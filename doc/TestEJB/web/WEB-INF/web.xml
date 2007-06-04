@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+
+<!--
+ Copyright 2002, 2003 Sun Microsystems, Inc. All Rights Reserved.
+-->
+
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+
+    <context-param>
+      <param-name>javax.faces.CONFIG_FILES</param-name>
+      <param-value>/WEB-INF/navigation.xml,/WEB-INF/managed-beans.xml</param-value>
+    </context-param>
+
+    <context-param>
+      <param-name>com.sun.faces.validateXml</param-name>
+      <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
+      <param-name>com.sun.faces.verifyObjects</param-name>
+      <param-value>false</param-value>
+    </context-param>
+
+    <!-- Filter needed for File Upload component  -->
+    <filter>
+      <filter-name>UploadFilter</filter-name>
+      <filter-class>com.sun.rave.web.ui.util.UploadFilter</filter-class>
+      <init-param>
+        <description>
+          The maximum allowed upload size in bytes.  If this is set
+          to a negative value, there is no maximum.  The default
+          value is 1000000.
+        </description>
+        <param-name>maxSize</param-name>
+        <param-value>1000000</param-value>
+      </init-param>
+      <init-param>
+        <description>
+          The size (in bytes) of an uploaded file which, if it is
+          exceeded, will cause the file to be written directly to
+          disk instead of stored in memory.  Files smaller than or
+          equal to this size will be stored in memory.  The default
+          value is 4096.
+        </description>
+        <param-name>sizeThreshold</param-name>
+        <param-value>4096</param-value>
+      </init-param>
+<!--
+      <init-param>
+        <description>
+          The directory into which uploaded files that exceed the
+          size threshold are written.  To set this parameter,
+          uncomment this "init-param" entry and set the correct
+          absolute path to the directory.  If this parameter is
+          not specified, the default behavior is to use the
+          directory specified by the system property
+          "java.io.tmpdir".
+        </description>
+        <param-name>tmpDir</param-name>
+        <param-value>/tmp</param-value>
+      </init-param>
+-->
+    </filter>
+    <filter-mapping>
+      <filter-name>UploadFilter</filter-name>
+      <servlet-name>Faces Servlet</servlet-name>
+    </filter-mapping>
+
+    <!-- Faces Servlet -->
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup> 1 </load-on-startup>
+    </servlet>
+
+    <!-- Error Handler Servlet -->
+    <servlet>
+	<servlet-name>ExceptionHandlerServlet</servlet-name>
+	<servlet-class>com.sun.errorhandler.ExceptionHandler</servlet-class>
+        <init-param>
+	   <param-name>errorHost</param-name>
+           <param-value>localhost</param-value>
+        </init-param>
+        <init-param>
+           <param-name>errorPort</param-name>
+           <param-value>4444</param-value>
+        </init-param>
+    </servlet>
+
+    <!-- Sun Web UI Components Themes -->
+    <servlet>
+        <servlet-name>ThemeServlet</servlet-name>
+        <servlet-class>com.sun.rave.web.ui.theme.ThemeServlet</servlet-class>
+    </servlet>
+
+    <!-- Faces Servlet Mapping -->
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+	<url-pattern>/faces/*</url-pattern>
+	<!-- <url-pattern>*.faces</url-pattern> -->
+    </servlet-mapping>
+
+    <!-- Error Handler Servlet Mapping -->
+    <servlet-mapping>
+        <servlet-name>ExceptionHandlerServlet</servlet-name>
+        <url-pattern>/error/ExceptionHandler</url-pattern>
+    </servlet-mapping>
+
+    <!-- Sun Web UI Components Servlet Mapping -->
+    <servlet-mapping>
+        <servlet-name>ThemeServlet</servlet-name>
+        <url-pattern>/theme/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Welcome File List -->
+    <welcome-file-list>
+        <welcome-file>faces/Page1.jsp</welcome-file>
+    </welcome-file-list>
+
+    <!-- Catch  ServletException -->
+    <error-page>
+        <exception-type>javax.servlet.ServletException</exception-type>
+        <location>/error/ExceptionHandler</location>
+    </error-page>
+    
+    <!-- Catch  IOException -->
+    <error-page>
+        <exception-type>java.io.IOException</exception-type>
+        <location>/error/ExceptionHandler</location>
+    </error-page>
+
+    <!-- Catch  FacesException -->
+    <error-page>
+        <exception-type>javax.faces.FacesException</exception-type>
+        <location>/error/ExceptionHandler</location>
+    </error-page>
+    
+    <!-- Catch  ApplicationException -->
+    <error-page>
+	<exception-type>com.sun.rave.web.ui.appbase.ApplicationException</exception-type>
+	<location>/error/ExceptionHandler</location>
+    </error-page> 
+
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jspf</url-pattern>
+            <is-xml>true</is-xml>
+        </jsp-property-group>
+    </jsp-config>
+</web-app>

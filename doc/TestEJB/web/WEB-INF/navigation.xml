@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+    version="1.2">
+    
+    <navigation-rule>
+        <from-view-id>/jsfExample/StudyList.jsp</from-view-id>
+          <navigation-case>
+            <from-action>#{studyList.goToDetails}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/jsfExample/StudyDetail.jsp</to-view-id>
+        </navigation-case>   
+        <navigation-case>
+            <from-action>#{studyList.goToAdd}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/jsfExample/EditStudy.jsp</to-view-id>
+            <redirect/>
+        </navigation-case>   
+        <navigation-case>
+            <from-action>#{studyList.goToUpdate}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/jsfExample/EditStudy.jsp</to-view-id>
+        </navigation-case>   
+        <navigation-case>
+            <from-action>#{studyList.goToDelete}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/jsfExample/DeleteStudy.jsp</to-view-id>
+        </navigation-case>   
+   </navigation-rule>   
+    
+    <navigation-rule>
+        <from-view-id>/jsfExample/EditStudy.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/jsfExample/StudyList.jsp</to-view-id>
+            <redirect/>
+        </navigation-case>   
+     
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/jsfExample/StudyDetail.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/jsfExample/StudyList.jsp</to-view-id>
+            <redirect/>
+        </navigation-case>        
+    </navigation-rule>
+    
+     <navigation-rule>
+        <from-view-id>/jsfExample/DeleteStudy.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/jsfExample/StudyList.jsp</to-view-id>
+            <redirect/>
+        </navigation-case>        
+    </navigation-rule>
+    
+   
+    
+</faces-config>

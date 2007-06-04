@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.web.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/web-project/3">
+            <name>TestEJB</name>
+            <minimum-ant-version>1.6</minimum-ant-version>
+            <web-module-libraries>
+                <library files="8">
+                    <file>${libs.jsfsupport-designtime.classpath}</file>
+                </library>
+                <library files="4">
+                    <file>${libs.webui-designtime.classpath}</file>
+                </library>
+                <library files="2">
+                    <file>${libs.jdbcsupport-designtime.classpath}</file>
+                </library>
+                <library files="1">
+                    <file>${libs.theme-default.classpath}</file>
+                </library>
+                <library files="1">
+                    <file>${reference.VDCNet-ejb.dist}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+            </web-module-libraries>
+            <web-module-additional-libraries>
+                <library files="3">
+                    <file>${libs.jsfsupport-runtime.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="3">
+                    <file>${libs.webui-runtime.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="2">
+                    <file>${libs.jdbcsupport-runtime.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.exceptionhandler-runtime.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.theme-default.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+            </web-module-additional-libraries>
+            <source-roots>
+                <root id="src.dir" name="Source Packages"/>
+            </source-roots>
+            <test-roots>
+                <root id="test.src.dir" name="Test Packages"/>
+            </test-roots>
+        </data>
+        <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
+            <reference>
+                <foreign-project>VDCNet-ejb</foreign-project>
+                <artifact-type>jar</artifact-type>
+                <script>build.xml</script>
+                <target>dist</target>
+                <clean-target>clean</clean-target>
+                <id>dist</id>
+            </reference>
+        </references>
+    </configuration>
+</project>

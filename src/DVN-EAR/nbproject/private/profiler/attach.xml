@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment></comment>
+<entry key="profiler.attach.remote">false</entry>
+<entry key="profiler.attach.server.type">Sun Application Server 9 / GlassFish</entry>
+<entry key="profiler.attach.working.dir"></entry>
+<entry key="profiler.attach.host.os">Mac OS X</entry>
+<entry key="profiler.attach.direct">true</entry>
+<entry key="profiler.attach.target.type">J2EE Web/App Server</entry>
+<entry key="profiler.attach.host">localhost</entry>
+<entry key="profiler.attach.ctrl.break">true</entry>
+</properties>

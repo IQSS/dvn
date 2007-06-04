@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
+    <managed-bean>
+        <managed-bean-name>VDCRequestBean</managed-bean-name>
+        <managed-bean-class>jsfExample.VDCRequestBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>VDCSessionBean</managed-bean-name>
+        <managed-bean-class>jsfExample.VDCSessionBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>VDCApplicationBean</managed-bean-name>
+        <managed-bean-class>jsfExample.VDCApplicationBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>studyList</managed-bean-name>
+        <managed-bean-class>jsfExample.StudyListBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>studyDetail</managed-bean-name>
+        <managed-bean-class>jsfExample.StudyDetailBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>study</property-name>
+            <value>#{VDCSessionBean.currentStudy}</value>
+        </managed-property>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>SessionBean1</managed-bean-name>
+        <managed-bean-class>testejb.SessionBean1</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>ApplicationBean1</managed-bean-name>
+        <managed-bean-class>testejb.ApplicationBean1</managed-bean-class>
+        <managed-bean-scope>application</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>RequestBean1</managed-bean-name>
+        <managed-bean-class>testejb.RequestBean1</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+</faces-config>

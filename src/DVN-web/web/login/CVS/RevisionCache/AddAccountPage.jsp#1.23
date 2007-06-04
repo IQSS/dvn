@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root version="2.0" xmlns:f="http://java.sun.com/jsf/core" 
+                        xmlns:h="http://java.sun.com/jsf/html" 
+                        xmlns:jsp="http://java.sun.com/JSP/Page" 
+                        xmlns:ui="http://www.sun.com/web/ui"
+                        xmlns:tiles="http://struts.apache.org/tags-tiles">
+    <f:subview id="AddAccountPageView">
+                    <ui:form  id="form1">
+                       <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                        <h:inputHidden id="studyId" value="#{AddAccountPage.studyId}"/>
+                      <input type="hidden" name="pageName" value="AddAccountPage"/>
+                            <ui:panelLayout panelLayout="flow" styleClass="vdcSectionMiddleFixed" style="width: 600px">
+                                    <ui:panelLayout  id="layoutPanel2" panelLayout="flow" styleClass="vdcSectionHeader">
+                                        <h:outputText  id="outputText1" value="Create a New Account"/>
+                                    </ui:panelLayout>
+                                    
+                                    <ui:panelLayout   panelLayout="flow" style="padding-left: 40px; padding-top: 30px; padding-bottom: 30px;  padding-right: 20px;">
+                                        <ui:panelGroup block="true" id="groupPanel4" style="padding-bottom: 15px">
+                                            <h:outputText  id="outputText3" value="Already have a Dataverse account?"/>
+                                            <h:outputLink  id="hyperlink1" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp">
+                                                <h:outputText  id="hyperlink1Text" value="Log in"/>
+                                            </h:outputLink>
+                                        </ui:panelGroup>
+                                        <ui:panelGroup block="true" style="padding-bottom: 15px;">
+                                            <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                                            <h:outputText  styleClass="vdcHelpText" value="Why do I need a Dataverse account?."/>
+                                            <ui:panelGroup block="true" style="padding-top: 5px">
+                                                <h:outputText  styleClass="vdcHelpText" value="- You need an account if you'd like to be added as a privileged user. Just by creating an account will not automcatically give you privileges, but it will enable an administrator to grant you any privileges on request. If you are interested in sending a special request to become a curator of a Dataverse, for example, please "/>
+                                                <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.jsp">
+                                                    <h:outputText value="contact us"/>
+                                                </h:outputLink>
+                                                <h:outputText  styleClass="vdcHelpText" value=" describing your request and providing your username." />
+                                            </ui:panelGroup> 
+                                            <ui:panelGroup block="true" style="padding-top: 5px" rendered="#{VDCRequest.currentVDCId!=null and VDCRequest.currentVDC.allowContributorRequests and AddAccountPage.studyId==null}" >
+                                                <h:outputText  styleClass="vdcHelpText" value="- If you are interested in " /> 
+                                                <h:outputText  styleClass="vdcHelpText" style="font-weight: bold;" value="becoming a contributor of this Dataverse" />
+                                                <h:outputText  styleClass="vdcHelpText" value=", you may now request it directly by checking the option below." />
+                                            </ui:panelGroup> 
+                                            <ui:panelGroup block="true" style="padding-top: 5px" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest and VDCRequest.currentVDCId==null}">
+                                                <h:outputText  styleClass="vdcHelpText" value="- If you are interested in , you may now request it by checking the option below."/>
+                                                <h:outputText  styleClass="vdcHelpText" style="font-weight: bold;" value="creating your own Dataverse" />
+                                                <h:outputText  styleClass="vdcHelpText" value=", you may now request it directly by checking the option below." />
+                                            </ui:panelGroup>
+                                            <ui:panelGroup block="true" style="padding-top: 5px" rendered="#{AddAccountPage.studyId!=null}">   
+                                                <h:outputText  styleClass="vdcHelpText" value="- If you are interested in "/>
+                                                <h:outputText  styleClass="vdcHelpText" style="font-weight: bold;" value="accessing the restricted files of this study" />
+                                                <h:outputText  styleClass="vdcHelpText" value=", you may now request it directly by checking the option below." />
+                                           </ui:panelGroup>                                                              
+                                        </ui:panelGroup>
+                                        <ui:panelGroup block="true" style="padding-bottom: 15px;">
+                                            <h:graphicImage value="/resources/icon_required.gif"/> <h:outputText style="vdcHelpText" value="Indicates a required field."/>
+                                        </ui:panelGroup>
+                                        <h:panelGrid  cellpadding="0" cellspacing="0"
+                                                      columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
+                                            <ui:panelGroup >
+                                                <h:outputText   value="Username"/>
+                                                <h:graphicImage  id="image1" value="/resources/icon_required.gif"/>
+                                            </ui:panelGroup>
+                                            <ui:panelGroup>
+                                                <h:inputText id="inputUserName" validator="#{AddAccountPage.validateUserName}" value="#{AddAccountPage.user.userName}" required="true">
+                                                </h:inputText>
+                                                <h:message for="inputUserName"  styleClass="errorMessage"/>
+                                            </ui:panelGroup>
+                                            <ui:panelGroup >
+                                                <h:outputText  value="Password"/>
+                                                <h:graphicImage  value="/resources/icon_required.gif"/>
+                                            </ui:panelGroup>
+                                            <ui:panelGroup> 
+                                                <h:inputSecret  id="inputPassword" value="#{AddAccountPage.user.password}" required="true"/>
+                                                <h:message for="inputPassword"  styleClass="errorMessage"/>
+                                            </ui:panelGroup>
+                                            <ui:panelGroup >
+                                                <h:outputText  value="First Name"/>
+                                                <h:graphicImage  value="/resources/icon_required.gif"/>
+                                            </ui:panelGroup>
+                                            <ui:panelGroup>
+                                                <h:inputText id="inputFirstName" value="#{AddAccountPage.user.firstName}" required="true"/> 
+                                                <h:message for="inputFirstName"  styleClass="errorMessage"/>
+                                            </ui:panelGroup>
+                                            
+                                            
+                                            <ui:panelGroup >
+                                                <h:outputText  value="Last Name"/>
+                                                <h:graphicImage  value="/resources/icon_required.gif"/>
+                                            </ui:panelGroup>
+                                            <ui:panelGroup>
+                                                <h:inputText id="inputLastName" value="#{AddAccountPage.user.lastName}" required="true"/> 
+                                                <h:message for="inputLastName"  styleClass="errorMessage"/>
+                                            </ui:panelGroup>
+                                            
+                                            <ui:panelGroup >
+                                                <h:outputText  value="E-Mail"/>
+                                                <h:graphicImage  value="/resources/icon_required.gif"/>
+                                            </ui:panelGroup>
+                                            <ui:panelGroup>
+                                                <h:inputText  id="inputEmail" value="#{AddAccountPage.user.email}" size="40" required="true">
+                                                    <f:validator validatorId="EmailValidator"/>
+                                                </h:inputText>
+                                                <h:message for="inputEmail"  styleClass="errorMessage"/>
+                                            </ui:panelGroup>
+                                            
+                                            <ui:panelGroup>    
+                                                <h:outputText value="Institution"/>
+                                            </ui:panelGroup>
+                                            <h:inputText id="inputInstitution" value="#{AddAccountPage.user.institution}"  size="40"/>
+                                            
+                                            <ui:panelGroup >
+                                                <h:outputText  value="Position"/>
+                                            </ui:panelGroup>
+                                            
+                                            <h:selectOneMenu value="#{AddAccountPage.user.position}" >
+                                                <f:selectItem itemLabel="Student" itemValue="Student" />
+                                                <f:selectItem itemLabel="Faculty" itemValue="Faculty" />
+                                                <f:selectItem itemLabel="Staff" itemValue="Staff" />
+                                                <f:selectItem itemLabel="Other" itemValue="Other" />
+                                            </h:selectOneMenu>
+                                            
+                                            <ui:panelGroup >
+                                                <h:outputText  value="Phone Number"/>
+                                            </ui:panelGroup>
+                                            <h:inputText  id="inputPhoneNumber" value="#{AddAccountPage.user.phoneNumber}"  />
+                                            
+                                        </h:panelGrid>
+                                        <ui:panelGroup  block="true"  style="padding-left: 100px; padding-top: 20px" rendered="#{VDCRequest.currentVDCId!=null and VDCRequest.currentVDC.allowContributorRequests and AddAccountPage.studyId==null}"> 
+                                            <h:selectBooleanCheckbox id="contributorCheckbox" value="#{AddAccountPage.contributorRequest}"/>
+                                            <h:outputLabel for="contributorCheckbox" value="I want to become a contributor to #{VDCRequest.currentVDC.name} Dataverse. This will allow me to upload my own data in this archive."/>
+                                        </ui:panelGroup>
+                                        <ui:panelGroup  block="true" style="padding-left: 100px; padding-top: 20px" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest and VDCRequest.currentVDCId==null}">
+                                            <h:selectBooleanCheckbox id="creatorCheckbox" value="#{AddAccountPage.creatorRequest}" />
+                                            <h:outputLabel for="creatorCheckbox" value="I want to become a Dataverse creator. This will allow me to create my virtual archive in the #{VDCRequest.vdcNetwork.name} Dataverse Network."/>
+                                        </ui:panelGroup>
+                                        <ui:panelGroup  block="true"  style="padding-left: 100px; padding-top: 20px" rendered="#{AddAccountPage.studyId!=null}">
+                                            <h:selectBooleanCheckbox id="studyCheckbox" value="#{AddAccountPage.accessStudy}"  />
+                                            <h:outputLabel for="studyCheckbox" value="I want to access the restricted files of Study: #{AddAccountPage.studyId}"/>
+                                        </ui:panelGroup>
+                                        <ui:panelGroup block="true"  style="padding-left: 100px; padding-top: 20px">
+                                            <h:commandButton  value="Create Account" action="#{AddAccountPage.createAccount}"/>
+                                            <h:commandButton  immediate="true" value="Cancel" action="#{AddAccountPage.cancel}"/>
+                                        </ui:panelGroup>
+                                        
+                                    </ui:panelLayout>
+                                    
+                            </ui:panelLayout>
+                    </ui:form>
+        </f:subview>
+</jsp:root>

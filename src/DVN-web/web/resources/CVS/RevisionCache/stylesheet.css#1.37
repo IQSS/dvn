@@ -1,0 +1,924 @@
+/* Style rules to make data tables look better */
+
+.list-header {
+   background-color: #e2e2e2;
+   font-size: larger;
+   font-weight: bold;
+}
+.list-header-left {
+   background-color: #e2e2e2;
+   font-size: larger;
+   font-weight: bold;
+   text-align: left
+}
+.list-paging-header {
+  background-color: white;
+}
+
+.list-paging-footer {
+  background-color: white;
+}
+
+.list-row-even { 
+}
+
+.list-row-odd { 
+  background-color: #eeeeee;
+}
+
+/* Style rules for message severity levels */
+
+.infoMessage {
+  color: black;
+}
+
+.successMessage {
+    margin: 0px;
+    padding: 0px;
+    background: #FBD91F;
+    color: #002BB8;
+    border-width: 1px;
+    border-color: #CE8928;
+    border-style: solid;
+    text-align: center;
+}
+
+.warnMessage {
+   color: #8B0404;
+}
+
+.errorMessage {
+  color: red;
+  font-weight: bold;
+}
+
+.fatalMessage {
+  color: red;
+  font-style: italic;
+  font-weight: bold;
+}
+
+/* VDCNet general style rules
+*/
+
+body { 
+   font-family: Verdana, Arial, Helvetica, sans-serif; 
+   margin: 0px; /* Need to set body margin and padding to get consistency between browsers. */
+   padding: 0px;
+   text-align: center;  /* Counteract to IE/Win Hack */
+}
+/* All content jsps have a panel layot (div) with style: vdcSectionMiddle, vdcSectionMiddleNoBorder (when there are more than 1 section columns), 
+*  or vdcSectionMiddleFixed (when the section needs to be of a fixed size - specify the size in the jsp)
+*/
+
+.vdcSectionMiddle{
+   border: 1px solid #cccccc;
+   width: 90%;
+   margin-left: auto;
+   margin-right: auto;
+   margin-top: 50px;
+   margin-bottom: 50px; 
+   text-align: left; /* Counteract to IE/Win Hack */
+   height: 100%;
+}
+.vdcSectionMiddleNoBorder{
+   width: 90%;
+   margin-left: auto;
+   margin-right: auto;
+   margin-top: 50px;
+   margin-bottom: 50px; 
+   padding: 0px;
+   text-align: left; /* Counteract to IE/Win Hack */
+   height: 100%;   
+}
+.vdcSectionMiddleFixed {
+    margin-left: auto; /* Right and left margin widths set to "auto" */
+    margin-right: auto;
+    margin-top: 50px;
+    margin-bottom: 50px; 
+    text-align: left; /* Counteract to IE/Win Hack */
+    border: 1px solid #cccccc;
+    padding: 0px;
+    height: 100%;
+}
+
+.vdcSectionMiddleMessage {
+    margin-left: auto; /* Right and left margin widths set to "auto" */
+    margin-right: auto;
+    margin-top: 0px;
+    margin-bottom: 0px; 
+    text-align: left; /* Counteract to IE/Win Hack */
+    padding: 0px;
+    height: 100%;
+}
+/* Rules for more than 1 section column
+*/
+.vdcContentCol1{
+   padding-bottom: 0px;
+   padding-left: 0px;
+   padding-right: 15px;
+   padding-top: 0px;
+   vertical-align: top;
+   width: 75%;
+}
+
+.vdcContentCol2{
+   padding-bottom: 0px;
+   padding-left: 15px;
+   padding-right: 0px;
+   padding-top: 0px;
+   width: 25%;
+   vertical-align: top;
+}
+
+.vdcSectionCol {
+   width: 100%;
+   border: 1px solid #cccccc; 
+   padding: 0px;
+   margin: 0px;
+}
+
+.vdcSectionColRight {
+   width: 98%;
+   border: 1px solid #cccccc; 
+   padding: 0px;
+   margin: 0px;
+}
+
+.vdcTwoColLayout {
+    width: 50%; 
+    padding: 0px;
+    margin: 0px;
+    vertical-align: top;
+}
+
+.vdcSectionTwoCol {
+   width: 100%;
+   padding: 0px;
+   margin: 0px;
+}
+
+/* Section Header and general text styles
+*/
+.vdcSectionHeader {
+   background-image: url(gradientbar.jpg);
+   border-bottom-color: #999999;
+   border-bottom-style: solid;
+   border-bottom-width: 1px;
+   border-top-color: #999999;
+   border-top-style: solid;
+   border-top-width: 1px;
+   color: #004C80;
+   font-weight: bold;
+   margin: 0px;
+   padding-bottom: 7px;
+   padding-left: 0px;
+   padding-right: 0px;
+   padding-top: 2px;
+   text-align: left;
+   text-indent: 3px;
+   vertical-align: top;
+   white-space: nowrap; 
+   letter-spacing: 1px;
+}
+
+.vdcTextWrap{
+    white-space: normal;
+}
+.vdcTextNoWrap{
+    white-space: nowrap;
+}
+.vdcTextStandOut{
+   color: #820024;
+   font-weight: bold
+}
+
+.vdcHelpText{
+    font-size: 11px;
+}
+.vdcNoBorders{
+   border-bottom-style: none;
+   border-left-style: none;
+   border-right-style: none;
+   border-top-style: none
+}
+
+.vdcSubHeader{
+   font-weight: bold;
+   letter-spacing: 1px;
+}
+.vdcSubHeaderColor{
+   color: #004C80;
+   font-weight: bold;
+   letter-spacing: 1px;
+}
+
+.vdcFieldTitle{
+   font-weight: bold
+}
+.vdcTextRight{
+   padding-right: 4px;
+   text-align: right
+}
+
+.vdcColPadded{
+   padding-bottom: 3px;
+   padding-left: 4px;
+   padding-top: 3px;
+}
+
+.vdcSmallButton{
+   color: #000099;
+   font-size: 10px;
+   height: 20px
+}
+
+.vdcTextLarger{
+   font-size: 14px
+}
+
+/* Connected Banner style rules
+*/
+.vdcConnectBanner{
+   border-color: #990000;
+   border-style: solid;
+   border-width: 1px;
+}
+.vdcConnectBannerCol1{
+   background-color: #FFFFFF;
+   text-align: left;
+   padding-left: 10px;
+}
+.vdcConnectBannerCol2{
+   background-color: #FFFFFF;
+   padding-right: 5px;
+   text-align: right;
+}
+.vdcConnectedToText{
+    font-size: 11px;
+    font-family: Arial;
+    color: #333333;
+    vertical-align: text-bottom;
+}
+.vdcConnectNetworkText{
+    font-size: 22px;
+    font-family: Arial;
+    vertical-align: text-bottom;
+    color: #333333;
+}
+a.vdcConnectNetworkText:link,a.vdcConnectNetworkText:visited,a.vdcConnectNetworkText:hover{
+    color: #666666;
+}
+
+/*Menubar Style rules
+*/
+.vdcMenubarCol1{
+   background-color: #EDEDED;
+   padding-bottom: 5px;
+   padding-top: 5px;
+   text-align: left;
+}
+.vdcMenubarCol2{
+   background-color: #EDEDED;
+   padding-bottom: 5px;
+   padding-top: 5px;
+   padding-right: 10px;
+   text-align: right
+}
+.vdcMenuItem{
+   border-right-style: solid;
+   border-right-color: black;
+   border-right-width: 1px;
+   padding-left: 10px;
+   padding-right: 12px
+}
+.vdcMenuItemLast{
+   padding-left: 10px;
+   padding-right: 12px
+}
+
+.vdcMenuUserOptions{
+   color: #820024;
+   margin-right: 5px;
+   margin-left: 5px;
+   font-weight: bold
+}
+a.vdcMenuUserOptions:link,a.vdcMenuUserOptions:visited,a.vdcMenuUserOptions:hover{
+   color: #820024;
+   font-weight: bold
+}
+
+.vdcMenuNetworkOptions{
+   color: #820024;
+   margin-right: 5px;
+   margin-left: 5px;
+   font-weight: bold
+}
+a.vdcMenuNetworkOptions:link,a.vdcMenuNetworkOptions:visited,a.vdcMenuNetworkOptions:hover{
+   color: #820024;
+   font-weight: bold
+}
+.vdcMenuUserName{
+   margin-right: 5px
+}
+
+a.vdcSiteMapLink:link {
+  text-decoration: underline;
+}
+a.vdcSiteMapLink:visited {
+  color: #660099;
+  text-decoration: underline;
+}
+a.vdcSiteMapLink:hover {
+  color: #ff0000;
+  text-decoration: underline;
+}
+/* VDC Search Box Style rules
+*/
+
+.vdcSearchSection {
+   background-color: #E2E2E2;
+   text-align: left;
+   width: 100%;
+   padding: 0px;
+   margin: 0px; 
+}
+
+.vdcSearchGroupFirst {
+   border-left-color: #ffffff;
+   border-left-style: solid;
+   border-left-width: 2px;
+   border-right-style: solid;
+   border-right-color: #ffffff;
+   border-right-width: 2px;
+   border-top-color: #ffffff;
+   border-top-style: solid;
+   border-top-width: 2px;
+   margin-bottom: 0px;
+   margin-left: 0px;
+   margin-right: 0px;
+   margin-top: 0px;
+   padding-bottom: 10px;
+   padding-left: 2px;
+   padding-right: 2px;
+   padding-top: 2px;
+}
+
+.vdcSearchGroupMiddle {
+   border-left-color: #ffffff;
+   border-left-style: solid;
+   border-left-width: 2px;
+   border-right-style: solid;
+   border-right-color: #ffffff;
+   border-right-width: 2px;
+   margin-bottom: 0px;
+   margin-left: 0px;
+   margin-right: 0px;
+   margin-top: 0px;
+   padding-bottom: 10px;
+   padding-left: 20px;
+   padding-right: 0px;
+   padding-top: 0px;
+}
+
+.vdcSearchGroupLast {
+   border-left-color: #ffffff;
+   border-left-style: solid;
+   border-left-width: 2px;
+   border-right-style: solid;
+   border-right-color: #ffffff;
+   border-right-width: 2px;
+   border-bottom-color: #ffffff;
+   border-bottom-style: solid;
+   border-bottom-width: 2px;
+   margin-bottom: 0px;
+   margin-left: 0px;
+   margin-right: 0px;
+   margin-top: 0px;
+   padding-bottom: 10px;
+   padding-left: 20px;
+   padding-right: 0px;
+   padding-top: 0px;
+}
+
+.vdcSearchLink1{
+   border-right-style: solid;
+   border-right-color: black;
+   border-right-width: 1px;
+   padding-left: 4px;
+   padding-right: 8px
+}
+
+.vdcSearchLink2{
+   padding-left: 4px;
+   padding-right: 4px
+}
+
+.vdcSearchText1{
+   padding-left: 0px;
+   padding-right: 4px;
+}
+
+.vdcSearchText2{
+   padding-left: 4px;
+   padding-right: 4px;
+}
+
+/* VDC Search Results Style rules 
+*/
+
+.vdcSResultsPageN {
+   border-right-style: solid;
+   border-right-color: black;
+   border-right-width: 1px;
+   padding-left: 2px;
+   padding-right: 4px
+}
+
+.vdcSResultsPageNLast {
+   padding-left: 2px;
+   padding-right: 4px
+}
+
+.vdcSResultsTop{
+   padding-bottom: 5px;
+   padding-top: 20px;
+}
+
+.vdcSResultsField {
+   font-weight: bold;
+}
+
+.vdcSResultsStudyTitle{
+   font-weight: bold;
+}
+
+.vdcSResultsCol1{
+   width: 50%
+}
+
+.vdcSResultsCol2{
+   text-align: right;
+   width: 50%
+}
+
+.vdcSResultsList{
+   padding-top: 10px;
+   padding-bottom: 10px;
+}
+/* Style rules for Study Page (Cataloging Info and Files)
+*/
+.vdcStudyTitle {
+   padding-bottom: 10px;
+   padding-left: 8px;
+   padding-top: 0px
+}
+
+.vdcStudyTitleID {
+   font-size: 12pt;
+   font-weight: bold;
+  color: black
+}
+
+.vdcStudyTitleName {
+   color: #065A85;
+   font-size: 12pt;
+   font-weight: bold;
+   padding-left: 4px
+}
+
+.vdcStudyTabSet {
+   padding-left: 4px;
+   padding-right: 4px;
+   margin: 0px;
+}
+
+.vdcStudyInfoHeader {
+   background-color: #E2E2E2;
+   font-size: 10px;
+   font-weight: bold;
+   text-align: center;
+   padding-top: 3px;
+   padding-bottom: 3px;
+   margin-top: -1px;
+   margin-bottom: 4px;
+}
+
+.vdcStudyInfoCol1 {
+   border-bottom-color: #E2E2E2;
+   border-bottom-style: solid;
+   border-bottom-width: 1px;
+   font-weight: bold;
+   padding-bottom: 5px;
+   padding-left: 0px;
+   padding-right: 10px;
+   padding-top: 5px;
+   text-align: left;
+   width: 200px;
+}
+.vdcStudyInfoCol2 {
+   border-bottom-color: #E2E2E2;
+   border-bottom-style: solid;
+   border-bottom-width: 1px;
+   font-weight: normal;
+   padding-bottom: 5px;
+   padding-top: 5px;
+   text-align: left;
+}
+
+.vdcStudyInfoDownload {
+   font-weight: bold;
+   padding-top: 10px;
+   text-align: center
+}
+
+.vdcStudyFilesCat {
+   background-color: #E2E2E2;
+   border-bottom-color: #ffffff;
+   border-bottom-style: solid;
+   border-bottom-width: 1px;
+   padding-bottom: 2px;
+   padding-left: 4px;
+   padding-top: 2px;
+   text-align: left
+}
+
+.vdcStudyFilesCatLabel {
+   font-weight: bold;
+   padding-left: 8px;
+   padding-right: 8px;
+}
+
+.vdcStudyFilesCol1{
+   font-size: 10px;
+   padding-bottom: 2px;
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 2px;
+   white-space: normal;
+   width: 20%
+}
+
+.vdcStudyFilesCol2{
+   font-size: 10px;
+   padding-bottom: 2px;
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 2px; 
+   white-space: normal;  
+   width: 35%
+}
+
+.vdcStudyFilesCol3{
+   font-size: 10px;
+   padding-bottom: 2px;
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 2px;
+   white-space: normal;  
+   width: 15%
+}
+
+.vdcStudyFilesCol4{
+   font-size: 10px;
+   padding-bottom: 2px;
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 2px;
+   white-space: normal;  
+   width: 5%
+}
+
+.vdcStudyFilesCol5{
+   font-size: 10px;
+   padding-bottom: 2px;
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 2px;
+   white-space: normal;  
+   width: 25%
+}
+
+/* Edit Study/Files style rules
+*/
+.vdcEditFilesColA{
+   padding-bottom: 2px;
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 2px;
+   width: 20%
+}
+
+.vdcEditFilesColB{
+   padding-bottom: 2px;
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 2px;
+   width: 35%;
+   white-space: nowrap;
+}
+
+.vdcEditFilesColC{
+   padding-bottom: 2px;
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 2px;
+}
+
+.vdcEditFilesHeader{
+   background-color: #E2E2E2;
+   font-weight: bold;
+   text-align: left
+}
+.vdcEditStudyCol1 {
+   font-weight: normal;
+   padding-bottom: 0px;
+   padding-left: 0px;
+   padding-top: 0px;
+   text-align: left;
+   vertical-align: top;
+   width: 220px;
+}
+.vdcEditStudyCol1b {
+   font-weight: normal;
+   padding-bottom: 0px;
+   padding-left: 0px;
+   padding-top: 0px;
+   text-align: left;
+   vertical-align: top;
+   width: 220px;
+}
+.vdcEditStudyCol2 {
+   font-weight: normal;
+   padding-bottom: 0px;
+   padding-top: 0px;
+   text-align: left;
+   vertical-align: middle;
+   white-space: normal;
+}
+.vdcEditStudyCol3{
+   font-weight: normal;
+   padding-bottom: 0px;
+   padding-top: 0px;
+   text-align: right;
+   width: 50px;
+   vertical-align: top;
+}
+.vdcEditStudyField{
+   padding-top: 6px;
+   padding-bottom: 6px;
+}
+.vdcEditStudyGroupField{
+    white-space: nowrap;
+}
+
+/* Style Rules for Most Pouplar Table
+*/
+
+.vdcTableHeaderWhite{
+   background-color: white;
+   font-weight: bold;
+   text-align: center
+}
+
+.vdcTableMPopularCol1{
+   border-right-color: #cccccc;
+   border-right-style: solid;
+   border-right-width: 1px;
+   padding-bottom: 4px;
+   padding-left: 4px;
+   padding-right: 2px;
+   padding-top: 4px
+}
+
+.vdcTableMPopularCol2{
+   padding-bottom: 4px;
+   padding-left: 4px;
+   padding-right: 2px;
+   padding-top: 4px;
+   width: 30px
+}
+
+/* Advanced Search Style Rules
+*/
+.vdcAdvSearchCol{
+   padding-bottom: 2px;
+   padding-left: 10px;
+   padding-top: 2px;
+   vertical-align: bottom;
+}
+
+/* Add/Manage Collection Style Rules
+*/
+.vdcAddCollectionCol1{
+   padding-bottom: 4px;
+   padding-left: 20px;
+   padding-top: 4px;
+   width: 250px
+}
+.vdcAddCollectionCol2{
+   padding-bottom: 4px;
+   padding-left: 20px;
+   padding-top: 4px;
+}
+
+/* Add Site Page Style Rules
+*/
+.vdcAddSiteCol1{
+   padding-bottom: 4px;
+   padding-left: 40px;
+   padding-top: 4px
+}
+.vdcAddSiteCol2{
+   padding-bottom: 4px;
+   padding-left: 10px;
+   padding-top: 4px
+}
+
+/* Analysis Page Style Rules
+*/
+.vdcVariablesCol1{
+   width: 20px;
+   padding-left: 2px;
+   padding-right: 2px;
+}
+.vdcVariablesCol2{
+   padding-left: 2px;
+   padding-right: 2px;
+   width: 50px
+}
+.vdcVariablesCol3{
+   padding-left: 2px;
+   padding-right: 2px;
+   width: 50px
+}
+.vdcVariablesCol4{
+   padding-left: 2px;
+   padding-right: 2px;
+   width: 200px
+}
+.vdcVariablesCol5{
+   padding-left: 2px;
+   padding-right: 2px;
+
+}
+.vdcVariablesCol6{
+   padding-left: 2px;
+   padding-right: 2px;
+   width: 200px
+}
+
+.vdcAnalysisCol1 {
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 4px;
+   vertical-align: top;
+   width: 200px
+}
+.vdcAnalysisCol2 {
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 20px;
+   text-align: left;
+   vertical-align: top
+}
+
+.vdcVarSummaryCol1{
+   color: #003366;
+   font-weight: bold;
+   padding-right: 2px;
+   width: 50px
+}
+.vdcVarSummaryCol2{
+   padding-right: 2px
+}
+
+.vdcAdvAnalysisCol1{
+   padding-top: 10px;
+   text-align: left;
+   vertical-align: top
+}
+.vdcAdvAnalysisCol2{
+   padding-left: 20px;
+   padding-top: 10px;
+   text-align: left;
+   vertical-align: top
+}
+.vdcVarHeaderCol1{
+   background-color: #E2E2E2;
+   padding-bottom: 5px;
+   padding-left: 20px;
+   padding-top: 10px
+}
+.vdcVarHeaderCol2{
+   background-color: #E2E2E2;
+   padding-bottom: 5px;
+   padding-top: 10px;
+   padding-right: 4px;
+   text-align: right
+}
+
+.vdcRecodesColA{
+   padding-left: 4px;
+   padding-right: 4px;
+   width: 20px
+}
+.vdcRecodesColB{
+   padding-left: 4px;
+   padding-right: 4px;
+}
+.vdcRecodesHeader{
+   font-weight: bold;
+   text-align: center
+}
+
+/* Network Homepage Style Rules */
+.vdcDataverseGroupLeft{
+   padding-bottom: 0px;
+   padding-left: 80px;
+   padding-right: 20px;
+   padding-top: 30px;
+   vertical-align: top;
+   width: 50%;
+}
+.vdcDataverseGroupRight{
+   padding-bottom: 0px;
+   padding-left: 20px;
+   padding-right: 80px;
+   padding-top: 30px;
+   vertical-align: top;
+   width: 50%;
+}
+.vdcDataverseGroupHeader{
+   color: #000000;
+   font-weight: bold;
+   padding-bottom: 4px;
+   text-align: left
+}
+.vdcDataversesTable{
+   padding-bottom: 9px;
+   padding-left: 50px;
+   padding-right: 20px;
+   padding-top: 9px;
+}
+/* Rules for Login Page
+*/
+.vdcLoginCol1{
+   padding-bottom: 6px;
+   padding-top: 6px;
+   white-space: nowrap;
+   width: 100px;
+}
+.vdcLoginCol2{
+   padding-bottom: 6px;
+   padding-top: 6px; 
+}
+
+/* Rules for paragraphs in abstract
+*/
+.vdcAbstractSResults{
+    padding-top: 3px; 
+    padding-bottom: 3px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+p { margin-top: 2px; margin-bottom: 2px; padding: 0px; }
+/* Rules for Request panel in Homepage (Become a Dataverse Creator and Contributor)
+*/
+.vdcRequestPanel{
+    padding: 20px 10px 20px 10px; 
+    font-size: 12px; 
+    text-align: center;
+    font-weight: normal;
+    background-color: #eeeeee;
+    border: 1px solid #990000; 
+}
+a.vdcRequestPanelLink:link{
+   color: #820024;
+    font-weight: bold;
+}
+a.vdcRequestPanelLink:visited{
+     color: #BA6465;
+    font-weight: bold;
+}
+a.vdcRequestPanelLink:hover{
+     color: #D39D60;
+    font-weight: bold;
+}
+
+/* Collections Tree Styles
+*/
+.vdcTreeDataverse{
+    color: #990000;
+    font-weight: bold;
+}
+
+/* Overwrite tabset style rules (from Creator Default Themes)
+*/
+.MniTabLnk{display: block; padding: 5px 15px 4px; font-size: 12px; }
+a.MniTabLnk:link, a.MniTabLnk:visited {font-weight: bold; }
+.MniTabSelTxt{font-weight: bold; }
+
+/* Overwrite Tree style rules (from Creator Default Themes)
+*/
+.TreeRow {white-space: normal}

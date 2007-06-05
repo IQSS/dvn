@@ -18,6 +18,7 @@ import javax.xml.bind.JAXBContext;
  * @author Ellen Kraffmiller
  */
 public interface HarvesterServiceLocal {
+    public void createHarvestTimer();
     public void harvest(HarvestingDataverse dataverse, String from, String until);
     public List<SetDetailBean> getSets(String oaiUrl); 
     public List<String> getMetadataFormats(String oaiUrl);

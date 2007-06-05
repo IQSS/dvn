@@ -39,7 +39,7 @@
                         //Create Popup div
                         popup = new PopupWindow(divId);
                         popup.autoHide();
-                        popup.offsetX=-200;
+                        popup.offsetX=-300;
                         popup.offsetY=20;
                         popup.showPopup(anchorId);
                         return popup;
@@ -380,10 +380,21 @@
                                 </ui:tab>
                                 
                                 <ui:tab  id="files"  style="font-weight: bold" text="Study Files" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=files">
-                                    <ui:panelGroup  block="true" id="noFilesPanel" style="padding-top: 30px; padding-bottom: 30px; padding-left: 20px;" rendered="#{empty studyPage.studyUI.study.fileCategories}">
-                                        <h:outputText value="No files have been provided for this study."/>
-                                    </ui:panelGroup>
-                                    <ui:panelLayout  id="layoutPanel2" panelLayout="flow" style="width: 100%;" rendered="#{!empty studyPage.studyUI.study.fileCategories}">
+                                    <ui:panelLayout  id="noFilesPanel1" panelLayout="flow" style="margin: 0px; padding: 0px 0px 10px 0px; " rendered="#{empty studyPage.studyUI.study.fileCategories}">
+                                        <ui:panelGroup  block="true" id="noFilesPanel2" style="padding-top: 30px; padding-bottom: 30px; padding-left: 20px;" rendered="#{!studyPage.userAuthorizedToEdit}">
+                                            <h:outputText value="No files have been provided for this study."/>
+                                        </ui:panelGroup>
+                                        <ui:panelGroup  block="true" id="noFilesPanel3" style="padding-top: 30px; padding-bottom: 30px; padding-left: 20px;" rendered="#{studyPage.userAuthorizedToEdit and (studyPage.studyUI.study.studyLock==null)}">
+                                            <h:outputText value="No files have been yet been uploaded to this study. To add a file, follow the 'Add File(s)' link on the top right of this page."/>
+                                        </ui:panelGroup>
+                                        <ui:panelGroup  block="true" id="noFilesPanel4a" style="padding-top: 30px; padding-bottom: 30px; padding-left: 20px;" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
+                                            <h:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
+                                        </ui:panelGroup>
+                                    </ui:panelLayout>
+                                   <ui:panelGroup  block="true" id="noFilesPanel4b" style="align-text: left; padding-top: 10px; padding-bottom: 10px;" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
+                                            <h:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
+                                        </ui:panelGroup>
+                                    <ui:panelLayout  id="layoutPanel2" panelLayout="flow" style="margin: 0px; padding: 0px 0px 10px 0px; " rendered="#{!empty studyPage.studyUI.study.fileCategories}">
                                         <ui:panelGroup  block="true" styleClass="vdcRequestPanelFiles" rendered="#{studyPage.studyUI.anyFileRestricted and studyPage.studyUI.study.requestAccess}">
                                             <h:outputText value="Would you like to access the restricted files in this study?" />
                                             <h:outputLink rendered="#{VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.jsp?studyId=#{studyPage.studyId}" styleClass="vdcRequestPanelLink">
@@ -393,15 +404,26 @@
                                                 <h:outputText  value="Send a Request"/>
                                             </h:outputLink>            
                                         </ui:panelGroup>
-                                        <ui:panelGroup  block="true" id="groupPanel7" style="align-text: left; padding-bottom: 10px; padding-top: 5px;">
+                                         
+                                        <ui:panelGroup  block="true" id="groupPanel7a" style="align-text: left; padding-bottom: 2px; padding-top: 5px;">
                                             <h:outputText  id="outputText33"  value="Download all files in a single archive file (files that you cannot access will not be downloaded): "/>                                            
-                                            <h:graphicImage  value="/resources/icon_download_locked.gif" rendered="#{!studyPage.studyUI.anyFileUnrestricted}"
+                                            <h:graphicImage  value="/resources/icon_downloadall_locked.gif" rendered="#{!studyPage.studyUI.anyFileUnrestricted}"
                                                              alt="You do not have permissions to access any files in this study." title="You do not have permissions to access any files in this study."/>
                                             <h:outputLink  id="linkAction7" onclick="return checkTerms(this.id);" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?studyId=#{studyPage.studyUI.study.id}" title="Download all files in a single archive file." rendered="#{studyPage.studyUI.anyFileUnrestricted}">
                                                 <h:graphicImage  id="image7" styleClass="vdcNoBorders" value="/resources/icon_downloadall.gif"/>
                                             </h:outputLink>
-                                            
                                         </ui:panelGroup>
+ 
+                                        
+                                        <h:panelGrid cellpadding="3" cellspacing="0" columnClasses="vdcStudyFilesHead1, vdcStudyFilesHead2, vdcStudyFilesHead3, vdcStudyFilesHead4, vdcStudyFilesHead5, vdcStudyFilesHead6" columns="6" width="100%" rendered="#{!empty studyPage.studyUI.study.fileCategories}" > 
+                                           <h:outputText value="File Name"/>
+                                           <h:outputText value="Description"/>
+                                           <h:outputText value="Type"/>
+                                           <h:outputText value="Cases"/>
+                                           <h:outputText value="Variables"/>
+                                           <h:outputText value="Controls"/> 
+                                        </h:panelGrid>
+                                        
                                         <h:dataTable  cellpadding="0" cellspacing="0" value="#{studyPage.studyUI.categoryUIList}" id="catDataTable" var="catUI" width="100%">                                        
                                             <h:column  id="catColumn">
                                                 <ui:panelGroup  block="true" id="groupPanel4" styleClass="vdcStudyFilesCat">
@@ -415,46 +437,48 @@
                                                         <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_downloadall.gif" />
                                                     </h:outputLink>
                                                 </ui:panelGroup>
-                                                <h:dataTable  rendered="#{catUI.rendered}" cellpadding="0" cellspacing="0"
-                                                              columnClasses="vdcStudyFilesCol1, vdcStudyFilesCol2, vdcStudyFilesCol3, vdcStudyFilesCol4, vdcStudyFilesCol5"
+                                                <h:dataTable  rendered="#{catUI.rendered}" cellpadding="0" cellspacing="1"
+                                                              columnClasses="vdcStudyFilesCol1, vdcStudyFilesCol2, vdcStudyFilesCol3, vdcStudyFilesCol4, vdcStudyFilesCol5, vdcStudyFilesCol6"
                                                               headerClass="vdcStudyFilesHeader" id="dataTable5" rowClasses="list-row-even,list-row-odd"
                                                               value="#{catUI.studyFileUIs}" var="studyFileUI" width="100%">
                                                     <h:column  id="column9">
-                                                        <h:outputText  id="outputText15" value="#{studyFileUI.studyFile.fileName}"/>
+                                                        <h:outputText  id="outputText15" value="&#160;#{studyFileUI.studyFile.fileName}"/>
                                                     </h:column>
                                                     <h:column  id="column10">
-                                                        <h:outputText  id="outputText17" value="#{studyFileUI.studyFile.description}"/>
+                                                        <h:outputText  id="outputText17" value="&#160;#{studyFileUI.studyFile.description}"/>
                                                     </h:column>
                                                     <h:column  id="column11">
-                                                        <h:outputText  id="outputText19" value="#{studyFileUI.studyFile.fileType}"/>
+                                                        <h:outputText  id="outputText19" value="&#160;#{studyFileUI.studyFile.fileType}"/>
                                                     </h:column>
-                                                    <h:column  id="column12">
-                                                        <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" 
-                                                                         alt="You do not have permissions to access this file." title="You do not have permissions to access this file."/>
-                                                        <h:outputLink  id="fileLink" style="padding-right: 15px" onclick="return checkTerms(this.id);" target="_file" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/#{studyFileUI.studyFile.fileName}?fileId=#{studyFileUI.studyFile.id}" rendered="#{!studyFileUI.restrictedForUser}" title="Get this File">
-                                                            <h:graphicImage   styleClass="vdcNoBorders" value="/resources/icon_download.gif"/>
-                                                        </h:outputLink>   
-                                                        
-                                                        
+                                                    <h:column  id="column12a">
+                                                        <h:outputText value="&#160;#{studyFileUI.studyFile.dataTable.caseQuantity}"/>                         
+                                                    </h:column>
+                                                    <h:column  id="column12b">
+                                                        <h:outputText value="&#160;#{studyFileUI.studyFile.dataTable.varQuantity}"/>
                                                     </h:column>
                                                     <h:column  id="column13">
-                                                        <ui:panelGroup  block="true" rendered="#{studyFileUI.studyFile.subsettable}">                                                        
-                                                            <h:outputLink  id="fileSubset" onclick="return checkTerms(this.id);" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.jsp?dtId=#{studyFileUI.studyFile.dataTable.id}" title="Go to Subset and Analysis page for this file." >
+                                                        <ui:panelGroup  block="true" > 
+                                                        
+                                                            <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" 
+                                                                         alt="You do not have permissions to access this file." title="You do not have permissions to access this file."/>
+                                                            <h:outputLink  id="fileLink" style="padding-right: 15px" onclick="return checkTerms(this.id);" target="_file" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/#{studyFileUI.studyFile.fileName}?fileId=#{studyFileUI.studyFile.id}" rendered="#{!studyFileUI.restrictedForUser}" title="Get this File">
+                                                                <h:graphicImage   styleClass="vdcNoBorders" value="/resources/icon_download.gif"/>
+                                                            </h:outputLink> 
+                                                           
+                                                            <h:outputLink rendered="#{studyFileUI.studyFile.subsettable}" id="fileSubset" onclick="return checkTerms(this.id);" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.jsp?dtId=#{studyFileUI.studyFile.dataTable.id}" title="Go to Subset and Analysis page for this file." >
                                                                 <h:graphicImage  id="imagefs" styleClass="vdcNoBorders" value="/resources/icon_subsettable.gif"/>
                                                             </h:outputLink> 
-                                                            <ui:panelGroup  >  
-                                                                <h:outputText value="cases: #{studyFileUI.studyFile.dataTable.caseQuantity}"/><h:outputText value="variables: #{studyFileUI.studyFile.dataTable.varQuantity}"/>                         
-                                                            </ui:panelGroup>
-                                                            <ui:panelGroup >  
+                                                            
+                                                            <ui:panelGroup rendered="#{studyFileUI.studyFile.subsettable}">  
                                                                 <f:verbatim>
-                                                                    <h:outputLink  id="citation" onclick="createFileCitationPopup(this.nextSibling.id,this.id);return false;"  value="#">
-                                                                        <h:outputText   value="citation" />
+                                                                    <h:outputLink  id="citation"  onclick="createFileCitationPopup(this.nextSibling.id,this.id);return false;"  value="#">
+                                                                        <h:outputText  style="font-weight: bold; margin: 3px;" value="C" />
                                                                     </h:outputLink>                                                                      
                                                                     
                                                                     <ui:panelGroup block="true" id="fileCitationDiv" style="position:absolute;visibility:hidden;background-color:#FFFFCC; border-color:#000099; border-width: 1px; border-style: solid; padding: 8px;">
                                                                         <div style="text-align: right; font-size: 0.9em;"><a href="#" style="font-size: 0.9em;" onClick="fileCitationPopup.hidePopup();return false;">Hide It</a></div>
                                                                         
-                                                                        <h:outputText   value="#{studyPage.studyUI.study.citation}" />
+                                                                        <h:outputText   value="#{studyPage.studyUI.study.citation}" escape="false"/>
                                                                         <h:outputText   value="#{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)] #{studyFileUI.studyFile.dataTable.unf}" />
                                                                     </ui:panelGroup>
                                                                 </f:verbatim>
@@ -466,7 +490,37 @@
                                             </h:column>
                                             
                                         </h:dataTable>
-                                        
+                                        <ui:panelGroup style="margin-top:10px;" block="true" rendered="#{!empty studyPage.studyUI.study.fileCategories}" >
+                                            <ui:panelGroup style="padding-top: 5px; font-weight: bold; font-size:1.1em; color:#666666" block="true">
+                                                <h:outputText    value="Legend"/>                                              
+                                            </ui:panelGroup>
+                                            <h:panelGrid cellpadding="3" cellspacing="0" columns="3" style="border-width:1px; border-style:solid; border-color: #ffff66;" > 
+                                                <ui:panelGroup  block="true">
+                                                    <h:graphicImage  value="/resources/icon_downloadall.gif" alt="Download"/>
+                                                    <h:outputText   styleClass="vdcHelpText" value="Download all files in the study or in a category"/> 
+                                                </ui:panelGroup>  
+                                                <ui:panelGroup  block="true">
+                                                    <h:graphicImage  value="/resources/icon_download_locked.gif" alt="Download Locked"/>
+                                                    <h:outputText  styleClass="vdcHelpText"  value="No access to download this file"/>
+                                                </ui:panelGroup>
+                                                <ui:panelGroup  block="true">
+                                                    <h:graphicImage  value="/resources/icon_subsettable.gif" alt="Subset"/>
+                                                    <h:outputText  styleClass="vdcHelpText"  value="Subset/Analysis available for this file"/> 
+                                                </ui:panelGroup>
+                                                <ui:panelGroup  block="true">                                               
+                                                    <h:graphicImage  value="/resources/icon_downloadall_locked.gif" alt="Download Locked"/>
+                                                    <h:outputText  styleClass="vdcHelpText"  value="No access to download all the files in the study or in a category"/>
+                                                </ui:panelGroup>
+                                                <ui:panelGroup  block="true">
+                                                    <h:graphicImage  value="/resources/icon_download.gif" alt="Download"/>
+                                                    <h:outputText styleClass="vdcHelpText"   value="Download this file"/> 
+                                                </ui:panelGroup>                                     
+                                                <ui:panelGroup  block="true">
+                                                    <h:outputText  style="font-weight: bold; margin: 3px;"  value="C"/>
+                                                    <h:outputText  styleClass="vdcHelpText"  value="View Data Citation"/>
+                                                </ui:panelGroup>
+                                            </h:panelGrid>
+                                        </ui:panelGroup>
                                     </ui:panelLayout>
                                 </ui:tab>
                             </ui:tabSet>

@@ -125,7 +125,7 @@ public class Study {
                 str+=", ";
             }
             try {
-                str+=getGlobalId()+" "+ "http://id.thedata.org/"+URLEncoder.encode( getGlobalId(), "UTF-8" );
+                str+=getGlobalId()+"&#160; &#160; http://id.thedata.org/"+URLEncoder.encode( getGlobalId(), "UTF-8" )+"&#160; &#160;";
             } catch (UnsupportedEncodingException e) {
                 throw new EJBException(e);
             }

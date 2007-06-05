@@ -107,10 +107,10 @@ public class HarvestSitesPage extends VDCBaseBean {
     public void doRunNow(ActionEvent ae) {
    
          HarvestingDataverse hd = (HarvestingDataverse)this.harvestDataTable.getRowData();
-        
-         harvesterService.harvest(hd,"2007-03-01",null);
-   //        harvesterService.getRecord(hd,"hdl:1902.2/06635",hd.getFormat(),null);
-    //        harvesterService.getRecord(hd,"hdl:1902.2/zzzzzzz",hd.getFormat(),null);
+        // TODO: replace this with lastUpdateTime when after we remove call to stateful session bean in harvesterService
+         harvesterService.harvest(hd,null,null);
+    //       harvesterService.getRecord(hd,"hdl:1902.2/06635",hd.getFormat(),null);
+     //       harvesterService.getRecord(hd,"hdl:1902.2/zzzzzzz",hd.getFormat(),null);
    }
     
     public void doRemoveHarvestDataverse(ActionEvent ae) {

@@ -1,5 +1,6 @@
 package edu.harvard.hmdc.vdcnet.web;
 
+import com.sun.rave.web.ui.component.Hyperlink;
 import com.sun.rave.web.ui.component.Tree;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleRequestServiceLocal;
@@ -10,6 +11,8 @@ import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
+import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.collection.CollectionUI;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
@@ -20,10 +23,19 @@ import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
+import javax.faces.component.UIColumn;
+import javax.faces.component.UIOutput;
+import javax.faces.component.html.HtmlGraphicImage;
+import javax.faces.component.html.HtmlOutputText;
+import javax.faces.component.html.HtmlPanelGrid;
+import javax.faces.component.html.HtmlPanelGroup;
+import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
 
 /*
  * HomePageBean.java
@@ -81,7 +93,9 @@ public class HomePage extends VDCBaseBean{
                 showRequestContributor=true;
             }
         }
-        
+        //Add support for VDC Groups on VDC network home page
+        initVdcGroupData();
+        initVdcsSansGroups();
     }
     
     /**
@@ -278,4 +292,207 @@ public class HomePage extends VDCBaseBean{
         this.showRequestContributor = showRequestContributor;
     }
     
+    /** ************ Add support for VDC Groups on the network home page *************** 
+     *
+     *
+     *
+     *
+     * @author wbossons
+     *
+     */
+    @EJB VDCGroupServiceLocal vdcGroupService;
+     
+    private final String defaultVdcPath = "/faces/HomePage.jsp";//TODO: Calculate this from the faces configuration
+    
+    private void initVdcGroupData() {
+        // Get all the vdc groups
+        List list = (List)vdcGroupService.findAll();
+        setVdcGroups(list);
+    }
+    private List vdcGroups;
+    
+    public List getVdcGroups() {
+        return (List)vdcGroups;
+    }
+    
+    public void setVdcGroups(List vdcgroups) {
+        this.vdcGroups = vdcgroups;
+    }
+    
+    private HtmlPanelGrid mainDataTable;
+    
+    public HtmlPanelGrid getMainDataTable() {
+        //first iterate through the vdcGroups to get the int to split on
+        // and to get the vdcs to display etc !
+        List localList = vdcGroups;
+        mainDataTable = new HtmlPanelGrid();
+        mainDataTable.setColumns(1);
+        mainDataTable.setColumnClasses("dvnMainColumn");
+        mainDataTable.setStyleClass("dvnMainTable");
+        UIColumn mainTableColumn = new UIColumn(); // the main data table column used for appending later.
+        Iterator iterator = localList.iterator();
+        HtmlPanelGrid childTable = null;
+        VDCGroup vdcgroup = null;
+        // add the vdc children who are members of a group
+        while (iterator.hasNext()) {
+            vdcgroup = (VDCGroup)iterator.next();
+            //add the heading row.
+            HtmlPanelGroup panelGroup = formatHeading(vdcgroup.getName());
+            mainTableColumn.getChildren().add(panelGroup);
+            childTable = formatChildTable(vdcgroup.getVdcs());
+            mainTableColumn.getChildren().add(childTable);
+            childTable = null;
+        }
+        // now add the other vdcs sans groups
+        if (!localList.isEmpty() && !this.vdcsSansGroups.isEmpty()) {
+           HtmlPanelGroup panelGroup = formatHeading("Other");
+           mainTableColumn.getChildren().add(panelGroup); 
+           childTable = formatChildTable(this.vdcsSansGroups);
+           mainTableColumn.getChildren().add(childTable);
+        } else if (localList.isEmpty() && !this.vdcsSansGroups.isEmpty()) {
+            childTable = formatChildTable(this.vdcsSansGroups);
+            mainTableColumn.getChildren().add(childTable);
+        } else {
+            HtmlOutputText noOutputText = new HtmlOutputText();
+            noOutputText.setEscape(false);
+            noOutputText.setValue("<br />");
+            mainTableColumn.getChildren().add(noOutputText);
+            //TODO: See if this can be eliminated.
+        }
+        // end get other vdcs
+        HtmlPanelGrid panelGrid = new HtmlPanelGrid();
+        mainDataTable.getChildren().add(mainTableColumn);
+        return this.mainDataTable;
+    }
+
+    /**
+     * Holds value of property vdcsSansGroups.
+     */
+    private List<VDC> vdcsSansGroups;
+
+    /**
+     * Getter for property vdcsSansGroups.
+     * @return Value of property vdcsSansGroups.
+     */
+    public List<VDC> getVdcsSansGroups() {
+        return this.vdcsSansGroups;
+    }
+
+    /**
+     * Setter for property vdcsSansGroups.
+     * @param vdcsSansGroups New value of property vdcsSansGroups.
+     */
+    public void setVdcsSansGroups(List<VDC> vdcsSansGroups) {
+        this.vdcsSansGroups = vdcsSansGroups;
+    }
+    
+    private void initVdcsSansGroups() {
+        // Get all the vdc groups
+        List list = (List)vdcService.findVdcsNotInGroups();
+        setVdcsSansGroups(list);
+    }
+    
+    /** Utility methods
+     *
+     * @author wbossons
+     *
+     */
+    
+    /** formatHeading
+     *
+     *
+     * formats the heading for the 
+     * VDCGroup
+     */
+    private HtmlPanelGroup formatHeading(String vdcName) {
+        HtmlPanelGroup panelGroup = new HtmlPanelGroup();
+        panelGroup.setStyleClass("dvnMainPanel");
+        UIOutput headingText = new UIOutput();
+        ValueBinding outervaluebinding = FacesContext.getCurrentInstance().getApplication().createValueBinding(vdcName);
+        headingText.setValueBinding("value", outervaluebinding);
+        panelGroup.getChildren().add(headingText);
+        return panelGroup;
+    }
+    
+    /* formatChildTable
+     *
+     * formats the nested tables
+     * of the Vdc groups
+     *
+     * @author wbossons
+     */
+    private HtmlPanelGrid formatChildTable(List vdcs) {
+        List membervdcs   = (List)vdcs;
+        HtmlPanelGrid childTable = new HtmlPanelGrid();
+        Iterator iterator = membervdcs.iterator();
+        //Then inside this method, the following
+        //three lines will be used
+        int totalColumns = 3;
+        float columnSize = membervdcs.size()/totalColumns;
+        int startNew = Math.round(columnSize + (float).5); // the point at which to add a new column to the datatable
+        int startPos = 0;
+        // these next three lines can exist in the method
+        childTable = new HtmlPanelGrid(); // start the child table which eventually must be added to the view
+        childTable.setStyleClass("dvnChildTable");
+        childTable.setColumns(3);
+        childTable.setColumnClasses("dvnChildColumn");
+        UIColumn column           = null;
+        HtmlPanelGroup linkPanel  = null;
+        HtmlOutputText startLinkTag = null;
+        HtmlOutputText endLinkTag = null;
+        Hyperlink nodelink        = null;
+        HtmlGraphicImage image    = null;
+        while (iterator.hasNext()) {
+            if (startPos == 0) {
+                column = new UIColumn();
+            }
+            VDC vdc  = (VDC)iterator.next();
+            startLinkTag = new HtmlOutputText();
+            startLinkTag.setEscape(false);
+            startLinkTag.setValue("<ul><li>");
+            nodelink = new Hyperlink();
+            nodelink.setText(vdc.getName());
+            nodelink.setToolTip(vdc.getDescription());
+            nodelink.setUrl("/dv/" + vdc.getAlias() + defaultVdcPath);
+            nodelink.setStyle("font-size:normal; text-decoration:underline;");
+            endLinkTag = new HtmlOutputText();
+            endLinkTag.setEscape(false);
+            endLinkTag.setValue("</li></ul>");
+            linkPanel = new HtmlPanelGroup();
+            linkPanel.getChildren().add(startLinkTag);
+            linkPanel.getChildren().add(nodelink);
+            if ( vdc.isRestricted() ) {
+                image = new HtmlGraphicImage();
+                image.setUrl("/resources/icon_lock.gif");
+                image.setAlt("Restricted Dataverse");
+                image.setTitle("Restricted Dataverse");
+                image.setStyleClass("dvnRestricted");
+                linkPanel.getChildren().add(image);
+            } 
+            linkPanel.getChildren().add(endLinkTag);
+            column.getChildren().add(linkPanel);
+            startPos++;
+            if (startPos == startNew || iterator.hasNext() == false) {
+                childTable.getChildren().add(column);
+                startPos = 0;
+            }
+        }
+        //manage the condition where there were only enough records
+        // to build two columns -- to achieve balance in the presentation
+        if (childTable.getChildCount() < totalColumns) {
+            int remainder = totalColumns - childTable.getChildCount();
+            int i = 0;
+            HtmlOutputText placeholder = null;
+            while (i < remainder) {
+                column = new UIColumn();
+                placeholder = new HtmlOutputText();
+                placeholder.setEscape(false);
+                placeholder.setValue("<br />");
+                column.getChildren().add(placeholder);
+                childTable.getChildren().add(column);
+                i++;
+            }
+        }
+        return childTable;
+    }
 }

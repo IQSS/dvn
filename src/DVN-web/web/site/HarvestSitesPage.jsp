@@ -50,7 +50,7 @@
                                             <f:facet name="header">
                                                 <h:outputText  value=""/>
                                             </f:facet>
-                                            <h:commandButton value="Run Harvester Now" disabled="#{!currentRow.scheduled}" actionListener="#{HarvestSitesPage.doRunNow}"/>
+                                            <h:commandButton value="Run Harvester Now"  actionListener="#{HarvestSitesPage.doRunNow}"/>
                                          
                                         </h:column>
                                         <h:column >

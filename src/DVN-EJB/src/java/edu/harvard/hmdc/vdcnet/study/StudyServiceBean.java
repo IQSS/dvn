@@ -51,7 +51,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     @EJB DDI20ServiceLocal ddiService;
     @EJB UserServiceLocal userService;
     @EJB IndexServiceLocal indexService;
- 
+    
     /**
      * Creates a new instance of StudyServiceBean
      */
@@ -77,7 +77,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 elem.setStudy(study);
             }
         }
-    
+        
         Template template = study.getTemplate();
         study.setTemplate(null);
         em.persist(study);
@@ -92,8 +92,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
     
     public void deleteStudy(Long studyId) {
-     Study study = em.find(Study.class,studyId);
-     for (Iterator<VDCCollection>it = study.getStudyColls().iterator(); it.hasNext();) {
+        Study study = em.find(Study.class,studyId);
+        for (Iterator<VDCCollection>it = study.getStudyColls().iterator(); it.hasNext();) {
             VDCCollection elem =  it.next();
             elem.getStudies().remove(study);
             
@@ -101,7 +101,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         
         study.getAllowedGroups().clear();
         study.getAllowedUsers().clear();
-       
+        
         
         File studyDir = new File(FileUtil.getStudyFileDir()+File.separator+ study.getAuthority()+File.separator+study.getStudyId());
         if (studyDir.exists()) {
@@ -251,7 +251,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return studies;
     }
     
-      public List <Study> getNewStudies(Long vdcId){
+    public List <Study> getNewStudies(Long vdcId){
         String query = "SELECT s FROM Study s WHERE s.reviewState.name = 'New' AND s.owner.id = " + vdcId;
         List <Study> studies = em.createQuery(query).getResultList();
         for (Iterator it = studies.iterator(); it.hasNext();) {
@@ -261,7 +261,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         
         return studies;
     }
-     
+    
     public List <Study> getContributorStudies(VDCUser contributor){
         String query = "SELECT s FROM Study s WHERE s.creator.id = " + contributor.getId().toString();
         List <Study> studies = em.createQuery(query).getResultList();
@@ -324,7 +324,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 
             } catch (IOException ex) {
                 throw new EJBException(ex);
-            }            
+            }
             
             
             // also move original file for archiving
@@ -335,7 +335,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 tempOriginalFile.delete();
             } catch (IOException ex) {
                 throw new EJBException(ex);
-            }            
+            }
         }
         
         // calcualte study UNF
@@ -499,7 +499,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             for (Iterator it = updatedStudies.iterator(); it.hasNext();) {
                 Study study = (Study) it.next();
                 logger.info("Exporting study "+study.getStudyId());
-                 
+                
                 exportStudy(study,authority);
                 studyCount++;
                 
@@ -514,7 +514,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 stackTrace+=ste[m].toString()+"\n";
             }
             logger.severe(stackTrace);
-        }   
+        }
         
         logger.info("End export, "+studyCount +" studies successfully exported, "+deletedStudyCount+" studies deleted.");
     }
@@ -614,5 +614,40 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
         
         sd.setNumberOfDownloads( sd.getNumberOfDownloads() + 1 );
-    }    
+    }
+    
+    public Study getStudyByGlobalId(String identifier) {
+        
+        String protocol=null;
+        String authority=null;
+        String studyId=null;
+        int index1 = identifier.indexOf(':');
+        int index2 = identifier.indexOf('/');
+        if (index1==-1) {
+            throw new EJBException("Error parsing identifier: "+identifier+". ':' not found in string");
+        } else {
+            protocol=identifier.substring(0,index1);
+        }
+        if (index2 == -1) {
+            throw new EJBException("Error parsing identifier: "+identifier+". '/' not found in string");
+            
+        } else {
+            authority=identifier.substring(index1+1, index2);
+        }
+        studyId = identifier.substring(index2+1);
+        
+        String queryStr="SELECT s from Study s where s.studyId = :studyId  and s.protocol= :protocol and s.authority= :authority";
+        
+        Study study=null;
+        try {
+            Query query = em.createQuery(queryStr);
+            query.setParameter("studyId",studyId);
+            query.setParameter("protocol",protocol);
+            query.setParameter("authority",authority);
+            study=(Study)query.getSingleResult();
+        } catch (javax.persistence.NoResultException e) {
+            // DO nothing, just return null.
+        }
+        return study;
+    }
 }

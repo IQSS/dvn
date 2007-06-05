@@ -25,8 +25,8 @@ import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -53,10 +53,6 @@ import javax.persistence.PersistenceContextType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
@@ -65,7 +61,7 @@ import org.xml.sax.SAXException;
  * @author Ellen Kraffmiller
  */
 @Stateful
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED) 
 public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditStudyService {
     @EJB IndexServiceLocal indexService;
     @EJB ReviewStateServiceLocal reviewStateService;
@@ -515,31 +511,18 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
     }
     
     
-    public void importHarvestStudy(Node xmlNode) {
-        importStudy(xmlNode, false, false, true);
+    public void importHarvestStudy(File metadataFile) {
+        importStudy(metadataFile, false, false,true);
     }
     
     public void importLegacyStudy(File xmlFile) {
         importStudy(xmlFile,true, true, false);
     }
-    
+  /*  
     public void importStudy( Node xmlNode, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates ) {
-        CodeBook _cb = null;
-        
-        // first unmarshall the XML
-        try {
-            JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
-            Unmarshaller unmarshaller = jc.createUnmarshaller();
-            _cb  = (CodeBook) unmarshaller.unmarshal( xmlNode );
-            
-        } catch(JAXBException ex) {
-            EJBException e = new EJBException("Import Study failed: "+ex.getMessage() );
-            e.initCause(ex);
-            throw e;
-        }
         
         // now import
-        importStudy( _cb, checkRestrictions, generateStudyId, allowUpdates );
+        doImportStudy( xmlNode, checkRestrictions, generateStudyId,allowUpdates );
         
         // last create XML file for storage
         // create, if needed, the directory
@@ -569,23 +552,10 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
         
     }
     
-    
+    */
     public void importStudy( File xmlFile, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates ) {
-        CodeBook _cb = null;
         
-        // first unmarshall the XML
-        try {
-            JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
-            Unmarshaller unmarshaller = jc.createUnmarshaller();
-            _cb  = (CodeBook) unmarshaller.unmarshal( xmlFile );
-        } catch(JAXBException ex) {
-            EJBException e = new EJBException("Import Study failed: "+ex.getMessage() );
-            e.initCause(ex);
-            throw e;
-        }
-        
-        // now import
-        importStudy( _cb, checkRestrictions, generateStudyId, allowUpdates );
+        doImportStudy( xmlFile, checkRestrictions, generateStudyId, allowUpdates );
         
         // lastly, copy XML file
         try {
@@ -608,9 +578,39 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
         }
     }
     
-    private void importStudy( CodeBook _cb, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates ) {
-        clearStudy();
+    public void doImportStudy( Object obj, boolean checkRestrictions, boolean generateStudyId,  boolean allowUpdates ) {
+        CodeBook _cb = null;
+        if (obj instanceof CodeBook) {
+            _cb = (CodeBook)obj;
+        } else if (obj instanceof Node || obj instanceof File ) {
+            // first unmarshall the XML
+            try {
+                JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
+                Unmarshaller unmarshaller = jc.createUnmarshaller();
+                if (obj instanceof Node) {
+                    _cb  = (CodeBook) unmarshaller.unmarshal( (Node)obj );
+                } else {
+                    Object unmarshalObj= unmarshaller.unmarshal( (File)obj );
+                    _cb  = (CodeBook)unmarshalObj; 
+                  
+                }
+            } catch(JAXBException ex) {
+                EJBException e = new EJBException("Import Study failed: "+ex.getMessage() );
+                e.initCause(ex);
+                throw e;
+            }
+            
+                   
+        } else {
+            throw new EJBException("Invalid type for parameter obj: "+obj.getClass().getName()+". obj must instance of Node or File.");
+        }
+        
+      
+        
+        
         ddiService.mapDDI( _cb, study, allowUpdates );
+        _cb=null;
+        System.gc();
         
         if (study.getStudyId()==null || study.getStudyId().equals("")) {
             if (generateStudyId) {

@@ -21,18 +21,22 @@ import edu.harvard.hmdc.vdcnet.jaxb.oai.ListSetsType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.MetadataFormatType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.OAIPMHerrorType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.OAIPMHtype;
-import edu.harvard.hmdc.vdcnet.jaxb.oai.RecordType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.ResumptionTokenType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.SetType;
 import edu.harvard.hmdc.vdcnet.study.EditStudyService;
+import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,41 +51,55 @@ import javax.ejb.EJBException;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.Timeout;
+import javax.ejb.Timer;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /**
  *
  * @author Ellen Kraffmiller
  */
-@Stateless
+@Stateless( name="harvesterService")
 
 @EJB(name="editStudyService", beanInterface=edu.harvard.hmdc.vdcnet.study.EditStudyService.class)
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+  @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class HarvesterServiceBean implements HarvesterServiceLocal {
+    @PersistenceUnit(unitName="VDCNet-test") EntityManagerFactory emf;
+    @PersistenceContext(unitName="VDCNet-ejbPU") EntityManager em;
+   
     @Resource javax.ejb.TimerService timerService;
     @Resource SessionContext ejbContext;
     @EJB StudyServiceLocal studyService;
     @EJB HarvestingDataverseServiceLocal havestingDataverseService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean");
+    private static final String HARVEST_TIMER = "HarvesterTimer";
     static {
-        try { 
-        logger.addHandler(new FileHandler(FileUtil.getImportFileDir()+ File.separator+ "harvest.log"));
+        try {
+            logger.addHandler(new FileHandler(FileUtil.getImportFileDir()+ File.separator+ "harvest.log"));
         } catch(IOException e) {
             throw new EJBException(e);
         }
     }
-   
+    
     
     /**
      * Creates a new instance of HarvesterServiceBean
@@ -113,15 +131,45 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             Date initialExpiration = cal.getTime();  // First timeout is 1:00 AM of next day
             long intervalDuration = 1000*60 *60*24;  // repeat every 24 hours
             timerService.createTimer(initialExpiration, intervalDuration,null);
+            
         }
         
     }
     
+    
+    public void createHarvestTimer() {
+        for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
+            Timer timer = (Timer) it.next();
+            if (timer.getInfo().equals(HARVEST_TIMER)) {
+                throw new EJBException("Cannot create HarvestTimer, timer already exists.");
+            }
+            
+        }
+        
+        
+        
+        Calendar cal = Calendar.getInstance();
+        //    cal.add(Calendar.DAY_OF_YEAR,1);
+        //    cal.set(Calendar.HOUR_OF_DAY,1);
+        
+        // Test Only - have timer expire in 5 minutes
+        cal.add(Calendar.MINUTE,5);
+        logger.log(Level.INFO,"Harvester timer set for "+cal.getTime());
+        System.out.println("Harvester timer set for "+cal.getTime());
+        Date initialExpiration = cal.getTime();  // First timeout is 1:00 AM of next day
+        long intervalDuration = 1000*60 *60*24;  // repeat every 24 hours
+        timerService.createTimer(initialExpiration, intervalDuration,HARVEST_TIMER);
+    }
+    
+    
+    
+    
     @Timeout
     public void doScheduledHarvesting(javax.ejb.Timer timer) {
-        String lastUpdateTime =(String)timer.getInfo();
-        String from=null;
-        String until=null;
+        String from = null;
+        Date today = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String until= formatter.format(today);
         try {
             // Get list of Harvested dataverses
             // For each dataverse that is scheduled, call OAIServer to get list of updated records.
@@ -130,8 +178,13 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             
             for (Iterator it = dataverses.iterator(); it.hasNext();) {
                 HarvestingDataverse dataverse = (HarvestingDataverse) it.next();
-                harvest(dataverse, from,until);
-                
+                // If we have harvested before, then get updates since last harvest.
+                // Else, use from==null, which will get all records.
+                if (dataverse.getLastHarvestTime()!=null) {
+                    from= formatter.format(dataverse.getLastHarvestTime());
+                }
+                harvest(dataverse,from, until);
+                dataverse.setLastHarvestTime(today);
                 
             }
         } catch (Exception e) {
@@ -139,22 +192,41 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         }
     }
     
-    
+  
     public void harvest( HarvestingDataverse dataverse, String from, String until) {
-        logger.log(Level.INFO,"BEGIN HARVEST..., oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);      
+        
+        logger.log(Level.INFO,"BEGIN HARVEST..., oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);
         ResumptionTokenType resumptionToken = null;
         do {
             resumptionToken= harvestFromIdentifiers(resumptionToken,dataverse,from,until);
         } while(resumptionToken!=null);
-          logger.log(Level.INFO,"COMPLETED HARVEST, oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);      
-          
+        getRecord(dataverse,"hdl:1902.2/09720",dataverse.getFormat(),null);
+  //      updateLastHarvestTime(dataverse.getId());
+        logger.log(Level.INFO,"COMPLETED HARVEST, oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);
+        
     }
+       
+ //  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private void updateLastHarvestTime(Long dataverseId) {
+    //             HarvestingDataverse dataverse = em.find(HarvestingDataverse.class,dataverseId);
+   //             dataverse.setLastHarvestTime(new Date());
      
-    
+            EntityManager em = emf.createEntityManager();
+            try {
+                em.getTransaction().begin();
+                HarvestingDataverse dataverse = em.find(HarvestingDataverse.class,dataverseId);
+                dataverse.setLastHarvestTime(new Date());
+                em.persist(dataverse);
+                em.getTransaction().commit();
+            } finally {
+                em.close();
+            }
+   
+        }
     
     public ResumptionTokenType harvestFromIdentifiers(ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until) {
         String encodedSet=null;
-       
+        
         try {
             //    PrintWriter pw = new PrintWriter(System.out);
             //    boolean environmentOK = (new EnvironmentCheck()).checkEnvironment(pw);
@@ -178,30 +250,29 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             
             if (oaiObj.getError()!=null && oaiObj.getError().size()>0) {
                 handleOAIError(oaiObj, "calling listIdentifiers, oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getFormat());
-            }
-            else {
+            } else {
                 ListIdentifiersType listIdentifiersType = oaiObj.getListIdentifiers();
-                if (listIdentifiersType!=null) {              
-                    resumptionToken= listIdentifiersType.getResumptionToken();      
+                if (listIdentifiersType!=null) {
+                    resumptionToken= listIdentifiersType.getResumptionToken();
                     for (Iterator it = listIdentifiersType.getHeader().iterator(); it.hasNext();) {
                         HeaderType header = (HeaderType) it.next();
                         System.out.println( "Identifier for header is :"+header.getIdentifier());
                         getRecord(dataverse, header.getIdentifier(),dataverse.getFormat(),jc);
                     }
-
+                    
                 }
             }
         } catch (Exception e) {
-                logger.log(Level.SEVERE, "Exception processing listIdentifiers(), oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getFormat()+" "+ e.getClass().getName()+ " "+e.getMessage());
-                if (e.getCause()!=null) {
-                    String stackTrace = "StackTrace: \n";
-                    logger.severe("Exception caused by: "+e.getCause()+"\n");
-                    StackTraceElement[] ste = e.getCause().getStackTrace();
-                    for(int m=0;m<ste.length;m++) {
-                        stackTrace+=ste[m].toString()+"\n";
-                    }
-                    logger.severe(stackTrace);
-                }          throw new EJBException(e);
+            logger.log(Level.SEVERE, "Exception processing listIdentifiers(), oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getFormat()+" "+ e.getClass().getName()+ " "+e.getMessage());
+            if (e.getCause()!=null) {
+                String stackTrace = "StackTrace: \n";
+                logger.severe("Exception caused by: "+e.getCause()+"\n");
+                StackTraceElement[] ste = e.getCause().getStackTrace();
+                for(int m=0;m<ste.length;m++) {
+                    stackTrace+=ste[m].toString()+"\n";
+                }
+                logger.severe(stackTrace);
+            }          throw new EJBException(e);
         }
         return resumptionToken;
     }
@@ -212,51 +283,49 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             message +=", error code: "+error.getCode();
             message +=", error value: "+error.getValue();
             logger.log(Level.SEVERE,message);
-          
+            
         }
     }
+     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void getRecord(HarvestingDataverse dataverse, String identifier, String metadataPrefix, JAXBContext jc) {
         String oaiUrl= dataverse.getOaiServer();
         logger.log(Level.INFO,"Calling GetRecord: oaiUrl= "+oaiUrl+", identifier= "+identifier+", metadataPrefix= "+metadataPrefix);
         try {
-             if (jc==null) {
-                jc=JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.oai");
-            }
             
             GetRecord record = new GetRecord(oaiUrl, identifier, metadataPrefix);
-            Document doc = record.getDocument();
-            
-            Unmarshaller unmarshaller = jc.createUnmarshaller();
-            
-            JAXBElement unmarshalObj = (JAXBElement)unmarshaller.unmarshal(doc);
-            OAIPMHtype oaiObj = (OAIPMHtype)unmarshalObj.getValue();
-            if (oaiObj.getError()!=null && oaiObj.getError().size()>0) {  
-                handleOAIError(oaiObj,"calling GetRecord, oaiUrl="+oaiUrl+", identifier="+identifier+", metadataPrefix= "+metadataPrefix);
-            }   
-            else {   
-                RecordType recordType = oaiObj.getGetRecord().getRecord();
-                Node metadata =(Node)recordType.getMetadata().getAny();
+            String errMessage=record.getErrorMessage();
+            if (errMessage!=null) {
+               logger.log(Level.SEVERE,"Error calling GetRecord - "+errMessage);
+            } else if (record.isDeleted()) {
+                    Study study = studyService.getStudyByGlobalId(identifier);
+                    studyService.deleteStudy(study.getId());  
+            }  
+            else {
                 EditStudyService editStudyService = (EditStudyService) ejbContext.lookup("editStudyService");
                 VDCUser networkAdmin = vdcNetworkService.find().getDefaultNetworkAdmin();
-                editStudyService.newStudy(dataverse.getVdc().getId(), networkAdmin.getId());
-                editStudyService.importHarvestStudy( metadata );
+                Study study= studyService.getStudyByGlobalId(identifier);
+                if (study==null) {
+                    editStudyService.newStudy(dataverse.getVdc().getId(), networkAdmin.getId());
+                } else {
+                    editStudyService.setStudy(study.getId());
+                }
+                editStudyService.importHarvestStudy(record.getMetadataFile());
                 editStudyService.save(dataverse.getVdc().getId(),networkAdmin.getId());
-                                  
+
                 logger.log(Level.INFO,"Harvest Successful for identifier "+identifier );
             }
-           
-            
+              
         } catch (Exception e) {
-             logger.log(Level.SEVERE,"Exception processing getRecord(), oaiUrl="+oaiUrl+",identifier="+identifier +" "+ e.getClass().getName()+" "+ e.getMessage());
-              if (e.getCause()!=null) {
-                    String stackTrace = "StackTrace: \n";
-                    logger.severe("Exception caused by: "+e.getCause()+"\n");
-                    StackTraceElement[] ste = e.getCause().getStackTrace();
-                    for(int m=0;m<ste.length;m++) {
-                        stackTrace+=ste[m].toString()+"\n";
-                    }
-                    logger.severe(stackTrace);
+            logger.log(Level.SEVERE,"Exception processing getRecord(), oaiUrl="+oaiUrl+",identifier="+identifier +" "+ e.getClass().getName()+" "+ e.getMessage());
+            if (e.getCause()!=null) {
+                String stackTrace = "StackTrace: \n";
+                logger.severe("Exception caused by: "+e.getCause()+"\n");
+                StackTraceElement[] ste = e.getCause().getStackTrace();
+                for(int m=0;m<ste.length;m++) {
+                    stackTrace+=ste[m].toString()+"\n";
                 }
+                logger.severe(stackTrace);
+            }
             throw new EJBException(e);
         }
     }
@@ -324,12 +393,12 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         }
         List<SetDetailBean> sets = null;
         Object value = unmarshalObj.getValue();
-    
+        
         
         Package valPackage = value.getClass().getPackage();
         if (value instanceof edu.harvard.hmdc.vdcnet.jaxb.oai.OAIPMHtype) {
-           OAIPMHtype OAIObj = (OAIPMHtype)value;
-           ListSetsType listSetsType = OAIObj.getListSets();
+            OAIPMHtype OAIObj = (OAIPMHtype)value;
+            ListSetsType listSetsType = OAIObj.getListSets();
             
             
             if (listSetsType!=null) {
@@ -345,5 +414,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         }
         return sets;
     }
+    
+    
+    
     
 }

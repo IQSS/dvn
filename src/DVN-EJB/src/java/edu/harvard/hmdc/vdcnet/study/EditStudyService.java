@@ -1,20 +1,19 @@
 
 package edu.harvard.hmdc.vdcnet.study;
 
-import edu.harvard.hmdc.vdcnet.jaxb.ddi20.CodeBook;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.Local;
-import org.w3c.dom.Node;
 
 /**
  * This is the business interface for EditStudyService enterprise bean.
  */
 @Local
-public interface EditStudyService {
+public interface EditStudyService { 
     public void setStudy( Long studyId);
     public void newStudy(Long vdcId, Long userId);
     public void cancel();
@@ -40,10 +39,10 @@ public interface EditStudyService {
     
     public boolean isNewStudy();
 
-    public void importHarvestStudy(Node xmlNode);
-    public void importLegacyStudy(File xmlFile); 
-    public void importStudy(Node xmlNode, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates);
-    public void importStudy(File xmlFile, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates);
+    public void importHarvestStudy(File metadataFile);
+    public void importLegacyStudy(File metadataFile); 
+ //   public void importStudy(Node xmlNode, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates);
+    public void importStudy(File metadataFile, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates);
 //    public void importStudy(CodeBook _cb, boolean checkRestrictions, boolean generateStudyId);
    
 

@@ -60,8 +60,15 @@
                                     </ui:panelLayout>
                                     <ui:panelLayout  id="noDataversePanel" panelLayout="flow" style="padding-top:30px; padding-bottom: 0px; padding-left:20px;" rendered="#{empty HomePage.vdcs}">
                                         <h:outputText styleClass="vdcTextStandOut" value="There are no Dataverses yet in #{VDCRequest.vdcNetwork.name} Dataverse Network."/>
-                                    </ui:panelLayout> 
-                                    <ui:panelLayout  id="browsePanel" panelLayout="flow" style="margin: 0px; padding: 30px 2px 30px 15px;">
+                                    </ui:panelLayout>
+                                    
+                                    <!-- add the network home page here -->
+                                    <h:panelGrid binding="#{HomePage.mainDataTable}" rendered="#{VDCRequest.currentVDC == null}">
+                                      <!-- network collections fragment --> 
+                                    </h:panelGrid>
+                                    <!-- end network home page -->
+                                    
+                                    <ui:panelLayout id="browsePanel" panelLayout="flow" style="margin: 0px; padding: 30px 2px 30px 15px;" rendered="#{VDCRequest.currentVDC != null}">
                                         <h:panelGrid  cellpadding="0" cellspacing="0" columns="1"  width="100%"> 
                                             <ui:tree  binding="#{HomePage.collectionTree}" id="collectionTree"  text="" />
                                         </h:panelGrid>

@@ -282,8 +282,8 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
     private String getUrlStr(String prefix, String handle) {
         String baseUrl = null;
         if (prefix.equals("1902.1")){
-            baseUrl = "id.thedata.org";
+            baseUrl = "http://dvn.iq.harvard.edu/dvn/faces/study/StudyPage.jsp?globalId=hdl:";
         }
-        return baseUrl + "/" + handle;
+        return baseUrl + handle;
     }
 }

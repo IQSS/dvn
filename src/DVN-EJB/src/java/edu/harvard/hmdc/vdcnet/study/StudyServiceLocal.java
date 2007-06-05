@@ -22,6 +22,8 @@ public interface StudyServiceLocal {
         
     public Study getStudy(Long studyId);
     
+    public Study getStudyByGlobalId(String globalId);
+    
     public Study getStudyDetail(Long studyId);
     
     public void updateStudy(Study study);

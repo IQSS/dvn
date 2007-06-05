@@ -9,6 +9,8 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -19,10 +21,11 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class VDCGroup {
+public class VDCGroup implements Serializable {
     private int displayOrder;
       @OneToMany(mappedBy="group")
     private List<VDCGroupRelationship> subGroups;
+    
     
     /** Creates a new instance of VDCGroup */
     public VDCGroup() {
@@ -83,11 +86,11 @@ public class VDCGroup {
         this.version = version;
     }    
  
-    public List<VDCGroupRelationship> getSubGroups() {
+    public java.util.List<edu.harvard.hmdc.vdcnet.vdc.VDCGroupRelationship> getSubGroups() {
         return subGroups;
     }
 
-    public void setSubGroups(List<VDCGroupRelationship> subGroups) {
+    public void setSubGroups(java.util.List<edu.harvard.hmdc.vdcnet.vdc.VDCGroupRelationship> subGroups) {
         this.subGroups = subGroups;
     }
     
@@ -105,7 +108,70 @@ public class VDCGroup {
         VDCGroup other = (VDCGroup)object;
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
         return true;
-    }       
+    } 
+    
+/** ********************* NEW FOR NETWORK PAGE UI CHANGES -wjb May 2007 ******************** */
+      
+    @ManyToMany(mappedBy="vdcGroups")
+    private java.util.List<VDC> vdcs;
+
+    /**
+     * Getter for property memberVdcs.
+     * @return Value of property memberVdcs.
+     */
+    public java.util.List<VDC> getVdcs() {
+        return this.vdcs;
+    }
+
+    /**
+     * Setter for property memberVdcs.
+     * @param memberVdcs New value of property memberVdcs.
+     */
+    public void setVdcs(java.util.List<VDC> memberVdcs) {
+        this.vdcs = memberVdcs;
+    }
+
+    /**
+     * Holds value of property name.
+     */
+    private String name;
+
+    /**
+     * Getter for property name.
+     * @return Value of property name.
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Setter for property name.
+     * @param name New value of property name.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Holds value of property description.
+     */
+    private String description;
+
+    /**
+     * Getter for property description.
+     * @return Value of property description.
+     */
+    public String getDescription() {
+        return this.description;
+    }
+
+    /**
+     * Setter for property description.
+     * @param description New value of property description.
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
     
     
 }

@@ -203,6 +203,9 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     public static final String LEVEL_VARIABLE = "variable";
     public static final String LEVEL_CATEGORY = "category";
     
+    public static final String NOTE_TYPE_UNF = "VDC:UNF";
+    public static final String NOTE_SUBJECT_UNF = "Universal Numeric Fingerprint";
+    
     // db constants
     public static final String DB_VAR_INTERVAL_TYPE_CONTINUOUS = "continuous";
     public static final String DB_VAR_RANGE_TYPE_POINT = "point";
@@ -491,7 +494,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         notesIter = _citation.getNotes().iterator();
         while (notesIter.hasNext()) {
             NotesType _note = (NotesType) notesIter.next();
-            if ( "VDC:UNF".equals(_note.getType()) ) {
+            if ( NOTE_TYPE_UNF.equals(_note.getType()) ) {
                 s.setUNF( mapUNF( (String)_note.getContent().get(0) ) );
             } else {
                 mapStudyNote( _note, s, noteCount++ );
@@ -1616,6 +1619,17 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             addVerStmt = true;
         }
         
+        // study UNF
+        if (! StringUtil.isEmpty( s.getUNF()) ) {
+            NotesType _unf = objFactory.createNotesType();
+            _unf.getContent().add( s.getUNF() );
+            _unf.setLevel(LEVEL_STUDY);
+            _unf.setSubject( NOTE_SUBJECT_UNF );
+            _unf.setType( NOTE_TYPE_UNF );
+            
+            _citation.getNotes().add(_unf);
+        }
+        
         // now add the pieces
         _citation.setTitlStmt(_titleStmt);
         if (addRspStmt)     { _citation.setRspStmt(_rspStmt); }
@@ -2179,8 +2193,8 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         // notes
         NotesType _unf = objFactory.createNotesType();
         _unf.setLevel(LEVEL_FILE);
-        _unf.setType("VDC:UNF");
-        _unf.setSubject("Universal Numeric Fingerprint");
+        _unf.setType(NOTE_TYPE_UNF);
+        _unf.setSubject(NOTE_SUBJECT_UNF);
         _unf.getContent().add(dt.getUnf());
         
         NotesType _cat = objFactory.createNotesType();
@@ -2336,8 +2350,8 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         // notes
         NotesType _unf = objFactory.createNotesType();
         _unf.setLevel(LEVEL_VARIABLE);
-        _unf.setType("VDC:UNF");
-        _unf.setSubject("Universal Numeric Fingerprint");
+        _unf.setType(NOTE_TYPE_UNF);
+        _unf.setSubject(NOTE_SUBJECT_UNF);
         _unf.getContent().add(dv.getUnf());
         _dv.getNotes().add(_unf);
         

@@ -23,3 +23,6 @@ ALTER TABLE harvestingdataverse ALTER COLUMN lastharvesttime SET STORAGE PLAIN;
 ALTER TABLE study ALTER COLUMN geographiccoverage type text;
 
 UPDATE vdcnetwork set authority='TEST';
+
+ALTER TABLE studytopicclass ALTER COLUMN value type text;
+

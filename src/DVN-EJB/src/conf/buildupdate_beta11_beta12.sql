@@ -6,6 +6,7 @@ ALTER TABLE datavariable ALTER COLUMN label type text;
 
 ALTER TABLE vdcnetwork ADD COLUMN handleRegistration bool;
 ALTER TABLE vdcnetwork ALTER COLUMN handleRegistration SET STORAGE PLAIN;
+update vdcnetwork set handleregistration = false;
 
 -- Column: name
 ALTER TABLE vdcgroup ADD COLUMN name varchar(255);

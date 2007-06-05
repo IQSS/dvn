@@ -232,5 +232,21 @@ public class VDCServiceBean implements VDCServiceLocal {
         return em.createQuery("select object(o) from VDC as o where o.harvestingDataverse is null order by o.name").getResultList();
            
       }
-    
+      /**
+       * findVdcsNotInGroups
+       *
+       * A method to find vdcs
+       * that are not associated with
+       * a vdc group. This is for the network
+       * level (DVN) where the home page
+       * display will be a list.
+       *
+       */
+       public List<VDC> findVdcsNotInGroups() {
+        //return em.createQuery("select object(o) FROM VDC as o WHERE NOT EXISTS (SELECT gvdcs FROM VDCGroup as groups JOIN groups.vdcs as gvdcs)").getResultList();
+        // The next query returns all vdcs
+        //return em.createQuery("select object(o) FROM VDC as o WHERE EXISTS (SELECT gvdcs FROM VDCGroup as groups JOIN groups.vdcs as gvdcs)").getResultList();
+           return em.createQuery("select object(o) FROM VDC as o WHERE o.id NOT IN (SELECT gvdcs.id FROM VDCGroup as groups JOIN groups.vdcs as gvdcs)").getResultList();
+           
+       }    
 }

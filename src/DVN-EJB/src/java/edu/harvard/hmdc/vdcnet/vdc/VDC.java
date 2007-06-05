@@ -713,5 +713,21 @@ public class VDC {
         return true;
     }       
 
+ /** ********************* add for VDCGroup support *********************** */
+     /**
+     * Holds value of property memberVdcs.
+     */
+    @ManyToMany
+    @JoinTable(name="VDCGROUP_VDCS",
+            joinColumns=@JoinColumn(name="VDC_ID"),
+            inverseJoinColumns=@JoinColumn(name="VDCGROUP_ID"))
+    private Collection<VDCGroup> vdcGroups;
+    
+    public java.util.Collection<VDCGroup> getVdcGroups() {
+        return vdcGroups;
+    }
 
+    public void setVdcGroups(java.util.Collection<VDCGroup> vdcGroups) {
+        this.vdcGroups = vdcGroups;
+    }
 }

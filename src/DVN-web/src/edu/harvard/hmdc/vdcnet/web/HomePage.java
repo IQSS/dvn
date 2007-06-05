@@ -364,6 +364,15 @@ public class HomePage extends VDCBaseBean{
         mainDataTable.getChildren().add(mainTableColumn);
         return this.mainDataTable;
     }
+    
+    /** 
+     * Setter method for the mainDataTable
+     *
+     */
+    
+    public void setMainDataTable(HtmlPanelGrid panelgrid) {
+        this.mainDataTable = panelgrid;
+    }
 
     /**
      * Holds value of property vdcsSansGroups.

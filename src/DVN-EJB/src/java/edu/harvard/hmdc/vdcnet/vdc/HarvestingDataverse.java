@@ -7,22 +7,17 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
-import edu.harvard.hmdc.vdcnet.admin.RoleRequest;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
-import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyField;
-import edu.harvard.hmdc.vdcnet.study.Template;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.*;
 
 /**
@@ -32,7 +27,8 @@ import javax.persistence.*;
 @Entity
 public class HarvestingDataverse {
     
-    
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date lastHarvestTime;
     
     public Collection<Study> search(String query) {
         //TODO: complete implementation
@@ -304,6 +300,14 @@ public class HarvestingDataverse {
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
         return true;
     }    
+
+    public Date getLastHarvestTime() {
+        return lastHarvestTime;
+    }
+
+    public void setLastHarvestTime(Date lastHarvestTime) {
+        this.lastHarvestTime = lastHarvestTime;
+    }
 
    
 

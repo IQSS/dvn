@@ -46,5 +46,7 @@ public interface VDCServiceLocal {
     public void delete (Long vdcId);
     
     public List findAllNonHarvesting();
+
+    public List findVdcsNotInGroups();
     
 }

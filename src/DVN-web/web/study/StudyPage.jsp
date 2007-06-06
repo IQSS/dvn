@@ -391,7 +391,7 @@
                                             <h:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
                                         </ui:panelGroup>
                                     </ui:panelLayout>
-                                   <ui:panelGroup  block="true" id="noFilesPanel4b" style="align-text: left; padding-top: 10px; padding-bottom: 10px;" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
+                                   <ui:panelGroup  block="true" id="noFilesPanel4b" style="align-text: left; padding-top: 10px; padding-bottom: 10px;" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null) and !empty studyPage.studyUI.study.fileCategories}">
                                             <h:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
                                         </ui:panelGroup>
                                     <ui:panelLayout  id="layoutPanel2" panelLayout="flow" style="margin: 0px; padding: 0px 0px 10px 0px; " rendered="#{!empty studyPage.studyUI.study.fileCategories}">
@@ -491,10 +491,10 @@
                                             
                                         </h:dataTable>
                                         <ui:panelGroup style="margin-top:10px;" block="true" rendered="#{!empty studyPage.studyUI.study.fileCategories}" >
-                                            <ui:panelGroup style="padding-top: 5px; font-weight: bold; font-size:1.1em; color:#666666" block="true">
+                                            <ui:panelGroup style="padding-top: 15px; font-weight: bold; font-size:1.1em; color:#666666; font-style:italic;" block="true">
                                                 <h:outputText    value="Legend"/>                                              
                                             </ui:panelGroup>
-                                            <h:panelGrid cellpadding="3" cellspacing="0" columns="3" style="border-width:1px; border-style:solid; border-color: #ffff66;" > 
+                                            <h:panelGrid cellpadding="3" cellspacing="0" columns="3" style="border-width:0px; border-style:solid; border-color: #ffff66;" > 
                                                 <ui:panelGroup  block="true">
                                                     <h:graphicImage  value="/resources/icon_downloadall.gif" alt="Download"/>
                                                     <h:outputText   styleClass="vdcHelpText" value="Download all files in the study or in a category"/> 

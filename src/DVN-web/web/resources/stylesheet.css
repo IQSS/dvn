@@ -1437,9 +1437,10 @@ a.MniTabLnk:link, a.MniTabLnk:visited {font-weight: bold; }
 /* subsetting page: summary statistics: ends here */
 
 /* *************** dvn network page specific ***************** */
-        .dvnRestricted   { padding:0px 0px 0px; 4px; vertical-align:middle; }
-        .dvnChildColumn  { width:33%; border:thin solid #cccccc; vertical-align:top; text-align:left; }
+         ul.dvnGroupListStyle { list-style-type:square; color:#035399; }
+        .dvnRestricted   { margin-left:4px; vertical-align:middle; }
+        .dvnChildColumn  { font-style:normal; width:33%; border:thin solid #cccccc; vertical-align:top; text-align:left; }
         .dvnChildTable   { width:100%; background-color:#eeeeee; }
-        .dvnMainColumn   { text-align:left; }
-        .dvnMainTable    { width:100%; padding:6px 6px 6px 0px; }
-        .dvnMainPanel    { display:block; width:50%; background-color:palegreen; margin:2px 0px 4px 0px; padding:2px 0px 2px 2px; text-align:left; }
+        .dvnMainColumn   { font-style:oblique; font-weight:bold; text-align:center; }
+        .dvnMainTable    { width:98%; padding:6px 6px 6px 0px; }
+        .dvnMainPanel    { display:block; width:100%; background-color:rgb(206, 242, 224); margin:2px 0px 4px 0px; padding:2px 0px 2px 2px; }

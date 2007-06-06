@@ -458,7 +458,7 @@ public class HomePage extends VDCBaseBean{
             VDC vdc  = (VDC)iterator.next();
             startLinkTag = new HtmlOutputText();
             startLinkTag.setEscape(false);
-            startLinkTag.setValue("<ul><li>");
+            startLinkTag.setValue("<ul class=dvnGroupListStyle><li>");
             nodelink = new Hyperlink();
             nodelink.setText(vdc.getName());
             nodelink.setToolTip(vdc.getDescription());

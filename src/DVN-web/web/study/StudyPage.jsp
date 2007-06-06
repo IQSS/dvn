@@ -472,7 +472,7 @@
                                                             <ui:panelGroup rendered="#{studyFileUI.studyFile.subsettable}">  
                                                                 <f:verbatim>
                                                                     <h:outputLink  id="citation"  onclick="createFileCitationPopup(this.nextSibling.id,this.id);return false;"  value="#">
-                                                                        <h:outputText  style="font-weight: bold; margin: 3px;" value="C" />
+                                                                        <h:graphicImage styleClass="vdcNoBorders" value="/resources/icon_citation.gif"/>
                                                                     </h:outputLink>                                                                      
                                                                     
                                                                     <ui:panelGroup block="true" id="fileCitationDiv" style="position:absolute;visibility:hidden;background-color:#FFFFCC; border-color:#000099; border-width: 1px; border-style: solid; padding: 8px;">
@@ -516,7 +516,7 @@
                                                     <h:outputText styleClass="vdcHelpText"   value="Download this file"/> 
                                                 </ui:panelGroup>                                     
                                                 <ui:panelGroup  block="true">
-                                                    <h:outputText  style="font-weight: bold; margin: 3px;"  value="C"/>
+                                                    <h:graphicImage styleClass="vdcNoBorders" value="/resources/icon_citation.gif"/>
                                                     <h:outputText  styleClass="vdcHelpText"  value="View Data Citation"/>
                                                 </ui:panelGroup>
                                             </h:panelGrid>

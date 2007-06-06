@@ -1,5 +1,5 @@
 /*
- * AnalysisBacking.java
+ * AnalysisPage.java
  *
  * Created on October 12, 2006, 12:13 AM
  *
@@ -336,8 +336,7 @@ public class AnalysisPage extends VDCBaseBean {
     
     public void resetVariableInLBox(ActionEvent acev){
       
-      out.println("Within resetVariableInLBox: tab Id ="+acev.getComponent
-().getId());
+      out.println("Within resetVariableInLBox: tab Id ="+acev.getComponent().getId());
       // remove vars from RHS boxes
       advStatVarRBox1.clear();
       advStatVarRBox2.clear();
@@ -380,7 +379,6 @@ public class AnalysisPage extends VDCBaseBean {
     public void setTabAdvStat(Tab tab5) {
         this.tabAdvStat = tab5;
     }
-
 
     private String currentTabId;
     public String getCurrentTabId(){
@@ -707,6 +705,7 @@ if (isRecodedVar(varId)){
             addValueRangeBttn.setRendered(true);
             // keep this variable's Id
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("currentRecodeVariableId", currentRecodeVariableId);
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("currentRecodeVariableName", currentRecodeVariableName);
             
           
         } else {
@@ -901,9 +900,12 @@ if (isRecodedVar(varId)){
       this.recodeButton = hcb;
     }
     
-    // h:commandButton: recodeBttn
-    // @actionListener
-    // saving the current recoding scheme
+    /**
+     * saving the current recoding scheme
+     * h:commandButton: recodeBttn
+     * attr: actionListener
+     * 
+     */
     public void saveRecodedVariable(ActionEvent acev){
       out.println("******************** saveRecodedVariable(): begins here ********************");
 
@@ -968,11 +970,12 @@ if (isRecodedVar(varId)){
       sb.append(varIdGenerator(oldVarId));
       String newVarId = sb.toString();
       out.println("newVarId="+newVarId);
-      
+      FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("currentRecodeVariableId", newVarId);
+
       // new-case only
-        varCart.put( newVarId, newVarName);
+      varCart.put( newVarId, newVarName);
       // new only
-        getVarSetAdvStat().add( new Option( newVarId, newVarName ) );
+      getVarSetAdvStat().add( new Option( newVarId, newVarName ) );
       
       
       // add this new var to the old2new mapping table
@@ -1054,6 +1057,10 @@ if (isRecodedVar(varId)){
       //recodedVarTable.setRendered(true);
       out.println("recodeVarSet="+recodedVarSet);
       
+      // save recode-source variable name for the header
+      FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("currentRecodeVariableName", currentRecodeVariableName);
+
+      
       out.println("******************** saveRecodedVariable(): ends here ********************");
     }
     
@@ -1133,12 +1140,17 @@ if (isRecodedVar(varId)){
       msgSaveRecodeBttn.setRendered(false);
       msgSaveRecodeBttn.setText(" ");
     }
-   
-    // removeRecodedVariable
-    //
-    // ui:hyperlink @actionListener
-    // see recode block above
+    
+    /**
+     * remove a recoded Variable from the cart
+     * 
+     * ui:hyperlink
+     * attr: actionListener
+     * see recode block above
+     */
     public void removeRecodedVariable(ActionEvent e){
+      out.println("******************** removeRecodedVariable(): begins here ********************");
+
       // get data stored in the event row
       List<Object> tmpRecodeVarLine = (List<Object>) getRecodedVarTable().getRowData();
       // get varId as a key of recodeSchema
@@ -1211,7 +1223,10 @@ if (isRecodedVar(varId)){
         // reset the current variable Id
         setCurrentRecodeVariableName(null);
         setCurrentRecodeVariableId(null);
+        
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("currentRecodeVariableId", currentRecodeVariableId);
+        
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("currentRecodeVariableName", currentRecodeVariableName);
 
         // reset variable name and label
         recodeTargetVarName.resetValue();
@@ -1229,8 +1244,9 @@ if (isRecodedVar(varId)){
         out.println("The variable in the recode table differs from the variable to be removed");
       }
       
-      
+      out.println("******************** removeRecodedVariable(): ends here ********************");
     }
+    
     public boolean isRecodedVar(String varId){
         Pattern p=Pattern.compile("_");
         Matcher m = p.matcher(varId);
@@ -1272,7 +1288,6 @@ if (isRecodedVar(varId)){
       }
       return null;
     }
-
     
     
     // editRecodedVariable
@@ -4492,7 +4507,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
               Collections.addAll(sessionObjects, "dt4Display", "varCart", "varSetAdvStat",
                 "groupPanel8below", "advStatVarRBox1", "advStatVarRBox2", "advStatVarRBox3",
                 "setxDiffVarBox1", "setxDiffVarBox2", "checkboxSelectUnselectAll", 
-                "currentModelName", "currentRecodeVariableId", "recodedVarSet", "recodeSchema",
+                "currentModelName", "currentRecodeVariableId","currentRecodeVariableName", "recodedVarSet", "recodeSchema",
                 "baseVarToDerivedVar","derivedVarToBaseVar","recodeVarNameSet");
 
               // clear the data for the dataTable
@@ -4613,14 +4628,14 @@ if (baseVarToDerivedVar.containsKey(varId)){
                 } else {
                   out.println("currentRecodeVariableId="+currentRecodeVariableId);
                 }
-                  out.println("currentRecodeVariableId: received value from sessionMap="+(String) sessionMap.get("currentRecodeVariableId"));
-                  currentRecodeVariableId = (String) sessionMap.get("currentRecodeVariableId");
-                  out.println("new currentRecodeVariableId="+currentRecodeVariableId);
-
+                out.println("currentRecodeVariableId: received value from sessionMap="+(String) sessionMap.get("currentRecodeVariableId"));
+                currentRecodeVariableId = (String) sessionMap.get("currentRecodeVariableId");
+                out.println("new currentRecodeVariableId="+currentRecodeVariableId);
+                
                 //dropDown2 = (DropDown)cntxt.getExternalContext().getSessionMap().get("dropDown2");
                 //dropDown3 = (DropDown)cntxt.getExternalContext().getSessionMap().get("dropDown3");
                 
-                  out.println("model name(post-back block)="+currentModelName);
+                out.println("model name(post-back block)="+currentModelName);
                 // out.println("model name(post-back block)="+getCurrentModelName());
                 
                 
@@ -4631,12 +4646,15 @@ if (baseVarToDerivedVar.containsKey(varId)){
                 //checkboxGroupXtbOptions= (MultipleSelectOptionsList)sessionMap.get("checkboxGroupXtbOptions");
                 
                 
-                // @value of recode target variable name
-                if (!sessionMap.containsKey("recodeVariableName")){
-                  FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("recodeVariableName", recodeVariableName);
+                // recode source variable name: header
+                if (!sessionMap.containsKey("currentRecodeVariableName")){
+                  FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("currentRecodeVariableName", currentRecodeVariableName);
                 } else {
-                  recodeVariableName= (String) sessionMap.get("recodeVariableName");
+                  currentRecodeVariableName= (String) sessionMap.get("currentRecodeVariableName");
                 }
+                
+                out.println("new currentRecodeVariableName="+currentRecodeVariableName);
+
                 // @value of recode target variable label
                 if (!sessionMap.containsKey("recodeVariableLabel")){
                   FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("recodeVariableLabel", recodeVariableLabel);

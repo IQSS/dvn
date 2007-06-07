@@ -15,6 +15,7 @@ import edu.harvard.hmdc.vdcnet.study.EditStudyService;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
+import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
@@ -38,6 +39,7 @@ import javax.naming.InitialContext;
 public class ImportStudyPage extends VDCBaseBean  {
     
     @EJB VDCServiceLocal vdcService;
+    @EJB StudyServiceLocal studyService;
     
     private UploadedFile browserFile;
     private Long vdcId;
@@ -98,18 +100,7 @@ public class ImportStudyPage extends VDCBaseBean  {
             try {
                 File xmlFile = File.createTempFile("ddi", ".xml");
                 browserFile.write(xmlFile);
-                
-                Context ctx = new InitialContext();
-                EditStudyService editStudyService = (EditStudyService) ctx.lookup("java:comp/env/editStudy");
-                editStudyService.newStudy(vdcId, lb.getUser().getId());
-                editStudyService.importStudy(xmlFile,checkRestrictions, true, false);
-                
-                if (copyFiles) {
-                    editStudyService.retrieveFilesAndSave(vdcId, lb.getUser().getId());
-                } else {
-                    editStudyService.save(vdcId, lb.getUser().getId());
-                }
-                            
+                studyService.importStudy(xmlFile, null, vdcId, lb.getUser().getId(), checkRestrictions, true, false, copyFiles);
                 resultMsg = "Import succeeded.";
             } catch (Exception ex) {
                 resultMsg = "Import failed.";

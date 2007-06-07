@@ -901,7 +901,7 @@ CREATE SEQUENCE studyid_seq
   MAXVALUE 9223372036854775807
   START 10000
   CACHE 1;
-ALTER TABLE studyid_seq OWNER TO "vdcApp";
+ALTER TABLE studyid_seq OWNER TO "dvnApp";
 
 -- Sequence: filesystemname_seq
 
@@ -913,7 +913,7 @@ CREATE SEQUENCE filesystemname_seq
   MAXVALUE 9223372036854775807
   START 2
   CACHE 1;
-ALTER TABLE filesystemname_seq OWNER TO "vdcApp";
+ALTER TABLE filesystemname_seq OWNER TO "dvnApp";
 
 
 create index datavariable_id_index on  datavariable (id);

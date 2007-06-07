@@ -3,9 +3,6 @@
 <sun-ejb-jar>
   <enterprise-beans>
     <ejb>
-      <ejb-name>EditStudyServiceBean</ejb-name>
-    </ejb>
-    <ejb>
       <ejb-name>IndexServiceBean</ejb-name>
     </ejb>
     <ejb>

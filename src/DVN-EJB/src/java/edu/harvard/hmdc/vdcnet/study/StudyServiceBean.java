@@ -15,8 +15,12 @@ import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 import edu.harvard.hmdc.vdcnet.gnrs.GNRSServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
+import edu.harvard.hmdc.vdcnet.jaxb.ddi20.CodeBook;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
+import edu.harvard.hmdc.vdcnet.vdc.ReviewState;
+import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import java.io.File;
 import java.io.FileWriter;
@@ -33,10 +37,16 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -51,6 +61,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     @EJB DDI20ServiceLocal ddiService;
     @EJB UserServiceLocal userService;
     @EJB IndexServiceLocal indexService;
+    @EJB ReviewStateServiceLocal reviewStateService;
     
     /**
      * Creates a new instance of StudyServiceBean
@@ -392,6 +403,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     /**
      *  Check that a studyId entered by the user is unique (not currently used for any other study in this Dataverse Network)
      */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public boolean isUniqueStudyId(String userStudyId, String protocol,String authority) {
         String query = "SELECT s FROM Study s WHERE s.studyId = '" + userStudyId +"'";
         query += " and s.protocol ='"+protocol+"'";
@@ -650,4 +662,368 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
         return study;
     }
+    
+    
+    public Study saveStudy (Study study, Long userId) {
+        VDCUser user = em.find(VDCUser.class,userId);
+        
+        study.setLastUpdateTime(new Date());
+        study.setLastUpdater(user);        
+        
+        setDisplayOrders(study);
+        
+        // flush to produce the id for the call to the index
+        em.flush();
+        indexService.updateStudy(study.getId());
+        
+        return study;
+    }
+
+   
+    
+    public Study importHarvestStudy(File xmlFile, Long studyId, Long vdcId, Long userId) {
+        return importStudy(xmlFile, studyId, vdcId, userId, false, false,true, false);
+    }   
+
+    public Study importLegacyStudy(File xmlFile, Long vdcId, Long userId) {
+        return importStudy(xmlFile, null, vdcId, userId, true, true, false, true);
+    }       
+
+    // needed for local testing
+    public Study importLegacyStudy(File xmlFile, Long vdcId, Long userId, boolean copyFiles) {
+        return importStudy(xmlFile, null, vdcId, userId, true, true, false, copyFiles);
+    }    
+   
+    
+     public Study importStudy(File xmlFile, Long studyId, Long vdcId, Long userId, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates, boolean retrieveFiles) {
+         Study study = null;
+         
+         if (studyId == null) {
+            VDC vdc = em.find(VDC.class, vdcId);
+            VDCUser creator = em.find(VDCUser.class,userId);
+            ReviewState reviewState = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
+        
+            study = new Study(vdc, creator, reviewState);
+            em.persist(study);
+        } else {
+            study = em.find(Study.class, studyId);
+            clearStudy(study);
+        }
+        
+        doImportStudy(study, xmlFile, checkRestrictions, generateStudyId, allowUpdates);
+        copyXMLFile(study, xmlFile);
+        
+        if (retrieveFiles) {
+            retrieveFiles(study);
+        }
+        
+        saveStudy(study, userId);   
+        return study;
+    }   
+     
+   private void copyXMLFile( Study study, File xmlFile ) {
+        try {
+            // create, if needed, the directory
+            File newDir = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
+            if (!newDir.exists()) {
+                newDir.mkdirs();
+            }
+            
+            FileUtil.copyFile( xmlFile, new File(newDir, "original_imported_study.xml"));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            String msg = "ImportStudy failed: ";
+            if (ex.getMessage()!=null) {
+                msg+=ex.getMessage();
+            }
+            EJBException e = new EJBException(msg );
+            e.initCause(ex);
+            throw e;
+        }
+    }
+    
+    private void doImportStudy(Study study, Object obj, boolean checkRestrictions, boolean generateStudyId,  boolean allowUpdates ) {
+        CodeBook _cb = null;
+        if (obj instanceof CodeBook) {
+            _cb = (CodeBook)obj;
+        } else if (obj instanceof Node || obj instanceof File ) {
+            // first unmarshall the XML
+            try {
+                JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
+                Unmarshaller unmarshaller = jc.createUnmarshaller();
+                if (obj instanceof Node) {
+                    _cb  = (CodeBook) unmarshaller.unmarshal( (Node)obj );
+                } else {
+                    Object unmarshalObj= unmarshaller.unmarshal( (File)obj );
+                    _cb  = (CodeBook)unmarshalObj; 
+                  
+                }
+            } catch(JAXBException ex) {
+                EJBException e = new EJBException("Import Study failed: "+ex.getMessage() );
+                e.initCause(ex);
+                throw e;
+            }
+            
+                   
+        } else {
+            throw new EJBException("Invalid type for parameter obj: "+obj.getClass().getName()+". obj must instance of Node or File.");
+        }
+        
+      
+        
+        
+        ddiService.mapDDI( _cb, study, allowUpdates );
+        _cb=null;
+        System.gc();
+        
+        if (study.getStudyId()==null || study.getStudyId().equals("")) {
+            if (generateStudyId) {
+                VDCNetwork vdcNetwork = vdcNetworkService.find();
+                study.setProtocol(vdcNetwork.getProtocol());
+                study.setAuthority(vdcNetwork.getAuthority());
+                study.setStudyId( generateStudyIdSequence(study.getProtocol(),study.getAuthority()));
+            } else {
+                throw new EJBException("ImportStudy failed: DDI does not specify a handle for this study.");
+            }
+        }
+        
+        
+        // If study comes from old VDC, set restrictions based on  restrictions in VDC repository
+        if (checkRestrictions) {
+            setImportedStudyRestrictions(study);
+        }
+    }   
+    
+    private void setImportedStudyRestrictions(Study study) {
+        RepositoryWrapper repositoryWrapper = new RepositoryWrapper();
+        try {
+            String studyObjectHandle = study.getProtocol()+":"+study.getAuthority()+"/"+study.getStudyId();
+            if (repositoryWrapper.isObjectRestricted(studyObjectHandle)) {
+                study.setRestricted(true);
+            }
+            for (Iterator it = study.getFileCategories().iterator(); it.hasNext();) {
+                FileCategory cat = (FileCategory) it.next();
+                for (Iterator it2 = cat.getStudyFiles().iterator(); it2.hasNext();) {
+                    StudyFile studyFile = (StudyFile) it2.next();
+                    String fileSystemName = determineLegacyFile(studyFile).getName();
+                    if (repositoryWrapper.isObjectRestricted(studyObjectHandle+"/"+fileSystemName)) {
+                        studyFile.setRestricted(true);
+                    }
+                }
+                
+            }
+        } catch (IOException e) {
+            EJBException ex = new EJBException("Exception setting restrictions for study "+study.getGlobalId());
+            ex.initCause(e);
+            throw ex;
+            
+            
+        } catch (SAXException e) {
+            EJBException ex = new EJBException("Exception setting restrictions for study "+study.getGlobalId());
+            ex.initCause(e);
+            throw ex;
+            
+        }
+        
+        
+    }    
+    
+    private File determineLegacyFile(StudyFile file) {
+        
+        String legacyFileDir = FileUtil.getLegacyFileDir();
+        
+        int startIndex = file.getFileSystemLocation().indexOf("/hdl:") + 5;
+        String parsedFileLocation = file.getFileSystemLocation().substring( startIndex );
+        
+        // this line is just for when testing on a windows machine!
+        parsedFileLocation = parsedFileLocation.replace('/', File.separatorChar);
+        
+        File legacyFile = new File(legacyFileDir, parsedFileLocation);
+        
+        return legacyFile;
+    }   
+    
+    private void retrieveFiles( Study study ) {
+        try {
+            
+            // create, if needed, the directory
+            File newDir = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
+            if (!newDir.exists()) {
+                newDir.mkdirs();
+            }
+            
+            Iterator iter = study.getStudyFiles().iterator();
+            while (iter.hasNext()) {
+                StudyFile file = (StudyFile) iter.next();
+                File inputFile = determineLegacyFile( file );
+                file.setFileSystemName( inputFile.getName() );
+                File outputFile = new File(newDir, file.getFileSystemName() );
+                FileUtil.copyFile( inputFile, outputFile );
+                file.setFileSystemLocation( outputFile.getAbsolutePath() );
+                if (file.isSubsettable()) {
+                    file.setFileType( "text/tab-separated-values" );
+                } else {
+                    // we need to incorprate something like JHOVE to determine otherMat filetypes
+                }
+            }
+            
+            
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            EJBException e= new EJBException("RetrieveFilesAndSave failed: " + ex.getMessage() );
+            e.initCause(ex);
+            throw e;
+        }
+    }  
+    
+    private void clearStudy(Study study) {
+        // should this be done with bulk deletes??
+        
+        for (Iterator iter = study.getFileCategories().iterator(); iter.hasNext();) {
+            FileCategory elem = (FileCategory) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyAbstracts().iterator(); iter.hasNext();) {
+            StudyAbstract elem = (StudyAbstract) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyAuthors().iterator(); iter.hasNext();) {
+            StudyAuthor elem = (StudyAuthor) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyDistributors().iterator(); iter.hasNext();) {
+            StudyDistributor elem = (StudyDistributor) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyGeoBoundings().iterator(); iter.hasNext();) {
+            StudyGeoBounding elem = (StudyGeoBounding) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyGrants().iterator(); iter.hasNext();) {
+            StudyGrant elem = (StudyGrant) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyKeywords().iterator(); iter.hasNext();) {
+            StudyKeyword elem = (StudyKeyword) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyNotes().iterator(); iter.hasNext();) {
+            StudyNote elem = (StudyNote) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyOtherIds().iterator(); iter.hasNext();) {
+            StudyOtherId elem = (StudyOtherId) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyOtherRefs().iterator(); iter.hasNext();) {
+            StudyOtherRef elem = (StudyOtherRef) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyProducers().iterator(); iter.hasNext();) {
+            StudyProducer elem = (StudyProducer) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyRelMaterials().iterator(); iter.hasNext();) {
+            StudyRelMaterial elem = (StudyRelMaterial) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyRelPublications().iterator(); iter.hasNext();) {
+            StudyRelPublication elem = (StudyRelPublication) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyRelStudies().iterator(); iter.hasNext();) {
+            StudyRelStudy elem = (StudyRelStudy) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudySoftware().iterator(); iter.hasNext();) {
+            StudySoftware elem = (StudySoftware) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+        for (Iterator iter = study.getStudyTopicClasses().iterator(); iter.hasNext();) {
+            StudyTopicClass elem = (StudyTopicClass) iter.next();
+            removeCollectionElement(iter,elem);
+        }
+    }   
+    
+    private void removeCollectionElement(Iterator iter, Object elem) {
+        iter.remove();
+        em.remove(elem);
+    }    
+    
+    private void setDisplayOrders(Study study) {
+        int i=0;
+        for (Iterator it = study.getStudyAuthors().iterator(); it.hasNext();) {
+            StudyAuthor elem = (StudyAuthor) it.next();
+            elem.setDisplayOrder(i);
+            i++;
+            
+        }
+        i=0;
+        for (Iterator it = study.getStudyAbstracts().iterator(); it.hasNext();) {
+            StudyAbstract elem = (StudyAbstract) it.next();
+            elem.setDisplayOrder(i);
+            i++;
+            
+        }
+        i=0;
+        for (Iterator it = study.getStudyDistributors().iterator(); it.hasNext();) {
+            StudyDistributor elem = (StudyDistributor) it.next();
+            elem.setDisplayOrder(i);
+            i++;
+            
+        }
+        i=0;
+        for (Iterator it = study.getStudyGeoBoundings().iterator(); it.hasNext();) {
+            StudyGeoBounding elem = (StudyGeoBounding) it.next();
+            elem.setDisplayOrder(i);
+            i++;
+            
+        }
+        i=0;
+        for (Iterator it = study.getStudyGrants().iterator(); it.hasNext();) {
+            StudyGrant elem = (StudyGrant) it.next();
+            elem.setDisplayOrder(i);
+            i++;
+        }
+        
+        i=0;
+        for (Iterator it = study.getStudyKeywords().iterator(); it.hasNext();) {
+            StudyKeyword elem = (StudyKeyword) it.next();
+            elem.setDisplayOrder(i);
+            i++;
+        }
+        
+        i=0;
+        for (Iterator it = study.getStudyNotes().iterator(); it.hasNext();) {
+            StudyNote elem = (StudyNote) it.next();
+            elem.setDisplayOrder(i);
+            i++;
+        }
+        i=0;
+        for (Iterator it = study.getStudyOtherIds().iterator(); it.hasNext();) {
+            StudyOtherId elem = (StudyOtherId) it.next();
+            elem.setDisplayOrder(i);
+            i++;
+        }
+        i=0;
+        for (Iterator it = study.getStudyProducers().iterator(); it.hasNext();) {
+            StudyProducer elem = (StudyProducer) it.next();
+            elem.setDisplayOrder(i);
+            i++;
+        }
+        i=0;
+        for (Iterator it = study.getStudySoftware().iterator(); it.hasNext();) {
+            StudySoftware elem = (StudySoftware) it.next();
+            elem.setDisplayOrder(i);
+            i++;
+        }
+        
+        i=0;
+        for (Iterator it = study.getStudyTopicClasses().iterator(); it.hasNext();) {
+            StudyTopicClass elem = (StudyTopicClass) it.next();
+            elem.setDisplayOrder(i);
+            i++;
+        }
+        
+    }     
 }

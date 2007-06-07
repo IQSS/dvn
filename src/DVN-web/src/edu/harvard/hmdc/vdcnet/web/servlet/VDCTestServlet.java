@@ -149,17 +149,8 @@ public class VDCTestServlet extends HttpServlet {
             Long vdcId = new Long(1);
             Long userId = new Long(1);
             Long studyId = new Long(1);
-            
-            Context ctx = new InitialContext();
-            EditStudyService editStudyService = (EditStudyService) ctx.lookup("java:comp/env/editStudy");
-            editStudyService.setStudy(studyId);
-            editStudyService.importStudy( xmlFile, false, false, true );
-            if ( req.getParameter("nofiles") == null ) {
-                editStudyService.retrieveFilesAndSave(vdcId, userId);
-            } else {
-                editStudyService.save(vdcId, userId);
-            }
-            
+          
+            studyService.importStudy( xmlFile, studyId, vdcId, userId, false, false, true, false );
             
             // send the DDI as the response
             res.setContentType("text/xml");

@@ -292,16 +292,11 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 Study study = studyService.getStudyByGlobalId(identifier);
                 studyService.deleteStudy(study.getId());
             } else {
-                EditStudyService editStudyService = (EditStudyService) ejbContext.lookup("editStudyService");
                 VDCUser networkAdmin = vdcNetworkService.find().getDefaultNetworkAdmin();
                 Study study= studyService.getStudyByGlobalId(identifier);
-                if (study==null) {
-                    editStudyService.newStudy(dataverse.getVdc().getId(), networkAdmin.getId());
-                } else {
-                    editStudyService.setStudy(study.getId());
-                }
-                editStudyService.importHarvestStudy(record.getMetadataFile());
-                editStudyService.save(dataverse.getVdc().getId(),networkAdmin.getId());
+                Long studyId = study != null ? study.getId() : null;
+               
+                studyService.importHarvestStudy(record.getMetadataFile(), studyId, dataverse.getVdc().getId(),networkAdmin.getId());
                 
                 hdLogger.log(Level.INFO,"Harvest Successful for identifier "+identifier );
             }

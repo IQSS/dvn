@@ -2,6 +2,7 @@
 package edu.harvard.hmdc.vdcnet.study;
 
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import javax.ejb.Local;
@@ -66,6 +67,18 @@ public interface StudyServiceLocal {
     void removeStudyLock(Study study);
 
     void addStudyLock(Study study, VDCUser user, String detail);
+
+
+
+    edu.harvard.hmdc.vdcnet.study.Study saveStudy(Study study, Long userId);
+
+    edu.harvard.hmdc.vdcnet.study.Study importLegacyStudy(File xmlFile, Long vdcId, Long userId);
+    edu.harvard.hmdc.vdcnet.study.Study importLegacyStudy(File xmlFile, Long vdcId, Long userId, boolean copyFiles);
+
+    edu.harvard.hmdc.vdcnet.study.Study importHarvestStudy(File xmlFile, Long studyId, Long vdcId, Long userId);
+
+    edu.harvard.hmdc.vdcnet.study.Study importStudy(File xmlFile, Long studyId, Long vdcId, Long userId, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates, boolean retrieveFiles);
+
 
     
 }

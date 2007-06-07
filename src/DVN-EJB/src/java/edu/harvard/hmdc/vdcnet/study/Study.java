@@ -8,7 +8,6 @@
 package edu.harvard.hmdc.vdcnet.study;
 
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
-import edu.harvard.hmdc.vdcnet.admin.Role;
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCRole;
@@ -81,12 +80,26 @@ public class Study {
     @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<StudyAccessRequest> studyRequests;
     
-    
-    
-    /** Creates a new instance of Study */
-    public Study() {
+    public Study () {
+    }    
         
+    public Study(VDC vdc, VDCUser creator, ReviewState reviewState) {
+        this.setOwner(vdc);
+        if (vdc != null) {
+            this.setTemplate( vdc.getDefaultTemplate() );
+        }
+        this.setCreator(creator);
+        this.setCreateTime( new Date() );
+        this.setReviewState( reviewState );
+        
+        // Add Study to root collection of it's VDC owner. 
+        if (this.getOwner()!=null) {
+            this.setStudyColls( new ArrayList() );
+            this.getStudyColls().add(this.getOwner().getRootCollection());
+            this.getOwner().getRootCollection().getStudies().add(this);
+        }        
     }
+       
     
     public String getGlobalId() {
         return protocol+":"+authority+"/"+studyId;

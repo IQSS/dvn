@@ -9,31 +9,35 @@
 
 package edu.harvard.hmdc.vdcnet.util;
 
-import java.util.Iterator;
-import javax.faces.FactoryFinder;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
+import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
+import edu.harvard.hmdc.vdcnet.study.SyncVDCServiceLocal;
+import javax.ejb.EJB;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import com.sun.faces.lifecycle.LifecycleFactoryImpl;
-import com.sun.faces.context.FacesContextFactoryImpl;
 
 /**
  *
- * @author wbossons
+ * 
  */
 public class VDCContextListener implements ServletContextListener {
+   @EJB HarvesterServiceLocal harvesterService;
+   @EJB SyncVDCServiceLocal syncVDCService;
+
     
+    public void contextDestroyed(ServletContextEvent event) {
+    
+    }
+    
+    public void contextInitialized(ServletContextEvent event) {
+        // This call initializes the Harvest Timer that will activate once a day and 
+        // run all scheduled Harvest Dataverses.
+        harvesterService.createHarvestTimer();
+        // This initializes the export Timer - runs once a day and exports changes to old VDC
+       // syncVDCService.scheduleDaily();
+        
+    }
     /** Creates a new instance of VDCContextListener */
     public VDCContextListener() {
     }
     
-    public void contextInitialized(ServletContextEvent servletcontextevent){
-        System.out.println("the context is initialized");
-        
-    }
-    
-    public void contextDestroyed(ServletContextEvent servletcontextevent) {
-        System.out.println("the context is destroyed");
-    }
 }

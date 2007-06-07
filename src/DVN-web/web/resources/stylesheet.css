@@ -1437,10 +1437,28 @@ a.MniTabLnk:link, a.MniTabLnk:visited {font-weight: bold; }
 /* subsetting page: summary statistics: ends here */
 
 /* *************** dvn network page specific ***************** */
-         ul.dvnGroupListStyle { list-style-type:square; color:#035399; }
-        .dvnRestricted   { margin-left:4px; vertical-align:middle; }
-        .dvnChildColumn  { font-style:normal; width:33%; border:thin solid #cccccc; vertical-align:top; text-align:left; }
-        .dvnChildTable   { width:100%; background-color:#eeeeee; }
-        .dvnMainColumn   { font-style:oblique; font-weight:bold; text-align:center; }
-        .dvnMainTable    { width:98%; padding:6px 6px 6px 0px; }
-        .dvnMainPanel    { display:block; width:100%; background-color:rgb(206, 242, 224); margin:2px 0px 4px 0px; padding:2px 0px 2px 2px; }
+ul.dvnGroupListStyle { list-style-type:square; color:#035399; }
+.dvnRestricted   { margin-left:4px; vertical-align:middle; }
+.dvnChildColumn  { font-style:normal; width:33%; border:thin solid #cccccc; vertical-align:top; text-align:left; }
+.dvnChildTable   { width:100%; background-color:#eeeeee; }
+.dvnMainColumn   {
+   font-style: oblique;
+   font-weight: bold;
+   text-align: center
+}
+.dvnMainTable    { width:99%; padding:6px 6px 6px 0px; }
+.dvnMainPanel    {
+   font-size: 1.2em;
+   background-color: #dce6cb;
+   border: thin solid #cbdcaf;
+   display: block;
+   margin-bottom: 2px;
+   margin-left: 0px;
+   margin-right: 0px;
+   margin-top: 10px;
+   padding-bottom: 2px;
+   padding-left: 0px;
+   padding-right: 0px;
+   padding-top: 2px;
+   width: 100%
+}

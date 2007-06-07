@@ -55,7 +55,7 @@ public class VDCImportServlet extends HttpServlet {
         Logger logger = null;
         try {
             String importLogDirStr = FileUtil.getImportFileDir();
-           
+            
             
             // Create a file handler that write log record to a file
             FileHandler handler = new FileHandler(importLogDirStr+ File.separator+ "import.log");
@@ -141,9 +141,9 @@ public class VDCImportServlet extends HttpServlet {
             File file = (File) it.next();
             if (doImportStudy(req,res,logger,  file, vdcId,userId,copyFiles)) {
                 importedStudies++;
-            }        
+            }
         }
-                   
+        
         logger.info("Import completed, imported "+importedStudies+" studies, time= "+new Date()+". \n\n");
         
     }
@@ -152,7 +152,7 @@ public class VDCImportServlet extends HttpServlet {
     private List<File> getDDIFilesFromRepository(Logger logger, File legacyFileDir,String authority)throws IOException,SAXException {
         List files= new ArrayList<File>();
         RepositoryWrapper repositoryWrapper = new RepositoryWrapper();
-
+        
         List<String> filePaths = repositoryWrapper.getStudyDDIPaths(authority);
         for (Iterator it = filePaths.iterator(); it.hasNext();) {
             String filePath = (String) it.next();
@@ -163,7 +163,7 @@ public class VDCImportServlet extends HttpServlet {
                 logger.severe("File "+filePath+" does not exist!");
             }
         }
-         return files;
+        return files;
     }
     
     private boolean doImportStudy(HttpServletRequest req, HttpServletResponse res, Logger logger,  File studyFile,Long vdcId,Long userId,boolean copyFiles ) {
@@ -171,10 +171,9 @@ public class VDCImportServlet extends HttpServlet {
         logger.info("Importing study "+ddiFilePath+"\n");
         boolean success=false;
         try {
-            if (mapDDI(req, res, studyFile,vdcId,userId, copyFiles,logger)) {
-                 logger.info("Successfully imported study "+ddiFilePath+"\n");
-                 success=true;
-            }
+            studyService.importLegacyStudy(studyFile,vdcId,userId, copyFiles);
+            logger.info("Successfully imported study "+ddiFilePath+"\n");
+            success=true;
             
         } catch(Exception e) {
             if (e.getCause()!=null && e.getCause() instanceof MappingException) {
@@ -196,58 +195,7 @@ public class VDCImportServlet extends HttpServlet {
         return success;
     }
     
-    // <editor-fold defaultstate="collapsed" desc="mapDDITest">
-    protected boolean mapDDI(HttpServletRequest req, HttpServletResponse res, File xmlFile, Long vdcId, Long userId, boolean copyFiles, Logger logger ) throws Exception {
-        boolean importCompleted=false;
-        InputStream in = null;
-        OutputStream out = null;
-        EditStudyService editStudyService=null;
-        try {
-            
-            in = new FileInputStream( xmlFile );
-            Context ctx = new InitialContext();
-            editStudyService = (EditStudyService) ctx.lookup("java:comp/env/editStudy");
-            editStudyService.newStudy(vdcId, userId);
-            editStudyService.importLegacyStudy( xmlFile);
-            Study study = editStudyService.getStudy();
-            if (studyService.isUniqueStudyId(study.getStudyId(),study.getProtocol(),study.getAuthority())){
-                if (copyFiles) {
-                    editStudyService.retrieveFilesAndSave(vdcId, userId);
-                } else {
-                    editStudyService.save(vdcId,userId);
-                }
-                importCompleted=true;
-            } else {
-                logger.info("Study with Id "+study.getStudyId()+" already exists, not imported.");
-            }
-            
-            
-            
-            
-        } finally {
-            if (in != null) { in.close(); }
-            if (out != null) { out.close(); }
-            
-        }
-        return importCompleted;
-    }
     
-    private void readUrlIntoFile(URL inputUrl, File outputFile) throws IOException {
-        InputStream in = inputUrl.openStream();
-        OutputStream out = new FileOutputStream(outputFile);
-        
-        try {
-            int i = in.read();
-            while (i != -1 ) {
-                out.write(i);
-                i = in.read();
-            }
-            
-        } finally {
-            if (in != null) { in.close(); }
-            if (out != null) { out.close(); }
-        }
-    }
     
     /** Handles the HTTP <code>GET</code> method.
      * @param request servlet request

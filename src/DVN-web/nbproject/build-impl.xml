@@ -428,12 +428,6 @@
         <copy-ear-war file="${file.reference.commons-httpclient-3.0.1.jar}" propname="included.lib.file.reference.commons-httpclient-3.0.1.jar.X"/>
         <basename property="included.lib.file.reference.oaicat.jar" file="${file.reference.oaicat.jar}"/>
         <copy-ear-war file="${file.reference.oaicat.jar}" propname="included.lib.file.reference.oaicat.jar.X"/>
-        <basename property="included.lib.libs.woodstock-components.classpath.3" file="${libs.woodstock-components.classpath.libfile.3}"/>
-        <basename property="included.lib.libs.woodstock-components.classpath.2" file="${libs.woodstock-components.classpath.libfile.2}"/>
-        <basename property="included.lib.libs.woodstock-components.classpath.1" file="${libs.woodstock-components.classpath.libfile.1}"/>
-        <copy-ear-war file="${libs.woodstock-components.classpath.libfile.3}" propname="included.lib.libs.woodstock-components.classpath.3.X"/>
-        <copy-ear-war file="${libs.woodstock-components.classpath.libfile.2}" propname="included.lib.libs.woodstock-components.classpath.2.X"/>
-        <copy-ear-war file="${libs.woodstock-components.classpath.libfile.1}" propname="included.lib.libs.woodstock-components.classpath.1.X"/>
         <copy file="${libs.jsfsupport-runtime.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsfsupport-runtime.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsfsupport-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
@@ -454,7 +448,7 @@
         <copy file="${file.reference.xalan.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <mkdir dir="${build.web.dir.real}/META-INF"/>
         <manifest file="${build.web.dir.real}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.reference.DVN-ejb.dist} ${included.lib.file.reference.shale-tiles-1.0.4-SNAPSHOT.jar} ${included.lib.file.reference.tiles-core-2.0-SNAPSHOT.jar} ${included.lib.file.reference.commons-beanutils.jar} ${included.lib.file.reference.commons-collections-3.2.jar} ${included.lib.file.reference.commons-digester-1.7.jar} ${included.lib.file.reference.commons-el.jar} ${included.lib.file.reference.commons-logging-1.1.jar} ${included.lib.file.reference.commons-collections-3.2.zip} ${included.lib.file.reference.commons-codec-1.3.jar} ${included.lib.file.reference.log4j-1.2.12.jar} ${included.lib.file.reference.xalan.jar} ${included.lib.file.reference.commons-httpclient-3.0.1.jar} ${included.lib.file.reference.oaicat.jar} ${included.lib.libs.woodstock-components.classpath.1.X} ${included.lib.libs.woodstock-components.classpath.2.X} ${included.lib.libs.woodstock-components.classpath.3.X} "/>
+            <attribute name="Class-Path" value="${included.lib.reference.DVN-ejb.dist} ${included.lib.file.reference.shale-tiles-1.0.4-SNAPSHOT.jar} ${included.lib.file.reference.tiles-core-2.0-SNAPSHOT.jar} ${included.lib.file.reference.commons-beanutils.jar} ${included.lib.file.reference.commons-collections-3.2.jar} ${included.lib.file.reference.commons-digester-1.7.jar} ${included.lib.file.reference.commons-el.jar} ${included.lib.file.reference.commons-logging-1.1.jar} ${included.lib.file.reference.commons-collections-3.2.zip} ${included.lib.file.reference.commons-codec-1.3.jar} ${included.lib.file.reference.log4j-1.2.12.jar} ${included.lib.file.reference.xalan.jar} ${included.lib.file.reference.commons-httpclient-3.0.1.jar} ${included.lib.file.reference.oaicat.jar} "/>
         </manifest>
         <delete dir="${dist.ear.dir}/temp"/>
     </target>
@@ -473,9 +467,6 @@
         <copy file="${file.reference.xalan.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${file.reference.commons-httpclient-3.0.1.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${file.reference.oaicat.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.woodstock-components.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.woodstock-components.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.woodstock-components.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsfsupport-runtime.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsfsupport-runtime.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsfsupport-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>

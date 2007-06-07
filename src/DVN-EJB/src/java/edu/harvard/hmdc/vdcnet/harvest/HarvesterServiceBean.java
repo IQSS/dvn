@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -80,18 +81,20 @@ import org.xml.sax.SAXException;
 @Stateless( name="harvesterService")
 
 @EJB(name="editStudyService", beanInterface=edu.harvard.hmdc.vdcnet.study.EditStudyService.class)
-  @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class HarvesterServiceBean implements HarvesterServiceLocal {
     @PersistenceUnit(unitName="VDCNet-test") EntityManagerFactory emf;
     @PersistenceContext(unitName="VDCNet-ejbPU") EntityManager em;
-   
+    
     @Resource javax.ejb.TimerService timerService;
     @Resource SessionContext ejbContext;
     @EJB StudyServiceLocal studyService;
     @EJB HarvestingDataverseServiceLocal havestingDataverseService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean");
-    private static final String HARVEST_TIMER = "HarvesterTimer";
+    private static final String HARVEST_TIMER = "HarvestTimer";
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    
     static {
         try {
             logger.addHandler(new FileHandler(FileUtil.getImportFileDir()+ File.separator+ "harvest.log"));
@@ -108,34 +111,12 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         
     }
     
-    /**
-     *  For testing
-     */
-    public void scheduleNow(String lastUpdateTime, String authority ) {
-        try {
-            studyService.exportStudyFiles(lastUpdateTime,authority);
-        } catch (Exception e) {
-            throw new EJBException(e);
-        }
-        
-    }
     
-    /**
-     *
-     */
-    public void scheduleDaily() {
-        if (timerService.getTimers().isEmpty()){
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DAY_OF_YEAR,1);
-            cal.set(Calendar.HOUR_OF_DAY,1);
-            Date initialExpiration = cal.getTime();  // First timeout is 1:00 AM of next day
-            long intervalDuration = 1000*60 *60*24;  // repeat every 24 hours
-            timerService.createTimer(initialExpiration, intervalDuration,null);
-            
-        }
-        
+    public void doAsyncHarvest(HarvestingDataverse dataverse) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MINUTE,1);
+        timerService.createTimer(cal.getTime(),dataverse.getId());
     }
-    
     
     public void createHarvestTimer() {
         for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
@@ -146,31 +127,39 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             
         }
         
-        
-        
         Calendar cal = Calendar.getInstance();
-        //    cal.add(Calendar.DAY_OF_YEAR,1);
-        //    cal.set(Calendar.HOUR_OF_DAY,1);
+        cal.add(Calendar.DAY_OF_YEAR,1);
+        cal.set(Calendar.HOUR_OF_DAY,1);
         
         // Test Only - have timer expire in 5 minutes
-        cal.add(Calendar.MINUTE,5);
+        // cal.add(Calendar.MINUTE,5);
         logger.log(Level.INFO,"Harvester timer set for "+cal.getTime());
         System.out.println("Harvester timer set for "+cal.getTime());
         Date initialExpiration = cal.getTime();  // First timeout is 1:00 AM of next day
         long intervalDuration = 1000*60 *60*24;  // repeat every 24 hours
         timerService.createTimer(initialExpiration, intervalDuration,HARVEST_TIMER);
+        
     }
     
     
-    
-    
     @Timeout
-    public void doScheduledHarvesting(javax.ejb.Timer timer) {
-        String from = null;
-        Date today = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String until= formatter.format(today);
-        try {
+    public void handleTimeout(javax.ejb.Timer timer) {
+        if (timer.getInfo().equals(HARVEST_TIMER)) {
+            doScheduledHarvesting();
+        } else {
+            doImmediateHarvesting((Long)timer.getInfo());
+        }
+    }
+    
+    
+    public void doImmediateHarvesting(Long dataverseId) {
+        System.out.println("DO immediate HARVESTING of "+dataverseId);
+        HarvestingDataverse dataverse = em.find(HarvestingDataverse.class, dataverseId);
+        harvest(dataverse);
+        
+    }
+    
+    public void doScheduledHarvesting() {
             // Get list of Harvested dataverses
             // For each dataverse that is scheduled, call OAIServer to get list of updated records.
             // Call import to save each study in the database.
@@ -178,58 +167,59 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             
             for (Iterator it = dataverses.iterator(); it.hasNext();) {
                 HarvestingDataverse dataverse = (HarvestingDataverse) it.next();
-                // If we have harvested before, then get updates since last harvest.
-                // Else, use from==null, which will get all records.
-                if (dataverse.getLastHarvestTime()!=null) {
-                    from= formatter.format(dataverse.getLastHarvestTime());
-                }
-                harvest(dataverse,from, until);
-                dataverse.setLastHarvestTime(today);
-                
+                harvest(dataverse);
             }
-        } catch (Exception e) {
+    }
+    
+    
+    public void harvest(HarvestingDataverse dataverse) {
+        String from = null;
+        Date today = new Date();
+        String until= formatter.format(today);
+        if (dataverse.getLastHarvestTime()!=null) {
+            from= formatter.format(dataverse.getLastHarvestTime());
+        }
+        harvest(dataverse,from, until);
+    }
+    
+    
+    public void harvest( HarvestingDataverse dataverse, String from, String until) {
+        Logger hdLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean."+dataverse.getVdc().getAlias());
+   
+        try {
+            hdLogger.addHandler(new FileHandler(FileUtil.getImportFileDir()+ File.separator+ "harvest_"+dataverse.getVdc().getAlias()+".log"));
+        } catch(IOException e) {
             throw new EJBException(e);
         }
-    }
-    
-  
-    public void harvest( HarvestingDataverse dataverse, String from, String until) {
-        
-        logger.log(Level.INFO,"BEGIN HARVEST..., oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);
-        ResumptionTokenType resumptionToken = null;
-        do {
-            resumptionToken= harvestFromIdentifiers(resumptionToken,dataverse,from,until);
-        } while(resumptionToken!=null);
-        getRecord(dataverse,"hdl:1902.2/09720",dataverse.getFormat(),null);
-  //      updateLastHarvestTime(dataverse.getId());
-        logger.log(Level.INFO,"COMPLETED HARVEST, oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);
-        
-    }
-       
- //  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    private void updateLastHarvestTime(Long dataverseId) {
-    //             HarvestingDataverse dataverse = em.find(HarvestingDataverse.class,dataverseId);
-   //             dataverse.setLastHarvestTime(new Date());
-     
-            EntityManager em = emf.createEntityManager();
-            try {
-                em.getTransaction().begin();
-                HarvestingDataverse dataverse = em.find(HarvestingDataverse.class,dataverseId);
-                dataverse.setLastHarvestTime(new Date());
-                em.persist(dataverse);
-                em.getTransaction().commit();
-            } finally {
-                em.close();
-            }
    
+        Date lastHarvestTime;
+        try {
+        
+            lastHarvestTime = formatter.parse(until);
+            hdLogger.log(Level.INFO,"BEGIN HARVEST..., oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);
+            ResumptionTokenType resumptionToken = null;
+            do {
+                resumptionToken= harvestFromIdentifiers(hdLogger, resumptionToken,dataverse,from,until);
+            } while(resumptionToken!=null);
+            
+            // Get managed version of the dataverse so that update to lastHarvestTime will be persisted
+            dataverse = em.find(HarvestingDataverse.class, dataverse.getId()); 
+            dataverse.setLastHarvestTime(lastHarvestTime);
+            
+            hdLogger.log(Level.INFO,"COMPLETED HARVEST, oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);
+ 
+        } catch (ParseException ex) {
+            hdLogger.log(Level.SEVERE, "ParseException harvesting dataverse "+dataverse.getVdc().getName()+", until Str="+until+", exception: "+ex.getMessage() );
         }
+        
+    }
     
-    public ResumptionTokenType harvestFromIdentifiers(ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until) {
+    
+    
+    private ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until) {
         String encodedSet=null;
         
         try {
-            //    PrintWriter pw = new PrintWriter(System.out);
-            //    boolean environmentOK = (new EnvironmentCheck()).checkEnvironment(pw);
             encodedSet = dataverse.getHarvestingSet()==null ? null : URLEncoder.encode(dataverse.getHarvestingSet(), "UTF-8");
             ListIdentifiers listIdentifiers=null;
             if (resumptionToken==null) {
@@ -249,58 +239,59 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             OAIPMHtype oaiObj = (OAIPMHtype)unmarshalObj.getValue();
             
             if (oaiObj.getError()!=null && oaiObj.getError().size()>0) {
-                handleOAIError(oaiObj, "calling listIdentifiers, oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getFormat());
+                handleOAIError(hdLogger, oaiObj, "calling listIdentifiers, oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getFormat());
             } else {
                 ListIdentifiersType listIdentifiersType = oaiObj.getListIdentifiers();
                 if (listIdentifiersType!=null) {
                     resumptionToken= listIdentifiersType.getResumptionToken();
                     for (Iterator it = listIdentifiersType.getHeader().iterator(); it.hasNext();) {
                         HeaderType header = (HeaderType) it.next();
-                        System.out.println( "Identifier for header is :"+header.getIdentifier());
-                        getRecord(dataverse, header.getIdentifier(),dataverse.getFormat(),jc);
+                        getRecord(hdLogger, dataverse, header.getIdentifier(),dataverse.getFormat(),jc);
                     }
                     
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception processing listIdentifiers(), oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getFormat()+" "+ e.getClass().getName()+ " "+e.getMessage());
+            hdLogger.log(Level.SEVERE, "Exception processing listIdentifiers(), oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getFormat()+" "+ e.getClass().getName()+ " "+e.getMessage());
             if (e.getCause()!=null) {
                 String stackTrace = "StackTrace: \n";
-                logger.severe("Exception caused by: "+e.getCause()+"\n");
+                hdLogger.severe("Exception caused by: "+e.getCause()+"\n");
                 StackTraceElement[] ste = e.getCause().getStackTrace();
                 for(int m=0;m<ste.length;m++) {
                     stackTrace+=ste[m].toString()+"\n";
                 }
-                logger.severe(stackTrace);
-            }          throw new EJBException(e);
+                hdLogger.severe(stackTrace);
+            }          
+            throw new EJBException(e);
         }
         return resumptionToken;
     }
     
-    private void handleOAIError(OAIPMHtype oaiObj, String message) {
+    private void handleOAIError(Logger hdLogger, OAIPMHtype oaiObj, String message) {
         for (Iterator it = oaiObj.getError().iterator(); it.hasNext();) {
             OAIPMHerrorType error = (OAIPMHerrorType)it.next();
             message +=", error code: "+error.getCode();
             message +=", error value: "+error.getValue();
-            logger.log(Level.SEVERE,message);
+            hdLogger.log(Level.SEVERE,message);
             
         }
     }
-     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void getRecord(HarvestingDataverse dataverse, String identifier, String metadataPrefix, JAXBContext jc) {
+    
+    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    private void getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, JAXBContext jc) {
         String oaiUrl= dataverse.getOaiServer();
-        logger.log(Level.INFO,"Calling GetRecord: oaiUrl= "+oaiUrl+", identifier= "+identifier+", metadataPrefix= "+metadataPrefix);
+        hdLogger.log(Level.INFO,"Calling GetRecord: oaiUrl= "+oaiUrl+", identifier= "+identifier+", metadataPrefix= "+metadataPrefix);
         try {
             
             GetRecord record = new GetRecord(oaiUrl, identifier, metadataPrefix);
             String errMessage=record.getErrorMessage();
             if (errMessage!=null) {
-               logger.log(Level.SEVERE,"Error calling GetRecord - "+errMessage);
+                hdLogger.log(Level.SEVERE,"Error calling GetRecord - "+errMessage);
             } else if (record.isDeleted()) {
-                    Study study = studyService.getStudyByGlobalId(identifier);
-                    studyService.deleteStudy(study.getId());  
-            }  
-            else {
+                Study study = studyService.getStudyByGlobalId(identifier);
+                studyService.deleteStudy(study.getId());
+            } else {
                 EditStudyService editStudyService = (EditStudyService) ejbContext.lookup("editStudyService");
                 VDCUser networkAdmin = vdcNetworkService.find().getDefaultNetworkAdmin();
                 Study study= studyService.getStudyByGlobalId(identifier);
@@ -311,26 +302,24 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 }
                 editStudyService.importHarvestStudy(record.getMetadataFile());
                 editStudyService.save(dataverse.getVdc().getId(),networkAdmin.getId());
-
-                logger.log(Level.INFO,"Harvest Successful for identifier "+identifier );
+                
+                hdLogger.log(Level.INFO,"Harvest Successful for identifier "+identifier );
             }
-              
+            
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Exception processing getRecord(), oaiUrl="+oaiUrl+",identifier="+identifier +" "+ e.getClass().getName()+" "+ e.getMessage());
+            hdLogger.log(Level.SEVERE,"Exception processing getRecord(), oaiUrl="+oaiUrl+",identifier="+identifier +" "+ e.getClass().getName()+" "+ e.getMessage());
             if (e.getCause()!=null) {
                 String stackTrace = "StackTrace: \n";
-                logger.severe("Exception caused by: "+e.getCause()+"\n");
+                hdLogger.severe("Exception caused by: "+e.getCause()+"\n");
                 StackTraceElement[] ste = e.getCause().getStackTrace();
                 for(int m=0;m<ste.length;m++) {
                     stackTrace+=ste[m].toString()+"\n";
                 }
-                logger.severe(stackTrace);
+                hdLogger.severe(stackTrace);
             }
             throw new EJBException(e);
         }
     }
-    
-    
     
     
     public List<String> getMetadataFormats(String oaiUrl) {

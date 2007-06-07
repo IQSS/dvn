@@ -39,12 +39,5 @@ public interface EditStudyService {
     
     public boolean isNewStudy();
 
-    public void importHarvestStudy(File metadataFile);
-    public void importLegacyStudy(File metadataFile); 
- //   public void importStudy(Node xmlNode, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates);
-    public void importStudy(File metadataFile, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates);
-//    public void importStudy(CodeBook _cb, boolean checkRestrictions, boolean generateStudyId);
-   
 
-    void retrieveFilesAndSave(Long vdcId, Long userId );
 }

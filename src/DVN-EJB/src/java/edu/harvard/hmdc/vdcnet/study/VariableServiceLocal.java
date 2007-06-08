@@ -27,4 +27,17 @@ public interface VariableServiceLocal {
 
     java.util.List getDataVariablesByFileOrder(Long dtId);
     
+    List<SummaryStatisticType> findAllSummaryStatisticType();
+    SummaryStatisticType findSummaryStatisticTypeByName(List<SummaryStatisticType> typeList, String name);
+    
+    List<VariableFormatType> findAllVariableFormatType();
+    VariableFormatType findVariableFormatTypeByName(List<VariableFormatType> typeList, String name);
+
+    
+    List<VariableIntervalType> findAllVariableIntervalType();
+    VariableIntervalType findVariableIntervalTypeByName(List<VariableIntervalType> typeList, String name);
+
+    List<VariableRangeType> findAllVariableRangeType();
+    VariableRangeType findVariableRangeTypeByName(List<VariableRangeType> typeList, String name);
+     
 }

@@ -149,8 +149,12 @@ import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.StudySoftware;
 import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
 import edu.harvard.hmdc.vdcnet.study.SummaryStatistic;
+import edu.harvard.hmdc.vdcnet.study.SummaryStatisticType;
 import edu.harvard.hmdc.vdcnet.study.VariableCategory;
+import edu.harvard.hmdc.vdcnet.study.VariableFormatType;
+import edu.harvard.hmdc.vdcnet.study.VariableIntervalType;
 import edu.harvard.hmdc.vdcnet.study.VariableRange;
+import edu.harvard.hmdc.vdcnet.study.VariableRangeType;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtil;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
@@ -163,6 +167,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -180,6 +185,8 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     @EJB VariableServiceLocal varService;
     @EJB VDCNetworkServiceLocal networkService;
     @EJB StudyServiceLocal studyService;
+    private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceBean");
+ 
     
     /** Creates a new instance of DDI20ServiceBean */
     public DDI20ServiceBean() {
@@ -228,6 +235,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     //*************************************************************
     
     public Study mapDDI(CodeBook _cb) {
+     //   Logger logger = Logger.getLogger()
         // this is currently only used by ingest; so it is OK
         // to pass true for the isAnIngest variable
         return mapDDI(_cb, new Study(), true, false);
@@ -238,6 +246,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     }
     
     private Study mapDDI(CodeBook _cb, Study study, boolean isAnIngest, boolean allowUpdates) {
+        logger.info("begin mapDDI()");
         // map used to link dataVariables to appropriate dataTable
         Map filesMap = new HashMap();
         
@@ -265,6 +274,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         
         // begin mapping
         if (!isAnIngest) {
+            logger.info("calling mapStudyDscr()");
             mapStdyDscr( _cb.getStdyDscr().get(0), study, docDscrMap );
             
             // only go through docDscr if we have something in our docDscrMap
@@ -272,6 +282,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             Iterator iter = _cb.getDocDscr().iterator();
             while ( !docDscrMap.isEmpty() && iter.hasNext()) {
                 DocDscrType _dd = (DocDscrType) iter.next();
+                logger.info("calling mapDocDscr()");
                 mapDocDscr( _dd, study, docDscrMap );
             }
             
@@ -285,22 +296,25 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             
             iter = _cb.getOtherMat().iterator();
             while (iter.hasNext()) {
+                logger.info("calling mapOtherMat()");
                 mapOtherMat( (OtherMatType) iter.next(), study, filesMap );
             }
         }
         
         Iterator iter = _cb.getDataDscr().iterator();
         while (iter.hasNext()) {
+            logger.info("calling mapDataDscr");
             mapDataDscr( (DataDscrType) iter.next(), filesMap );
         }
         
         iter = _cb.getFileDscr().iterator();
         while (iter.hasNext()) {
+            logger.info("calling mapFileDscr");
             mapFileDscr( (FileDscrType) iter.next(), study, filesMap );
         }
         
         
-        
+        logger.info("returning study "+study.getGlobalId());
         return study;
     }
     
@@ -1007,6 +1021,12 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     }
     
     private void mapDataDscr(DataDscrType _dd, Map filesMap) {
+        // Pre-fetch Variable data for efficiency
+        List<VariableFormatType> variableFormatTypeList =  varService.findAllVariableFormatType(); 
+        List<VariableIntervalType> variableIntervalTypeList =  varService.findAllVariableIntervalType(); 
+        List<SummaryStatisticType> summaryStatisticTypeList =  varService.findAllSummaryStatisticType(); 
+        List<VariableRangeType> variableRangeTypeList =  varService.findAllVariableRangeType(); 
+
         Iterator iter = _dd.getVar().iterator();
         int fileOrder = 0;
         while (iter.hasNext()) {
@@ -1050,7 +1070,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 
                 VarFormatType _format = _dv.getVarFormat();
                 if (_format != null) {
-                    dv.setVariableFormatType( varService.findVariableFormatTypeByName( _format.getType() ) );
+                    dv.setVariableFormatType( varService.findVariableFormatTypeByName(variableFormatTypeList, _format.getType() ) );
                     dv.setFormatSchema( _format.getSchema() );
                     dv.setFormatSchemaName( _format.getFormatname() );
                 }
@@ -1058,7 +1078,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 // interval type (DB value may be different than DDI value)
                 String _interval = _dv.getIntrvl();
                 _interval = VAR_INTERVAL_CONTIN.equals(_interval) ? DB_VAR_INTERVAL_TYPE_CONTINUOUS : _interval;
-                dv.setVariableIntervalType( varService.findVariableIntervalTypeByName( _interval ));
+                dv.setVariableIntervalType( varService.findVariableIntervalTypeByName(variableIntervalTypeList, _interval ));
                 
                 dv.setWeighted( (_dv.getWgt() != null &&_dv.getWgt().equals(VAR_WEIGHTED)) );
                 
@@ -1077,7 +1097,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 while (sumStatIter.hasNext()) {
                     SumStatType _ss = (SumStatType) sumStatIter.next();
                     SummaryStatistic ss = new SummaryStatistic();
-                    ss.setType( varService.findSummaryStatisticTypeByName( _ss.getType() ) );
+                    ss.setType( varService.findSummaryStatisticTypeByName( summaryStatisticTypeList, _ss.getType() ) );
                     ss.setValue( (String) _ss.getContent().get(0) );
                     ss.setDataVariable(dv);
                     
@@ -1112,7 +1132,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                             ItemType _item = (ItemType) _choice;
                             VariableRange range = new VariableRange();
                             range.setBeginValue( _item.getVALUE() );
-                            range.setBeginValueType(varService.findVariableRangeTypeByName( DB_VAR_RANGE_TYPE_POINT )  );
+                            range.setBeginValueType(varService.findVariableRangeTypeByName( variableRangeTypeList, DB_VAR_RANGE_TYPE_POINT )  );
                             range.setDataVariable(dv);
                             dv.getInvalidRanges().add(range);
                             
@@ -1121,18 +1141,18 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                             VariableRange range = new VariableRange();
                             if ( _range.getMin() != null && !_range.getMin().equals("") ) {
                                 range.setBeginValue( _range.getMin() );
-                                range.setBeginValueType(varService.findVariableRangeTypeByName( DB_VAR_RANGE_TYPE_MIN )  );
+                                range.setBeginValueType(varService.findVariableRangeTypeByName( variableRangeTypeList,DB_VAR_RANGE_TYPE_MIN )  );
                             } else if ( _range.getMinExclusive() != null && !_range.getMinExclusive().equals("") ) {
                                 range.setBeginValue( _range.getMinExclusive() );
-                                range.setBeginValueType(varService.findVariableRangeTypeByName( DB_VAR_RANGE_TYPE_MIN_EX )  );
+                                range.setBeginValueType(varService.findVariableRangeTypeByName( variableRangeTypeList,DB_VAR_RANGE_TYPE_MIN_EX )  );
                             }
                             
                             if ( _range.getMax() != null && !_range.getMax().equals("") ) {
                                 range.setEndValue( _range.getMax() );
-                                range.setEndValueType(varService.findVariableRangeTypeByName( DB_VAR_RANGE_TYPE_MAX )  );
+                                range.setEndValueType(varService.findVariableRangeTypeByName( variableRangeTypeList,DB_VAR_RANGE_TYPE_MAX )  );
                             } else if ( _range.getMaxExclusive() != null && !_range.getMaxExclusive().equals("") ) {
                                 range.setEndValue( _range.getMaxExclusive() );
-                                range.setEndValueType(varService.findVariableRangeTypeByName( DB_VAR_RANGE_TYPE_MAX_EX )  );
+                                range.setEndValueType(varService.findVariableRangeTypeByName(variableRangeTypeList, DB_VAR_RANGE_TYPE_MAX_EX )  );
                             }
                             
                             range.setDataVariable(dv);

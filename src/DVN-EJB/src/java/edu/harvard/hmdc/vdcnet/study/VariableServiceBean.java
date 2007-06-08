@@ -71,6 +71,52 @@ public class VariableServiceBean implements edu.harvard.hmdc.vdcnet.study.Variab
         return type;
     }
     
+    
+  public List<SummaryStatisticType> findAllSummaryStatisticType() {
+        String query="SELECT t from SummaryStatisticType t ";
+        return em.createQuery(query).getResultList();
+          
+    }
+    
+    /**
+     * Find type from prefetched list
+     * TODO: find a place to put the global list
+     */
+    public SummaryStatisticType findSummaryStatisticTypeByName(List<SummaryStatisticType> typeList,String name) {
+       SummaryStatisticType type = null;
+       for (Iterator<SummaryStatisticType> it = typeList.iterator(); it.hasNext();) {
+           SummaryStatisticType elem = it.next();
+           if (elem.getName().equals(name)) {
+               type=elem;
+               break;
+           }
+       }
+       return type;
+    }      
+        
+    
+ public List<VariableRangeType> findAllVariableRangeType() {
+        String query="SELECT t from VariableRangeType t ";
+        return em.createQuery(query).getResultList();
+          
+    }
+    
+    /**
+     * Find type from prefetched list
+     * TODO: find a place to put the global list
+     */
+    public VariableRangeType findVariableRangeTypeByName(List<VariableRangeType> typeList,String name) {
+       VariableRangeType type = null;
+       for (Iterator<VariableRangeType> it = typeList.iterator(); it.hasNext();) {
+           VariableRangeType elem = it.next();
+           if (elem.getName().equals(name)) {
+               type=elem;
+               break;
+           }
+       }
+       return type;
+    }          
+    
     public VariableFormatType findVariableFormatTypeByName(String name) {
         String query="SELECT t from VariableFormatType t where t.name = '"+name+"'";
         VariableFormatType type = null;
@@ -81,6 +127,51 @@ public class VariableServiceBean implements edu.harvard.hmdc.vdcnet.study.Variab
         }
         return type;
     }
+    
+    public List<VariableFormatType> findAllVariableFormatType() {
+        String query="SELECT t from VariableFormatType t ";
+        return em.createQuery(query).getResultList();
+          
+    }
+    
+    /**
+     * Find type from prefetched list
+     * TODO: find a place to put the global list
+     */
+    public VariableFormatType findVariableFormatTypeByName(List<VariableFormatType> typeList,String name) {
+       VariableFormatType type = null;
+       for (Iterator<VariableFormatType> it = typeList.iterator(); it.hasNext();) {
+           VariableFormatType elem = it.next();
+           if (elem.getName().equals(name)) {
+               type=elem;
+               break;
+           }
+       }
+       return type;
+    }   
+    
+  public List<VariableIntervalType> findAllVariableIntervalType() {
+        String query="SELECT t from VariableIntervalType t ";
+        return em.createQuery(query).getResultList();
+          
+    }
+    
+    /**
+     * Find type from prefetched list
+     * TODO: find a place to put the global list
+     */
+    public VariableIntervalType findVariableIntervalTypeByName(List<VariableIntervalType> typeList,String name) {
+       VariableIntervalType type = null;
+       for (Iterator<VariableIntervalType> it = typeList.iterator(); it.hasNext();) {
+           VariableIntervalType elem = it.next();
+           if (elem.getName().equals(name)) {
+               type=elem;
+               break;
+           }
+       }
+       return type;
+    }      
+    
     
     public VariableIntervalType findVariableIntervalTypeByName(String name) {
         String query="SELECT t from VariableIntervalType t where t.name = '"+name+"'";

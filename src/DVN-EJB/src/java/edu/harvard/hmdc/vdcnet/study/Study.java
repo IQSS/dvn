@@ -58,6 +58,8 @@ public class Study {
     private Date lastUpdateTime;
     @ManyToOne
     private ReviewState reviewState;
+    
+    @Column(columnDefinition="TEXT")
     private String UNF;
     @ManyToMany(cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<UserGroup> allowedGroups;
@@ -68,6 +70,7 @@ public class Study {
     private boolean isHarvested;
     @ManyToMany( cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<StudyField> summaryFields;
+    @Column(columnDefinition="TEXT")
     private String title;
     @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     @OrderBy("displayOrder")
@@ -584,6 +587,7 @@ public class Study {
     /**
      * Holds value of property fundingAgency.
      */
+    @Column(columnDefinition="TEXT")    
     private String fundingAgency;
     
     /**
@@ -605,6 +609,7 @@ public class Study {
     /**
      * Holds value of property seriesName.
      */
+    @Column(columnDefinition="TEXT")   
     private String seriesName;
     
     /**
@@ -626,6 +631,7 @@ public class Study {
     /**
      * Holds value of property seriesInformation.
      */
+    @Column(columnDefinition="TEXT")
     private String seriesInformation;
     
     /**
@@ -647,6 +653,7 @@ public class Study {
     /**
      * Holds value of property studyVersion.
      */
+    @Column(columnDefinition="TEXT")
     private String studyVersion;
     
     /**
@@ -668,6 +675,7 @@ public class Study {
     /**
      * Holds value of property timePeriodCoveredStart.
      */
+    @Column(columnDefinition="TEXT")
     private String timePeriodCoveredStart;
     
     /**
@@ -689,6 +697,7 @@ public class Study {
     /**
      * Holds value of property timePeriodCoveredEnd.
      */
+    @Column(columnDefinition="TEXT")
     private String timePeriodCoveredEnd;
     
     /**
@@ -710,6 +719,7 @@ public class Study {
     /**
      * Holds value of property dateOfCollectionStart.
      */
+    @Column(columnDefinition="TEXT")
     private String dateOfCollectionStart;
     
     /**
@@ -731,6 +741,7 @@ public class Study {
     /**
      * Holds value of property dateOfCollectionEnd.
      */
+    @Column(columnDefinition="TEXT")
     private String dateOfCollectionEnd;
     
     /**
@@ -752,6 +763,7 @@ public class Study {
     /**
      * Holds value of property country.
      */
+    @Column(columnDefinition="TEXT")
     private String country;
     
     /**
@@ -773,6 +785,7 @@ public class Study {
     /**
      * Holds value of property geographicCoverage.
      */
+    @Column(columnDefinition="TEXT")
     private String geographicCoverage;
     
     /**
@@ -794,6 +807,7 @@ public class Study {
     /**
      * Holds value of property geographicUnit.
      */
+    @Column(columnDefinition="TEXT")
     private String geographicUnit;
     
     /**
@@ -815,6 +829,7 @@ public class Study {
     /**
      * Holds value of property unitOfAnalysis.
      */
+    @Column(columnDefinition="TEXT")
     private String unitOfAnalysis;
     
     /**
@@ -858,6 +873,7 @@ public class Study {
     /**
      * Holds value of property kindOfData.
      */
+    @Column(columnDefinition="TEXT")
     private String kindOfData;
     
     /**
@@ -1430,6 +1446,7 @@ public class Study {
     /**
      * Holds value of property numberOfFiles.
      */
+    @Column(columnDefinition="TEXT")
     private String numberOfFiles;
     
     /**
@@ -1605,6 +1622,7 @@ public class Study {
     /**
      * Holds value of property productionDate.
      */
+    @Column(columnDefinition="TEXT")
     private String productionDate;
     
     /**
@@ -1626,6 +1644,7 @@ public class Study {
     /**
      * Holds value of property productionPlace.
      */
+    @Column(columnDefinition="TEXT")
     private String productionPlace;
     
     /**
@@ -1713,6 +1732,7 @@ public class Study {
     /**
      * Holds value of property distributionDate.
      */
+    @Column(columnDefinition="TEXT")
     private String distributionDate;
     
     /**
@@ -1734,6 +1754,7 @@ public class Study {
     /**
      * Holds value of property distributorContact.
      */
+    @Column(columnDefinition="TEXT")
     private String distributorContact;
     
     /**
@@ -1755,6 +1776,7 @@ public class Study {
     /**
      * Holds value of property distributorContactAffiliation.
      */
+    @Column(columnDefinition="TEXT")
     private String distributorContactAffiliation;
     
     /**
@@ -1776,6 +1798,7 @@ public class Study {
     /**
      * Holds value of property distributorContactEmail.
      */
+    @Column(columnDefinition="TEXT")
     private String distributorContactEmail;
     
     /**
@@ -1797,6 +1820,7 @@ public class Study {
     /**
      * Holds value of property depositor.
      */
+    @Column(columnDefinition="TEXT")
     private String depositor;
     
     /**
@@ -1818,6 +1842,7 @@ public class Study {
     /**
      * Holds value of property dateOfDeposit.
      */
+    @Column(columnDefinition="TEXT")
     private String dateOfDeposit;
     
     /**
@@ -1950,6 +1975,7 @@ public class Study {
     /**
      * Holds value of property versionDate.
      */
+    @Column(columnDefinition="TEXT")
     private String versionDate;
     
     /**
@@ -2186,6 +2212,7 @@ public class Study {
     /**
      * Holds value of property subTitle.
      */
+    @Column(columnDefinition="TEXT")
     private String subTitle;
     
     /**
@@ -2215,6 +2242,7 @@ public class Study {
     /**
      * Holds value of property protocol.
      */
+    @Column(columnDefinition="TEXT")
     private String protocol;
     
     /**
@@ -2236,6 +2264,7 @@ public class Study {
     /**
      * Holds value of property authority.
      */
+    @Column(columnDefinition="TEXT")
     private String authority;
     
     /**

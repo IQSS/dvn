@@ -188,7 +188,7 @@ body {
    text-indent: 3px;
    vertical-align: top;
    white-space: nowrap; 
-   font-size: 1.2em;
+   font-size: 1.3em;
 }
 
 .vdcTextWrap{
@@ -722,7 +722,7 @@ a.vdcSiteMapLink:hover {
 
 .vdcStudyTitleName {
    color: #0b3b6b;
-   font-size: 1.2em;
+   font-size: 1.3em;
    font-weight: bold;
 }
 .vdcStudyStatus {
@@ -1126,12 +1126,12 @@ a.vdcSiteMapLink:hover {
    text-align: center
 }
 .vdcStudyTitleNameSubs {
-   font-size: 1.2em;
+   font-size: 1.3em;
    font-weight: bold;
 }
 .vdcFileTitle{
    font-weight: bold;
-   font-size: 1.2em;
+   font-size: 1.3em;
    color: #0b3b6b;
    padding-left: 4px;
 }
@@ -1204,7 +1204,7 @@ p { margin-top: 2px; margin-bottom: 2px; padding: 0px; }
     padding: 4px 2px 4px 2px;
     background-color: #f5e9d8;
     border: 1px solid #bfb1a3;
-    font-size: 1.2em; 
+    font-size: 1.3em; 
     text-align: center;
     font-weight: bold;
     color: #6b300c;
@@ -1222,7 +1222,7 @@ p { margin-top: 2px; margin-bottom: 2px; padding: 0px; }
     padding: 4px 2px 4px 2px;
     background-color: #d9e7f0;
     border: 1px solid #a3b1bf;
-    font-size: 1.2em; 
+    font-size: 1.3em; 
     text-align: center;
     font-weight: bold;
     color: #1a5d91;
@@ -1440,18 +1440,20 @@ a.MniTabLnk:link, a.MniTabLnk:visited {font-weight: bold; }
 ul.dvnGroupListStyle { list-style-type:square; color:#035399; }
 .dvnRestricted   { margin-left:4px; vertical-align:middle; }
 .dvnChildColumn  { font-style:normal; width:33%; border:thin solid #cccccc; vertical-align:top; text-align:left; }
-.dvnChildTable   { width:100%; background-color:#eeeeee; }
+.dvnChildTable   { width: 100%; background-color:#eeeeee; }
 .dvnMainColumn   {
    font-style: oblique;
    font-weight: bold;
    text-align: center
 }
-.dvnMainTable    { width:99%; padding:6px 6px 6px 0px; }
+.dvnMainTable    { width:98%; padding:6px 0px 6px 0px; margin:0 1% 0 1%}
 .dvnMainPanel    {
-   font-size: 1.2em;
    background-color: #dce6cb;
-   border: thin solid #cbdcaf;
+   border-color: #999900;
+   border-style: solid;
+   border-width: 1px;
    display: block;
+   font-size: 1.3em;
    margin-bottom: 2px;
    margin-left: 0px;
    margin-right: 0px;

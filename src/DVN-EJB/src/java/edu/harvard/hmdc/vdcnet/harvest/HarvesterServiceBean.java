@@ -81,7 +81,6 @@ import org.xml.sax.SAXException;
 @Stateless( name="harvesterService")
 
 @EJB(name="editStudyService", beanInterface=edu.harvard.hmdc.vdcnet.study.EditStudyService.class)
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class HarvesterServiceBean implements HarvesterServiceLocal {
     @PersistenceUnit(unitName="VDCNet-test") EntityManagerFactory emf;
     @PersistenceContext(unitName="VDCNet-ejbPU") EntityManager em;
@@ -278,7 +277,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     }
     
     
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+  
     private void getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, JAXBContext jc) {
         String oaiUrl= dataverse.getOaiServer();
         hdLogger.log(Level.INFO,"Calling GetRecord: oaiUrl= "+oaiUrl+", identifier= "+identifier+", metadataPrefix= "+metadataPrefix);
@@ -312,7 +311,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 }
                 hdLogger.severe(stackTrace);
             }
-            throw new EJBException(e);
+           
         }
     }
     

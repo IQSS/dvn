@@ -111,12 +111,16 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     private void addDocument(final long studyId) {
         Study study = studyService.getStudy(studyId);    
         Indexer indexer = Indexer.getInstance();
+        String indexAdminMail = System.getProperty("dvn.indexadmin");
+        if (indexAdminMail == null){
+            indexAdminMail = "dataverse@lists.hmdc.harvard.edu";
+        }
         try {
             indexer.addDocument(study);
         } catch (IOException ex) {
             ex.printStackTrace();
             try {
-                mailService.sendDoNotReplyMail("vdc-dev@lists.hmdc.harvard.edu","IO problem", "Check index write lock "+InetAddress.getLocalHost().getHostAddress());
+                mailService.sendDoNotReplyMail(indexAdminMail ,"IO problem", "Check index write lock "+InetAddress.getLocalHost().getHostAddress() + " , study id " + studyId);
             } catch (UnknownHostException u) {
                 u.printStackTrace();
             }

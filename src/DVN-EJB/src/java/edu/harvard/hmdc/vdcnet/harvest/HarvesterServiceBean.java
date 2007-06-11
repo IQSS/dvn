@@ -121,7 +121,10 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
             Timer timer = (Timer) it.next();
             if (timer.getInfo().equals(HARVEST_TIMER)) {
-                throw new EJBException("Cannot create HarvestTimer, timer already exists.");
+                logger.info("Cannot create HarvestTimer, timer already exists.");
+                logger.info("HarvestTimer next timeout is " +timer.getNextTimeout());
+                return;
+           
             }
             
         }

@@ -434,15 +434,9 @@ public class HomePage extends VDCBaseBean{
         List membervdcs   = (List)vdcs;
         HtmlPanelGrid childTable = new HtmlPanelGrid();
         Iterator iterator = membervdcs.iterator();
-        //Then inside this method, the following
-        //three lines will be used
+        //Set no. of records per column
         int totalColumns = 3;
-        float columnSize = membervdcs.size()/totalColumns;
-        int startNew = 0;
-        if (membervdcs.size() % totalColumns != 0)
-            startNew = Math.round(columnSize + (float).5);// the point at which to add a new column to the table
-        else
-            startNew = ((Number)columnSize).intValue(); // the point at which to add a new column -- no divisible by 3
+        int startNew = setColumnLength(membervdcs.size(), totalColumns);
         int startPos = 0;
         // these next three lines can exist in the method
         childTable = new HtmlPanelGrid(); // start the child table which eventually must be added to the view
@@ -507,5 +501,25 @@ public class HomePage extends VDCBaseBean{
             }
         }
         return childTable;
+    }
+    
+    /** setColumnLength();
+     *
+     * used to set the no of
+     * records per column
+     *
+     * @param numRecords
+     * @param numColumns
+     * @return int
+     *
+     * @author wbossons
+     *
+     */
+    private int setColumnLength(int numRecords, int numColumns) {
+        int startNew = 0;
+        double doubleRecords = ((Integer)numRecords).doubleValue();
+        double doubleColumns = ((Integer)numColumns).doubleValue();
+        startNew = ((Number)Math.ceil(doubleRecords/doubleColumns)).intValue();
+        return startNew;
     }
 }

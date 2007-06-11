@@ -61,7 +61,7 @@ import org.xml.sax.SAXException;
  * @author Ellen Kraffmiller
  */
 @Stateful
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED) 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditStudyService {
     @EJB IndexServiceLocal indexService;
     @EJB ReviewStateServiceLocal reviewStateService;
@@ -125,13 +125,13 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
         if ((creator.getNetworkRole()!=null && creator.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN))
         || (creator.getVDCRole(vdc)!=null && !creator.getVDCRole(vdc).getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR))) {
             reviewState = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
-        }          
+        }
         
         study = new Study(vdc, creator, reviewState);
         em.persist(study);
         
         // set default protocol and authority
-        VDCNetwork vdcNetwork = vdcNetworkService.find();        
+        VDCNetwork vdcNetwork = vdcNetworkService.find();
         study.setProtocol(vdcNetwork.getProtocol());
         study.setAuthority(vdcNetwork.getAuthority());
         
@@ -172,8 +172,6 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
     @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void save(Long vdcId, Long userId) {
-        
-        
         VDCUser user = em.find(VDCUser.class,userId);
         try {
             // If user is a Contributor and is editing a study with review state "Released", then
@@ -196,9 +194,13 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
             
             studyService.saveStudy(study, userId);
             
+            if (study.getId() == null) {
+                // we need to flush to get the id for the indexer
+                em.flush();
+            }
             
+            indexService.updateStudy(study.getId());
             
-            //indexService.updateStudy(study.getId());
         } catch (EJBException e) {
             System.out.println("EJBException "+e.getMessage()+" saving study "+study.getId()+" edited by " + user.getUserName() + " at "+ new Date().toString());
             e.printStackTrace();

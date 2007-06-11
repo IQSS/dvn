@@ -63,6 +63,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     @EJB IndexServiceLocal indexService;
     @EJB ReviewStateServiceLocal reviewStateService;
     
+    @EJB StudyServiceLocal studyService; // used to force new transaction during import
+    
     /**
      * Creates a new instance of StudyServiceBean
      */
@@ -664,45 +666,40 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
     
     
-    public Study saveStudy (Study study, Long userId) {
-        VDCUser user = em.find(VDCUser.class,userId);
-        
-        study.setLastUpdateTime(new Date());
-        study.setLastUpdater(user);        
-        
-        setDisplayOrders(study);
-        
-        // flush to produce the id for the call to the index
-        em.flush();
-        indexService.updateStudy(study.getId());
-        
-        return study;
-    }
-
-   
+  
+    
     
     public Study importHarvestStudy(File xmlFile, Long studyId, Long vdcId, Long userId) {
         return importStudy(xmlFile, studyId, vdcId, userId, false, false,true, false);
-    }   
-
+    }
+    
     public Study importLegacyStudy(File xmlFile, Long vdcId, Long userId) {
         return importStudy(xmlFile, null, vdcId, userId, true, true, false, true);
-    }       
-
-    // needed for local testing
-    public Study importLegacyStudy(File xmlFile, Long vdcId, Long userId, boolean copyFiles) {
-        return importStudy(xmlFile, null, vdcId, userId, true, true, false, copyFiles);
-    }    
-   
+    }
     
-     public Study importStudy(File xmlFile, Long studyId, Long vdcId, Long userId, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates, boolean retrieveFiles) {
-         Study study = null;
-         
-         if (studyId == null) {
+    // needed for local testing
+    public Study importLegacyStudy(File xmlFile, Long vdcId, Long userId, boolean retrieveFiles) {
+        return importStudy(xmlFile, null, vdcId, userId, true, true, false, retrieveFiles);
+    }
+
+    public Study importStudy(File xmlFile, Long studyId, Long vdcId, Long userId, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates, boolean retrieveFiles) {
+        // call internal studyService to force NEW transaction
+        Study study =  studyService.doImportStudy (xmlFile, studyId, vdcId, userId, checkRestrictions, generateStudyId, allowUpdates, retrieveFiles);
+        indexService.updateStudy(study.getId());
+        return study;
+    }
+
+        
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public Study doImportStudy(File xmlFile, Long studyId, Long vdcId, Long userId, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates, boolean retrieveFiles) {
+        Study study = null;
+        
+        if (studyId == null) {
             VDC vdc = em.find(VDC.class, vdcId);
             VDCUser creator = em.find(VDCUser.class,userId);
             ReviewState reviewState = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
-        
+            
             study = new Study(vdc, creator, reviewState);
             em.persist(study);
         } else {
@@ -710,39 +707,36 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             clearStudy(study);
         }
         
-        doImportStudy(study, xmlFile, checkRestrictions, generateStudyId, allowUpdates);
-        copyXMLFile(study, xmlFile);
+        callDDIMapper(study, xmlFile, allowUpdates);
         
+        // check studyId (this logic will have to be modified some for harvest)
+        if (study.getStudyId()==null || study.getStudyId().equals("")) {
+            if (generateStudyId) {
+                VDCNetwork vdcNetwork = vdcNetworkService.find();
+                study.setProtocol(vdcNetwork.getProtocol());
+                study.setAuthority(vdcNetwork.getAuthority());
+                study.setStudyId( generateStudyIdSequence(study.getProtocol(),study.getAuthority()));
+            } else {
+                throw new EJBException("ImportStudy failed: DDI does not specify a handle for this study.");
+            }
+        }
+        
+        // If study comes from old VDC, set restrictions based on  restrictions in VDC repository
+        if (checkRestrictions) {
+            setImportedStudyRestrictions(study);
+        }
         if (retrieveFiles) {
             retrieveFiles(study);
         }
         
-        saveStudy(study, userId);   
+        copyXMLFile(study, xmlFile);
+        
+        saveStudy(study, userId);
         return study;
-    }   
-     
-   private void copyXMLFile( Study study, File xmlFile ) {
-        try {
-            // create, if needed, the directory
-            File newDir = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
-            if (!newDir.exists()) {
-                newDir.mkdirs();
-            }
-            
-            FileUtil.copyFile( xmlFile, new File(newDir, "original_imported_study.xml"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            String msg = "ImportStudy failed: ";
-            if (ex.getMessage()!=null) {
-                msg+=ex.getMessage();
-            }
-            EJBException e = new EJBException(msg );
-            e.initCause(ex);
-            throw e;
-        }
     }
     
-    private void doImportStudy(Study study, Object obj, boolean checkRestrictions, boolean generateStudyId,  boolean allowUpdates ) {
+    
+    private void callDDIMapper(Study study, Object obj,  boolean allowUpdates ) {
         CodeBook _cb = null;
         if (obj instanceof CodeBook) {
             _cb = (CodeBook)obj;
@@ -755,44 +749,23 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                     _cb  = (CodeBook) unmarshaller.unmarshal( (Node)obj );
                 } else {
                     Object unmarshalObj= unmarshaller.unmarshal( (File)obj );
-                    _cb  = (CodeBook)unmarshalObj; 
-                  
+                    _cb  = (CodeBook)unmarshalObj;
+                    
                 }
             } catch(JAXBException ex) {
                 EJBException e = new EJBException("Import Study failed: "+ex.getMessage() );
                 e.initCause(ex);
                 throw e;
             }
-            
-                   
         } else {
-            throw new EJBException("Invalid type for parameter obj: "+obj.getClass().getName()+". obj must instance of Node or File.");
+            throw new EJBException("Invalid type for parameter obj: "+obj.getClass().getName()+". obj must instance CodeBook, Node, or File.");
         }
-        
-      
-        
         
         ddiService.mapDDI( _cb, study, allowUpdates );
         _cb=null;
         System.gc();
         
-        if (study.getStudyId()==null || study.getStudyId().equals("")) {
-            if (generateStudyId) {
-                VDCNetwork vdcNetwork = vdcNetworkService.find();
-                study.setProtocol(vdcNetwork.getProtocol());
-                study.setAuthority(vdcNetwork.getAuthority());
-                study.setStudyId( generateStudyIdSequence(study.getProtocol(),study.getAuthority()));
-            } else {
-                throw new EJBException("ImportStudy failed: DDI does not specify a handle for this study.");
-            }
-        }
-        
-        
-        // If study comes from old VDC, set restrictions based on  restrictions in VDC repository
-        if (checkRestrictions) {
-            setImportedStudyRestrictions(study);
-        }
-    }   
+    }
     
     private void setImportedStudyRestrictions(Study study) {
         RepositoryWrapper repositoryWrapper = new RepositoryWrapper();
@@ -826,7 +799,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
         
         
-    }    
+    }
     
     private File determineLegacyFile(StudyFile file) {
         
@@ -841,7 +814,28 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         File legacyFile = new File(legacyFileDir, parsedFileLocation);
         
         return legacyFile;
-    }   
+    }
+    
+    private void copyXMLFile( Study study, File xmlFile ) {
+        try {
+            // create, if needed, the directory
+            File newDir = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
+            if (!newDir.exists()) {
+                newDir.mkdirs();
+            }
+            
+            FileUtil.copyFile( xmlFile, new File(newDir, "original_imported_study.xml"));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            String msg = "ImportStudy failed: ";
+            if (ex.getMessage()!=null) {
+                msg+=ex.getMessage();
+            }
+            EJBException e = new EJBException(msg );
+            e.initCause(ex);
+            throw e;
+        }
+    }
     
     private void retrieveFiles( Study study ) {
         try {
@@ -874,7 +868,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             e.initCause(ex);
             throw e;
         }
-    }  
+    }
     
     private void clearStudy(Study study) {
         // should this be done with bulk deletes??
@@ -943,12 +937,12 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             StudyTopicClass elem = (StudyTopicClass) iter.next();
             removeCollectionElement(iter,elem);
         }
-    }   
+    }
     
     private void removeCollectionElement(Iterator iter, Object elem) {
         iter.remove();
         em.remove(elem);
-    }    
+    }
     
     private void setDisplayOrders(Study study) {
         int i=0;
@@ -1025,5 +1019,15 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             i++;
         }
         
-    }     
+    }
+    
+    public Study saveStudy(Study study, Long userId) {
+        VDCUser user = em.find(VDCUser.class,userId);
+        
+        study.setLastUpdateTime(new Date());
+        study.setLastUpdater(user);
+        
+        setDisplayOrders(study);
+        return study;
+    }    
 }

@@ -65,7 +65,7 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
         } while (!isUniqueStudyId(studyId, protocol, authority));
         String handle = authority + "/" + studyId;
         VDCNetwork vdcNetwork = vdcNetworkService.find();
-        if (vdcNetwork.isHandleRegistration()){
+        if (vdcNetwork.isHandleRegistration()&& isAuthority(authority)){
             createHandle(handle);
         }
         return studyId;
@@ -85,7 +85,10 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
 
    public void delete(String authority, String studyId) {
        String handle = authority + "/" + studyId;
-       deleteHandle(handle);       
+       VDCNetwork vdcNetwork = vdcNetworkService.find();
+       if (vdcNetwork.isHandleRegistration() && isAuthority(authority)){
+           deleteHandle(handle);
+       }
    }
 
     public void createHandle( String handle){
@@ -285,5 +288,13 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
             baseUrl = "http://dvn.iq.harvard.edu/dvn/faces/study/StudyPage.jsp?globalId=hdl:";
         }
         return baseUrl + handle;
+    }
+    
+    private boolean isAuthority(String prefix){
+        boolean auth = false;
+        if (prefix.equals("1902.1")){
+            auth = true;
+        }
+        return auth;
     }
 }

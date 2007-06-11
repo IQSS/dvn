@@ -438,7 +438,11 @@ public class HomePage extends VDCBaseBean{
         //three lines will be used
         int totalColumns = 3;
         float columnSize = membervdcs.size()/totalColumns;
-        int startNew = Math.round(columnSize + (float).5); // the point at which to add a new column to the datatable
+        int startNew = 0;
+        if (membervdcs.size() % totalColumns != 0)
+            startNew = Math.round(columnSize + (float).5);// the point at which to add a new column to the table
+        else
+            startNew = ((Number)columnSize).intValue(); // the point at which to add a new column -- no divisible by 3
         int startPos = 0;
         // these next three lines can exist in the method
         childTable = new HtmlPanelGrid(); // start the child table which eventually must be added to the view

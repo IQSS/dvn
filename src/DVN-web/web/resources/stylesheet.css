@@ -1439,7 +1439,7 @@ a.MniTabLnk:link, a.MniTabLnk:visited {font-weight: bold; }
 /* *************** dvn network page specific ***************** */
 ul.dvnGroupListStyle { list-style-type:square; color:#035399; }
 .dvnRestricted   { margin-left:4px; vertical-align:middle; }
-.dvnChildColumn  { font-style:normal; width:33%; border:thin solid #cccccc; vertical-align:top; text-align:left; }
+.dvnChildColumn  { font-style:normal; width:33%; border:thin solid #cccccc; vertical-align:top; text-align:left; padding-top:4px; }
 .dvnChildTable   { width: 100%; background-color:#eeeeee; }
 .dvnMainColumn   {
    font-style: oblique;

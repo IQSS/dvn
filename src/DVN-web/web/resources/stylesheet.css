@@ -1464,3 +1464,10 @@ ul.dvnGroupListStyle { list-style-type:square; color:#035399; }
    padding-top: 2px;
    width: 100%
 }
+
+/* *************** vanilla pages styles ***************** */
+        div.ContentArea { background: url(custom_corners_topleft.gif) top left no-repeat; width:50%; }
+        div.ContentArea h2 { background: url(custom_corners_topright.gif) top right no-repeat; font-size:1.3em; padding:15px; margin:0; }
+        div.ContentAreaBody { background: url(custom_corners_rightborder.gif) top right repeat-y; margin:0; margin-top:-2em; padding:15px; }
+        div.ContentAreaFooter { background: url(custom_corners_bottomleft.gif) bottom left no-repeat; }
+        div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom right no-repeat; display:block; padding:15px; margin:-2em 0 0 0; }

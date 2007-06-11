@@ -12,6 +12,7 @@ package edu.harvard.hmdc.vdcnet.util;
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.SyncVDCServiceLocal;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -19,8 +20,9 @@ import javax.servlet.ServletContextListener;
  *
  * 
  */
+ @EJB(name="harvesterService", beanInterface=edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal.class)
 public class VDCContextListener implements ServletContextListener {
-   @EJB HarvesterServiceLocal harvesterService;
+ //  @EJB HarvesterServiceLocal harvesterService;
    @EJB SyncVDCServiceLocal syncVDCService;
 
     
@@ -31,7 +33,18 @@ public class VDCContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent event) {
         // This call initializes the Harvest Timer that will activate once a day and 
         // run all scheduled Harvest Dataverses.
-        harvesterService.createHarvestTimer();
+        
+         HarvesterServiceLocal harvesterService = null;
+        try {
+            harvesterService=(HarvesterServiceLocal)new InitialContext().lookup("java:comp/env/harvesterService");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            harvesterService.createHarvestTimer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // This initializes the export Timer - runs once a day and exports changes to old VDC
        // syncVDCService.scheduleDaily();
         

@@ -11,6 +11,10 @@
         <put name="content"         type="template" value=""/>
         <put name="footer"          type="template" value="/WEB-INF/tiles/CustomFooter.jsp"/>
    </definition>
+   <definition name="/vanilla-layout" path="/vanillaLayout.jsp">
+       <put name="pageTitle"       type="string"   value=""/>
+       <put name="content"         type="template" value=""/>
+   </definition>
    <!-- End User Pages -->
    <definition name="/HomePage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="Home"/>
@@ -67,11 +71,17 @@
        <put name="pageTitle"   type="string"        value="User Account"/>
        <put name="content" type="template"     value="/login/EditAccountPage.jsp"/>
    </definition>
-      <definition name="/login/LoginPage" extends="/main-layout">
+   <!-- rem in favor of vanilla layout -->
+   <definition name="/login/LoginPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="Login"/>
        <put name="content" type="template"     value="/login/LoginPage.jsp"/>
    </definition>
-       <definition name="/login/LogoutPage" extends="/main-layout">
+   <!-- end rem in favor of vanilla layout -->
+   <definition name="/login/VanillaLoginPage" extends="/vanilla-layout">
+       <put name="pageTitle"   type="string"   value="Login"/>
+       <put name="content"     type="template" value="/login/VanillaLoginPage.jsp"/>
+   </definition>
+   <definition name="/login/LogoutPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="Logout"/>
        <put name="content" type="template"     value="/login/LogoutPage.jsp"/>
    </definition>

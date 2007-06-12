@@ -57,9 +57,9 @@ my $ccfltrlst = [qw (_varNameA _varNameH _varType _varLabel _varNo _varNoMpTbl _
 
 my $CNVRSNTBL = {
 	'#'=>'hex23',
-	'$'=>,'hex24',
-	'@'=>,'hex40',
-	'_'=>,'hex5F',
+	'$'=>'hex24',
+	'@'=>'hex40',
+	'_'=>'hex5F',
 };
 
 

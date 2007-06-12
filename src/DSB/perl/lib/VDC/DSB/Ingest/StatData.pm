@@ -57,9 +57,9 @@ my $QN2MNTH = {'1'=>'01', '2'=>'04', '3'=>'07','4'=>'10'};
 # MONTH and WKDAY are treated as string-type
 my $CNVRSNTBL = {
 	'#'=>'hex23',
-	'$'=>,'hex24',
-	'@'=>,'hex40',
-	'_'=>,'hex5F',
+	'$'=>'hex24',
+	'@'=>'hex40',
+	'_'=>'hex5F',
 };
 
 my $tm = localtime;

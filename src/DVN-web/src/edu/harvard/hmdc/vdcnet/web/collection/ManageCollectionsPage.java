@@ -13,14 +13,12 @@ import com.sun.rave.web.ui.component.Html;
 import com.sun.rave.web.ui.component.Link;
 import com.sun.rave.web.ui.component.Page;
 import edu.harvard.hmdc.vdcnet.study.ReviewStateServiceLocal;
-import edu.harvard.hmdc.vdcnet.vdc.ReviewState;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollectionServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import edu.harvard.hmdc.vdcnet.web.component.VDCCollectionTree;
 import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlPanelGrid;
 import com.sun.rave.web.ui.component.PanelLayout;
 import javax.faces.component.html.HtmlOutputText;
@@ -45,11 +42,8 @@ import com.sun.jsfcl.data.DefaultTableDataModel;
 import javax.faces.component.UIColumn;
 import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import com.sun.jsfcl.data.DefaultSelectItemsArray;
-import com.sun.rave.web.ui.component.Tree;
 import javax.faces.component.html.HtmlCommandLink;
 import javax.faces.component.html.HtmlGraphicImage;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This

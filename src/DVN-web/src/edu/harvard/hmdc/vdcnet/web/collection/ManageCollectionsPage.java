@@ -322,13 +322,13 @@ public class ManageCollectionsPage extends VDCBaseBean {
             Map m = getRequestMap();
             m.put("statusMessage",newMsg);            
         }
-/*        
+        
         try {
             init();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
- */
+ 
         
         return "manageCollections";
     }
@@ -391,13 +391,13 @@ public class ManageCollectionsPage extends VDCBaseBean {
             Map m = getRequestMap();
             m.put("statusMessage",newMsg);            
         }
-/*        
+        
         try {
             init();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
- */
+ 
         
         return "manageCollections";
     }

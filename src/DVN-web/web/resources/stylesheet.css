@@ -1172,7 +1172,6 @@ a.vdcSiteMapLink:hover {
    padding-bottom: 6px;
    padding-top: 6px;
    white-space: nowrap;
-   width: 100px;
 }
 .vdcLoginCol2{
    background-color:inherit !important;
@@ -1466,8 +1465,9 @@ ul.dvnGroupListStyle { list-style-type:square; color:#035399; }
 }
 
 /* *************** vanilla pages styles ***************** */
-        div.ContentArea { background: url(custom_corners_topleft.gif) top left no-repeat; width:50%; }
-        div.ContentArea h2 { background: url(custom_corners_topright.gif) top right no-repeat; font-size:1.3em; padding:15px; margin:0; }
+        div.ContentArea { margin-top:150px; margin-left:auto; margin-right:auto; background: url(custom_corners_topleft.gif) top left no-repeat; width:50%; }
+        div.ContentArea p { background: url(custom_corners_topright.gif) top right no-repeat; font-size:1.3em; padding:15px; margin:0; color: #062f58; }
+        div.ContentArea span.headingText { display:block;width:100%; background-color:#dce6cb; font-style: oblique; font-size: 1.3em; font-weight: bold; text-align: center; }
         div.ContentAreaBody { background: url(custom_corners_rightborder.gif) top right repeat-y; margin:0; margin-top:-2em; padding:15px; }
         div.ContentAreaFooter { background: url(custom_corners_bottomleft.gif) bottom left no-repeat; }
         div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom right no-repeat; display:block; padding:15px; margin:-2em 0 0 0; }

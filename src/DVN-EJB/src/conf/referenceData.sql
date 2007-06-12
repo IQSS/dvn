@@ -760,10 +760,10 @@ INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VA
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(16,1,16,3);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(17,1,17,3);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(18,1,18,2);
-INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(19,1,19,3);
+INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(19,1,19,2);
 
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(20,1,20,3);
-INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(21,1,21,3);
+INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(21,1,21,2);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(22,1,22,3);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(23,1,23,2);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(24,1,24,3);
@@ -780,8 +780,8 @@ INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VA
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(34,1,34,3);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(35,1,35,2);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(36,1,36,2);
-INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(37,1,37,3);
-INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(38,1,38,3);
+INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(37,1,37,2);
+INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(38,1,38,2);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(39,1,39,2);
 
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(40,1,40,2);

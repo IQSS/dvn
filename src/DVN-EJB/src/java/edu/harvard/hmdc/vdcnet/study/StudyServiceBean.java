@@ -62,6 +62,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     @EJB UserServiceLocal userService;
     @EJB IndexServiceLocal indexService;
     @EJB ReviewStateServiceLocal reviewStateService;
+    private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.study.StudyServiceBean");
+ 
     
     @EJB StudyServiceLocal studyService; // used to force new transaction during import
     
@@ -670,7 +672,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     
     
     public Study importHarvestStudy(File xmlFile, Long studyId, Long vdcId, Long userId) {
-        return importStudy(xmlFile, studyId, vdcId, userId, false, false,true, false);
+        logger.info("calling importStudy()");
+        Study study= importStudy(xmlFile, studyId, vdcId, userId, false, false,true, false);
+        logger.info("completed importStudy() returning study"+study.getGlobalId());
+        return study;
     }
     
     public Study importLegacyStudy(File xmlFile, Long vdcId, Long userId) {
@@ -737,21 +742,25 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     
     
     private void callDDIMapper(Study study, Object obj,  boolean allowUpdates ) {
+        logger.info("Begin doImportStudy");
         CodeBook _cb = null;
         if (obj instanceof CodeBook) {
             _cb = (CodeBook)obj;
         } else if (obj instanceof Node || obj instanceof File ) {
             // first unmarshall the XML
+         
             try {
                 JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
                 Unmarshaller unmarshaller = jc.createUnmarshaller();
                 if (obj instanceof Node) {
                     _cb  = (CodeBook) unmarshaller.unmarshal( (Node)obj );
                 } else {
+                    logger.info("begin unmarshal of file "+((File)obj).getName());
                     Object unmarshalObj= unmarshaller.unmarshal( (File)obj );
                     _cb  = (CodeBook)unmarshalObj;
                     
                 }
+                logger.info("Completed unmarshal");
             } catch(JAXBException ex) {
                 EJBException e = new EJBException("Import Study failed: "+ex.getMessage() );
                 e.initCause(ex);
@@ -761,7 +770,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             throw new EJBException("Invalid type for parameter obj: "+obj.getClass().getName()+". obj must instance CodeBook, Node, or File.");
         }
         
+      
+        
+        logger.info("calling mapDDI()");
         ddiService.mapDDI( _cb, study, allowUpdates );
+        logger.info("completed mapDDI, studyId = "+study.getStudyId());
         _cb=null;
         System.gc();
         

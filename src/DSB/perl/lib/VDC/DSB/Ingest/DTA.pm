@@ -48,6 +48,7 @@ my ($releaseNo, $nvar);
 my @dblMaxValue = (2**333, 2**1023);
 my @lengthLabel = (32,81);
 my @lengthName  = (9,33);
+my @lengthFmt   = (12, 49);
 my @lengthExpFld= (2,4);
 my $VTC = {
 	105 =>[ 127, 100, 102,  98, 105, 108 ], 
@@ -61,6 +62,7 @@ my $RLSPARAMS = {
 				lengthName  =>$lengthName[0],
 				lengthExpFld=>$lengthExpFld[0],
 				dblMaxValue =>$dblMaxValue[0],
+				lengthFmt   =>$lengthFmt[0],
 				varTypeCode =>$VTC->{105},
 			},
 	108 =>{
@@ -69,6 +71,7 @@ my $RLSPARAMS = {
 				lengthName  =>$lengthName[0],
 				lengthExpFld=>$lengthExpFld[0],
 				dblMaxValue =>$dblMaxValue[1],
+				lengthFmt   =>$lengthFmt[0],
 				varTypeCode =>$VTC->{105},
 			},
 	110 =>{
@@ -77,6 +80,7 @@ my $RLSPARAMS = {
 				lengthName  =>$lengthName[1],
 				lengthExpFld=>$lengthExpFld[1],
 				dblMaxValue =>$dblMaxValue[1],
+				lengthFmt   =>$lengthFmt[0],
 				varTypeCode =>$VTC->{105},
 			},
 	111 =>{
@@ -85,17 +89,31 @@ my $RLSPARAMS = {
 				lengthName  =>$lengthName[1],
 				lengthExpFld=>$lengthExpFld[1],
 				dblMaxValue =>$dblMaxValue[1],
+				lengthFmt   =>$lengthFmt[0],
 				varTypeCode =>$VTC->{111},
 			},
 	113 =>{
-				RlsNoString =>"8",
+				RlsNoString =>"8 or 9",
 				lengthLabel =>$lengthLabel[1],
 				lengthName  =>$lengthName[1],
 				lengthExpFld=>$lengthExpFld[1],
 				dblMaxValue =>$dblMaxValue[1],
+				lengthFmt   =>$lengthFmt[0],
+				varTypeCode =>$VTC->{111},
+			},
+	114 =>{
+				RlsNoString =>"10",
+				lengthLabel =>$lengthLabel[1],
+				lengthName  =>$lengthName[1],
+				lengthExpFld=>$lengthExpFld[1],
+				dblMaxValue =>$dblMaxValue[1],
+				lengthFmt   =>$lengthFmt[1],
 				varTypeCode =>$VTC->{111},
 			}, 
+
 };
+# stata 10 shipped (2007/06)
+# stata  9 shipped (2005/04)
 
 my $byteOrderKey;
 
@@ -334,6 +352,7 @@ sub read_Descriptors {
 	my @typeList;
 	my ($buff);
 	my $lenname  = $RLSPARAMS->{$releaseNo}->{lengthName};
+	my $lengthFmt= $RLSPARAMS->{$releaseNo}->{lengthFmt};
 	print $FH "before descriptors=" . tell($rfh) . "\n" if $DEBUG;
 
 	read($rfh, $buff, $nvar);
@@ -443,9 +462,9 @@ sub read_Descriptors {
 	print $FH "after variable sort list=" . tell($rfh) . "\n" if $DEBUG;
 
 	# 2.4 fmtlist(var format list)
-	read($rfh, $buff, (12 * $nvar));
-	my @fmtlst = unpack('Z12' x $nvar, $buff);
-	print $FH "fmtlst(Z9):\n\t", join("\n\t", @fmtlst), "\n" if $DEBUG;
+	read($rfh, $buff, ($lengthFmt * $nvar));
+	my @fmtlst = unpack("Z$lengthFmt" x $nvar, $buff);
+	print $FH "fmtlst(Z$lengthFmt):\n\t", join("\n\t", @fmtlst), "\n" if $DEBUG;
 	print $FH "after variable format list=" . tell($rfh) . "\n" if $DEBUG;
 
 	# 2.5 lblist(value label for each variable (if applicable))

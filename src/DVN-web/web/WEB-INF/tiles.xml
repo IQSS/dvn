@@ -71,7 +71,7 @@
        <put name="pageTitle"   type="string"        value="User Account"/>
        <put name="content" type="template"     value="/login/EditAccountPage.jsp"/>
    </definition>
-   <definition name="/login/LoginPage" extends="/main-layout">
+   <definition name="/login/LoginPage" extends="/vanilla-layout">
        <put name="pageTitle"   type="string"        value="Login"/>
        <put name="content" type="template"     value="/login/LoginPage.jsp"/>
    </definition>

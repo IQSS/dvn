@@ -1312,6 +1312,7 @@ sub writeDDIinXML{
 				my $mvtoken='';
 				my $vllblSet = $self->{_valLblTbl}->{$self->{_valVrMpTbl}->{$varName}};
 				#print Dumper($vllblSet);
+				my $varFmt = $self->{_varFormat}->{$varName};
 				for (my $k=0; $k <= $#{$vllblSet}; $k++) {
 					#print "varName=",$self->{_valVrMpTbl}->{$varName},"\n";
 					#print $k,"\t", scalar(@{$vllblSet->[$k]}), "\n";
@@ -1325,10 +1326,18 @@ sub writeDDIinXML{
 							my @timedata= split(/ /,$vllblSet->[$k][0]);
 							$output->print("\t\t\t<catValu>",$timedata[1],"</catValu>\n");
 						} else {
-							$output->print("\t\t\t<catValu>",$vllblSet->[$k][0],"</catValu>\n");
+							if ($varFmt eq 'A'){
+								$output->print("\t\t\t<catValu>",encode_entities_numeric($vllblSet->[$k][0]),"</catValu>\n");
+							} else {
+								$output->print("\t\t\t<catValu>",$vllblSet->[$k][0],"</catValu>\n");
+							}
 						}
 					} else {
-						$output->print("\t\t\t<catValu>",$vllblSet->[$k][0],"</catValu>\n");
+						if ($varFmt eq 'A'){
+							$output->print("\t\t\t<catValu>",encode_entities_numeric($vllblSet->[$k][0]),"</catValu>\n");
+						} else {
+							$output->print("\t\t\t<catValu>",$vllblSet->[$k][0],"</catValu>\n");
+						}
 					}
 					
 					if ($vllblSet->[$k][1]){
@@ -1648,6 +1657,7 @@ sub writeDDIsec4{
 				my $mvtoken='';
 				my $vllblSet = $self->{_valLblTbl}->{$self->{_valVrMpTbl}->{$varName}};
 				#print Dumper($vllblSet);
+				my $varFmt = $self->{_varFormat}->{$varName};
 				for (my $k=0; $k <= $#{$vllblSet}; $k++) {
 					#print "varName=",$self->{_valVrMpTbl}->{$varName},"\n";
 					#print $k,"\t", scalar(@{$vllblSet->[$k]}), "\n";
@@ -1661,10 +1671,18 @@ sub writeDDIsec4{
 							my @timedata= split(/ /,$vllblSet->[$k][0]);
 							$output->print("\t\t\t<catValu>",$timedata[1],"</catValu>\n");
 						} else {
-							$output->print("\t\t\t<catValu>",$vllblSet->[$k][0],"</catValu>\n");
+							if ($varFmt eq 'A'){
+								$output->print("\t\t\t<catValu>",encode_entities_numeric($vllblSet->[$k][0]),"</catValu>\n");
+							} else {
+								$output->print("\t\t\t<catValu>",$vllblSet->[$k][0],"</catValu>\n");
+							}
 						}
 					} else {
-						$output->print("\t\t\t<catValu>",$vllblSet->[$k][0],"</catValu>\n");
+						if ($varFmt eq 'A'){
+							$output->print("\t\t\t<catValu>",encode_entities_numeric($vllblSet->[$k][0]),"</catValu>\n");
+						} else {
+							$output->print("\t\t\t<catValu>",$vllblSet->[$k][0],"</catValu>\n");
+						}
 					}
 					
 					if ($vllblSet->[$k][1]){

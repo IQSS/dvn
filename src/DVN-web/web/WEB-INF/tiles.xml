@@ -71,15 +71,9 @@
        <put name="pageTitle"   type="string"        value="User Account"/>
        <put name="content" type="template"     value="/login/EditAccountPage.jsp"/>
    </definition>
-   <!-- rem in favor of vanilla layout -->
    <definition name="/login/LoginPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="Login"/>
        <put name="content" type="template"     value="/login/LoginPage.jsp"/>
-   </definition>
-   <!-- end rem in favor of vanilla layout -->
-   <definition name="/login/VanillaLoginPage" extends="/vanilla-layout">
-       <put name="pageTitle"   type="string"   value="Login"/>
-       <put name="content"     type="template" value="/login/VanillaLoginPage.jsp"/>
    </definition>
    <definition name="/login/LogoutPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="Logout"/>

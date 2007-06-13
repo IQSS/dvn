@@ -948,6 +948,72 @@ sub _checkfile {
 		#print STDERR "$dfname is a por file(step2)\n";
 		return("application/x-spss-por");
 	}
+	
+	
+	
+	# RData format
+	################################
+	seek $dfname, 0, 0;
+
+	$filesignature = 5;
+	read($dfname, $buff, $filesignature);
+	# step 1: read 5 byptes and check their pattern(up to 4th byte first)
+	$template = "H2H2H2H2H2";
+	my @first5b = unpack($template, $buff);
+	# The firt 4 bytes of a GZIP file= 1f 8b 08 00
+	
+	if (join('',@first5b[0..1]) ne '1f8b'){
+		# check the first 5 bytes, assuming it is ASCII type
+		# if so, the hex pattern is 52-44-41-32-0a, etc.
+		
+		$template ="H*" ;
+		my $first5byte = pack($template, join('', @first5b));
+		
+		if ($first5byte =~ /^RD[ABX][12][\n]/){
+			# cases: RDX2(non-ASCII format) or RDA2(ASCII format)
+			# cases: RDX1(non-ASCII format) or RDA1(ASCII format)
+			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is an ungzipped-RData type"); 
+			return("application/x-R-rda");
+		} else {
+			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is not an RData type");
+		}
+	} else {
+		# this file is gzip-type
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is GZIP-type");
+		# extra check:
+		if ($first5b[3] eq '00') {
+			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","Header of this GZIP file is 10-byte");
+		}
+		# wind back the file and
+		# gunzip it and check its contents
+		seek $dfname, 0, 0;
+		binmode ($dfname);
+
+		my $gzbuff;
+		my $rdheadersize= 5;
+		my $gz = gzopen($dfname, 'rb');
+
+		my $bytesread = $gz->gzread($gzbuff, $rdheadersize) ;
+
+		if ($bytesread == 5) {
+			my $first5byte = pack("H*", join('',unpack("H2H2H2H2H2", $gzbuff)));
+
+			if ($first5byte =~ /^RD[ABX][12][\n]/){
+				# cases: RDX2(non-ASCII format) or RDA2(ASCII format)
+				# cases: RDX1(non-ASCII format) or RDA1(ASCII format)
+				$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is an gzipped-RData type"); 
+				return("application/x-R-rda");
+			} else {
+			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is not an RData type"); 
+			}
+		} else {
+			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","error in ungunzipping the file");
+		}
+		$gz->gzclose();
+	}
+	
+	
+	
 	return;
 }
 

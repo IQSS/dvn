@@ -113,6 +113,7 @@ public class VDCGroup implements Serializable {
 /** ********************* NEW FOR NETWORK PAGE UI CHANGES -wjb May 2007 ******************** */
       
     @ManyToMany(mappedBy="vdcGroups")
+    @OrderBy("name ASC")
     private java.util.List<VDC> vdcs;
 
     /**

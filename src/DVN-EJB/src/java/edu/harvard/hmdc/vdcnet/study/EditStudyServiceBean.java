@@ -194,6 +194,12 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
             
             studyService.saveStudy(study, userId);
             
+            // if new, register the handle
+            if ( isNewStudy() && vdcNetworkService.find().isHandleRegistration() ) {
+                String handle = study.getAuthority() + "/" + study.getStudyId();
+                gnrsService.createHandle(handle);
+            }
+            
             if (study.getId() == null) {
                 // we need to flush to get the id for the indexer
                 em.flush();

@@ -243,4 +243,12 @@
         <servlet-name>VDCHandleRegistrationServlet</servlet-name>
         <url-pattern>/handleregistration/*</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>StudyGlobalIdServlet</servlet-name>
+        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.StudyGlobalIdServlet</servlet-class>
+    </servlet>    
+    <servlet-mapping>
+        <servlet-name>StudyGlobalIdServlet</servlet-name>
+        <url-pattern>/study</url-pattern>
+    </servlet-mapping>      
 </web-app>

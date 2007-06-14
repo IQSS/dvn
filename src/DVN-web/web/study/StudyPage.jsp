@@ -432,7 +432,7 @@
                                                         <h:graphicImage  id="image1b" styleClass="vdcNoBorders" value="/resources/icon_contract.gif" title="Show files in this category" rendered="#{!catUI.rendered}"/>
                                                     </h:commandLink>
                                                     <h:outputText  id="outputText16" styleClass="vdcStudyFilesCatLabel" value="#{catUI.fileCategory.name}"/>
-                                                    <h:graphicImage   styleClass="vdcNoBorders" value="/resources/icon_download_locked.gif" rendered="#{!catUI.anyFileUnrestricted}" alt="You do not have permissions to access any files in this category." title="You do not have permission to access any files in this category." />
+                                                    <h:graphicImage   styleClass="vdcNoBorders" value="/resources/icon_downloadall_locked.gif" rendered="#{!catUI.anyFileUnrestricted}" alt="You do not have permissions to access any files in this category." title="You do not have permission to access any files in this category." />
                                                     <h:outputLink   id="catDownloadLink" onclick="return checkTerms(this.id);" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}_#{catUI.downloadName}.zip?catId=#{catUI.fileCategory.id}" title="Download all files in this category in a single archive file." rendered="#{catUI.anyFileUnrestricted}">
                                                         <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_downloadall.gif" />
                                                     </h:outputLink>
@@ -459,20 +459,20 @@
                                                     <h:column  id="column13">
                                                         <ui:panelGroup  block="true" > 
                                                         
-                                                            <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" 
+                                                            <h:graphicImage  styleClass="vdcNoBorders" style="margin-left: 2px; margin-right: 0px;" value="/resources/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" 
                                                                          alt="You do not have permissions to access this file." title="You do not have permissions to access this file."/>
                                                             <h:outputLink  id="fileLink" style="padding-right: 15px" onclick="return checkTerms(this.id);" target="_file" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/#{studyFileUI.studyFile.fileName}?fileId=#{studyFileUI.studyFile.id}" rendered="#{!studyFileUI.restrictedForUser}" title="Get this File">
-                                                                <h:graphicImage   styleClass="vdcNoBorders" value="/resources/icon_download.gif"/>
+                                                                <h:graphicImage   styleClass="vdcNoBorders" style="margin-left: 2px; margin-right: 0px;" value="/resources/icon_download.gif"/>
                                                             </h:outputLink> 
                                                            
-                                                            <h:outputLink rendered="#{studyFileUI.studyFile.subsettable}" id="fileSubset" onclick="return checkTerms(this.id);" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.jsp?dtId=#{studyFileUI.studyFile.dataTable.id}" title="Go to Subset and Analysis page for this file." >
-                                                                <h:graphicImage  id="imagefs" styleClass="vdcNoBorders" value="/resources/icon_subsettable.gif"/>
+                                                            <h:outputLink rendered="#{studyFileUI.studyFile.subsettable}"  id="fileSubset" onclick="return checkTerms(this.id);" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.jsp?dtId=#{studyFileUI.studyFile.dataTable.id}" title="Go to Subset and Analysis page for this file." >
+                                                                <h:graphicImage  id="imagefs" styleClass="vdcNoBorders" style="margin-left: 0px; margin-right: 2px;" value="/resources/icon_subsettable.gif"/>
                                                             </h:outputLink> 
                                                             
                                                             <ui:panelGroup rendered="#{studyFileUI.studyFile.subsettable}">  
                                                                 <f:verbatim>
                                                                     <h:outputLink  id="citation"  onclick="createFileCitationPopup(this.nextSibling.id,this.id);return false;"  value="#">
-                                                                        <h:graphicImage styleClass="vdcNoBorders" value="/resources/icon_citation.gif"/>
+                                                                        <h:graphicImage styleClass="vdcNoBorders" style="margin-left: 6px; margin-right: 2px;" value="/resources/icon_citation.gif"/>
                                                                     </h:outputLink>                                                                      
                                                                     
                                                                     <ui:panelGroup block="true" id="fileCitationDiv" style="position:absolute;visibility:hidden;background-color:#FFFFCC; border-color:#000099; border-width: 1px; border-style: solid; padding: 8px;">
@@ -491,30 +491,30 @@
                                             
                                         </h:dataTable>
                                         <ui:panelGroup style="margin-top:10px;" block="true" rendered="#{!empty studyPage.studyUI.study.fileCategories}" >
-                                            <ui:panelGroup style="padding-top: 15px; font-weight: bold; font-size:1.1em; color:#666666; font-style:italic;" block="true">
+                                            <ui:panelGroup style="padding-top: 15px; font-weight: bold; font-size:1.2em; color:#666666; font-style:italic;" block="true">
                                                 <h:outputText    value="Legend"/>                                              
                                             </ui:panelGroup>
                                             <h:panelGrid cellpadding="3" cellspacing="0" columns="3" style="border-width:0px; border-style:solid; border-color: #ffff66;" > 
                                                 <ui:panelGroup  block="true">
                                                     <h:graphicImage  value="/resources/icon_downloadall.gif" alt="Download"/>
-                                                    <h:outputText   styleClass="vdcHelpText" value="Download all files in the study or in a category"/> 
+                                                    <h:outputText   styleClass="vdcHelpText" value="Download all files you have access in the study or category"/> 
                                                 </ui:panelGroup>  
                                                 <ui:panelGroup  block="true">
-                                                    <h:graphicImage  value="/resources/icon_download_locked.gif" alt="Download Locked"/>
-                                                    <h:outputText  styleClass="vdcHelpText"  value="No access to download this file"/>
-                                                </ui:panelGroup>
+                                                    <h:graphicImage  value="/resources/icon_download.gif" alt="Download"/>
+                                                    <h:outputText styleClass="vdcHelpText"   value="Download this file"/> 
+                                                </ui:panelGroup>  
                                                 <ui:panelGroup  block="true">
                                                     <h:graphicImage  value="/resources/icon_subsettable.gif" alt="Subset"/>
                                                     <h:outputText  styleClass="vdcHelpText"  value="Subset/Analysis available for this file"/> 
                                                 </ui:panelGroup>
                                                 <ui:panelGroup  block="true">                                               
                                                     <h:graphicImage  value="/resources/icon_downloadall_locked.gif" alt="Download Locked"/>
-                                                    <h:outputText  styleClass="vdcHelpText"  value="No access to download all the files in the study or in a category"/>
+                                                    <h:outputText  styleClass="vdcHelpText"  value="No access to download any file in the study or category"/>
                                                 </ui:panelGroup>
                                                 <ui:panelGroup  block="true">
-                                                    <h:graphicImage  value="/resources/icon_download.gif" alt="Download"/>
-                                                    <h:outputText styleClass="vdcHelpText"   value="Download this file"/> 
-                                                </ui:panelGroup>                                     
+                                                    <h:graphicImage  value="/resources/icon_download_locked.gif" alt="Download Locked"/>
+                                                    <h:outputText  styleClass="vdcHelpText"  value="No access to download this file"/>
+                                                </ui:panelGroup>                 
                                                 <ui:panelGroup  block="true">
                                                     <h:graphicImage styleClass="vdcNoBorders" value="/resources/icon_citation.gif"/>
                                                     <h:outputText  styleClass="vdcHelpText"  value="View Data Citation"/>

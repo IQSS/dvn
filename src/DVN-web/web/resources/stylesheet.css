@@ -74,7 +74,7 @@ body {
 
 .vdcSectionMiddle{
    border: 1px solid #cccccc;
-   width: 90%;
+   width: 96%;
    margin-left: auto;
    margin-right: auto;
    margin-top: 50px;
@@ -83,7 +83,7 @@ body {
    height: 100%;
 }
 .vdcSectionMiddleNoBorder{
-   width: 90%;
+   width: 96%;
    margin-left: auto;
    margin-right: auto;
    margin-top: 50px;
@@ -810,7 +810,7 @@ a.vdcSiteMapLink:hover {
 }
 .vdcStudyFilesHead3{
    white-space: nowrap;  
-   width: 150px;
+   width: 140px;
    font-weight: bold;
    font-style : italic;
   background-color : #b2b2b2;
@@ -831,7 +831,7 @@ a.vdcSiteMapLink:hover {
 }
 .vdcStudyFilesHead6{
    white-space: nowrap;  
-   width: 100px;
+   width: 90px;
    font-weight: bold;
    font-style : italic;
   background-color : #b2b2b2;
@@ -873,7 +873,7 @@ a.vdcSiteMapLink:hover {
 }
 .vdcStudyFilesCol6{
    white-space: normal;  
-   width: 100px;
+   width: 90px;
    border-color: #E2E2E2;
    border-style: solid;
    border-width: 1px;
@@ -1125,14 +1125,10 @@ a.vdcSiteMapLink:hover {
    font-weight: bold;
    text-align: center
 }
-.vdcStudyTitleNameSubs {
-   font-size: 1.3em;
-   font-weight: bold;
-}
+
 .vdcFileTitle{
    font-weight: bold;
    font-size: 1.3em;
-   color: #0b3b6b;
    padding-left: 4px;
 }
 

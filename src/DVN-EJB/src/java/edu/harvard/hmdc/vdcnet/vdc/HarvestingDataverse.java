@@ -309,6 +309,49 @@ public class HarvestingDataverse {
         this.lastHarvestTime = lastHarvestTime;
     }
 
+    /**
+     * Holds value of property harvestingNow.
+     */
+    private boolean harvestingNow;
+
+    /**
+     * Getter for property harvestingNow.
+     * @return Value of property harvestingNow.
+     */
+    public boolean isHarvestingNow() {
+        return this.harvestingNow;
+    }
+
+    /**
+     * Setter for property harvestingNow.
+     * @param harvestingNow New value of property harvestingNow.
+     */
+    public void setHarvestingNow(boolean harvestingNow) {
+        this.harvestingNow = harvestingNow;
+    }
+
+    /**
+     * Holds value of property handlePrefix.
+     */
+    @ManyToOne
+    private HandlePrefix handlePrefix;
+
+    /**
+     * Getter for property handlePrefix.
+     * @return Value of property handlePrefix.
+     */
+    public HandlePrefix getHandlePrefix() {
+        return this.handlePrefix;
+    }
+
+    /**
+     * Setter for property handlePrefix.
+     * @param handlePrefix New value of property handlePrefix.
+     */
+    public void setHandlePrefix(HandlePrefix handlePrefix) {
+        this.handlePrefix = handlePrefix;
+    }
+
    
 
 

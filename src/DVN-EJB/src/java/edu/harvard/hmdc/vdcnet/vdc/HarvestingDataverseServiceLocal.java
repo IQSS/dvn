@@ -12,6 +12,8 @@ import javax.ejb.Local;
 public interface HarvestingDataverseServiceLocal {
      
     public List findAll();
+    public HarvestingDataverse find(Long id);
     public void edit(HarvestingDataverse harvestingDataverse);
     public void delete(Long hdId);
+    public void setHarvestingNow(Long hdId, boolean harvestingNow);
 }

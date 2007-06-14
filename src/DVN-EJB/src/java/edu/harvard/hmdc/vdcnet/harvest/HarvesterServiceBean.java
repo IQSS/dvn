@@ -28,6 +28,7 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
+import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceBean;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import java.io.File;
@@ -113,7 +114,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     
     public void doAsyncHarvest(HarvestingDataverse dataverse) {
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MINUTE,1);
+     
         timerService.createTimer(cal.getTime(),dataverse.getId());
     }
     
@@ -175,6 +176,9 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     
     
     public void harvest(HarvestingDataverse dataverse) {
+        if (dataverse.isHarvestingNow()) {
+                throw new EJBException("Cannot begin harvesting, Dataverse "+dataverse.getVdc().getName()+" is currently being harvested.");
+        }
         String from = null;
         Date today = new Date();
         String until= formatter.format(today);
@@ -196,7 +200,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
    
         Date lastHarvestTime;
         try {
-        
+          
+            havestingDataverseService.setHarvestingNow(dataverse.getId(), true);
             lastHarvestTime = formatter.parse(until);
             hdLogger.log(Level.INFO,"BEGIN HARVEST..., oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);
             ResumptionTokenType resumptionToken = null;
@@ -205,13 +210,15 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             } while(resumptionToken!=null);
             
             // Get managed version of the dataverse so that update to lastHarvestTime will be persisted
-            dataverse = em.find(HarvestingDataverse.class, dataverse.getId()); 
+            dataverse = em.find(HarvestingDataverse.class, dataverse.getId());         
             dataverse.setLastHarvestTime(lastHarvestTime);
             
             hdLogger.log(Level.INFO,"COMPLETED HARVEST, oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);
  
         } catch (ParseException ex) {
             hdLogger.log(Level.SEVERE, "ParseException harvesting dataverse "+dataverse.getVdc().getName()+", until Str="+until+", exception: "+ex.getMessage() );
+        } finally {
+             havestingDataverseService.setHarvestingNow(dataverse.getId(), false);
         }
         
     }
@@ -247,7 +254,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 if (listIdentifiersType!=null) {
                     resumptionToken= listIdentifiersType.getResumptionToken();
                     for (Iterator it = listIdentifiersType.getHeader().iterator(); it.hasNext();) {
-                        HeaderType header = (HeaderType) it.next();
+                        HeaderType header = (HeaderType) it.next(); 
                         getRecord(hdLogger, dataverse, header.getIdentifier(),dataverse.getFormat(),jc);
                     }
                     
@@ -257,7 +264,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             hdLogger.log(Level.SEVERE, "Exception processing listIdentifiers(), oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getFormat()+" "+ e.getClass().getName()+ " "+e.getMessage());
             if (e.getCause()!=null) {
                 String stackTrace = "StackTrace: \n";
-                hdLogger.severe("Exception caused by: "+e.getCause()+"\n");
+                hdLogger.severe("Exception caused by: "+e.getCause()+"\n, nested Exception: "+e.getCause().getCause());            
                 StackTraceElement[] ste = e.getCause().getStackTrace();
                 for(int m=0;m<ste.length;m++) {
                     stackTrace+=ste[m].toString()+"\n";
@@ -307,7 +314,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             hdLogger.log(Level.SEVERE,"Exception processing getRecord(), oaiUrl="+oaiUrl+",identifier="+identifier +" "+ e.getClass().getName()+" "+ e.getMessage());
             if (e.getCause()!=null) {
                 String stackTrace = "StackTrace: \n";
-                hdLogger.severe("Exception caused by: "+e.getCause()+"\n");
+                hdLogger.severe("Exception caused by: "+e.getCause()+"\n, nested Exception: "+e.getCause().getCause());
                 StackTraceElement[] ste = e.getCause().getStackTrace();
                 for(int m=0;m<ste.length;m++) {
                     stackTrace+=ste[m].toString()+"\n";
@@ -400,7 +407,6 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         }
         return sets;
     }
-    
     
     
     

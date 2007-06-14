@@ -4,7 +4,7 @@
     <provider>oracle.toplink.essentials.ejb.cmp3.EntityManagerFactoryProvider</provider>
     <jta-data-source>jdbc/VDCNetDS</jta-data-source>
     <properties>
-         <property name="toplink.logging.level" value="FINE"/>
+         <!--property name="toplink.logging.level" value="FINE"/-->
       <property name="toplink.ddl-generation" value="create-tables"/>
     </properties>
   </persistence-unit>

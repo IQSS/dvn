@@ -48,16 +48,6 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
     
     public List<VDCGroup> findAll() {
         List<VDCGroup> vdcgroups = (List<VDCGroup>)em.createQuery("select object(o) from VDCGroup as o").getResultList();
-        // Trigger loading of dependent objects
-        for (Iterator iterator = vdcgroups.iterator(); iterator.hasNext();) {
-            VDCGroup vdcgroup = (VDCGroup) iterator.next();
-            if (vdcgroup.getVdcs().size() > 0) {
-                for (Iterator innerIterator = vdcgroup.getVdcs().iterator(); innerIterator.hasNext();) {
-                    VDC vdc = (VDC) innerIterator.next();
-                    Long id = vdc.getId();
-                }
-           }
-        }
         return vdcgroups;
     }
 }

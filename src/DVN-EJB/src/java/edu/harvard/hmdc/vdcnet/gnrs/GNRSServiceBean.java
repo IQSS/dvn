@@ -46,12 +46,9 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
     @PersistenceContext(unitName="VDCNet-ejbPU") EntityManager em;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB StudyServiceLocal studyService;
-    String vdcAuthority;
 
     /** Creates a new instance of GNRSServiceBean */
     public GNRSServiceBean() {
-        VDCNetwork network = vdcNetworkService.find();
-        vdcAuthority = network.getAuthority(); 
     }
     
     public String getNewObjectId(String protocol, String authority){
@@ -329,6 +326,8 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
 
     
     private String getUrlStr(String prefix, String handle) {
+        VDCNetwork network = vdcNetworkService.find();
+        String vdcAuthority = network.getAuthority(); 
         String baseUrl = null;
         if (prefix.equals(vdcAuthority)){
             baseUrl = "http://dvn.iq.harvard.edu/dvn/study?globalId=hdl:";
@@ -337,6 +336,8 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
     }
     
     private boolean isAuthority(String prefix){
+        VDCNetwork network = vdcNetworkService.find();
+        String vdcAuthority = network.getAuthority(); 
         boolean auth = false;
         if (prefix.equals(vdcAuthority)){
             auth = true;

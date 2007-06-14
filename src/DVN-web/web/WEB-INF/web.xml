@@ -170,6 +170,10 @@
         <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCIndexServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>VDCHandleRegistrationServlet</servlet-name>
+        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCHandleRegistrationServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>OAIHandler</servlet-name>
         <servlet-class>ORG.oclc.oai.server.OAIHandler</servlet-class>
     </servlet>
@@ -234,5 +238,9 @@
     <servlet-mapping>
         <servlet-name>VDCExportServlet</servlet-name>
         <url-pattern>/export/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VDCHandleRegistrationServlet</servlet-name>
+        <url-pattern>/handleregistration/*</url-pattern>
     </servlet-mapping>
 </web-app>

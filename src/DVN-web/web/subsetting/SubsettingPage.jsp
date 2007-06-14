@@ -48,12 +48,14 @@ xmlns:ui="http://www.sun.com/web/ui"
      <ui:panelLayout id="plBelowForm1" panelLayout="flow" styleClass="vdcSectionMiddleNoBorder"> 
          
          <ui:panelGroup  block="true" styleClass="vdcStudyTitle">
-             <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{AnalysisPage.studyId}&amp;tab=files">
-                 <h:outputText  styleClass="vdcStudyTitleNameSubs" value="#{AnalysisPage.studyTitle}"/>                            
-             </h:outputLink>
+             <h:outputText styleClass="vdcStudyTitleName"  value="#{AnalysisPage.studyTitle}"/>
+             
         </ui:panelGroup>
         <ui:panelGroup  block="true" styleClass="vdcFileTitle" style="padding-bottom: 10px;">
-            <h:outputText value="#{AnalysisPage.fileName}"/>
+            <h:outputText value="Date File: #{AnalysisPage.fileName}"/>
+            <h:outputLink  style="margin-left: 2px;" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{AnalysisPage.studyId}&amp;tab=files">
+                      <h:outputText style="font-size: 0.9em; font-weight: bold;" value="Back to Study Files"/>                       
+             </h:outputLink>
         </ui:panelGroup>
 
     <!--tab block starts here -->

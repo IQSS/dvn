@@ -23,7 +23,8 @@
            <f:subview id="banner">
               <tiles:insert name="banner" flush="false"/>
            </f:subview>
-
+           
+          <!-- <ui:panelGroup style="max-width:1000px; text-align: center; margin-left: auto; margin-right: auto; " block="true"> -->
            <f:subview id="menubar">
               <tiles:insert name="menubar" flush="false"/>
            </f:subview>
@@ -31,7 +32,7 @@
            <f:subview id="content">
                 <tiles:insert name="content" flush="false"/>
             </f:subview>
-
+            <!-- </ui:panelGroup> -->
             <f:subview id="footer">
                 <tiles:insert name="footer" flush="false"/>
             </f:subview>

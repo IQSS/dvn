@@ -242,11 +242,10 @@ public class VDCServiceBean implements VDCServiceLocal {
        * display will be a list.
        *
        */
+      
        public List<VDC> findVdcsNotInGroups() {
-        //return em.createQuery("select object(o) FROM VDC as o WHERE NOT EXISTS (SELECT gvdcs FROM VDCGroup as groups JOIN groups.vdcs as gvdcs)").getResultList();
-        // The next query returns all vdcs
-        //return em.createQuery("select object(o) FROM VDC as o WHERE EXISTS (SELECT gvdcs FROM VDCGroup as groups JOIN groups.vdcs as gvdcs)").getResultList();
-           return em.createQuery("select object(o) FROM VDC as o WHERE o.id NOT IN (SELECT gvdcs.id FROM VDCGroup as groups JOIN groups.vdcs as gvdcs)").getResultList();
+           String query = "select object(o) FROM VDC as o WHERE o.id NOT IN (SELECT gvdcs.id FROM VDCGroup as groups JOIN groups.vdcs as gvdcs) order by o.name";
+           return (List)em.createQuery(query).getResultList();
            
        }    
 }

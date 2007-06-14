@@ -136,7 +136,7 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
             System.err.println("Can't load private key in " + file +": " + t);
         }
         
-        String urlStr = getUrlStr(prefix, localHandle); 
+        String urlStr = getUrlStr(prefix, handle); 
         
         try {
             PublicKeyAuthenticationInfo auth =
@@ -331,7 +331,7 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
     private String getUrlStr(String prefix, String handle) {
         String baseUrl = null;
         if (prefix.equals(vdcAuthority)){
-            baseUrl = "http://dvn.iq.harvard.edu/dvn/faces/study/StudyPage.jsp?globalId=hdl:";
+            baseUrl = "http://dvn.iq.harvard.edu/dvn/study?globalId=hdl:";
         }
         return baseUrl + handle;
     }

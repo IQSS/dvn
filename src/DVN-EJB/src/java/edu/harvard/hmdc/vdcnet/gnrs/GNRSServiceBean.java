@@ -63,11 +63,15 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
             Vector result = (Vector)em.createNativeQuery("select nextval('studyid_seq')").getSingleResult();
             studyId = result.get(0).toString();
         } while (!isUniqueStudyId(studyId, protocol, authority));
+        
+        /*
         String handle = authority + "/" + studyId;
         VDCNetwork vdcNetwork = vdcNetworkService.find();
         if (vdcNetwork.isHandleRegistration()&& isAuthority(authority)){
             createHandle(handle);
         }
+        */
+        
         return studyId;
         
     }

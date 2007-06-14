@@ -1445,7 +1445,7 @@ ul.dvnGroupListStyle { list-style-type:square; color:#035399; }
    font-weight: bold;
    text-align: center
 }
-.dvnMainTable    { width:98%; padding:6px 0px 6px 0px; margin:0 1% 0 1%}
+.dvnMainTable    { width:98%; padding:6px 0px 6px 0px; margin:0 auto 0 auto;}
 .dvnMainPanel    {
    background-color: #dce6cb;
    border-color: #999900;

@@ -3091,7 +3091,7 @@ if (isRecodedVar(varId)){
 
 
 
-
+/*
 
 // Sensitivity analysis: checkbox
      private Checkbox sensitivity = new Checkbox();
@@ -3125,7 +3125,7 @@ if (isRecodedVar(varId)){
         FacesContext.getCurrentInstance().renderResponse();
 
     }
-
+*/
 
 // Missing-Value handling: checkbox
     // advStatNaMethod: ui:checkbox

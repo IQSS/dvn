@@ -695,11 +695,14 @@ xmlns:ui="http://www.sun.com/web/ui"
                                 </ui:panelGroup><!--groupPanel20 -->
 
                                 <!-- checkbox: Sensitivity analysis -->
+                                <!-- 
                                 <ui:checkbox id="sensitivity"
                                     binding="#{AnalysisPage.sensitivity}" 
                                     label="#{bundleAnalysis['advStat.sensitivity.Option']}"
                                     valueChangeListener="#{AnalysisPage.showHideSensitivityOptPanel}" 
                                     immediate="true"
+                                    rendered="false"
+                                    visible="false"
                                     onClick="submit();"/>
 
 
@@ -710,7 +713,9 @@ xmlns:ui="http://www.sun.com/web/ui"
                                     visible="false">
                                     <ui:label for="advStatSensitivityQ" id="label3" labelLevel="3" text="#{bundleAnalysis['advStat.sensitivity.LevelBox']}"/>
                                     <ui:textField columns="8" id="advStatSensitivityQ" text="0.05"/>
-                                </ui:panelGroup><!--groupPanel23 -->
+                                </ui:panelGroup>
+                                -->
+                                <!--groupPanel23 -->
                           </ui:panelGroup>
                                 <!-- checkbox: Missing Values -->
                                 <ui:checkbox id="advStatNaMethod" 

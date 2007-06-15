@@ -973,7 +973,7 @@ sub _checkfile {
 			# cases: RDX2(non-ASCII format) or RDA2(ASCII format)
 			# cases: RDX1(non-ASCII format) or RDA1(ASCII format)
 			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is an ungzipped-RData type"); 
-			return("application/x-R-rda");
+			return("application/x-rlang-transport");
 		} else {
 			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is not an RData type");
 		}
@@ -1002,7 +1002,7 @@ sub _checkfile {
 				# cases: RDX2(non-ASCII format) or RDA2(ASCII format)
 				# cases: RDX1(non-ASCII format) or RDA1(ASCII format)
 				$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is an gzipped-RData type"); 
-				return("application/x-R-rda");
+				return("application/x-rlang-transport");
 			} else {
 			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is not an RData type"); 
 			}

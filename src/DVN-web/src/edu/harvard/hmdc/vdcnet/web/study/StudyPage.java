@@ -490,7 +490,11 @@ public boolean getNotesIsEmpty() {
     }
     
     public void setReadyForReview(ActionEvent ae) {
-        studyService.updateReviewState(studyUI.getStudy().getId(),ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
+        ReviewState inReview = this.reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
+        studyUI.getStudy().setReviewState(inReview);
+        studyService.updateStudy(studyUI.getStudy());
+
+        
         Study study = studyUI.getStudy();
         VDCUser user = getVDCSessionBean().getLoginBean().getUser();
             // If the user adding the study is a Contributor, send notification to all Curators in this VDC

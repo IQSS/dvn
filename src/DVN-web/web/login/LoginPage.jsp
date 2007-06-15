@@ -36,7 +36,7 @@
 
                          </f:verbatim>
                         <ui:panelLayout id="layoutPanel1" panelLayout="flow" styleClass="ContentArea">
-                                <h:outputText escape="false" value="&lt;p&gt;&lt;span class=&quot;headingText&quot;&gt;Log in&lt;/span&gt;&lt;/p&gt;"/>
+                                <h:outputText escape="false" value="&lt;p&gt;&lt;span class=&quot;headingText&quot;&gt;Login&lt;/span&gt;&lt;/p&gt;"/>
                                 
                                
                                 <ui:panelLayout panelLayout="flow" style="padding-top: 30px; padding-bottom: 40px" styleClass="ContentAreaBody">

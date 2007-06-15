@@ -19,7 +19,7 @@
                                 
                                 <!-- START SEARCH AREA -->
                                 <ui:panelLayout  id="searchHeaderPanel" panelLayout="flow" styleClass="vdcSectionHeader">
-                                    <h:outputText  value="Search #{VDCRequest.currentVDC.name} Dataverse" rendered="#{VDCRequest.currentVDC != null}"/>
+                                    <h:outputText  value="Search" rendered="#{VDCRequest.currentVDC != null}"/>
                                     <h:outputText  value="Search All Dataverses" rendered="#{VDCRequest.currentVDC == null}"/>
                                 </ui:panelLayout>
                                 <ui:panelLayout  id="searchPanel" panelLayout="flow" styleClass="vdcSearchSection">

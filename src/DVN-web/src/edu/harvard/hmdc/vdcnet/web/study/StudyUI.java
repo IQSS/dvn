@@ -69,6 +69,9 @@ public class StudyUI {
         return study;
     }
     
+    public void setStudy(Study study) {
+        this.study=study;
+    }
  
     
     /**
@@ -764,4 +767,6 @@ public class StudyUI {
     public int getNumberOfDownloads() {
         return (study.getStudyDownload() != null ? study.getStudyDownload().getNumberOfDownloads() : 0);
     }
+    
+    
 }

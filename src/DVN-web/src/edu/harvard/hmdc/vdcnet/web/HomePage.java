@@ -114,6 +114,8 @@ public class HomePage extends VDCBaseBean{
             if (vdc == null) {
                 collectionTree = vdcTree.populate(vdcService.findAll());
             } else {
+                vdcTree.setExpandAll(true);
+                
                 // if only root collection (check links and subcollections), then include studies
                 VDCUI vdcUI = new VDCUI(vdc);
                 if (vdcUI.getLinkedCollections() == null || vdcUI.getLinkedCollections().size() == 0 ) {

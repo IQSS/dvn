@@ -269,6 +269,8 @@ public class StudyPage extends VDCBaseBean {
         if ( isFromPage("StudyPage") ) {
            setStudyUI((StudyUI) sessionGet(StudyUI.class.getName()));
            setStudyId(studyUI.getStudy().getId());
+           studyUI.setStudy(studyService.getStudyDetail(studyId));
+           
         }
         else {
             // if studyId was passes as a URL parameter it will
@@ -488,9 +490,7 @@ public boolean getNotesIsEmpty() {
     }
     
     public void setReadyForReview(ActionEvent ae) {
-        ReviewState inReview = this.reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
-        studyUI.getStudy().setReviewState(inReview);
-        studyService.updateStudy(studyUI.getStudy());
+        studyService.updateReviewState(studyUI.getStudy().getId(),ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
         Study study = studyUI.getStudy();
         VDCUser user = getVDCSessionBean().getLoginBean().getUser();
             // If the user adding the study is a Contributor, send notification to all Curators in this VDC
@@ -515,6 +515,7 @@ public boolean getNotesIsEmpty() {
         ReviewState released = this.reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
         studyUI.getStudy().setReviewState(released);
         studyService.updateStudy(studyUI.getStudy());
+    //    studyService.updateReviewState(studyUI.getStudy().getId(),ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
         VDCRole studyCreatorRole=studyUI.getStudy().getCreator().getVDCRole(studyUI.getStudy().getOwner());
         
         if (studyCreatorRole!=null && studyCreatorRole.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {

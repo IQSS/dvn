@@ -1243,7 +1243,7 @@ sub printZeligManifestPage {
 			$contents .= "<li><a href=\"" . $zlgOutFileSet->[$i]->[0] . "\">" . $RunOrder->[$i] . "</a>\&nbsp;<input type=\"button\" onclick=\"shwNshw('Rlog',event,'log')\" value=\"R Log File\" ></li>\n";
 		} else {
 			# failed case (no output)
-			$contents .= "<span style=\"color:red;\"><li>" . $RunOrder->[$i] ."(modeling failed";
+			$contents .= "<span style=\"color:red;\"><li>" . $RunOrder->[$i] ." (modeling failed";
 			if ($zRoutLog ne ""){
 				$contents .= " <input type=\"button\" onclick=\"shwNshw('Rlog',event,'log')\" value=\"R Log File\" >";
 			}

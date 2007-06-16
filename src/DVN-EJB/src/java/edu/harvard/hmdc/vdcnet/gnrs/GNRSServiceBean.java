@@ -267,7 +267,7 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
 
     private ResolutionRequest buildResolutionRequest(final String handle) {
         String prefix = handle.substring(0,handle.indexOf("/"));
-        String localHandle = handle.substring(handle.indexOf("/"+1));
+        String localHandle = handle.substring(handle.indexOf("/")+1);
         String authHandle =  "0.NA/" + prefix;
         byte[] key = null;
         String file = "/hs/svr_1/admpriv.bin";

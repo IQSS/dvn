@@ -164,14 +164,14 @@ public class AnalysisPage extends VDCBaseBean {
     // set the number of rows to be displayed
     howManyRowsOptions.setOptions(
       new Option[] {
-        new Option("10", "10 Variables"), 
         new Option("20", "20 Variables"), 
+        new Option("10", "10 Variables"), 
         new Option("50", "50 Variables"),
         new Option("0", "All")
       }
     );
     
-    howManyRowsOptions.setSelectedValue("20");
+    //howManyRowsOptions.setSelectedValue("20");
 
     setStudyUIclassName("edu.harvard.hmdc.vdcnet.web.study.StudyUI");
 
@@ -3564,22 +3564,27 @@ if (isRecodedVar(varId)){
 // howManyRows@valueChangeListener
 
     public void howManyRows_processValueChange(ValueChangeEvent vce) {
+      out.println("+++++++++ howManyRows_processValueChange: start +++++++++");
        // the value of show-all-rows option == 0
+       out.println("old number of Rows="+vce.getOldValue());
        out.println("new number of Rows="+vce.getNewValue());
        out.println("current Row Index(1)="+data.getRowIndex());
-       String selectedNoRows = (String)howManyRows.getSelected();
+       selectedNoRows = (String)howManyRows.getSelected();
        out.println("selected number of Rows="+selectedNoRows);
+       
        int newNoRows = Integer.parseInt(selectedNoRows);
        if (newNoRows == 0){
           newNoRows = data.getRowCount();
        }
-       out.println("acutual selected number of Rows="+newNoRows);
+       out.println("acutually selected number of Rows="+newNoRows);
        data.setRows(newNoRows);
        out.println("first row to be shown="+data.getFirst());
        out.println("current Row Index(2)="+data.getRowIndex());
+        FacesContext.getCurrentInstance().renderResponse();
+            howManyVarsChecked();
+      FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedNoRows", selectedNoRows);
 
-       //scroll(0);
-       //FacesContext.getCurrentInstance().renderResponse();
+      out.println("+++++++++ howManyRows_processValueChange: end +++++++++");
     }
     private String howManyRowsClientId;
     
@@ -3588,6 +3593,8 @@ if (isRecodedVar(varId)){
       return howManyRows.getClientId(context);
     }
 
+    private String selectedNoRows;
+    
 //--------------------------------------------------------------------------->
 // variable Table section
 //--------------------------------------------------------------------------->
@@ -3650,10 +3657,20 @@ if (isRecodedVar(varId)){
         UIComponent component = event.getComponent();
         Integer curRow = (Integer) component.getAttributes().get("currentRow");
         out.println("within processScrollEvent: curRow="+curRow);
+        int firstRow = data.getFirst();
+        out.println("b: 1st row-index value="+firstRow);
+        int lastRow = data.getFirst()+data.getRows();
+        out.println("b: tentative last row-index value="+lastRow);
         if (curRow!=null){
             currentRow=curRow.intValue();
         }
+        out.println("currentRow="+currentRow);
         scroll(currentRow);
+        firstRow = data.getFirst();
+        out.println("a: 1st row-index value="+firstRow);
+        lastRow = data.getFirst()+data.getRows();
+        out.println("a: tentative last row-index value="+lastRow);
+        howManyVarsChecked();
     }
     
 //--------------------------------------------------------------------------->
@@ -3674,10 +3691,53 @@ if (isRecodedVar(varId)){
         this.checkboxSelectUnselectAll = c;
     }
     
+    // check how many displayed variables are checked (all or not all)
+    public void howManyVarsChecked(){
+      out.println("++++++++++++++++++++ howManyVarsChecked: start ++++++++++++++++++++");
+      // get the 1st and last ones of the displayed rows
+      int firstRow = data.getFirst();
+      out.println("1st row-index value="+firstRow);
+      int lastRow = data.getFirst()+data.getRows();
+      out.println("tentative last row-index value="+lastRow);
+      int remain  = data.getRowCount() - firstRow;
+      if ( remain < data.getRows()){
+        lastRow = data.getFirst()+remain;
+        out.println("adjusted last row-index value="+lastRow);
+      }
+      out.println("how many rows are displayed="+data.getRows());
+      
+      int counter=0;
+      for (int i=firstRow; i<lastRow;i++){
+         List<Object> rw = new ArrayList<Object>();
+         rw = (ArrayList) dt4Display.get(i); 
+         if ((Boolean)rw.get(0)){
+           counter++;
+         }
+      }
+      int diff = lastRow - firstRow;
+      out.println("how many rows to be displayed="+diff);
+      out.println("how many rows are checked="+counter);
+      if (counter == diff) {
+        // check the checkbox
+        checkboxSelectUnselectAll.setSelected(Boolean.TRUE);
+        out.println("set the select/unselect-all checkbox checked");
+      } else {
+        // uncheck the checkbox
+        checkboxSelectUnselectAll.setSelected(Boolean.FALSE);
+        out.println("set the select/unselect-all checkbox UNchecked");
+      }
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("checkboxSelectUnselectAll", checkboxSelectUnselectAll);
+      out.println("++++++++++++++++++++ howManyVarsChecked: end ++++++++++++++++++++");
+
+    }
+    
+    
     // ui:checkbox: checkboxSelectUnselectAll
     // @valueChangeListener
     
     public void selectUnselectAllCheckbox(ValueChangeEvent vce) {
+      out.println("++++++++++++++++++++ selectUnselectAllCheckbox: start ++++++++++++++++++++");
+
       // toggle false to true or vice versa
       FacesContext context = FacesContext.getCurrentInstance();
       Boolean oldState    = (Boolean) vce.getOldValue();
@@ -3688,10 +3748,9 @@ if (isRecodedVar(varId)){
       // clear the error message if it still exists
       resetMsgVariableSelection();
 
-
       // check the displayed rows
       int firstRow = data.getFirst();
-      out.println("1st row-index value="+firstRow);
+      out.println("1st-row index value="+firstRow);
       int lastRow = data.getFirst()+data.getRows();
       out.println("tentative last row-index value="+lastRow);
       int remain  = data.getRowCount() - firstRow;
@@ -3700,8 +3759,6 @@ if (isRecodedVar(varId)){
         out.println("adjusted last row-index value="+lastRow);
       }
       out.println("how many rows are to be displayed="+data.getRows());
-
-      //for (int i=0; i<dt4Display.size();i++){
       
       Set<String> bvIdSet = new HashSet<String>(); 
       Set<String> rmIdSet = new HashSet<String>();
@@ -3725,11 +3782,11 @@ if (isRecodedVar(varId)){
       }
       out.println("conents:bvIdSet="+bvIdSet);
       out.println("number of recoded vars="+bvcnt);
+      
       if (currentState){
         // select-all case
-        out.println("add all variable to varCart, etc.");
+        out.println("select all case: add all variable to varCart, etc.");
         
-        //for (int i=0; i<dt4Display.size();i++){
         for (int i=firstRow;i<lastRow;i++){
           String keyS = (String)((ArrayList)dt4Display.get(i)).get(2);
           String valueS  = (String)((ArrayList)dt4Display.get(i)).get(3);
@@ -3743,108 +3800,111 @@ if (isRecodedVar(varId)){
         }
         // activate buttons
         activateButtons();
-        
+        checkboxSelectUnselectAll.setSelected(Boolean.TRUE);
       } else {
         // unselect-all case
-        
-if (bvcnt == 0){
-// no recoded var case        
-        out.println("un-select-all case: no recoding vars");
-        // backing Map object
-        varCart.clear();
-        // LHS listbox
-        varSetAdvStat.clear();
-        // RHS listboxes
-        advStatVarRBox1.clear();
-        advStatVarRBox2.clear();
-        advStatVarRBox3.clear();
-        
-        
-        // RHS simulation option: unchecked
-        checkbox3.setSelected(false);
-        
-        // simulation-type radio button group
-        radioButtonGroup1.setSelected("0");
-        groupPanel20.setRendered(false);
-        groupPanel22.setRendered(false);
-        
-        // deactivate buttons
-        deactivateButtons();
-        clearRecodeTargetVarInfo();
-        // clear the recodeTable area
-        // to do
-        
-        // hide recode Area
-        hideRecodeTableArea();
-} else {
-// at least one recoded var exists
-        out.println("un-select-all: some variables are used for recoding");
-        // clear varCart(Map) except for base vars for recoding
-   
-        for (String v: rmIdSet) {   
-            varCart.remove(v);
-        }
+        out.println("unselect all case");
+        if (bvcnt == 0){
+          // no recoded var case        
+          out.println("un-select-all case: no recoding vars");
+          // backing Map object
+          varCart.clear();
+          // LHS listbox
+          varSetAdvStat.clear();
+          // RHS listboxes
+          advStatVarRBox1.clear();
+          advStatVarRBox2.clear();
+          advStatVarRBox3.clear();
 
-        out.println("pass the block for varCart");
-        // clear varSetAdvStat except for base vars for recoding
-        // LHS listbox object (Collection ArrayList<Option>)
-        Collection<Option> tmpvs = new ArrayList<Option>();
-        for (Iterator i = varSetAdvStat.iterator(); i.hasNext();) {
-          Option el =  (Option)i.next();
-          if ( bvIdSet.contains((String)el.getValue() ) ){
-            tmpvs.add(new Option(el.getValue(), el.getLabel()));
-            
+
+          // RHS simulation option: unchecked
+          checkbox3.setSelected(false);
+
+          // simulation-type radio button group
+          radioButtonGroup1.setSelected("0");
+          groupPanel20.setRendered(false);
+          groupPanel22.setRendered(false);
+
+          // deactivate buttons
+          deactivateButtons();
+          clearRecodeTargetVarInfo();
+          // clear the recodeTable area
+          // to do
+
+          // hide recode Area
+          hideRecodeTableArea();
+        } else {
+          // at least one recoded var exists
+          out.println("un-select-all: some variables are used for recoding");
+          // clear varCart(Map) except for base vars for recoding
+
+          for (String v: rmIdSet) {   
+              varCart.remove(v);
           }
-        }
-        out.println("contents:tmpvs="+tmpvs);
-        varSetAdvStat.clear();
-        varSetAdvStat.addAll(tmpvs);
 
-        
-        out.println("pass the block for varSetAdvState");
+          out.println("pass the block for varCart");
+          // clear varSetAdvStat except for base vars for recoding
+          // LHS listbox object (Collection ArrayList<Option>)
+          Collection<Option> tmpvs = new ArrayList<Option>();
+          for (Iterator i = varSetAdvStat.iterator(); i.hasNext();) {
+            Option el =  (Option)i.next();
+            if ( bvIdSet.contains((String)el.getValue() ) ){
+              tmpvs.add(new Option(el.getValue(), el.getLabel()));
 
-        // RHS listbox1
-        Collection<Option> tmpRBox1 = new ArrayList<Option>();
-        for (Iterator i = advStatVarRBox1.iterator(); i.hasNext();) {
-          Option el =  (Option)i.next();
-          if ( !bvIdSet.contains((String)el.getValue() ) ){
-            tmpRBox1.add(new Option(el.getValue(), el.getLabel()));
-
+            }
           }
-        }
-        advStatVarRBox1.clear();
-        advStatVarRBox1.addAll(tmpRBox1);
-        out.println("pass the block for advStatVarRBox1");
+          out.println("contents:tmpvs="+tmpvs);
+          varSetAdvStat.clear();
+          varSetAdvStat.addAll(tmpvs);
 
-        // RHS listbox2
-        Collection<Option> tmpRBox2 = new ArrayList<Option>();
-        for (Iterator i = advStatVarRBox2.iterator(); i.hasNext();) {
-          Option el =  (Option)i.next();
-          if (bvIdSet.contains((String)el.getValue() ) ){
-            tmpRBox2.add(new Option(el.getValue(), el.getLabel()));
+
+          out.println("pass the block for varSetAdvState");
+
+          // RHS listbox1
+          Collection<Option> tmpRBox1 = new ArrayList<Option>();
+          for (Iterator i = advStatVarRBox1.iterator(); i.hasNext();) {
+            Option el =  (Option)i.next();
+            if ( !bvIdSet.contains((String)el.getValue() ) ){
+              tmpRBox1.add(new Option(el.getValue(), el.getLabel()));
+
+            }
           }
-        }
-        advStatVarRBox2.clear();
-        advStatVarRBox2.addAll(tmpRBox2);
+          advStatVarRBox1.clear();
+          advStatVarRBox1.addAll(tmpRBox1);
+          out.println("pass the block for advStatVarRBox1");
 
-        
-        // RHS listbox3
-        Collection<Option> tmpRBox3 = new ArrayList<Option>();
-        for (Iterator i = advStatVarRBox3.iterator(); i.hasNext();) {
-          Option el =  (Option)i.next();
-          if (bvIdSet.contains((String)el.getValue() ) ){
-            tmpRBox3.add(new Option(el.getValue(), el.getLabel()));
+          // RHS listbox2
+          Collection<Option> tmpRBox2 = new ArrayList<Option>();
+          for (Iterator i = advStatVarRBox2.iterator(); i.hasNext();) {
+            Option el =  (Option)i.next();
+            if (bvIdSet.contains((String)el.getValue() ) ){
+              tmpRBox2.add(new Option(el.getValue(), el.getLabel()));
+            }
           }
+          advStatVarRBox2.clear();
+          advStatVarRBox2.addAll(tmpRBox2);
+
+
+          // RHS listbox3
+          Collection<Option> tmpRBox3 = new ArrayList<Option>();
+          for (Iterator i = advStatVarRBox3.iterator(); i.hasNext();) {
+            Option el =  (Option)i.next();
+            if (bvIdSet.contains((String)el.getValue() ) ){
+              tmpRBox3.add(new Option(el.getValue(), el.getLabel()));
+            }
+          }
+          advStatVarRBox3.clear();
+          advStatVarRBox3.addAll(tmpRBox3);
+
+
+          msgVariableSelection.setRendered(true);
+          msgVariableSelection.setText("At least one variable is used for recoding;<br />Remove its recoded variable(s) first.");
         }
-        advStatVarRBox3.clear();
-        advStatVarRBox3.addAll(tmpRBox3);
-
-
-  msgVariableSelection.setRendered(true);
-  msgVariableSelection.setText("At least one variable is used for recoding;<br />Remove its recoded variable(s) first.");
-}
       }
+      
+      FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("checkboxSelectUnselectAll", checkboxSelectUnselectAll);
       FacesContext.getCurrentInstance().renderResponse();
+      out.println("++++++++++++++++++++ selectUnselectAllCheckbox: end ++++++++++++++++++++");
     }
     
 //--------------------------------------------------------------------------->
@@ -3978,9 +4038,10 @@ if (baseVarToDerivedVar.containsKey(varId)){
     }
 
     public void resetMsgVariableSelection() {
-      out.println("******* within resetMsgVariableSelection *******");
+      out.println("******* resetMsgVariableSelection: start *******");
       msgVariableSelection.setRendered(false);
       msgVariableSelection.setText(" ");
+      out.println("******* resetMsgVariableSelection: end *******");
     }
 
 
@@ -4508,7 +4569,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
                 "groupPanel8below", "advStatVarRBox1", "advStatVarRBox2", "advStatVarRBox3",
                 "setxDiffVarBox1", "setxDiffVarBox2", "checkboxSelectUnselectAll", 
                 "currentModelName", "currentRecodeVariableId","currentRecodeVariableName", "recodedVarSet", "recodeSchema",
-                "baseVarToDerivedVar","derivedVarToBaseVar","recodeVarNameSet");
+                "baseVarToDerivedVar","derivedVarToBaseVar","recodeVarNameSet", "selectedNoRows");
 
               // clear the data for the dataTable
               for (String obj : sessionObjects){
@@ -4597,9 +4658,8 @@ if (baseVarToDerivedVar.containsKey(varId)){
                 sessionMap.put("advStatVarRBox3",advStatVarRBox3);
 
                 sessionMap.put("checkboxSelectUnselectAll",checkboxSelectUnselectAll);
-                
-                  
-
+                howManyRowsOptions.setSelectedValue("20");
+                out.println("1st time visit: selected value for howManyRows="+howManyRowsOptions.getSelectedValue());
               } else {
                 // set the stored data to the key page-scoped objects
                 // postback cases
@@ -4622,6 +4682,11 @@ if (baseVarToDerivedVar.containsKey(varId)){
                 setxDiffVarBox2= (Collection<Option>) sessionMap.get("setxDiffVarBox2");
                 currentModelName = (String) sessionMap.get("currentModelName");
                 checkboxSelectUnselectAll = (Checkbox) sessionMap.get("checkboxSelectUnselectAll");
+                
+                selectedNoRows = (String) sessionMap.get("selectedNoRows");
+                howManyRowsOptions.setSelectedValue(selectedNoRows);
+                out.println("post-back case: selected value for howManyRows="+howManyRowsOptions.getSelectedValue());
+
                 
                 if (currentRecodeVariableId==null){
                   out.println("currentRecodeVariableId is null");
@@ -4715,20 +4780,20 @@ if (baseVarToDerivedVar.containsKey(varId)){
           
           // prepare study Title and Id
           if (sessionMap.containsKey(getStudyUIclassName())){
-            out.println("key was found in the session Map");
+            out.println("StudyUIclassName was found in the session Map");
 
             StudyUI sui  = (StudyUI) sessionMap.get(getStudyUIclassName());
 
             setStudyTitle(sui.getStudy().getTitle());
             
-            out.println("Study Title="+studyTitle);
+            //out.println("Study Title="+studyTitle);
             
             setStudyId(sui.getStudy().getId());
             
-            out.println("Study Id="+studyId);
+            //out.println("Study Id="+studyId);
             
             setCitation(sui.getStudy().getCitation());
-            out.println("ciation="+citation);
+            //out.println("ciation="+citation);
 
           } else {
             out.println("StudyUIclassName was not found in the session Map");
@@ -4745,6 +4810,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
 
 
       out.println("doInit(): current tab id="+tabSet1.getSelected());
+      out.println("***********//////////////// end of doInit() ////////////////***********");
 
       
     } // end of doInit()

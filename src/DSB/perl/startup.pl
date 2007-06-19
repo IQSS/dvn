@@ -46,34 +46,6 @@ BEGIN {
     }
 }
 
-my $VDC_ROOT = "/usr/local/VDC";
-my $VDC_ETC  = $VDC_ROOT . "/etc";
-my $VDC_CONF = $VDC_ETC . "/components.conf";
-
-sub read_Config
-{
-    my ( $conf, $vdcname_ref, $comp_ref, $loc_ref, $pw_ref ) = @_;
-
-    open ( C, $conf ) || return undef;
-    while ( <C> )
-    {
-	chop;
-	if ( /^COMPONENT[\t ]*([^\t ]*)[\t ]*([^\t ]*)[\t ]*([^\t ]*)/ )
-	{
-	    push ( @$comp_ref, $1 );
-	    $$loc_ref{$1} = $2;
-	    $$pw_ref{$1} = $3;
-	}
-	elsif ( /^LOCALVDC[\t ]*([^\t ]*)/ )
-	{
-	    $$vdcname_ref = $1;
-	}
-    }
-    close C;
-
-    return $$vdcname_ref;
-}
-
 1;
 
 

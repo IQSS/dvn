@@ -1,62 +1,84 @@
+INSTALL_ROOT = /usr/local/VDC
+TMPDIR = /tmp/VDC
 
-#
-# Global rule.  Build the Makefiles if needed and then build the
-# libraries and agents.
-#
-
-SUBDIRS = Ingest VERBS cgi XSLT R
-
-all: Make.rules
-	@sh -c 'for i in $(SUBDIRS); do \
-	(cd $$i; echo  "making all in" "(`pwd`)"; \
-	$(MAKE) all ) done '
-
-meDIR           = DSB
-meRPM		= VDC-DSB
-meSPC	        = vdc-dsb.spec
-
-#
-# general routines - to be implemented in Makefiles in each
-# subdirectory
-#
-
+all: 	build
 
 clean:
-	@sh -c 'for i in $(SUBDIRS); do \
-	(cd $$i; echo  "making clean in" "(`pwd`)"; \
-	$(MAKE) clean ) done '
+	for dir in rcut; \
+	do (cd $$dir; make clean); done
+	/bin/rm -f `find . -name '*~'`
 
-install: all
-	@sh -c 'for i in $(SUBDIRS); do \
-	(cd $$i; echo  "making install in" "(`pwd`)"; \
-	$(MAKE) RPM_PREFIX=${RPM_PREFIX} install ) done '
+install: 
 
-Make.rules:
-	@if -f ../Make.rules \
-	then; \
-		cp ../Make.rules $@; \
-	else \
-		echo using a cached copy of $@; \
-	fi
+uninstall: 
+	/bin/rm -rf ${RPM_PREFIX}/${INSTALL_ROOT}
+	/bin/rm -rf ${RPM_PREFIX}/${TMPDIR}
 
-rpm: all clean update-spec
-	(cd ..; ln -s DSB VDC-DSB-`cat VERSION`; \
-	tar chzf /usr/src/redhat/SOURCES/VDC-DSB-`cat VERSION`.tar.gz VDC-DSB-`cat VERSION`/; /bin/rm VDC-DSB-`cat VERSION`)
-	rpmbuild -ba --target i586 $(meSPC).daily
-	#rpmbuild -bb --target i686 $(meSPC).daily
-	#rpmbuild -bb --target x86_64 $(meSPC).daily
+build: inst_rcut inst_cgi-bin inst_etc inst_perl inst_R inst_sbin inst_xslt inst_tmp
+
+inst_rcut: 
+	(cd rcut; make VDC_DIR=${RPM_PREFIX}/${INSTALL_ROOT})
+
+inst_cgi-bin:
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/cgi-bin
+	install -m 0775 perl/bind.cgi ${RPM_PREFIX}/${INSTALL_ROOT}/cgi-bin
+	install -m 0775 perl/dispatch.pl ${RPM_PREFIX}/${INSTALL_ROOT}/cgi-bin
+	install -m 0775 perl/dmpConfigZelig.pl ${RPM_PREFIX}/${INSTALL_ROOT}/cgi-bin
+	install -m 0775 perl/nph-dmpData.pl ${RPM_PREFIX}/${INSTALL_ROOT}/cgi-bin
+	install -m 0775 perl/nph-dmpJpg.pl ${RPM_PREFIX}/${INSTALL_ROOT}/cgi-bin
+	install -m 0775 perl/nph-error.cgi ${RPM_PREFIX}/${INSTALL_ROOT}/cgi-bin
+	install -m 0775 perl/univar03.cgi ${RPM_PREFIX}/${INSTALL_ROOT}/cgi-bin
+
+inst_etc: 
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/etc
+	install -m 0775 etc/Rmodules.txt ${RPM_PREFIX}/${INSTALL_ROOT}/etc
+	install -m 0775 etc/*.tmpl ${RPM_PREFIX}/${INSTALL_ROOT}/etc
+	install -m 0775 etc/README.* ${RPM_PREFIX}/${INSTALL_ROOT}/etc
+	install -m 0775 etc/iptables.sample ${RPM_PREFIX}/${INSTALL_ROOT}/etc
+	install -m 0775 etc/configure.perl ${RPM_PREFIX}/${INSTALL_ROOT}/etc
+
+inst_perl:	inst_etc
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/perl
+	install -m 0775 perl/dispatch.pl ${RPM_PREFIX}/${INSTALL_ROOT}/perl
+	install -m 0775 perl/startup.pl ${RPM_PREFIX}/${INSTALL_ROOT}/perl
+	install -m 0775 perl/vdcCGI.pm ${RPM_PREFIX}/${INSTALL_ROOT}/perl
+	install -m 0775 perl/VDCdiag.pm ${RPM_PREFIX}/${INSTALL_ROOT}/perl
+	install -m 0775 perl/vdcLOG.pm ${RPM_PREFIX}/${INSTALL_ROOT}/perl
+	install -m 0775 perl/vdcLWP.pm ${RPM_PREFIX}/${INSTALL_ROOT}/perl
+	cp -R perl/lib ${RPM_PREFIX}/${INSTALL_ROOT}/perl
+	cp -R perl/vdcRAP ${RPM_PREFIX}/${INSTALL_ROOT}/perl
+	(cd ${RPM_PREFIX}/${INSTALL_ROOT}/perl; ln -s ../etc/glv03)
+
+inst_R:
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}
+	cp -R R ${RPM_PREFIX}/${INSTALL_ROOT}
+	install -m 0775 installR.sh ${RPM_PREFIX}/${INSTALL_ROOT}/R
+
+inst_sbin: 	
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/sbin
+	install -m 0775 perl/sbin/readdta.pl ${RPM_PREFIX}/${INSTALL_ROOT}/sbin
+	install -m 0775 perl/sbin/readpor.pl ${RPM_PREFIX}/${INSTALL_ROOT}/sbin
+	install -m 0775 perl/sbin/readsav.pl ${RPM_PREFIX}/${INSTALL_ROOT}/sbin
+	install -m 0775 perl/sbin/recreatevlm.pl ${RPM_PREFIX}/${INSTALL_ROOT}/sbin
+
+inst_xslt: 
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/xslt
+	install -m 0775 xslt/rcrtcl_tab.xsl ${RPM_PREFIX}/${INSTALL_ROOT}/xslt
+	install -m 0775 xslt/rcrtcl.xsl ${RPM_PREFIX}/${INSTALL_ROOT}/xslt
+
+inst_tmp: 
+	install -m 0777 -d ${RPM_PREFIX}/${TMPDIR}
+	install -m 0777 -d ${RPM_PREFIX}/${TMPDIR}/DSB
+	install -m 0777 -d ${RPM_PREFIX}/${TMPDIR}/webtemp
+
+rpm:	clean update-spec
+	(cd ..; ln -s DSB DVN-DSB-`cat DSB/VERSION`; \
+	tar chzf /usr/src/redhat/SOURCES/DVN-DSB-`cat DSB/VERSION`.tar.gz DVN-DSB-`cat DSB/VERSION`/; /bin/rm DVN-DSB-`cat DSB/VERSION`)
+	rpmbuild -ba dvn-dsb.spec
+	#rpmbuild -bb --target i686 dvn-dsb.spec
+	#rpmbuild -bb --target x86_64 dvn-dsb.spec
 	@echo "don't forget to run cvs commit to properly update the build version!"
 
-rpm-daily: all clean
-	/bin/cp $(meSPC) $(meSPC).daily
-	../update-spec.pl --build=`date +%Y%m%d` $(meSPC).daily
-	(cd ..; ln -s $(meDIR) $(meRPM)-`cat VERSION`; \
-	tar chzf /usr/src/redhat/SOURCES/$(meRPM)-`cat VERSION`.tar.gz $(meRPM)-`cat VERSION`/; /bin/rm $(meRPM)-`cat VERSION`)
-	rpmbuild -ba --target i586 $(meSPC).daily
-	#rpmbuild -bb --target i686 $(meSPC).daily
-	#rpmbuild -bb --target x86_64 $(meSPC).daily
-
-update-spec:	vdc-dsb.spec
-	../update-spec.pl vdc-dsb.spec
-
+update-spec:	dvn-dsb.spec
+	./update-spec.pl dvn-dsb.spec
 

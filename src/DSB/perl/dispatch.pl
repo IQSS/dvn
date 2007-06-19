@@ -52,7 +52,8 @@ if ( !defined ($dispatcher::catalog{$SERVICE . ":" . $netloc}) )
 	( "VDC::$SERVICE", '<INIT>',
 	  "Initializing the service..." ); 
 
-    my $module = &chk_config_alias ($SERVICE); 
+#    my $module = &chk_config_alias ($SERVICE); 
+    my $module = $SERVICE; 
     
     my $success =  &my_require ($module);
 
@@ -311,24 +312,6 @@ sub my_require {
 }                                                              
 
 
-sub chk_config_alias {
-    my($service_name) = shift @_; 
-
-    my $cfg = "/usr/local/VDC/etc/components.conf";
-
-    open ( F, $cfg ) || return undef; 
-
-    while ( <F> )
-    {
-	chop; 
-	if ( /^COMPALIAS[ \t]*([^\t ]+)[ \t]*$service_name$/ )
-	{
-	    return $1; 
-	}
-    }
-
-    return $service_name; 
-}
 
 
 

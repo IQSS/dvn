@@ -20,7 +20,7 @@
 
 # Sample: $CGIDIR = "zzzz/cgi-bin/dsb"
 
- our($CGIDIR) = "%DSB_PATH%";
+ our($CGIDIR) = "cgi-bin";
 
 
 ### Pathnames (Machine) ###
@@ -28,7 +28,7 @@
 # Base directory for the R-related cgi scripts (full pathname)
 # Sample: $CGIBASE = "/localhostmachine/aaa/bbb/cgi-bin/dsb"
 
- our($CGIBASE) = "%VDCROOT%/%DSB_PATH%";
+ our($CGIBASE) = "%VDCROOT%/cgi-bin";
 
 
 # Directory for the .Rprofile file
@@ -40,11 +40,11 @@
 # location of the R executable (full pathname)
 # Sample: $RDIR = "/localhostmachine/usr/bin/R"
 
- our($RDIR) = "%R_PATH%";
-#$RDIR = "/usr/bin/R";
+# our($RDIR) = "%R_PATH%";
+  our($RDIR) = "/usr/bin/R";
 
 # Directory of VDC R libraries
-our($VDCRLIB) = "/usr/local/VDC/R/library";
+our($VDCRLIB) = "%VDCROOT%/R/library";
 
 # Directory for temporary files
 # Sample: $TMPDIR = "/tmp"
@@ -57,26 +57,11 @@ our($VDCRLIB) = "/usr/local/VDC/R/library";
 
 # path-name of rcut
 
-our ($RCUTDIR) = '/usr/local/VDC/bin';
+our ($RCUTDIR) = '%VDCROOT%/bin';
 
-
-# URL of the proxy server through which the Repository is accessed
-our($PROXY_URL) = "http://%PROXY_HOST%:%PROXY_PORT%";
-our($FTP_PROXY_URL) = "%PROXY_CACHE_URI%";
-
-# External proxy server
-our($EXTERNAL_PROXY_HOST)="%EXTERNAL_PROXY_HOST%";
-our($EXTERNAL_PROXY_PORT)="%EXTERNAL_PROXY_PORT%";
 
 # location of xml catalog file
 our($XMLCTLGDIR)="%VDCROOT%/catalog";
-
-# Information for those who are new to perl programming about the below "1"
-#
-# The following "1" is not a coding error; it is necessary to determine  
-# whether the loading of this file (glv) is successful 
-# with regard to "require glv" in the univariate analysis cgi;
-# See Hall, J.N.  and R.L. Schwartz. 1998. Effective Perl Programming. p. 225
 
 1
 

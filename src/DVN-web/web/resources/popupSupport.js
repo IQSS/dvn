@@ -24,14 +24,16 @@ helpPopup.offsetY=25;
 function popupInlineHelp(anchorname, message, heading, evt) {
     message = "<div id=\"vdcInlineHelpWrapperDiv\" class=\"vdcInlineHelpWrapper\">&nbsp;&nbsp;" + heading + "<p id=\"helpContentsDiv\" class=\"vdcInlineHelpContents\">" + message + "</p></div>";
     helpPopup.populate(message);
-     if (window.event == null) {
+    rootScrollTopReference = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop; //true? ie7version otherwise ie6 version
+    rootScrollLeftReference = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft; 
+    if (window.event == null) {
         xCoordinate = evt.pageX - document.getElementById('helpDiv').offsetParent.offsetLeft;
         yCoordinate = evt.pageY - document.getElementById('helpDiv').offsetParent.offsetTop;
     } else if (window.event) {
-        xCoordinate = window.event.clientX - document.getElementById('helpDiv').offsetParent.offsetLeft;
-        yCoordinate = window.event.clientY - document.getElementById('helpDiv').offsetParent.offsetTop;
+        xCoordinate = window.event.clientX + rootScrollLeftReference;
+        yCoordinate = window.event.clientY + rootScrollTopReference;
     }
-    helpPopup.showPopup(anchorname, xCoordinate, yCoordinate);
+    helpPopup.showPopup(anchorname, parseInt(xCoordinate), yCoordinate);
 }
 
 function hideInlineHelp() {

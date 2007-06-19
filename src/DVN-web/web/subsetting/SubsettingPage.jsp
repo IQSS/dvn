@@ -77,6 +77,7 @@ xmlns:ui="http://www.sun.com/web/ui"
                     <ui:listbox id="mListboxDwnld" 
                         items="#{AnalysisPage.varSetAdvStat}" 
                         rows="10" 
+                        disabled="true"
                         labelLevel="3" 
                         monospace="true"  
                         multiple="true" 
@@ -279,6 +280,7 @@ xmlns:ui="http://www.sun.com/web/ui"
                         items="#{AnalysisPage.varSetAdvStat}" 
                         rows="10" 
                         labelLevel="3" 
+                        disabled="true"
                         monospace="true"  
                         multiple="true" 
                         label="#{bundleAnalysis['eda.selectedVarBox.title']}"
@@ -952,7 +954,8 @@ xmlns:ui="http://www.sun.com/web/ui"
 <h:panelGrid id="belowDT">
 
 <ui:panelGroup id="pgRecodedVarTable"
-  binding="#{AnalysisPage.pgRecodedVarTable}" >
+  binding="#{AnalysisPage.pgRecodedVarTable}"
+  rendered="false">
 
 <h:outputText id="recodedVarTableTitle" 
   binding="#{AnalysisPage.recodedVarTableTitle}"

@@ -955,6 +955,8 @@ if (isRecodedVar(varId)){
             out.println("The new variable name is unique");
             msgSaveRecodeBttn.setRendered(false);
             //msgSaveRecodeBttn.setText("The variable name is unique");
+            
+            
           }
         }
       }
@@ -1047,7 +1049,8 @@ if (isRecodedVar(varId)){
         // add this newly created var to the set
         recodeVarNameSet.add(newVarName);
         
-        //
+        // show the recode-var table
+        pgRecodedVarTable.setRendered(true);
         
       } else {
         // 2nd-time save
@@ -1244,6 +1247,11 @@ if (isRecodedVar(varId)){
         out.println("The variable in the recode table differs from the variable to be removed");
       }
       
+      
+      // if no more recoded var, hide the recoded var table
+      if (baseVarToDerivedVar.isEmpty()){
+         pgRecodedVarTable.setRendered(false);
+      }
       out.println("******************** removeRecodedVariable(): ends here ********************");
     }
     
@@ -4389,16 +4397,16 @@ if (baseVarToDerivedVar.containsKey(varId)){
 
           if (dv.getVariableFormatType().getName().equals("numeric")){
               if (dv.getVariableIntervalType()==null){
-                rw.add("C");
+                rw.add("Continuous");
               } else {
                 if (dv.getVariableIntervalType().getId().intValue() == 2 ){
-                   rw.add("C");
+                   rw.add("Continuous");
                 } else {
-                   rw.add("D");
+                   rw.add("Discrete");
                 }
               }
           } else {
-            rw.add("Chr");
+            rw.add("Chraracter");
           }
 
           // 2: ID
@@ -4466,18 +4474,58 @@ if (baseVarToDerivedVar.containsKey(varId)){
 
 
   // quickSummary: HashMap to html table
+          String imgPrefix = "<img src='/dvn/resources/headerblue.png' height='10px' hspace='2px' width='";
 
   public String getmlTableFrag (Map mp, String hdrKey, String hdrValue){
           //StringBuilder sb = new StringBuilder("<table border='1px'><tr><td>"+hdrKey+"</td><td>"+hdrValue+"</td></tr>");
+          // /resources/headerblue.png
+          
+          // <img src="./headerblue.png" height="10" hspace="2" width="157">
+          // <img src='/resources/headerblue.png' height='10px' hspace='2px' width='157'>
           
           StringBuilder sb = new StringBuilder("<div class='statbox'><table class='viTblinx'><tbody><tr><th>"+hdrKey+"</th><th>"+hdrValue+"</th></tr></tbody><tbody>");
+          
           Set ent = mp.entrySet();
+            long maxBarLen = 200L;
+            long maxFreq=0L;
+          
+          if (hdrValue.equals("Frequency")){
+            // get max freq
+            for (Iterator itr = ent.iterator(); itr.hasNext();){
+              Map.Entry en = (Map.Entry) itr.next();
+              if (en.getKey().equals("UNF")){
+              } else {
+                long tmpMax = Long.parseLong((String)en.getValue());
+                out.println("tmpMax="+tmpMax);
+                if (tmpMax > maxFreq) {
+                  maxFreq = tmpMax;
+                  out.println("tmp max="+maxFreq);
+                }
+              }
+            }
+            // 
+          } 
+          out.println("maxFreq(final)="+maxFreq);
+          
           for (Iterator itr = ent.iterator(); itr.hasNext();){
             Map.Entry en = (Map.Entry) itr.next();
             if (en.getKey().equals("UNF")){
                 sb.append("<tr><th class='viUNF' title='Univeral Numeric Fingerprint'>"+en.getKey()+"</th><td>"+en.getValue()+"</td></tr>");
             } else {
-                sb.append("<tr><th>"+en.getKey()+"</th><td>"+en.getValue()+"</td></tr>");
+                if (hdrValue.equals("Frequency")){
+                  StringBuilder img = new StringBuilder("");
+                  // calculate width
+                  long w = 0L;
+                  if (maxFreq != 0){
+                    w =maxBarLen*Long.parseLong(((String)en.getValue()))/maxFreq;
+                    out.println("bar chart width="+w);
+                  }
+                  img.append(imgPrefix+w+"'>");
+                  sb.append("<tr><th>"+en.getKey()+"</th><td>"+img.toString()+en.getValue()+"</td></tr>");
+                } else {
+                  sb.append("<tr><th>"+en.getKey()+"</th><td>"+en.getValue()+"</td></tr>");
+                }
+                
             }
           }
           sb.append("</tbody></table></div>");

@@ -30,8 +30,8 @@ function popupInlineHelp(anchorname, message, heading, evt) {
         xCoordinate = evt.pageX - document.getElementById('helpDiv').offsetParent.offsetLeft;
         yCoordinate = evt.pageY - document.getElementById('helpDiv').offsetParent.offsetTop;
     } else if (window.event) {
-        xCoordinate = window.event.clientX + rootScrollLeftReference;
-        yCoordinate = window.event.clientY + rootScrollTopReference;
+        xCoordinate = window.event.clientX - document.getElementById('helpDiv').offsetParent.offsetLeft + rootScrollLeftReference;
+        yCoordinate = window.event.clientY - document.getElementById('helpDiv').offsetParent.offsetTop + rootScrollTopReference;
     }
     helpPopup.showPopup(anchorname, parseInt(xCoordinate), yCoordinate);
 }

@@ -16,14 +16,16 @@
                 <library files="8">
                     <file>${libs.jsfsupport-designtime.classpath}</file>
                 </library>
-                <library files="4">
-                    <file>${libs.webui-designtime.classpath}</file>
+                <library files="3">
+                    <file>${libs.dvn-webui-runtime.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="2">
                     <file>${libs.jdbcsupport-designtime.classpath}</file>
                 </library>
                 <library files="1">
-                    <file>${libs.theme-default.classpath}</file>
+                    <file>${libs.dvn-theme-default.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
                     <file>${reference.DVN-ejb.dist}</file>
@@ -81,14 +83,13 @@
                     <file>${file.reference.oaicat.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
+                <library files="4">
+                    <file>${libs.dvn-webui-designtime.classpath}</file>
+                </library>
             </web-module-libraries>
             <web-module-additional-libraries>
                 <library files="3">
                     <file>${libs.jsfsupport-runtime.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library files="3">
-                    <file>${libs.webui-runtime.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="2">
@@ -97,10 +98,6 @@
                 </library>
                 <library files="1">
                     <file>${libs.exceptionhandler-runtime.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library files="1">
-                    <file>${libs.theme-default.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
@@ -136,6 +133,14 @@
                 </library>
                 <library files="1">
                     <file>${file.reference.xalan.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="3">
+                    <file>${libs.dvn-webui-runtime.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.dvn-theme-default.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-additional-libraries>

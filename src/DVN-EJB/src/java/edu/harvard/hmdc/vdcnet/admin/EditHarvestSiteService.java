@@ -32,7 +32,7 @@ public interface EditHarvestSiteService {
     HarvestingDataverse getHarvestingDataverse();
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void save(String name, String alias, Long userId);
+    public void save(String name, String alias, Long userId, Long handlePrefixId);
 
    
     public void removeAllowedFileGroup(Long groupId);

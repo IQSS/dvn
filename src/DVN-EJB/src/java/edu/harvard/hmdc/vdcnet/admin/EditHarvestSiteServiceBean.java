@@ -11,6 +11,7 @@ package edu.harvard.hmdc.vdcnet.admin;
 
 import edu.harvard.hmdc.vdcnet.harvest.SetDetailBean;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.HandlePrefix;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
@@ -71,7 +72,7 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
  
         
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void save(String name, String alias, Long userId) {
+    public void save(String name, String alias, Long userId, Long handlePrefixId ) {
         if (harvestingDataverse.getVdc()==null) {
             vdcService.create(userId,name,alias);
             VDC vdc = vdcService.findByAlias(alias);
@@ -81,7 +82,12 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
             harvestingDataverse.getVdc().setName(name);
             harvestingDataverse.getVdc().setAlias(alias);
         }
-   
+        if (handlePrefixId==null) {
+            harvestingDataverse.setHandlePrefix(null);
+        } else {
+            HandlePrefix handlePrefix = em.find(HandlePrefix.class, handlePrefixId);
+            harvestingDataverse.setHandlePrefix(handlePrefix);
+        }
         em.flush();
     }
     

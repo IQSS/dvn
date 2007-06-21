@@ -27,7 +27,8 @@
                                             <f:facet name="header">
                                                 <h:outputText id="outputText2" value="Harvest Dataverse"/>
                                             </f:facet>
-                                            <h:outputLink id="hyperlink1" value="EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
+                                            <h:outputText  value="#{currentRow.vdc.name}" rendered="#{currentRow.harvestingNow}" />
+                                            <h:outputLink rendered="#{!currentRow.harvestingNow}" id="hyperlink1" value="EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
                                                 <h:outputText id="hyperlink1Text1" value="#{currentRow.vdc.name}"/>
                                             </h:outputLink>
                                         </h:column>
@@ -50,14 +51,15 @@
                                             <f:facet name="header">
                                                 <h:outputText  value=""/>
                                             </f:facet>
-                                            <h:commandButton value="Run Harvester Now"  actionListener="#{HarvestSitesPage.doRunNow}"/>
+                                            <h:commandButton value="Run Harvester Now"  rendered="#{!currentRow.harvestingNow}"   actionListener="#{HarvestSitesPage.doRunNow}"/>
+                                            <h:outputText  value="Harvesting Currently Running" rendered="#{currentRow.harvestingNow}" />   
                                          
                                         </h:column>
                                         <h:column >
                                             <f:facet name="header">
                                                 <h:outputText id="outputText3" value="Remove"/>
                                             </f:facet>
-                                            <h:commandButton  value="Remove" actionListener="#{HarvestSitesPage.doRemoveHarvestDataverse}"/>
+                                            <h:commandButton  value="Remove"  disabled="#{currentRow.harvestingNow}" actionListener="#{HarvestSitesPage.doRemoveHarvestDataverse}"/>
                                         </h:column>
                                         
                                     </h:dataTable>

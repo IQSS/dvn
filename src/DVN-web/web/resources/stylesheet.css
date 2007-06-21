@@ -171,7 +171,7 @@ body {
 .vdcSectionHeader {
    background-image: url(gradientbar.jpg);
    background-repeat: repeat-x;
-   background-color:#eeeeee;
+   background-color: #eeeeee;
    border-bottom-color: #999999;
    border-bottom-style: solid;
    border-bottom-width: 1px;
@@ -1460,10 +1460,18 @@ ul.dvnGroupListStyle { list-style-type:square; color:#035399; }
 }
 
 /* *************** vanilla pages styles ***************** */
-        div.ContentArea { margin-left:auto; margin-right:auto; min-width:300px; max-width:600px; background: url(custom_corners_topleft.gif) top left no-repeat; width:50%; }
-        div.ContentArea p.rightCorner { background: url(custom_corners_topright.gif) top right no-repeat; font-size:1.3em; padding:15px; margin:0; color: #062f58; }
-/* probably this next line needs to go in the body */        
+div.ContentArea { margin-top:150px; margin-left:auto; margin-right:auto; min-width:300px; max-width:600px; background: url(custom_corners_topleft.gif) top left no-repeat; width:50%; }
+div.ContentArea p { background: url(custom_corners_topright.gif) top right no-repeat; font-size:1.3em; padding:15px; margin:0; color: #062f58; }
 div.ContentArea span.headingText { display:block;width:100%; background-color:#dce6cb; font-style: oblique; font-size: 1.3em; font-weight: bold; text-align: center; }
-        div.ContentAreaBody { background: url(custom_corners_rightborder.gif) top right repeat-y; margin:0; margin-top:-2em; padding:15px; }
-        div.ContentAreaFooter { background: url(custom_corners_bottomleft.gif) bottom left no-repeat; }
-        div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom right no-repeat; display:block; padding:15px; margin:-2em 0 0 0; }
+div.ContentAreaBody { background: url(custom_corners_rightborder.gif) top right repeat-y; margin:0; margin-top:-2em; padding:15px; }
+div.ContentAreaFooter { background: url(custom_corners_bottomleft.gif) bottom left no-repeat; }
+div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom right no-repeat; display:block; padding:15px; margin:-2em 0 0 0; }
+
+/* *************** NetworkAdmin VDCGroup styles ******************** */
+.groupEditColumnCenter { border:1px solid silver; text-align:center; }
+.groupEditColumnLeft   { border:1px solid silver; text-align:left; }
+.groupEditActionRight  { border:0px; text-align:right; padding:0px 6px 0px 0px; }
+.groupEditActionCenter { border:0px; text-align:center; }
+.groupEditActionLeft   { border:0px; text-align:left; padding:0px 0px 0px 6px; }
+.groupEditHeader { background-color: #d9e7f0; padding:0px; }
+#content:vDCGroupPageView:vdcGroupPageForm:VDCGroups:dataTableCaption {font-size:1.3em; }/*overrides the default theme */

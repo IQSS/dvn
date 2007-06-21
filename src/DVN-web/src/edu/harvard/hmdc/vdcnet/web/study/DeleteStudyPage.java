@@ -12,6 +12,11 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -20,8 +25,9 @@ import javax.ejb.EJB;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@EJB(name="editStudy", beanInterface=edu.harvard.hmdc.vdcnet.study.EditStudyService.class)
 public class DeleteStudyPage extends VDCBaseBean {
-    @EJB EditStudyService editStudyService;
+    EditStudyService editStudyService;
     @EJB StudyServiceLocal studyService;
     
     /**
@@ -49,6 +55,17 @@ public class DeleteStudyPage extends VDCBaseBean {
             editStudyService = (EditStudyService) sessionGet(editStudyService.getClass().getName());
             study = editStudyService.getStudy();
         }else {
+                // we need to create the editStudyService bean
+            try {
+                Context ctx = new InitialContext();
+                editStudyService = (EditStudyService) ctx.lookup("java:comp/env/editStudy");
+            } catch(NamingException e) {
+                e.printStackTrace();
+                FacesContext context = FacesContext.getCurrentInstance();
+                FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(),null);
+                context.addMessage(null,errMessage);
+                
+            }
             if (studyId != null) {
                 //TODO: we need to store editStudyService by studyId, not just class name
                editStudyService.setStudy(getStudyId());

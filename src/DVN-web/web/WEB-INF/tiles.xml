@@ -297,6 +297,10 @@
        <put name="pageTitle"   type="string"        value="DVN - Dataverse Network User Groups"/>
        <put name="content" type="template"     value="/networkAdmin/UserGroupsPage.jsp"/>
    </definition>
+   <definition name="/networkAdmin/VDCGroupPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Dataverse Groups View"/>
+       <put name="content" type="template"     value="/networkAdmin/VDCGroupPage.jsp"/>
+   </definition>
    <definition name="/networkAdmin/ImportStudyPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Import Study "/>
        <put name="content" type="template"     value="/networkAdmin/ImportStudyPage.jsp"/>

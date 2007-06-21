@@ -15,11 +15,11 @@
                                     <h:outputText styleClass="errorMessage" value="We are sorry. An application error has occurred. "/>
                                     <f:verbatim><br /><br /></f:verbatim>
                                     <h:outputText value="Error Message:" rendered="#{param.errorMsg!=null}"/>
-                                    <h:outputText styleClass="errorMessage" value="#{param.errorMsg}" rendered="#{param.errorMsg!=null}"/>
+                                    <h:outputText escape="false" styleClass="errorMessage" value="#{param.errorMsg}" rendered="#{param.errorMsg!=null}"/>
                                     
                                     <h:dataTable value="#{ErrorPage.messages}" var="currentRow">
                                         <h:column>
-                                            <h:outputText styleClass="errorMessage" value="#{currentRow}"/>
+                                            <h:outputText escape="false" styleClass="errorMessage" value="#{currentRow}"/>
                                         </h:column>
                                         
                                     </h:dataTable>

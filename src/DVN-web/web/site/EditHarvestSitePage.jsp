@@ -68,7 +68,7 @@
                                     
                                     <h:panelGrid cellpadding="0" cellspacing="0"
                                                  columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" style="margin-top: 30px; margin-bottom: 30px">
-                                        <ui:panelGroup block="true" style="vertical-align: top;" >
+                                        <ui:panelGroup block="true" style="vertical-align: top;" rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.harvestingSets}" > 
                                            <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Harvesting Set"/> 
                                         </ui:panelGroup>
                                         <ui:panelGroup rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.harvestingSets}">                          
@@ -85,13 +85,25 @@
                                            <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Harvesting Format"/> 
                                         </ui:panelGroup>
                                         <ui:panelGroup  rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.metadataFormats}">
-                                            <h:selectOneMenu  id="dropdown2"  value="#{EditHarvestSitePage.harvestingDataverse.format}" >
+                                            <h:selectOneMenu   value="#{EditHarvestSitePage.harvestingDataverse.format}" >
                                                 <f:selectItems  value="#{EditHarvestSitePage.metadataFormatsSelect}" />
                                             </h:selectOneMenu>
                                             <verbatim><br /></verbatim>
                                             <h:outputText styleClass="vdcHelpText" value="This is the XML format when used harvesting studies from this OAI Server."/>
                                         </ui:panelGroup>  
-                                       
+   
+                                         <ui:panelGroup  >
+                                              <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Handle Registration"/> 
+                                          </ui:panelGroup >
+                                          <ui:panelGroup>    
+                                            <h:selectOneMenu  binding="#{EditHarvestSitePage.handlePrefixSelectOneMenu}" value="#{EditHarvestSitePage.handlePrefixId}" >
+                                                <f:selectItem itemValue="" itemLabel="Do not register harvested studies (studies must already have a handle)"/>
+                                                <f:selectItems  value="#{EditHarvestSitePage.handlePrefixSelect}" />
+                                            </h:selectOneMenu>
+                                            <verbatim><br /></verbatim>
+                                           
+                                        </ui:panelGroup>  
+                                          
                                     </h:panelGrid>
                                     <h:panelGrid cellpadding="0" cellspacing="0"
                                                  columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" style="margin-top: 30px; margin-bottom: 30px">

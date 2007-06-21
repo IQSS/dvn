@@ -19,6 +19,8 @@ import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.harvest.SetDetailBean;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
 import edu.harvard.hmdc.vdcnet.util.SessionCounter;
+import edu.harvard.hmdc.vdcnet.vdc.HandlePrefix;
+import edu.harvard.hmdc.vdcnet.vdc.HandlePrefixServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
@@ -32,6 +34,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
@@ -49,6 +52,7 @@ public class EditHarvestSitePage extends VDCBaseBean {
     @EJB GroupServiceLocal groupService;
     @EJB VDCServiceLocal vdcService;
     @EJB HarvesterServiceLocal harvesterService;
+    @EJB HandlePrefixServiceLocal handlePrefixService;
     
     
     private HarvestingDataverse harvestingDataverse;
@@ -107,6 +111,7 @@ public class EditHarvestSitePage extends VDCBaseBean {
               
                 
             }
+            
         }
     }
     /**
@@ -190,7 +195,7 @@ public class EditHarvestSitePage extends VDCBaseBean {
     
     public String save() {
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
-        editHarvestSiteService.save(dataverseName,dataverseAlias,userId);
+        editHarvestSiteService.save(dataverseName,dataverseAlias,userId, handlePrefixId);
         success=true;
         return "success";
         
@@ -541,6 +546,18 @@ public class EditHarvestSitePage extends VDCBaseBean {
         return metadataFormatsSelect;
     }
     
+    
+   public List<SelectItem> getHandlePrefixSelect() {
+        List<SelectItem> handlePrefixSelect = new ArrayList<SelectItem>();
+        List<HandlePrefix> prefixList = handlePrefixService.findAll();
+        for (Iterator it = prefixList.iterator(); it.hasNext();) {
+            HandlePrefix prefix = (HandlePrefix) it.next();
+            handlePrefixSelect.add(new SelectItem(prefix.getId(),"Register harvested studies with prefix "+prefix.getPrefix()));
+        }
+        
+        return handlePrefixSelect;
+    }    
+    
     public void validateAlias(FacesContext context,
             UIComponent toValidate,
             Object value) {
@@ -579,6 +596,52 @@ public class EditHarvestSitePage extends VDCBaseBean {
             FacesMessage message = new FacesMessage("This name is already taken.");
             context.addMessage(toValidate.getClientId(context), message);
         }
+    }
+
+    /**
+     * Holds value of property handlePrefixId.
+     */
+    private Long handlePrefixId;
+
+    /**
+     * Getter for property handlePrefixId.
+     * @return Value of property handlePrefixId.
+     */
+    public Long getHandlePrefixId() {
+        Long id=null;
+        if (harvestingDataverse.getHandlePrefix()!=null) {
+            id = harvestingDataverse.getHandlePrefix().getId();
+        }
+        return id;
+    }
+
+    /**
+     * Setter for property handlePrefixId.
+     * @param handlePrefixId New value of property handlePrefixId.
+     */
+    public void setHandlePrefixId(Long handlePrefixId) {
+        this.handlePrefixId = handlePrefixId;
+    }
+
+    /**
+     * Holds value of property handlePrefixSelectOneMenu.
+     */
+    private HtmlSelectOneMenu handlePrefixSelectOneMenu;
+
+    /**
+     * Getter for property handlePrefixSelectOneMenu.
+     * @return Value of property handlePrefixSelectOneMenu.
+     */
+    public HtmlSelectOneMenu getHandlePrefixSelectOneMenu() {
+        return this.handlePrefixSelectOneMenu;
+    }
+
+    /**
+     * Setter for property handlePrefixSelectOneMenu.
+     * @param handlePrefixSelectOneMenu New value of property handlePrefixSelectOneMenu.
+     */
+    public void setHandlePrefixSelectOneMenu(HtmlSelectOneMenu handlePrefixSelectOneMenu) {
+        this.handlePrefixSelectOneMenu = handlePrefixSelectOneMenu;
     }
    
     

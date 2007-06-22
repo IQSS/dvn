@@ -52,7 +52,7 @@ xmlns:ui="http://www.sun.com/web/ui"
              
         </ui:panelGroup>
         <ui:panelGroup  block="true" styleClass="vdcFileTitle" style="padding-bottom: 10px;">
-            <h:outputText value="Date File: #{AnalysisPage.fileName}"/>
+            <h:outputText value="Data File: #{AnalysisPage.fileName}"/>
             <h:outputLink  style="margin-left: 2px;" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{AnalysisPage.studyId}&amp;tab=files">
                       <h:outputText style="font-size: 0.9em; font-weight: bold;" value="Back to Study Files"/>                       
              </h:outputLink>
@@ -720,6 +720,7 @@ xmlns:ui="http://www.sun.com/web/ui"
                                 <!--groupPanel23 -->
                           </ui:panelGroup>
                                 <!-- checkbox: Missing Values -->
+                                <!--
                                 <ui:checkbox id="advStatNaMethod" 
                                     binding="#{AnalysisPage.advStatNaMethod}"
                                     immediate="true"
@@ -727,6 +728,7 @@ xmlns:ui="http://www.sun.com/web/ui"
                                     label="Included Missing Values" 
                                     selectedValue="none"
                                     />
+                                    -->
                             </ui:panelGroup><!-- analysisOptionPanel-->
 
 

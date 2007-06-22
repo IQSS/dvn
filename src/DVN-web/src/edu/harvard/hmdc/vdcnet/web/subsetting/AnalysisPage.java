@@ -3138,6 +3138,7 @@ if (isRecodedVar(varId)){
 // Missing-Value handling: checkbox
     // advStatNaMethod: ui:checkbox
     // @binding
+    /*
     private Checkbox advStatNaMethod = new Checkbox();
 
     public Checkbox getAdvStatNaMethod() {
@@ -3147,6 +3148,7 @@ if (isRecodedVar(varId)){
     public void setAdvStatNaMethod(Checkbox c) {
        this.advStatNaMethod = c;
     }
+    */
     /*
     private OptionsList checkboxAdvStatNaMethodOption = new OptionsList();
     public OptionsList getCheckboxAdvStatNaMethodOption (){
@@ -3404,9 +3406,11 @@ if (isRecodedVar(varId)){
                     
                     //if (advStatNaMethod.getSelected("naMethod").size() >0){
                       //if (advStatNaMethod.getSelected("naMethod").get(0).equals("none")){
+                    /*
                       if (advStatNaMethod.isChecked()){
                         mpl.put(zligPrefix+"_naMethod",  Arrays.asList("none"));
                       }
+                    */
                     //}
                     
                 }

@@ -170,7 +170,9 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             
             for (Iterator it = dataverses.iterator(); it.hasNext();) {
                 HarvestingDataverse dataverse = (HarvestingDataverse) it.next();
-                harvest(dataverse);
+                if (dataverse.isScheduled()) {
+                    harvest(dataverse);
+                }
             }
     }
     

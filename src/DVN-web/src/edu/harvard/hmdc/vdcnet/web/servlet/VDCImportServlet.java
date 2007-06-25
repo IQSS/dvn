@@ -118,11 +118,6 @@ public class VDCImportServlet extends HttpServlet {
         } else
             userId=new Long(1);
         
-        boolean copyFiles=true;
-        String copyFilesStr = req.getParameter("copyFiles");
-        if (copyFilesStr!=null && copyFilesStr.equals("false")) {
-            copyFiles=false;
-        }
         
         logger.info("Begin import, time="+new Date()+".\n");
         
@@ -139,7 +134,7 @@ public class VDCImportServlet extends HttpServlet {
         List<File> files = getDDIFilesFromRepository(logger,legacyFileDir,authStr);
         for (Iterator it = files.iterator(); it.hasNext();) {
             File file = (File) it.next();
-            if (doImportStudy(req,res,logger,  file, vdcId,userId,copyFiles)) {
+            if (doImportStudy(req,res,logger,  file, vdcId,userId)) {
                 importedStudies++;
             }
         }
@@ -166,12 +161,12 @@ public class VDCImportServlet extends HttpServlet {
         return files;
     }
     
-    private boolean doImportStudy(HttpServletRequest req, HttpServletResponse res, Logger logger,  File studyFile,Long vdcId,Long userId,boolean copyFiles ) {
+    private boolean doImportStudy(HttpServletRequest req, HttpServletResponse res, Logger logger,  File studyFile,Long vdcId,Long userId ) {
         String ddiFilePath = studyFile.getParent()+studyFile.separatorChar+studyFile.getName();
         logger.info("Importing study "+ddiFilePath+"\n");
         boolean success=false;
         try {
-            studyService.importLegacyStudy(studyFile,vdcId,userId, copyFiles);
+            studyService.importLegacyStudy(studyFile,vdcId,userId);
             logger.info("Successfully imported study "+ddiFilePath+"\n");
             success=true;
             

@@ -200,7 +200,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             throw new EJBException(e);
         }
    
-        Date lastHarvestTime;
+        Date lastHarvestTime=null;
         try {
           
             havestingDataverseService.setHarvestingNow(dataverse.getId(), true);
@@ -211,9 +211,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 resumptionToken= harvestFromIdentifiers(hdLogger, resumptionToken,dataverse,from,until);
             } while(resumptionToken!=null);
             
-            // Get managed version of the dataverse so that update to lastHarvestTime will be persisted
-            dataverse = em.find(HarvestingDataverse.class, dataverse.getId());         
-            dataverse.setLastHarvestTime(lastHarvestTime);
+          
             
             hdLogger.log(Level.INFO,"COMPLETED HARVEST, oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);
  
@@ -221,8 +219,13 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             hdLogger.log(Level.SEVERE, "ParseException harvesting dataverse "+dataverse.getVdc().getName()+", until Str="+until+", exception: "+ex.getMessage() );
         } finally {
              havestingDataverseService.setHarvestingNow(dataverse.getId(), false);
+            
         }
-        
+         // Get managed version of the dataverse so that update to lastHarvestTime will be persisted
+            dataverse = em.find(HarvestingDataverse.class, dataverse.getId());     
+            em.refresh(dataverse);  // setHarvestingNow() happened in a separate transaction, so we need to refetch data from the database before setting harvesting time.
+            dataverse.setLastHarvestTime(lastHarvestTime);
+          
     }
     
     

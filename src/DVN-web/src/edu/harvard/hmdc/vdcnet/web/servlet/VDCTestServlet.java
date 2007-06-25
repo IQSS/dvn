@@ -62,7 +62,7 @@ public class VDCTestServlet extends HttpServlet {
         
         switch ( test ) {
             case TEST_ZELIG_CONFIG : zeligTest(req,res); break;
-            case TEST_MAP_DDI : mapDDITest(req,res); break;
+            case TEST_MAP_DDI : res.getWriter().println("This test is no longer valid."); break;
             case TEST_MAP_STUDY : mapStudyTest(req,res); break;
             case TEST_DISSEMINATE : disseminateTest(req,res); break;            
             default: res.getWriter().println("Invalid test specified.");
@@ -125,50 +125,6 @@ public class VDCTestServlet extends HttpServlet {
     }
     // </editor-fold>
     
-    // <editor-fold defaultstate="collapsed" desc="mapDDITest">
-    protected void mapDDITest(HttpServletRequest req, HttpServletResponse res)
-    throws ServletException, IOException {
-        File xmlFile = null;
-        InputStream in = null;
-        OutputStream out = null;
-        
-        try {
-            if (req.getParameter("url") != null) {
-                xmlFile = File.createTempFile("ddi", ".xml");
-                readUrlIntoFile( new URL(req.getParameter("url")), xmlFile  );
-                in = new FileInputStream( xmlFile );
-                
-            } else if (req.getParameter("file") != null) {
-                xmlFile = new File( req.getParameter("file") );
-                in = new FileInputStream( xmlFile );
-            } else {
-                res.getWriter().println("No DDI specified; please use 'url' or 'file' parameter.");
-                return;
-            }
-            
-            Long vdcId = new Long(1);
-            Long userId = new Long(1);
-            Long studyId = new Long(1);
-          
-            studyService.importStudy( xmlFile, studyId, vdcId, userId, false, false, true, false );
-            
-            // send the DDI as the response
-            res.setContentType("text/xml");
-            out = res.getOutputStream();
-            
-            int i = in.read();
-            while (i != -1 ) {
-                out.write(i);
-                i = in.read();
-            }
-            
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (in != null) { in.close(); }
-            if (out != null) { out.close(); }
-        }
-    }
     
     private void readUrlIntoFile(URL inputUrl, File outputFile) throws IOException {
         InputStream in = inputUrl.openStream();

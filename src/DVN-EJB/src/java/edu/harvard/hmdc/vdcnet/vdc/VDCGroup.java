@@ -172,7 +172,16 @@ public class VDCGroup implements Serializable {
      */
     public void setDescription(String description) {
         this.description = description;
+    }  
+    
+    @Transient
+    private boolean selected = true;
+    
+    public boolean getSelected() {
+        return this.selected;
     }
     
-    
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 }

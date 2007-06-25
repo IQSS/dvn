@@ -281,7 +281,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         //   Logger logger = Logger.getLogger()
         // this is currently only used by ingest; so it is OK
         // to pass true for the isAnIngest variable
-        return mapDDI(_cb, new Study(), true, false);
+        return mapDDI(_cb, new Study(), true);
     }
     
     public Study mapDDI(CodeBook _cb, Study study) {

@@ -73,11 +73,10 @@ public interface StudyServiceLocal {
     edu.harvard.hmdc.vdcnet.study.Study saveStudy(Study study, Long userId);
 
     edu.harvard.hmdc.vdcnet.study.Study importLegacyStudy(File xmlFile, Long vdcId, Long userId);
-    edu.harvard.hmdc.vdcnet.study.Study importLegacyStudy(File xmlFile, Long vdcId, Long userId, boolean copyFiles);
-    edu.harvard.hmdc.vdcnet.study.Study importHarvestStudy(File xmlFile, Long studyId, Long vdcId, Long userId);
-    edu.harvard.hmdc.vdcnet.study.Study importStudy(File xmlFile, Long studyId, Long vdcId, Long userId, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates, boolean retrieveFiles);
+    edu.harvard.hmdc.vdcnet.study.Study importHarvestStudy(File xmlFile, Long vdcId, Long userId);
+    edu.harvard.hmdc.vdcnet.study.Study importStudy(File xmlFile, Long vdcId, Long userId, boolean registerHandle, boolean genegenerateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles);
 
-    edu.harvard.hmdc.vdcnet.study.Study doImportStudy(File xmlFile, Long studyId, Long vdcId, Long userId, boolean checkRestrictions, boolean generateStudyId, boolean allowUpdates, boolean retrieveFiles);
+    edu.harvard.hmdc.vdcnet.study.Study doImportStudy(File xmlFile, Long vdcId, Long userId, boolean registerHandle, boolean genegenerateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles);
 
 
     

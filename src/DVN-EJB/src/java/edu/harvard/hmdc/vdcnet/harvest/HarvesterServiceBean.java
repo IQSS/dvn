@@ -307,10 +307,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 studyService.deleteStudy(study.getId());
             } else {
                 VDCUser networkAdmin = vdcNetworkService.find().getDefaultNetworkAdmin();
-                Study study= studyService.getStudyByGlobalId(identifier);
-                Long studyId = study != null ? study.getId() : null;
-               
-                studyService.importHarvestStudy(record.getMetadataFile(), studyId, dataverse.getVdc().getId(),networkAdmin.getId());
+
+                studyService.importHarvestStudy(record.getMetadataFile(),dataverse.getVdc().getId(),networkAdmin.getId());
                 
                 hdLogger.log(Level.INFO,"Harvest Successful for identifier "+identifier );
             }

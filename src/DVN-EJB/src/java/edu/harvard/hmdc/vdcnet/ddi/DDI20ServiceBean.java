@@ -186,7 +186,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     @EJB VDCNetworkServiceLocal networkService;
     @EJB StudyServiceLocal studyService;
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceBean");
- 
+    
     
     /** Creates a new instance of DDI20ServiceBean */
     public DDI20ServiceBean() {
@@ -227,6 +227,49 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     // no such prefix; e.g. "_ss" would represent the SumStatType object generated
     // by the unmarshaller, while "ss" represents the entity object
     
+    public String determineId(CodeBook _cb, String agency) {
+        // some of this code is redundant logic from what happens in
+        // mapping, and could probably be consolidated
+        
+        String returnId = null;
+        
+        // first check StudyDscr
+        List<IDNoType> _idList = _cb.getStdyDscr().get(0).getCitation().get(0).getTitlStmt().getIDNo();
+        returnId = agency == null ? getFirstId(_idList) : getIdByAgency(_idList, agency);
+        
+        if (returnId == null) {
+            // now check docDscr
+            Iterator iter = _cb.getDocDscr().iterator();
+            while ( returnId == null && iter.hasNext()) {
+                DocDscrType _dd = (DocDscrType) iter.next();
+                if (_dd.getCitation() != null) {
+                    _idList = _dd.getCitation().getTitlStmt().getIDNo();
+                    returnId = agency == null ? getFirstId(_idList) : getIdByAgency(_idList, agency);
+                }
+            }
+        }
+        
+        return returnId;
+    }
+    
+    
+    private String getFirstId(List<IDNoType> _idList) {
+        if ( _idList != null && _idList.size() > 0) {
+            IDNoType _id = _idList.get(0);
+            return (String) _id.getContent().get(0);
+        }
+        return null;
+    }
+    
+    private String getIdByAgency(List<IDNoType> _idList, String agency) {
+        for (IDNoType _id : _idList) {
+            if (_id.getAgency()!=null && _id.getAgency().equals(agency)) {
+                return (String) _id.getContent().get(0);
+            }
+        }
+
+        return null;
+    }    
     
     //*************************************************************
     //
@@ -235,17 +278,18 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     //*************************************************************
     
     public Study mapDDI(CodeBook _cb) {
-     //   Logger logger = Logger.getLogger()
+        //   Logger logger = Logger.getLogger()
         // this is currently only used by ingest; so it is OK
         // to pass true for the isAnIngest variable
         return mapDDI(_cb, new Study(), true, false);
     }
     
-    public Study mapDDI(CodeBook _cb, Study study, boolean allowUpdates) {
-        return mapDDI(_cb, study, false, allowUpdates);
+    public Study mapDDI(CodeBook _cb, Study study) {
+        return mapDDI(_cb, study, false);
     }
     
-    private Study mapDDI(CodeBook _cb, Study study, boolean isAnIngest, boolean allowUpdates) {
+    
+    private Study mapDDI(CodeBook _cb, Study study, boolean isAnIngest) {
         logger.info("begin mapDDI()");
         // map used to link dataVariables to appropriate dataTable
         Map filesMap = new HashMap();
@@ -286,13 +330,6 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 mapDocDscr( _dd, study, docDscrMap );
             }
             
-            // now check studyId
-            if (!allowUpdates) {
-                if (!studyService.isUniqueStudyId(study.getStudyId(),study.getProtocol(),study.getAuthority())) {
-                    // There is already a study in the database with this id, so we can't save this study in the database
-                    throw new MappingException("Study "+study.getGlobalId()+" already exists. ");
-                }                
-            }
             
             iter = _cb.getOtherMat().iterator();
             while (iter.hasNext()) {
@@ -530,8 +567,8 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 String abstractText = "";
                 while (abstractsContentIter.hasNext()) {
                     Object content = (Object) abstractsContentIter.next();
-                     abstractText += mapContent(content);
-                     abstractText += abstractsContentIter.hasNext() ? "\n" : "";
+                    abstractText += mapContent(content);
+                    abstractText += abstractsContentIter.hasNext() ? "\n" : "";
                 }
                 studyAbstract.setText( abstractText.trim() );
                 
@@ -986,23 +1023,23 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         
         file.setFileSystemLocation( _fd.getURI() );
         // for now, don't do anything about content type'
-
+        
         
         // now check if we have any variables associated (to see if we are subsettable)
-        DataTable dt = (DataTable) filesMap.get( _fd.getID() );    
+        DataTable dt = (DataTable) filesMap.get( _fd.getID() );
         if (dt != null) {
-            file.setSubsettable(true);            
-
+            file.setSubsettable(true);
+            
             dt.setStudyFile(file);
-            file.setDataTable(dt);        
-
+            file.setDataTable(dt);
+            
             DimensnsType _dim = _fd.getFileTxt().get(0).getDimensns();
             dt.setCaseQuantity( new Long( (String) _dim.getCaseQnty().get(0).getContent().get(0) ) );
             dt.setVarQuantity( new Long( (String) _dim.getVarQnty().get(0).getContent().get(0) ) );
         }
         
         
-       
+        
         Iterator iter = _fd.getNotes().iterator();
         while (iter.hasNext()) {
             NotesType _note = (NotesType) iter.next();
@@ -1022,11 +1059,11 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     
     private void mapDataDscr(DataDscrType _dd, Map filesMap) {
         // Pre-fetch Variable data for efficiency
-        List<VariableFormatType> variableFormatTypeList =  varService.findAllVariableFormatType(); 
-        List<VariableIntervalType> variableIntervalTypeList =  varService.findAllVariableIntervalType(); 
-        List<SummaryStatisticType> summaryStatisticTypeList =  varService.findAllSummaryStatisticType(); 
-        List<VariableRangeType> variableRangeTypeList =  varService.findAllVariableRangeType(); 
-
+        List<VariableFormatType> variableFormatTypeList =  varService.findAllVariableFormatType();
+        List<VariableIntervalType> variableIntervalTypeList =  varService.findAllVariableIntervalType();
+        List<SummaryStatisticType> summaryStatisticTypeList =  varService.findAllSummaryStatisticType();
+        List<VariableRangeType> variableRangeTypeList =  varService.findAllVariableRangeType();
+        
         Iterator iter = _dd.getVar().iterator();
         int fileOrder = 0;
         while (iter.hasNext()) {
@@ -1272,7 +1309,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 boolean addHoldings = false;
                 String holdings = "";
                 for (HoldingsType _holdings : _citation.getHoldings() ) {
-                    holdings += addHoldings ? ", " : "";     
+                    holdings += addHoldings ? ", " : "";
                     if (_holdings.getURI() != null && !_holdings.getURI().trim().equals("") ) {
                         holdings += "<a href=\"" + _holdings.getURI() + "\">";
                         holdings += mapContent(_holdings.getContent().get(0));
@@ -1574,8 +1611,8 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             addDistStmt = true;
         }
         
-        if (!StringUtil.isEmpty( s.getDistributorContact()) || 
-                !StringUtil.isEmpty( s.getDistributorContactEmail()) || 
+        if (!StringUtil.isEmpty( s.getDistributorContact()) ||
+                !StringUtil.isEmpty( s.getDistributorContactEmail()) ||
                 !StringUtil.isEmpty( s.getDistributorContactAffiliation()) ) {
             
             ContactType _contact = objFactory.createContactType();

@@ -43,7 +43,12 @@ public class ImportStudyPage extends VDCBaseBean  {
     
     private UploadedFile browserFile;
     private Long vdcId;
+    private boolean registerHandle;
+    private boolean generateHandle;
+    private boolean allowUpdates;
+    private boolean checkRestrictions;
     private boolean copyFiles;
+    
     
     
     /** Creates a new instance of ImportStudyPage */
@@ -82,13 +87,7 @@ public class ImportStudyPage extends VDCBaseBean  {
         this.vdcId = vdcId;
     }
     
-    public boolean isCopyFiles() {
-        return copyFiles;
-    }
-    
-    public void setCopyFiles(boolean copyFiles) {
-        this.copyFiles = copyFiles;
-    }
+
     
     public String import_action() {
         String resultMsg = null;
@@ -100,10 +99,10 @@ public class ImportStudyPage extends VDCBaseBean  {
             try {
                 File xmlFile = File.createTempFile("ddi", ".xml");
                 browserFile.write(xmlFile);
-                studyService.importStudy(xmlFile, null, vdcId, lb.getUser().getId(), checkRestrictions, true, false, copyFiles);
+                studyService.importStudy(xmlFile, vdcId, lb.getUser().getId(), registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles);
                 resultMsg = "Import succeeded.";
             } catch (Exception ex) {
-                resultMsg = "Import failed.";
+                resultMsg = "Import failed: " + ex.getMessage() ;
                 ex.printStackTrace();
             }
         }
@@ -115,26 +114,48 @@ public class ImportStudyPage extends VDCBaseBean  {
         return null;
     }
 
-    /**
-     * Holds value of property checkRestrictions.
-     */
-    private boolean checkRestrictions;
 
-    /**
-     * Getter for property checkRestrictions.
-     * @return Value of property checkRestrictions.
-     */
+    public boolean isRegisterHandle() {
+        return registerHandle;
+    }
+
+    public void setRegisterHandle(boolean registerHandle) {
+        this.registerHandle = registerHandle;
+    }
+
+    public boolean isGenerateHandle() {
+        return generateHandle;
+    }
+
+    public void setGenerateHandle(boolean generateHandle) {
+        this.generateHandle = generateHandle;
+    }
+
+    public boolean isAllowUpdates() {
+        return allowUpdates;
+    }
+
+    public void setAllowUpdates(boolean allowUpdates) {
+        this.allowUpdates = allowUpdates;
+    }
+
     public boolean isCheckRestrictions() {
         return this.checkRestrictions;
     }
 
-    /**
-     * Setter for property checkRestrictions.
-     * @param checkRestrictions New value of property checkRestrictions.
-     */
     public void setCheckRestrictions(boolean checkRestrictions) {
         this.checkRestrictions = checkRestrictions;
     }
+    
+    public boolean isCopyFiles() {
+        return copyFiles;
+    }
+    
+    public void setCopyFiles(boolean copyFiles) {
+        this.copyFiles = copyFiles;
+    }    
+
+
     
     
     

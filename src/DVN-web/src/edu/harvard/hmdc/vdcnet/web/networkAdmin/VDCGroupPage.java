@@ -14,11 +14,13 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.persistence.EntityManager;
@@ -40,6 +42,8 @@ public class VDCGroupPage extends VDCBaseBean {
     private VDCGroup VDCGroup;
 
     private DataModel model;
+    
+    private List groupList;
 
     @Resource
     private UserTransaction utx;
@@ -76,6 +80,17 @@ public class VDCGroupPage extends VDCBaseBean {
         model = new ListDataModel(new ArrayList(m));
     }
 
+    public String saveDetails() {
+        DataModel localmodel = model;
+        List list = (List)localmodel.getWrappedData();
+        Iterator iterator = list.iterator();
+        while (iterator.hasNext()) {
+            VDCGroup vdcgroup = (VDCGroup)iterator.next();
+            System.out.println(vdcgroup.getName());
+        }
+        return "success";
+    }
+    
     public String createSetup() {
         this.VDCGroup = new VDCGroup();
         return "VDCGroup_create";
@@ -148,6 +163,18 @@ public class VDCGroupPage extends VDCBaseBean {
     
     public String saveOrder() {
         //add some code to save the order
+        model.getRowData();
+        /*List wrappeddata = (List)model.getWrappedData();
+        Iterator iterator = wrappeddata.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            List list = (List)iterator.next();
+            Iterator inneriterator = list.iterator();
+             while (inneriterator.hasNext()) {
+                System.out.println(inneriterator.next().toString());
+             }
+            i++;
+        }*/
         return "success";
     }
     
@@ -169,7 +196,7 @@ public class VDCGroupPage extends VDCBaseBean {
     public VDCGroup getVDCGroupFromRequestParam() {
         EntityManager em = getEntityManager();
         try{
-            VDCGroup o = (VDCGroup) model.getRowData();
+            VDCGroup o = (VDCGroup)model.getRowData();
             o = em.merge(o);
             return o;
         } finally {
@@ -185,12 +212,25 @@ public class VDCGroupPage extends VDCBaseBean {
     public DataModel getVDCGroups() {
         model = null;
         try {
-            model = new ListDataModel((List)vdcGroupService.findAll());
+            List list = this.getGroupList();
+            model = new ListDataModel(list);
         } catch (Exception e) {
             addErrorMessage(e.getCause().toString());
         } finally {
             return model;
         }
+    }
+    
+    public List getGroupList() {
+        if (groupList == null)
+            groupList = (List)vdcGroupService.findAll();
+        else 
+            groupList = groupList;
+        return this.groupList;
+    }
+    
+    public void setGroupList(List grouplist) {
+        this.groupList = grouplist;
     }
 
     public static void addErrorMessage(String msg) {
@@ -251,6 +291,52 @@ public class VDCGroupPage extends VDCBaseBean {
             firstItem = 0;
         }
         return "VDCGroup_list";
+    } 
+    
+    /** some helper methods
+     *
+     *
+     *
+     * @author wbossons
+     */
+    
+    /** value change listener
+     *
+     * changeSelect
+     *
+     * @author wbossons
+     */
+    public void changeSelect(ValueChangeEvent event) {
+            Boolean newValue = (Boolean)event.getNewValue();
+            VDCGroup vdcgroup = (VDCGroup)this.getVDCGroups().getRowData();
+            vdcgroup.setSelected(newValue.booleanValue());
+            List list = groupList;
+            Iterator iterator = list.iterator();
+            while (iterator.hasNext()) {
+                VDCGroup itgroup = (VDCGroup)iterator.next();
+                if (itgroup.getId() == vdcgroup.getId())
+                    this.groupList.set(this.groupList.indexOf(itgroup), vdcgroup);
+            }
+            this.model.setWrappedData(groupList);
     }
     
+    /** value change listener
+     *
+     * changeSelect
+     *
+     * @author wbossons
+     */
+    public void changeOrder(ValueChangeEvent event) {
+            Long newValue = (Long)event.getNewValue();
+            VDCGroup vdcgroup = (VDCGroup)this.getVDCGroups().getRowData();
+            vdcgroup.setDisplayOrder(newValue.intValue());
+            List list = groupList;
+            Iterator iterator = list.iterator();
+            while (iterator.hasNext()) {
+                VDCGroup itgroup = (VDCGroup)iterator.next();
+                if (itgroup.getId() == vdcgroup.getId())
+                    this.groupList.set(this.groupList.indexOf(itgroup), vdcgroup);
+            }
+            this.model.setWrappedData(groupList);
+    }
 }

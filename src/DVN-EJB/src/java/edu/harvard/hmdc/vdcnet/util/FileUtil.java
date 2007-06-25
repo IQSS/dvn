@@ -61,7 +61,7 @@ public class FileUtil {
         if (studyFileDir != null) {
             return studyFileDir;
         } else {
-            throw new EJBException("System property \"vdc.study.file.dir\" has not been set.");
+            throw new EJBException("System property \"vdc.legacy.file.dir\" has not been set.");
         }
     }     
        

@@ -22,13 +22,22 @@
                     <h:selectOneMenu  id="radioButtonList1" value="#{ImportStudyPage.vdcId}">
                         <f:selectItems  id="radio1SelectItem" value="#{ImportStudyPage.vdcRadioItems}" />
                     </h:selectOneMenu>
-                            
-                    <h:outputText value="Copy Files?" />
-                    <h:selectBooleanCheckbox  id="copyFilesCheckBox" value="#{ImportStudyPage.copyFiles}"/> 
+                    
+                    <h:outputText value="Register Handle?" />
+                    <h:selectBooleanCheckbox  id="registerHandleCheckBox" value="#{ImportStudyPage.registerHandle}"/> 
+                    
+                    <h:outputText value="Generate Handle?" />
+                    <h:selectBooleanCheckbox  id="generateHandleCheckBox" value="#{ImportStudyPage.generateHandle}"/> 
+                    
+                    <h:outputText value="Allow Updates?" />
+                    <h:selectBooleanCheckbox  id="allowUpdatesCheckBox" value="#{ImportStudyPage.allowUpdates}"/> 
                             
                     <h:outputText value="Check Restrictions?" />
                     <h:selectBooleanCheckbox  id="checkRestrictionsCheckBox" value="#{ImportStudyPage.checkRestrictions}"/> 
-                           
+                      
+                    <h:outputText value="Copy Files?" />
+                    <h:selectBooleanCheckbox  id="copyFilesCheckBox" value="#{ImportStudyPage.copyFiles}"/> 
+                    
                 </h:panelGrid>
                 <ui:panelLayout   style="padding: 30px 40px 40px 40px; ">
                     <h:commandButton  value="Import" action="#{ImportStudyPage.import_action}"/>

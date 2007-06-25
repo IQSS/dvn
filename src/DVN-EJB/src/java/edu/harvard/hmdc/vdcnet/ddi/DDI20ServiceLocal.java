@@ -18,10 +18,12 @@ import javax.xml.bind.JAXBException;
 public interface DDI20ServiceLocal {
     edu.harvard.hmdc.vdcnet.study.Study mapDDI(CodeBook _cb);
 
-    edu.harvard.hmdc.vdcnet.study.Study mapDDI(CodeBook _cb, Study study, boolean allowUpdates);
+    edu.harvard.hmdc.vdcnet.study.Study mapDDI(CodeBook _cb, Study study);
     
     void exportStudy(Study study, Writer out) throws IOException, JAXBException;
     
     void exportStudy(Study study, Writer out, boolean exportToLegacyVDC) throws IOException, JAXBException;
+    
+    java.lang.String determineId(CodeBook _cb, String agency);    
     
 }

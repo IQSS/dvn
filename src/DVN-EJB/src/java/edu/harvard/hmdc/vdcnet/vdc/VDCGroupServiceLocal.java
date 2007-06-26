@@ -22,4 +22,5 @@ public interface VDCGroupServiceLocal {
     
     public java.util.Collection<VDCGroup> findAll();
     
+    public void updateVdcGroup(VDCGroup vdcgroup);
 }

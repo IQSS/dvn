@@ -115,6 +115,7 @@ public class VDCServiceBean implements VDCServiceLocal {
 
     public void create(Long userId,String name, String alias) {
         VDC addedSite = new VDC();
+        em.persist(addedSite);
         addedSite.setName(name);
         addedSite.setAlias(alias);
         VDCCollection addedRootCollection = new VDCCollection();
@@ -123,6 +124,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         addedRootCollection.setVisible(true);
         vdcCollectionService.create(addedRootCollection);
         addedSite.setRootCollection(addedRootCollection);
+        addedSite.getOwnedCollections().add(addedRootCollection);
         VDCNetwork vdcNetwork = vdcNetworkService.find(new Long(1));
         addedSite.setDefaultTemplate(vdcNetwork.getDefaultTemplate());
         addedSite.setHeader(vdcNetwork.getDefaultVDCHeader());
@@ -144,7 +146,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         addedSite.setAdvSearchFields(advancedSearchFields);
         addedSite.setSearchResultFields(searchResultsFields);
         addedSite.setCreator(em.find(VDCUser.class,userId));
-        em.persist(addedSite);
+   
         addedRootCollection.setOwner(addedSite);
         vdcCollectionService.edit(addedRootCollection);
         userService.addVdcRole(userId,findByAlias(addedSite.getAlias()).getId(), roleService.ADMIN);
@@ -209,14 +211,15 @@ public class VDCServiceBean implements VDCServiceLocal {
     
     public void delete (Long vdcId) {
         VDC vdc = em.find(VDC.class,vdcId);
+        em.refresh(vdc);
         
         for (Iterator it = vdc.getOwnedStudies().iterator(); it.hasNext();) {
             Study elem = (Study) it.next();
             studyService.deleteStudy(elem.getId());    
         }
-        vdc.getOwnedStudies().clear();
+   //    vdc.getOwnedStudies().clear();
        
-        vdc.setRootCollection(null);
+    //    vdc.setRootCollection(null);
        
         for (Iterator it = vdc.getOwnedCollections().iterator(); it.hasNext();) {
            VDCCollection elem = (VDCCollection) it.next();

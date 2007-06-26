@@ -80,13 +80,13 @@ public class VDCGroupPage extends VDCBaseBean {
         model = new ListDataModel(new ArrayList(m));
     }
 
-    public String saveDetails() {
-        DataModel localmodel = model;
-        List list = (List)localmodel.getWrappedData();
+    public String save() {
+        model.getRowCount();
+        List list = (List)model.getWrappedData();
         Iterator iterator = list.iterator();
         while (iterator.hasNext()) {
             VDCGroup vdcgroup = (VDCGroup)iterator.next();
-            System.out.println(vdcgroup.getName());
+            this.vdcGroupService.updateVdcGroup(vdcgroup);
         }
         return "success";
     }
@@ -303,6 +303,12 @@ public class VDCGroupPage extends VDCBaseBean {
     /** value change listener
      *
      * changeSelect
+     * 
+     * This method detects the selected
+     * delete state. It operates on the
+     * VDCGroup class' transient property,
+     * selected and resets the dataModel
+     * to ready it for submission.
      *
      * @author wbossons
      */
@@ -310,33 +316,47 @@ public class VDCGroupPage extends VDCBaseBean {
             Boolean newValue = (Boolean)event.getNewValue();
             VDCGroup vdcgroup = (VDCGroup)this.getVDCGroups().getRowData();
             vdcgroup.setSelected(newValue.booleanValue());
-            List list = groupList;
-            Iterator iterator = list.iterator();
-            while (iterator.hasNext()) {
-                VDCGroup itgroup = (VDCGroup)iterator.next();
-                if (itgroup.getId() == vdcgroup.getId())
-                    this.groupList.set(this.groupList.indexOf(itgroup), vdcgroup);
-            }
-            this.model.setWrappedData(groupList);
+            resetWrappedData(vdcgroup, groupList);
     }
     
     /** value change listener
      *
-     * changeSelect
+     * changeOrder
+     * 
+     * This method detects the changed display
+     * order input. It operates on the
+     * VDCGroup class' displayorder property
+     * and resets the dataModel
+     * to ready it for submission.
      *
      * @author wbossons
      */
     public void changeOrder(ValueChangeEvent event) {
-            Long newValue = (Long)event.getNewValue();
+            Integer newValue = (Integer)event.getNewValue();
             VDCGroup vdcgroup = (VDCGroup)this.getVDCGroups().getRowData();
             vdcgroup.setDisplayOrder(newValue.intValue());
-            List list = groupList;
-            Iterator iterator = list.iterator();
-            while (iterator.hasNext()) {
-                VDCGroup itgroup = (VDCGroup)iterator.next();
-                if (itgroup.getId() == vdcgroup.getId())
-                    this.groupList.set(this.groupList.indexOf(itgroup), vdcgroup);
-            }
-            this.model.setWrappedData(groupList);
+            resetWrappedData(vdcgroup, groupList);
+    }
+    
+    /** commonly used iteration
+     * (by change listeners)
+     *
+     * @param group - The group data that has changed.
+     * @param list - The group list that populates the data model. 
+     * The list is the same as the class' groupList. This method operates
+     * on both this class' groupList and its data model.
+     *
+     * @author wbossons
+     */
+    public void resetWrappedData(VDCGroup group, List list) {
+        VDCGroup localgroup = group;
+        List locallist = list;
+        Iterator iterator = locallist.iterator();
+        while (iterator.hasNext()) {
+            VDCGroup itgroup = (VDCGroup)iterator.next();
+            if (itgroup.getId() == localgroup.getId())
+                this.groupList.set(this.groupList.indexOf(itgroup), localgroup);
+        }
+        this.model.setWrappedData(groupList);
     }
 }

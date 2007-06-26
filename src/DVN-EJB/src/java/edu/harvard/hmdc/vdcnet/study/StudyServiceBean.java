@@ -142,6 +142,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         em.remove(study);
         gnrsService.delete(study.getAuthority(),study.getStudyId());
         indexService.deleteStudy(studyId);
+       
         
     }
     
@@ -508,7 +509,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             }
             query = "SELECT s from Study s where s.authority = '"+authority+"' " ;
             query+=" and s.lastUpdateTime >'" +beginTime+"'";
-            query+=" and s.lastUpdateTime <'" +endTime+"'";
+        //    query+=" and s.lastUpdateTime <'" +endTime+"'";
             query+=" order by s.studyId";
             List updatedStudies = em.createQuery(query).getResultList();
             

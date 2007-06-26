@@ -1130,6 +1130,10 @@ a.vdcSiteMapLink:hover {
    font-size: 1.3em;
    padding-left: 4px;
 }
+.MnuStdOptGrp {
+   color:#000000; 
+   background-color:#ffffff;
+}
 
 /* Network Homepage Style Rules */
 .vdcDataverseGroupLeft{

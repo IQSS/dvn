@@ -19,7 +19,8 @@
                         <f:facet name="header">
                             <h:outputText id="displayColumnCaption" escape="false" value="Display Order"/>
                         </f:facet>
-                        <h:inputText valueChangeListener="#{changeOrder}" onchange="submit();" id="displayOrder" styleClass="groupEditOrderInput" size="2" maxlength="3" value="#{item.displayOrder}"/>
+                        <h:inputText valueChangeListener="#{VDCGroupPage.changeOrder}" onblur="submit();" id="displayOrder" styleClass="groupEditOrderInput" size="2" maxlength="3" value="#{item.displayOrder}"/>
+                            
                     </h:column>
                     <h:column>
                         <f:facet name="header">
@@ -45,7 +46,7 @@
                     <h:column><h:outputText escape="false" value="&lt;!-- placeholder --&gt;"/></h:column>
                     <h:column><h:commandLink id="add" value="Add Group" action="#{VDCGroupPage.addGroup}"/></h:column>
                     <h:column><h:outputText escape="false" value="&lt;!-- placeholder --&gt;"/></h:column>
-                    <h:column><h:commandButton id="save" value="Save" action="#{VDCGroupPage.saveOrder}"/></h:column>
+                    <h:column><h:commandButton id="save" value="Save" action="#{VDCGroupPage.save}"/></h:column>
                 </h:panelGrid>
             </ui:panelLayout>
         </h:form>

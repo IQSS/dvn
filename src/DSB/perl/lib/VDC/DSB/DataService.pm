@@ -1035,7 +1035,7 @@ sub setBpRcode{
 	my $optn ={ @_ };
 	$self->{bpRdata}={
 		startup=>"########## VDC DS Request Code starts here ##########\nsource(\"/usr/local/VDC/R/library/vdc_startup.R\")\n\n",
-		asI=>"for (i in 1:dim(x)[2]){if (attr(x,\"var.type\")[i] == 0) {x[[i]]<-I(x[[i]]);  x[[i]][ x[[i]] == '' ]<-NA  }}\n\n",
+		asI=>"for (i in 1:dim(x)[2]){if (attr(x,\"var.type\")[i] == 0) {\nx[[i]]<-I(x[[i]]);  x[[i]][ x[[i]] == '' ]<-NA  }}\n\n",
 		VL=>"VALTABLE<-list()\n",
 		attrVL=>"attr(x, \"val.table\")<-VALTABLE\n",
 		MVL=>"MSVLTBL<-list()\n",
@@ -2427,14 +2427,14 @@ sub createDataCitationFile{
 
 	
 	if ($outputType eq 'html') {
-		$cTemplate->[1]= "_Citation for the full data set_:</pre>\n\n<blockquote>" . $self->{citation}->{OfflineCitation} . "</blockquote><pre>\n\n";
+		$cTemplate->[1]= "_Citation_ for the full data set:</pre>\n\n<blockquote>" . $self->{citation}->{OfflineCitation} . "</blockquote><pre>\n\n";
 	}  elsif ($outputType eq 'txt') {
 		$cTemplate->[1]= "_Citation for the full data set_:\n\n" . $self->{citation}->{OfflineCitation} . "\n\n";
 	}
 	print "citation file(part 2):\n", $cTemplate->[1] if $DEBUG ;
 
 	
-	my $varId2Name="\tName\n" ;
+	my $varId2Name="\tID\tName\n" ;
 	foreach my $k (@{$self->{_varNo}}) {
 		$varId2Name .= "\t" . $self->{_varNameH}->{$k} . "\n";
 	}
@@ -2620,7 +2620,7 @@ sub printZeligCode{
 		print "test: setx argument=",$setxArgSet,"\n" if $DEBUG;
 		
 		if ($setxArgSet){
-			$otherArgs  .= "," . $setxArgSet;
+			$otherArgs  .= ",\n" . $setxArgSet;
 		}
 		
 		# naMethod
@@ -2649,8 +2649,8 @@ sub printZeligCode{
 		}
 		my $rqstDir = $ZELIGOUTPUTDIR . '/rqst_' . $mdlCounter;
 		mkdir $rqstDir;
-		print $wh "\ntry( {zlg.out<- VDCgenAnalysis(outDir=\"${rqstDir}\", " . join(", ", ($formula,  "model=\"$model\"", "data=$dtfrm", $otherArgs, )) .  ", HTMLInitArgs=list(Title=\"Dataverse Analysis\") )} )\n\n";
-		print $wh "if (exists('zlg.out')) { try(cat(file=\"" . $zlgOutIdFile . "\", paste(zlg.out,collapse=\"\\t\"),append=T,sep=\"\\n\"))} else {try(cat(file=\"" . $zlgOutIdFile . "\", \"${mdlCounter}_${model}_failed\",append=T,sep=\"\\n\"))}\n";
+		print $wh "\ntry( {zlg.out<- VDCgenAnalysis(\noutDir=\"${rqstDir}\",\n" . join(",\n", ($formula,  "model=\"$model\"", "data=$dtfrm", $otherArgs, )) .  ",\nHTMLInitArgs=list(Title=\"Dataverse Analysis\") )} )\n\n";
+		print $wh "if (exists('zlg.out')) {\ntry(cat(file=\"" . $zlgOutIdFile . "\",\npaste(zlg.out,collapse=\"\\t\"),append=T,sep=\"\\n\"))\n} else {\ntry(cat(file=\"" . $zlgOutIdFile . "\",\n\"${mdlCounter}_${model}_failed\",\nappend=T,sep=\"\\n\"))}\n";
 		print $wh "########## Code for the request ends here ##########\n";
 	}
 	print $wh "########## Code listing: end ##########\n";

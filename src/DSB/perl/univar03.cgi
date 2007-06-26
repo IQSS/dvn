@@ -1412,6 +1412,7 @@ ENDX
 		my $startLine ='> # iteration lines begin here';
 		my $endLine ='> ########## Code listing: end ##########';
 		my $masktoken = '**********';
+		my $write=1;
 		while (<Z>){
 			my $temp =$_;
 			chomp $temp;
@@ -1423,8 +1424,15 @@ ENDX
 				if ( $temp =~ /^> x<-read/){
 					$_ =~ s/vdc/dvn/gi;
 				}
-				
-				print $wh $_ ;
+				if ($_ =~ m/^To cite /){
+					$write=0;
+				}
+				if ($write){
+					print $wh $_ ;
+				}
+				if (($write == 0) && ($_ =~ m/^\s+[}]/)){
+					$write=1;
+				}
 			} 
 			if ($temp eq $endLine){
 				$logBlock=0;

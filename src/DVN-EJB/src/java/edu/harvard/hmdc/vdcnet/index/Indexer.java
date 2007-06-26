@@ -32,7 +32,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.StringTokenizer;
-import javax.ejb.EJB;
 import lia.analysis.positional.PositionalPorterStopAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
@@ -340,10 +339,29 @@ public class Indexer {
             BooleanQuery studiesQuery = orClause(studyIdTerms);
             searchParts.add(studiesQuery);
         }
-        BooleanQuery searchTermsQuery = andSearchTermClause(searchTerms);
+        List <SearchTerm> variableSearchTerms = new ArrayList();
+        List <SearchTerm> nonVariableSearchTerms = new ArrayList();
+        for (Iterator it = searchTerms.iterator(); it.hasNext();){
+            SearchTerm elem = (SearchTerm) it.next();
+            if (elem.getFieldName().equals("variable")){
+                variableSearchTerms.add(elem);
+            } else {
+                nonVariableSearchTerms.add(elem);
+            }
+        }
+        List <Long> vResults = searchVariables(studyIds,variableSearchTerms);
+        BooleanQuery searchTermsQuery = andSearchTermClause(nonVariableSearchTerms);
         searchParts.add(searchTermsQuery);
         BooleanQuery searchQuery = andQueryClause(searchParts);
-        return getHitIds(searchQuery);
+        List <Long> nvResults = getHitIds(searchQuery);
+        List <Long> mergeResults = new ArrayList();
+        for (Iterator it = vResults.iterator(); it.hasNext();){
+            Long elem = (Long) it.next();
+            if (nvResults.contains(elem)){
+                mergeResults.add(elem);
+            }
+        }
+        return mergeResults;
         
     }
 
@@ -437,6 +455,32 @@ public class Indexer {
         }
         BooleanQuery searchQuery = andQueryClause(searchParts);
 //        return getHitIds(indexQuery);
+        return getHitIds(searchQuery);
+    }
+    
+    public List searchVariables(List <Long> studyIds, List <SearchTerm> searchTerms) throws IOException {
+        List <BooleanQuery> searchParts = new ArrayList();
+        if (studyIds.size() > 0){
+            List <SearchTerm> studyIdTerms = new ArrayList();
+            for (Iterator it = studyIds.iterator(); it.hasNext();) {
+                Long elem = (Long) it.next();
+                SearchTerm t = new SearchTerm();
+                t.setFieldName("varStudyId");
+                t.setValue(elem.toString());
+                studyIdTerms.add(t);
+            }
+            BooleanQuery studiesQuery = orClause(studyIdTerms);
+            searchParts.add(studiesQuery);
+        }
+        for (Iterator it = searchTerms.iterator(); it.hasNext();){
+            SearchTerm elem = (SearchTerm) it.next();
+            BooleanQuery indexQuery = null;
+            if (elem.getFieldName().equalsIgnoreCase("variable")){
+                indexQuery = buildVariableQuery(elem.getValue().toLowerCase().trim());
+                searchParts.add(indexQuery);
+            }
+        }
+        BooleanQuery searchQuery = andQueryClause(searchParts);
         return getHitIds(searchQuery);
     }
     

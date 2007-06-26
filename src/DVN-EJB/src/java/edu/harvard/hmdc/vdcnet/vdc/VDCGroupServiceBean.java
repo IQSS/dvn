@@ -33,21 +33,22 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
     /**
      * Constructor
      */
-    public VDCGroupServiceBean() {
-        
+    public VDCGroupServiceBean() {    
     }
     
     public VDCGroup findById(Long id) {
-        VDCGroup vdcGroup = em.find(VDCGroup.class, id);
-        for (Iterator iterator = vdcGroup.getVdcs().iterator(); iterator.hasNext();) {
-            VDC vdc = (VDC) iterator.next();
-            Long vdcId = vdc.getId();
-        }
-        return vdcGroup;
+        VDCGroup o = (VDCGroup) em.find(VDCGroup.class, id);
+        return o;
     }
     
     public List<VDCGroup> findAll() {
-        List<VDCGroup> vdcgroups = (List<VDCGroup>)em.createQuery("select object(o) from VDCGroup as o").getResultList();
+        List<VDCGroup> vdcgroups = (List<VDCGroup>)em.createQuery("select object(o) from VDCGroup as o order by o.displayOrder").getResultList() ;
         return vdcgroups;
+    }
+    
+    public void updateVdcGroup(VDCGroup vdcgroup) {
+        if (findById(vdcgroup.getId()) != null) {
+            em.merge(vdcgroup);
+        }
     }
 }

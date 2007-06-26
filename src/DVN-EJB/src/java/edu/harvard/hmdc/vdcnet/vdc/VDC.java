@@ -431,7 +431,7 @@ public class VDC {
         this.allowedGroups = allowedGroups;
     }
     
-    @OneToMany(mappedBy="owner", cascade={ CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy="owner", cascade={ CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
     private Collection<Study> ownedStudies;
   
     

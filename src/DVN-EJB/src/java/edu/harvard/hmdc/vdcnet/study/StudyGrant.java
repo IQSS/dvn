@@ -174,7 +174,7 @@ public class StudyGrant {
 
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Study)) {
+        if (!(object instanceof StudyGrant)) {
             return false;
         }
         StudyGrant other = (StudyGrant)object;

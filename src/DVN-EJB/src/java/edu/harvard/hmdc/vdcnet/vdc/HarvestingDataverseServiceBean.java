@@ -50,6 +50,8 @@ public class HarvestingDataverseServiceBean implements edu.harvard.hmdc.vdcnet.v
     
     public void delete(Long hdId){
         HarvestingDataverse hd = em.find(HarvestingDataverse.class, hdId);
+        em.refresh(hd);
+        
         vdcService.delete(hd.getVdc().getId());
         em.remove(hd);
      

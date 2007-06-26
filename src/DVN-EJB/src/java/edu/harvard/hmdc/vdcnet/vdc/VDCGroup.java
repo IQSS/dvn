@@ -175,7 +175,7 @@ public class VDCGroup implements Serializable {
     }  
     
     @Transient
-    private boolean selected = true;
+    private boolean selected = false;
     
     public boolean getSelected() {
         return this.selected;

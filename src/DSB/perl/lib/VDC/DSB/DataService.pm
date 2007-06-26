@@ -1828,13 +1828,14 @@ sub printVDCxtabs{
 	
 	my $xtabWantString ="wantPercentages=$self->{xtab}->{Percentages}, wantTotals=$self->{xtab}->{Totals}, wantStats=$self->{xtab}->{Statistics}, wantExtraTables=$self->{xtab}->{ExtraTables}";
 
-	my $cmndLine =  "library(VDCutil);\ntry(VDCcrossTabulation(HTMLfile=\"$htmlfl\", data=x, classificationVars=c(\"" .  join('","', (@varName)) . '")' ;
+	#my $cmndLine =  "library(VDCutil);\ntry(VDCcrossTabulation(HTMLfile=\"$htmlfl\",\ndata=x,\nclassificationVars=c(\"" .  join('","', (@varName)) . '")' ;
+	my $cmndLine =  "library(VDCutil);\ntry(VDCcrossTabulation(HTMLfile=\"$htmlfl\",\ndata=x,\nclassificationVars=c('" .  join("',\n'", (@varName)) . "')" ;
 	
 	if ($freqVarString) {
-		$cmndLine  .= ", " . $freqVarString ;
+		$cmndLine  .= ",\n " . $freqVarString ;
 	}
 	
-	$cmndLine .= ", " . $xtabWantString . "));\n";
+	$cmndLine .= ",\n " . $xtabWantString . "));\n";
 	
 	print $wh $cmndLine;
 
@@ -1854,7 +1855,7 @@ sub printUnivarChart{
 	my $wh = $self->{WH};
 	my $imgflprfx = $optn->{IMGFLPRFX};
 	my $withZlg = $optn->{STANDALONE};
-	print $wh "try({x<-univarChart(dtfrm=x, analysisoptn=aol, imgflprfx=\"$imgflprfx\", standalone=$withZlg)})\n";
+	print $wh "try({x<-univarChart(dtfrm=x,\nanalysisoptn=aol,\nimgflprfx=\"$imgflprfx\",\nstandalone=$withZlg)})\n";
 }
 
 sub printUnivarStatHtml{
@@ -1864,7 +1865,7 @@ sub printUnivarStatHtml{
 	my $srvrcgi = $optn->{SRVRCGI};
 	my $htmlfl = $optn->{HTMLFL};
 	my $withZlg = $optn->{STANDALONE};
-	print $wh "try(univarStatHtml(dtfrm=x, tmpimgfile=\"$srvrcgi\", analysisoptn=aol, tmphtmlfile=\"$htmlfl\", standalone=$withZlg))\n";
+	print $wh "try(univarStatHtml(dtfrm=x,\ntmpimgfile=\"$srvrcgi\",\nanalysisoptn=aol,\ntmphtmlfile=\"$htmlfl\",\nstandalone=$withZlg))\n";
 }
 		
 sub printUnivarDataDwnld{

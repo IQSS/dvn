@@ -2183,7 +2183,9 @@ sub getCaseSelectionCriteria{
 	
 	#$rowSbstParam = 'rows=(' . $rowSbstParam . ')';
 	print "final:\n",$caseSbstParam,"\n" if $DEBUG;
-	
+	if ($caseSbstParam){
+		$caseSbstParam = "\n\nAnd the row selection criteria were:\n\tWHERE (" . $caseSbstParam .")";
+	}
 	return $caseSbstParam;
 
 
@@ -2402,9 +2404,9 @@ sub createDataCitationFile{
 	
 	
 	if ($outputType eq 'html') {
-		$cTemplate->[0]= "<blockquote>Extract From \"" . $self->{citation}->{studytitle} . "\"</blockquote><pre>\n\nThank you for using the " . $provider . ".\nPlease keep this citation information for future reference.\n\nTo obtain a new copy of this data, please go to:\n\n</pre><blockquote>" . $datasetURL . "</blockquote><pre>\n\n";
+		$cTemplate->[0]= "<blockquote>Extract From \"" . $self->{citation}->{studytitle} . "\"</blockquote><pre>To obtain a new copy of this data, please go to:\n\n</pre><blockquote>" . $datasetURL . "</blockquote><pre>\n\n";
 	} elsif ($outputType eq 'txt') {
-		$cTemplate->[0]= "Extract From \"" . $self->{citation}->{studytitle} . "\"\n\nThank you for using the " . $provider . ".\nPlease keep this citation information for future reference.\n\nTo obtain a new copy of this data, please go to:\n\n" . $datasetURL . "\n\n";
+		$cTemplate->[0]= "Extract From \"" . $self->{citation}->{studytitle} . "\"\n\nTo obtain a new copy of this data, please go to:\n\n" . $datasetURL . "\n\n";
 	}
 	
 	print "citation file(part 1):\n", $cTemplate->[0] if $DEBUG ;
@@ -2425,16 +2427,16 @@ sub createDataCitationFile{
 
 	
 	if ($outputType eq 'html') {
-		$cTemplate->[1]= "_Citation_:</pre>\n\n<blockquote>" . $self->{citation}->{OfflineCitation} . "</blockquote><pre>\n\nPlease  use this citation when referring to the study.\n\n";
+		$cTemplate->[1]= "_Citation for the full data set_:</pre>\n\n<blockquote>" . $self->{citation}->{OfflineCitation} . "</blockquote><pre>\n\n";
 	}  elsif ($outputType eq 'txt') {
-		$cTemplate->[1]= "_Citation_:\n\n" . $self->{citation}->{OfflineCitation} . "\n\nPlease  use this citation when referring to the study.\n\n";
+		$cTemplate->[1]= "_Citation for the full data set_:\n\n" . $self->{citation}->{OfflineCitation} . "\n\n";
 	}
 	print "citation file(part 2):\n", $cTemplate->[1] if $DEBUG ;
 
 	
-	my $varId2Name="\tID\tName\n" ;
+	my $varId2Name="\tName\n" ;
 	foreach my $k (@{$self->{_varNo}}) {
-		$varId2Name .= "\t" . $k . "\t" . $self->{_varNameH}->{$k} . "\n";
+		$varId2Name .= "\t" . $self->{_varNameH}->{$k} . "\n";
 	}
 	
 	print "varId2Name:\n", $varId2Name if $DEBUG ;
@@ -2444,9 +2446,9 @@ sub createDataCitationFile{
 
 
 	if ($outputType eq 'html') {
-		$cTemplate->[2]= "_Variable information_:\n\nThe particular subset of variables you have selected is:\n\n" . $varId2Name . "\n\nAnd the row selection criteria were:\n\tWHERE (" . $rsCriteria . ")\n\nThe unique fingerprint for this subset is:\n\t" . $fileUNFdata . "\n\n_Extended citation_:\n\n</pre><p>Please use the following extended citation when describing and publishing analyses and tables based on this subset:</p>\n\n<blockquote>" . $self->{citation}->{OfflineCitation} . ' ' . join(',', @{$self->{_varNameA}}) . ' [VarGrp/@var(DDI)]; ' . "\n" . $fileUNFdata . '</blockquote>';
+		$cTemplate->[2]= "_Variable information_:\n\nThe subset of variables you have selected is:\n\n" . $varId2Name  . $rsCriteria . "\n\nThe unique fingerprint for this subset is:\n\t" . $fileUNFdata . "\n\n_Citation for this subset_:\n\n</pre>\n\n<blockquote>" . $self->{citation}->{OfflineCitation} . ' ' . join(',', @{$self->{_varNameA}}) . ' [VarGrp/@var(DDI)]; ' . "\n" . $fileUNFdata . '</blockquote>';
 	}  elsif ($outputType eq 'txt') {
-		$cTemplate->[2]= "_Variable information_:\n\nThe particular subset of variables you have selected is:\n\n" . $varId2Name . "\n\nAnd the row selection criteria were:\n\tWHERE (" . $rsCriteria . ")\n\nThe unique fingerprint for this subset is:\n\t" . $fileUNFdata . "\n\n_Extended citation_:\n\nPlease use the following extended citation when describing and publishing analyses and tables based on this subset:\n\n" . $self->{citation}->{OfflineCitation} . ' ' . join(',', @{$self->{_varNameA}}) . ' [VarGrp/@var(DDI)]; ' . "\n" . $fileUNFdata . "\n";
+		$cTemplate->[2]= "_Variable information_:\n\nThe subset of variables you have selected is:\n\n" . $varId2Name .  $rsCriteria . "\n\nThe unique fingerprint for this subset is:\n\t" . $fileUNFdata . "\n\n_Citation for this subset_:\n\n" . $self->{citation}->{OfflineCitation} . ' ' . join(',', @{$self->{_varNameA}}) . ' [VarGrp/@var(DDI)]; ' . "\n" . $fileUNFdata . "\n";
 	}
 	
 	print "citation file(part 3):\n", $cTemplate->[2] if $DEBUG ;
@@ -2622,7 +2624,7 @@ sub printZeligCode{
 		}
 		
 		# naMethod
-		$otherArgs  .= ",naMethod=\"" . $self->{zlgParam}->{$model}->{'naMethod'}->[0] . "\""; 
+		#$otherArgs  .= ",naMethod=\"" . $self->{zlgParam}->{$model}->{'naMethod'}->[0] . "\""; 
 
 		
 		print "test: otherArgs($model): " . $otherArgs . "\n" if $DEBUG;

@@ -669,7 +669,7 @@ if ($dataURL) {
 							$q->li ({-type=>'disc'}, 
 
 							[ $q->strong(
-								$q->a({href=>"http://${SERVER}/VDC/temp/${dirString}", target=>'_blank'},
+								$q->a({href=>"http://${SERVER}/VDC/temp/${dirString}"},
 								"Check the modeling Result")),
 
 							$q->strong(
@@ -936,9 +936,11 @@ END
 	$ret .= $q->h2 ('Results');
 	#$ret .= $q->p ("Study ID Number: $stdyno");
 	$ret .= $q->p ("Study Title: $stdyttl");
-	if ($datasetname) {
-		$ret .= $q->p ("Data Set File Name:$datasetname");
-	}
+	#if ($datasetname) {
+	#	$ret .= $q->p ("Data Set File Name:$datasetname");
+	#}
+	$ret .= $q->blockquote($q->strong($q->a( {href=>'javascript:window.history.back();'},'Go back to the previous page')));
+
 	$ret .= $q->hr;
 
     return $ret; 
@@ -1350,8 +1352,10 @@ ENDX
 	-title=> "Dataverse Analysis: Request # $$ ", 
 	-script=>$JSCRIPT,-style=>{-code=>$r2htmlStyle});
 	$pt_d .= $q->h1 ("Dataverse Analysis");
+	$pt_d .= $q->blockquote($q->strong($q->a( {href=>'javascript:window.history.back();'},'Go back to the previous page')));
+
 	$pt_d .= $q->hr ("");
-	$pt_d .= $q->h2 ("Data Set:");
+	$pt_d .= $q->h2 ("Citation Information about the Dataset:");
 	
 	
 	$pt_d .= $q->ul (

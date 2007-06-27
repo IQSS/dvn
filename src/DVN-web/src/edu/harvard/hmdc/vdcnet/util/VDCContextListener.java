@@ -33,7 +33,7 @@ public class VDCContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent event) {
         // This call initializes the Harvest Timer that will activate once a day and 
         // run all scheduled Harvest Dataverses.
-        
+      
          HarvesterServiceLocal harvesterService = null;
         try {
             harvesterService=(HarvesterServiceLocal)new InitialContext().lookup("java:comp/env/harvesterService");
@@ -46,8 +46,14 @@ public class VDCContextListener implements ServletContextListener {
             e.printStackTrace();
         }
         // This initializes the export Timer - runs once a day and exports changes to old VDC
-       // syncVDCService.scheduleDaily();
-        
+        String export = event.getServletContext().getInitParameter("edu.harvard.hmdc.export");
+        if (export.equalsIgnoreCase("true")) {
+            System.out.println("Found export initParameter, scheduling study export.");
+            syncVDCService.scheduleDaily();
+        } else {
+            System.out.println("Export not scheduled.");
+        }
+
     }
     /** Creates a new instance of VDCContextListener */
     public VDCContextListener() {

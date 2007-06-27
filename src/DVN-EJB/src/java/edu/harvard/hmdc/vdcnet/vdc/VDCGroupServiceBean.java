@@ -46,6 +46,21 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
         return vdcgroups;
     }
     
+    public void removeVdcGroup(VDCGroup vdcgroup) {
+        VDCGroup group = findById(vdcgroup.getId());
+        if (group != null) {
+            List membervdcs = (List)group.getVdcs();
+            Iterator iterator = membervdcs.iterator();
+            while (iterator.hasNext()) {
+                VDC vdc = (VDC)iterator.next();
+                if (vdc.getVdcGroups().contains(group))
+                    vdc.getVdcGroups().remove(group);
+            }
+            iterator.remove();//remove the vdc from the group relationship
+            em.remove(group);
+        }
+    }
+    
     public void updateVdcGroup(VDCGroup vdcgroup) {
         if (findById(vdcgroup.getId()) != null) {
             em.merge(vdcgroup);

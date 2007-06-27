@@ -296,6 +296,14 @@
             <to-view-id>/networkAdmin/UserGroupsPage.jsp</to-view-id>       
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/networkAdmin/DVGroupDetailPage.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>result</from-outcome>
+            <to-view-id>/networkAdmin/DVGroupDetailPage.jsp</to-view-id> 
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
     
 <!-- 
   Navigation rules from SubsettingPage.jsp to RequestSummaryPage.jsp

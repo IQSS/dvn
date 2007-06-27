@@ -659,32 +659,19 @@ if ($dataURL) {
 				my $VDCFXCSS = 'R2HTML.css'; 
 				`cd $VDCRLIB; cp $VDCFXCSS $ZHTMLDIR`;
 				
+my $jumpScript=<<ENDJ;
+<!--
+function jump(url){
+	window.location=url;
+}
+//-->
+ENDJ
 					print $q->header (-type=>'text/html');
-					print $q->start_html ( -title=>'Modeling Results are Ready to Check');
-					print $q->start_form(-name=>'navigation');
-					print $q->h3('<br>Thank you for using the Dataverse Network.');
-					print $q->blockquote ( 
-						$q->strong('The modeling request has been completed:<br>'), 
-						$q->ul(
-							$q->li ({-type=>'disc'}, 
-
-							[ $q->strong(
-								$q->a({href=>"http://${SERVER}/VDC/temp/${dirString}"},
-								"Check the modeling Result")),
-
-							$q->strong(
-								$q->a( {href=>'javascript:window.history.back();'}, 'Go back to the subsetting page')), 
-
-							$q->strong(
-								$q->a({href=>"http://$appSERVER$studyLink", target=>'_blank'}, "Go back to the study page")), 
-							])
-						)
-					
+					print $q->start_html (
+					-title=>'Modeling Results are Ready to Check',
+					-script=>$jumpScript,
+					-onload=>"jump(\"http://${SERVER}/VDC/temp/${dirString}\")",
 					);
-					
-					
-					
-					print $q->endform;
 					print $q->end_html;
 					$logger->vdcLOG_info( 'VDC::DSB',  $script_name,  "Zelig modeling request completed");
 					if (-e $zlgOutIdFile) {
@@ -1144,15 +1131,15 @@ sub termHandler {
 
 sub exitChores {
 	unless ($DEBUG) {
-	 	#unlink($Rcode);
-	 	#unlink($RtxtOutput);
-	 	#unlink($RtmpData);
-	 	#unlink($RtmpDataRaw);
-	 	#unlink($ddiforR);
-	 	#unlink($RtmpHtml);
-		#my $nofldl =  unlink(< $TMPDIR/t.$$.*.tab >);
-		#print TMPX "\n",$nofldl," sub-tab files are deleted\n";
-		#unlink("$TMPDIR/tmpRange.$$.log");
+	 	unlink($Rcode);
+	 	unlink($RtxtOutput);
+	 	unlink($RtmpData);
+	 	unlink($RtmpDataRaw);
+	 	unlink($ddiforR);
+	 	unlink($RtmpHtml);
+		my $nofldl =  unlink(< $TMPDIR/t.$$.*.tab >);
+		print TMPX "\n",$nofldl," sub-tab files are deleted\n";
+		unlink("$TMPDIR/tmpRange.$$.log");
 	}
 }
 

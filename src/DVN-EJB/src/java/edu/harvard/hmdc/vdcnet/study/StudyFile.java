@@ -12,6 +12,7 @@ import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.io.Serializable;
 import java.util.Collection;
@@ -321,10 +322,19 @@ public class StudyFile implements Serializable{
     }
     
     public boolean isFileRestrictedForUser( VDCUser user, VDC vdc ) {
+      // If file belongs to a study in a HarvestingDataverse,
+        // Check dataverse permisssions
+        if (this.getFileCategory().getStudy().getOwner().isHarvestingDataverse()) {
+            HarvestingDataverse hd = this.getFileCategory().getStudy().getOwner().getHarvestingDataverse();
+             if (hd.areFilesRestrictedForUser(user)) {
+                 return true;
+             }
+        }
         if ( isRestricted() ) {
             if (user == null) {
                 return true;
             }
+          
             // 1. check if study is restricted
             Study study = getFileCategory().getStudy();
             if (study.isStudyRestrictedForUser(vdc,user)){

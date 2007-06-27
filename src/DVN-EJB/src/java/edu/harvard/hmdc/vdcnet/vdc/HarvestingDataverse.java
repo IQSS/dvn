@@ -9,6 +9,7 @@ package edu.harvard.hmdc.vdcnet.vdc;
 
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
+import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import java.util.Collection;
 import java.util.Date;
@@ -131,6 +132,25 @@ public class HarvestingDataverse {
         this.allowedFileGroups = allowedFileGroups;
     }
     
+    public boolean areFilesRestrictedForUser(VDCUser user) {
+        if (this.filesRestricted) {
+            if (!allowedFileUsers.contains(user) ) {
+                boolean foundUserInGroup=false;
+                for (Iterator it = allowedFileGroups.iterator(); it.hasNext();) {
+                    UserGroup elem = (UserGroup) it.next();
+                    if (elem.getUsers().contains(user)) {
+                        foundUserInGroup=true;
+                        break;
+                    }
+                }
+                if (!foundUserInGroup) {
+                    return true;
+                }
+                     
+            }
+        }
+        return false;
+    }
     
      /**
      * Holds value of property allowedFileUsers.

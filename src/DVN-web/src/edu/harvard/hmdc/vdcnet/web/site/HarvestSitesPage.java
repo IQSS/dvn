@@ -37,6 +37,7 @@ public class HarvestSitesPage extends VDCBaseBean {
     public void init(){
         super.init();
         harvestSiteList = harvestingDataverseService.findAll();
+        dataverseSiteList = vdcService.findAllNonHarvesting();
     }
     
     /**
@@ -54,14 +55,14 @@ public class HarvestSitesPage extends VDCBaseBean {
         
         
     }
-    
+    private List<VDC> dataverseSiteList;
     /**
      * Getter for property harvestSiteList.
      * @return Value of property harvestSiteList.
      */
     public List<VDC> getDataverseSiteList() {
         
-        return vdcService.findAllNonHarvesting();
+        return dataverseSiteList;
         
         
     }
@@ -126,15 +127,14 @@ public class HarvestSitesPage extends VDCBaseBean {
      public void doRemoveHarvestDataverse(ActionEvent ae) {
            HarvestingDataverse hd = (HarvestingDataverse)this.harvestDataTable.getRowData();      
            harvestingDataverseService.delete(hd.getId());
-           harvestDataTable.getChildren().remove(hd);
-           System.out.println("list size="+harvestDataTable.getChildren());
+           this.harvestSiteList = harvestingDataverseService.findAll();
         
     }
        public void doRemoveDataverse(ActionEvent ae) {
            VDC vdc = (VDC)this.dataverseDataTable.getRowData();      
            vdcService.delete(vdc.getId());
-           dataverseDataTable.getChildren().remove(vdc);
-       
+           dataverseSiteList = vdcService.findAllNonHarvesting();
+    
         
     }
         

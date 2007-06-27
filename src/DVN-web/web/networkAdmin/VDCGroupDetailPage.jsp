@@ -4,10 +4,11 @@
           xmlns:jsp="http://java.sun.com/JSP/Page" 
           xmlns:ui="http://www.sun.com/web/ui"
           xmlns:tiles="http://struts.apache.org/tags-tiles">
-    
     <f:subview id="vDCGroupPageView">
         <h:form id="vdcGroupPageForm">
-            <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            <ui:panelLayout rendered="#{VDCGroupPage.success}" panelLayout="flow" styleClass="vdcSectionMiddleMessage" style="width: 400px; margin-top: 10px; margin-bottom: -10px">
+                 <h:messages styleClass="successMessage" layout="table" showDetail="false" showSummary="true"/>
+            </ui:panelLayout>
             <ui:panelLayout panelLayout="flow" style="min-width:300px; max-width:800px; margin-left:auto; margin-right:auto; margin-top:25px;">
                 <h:dataTable id="VDCGroups" value="#{VDCGroupPage.groupList}" var="item" cellspacing="0" style="margin-left:auto; margin-right:auto; border-width:1px 1px 0px 1px; border-style:solid; border-color:silver; padding:0px;" headerClass="groupEditHeader" columnClasses="groupEditOrderColumn, groupEditNameColumn, groupEditDescriptionColumn, groupEditDeleteColumn" rowClasses="whiteRow, shadedRow">
                     <f:facet name="caption">

@@ -19,6 +19,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
@@ -45,20 +46,6 @@ public class VDCGroupPage extends VDCBaseBean {
     
     private List groupList;
 
-    @Resource
-    private UserTransaction utx;
-
-    @PersistenceUnit(unitName = "DVN-webPU")
-    private EntityManagerFactory emf;
-
-    private EntityManager getEntityManager() {
-        return emf.createEntityManager();
-    }
-
-    private int batchSize = 20;
-
-    private int firstItem = 0;
-
     public void init() {
         super.init();
         
@@ -81,102 +68,29 @@ public class VDCGroupPage extends VDCBaseBean {
     }
 
     public String save() {
-        model.getRowCount();
-        List list = (List)model.getWrappedData();
-        Iterator iterator = list.iterator();
-        while (iterator.hasNext()) {
-            VDCGroup vdcgroup = (VDCGroup)iterator.next();
-            this.vdcGroupService.updateVdcGroup(vdcgroup);
-        }
-        return "success";
-    }
-    
-    public String createSetup() {
-        this.VDCGroup = new VDCGroup();
-        return "VDCGroup_create";
-    }
-
-    public String create() {
-        EntityManager em = getEntityManager();
+        String msg = SUCCESS_MESSAGE;
+        success    = true;
         try {
-            utx.begin();
-            em.joinTransaction();
-            em.persist(VDCGroup);
-            utx.commit();
-            addSuccessMessage("VDCGroup was successfully created.");
-        } catch (Exception ex) {
-            try {
-                addErrorMessage(ex.getLocalizedMessage());
-                utx.rollback();
-            } catch (Exception e) {
-                addErrorMessage(e.getLocalizedMessage());
+            model.getRowCount();
+            List list = (List)model.getWrappedData();
+            Iterator iterator = list.iterator();
+            while (iterator.hasNext()) {
+                VDCGroup vdcgroup = (VDCGroup)iterator.next();
+                this.vdcGroupService.updateVdcGroup(vdcgroup);
+                if (vdcgroup.getSelected() == true) {
+                    this.vdcGroupService.removeVdcGroup(vdcgroup);
+                }
             }
+            
+        } catch (Exception e) {
+            msg = "An error occurred: " + e.getCause().toString();
+            success = false;
         } finally {
-            em.close();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(msg));
+            return "result";
         }
-        return "VDCGroup_list";
-    }
-
-    public String detailSetup() {
-        setVDCGroupFromRequestParam();
-        return "VDCGroup_detail";
-    }
-
-    public String editSetup() {
-        setVDCGroupFromRequestParam();
-        return "VDCGroup_edit";
-    }
-
-    public String deleteGroup() {
-        EntityManager em = getEntityManager();
-        try {
-            utx.begin();
-            em.joinTransaction();
-            VDCGroup VDCGroup = getVDCGroupFromRequestParam();
-            VDCGroup = em.merge(VDCGroup);
-            em.remove(VDCGroup);
-            utx.commit();
-            addSuccessMessage("VDCGroup was successfully deleted.");
-        } catch (Exception ex) {
-            try {
-                addErrorMessage(ex.getLocalizedMessage());
-                utx.rollback();
-            } catch (Exception e) {
-                addErrorMessage(e.getLocalizedMessage());
-            }
-        } finally {
-            em.close();
-        }
-        return "success";
     }
     
-    /** saveOrder
-     *
-     * a method to save the ordering of 
-     * the vdc groups
-     *
-     * @return success a string to be used for navigation.xml
-     *
-     * @author wbossons
-     *
-     */
-    
-    public String saveOrder() {
-        //add some code to save the order
-        model.getRowData();
-        /*List wrappeddata = (List)model.getWrappedData();
-        Iterator iterator = wrappeddata.iterator();
-        int i = 0;
-        while (iterator.hasNext()) {
-            List list = (List)iterator.next();
-            Iterator inneriterator = list.iterator();
-             while (inneriterator.hasNext()) {
-                System.out.println(inneriterator.next().toString());
-             }
-            i++;
-        }*/
-        return "success";
-    }
     
     /** addGroup
      *
@@ -193,29 +107,14 @@ public class VDCGroupPage extends VDCBaseBean {
         return "success";
     }
     
-    public VDCGroup getVDCGroupFromRequestParam() {
-        EntityManager em = getEntityManager();
-        try{
-            VDCGroup o = (VDCGroup)model.getRowData();
-            o = em.merge(o);
-            return o;
-        } finally {
-            em.close();
-        }
-    }
-
-    public void setVDCGroupFromRequestParam() {
-        VDCGroup VDCGroup = getVDCGroupFromRequestParam();
-        setVDCGroup(VDCGroup);
-    }
-
+    
     public DataModel getVDCGroups() {
         model = null;
         try {
             List list = this.getGroupList();
             model = new ListDataModel(list);
         } catch (Exception e) {
-            addErrorMessage(e.getCause().toString());
+            //addErrorMessage(e.getCause().toString());
         } finally {
             return model;
         }
@@ -233,66 +132,6 @@ public class VDCGroupPage extends VDCBaseBean {
         this.groupList = grouplist;
     }
 
-    public static void addErrorMessage(String msg) {
-        FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg);
-        FacesContext fc = FacesContext.getCurrentInstance();
-        fc.addMessage(null, facesMsg);
-    }
-
-    public static void addSuccessMessage(String msg) {
-        FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, msg, msg);
-        FacesContext fc = FacesContext.getCurrentInstance();
-        fc.addMessage("successInfo", facesMsg);
-    }
-
-    public VDCGroup findVDCGroup(Long id) {
-        EntityManager em = getEntityManager();
-        try{
-            VDCGroup o = (VDCGroup) em.find(VDCGroup.class, id);
-            return o;
-        } finally {
-            em.close();
-        }
-    }
-
-    public int getItemCount() {
-        EntityManager em = getEntityManager();
-        try{
-            int count = ((Long) em.createQuery("select count(o) from VDCGroup as o").getSingleResult()).intValue();
-            return count;
-        } finally {
-            em.close();
-        }
-    }
-
-    public int getFirstItem() {
-        return firstItem;
-    }
-
-    public int getLastItem() {
-        int size = getItemCount();
-        return firstItem + batchSize > size ? size : firstItem + batchSize;
-    }
-
-    public int getBatchSize() {
-        return batchSize;
-    }
-
-    public String next() {
-        if (firstItem + batchSize < getItemCount()) {
-            firstItem += batchSize;
-        }
-        return "VDCGroup_list";
-    }
-
-    public String prev() {
-        firstItem -= batchSize;
-        if (firstItem < 0) {
-            firstItem = 0;
-        }
-        return "VDCGroup_list";
-    } 
-    
     /** some helper methods
      *
      *
@@ -359,4 +198,27 @@ public class VDCGroupPage extends VDCBaseBean {
         }
         this.model.setWrappedData(groupList);
     }
+    
+    private String SUCCESS_MESSAGE = new String("Update Successful! Go to the home page to see your changes.");
+    /**
+     * Holds value of property success.
+     */
+    private boolean success;
+
+    /**
+     * Getter for property success.
+     * @return Value of property success.
+     */
+    public boolean isSuccess() {
+        return this.success;
+    }
+
+    /**
+     * Setter for property success.
+     * @param success New value of property success.
+     */
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+    
 }

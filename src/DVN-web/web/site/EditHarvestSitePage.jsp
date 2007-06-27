@@ -150,7 +150,7 @@
                                         </ui:panelGroup>
                                         <ui:panelGroup>
                                             <h:inputText value="#{EditHarvestSitePage.addGroupName}" /> <h:commandButton  value="Add"  actionListener="#{EditHarvestSitePage.addGroup}" />
-                                              <h:message styleClass="errorMessage" for="dataverseName"/> 
+                                            
                                             <verbatim><br /></verbatim>
                                             <h:outputText styleClass="vdcHelpText" value="Enter group name to allow them to access restricted studies."/>
                                           <h:dataTable binding="#{EditHarvestSitePage.groupTable}" cellpadding="0" cellspacing="0"

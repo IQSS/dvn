@@ -18,7 +18,7 @@
     </context-param>
     <context-param>
        <param-name>edu.harvard.hmdc.export</param-name>
-        <param-value>true</param-value>        
+        <param-value>false</param-value>        
     </context-param>
     <listener>
         <listener-class>edu.harvard.hmdc.vdcnet.util.VDCContextListener</listener-class>

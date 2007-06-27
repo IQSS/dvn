@@ -858,16 +858,15 @@ sub _checkfile {
 
 	my $template = "a80a11";
 	my ($frst80, $next11) = unpack($template, $buff);
-	#print STDERR "first 80 bytes:",$frst80,"\n";
-	#print STDERR "next  11 bytes:",$next11,"\n";
-
+	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "first 80 bytes:" . $frst80 );
+	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "next  11 bytes:" . $next11 );
 	if ( ($frst80 eq 'HEADER RECORD*******LIBRARY HEADER RECORD!!!!!!!000000000000000000000000000000  ') 
 		&& ($next11 eq 'SAS     SAS')) {
-	#	print STDERR "$dfname is a sas export file\n";
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "$dfname is a sas export file" );
 		#return "application/x-sas-xport";
 		return undef; # should'nt be returning subsettable if no input script
 	} else {
-	#	print STDERR "$dfname is NOT a sas export file\n";
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "$dfname is NOT a sas export file");
 	}
 
 	# return to the top of the file
@@ -881,35 +880,35 @@ sub _checkfile {
 	$template = "c4";
 	my @first4b1 = unpack($template, $buff);
 	my @frst4b = unpack("H8", $buff);
-	#print STDERR "contents(4 byte hex dump)=",join("-", @frst4b),"\n";
-	#print STDERR "contents(1st byte: int)=",("$first4b1[0]"),"\n";
-	#print STDERR "contents(2nd byte: int)=",("$first4b1[1]"),"\n";
-	#print STDERR "contents(3rd byte: int)=",("$first4b1[2]"),"\n";
-	#print STDERR "contents(4th byte: int)=",("$first4b1[3]"),"\n";
-	my $dtarelno = { 
+	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "contents(4 byte hex dump)=" . join("-", @frst4b) );
+	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "contents(1st byte: int)=" . "$first4b1[0]");
+	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "contents(2nd byte: int)=" . "$first4b1[1]");
+	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "contents(3rd byte: int)=" . "$first4b1[2]");
+	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "contents(4th byte: int)=" . "$first4b1[3]");	
+	my $dtaRelNo = { 
 		105 =>  rel_4or5,  108 => rel_6, 110 => rel_7first,
-		111 => rel_7scnd, 113 => rel_8,
+		111 => rel_7scnd,  113 => rel_8_or_9, 114 => rel_10
 	}; 
-	 if ($first4b1[2] != 1) {
-		#print STDERR "$dfname is not sata type(failed: 1st step)\n";
-	 } elsif ($first4b1[1] != 1 && $first4b1[1] != 2) {
-		#print STDERR "$dfname is not stata type(failed: 2nd step)\n";
-	 } elsif (!exists($dtarelno->{"$first4b1[0]"})) {
-		#print STDERR "$dfname is neither stata-type nor one of the permissible release numbers(3rd step)\n"; 
+	if ($first4b1[2] != 1) {
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "$dfname is not sata type(failed: 1st step)");
+	} elsif ($first4b1[1] != 1 && $first4b1[1] != 2) {
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "$dfname is not stata type(failed: 2nd step)");
+	} elsif (!exists($dtaRelNo->{"$first4b1[0]"})) {
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "$dfname is neither stata-type nor one of the permissible release numbers(3rd step)");
 	} else {
-		#print STDERR "$dfname is a stata file: release number=",$dtarelno->{"$first4b1[0]"},"\n";
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "$dfname is a stata file: release number=" . $dtaRelNo->{"$first4b1[0]"} );
 		return("application/x-stata");
 	}
 
 	# check the file against sav
 	$template = "a4";
 	my $first4b2 = unpack($template, $buff);
-
-	#print STDERR "The firt 4 byte[expected value=\$FL2]:",$first4b2,"\n";
+	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "The first 4 byte[expected value=\$FL2]:" . $first4b2);
 	if ($first4b2 ne '$FL2'){
-		#print STDERR "$dfname is not an spss system (.sav) file or the character representation code of $buff might be non-7bit-ASCII\n";
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "$dfname is not an spss system (.sav) file or the character representation code of $buff might be non-7bit-ASCII");
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "not an spss system (.sav) file or the character representation code of " . $buff  . "might be non-7bit-ASCII");
 	} else {
-		#print STDERR "$dfname is an sav file\n";
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "$dfname is an sav file");
 		return "application/x-spss-sav";
 	}
 
@@ -919,33 +918,30 @@ sub _checkfile {
 	my $lines =[];
 	my $line='';
 	while (<$dfname>) {
-	   tr/\015//d;
-	   chomp $_;
-	   $line .= $_;
-	   push @{$lines}, length($_);
-	   last if ($. == 6);
+		tr/\015//d;
+		chomp $_;
+		$line .= $_;
+		push @{$lines}, length($_);
+		last if ($. == 6);
 	}
-        close ($dfname);
+	close ($dfname);
 
-	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", 
-			        "contents of 6 lines=" . $line );
+	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "contents of 6 lines(por)=" . $line );
 
-	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", 
-			         "length of 6 lines[should be 480]=" . length($line) );
+	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "length of 6 lines[should be 480](por)=" . length($line) );
 
-	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","lines(len)=" . join('-',@{$lines}));
+	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","lines(len:por)=" . join('-',@{$lines}));
 	my $bias =0;
 	for (my $l=0;$l<=4;$l++){
 		$bias += ($lines->[$l] - 80);
 	}
 	my $bias1st = $lines->[0]-80;
-	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","bias=" . $bias);
-		
+	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","bias(por)=" . $bias);
 	if (uc(substr($line, (456+$bias), 8)) eq "SPSSPORT") {
-		#print STDERR "$dfname is a por file(step1)\n";
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "$dfname is a por file(step1)");
 		return "application/x-spss-por";
-	} elsif ( (uc(substr($line, (40+$bias1st), 20)) eq "ASCII SPSS PORT FILE") && ($line->[5] =~ /SPSSPORT/i) )  {
-		#print STDERR "$dfname is a por file(step2)\n";
+	} elsif ( (uc(substr($line, (40+$bias1st), 20)) eq "ASCII SPSS PORT FILE") && ($line->[5] =~ /SPSSPORT/i) ) {
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "$dfname is a por file(step2)");
 		return("application/x-spss-por");
 	}
 	
@@ -959,23 +955,30 @@ sub _checkfile {
 	read($dfname, $buff, $filesignature);
 	# step 1: read 5 byptes and check their pattern(up to 4th byte first)
 	$template = "H2H2H2H2H2";
+	#$templateB = "h2h2h2h2h2";
 	my @first5b = unpack($template, $buff);
-	# The firt 4 bytes of a GZIP file= 1f 8b 08 00
+	#my @first5bB = unpack($templateB, $buff);
 	
+	# The firt 4 bytes of a GZIP file= 1f 8b 08 00
+	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","Check 1st 5 bytes: RData(H)=" . join("-", @first5b));
+	#$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","Check 1st 5 bytes: RData(h)=" . join("-", @first5bB));
 	if (join('',@first5b[0..1]) ne '1f8b'){
 		# check the first 5 bytes, assuming it is ASCII type
 		# if so, the hex pattern is 52-44-41-32-0a, etc.
 		
 		$template ="H*" ;
 		my $first5byte = pack($template, join('', @first5b));
-		
-		if ($first5byte =~ /^RD[ABX][12][\n]/){
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","1st 5 bytes (Not gzipped): RData=" . $first5byte);
+
+		if ($first5byte =~ /^RD[ABX][12]\012/){
 			# cases: RDX2(non-ASCII format) or RDA2(ASCII format)
 			# cases: RDX1(non-ASCII format) or RDA1(ASCII format)
-			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is an ungzipped-RData type"); 
-			return("application/x-rlang-transport");
+			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is an ungzipped-RData type");
+			return undef;
+			#return("application/x-rlang-transport");
 		} else {
 			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is not an RData type");
+			return undef;
 		}
 	} else {
 		# this file is gzip-type
@@ -997,22 +1000,23 @@ sub _checkfile {
 
 		if ($bytesread == 5) {
 			my $first5byte = pack("H*", join('',unpack("H2H2H2H2H2", $gzbuff)));
+			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","1st 5 bytes (gzipped): RData=" . $first5byte);
 
-			if ($first5byte =~ /^RD[ABX][12][\n]/){
+			if ($first5byte =~ /^RD[ABX][12]\012/){
 				# cases: RDX2(non-ASCII format) or RDA2(ASCII format)
 				# cases: RDX1(non-ASCII format) or RDA1(ASCII format)
-				$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is an gzipped-RData type"); 
-				return("application/x-rlang-transport");
+				$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is an gzipped-RData type");
+				return undef;
+				#return("application/x-rlang-transport");
 			} else {
-			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is not an RData type"); 
+				$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","The expected byte-pattern was not found; This file is not an RData type");
+				return undef;
 			}
 		} else {
 			$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","error in ungunzipping the file");
 		}
 		$gz->gzclose();
 	}
-	
-	
 	
 	return;
 }
@@ -1023,59 +1027,56 @@ sub GetZeligConfig {
     my $self = shift;
     my $params = shift;
     my $context = shift; 
-
-
     my $q  = $self->{query};
 
+	my $buffer;
+	my $DEBUG=0;
+	# R code to print the config file
+	# library(VDCutil);  printZeligSchemaInstance('../configZeligGUI.xml')
 
-my $buffer;
-my $DEBUG=0;
-# R code to print the config file
-# library(VDCutil);  printZeligSchemaInstance('../configZeligGUI.xml')
-
-my $flnm = "$TMPDIR/configZeligGUI.xml";
-#my $server=`hostname -f`; use  $SERVER from glv03
-my $rCodeFile = "$TMPDIR/zeligConfig.$$.R";
-open(RH, "> $rCodeFile");
-# printZeligSchemaInstance(filename=NULL, serverName=NULL,vdcAbsDirPrefix=NULL)
-print RH "library(VDCutil);  printZeligSchemaInstance('" . $flnm ."',", "'",$SERVER,"')";
-close(RH);
-my $log_file = "$TMPDIR/zeligConfig.$$.log";
-open(FH, "> $log_file") if $DEBUG;
-open(PH, "R --slave < $rCodeFile  2>&1 |");
-while (<PH>) {
-	print FH $_ if $DEBUG;
-	chomp;
-	if (/(Error\s+in)|(Execution\s+halted)/i){
-		#print $FH "error in R run=",$1,"\t",$2,"\n" if $DEBUG;
-		#print $FH "error in R run=",$_,"\n" if $DEBUG;
-		#$runr=0;
-	} else {
-		#print $FH "Zelig config file is created\n" if $DEBUG;
+	my $flnm = "$TMPDIR/configZeligGUI.xml";
+	#my $server=`hostname -f`; use  $SERVER from glv03
+	my $rCodeFile = "$TMPDIR/zeligConfig.$$.R";
+	open(RH, "> $rCodeFile");
+	# printZeligSchemaInstance(filename=NULL, serverName=NULL,vdcAbsDirPrefix=NULL)
+	print RH "library(VDCutil);  printZeligSchemaInstance('" . $flnm ."',", "'",$SERVER,"')";
+	close(RH);
+	my $log_file = "$TMPDIR/zeligConfig.$$.log";
+	open(FH, "> $log_file") if $DEBUG;
+	open(PH, "R --slave < $rCodeFile  2>&1 |");
+	while (<PH>) {
+		print FH $_ if $DEBUG;
+		chomp;
+		if (/(Error\s+in)|(Execution\s+halted)/i){
+			#print $FH "error in R run=",$1,"\t",$2,"\n" if $DEBUG;
+			#print $FH "error in R run=",$_,"\n" if $DEBUG;
+			#$runr=0;
+		} else {
+			#print $FH "Zelig config file is created\n" if $DEBUG;
+		}
 	}
-}
-close(PH);
-close(FH) if $DEBUG;
+	close(PH);
+	close(FH) if $DEBUG;
 
-unless ($DEBUG) {
-	unlink($rCodeFile);
-}
-my $size = -s $flnm;
+	unless ($DEBUG) {
+		unlink($rCodeFile);
+	}
+	my $size = -s $flnm;
 
-my $cntnttyp = "text/xml" ;  
+	my $cntnttyp = "text/xml" ;  
 
-if (-r $flnm  && -f $flnm &&  open(dwnldFile, "<$flnm")) {
+	if (-r $flnm  && -f $flnm &&  open(dwnldFile, "<$flnm")) {
 		print $q->header ( -type=>$cntnttyp);
 		while (read dwnldFile, $buffer, $size){
 			print $buffer;
 		}
 		close(dwnldFile);
 		unlink($flnm);
-} else {
-	return ( 404, 'Not Found: Temporary Results Deleted');
-    }
+	} else {
+		return ( 404, 'Not Found: Temporary Results Deleted');
+	}
 
-    return undef; 
+	return undef; 
 }
 
 

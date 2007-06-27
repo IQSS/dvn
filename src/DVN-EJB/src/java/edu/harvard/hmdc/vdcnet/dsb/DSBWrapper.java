@@ -139,8 +139,10 @@ public class DSBWrapper {
             if (f.length() > 1024) {
                 fin.read(header, 0, 1024);
             } else {
-                byte[] b = new byte[(int) f.length()];
-                fin.read(b);
+                //byte[] b = new byte[(int) f.length()];
+                header = new byte[(int) f.length()];
+                //fin.read(b);
+                fin.read(header);
             }
             
             return header;

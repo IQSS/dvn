@@ -47,7 +47,7 @@ public class VDCContextListener implements ServletContextListener {
         }
         // This initializes the export Timer - runs once a day and exports changes to old VDC
         String export = event.getServletContext().getInitParameter("edu.harvard.hmdc.export");
-        if (export.equalsIgnoreCase("true")) {
+        if (export!=null && export.equalsIgnoreCase("true")) {
             System.out.println("Found export initParameter, scheduling study export.");
             syncVDCService.scheduleDaily();
         } else {

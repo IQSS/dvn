@@ -481,6 +481,7 @@ sub Ingest {
     # indicating which files have been converted and which ones have failed.
 
     my @dfDO;
+
     my $datafiles_DO = \@dfDO;
     my $n_processed  = $ingest->prepare_DataDeposit ( $base, $params, $datafiles_DO ); 
     my $tab_files = [];
@@ -489,17 +490,23 @@ sub Ingest {
     {
 	$tab_files = $ingest->produce_TabFiles ( $base, $datafiles_DO ); 
 
-	unless ( $tab_files )
-	{
-	    $datafiles_status = $ingest->{INGEST_DATA_STATUS};
-	    $final_status = "failed";
-	}
-	else
-	{
-	    $datafiles_status = "ok";
+	unless ( $#{$tab_files} >= 0 )
+	{	    
+	    my $xml; 
+	    
+	    $xml .= $self->{query}->header ( -Cache_control=>'max-age= 0', -status=>$code, -type=>'text/xml');
+	    
+	    $xml .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	    $xml .= "  <Ingest version=\"1.1\">\n";
+
+	    $xml .= "  <system status=\"failed\">" . $ingest->{INGEST_DATA_STATUS} . "</system>\n";
+	    
+	    $xml .= "  </Ingest>\n";
+
+	    print $xml;
+	    return undef; 
 	}
     }
-
 
 #    $xml .= $self->{query}->header ( -Cache_control=>'max-age= 0', -status=>$code, -type=>'text/xml');
 #    print $self->{query}->header ( -Cache_control=>'max-age= 0', -type=>'text/tab-separated-values');

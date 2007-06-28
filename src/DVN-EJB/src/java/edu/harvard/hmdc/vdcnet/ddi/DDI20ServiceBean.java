@@ -978,7 +978,6 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     
     private void mapOtherMat(OtherMatType _om, Study s, Map filesMap) {
         StudyFile file = new StudyFile();
-        boolean fileAdded = false;
         
         if (_om.getLabl().size() > 0) {
             file.setFileName( (String) _om.getLabl().get(0).getContent().get(0) );
@@ -992,24 +991,12 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         
         file.setFileSystemLocation( _om.getURI() );
         
-        Iterator iter = _om.getNotes().iterator();
-        while (iter.hasNext()) {
-            NotesType _note = (NotesType) iter.next();
-            if ( "vdc:category".equals(_note.getType()) ) {
-                String catName = (String) _note.getContent().get(0);
-                addFileToCategory( file, catName, s );
-                fileAdded = true;
-            }
-        }
-        if (!fileAdded) {
-            addFileToCategory( file, "", s );
-        }
+        addFileToCategory( file, determineFileCategory(_om.getNotes()), s );
     }
     
     
     private void mapFileDscr(FileDscrType _fd, Study s, Map filesMap) {
         StudyFile file = new StudyFile();
-        boolean fileAdded = false;
         
         if (  _fd.getFileTxt().get(0).getFileName() != null ) {
             file.setFileName( mapContent( _fd.getFileTxt().get(0).getFileName().getContent().get(0) ) );
@@ -1036,25 +1023,49 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             DimensnsType _dim = _fd.getFileTxt().get(0).getDimensns();
             dt.setCaseQuantity( new Long( (String) _dim.getCaseQnty().get(0).getContent().get(0) ) );
             dt.setVarQuantity( new Long( (String) _dim.getVarQnty().get(0).getContent().get(0) ) );
-        }
-        
-        
-        
-        Iterator iter = _fd.getNotes().iterator();
-        while (iter.hasNext()) {
-            NotesType _note = (NotesType) iter.next();
-            if ( file.isSubsettable()  && "VDC:UNF".equals(_note.getType()) ) {
-                dt.setUnf( mapUNF( (String) _note.getContent().get(0) ) );
-            } else if ( "vdc:category".equals(_note.getType()) ) {
-                String catName = (String) _note.getContent().get(0);
-                addFileToCategory( file, catName, s );
-                fileAdded = true;
+            
+            String unf = mapFileNote(_fd.getNotes(), "VDC:UNF");
+            if (unf != null) {
+                dt.setUnf( mapUNF( unf ) );    
             }
         }
-        if (!fileAdded) {
-            addFileToCategory( file, "", s );
+          
+        addFileToCategory( file, determineFileCategory(_fd.getNotes()) , s );
+    }
+    
+    private String determineFileCategory(List<NotesType> notes) {
+        // first check for vdc:category
+        String catName = mapFileNote(notes, "vdc:category");
+        
+        if (catName == null) {
+            // check icpsr:category
+            catName = mapFileNote( notes, "icpsr:category", "description");
+            
+            if (catName != null) {
+                String id = mapFileNote( notes, "icpsr:category", "id");
+                if (id != null) {
+                    catName = id + ". " + catName;
+                }
+            }
+        }  
+        
+        return (catName != null ? catName : "");
+    }
+    
+    private String  mapFileNote(List<NotesType> notes, String type ) {
+        return mapFileNote( notes, type, null );
+    }    
+    
+    private String  mapFileNote(List<NotesType> notes, String type, String subject) {
+        for (NotesType _note : notes) {
+            if (_note.getType() != null &&_note.getType().equals(type) ) {
+                if (subject == null || (_note.getSubject() != null &&_note.getSubject().equals(subject) ) ) {
+                    return (String) _note.getContent().get(0);
+                }
+            }
         }
         
+        return null;
     }
     
     private void mapDataDscr(DataDscrType _dd, Map filesMap) {

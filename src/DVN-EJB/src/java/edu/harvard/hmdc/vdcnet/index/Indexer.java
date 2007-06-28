@@ -67,11 +67,21 @@ public class Indexer {
     private static Indexer indexer;
     Directory dir;
     String indexDir = "index-dir";
+    int dvnMaxClauseCount = 2048;
 
     
     
     /** Creates a new instance of Indexer */
     public Indexer() {
+        String dvnMaxClauseCountStr = System.getProperty("dvn.search.maxclausecount");
+        if (dvnMaxClauseCountStr != null){
+            try {
+                dvnMaxClauseCount = Integer.parseInt(dvnMaxClauseCountStr);
+            } catch (Exception e){
+                e.printStackTrace();
+                dvnMaxClauseCount = 1024;
+            }
+        }
         try {
             dir = FSDirectory.getDirectory(indexDir,false);
         } catch (IOException ex) {
@@ -570,7 +580,7 @@ public class Indexer {
     
     BooleanQuery orClause(List <SearchTerm> orSearchTerms){
         BooleanQuery orTerms = new BooleanQuery();
-        orTerms.setMaxClauseCount(2048);
+        orTerms.setMaxClauseCount(dvnMaxClauseCount);
         for (Iterator it = orSearchTerms.iterator(); it.hasNext();) {
             SearchTerm elem = (SearchTerm) it.next();
             Term t = new Term(elem.getFieldName(), elem.getValue().toLowerCase().trim());
@@ -583,7 +593,7 @@ public class Indexer {
     
     BooleanQuery orPhraseQuery(List <SearchTerm> orSearchTerms){
         BooleanQuery orTerms = new BooleanQuery();
-        orTerms.setMaxClauseCount(2048);
+        orTerms.setMaxClauseCount(dvnMaxClauseCount);
         for (Iterator it = orSearchTerms.iterator(); it.hasNext();) {
             SearchTerm elem = (SearchTerm) it.next();
             String [] phrase = getPhrase( elem.getValue().toLowerCase().trim());
@@ -607,7 +617,7 @@ public class Indexer {
 
     BooleanQuery andSearchTermClause(List <SearchTerm> andSearchTerms){
         BooleanQuery andTerms = new BooleanQuery();
-        andTerms.setMaxClauseCount(2048);
+        andTerms.setMaxClauseCount(dvnMaxClauseCount);
 //        boolean required;
 //        boolean prohibited;
         Query rQuery=null;
@@ -650,7 +660,7 @@ public class Indexer {
     
     BooleanQuery andQueryClause(List <BooleanQuery> andQueries){
         BooleanQuery andTerms = new BooleanQuery();
-        andTerms.setMaxClauseCount(2048);
+        andTerms.setMaxClauseCount(dvnMaxClauseCount);
         for (Iterator it = andQueries.iterator(); it.hasNext();) {
             BooleanQuery elem = (BooleanQuery) it.next();
             BooleanClause clause = new BooleanClause(elem, BooleanClause.Occur.MUST);

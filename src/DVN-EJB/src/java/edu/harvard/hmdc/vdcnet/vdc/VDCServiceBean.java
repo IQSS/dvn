@@ -219,7 +219,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         }
    //    vdc.getOwnedStudies().clear();
        
-    //    vdc.setRootCollection(null);
+        vdc.setRootCollection(null);
        
         for (Iterator it = vdc.getOwnedCollections().iterator(); it.hasNext();) {
            VDCCollection elem = (VDCCollection) it.next();

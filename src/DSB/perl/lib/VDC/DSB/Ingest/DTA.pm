@@ -663,6 +663,10 @@ sub read_Data {
 				$tmpdata[$j] = $chr_na;
 			} elsif (($self->{varTypeCode}->[$j] eq "s") && ($tmpdata[$j])) {
 				# if (ord(substr($tmpdata[$j],0,1)) == 46) # this may not work if the position of a period is other than 0.
+				# replace non-space white characters with a space
+				$tmpdata[$j] =~ s/[\t\r\f\n]+/ /g;
+				$tmpdata[$j] =~ s/^\s+//;
+				$tmpdata[$j] =~ s/\s+$//;
 				(my $tmpprd = $tmpdata[$j]) =~ s/ //g;
 				if (ord($tmpprd) == 46) {
 					$tmpdata[$j] = $chr_na;

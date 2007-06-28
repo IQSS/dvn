@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -128,19 +129,12 @@ public class EditHarvestSitePage extends VDCBaseBean {
     public boolean validateOAIServer(FacesContext context,
             UIComponent toValidate,Object value) {
         System.out.println("in validateOAIServer");
-        boolean valid=true;
-        
-    
-            
-          //      PrintWriter pw = new PrintWriter(System.out);
-          //       boolean environmentOK = (new EnvironmentCheck()).checkEnvironment(pw);
-            
+        boolean valid=true;            
 
-            assignHarvestingSets((String)value);
-            assignMetadataFormats((String)value);
-            
-      
-        
+       valid= assignHarvestingSets(((String)value).trim());
+       if (valid) {
+            assignMetadataFormats(((String)value).trim());
+       }
         if (!valid) {
             ((UIInput)toValidate).setValid(false);
             FacesMessage message = new FacesMessage( "Invalid OAI Server Url");
@@ -509,13 +503,19 @@ public class EditHarvestSitePage extends VDCBaseBean {
         
     }
     
-    private void assignHarvestingSets(String oaiUrl)   {
+    private boolean assignHarvestingSets(String oaiUrl)   {
+        
+        boolean valid=true;
         if (oaiUrl!=null) {
+            try {
             editHarvestSiteService.setHarvestingSets(harvesterService.getSets(oaiUrl));
+            } catch (EJBException e) {
+                valid=false;
+            }
         } else {
             editHarvestSiteService.setHarvestingSets(null);
         }
-        
+        return valid;
     }
     
     

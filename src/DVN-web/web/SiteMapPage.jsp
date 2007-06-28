@@ -28,11 +28,11 @@
                               <h:outputText  id="homeHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapHomeHeading}"/>
                           </ui:panelGroup>
                           <ui:panelGroup  block="true" id="groupPanel2" separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
-                              <h:outputLink id="sitemaplink1"  styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.jsp#content:homePageView:form1:searchAnchor">
+                              <h:outputLink id="sitemaplink1"  styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}">
                                   <h:outputText  id="sitemaplink1Text" value="#{bundle.sitemapSearchLink}"/>
                               </h:outputLink>
                               <!--  Search Tips converted to Search Help-->
-                              <h:outputLink value="http://thedata.org/help/browsesearch" target="_blank">
+                              <h:outputLink value="http://thedata.org/help/browsesearch" styleClass="vdcSiteMapLink" target="_blank">
                                             <h:outputText  value="#{bundle.sitemapSearchTipsLink}"/>
                                     </h:outputLink>
                               <h:outputLink id="sitemaplink3" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">

@@ -219,6 +219,14 @@
        <put name="pageTitle"   type="string"        value="DVN - Manage Harvest Dataverses"/>
        <put name="content" type="template"     value="/site/HarvestSitesPage.jsp"/>
    </definition>
+   <definition name="/site/DeleteDataversePage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Delete Dataverse"/>
+       <put name="content" type="template"     value="/site/DeleteDataversePage.jsp"/>
+   </definition>   
+      <definition name="/site/DeleteDataverseSuccessPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Delete Dataverse Successful"/>
+       <put name="content" type="template"     value="/site/DeleteDataverseSuccessPage.jsp"/>
+   </definition> 
    <!-- **************** Admin  ****************  -->
    <definition name="/admin/SearchFieldsPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Search Results Fields"/>

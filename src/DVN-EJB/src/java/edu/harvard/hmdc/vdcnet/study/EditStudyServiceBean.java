@@ -127,7 +127,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
             reviewState = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
         }
         
-        study = new Study(vdc, creator, reviewState);
+        study = new Study(vdc, creator, em.find(ReviewState.class, reviewState.getId()));
         em.persist(study);
         
         // set default protocol and authority

@@ -52,7 +52,7 @@ public class DeleteStudyPage extends VDCBaseBean {
     public void init() {
         super.init();
          if ( isFromPage("DeleteStudyPage") ) {
-            editStudyService = (EditStudyService) sessionGet(editStudyService.getClass().getName());
+            editStudyService = (EditStudyService) sessionGet(EditStudyService.class.getName());
             study = editStudyService.getStudy();
         }else {
                 // we need to create the editStudyService bean
@@ -69,7 +69,7 @@ public class DeleteStudyPage extends VDCBaseBean {
             if (studyId != null) {
                 //TODO: we need to store editStudyService by studyId, not just class name
                editStudyService.setStudy(getStudyId());
-               sessionPut( editStudyService.getClass().getName(), editStudyService);
+               sessionPut( EditStudyService.class.getName(), editStudyService);
                study = editStudyService.getStudy();
             } else {
                 // TODO: replace this with real current VDC

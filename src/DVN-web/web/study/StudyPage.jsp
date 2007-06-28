@@ -442,26 +442,26 @@
                                                               headerClass="vdcStudyFilesHeader" id="dataTable5" rowClasses="list-row-even,list-row-odd"
                                                               value="#{catUI.studyFileUIs}" var="studyFileUI" width="100%">
                                                     <h:column  id="column9">
-                                                        <h:outputText  id="outputText15" value="&#160;#{studyFileUI.studyFile.fileName}"/>
+                                                        <h:outputText  id="outputText15" value="#{studyFileUI.studyFile.fileName}"/>
                                                     </h:column>
                                                     <h:column  id="column10">
-                                                        <h:outputText  id="outputText17" value="&#160;#{studyFileUI.studyFile.description}"/>
+                                                        <h:outputText  id="outputText17" value="#{studyFileUI.studyFile.description}"/>
                                                     </h:column>
                                                     <h:column  id="column11">
-                                                        <h:outputText  id="outputText19" value="&#160;#{studyFileUI.studyFile.fileType}"/>
+                                                        <h:outputText  id="outputText19" value="#{studyFileUI.studyFile.fileType}"/>
                                                     </h:column>
                                                     <h:column  id="column12a">
-                                                        <h:outputText value="&#160;#{studyFileUI.studyFile.dataTable.caseQuantity}"/>                         
+                                                        <h:outputText value="#{studyFileUI.studyFile.dataTable.caseQuantity}"/>                         
                                                     </h:column>
                                                     <h:column  id="column12b">
-                                                        <h:outputText value="&#160;#{studyFileUI.studyFile.dataTable.varQuantity}"/>
+                                                        <h:outputText value="#{studyFileUI.studyFile.dataTable.varQuantity}"/>
                                                     </h:column>
                                                     <h:column  id="column13">
                                                         <ui:panelGroup  block="true" > 
                                                         
                                                             <h:graphicImage  styleClass="vdcNoBorders" style="margin-left: 2px; margin-right: 0px;" value="/resources/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" 
                                                                          alt="You do not have permissions to access this file." title="You do not have permissions to access this file."/>
-                                                            <h:outputLink  id="fileLink" style="padding-right: 15px" onclick="return checkTerms(this.id);" target="_file" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/#{studyFileUI.studyFile.fileName}?fileId=#{studyFileUI.studyFile.id}" rendered="#{!studyFileUI.restrictedForUser}" title="View or download this File">
+                                                            <h:outputLink  id="fileLink" style="padding-right: 15px" onclick="return checkTerms(this.id);" target="_file" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/#{studyFileUI.studyFile.fileName}?fileId=#{studyFileUI.studyFile.id}" rendered="#{!studyFileUI.restrictedForUser}" title="View or download this File.">
                                                                 <h:graphicImage   styleClass="vdcNoBorders" style="margin-left: 2px; margin-right: 0px;" value="/resources/icon_download.gif"/>
                                                             </h:outputLink> 
                                                            

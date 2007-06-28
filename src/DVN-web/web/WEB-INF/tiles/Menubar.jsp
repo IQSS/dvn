@@ -13,7 +13,7 @@
          </ui:panelGroup>
          <ui:panelGroup styleClass="vdcMenubn" block="true">
              <h:outputLink value="/dvn"  styleClass="vdcConnectTextActiven" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage">
-                <h:outputText  value="#{VDCRequest.vdcNetwork.name} Dataverse Network"/>
+                <h:outputText  value="#{VDCRequest.vdcNetwork.name} Dataverse Network" style="white-space: nowrap" />
              </h:outputLink>
          </ui:panelGroup>
         <ui:panelGroup  block="true">
@@ -29,12 +29,12 @@
             </ui:panelGroup>
                         <ui:panelGroup styleClass="vdcMenub" block="true">
                  <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}"  styleClass="vdcConnectTextActive" title="#{VDCRequest.currentVDC.name} dataverse Homepage">
-                    <h:outputText value="#{VDCRequest.currentVDC.name} Dataverse "/>
+                    <h:outputText value="#{VDCRequest.currentVDC.name} Dataverse " style="white-space: nowrap"/>
                  </h:outputLink>
            </ui:panelGroup>   
             <ui:panelGroup styleClass="vdcMenua" block="true">
                     <h:outputLink value="/dvn"  styleClass="vdcConnectText" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage">
-                        <h:outputText  value="#{VDCRequest.vdcNetwork.name} Dataverse Network"/> 
+                        <h:outputText  value="#{VDCRequest.vdcNetwork.name} Dataverse Network" style="white-space: nowrap"/> 
                     </h:outputLink>
             </ui:panelGroup>
 

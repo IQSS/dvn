@@ -404,7 +404,7 @@
                                                 <h:outputText  value="Send a Request"/>
                                             </h:outputLink>            
                                         </ui:panelGroup>
-                                         
+                                       
                                         <ui:panelGroup  block="true" id="groupPanel7a" style="align-text: left; padding-bottom: 2px; padding-top: 5px;">
                                             <h:outputText  id="outputText33"  value="Download all files in a single archive file (files that you cannot access will not be downloaded): "/>                                            
                                             <h:graphicImage  value="/resources/icon_downloadall_locked.gif" rendered="#{!studyPage.studyUI.anyFileUnrestricted}"
@@ -461,18 +461,18 @@
                                                         
                                                             <h:graphicImage  styleClass="vdcNoBorders" style="margin-left: 2px; margin-right: 0px;" value="/resources/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" 
                                                                          alt="You do not have permissions to access this file." title="You do not have permissions to access this file."/>
-                                                            <h:outputLink  id="fileLink" style="padding-right: 15px" onclick="return checkTerms(this.id);" target="_file" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/#{studyFileUI.studyFile.fileName}?fileId=#{studyFileUI.studyFile.id}" rendered="#{!studyFileUI.restrictedForUser}" title="Get this File">
+                                                            <h:outputLink  id="fileLink" style="padding-right: 15px" onclick="return checkTerms(this.id);" target="_file" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/#{studyFileUI.studyFile.fileName}?fileId=#{studyFileUI.studyFile.id}" rendered="#{!studyFileUI.restrictedForUser}" title="View or download this File">
                                                                 <h:graphicImage   styleClass="vdcNoBorders" style="margin-left: 2px; margin-right: 0px;" value="/resources/icon_download.gif"/>
                                                             </h:outputLink> 
                                                            
                                                             <h:outputLink rendered="#{studyFileUI.studyFile.subsettable}"  id="fileSubset" onclick="return checkTerms(this.id);" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.jsp?dtId=#{studyFileUI.studyFile.dataTable.id}" title="Go to Subset and Analysis page for this file." >
-                                                                <h:graphicImage  id="imagefs" styleClass="vdcNoBorders" style="margin-left: 0px; margin-right: 2px;" value="/resources/icon_subsettable.gif"/>
+                                                                <h:graphicImage  id="imagefs" styleClass="vdcNoBorders" style="margin-left: 0px; margin-right: 2px;" value="/resources/icon_subsettable.gif" />
                                                             </h:outputLink> 
                                                             
                                                             <ui:panelGroup rendered="#{studyFileUI.studyFile.subsettable}">  
                                                                 <f:verbatim>
                                                                     <h:outputLink  id="citation"  onclick="createFileCitationPopup(this.nextSibling.id,this.id);return false;"  value="#">
-                                                                        <h:graphicImage styleClass="vdcNoBorders" style="margin-left: 6px; margin-right: 2px;" value="/resources/icon_citation.gif"/>
+                                                                        <h:graphicImage styleClass="vdcNoBorders" style="margin-left: 6px; margin-right: 2px;" value="/resources/icon_citation.gif" title="View data citation for this file." />
                                                                     </h:outputLink>                                                                      
                                                                     
                                                                     <ui:panelGroup block="true" id="fileCitationDiv" style="position:absolute;visibility:hidden;background-color:#FFFFCC; border-color:#000099; border-width: 1px; border-style: solid; padding: 8px;">
@@ -487,12 +487,12 @@
                                                         </ui:panelGroup>
                                                     </h:column>
                                                 </h:dataTable> 
-                                            </h:column>
-                                            
-                                        </h:dataTable>
+                                            </h:column> 
+                                         </h:dataTable>
+                                        
                                         <ui:panelGroup style="margin-top:10px;" block="true" rendered="#{!empty studyPage.studyUI.study.fileCategories}" >
                                             <ui:panelGroup style="padding-top: 15px; font-weight: bold; font-size:1.2em; color:#666666; font-style:italic;" block="true">
-                                                <h:outputText    value="Legend"/>                                              
+                                                <h:outputText    value="Legend:"/>                                              
                                             </ui:panelGroup>
                                             <h:panelGrid cellpadding="3" cellspacing="0" columns="3" style="border-width:0px; border-style:solid; border-color: #ffff66;" > 
                                                 <ui:panelGroup  block="true">
@@ -517,10 +517,11 @@
                                                 </ui:panelGroup>                 
                                                 <ui:panelGroup  block="true">
                                                     <h:graphicImage styleClass="vdcNoBorders" value="/resources/icon_citation.gif"/>
-                                                    <h:outputText  styleClass="vdcHelpText"  value="View Data Citation"/>
+                                                    <h:outputText  styleClass="vdcHelpText"  value="View Data Citation for this file"/>
                                                 </ui:panelGroup>
                                             </h:panelGrid>
                                         </ui:panelGroup>
+                                        
                                     </ui:panelLayout>
                                 </ui:tab>
                             </ui:tabSet>

@@ -105,7 +105,7 @@ public class HomePage extends VDCBaseBean{
     public Tree getCollectionTree() {
         if (collectionTree == null) {
             VDCCollectionTree vdcTree = new VDCCollectionTree();
-            vdcTree.setVDCUrl("/faces/HomePage.jsp");
+            vdcTree.setVDCUrl("");
             vdcTree.setCollectionUrl("/faces/SearchPage.jsp?mode=1");
             
             VDC vdc = getVDCRequestBean().getCurrentVDC();
@@ -304,7 +304,7 @@ public class HomePage extends VDCBaseBean{
      */
     @EJB VDCGroupServiceLocal vdcGroupService;
      
-    private final String defaultVdcPath = "/faces/HomePage.jsp";//TODO: Calculate this from the faces configuration
+    private final String defaultVdcPath = "";//TODO: Calculate this from the faces configuration
     
     private void initVdcGroupData() {
         // Get all the vdc groups

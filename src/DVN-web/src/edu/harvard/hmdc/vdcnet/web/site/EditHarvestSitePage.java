@@ -128,7 +128,7 @@ public class EditHarvestSitePage extends VDCBaseBean {
     
     public boolean validateOAIServer(FacesContext context,
             UIComponent toValidate,Object value) {
-        System.out.println("in validateOAIServer");
+     
         boolean valid=true;            
 
        valid= assignHarvestingSets(((String)value).trim());

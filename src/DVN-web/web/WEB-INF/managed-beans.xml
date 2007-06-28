@@ -271,6 +271,16 @@
         </managed-property>
     </managed-bean>
     <!-- **************** Collection and Site Management  ****************  -->
+      <managed-bean>
+        <managed-bean-name>DeleteDataversePage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.site.DeleteDataversePage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>deleteId</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.deleteId}</value>
+        </managed-property>
+    </managed-bean>
     <managed-bean>
         <managed-bean-name>AddSitePage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.site.AddSitePage</managed-bean-class>

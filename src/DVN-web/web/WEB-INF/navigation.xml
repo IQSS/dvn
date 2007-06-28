@@ -154,6 +154,17 @@
             <to-view-id>/HomePage.jsp</to-view-id>
         </navigation-case>
     </navigation-rule>
+      <navigation-rule>
+            <from-view-id>/site/DeleteDataversePage.jsp</from-view-id>
+            <navigation-case>
+                <from-outcome>success</from-outcome>
+                <to-view-id>/site/DeleteDataverseSuccessPage.jsp</to-view-id>
+            </navigation-case>
+   	    <navigation-case>
+                <from-outcome>cancel</from-outcome>
+                <to-view-id>/site/HarvestSitesPage.jsp</to-view-id>
+            </navigation-case>           
+    </navigation-rule>    
     <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>

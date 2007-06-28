@@ -28,8 +28,8 @@
                                                 <h:outputText id="outputText2" value="Harvest Dataverse"/>
                                             </f:facet>
                                             <h:outputText  value="#{currentRow.vdc.name}" rendered="#{currentRow.harvestingNow}" />
-                                            <h:outputLink rendered="#{!currentRow.harvestingNow}" id="hyperlink1" value="EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
-                                                <h:outputText id="hyperlink1Text1" value="#{currentRow.vdc.name}"/>
+                                            <h:outputLink rendered="#{!currentRow.harvestingNow}"  value="EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
+                                                <h:outputText  value="#{currentRow.vdc.name}"/>
                                             </h:outputLink>
                                         </h:column>
                                         <h:column >
@@ -59,7 +59,10 @@
                                             <f:facet name="header">
                                                 <h:outputText id="outputText3" value="Remove"/>
                                             </f:facet>
-                                            <h:commandButton  value="Remove"  disabled="#{currentRow.harvestingNow}" actionListener="#{HarvestSitesPage.doRemoveHarvestDataverse}"/>
+                                            <!--h:commandButton  value="Remove"  actionListener="#{HarvestSitesPage.doRemoveHarvestDataverse}"/-->
+                                             <h:outputLink disabled="#{currentRow.harvestingNow}" value="DeleteDataversePage.jsp?deleteId=#{currentRow.vdc.id}">
+                                                <h:outputText  value="Remove"/>
+                                            </h:outputLink>                           
                                         </h:column>
                                         
                                     </h:dataTable>
@@ -81,7 +84,7 @@
                                                 <h:outputText  value="Dataverse"/>
                                             </f:facet>
                                             <h:outputLink value="/dvn/faces/admin/OptionsPage.jsp?currentVDCId=#{currentRow.id}">
-                                                <h:outputText id="hyperlink1Text1" value="#{currentRow.name}"/>
+                                                <h:outputText  value="#{currentRow.name}"/>
                                             </h:outputLink>
                                         </h:column>
                                        
@@ -90,7 +93,10 @@
                                             <f:facet name="header">
                                                 <h:outputText  value="Remove"/>
                                             </f:facet>
-                                            <h:commandButton  value="Remove" actionListener="#{HarvestSitesPage.doRemoveDataverse}"/>
+                                            <!--h:commandButton  value="Remove" actionListener="#{HarvestSitesPage.doRemoveDataverse}"/-->
+                                            <h:outputLink   value="DeleteDataversePage.jsp?deleteId=#{currentRow.id}">
+                                                <h:outputText id="hyperlink1Text1" value="Remove"/>
+                                            </h:outputLink>                     
                                         </h:column>
                                         
                                     </h:dataTable>

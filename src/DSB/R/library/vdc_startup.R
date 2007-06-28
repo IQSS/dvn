@@ -951,7 +951,7 @@ univarDataDwnld<-function(dtfrm, dwnldoptn, dsnprfx) {
 		#dump(ls(dtfrm), file=dsnprfx)
 		#detach(dtfrm)
 	} else if (dwnldoptn == 'D03') {
-		write.dta(dtfrm, file=dsnprfx)
+		write.dta(dtfrm, file=dsnprfx, version=7)
 	} else if (dwnldoptn == 'D04') {
 		save(x,file=dsnprfx)
 	}

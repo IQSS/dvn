@@ -798,14 +798,16 @@ a.vdcSiteMapLink:hover {
    white-space: nowrap;
    width: 150px;
    font-weight: bold;
-   font-style : italic;
+   font-style: italic;
   background-color : #b2b2b2;
+  text-align: center;  
 }
 .vdcStudyFilesHead2{ 
    white-space: nowrap; 
    font-weight: bold;
    font-style : italic;
   background-color : #b2b2b2;
+  text-align: center;  
 }
 .vdcStudyFilesHead3{
    white-space: nowrap;  
@@ -813,6 +815,7 @@ a.vdcSiteMapLink:hover {
    font-weight: bold;
    font-style : italic;
   background-color : #b2b2b2;
+  text-align: center;  
 }
 .vdcStudyFilesHead4{
    white-space: nowrap;  
@@ -820,6 +823,7 @@ a.vdcSiteMapLink:hover {
    font-weight: bold;
    font-style : italic;
   background-color : #b2b2b2;
+  text-align: center;  
 }
 .vdcStudyFilesHead5{
    white-space: nowrap;  
@@ -827,6 +831,7 @@ a.vdcSiteMapLink:hover {
    font-weight: bold;
    font-style : italic;
   background-color : #b2b2b2;
+  text-align: center;  
 }
 .vdcStudyFilesHead6{
    white-space: nowrap;  
@@ -834,6 +839,7 @@ a.vdcSiteMapLink:hover {
    font-weight: bold;
    font-style : italic;
   background-color : #b2b2b2;
+  text-align: center;  
 }
 
 .vdcStudyFilesCol1{
@@ -842,12 +848,16 @@ a.vdcSiteMapLink:hover {
    border-color: #e2e2e2;
    border-style: solid;
    border-width: 1px;
+   padding-right: 2px;
+   padding-left: 2px; 
 }
 .vdcStudyFilesCol2{
    white-space: normal; 
    border-color: #E2E2E2;
    border-style: solid;
    border-width: 1px;
+   padding-right: 2px;
+   padding-left: 2px; 
 }
 .vdcStudyFilesCol3{
    white-space: normal;  
@@ -855,6 +865,8 @@ a.vdcSiteMapLink:hover {
    border-color: #E2E2E2;
    border-style: solid;
    border-width: 1px;
+   padding-right: 2px;
+   padding-left: 2px; 
 }
 .vdcStudyFilesCol4{
    white-space: normal;  
@@ -862,6 +874,8 @@ a.vdcSiteMapLink:hover {
    border-color: #E2E2E2;
    border-style: solid;
    border-width: 1px;
+   padding-right: 2px;
+   padding-left: 2px; 
 }
 .vdcStudyFilesCol5{
    white-space: normal;  
@@ -869,6 +883,8 @@ a.vdcSiteMapLink:hover {
    border-color: #E2E2E2;
    border-style: solid;
    border-width: 1px;
+   padding-right: 2px;
+   padding-left: 2px; 
 }
 .vdcStudyFilesCol6{
    white-space: normal;  

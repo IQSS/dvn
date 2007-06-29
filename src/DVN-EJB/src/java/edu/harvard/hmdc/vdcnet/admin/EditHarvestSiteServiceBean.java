@@ -76,8 +76,10 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
         if (harvestingDataverse.getVdc()==null) {
             vdcService.create(userId,name,alias);
             VDC vdc = vdcService.findByAlias(alias);
-            harvestingDataverse.setVdc(vdc);
-            vdc.setHarvestingDataverse(harvestingDataverse);
+            // Get managed entity so we can update it with harvesting dataverse reference
+            VDC managedVdc = em.find(VDC.class, vdc.getId());  
+            harvestingDataverse.setVdc(managedVdc);
+            managedVdc.setHarvestingDataverse(harvestingDataverse);
         } else {
             harvestingDataverse.getVdc().setName(name);
             harvestingDataverse.getVdc().setAlias(alias);

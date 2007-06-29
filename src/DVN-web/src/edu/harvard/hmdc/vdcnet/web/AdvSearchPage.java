@@ -53,11 +53,13 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.component.html.HtmlDataTable;
 import com.sun.jsfcl.data.DefaultTableDataModel;
+import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import javax.faces.component.UIColumn;
 import javax.faces.component.html.HtmlGraphicImage;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -73,12 +75,22 @@ public class AdvSearchPage extends VDCBaseBean {
     @EJB StudyFieldServiceLocal studyFieldService;
     @EJB ReviewStateServiceLocal reviewStateService;
     @EJB StudyServiceLocal studyService;
+    @EJB VariableServiceLocal varService;
     private Locale currentLocale = getExternalContext().getRequestLocale();
     private ResourceBundle messages = ResourceBundle.getBundle("Bundle");
     private HashMap advSearchFieldMap= new HashMap();
     private HashMap operatorMap = new HashMap();
-    private String[] advancedSearchFields = {"title","authorName","studyId","otherId","abstractText","keywordValue","keywordVocabulary","topicClassValue","topicClassVocabulary","producerName","distributorName","fundingAgency","productionDate","distributionDate","dateOfDeposit","timePeriodCoveredStart","timePeriodCoveredEnd","country","geographicCoverage","geographicUnit","universe","kindOfData"};
+    private String[] advancedSearchFields = {"title","authorName","studyId","otherId","abstractText","keywordValue","keywordVocabulary","topicClassValue","topicClassVocabulary","producerName","distributorName","fundingAgency","productionDate","distributionDate","dateOfDeposit","timePeriodCoveredStart","timePeriodCoveredEnd","country","geographicCoverage","geographicUnit","universe","kindOfData","variable"};
     private boolean collectionsIncluded;
+    private boolean variableSearch;
+
+    public boolean isVariableSearch() {
+        return variableSearch;
+    }
+
+    public void setVariableSearch(boolean variableSearch) {
+        this.variableSearch = variableSearch;
+    }
     public boolean isCollectionsIncluded(){
         return collectionsIncluded;
     }
@@ -971,9 +983,18 @@ public class AdvSearchPage extends VDCBaseBean {
         List<Long> viewableIds = getViewableStudyIds(thisVDC, searchCollections, searchTerms);
         
         StudyListing sl = new StudyListing(StudyListing.VDC_SEARCH);
-        sl.setStudyIds(viewableIds);
         sl.setSearchTerms(searchTerms);
-       
+        if (isVariableSearch()){
+            Map variableMap = new HashMap();
+            List studies = new ArrayList();
+            varService.determineStudiesFromVariables(viewableIds, studies, variableMap);
+            sl.setStudyIds(studies);
+            sl.setVariableMap(variableMap);
+            
+        } else {
+            sl.setStudyIds(viewableIds);            
+        }
+        
         getVDCRequestBean().setStudyListing(sl);
         
         return "search";
@@ -982,7 +1003,12 @@ public class AdvSearchPage extends VDCBaseBean {
     private List<Long> getViewableStudyIds(final VDC thisVDC, final List searchCollections, final List<SearchTerm> searchTerms) {
         List matchedIds = null;
         matchedIds = indexServiceBean.search(thisVDC,searchCollections,searchTerms);
-        List<Long> viewableIds = viewableStudiesFilter(matchedIds);
+        List<Long> viewableIds = null;
+        if (!isVariableSearch()){
+            viewableIds = viewableStudiesFilter(matchedIds);
+        } else {
+            viewableIds = matchedIds;
+        }
         return viewableIds;
     }
 
@@ -1066,6 +1092,10 @@ public class AdvSearchPage extends VDCBaseBean {
             searchTerm1.setOperator(operatorToken((String) dropdown9.getValue()));
             searchTerm1.setValue((String) textField1.getValue());
             searchTerms.add(searchTerm1);
+            if (searchTerm1.getFieldName().equals("variable")){
+                setVariableSearch(true);
+            }
+        
         }
         if (((String)textField2.getValue()).length() > 0){
             SearchTerm searchTerm2 = new SearchTerm();
@@ -1073,6 +1103,9 @@ public class AdvSearchPage extends VDCBaseBean {
             searchTerm2.setOperator(operatorToken((String) dropdown4.getValue()));
             searchTerm2.setValue((String) textField2.getValue());
             searchTerms.add(searchTerm2);
+            if (searchTerm2.getFieldName().equals("variable")){
+                setVariableSearch(true);
+            }
 
         }
         if (((String)textField3.getValue()).length() >0){
@@ -1081,6 +1114,9 @@ public class AdvSearchPage extends VDCBaseBean {
             searchTerm3.setOperator(operatorToken((String) dropdown6.getValue()));
             searchTerm3.setValue((String) textField3.getValue());
             searchTerms.add(searchTerm3);
+            if (searchTerm3.getFieldName().equals("variable")){
+                setVariableSearch(true);
+            }
         }
         if (((String)textField4.getValue()).length() > 0){
             SearchTerm searchTerm4 = new SearchTerm();
@@ -1088,6 +1124,9 @@ public class AdvSearchPage extends VDCBaseBean {
             searchTerm4.setOperator(operatorToken((String) dropdown8.getValue()));
             searchTerm4.setValue((String) textField4.getValue());
             searchTerms.add(searchTerm4);
+            if (searchTerm4.getFieldName().equals("variable")){
+                setVariableSearch(true);
+            }
         }
         return searchTerms;
     }

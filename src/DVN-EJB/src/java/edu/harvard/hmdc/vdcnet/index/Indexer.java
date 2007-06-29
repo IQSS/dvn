@@ -336,7 +336,10 @@ public class Indexer {
     }
     
     public List search(List <Long> studyIds, List <SearchTerm> searchTerms) throws IOException{
+        List <Long> results = null;
         List <BooleanQuery> searchParts = new ArrayList();
+        boolean variableSearch = false;
+        boolean nonVariableSearch = false;
         if (studyIds.size() > 0){
             List <SearchTerm> studyIdTerms = new ArrayList();
             for (Iterator it = studyIds.iterator(); it.hasNext();) {
@@ -355,23 +358,38 @@ public class Indexer {
             SearchTerm elem = (SearchTerm) it.next();
             if (elem.getFieldName().equals("variable")){
                 variableSearchTerms.add(elem);
+                variableSearch = true;
             } else {
                 nonVariableSearchTerms.add(elem);
+                nonVariableSearch = true;
             }
         }
-        List <Long> vResults = searchVariables(studyIds,variableSearchTerms);
-        BooleanQuery searchTermsQuery = andSearchTermClause(nonVariableSearchTerms);
-        searchParts.add(searchTermsQuery);
-        BooleanQuery searchQuery = andQueryClause(searchParts);
-        List <Long> nvResults = getHitIds(searchQuery);
-        List <Long> mergeResults = new ArrayList();
-        for (Iterator it = vResults.iterator(); it.hasNext();){
-            Long elem = (Long) it.next();
-            if (nvResults.contains(elem)){
-                mergeResults.add(elem);
-            }
+        List <Long> nvResults = null;
+        if (nonVariableSearch){
+            BooleanQuery searchTermsQuery = andSearchTermClause(nonVariableSearchTerms);
+            searchParts.add(searchTermsQuery);
+            BooleanQuery searchQuery = andQueryClause(searchParts);
+            nvResults = getHitIds(searchQuery);
         }
-        return mergeResults;
+        if (variableSearch){
+            List <Long> vResults = searchVariables(studyIds,variableSearchTerms,false);
+            if (nonVariableSearch){
+                List <Long> mergeResults = new ArrayList();
+                for (Iterator it = vResults.iterator(); it.hasNext();){
+                    Long elem = (Long) it.next();
+                    if (nvResults.contains(elem)){
+                        mergeResults.add(elem);
+                    }
+                }
+                results = searchVariables(mergeResults,variableSearchTerms,true);
+            } else{
+                results = searchVariables(vResults,variableSearchTerms,true);
+            }
+        } else {
+            results = nvResults;
+        }
+
+        return results;
         
     }
 
@@ -468,7 +486,8 @@ public class Indexer {
         return getHitIds(searchQuery);
     }
     
-    public List searchVariables(List <Long> studyIds, List <SearchTerm> searchTerms) throws IOException {
+    public List searchVariables(List <Long> studyIds, List <SearchTerm> searchTerms, boolean varIdReturnValues) throws IOException {
+        List <Long> returnValues = null;
         List <BooleanQuery> searchParts = new ArrayList();
         if (studyIds.size() > 0){
             List <SearchTerm> studyIdTerms = new ArrayList();
@@ -491,7 +510,12 @@ public class Indexer {
             }
         }
         BooleanQuery searchQuery = andQueryClause(searchParts);
-        return getHitIds(searchQuery);
+        if (varIdReturnValues){
+            returnValues = getHitIds(searchQuery);
+        } else {
+            returnValues = getVarHitIds(searchQuery);
+        }
+        return returnValues;
     }
     
     public List searchBetween(Term begin,Term end, boolean inclusive) throws IOException{
@@ -518,6 +542,27 @@ public class Indexer {
         return matchIds;
     }
     
+    /* returns studyIds for variable query
+     */
+    private List getVarHitIds( Query query) throws IOException {
+        ArrayList matchIds = new ArrayList();
+        LinkedHashSet matchIdsSet = new LinkedHashSet();
+        if (query != null){
+            IndexSearcher searcher = new IndexSearcher(dir);
+            Hits hits = searcher.search(query);
+            for (int i = 0; i < hits.length(); i++) {
+                Document d = hits.doc(i);
+                Field studyId = d.getField("varStudyId");
+                String studyIdStr = studyId.stringValue();
+                Long studyIdLong = Long.valueOf(studyIdStr);
+                matchIdsSet.add(studyIdLong);
+            }
+            searcher.close();
+        }
+        matchIds.addAll(matchIdsSet);
+        return matchIds;
+    }
+
     /* phraseQuery supports partial match, if slop == 0, phrase must match in exact order
      */
     

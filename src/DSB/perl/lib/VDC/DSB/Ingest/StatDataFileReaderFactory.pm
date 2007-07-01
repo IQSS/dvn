@@ -123,7 +123,7 @@ sub checkReadableFileType {
 	}
 	my $dtarelno = { 
 		105 =>  'rel_4or5',  108 => 'rel_6', 110 => 'rel_7first',
-		111 => 'rel_7scnd', 113 => 'rel_8',
+		111 => 'rel_7scnd', 113 => 'rel_8or9',114 => 'rel_10',
 	}; 
 	 if ($first4b1[2] != 1) {
 		print STDERR "$dfname is not sata type(failed: 1st step)\n" if $DEBUG;

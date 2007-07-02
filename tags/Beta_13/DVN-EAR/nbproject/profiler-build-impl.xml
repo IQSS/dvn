@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*** GENERATED FROM project.xml - DO NOT EDIT  ***
+***         EDIT ../build.xml INSTEAD         ***
+
+-->
+<project name="-profiler-impl" default="profile-j2ee" basedir="..">
+    <target name="default" depends="profile-j2ee" description="Build and profile the project."/>
+    <!--
+
+    =================
+    PROFILING SECTION
+    =================
+    -->
+    <target name="profile-j2ee" description="Profile a Web Project in the IDE.">
+        <condition property="profiler.startserver.target" value="start-profiled-server-env" else="start-profiled-server-noenv">
+            <isset property="profiler.info.agentpath"/>
+        </condition>
+        <antcall target="${profiler.startserver.target}"/>
+        <antcall target="run"/>
+    </target>
+    <target name="start-profiled-server-env">
+        <nbstartprofiledserver forceRestart="${profiler.j2ee.serverForceRestart}" startupTimeout="${profiler.j2ee.serverStartupTimeout}" javaPlatform="${profiler.info.javaPlatform}">
+            <jvmarg value="${profiler.info.jvmargs.agent}"/>
+            <jvmarg value="${profiler.j2ee.agentID}"/>
+            <env key="${profiler.info.pathvar}" value="${profiler.info.agentpath}"/>
+        </nbstartprofiledserver>
+    </target>
+    <target name="start-profiled-server-noenv">
+        <nbstartprofiledserver forceRestart="${profiler.j2ee.serverForceRestart}" startupTimeout="${profiler.j2ee.serverStartupTimeout}" javaPlatform="${profiler.info.javaPlatform}">
+            <jvmarg value="${profiler.info.jvmargs.agent}"/>
+            <jvmarg value="${profiler.j2ee.agentID}"/>
+        </nbstartprofiledserver>
+    </target>
+</project>

@@ -908,17 +908,26 @@ univarStatHtml<-function(dtfrm, tmpimgfile, analysisoptn, tmphtmlfile, standalon
 	
 	# main 
 	# implementation
+		rawVarName <- nameset
+		if (length(attr(dtfrm, "Rsafe2raw"))>0){
+			Rsafe2raw <- attr(dtfrm, "Rsafe2raw")
+			for (i in 1:length(nameset)){
+				if (!is.null(Rsafe2raw[[nameset[i]]])){
+					rawVarName[i] <-  Rsafe2raw[[nameset[i]]];
+				}
+			}
+		}
 	
 	for (i in 1:dim(dtfrm)[2]){
 		try({
 		if (VARTYPE[i]==2) {
-			varsgmnt.c<-univarStatHtml.cntn(statlst=STATLST[[as.character(i)]], imgfllst=CHRTLST[[as.character(i)]], cmbntn=analysisoptn, namesi=nameset[i], varlabelsi=varlabelset[i])
+			varsgmnt.c<-univarStatHtml.cntn(statlst=STATLST[[as.character(i)]], imgfllst=CHRTLST[[as.character(i)]], cmbntn=analysisoptn, namesi=rawVarName[i], varlabelsi=varlabelset[i])
 			cat(file=whtml, varsgmnt.c, sep="")
 		} else {
 			if (DBG) {cat(i,"-th var before entering the discrete html function\n", sep="")}
 			#cat("check the value table=",VALTABLE[[VALINDEX[[i]]]],"\n", sep="")
 			if (is.null(VALINDEX[[as.character(i)]])){valtable<-NULL} else {valtable<-VALTABLE[[VALINDEX[[as.character(i)]]]]}
-			varsgmnt.d<-univarStatHtml.dscrt(statlst=STATLST[[as.character(i)]], imgfllst=CHRTLST[[as.character(i)]], cmbntn=analysisoptn, namesi=nameset[i], varlabelsi=varlabelset[i], vltbl=valtable)
+			varsgmnt.d<-univarStatHtml.dscrt(statlst=STATLST[[as.character(i)]], imgfllst=CHRTLST[[as.character(i)]], cmbntn=analysisoptn, namesi=rawVarName[i], varlabelsi=varlabelset[i], vltbl=valtable)
 			cat(file=whtml, varsgmnt.d, sep="")
 		}
 		}) # end of try

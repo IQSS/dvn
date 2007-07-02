@@ -726,11 +726,15 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         VDCNetwork vdcNetwork = vdcNetworkService.find();
         VDC vdc = em.find(VDC.class, vdcId);
         
+        File ddiFile = xmlFile;
+        boolean fileTransformed = false;
+        
         if (xmlFileFormat != 0) { 
-            xmlFile = transformToDDI(xmlFile, "mif2ddi.xsl");
+            ddiFile = transformToDDI(xmlFile, "mif2ddi.xsl");
+            fileTransformed = true;
         }
         
-        CodeBook _cb = generateCodeBook(xmlFile);
+        CodeBook _cb = generateCodeBook(ddiFile);
         String id = null;
         String globalId = null;
         
@@ -813,7 +817,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             retrieveFiles(study);
         }
         
-        copyXMLFile(study, xmlFile);
+        copyXMLFile(study, ddiFile, "original_imported_study.xml");
+        
+        if (fileTransformed) {
+            copyXMLFile(study, xmlFile, "original_imported_study_pretransform.xml");
+        }
         
         saveStudy(study, userId);
         
@@ -857,6 +865,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 if (out != null) { out.close(); }
             } catch (Exception e) {}         
         }
+        
         
         return ddiFile;
 
@@ -944,7 +953,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return legacyFile;
     }
     
-    private void copyXMLFile( Study study, File xmlFile ) {
+    private void copyXMLFile( Study study, File xmlFile, String xmlFileName ) {
         try {
             // create, if needed, the directory
             File newDir = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
@@ -952,7 +961,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 newDir.mkdirs();
             }
             
-            FileUtil.copyFile( xmlFile, new File(newDir, "original_imported_study.xml"));
+            FileUtil.copyFile( xmlFile, new File(newDir, xmlFileName ));
         } catch (IOException ex) {
             ex.printStackTrace();
             String msg = "ImportStudy failed: ";

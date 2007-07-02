@@ -53,7 +53,7 @@ my $errMsgtbl = {
 	},
 };
 
-my $ccfltrlst = [qw (_varNameA _varNameH _varType _varLabel _varNo _varNoMpTbl _valLblTbl _mssvlTbl _charVarTbl VarID _varFormat _formatName _formatCatgry _newVarNameSetA _newVarNameSetH _newVarSpec unsafeVarName unsafeNewVarName _varNameAsafe _newVarNameAsafe _varNameHsafe _newVarNameHsafe) ];
+my $ccfltrlst = [qw (_varNameA _varNameH _varType _varLabel _varNo _varNoMpTbl _valLblTbl _mssvlTbl _charVarTbl VarID _varFormat _formatName _formatCatgry _newVarNameSetA _newVarNameSetH _newVarSpec unsafeVarName unsafeNewVarName _varNameAsafe _newVarNameAsafe _varNameHsafe _newVarNameHsafe RsafeVarName2raw) ];
 
 my $CNVRSNTBL = {
 	'#'=>'hex23',

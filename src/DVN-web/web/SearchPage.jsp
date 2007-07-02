@@ -32,9 +32,8 @@
                         
                         <!-- START SEARCH AREA -->
                         <ui:panelLayout id="searchBlockPanel" panelLayout="flow" rendered="#{SearchPage.renderSearch}">
-                            <ui:panelLayout  id="searchHeaderPanel1" panelLayout="flow" styleClass="vdcSectionHeader">
-                                 <h:outputText  value="Search" rendered="#{VDCRequest.currentVDC != null}"/>
-                                 <h:outputText  value="Search All Dataverses" rendered="#{VDCRequest.currentVDC == null}"/>     
+                            <ui:panelLayout  id="searchHeaderPanel1" panelLayout="flow" styleClass="vdcSectionHeader">  
+                                 <h:outputText  value="Search" />     
                             </ui:panelLayout>
                             <ui:panelLayout  id="searchPanel1" panelLayout="flow" styleClass="vdcSearchSection">
                                 <ui:panelGroup  block="true" id="groupPanel3" styleClass="vdcSearchGroupFirst">
@@ -47,7 +46,8 @@
                                     </h:outputLink>
                                 </ui:panelGroup>
                                 <ui:panelGroup  block="true" id="groupPanel6" styleClass="vdcSearchGroupMiddle">
-                                    <h:outputText  id="outputText2" value=" Search: "/>
+                                    <h:outputText  id="outputText2a" value=" Search all public dataverses: " rendered="#{VDCRequest.currentVDC == null}"/>
+                                    <h:outputText  id="outputText2b" value=" Search this dataverse: " rendered="#{VDCRequest.currentVDC != null}"/>
                                     <h:selectOneMenu  id="dropdown1" value="#{SearchPage.searchField}">
                                         <f:selectItem   itemLabel="Cataloging Information" itemValue="any" />
                                         <f:selectItem   itemLabel="- Author" itemValue="authorName" />

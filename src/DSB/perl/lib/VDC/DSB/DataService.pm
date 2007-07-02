@@ -1037,9 +1037,9 @@ sub printRcodeData{
 		$self->printVarType(iteration=>$i);
 		$self->printVarFormat(iteration=>$i);
 		$self->printReadTable(iteration=>$i);
-		if ($self->{unsafeVarName}){
+		#if ($self->{unsafeVarName}){
 			$self->printRsafe2rawList();
-		}
+		#}
 		$self->printBpRcode(line=>"asI");
 		## user-defined vars
 		if ($update){

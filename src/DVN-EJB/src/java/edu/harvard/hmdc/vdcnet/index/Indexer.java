@@ -73,6 +73,16 @@ public class Indexer {
     
     /** Creates a new instance of Indexer */
     public Indexer() {
+        String dvnIndexLocation = System.getProperty("dvn.index.location");
+        File locationDirectory = null;
+        if (dvnIndexLocation != null){
+            locationDirectory = new File(dvnIndexLocation);
+        }
+        if (locationDirectory.exists() && locationDirectory.isDirectory()){
+            // TBD
+            // substitute for the default location of "index-dir"
+            indexDir = dvnIndexLocation + "/index-dir";
+        }
         String dvnMaxClauseCountStr = System.getProperty("dvn.search.maxclausecount");
         if (dvnMaxClauseCountStr != null){
             try {
@@ -401,7 +411,7 @@ public class Indexer {
         String[] phrase = getPhrase(value);
         
         
-        String indexDir = "index-dir";
+//        String indexDir = "index-dir";
         Directory searchdir = FSDirectory.getDirectory(indexDir,false);
         IndexSearcher searcher = new IndexSearcher(searchdir);
         Hits hits = exactMatchQuery(searcher, field, value);

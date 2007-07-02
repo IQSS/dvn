@@ -1037,6 +1037,9 @@ sub printRcodeData{
 		$self->printVarType(iteration=>$i);
 		$self->printVarFormat(iteration=>$i);
 		$self->printReadTable(iteration=>$i);
+		if ($self->{unsafeVarName}){
+			$self->printRsafe2rawList();
+		}
 		$self->printBpRcode(line=>"asI");
 		## user-defined vars
 		if ($update){
@@ -1207,6 +1210,25 @@ sub printReadTable{
 	print $wh "x<-read.table141vdc(file=\"$RData\",col.names=c(\n\"",join("\",\n\"", @$varname[$varRangeSet->[$i][0]..$varRangeSet->[$i][1]]), "\"),colClassesx=vartyp,varFormat=varFmt)\n\n";
 }
 
+sub printRsafe2rawList{
+	my $self = shift;
+	my $optn ={ @_ };
+	my $wh = $self->{WH};
+	my $varNameHsafe2raw = $self->{RsafeVarName2raw};
+	print $wh "attr(x, \"Rsafe2raw\")<-list(\n";
+	my $kys = [keys(%{$varNameHsafe2raw})];
+	my $lv  = scalar(@{$kys});
+	for (my $i=0; $i<$lv; $i++ ) {
+		my $value = $varNameHsafe2raw->{$kys->[$i]};
+		if ($i < ($lv -1)){
+			print $wh "'" . $kys->[$i] . "'='" .  $value . "',\n";
+		} else {
+			print $wh "'" . $kys->[$i] . "'='" .  $value . "'";
+
+		}
+	}
+	print $wh  ")\n\n";
+}
 
 sub printSubset{
 	my $self = shift;

@@ -23,6 +23,11 @@
                         <f:selectItems  id="radio1SelectItem" value="#{ImportStudyPage.vdcRadioItems}" />
                     </h:selectOneMenu>
                     
+                    <h:outputText value="XML file format:" />
+                    <h:selectOneMenu  id="xmlFileFormatList" value="#{ImportStudyPage.xmlFileFormat}">
+                        <f:selectItems  id="xmlFileFormatItems" value="#{ImportStudyPage.xmlFileFormatRadioItems}" />
+                    </h:selectOneMenu>
+                    
                     <h:outputText value="Register Handle?" />
                     <h:selectBooleanCheckbox  id="registerHandleCheckBox" value="#{ImportStudyPage.registerHandle}"/> 
                     

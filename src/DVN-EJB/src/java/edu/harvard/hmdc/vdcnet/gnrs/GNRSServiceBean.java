@@ -100,125 +100,129 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
        }
    }
 
-    public void createHandle( String handle){
-        String prefix = handle.substring(0,handle.indexOf("/"));
-        String localHandle = handle.substring(handle.indexOf("/")+1);
-        String authHandle =  "0.NA/" + prefix;
-        byte[] key = null;
-        int index = 300;
-        String file = "/hs/svr_1/admpriv.bin";
-        String secret = System.getProperty("vdc.handle.admprivphrase");
-        try {
-            File f = new File(file);
-            FileInputStream fs = new FileInputStream(f);
-            key = new byte[(int)f.length()];
-            int n=0;
-            while(n<key.length) key[n++] = (byte)fs.read();
-            fs.read(key);
-        } catch (Throwable t){
-            System.err.println("Cannot read private key " + file +": " + t);
-        }
-        
-        HandleResolver resolver = new HandleResolver();
-        
-        PrivateKey privkey = null;
-        byte secKey[] = null;
-        try {
-            if(Util.requiresSecretKey(key)){
-                secKey = secret.getBytes();
-            }
-            key = Util.decrypt(key, secKey);
-            privkey = Util.getPrivateKeyFromBytes(key, 0);
-        } catch (Throwable t){
-            System.err.println("Can't load private key in " + file +": " + t);
-        }
-        
-        String urlStr = getUrlStr(prefix, handle); 
-        
-        try {
-            PublicKeyAuthenticationInfo auth =
-                    new PublicKeyAuthenticationInfo(authHandle.getBytes("UTF8"),
-                    index,
-                    privkey);
-            
-            AdminRecord admin = new AdminRecord(authHandle.getBytes("UTF8"), 300,
-                    true, true , true, true, true, true,
-                    true, true, true, true, true, true);
-            
-            int timestamp = (int)(System.currentTimeMillis()/1000);
-            
-            HandleValue[] val = { new HandleValue(100, "HS_ADMIN".getBytes("UTF8"),
-                    Encoder.encodeAdminRecord(admin),
-                    HandleValue.TTL_TYPE_RELATIVE, 86400,
-                    timestamp, null, true, true, true, false), new HandleValue(1,"URL".getBytes("UTF8"),
-                    urlStr.getBytes(),
-                    HandleValue.TTL_TYPE_RELATIVE, 86400,
-                    timestamp, null, true, true, true, false) };
-            
-            CreateHandleRequest req =
-                    new CreateHandleRequest(handle.getBytes("UTF8"), val, auth);
-            
-            resolver.traceMessages = true;
-            AbstractResponse response = resolver.processRequest(req);
-            if (response.responseCode == AbstractMessage.RC_SUCCESS){
-                System.out.println("\nGot Response: \n"+response);
-            } else {
-                System.out.println("\nGot Error: \n"+response);
-            }
-        } catch (Throwable t) {
-            System.err.println("\nError: "+t);
-        }
-    }
+   public void createHandle( String handle){
+       String prefix = handle.substring(0,handle.indexOf("/"));
+       if (vdcNetworkService.find().isHandleRegistration() && isAuthority(prefix)){
+           String localHandle = handle.substring(handle.indexOf("/")+1);
+           String authHandle =  "0.NA/" + prefix;
+           byte[] key = null;
+           int index = 300;
+           String file = "/hs/svr_1/admpriv.bin";
+           String secret = System.getProperty("vdc.handle.admprivphrase");
+           try {
+               File f = new File(file);
+               FileInputStream fs = new FileInputStream(f);
+               key = new byte[(int)f.length()];
+               int n=0;
+               while(n<key.length) key[n++] = (byte)fs.read();
+               fs.read(key);
+           } catch (Throwable t){
+               System.err.println("Cannot read private key " + file +": " + t);
+           }
+           
+           HandleResolver resolver = new HandleResolver();
+           
+           PrivateKey privkey = null;
+           byte secKey[] = null;
+           try {
+               if(Util.requiresSecretKey(key)){
+                   secKey = secret.getBytes();
+               }
+               key = Util.decrypt(key, secKey);
+               privkey = Util.getPrivateKeyFromBytes(key, 0);
+           } catch (Throwable t){
+               System.err.println("Can't load private key in " + file +": " + t);
+           }
+           
+           String urlStr = getUrlStr(prefix, handle);
+           
+           try {
+               PublicKeyAuthenticationInfo auth =
+                       new PublicKeyAuthenticationInfo(authHandle.getBytes("UTF8"),
+                       index,
+                       privkey);
+               
+               AdminRecord admin = new AdminRecord(authHandle.getBytes("UTF8"), 300,
+                       true, true , true, true, true, true,
+                       true, true, true, true, true, true);
+               
+               int timestamp = (int)(System.currentTimeMillis()/1000);
+               
+               HandleValue[] val = { new HandleValue(100, "HS_ADMIN".getBytes("UTF8"),
+                       Encoder.encodeAdminRecord(admin),
+                       HandleValue.TTL_TYPE_RELATIVE, 86400,
+                       timestamp, null, true, true, true, false), new HandleValue(1,"URL".getBytes("UTF8"),
+                       urlStr.getBytes(),
+                       HandleValue.TTL_TYPE_RELATIVE, 86400,
+                       timestamp, null, true, true, true, false) };
+               
+               CreateHandleRequest req =
+                       new CreateHandleRequest(handle.getBytes("UTF8"), val, auth);
+               
+               resolver.traceMessages = true;
+               AbstractResponse response = resolver.processRequest(req);
+               if (response.responseCode == AbstractMessage.RC_SUCCESS){
+                   System.out.println("\nGot Response: \n"+response);
+               } else {
+                   System.out.println("\nGot Error: \n"+response);
+               }
+           } catch (Throwable t) {
+               System.err.println("\nError: "+t);
+           }
+       }
+   }
 
-    public void deleteHandle( String handle) {
-        String prefix = handle.substring(0,handle.indexOf("/"));
-        String localHandle = handle.substring(handle.indexOf("/")+1);
-        String authHandle =  "0.NA/" + prefix;
-        String file = "/hs/svr_1/admpriv.bin";
-        String secret = System.getProperty("vdc.handle.admprivphrase");
-        byte[] key = null;
-        try {
-            File f = new File(file);
-            FileInputStream fs = new FileInputStream(f);
-            key = new byte[(int)f.length()];
-            int n=0;
-            while(n<key.length) key[n++] = (byte)fs.read();
-            fs.read(key);
-        } catch (Throwable t) {
-            System.err.println("Cannot read private key " + file + ": " + t);
-        }
-        
-        HandleResolver resolver = new HandleResolver();
-        resolver.setSessionTracker(new ClientSessionTracker());
-        PrivateKey privkey = null;
-        byte secKey[] = null;
-        try {
-            if(Util.requiresSecretKey(key)){
-                secKey = secret.getBytes();
-            }
-            key = Util.decrypt(key, secKey);
-            privkey = Util.getPrivateKeyFromBytes(key, 0);
-        } catch (Throwable t) {
-            System.err.println("Can't load private key in " + file + ": " +t);
-        }
-        PublicKeyAuthenticationInfo auth =
-                new PublicKeyAuthenticationInfo(Util.encodeString(authHandle), 300, privkey);
-        
-        DeleteHandleRequest req =
-                new DeleteHandleRequest(Util.encodeString(handle), auth);
-        AbstractResponse response=null;
-        try {
-            response = resolver.processRequest(req);
-        } catch (HandleException ex) {
-            ex.printStackTrace();
-        }
-        if(response==null || response.responseCode!=AbstractMessage.RC_SUCCESS) {
-            System.out.println("error deleting '"+handle+"': "+response);
-        } else {
-            System.out.println("deleted "+handle);
-        }
-    }
-    
+   public void deleteHandle( String handle) {
+       String prefix = handle.substring(0,handle.indexOf("/"));
+       if (vdcNetworkService.find().isHandleRegistration() && isAuthority(prefix)){
+           String localHandle = handle.substring(handle.indexOf("/")+1);
+           String authHandle =  "0.NA/" + prefix;
+           String file = "/hs/svr_1/admpriv.bin";
+           String secret = System.getProperty("vdc.handle.admprivphrase");
+           byte[] key = null;
+           try {
+               File f = new File(file);
+               FileInputStream fs = new FileInputStream(f);
+               key = new byte[(int)f.length()];
+               int n=0;
+               while(n<key.length) key[n++] = (byte)fs.read();
+               fs.read(key);
+           } catch (Throwable t) {
+               System.err.println("Cannot read private key " + file + ": " + t);
+           }
+           
+           HandleResolver resolver = new HandleResolver();
+           resolver.setSessionTracker(new ClientSessionTracker());
+           PrivateKey privkey = null;
+           byte secKey[] = null;
+           try {
+               if(Util.requiresSecretKey(key)){
+                   secKey = secret.getBytes();
+               }
+               key = Util.decrypt(key, secKey);
+               privkey = Util.getPrivateKeyFromBytes(key, 0);
+           } catch (Throwable t) {
+               System.err.println("Can't load private key in " + file + ": " +t);
+           }
+           PublicKeyAuthenticationInfo auth =
+                   new PublicKeyAuthenticationInfo(Util.encodeString(authHandle), 300, privkey);
+           
+           DeleteHandleRequest req =
+                   new DeleteHandleRequest(Util.encodeString(handle), auth);
+           AbstractResponse response=null;
+           try {
+               response = resolver.processRequest(req);
+           } catch (HandleException ex) {
+               ex.printStackTrace();
+           }
+           if(response==null || response.responseCode!=AbstractMessage.RC_SUCCESS) {
+               System.out.println("error deleting '"+handle+"': "+response);
+           } else {
+               System.out.println("deleted "+handle);
+           }
+       }
+   }
+   
     public String resolveHandleUrl(String handle){
         ResolutionRequest req = buildResolutionRequest(handle);
         AbstractResponse response=null;
@@ -341,6 +345,12 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
         boolean auth = false;
         if (prefix.equals(vdcAuthority)){
             auth = true;
+        } else {
+            String query = "select h from HandlePrefix h where h.prefix = '" +prefix + "'";
+            List <HandlePrefix> handlePrefixList = em.createQuery(query).getResultList();
+            if (handlePrefixList.size() > 0){
+                auth = true;
+            }
         }
         return auth;
     }

@@ -998,21 +998,22 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     private void mapFileDscr(FileDscrType _fd, Study s, Map filesMap) {
         StudyFile file = new StudyFile();
         
-        if (  _fd.getFileTxt().get(0).getFileName() != null ) {
-            file.setFileName( mapContent( _fd.getFileTxt().get(0).getFileName().getContent().get(0) ) );
-        } else {
-            file.setFileName("file");
-        }
-        
-        if (  _fd.getFileTxt().get(0).getFileCont() != null ) {
-            file.setDescription( mapContent( _fd.getFileTxt().get(0).getFileCont().getContent().get(0) ) );
-        }
-        
         file.setFileSystemLocation( _fd.getURI() );
-        // for now, don't do anything about content type'
+        file.setFileName("file"); // default filename; if specified by DDI, will be replaced
         
+        FileTxtType _fileTxt = null;
         
-        // now check if we have any variables associated (to see if we are subsettable)
+        if ( _fd.getFileTxt().size() > 0 ) {
+            _fileTxt = _fd.getFileTxt().get(0);
+            if (  _fileTxt.getFileName() != null ) {
+                file.setFileName( mapContent( _fd.getFileTxt().get(0).getFileName().getContent().get(0) ) );
+            }
+            if (  _fileTxt.getFileCont() != null ) {
+                file.setDescription( mapContent( _fd.getFileTxt().get(0).getFileCont().getContent().get(0) ) );
+            }
+        }
+        
+       // now check if we have any variables associated (to see if we are subsettable)
         DataTable dt = (DataTable) filesMap.get( _fd.getID() );
         if (dt != null) {
             file.setSubsettable(true);
@@ -1020,9 +1021,15 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             dt.setStudyFile(file);
             file.setDataTable(dt);
             
-            DimensnsType _dim = _fd.getFileTxt().get(0).getDimensns();
-            dt.setCaseQuantity( new Long( (String) _dim.getCaseQnty().get(0).getContent().get(0) ) );
-            dt.setVarQuantity( new Long( (String) _dim.getVarQnty().get(0).getContent().get(0) ) );
+            if (_fileTxt != null && _fileTxt.getDimensns() != null) {
+                DimensnsType _dim = _fileTxt.getDimensns();
+                if ( _dim.getCaseQnty().size() > 0) {
+                    dt.setCaseQuantity( new Long( (String) _dim.getCaseQnty().get(0).getContent().get(0) ) );
+                }
+                if ( _dim.getVarQnty().size() > 0) {
+                    dt.setVarQuantity( new Long( (String) _dim.getVarQnty().get(0).getContent().get(0) ) );
+                }
+            }
             
             String unf = mapFileNote(_fd.getNotes(), "VDC:UNF");
             if (unf != null) {
@@ -1031,6 +1038,8 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         }
           
         addFileToCategory( file, determineFileCategory(_fd.getNotes()) , s );
+        
+        // for now, don't do anything about content type
     }
     
     private String determineFileCategory(List<NotesType> notes) {
@@ -2238,14 +2247,21 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         FileContType _fileCont = objFactory.createFileContType();
         _fileCont.getContent().add(sf.getDescription());
         
-        CaseQntyType _cq = objFactory.createCaseQntyType();
-        _cq.getContent().add(dt.getCaseQuantity().toString());
-        VarQntyType _vq = objFactory.createVarQntyType();
-        _vq.getContent().add(dt.getVarQuantity().toString());
-        
+        boolean addDimensions = false;
         DimensnsType _dim = objFactory.createDimensnsType();
-        _dim.getCaseQnty().add(_cq);
-        _dim.getVarQnty().add(_vq);
+        if (dt.getCaseQuantity() != null) {
+            CaseQntyType _cq = objFactory.createCaseQntyType();
+            _cq.getContent().add(dt.getCaseQuantity().toString());
+            _dim.getCaseQnty().add(_cq);
+            addDimensions = true;
+        }
+        if (dt.getVarQuantity() != null) {
+            VarQntyType _vq = objFactory.createVarQntyType();
+            _vq.getContent().add(dt.getVarQuantity().toString());
+            _dim.getVarQnty().add(_vq);
+            addDimensions = true;
+        }
+        
         
         FileTypeType _fileType = objFactory.createFileTypeType();
         _fileType.getContent().add(sf.getFileType());
@@ -2253,7 +2269,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         FileTxtType _fileText = objFactory.createFileTxtType();
         _fileText.setFileName(_fileName);
         _fileText.setFileCont(_fileCont);
-        _fileText.setDimensns(_dim);
+        if (addDimensions) { _fileText.setDimensns(_dim); }
         _fileText.setFileType(_fileType);
         
         _fd.getFileTxt().add(_fileText);

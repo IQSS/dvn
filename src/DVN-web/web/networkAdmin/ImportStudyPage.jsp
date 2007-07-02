@@ -15,14 +15,9 @@
                     <h:messages id="importMsg"  styleClass="errorMessage"/> 
                 </ui:panelLayout>
                 <h:panelGrid columns="2"    style="padding: 30px 40px 40px 40px; ">                           
-                    <h:outputText value="DDI" />
+                    <h:outputText value="XML file (study):" />
                     <ui:upload  id="fileBrowser"  uploadedFile ="#{ImportStudyPage.browserFile}"/>
  
-                    <h:outputText value="Import into:" />
-                    <h:selectOneMenu  id="radioButtonList1" value="#{ImportStudyPage.vdcId}">
-                        <f:selectItems  id="radio1SelectItem" value="#{ImportStudyPage.vdcRadioItems}" />
-                    </h:selectOneMenu>
-                    
                     <h:outputText value="XML file format:" />
                     <h:selectOneMenu  id="xmlFileFormatList" value="#{ImportStudyPage.xmlFileFormat}">
                         <f:selectItems  id="xmlFileFormatItems" value="#{ImportStudyPage.xmlFileFormatRadioItems}" />
@@ -42,6 +37,11 @@
                       
                     <h:outputText value="Copy Files?" />
                     <h:selectBooleanCheckbox  id="copyFilesCheckBox" value="#{ImportStudyPage.copyFiles}"/> 
+ 
+                    <h:outputText value="Import into:" />
+                    <h:selectOneMenu  id="radioButtonList1" value="#{ImportStudyPage.vdcId}">
+                        <f:selectItems  id="radio1SelectItem" value="#{ImportStudyPage.vdcRadioItems}" />
+                    </h:selectOneMenu>                    
                     
                 </h:panelGrid>
                 <ui:panelLayout   style="padding: 30px 40px 40px 40px; ">

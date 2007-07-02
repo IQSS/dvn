@@ -24,8 +24,12 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,6 +50,11 @@ import javax.persistence.Query;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
@@ -675,29 +684,36 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     
     public Study importHarvestStudy(File xmlFile, Long vdcId, Long userId) {
         VDC vdc = em.find(VDC.class, vdcId);
+        em.refresh(vdc); // workaround to get correct value for harvesting dataverse (to be investigated)
+        
         if (vdc.getHarvestingDataverse() == null) {
             throw new EJBException("importHarvestStudy(...) should only be called for a harvesting dataverse.");
         }
         
         boolean createNewHandle = (vdc.getHarvestingDataverse().getHandlePrefix() != null);
+        int format = vdc.getHarvestingDataverse().getFormat().equals("ddi") ? 0 : 1; // 1 is mif; eventually this will be dynamic
         
-        Study study= importStudy(xmlFile, vdcId, userId, createNewHandle, createNewHandle, true, false, false);
+        Study study= importStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false);
         return study;
     }
     
     public Study importLegacyStudy(File xmlFile, Long vdcId, Long userId) {
         VDC vdc = em.find(VDC.class, vdcId);
+        em.refresh(vdc); // workaround to get correct value for harvesting dataverse (to be investigated)
+        
         if (vdc.getHarvestingDataverse() != null) {
             throw new EJBException("importLegacyStudy(...) should never be called for a harvesting dataverse.");
         }        
         
-        return importStudy(xmlFile, vdcId, userId, true, false, false, true, true);
+        return importStudy(xmlFile, 0,vdcId, userId, true, false, false, true, true);
     }
     
     
-    public Study importStudy(File xmlFile, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles) {
+    public Study importStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles) {
         // call internal studyService to force NEW transaction
-        Study study =  studyService.doImportStudy(xmlFile, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles);
+        Study study =  studyService.doImportStudy(xmlFile, xmlFileFormat, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles);
+        em.merge(study); // workaround to get filecategory values in cache (only for some studies, to be investigated)
+        
         indexService.updateStudy(study.getId());
         return study;
     }
@@ -705,11 +721,14 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Study doImportStudy(File xmlFile, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles) {
+    public Study doImportStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles) {
         logger.info("Begin doImportStudy");
         VDCNetwork vdcNetwork = vdcNetworkService.find();
         VDC vdc = em.find(VDC.class, vdcId);
         
+        if (xmlFileFormat != 0) { 
+            xmlFile = transformToDDI(xmlFile, "mif2ddi.xsl");
+        }
         
         CodeBook _cb = generateCodeBook(xmlFile);
         String id = null;
@@ -723,6 +742,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             
             id = ddiService.determineId(_cb, null);
             if (id != null) {
+                // first replace any slashes
+                id = id.replace('/', '-');
                 if (vdc.getHarvestingDataverse() != null) {
                     if (vdc.getHarvestingDataverse().getHandlePrefix() != null) {
                         globalId = "hdl:" + vdc.getHarvestingDataverse().getHandlePrefix().getPrefix() + "/" + id;                    
@@ -805,7 +826,43 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return study;
     }
     
+    private File transformToDDI(File xmlFile, String xslFileName) {
+        File ddiFile = null;        
+        InputStream in = null;
+        OutputStream out = null;
+        
+        try {
+            // prepare source
+            in = new FileInputStream(xmlFile);
+            StreamSource source = new StreamSource(in);
+
+            // prepare result
+            ddiFile = File.createTempFile("ddi", ".xml");
+            out = new FileOutputStream(ddiFile);
+            StreamResult result = new StreamResult(out);        
+
+            // now transform
+            StreamSource xslSource = new StreamSource(new File(xslFileName));
+            Transformer transformer = TransformerFactory.newInstance().newTransformer(xslSource);
+            transformer.transform( source, result ); 
+        
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new EJBException ("Error occurred while attempting to transform file.");
+        } finally {
+            try {
+                if (in != null) { in.close(); }
+            } catch (Exception e) {}
+            try {
+                if (out != null) { out.close(); }
+            } catch (Exception e) {}         
+        }
+        
+        return ddiFile;
+
+    }
     
+   
     private CodeBook generateCodeBook(Object obj ) {
         CodeBook _cb = null;
         

@@ -43,6 +43,7 @@ public class ImportStudyPage extends VDCBaseBean  {
     
     private UploadedFile browserFile;
     private Long vdcId;
+    private int xmlFileFormat;
     private boolean registerHandle;
     private boolean generateHandle;
     private boolean allowUpdates;
@@ -71,6 +72,13 @@ public class ImportStudyPage extends VDCBaseBean  {
         return vdcRadioItems;
     }
     
+    public List getXmlFileFormatRadioItems() {
+        List xmlFileFrmatRadioItems = new ArrayList();
+        xmlFileFrmatRadioItems.add( new SelectItem(0, "ddi") );
+        xmlFileFrmatRadioItems.add( new SelectItem(1, "mif") );
+        return xmlFileFrmatRadioItems;
+    }    
+    
     public UploadedFile getBrowserFile() {
         return browserFile;
     }
@@ -87,7 +95,13 @@ public class ImportStudyPage extends VDCBaseBean  {
         this.vdcId = vdcId;
     }
     
+    public int getXmlFileFormat() {
+        return xmlFileFormat;
+    }
 
+    public void setXmlFileFormat(int xmlFileFormat) {
+        this.xmlFileFormat = xmlFileFormat;
+    }
     
     public String import_action() {
         String resultMsg = null;
@@ -99,7 +113,7 @@ public class ImportStudyPage extends VDCBaseBean  {
             try {
                 File xmlFile = File.createTempFile("ddi", ".xml");
                 browserFile.write(xmlFile);
-                studyService.importStudy(xmlFile, vdcId, lb.getUser().getId(), registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles);
+                studyService.importStudy(xmlFile, xmlFileFormat, vdcId, lb.getUser().getId(), registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles);
                 resultMsg = "Import succeeded.";
             } catch (Exception ex) {
                 resultMsg = "Import failed: " + ex.getMessage() ;

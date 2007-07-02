@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2005 sp1 U (http://www.xmlspy.com) by Merce Crosas (Harvard) -->
+<!-- updated by asone -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://gking.harvard.edu/zelig" targetNamespace="http://gking.harvard.edu/zelig" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.1">
+	<xs:simpleType name="MODEL">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="continuous"/>
+			<xs:enumeration value="discrete"/>
+			<xs:enumeration value="nominal"/>
+			<xs:enumeration value="ordinal"/>
+			<xs:enumeration value="binary"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DATA">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="factor"/>
+			<xs:enumeration value="integer"/>
+			<xs:enumeration value="real"/>
+			<xs:enumeration value="character"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="MAXSETX">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PACK_REL">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="required"/>
+			<xs:enumeration value="suggested"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="zelig">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="model" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="description" type="xs:string"/>
+							<xs:element name="helpLink">
+								<xs:complexType>
+									<xs:attribute name="url" type="xs:anyURI" use="required"/>
+									<xs:attribute name="rhelp" type="xs:string" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="packageDependency" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="name" type="xs:string" use="required"/>
+									<xs:attribute name="version" type="xs:string" use="required"/>
+									<xs:attribute name="relationship" type="PACK_REL" use="optional" default="required"/>
+									<xs:attribute name="CRAN" type="xs:anyURI" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="formula">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="equation" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="outcome" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="modelingType" minOccurs="0" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="MODEL"/>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="dataType" minOccurs="0" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="DATA"/>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="minEquations" type="xs:positiveInteger" use="optional" default="1"/>
+															<xs:attribute name="maxEquations" type="xs:positiveInteger" use="optional" default="1"/>
+															<xs:attribute name="minVar" type="xs:nonNegativeInteger" use="optional" default="1"/>
+															<xs:attribute name="maxVar" type="xs:integer" use="optional" default="1"/>
+															<xs:attribute name="label" type="xs:string" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="explanatory" minOccurs="0" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="modelingType" minOccurs="0" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="MODEL"/>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="dataType" minOccurs="0" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="DATA"/>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="minVar" type="xs:nonNegativeInteger" use="optional" default="1"/>
+															<xs:attribute name="maxVar" type="xs:integer" use="optional" default="-1"/>
+															<xs:attribute name="label" type="xs:string" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="name" type="xs:string" use="optional"/>
+												<xs:attribute name="interceptAllowed" type="xs:boolean" use="optional" default="1"/>
+												<xs:attribute name="crossedAllowed" type="xs:boolean" use="optional" default="1"/>
+												<xs:attribute name="nestedAllowed" type="xs:boolean" use="optional" default="1"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="minEquations" type="xs:positiveInteger" use="optional" default="1"/>
+									<xs:attribute name="maxEquations" type="xs:positiveInteger" use="optional" default="1"/>
+									<xs:attribute name="simulEq" type="xs:boolean" use="optional" default="0"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="setx">
+								<xs:complexType>
+									<xs:attribute name="maxSetx" type="MAXSETX" use="optional" default="2"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="name" type="xs:string" use="required"/>
+						<xs:attribute name="label" type="xs:string" use="optional"/>
+						<xs:attribute name="specialFunction" type="xs:string" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

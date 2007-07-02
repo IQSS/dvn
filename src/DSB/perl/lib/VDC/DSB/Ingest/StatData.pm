@@ -62,6 +62,26 @@ my $CNVRSNTBL = {
 	'_'=>'hex5F',
 };
 
+
+# R-safe variable Name Mapping table
+my $Rkywrd2safeVarName= {
+	'NULL'=>'null',
+	'NA'=>'na',
+	'TRUE'=>'true',
+	'FALSE'=>'false',
+	'Inf'=>'inf',
+	'NaN'=>'naN',
+	'function'=>'Function',
+	'while'=>'While',
+	'repeat'=>'Repeat',
+	'for'=>'For',
+	'if'=>'If',
+	'in'=>'In',
+	'else'=>'Else',
+	'next'=>'Next',
+	'break'=>'Break',
+};
+
 my $tm = localtime;
 #print "loca time=", $tm, "\n";
 my @CY = split(/ /, $tm);
@@ -410,29 +430,14 @@ sub addSumstat{
 	
 	my $divisor = scalar(@$varRangeSet);
 	my $Rdata   = $self->{_prcssOptn}->{DLMTDDATA};
-	my $rawvarname = $self->{_varNameA};
 	my $novar   = $self->{_fileDscr}->{varQnty};
 	my $varcode = $self->getVarTypeSet();
 	
-	my $vnMapTable={};
-	my $vnMapTableR={};
-	my $varname=[];
-	for (my $i=0;$i<@{$rawvarname};$i++){
-		my $tmpVN = $rawvarname->[$i];
-		foreach my $token (keys %{$CNVRSNTBL}){
-			$tmpVN =~ s/[$token]/$CNVRSNTBL->{$token}/g;
-		}
-		if ($tmpVN ne $rawvarname->[$i]){
-			$vnMapTable->{$rawvarname->[$i]}=$tmpVN;
-			$vnMapTableR->{$tmpVN}=$rawvarname->[$i];
-		}
-		push @{$varname}, $tmpVN;
-	}
-	print $FH "varName changed=\n", Dumper($vnMapTable), if $DEBUG;
+	my $varname = $self->getRsafeVarNameSet();
+	my $raw2RsafeVarName = $self->{raw2RsafeVarName};
+	my $RsafeVarName2raw = $self->{RsafeVarName2raw};
+	print $FH "varName changed=\n", Dumper($raw2RsafeVarName), if $DEBUG;
 
-	
-	
-	
 	# note: although a tab data file will be divided,
 	# an output tab file that stores descriptive statistics is one file
 	# step 1: save an R code file
@@ -620,9 +625,9 @@ sub addSumstat{
 			print $unfh $line[$#line],"\n";
 			print $FH $line[$#line],"\n" if $DEBUG;
 			$UNFcounter++;
-			if (exists($vnMapTableR->{$line[0]})){
-				print $FH "variable name for R ",$line[0]," is replaced with the orignal name",$vnMapTableR->{$line[0]},"\n";
-				$line[0]= $vnMapTableR->{$line[0]};
+			if (exists($RsafeVarName2raw->{$line[0]})){
+				print $FH "variable name for R ",$line[0]," is replaced with the orignal name:",$RsafeVarName2raw->{$line[0]},"\n";
+				$line[0]= $RsafeVarName2raw->{$line[0]};
 			}
 			
 			
@@ -1060,7 +1065,35 @@ sub getVarNameSet{
 	}
 	return $varNameSet;
 }
-
+sub getRsafeVarNameSet{
+	my $self = shift;
+	my $rawvarname = $self->{_varNameA};
+	my $raw2RsafeVarName={};
+	my $RsafeVarName2raw={};
+	my $varName=[];
+	for (my $i=0;$i<@{$rawvarname};$i++){
+		my $tmpVN = $rawvarname->[$i];
+		# check it against the R-reserved-word list
+		if (exists($Rkywrd2safeVarName->{$tmpVN})){
+			$tmpVN = $Rkywrd2safeVarName->{$tmpVN};
+			$raw2RsafeVarName->{$rawvarname->[$i]}=$tmpVN;
+			$RsafeVarName2raw->{$tmpVN}=$rawvarname->[$i];
+		} else {
+			foreach my $token (keys %{$CNVRSNTBL}){
+				$tmpVN =~ s/[$token]/$CNVRSNTBL->{$token}/g;
+			}
+			if ($tmpVN ne $rawvarname->[$i]){
+				$raw2RsafeVarName->{$rawvarname->[$i]}=$tmpVN;
+				$RsafeVarName2raw->{$tmpVN}=$rawvarname->[$i];
+			}
+		}
+		
+		push @{$varName}, $tmpVN;
+	}
+	$self->{raw2RsafeVarName} = $raw2RsafeVarName;
+	$self->{RsafeVarName2raw} = $RsafeVarName2raw;
+	return $varName;
+}
 
 
 sub writeDDIinXML{

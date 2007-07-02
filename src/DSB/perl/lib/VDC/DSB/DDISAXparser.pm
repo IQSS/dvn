@@ -56,15 +56,6 @@ my $varformatschema_ATTRB="{}schema";
 my $novars;
 my $varcntr=0;
 
-my $CNVRSNTBL = {
-	'#'=>'hex23',
-	'$'=>'hex24',
-	'@'=>'hex40',
-	'_'=>'hex5F',
-};
-
-
-
 sub new {
 	my $class = shift;
 	my $self = { @_ };
@@ -107,20 +98,9 @@ sub start_element {
 		$curr_varattr->{ID}   = $atts->{$ID_ATTRB}->{Value};
 		$curr_varattr->{name} = $atts->{$name_ATTRB}->{Value};
 		push @{$self->{_varNameA}}, $curr_varattr->{name};
-			
-		my $tmpVN = $curr_varattr->{name};
-		foreach my $token (keys %{$CNVRSNTBL}){
-			$tmpVN =~ s/[$token]/$CNVRSNTBL->{$token}/g;
-		}
-		if ($tmpVN ne $curr_varattr->{name}){
-			$self->{unsafeVarName}++;
-		}
-		push @{$self->{_varNameAsafe}}, $tmpVN;
-		
 		
 		push @{$self->{_varNo}},    $curr_varattr->{ID} ;
 		$self->{_varNameH}->{ $curr_varattr->{ID} } = $curr_varattr->{name};
-		$self->{_varNameHsafe}->{ $curr_varattr->{ID} } = $tmpVN;
 		
 		
 		$self->{_varNoMpTbl}->{ $curr_varattr->{ID} } = $varcntr;
@@ -299,13 +279,7 @@ sub passMetadata {
 	my $temp= {};
 
 	while ((my $key, my $value) = each(%{$self})) {
-		if (($key eq '_varNameAsafe') || ($key eq '_varNameHsafe')){
-			if ($self->{unsafeVarName}) {
-				$temp->{$key} = $value;
-			}
-		} else {
-			$temp->{$key} = $value;
-		}
+		$temp->{$key} = $value;
 	}
 	
 	return $temp;

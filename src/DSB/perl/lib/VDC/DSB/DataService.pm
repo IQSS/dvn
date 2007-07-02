@@ -62,6 +62,24 @@ my $CNVRSNTBL = {
 	'_'=>'hex5F',
 };
 
+# R-safe variable Name Mapping table
+my $Rkywrd2safeVarName= {
+	'NULL'=>'null',
+	'NA'=>'na',
+	'TRUE'=>'true',
+	'FALSE'=>'false',
+	'Inf'=>'inf',
+	'NaN'=>'naN',
+	'function'=>'Function',
+	'while'=>'While',
+	'repeat'=>'Repeat',
+	'for'=>'For',
+	'if'=>'If',
+	'in'=>'In',
+	'else'=>'Else',
+	'next'=>'Next',
+	'break'=>'Break',
+};
 
 
 my $rangeOprMap = {
@@ -238,9 +256,6 @@ sub paramfilter {
 		print "name varName hash:",Dumper ($tmpvnhsh) if $DEBUG;
 		$newset->{_newVarNameSetH}=$tmpvnhsh;
 		$newset->{_newVarNameSetA}=[split('\0', $cgiparam->{newVarNameSet})];
-
-	
-	
 	
 		foreach my $ky (keys %{$cgiparam}) {
 			print "key to be checked=",$ky,"\n" if $DEBUG;
@@ -595,6 +610,56 @@ sub addMetaData{
 		#$self->{metadata}->{$ky}=$vl;
 		
 	}
+	# sanitize variable names for R
+	#
+	# attributes to be added
+	# $self->{unsafeVarName} = scalar: 0 or more
+	# $self->{_varNameAsafe} = array [safe variable name]
+	# $self->{_varNameHsafe} = hash key: id => safe variable name: 
+	my $count=0;
+	my $rawvarname = $self->{_varNameA};
+	#my $self->{'_varNameH'}; # id => name
+	my $raw2RsafeVarName={};
+	my $RsafeVarName2raw={};
+	my $varNameWunderscore={};
+	my $varName=[];
+	for (my $i=0;$i<@{$rawvarname};$i++){
+		my $tmpVN = $rawvarname->[$i];
+		# check it against the R-reserved-word list
+		if (exists($Rkywrd2safeVarName->{$tmpVN})){
+			$tmpVN = $Rkywrd2safeVarName->{$tmpVN};
+			$raw2RsafeVarName->{$rawvarname->[$i]}=$tmpVN;
+			$RsafeVarName2raw->{$tmpVN}=$rawvarname->[$i];
+			$count++;
+		} else {
+			foreach my $token (keys %{$CNVRSNTBL}){
+				if ($token eq '_'){
+					
+				}
+				$tmpVN =~ s/[$token]/$CNVRSNTBL->{$token}/g;
+			}
+			if ($tmpVN ne $rawvarname->[$i]){
+				$raw2RsafeVarName->{$rawvarname->[$i]}=$tmpVN;
+				$RsafeVarName2raw->{$tmpVN}=$rawvarname->[$i];
+				$count++;
+			}
+		}
+		push @{$varName}, $tmpVN;
+	}
+	$self->{_varNameAsafe}    = $varName;
+	
+	my $tmph ={};
+	while ((my $key, my $value) = each(%{$self->{'_varNameH'}})) {
+		if (exists($raw2RsafeVarName->{$value})){
+			$tmph->{$key} = $raw2RsafeVarName->{$value};
+		} else {
+			$tmph->{$key} = $value;
+		}
+	}
+	$self->{_varNameHsafe}    = $tmph;
+	$self->{raw2RsafeVarName} = $raw2RsafeVarName;
+	$self->{RsafeVarName2raw} = $RsafeVarName2raw;
+	$self->{unsafeVarName}    = $count;
 }
 
 sub getMetaData4CC {

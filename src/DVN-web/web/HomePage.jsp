@@ -55,8 +55,7 @@
                                 
                                 <ui:panelLayout id="collectionBlockPanel" panelLayout="flow">
                                     <ui:panelLayout  id="browseHeaderPanel" panelLayout="flow" styleClass="vdcSectionHeader">
-                                        <h:outputText  value="Browse" rendered="#{VDCRequest.currentVDC != null}"/>
-                                        <h:outputText  value="Browse Dataverses" rendered="#{VDCRequest.currentVDC == null}"/>
+                                        <h:outputText  value="Browse"/>
                                     </ui:panelLayout>
                                     <ui:panelLayout  id="noDataversePanel" panelLayout="flow" style="padding-top:30px; padding-bottom: 0px; padding-left:20px;" rendered="#{empty HomePage.vdcs}">
                                         <h:outputText styleClass="vdcTextStandOut" value="There are no Dataverses yet in #{VDCRequest.vdcNetwork.name} Dataverse Network."/>

@@ -70,10 +70,13 @@ public class FileDownloadServlet extends HttpServlet{
         
         String fileId = req.getParameter("fileId");
         if (fileId != null) {
+
+	    StudyFile file = studyService.getStudyFile( new Long(fileId));
+
 	    // determine if the fileId represents a local object 
 	    // or a remote URL
 
-	    if ( fileId.startsWith("http") ) {
+	    if ( file.isRemote() ) {
 
 		// do the http magic
 
@@ -81,7 +84,7 @@ public class FileDownloadServlet extends HttpServlet{
 		int status = 200;
 
 		try { 
-		    method = new GetMethod ( fileId );
+		    method = new GetMethod ( file.getFileSystemLocation() );
 		    status = getClient().executeMethod(method);
 		} catch (IOException ex) {
 		    // return 404 
@@ -156,7 +159,8 @@ public class FileDownloadServlet extends HttpServlet{
 
 		// try {
 
-		StudyFile file = studyService.getStudyFile( new Long(fileId));
+		// StudyFile file = studyService.getStudyFile( new Long(fileId));
+
 
 		// }
 		//  catch (IllegalArgumentException ex) {

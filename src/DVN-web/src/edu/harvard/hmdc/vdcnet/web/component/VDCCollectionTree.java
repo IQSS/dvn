@@ -310,7 +310,8 @@ public class VDCCollectionTree {
             image.setUrl("/resources/tree_folder.gif");
             image.setAlt("Collection");
         } else {
-            image.setUrl("/resources/icon_link.gif");
+            //image.setUrl("/resources/icon_link.gif"); change icon to make link collections to look the same as regular collections
+            image.setUrl("/resources/tree_folder.gif");
             image.setAlt("Linked Collection");
         }
         

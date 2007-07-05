@@ -46,8 +46,8 @@
                                     </h:outputLink>
                                 </ui:panelGroup>
                                 <ui:panelGroup  block="true" id="groupPanel6" styleClass="vdcSearchGroupMiddle">
-                                    <h:outputText  id="outputText2a" value=" Search all public dataverses: " rendered="#{VDCRequest.currentVDC == null}"/>
-                                    <h:outputText  id="outputText2b" value=" Search this dataverse: " rendered="#{VDCRequest.currentVDC != null}"/>
+                                    <h:outputText  id="outputText2a" value=" Search all public dataverses: " rendered="#{VDCRequest.currentVDC == null}" styleClass="vdcSubHeader"/>
+                                    <h:outputText  id="outputText2b" value=" Search this dataverse: " rendered="#{VDCRequest.currentVDC != null}" styleClass="vdcSubHeader"/>
                                     <h:selectOneMenu  id="dropdown1" value="#{SearchPage.searchField}">
                                         <f:selectItem   itemLabel="Cataloging Information" itemValue="any" />
                                         <f:selectItem   itemLabel="- Author" itemValue="authorName" />
@@ -55,7 +55,7 @@
                                         <f:selectItem   itemLabel="- Study ID" itemValue="studyId" />
                                         <f:selectItem   itemLabel="Variable Information" itemValue="variable" />
                                     </h:selectOneMenu>
-                                    <h:outputText  id="outputText3"  value=" For: "/>
+
                                     <h:inputText onkeypress="if (window.event) return processEvent('', 'content:searchPageView:form1:search'); else return processEvent(event, 'content:searchPageView:form1:search');" id="textField2" value="#{SearchPage.searchValue}"/>
                                     <h:commandButton  action="#{SearchPage.search_action}" id="search" value="Search"/>
                                 </ui:panelGroup>

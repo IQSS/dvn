@@ -93,47 +93,33 @@ public class VDCGroupPage extends VDCBaseBean {
     public String addGroup() {
         this.setName("");
         this.setDescription("");
-        VDCGroup vdcgroup = new VDCGroup();
-        vdcgroup.setName("");
-        vdcgroup.setDescription("");
-        vdcGroupService.create(vdcgroup);
-        this.setVdcGroup(vdcgroup);
-        HttpServletRequest request  = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        request.setAttribute("vdcGroupId", this.getVdcGroup().getId());
         return "dvgroup_add";
-    }
-    
-    public String add() {
-        String msg = SUCCESS_MESSAGE;
-        success = true;
-        try {
-           this.getVdcGroup().setName(this.getName());
-           this.getVdcGroup().setDescription(this.getDescription());
-           if (!addRemoveList.getSelectedValues().equals("")) {
-               vdcGroupService.updateWithVdcs(this.getVdcGroup(), addRemoveList.getValueAsStringArray(FacesContext.getCurrentInstance()));
-           } else {
-                vdcGroupService.updateVdcGroup(this.getVdcGroup());
-           }
-        } catch (Exception e) {
-            System.out.println("An error occurred ... ");
-        } finally {
-            return "success";
-        }
     }
     
    public String update() {
         String msg = SUCCESS_MESSAGE;
         success = true;
         try {
-           VDCGroup vdcgroup = this.getVdcGroup();
-           System.out.println(this.getVdcGroup().getName());
-           if (addRemoveList.getValueAsStringArray(FacesContext.getCurrentInstance()).length > 0) {
-               String[] selectValues = addRemoveList.getValueAsStringArray (getFacesContext ());
-               System.out.println(selectValues.length + " and the val pos 0 is " + selectValues[0]);
-               vdcGroupService.updateWithVdcs(vdcgroup, addRemoveList.getValueAsStringArray(FacesContext.getCurrentInstance()));
-           } //else {
-                vdcGroupService.updateVdcGroup(vdcgroup);
-           //}
+            VDCGroup vdcgroup = null;
+            if (this.getVdcGroup() != null) {
+                vdcgroup = this.getVdcGroup();
+            } else {
+                vdcgroup = new VDCGroup();
+                vdcGroupService.create(vdcgroup);
+                this.setVdcGroup(vdcgroup);
+            }
+           vdcgroup.setName(this.getName());
+           vdcgroup.setDescription(this.getDescription());
+           if (vdcgroup.getName() == "") {
+               vdcGroupService.removeVdcGroup(vdcgroup);// should actually render the response to the vdc edit page "You must give the group a name ..."
+           } else {
+               if (addRemoveList.getValueAsStringArray(FacesContext.getCurrentInstance()).length > 0) {
+                   String[] selectValues = addRemoveList.getValueAsStringArray (getFacesContext ());
+                   System.out.println(selectValues.length + " and the val pos 0 is " + selectValues[0]);
+                   vdcGroupService.updateWithVdcs(vdcgroup, addRemoveList.getValueAsStringArray(FacesContext.getCurrentInstance()));
+                }
+               vdcGroupService.updateVdcGroup(vdcgroup);
+           }
         } catch (Exception e) {
             System.out.println("An error occurred ... ");
         } finally {
@@ -254,15 +240,20 @@ public class VDCGroupPage extends VDCBaseBean {
     /** new */
 
     private Object[] setSelectedValues() {
-        List list = new ArrayList(this.getVdcGroup().getVdcs());
-        Iterator iterator = list.iterator();
-        Object[] selectedValues = new Object[list.size()];
-        int i = 0;
-            while (iterator.hasNext()) {
-                VDC vdc = (VDC)iterator.next();
-                selectedValues[i] = Long.toString(vdc.getId().longValue());
-                i++;
-            }
+        Object[] selectedValues = null;
+        if (this.getVdcGroup() != null ){
+            List list = new ArrayList(this.getVdcGroup().getVdcs());
+            Iterator iterator = list.iterator();
+            selectedValues = new Object[list.size()];
+            int i = 0;
+                while (iterator.hasNext()) {
+                    VDC vdc = (VDC)iterator.next();
+                    selectedValues[i] = Long.toString(vdc.getId().longValue());
+                    i++;
+                }
+        } else {
+            selectedValues = new Object[0];
+        }
         return selectedValues;
     }
     
@@ -280,7 +271,7 @@ public class VDCGroupPage extends VDCBaseBean {
     private String name;
     
     public String getName() {
-        if (name == null) {
+        if (name == null && this.getVdcGroup() != null) {
             setName(this.getVdcGroup().getName());
         }
         return this.name;
@@ -293,7 +284,7 @@ public class VDCGroupPage extends VDCBaseBean {
     private String description;
     
     public String getDescription() {
-        if (description == null) {
+        if (description == null && this.getVdcGroup() != null) {
             setDescription(this.getVdcGroup().getDescription());
         }
         return this.description;
@@ -360,9 +351,6 @@ public class VDCGroupPage extends VDCBaseBean {
      */
     public void changeName(ValueChangeEvent event) {
             String newValue = (String)event.getNewValue();
-            if (this.getVdcGroup() != null) {
-                this.getVdcGroup().setName(newValue);
-            }
             this.setName(newValue);
     }
     
@@ -379,10 +367,6 @@ public class VDCGroupPage extends VDCBaseBean {
      */
     public void changeDescription(ValueChangeEvent event) {
             String newValue = (String)event.getNewValue();
-            if (this.getVdcGroup() != null) { //this is an edit
-            this.getVdcGroup().setDescription(newValue);
-            } 
-            //both add and edit do the following
             this.setDescription(newValue);
     }
     

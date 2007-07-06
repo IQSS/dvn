@@ -1488,10 +1488,27 @@ div.ContentAreaFooter { background: url(custom_corners_bottomleft.gif) bottom le
 div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom right no-repeat; display:block; padding:15px; margin:-2em 0 0 0; }
 
 /* *************** NetworkAdmin VDCGroup styles ******************** */
-.groupEditColumnCenter { border:1px solid silver; text-align:center; }
-.groupEditColumnLeft   { border:1px solid silver; text-align:left; }
-.groupEditActionRight  { border:0px; text-align:right; padding:0px 6px 0px 0px; }
-.groupEditActionCenter { border:0px; text-align:center; }
-.groupEditActionLeft   { border:0px; text-align:left; padding:0px 0px 0px 6px; }
-.groupEditHeader { background-color: #d9e7f0; padding:0px; }
+.shadedRow              { background-color:#eeeeee; }
+.whiteRow               { background-color:#ffffff; }
 #content:vDCGroupPageView:vdcGroupPageForm:VDCGroups:dataTableCaption {font-size:1.3em; }/*overrides the default theme */
+.dvGroupAdminLayout     { min-width:300px; max-width:800px; margin-left:auto; margin-right:auto; margin-top:25px; border-width:1px 1px 1px 1px; border-style:solid; border-color:silver; }
+.dvGroupAdminTable      { padding:0px; }
+#dvGroupAdminCaption    { border-left:1px solid silver; border-right:1px solid silver; font-size:1.3em; }
+.dvGroupAdminFooter     { background-color: #d9e7f0; width:100%; }
+.groupAdminHeader       { background-color: #d9e7f0; padding:0px; }
+.groupAdminOrderColumn  { width:5%; border:1px solid silver; text-align:center; }
+.groupAdminNameColumn   { width:30%; border:1px solid silver; text-align:left; }
+.groupAdminDescriptionColumn   { width:60%; border:1px solid silver; text-align:left; }
+.groupAdminDeleteColumn { width:5%; border:1px solid silver; text-align:center; }
+.groupAdminOrderInput   { text-align:center; }
+
+.groupAdminOrderFooter  { width:5%; border:0px; text-align:right; padding:0px 6px 0px 0px; }
+.groupAdminNameFooter   { width:30%; border:0px; padding-left:5px; text-align:left; text-decoration:underline; color:#006699; }
+.groupAdminDescriptionFooter   { width:60%; border:0px; text-align:left; padding:0px 0px 0px 6px; }
+.groupAdminDeleteFooter { width:5%; background-color:#d9e7f0; padding:0px; }
+
+.groupEditHeader        { background-color: #d9e7f0; padding:0px; }
+.groupEditNameColumn    { width:30%; vertical-align:top; border:1px solid silver; text-align:left; }
+.groupEditDescriptionColumn   { width:70%; border:1px solid silver; text-align:left; }
+.groupEditFooter        { width:100%; background-color:#d9e7f0; padding:0px; text-align:right;  }
+

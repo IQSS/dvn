@@ -451,6 +451,7 @@ public class HomePage extends VDCBaseBean{
         HtmlOutputText endLinkTag = null;
         Hyperlink nodelink        = null;
         HtmlGraphicImage image    = null;
+        HtmlOutputText textTag = null;
         while (iterator.hasNext()) {
             if (startPos == 0) {
                 column = new UIColumn();
@@ -461,7 +462,7 @@ public class HomePage extends VDCBaseBean{
             startLinkTag.setValue("<ul class=dvnGroupListStyle><li>");
             nodelink = new Hyperlink();
             nodelink.setText(vdc.getName());
-            nodelink.setToolTip(vdc.getDescription());
+            nodelink.setToolTip(vdc.getName() + " dataverse");
             nodelink.setUrl("/dv/" + vdc.getAlias() + defaultVdcPath);
             nodelink.setStyle("font-size:normal; text-decoration:underline;");
             endLinkTag = new HtmlOutputText();
@@ -471,12 +472,17 @@ public class HomePage extends VDCBaseBean{
             linkPanel.getChildren().add(startLinkTag);
             linkPanel.getChildren().add(nodelink);
             if ( vdc.isRestricted() ) {
-                image = new HtmlGraphicImage();
-                image.setUrl("/resources/icon_lock.gif");
-                image.setAlt("Restricted Dataverse");
-                image.setTitle("Restricted Dataverse");
-                image.setStyleClass("dvnRestricted");
-                linkPanel.getChildren().add(image);
+                //image = new HtmlGraphicImage();
+                //image.setUrl("/resources/icon_lock.gif");
+                //image.setAlt("Restrcited Dataverse");
+                //image.setTitle("Restricted Dataverse");
+                //image.setStyleClass("dvnRestricted");
+                //linkPanel.getChildren().add(image);
+                textTag =  new HtmlOutputText();
+                textTag.setEscape(false);
+                textTag.setValue("<span class=dvnGroupInProgress>In Progress</span>");
+                linkPanel.getChildren().add(textTag);
+                nodelink.setToolTip(vdc.getName() + " dataverse (Not yet released)");
             } 
             linkPanel.getChildren().add(endLinkTag);
             column.getChildren().add(linkPanel);

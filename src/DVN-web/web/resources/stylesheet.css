@@ -1502,6 +1502,10 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 .groupAdminDeleteColumn { width:5%; border:1px solid silver; text-align:center; }
 .groupAdminOrderInput   { text-align:center; }
 
+#dvGroupNoneCaption    { border-left:1px solid silver; border-right:1px solid silver; font-size:1.3em; }
+#dataNoneCaption        {font-size:1.3em; }/*overrides the default theme */
+.groupAdminNoneColumn   { width:100%; border:1px solid silver; text-align:center; }
+
 .groupAdminOrderFooter  { width:5%; border:0px; text-align:right; padding:0px 6px 0px 0px; }
 .groupAdminNameFooter   { width:30%; border:0px; padding-left:5px; text-align:left; text-decoration:underline; color:#006699; }
 .groupAdminDescriptionFooter   { width:60%; border:0px; text-align:left; padding:0px 0px 0px 6px; }

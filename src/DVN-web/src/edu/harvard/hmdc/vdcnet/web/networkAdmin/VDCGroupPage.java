@@ -176,7 +176,10 @@ public class VDCGroupPage extends VDCBaseBean {
     public DataModel getVDCGroups() {
         try {
             List list = this.getGroupList();
-            model = new ListDataModel(list);
+            if (!list.isEmpty())
+                model = new ListDataModel(list);
+            else
+                model = null;
         } catch (Exception e) {
             System.out.println("An error occurred while getting the VDC Groups . . .");
         } finally {

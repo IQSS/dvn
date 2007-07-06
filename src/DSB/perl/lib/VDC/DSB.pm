@@ -893,7 +893,7 @@ sub _checkfile {
 	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "contents(3rd byte: int)=" . "$first4b1[2]");
 	$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)", "contents(4th byte: int)=" . "$first4b1[3]");	
 	my $dtaRelNo = { 
-		105 =>  rel_4or5,  108 => rel_6, 110 => rel_7first,
+		104 => rel_3,      105 =>  rel_4or5,  108 => rel_6, 110 => rel_7first,
 		111 => rel_7scnd,  113 => rel_8_or_9, 114 => rel_10
 	}; 
 	if ($first4b1[2] != 1) {

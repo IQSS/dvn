@@ -29,6 +29,12 @@
                                             <h:outputText  value="Manage Dataverses"/>
                                         </h:outputLink>
                                     </ui:panelGroup>
+                                    <ui:panelGroup  block="true" 
+                                        separator="&lt;br /&gt;&lt;br /&gt;" style="padding-top: 20px">
+                                        <h:outputLink   value="/dvn/faces/networkAdmin/DVGroupDetailPage.jsp">
+                                            <h:outputText  value="Manage Dataverse Groups"/>
+                                        </h:outputLink>
+                                    </ui:panelGroup>
 
                                     <ui:panelGroup  block="true" id="groupPanel3" style="padding-top: 20px; padding-bottom: 15px">
                                         <h:outputText  id="outputText3" styleClass="vdcSubHeader" value="Network Customization"/>

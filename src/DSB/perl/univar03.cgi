@@ -1339,7 +1339,7 @@ ENDX
 	-title=> "Dataverse Analysis: Request # $$ ", 
 	-script=>$JSCRIPT,-style=>{-code=>$r2htmlStyle});
 	$pt_d .= $q->h1 ("Dataverse Analysis");
-	$pt_d .= $q->blockquote($q->strong($q->a( {href=>'javascript:window.history.back();'},'Go back to the previous page')));
+	$pt_d .= $q->blockquote($q->strong($q->a( {href=>'javascript:window.history.go(-2);'},'Go back to the previous page')));
 
 	$pt_d .= $q->hr ("");
 	$pt_d .= $q->h2 ("Citation Information about the Dataset:");

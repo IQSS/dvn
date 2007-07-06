@@ -10,7 +10,7 @@
                  <h:messages styleClass="successMessage" layout="table" showDetail="false" showSummary="true"/>
             </ui:panelLayout>
             <ui:panelLayout panelLayout="flow" styleClass="dvGroupAdminLayout">
-                <h:dataTable id="VDCGroups" value="#{VDCGroupPage.VDCGroups}" var="item" cellspacing="0" styleClass="dvGroupAdminTable" headerClass="groupAdminHeader" columnClasses="groupAdminOrderColumn, groupAdminNameColumn, groupAdminDescriptionColumn, groupAdminDeleteColumn" rowClasses="whiteRow, shadedRow">
+                <h:dataTable rendered="#{VDCGroupPage.VDCGroups != null}" id="VDCGroups" value="#{VDCGroupPage.VDCGroups}" var="item" cellspacing="0" styleClass="dvGroupAdminTable" headerClass="groupAdminHeader" columnClasses="groupAdminOrderColumn, groupAdminNameColumn, groupAdminDescriptionColumn, groupAdminDeleteColumn" rowClasses="whiteRow, shadedRow">
                     <f:facet name="caption">
                         <ui:panelGroup id="dvGroupAdminCaption" block="true" styleClass="vdcSectionHeader">
                             <h:outputText id="dataTableCaption" value="Dataverse Groups"/>
@@ -43,11 +43,19 @@
                         
                     </h:column>
                 </h:dataTable>
+                <h:panelGrid columns="1" rendered="#{VDCGroupPage.VDCGroups == null}" style="width:100%" cellspacing="0" styleClass="dvGroupAdminTable" headerClass="groupAdminHeader" columnClasses="groupAdminNoneColumn">
+                    <f:facet name="caption">
+                        <ui:panelGroup id="dvGroupNoneCaption" block="true" styleClass="vdcSectionHeader">
+                            <h:outputText id="dataNoneCaption" value="Dataverse Groups"/>
+                        </ui:panelGroup>
+                    </f:facet> 
+                    <h:outputText rendered="#{VDCGroupPage.VDCGroups == null}" escape="false" value="There are no VDCGroups to display"/>
+                </h:panelGrid>
                 <h:panelGrid columns="4" styleClass="dvGroupAdminFooter" columnClasses="groupAdminOrderFooter, groupAdminNameFooter, groupAdminDescriptionFooter, groupAdminDeleteFooter" cellspacing="0">
                     <h:column><h:outputText escape="false" value="&lt;!-- placeholder --&gt;"/></h:column>
                     <h:column><h:commandLink id="add" value="Add Group" action="#{VDCGroupPage.addGroup}"/></h:column>
                     <h:column><h:outputText escape="false" value="&lt;!-- placeholder --&gt;"/></h:column>
-                    <h:column><h:commandButton id="save" value="Save" action="#{VDCGroupPage.save}"/></h:column>
+                    <h:column><h:commandButton rendered="#{VDCGroupPage.VDCGroups != null}" id="save" value="Save" action="#{VDCGroupPage.save}"/></h:column>
                 </h:panelGrid>
             </ui:panelLayout>
         </h:form>

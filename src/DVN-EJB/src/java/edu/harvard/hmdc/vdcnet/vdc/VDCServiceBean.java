@@ -98,7 +98,11 @@ public class VDCServiceBean implements VDCServiceLocal {
        return vdc;
     }
     
-
+    public VDC findById(Long id) {
+        VDC o = (VDC) em.find(VDC.class, id);
+        return o;
+    }
+    
     public VDC findByName(String name) {
      String query="SELECT v from VDC v where v.name = :fieldName";
        VDC vdc=null;

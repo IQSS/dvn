@@ -28,6 +28,8 @@ public interface VDCServiceLocal {
     public void destroy(VDC vDC);
 
     public VDC find(Object pk);
+    
+    public VDC findById(Long id);
 
     public List findAll();
 

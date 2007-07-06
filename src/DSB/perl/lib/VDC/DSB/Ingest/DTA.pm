@@ -48,14 +48,25 @@ my ($releaseNo, $nvar);
 my @dblMaxValue = (2**333, 2**1023);
 my @lengthLabel = (32,81);
 my @lengthName  = (9,33);
-my @lengthFmt   = (12, 49);
-my @lengthExpFld= (2,4);
+my @lengthFmt   = (12, 49, 7);
+my @lengthExpFld= (2,4, 0);
 my $VTC = {
 	105 =>[ 127, 100, 102,  98, 105, 108 ], 
 	111 =>[   0, 255, 254, 251, 252, 253 ],
 };
 
 my $RLSPARAMS = {
+
+	104 =>	{	
+				RlsNoString =>"3",
+				lengthLabel =>$lengthLabel[0],
+				lengthName  =>$lengthName[0],
+				lengthExpFld=>$lengthExpFld[2],
+				dblMaxValue =>$dblMaxValue[0],
+				lengthFmt   =>$lengthFmt[2],
+				varTypeCode =>$VTC->{105},
+			},
+			
 	105 =>	{	
 				RlsNoString =>"4 or 5",
 				lengthLabel =>$lengthLabel[0],
@@ -217,6 +228,12 @@ sub parse_file {
 			print $FH "field Type=",$field2Method[$i],"\n" if $DEBUG;
 			$method4field = "read_" . $field2Method[$i];
 			my $relsuffix;
+			if ($i == 3){
+				# release 4 does not have ExpansionFields
+				if ($self->{releaseNo} == 104){
+					next;
+				}
+			}
 			if ($i == 5){
 				if ($self->{releaseNo} == 105 ){
 					$relsuffix="Rel105";
@@ -279,7 +296,7 @@ sub read_Header {
 	
 	if (exists($RLSPARAMS->{$releaseNo})){
 		print $FH "Relese Number of this file is ",$RLSPARAMS->{$releaseNo}->{RlsNoString},"\n" if $DEBUG;
-	} elsif ($releaseNo < 105) {
+	} elsif ($releaseNo < 104) {
 		die "Error: Release number of this file is too old to be handled";
 	} else {
 		die "Error: Release number of this file seems to be out-of-range, or this file may not be a Stata file.\n";
@@ -312,13 +329,23 @@ sub read_Header {
 	$int32   = $fileDecodeParam->{$byteOrderKey}->{int32};
 	$bytrvrs = $fileDecodeParam->{$byteOrderKey}->{byteReversal};
 	my $lenlbl  = $RLSPARAMS->{$releaseNo}->{lengthLabel};
-	#my $hdr = $hdr0 + $lenlbl;
-	my $lengthHeader   = $fieldlength{headerBase} + $lenlbl;
+	# length of the header (data label portion only)
+	my $lengthHeader   = $RLSPARAMS->{$releaseNo}->{lengthLabel};
+	
+	$template = "c2${int16}${int32}Z${lenlbl}";
+	# calculate the length of the remaining header portion
+	if ($releaseNo > 104){
+		# 10(10-byte part) - 2(already read) + 18(time stamp)    = 26
+		$lengthHeader   += 26;
+		# add the template for the time-stamp field
+		$template .= "Z18";
+	} elsif ($releaseNo == 104){
+		# 10(10-byte part) - 2(already read) +  0(no time stamp) =  8
+		$lengthHeader   += 8;
+	}
 	# 1.x Header: read the remaining fields
 
 	read($rfh, $buff, $lengthHeader);
-	$template = "c2${int16}${int32}Z${lenlbl}Z18";
-
 	print $FH "template for the header:", $template, "\n" if $DEBUG;
 	print $FH "end of the header=" . tell($rfh) . "\n" if $DEBUG;
 
@@ -331,8 +358,10 @@ sub read_Header {
 		print $FH "unused 1-byte:", $unused, "\n";
 		print $FH "variables(nvars):", $nvar, "\n";
 		print $FH "observations(nobs):", $nobs, "\n";
-		print $FH "data_label:", $dt_lbl, "\n";
-		print $FH "time_stamp:", $tm_stmp, "\n\n";
+			print $FH "data_label:", $dt_lbl, "\n";
+		if ($releaseNo > 104){
+			print $FH "time_stamp:", $tm_stmp, "\n\n";
+		}
 	}
 	$self->{_fileDscr}->{varQnty}      =$nvar;
 	$self->{_fileDscr}->{caseQnty}     =$nobs;
@@ -363,6 +392,7 @@ sub read_Descriptors {
 
 		# Here one-byte type is unsigned (use "C" instead of "c", signed)
 	}
+	print $FH "contents=" . join("-",@typeList) . "\n" if $DEBUG;
 	my @unpackTemplate = ();
 	my $VTCno=105;
 	if ($releaseNo >= 111) {

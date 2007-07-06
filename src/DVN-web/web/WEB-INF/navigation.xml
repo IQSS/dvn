@@ -315,6 +315,24 @@
             <redirect />
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/networkAdmin/DVGroupDetailPage.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>dvgroup_edit</from-outcome>
+            <to-view-id>/networkAdmin/DVGroupEditPage.jsp</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>dvgroup_add</from-outcome>
+            <to-view-id>/networkAdmin/DVGroupEditPage.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/networkAdmin/DVGroupEditPage.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/networkAdmin/DVGroupDetailPage.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
     
 <!-- 
   Navigation rules from SubsettingPage.jsp to RequestSummaryPage.jsp

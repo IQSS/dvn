@@ -143,6 +143,8 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
         }
         
         if (problemFiles != null && problemFiles.size() != 0) {
+            msgSubject += " (with failures)";
+            
             msgText += "\nThe following subsettable files failed to upload: \n";
             Iterator iter = problemFiles.iterator();
             while (iter.hasNext()) {

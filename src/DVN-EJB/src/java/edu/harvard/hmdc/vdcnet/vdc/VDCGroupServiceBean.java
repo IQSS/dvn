@@ -11,11 +11,9 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
-import edu.harvard.hmdc.vdcnet.admin.LoginDomain;
-import edu.harvard.hmdc.vdcnet.admin.UserGroup;
-import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import java.util.Iterator;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,7 +27,7 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
     
     @PersistenceContext(unitName="VDCNet-ejbPU")
     private EntityManager em;
-    
+    @EJB VDCServiceLocal vdcService;
     /**
      * Constructor
      */
@@ -61,9 +59,40 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
         em.remove(group);
     }
     
+    public void create(VDCGroup vdcgroup) {
+        em.persist(vdcgroup);
+    }
+    
     public void updateVdcGroup(VDCGroup vdcgroup) {
         if (findById(vdcgroup.getId()) != null) {
             em.merge(vdcgroup);
+        }
+    }
+    
+    public void updateWithVdcs(VDCGroup vdcgroup, String[] vdcs) {
+            // remove existing relationships
+        vdcgroup = findById(vdcgroup.getId());
+        if (vdcgroup != null) {
+            List membervdcs = (List)vdcgroup.getVdcs();
+            Iterator iterator = membervdcs.iterator();
+            while (iterator.hasNext()) {
+                VDC vdc = (VDC)iterator.next();
+                if (vdc.getVdcGroups().contains(vdcgroup))
+                    vdc.getVdcGroups().remove(vdcgroup);
+                iterator.remove();//remove the vdc from the vdcgroup relationship
+            } 
+        
+            //end remove existing relationships
+            String selectedVdcs[] = vdcs;
+            for ( int i = 0; i < selectedVdcs.length; i++ ) {
+                String mystring = selectedVdcs[i].toString();
+                Long vdcid = new Long(mystring);
+                VDC vdc    = vdcService.findById(vdcid);
+                if (!vdc.getVdcGroups().contains(vdcgroup)) {
+                    vdc.getVdcGroups().add(vdcgroup);
+                    vdcgroup.getVdcs().add(vdc);
+                }
+            }
         }
     }
 }

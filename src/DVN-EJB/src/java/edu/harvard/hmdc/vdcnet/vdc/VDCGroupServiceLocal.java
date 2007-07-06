@@ -23,6 +23,10 @@ public interface VDCGroupServiceLocal {
     public java.util.Collection<VDCGroup> findAll();
     
     public void removeVdcGroup(VDCGroup vdcgroup);
+     
+    public void create(VDCGroup vdcgroup);
     
     public void updateVdcGroup(VDCGroup vdcgroup);
+    
+    public void updateWithVdcs(VDCGroup vdcgroup, String[] vdcs);
 }

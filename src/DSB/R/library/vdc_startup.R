@@ -630,7 +630,8 @@ univarStatHtml<-function(dtfrm, tmpimgfile, analysisoptn, tmphtmlfile, standalon
 	# legend: c(1:background, 2:table header, 3: table body(o), 4: table body(e))
 	# clschm <-c("#FFFFFF", "#CCFFCC","#e0ffff","#f0fff0") # green-based palette
  	# blue-based palette
-	 clschm <-c("#FFFFFF", "#e6e6fa","#ffffff","#f5f5f5")
+	#clschm <-c("#FFFFFF", "#e6e6fa","#ffffff","#f5f5f5")
+	clschm <-c("dvnUnvStatTbl", "dvnUnvStatTblHdr","dvnUnvStatTblRowO","dvnUnvStatTblRowE")
 	
 	# table parameters
 	# legend: c(border, cellspacing)
@@ -711,7 +712,7 @@ univarStatHtml<-function(dtfrm, tmpimgfile, analysisoptn, tmphtmlfile, standalon
 			if (cmbntn[1]) {
 				# statistics on
 				# table header
-				tr2<-paste("<tr bgcolor=\"",clschm[2],"\">\n<td><b>Statistic</b></td><td align=\"right\"><b>Value</b></td>\n<td><b>Statistic</b></td><td align=\"right\"><b>Value</b></td>\n</tr>\n",sep="")
+				tr2<-paste("<tr class=\"",clschm[2],"\">\n<td align=\"left\"><b>Statistic</b></td><td align=\"right\"><b>Value</b></td>\n<td align=\"left\"><b>Statistic</b></td><td align=\"right\"><b>Value</b></td>\n</tr>\n",sep="")
 
 				# statistical data
 				# when # of statistics is not even
@@ -722,10 +723,10 @@ univarStatHtml<-function(dtfrm, tmpimgfile, analysisoptn, tmphtmlfile, standalon
 					if (j%%2==FALSE) colorprm <- clschm[3] else colorprm <-clschm[4]
 
 					tr2<-paste(tr2, 
-					"<tr bgcolor=\"",colorprm,"\">\n",
-					"<td>",univarstathdr[j],"</td>\n", 
+					"<tr class=\"",colorprm,"\">\n",
+					"<td align=\"left\">",univarstathdr[j],"</td>\n", 
 					"<td align=\"right\">", prettyNum(statlst[[j]]),"</td>\n", 
-					"<td>",univarstathdr[j+nrows],"</td>\n", 
+					"<td align=\"left\">",univarstathdr[j+nrows],"</td>\n", 
 					"<td align=\"right\">", if ( (j==nrows) & (blnkcell) ) {"&nbsp;"} else {prettyNum(statlst[[j+nrows]])},"</td>\n</tr>\n", sep="")
 				}
 			}
@@ -736,7 +737,7 @@ univarStatHtml<-function(dtfrm, tmpimgfile, analysisoptn, tmphtmlfile, standalon
 		pt.tbl<-function(statlst=statlst,cmbntn=cmbntn,imgfllst=imgfllst){
 			tr1<-pt.tr1(imgfllst=imgfllst, cmbntn=cmbntn)
 			tr2<-pt.tr2(statlst=statlst, cmbntn=cmbntn)
-			tbl<-paste("<center>\n<table border=\"",tblprm[1],"\" bgcolor=\"",clschm[1],"\" cellspacing=\"",tblprm[2],"\" >\n",tr1,tr2,"</table>\n</center>\n",sep="")
+			tbl<-paste("<center>\n<table border=\"",tblprm[1],"\" class=\"",clschm[1],"\" cellspacing=\"",tblprm[1],"\" >\n",tr1,tr2,"</table>\n</center>\n",sep="")
 			tbl
 		}
 
@@ -799,9 +800,9 @@ univarStatHtml<-function(dtfrm, tmpimgfile, analysisoptn, tmphtmlfile, standalon
 			tr1.r<-""
 			if (cmbntn[1]) {
 				if (class(statlst$freqtbl)=="table"){
-					tr1.r<-paste("<td bgcolor=\"",clschm[2],"\" ><b>Value: Value Label</b></td><td bgcolor=\"",clschm[2],"\" ><b>Freq</b></td><td bgcolor=\"",clschm[2],"\" ><b>Percent</b></td>\n",sep="")
+					tr1.r<-paste("<td align=\"left\" class=\"",clschm[2],"\" ><b>Value: Value Label</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Freq</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Percent</b></td>\n",sep="")
 				} else if (!sprsstr1r){
-					tr1.r<-paste("<td colspan=\"3\" valign=\"top\">\n<p><B><small>The number of categories is more than 50. Frequency/Percentage tables are not shown here</small></B></p>\n</td>\n",sep="")
+					tr1.r<-paste("<td align=\"left\" colspan=\"3\" valign=\"top\">\n<p><B><small>The number of categories is more than 50. Frequency/Percentage tables are not shown here</small></B></p>\n</td>\n",sep="")
 				}
 			}
 			tr1<-paste("<tr>\n",tr1.l,tr1.r,"</tr>\n",sep="")
@@ -832,11 +833,11 @@ univarStatHtml<-function(dtfrm, tmpimgfile, analysisoptn, tmphtmlfile, standalon
 								catgrylbl<-paste("(",vltbl[[tblkey[j]]],")",sep="")
 							}
 						}
-						tr2<-paste(tr2, "<tr bgcolor=\"",colorprm,"\">\n<td>",tblkey[j],catgrylbl,"</td>\n<td align=\"right\">",statlst$freqtbl[[j]],"</td>\n<td align=\"right\">", signif(statlst$pcnttbl[[j]],3),"</td>\n</tr>\n", sep="")
+						tr2<-paste(tr2, "<tr class=\"",colorprm,"\">\n<td align=\"left\">",tblkey[j],catgrylbl,"</td>\n<td align=\"right\">",statlst$freqtbl[[j]],"</td>\n<td align=\"right\">", signif(statlst$pcnttbl[[j]],3),"</td>\n</tr>\n", sep="")
 
 					} else if (j == (nrw -2)) {
 						#cat("entering the total row\n")
-						tr2<-paste(tr2, "<tr bgcolor=\"",colorprm,"\">\n<td>Total</td>\n<td align=\"right\">",statlst$Vald+statlst$Invald,"</td>\n<td align=\"right\">100</td>\n</tr>\n", sep="")
+						tr2<-paste(tr2, "<tr class=\"",colorprm,"\">\n<td align=\"left\">Total</td>\n<td align=\"right\">",statlst$Vald+statlst$Invald,"</td>\n<td align=\"right\">100</td>\n</tr>\n", sep="")
 
 					} else if (j == (nrw -1)) {
 						# median
@@ -852,7 +853,7 @@ univarStatHtml<-function(dtfrm, tmpimgfile, analysisoptn, tmphtmlfile, standalon
 							}
 						}
 
-						tr2<-paste(tr2,"<tr bgcolor=\"",colorprm,"\">\n<td>Median</td>\n<td align=\"right\">",median.vl,"</td>\n<td align=\"right\">",median.lbl,"</td>\n</tr>\n", sep="")
+						tr2<-paste(tr2,"<tr class=\"",colorprm,"\">\n<td align=\"left\">Median</td>\n<td align=\"right\">",median.vl,"</td>\n<td align=\"right\">",median.lbl,"</td>\n</tr>\n", sep="")
 
 					} else if (j == nrw) {
 						# mode
@@ -868,7 +869,7 @@ univarStatHtml<-function(dtfrm, tmpimgfile, analysisoptn, tmphtmlfile, standalon
 							}
 						}
 
-						tr2<-paste(tr2,"<tr bgcolor=\"",colorprm,"\">\n<td>Mode</td>\n<td align=\"right\">",mode.vl,"</td>\n<td align=\"right\">",mode.lbl,"</td>\n</tr>\n", sep="")
+						tr2<-paste(tr2,"<tr class=\"",colorprm,"\">\n<td align=\"left\">Mode</td>\n<td align=\"right\">",mode.vl,"</td>\n<td align=\"right\">",mode.lbl,"</td>\n</tr>\n", sep="")
 					}
 				}
 			}
@@ -881,7 +882,7 @@ univarStatHtml<-function(dtfrm, tmpimgfile, analysisoptn, tmphtmlfile, standalon
 			try({
 			tr1<-pt.tr1(imgfllst=imgfllst, cmbntn=cmbntn)
 			tr2<-pt.tr2(statlst=statlst, cmbntn=cmbntn, vltbl=vltbl,imgfllst=imgfllst)
-			tbl<-paste("<center>\n<table border=\"",tblprm[1],"\" bgcolor=\"",clschm[1],"\" cellspacing=\"",tblprm[2],"\" >\n",tr1,tr2,"</table>\n</center>\n",sep="")
+			tbl<-paste("<center>\n<table border=\"",tblprm[1],"\" class=\"",clschm[1],"\" cellspacing=\"",tblprm[1],"\" >\n",tr1,tr2,"</table>\n</center>\n",sep="")
 			tbl
 			})
 		}

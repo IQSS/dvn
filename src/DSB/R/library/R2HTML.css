@@ -5,13 +5,13 @@ body {
 	font-size: 10pt;
 	font-weight: normal
 }
-
+/*
 .tablesort {
 	cursor: pointer;
 	behavior: url(tablesort.htc);
 	-moz-binding: url(tablesort.htc);
 }
-
+*/
 H1 {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 20pt;
@@ -109,7 +109,7 @@ XMP {
 
 TR {
 	font-family: Arial, Helvetica, Times, Helvetica, sans-serif;
-	font-size: 10pt;
+	font-size: 10pt;background-color:#FFFFFF;
 	font-style: normal;
 	padding: 0 0
 }
@@ -126,10 +126,12 @@ TR.ListBackTitle {
 	text-align:left;
 	font-weight: bold
 }
+
 TD {
-	background:#FFFFFF;
-	padding: 0 0
+	padding-left: 10px;
+	padding-right: 10px;
 }
+
 TD.ListBackMain {
 	background: #E0E0E0;
 	padding: 0 0

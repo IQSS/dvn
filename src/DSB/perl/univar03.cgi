@@ -913,6 +913,22 @@ H4 {
 	.xtb_mrgnl {
 		text-align:center;font-family:Helvetica;background-color:#ccccff;
 	}
+	
+	
+	.dvnUnvStatTbl{
+		background-color:#ffffff;
+	}
+	.dvnUnvStatTblHdr{
+		background-color:#e6e6fa;
+	}
+	.dvnUnvStatTblRowO{
+		background-color:#f5f5f5;
+	}
+	.dvnUnvStatTblRowE{
+		background-color:#ffffff;
+	}
+
+	
 -->
 END
 	

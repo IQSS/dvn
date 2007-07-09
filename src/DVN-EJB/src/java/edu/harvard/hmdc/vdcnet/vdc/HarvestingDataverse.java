@@ -217,7 +217,7 @@ public class HarvestingDataverse {
      * @param oaiServer New value of property oaiServer.
      */
     public void setOaiServer(String oaiServer) {
-        this.oaiServer = oaiServer;
+        this.oaiServer = oaiServer.trim();
     }
 
     /**

@@ -36,7 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 import javax.ejb.EJB;
 import javax.faces.component.html.HtmlPanelGrid;
 import com.sun.rave.web.ui.component.PanelLayout;
@@ -1074,9 +1073,13 @@ public class AddCollectionsPage extends VDCBaseBean {
             addCollection.removeParentRelationship();
         } else{
             addCollection = new VDCCollection();
+            addCollection.setVisible(true);
+        }
+        addCollection.setName((String)textFieldCollectionName.getValue());
+        if (!edit){
+            vdcCollectionService.create(addCollection);
         }
         addCollection.setParentRelationship(node);
-        addCollection.setName((String)textFieldCollectionName.getValue());
         ArrayList studies = new ArrayList();
         HashSet studiesSet = new HashSet();
         for (int i=0;i<s.length;i++){
@@ -1094,12 +1097,7 @@ public class AddCollectionsPage extends VDCBaseBean {
         addCollection.setStudies(studies);
         addCollection.setOwner(thisVDC);
         addCollection.setReviewState(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED));
-        addCollection.setVisible(true);
-        if (edit){
-            vdcCollectionService.edit(addCollection);
-        }else{
-            vdcCollectionService.create(addCollection);
-        }
+        vdcCollectionService.edit(addCollection);
         StatusMessage msg = new StatusMessage();
         msg.setMessageText("Collection "+ addCollection.getName()+ " has been saved");
         msg.setStyleClass("successMessage");

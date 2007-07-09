@@ -61,7 +61,7 @@ public class VDCGroupPage extends VDCBaseBean {
             Iterator iter = request.getParameterMap().keySet().iterator();
             while (iter.hasNext()) {
                 Object key = (Object) iter.next();
-                if ( key instanceof String && ((String) key).indexOf("vdcGroupId") != -1 ) {
+                if ( key instanceof String && ((String) key).indexOf("vdcGroupId") != -1 && !request.getParameter((String)key).equals("")) {
                     vdcGroupIdParam = request.getParameter((String)key);
                     Long longid = new Long(vdcGroupIdParam);
                     if (longid != 0) {
@@ -162,10 +162,13 @@ public class VDCGroupPage extends VDCBaseBean {
     public DataModel getVDCGroups() {
         try {
             List list = this.getGroupList();
-            if (!list.isEmpty())
+            if (model == null && !list.isEmpty()) {
                 model = new ListDataModel(list);
-            else
+            } else if (model != null) {
+                return model;
+            } else {
                 model = null;
+            }
         } catch (Exception e) {
             System.out.println("An error occurred while getting the VDC Groups . . .");
         } finally {
@@ -240,7 +243,7 @@ public class VDCGroupPage extends VDCBaseBean {
     /** new */
 
     private Object[] setSelectedValues() {
-        Object[] selectedValues = null;
+             Object[] selectedValues = null;
         if (this.getVdcGroup() != null ){
             List list = new ArrayList(this.getVdcGroup().getVdcs());
             Iterator iterator = list.iterator();
@@ -254,7 +257,7 @@ public class VDCGroupPage extends VDCBaseBean {
         } else {
             selectedValues = new Object[0];
         }
-        return selectedValues;
+            return selectedValues;
     }
     
     private AddRemove addRemoveListDefaultOptions = new AddRemove();

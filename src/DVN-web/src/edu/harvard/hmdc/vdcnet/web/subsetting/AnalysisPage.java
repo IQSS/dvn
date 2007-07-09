@@ -387,6 +387,15 @@ public class AnalysisPage extends VDCBaseBean {
     public void setCurrentTabId(String tb){
       this.currentTabId = tb;
     }
+    
+    
+    private String browserType;
+    public String getBrowserType(){
+      return browserType;
+    }
+    public void   setBrowserType(String bt){
+      this.browserType = bt;
+    }
 //--------------------------------------------------------------------------//
 // download section
 //--------------------------------------------------------------------------//
@@ -484,7 +493,7 @@ public class AnalysisPage extends VDCBaseBean {
               new DSBWrapper().disseminate(res, mpl, sf, serverPrefix, getDataVariableForRequest(), formatType);
               
           } catch (IOException ex) {
-              out.println("disseminate:download filed due to io exception");
+              out.println("disseminate:download failed due to io exception");
               ex.printStackTrace();
           }
           
@@ -1806,14 +1815,14 @@ if (isRecodedVar(varId)){
                 mpl.put("studytitle",Arrays.asList(studyTitle));
                 mpl.put("studyno", Arrays.asList(studyId.toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
-                
+                mpl.put("browserType", Arrays.asList(browserType));
                 
                 // disseminate(HttpServletResponse res, Map parameters, StudyFile sf, String serverPrefix, List variables)
                 //new DSBWrapper().disseminate(res, mps, sf, serverPrefix, getDataVariableForRequest());
                 new DSBWrapper().disseminate(res, mpl, sf, serverPrefix, getDataVariableForRequest());
 
             } catch (IOException ex) {
-                out.println("disseminate:download filed due to io exception");
+                out.println("disseminate:EDA failed due to io exception");
                 ex.printStackTrace();
             }
 
@@ -3430,13 +3439,13 @@ if (isRecodedVar(varId)){
                 mpl.put("studytitle",Arrays.asList(studyTitle));
                 mpl.put("studyno", Arrays.asList(studyId.toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
-
+                mpl.put("browserType", Arrays.asList(browserType));
                 // Disseminate Request
                 new DSBWrapper().disseminate(res, mpl, sf, serverPrefix, getDataVariableForRequest());
                 
 
             } catch (IOException ex) {
-                out.println("disseminate:download filed due to io exception");
+                out.println("disseminate: advanced Statistics failed due to io exception");
                 ex.printStackTrace();
             }
 
@@ -4559,8 +4568,21 @@ if (baseVarToDerivedVar.containsKey(varId)){
       recodedVarTable.setRendered(false);
     }
 
+// public 
 
-
+    public boolean isBrowserFirefox(String userAgent){
+      boolean rtvl=false;
+      String regex ="Firefox";
+      Pattern p = null;
+      try {
+        p=Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+      } catch (PatternSyntaxException pex) {
+        pex.printStackTrace();
+      }
+      Matcher matcher = p.matcher(userAgent);
+      rtvl = matcher.find();
+      return rtvl;
+    }
 
 //<---------------------------------------------------------------------------
 
@@ -4600,7 +4622,17 @@ if (baseVarToDerivedVar.containsKey(varId)){
           out.println("\ncontents of RequestParameterMap:\n"+exCntxt.getRequestParameterMap());
           
           //out.println("\ncontents of SessionMap:\n"+sessionMap);
-          
+          //Map<String,String[]> rqustHdrMp = exCntxt.getRequestHeaderValuesMap();
+          Map<String,String> rqustHdrMp = exCntxt.getRequestHeaderMap();
+          out.println("\nRequest Header Values Map:\n"+rqustHdrMp);
+          out.println("\nRequest Header Values Map(user-agent):"+rqustHdrMp.get("user-agent"));
+          if (isBrowserFirefox(rqustHdrMp.get("user-agent"))){
+            out.println("user's browser is firefox");
+            browserType = "Firefox";
+          } else {
+            browserType = "notFirefox";
+          }
+
           String currentViewStateValue= exCntxt.getRequestParameterMap().get(ResponseStateManager.VIEW_STATE_PARAM);
           
           out.println("ViewState value="+currentViewStateValue);

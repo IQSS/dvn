@@ -78,7 +78,9 @@ my $dataURL =    $q->param('URLdata');
 my $ddiURL  =    $q->param('uri');
 my $fileid  =    $q->param('fileid'); 
 my $appSERVER  = $q->param('appSERVER'); 
-my $studyURL  =  $q->param('studyURL'); 
+my $studyURL  =  $q->param('studyURL');
+my $browserType= $q->param('browserType');
+
 my $studyLink =  $studyURL . "/faces/study/StudyPage.jsp?studyId=" . $stdyno  . '&tab=files';
 my($tmpurl0, $datasetname) = split('=', $dataURL);
 $script_name .="($dataURL)";
@@ -641,7 +643,7 @@ if ($dataURL) {
 				my $citationMessage=$CGIparamSet->createDataCitationFile(SBSTDATAFILE=>$RtmpData, OUTPUTTYPE=>'html');
 				print TMPX "self:\n". Dumper($CGIparamSet). "\n";
 				my $dirStringId = &getRandomString(4);
-
+				print TMPX "browserType=", $browserType, "\n";
 				open(M, "> $zlgMnfstFile ");
 				 print M &printZeligManifestPage(\*M, $stdyno, $stdyttl,$datasetname,$zlgOutFileSet, $RunOrder, $zRoutHtml, $RtxtOutput, $citationMessage, $nonZeligJob, $dirStringId, $q->param('analysis'));
 				close(M);
@@ -1241,7 +1243,7 @@ sub printZeligManifestPage {
 	my $nonZeligJob=shift;
 	my $dirStringId=shift;
 	my $aOption=shift;
-	
+
 	my $contents ="";
 	for (my $i=0;$i<@{$RunOrder};$i++){
 		if ($zlgOutFileSet->[$i]->[0]){
@@ -1350,12 +1352,16 @@ H4 {
 }
 -->
 ENDX
-
+	my $goBackParam = '-2';
+	if ($browserType eq 'Firefox'){
+		$goBackParam = '-1';
+	}
+	my $hrefString  = 'javascript:window.history.go(' . $goBackParam . ');';
 	$pt_d .= $q->start_html (
 	-title=> "Dataverse Analysis: Request # $$ ", 
 	-script=>$JSCRIPT,-style=>{-code=>$r2htmlStyle});
 	$pt_d .= $q->h1 ("Dataverse Analysis");
-	$pt_d .= $q->blockquote($q->strong($q->a( {href=>'javascript:window.history.go(-2);'},'Go back to the previous page')));
+	$pt_d .= $q->blockquote($q->strong($q->a( {href=>$hrefString},'Go back to the previous page')));
 
 	$pt_d .= $q->hr ("");
 	$pt_d .= $q->h2 ("Citation Information about the Dataset:");

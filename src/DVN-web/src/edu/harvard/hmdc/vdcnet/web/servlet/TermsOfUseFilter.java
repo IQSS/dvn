@@ -18,6 +18,10 @@ import edu.harvard.hmdc.vdcnet.web.common.VDCSessionBean;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import javax.ejb.EJB;
 import javax.servlet.*;
 
@@ -31,7 +35,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-/**
+
+
+/** 
+
  *
  * @author  gdurand
  * @version
@@ -137,17 +144,45 @@ public class TermsOfUseFilter implements Filter {
         
         // if we've populate the study, then check the TermsOfUse'
         if (study != null) {
-            Map termsOfUseMap = getTermsOfUseMap(req);
-            if ( isVdcTermsRequired(study, termsOfUseMap) || isStudyTermsRequired(study, termsOfUseMap) ) {
-                VDC currentVDC = vdcService.getVDCFromRequest(req);   
-                String params = "?studyId=" + study.getId();
-                params += "&redirectPage=" + req.getServletPath() + req.getPathInfo() +"?" + req.getQueryString();
-                if (currentVDC!=null) {
-                    params+="&vdcId="+currentVDC.getId();
-                }   
-                res.sendRedirect(req.getContextPath()+"/faces/study/TermsOfUsePage.jsp" + params);
-                return; // don't continue with chain since we are redirecting'
-            }     
+
+	    // the code below is for determining if the request is from 
+	    // our registered DSB host; (then no agreement form should be 
+	    // displayed!)
+	    // this logic is essentially cut-and-pasted from 
+	    // FileDownloadServlet.java, where I added it earlie this year. 
+
+	    String dsbHost = System.getProperty("vdc.dsb.url");
+
+	    boolean NOTaDSBrequest = true;
+
+	    if ( dsbHost.equals(req.getRemoteHost()) ) {
+		NOTaDSBrequest = false; 
+	    } else { 
+		try {
+		    String dsbHostIPAddress = InetAddress.getByName(dsbHost).getHostAddress(); 
+		    if ( dsbHostIPAddress.equals(req.getRemoteHost()) ) {
+			NOTaDSBrequest = false;
+		    }
+		} catch ( UnknownHostException ex ) {
+		    // do nothing; 
+		    // the "vdc.dsb.url" setting is clearly misconfigured,
+		    // so we just keep assuming this is NOT a DSB call
+		}
+	    }
+
+	    if ( NOTaDSBrequest ) {
+		Map termsOfUseMap = getTermsOfUseMap(req);
+		if ( isVdcTermsRequired(study, termsOfUseMap) || isStudyTermsRequired(study, termsOfUseMap) ) {
+		    VDC currentVDC = vdcService.getVDCFromRequest(req);   
+		    String params = "?studyId=" + study.getId();
+		    params += "&redirectPage=" + req.getServletPath() + req.getPathInfo() +"?" + req.getQueryString();
+		    if (currentVDC!=null) {
+			params+="&vdcId="+currentVDC.getId();
+		    }   
+		    res.sendRedirect(req.getContextPath()+"/faces/study/TermsOfUsePage.jsp" + params);
+		    return; // don't continue with chain since we are redirecting'
+		}     
+	    }
         }
         
         Throwable problem = null;

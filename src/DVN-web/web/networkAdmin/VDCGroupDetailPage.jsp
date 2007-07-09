@@ -27,7 +27,7 @@
                         <f:facet name="header">
                             <h:outputText value="Name"/>
                         </f:facet>
-                        <h:commandLink id="editGroup" action="#{VDCGroupPage.edit}" value="#{item.name}" immediate="true"/>
+                        <h:commandLink id="editGroup" action="#{VDCGroupPage.edit}" value="#{item.name}" onclick="submit()" immediate="true"/>
                     </h:column>
                     <h:column>
                         <f:facet name="header">

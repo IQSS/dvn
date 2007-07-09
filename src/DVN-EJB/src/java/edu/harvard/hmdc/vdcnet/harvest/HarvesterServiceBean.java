@@ -210,7 +210,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             ResumptionTokenType resumptionToken = null;
             do {
                 resumptionToken= harvestFromIdentifiers(hdLogger, resumptionToken,dataverse,from,until);
-            } while(resumptionToken!=null);
+            } while(resumptionToken!=null && !resumptionToken.equals(""));
             
           
             
@@ -255,6 +255,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             
             if (oaiObj.getError()!=null && oaiObj.getError().size()>0) {
                 handleOAIError(hdLogger, oaiObj, "calling listIdentifiers, oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getFormat());
+                return null; // this will halt the loop to this method
             } else {
                 ListIdentifiersType listIdentifiersType = oaiObj.getListIdentifiers();
                 if (listIdentifiersType!=null) {

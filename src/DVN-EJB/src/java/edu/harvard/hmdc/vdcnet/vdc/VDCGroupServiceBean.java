@@ -61,6 +61,8 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
     
     public void create(VDCGroup vdcgroup) {
         em.persist(vdcgroup);
+        em.flush();
+        em.refresh(vdcgroup);
     }
     
     public void updateVdcGroup(VDCGroup vdcgroup) {

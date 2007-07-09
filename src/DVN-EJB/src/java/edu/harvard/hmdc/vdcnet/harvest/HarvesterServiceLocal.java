@@ -20,7 +20,7 @@ import javax.xml.bind.JAXBContext;
 public interface HarvesterServiceLocal {
     public void createHarvestTimer();
     public void doAsyncHarvest(HarvestingDataverse dataverse);
-    public void harvest(HarvestingDataverse dataverse, String from, String until);
+
     public List<SetDetailBean> getSets(String oaiUrl); 
     public List<String> getMetadataFormats(String oaiUrl);
    

@@ -366,15 +366,16 @@ sub read_RT2{
 	my @tmplt02 = ("${int32}", "${int32}","${int32}", "${int32}","c4","c4");
 	#my @tmplt02 = ("l", "l","l", "l","c4","c4");
 	
+	print  $FH "initial template before the byte-order check:", @tmplt02, "\n" if $DEBUG;
 	my $template;
 	
 	if ($reverseBtyeOrder){
 		#$template02 = join("", reverse(@tmplt02));
 		$template02 = join("", @tmplt02);
-		## print  $FH "reversed template:", $template02, "\n";
+		print  $FH "reversed template:", $template02, "\n" if $DEBUG;
 	} else {
 		$template02 = join("", @tmplt02);
-		## print  $FH "         template:", $template02, "\n";
+		print  $FH "         template:", $template02, "\n" if $DEBUG;
 	}
 
 	my $varpwfrmt;
@@ -382,7 +383,7 @@ sub read_RT2{
 		# unpack the first 4*8(units) bytes
 		#read($rfh, $buff, $INT4*8);
 		read($rfh, $buff, $INT4*6);
-		## print $FH "\n\n$i-th OBS processing\n";
+		print $FH "\n\n$i-th OBS processing\n" if $DEBUG;
 		#@RRT2F = unpack($template, $buff);
 		if ($reverseBtyeOrder){
 			#@RRT2F = reverse (unpack($template02, reverse($buff)));
@@ -390,7 +391,7 @@ sub read_RT2{
 		} else {
 			@RRT2F = unpack($template02, $buff);
 		}
-		print $FH "$i: ",join("|", @RRT2F), "\n" if $DEBUG;
+		print $FH "$i -th RRT2F= ",join("|", @RRT2F), "\n" if $DEBUG;
 		if ($RRT2F[0] != 2) {
 			die"The record type code ($RRT2F[0]) is not 2.\n.";
 		}
@@ -398,6 +399,12 @@ sub read_RT2{
 		$template = "A8";
 		$RRT2F[12] = unpack($template, $buff);
 		print $FH "//////////////// varname: $RRT2F[12] ////////////////\n" if $DEBUG;
+		if (($reverseBtyeOrder) && ($RRT2F[1] == 4294967295 )){
+			print $FH "The code for a continuation of a string variable (-1) was found\n";
+			# unpack function does not have a template for
+			# signed long integers in big-endian order 
+			$RRT2F[1] = -1;
+		}	
 		push @{$self->{_varTypeRaw}}, $RRT2F[1];
 		# identify the variable type
 		if ($RRT2F[1] >=0){
@@ -410,13 +417,13 @@ sub read_RT2{
 			$self->{_varType}->{$RRT2F[12]} = $RRT2F[1];
 			if ($RRT2F[1]) {
 				# 1st octet of a string variable
-				## print $FH "before adj length and remainder:",$RRT2F[1],"\t", ($RRT2F[1] % $OBS),"\n" if $DEBUG;
+				print $FH "before adj length and remainder:",$RRT2F[1],"\t", ($RRT2F[1] % $OBS),"\n" if $DEBUG;
 				if ($RRT2F[1] % $OBS){
 					$adjlenstrng = $OBS*(int($RRT2F[1]/$OBS)+1);
 				} elsif (!($RRT2F[1] % $OBS)) {
 					$adjlenstrng = $RRT2F[1];
 				}
-				## print $FH "after adj length:",$adjlenstrng,"\n" if $DEBUG;
+				print $FH "after adj length:",$adjlenstrng,"\n" if $DEBUG;
 				push @{$self->{_varTemplate}}, ("Z" . $adjlenstrng);
 				$self->{_charVarTbl}->{$RRT2F[12]}=$varordr;
 				($self->{_noCharVar})++;
@@ -427,7 +434,7 @@ sub read_RT2{
 				push @{$self->{_varTemplate}}, "d";
 			}
 			$varordr++;
-			## print $FH "variable counter:",$varordr,"\n" if $DEBUG;
+			print $FH "variable counter:",$varordr,"\n" if $DEBUG;
 			# set the id number of the case-weight variable
 			if ($wghtVarIndx == ($i+1)) {
 				$wghtVarNo = $varordr;
@@ -439,17 +446,17 @@ sub read_RT2{
 				read($rfh, $buff, $INT4);
 				$template = "${int32}";
 				$lenvarlbl= unpack($template, $buff);
-				## print $FH "The length of a variable label:",$lenvarlbl,"\n" if $DEBUG;
+				print $FH "The length of a variable label:",$lenvarlbl,"\n" if $DEBUG;
 				if ($lenvarlbl > 256) {
 					die "The length of a variable label($lenvarlbl) must be less than 257: $!";
 				}
-				## print $FH "before adj length and remainder:", $lenvarlbl, "\t", ($lenvarlbl % $INT4), "\n" if $DEBUG;
+				print $FH "before adj length and remainder:", $lenvarlbl, "\t", ($lenvarlbl % $INT4), "\n" if $DEBUG;
 				if ($lenvarlbl % $INT4){
 					$lenvarlblx = 4*(int($lenvarlbl/4)+1);
 				} else {
 					$lenvarlblx = $lenvarlbl;
 				}
-				## print $FH "after adj length:",$lenvarlblx,"\n" if $DEBUG;
+				print $FH "after adj length:",$lenvarlblx,"\n" if $DEBUG;
 				read($rfh, $buff, $lenvarlblx);
 				$template = "A$lenvarlblx";
 				## print $FH "template:",$template,"\n" if $DEBUG;

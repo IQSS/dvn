@@ -146,6 +146,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     
     
     @Timeout
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void handleTimeout(javax.ejb.Timer timer) {
         if (timer.getInfo().equals(HARVEST_TIMER)) {
             doScheduledHarvesting();
@@ -154,15 +155,14 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         }
     }
     
-    
-    public void doImmediateHarvesting(Long dataverseId) {
+    private void doImmediateHarvesting(Long dataverseId) {
         System.out.println("DO immediate HARVESTING of "+dataverseId);
         HarvestingDataverse dataverse = em.find(HarvestingDataverse.class, dataverseId);
         harvest(dataverse);
         
     }
     
-    public void doScheduledHarvesting() {
+    private void doScheduledHarvesting() {
             // Get list of Harvested dataverses
             // For each dataverse that is scheduled, call OAIServer to get list of updated records.
             // Call import to save each study in the database.
@@ -176,23 +176,27 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             }
     }
     
-    
-    public void harvest(HarvestingDataverse dataverse) {
-        em.refresh(dataverse);
-        if (dataverse.isHarvestingNow()) {
+
+    private void harvest(HarvestingDataverse dataverse) {
+        boolean harvestingNow = havestingDataverseService.getHarvestingNow(dataverse.getId());
+        if (harvestingNow) {
                 throw new EJBException("Cannot begin harvesting, Dataverse "+dataverse.getVdc().getName()+" is currently being harvested.");
         }
-        String from = null;
+        
         Date today = new Date();
         String until= formatter.format(today);
-        if (dataverse.getLastHarvestTime()!=null) {
-            from= formatter.format(dataverse.getLastHarvestTime());
+        
+        String from = null;
+        Date lastHarvestTime = havestingDataverseService.getLastHarvestTime(dataverse.getId());
+        if (lastHarvestTime!=null) {
+            from= formatter.format( lastHarvestTime );
         }
+        
         harvest(dataverse,from, until);
     }
     
     
-    public void harvest( HarvestingDataverse dataverse, String from, String until) {
+    private void harvest( HarvestingDataverse dataverse, String from, String until) {
         Logger hdLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean."+dataverse.getVdc().getAlias());
    
         try {
@@ -222,13 +226,11 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
              havestingDataverseService.setHarvestingNow(dataverse.getId(), false);
             
         }
-         // Get managed version of the dataverse so that update to lastHarvestTime will be persisted
-            dataverse = em.find(HarvestingDataverse.class, dataverse.getId());     
-            em.refresh(dataverse);  // setHarvestingNow() happened in a separate transaction, so we need to refetch data from the database before setting harvesting time.
-            dataverse.setLastHarvestTime(lastHarvestTime);
+
+        havestingDataverseService.setLastHarvestTime(dataverse.getId(), lastHarvestTime);
+
           
     }
-    
     
     
     private ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until) {
@@ -294,7 +296,6 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     }
     
     
-  
     private void getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, JAXBContext jc) {
         String oaiUrl= dataverse.getOaiServer();
         hdLogger.log(Level.INFO,"Calling GetRecord: oaiUrl= "+oaiUrl+", identifier= "+identifier+", metadataPrefix= "+metadataPrefix);

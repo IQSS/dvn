@@ -681,7 +681,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     
     
     
-    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Study importHarvestStudy(File xmlFile, Long vdcId, Long userId) {
         VDC vdc = em.find(VDC.class, vdcId);
         em.refresh(vdc); // workaround to get correct value for harvesting dataverse (to be investigated)
@@ -697,6 +697,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return study;
     }
     
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Study importLegacyStudy(File xmlFile, Long vdcId, Long userId) {
         VDC vdc = em.find(VDC.class, vdcId);
         em.refresh(vdc); // workaround to get correct value for harvesting dataverse (to be investigated)
@@ -708,7 +709,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return importStudy(xmlFile, 0,vdcId, userId, true, false, false, true, true);
     }
     
-    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Study importStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles) {
         // call internal studyService to force NEW transaction
         Study study =  studyService.doImportStudy(xmlFile, xmlFileFormat, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles);

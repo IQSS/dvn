@@ -23,6 +23,8 @@ import javax.persistence.*;
  */
 @Entity
 public class FileCategory {
+    
+    @Column(columnDefinition="TEXT")
     private String name;
     private String description;
   //  @OneToMany 

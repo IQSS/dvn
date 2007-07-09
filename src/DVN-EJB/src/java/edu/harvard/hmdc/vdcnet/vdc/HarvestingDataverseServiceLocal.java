@@ -1,6 +1,7 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,4 +17,7 @@ public interface HarvestingDataverseServiceLocal {
     public void edit(HarvestingDataverse harvestingDataverse);
     public void delete(Long hdId);
     public void setHarvestingNow(Long hdId, boolean harvestingNow);
+    public void setLastHarvestTime(Long hdId, Date lastHarvestTime);
+    public boolean getHarvestingNow(Long hdId);
+    public Date getLastHarvestTime(Long hdId);
 }

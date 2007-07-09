@@ -10,7 +10,6 @@
 package edu.harvard.hmdc.vdcnet.vdc;
 
 import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -46,7 +45,8 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
     }
     
     public void edit(VDCCollection vDCCollection) {
-        em.merge(vDCCollection);
+        VDCCollection managedCollection = em.merge(vDCCollection);
+        managedCollection.setName(vDCCollection.getName());
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -59,7 +59,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
     public VDCCollection find(Object pk) {
         return (VDCCollection) em.find(VDCCollection.class, pk);
     }
-    
+
     public List findAll() {
         return em.createQuery("select object(o) from VDCCollection as o").getResultList();
     }

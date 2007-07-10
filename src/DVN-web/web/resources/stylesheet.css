@@ -1499,10 +1499,7 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 .shadedRow              { background-color:#eeeeee; }
 .whiteRow               { background-color:#ffffff; }
 #content:vDCGroupPageView:vdcGroupPageForm:VDCGroups:dataTableCaption {font-size:1.3em; }/*overrides the default theme */
-<<<<<<< .mine
 
-
-=======
 .dvGroupAdminLayout     { min-width:300px; max-width:800px; margin-left:auto; margin-right:auto; margin-top:25px; border-width:1px 1px 1px 1px; border-style:solid; border-color:silver; }
 .dvGroupAdminTable      { padding:0px; }
 #dvGroupAdminCaption    { border-left:1px solid silver; border-right:1px solid silver; font-size:1.3em; }
@@ -1528,4 +1525,3 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 .groupEditDescriptionColumn   { width:70%; border:1px solid silver; text-align:left; }
 .groupEditFooter        { width:100%; background-color:#d9e7f0; padding:0px; text-align:right;  }
 
->>>>>>> .r295

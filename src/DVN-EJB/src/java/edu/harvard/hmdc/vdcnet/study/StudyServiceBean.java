@@ -373,6 +373,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         
         study.setLastUpdateTime( new Date() );
         study.setLastUpdater( user );
+        
+        // lastly, call index
+        indexService.updateStudy(study.getId());
+        
     }
     
     

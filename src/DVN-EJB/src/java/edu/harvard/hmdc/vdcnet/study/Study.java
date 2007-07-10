@@ -90,6 +90,7 @@ public class Study {
         this.setOwner(vdc);
         if (vdc != null) {
             this.setTemplate( vdc.getDefaultTemplate() );
+            vdc.getOwnedStudies().add(this);
         }
         this.setCreator(creator);
         this.setCreateTime( new Date() );

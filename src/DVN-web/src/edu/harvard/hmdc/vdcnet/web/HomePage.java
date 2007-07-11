@@ -125,7 +125,7 @@ public class HomePage extends VDCBaseBean{
                         // we can use the studyFilter for this currently, since the root collection
                         // is always shown; if at some point we include studies for a tree with subcollections
                         // we will have to revisit this
-                        vdcTree.setStudyFilter( StudyUI.filterVisibleStudies(rootCollUI.getStudies(), vdc, user) );
+                        vdcTree.setStudyFilter( StudyUI.filterVisibleStudies(rootCollUI.getStudies(), vdc, user, getVDCSessionBean().getIpUserGroup()) );
                         vdcTree.setIncludeStudies(true);
                         vdcTree.setStudyUrl("/faces/study/StudyPage.jsp");
                     }
@@ -170,7 +170,7 @@ public class HomePage extends VDCBaseBean{
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             if (vdc != null) {
                 VDCUser user = getVDCSessionBean().getUser();
-                recentStudies = StudyUI.filterVisibleStudies( studyService.getRecentStudies(vdc.getId(), -1), vdc, user, 3 );
+                recentStudies = StudyUI.filterVisibleStudies( studyService.getRecentStudies(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 3 );
             }
         }
         return recentStudies;

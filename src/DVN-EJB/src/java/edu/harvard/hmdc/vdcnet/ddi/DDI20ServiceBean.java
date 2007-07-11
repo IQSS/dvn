@@ -69,8 +69,10 @@ import edu.harvard.hmdc.vdcnet.jaxb.ddi20.HoldingsType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.IDNoType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.InvalrngType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.ItemType;
+import edu.harvard.hmdc.vdcnet.jaxb.ddi20.ItmType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.KeywordType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.LablType;
+import edu.harvard.hmdc.vdcnet.jaxb.ddi20.ListType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.LocationType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.MethodType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.NationType;
@@ -296,6 +298,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         
         // map used to determine which, if any, fields are needed from the docDscr
         Map docDscrMap = new HashMap();
+        docDscrMap.put("holdings", "holdings");
         
         // initialize the collections
         study.setFileCategories( new ArrayList() );
@@ -373,6 +376,11 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                         }
                     }
                 }
+            } else if ( key.equals("holdings")) {
+                if (_dd.getCitation() != null && _dd.getCitation().getHoldings().size() > 0) {
+                    s.setHarvestHoldings( _dd.getCitation().getHoldings().get(0).getURI() );
+                    docDscrMap.remove("holdings");
+                }                 
             }
             
         }
@@ -562,16 +570,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 AbstractType _abstract = (AbstractType) abstractsIter.next();
                 StudyAbstract studyAbstract = new StudyAbstract();
                 studyAbstract.setDate( _abstract.getDate() );
-                
-                Iterator abstractsContentIter = _abstract.getContent().iterator();
-                String abstractText = "";
-                while (abstractsContentIter.hasNext()) {
-                    Object content = (Object) abstractsContentIter.next();
-                    abstractText += mapContent(content);
-                    abstractText += abstractsContentIter.hasNext() ? "\n" : "";
-                }
-                studyAbstract.setText( abstractText.trim() );
-                
+                studyAbstract.setText( mapContentList(_abstract.getContent()).trim() );
                 studyAbstract.setDisplayOrder( abstractCount++ );
                 studyAbstract.setStudy(s);
                 s.getStudyAbstracts().add(studyAbstract);
@@ -835,7 +834,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                     s.setDepositorRequirements( mapContent(_us.getDeposReq().getContent().get(0) ) );
                 }
                 if (_us.getConditions() != null) {
-                    s.setConditions( mapContent(_us.getConditions().getContent().get(0) ) );
+                    s.setConditions( mapContentList(_us.getConditions().getContent() ) );
                 }
                 if (_us.getDisclaimer() != null) {
                     s.setDisclaimer( mapContent(_us.getDisclaimer().getContent().get(0) ) );
@@ -1314,6 +1313,19 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         }
     }
     
+    private String mapContentList(List contentList) {
+        Iterator iter = contentList.iterator();
+        String content = "";
+        while (iter.hasNext()) {
+            Object item = (Object) iter.next();
+            content += mapContent(item);
+            content += iter.hasNext() ? "\n" : "";
+        }
+
+        
+        return content;
+    }
+    
     private String mapContent(Object _content) {
         if (_content instanceof String) {
             return ((String) _content).trim().replace('\n',' ');
@@ -1321,6 +1333,32 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             Object _html = ((JAXBElement)_content).getValue();
             if ( _html instanceof PType) {
                 return "<p>" + mapContent( ((PType)_html).getContent().get(0) ) + "</p>";
+            } else if ( _html instanceof ListType) {
+                ListType _list = (ListType)_html;
+                String listString = null;
+                String listCloseTag = null;
+                
+                // check type
+                if ("bulleted".equals(_list.getType()) ){
+                    listString = "<ul>\n";
+                    listCloseTag = "</ul>";
+                } else if ("ordered".equals(_list.getType()) ) {
+                    listString = "<ol>\n";
+                    listCloseTag = "</ol>";
+                } else {
+                    throw new EJBException("mapContent: ListType of types other than {bulleted, ordered} not currently supported.");    
+                }
+                
+                // add items
+                for (Object _item : ((ListType)_html).getLabelOrItm()) {
+                    if ( _item instanceof ItmType) {
+                        listString += "<li>" + mapContent( ((ItmType) _item).getContent().get(0) ) + "</li>\n";
+                    } else {
+                        throw new EJBException("mapContent: ListType does not currently supported contained LabelType.");
+                    }
+                }
+                return (listString + listCloseTag);
+                
             } else if ( _html instanceof CitationType) {
                 CitationType _citation = (CitationType)_html;
                 String citation = "<!--  parsed from DDI citation title and holdings -->";

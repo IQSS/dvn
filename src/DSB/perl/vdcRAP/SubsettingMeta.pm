@@ -92,10 +92,40 @@ sub vdc_generateColFile {
 
 #    $self->{'logger'}->vdcLOG_info ( "VDC::vdcRAP::SubsettingMeta", 'generateColFile', 'this is dataset ' . $dataset_id ); 
 
-
     return undef unless $dataset_id; 
 
-    system ( "/usr/local/VDC/sbin/recreatevlm.pl $dir $ddi $dataset_id $type" ); 
+    # The step below involves parsing the study DDI to produce 
+    # column-definition metadata for the study variables;
+    # The DDI is created by the Dataverse and, apparently, always
+    # tagged as "UTF-8" content. So it was discovered that this will 
+    # cause problems for the parser in Akio's script below when there are 
+    # 8-bit characters in the DDI (most often, the result of ingest from 
+    # Stata and SPSS files). 
+    # As an immediate fix, I'm going to preprocess the DDI and 
+    # strip all such potentially-dangerous characters. This cannot 
+    # possibly cause any real content loss, since at this stage we are 
+    # only interested in the byte offsets of the variable columns in the 
+    # datafiles, so any text in the DDI can be safely disregarded. 
+    # 
+    # However, the problem of exporting illegal XML by the application 
+    # still remains, and will be addressed in the next build. \
+
+
+    open ( DDI, $dir . "/" . $ddi ) || return undef; 
+    open ( STRIPPED_DDI, ">" . $dir . "/" . $ddi . "_stripped" ) || return undef; 
+
+    while ( <DDI> )
+    {
+	chop; 
+	s/[\000-\037\200-\377]//g; 
+	print STRIPPED_DDI $_ . "\n";
+    }
+
+    close DDI; 
+    close STRIPPED_DDI; 
+
+
+    system ( "/usr/local/VDC/sbin/recreatevlm.pl $dir $ddi" . "_stripped " .  "$dataset_id $type" ); 
 
     my $col_filename = sprintf ( "%s/%s.vlm", $dir, $dataset_id );
  

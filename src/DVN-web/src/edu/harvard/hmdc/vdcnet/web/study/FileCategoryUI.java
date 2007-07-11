@@ -9,6 +9,7 @@
 
 package edu.harvard.hmdc.vdcnet.web.study;
 
+import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
@@ -29,19 +30,19 @@ public class FileCategoryUI  {
     private FileCategory fileCategory;
     
     /** Creates a new instance of FileCategoryUI */
-    public FileCategoryUI(FileCategory fileCategory, VDC vdc, VDCUser user) {
+    public FileCategoryUI(FileCategory fileCategory, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         this.fileCategory = fileCategory;
-        initStudyFiles(vdc,user);
+        initStudyFiles(vdc,user, ipUserGroup);
 
     }  
     
       /** Creates a new instance of FileCategoryUI */
     public FileCategoryUI(FileCategory fileCategory) {
         this.fileCategory = fileCategory;
-        initStudyFiles(null,null);
+        initStudyFiles(null,null,null);
 
     }  
-    private void initStudyFiles(VDC vdc, VDCUser user) {
+    private void initStudyFiles(VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         StudyServiceLocal studyService = null;
         try {
             studyService=(StudyServiceLocal)new InitialContext().lookup("java:comp/env/studyService");
@@ -52,7 +53,7 @@ public class FileCategoryUI  {
         List<StudyFile> studyFiles = studyService.getOrderedFilesByCategory(fileCategory.getId());
         for (Iterator it = studyFiles.iterator(); it.hasNext();) {
             StudyFile studyFile = (StudyFile) it.next();
-            StudyFileUI studyFileUI = new StudyFileUI(studyFile, vdc, user);
+            StudyFileUI studyFileUI = new StudyFileUI(studyFile, vdc, user, ipUserGroup);
             studyFileUIs.add(studyFileUI);
         }
     }

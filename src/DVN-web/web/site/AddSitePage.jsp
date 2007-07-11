@@ -39,7 +39,7 @@
                                         <ui:panelGroup>
                                             <h:inputText binding="#{AddSitePage.dataverseAlias}" id="dataverseAlias" required="true" validator="#{AddSitePage.validateAlias}" />
                                             <verbatim><br /></verbatim>
-                                            <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, i.e., http://.../dv/'alias'."/>
+                                            <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, i.e., http://.../dv/'alias'. It is case sensitive."/>
                                             <h:message for="dataverseAlias" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                                         </ui:panelGroup>
                                     </h:panelGrid>

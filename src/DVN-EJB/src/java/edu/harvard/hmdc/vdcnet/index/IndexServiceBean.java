@@ -161,12 +161,14 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
                 studies = elem.getStudies();
                 for (Iterator it2 = studies.iterator(); it2.hasNext();) {
                     Study elem2 = (Study) it2.next();
-                    studyIds.add(elem2.getId());
+                    if (!studyIds.contains(elem2.getId())) {
+                        studyIds.add(elem2.getId());
+                    }
                 }
             }
         }
         List matchingStudyIds = null;
-        if (studyIds.size() == 0){
+        if (studyIds.isEmpty()){
             matchingStudyIds = new ArrayList();
         }else{
             try {
@@ -280,7 +282,7 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         }
 
         List matchingStudyIds = null;
-        if (studyIds.size() == 0){
+        if (studyIds.isEmpty()){
             matchingStudyIds = new ArrayList();
         }else{
             try {
@@ -318,7 +320,7 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
             VDCCollection elem = (VDCCollection) it.next();
             collections.add(elem);
             Collection <VDCCollection> subcollections = elem.getSubCollections();
-            if (subcollections.size()>0){
+            if (!subcollections.isEmpty()){
                 buildList(collections,subcollections);
             }
         }

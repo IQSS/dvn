@@ -480,9 +480,9 @@ public class HomePage extends VDCBaseBean{
                 //linkPanel.getChildren().add(image);
                 textTag =  new HtmlOutputText();
                 textTag.setEscape(false);
-                textTag.setValue("<span class=dvnGroupInProgress>In Progress</span>");
+                textTag.setValue("<span class=dvn_dvNotReleased>Not yet Released</span>");
                 linkPanel.getChildren().add(textTag);
-                nodelink.setToolTip(vdc.getName() + " dataverse (Not yet released)");
+                nodelink.setToolTip("Dataverse not yet released (under construction).");
             } 
             linkPanel.getChildren().add(endLinkTag);
             column.getChildren().add(linkPanel);

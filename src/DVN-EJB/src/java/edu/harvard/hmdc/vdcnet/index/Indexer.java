@@ -348,18 +348,6 @@ public class Indexer {
         List <BooleanQuery> searchParts = new ArrayList();
         boolean variableSearch = false;
         boolean nonVariableSearch = false;
-        if (studyIds.size() > 0){
-            List <SearchTerm> studyIdTerms = new ArrayList();
-            for (Iterator it = studyIds.iterator(); it.hasNext();) {
-                Long elem = (Long) it.next();
-                SearchTerm t = new SearchTerm();
-                t.setFieldName("id");
-                t.setValue(elem.toString());
-                studyIdTerms.add(t);
-            }
-            BooleanQuery studiesQuery = orClause(studyIdTerms);
-            searchParts.add(studiesQuery);
-        }
         List <SearchTerm> variableSearchTerms = new ArrayList();
         List <SearchTerm> nonVariableSearchTerms = new ArrayList();
         for (Iterator it = searchTerms.iterator(); it.hasNext();){
@@ -382,13 +370,7 @@ public class Indexer {
         if (variableSearch){
             List <Long> vResults = searchVariables(studyIds,variableSearchTerms,false);
             if (nonVariableSearch){
-                List <Long> mergeResults = new ArrayList();
-                for (Iterator it = vResults.iterator(); it.hasNext();){
-                    Long elem = (Long) it.next();
-                    if (nvResults.contains(elem)){
-                        mergeResults.add(elem);
-                    }
-                }
+                List<Long> mergeResults = intersectionResults(vResults, nvResults);
                 results = searchVariables(mergeResults,variableSearchTerms,true);
             } else{
                 results = searchVariables(vResults,variableSearchTerms,true);
@@ -396,9 +378,21 @@ public class Indexer {
         } else {
             results = nvResults;
         }
+        List <Long> filteredResults = intersectionResults(results, studyIds);
 
-        return results;
+        return filteredResults;
         
+    }
+
+    private List<Long> intersectionResults(final List<Long> results1, final List<Long> results2) {
+        List <Long> mergeResults = new ArrayList();
+        for (Iterator it = results1.iterator(); it.hasNext();){
+            Long elem = (Long) it.next();
+            if (results2.contains(elem)){
+                mergeResults.add(elem);
+            }
+        }
+        return mergeResults;
     }
 
     public List search(String query) throws IOException {
@@ -471,19 +465,6 @@ public class Indexer {
     
     public List searchVariables(List <Long> studyIds,SearchTerm searchTerm) throws IOException {
         List <BooleanQuery> searchParts = new ArrayList();
-        if (studyIds.size() > 0){
-            List <SearchTerm> studyIdTerms = new ArrayList();
-            for (Iterator it = studyIds.iterator(); it.hasNext();) {
-                Long elem = (Long) it.next();
-                SearchTerm t = new SearchTerm();
-                t.setFieldName("varStudyId");
-                t.setValue(elem.toString());
-                studyIdTerms.add(t);
-            }
-            BooleanQuery studiesQuery = orClause(studyIdTerms);
-            searchParts.add(studiesQuery);
-        }
-//        return getHitIds(searchQuery);
         BooleanQuery indexQuery = null;        
         if (searchTerm.getFieldName().equalsIgnoreCase("variable")){
             indexQuery = buildVariableQuery(searchTerm.getValue().toLowerCase().trim());
@@ -491,24 +472,14 @@ public class Indexer {
         }
         BooleanQuery searchQuery = andQueryClause(searchParts);
 //        return getHitIds(indexQuery);
-        return getHitIds(searchQuery);
+        List <Long> variableResults = getHitIds(searchQuery);
+        List <Long> filteredResults = intersectionResults(variableResults, studyIds);
+        return filteredResults;
     }
     
     public List searchVariables(List <Long> studyIds, List <SearchTerm> searchTerms, boolean varIdReturnValues) throws IOException {
         List <Long> returnValues = null;
         List <BooleanQuery> searchParts = new ArrayList();
-        if (studyIds.size() > 0){
-            List <SearchTerm> studyIdTerms = new ArrayList();
-            for (Iterator it = studyIds.iterator(); it.hasNext();) {
-                Long elem = (Long) it.next();
-                SearchTerm t = new SearchTerm();
-                t.setFieldName("varStudyId");
-                t.setValue(elem.toString());
-                studyIdTerms.add(t);
-            }
-            BooleanQuery studiesQuery = orClause(studyIdTerms);
-            searchParts.add(studiesQuery);
-        }
         for (Iterator it = searchTerms.iterator(); it.hasNext();){
             SearchTerm elem = (SearchTerm) it.next();
             BooleanQuery indexQuery = null;
@@ -523,7 +494,10 @@ public class Indexer {
         } else {
             returnValues = getVarHitIds(searchQuery);
         }
-        return returnValues;
+        List <Long> filteredResults =  intersectionResults(returnValues, studyIds);
+
+         
+        return filteredResults;
     }
     
     public List searchBetween(Term begin,Term end, boolean inclusive) throws IOException{

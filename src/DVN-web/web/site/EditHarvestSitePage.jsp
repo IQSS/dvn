@@ -24,7 +24,8 @@
                                      </ui:panelLayout>
                                     <ui:panelGroup block="true" style="padding-left: 20px; padding-right: 30px">
                                      <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                     <h:outputText  id="outputText2" styleClass="vdcHelpText" value="A Harvest dataverse provides most of the functionality included in a regular dataverse but all of its studies are harvested form an OAI Server (which in some cases might be another Dataverse Network). Harvested studies cannot be edited. The study metadata (cataloging and variable information) is searched locally but files are accessed remotely. "/>
+                                     <h:outputText  id="outputText2" styleClass="vdcHelpText" value="A Harvest dataverse gathers studies from an OAI Server (which could be another Dataverse Network). A Harvest dataverse provides most of the same functionality as a regular dataverse with the following differences: 1) You cannot edit a harvested study. 2) You search for the cataloging and variable information (study metadata) locally but you access the files remotely. "/>
+                                     <h:outputText   styleClass="vdcHelpText" value="Any changes you make to this page will not be saved until you click the Save button. "/>
                                     </ui:panelGroup>
                                     <h:panelGrid cellpadding="0" cellspacing="0"
                                         columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" id="gridPanel1" style="margin-top: 30px; margin-bottom: 30px">
@@ -177,8 +178,7 @@
                                     <ui:panelGroup block="true"  style="padding-left: 160px">
                                         <h:commandButton id="button1" value="Save"  action="#{EditHarvestSitePage.save}"/>
                                         <h:commandButton id="button2" style="margin-left: 20px" immediate="true" value="Cancel" action="#{EditHarvestSitePage.cancel}"/>
-                                        <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                     <h:outputText   styleClass="vdcHelpText" value="Any changes you make to this page will not be saved until you click the Save button. "/>
+                                     
                                     </ui:panelGroup>
                                    
                                 </ui:panelLayout>

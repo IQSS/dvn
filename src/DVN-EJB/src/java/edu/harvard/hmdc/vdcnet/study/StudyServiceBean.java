@@ -698,7 +698,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         boolean createNewHandle = (vdc.getHarvestingDataverse().getHandlePrefix() != null);
         int format = vdc.getHarvestingDataverse().getFormat().equals("ddi") ? 0 : 1; // 1 is mif; eventually this will be dynamic
         
-        Study study= importStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false);
+        Study study= importStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, true);
         return study;
     }
     
@@ -711,13 +711,13 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             throw new EJBException("importLegacyStudy(...) should never be called for a harvesting dataverse.");
         }        
         
-        return importStudy(xmlFile, 0,vdcId, userId, true, false, false, true, true);
+        return importStudy(xmlFile, 0,vdcId, userId, true, false, false, true, true, false);
     }
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Study importStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles) {
+    public Study importStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, boolean markAsHarvested) {
         // call internal studyService to force NEW transaction
-        Study study =  studyService.doImportStudy(xmlFile, xmlFileFormat, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles);
+        Study study =  studyService.doImportStudy(xmlFile, xmlFileFormat, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, markAsHarvested);
         em.merge(study); // workaround to get filecategory values in cache (only for some studies, to be investigated)
         
         indexService.updateStudy(study.getId());
@@ -727,7 +727,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Study doImportStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles) {
+    public Study doImportStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, boolean markAsHarvested) {
         logger.info("Begin doImportStudy");
         VDCNetwork vdcNetwork = vdcNetworkService.find();
         VDC vdc = em.find(VDC.class, vdcId);
@@ -752,8 +752,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             
             id = ddiService.determineId(_cb, null);
             if (id != null) {
-                // first replace any slashes
-                id = id.replace('/', '-');
+                // first replace any slashes and/or spaces
+                id = id.replace('/', '-').replace(' ', '_');
                 if (vdc.getHarvestingDataverse() != null) {
                     if (vdc.getHarvestingDataverse().getHandlePrefix() != null) {
                         globalId = "hdl:" + vdc.getHarvestingDataverse().getHandlePrefix().getPrefix() + "/" + id;                    
@@ -797,6 +797,13 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         logger.info("completed mapDDI, studyId = "+study.getStudyId());
         _cb=null;
         System.gc();
+        
+        //post mapping processing
+        if ( markAsHarvested ) {
+            study.setIsHarvested(true);
+        } else {
+            study.setHarvestHoldings(""); // clear the holdings field
+        }
         
         if (generateHandle) {
             if (vdc.getHarvestingDataverse() != null) {

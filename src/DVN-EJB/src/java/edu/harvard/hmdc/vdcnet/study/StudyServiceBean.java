@@ -126,6 +126,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         
         study.getAllowedGroups().clear();
         study.getAllowedUsers().clear();
+        study.setOwner(null);
         
         
         File studyDir = new File(FileUtil.getStudyFileDir()+File.separator+ study.getAuthority()+File.separator+study.getStudyId());

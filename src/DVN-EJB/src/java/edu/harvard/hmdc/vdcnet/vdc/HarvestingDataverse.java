@@ -132,12 +132,16 @@ public class HarvestingDataverse {
         this.allowedFileGroups = allowedFileGroups;
     }
     
-    public boolean areFilesRestrictedForUser(VDCUser user) {
+    public boolean areFilesRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
         if (this.filesRestricted) {
             if (!allowedFileUsers.contains(user) ) {
                 boolean foundUserInGroup=false;
                 for (Iterator it = allowedFileGroups.iterator(); it.hasNext();) {
                     UserGroup elem = (UserGroup) it.next();
+                    if (elem.equals(ipUserGroup)) {
+                        foundUserInGroup=true;
+                        break;
+                    }
                     if (elem.getUsers().contains(user)) {
                         foundUserInGroup=true;
                         break;

@@ -91,6 +91,13 @@ xmlns:ui="http://www.sun.com/web/ui"
                 </ui:panelGroup>
 
                 <ui:panelGroup block="true" id="groupPanel5">
+                    <h:graphicImage 
+                    alt="Information" 
+                    title="Information" 
+                    styleClass="vdcNoBorders" 
+                    style="vertical-align: bottom" 
+                    value="/resources/icon_info.gif" />
+                    
                     <h:outputText id="outputText13" value="#{bundleAnalysis['dwnld.instruction']}"/>
 
                     <h:selectOneRadio binding="#{AnalysisPage.dwnldFileTypeSet}" id="dtdwnld" layout="pageDirection">
@@ -143,9 +150,17 @@ xmlns:ui="http://www.sun.com/web/ui"
                 
 <!-- 2nd column -->
                 <ui:panelGroup id="groupPanel11" separator="&lt;br /&gt;">
-                
+                    <ui:panelGroup id="wrapRecodeInstruction">
+                    <h:graphicImage 
+                    alt="Information" 
+                    title="Information" 
+                    styleClass="vdcNoBorders" 
+                    style="vertical-align: bottom" 
+                    value="/resources/icon_info.gif" />
+                    
                     <h:outputText id="outputText49" 
                        value="#{bundleAnalysis['recode.instruction']}"/>
+                    </ui:panelGroup>
                     <br />
 
                 <ui:panelGroup id="recodeTableArea">
@@ -291,7 +306,13 @@ xmlns:ui="http://www.sun.com/web/ui"
 
 
                 <ui:panelGroup block="true" id="groupPanel4">
-
+                    <h:graphicImage 
+                    alt="Information" 
+                    title="Information" 
+                    styleClass="vdcNoBorders" 
+                    style="vertical-align: bottom" 
+                    value="/resources/icon_info.gif" />
+                    
                     <h:outputText id="outputText21" value="#{bundleAnalysis['eda.instruction']}"/>
 
                     <h:selectManyCheckbox binding="#{AnalysisPage.edaOptionSet}" id="analysis" layout="pageDirection">
@@ -760,11 +781,18 @@ xmlns:ui="http://www.sun.com/web/ui"
           cellpadding="0" cellspacing="0"
           columns="1" 
           style="margin-left: 8px; margin-top: 10px" width="98%">
+          <ui:panelGroup id="wrapSusettingInstruction">
+          <h:graphicImage 
+          alt="Information" 
+          title="Information" 
+          styleClass="vdcNoBorders" 
+          style="vertical-align: bottom" 
+          value="/resources/icon_info.gif" />
           
           <h:outputText id="txtSubsettingInstruction" 
           binding="#{AnalysisPage.txtSubsettingInstruction}" 
           value="#{bundleAnalysis['subsettingInstruction']}" />
-          
+          </ui:panelGroup>
           
           <ui:staticText id="msgVariableSelection"
               binding="#{AnalysisPage.msgVariableSelection}" 

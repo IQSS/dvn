@@ -12,6 +12,7 @@ package edu.harvard.hmdc.vdcnet.web.study;
 import com.sun.jsfcl.data.DefaultTableDataModel;
 import com.sun.rave.web.ui.component.Tab;
 import com.sun.rave.web.ui.component.TabSet;
+import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
@@ -25,6 +26,7 @@ import java.util.Iterator;
 import javax.ejb.EJB;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -34,7 +36,7 @@ public class StudyPage extends VDCBaseBean {
     @EJB private StudyServiceLocal studyService;
     @EJB private ReviewStateServiceLocal reviewStateService; 
     @EJB private MailServiceLocal mailService;
-
+    
     /**
      * Creates a new instance of StudyPage
      */
@@ -281,11 +283,13 @@ public class StudyPage extends VDCBaseBean {
                 studyId = getVDCRequestBean().getStudyId();
             }
             // we need to create the studyServiceBean
+            HttpServletRequest request = (HttpServletRequest)this.getExternalContext().getRequest();
             if (studyId != null) {
                 if (getVDCSessionBean().getLoginBean()!=null) {
-                    studyUI =new StudyUI(getStudyService().getStudyDetail(studyId),getVDCRequestBean().getCurrentVDC(),this.getVDCSessionBean().getLoginBean().getUser()); 
+                    studyUI =new StudyUI(studyService.getStudyDetail(studyId),getVDCRequestBean().getCurrentVDC(),
+                                          this.getVDCSessionBean().getLoginBean().getUser(), getVDCSessionBean().getIpUserGroup()); 
                 } else {
-                    studyUI =new StudyUI(getStudyService().getStudyDetail(studyId),null,null);
+                    studyUI =new StudyUI(studyService.getStudyDetail(studyId),null,null,  getVDCSessionBean().getIpUserGroup());
                 }
              
                 sessionPut( studyUI.getClass().getName(), studyUI);

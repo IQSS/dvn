@@ -5,7 +5,19 @@
           xmlns:ui="http://www.sun.com/web/ui"
           xmlns:tiles="http://struts.apache.org/tags-tiles">
     <f:subview id="vDCGroupEditView">
-        <h:form id="vdcGroupEditForm">
+        <f:verbatim>
+            <script language="JavaScript">
+            function getAddRemoveLength() {
+                if (document.getElementById('content:vDCGroupEditView:vdcGroupEditForm:addRemoveList_selected').length > 1) {
+                    return true;
+                } else {
+                    alert("Validation Error: There must be at least one entry in the Selected Dataverse(s) list." + "\n\r" + "Please add a Dataverse to continue.");
+                    return false;
+                }
+            }
+            </script>
+        </f:verbatim>
+        <h:form id="vdcGroupEditForm" onsubmit="return getAddRemoveLength();">
             <ui:panelLayout rendered="#{VDCGroupPage.success}" panelLayout="flow" styleClass="vdcSectionMiddleMessage" style="width: 400px; margin-top: 10px; margin-bottom: -10px">
                  <h:messages styleClass="successMessage" layout="table" showDetail="false" showSummary="true"/>
             </ui:panelLayout>
@@ -36,10 +48,9 @@
                     </h:column>
                 </h:panelGrid>
                 <h:panelGroup layout="block" style="margin-left:auto;margin-right:auto;">
-                    
-                    <ui:addRemove vertical="false"  availableItemsLabel="Available Dataverse(s):" 
+                    <ui:addRemove vertical="false" availableItemsLabel="Available Dataverse(s):" 
                           id="addRemoveList" items="#{VDCGroupPage.addRemoveListDefaultOptions.items}" rows="10"  binding="#{VDCGroupPage.addRemoveList}"
-                          selectAll="true" selected="#{VDCGroupPage.addRemoveListDefaultOptions.selected}"
+                          selectAll="false" selected="#{VDCGroupPage.addRemoveListDefaultOptions.selected}"
                           selectedItemsLabel="Selected Dataverse(s):" style="margin-left: 15px; margin-top: 10px; margin-bottom: 10px;"/>
                 </h:panelGroup>
                 <h:panelGrid columns="1" styleClass="dvGroupAdminFooter" columnClasses="groupEditFooter" cellspacing="0">

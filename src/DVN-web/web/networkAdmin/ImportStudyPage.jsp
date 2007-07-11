@@ -37,7 +37,10 @@
                       
                     <h:outputText value="Copy Files?" />
                     <h:selectBooleanCheckbox  id="copyFilesCheckBox" value="#{ImportStudyPage.copyFiles}"/> 
- 
+                    
+                    <h:outputText value="Mark as Harvested?" />
+                    <h:selectBooleanCheckbox  id="markAsHarvestedsCheckBox" value="#{ImportStudyPage.markAsHarvested}"/> 
+                    
                     <h:outputText value="Import into:" />
                     <h:selectOneMenu  id="radioButtonList1" value="#{ImportStudyPage.vdcId}">
                         <f:selectItems  id="radio1SelectItem" value="#{ImportStudyPage.vdcRadioItems}" />

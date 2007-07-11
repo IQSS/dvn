@@ -49,7 +49,7 @@
                             <h:outputText id="dataNoneCaption" value="Dataverse Groups"/>
                         </ui:panelGroup>
                     </f:facet> 
-                    <h:outputText rendered="#{VDCGroupPage.VDCGroups == null}" escape="false" value="There are no VDCGroups to display"/>
+                    <h:outputText rendered="#{VDCGroupPage.VDCGroups == null}" escape="false" value="There are no Dataverse groups to display"/>
                 </h:panelGrid>
                 <h:panelGrid columns="4" styleClass="dvGroupAdminFooter" columnClasses="groupAdminOrderFooter, groupAdminNameFooter, groupAdminDescriptionFooter, groupAdminDeleteFooter" cellspacing="0">
                     <h:column><h:outputText escape="false" value="&lt;!-- placeholder --&gt;"/></h:column>

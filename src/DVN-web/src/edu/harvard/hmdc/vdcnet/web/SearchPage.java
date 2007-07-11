@@ -490,7 +490,7 @@ public class SearchPage extends VDCBaseBean{
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             if (vdc != null) {
                 VDCUser user = getVDCSessionBean().getUser();
-                studies = StudyUI.filterVisibleStudies( studyService.getRecentStudies(vdc.getId(), -1), vdc, user, numResults );
+                studies = StudyUI.filterVisibleStudies( studyService.getRecentStudies(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), numResults );
             } else {
                 studies = new ArrayList();
             }

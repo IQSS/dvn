@@ -10,12 +10,12 @@
                              <ui:panelLayout id="layoutPanel1" panelLayout="flow" styleClass="vdcSectionMiddleNoBorder">
                                 <h:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%">
                                 <ui:panelLayout  id="layoutPanel2" panelLayout="flow" styleClass="vdcSectionHeader">
-                                    <h:outputText value="Manage Harvest Dataverses"/>
+                                    <h:outputText value="Manage Dataverses"/>
                                 </ui:panelLayout>
                                 <ui:panelLayout id="layoutPanel3" panelLayout="flow" style="padding: 40px 40px 30px 40px; border: 1px solid #cccccc; ">
                                     <ui:panelGroup block="true" style="padding-bottom: 10px">
                                                  <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                                 <h:outputText  styleClass="vdcHelpText" escape="false" value="Help Text" />
+                                                 <h:outputText  styleClass="vdcHelpText" escape="false" value="To edit a harvest dataverse settings, click on the dataverse name. If you have set up a harvest dataverse, you can schedule harvesting from this page. The harvest schedule runs every night and gets any new studies or studies that have changed in the original source (OAI server) since the last harvesting. You have also the option to run harvesting on demand." />
                                     </ui:panelGroup>
 
                                     <h:dataTable cellpadding="0" cellspacing="0"
@@ -71,7 +71,7 @@
                                  <ui:panelLayout  panelLayout="flow" style="padding: 40px 40px 30px 40px; border: 1px solid #cccccc; ">
                                     <ui:panelGroup block="true" style="padding-bottom: 10px">
                                                  <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                                 <h:outputText  styleClass="vdcHelpText" escape="false" value="Help Text" />
+                                                 <h:outputText  styleClass="vdcHelpText" escape="false" value="Clicking a dataverse name takes you to the 'My Options' page for that dataverse. Keep in mind that by removing a dataverse you delete any study owned by that dataverse." />
                                     </ui:panelGroup>
 
                                     <h:dataTable cellpadding="0" cellspacing="0"
@@ -83,9 +83,9 @@
                                             <f:facet name="header">
                                                 <h:outputText  value="Dataverse"/>
                                             </f:facet>
-                                            <h:outputLink value="/dvn/faces/admin/OptionsPage.jsp?currentVDCId=#{currentRow.id}">
+                                            <h:outputLink value="/dvn/dv/#{currentRow.alias}/faces/admin/OptionsPage.jsp?currentVDCId=#{currentRow.id}">
                                                 <h:outputText  value="#{currentRow.name}"/>
-                                            </h:outputLink>
+                                    </h:outputLink>
                                         </h:column>
                                        
                                         

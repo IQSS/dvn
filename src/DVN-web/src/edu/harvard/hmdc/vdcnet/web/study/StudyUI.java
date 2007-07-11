@@ -44,6 +44,7 @@ import javax.naming.InitialContext;
 public class StudyUI {
     
     private Study study;
+    private UserGroup ipUserGroup;
     
     /** Creates a new instance of StudyUI 
      *  this consturctor does not initialize the file category ui list
@@ -60,9 +61,10 @@ public class StudyUI {
        * Use this constructor if you want to set the StudyFileUI.fileRestrictedFor user value
        */
     
-    public StudyUI(Study s, VDC vdc, VDCUser user) {
+    public StudyUI(Study s, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         this.study = s;
-        initFileCategoryUIList(vdc,user);
+        this.ipUserGroup=ipUserGroup;
+        initFileCategoryUIList(vdc,user, ipUserGroup);
     }
     
     public Study getStudy() {
@@ -605,7 +607,7 @@ public class StudyUI {
         this.termsOfUsePanelIsRendered = termsOfUsePanelIsRendered;
     }
     
-    public void initFileCategoryUIList(VDC vdc, VDCUser user) {
+    public void initFileCategoryUIList(VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         categoryUIList = new ArrayList<FileCategoryUI>();
         StudyServiceLocal studyService = null;
         try {
@@ -619,7 +621,7 @@ public class StudyUI {
         Iterator iter = categories.iterator();
         while (iter.hasNext()) {
             FileCategory fc = (FileCategory) iter.next();
-            FileCategoryUI catUI = new FileCategoryUI(fc,vdc,user);
+            FileCategoryUI catUI = new FileCategoryUI(fc,vdc,user, ipUserGroup);
             categoryUIList.add(catUI);
         }
        
@@ -655,12 +657,12 @@ public class StudyUI {
     
     
     
-    public static List filterVisibleStudies(List originalStudies, VDC vdc, VDCUser user) {
-        return filterVisibleStudies(originalStudies, vdc, user, -1);
+    public static List filterVisibleStudies(List originalStudies, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
+        return filterVisibleStudies(originalStudies, vdc, user, ipUserGroup, -1);
     }
 
 
-    public static List filterVisibleStudies(List originalStudies, VDC vdc, VDCUser user, int numResults) {
+    public static List filterVisibleStudies(List originalStudies, VDC vdc, VDCUser user,UserGroup ipUserGroup, int numResults) {
         List filteredStudies = new ArrayList();
         
         if (numResults != 0) {
@@ -668,7 +670,7 @@ public class StudyUI {
             Iterator iter = originalStudies.iterator();
             while (iter.hasNext()) {
                 Study study = (Study) iter.next();
-                if (StudyUI.isStudyVisibleToUser(study, vdc, user) ) {
+                if (StudyUI.isStudyVisibleToUser(study, vdc, user) || isStudyVisibleToGroup(study,vdc,ipUserGroup) ) {
                     filteredStudies.add(study);
                     if (numResults > 0 && ++count >= numResults) {
                         break;

@@ -321,18 +321,29 @@ public class StudyFile implements Serializable{
         this.dataTable = dataTable;
     }
     
-    public boolean isFileRestrictedForUser( VDCUser user, VDC vdc ) {
+    public boolean isFileRestrictedForUser( VDCUser user, VDC vdc, UserGroup ipUserGroup ) {
       // If file belongs to a study in a HarvestingDataverse,
         // Check dataverse permisssions
         if (this.getFileCategory().getStudy().getOwner().isHarvestingDataverse()) {
             HarvestingDataverse hd = this.getFileCategory().getStudy().getOwner().getHarvestingDataverse();
-             if (hd.areFilesRestrictedForUser(user)) {
+             if (hd.areFilesRestrictedForUser(user, ipUserGroup)) {
                  return true;
              }
         }
         if ( isRestricted() ) {
             if (user == null) {
-                return true;
+                if (ipUserGroup==null) {
+                    return true;
+                } else {
+                    Iterator iter = this.getAllowedGroups().iterator();
+                    while (iter.hasNext()) {
+                        UserGroup allowedGroup = (UserGroup) iter.next();
+                        if (allowedGroup.equals(ipUserGroup)) {
+                            return false;
+                        }    
+                    } 
+                    return true;
+                }
             }
           
             // 1. check if study is restricted
@@ -371,18 +382,13 @@ public class StudyFile implements Serializable{
             }
             
             // 6. check groups
+          
             iter = this.getAllowedGroups().iterator();
             while (iter.hasNext()) {
                 UserGroup allowedGroup = (UserGroup) iter.next();
-                Iterator groupIter = user.getUserGroups().iterator();
-                while (groupIter.hasNext()) {
-                    UserGroup userGroup = (UserGroup) groupIter.next();
-                    if ( allowedGroup.getId().equals( userGroup.getId() ) ) {
-                        return false;
-                    }
-                    
+                if (user.getUserGroups().contains(allowedGroup)) {
+                    return false;
                 }
-                
             }
             return true;
         }      

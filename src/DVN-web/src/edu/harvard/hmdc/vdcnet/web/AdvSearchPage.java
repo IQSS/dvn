@@ -844,7 +844,7 @@ public class AdvSearchPage extends VDCBaseBean {
             elem.setLevel(level);
             collections.add(elem);
             Collection <VDCCollection> subcollections = elem.getSubCollections();
-            if (subcollections.size()>0){
+            if (!subcollections.isEmpty()){
                 buildList(collections,subcollections,level);
             }
         }
@@ -878,7 +878,7 @@ public class AdvSearchPage extends VDCBaseBean {
         collections.add(row);
         List <VDCCollection> subcollections = vdcCollectionService.findSubCollections(vdcRootCollection.getId(),false);
 //        Collection <VDCCollection> subcollections = vdcRootCollection.getSubCollections();
-        if (subcollections.size()>0){
+        if (!subcollections.isEmpty()){
             collectionsIncluded = true;
         }
         treeLevel = buildDisplayModel(collections, subcollections,treeLevel);
@@ -902,7 +902,7 @@ public class AdvSearchPage extends VDCBaseBean {
                 collections.add(row);
                 List <VDCCollection> subcollections = vdcCollectionService.findSubCollections(elem.getId(),false);
 //                Collection <VDCCollection> subcollections = elem.getSubCollections();
-                if (subcollections.size()>0){
+                if (!subcollections.isEmpty()){
                     buildDisplayModel(collections,subcollections,level);
                 }
             }
@@ -973,7 +973,7 @@ public class AdvSearchPage extends VDCBaseBean {
                     searchCollections.add(selectedCollection);
                 }
             }
-            if (searchCollections.size()==0){
+            if (searchCollections.isEmpty()){
                 searchOnlySelectedCollections = false;
             }
             

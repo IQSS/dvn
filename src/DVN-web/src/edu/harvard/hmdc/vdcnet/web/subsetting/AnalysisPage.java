@@ -59,6 +59,7 @@ import com.sun.rave.web.ui.model.*;
 // com.sun.rave.faces.data 
 
 import com.sun.jsfcl.data.*;
+import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 
 import javax.servlet.http.*;
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
@@ -4702,7 +4703,9 @@ if (baseVarToDerivedVar.containsKey(varId)){
 
               StudyFile sf = dataTable.getStudyFile();
               // this info is later used to render the page differently
-              if (sf.isFileRestrictedForUser(user, vdc)) {
+              HttpServletRequest request = (HttpServletRequest)this.getExternalContext().getRequest();
+                 
+              if (sf.isFileRestrictedForUser(user, vdc, getVDCSessionBean().getIpUserGroup())) {
                 out.println("restricted=yes: this user does not have the subsetting permission");
                 subsettingPageAccess =Boolean.FALSE;
                 hideSubsettingFunctions();

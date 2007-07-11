@@ -2448,4 +2448,15 @@ public class Study {
         this.studyDownload = studyDownload;
     }
     
+    private String harvestHoldings;
+
+    public String getHarvestHoldings() {
+        return harvestHoldings;
+    }
+
+    public void setHarvestHoldings(String harvestHoldings) {
+        this.harvestHoldings = harvestHoldings;
+    }
+
+
 }

@@ -216,7 +216,7 @@
        <put name="content" type="template"     value="/site/EditHarvestSitePage.jsp"/>
    </definition>
    <definition name="/site/HarvestSitesPage" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Manage Harvest Dataverses"/>
+       <put name="pageTitle"   type="string"        value="DVN - Manage Dataverses"/>
        <put name="content" type="template"     value="/site/HarvestSitesPage.jsp"/>
    </definition>
    <definition name="/site/DeleteDataversePage" extends="/main-layout">

@@ -11,7 +11,9 @@ package edu.harvard.hmdc.vdcnet.util;
 
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.SyncVDCServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
 import javax.ejb.EJB;
+import javax.ejb.EJBs;
 import javax.naming.InitialContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -20,12 +22,13 @@ import javax.servlet.ServletContextListener;
  *
  * 
  */
- @EJB(name="harvesterService", beanInterface=edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal.class)
+@EJBs({
+ @EJB(name="harvesterService", beanInterface=edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal.class),
+ @EJB(name="harvestingDataverseService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal.class)
+})
 public class VDCContextListener implements ServletContextListener {
- //  @EJB HarvesterServiceLocal harvesterService;
-   @EJB SyncVDCServiceLocal syncVDCService;
+    @EJB SyncVDCServiceLocal syncVDCService;
 
-    
     public void contextDestroyed(ServletContextEvent event) {
     
     }
@@ -34,13 +37,18 @@ public class VDCContextListener implements ServletContextListener {
         // This call initializes the Harvest Timer that will activate once a day and 
         // run all scheduled Harvest Dataverses.
       
-         HarvesterServiceLocal harvesterService = null;
+        HarvesterServiceLocal harvesterService = null;
+        HarvestingDataverseServiceLocal harvestingDataverseService = null;
+         
         try {
             harvesterService=(HarvesterServiceLocal)new InitialContext().lookup("java:comp/env/harvesterService");
+            harvestingDataverseService=(HarvestingDataverseServiceLocal)new InitialContext().lookup("java:comp/env/harvestingDataverseService");
+           
         } catch(Exception e) {
             e.printStackTrace();
         }
         try {
+            harvestingDataverseService.resetHarvestingStatus();         
             harvesterService.createHarvestTimer();
         } catch (Exception e) {
             e.printStackTrace();

@@ -9,6 +9,8 @@
 
 package edu.harvard.hmdc.vdcnet.web.servlet;
 
+
+import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
 import edu.harvard.hmdc.vdcnet.study.Study;
@@ -60,14 +62,17 @@ public class FileDownloadServlet extends HttpServlet{
 
     @EJB StudyServiceLocal studyService;
     @EJB VDCServiceLocal vdcService;
-    
+  
     public void service(HttpServletRequest req, HttpServletResponse res)  {
         VDCUser user = null;
         if ( LoginFilter.getLoginBean(req) != null ) {
             user= LoginFilter.getLoginBean(req).getUser();
         }
         VDC vdc = vdcService.getVDCFromRequest(req);
-        
+        UserGroup ipUserGroup= null;
+        if (req.getSession(true).getAttribute("ipUserGroup") != null) {
+            ipUserGroup= (UserGroup)req.getSession().getAttribute("ipUserGroup");
+        }
         String fileId = req.getParameter("fileId");
         if (fileId != null) {
 
@@ -178,7 +183,7 @@ public class FileDownloadServlet extends HttpServlet{
 		String dsbHost = System.getProperty("vdc.dsb.url");
 
 		boolean NOTaDSBrequest = true;
-
+  
 		if ( dsbHost.equals(req.getRemoteHost()) ) {
 		    NOTaDSBrequest = false; 
 		} else { 
@@ -193,9 +198,8 @@ public class FileDownloadServlet extends HttpServlet{
 			// so we just keep assuming this is NOT a DSB call
 		    }
 		}
-			
-
-		if ( NOTaDSBrequest && file.isRestricted() && (user == null || file.isFileRestrictedForUser(user, vdc)) ) {
+		
+		if ( NOTaDSBrequest && file.isRestricted() && (user == null || file.isFileRestrictedForUser(user, vdc,ipUserGroup)) ) {
 		    // generate a response with a correct 403/FORBIDDEN code   
 
 		    createErrorResponse403(res);
@@ -246,7 +250,7 @@ public class FileDownloadServlet extends HttpServlet{
             Iterator iter = files.iterator();
             while (iter.hasNext()) {
                 StudyFile file = (StudyFile) iter.next();
-                if (file.isRestricted() && (user == null || file.isFileRestrictedForUser(user, vdc)) ) {
+                if (file.isRestricted() && (user == null || file.isFileRestrictedForUser(user, vdc,ipUserGroup)) ) {
                     iter.remove();
                 }  
             }

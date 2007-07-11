@@ -9,6 +9,7 @@
 
 package edu.harvard.hmdc.vdcnet.web.study;
 
+import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
@@ -23,9 +24,9 @@ public class StudyFileUI {
     public StudyFileUI() {
     }
     
-    public StudyFileUI(StudyFile studyFile, VDC vdc, VDCUser user) {
+    public StudyFileUI(StudyFile studyFile, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         this.studyFile=studyFile;
-        this.restrictedForUser = studyFile.isFileRestrictedForUser(user,vdc);
+        this.restrictedForUser = studyFile.isFileRestrictedForUser(user,vdc, ipUserGroup);
     }
 
     /**

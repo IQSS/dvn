@@ -82,7 +82,7 @@
                                     <ui:panelGroup  block="true" styleClass="vdcRequestTitleDataverse">
                                         <h:outputText  value="Create Your Own Dataverse"/>
                                     </ui:panelGroup>  
-                                    <h:outputText  value="Are you interested in having your on-line archive? Send a request to "/>
+                                    <h:outputText  value="Are you interested in having your own on-line data archive? Send a request to "/>
                                      <h:outputLink rendered="#{VDCSession.loginBean==null}"  styleClass="vdcRequestPanelLink" value="/dvn/faces/login/CreatorRequestAccountPage.jsp">
                                           <h:outputText  styleClass="vdcRequestPanelLink" value="Create your own Dataverse."/>
                                      </h:outputLink>

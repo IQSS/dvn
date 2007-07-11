@@ -3,6 +3,6 @@
 
 ALTER TABLE filecategory ALTER COLUMN name type text;
 
-ALTER TABLE study ADD COLUMN harvestsource varchar(255);
-ALTER TABLE study ALTER COLUMN harvestsource SET STORAGE EXTENDED;
+ALTER TABLE study ADD COLUMN harvestHoldings varchar(255);
+ALTER TABLE study ALTER COLUMN harvestHoldings SET STORAGE EXTENDED;
 

@@ -20,4 +20,5 @@ public interface HarvestingDataverseServiceLocal {
     public void setLastHarvestTime(Long hdId, Date lastHarvestTime);
     public boolean getHarvestingNow(Long hdId);
     public Date getLastHarvestTime(Long hdId);
+    public void resetHarvestingStatus();
 }

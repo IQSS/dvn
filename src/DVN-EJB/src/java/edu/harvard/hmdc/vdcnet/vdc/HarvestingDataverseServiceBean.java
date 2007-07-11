@@ -10,6 +10,7 @@
 package edu.harvard.hmdc.vdcnet.vdc;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -83,5 +84,14 @@ public class HarvestingDataverseServiceBean implements edu.harvard.hmdc.vdcnet.v
         HarvestingDataverse hd = em.find(HarvestingDataverse.class,hdId);
         em.refresh(hd);
         return hd.getLastHarvestTime();
+    }
+    
+    
+    public void resetHarvestingStatus() {
+        List harvestingDataverses = findAll();
+        for (Iterator it = harvestingDataverses.iterator(); it.hasNext();) {
+            HarvestingDataverse hd = (HarvestingDataverse)it.next();
+            hd.setHarvestingNow(false);
+        }
     }
 }

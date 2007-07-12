@@ -193,7 +193,45 @@ xmlns:ui="http://www.sun.com/web/ui"
                             <!-- value="#{AnalysisPage.recodeVariableLabel}" -->
                     </ui:panelGroup>
                     </h:panelGrid>
+                    <ui:panelGroup id="recodeTableHelpPanel" 
+                    binding="#{AnalysisPage.groupPanelRecodeTableHelp}" 
+                    rendered="false">
+                        <h:graphicImage 
+                        alt="Information" 
+                        title="Information" 
+                        styleClass="vdcNoBorders" 
+                        style="vertical-align: bottom" 
+                        value="/resources/icon_info.gif" />
 
+                        <h:outputText id="recodeHowToRecodeInstruction" 
+                           value="#{bundleAnalysis['recode.howToRecode.instruction']}"/>
+                        <br/>
+                        
+                        <h:graphicImage 
+                        alt="Information" 
+                        title="Information" 
+                        styleClass="vdcNoBorders" 
+                        style="vertical-align: bottom" 
+                        value="/resources/icon_info.gif" />
+
+                        <h:outputText id="recodeHowToSubsetInstruction" 
+                           value="#{bundleAnalysis['recode.howToSubset.instruction']}"/>
+                        
+                        <br/>
+                        
+                        <h:graphicImage 
+                        alt="Information" 
+                        title="Information" 
+                        styleClass="vdcNoBorders" 
+                        style="vertical-align: bottom" 
+                        value="/resources/icon_info.gif" />
+
+                        <h:outputText id="recodeHowToEnterConditionInstruction" 
+                           value="#{bundleAnalysis['recode.howToEnterCondition.instruction']}"/>
+                        <br/>
+
+
+                    </ui:panelGroup>
                     <h:dataTable id="recodeTable" 
                        binding="#{AnalysisPage.recodeTable}"
                        var="rd"

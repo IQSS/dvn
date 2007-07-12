@@ -24,15 +24,16 @@ public interface StudyServiceLocal {
     public Study getStudy(Long studyId);
     
     public Study getStudyByGlobalId(String globalId);
-    
+   
+    public Study getStudyByHarvestIdentifier(String harvestIdentifier);
+   
     public Study getStudyDetail(Long studyId);
     
     public void updateStudy(Study study);
     
     public void deleteStudy(Long studyId) ;
-    
-    
-     public List getStudies();
+   
+    public List getStudies();
 
     java.util.List getStudies(List studyIdList, String orderBy);
 
@@ -73,11 +74,10 @@ public interface StudyServiceLocal {
     edu.harvard.hmdc.vdcnet.study.Study saveStudy(Study study, Long userId);
 
     edu.harvard.hmdc.vdcnet.study.Study importLegacyStudy(File xmlFile, Long vdcId, Long userId);
-    edu.harvard.hmdc.vdcnet.study.Study importHarvestStudy(File xmlFile, Long vdcId, Long userId);
+    edu.harvard.hmdc.vdcnet.study.Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier);
     edu.harvard.hmdc.vdcnet.study.Study importStudy(File xmlFile,  int xmFileFormatId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier);
 
     edu.harvard.hmdc.vdcnet.study.Study doImportStudy(File xmlFile, int xmFileFormatId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier);
-
 
     
 }

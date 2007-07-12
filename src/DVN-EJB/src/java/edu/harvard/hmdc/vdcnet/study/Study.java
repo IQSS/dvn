@@ -141,7 +141,7 @@ public class Study {
             if (!StringUtil.isEmpty(str)) {
                 str+=", ";
             }
-            str+=getGlobalId()+"&#160; &#160; http://hdl.handle.net/"+authority+"/"+studyId+"&#160; &#160;";
+            str+="<a href='http://hdl.handle.net/"+authority+"/"+studyId+"'>"+getGlobalId()+"</a>";
 
         }
         

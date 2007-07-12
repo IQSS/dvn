@@ -141,11 +141,8 @@ public class Study {
             if (!StringUtil.isEmpty(str)) {
                 str+=", ";
             }
-            try {
-                str+=getGlobalId()+"&#160; &#160; http://id.thedata.org/"+URLEncoder.encode( getGlobalId(), "UTF-8" )+"&#160; &#160;";
-            } catch (UnsupportedEncodingException e) {
-                throw new EJBException(e);
-            }
+            str+=getGlobalId()+"&#160; &#160; http://hdl.handle.net/"+authority+"/"+studyId+"&#160; &#160;";
+
         }
         
         if (!StringUtil.isEmpty(UNF)) {

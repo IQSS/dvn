@@ -2455,5 +2455,13 @@ public class Study {
         this.harvestHoldings = harvestHoldings;
     }
 
+    private String harvestIdentifier;
+    
+    public String getHarvestIdentifier() {
+        return harvestIdentifier;
+    }
 
+    public void setHarvestIdentifier(String harvestIdentifier) {
+        this.harvestIdentifier = harvestIdentifier;
+    } 
 }

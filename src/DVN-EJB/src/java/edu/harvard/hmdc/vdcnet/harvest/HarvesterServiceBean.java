@@ -306,12 +306,12 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             if (errMessage!=null) {
                 hdLogger.log(Level.SEVERE,"Error calling GetRecord - "+errMessage);
             } else if (record.isDeleted()) {
-                Study study = studyService.getStudyByGlobalId(identifier);
+                Study study = studyService.getStudyByHarvestIdentifier(identifier);
                 studyService.deleteStudy(study.getId());
             } else {
                 VDCUser networkAdmin = vdcNetworkService.find().getDefaultNetworkAdmin();
 
-                studyService.importHarvestStudy(record.getMetadataFile(),dataverse.getVdc().getId(),networkAdmin.getId());
+                studyService.importHarvestStudy(record.getMetadataFile(),dataverse.getVdc().getId(),networkAdmin.getId(),identifier);
                 
                 hdLogger.log(Level.INFO,"Harvest Successful for identifier "+identifier );
             }

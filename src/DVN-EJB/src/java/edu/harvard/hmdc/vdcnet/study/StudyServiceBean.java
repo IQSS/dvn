@@ -115,7 +115,14 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     public void updateStudy(Study detachedStudy){
         em.merge(detachedStudy);
     }
-    
+
+    public Study getStudyByHarvestIdentifier(String harvestIdentifier) {
+        String query = "SELECT s FROM Study s WHERE s.harvestIdentifier = " + harvestIdentifier ;
+        return (Study)em.createQuery(query).getSingleResult();    
+  
+   }
+
+  
     public void deleteStudy(Long studyId) {
         Study study = em.find(Study.class,studyId);
         for (Iterator<VDCCollection>it = study.getStudyColls().iterator(); it.hasNext();) {

@@ -374,35 +374,66 @@ if ($dataURL) {
 					       "failed to locate coldef file"); 
 	    }
 	    
-	    my $output_filter = $subs_obj->produce_subset_filter ( $coldef_file, 'tab', '', $varNoStrng );
+	    
+	    # below is a (bit of a hackish) fix for an exotic
+	    # problem we've discovered: rcut doesn't handle the 
+	    # case of a single variable column in a datafile 
+	    # -- it must be expecting at least one variable 
+	    # separator character. The good news is that, 
+	    # obviously, we don't need to call rcut at all when 
+	    # we need a single column from a file that only contains
+	    # one column. 
 
+	    open ( VLM, $coldef_file ); 
+	    my $v_counter = 0;
+	    while ( <VLM> )
+	    {
+		last if $v_counter > 1; 
+		$v_counter++; 
+	    }
+	    close VLM; 
+	    my $rcut_filter = ""; 
 
-	    $logger->vdcLOG_info ("VDC::DSB", "Disseminate",
-				  "filter: "
-				  . $output_filter );
+	    if ( $v_counter == 1 )
+	    {
+		$logger->vdcLOG_info ("VDC::DSB", "Disseminate",
+				  "single-column datafile; no filter needed" );
 
-	    $logger->vdcLOG_info( 'VDC::DSB', $script_name,  "starting rcut pipe for new, Dataverse-style subsetting"); # 
+		$rcut_filter = "/bin/cat"; 
+
+	    }
+	    else
+	    {
+		my $output_filter = $subs_obj->produce_subset_filter ( $coldef_file, 'tab', '', $varNoStrng );
+
+		
+		$logger->vdcLOG_info( 'VDC::DSB', $script_name,  "starting rcut pipe for new, Dataverse-style subsetting"); # 
+		my $delim="\t";
+		$rcut_filter = $output_filter . " -d'" . $delim . "'";  
+
+		$logger->vdcLOG_info ("VDC::DSB", "Disseminate",
+				      "filter: "
+				      . $rcut_filter );
+	    }
 
 	 
-		my $do_stream;
-		my $buf="";
-		my $delim="\t";
+	    my $do_stream;
+	    my $buf="";
 
-		$response = $ua->request($request,
-		   sub {
-    			my($chunk, $res) = @_;
+	    $response = $ua->request($request,
+				     sub {
+					 my($chunk, $res) = @_;
+					 
+					 unless ($do_stream) {
+					     open(RCUT,"|" . $rcut_filter . " >  $RtmpDataFile") 
+						 ||  $logger->vdcLOG_warning ( 'VDC::DSB',  $script_name, "error opening rcut");
+					     $do_stream = 1; 
+					 }
 
-    			unless ($do_stream) {
-			    open(RCUT,"|" . $output_filter . " -d'" . $delim . "'" . " >  $RtmpDataFile") 
-				||  $logger->vdcLOG_warning ( 'VDC::DSB',  $script_name, "error opening rcut");
-			    $do_stream = 1; 
-			}
-
-			print RCUT  $chunk;
-		    }
- 		);
-		if ($buf) {print "$buf";} else { close(RCUT); }
-
+					 print RCUT  $chunk;
+				     }
+				     );
+	    if ($buf) {print "$buf";} else { close(RCUT); }
 	} else {
 		$logger->vdcLOG_info( 'VDC::DSB', $script_name,  "starting rcut pipe"); # debug
 		my $RCUT_BIN = "${RCUTDIR}/rcut";

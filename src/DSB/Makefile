@@ -71,7 +71,8 @@ inst_tmp:
 	install -m 0777 -d ${RPM_PREFIX}/${TMPDIR}/DSB
 	install -m 0777 -d ${RPM_PREFIX}/${TMPDIR}/webtemp
 
-rpm:	clean update-spec
+#rpm:	clean update-spec
+rpm:	clean
 	(cd ..; ln -s DSB DVN-DSB-`cat DSB/VERSION`; \
 	tar chzf /usr/src/redhat/SOURCES/DVN-DSB-`cat DSB/VERSION`.tar.gz DVN-DSB-`cat DSB/VERSION`/; /bin/rm DVN-DSB-`cat DSB/VERSION`)
 	rpmbuild -ba dvn-dsb.spec

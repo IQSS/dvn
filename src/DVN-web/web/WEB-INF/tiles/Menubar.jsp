@@ -18,7 +18,7 @@
          </ui:panelGroup>
         <ui:panelGroup  block="true">
             <h:outputLink  value="http://thedata.org" target="_blank"  title="Dataverse Network Project Site">
-                <h:graphicImage alt="Powered by the Dataverse Network Project" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/dvn_poweredby.jpg" />
+                <h:graphicImage alt="Powered by the Dataverse Network Project" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/poweredby_logo.gif" />
             </h:outputLink>
         </ui:panelGroup>
     </h:panelGrid>
@@ -40,7 +40,7 @@
 
         <ui:panelGroup  block="true">
             <h:outputLink  value="http://thedata.org" target="_blank"  title="Dataverse Network Project Site">
-                <h:graphicImage alt="Powered by the Dataverse Network Project" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/dvn_poweredby.jpg" />
+                <h:graphicImage alt="Powered by the Dataverse Network Project" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/poweredby_logo.gif" />
             </h:outputLink>
         </ui:panelGroup>
     </h:panelGrid>    

@@ -710,7 +710,7 @@ if (isRecodedVar(varId)){
             
             // show the recodeTable
             out.println("Number of rows in this Recode Table="+recodeDataList.size());
-            
+            groupPanelRecodeTableHelp.setRendered(true);
             recodeTable.setRendered(true);
             addValueRangeBttn.setRendered(true);
             // keep this variable's Id
@@ -732,7 +732,20 @@ if (isRecodedVar(varId)){
       recodeTargetVarLabel.resetValue();
     }
     
-    
+
+    // panel above the recodeTable : recodeTableHelpPanel
+    // @binding
+    private PanelGroup groupPanelRecodeTableHelp = new PanelGroup();
+
+    public PanelGroup getGroupPanelRecodeTableHelp() {
+        return groupPanelRecodeTableHelp;
+    }
+
+    public void setGroupPanelRecodeTableHelp(PanelGroup pg) {
+        this.groupPanelRecodeTableHelp = pg;
+    }
+
+
     // checkbox column(drop this value)
     // recodeDropValueCheckbox@binding
     private Checkbox recodeDropValueCheckbox = new Checkbox();
@@ -1245,6 +1258,7 @@ if (isRecodedVar(varId)){
         recodeTargetVarName.resetValue();
         recodeTargetVarLabel.resetValue();
         // hide the recode table and add-row button
+        groupPanelRecodeTableHelp.setRendered(false);
         recodeTable.setRendered(false);
         addValueRangeBttn.setRendered(false);
 
@@ -1681,6 +1695,7 @@ if (isRecodedVar(varId)){
     */
     
     public void hideRecodeTableArea(){
+      groupPanelRecodeTableHelp.setRendered(false);
       recodeTable.setRendered(false);
       addValueRangeBttn.setRendered(false);
     }

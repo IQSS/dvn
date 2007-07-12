@@ -41,6 +41,7 @@
                     <h:column headerClass="groupAdminHeader">
                         <h:panelGroup>
                             <h:inputText id="name" value="#{VDCGroupPage.name}" valueChangeListener="#{VDCGroupPage.changeName}" title="Name" immediate="true"/>
+                            <h:message for="name" styleClass="errorMessage"/>
                         </h:panelGroup>
                     </h:column>
                     <h:column>
@@ -54,7 +55,7 @@
                           selectedItemsLabel="Selected Dataverse(s):" style="margin-left: 15px; margin-top: 10px; margin-bottom: 10px;"/>
                 </h:panelGroup>
                 <h:panelGrid columns="1" styleClass="dvGroupAdminFooter" columnClasses="groupEditFooter" cellspacing="0">
-                    <h:commandButton action="#{VDCGroupPage.update}" value="Save" immediate="true"/>
+                    <h:commandButton id="btnSave" action="#{VDCGroupPage.update}" value="Save" immediate="true"/>
                     <!-- <h:commandLink action="VDCGroup_list" value="Show All VDCGroup"/> -->
                 </h:panelGrid>
             </ui:panelLayout>

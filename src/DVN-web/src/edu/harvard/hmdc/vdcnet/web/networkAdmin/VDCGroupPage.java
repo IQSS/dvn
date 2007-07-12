@@ -10,8 +10,8 @@
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
 import com.sun.rave.web.ui.component.AddRemove;
-import com.sun.rave.web.ui.model.MultipleSelectOptionsList;
 import com.sun.rave.web.ui.model.Option;
+import edu.harvard.hmdc.vdcnet.util.ExceptionMessageWriter;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
@@ -97,8 +97,9 @@ public class VDCGroupPage extends VDCBaseBean {
     }
     
    public String update() {
-        String msg = SUCCESS_MESSAGE;
-        success = true;
+        String msg    = SUCCESS_MESSAGE;
+        success       = true;
+        String result = "success";
         try {
             VDCGroup vdcgroup = null;
             if (this.getVdcGroup() != null) {
@@ -111,19 +112,32 @@ public class VDCGroupPage extends VDCBaseBean {
            vdcgroup.setName(this.getName());
            vdcgroup.setDescription(this.getDescription());
            if (vdcgroup.getName() == "") {
-               vdcGroupService.removeVdcGroup(vdcgroup);// should actually render the response to the vdc edit page "You must give the group a name ..."
+               msg    = "Validation Error: The name field is required.";
+               result = "failed";
+               success = false;
+               FacesContext.getCurrentInstance().addMessage("content:vDCGroupEditView:vdcGroupEditForm:name", new FacesMessage(msg));
+               if (vdcgroup.getId() != null) {
+                HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+                request.setAttribute("vdcGroupId", vdcgroup.getId());
+                this.setVdcGroup(vdcgroup);
+               } else {
+                    vdcGroupService.removeVdcGroup(vdcgroup);
+               }
            } else {
+               FacesContext.getCurrentInstance().addMessage("vdcGroupEditForm:btnSave", new FacesMessage(msg));
                if (addRemoveList.getValueAsStringArray(FacesContext.getCurrentInstance()).length > 0) {
                    String[] selectValues = addRemoveList.getValueAsStringArray (getFacesContext ());
-                   System.out.println(selectValues.length + " and the val pos 0 is " + selectValues[0]);
                    vdcGroupService.updateWithVdcs(vdcgroup, addRemoveList.getValueAsStringArray(FacesContext.getCurrentInstance()));
-                }
+               } 
                vdcGroupService.updateVdcGroup(vdcgroup);
            }
         } catch (Exception e) {
-            System.out.println("An error occurred ... ");
+            ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
+            msg     = "An error occurred. The Dataverse group was not saved.";
+            result  ="failed";
+            FacesContext.getCurrentInstance().addMessage("vdcGroupEditForm:btnSave", new FacesMessage(msg));
         } finally {
-            return "success";
+            return result;
         }
     }
     
@@ -224,7 +238,6 @@ public class VDCGroupPage extends VDCBaseBean {
     }
     
     public void initAddRemoveList() {
-        /** new */
         addRemoveList = new AddRemove();
         List list = new ArrayList(vdcService.findAll());
         Iterator iterator = list.iterator();
@@ -238,10 +251,9 @@ public class VDCGroupPage extends VDCBaseBean {
             addRemoveListDefaultOptions.setMultiple(true);
             addRemoveListDefaultOptions.setItems(options);
             addRemoveListDefaultOptions.setSelected(this.setSelectedValues());
-            addRemoveList.setSelected(addRemoveListDefaultOptions.getSelected());        
+            addRemoveList.setSelected(addRemoveListDefaultOptions.getSelected());
     }
-    /** new */
-
+    
     private Object[] setSelectedValues() {
              Object[] selectedValues = null;
         if (this.getVdcGroup() != null ){

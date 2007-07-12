@@ -164,7 +164,7 @@ xmlns:ui="http://www.sun.com/web/ui"
                     <br />
 
                 <ui:panelGroup id="recodeTableArea">
-                    <ui:panelGroup id="groupPanel15">
+                    <h:panelGrid id="groupPanel15" cellpadding="0" cellspacing="10px" columns="2" >
                         <h:commandButton id="moveRecodeVarBttn"
                             binding="#{AnalysisPage.moveRecodeVarBttn}"
                             immediate="true"
@@ -173,12 +173,14 @@ xmlns:ui="http://www.sun.com/web/ui"
                             style="vertical-align:top"
                             alt="#{bundleAnalysis['recode.button.moveVar.alt']}"  
                             value=" &gt; "   />
+                            
+                        <ui:panelGroup id="recodeNewVarInfo">
                         <h:outputText id="recodeNewVarName" 
                            value="#{bundleAnalysis['recode.newVar.name']}"/>
                         
                         <h:inputText id="recodeTargetVarName"
                            binding="#{AnalysisPage.recodeTargetVarName}"
-                           />
+                           /> <br/>
                            <!-- value="#{AnalysisPage.recodeVariableName}"  -->
 
                         <h:outputText id="recodeNewVarLabel"
@@ -189,8 +191,8 @@ xmlns:ui="http://www.sun.com/web/ui"
                             
                             size="40"/>
                             <!-- value="#{AnalysisPage.recodeVariableLabel}" -->
-
                     </ui:panelGroup>
+                    </h:panelGrid>
 
                     <h:dataTable id="recodeTable" 
                        binding="#{AnalysisPage.recodeTable}"

@@ -196,15 +196,31 @@ xmlns:ui="http://www.sun.com/web/ui"
                     <ui:panelGroup id="recodeTableHelpPanel" 
                     binding="#{AnalysisPage.groupPanelRecodeTableHelp}" 
                     rendered="false">
-                        <h:graphicImage 
-                        alt="Information" 
-                        title="Information" 
-                        styleClass="vdcNoBorders" 
-                        style="vertical-align: bottom" 
+                    
+                    
+                       
+                     <h:graphicImage 
+                                  alt="Information" 
+                                  title="Information" 
+                                  styleClass="vdcNoBorders" 
+                                  style="vertical-align: bottom" 
                         value="/resources/icon_info.gif" />
 
                         <h:outputText id="recodeHowToRecodeInstruction" 
                            value="#{bundleAnalysis['recode.howToRecode.instruction']}"/>
+                           
+                    <ui:imageHyperlink id="showRecodeDetails" 
+                        onClick="return shwNshwTxt('recodeDetail');"
+                        imageURL="/resources/icon_help.gif"
+                        styleClass="vdcNoBorders" 
+                        alt="Click to show the how-to information"
+                        toolTip="Click to show/hide how-to information"
+                        />
+                        <div id="recodeDetail" style="display:none">
+                        <br/>
+                        <h:outputText id="recodeHowToRecodeDetails"
+                           value="#{bundleAnalysis['recode.howToRecode.details']}"/>
+                        </div>
                         <br/>
                         
                         <h:graphicImage 
@@ -213,10 +229,24 @@ xmlns:ui="http://www.sun.com/web/ui"
                         styleClass="vdcNoBorders" 
                         style="vertical-align: bottom" 
                         value="/resources/icon_info.gif" />
+
 
                         <h:outputText id="recodeHowToSubsetInstruction" 
                            value="#{bundleAnalysis['recode.howToSubset.instruction']}"/>
-                        
+                           
+                    <ui:imageHyperlink id="showSubsetDetails" 
+                        onClick="return shwNshwTxt('subsetDetail');"
+                        imageURL="/resources/icon_help.gif"
+                        styleClass="vdcNoBorders" 
+                        alt="Click to show the how-to information"
+                        toolTip="Click to show/hide how-to information"
+                        />
+                           
+                        <div id="subsetDetail" style="display:none">
+                        <br/>
+                        <h:outputText id="recodeHowToSubsetDetails"
+                           value="#{bundleAnalysis['recode.howToSubset.details']}"/>
+                        </div>
                         <br/>
                         
                         <h:graphicImage 
@@ -226,8 +256,24 @@ xmlns:ui="http://www.sun.com/web/ui"
                         style="vertical-align: bottom" 
                         value="/resources/icon_info.gif" />
 
+
+
                         <h:outputText id="recodeHowToEnterConditionInstruction" 
                            value="#{bundleAnalysis['recode.howToEnterCondition.instruction']}"/>
+                           
+                    <ui:imageHyperlink id="showConditionDetails" 
+                        onClick="return shwNshwTxt('conditionDetail');"
+                        imageURL="/resources/icon_help.gif"
+                        styleClass="vdcNoBorders" 
+                        alt="Click to show the how-to information"
+                        toolTip="Click to show/hide how-to information"
+                        />
+                        
+                        <div id="conditionDetail" style="display:none">
+                        <br/>
+                        <h:outputText id="recodeHowToEnterConditionDetails"
+                           value="#{bundleAnalysis['recode.howToEnterCondition.details']}"/>
+                        </div>
                         <br/>
 
 
@@ -1160,7 +1206,22 @@ function shwNshwLnk(id, srcId, label) {
     document.getElementById(srcId).value ="Show " +label;
   }
 }
- 
+
+
+// show-no show button with a state-dependent button label
+function shwNshwTxt(id) {
+  // id     whose block to be shown/hidden
+  // srcId  button id
+  // label  button lable
+  var srcEl = document.getElementById(id);
+  if (srcEl.style.display == "none") {
+    srcEl.style.display = "";
+  } else if (srcEl.style.display == "") {
+    srcEl.style.display = "none";
+  }
+}
+
+
   //]]>
   </script>
   

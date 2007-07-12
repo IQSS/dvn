@@ -364,7 +364,6 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         while (iter.hasNext()) {
             String key = (String) iter.next();
             
-            //for now we only can have studyId
             if ( key.equals("studyId") ) {
                 if (_dd.getCitation() != null) {
                     Iterator idIter = _dd.getCitation().getTitlStmt().getIDNo().iterator();
@@ -705,55 +704,55 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             if (_method.getDataColl().size() != 0 ) {
                 DataCollType _dc = _method.getDataColl().get(0);
                 if (_dc.getTimeMeth().size() != 0) {
-                    s.setTimeMethod( mapContent( _dc.getTimeMeth().get(0).getContent().get(0) ) );
+                    s.setTimeMethod( mapContentList( _dc.getTimeMeth().get(0).getContent() ) );
                 }
                 if (_dc.getDataCollector().size() != 0) {
-                    s.setDataCollector( mapContent( _dc.getDataCollector().get(0).getContent().get(0) ) );
+                    s.setDataCollector( mapContentList( _dc.getDataCollector().get(0).getContent() ) );
                 }
                 if (_dc.getFrequenc().size() != 0) {
-                    s.setFrequencyOfDataCollection( mapContent( _dc.getFrequenc().get(0).getContent().get(0) ) );
+                    s.setFrequencyOfDataCollection( mapContentList( _dc.getFrequenc().get(0).getContent() ) );
                 }
                 if (_dc.getSampProc().size() != 0) {
-                    s.setSamplingProcedure( mapContent( _dc.getSampProc().get(0).getContent().get(0) ) );
+                    s.setSamplingProcedure( mapContentList( _dc.getSampProc().get(0).getContent() ) );
                 }
                 if (_dc.getDeviat().size() != 0) {
-                    s.setDeviationsFromSampleDesign( mapContent( _dc.getDeviat().get(0).getContent().get(0) ) );
+                    s.setDeviationsFromSampleDesign( mapContentList( _dc.getDeviat().get(0).getContent() ) );
                 }
                 if (_dc.getCollMode().size() != 0) {
-                    s.setCollectionMode( mapContent( _dc.getCollMode().get(0).getContent().get(0) ) );
+                    s.setCollectionMode( mapContentList( _dc.getCollMode().get(0).getContent() ) );
                 }
                 if (_dc.getResInstru().size() != 0) {
-                    s.setResearchInstrument( mapContent( _dc.getResInstru().get(0).getContent().get(0) ) );
+                    s.setResearchInstrument( mapContentList( _dc.getResInstru().get(0).getContent()) );
                 }
                 if (_dc.getSources() != null) {
                     SourcesType _sources = _dc.getSources();
                     if (_sources.getDataSrc().size() != 0) {
-                        s.setDataSources( mapContent( _sources.getDataSrc().get(0).getContent().get(0) ) );
+                        s.setDataSources( mapContentList( _sources.getDataSrc().get(0).getContent() ) );
                     }
                     if (_sources.getSrcOrig().size() != 0) {
-                        s.setOriginOfSources( mapContent( _sources.getSrcOrig().get(0).getContent().get(0) ) );
+                        s.setOriginOfSources( mapContentList( _sources.getSrcOrig().get(0).getContent() ) );
                     }
                     if (_sources.getSrcChar().size() != 0) {
-                        s.setCharacteristicOfSources( mapContent( _sources.getSrcChar().get(0).getContent().get(0) ) );
+                        s.setCharacteristicOfSources( mapContentList( _sources.getSrcChar().get(0).getContent()) );
                     }
                     if (_sources.getSrcDocu().size() != 0) {
-                        s.setAccessToSources( mapContent( _sources.getSrcDocu().get(0).getContent().get(0) ) );
+                        s.setAccessToSources( mapContentList( _sources.getSrcDocu().get(0).getContent() ) );
                     }
                 }
                 if (_dc.getCollSitu().size() != 0) {
-                    s.setDataCollectionSituation( mapContent( _dc.getCollSitu().get(0).getContent().get(0) ) );
+                    s.setDataCollectionSituation( mapContentList( _dc.getCollSitu().get(0).getContent() ) );
                 }
                 if (_dc.getActMin().size() != 0) {
-                    s.setActionsToMinimizeLoss( mapContent( _dc.getActMin().get(0).getContent().get(0) ) );
+                    s.setActionsToMinimizeLoss( mapContentList( _dc.getActMin().get(0).getContent() ) );
                 }
                 if (_dc.getConOps().size() != 0) {
-                    s.setControlOperations( mapContent( _dc.getConOps().get(0).getContent().get(0) ) );
+                    s.setControlOperations( mapContentList( _dc.getConOps().get(0).getContent() ) );
                 }
                 if (_dc.getWeight().size() != 0) {
-                    s.setWeighting( mapContent( _dc.getWeight().get(0).getContent().get(0) ) );
+                    s.setWeighting( mapContentList( _dc.getWeight().get(0).getContent() ) );
                 }
                 if (_dc.getCleanOps().size() != 0) {
-                    s.setCleaningOperations( mapContent( _dc.getCleanOps().get(0).getContent().get(0) ) );
+                    s.setCleaningOperations( mapContentList( _dc.getCleanOps().get(0).getContent() ) );
                 }
             }
             
@@ -771,13 +770,13 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             if (_method.getAnlyInfo() != null) {
                 AnlyInfoType _ai = _method.getAnlyInfo();
                 if (_ai.getRespRate().size() != 0) {
-                    s.setResponseRate( mapContent( _ai.getRespRate().get(0).getContent().get(0) ) );
+                    s.setResponseRate( mapContentList( _ai.getRespRate().get(0).getContent() ) );
                 }
                 if (_ai.getEstSmpErr().size() != 0) {
-                    s.setSamplingErrorEstimate( mapContent( _ai.getEstSmpErr().get(0).getContent().get(0) ) );
+                    s.setSamplingErrorEstimate( mapContentList( _ai.getEstSmpErr().get(0).getContent() ) );
                 }
                 if (_ai.getDataAppr().size() != 0) {
-                    s.setOtherDataAppraisal( mapContent( _ai.getDataAppr().get(0).getContent().get(0) ) );
+                    s.setOtherDataAppraisal( mapContentList( _ai.getDataAppr().get(0).getContent() ) );
                 }
             }
         }
@@ -790,19 +789,19 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             if (_da.getSetAvail().size() != 0) {
                 SetAvailType _sa = _da.getSetAvail().get(0);
                 if ( _sa.getAccsPlac().size() != 0 ) {
-                    s.setPlaceOfAccess( mapContent( _sa.getAccsPlac().get(0).getContent().get(0) ) );
+                    s.setPlaceOfAccess( mapContentList( _sa.getAccsPlac().get(0).getContent() ) );
                 }
                 if (_sa.getOrigArch() != null) {
-                    s.setOriginalArchive( mapContent(_sa.getOrigArch().getContent().get(0) ) );
+                    s.setOriginalArchive( mapContentList(_sa.getOrigArch().getContent() ) );
                 }
                 if ( _sa.getAvlStatus().size() != 0 ) {
-                    s.setAvailabilityStatus( mapContent( _sa.getAvlStatus().get(0).getContent().get(0) ) );
+                    s.setAvailabilityStatus( mapContentList( _sa.getAvlStatus().get(0).getContent() ) );
                 }
                 if (_sa.getCollSize() != null) {
-                    s.setCollectionSize( mapContent(_sa.getCollSize().getContent().get(0) ) );
+                    s.setCollectionSize( mapContentList(_sa.getCollSize().getContent() ) );
                 }
                 if (_sa.getComplete() != null) {
-                    s.setStudyCompletion( mapContent(_sa.getComplete().getContent().get(0) ) );
+                    s.setStudyCompletion( mapContentList(_sa.getComplete().getContent() ) );
                 }
                 
                 // set avail notes
@@ -816,28 +815,28 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             if (_da.getUseStmt().size() != 0) {
                 UseStmtType _us = _da.getUseStmt().get(0);
                 if (_us.getConfDec() != null) {
-                    s.setConfidentialityDeclaration( mapContent(_us.getConfDec().getContent().get(0) ) );
+                    s.setConfidentialityDeclaration( mapContentList(_us.getConfDec().getContent() ) );
                 }
                 if (_us.getSpecPerm() != null) {
-                    s.setSpecialPermissions( mapContent(_us.getSpecPerm().getContent().get(0) ) );
+                    s.setSpecialPermissions( mapContentList(_us.getSpecPerm().getContent() ) );
                 }
                 if (_us.getRestrctn() != null) {
-                    s.setRestrictions( mapContent(_us.getRestrctn().getContent().get(0) ) );
+                    s.setRestrictions( mapContentList(_us.getRestrctn().getContent() ) );
                 }
                 if (_us.getContact().size() != 0) {
-                    s.setContact( mapContent(_us.getContact().get(0).getContent().get(0) ) );
+                    s.setContact( mapContentList(_us.getContact().get(0).getContent() ) );
                 }
                 if (_us.getCitReq() != null) {
-                    s.setCitationRequirements( mapContent(_us.getCitReq().getContent().get(0) ) );
+                    s.setCitationRequirements( mapContentList(_us.getCitReq().getContent() ) );
                 }
                 if (_us.getDeposReq() != null) {
-                    s.setDepositorRequirements( mapContent(_us.getDeposReq().getContent().get(0) ) );
+                    s.setDepositorRequirements( mapContentList(_us.getDeposReq().getContent() ) );
                 }
                 if (_us.getConditions() != null) {
                     s.setConditions( mapContentList(_us.getConditions().getContent() ) );
                 }
                 if (_us.getDisclaimer() != null) {
-                    s.setDisclaimer( mapContent(_us.getDisclaimer().getContent().get(0) ) );
+                    s.setDisclaimer( mapContentList(_us.getDisclaimer().getContent()) );
                 }
             }
             
@@ -859,11 +858,11 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             while (rmIter.hasNext()) {
                 RelMatType _rm = (RelMatType) rmIter.next();
                 if (!replicationForFound && _rm.getType() != null && _rm.getType().equals(REPLICATION_FOR_TYPE) ) {
-                    s.setReplicationFor( mapContent( _rm.getContent().get(0) ) );
+                    s.setReplicationFor( mapContentList( _rm.getContent() ) );
                     replicationForFound = true;
                 } else {
                     StudyRelMaterial rm = new StudyRelMaterial();
-                    rm.setText( mapContent( _rm.getContent().get(0) ) );
+                    rm.setText( mapContentList( _rm.getContent() ) );
                     rm.setDisplayOrder(rmCount++);
                     rm.setStudy(s);
                     s.getStudyRelMaterials().add(rm);
@@ -875,7 +874,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             while (rsIter.hasNext()) {
                 RelStdyType _rs = (RelStdyType) rsIter.next();
                 StudyRelStudy rs = new StudyRelStudy();
-                rs.setText( mapContent( _rs.getContent().get(0) ) );
+                rs.setText( mapContentList( _rs.getContent() ) );
                 rs.setDisplayOrder(rsCount++);
                 rs.setStudy(s);
                 s.getStudyRelStudies().add(rs);
@@ -886,7 +885,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             while (rpIter.hasNext()) {
                 RelPublType _rp = (RelPublType) rpIter.next();
                 StudyRelPublication rp = new StudyRelPublication();
-                rp.setText( mapContent( _rp.getContent().get(0) ) );
+                rp.setText( mapContentList( _rp.getContent() ) );
                 rp.setDisplayOrder(rpCount++);
                 rp.setStudy(s);
                 s.getStudyRelPublications().add(rp);
@@ -897,7 +896,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             while (orIter.hasNext()) {
                 OthRefsType _or = (OthRefsType) orIter.next();
                 StudyOtherRef or = new StudyOtherRef();
-                or.setText( mapContent( _or.getContent().get(0) ) );
+                or.setText( mapContentList( _or.getContent() ) );
                 or.setDisplayOrder(orCount++);
                 or.setStudy(s);
                 s.getStudyOtherRefs().add(or);

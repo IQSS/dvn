@@ -378,7 +378,7 @@ public class Indexer {
         } else {
             results = nvResults;
         }
-        List <Long> filteredResults = intersectionResults(results, studyIds);
+        List <Long> filteredResults = studyIds != null ? intersectionResults(results, studyIds) : results;
 
         return filteredResults;
         

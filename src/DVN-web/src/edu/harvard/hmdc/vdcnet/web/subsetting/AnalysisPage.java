@@ -1262,8 +1262,6 @@ if (isRecodedVar(varId)){
         recodeTable.setRendered(false);
         addValueRangeBttn.setRendered(false);
 
-
-
         varCart.remove( newVarId );
         // remove the existing option first
         removeOption(newVarId, getVarSetAdvStat());

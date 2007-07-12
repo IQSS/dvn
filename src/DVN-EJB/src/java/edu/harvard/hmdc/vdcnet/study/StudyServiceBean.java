@@ -687,7 +687,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Study importHarvestStudy(File xmlFile, Long vdcId, Long userId) {
+    public Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier) {
         VDC vdc = em.find(VDC.class, vdcId);
         em.refresh(vdc); // workaround to get correct value for harvesting dataverse (to be investigated)
         
@@ -698,7 +698,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         boolean createNewHandle = (vdc.getHarvestingDataverse().getHandlePrefix() != null);
         int format = vdc.getHarvestingDataverse().getFormat().equals("ddi") ? 0 : 1; // 1 is mif; eventually this will be dynamic
         
-        Study study= importStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, true);
+        Study study= importStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
         return study;
     }
     
@@ -711,13 +711,13 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             throw new EJBException("importLegacyStudy(...) should never be called for a harvesting dataverse.");
         }        
         
-        return importStudy(xmlFile, 0,vdcId, userId, true, false, false, true, true, false);
+        return importStudy(xmlFile, 0,vdcId, userId, true, false, false, true, true, null);
     }
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Study importStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, boolean markAsHarvested) {
+    public Study importStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
         // call internal studyService to force NEW transaction
-        Study study =  studyService.doImportStudy(xmlFile, xmlFileFormat, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, markAsHarvested);
+        Study study =  studyService.doImportStudy(xmlFile, xmlFileFormat, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
         em.merge(study); // workaround to get filecategory values in cache (only for some studies, to be investigated)
         
         indexService.updateStudy(study.getId());
@@ -727,7 +727,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Study doImportStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, boolean markAsHarvested) {
+    public Study doImportStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
         logger.info("Begin doImportStudy");
         VDCNetwork vdcNetwork = vdcNetworkService.find();
         VDC vdc = em.find(VDC.class, vdcId);
@@ -799,10 +799,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         System.gc();
         
         //post mapping processing
-        if ( markAsHarvested ) {
+        if ( harvestIdentifier != null ) {
             study.setIsHarvested(true);
+            study.setHarvestIdentifier(harvestIdentifier);
         } else {
-            study.setHarvestHoldings(""); // clear the holdings field
+            study.setHarvestHoldings(null); // clear the holdings field
         }
         
         if (generateHandle) {

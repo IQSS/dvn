@@ -25,7 +25,7 @@ public interface StudyServiceLocal {
     
     public Study getStudyByGlobalId(String globalId);
    
-    public Study getStudyByHarvestIdentifier(String harvestIdentifier);
+    public Study getStudyByHarvestInfo(String authority, String harvestIdentifier);
    
     public Study getStudyDetail(Long studyId);
     

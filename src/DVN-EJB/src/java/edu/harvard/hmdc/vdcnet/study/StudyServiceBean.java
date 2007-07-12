@@ -116,8 +116,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         em.merge(detachedStudy);
     }
 
-    public Study getStudyByHarvestIdentifier(String harvestIdentifier) {
-        String query = "SELECT s FROM Study s WHERE s.harvestIdentifier = " + harvestIdentifier ;
+    public Study getStudyByHarvestInfo(String authority, String harvestIdentifier) {
+        String query = "SELECT s FROM Study s WHERE s.authority = "+authority+" and s.harvestIdentifier = " + harvestIdentifier ;
         return (Study)em.createQuery(query).getSingleResult();    
   
    }

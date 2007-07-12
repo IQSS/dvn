@@ -332,6 +332,10 @@
             <from-outcome>success</from-outcome>
             <to-view-id>/networkAdmin/DVGroupDetailPage.jsp</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>failed</from-outcome>
+            <to-view-id>/networkAdmin/DVGroupEditPage.jsp</to-view-id>
+        </navigation-case>
     </navigation-rule>
     
 <!-- 

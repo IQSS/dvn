@@ -113,7 +113,7 @@ public class EmailValidator implements Validator {
       if (deletedIllegalChars) {
           isValid = false;
           msg += "  Invalid characters were found" +
-                           ", such as spaces or commas or html markup.";
+                           ".  Check for invalid characters or spaces at the end of the email address.";
       }
       return isValid;
     }

@@ -49,7 +49,6 @@ public class ImportStudyPage extends VDCBaseBean  {
     private boolean allowUpdates;
     private boolean checkRestrictions;
     private boolean copyFiles;
-    private boolean markAsHarvested;
 
     
     
@@ -114,7 +113,7 @@ public class ImportStudyPage extends VDCBaseBean  {
             try {
                 File xmlFile = File.createTempFile("ddi", ".xml");
                 browserFile.write(xmlFile);
-                studyService.importStudy(xmlFile, xmlFileFormat, vdcId, lb.getUser().getId(), registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles, markAsHarvested);
+                studyService.importStudy(xmlFile, xmlFileFormat, vdcId, lb.getUser().getId(), registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles, null);
                 resultMsg = "Import succeeded.";
             } catch (Exception ex) {
                 resultMsg = "Import failed: " + ex.getMessage() ;
@@ -170,14 +169,6 @@ public class ImportStudyPage extends VDCBaseBean  {
         this.copyFiles = copyFiles;
     }    
 
-    public boolean isMarkAsHarvested() {
-        return markAsHarvested;
-    }
-
-    public void setMarkAsHarvested(boolean markAsHarvested) {
-        this.markAsHarvested = markAsHarvested;
-    }
-    
     
     
 }

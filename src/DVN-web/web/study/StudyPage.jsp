@@ -167,7 +167,10 @@
                                             <ihelp:inlinehelp helpMessage="#{studybundle.dataverseOwnerHelp}"  linkText="#{studybundle.dataverseOwnerLabel}" heading="#{studybundle.dataverseOwnerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"/>  
                                             <h:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}">
                                                 <h:outputText value="#{studyPage.studyUI.study.owner.name} Dataverse" />
-                                            </h:outputLink>   
+                                            </h:outputLink> 
+                                            
+                                            <ihelp:inlinehelp helpMessage="#{studybundle.harvestHoldingsHelp}"  linkText="#{studybundle.harvestHoldingsLabel}" heading="#{studybundle.harvestHoldingsHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.harvestHoldings != '' and studyPage.studyUI.study.isHarvested}"/>
+                                            <h:outputText   value="#{studyPage.studyUI.study.harvestHoldings}" rendered="#{studyPage.studyUI.study.harvestHoldings!='' and studyPage.studyUI.study.isHarvested}"/>
                                         </h:panelGrid>
                                         
                                         <ui:panelGroup block="true" id="groupPanel12" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.abstractAndScopePanelIsEmpty}" >

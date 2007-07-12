@@ -181,7 +181,7 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     }
     
     public List search(VDC vdc, List<SearchTerm> searchTerms){
-        List studyIds = listVdcStudyIds(vdc);
+        List studyIds = vdc != null ? listVdcStudyIds(vdc) : null;
 
         Indexer indexer = Indexer.getInstance();
         List matchingStudyIds = null;

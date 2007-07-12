@@ -2589,6 +2589,11 @@ if (isRecodedVar(varId)){
             msgMoveVar1Bttn.setRendered(true);
           }
         }
+      } else {
+        out.println("1st RHS box is already maxed out");
+        // show error message;
+        msgMoveVar1Bttn.setText("* The max number of variables<br/>for this box is: "+BoxR1max);
+        msgMoveVar1Bttn.setRendered(true);
       }
     }
     
@@ -2644,6 +2649,11 @@ if (isRecodedVar(varId)){
             msgMoveVar2Bttn.setRendered(true);
           }
         }
+      } else {
+        out.println("2nd RHS box is already maxed out");
+        // show error message;
+        msgMoveVar2Bttn.setText("* The max number of variables<br/>for this box is: "+BoxR2max);
+        msgMoveVar2Bttn.setRendered(true);
       }
     }
     

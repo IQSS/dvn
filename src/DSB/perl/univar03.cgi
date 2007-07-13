@@ -358,9 +358,17 @@ if ($dataURL) {
 		$logger->vdcLOG_info ("VDC::DSB", "Disseminate",
 				      "failed to create subsetting object");
 		
-	    }
+	    } 
 
-	    my $coldef_file = &locate_subsettingMetaFile ( $ddiforR, $fileid ); 
+	    my $datafile_format = &check_fileFormat ( $ddiforR, $fileid ); 
+
+	    $logger->vdcLOG_info ("VDC::DSB", "Disseminate",
+				  "datafile format detected: " . 
+				  $datafile_format );
+		
+
+
+	    my $coldef_file = &locate_subsettingMetaFile ( $ddiforR, $fileid, $datafile_format ); 
 
 	    if ( $coldef_file )
 	    {
@@ -394,17 +402,16 @@ if ($dataURL) {
 	    close VLM; 
 	    my $rcut_filter = ""; 
 
-	    if ( $v_counter == 1 )
+	    if ( ( $v_counter == 1 ) && ( $datafile_format eq 'tab' ) )
 	    {
 		$logger->vdcLOG_info ("VDC::DSB", "Disseminate",
 				  "single-column datafile; no filter needed" );
 
 		$rcut_filter = "/bin/cat"; 
-
 	    }
 	    else
 	    {
-		my $output_filter = $subs_obj->produce_subset_filter ( $coldef_file, 'tab', '', $varNoStrng );
+		my $output_filter = $subs_obj->produce_subset_filter ( $coldef_file, $datafile_format, '', $varNoStrng );
 
 		
 		$logger->vdcLOG_info( 'VDC::DSB', $script_name,  "starting rcut pipe for new, Dataverse-style subsetting"); # 
@@ -1502,15 +1509,45 @@ sub getRandomString {
 
 sub locate_subsettingMetaFile {
     my $ddi_file = shift; 
-    my $fileid = shift; 
+    my $fileid = shift;
+    my $format = shift; 
 
     my $subsetting_meta_object = new vdcRAP::SubsettingMeta; 
 
-    return $subsetting_meta_object->vdc_subsettingMetaFile ( $ddi_file, $fileid, 'tab' ); 
+    return $subsetting_meta_object->vdc_subsettingMetaFile ( $ddi_file, $fileid, $format ); 
 } 
 
+sub check_fileFormat {
+    my $ddi_file = shift; 
+    my $fileid = shift;
 
+    open DDI_IN, $ddi_file || return undef; 
 
+    while ( <DDI_IN> )
+    {
+	if ( /<location .*fileid=\"([^\"]*)\"/ )
+	{
+	    my $id_found = $1; 
+	    if ( $id_found eq $fileid )
+	    {
+		if ( /StartPos=\"[0-9]+\"/ &&
+		     /EndPos=\"[0-9]+\"/ )
+		{
+		    close DDI_IN; 
+		    return 'fixed'; 
+		}
+		else
+		{
+		    close DDI_IN; 
+		    return 'tab';
+		}
+	    }
+	}
+    }
+
+    close DDI_IN; 
+    return undef; 
+}
 
 END {
    exitChores();

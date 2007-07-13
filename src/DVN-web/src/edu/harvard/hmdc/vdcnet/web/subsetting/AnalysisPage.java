@@ -4589,7 +4589,8 @@ if (baseVarToDerivedVar.containsKey(varId)){
       // message of the recoded-var table
       //recodedVarTableState.setRendered(false);
       // recoded-var table
-      recodedVarTable.setRendered(false);
+      //recodedVarTable.setRendered(false);
+      pgRecodedVarTable.setRendered(false);
     }
 
 // public 

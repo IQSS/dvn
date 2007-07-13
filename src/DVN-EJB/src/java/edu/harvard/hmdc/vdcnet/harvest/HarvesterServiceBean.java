@@ -14,6 +14,7 @@ import ORG.oclc.oai.harvester2.verb.ListIdentifiers;
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
 import ORG.oclc.oai.harvester2.verb.ListSets;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.HeaderType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.ListIdentifiersType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.ListMetadataFormatsType;
@@ -90,6 +91,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     @Resource SessionContext ejbContext;
     @EJB StudyServiceLocal studyService;
     @EJB HarvestingDataverseServiceLocal havestingDataverseService;
+    @EJB IndexServiceLocal indexService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean");
     private static final String HARVEST_TIMER = "HarvestTimer";
@@ -228,8 +230,14 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         }
 
         havestingDataverseService.setLastHarvestTime(dataverse.getId(), lastHarvestTime);
+        
+        hdLogger.log(Level.INFO,"POST HARVEST, start calls to index.");
+        // now index all studies (need to modify for update)
+        for (Study study : dataverse.getVdc().getOwnedStudies() ) {
+            indexService.updateStudy( study.getId() );
+        }
+        hdLogger.log(Level.INFO,"POST HARVEST, calls to index finished.");
 
-          
     }
     
     

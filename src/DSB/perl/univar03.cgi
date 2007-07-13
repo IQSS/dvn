@@ -396,13 +396,13 @@ if ($dataURL) {
 	    my $v_counter = 0;
 	    while ( <VLM> )
 	    {
-		last if $v_counter > 1; 
 		$v_counter++; 
+		last if $v_counter > 2; 
 	    }
 	    close VLM; 
 	    my $rcut_filter = ""; 
 
-	    if ( ( $v_counter == 1 ) && ( $datafile_format eq 'tab' ) )
+	    if ( ( $v_counter == 2 ) && ( $datafile_format eq 'tab' ) )
 	    {
 		$logger->vdcLOG_info ("VDC::DSB", "Disseminate",
 				  "single-column datafile; no filter needed" );

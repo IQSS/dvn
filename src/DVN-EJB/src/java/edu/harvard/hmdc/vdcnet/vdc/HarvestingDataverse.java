@@ -7,6 +7,7 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
+import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
@@ -134,6 +135,9 @@ public class HarvestingDataverse {
     
     public boolean areFilesRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
         if (this.filesRestricted) {
+            if (user!=null && user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
+                return false;
+            }
             if (!allowedFileUsers.contains(user) ) {
                 boolean foundUserInGroup=false;
                 for (Iterator it = allowedFileGroups.iterator(); it.hasNext();) {

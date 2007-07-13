@@ -108,7 +108,18 @@ public class DataTable {
      */
     public void setVarQuantity(Long varQuantity) {
         this.varQuantity = varQuantity;
-    }       
+    }   
+    
+    private Long recordsPerCase;
+
+    public Long getRecordsPerCase() {
+        return recordsPerCase;
+    }
+
+    public void setRecordsPerCase(Long recordsPerCase) {
+        this.recordsPerCase = recordsPerCase;
+    }
+    
     
     /**
      * Holds value of property study.

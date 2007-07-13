@@ -982,8 +982,15 @@ END
 	#if ($datasetname) {
 	#	$ret .= $q->p ("Data Set File Name:$datasetname");
 	#}
-	$ret .= $q->blockquote($q->strong($q->a( {href=>'javascript:window.history.back();'},'Go back to the previous page')));
+	
+	#my $goBackParam = '-2';
+	#if ($browserType eq 'Firefox'){
+	#	$goBackParam = '-1';
+	#}
+	#my $hrefString  = 'javascript:window.history.go(' . $goBackParam . ');';
 
+	$ret .= $q->blockquote($q->strong($q->a( {href=>'javascript:window.history.back();'},'Go back to the previous page')));
+	#$ret .= $q->blockquote($q->strong($q->a( {href=>$hrefString},'Go back to the previous page')));
 	$ret .= $q->hr;
 
     return $ret; 

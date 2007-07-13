@@ -2744,7 +2744,7 @@ sub printZeligCode{
 		}
 		my $rqstDir = $ZELIGOUTPUTDIR . '/rqst_' . $mdlCounter;
 		mkdir $rqstDir;
-		print $wh "\ntry( {zlg.out<- VDCgenAnalysis(\noutDir=\"${rqstDir}\",\n" . join(",\n", ($formula,  "model=\"$model\"", "data=$dtfrm", $otherArgs, )) .  ",\nHTMLInitArgs=list(Title=\"Dataverse Analysis\") )} )\n\n";
+		print $wh "\ntry( {zlg.out<- VDCgenAnalysis(\noutDir=\"${rqstDir}\",\n" . join(",\n", ($formula,  "model=\"$model\"", "data=$dtfrm", $otherArgs, )) .  ",\nHTMLInitArgs=list(Title=\"Dataverse Analysis\")" . "\n, HTMLnote= \"<em>The following are the results of your requested analysis.</em><br/><a href='javascript:window.history.go(-1);'>Go back to the previous page</a>\"" .  ")} )\n\n";
 		print $wh "if (exists('zlg.out')) {\ntry(cat(file=\"" . $zlgOutIdFile . "\",\npaste(zlg.out,collapse=\"\\t\"),append=T,sep=\"\\n\"))\n} else {\ntry(cat(file=\"" . $zlgOutIdFile . "\",\n\"${mdlCounter}_${model}_failed\",\nappend=T,sep=\"\\n\"))}\n";
 		print $wh "########## Code for the request ends here ##########\n";
 	}

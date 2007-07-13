@@ -18,7 +18,7 @@
             </script>
         </f:verbatim>
         <h:form id="vdcGroupEditForm" onsubmit="return getAddRemoveLength();">
-            <ui:panelLayout rendered="#{VDCGroupPage.success}" panelLayout="flow" styleClass="vdcSectionMiddleMessage" style="width: 400px; margin-top: 10px; margin-bottom: -10px">
+            <ui:panelLayout rendered="#{VDCGroupPage.success}" panelLayout="flow" styleClass="vdcSectionMiddleMessage" style="width: 400px; margin-top: 10px; margin-bottom: -10px;">
                  <h:messages styleClass="successMessage" layout="table" showDetail="false" showSummary="true"/>
             </ui:panelLayout>
             <ui:panelLayout panelLayout="flow" styleClass="dvGroupAdminLayout">
@@ -48,15 +48,14 @@
                         <h:inputTextarea cols="100"  id="description" value="#{VDCGroupPage.description}" valueChangeListener="#{VDCGroupPage.changeDescription}" immediate="true" title="Description" />
                     </h:column>
                 </h:panelGrid>
-                <h:panelGroup layout="block" style="margin-left:auto;margin-right:auto;">
-                    <ui:addRemove vertical="true" availableItemsLabel="Available Dataverse(s):" 
-                          id="addRemoveList" items="#{VDCGroupPage.addRemoveListDefaultOptions.items}" rows="10"  binding="#{VDCGroupPage.addRemoveList}"
-                          selectAll="false" selected="#{VDCGroupPage.addRemoveListDefaultOptions.selected}"
-                          selectedItemsLabel="Selected Dataverse(s):" style="margin-left: 15px; margin-top: 10px; margin-bottom: 10px;"/>
-                </h:panelGroup>
+                <h:panelGrid columns="1" style="width:100%" cellspacing="0" styleClass="dvGroupAdminTable" headerClass="groupAdminHeader" columnClasses="groupAdminNoneColumn">
+                        <ui:addRemove vertical="true" availableItemsLabel="Available Dataverse(s):" 
+                                      id="addRemoveList" items="#{VDCGroupPage.addRemoveListDefaultOptions.items}" rows="10"  binding="#{VDCGroupPage.addRemoveList}"
+                                      selectAll="false" selected="#{VDCGroupPage.addRemoveListDefaultOptions.selected}"
+                                      selectedItemsLabel="Selected Dataverse(s):" style="margin-top: 10px; margin-bottom: 10px;"/>
+                </h:panelGrid>
                 <h:panelGrid columns="1" styleClass="dvGroupAdminFooter" columnClasses="groupEditFooter" cellspacing="0">
                     <h:commandButton id="btnSave" action="#{VDCGroupPage.update}" value="Save" immediate="true"/>
-                    <!-- <h:commandLink action="VDCGroup_list" value="Show All VDCGroup"/> -->
                 </h:panelGrid>
             </ui:panelLayout>
         </h:form>

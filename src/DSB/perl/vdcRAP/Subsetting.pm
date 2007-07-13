@@ -226,6 +226,7 @@ sub produce_subset_filter_fixed  {
 	if ($. == 1) 
 	{
 	    $logical_records = $_[0];
+	    $logical_records = 1 unless $logical_records > 1; 
 	    next;
 	}
 

@@ -1904,8 +1904,15 @@ sub printVDCxtabs{
 	my $wh = $self->{WH};
 	my $htmlfl = $optn->{HTMLFL};
 	my @varName;
-	foreach my $el (@{$self->{xtab}->{classVars}}){
-		push @varName, $self->{_varNameH}->{$el};
+	
+	if ($self->{unsafeVarName}){
+		foreach my $el (@{$self->{xtab}->{classVars}}){
+			push @varName, $self->{_varNameHsafe}->{$el};
+		}
+	} else {
+		foreach my $el (@{$self->{xtab}->{classVars}}){
+			push @varName, $self->{_varNameH}->{$el};
+		}
 	}
 	
 	my $freqVarString ="";

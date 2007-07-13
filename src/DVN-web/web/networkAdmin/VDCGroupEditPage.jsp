@@ -49,7 +49,7 @@
                     </h:column>
                 </h:panelGrid>
                 <h:panelGroup layout="block" style="margin-left:auto;margin-right:auto;">
-                    <ui:addRemove vertical="false" availableItemsLabel="Available Dataverse(s):" 
+                    <ui:addRemove vertical="true" availableItemsLabel="Available Dataverse(s):" 
                           id="addRemoveList" items="#{VDCGroupPage.addRemoveListDefaultOptions.items}" rows="10"  binding="#{VDCGroupPage.addRemoveList}"
                           selectAll="false" selected="#{VDCGroupPage.addRemoveListDefaultOptions.selected}"
                           selectedItemsLabel="Selected Dataverse(s):" style="margin-left: 15px; margin-top: 10px; margin-bottom: 10px;"/>

@@ -89,6 +89,7 @@ import edu.harvard.hmdc.vdcnet.jaxb.ddi20.ProdPlacType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.ProdStmtType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.ProducerType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.RangeType;
+import edu.harvard.hmdc.vdcnet.jaxb.ddi20.RecPrCasType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.RelMatType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.RelPublType;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.RelStdyType;
@@ -1026,6 +1027,9 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 }
                 if ( _dim.getVarQnty().size() > 0) {
                     dt.setVarQuantity( new Long( (String) _dim.getVarQnty().get(0).getContent().get(0) ) );
+                }
+                if ( _dim.getRecPrCas().size() > 0) {
+                    dt.setRecordsPerCase( new Long( (String) _dim.getRecPrCas().get(0).getContent().get(0) ) );
                 }
             }
             
@@ -2298,7 +2302,12 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             _dim.getVarQnty().add(_vq);
             addDimensions = true;
         }
-        
+        if (dt.getRecordsPerCase() != null) {
+            RecPrCasType _rpc = objFactory.createRecPrCasType();
+            _rpc.getContent().add(dt.getRecordsPerCase().toString());
+            _dim.getRecPrCas().add(_rpc);
+            addDimensions = true;
+        }        
         
         FileTypeType _fileType = objFactory.createFileTypeType();
         _fileType.getContent().add(sf.getFileType());

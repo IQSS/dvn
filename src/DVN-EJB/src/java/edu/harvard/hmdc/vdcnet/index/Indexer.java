@@ -471,9 +471,8 @@ public class Indexer {
             searchParts.add(indexQuery);
         }
         BooleanQuery searchQuery = andQueryClause(searchParts);
-//        return getHitIds(indexQuery);
         List <Long> variableResults = getHitIds(searchQuery);
-        List <Long> filteredResults = intersectionResults(variableResults, studyIds);
+        List <Long> filteredResults = studyIds != null ? intersectionResults(variableResults, studyIds) : variableResults;
         return filteredResults;
     }
     
@@ -494,7 +493,7 @@ public class Indexer {
         } else {
             returnValues = getVarHitIds(searchQuery);
         }
-        List <Long> filteredResults =  intersectionResults(returnValues, studyIds);
+        List <Long> filteredResults = studyIds != null ? intersectionResults(returnValues, studyIds) : returnValues;
 
          
         return filteredResults;

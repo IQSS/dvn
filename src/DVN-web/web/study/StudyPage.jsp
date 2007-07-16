@@ -170,7 +170,10 @@
                                             </h:outputLink> 
                                             
                                             <ihelp:inlinehelp helpMessage="#{studybundle.harvestHoldingsHelp}"  linkText="#{studybundle.harvestHoldingsLabel}" heading="#{studybundle.harvestHoldingsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.harvestHoldings != '' and studyPage.studyUI.study.isHarvested}"/>
-                                            <h:outputText   value="#{studyPage.studyUI.study.harvestHoldings}" rendered="#{studyPage.studyUI.study.harvestHoldings!='' and studyPage.studyUI.study.isHarvested}"/>
+                                            <h:outputLink value="#{studyPage.studyUI.study.harvestHoldings}" rendered="#{studyPage.studyUI.study.harvestHoldings!='' and studyPage.studyUI.study.isHarvested}">
+                                                <h:outputText value="#{studyPage.studyUI.study.harvestHoldings}" />
+                                            </h:outputLink> 
+                                            
                                         </h:panelGrid>
                                         
                                         <ui:panelGroup block="true" id="groupPanel12" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.abstractAndScopePanelIsEmpty}" >

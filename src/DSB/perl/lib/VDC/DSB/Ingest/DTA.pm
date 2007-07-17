@@ -404,11 +404,14 @@ sub read_Descriptors {
 	my $noCharVar = 0;
 	my $noDcmlVar = 0;
 	my @varTypeCode = ();
+	my $byteOffset =0;
+	my $boTable = {};
 	for (my $i = 0 ; $i < $nvar ; $i++) {
 		# each variable is to be upacked by native modes with or without reversing the byte-order a floating number
 		     if ($typeList[$i] == $VTC->{$VTCno}->[1]){
 			# d
 			$byteSizeList[$i]   = 8;
+			$byteOffset +=8;
 			$typeList[$i] = chr($typeList[$i]);
 			$noDcmlVar++;
 			push @varTypeCode, "d";
@@ -416,6 +419,7 @@ sub read_Descriptors {
 		} elsif ($typeList[$i] == $VTC->{$VTCno}->[2]){
 			# f
 			$byteSizeList[$i]   = 4;
+			$byteOffset +=4;
 			$typeList[$i] = chr($typeList[$i]);
 			$noDcmlVar++;
 			push @varTypeCode, "f";
@@ -423,27 +427,31 @@ sub read_Descriptors {
 		} elsif ($typeList[$i] == $VTC->{$VTCno}->[3]){
 			# b
 			$byteSizeList[$i]   = 1;
+			$byteOffset +=1;
 			$typeList[$i] = chr($typeList[$i]);
 			push @varTypeCode, "b";
 			push @unpackTemplate, "c";
 		} elsif ($typeList[$i] == $VTC->{$VTCno}->[4]){
 			# i
 			$byteSizeList[$i]   = 2;
+			$byteOffset +=2;
 			$typeList[$i] = chr($typeList[$i]);
 			push @varTypeCode, "i";
 			push @unpackTemplate, "s";
 		} elsif ($typeList[$i] == $VTC->{$VTCno}->[5]){
 			# l
 			$byteSizeList[$i]   = 4;
+			$byteOffset +=4;
 			$typeList[$i] = chr($typeList[$i]);
 			push @varTypeCode, "l";
 			push @unpackTemplate, "l";
 		} elsif ($typeList[$i] >= $VTC->{$VTCno}->[0]) {
 			$typeList[$i] = $byteSizeList[$i] = $typeList[$i] - $VTC->{$VTCno}->[0];
-			
+			$boTable->{$i} = [$byteOffset, $typeList[$i]];
 			$noCharVar++;
 			push @varTypeCode, "s";
 			push @unpackTemplate, "Z$typeList[$i]";
+			$byteOffset +=$typeList[$i];
 		} else {
 			print $FH "type_unknown=", $typeList[$i], "\n" if $DEBUG;
 			die "unkown format type was found for $i-th var";
@@ -451,7 +459,10 @@ sub read_Descriptors {
 	}
 	$self->{_noDcmlVar}=$noDcmlVar;
 	$self->{_noCharVar}=$noCharVar;
-	
+	$self->{byteOffset4charVar} = $boTable;
+	if ($noCharVar){
+		print $FH "byteOffset4charVar=\n", Dumper($self->{byteOffset4charVar}), "\n";
+	}
 	print $FH "stata variable-type code:", join("|", @varTypeCode), "\n\n" if $DEBUG;
 	$self->{varTypeCode}=[@varTypeCode];
 
@@ -464,6 +475,7 @@ sub read_Descriptors {
 		$nOBS += $_;
 	}
 	print $FH "bytes per observation:", $nOBS, "\n\n" if $DEBUG;
+	print $FH "bye offset final:", $byteOffset, "\n\n" if $DEBUG;
 	$self->{_fileDscr}->{nOBS}=$nOBS;
 	$self->{byteSizeList}=[@byteSizeList];
 
@@ -643,9 +655,12 @@ sub read_Data {
 	
 	my @unpackTemplate = @{$self->{unpackTemplate}};
 	my $unpackTmplt;
+	my $unpackTmpltbk;
 	if ($bytrvrs) {
-		 $unpackTmplt = join("", reverse(@unpackTemplate));
+		$unpackTmplt   = join("", reverse(@unpackTemplate));
+		$unpackTmpltbk = join("", @unpackTemplate);
 		print $FH "reversed tmpltst:", $unpackTmplt, "\n" if $DEBUG;
+		print $FH "tmpltst for string vars:", $unpackTmplt, "\n" if $DEBUG;
 	} else {
 		$unpackTmplt = join("", @unpackTemplate);
 		print $FH "         tmpltst:", $unpackTmplt, "\n" if $DEBUG;
@@ -654,10 +669,13 @@ sub read_Data {
 	my $chr_na = 'NA';
 	my $nmr_na = 'NA';
 	my @tmpdata;
+	my @tmpdatabk;
 	my @dtmtrx;
 	my $nOBS   = $self->{_fileDscr}->{nOBS};
 	my $nobs   = $self->{_fileDscr}->{caseQnty};
 	my $noVars = $self->{_fileDscr}->{varQnty};
+	my $noCharVar=$self->{_noCharVar};
+	my $bo4charVar = $self->{byteOffset4charVar};
 	my $dateAdj={};
 	for (my $i=0;$i<@{$self->{varTypeCode}}; $i++){
 		if ($self->{fmtlst}->[$i]=~/^[%][d]/){
@@ -668,18 +686,30 @@ sub read_Data {
 	print $FH Dumper($dateAdj) if $DEBUG;
 	for (my $i = 0 ; $i < $nobs ; $i++) {
 	
-			read($rfh, $buff, $nOBS);
-			if ($bytrvrs) {
-				@tmpdata = reverse(unpack($unpackTmplt, reverse($buff)));
-			} else {
-				@tmpdata = unpack($unpackTmplt, $buff);
+		read($rfh, $buff, $nOBS);
+		if ($bytrvrs) {
+			@tmpdata = reverse(unpack($unpackTmplt, reverse($buff)));
+			
+			# the following block for string variables is necessary for
+			# the reversal case to deal with space-padded cases such as
+			# [x20][x20][x00][ASU] ==> contents = '   ' not 'ASU'
+			# The order of character bytes of a string datum 
+			# is endian-neutoral 
+			
+			if ($noCharVar){
+				@tmpdatabk = unpack($unpackTmpltbk, $buff);
+				foreach my $k (keys %{$bo4charVar}){
+					my $kx = $k+0;
+					$tmpdata[$kx] = $tmpdatabk[$kx];
+				}
+				@tmpdatabk=();
 			}
-	
+		} else {
+			@tmpdata = unpack($unpackTmplt, $buff);
+		}
+
+		print $FH "raw data: obs # = $i\t", join("|", @tmpdata), "\n\n" if $DEBUG;
 		
-		
-		
-		#@tmpdata = unpack($vartmplt, $buff);
-		#print $FH join("|", @tmpdata), "\n";
 		# little endian Hex and decimals: missing values
 		# string: ""
 		# byte:   0x7f = 127
@@ -689,17 +719,25 @@ sub read_Data {
 		# double: 0x000000000000e07f = 2**1023
 		my $dblmax = $RLSPARAMS->{$releaseNo}->{dblMaxValue};
 		for (my $j = 0 ; $j <= $#tmpdata ; $j++) {
-			if (($self->{varTypeCode}->[$j] eq "s") && (!$tmpdata[$j])) {
-				$tmpdata[$j] = $chr_na;
-			} elsif (($self->{varTypeCode}->[$j] eq "s") && ($tmpdata[$j])) {
-				# if (ord(substr($tmpdata[$j],0,1)) == 46) # this may not work if the position of a period is other than 0.
-				# replace non-space white characters with a space
-				$tmpdata[$j] =~ s/[\t\r\f\n]+/ /g;
-				$tmpdata[$j] =~ s/^\s+//;
-				$tmpdata[$j] =~ s/\s+$//;
-				(my $tmpprd = $tmpdata[$j]) =~ s/ //g;
-				if (ord($tmpprd) == 46) {
+			if ($self->{varTypeCode}->[$j] eq "s") {
+				if (!$tmpdata[$j]) {
 					$tmpdata[$j] = $chr_na;
+				} elsif ($tmpdata[$j]) {
+					# if (ord(substr($tmpdata[$j],0,1)) == 46) # this may not work if the position of a period is other than 0.
+					# replace non-space white characters with a space
+					$tmpdata[$j] =~ s/[\t\r\f\n]+/ /g;
+					$tmpdata[$j] =~ s/^\s+//;
+					$tmpdata[$j] =~ s/\s+$//;
+					(my $tmpprd = $tmpdata[$j]) =~ s/ //g;
+					
+					print $FH "obs # = $i\t before na check=", $tmpdata[$j], "\n" if $DEBUG;
+					if (ord($tmpprd) == 46) {
+						$tmpdata[$j] = $chr_na;
+						print $FH "obs # = $i\t (string: '.'=na)=", $tmpdata[$j], "\n" if $DEBUG;
+					} else {
+						$tmpdata[$j] = $tmpdata[$j];
+						print $FH "obs # = $i\t (string: not na)=", $tmpdata[$j], "\n" if $DEBUG;
+					}
 				}
 			} elsif ($self->{varTypeCode}->[$j] eq "b") {
 				if ($releaseNo >= 111) {
@@ -741,7 +779,7 @@ sub read_Data {
 			}
 		}	# end of missing value processing
 		# tab-delimited data to an external file
-		print $FH "obs # = $i\tbyte=",tell($rfh),"\t",join("|", @tmpdata) , "\n" if $DEBUG;
+		print $FH "final: obs # = $i\tbyte=",tell($rfh),"\t",join("|", @tmpdata) , "\n\n" if $DEBUG;
 		print $tfh join("\t", @tmpdata),"\n";
 		
 		if (eof $rfh) {

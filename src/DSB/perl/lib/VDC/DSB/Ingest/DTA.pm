@@ -235,7 +235,7 @@ sub parse_file {
 				}
 			}
 			if ($i == 5){
-				if ($self->{releaseNo} == 105 ){
+				if ($self->{releaseNo} <= 105 ){
 					$relsuffix="Rel105";
 				} elsif ($self->{releaseNo} >= 108){
 					$relsuffix="Rel108";

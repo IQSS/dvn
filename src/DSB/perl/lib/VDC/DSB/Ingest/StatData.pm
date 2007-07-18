@@ -694,10 +694,13 @@ sub addSumstat{
 				#print "ch=",Dumper($ch),"\n\n";
 
 				# check the relationship between m and s
-				# 0 union, 1 intersect, 2, diff, 3 type
+				# [0] union, [1] intersect, [2] diff, [3] type(see value below)
+				# 1 = no intersection 2=non-empty intersection
+				# 3 = meta include actual 4 = actual included meta
+				# 5 = completely equal
 				my $obj = &checkSets($m, $cv);
 				my $settype=$obj->[3];
-				#print "type =",$settype,"\n\n";
+				print $FH "merge type =",$settype,"\n\n" if $DEBUG;
 				my $lnu= scalar(@{$obj->[0]});
 				my $lni= scalar(@{$obj->[1]});
 				my $lnd= scalar(@{$obj->[2]});
@@ -728,7 +731,7 @@ sub addSumstat{
 					print $FH "beyond the upper limit of categories\n" if $DEBUG;
 
 					if ($settype == 1){
-						# case 1
+						# case 1: no intersection
 						# scalar(@$m) == scalar(@$vltbl)
 						# set zero to the main table
 						for (my $k=0;$k <@$vltbl;$k++){
@@ -874,9 +877,6 @@ sub addSumstat{
 	
 	
 	$sh->close();
-	
-	
-	
 	
 	# file-wise UNF
 	$unfh->close();

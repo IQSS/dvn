@@ -1100,7 +1100,8 @@ sumStatTabAll.DDI<-function(dtfrm, file="", flid=1, jobNo=0, startno=1, novars=0
 				# discrete variable case
 
 				# actual value table
-				if (dim(tbl1)[1] <= 50) {
+				#if (dim(tbl1)[1] <= 50) {
+				# 50-category-limit is done by StatData.pm side
 					# integer: how many value-freq sets follw? 
 					pt.vr.st<-dim(tbl1)[1]
 					for (j in 1:(dim(tbl1)[1])) {
@@ -1113,10 +1114,10 @@ sumStatTabAll.DDI<-function(dtfrm, file="", flid=1, jobNo=0, startno=1, novars=0
 
 					}
 					
-				} else {
+				#} else {
 					# for more-than-50-category vars, print 0
-					pt.vr.st<-0
-				}
+					#pt.vr.st<-0
+				#}
 				
 				# for all cases, valid, invalid and N are printed
 				for (k in 1:length(statset)){

@@ -361,27 +361,52 @@ public class Indexer {
             }
         }
         List <Long> nvResults = null;
-        if (nonVariableSearch){
+        List<Long> filteredResults = null;
+        if (nonVariableSearch) {
             BooleanQuery searchTermsQuery = andSearchTermClause(nonVariableSearchTerms);
             searchParts.add(searchTermsQuery);
             BooleanQuery searchQuery = andQueryClause(searchParts);
             nvResults = getHitIds(searchQuery);
+            filteredResults = studyIds != null ? intersectionResults(nvResults, studyIds) : nvResults;
         }
         if (variableSearch){
-            List <Long> vResults = searchVariables(studyIds,variableSearchTerms,false);
+//            List <Long> vResults = null;
             if (nonVariableSearch){
-                List<Long> mergeResults = intersectionResults(vResults, nvResults);
-                results = searchVariables(mergeResults,variableSearchTerms,true);
+                results = searchVariables(filteredResults,variableSearchTerms,true); // get var ids
+//                List<Long> mergeResults = intersectionResults(vResults, nvResults);
+//                results = intersectionResults(vResults, nvResults);
+//                results = searchVariables(mergeResults,variableSearchTerms,true);
             } else{
-                results = searchVariables(vResults,variableSearchTerms,true);
+//                results = searchVariables(vResults,variableSearchTerms,true);
+                results = searchVariables(studyIds,variableSearchTerms,true); // get var ids
             }
         } else {
-            results = nvResults;
+            results = filteredResults;
         }
-        List <Long> filteredResults = studyIds != null ? intersectionResults(results, studyIds) : results;
+//        List <Long> filteredResults = studyIds != null ? intersectionResults(results, studyIds) : results;
 
-        return filteredResults;
+        return results;
         
+    }
+
+//    private List <Long> intersectionResults(final Hits results1, final List<Long> results2) throws IOException {
+    private List <Long> intersectionDocResults(final List<Document> results1, final List<Long> results2) throws IOException {
+        List <Long>  mergeResults = new ArrayList();
+        for (Iterator it = results1.iterator(); it.hasNext();){
+            Document d = (Document) it.next();
+//        for (int i = 0; i < results1.length(); i++) {
+//            Document d = results1.doc(i);
+            Field studyId = d.getField("varStudyId");
+            String studyIdStr = studyId.stringValue();
+            Long studyIdLong = Long.valueOf(studyIdStr);
+            if (results2.contains(studyIdLong)) {
+                Field varId = d.getField("id");
+                String varIdStr = varId.stringValue();
+                Long varIdLong = Long.valueOf(varIdStr);
+                mergeResults.add(varIdLong);
+            }
+        }
+        return mergeResults;
     }
 
     private List<Long> intersectionResults(final List<Long> results1, final List<Long> results2) {
@@ -471,37 +496,61 @@ public class Indexer {
             searchParts.add(indexQuery);
         }
         BooleanQuery searchQuery = andQueryClause(searchParts);
-        List <Long> variableResults = getHitIds(searchQuery);
-        List <Long> filteredResults = studyIds != null ? intersectionResults(variableResults, studyIds) : variableResults;
-        return filteredResults;
+        List <Document> variableResults = getHits(searchQuery);
+        List <Long> variableIdResults = getHitIds(variableResults);
+        List<Long> finalResults = studyIds != null ? intersectionDocResults(variableResults, studyIds) : variableIdResults;
+        return finalResults;
     }
     
-    public List searchVariables(List <Long> studyIds, List <SearchTerm> searchTerms, boolean varIdReturnValues) throws IOException {
-        List <Long> returnValues = null;
-        List <BooleanQuery> searchParts = new ArrayList();
-        for (Iterator it = searchTerms.iterator(); it.hasNext();){
+    public List searchVariables(List<Long> studyIds, List<SearchTerm> searchTerms, boolean varIdReturnValues) throws IOException {
+        List<BooleanQuery> searchParts = new ArrayList();
+        for (Iterator it = searchTerms.iterator(); it.hasNext();) {
             SearchTerm elem = (SearchTerm) it.next();
             BooleanQuery indexQuery = null;
-            if (elem.getFieldName().equalsIgnoreCase("variable")){
+            if (elem.getFieldName().equalsIgnoreCase("variable")) {
                 indexQuery = buildVariableQuery(elem.getValue().toLowerCase().trim());
                 searchParts.add(indexQuery);
             }
         }
         BooleanQuery searchQuery = andQueryClause(searchParts);
-        if (varIdReturnValues){
-            returnValues = getHitIds(searchQuery);
+        List<Long> finalResults = null;
+        if (varIdReturnValues) {
+            List <Document> variableResults = getHits(searchQuery);
+            List<Long> variableIdResults = getHitIds(variableResults);
+            finalResults = studyIds != null ? intersectionDocResults(variableResults, studyIds) : variableIdResults;
         } else {
-            returnValues = getVarHitIds(searchQuery);
-        }
-        List <Long> filteredResults = studyIds != null ? intersectionResults(returnValues, studyIds) : returnValues;
-
-         
-        return filteredResults;
+            List <Long> studyIdResults = getVarHitIds(searchQuery); // gets the study ids
+            finalResults = studyIds != null ? intersectionResults(studyIdResults, studyIds) : studyIdResults;
+        } 
+        return finalResults;
     }
     
     public List searchBetween(Term begin,Term end, boolean inclusive) throws IOException{
         RangeQuery query = new RangeQuery(begin,end,inclusive);
         return getHitIds(query);
+    }
+    
+//    private Hits getHits( Query query ) throws IOException {
+    private List<Document> getHits( Query query ) throws IOException {
+        Hits hits = null;
+ //       LinkedHashSet matchIdsSet = new LinkedHashSet();
+        List <Document> documents = new ArrayList();
+        if (query != null){
+            IndexSearcher searcher = new IndexSearcher(dir);
+            hits = searcher.search(query);
+            for (int i = 0; i < hits.length(); i++) {
+//                Document d = hits.doc(i);
+                documents.add(hits.doc(i));
+ //               Field studyId = d.getField("id");
+ //               String studyIdStr = studyId.stringValue();
+ //               Long studyIdLong = Long.valueOf(studyIdStr);
+//                matchIdsSet.add(studyIdLong);
+            }
+            searcher.close();
+        }
+//        documents.addAll(matchIdsSet);
+        return documents;
+//        return hits;
     }
     
     private List getHitIds( Query query) throws IOException {
@@ -523,6 +572,40 @@ public class Indexer {
         return matchIds;
     }
     
+//    private List<Long> getHitIds(Hits hits) throws IOException {
+    private List<Long> getHitIds(List<Document> hits) throws IOException {
+        ArrayList matchIds = new ArrayList();
+        LinkedHashSet matchIdsSet = new LinkedHashSet();
+         for (Iterator it = hits.iterator(); it.hasNext();) {
+//       for (int i = 0; i < hits.length(); i++) {
+            Document d = (Document) it.next();
+            Field studyId = d.getField("id");
+            String studyIdStr = studyId.stringValue();
+            Long studyIdLong = Long.valueOf(studyIdStr);
+            matchIdsSet.add(studyIdLong);
+        }
+
+        matchIds.addAll(matchIdsSet);
+        return matchIds;
+    }
+    
+//    private List getVarHitIds(Hits hits) throws IOException {
+    private List getVarHitIds(List <Document> hits) throws IOException {
+        ArrayList matchIds = new ArrayList();
+        LinkedHashSet matchIdsSet = new LinkedHashSet();
+        for (Iterator it = hits.iterator(); it.hasNext();){
+            Document d = (Document) it.next();
+//        for (int i = 0; i < hits.length(); i++) {
+//            Document d = hits.doc(i);
+            Field studyId = d.getField("varStudyId");
+            String studyIdStr = studyId.stringValue();
+            Long studyIdLong = Long.valueOf(studyIdStr);
+            matchIdsSet.add(studyIdLong);
+        }
+        matchIds.addAll(matchIdsSet);
+        return matchIds;
+    }
+
     /* returns studyIds for variable query
      */
     private List getVarHitIds( Query query) throws IOException {

@@ -403,7 +403,9 @@ public class Indexer {
                 Field varId = d.getField("id");
                 String varIdStr = varId.stringValue();
                 Long varIdLong = Long.valueOf(varIdStr);
-                mergeResults.add(varIdLong);
+                if (!mergeResults.contains(varIdLong)) {
+                    mergeResults.add(varIdLong);
+                }
             }
         }
         return mergeResults;

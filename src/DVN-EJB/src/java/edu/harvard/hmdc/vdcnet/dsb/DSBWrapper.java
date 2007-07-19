@@ -399,7 +399,6 @@ public class DSBWrapper {
         return variableList;
     }
     
-    // these methods are currently for testing purposes only!!
     private String generateUrlForDDI(String serverPrefix, Long studyId) {
         //String studyDDI = "http://vdc-build.hmdc.harvard.edu:8080/test_files/study" + studyId + ".xml";
         String studyDDI = serverPrefix + "/ddi/?studyId=" + studyId;
@@ -409,7 +408,7 @@ public class DSBWrapper {
     
     private String generateUrlForFile(String serverPrefix, Long fileId) {
         //String file = "http://vdc-build.hmdc.harvard.edu:8080/test_files/" + fileName;
-        String file = serverPrefix + "/FileDownload/?fileId=" + fileId;
+        String file = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1";
         System.out.println(file);
         return file;
     }

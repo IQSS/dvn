@@ -1917,7 +1917,12 @@ sub printVDCxtabs{
 	
 	my $freqVarString ="";
 	if (exists($self->{xtab}->{freqVar}) && $self->{xtab}->{freqVar} ne ""){
-		$freqVarString = "freqVars=(\"" .  $self->{_varNameH}->{ $self->{xtab}->{freqVar}} . "\")";
+		if (exists($self->{_varNameHsafe}->{ $self->{xtab}->{freqVar}})){
+			$freqVarString = "freqVars=(\"" .  $self->{_varNameHsafe}->{ $self->{xtab}->{freqVar}} . "\")";
+		
+		} else {
+			$freqVarString = "freqVars=(\"" .  $self->{_varNameH}->{ $self->{xtab}->{freqVar}} . "\")";
+		}
 	}
 	
 	my $xtabWantString ="wantPercentages=$self->{xtab}->{Percentages}, wantTotals=$self->{xtab}->{Totals}, wantStats=$self->{xtab}->{Statistics}, wantExtraTables=$self->{xtab}->{ExtraTables}";

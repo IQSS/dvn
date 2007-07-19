@@ -705,7 +705,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         boolean createNewHandle = (vdc.getHarvestingDataverse().getHandlePrefix() != null);
         int format = vdc.getHarvestingDataverse().getFormat().equals("ddi") ? 0 : 1; // 1 is mif; eventually this will be dynamic
         
-        Study study= importStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
+        // do not register for harvested studies (until we figure out why it's not working)
+        Study study= importStudy(xmlFile, format, vdcId, userId, false, createNewHandle, true, false, false, harvestIdentifier);
+        //Study study= importStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
+        
         return study;
     }
     

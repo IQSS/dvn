@@ -20,8 +20,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -236,26 +238,30 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     
     public List searchVariables(SearchTerm searchTerm){
         Indexer indexer = Indexer.getInstance();
-        List matchingStudyIds = null;
+        List matchingStudyIds = new ArrayList();
+        List matchingVarIds = null;
         try {
-            matchingStudyIds = indexer.searchVariables(searchTerm);
+            matchingVarIds = indexer.searchVariables(searchTerm);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return matchingStudyIds == null ? new ArrayList(): matchingStudyIds;
+        Map variableMap = new HashMap();
+        return matchingStudyIds;
     }
     
     public List searchVariables(VDC vdc,SearchTerm searchTerm){
         List studyIds = vdc != null ? listVdcStudyIds(vdc) : null;
+        List <Long> matchingStudyIds = new ArrayList();
 
         Indexer indexer = Indexer.getInstance();
-        List matchingStudyIds = null;
+        List matchingVarIds = null;
         try {
-            matchingStudyIds = indexer.searchVariables(studyIds, searchTerm);
+            matchingVarIds = indexer.searchVariables(studyIds, searchTerm);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return matchingStudyIds == null ? new ArrayList(): matchingStudyIds;
+        Map variableMap = new HashMap();
+        return matchingVarIds;
     }
     
     public List searchVariables(VDC vdc,List<VDCCollection> searchCollections,SearchTerm searchTerm){

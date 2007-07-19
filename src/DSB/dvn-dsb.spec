@@ -2,7 +2,7 @@ Summary: This RPM provides the DSB modules
 Group: Applications
 Name: DVN-DSB
 Version: 1.1
-Release: 13f
+Release: 13g
 Source: DVN-DSB-%{version}.tar.gz
 Copyright: Artistic or GPL
 URL: http://thedata.org/
@@ -51,7 +51,7 @@ rm -rf ${RPM_BUILD_ROOT}
 %attr (0777,apache,apache) %dir /tmp/VDC/webtemp
 
 %post
-(cd /usr/local/VDC/R; ./installR.sh)
-(cd /usr/local/VDC/etc; perl configure.perl /usr/local/VDC/etc /usr/local/VDC /tmp/VDC)
+(cd /usr/local/VDC/etc; /usr/bin/perl configure.perl /usr/local/VDC/etc /usr/local/VDC /tmp/VDC)
 /sbin/service httpd restart
+(cd /usr/local/VDC/R; ./installR.sh)
 

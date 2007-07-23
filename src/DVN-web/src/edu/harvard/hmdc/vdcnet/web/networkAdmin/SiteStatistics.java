@@ -10,6 +10,7 @@
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
 import java.io.*;
+
 /**
  *
  * @author wbossons
@@ -30,12 +31,14 @@ public class SiteStatistics {
      */
     public static void main(String[] args)
 			throws java.io.IOException {
-        writeMitReport((String)args[0]);
+        writeMitReport(args[0]);
     }
 
     public void writeReport(String dataverse) {
         // this is blank for now
     }
+
+    private static String line = null;
 
     /**
      * @param term could be a month daily weekly or yearly report
@@ -50,12 +53,23 @@ public class SiteStatistics {
         BufferedReader inputStream = null;
         BufferedWriter outputStream = null;
         try {
-			inputStream = new BufferedReader(new FileReader("c:\\data\\awstats072007.mit.txt"));
+		inputStream = new BufferedReader(new FileReader("c:\\data\\awstats072007.mit.txt"));
 	        outputStream = new BufferedWriter(new FileWriter("c:\\data\\mitreportoutput.txt"));
-	        String line = null;
+                boolean isTargetCategory = false;
             while ((line = inputStream.readLine()) != null) {
-                outputStream.write(line);
-                outputStream.newLine();
+                if (ReportConstants.BEGIN_GENERAL.contains(line)) {
+                    // set some flag so that I know I'm in the right place
+                    isTargetCategory = true;
+                }
+                // now I want to zero in on the value, in this case TotalVisits
+                if (ReportConstants.TOTAL_VISITS.contains("TotalVisits") && isTargetCategory == true) {
+                    // find the value through substringing the line
+                    String reportValue = line.substring(line.indexOf(ReportConstants.DELIMITER) + 1);
+                    outputStream.write(line);
+                    outputStream.newLine();
+                    isTargetCategory = false;
+                }
+                
             }
         } catch (Exception e) {
             // write an error
@@ -154,4 +168,9 @@ public class SiteStatistics {
     public void setSubsetAnalysisIps(int numsubsets) {
         this.subsetAnalysisIps = numsubsets;
     }
+
+  public boolean equals(Object obj) {
+    return (obj instanceof String 
+            && this.line == ((String)obj).toString());
+  }
 }

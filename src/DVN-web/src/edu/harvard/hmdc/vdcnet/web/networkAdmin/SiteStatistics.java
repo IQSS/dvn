@@ -44,7 +44,6 @@ public class SiteStatistics extends ReportConstants {
     }
 
     private static String line     = null;
-	//private static List    list    = new ArrayList();
     /**
      * @param term could be a month daily weekly or yearly report
      * this may need additional information. Year and month?
@@ -95,20 +94,32 @@ public class SiteStatistics extends ReportConstants {
 						}
 					}
 					if (i == monthsInReport.length - 1) inputStream.close();
-			}//end adding the data from each month
+			}
+			//end looping through the monthly files.
+			//Now add each to the hashtable and send to the report writer.
 			LinkedHashMap hashmap = new LinkedHashMap();
 			hashmap.put(ReportConstants.TOTAL_VISITS_HEADING, totalVisitsList);
 			hashmap.put(ReportConstants.TOTAL_UNIQUE_HEADING, totalUniqueList);
 			hashmap.put(ReportConstants.NUM_DOWNLOADS_HEADING, downloadsList);
 			hashmap.put(ReportConstants.NUM_SUBSETJOBS_HEADING, subsetsList);
-			//end looping through the files. Now add each to the hashtable and send to the report writer.
 			writeReport(hashmap);
         } catch (IOException ioe) {
 			System.out.println("Error " + ioe);
-		} //finally {
-            //inputStream.close();
-        //}
+		}
     }
+
+	/**
+	*
+	* writeReport
+	*
+	* @description This takes a linkedhashmap and then
+	* writes the textual mit report data
+	* mainly for command line use
+	*
+	* @param hashmap A hashmap with the report heading and data.
+	*
+	* @author wbossons
+	*/
 
 	private static void writeReport(LinkedHashMap hashmap)
 				throws java.io.IOException {
@@ -135,6 +146,20 @@ public class SiteStatistics extends ReportConstants {
 		}
 	}
 
+	/** getReportFiles
+	*
+	* @description This method returns the
+	* data needed to create a valid awstats name
+	* and to create associations for each month
+	* with the report (e.g. July, August, September ...)
+	*
+	* @param numberofmonths how many months do you want to output?
+	*
+	* @return a string array with the file number builder and
+	* the string month for the labels.
+	*
+	* @author wbossons
+	*/
 	private static String[][] getReportFiles(int numberofmonths) {
 		String[][] monthsAvailable = {{"07","08","09","10","11","12","01","02","03","04","05","06"},{"July", "August", "September", "October", "November", "December", "January", "February", "March", "April", "May", "June"}};
 		//example of above is [0][0]=07 and [1][0]=July
@@ -225,7 +250,7 @@ public class SiteStatistics extends ReportConstants {
     }
 
     /**
-     * – parsed from the access log
+     *  parsed from the access log
      * this is probably a list or array, not an int
      */
     private int subsetAnalysisIps;

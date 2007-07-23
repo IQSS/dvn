@@ -174,7 +174,7 @@ public class AddFilesPage extends VDCBaseBean {
                                                 analyzeFileType.equals("application/x-spss-sav") );
                 
                 // append ".tab" to name if subsettable
-                f.getStudyFile().setFileName(f.getStudyFile().isSubsettable() ? originalName + ".tab" : originalName);                
+                f.getStudyFile().setFileName(f.getStudyFile().isSubsettable() ? replaceExtension(originalName): originalName);                
                 
                 // currently, analyze is only precise enough when files are subsettable; therefore
                 // for other files, use the originalFileType determined by the upload
@@ -191,6 +191,15 @@ public class AddFilesPage extends VDCBaseBean {
                 System.out.println("Exception: " + ex.getMessage());
                 // report the problem        
             }                    
+        }
+    }
+    
+    private String replaceExtension(String originalName) {
+        int extensionIndex = originalName.lastIndexOf(".");
+        if (extensionIndex != -1 ) {
+            return originalName.substring(0, extensionIndex) + ".tab" ;
+        } else {
+            return originalName + ".tab";    
         }
     }
     

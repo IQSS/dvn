@@ -86,6 +86,7 @@ public class EditVDCPrivilegesServiceBean implements EditVDCPrivilegesService  {
    
    public void addUserRole(String userName) {
             VDCUser user = userService.findByUserName(userName);
+            user = em.find(VDCUser.class, user.getId());
             VDCRole vdcRole = new VDCRole();
             vdcRole.setVdcUser(user);
             vdcRole.setVdc(vdc);
@@ -142,13 +143,15 @@ public class EditVDCPrivilegesServiceBean implements EditVDCPrivilegesService  {
             List privilegedUsersRow =  it.next();
             VDCRole vdcRole = (VDCRole)privilegedUsersRow.get(0);  
             Long roleId=null;
-            if (privilegedUsersRow.get(1) instanceof Long) {
-                roleId =(Long)privilegedUsersRow.get(1);
-            } else {
-                roleId=Long.parseLong( (String)privilegedUsersRow.get(1));
-            }
-            if (roleId!=null) {
-                vdcRole.setRole(roleService.findById(roleId));
+            if (privilegedUsersRow.get(1)!=null) {
+                if (privilegedUsersRow.get(1) instanceof Long) {
+                    roleId =(Long)privilegedUsersRow.get(1);
+                } else {
+                    roleId=Long.parseLong( (String)privilegedUsersRow.get(1));
+                }
+                if (roleId!=null) {
+                    vdcRole.setRole(roleService.findById(roleId));
+                }
             }
          }
        

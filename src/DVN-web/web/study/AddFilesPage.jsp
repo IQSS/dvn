@@ -33,7 +33,11 @@
                 textField.value = dropdown.value;                            
                 }
                 }
-                }                    
+                }
+                
+                function disableSave() {
+                document.getElementById("content:addFilesPageView:form1:saveButton").disabled = true;
+                }
             </script>
         </f:verbatim>
         <ui:form  id="form1">
@@ -60,7 +64,7 @@
                             <h:outputText styleClass="vdcHelpText" value="You may upload multiple files to this page (by browsing each file individually) and then save all of them at once. If you upload a STATA (.dta) or SPSS (.sav or .por) file, it will be processed as a subsettable data file."/>
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel2" style="padding-bottom: 5px;">
-                            <ui:upload  id="fileBrowser" onChange="submit();" valueChangeListener="#{AddFilesPage.fileBrowser_add}"/>
+                            <ui:upload  id="fileBrowser" onChange="disableSave();submit();" valueChangeListener="#{AddFilesPage.fileBrowser_add}"/>
                         </ui:panelGroup>
 
                         <!-- Comment Save and Cancel buttons on top (per Isabelle's request)
@@ -134,7 +138,7 @@
                         </ui:panelGroup>                                
                         <ui:panelGroup  block="true" id="groupPanel5"
                             style="padding-top: 20px; " styleClass="vdcTextRight">
-                            <h:commandButton  id="button6" value="Save" action="#{AddFilesPage.save_action}"/>
+                            <h:commandButton  id="saveButton" value="Save" action="#{AddFilesPage.save_action}"/>
                             <h:commandButton  immediate="true" id="button8" value="Cancel" action="#{AddFilesPage.cancel_action}" style="margin-left: 30px;" />
                         </ui:panelGroup>
                     </ui:panelLayout>

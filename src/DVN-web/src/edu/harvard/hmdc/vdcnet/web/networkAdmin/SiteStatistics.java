@@ -45,12 +45,19 @@ public class SiteStatistics extends ReportConstants {
 
     private static String line     = null;
     /**
+     *
+     * @description
+     * This method reads each monthly report starting with the
+     * fiscal year and then populates a list with the correct data.
+     * Then it sends this data to the report writer method.
+     *
      * @param term could be a month daily weekly or yearly report
      * this may need additional information. Year and month?
      * @param config -- middle portion of the awstats config file
      * ex.awstats.mit.txt
      *
-     *
+     * TODO: parameterize the fiscal year
+     * TODO: parameterize the number of months
      */
     public static void writeMitReport(String term)
     			throws java.io.IOException {
@@ -61,7 +68,8 @@ public class SiteStatistics extends ReportConstants {
 	    LinkedHashMap totalUniqueList = new LinkedHashMap();
 	    LinkedHashMap downloadsList   = new LinkedHashMap();
 	    LinkedHashMap subsetsList     = new LinkedHashMap();
-
+		LinkedHashMap downloadsIpList = new LinkedHashMap();
+	    LinkedHashMap subsetsIpList     = new LinkedHashMap();
 	    // do the following for each month
 	    int numberOfMonths = 2;
 	    String theYear = "2007";
@@ -92,16 +100,29 @@ public class SiteStatistics extends ReportConstants {
 							String reportValue = line.substring(line.indexOf(ReportConstants.DELIMITER) + 1);
 							subsetsList.put(monthsInReport[1][i], reportValue);
 						}
+						//extra3 (number of unique ip addresses downloading data and documentation
+						if (line.contains(ReportConstants.BEGIN_EXTRA_3)) {
+							String reportValue = Integer.toString(getUniqueDownloads(inputStream, ReportConstants.BEGIN_EXTRA_3, ReportConstants.END_EXTRA_3));//line.substring(line.indexOf(ReportConstants.DELIMITER) + 1);
+							System.out.println("the report value is " + reportValue);
+							downloadsIpList.put(monthsInReport[1][i], reportValue);
+						}
+						//extra4 (number of unique ip addresses from which subsetting interface views were made)
+						if (line.contains(ReportConstants.BEGIN_EXTRA_4)) {
+							String reportValue = Integer.toString(getUniqueDownloads(inputStream, ReportConstants.BEGIN_EXTRA_4, ReportConstants.END_EXTRA_4));//line.substring(line.indexOf(ReportConstants.DELIMITER) + 1);
+							subsetsIpList.put(monthsInReport[1][i], reportValue);
+						}
 					}
 					if (i == monthsInReport.length - 1) inputStream.close();
 			}
-			//end looping through the monthly files.
+			//end looping through the monthly files
 			//Now add each to the hashtable and send to the report writer.
 			LinkedHashMap hashmap = new LinkedHashMap();
 			hashmap.put(ReportConstants.TOTAL_VISITS_HEADING, totalVisitsList);
 			hashmap.put(ReportConstants.TOTAL_UNIQUE_HEADING, totalUniqueList);
 			hashmap.put(ReportConstants.NUM_DOWNLOADS_HEADING, downloadsList);
 			hashmap.put(ReportConstants.NUM_SUBSETJOBS_HEADING, subsetsList);
+			hashmap.put(ReportConstants.NUM_UNIQUEDOWNLOADS_HEADING, downloadsIpList);
+			hashmap.put(ReportConstants.NUM_UNIQUESUBSETS_HEADING, subsetsIpList);
 			writeReport(hashmap);
         } catch (IOException ioe) {
 			System.out.println("Error " + ioe);
@@ -127,9 +148,10 @@ public class SiteStatistics extends ReportConstants {
 		try {
 			outputStream = new BufferedWriter(new FileWriter("c:\\data\\mitreportoutput.txt"));
 			Iterator iterator = hashmap.keySet().iterator();
+			int count = 1;
 			while (iterator.hasNext()) {
 				String key = (String)iterator.next();
-				outputStream.write("\n\r" + key + "\n\r");
+				outputStream.write("\n\r" + count + ". " + key + "\n\r");
 				outputStream.newLine();
 				LinkedHashMap innermap = (LinkedHashMap)hashmap.get(key);
 				Iterator innerIterator = innermap.keySet().iterator();
@@ -138,6 +160,7 @@ public class SiteStatistics extends ReportConstants {
 					outputStream.write(monthKey + ": " + innermap.get(monthKey));
 					outputStream.newLine();
 			    }
+			    count++;
 			}
 		} catch (IOException ioe) {
 			System.out.println("Error " + ioe.getCause().toString());
@@ -172,6 +195,38 @@ public class SiteStatistics extends ReportConstants {
 			reportFiles[1][j] = monthsAvailable[1][j];
 		}
 		return reportFiles;
+	}
+
+	/** getUniqueDownloads
+	*
+	* @description this method returns the
+	* number of unique ip addresses downloading
+	* data and documentation from the VDC
+	*
+	* @param inputstream - the inputstream being read
+	* @param category - line item of report
+	* @return int - the number of the downloads
+	*
+	* @author wbossons
+	*/
+	private static int getUniqueDownloads(BufferedReader inputstream, String lineitem, String lineend)
+						throws IOException {
+		int numberUnique = 0;
+		try {
+			while ((line = inputstream.readLine()) != null) {
+				if (line.contains(lineitem)) {
+					// keep reading until ReportConstants.END_EXTRA_3 is read
+					System.out.println("the line is " + line);
+				}
+				if (line.contains(lineend))
+					break;
+			    numberUnique++;
+			}
+		} catch (IOException ioe) {
+			System.out.println("An error occurred in getUnique Downloads");
+		} finally {
+			return numberUnique;
+		}
 	}
 
     private String category;

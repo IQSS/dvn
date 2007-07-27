@@ -12,7 +12,7 @@
 *individuals on behalf of OCLC Research. For more information on OCLC Research,
 *please see http://www.oclc.org/oclc/research/.
 *
-*The Original Code is DummyOAICatalog.java_____________________________.
+*The Original Code is DVNOAICatalog.java_____________________________.
 *The Initial Developer of the Original Code is Jeff Young.
 *Portions created by ______________________ are
 *Copyright (C) _____ _______________________. All Rights Reserved.
@@ -39,7 +39,7 @@ import ORG.oclc.oai.server.verb.IdDoesNotExistException;
 import ORG.oclc.oai.server.verb.NoMetadataFormatsException;
 
 /**
- * DummyOAICatalog is an example of how to implement the AbstractCatalog interface.
+ * DVNOAICatalog is an example of how to implement the AbstractCatalog interface.
  * Pattern an implementation of the AbstractCatalog interface after this class
  * to have OAICat work with your database. Your effort may be minimized by confining
  * your changes to areas identified by "YOUR CODE GOES HERE" comments. In truth, though,
@@ -48,7 +48,7 @@ import ORG.oclc.oai.server.verb.NoMetadataFormatsException;
  *
  * @author Jeffrey A. Young, OCLC Online Computer Library Center
  */
-public class DVN OAICatalog extends AbstractCatalog {
+public class DVNOAICatalog extends AbstractCatalog {
     /**
      * maximum number of entries to return for ListRecords and ListIdentifiers
      */
@@ -94,16 +94,16 @@ public class DVN OAICatalog extends AbstractCatalog {
     };
     
     /**
-     * Construct a DummyOAICatalog object
+     * Construct a DVNOAICatalog object
      *
      * @param properties a properties object containing initialization parameters
      */
-    public DummyOAICatalog(Properties properties) {
-        String maxListSize = properties.getProperty("DummyOAICatalog.maxListSize");
+    public DVNOAICatalog(Properties properties) {
+        String maxListSize = properties.getProperty("DVNOAICatalog.maxListSize");
         if (maxListSize == null) {
-            throw new IllegalArgumentException("DummyOAICatalog.maxListSize is missing from the properties file");
+            throw new IllegalArgumentException("DVNOAICatalog.maxListSize is missing from the properties file");
         } else {
-            DummyOAICatalog.maxListSize = Integer.parseInt(maxListSize);
+            DVNOAICatalog.maxListSize = Integer.parseInt(maxListSize);
         }
         
         /************************************************************

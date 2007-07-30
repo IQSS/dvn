@@ -231,14 +231,12 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         
         havestingDataverseService.setLastHarvestTime(dataverse.getId(), lastHarvestTime);
 
-        /* commented out for now, but may be needed later
         // now index all studies (need to modify for update)
         hdLogger.log(Level.INFO,"POST HARVEST, start calls to index.");
         for (Study study : dataverse.getVdc().getOwnedStudies() ) {
             indexService.updateStudy( study.getId() );
         }
         hdLogger.log(Level.INFO,"POST HARVEST, calls to index finished.");
-        */
     }
     
     

@@ -4443,7 +4443,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
                 }
               }
           } else {
-            rw.add("Chraracter");
+            rw.add("Character");
           }
 
           // 2: ID

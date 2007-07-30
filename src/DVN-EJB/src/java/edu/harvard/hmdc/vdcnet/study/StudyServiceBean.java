@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -73,6 +74,19 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     @EJB IndexServiceLocal indexService;
     @EJB ReviewStateServiceLocal reviewStateService;
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.study.StudyServiceBean");
+    
+    
+    private JAXBContext jaxbContext = null;
+    private Unmarshaller DDIUnmarshaller;
+    
+    public void ejbCreate() {
+        try {
+            jaxbContext = javax.xml.bind.JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
+            DDIUnmarshaller = jaxbContext.createUnmarshaller();
+        } catch (JAXBException ex) {
+            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+        }
+    }
     
     
     @EJB StudyServiceLocal studyService; // used to force new transaction during import
@@ -326,6 +340,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return fileCategory;
     }
     
+    // to be added later
+    //public List<DataFileFormatType> getDataFileFormatTypes() {
+    //    return em.createQuery("select object(t) from DataFileFormatType as t").getResultList();
+    //}
     
     
     public void addIngestedFiles(Long studyId, List fileBeans, Long userId) {
@@ -727,13 +745,12 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Study importStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
         // call internal studyService to force NEW transaction
-        Study study =  studyService.doImportStudy(xmlFile, xmlFileFormat, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
-        em.merge(study); // workaround to get filecategory values in cache (only for some studies, to be investigated)
+        Study study = doImportStudy(xmlFile, xmlFileFormat, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
+
         
-        indexService.updateStudy(study.getId());
+        //indexService.updateStudy(study.getId());
         return study;
     }
-    
     
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -905,13 +922,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             // first unmarshall the XML
             
             try {
-                JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
-                Unmarshaller unmarshaller = jc.createUnmarshaller();
                 if (obj instanceof Node) {
-                    _cb  = (CodeBook) unmarshaller.unmarshal( (Node)obj );
+                    _cb  = (CodeBook) DDIUnmarshaller.unmarshal( (Node)obj );
                 } else {
                     logger.info("begin unmarshal of file "+((File)obj).getName());
-                    Object unmarshalObj= unmarshaller.unmarshal( (File)obj );
+                    Object unmarshalObj= DDIUnmarshaller.unmarshal( (File)obj );
                     _cb  = (CodeBook)unmarshalObj;
                     
                 }

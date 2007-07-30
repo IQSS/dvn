@@ -170,10 +170,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
+import javax.ejb.EJBs;
 import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -186,8 +190,6 @@ import javax.xml.bind.Marshaller;
 @Stateless
 public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal {
     @EJB VariableServiceLocal varService;
-    @EJB VDCNetworkServiceLocal networkService;
-    @EJB StudyServiceLocal studyService;
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceBean");
     
     
@@ -223,6 +225,19 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     public static final String DB_VAR_RANGE_TYPE_MIN_EX = "min exclusive";
     public static final String DB_VAR_RANGE_TYPE_MAX = "max";
     public static final String DB_VAR_RANGE_TYPE_MAX_EX = "max exclusive";
+    
+    public List<VariableFormatType> variableFormatTypeList =  null;
+    public List<VariableIntervalType> variableIntervalTypeList =  null;
+    public List<SummaryStatisticType> summaryStatisticTypeList =  null;
+    public List<VariableRangeType> variableRangeTypeList =  null;    
+    
+    public void ejbCreate() {
+        // initialize lists
+        variableFormatTypeList = varService.findAllVariableFormatType();
+        variableIntervalTypeList = varService.findAllVariableIntervalType();
+        summaryStatisticTypeList = varService.findAllSummaryStatisticType();
+        variableRangeTypeList = varService.findAllVariableRangeType();
+    }
     
     // Note: in this classes' methods:
     // for ease of determining which variables come from the XML objects,
@@ -1080,11 +1095,6 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     }
     
     private void mapDataDscr(DataDscrType _dd, Map filesMap) {
-        // Pre-fetch Variable data for efficiency
-        List<VariableFormatType> variableFormatTypeList =  varService.findAllVariableFormatType();
-        List<VariableIntervalType> variableIntervalTypeList =  varService.findAllVariableIntervalType();
-        List<SummaryStatisticType> summaryStatisticTypeList =  varService.findAllSummaryStatisticType();
-        List<VariableRangeType> variableRangeTypeList =  varService.findAllVariableRangeType();
         
         Iterator iter = _dd.getVar().iterator();
         int fileOrder = 0;
@@ -1336,6 +1346,10 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             Object _html = ((JAXBElement)_content).getValue();
             if ( _html instanceof PType) {
                 return "<p>" + mapContent( ((PType)_html).getContent().get(0) ) + "</p>";
+            } else if ( _html instanceof ExtLinkType) {
+                ExtLinkType _link = (ExtLinkType)_html;
+                String _linkName = StringUtil.isEmpty( _link.getContent() ) ? _link.getURI() : _link.getContent().trim();
+                return "<a href=\"" + _link.getURI() +"\" >" + _linkName + "</a>";                
             } else if ( _html instanceof ListType) {
                 ListType _list = (ListType)_html;
                 String listString = null;

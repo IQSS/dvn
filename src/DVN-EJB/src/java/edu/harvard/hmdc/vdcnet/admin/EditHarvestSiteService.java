@@ -30,9 +30,12 @@ public interface EditHarvestSiteService {
 
     
     HarvestingDataverse getHarvestingDataverse();
-
+    
+    public Long getSelectedHandlePrefixId();
+    public void setSelectedHandlePrefixId(Long selectedHandlePrefixId);
+   
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void save(String name, String alias, Long userId, Long handlePrefixId);
+    public void save(String name, String alias, Long userId);
 
    
     public void removeAllowedFileGroup(Long groupId);

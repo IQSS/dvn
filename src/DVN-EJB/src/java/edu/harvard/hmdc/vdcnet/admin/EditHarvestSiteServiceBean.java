@@ -41,7 +41,15 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
     //  @EJB RoleServiceLocal roleService;
     EntityManager em;
     private HarvestingDataverse harvestingDataverse;
-    
+    private Long selectedHandlePrefixId;
+
+    public Long getSelectedHandlePrefixId() {
+        return selectedHandlePrefixId;
+    }
+
+    public void setSelectedHandlePrefixId(Long selectedHandlePrefixId) {
+        this.selectedHandlePrefixId = selectedHandlePrefixId;
+    }
    
   
     
@@ -53,8 +61,9 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
         if (harvestingDataverse==null) {
             throw new IllegalArgumentException("Unknown harvestingDataverse id: "+id);
         }
-       
-        
+        if (harvestingDataverse.getHandlePrefix()!=null) {
+            selectedHandlePrefixId = harvestingDataverse.getHandlePrefix().getId();
+        }
     }
     
     public void newHarvestingDataverse( ) {
@@ -72,7 +81,7 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
  
         
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void save(String name, String alias, Long userId, Long handlePrefixId ) {
+    public void save(String name, String alias, Long userId ) {
         if (harvestingDataverse.getVdc()==null) {
             vdcService.create(userId,name,alias);
             VDC vdc = vdcService.findByAlias(alias);
@@ -84,10 +93,10 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
             harvestingDataverse.getVdc().setName(name);
             harvestingDataverse.getVdc().setAlias(alias);
         }
-        if (handlePrefixId==null) {
+        if (selectedHandlePrefixId==null) {
             harvestingDataverse.setHandlePrefix(null);
         } else {
-            HandlePrefix handlePrefix = em.find(HandlePrefix.class, handlePrefixId);
+            HandlePrefix handlePrefix = em.find(HandlePrefix.class, selectedHandlePrefixId);
             harvestingDataverse.setHandlePrefix(handlePrefix);
         }
         em.flush();

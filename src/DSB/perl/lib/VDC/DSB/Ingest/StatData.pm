@@ -475,6 +475,7 @@ sub addSumstat{
 			#print "Dumper:\n", Dumper(@varNameSet);
 			#print "Dumper:\n", Dumper(@$varname[$varRangeSet->[$i][0]..$varRangeSet->[$i][1]]);
 			print $rh "varFmt<-list(","\n";
+			my $cntr =0;
 			for (my $v=0;$v<@varNameSet; $v++){
 
 
@@ -499,12 +500,14 @@ sub addSumstat{
 					# currently not applicable
 				}
 				if ($fmtChar){
+					$cntr++;
 					my $terminator="";
-					if ($v != (scalar(@varNameSet)-1)){
+					#if ($v != (scalar(@varNameSet)-1)){
+					if ($cntr > 1){
 						$terminator=",\n";
 
 					}
-					print $rh "'",$vn,"'", "='", $fmtChar, "'", $terminator;
+					print $rh $terminator . "'",$vn,"'", "='", $fmtChar, "'";
 				}
 			}
 

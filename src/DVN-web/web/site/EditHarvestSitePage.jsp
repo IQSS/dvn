@@ -97,7 +97,7 @@
                                               <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Handle Registration"/> 
                                           </ui:panelGroup >
                                           <ui:panelGroup>    
-                                            <h:selectOneMenu  binding="#{EditHarvestSitePage.handlePrefixSelectOneMenu}" value="#{EditHarvestSitePage.handlePrefixId}" >
+                                            <h:selectOneMenu  binding="#{EditHarvestSitePage.handlePrefixSelectOneMenu}" value="#{EditHarvestSitePage.editHarvestSiteService.selectedHandlePrefixId}" >
                                                 <f:selectItem itemValue="" itemLabel="Do not register harvested studies (studies must already have a handle)"/>
                                                 <f:selectItems  value="#{EditHarvestSitePage.handlePrefixSelect}" />
                                             </h:selectOneMenu>

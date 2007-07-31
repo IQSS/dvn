@@ -189,7 +189,7 @@ public class EditHarvestSitePage extends VDCBaseBean {
     
     public String save() {
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
-        editHarvestSiteService.save(dataverseName,dataverseAlias,userId, handlePrefixId);
+        editHarvestSiteService.save(dataverseName,dataverseAlias,userId);
         success=true;
         return "success";
         

@@ -49,6 +49,8 @@ public interface StudyServiceLocal {
    java.util.List<edu.harvard.hmdc.vdcnet.study.Study> getNewStudies(Long vdcId);
 
     void incrementNumberOfDownloads(Long studyId);
+    
+    List<DataFileFormatType> getDataFileFormatTypes();
 
     void addIngestedFiles(Long studyId, List fileBeans, Long userId);
     

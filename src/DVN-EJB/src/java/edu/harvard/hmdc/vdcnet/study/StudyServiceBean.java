@@ -340,10 +340,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return fileCategory;
     }
     
-    // to be added later
-    //public List<DataFileFormatType> getDataFileFormatTypes() {
-    //    return em.createQuery("select object(t) from DataFileFormatType as t").getResultList();
-    //}
+    public List<DataFileFormatType> getDataFileFormatTypes() {
+        return em.createQuery("select object(t) from DataFileFormatType as t").getResultList();
+    }
     
     
     public void addIngestedFiles(Long studyId, List fileBeans, Long userId) {

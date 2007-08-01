@@ -305,6 +305,14 @@
        <put name="pageTitle"   type="string"        value="DVN - Dataverse Network User Groups"/>
        <put name="content" type="template"     value="/networkAdmin/UserGroupsPage.jsp"/>
    </definition>
+   <definition name="/networkAdmin/SiteStatistics" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="Site Statistics Selector"/>
+       <put name="content" type="template"     value="/networkAdmin/SiteStatistics.jsp"/>
+   </definition>
+   <definition name="/networkAdmin/SiteStatisticsViewPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="Site Statistics View"/>
+       <put name="content" type="template"     value="/networkAdmin/SiteStatisticsViewPage.jsp"/>
+   </definition>
    <definition name="/networkAdmin/DVGroupDetailPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Dataverse Groups View"/>
        <put name="content" type="template"     value="/networkAdmin/VDCGroupDetailPage.jsp"/>
@@ -316,7 +324,7 @@
    <definition name="/networkAdmin/ImportStudyPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Import Study "/>
        <put name="content" type="template"     value="/networkAdmin/ImportStudyPage.jsp"/>
-   </definition>   
+   </definition>
    <!-- **************** VDC Administration ******************** -->
    <definition name="/admin/EditBannerFooterPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Edit Banner and Footer"/>

@@ -7,9 +7,6 @@
                             
    <f:subview id="siteStatistics">
         <ui:form  id="siteStatisticsForm"> 
-            <h:outputText value="Site Statistics Page Test"/>
-            <h:commandButton id="btnSubmit" action="#{SiteStatistics.viewStatistics}" value="View Statistics"/>
-            
             <ui:panelLayout  id="layoutPanel1" panelLayout="flow" styleClass="vdcSectionMiddleFixed" style="width: 700px">
                     <ui:panelLayout  id="layoutPanel2" panelLayout="flow" styleClass="vdcSectionHeader">
                         <h:outputText  value="Site Statistics Selector"/>
@@ -38,7 +35,7 @@
                             <h:inputText id="year" value="#{SiteStatistics.year}"/>
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel5" style="padding-left: 200px; padding-top: 20px">
-                            <h:commandButton  id="btnSave" value="#{bundle.saveButtonLabel}" action="#{EditNetworkAnnouncementsPage.save_action}"/>
+                            <h:commandButton id="btnSubmit" action="#{SiteStatistics.viewStatistics}" value="View Statistics"/>
                             <h:commandButton  id="btnCancel" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditNetworkAnnouncementsPage.cancel_action}"/>
                         </ui:panelGroup>
                     </ui:panelLayout>

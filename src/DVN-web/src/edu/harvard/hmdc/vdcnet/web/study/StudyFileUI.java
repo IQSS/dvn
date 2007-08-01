@@ -12,7 +12,13 @@ package edu.harvard.hmdc.vdcnet.web.study;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
+import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -71,4 +77,32 @@ public class StudyFileUI {
         this.restrictedForUser = restrictedForUser;
     }
     
+    
+    private String format;
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+    
+     public String fileDownload_action () {
+        try {
+            String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.studyFile.getId();
+            if (!StringUtil.isEmpty(format)) {
+                fileDownloadURL += "&format=" + this.format;
+            }
+            
+            FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
+            HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
+            response.sendRedirect(fileDownloadURL);
+            fc.responseComplete();
+        } catch (IOException ex) {
+            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+     }    
 }

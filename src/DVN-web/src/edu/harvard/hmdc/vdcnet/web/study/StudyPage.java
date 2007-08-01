@@ -17,15 +17,19 @@ import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
+import edu.harvard.hmdc.vdcnet.study.DataFileFormatType;
 import edu.harvard.hmdc.vdcnet.study.ReviewStateServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.ReviewState;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.event.ActionEvent;
+import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -530,5 +534,18 @@ public boolean getNotesIsEmpty() {
             mailService.sendStudyReleasedNotification(studyUI.getStudy().getCreator().getEmail(), studyUI.getStudy().getTitle(), studyUI.getStudy().getOwner().getName());
         }
     }
+     
+     private List dataFileFormatTypes;
+     
+     public List getDataFileFormatTypes() {
+         if (dataFileFormatTypes == null) {
+            dataFileFormatTypes = new ArrayList();
+            dataFileFormatTypes.add( new SelectItem("", "Tab delimited") );
+            for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
+                dataFileFormatTypes.add( new SelectItem(type.getValue(), type.getName()) );
+            }
+       }
+        return dataFileFormatTypes;         
+     }
     
 }

@@ -9,24 +9,47 @@
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
 import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
+import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.io.*;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.faces.event.ValueChangeEvent;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author wbossons
  */
 
-public class SiteStatistics extends ReportConstants {
+
+
+public class SiteStatistics extends VDCBaseBean {
 
     private int startMonth = 7; // the default start month is July
     private int endMonth = 6; // the default end month is June.
 
     /** Creates a new instance of SiteStatistics */
     public SiteStatistics() {
+    }
+
+    public void init() {
+        super.init();
+        success = false;
+        //check to see if a reportType is in request
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String reportType = request.getParameter("reportType");
+        if (reportType == null) {
+            Iterator iterator = request.getParameterMap().keySet().iterator();
+            while (iterator.hasNext()) {
+                Object key = (Object) iterator.next();
+                if ( key instanceof String && ((String) key).indexOf("reportType") != -1 && !request.getParameter((String)key).equals("")) {
+                    this.setReportType(request.getParameter((String)key));
+                }
+            }
+        }
     }
 
     /**
@@ -42,71 +65,90 @@ public class SiteStatistics extends ReportConstants {
         reportwriter.writeMitReport();
         //writeMitReport(args[0]);
     }
+
     /**viewStatistics
-     * 
+     *
      * This is the action method from
      * theSiteStatistics page
-     * 
+     *
      * @author wbossons
      */
     public String viewStatistics() {
         String success = "success";
-        //set the directory and the conf file name
-        setDirectory("awstats");//TODO parameterize this
-        setNamedConfigFile("mit"); //TODO parameterize this
+        //what kind of report is being output?
+        setDirectory("awstats"); //TODO should this be parameterized?
         try {
-            //update the statistics database
-            boolean isUpdated = this.updateStatistics();
-            //send the response
-            if (isUpdated == false) {
-                System.out.println("Operation completed with errors. Please see the server log for details.");
+            if (this.getReportType().equals("iqss") || this.getReportType().equals("mit")) {
+                setNamedConfigFile(this.getReportType());
+                //update the statistics database
+                boolean isUpdated = this.updateStatistics();
+                //send the response
+                if (isUpdated == false) {
+                    System.out.println("Operation completed with errors. Please see the server log for details.");
+                }
+                //write out the html
+                this.writeStatistics();
+                //send the user to the page where the report can be viewed
+                //perhaps by stuffing a flag into the request so it knows 
+                //what to look for and then
+                HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+                request.setAttribute("reportType", this.getReportType());
+                success = "guiReport";
+            } else if (this.getReportType().equals("mitMonthly")) { //TODO: parameterize monthly reports
+                setNamedConfigFile("mit");
+                //update the statistics database
+                boolean isUpdated = this.updateStatistics();
+                // and do the text report actions
+                //put the reporttype in the request
+                
+                //set the navigation action
+                success = "monthlyReport";
             }
-            //write out the html
-            this.writeStatistics();
+            System.out.println("the report to print is " + this.getReportType());
         } catch (Exception e) {
             System.out.println("An error occurred. Unable to complete the operation.");
             success = "failed";
         } finally {
-        return success;
+            return success;
         }
     }
-    
+
     /** updateStatistics
-     * 
+     *
      * updates the awstats database file
-     * 
-     * 
-     * 
+     *
+     *
+     *
      * @author wbossons
      */
     public synchronized boolean updateStatistics() {
         boolean isUpdated = false;
         try {
-        Runtime runtime = Runtime.getRuntime();
-        String command  = "perl " + this.getDirectory() + "/awstats.pl -config=" + getNamedConfigFile() + " -update";
-        if (this.getDirectory() == null) {
-            throw new Exception("System property \"dvn.awstats.dir\" has not been set.");
-        }
-        Process process = runtime.exec(command);
-        StatisticsReportRunner errorRunner  = new StatisticsReportRunner(process.getInputStream(), "ERROR");            
-        errorRunner.start();
-        // An exitValue of 0 indicates termination with no errors                        
-        int exitValue = process.waitFor();
-        System.out.println("ExitValue: " + exitValue);
-        isUpdated = true;
+            Runtime runtime = Runtime.getRuntime();
+            String command = "perl " + this.getDirectory() + "/awstats.pl -config=" + getNamedConfigFile() + " -update";
+            if (this.getDirectory() == null) {
+                throw new Exception("System property \"dvn.awstats.dir\" has not been set.");
+            }
+            Process process = runtime.exec(command);
+            StatisticsReportRunner errorRunner = new StatisticsReportRunner(process.getInputStream(), "ERROR");
+            errorRunner.start();
+            // An exitValue of 0 indicates termination with no errors
+            int exitValue = process.waitFor();
+            System.out.println("ExitValue: " + exitValue);
+            isUpdated = true;
         } catch (Exception e) {
             System.out.println("An error occurred while updating awstats statistics. " + e.toString());
         } finally {
             return isUpdated;
         }
     }
-    
+
     /** writeStatistics
-     * 
+     *
      * writes the awstats data to html
-     * 
-     * 
-     * 
+     *
+     *
+     *
      * @author wbossons
      */
     public synchronized boolean writeStatistics() throws IOException {
@@ -114,23 +156,23 @@ public class SiteStatistics extends ReportConstants {
         try {
             String awstatsDirectory = this.getDirectory();
             if (awstatsDirectory == null) {
-                    throw new Exception("System property \"dvn.awstats.dir\" has not been set.");
+                throw new Exception("System property \"dvn.awstats.dir\" has not been set.");
             }
             String awstatsFilePath = awstatsDirectory + "/custom/awstats." + getNamedConfigFile() + ".html";
-            FileOutputStream fileoutput = new FileOutputStream((awstatsDirectory + "/custom/awstats.mit.html"));
+            FileOutputStream fileoutput = new FileOutputStream(awstatsDirectory + "/custom/awstats." + this.getNamedConfigFile() + ".html");
             Runtime runtime = Runtime.getRuntime();
-            String command  = "perl " + awstatsDirectory + "/awstats.pl -config=" + getNamedConfigFile() + " -output -staticlinks";
+            String command = "perl " + awstatsDirectory + "/awstats.pl -config=" + getNamedConfigFile() + " -output -staticlinks";
             Process process = runtime.exec(command);
             // check for errors and output
-            StatisticsReportRunner errorRunner  = new StatisticsReportRunner(process.getErrorStream(), "ERROR");            
+            StatisticsReportRunner errorRunner = new StatisticsReportRunner(process.getErrorStream(), "ERROR");
             StatisticsReportRunner reportRunner = new StatisticsReportRunner(process.getInputStream(), "OUTPUT", fileoutput);
             errorRunner.start();
             reportRunner.start();
-            // An exitValue of 0 indicates termination with no errors                        
+            // An exitValue of 0 indicates termination with no errors
             int exitValue = process.waitFor();
             System.out.println("ExitValue: " + exitValue);
             fileoutput.flush();
-            fileoutput.close(); 
+            fileoutput.close();
             isWritten = true;
         } catch (Throwable t) {
             t.printStackTrace();
@@ -144,26 +186,91 @@ public class SiteStatistics extends ReportConstants {
     }
 
     private String directory = null;
-    
+
     public String getDirectory() {
         return directory;
     }
-    
+
     public void setDirectory(String systemdir) {
         String systemdirectory = "dvn." + systemdir + ".dir";
         this.directory = System.getProperty(systemdirectory);
     }
-    
+
     private String namedConfigFile = null;
-    
+
     public String getNamedConfigFile() {
         return this.namedConfigFile;
     }
-    
+
     public void setNamedConfigFile(String filename) {
         this.namedConfigFile = filename;
     }
-    
+
+    private String reportType = null;
+
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
+
+    private SelectItem[] reportTypes = {new SelectItem("iqss", "IQSS Dataverse Network Graphical"), new SelectItem("mit", "MIT Graphical"), new SelectItem("mitMonthly", "MIT Monthly")};
+
+    public SelectItem[] getReportTypes() {
+        return reportTypes;
+    }
+
+    public void changeReportType(ValueChangeEvent event) {
+        String newValue = (String) event.getNewValue();
+        setReportType(newValue);
+    }
+
+    private String month = null;
+
+    public String getMonth() {
+        if (month == null) {
+            Date date = new Date();
+            String reportDate;
+            SimpleDateFormat simpledateformat = new SimpleDateFormat("MMMM");
+            reportDate = simpledateformat.format(date);
+            this.month = reportDate;
+        }
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    private String year = null;
+
+    public String getYear() {
+        if (year == null) {
+            Date date = new Date();
+            String reportDate;
+            SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy");
+            reportDate = simpledateformat.format(date);
+            this.year = reportDate;
+            //int year = Calendar.get(Calendar.YEAR);
+        }
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+    private boolean success;
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
     private String category;
 
     private String getCategory() {

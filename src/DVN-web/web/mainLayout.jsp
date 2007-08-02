@@ -36,6 +36,10 @@
             <f:subview id="footer">
                 <tiles:insert name="footer" flush="false"/>
             </f:subview>
+            <script language="javascript" src="/cgi/awstats/js/awstats_misc_tracker.js"></script>
+            <noscript>
+                <img src="/cgi/awstats/js/awstats_misc_tracker.js?nojs=y" height="0" width="0" border="0" style="display:block"/>
+            </noscript>
       </body>
 </ui:html>
 </ui:page>

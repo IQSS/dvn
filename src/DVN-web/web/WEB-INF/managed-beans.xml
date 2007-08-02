@@ -460,6 +460,11 @@
             <property-class>java.lang.String</property-class>
             <value>#{requestScope.reportType}</value>
         </managed-property>
+        <managed-property>
+            <property-name>reportee</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{requestScope.reportee}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>VDCGroupPage</managed-bean-name>

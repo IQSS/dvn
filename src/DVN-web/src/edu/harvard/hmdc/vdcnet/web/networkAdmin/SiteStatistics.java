@@ -38,14 +38,17 @@ public class SiteStatistics extends VDCBaseBean {
     public void init() {
         super.init();
         success = false;
-        //check to see if a reportType is in request
+        //check to see if a reportee is in request
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        String reportType = request.getParameter("reportType");
-        if (reportType == null) {
+        String reportee = request.getParameter("reportee");
+        if (reportee == null) {
             Iterator iterator = request.getParameterMap().keySet().iterator();
             while (iterator.hasNext()) {
                 Object key = (Object) iterator.next();
-                if ( key instanceof String && ((String) key).indexOf("reportType") != -1 && !request.getParameter((String)key).equals("")) {
+                if ( key instanceof String && ((String) key).indexOf("reportee") != -1 && !request.getParameter((String)key).equals("")) {
+                    this.setReportee(request.getParameter((String)key));
+                }
+                if ( key instanceof String && ((String) key).indexOf("reporType") != -1 && !request.getParameter((String)key).equals("")) {
                     this.setReportType(request.getParameter((String)key));
                 }
             }
@@ -61,9 +64,8 @@ public class SiteStatistics extends VDCBaseBean {
      */
     public static void main(String[] args) throws java.io.IOException {
         int months = Integer.parseInt(args[0]);
-        ReportWriter reportwriter = new ReportWriter(months, args[1]);
+        ReportWriter reportwriter = new ReportWriter(months, args[1], args[2], args[3]);//args[3] send a \r\n to run from command line, <br> is only for html (see below)
         reportwriter.writeMitReport();
-        //writeMitReport(args[0]);
     }
 
     /**viewStatistics
@@ -73,13 +75,22 @@ public class SiteStatistics extends VDCBaseBean {
      *
      * @author wbossons
      */
+    
     public String viewStatistics() {
         String success = "success";
-        //what kind of report is being output?
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        if (this.getReportee().equals("mitMonthly") ){
+            request.setAttribute("reportee", "mit");
+            request.setAttribute("reportType", "txt");
+            this.setReportType("txt");
+        } else {
+            request.setAttribute("reportee", this.getReportee());//used by view page to construct include
+            request.setAttribute("reportType", "html");
+        }
         setDirectory("awstats"); //TODO should this be parameterized?
         try {
-            if (this.getReportType().equals("iqss") || this.getReportType().equals("mit")) {
-                setNamedConfigFile(this.getReportType());
+            if ( this.getReportType().equals("html") ) {
+                setNamedConfigFile(this.getReportee());
                 //update the statistics database
                 boolean isUpdated = this.updateStatistics();
                 //send the response
@@ -88,23 +99,17 @@ public class SiteStatistics extends VDCBaseBean {
                 }
                 //write out the html
                 this.writeStatistics();
-                //send the user to the page where the report can be viewed
-                //perhaps by stuffing a flag into the request so it knows 
-                //what to look for and then
-                HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-                request.setAttribute("reportType", this.getReportType());
                 success = "guiReport";
-            } else if (this.getReportType().equals("mitMonthly")) { //TODO: parameterize monthly reports
+            } else if (this.getReportType().equals("txt")) { //TODO: parameterize monthly reports
                 setNamedConfigFile("mit");
-                //update the statistics database
                 boolean isUpdated = this.updateStatistics();
-                // and do the text report actions
-                //put the reporttype in the request
-                
-                //set the navigation action
+                int months  = 2;
+                String year = "2007";
+                ReportWriter reportwriter = new ReportWriter(months, year, this.getNamedConfigFile(), "<br /><br />");
+                reportwriter.writeMitReport();
                 success = "monthlyReport";
             }
-            System.out.println("the report to print is " + this.getReportType());
+            System.out.println("the report to print is " + this.getReportType() + " the reportee is " + this.getReportee());
         } catch (Exception e) {
             System.out.println("An error occurred. Unable to complete the operation.");
             success = "failed";
@@ -206,22 +211,43 @@ public class SiteStatistics extends VDCBaseBean {
         this.namedConfigFile = filename;
     }
 
+    private String reportee = null;
+
+    public String getReportee() {
+        return reportee;
+    }
+
+    public void setReportee(String reportee) {
+        this.reportee = reportee;
+    }
+
+    private SelectItem[] reportees = {new SelectItem("iqss", "IQSS Dataverse Network Graphical"), new SelectItem("mit", "MIT Graphical"), new SelectItem("mitMonthly", "MIT Monthly")};
+
+    public SelectItem[] getReportees() {
+        return reportees;
+    }
+
+    public void changeReportee(ValueChangeEvent event) {
+        String newValue = (String) event.getNewValue();
+        setReportee(newValue);
+        if (newValue.equals("mitMonthly"))
+            this.setReportType("txt");
+        else
+            this.setReportType("html");
+    }
+    
     private String reportType = null;
 
     public String getReportType() {
+        if (reportType == null)
+            this.setReportType("html");
         return reportType;
     }
 
     public void setReportType(String reportType) {
         this.reportType = reportType;
     }
-
-    private SelectItem[] reportTypes = {new SelectItem("iqss", "IQSS Dataverse Network Graphical"), new SelectItem("mit", "MIT Graphical"), new SelectItem("mitMonthly", "MIT Monthly")};
-
-    public SelectItem[] getReportTypes() {
-        return reportTypes;
-    }
-
+    
     public void changeReportType(ValueChangeEvent event) {
         String newValue = (String) event.getNewValue();
         setReportType(newValue);

@@ -789,9 +789,13 @@ public class Indexer {
         anyTerms.add(buildAnyTerm("authorName",string));
         anyTerms.add(buildAnyTerm("authorAffiliation", string));
         anyTerms.add(buildAnyTerm("fundingAgency",string));
+        anyTerms.add(buildAnyTerm("producerName",string));
+        anyTerms.add(buildAnyTerm("distributorName",string));
         anyTerms.add(buildAnyTerm("distributorContact",string));
         anyTerms.add(buildAnyTerm("distributorContactAffiliation",string));
         anyTerms.add(buildAnyTerm("distributorContactEmail",string));
+        anyTerms.add(buildAnyTerm("productionDate",string));
+        anyTerms.add(buildAnyTerm("distributionDate",string));
         anyTerms.add(buildAnyTerm("dateOfDeposit",string));
         anyTerms.add(buildAnyTerm("depositor",string));
         anyTerms.add(buildAnyTerm("seriesName",string));
@@ -828,6 +832,8 @@ public class Indexer {
         anyTerms.add(buildAnyTerm("otherDataAppraisal",string));
         anyTerms.add(buildAnyTerm("placeOfAccess",string));
         anyTerms.add(buildAnyTerm("originalArchive",string));
+        anyTerms.add(buildAnyTerm("geographicCoverage",string));
+        anyTerms.add(buildAnyTerm("geographicUnit",string));
         anyTerms.add(buildAnyTerm("availabilityStatus",string));
         anyTerms.add(buildAnyTerm("collectionSize",string));
         anyTerms.add(buildAnyTerm("studyCompletion",string));
@@ -841,6 +847,7 @@ public class Indexer {
         anyTerms.add(buildAnyTerm("disclaimer",string));
         anyTerms.add(buildAnyTerm("relatedMaterial",string));
         anyTerms.add(buildAnyTerm("relatedPublications",string));
+        anyTerms.add(buildAnyTerm("relatedStudy",string));
         anyTerms.add(buildAnyTerm("otherReferences",string));
         anyTerms.add(buildAnyTerm("subtitle",string));
         anyTerms.add(buildAnyTerm("keywordVocabulary",string));

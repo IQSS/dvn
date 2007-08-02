@@ -21,15 +21,21 @@ import java.util.List;
 
 public class ReportWriter extends ReportConstants {
 
-	private int numberOfMonths = 0;
+	private static String awstatsDirectory = System.getProperty("dvn.awstats.dir");
+	private static String line             = null;
+        
+        private int numberOfMonths = 0;
 	private String theYear     = new String("");
+        private String reportee    = new String("");
+        private String separator   = new String("");
 
-	public ReportWriter(int months, String year) {
+	public ReportWriter(int months, String year, String reportee, String separator) {
 		this.numberOfMonths    = months;
 		this.theYear	       = year;
+                this.reportee          = reportee;
+                this.separator         = separator;
 	}
-
-	private static String line     = null;
+        
     /**
      *
      * @description
@@ -42,8 +48,8 @@ public class ReportWriter extends ReportConstants {
      * middle portion of the awstats config file
      * ex.awstats.mit.txt
      *
-     * TODO: parameterize the fiscal year
-     * TODO: parameterize the number of months
+     * TODO: parameterize the system directory
+     * TODO: parameterize the config file name (ex. mit)
      */
     public void writeMitReport()
     			throws java.io.IOException {
@@ -54,12 +60,13 @@ public class ReportWriter extends ReportConstants {
 	    LinkedHashMap totalUniqueList = new LinkedHashMap();
 	    LinkedHashMap downloadsList   = new LinkedHashMap();
 	    LinkedHashMap subsetsList     = new LinkedHashMap();
-		LinkedHashMap downloadsIpList = new LinkedHashMap();
-	    LinkedHashMap subsetsIpList     = new LinkedHashMap();
+	    LinkedHashMap downloadsIpList = new LinkedHashMap();
+	    LinkedHashMap subsetsIpList   = new LinkedHashMap();
 
 	    String[][] monthsInReport = getReportFiles(numberOfMonths);
             for (int i = 0; i < monthsInReport.length; i++) {
-                inputStream = new BufferedReader(new FileReader("c:\\data\\awstats" + monthsInReport[0][i] + theYear + ".mit.txt"));
+                String fileToRead = awstatsDirectory + "/data/awstats" + monthsInReport[0][i] + theYear + "." + reportee + ".txt";
+                inputStream = new BufferedReader(new FileReader(fileToRead));
                 boolean isGeneral = false;
                 while ((line = inputStream.readLine()) != null) {
                     if (line.contains(ReportConstants.BEGIN_GENERAL)) {
@@ -74,12 +81,12 @@ public class ReportWriter extends ReportConstants {
                             totalUniqueList.put(monthsInReport[1][i], reportValue);
                     }
 
-                    //extra1
+                    //extra1 (File Downloads)
                     if (line.contains(ReportConstants.BEGIN_EXTRA_1)) {
                             String reportValue = line.substring(line.indexOf(ReportConstants.DELIMITER) + 1);
                             downloadsList.put(monthsInReport[1][i], reportValue);
                     }
-                    //extra2
+                    //extra2 (Subsetting Views Resulting in a Subsetting and Analysis Request)
                     if (line.contains(ReportConstants.BEGIN_EXTRA_2)) {
                             String reportValue = line.substring(line.indexOf(ReportConstants.DELIMITER) + 1);
                             subsetsList.put(monthsInReport[1][i], reportValue);
@@ -123,6 +130,8 @@ public class ReportWriter extends ReportConstants {
 	*
 	* @param hashmap A hashmap with the report heading and data.
 	*
+        *  TODO: Use format to write this report in the proper format and / or
+        *  TODO: Use dl to format this report 
 	* @author wbossons
 	*/
 
@@ -130,22 +139,35 @@ public class ReportWriter extends ReportConstants {
 				throws java.io.IOException {
             BufferedWriter outputStream = null;
             try {
-                outputStream = new BufferedWriter(new FileWriter("c:\\data\\mitreportoutput.txt"));
+                String fileToRead = awstatsDirectory + "/custom/awstats." + reportee + ".txt";
+                outputStream = new BufferedWriter(new FileWriter(fileToRead));
+                if (separator.contains("<br />")) {
+                    outputStream.write("<div style=\"max-width:780; margin-top:25px; margin-right:auto; margin-left:auto;\">");
+                    outputStream.write("<span style=\"font-weight:800; font-size: medium;\">Monthly Usage Report of MIT Affiliates of the Dataverse Network</span>" + separator);
+                    outputStream.write("<div style=\"text-align:right;\"><input type=\"button\" value=\"Print\" onclick=\"window.open('" + awstatsDirectory + "/custom/awstats.' + reportee + '.txt', 'newWindow','menubar=0,resizable=1,width=640,height=480');\"/></div>");
+                    outputStream.write("<div style=\"margin-left:25px; margin-right:25px; font-size:medium; text-align:left;\">");
+                } else {
+                    outputStream.write("Monthly Usage Report of MIT Affiliates of the Dataverse Network" + separator);
+                }
                 Iterator iterator = hashmap.keySet().iterator();
                 int count = 1;
                 while (iterator.hasNext()) {
                     String key = (String)iterator.next();
-                    outputStream.write("\n\r" + count + ". " + key + "\n\r");
+                    outputStream.write(separator + count + ". " + key + separator);
                     outputStream.newLine();
                     LinkedHashMap innermap = (LinkedHashMap)hashmap.get(key);
                     Iterator innerIterator = innermap.keySet().iterator();
                     while (innerIterator.hasNext()) {
                         String monthKey = (String)innerIterator.next();
                         outputStream.write(monthKey + ": " + innermap.get(monthKey));
+                        if (separator.contains("<br />"))
+                            outputStream.write("<br />");
                         outputStream.newLine();
                     }
                     count++;
                 }
+                if (separator.contains("<br />"))
+                    outputStream.write("</div></div>");
             } catch (IOException ioe) {
                     System.out.println("Error " + ioe.getCause().toString());
             } finally {

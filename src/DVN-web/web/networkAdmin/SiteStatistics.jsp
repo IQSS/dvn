@@ -17,17 +17,17 @@
                     <ui:panelLayout id="layoutPanel3" panelLayout="flow" style="padding: 30px 50px 30px 50px; ">
                         <ui:panelGroup  block="true" id="groupPanel2">
                             <h:outputText  id="viewNetwork" value="Select a Report Type"/>
-                            <h:selectOneRadio id="reportType" layout="pageDirection" onchange="submit()" required="true" value="#{SiteStatistics.reportType}" valueChangeListener="#{SiteStatistics.changeReportType}">
-                                <f:selectItems value="#{SiteStatistics.reportTypes}"/>
+                            <h:selectOneRadio id="reportee" layout="pageDirection" onchange="submit();" required="true" value="#{SiteStatistics.reportee}" valueChangeListener="#{SiteStatistics.changeReportee}">
+                                <f:selectItems value="#{SiteStatistics.reportees}"/>
                             </h:selectOneRadio>
-                                
-                            <!-- <ui:panelGroup  block="true" style="padding-right: 70px">
+                            <h:inputHidden id="reportType" value="#{SiteStatistics.reportType}" valueChangeListener="#{SiteStatistics.changeReportType}"/>
+                            <ui:panelGroup  block="true" style="padding-right: 70px">
                               <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />  
-                             <h:outputText value="#{bundle.enableNetworkAnnouncementsHelpMsg} #{bundle.htmlHelpText}" styleClass="vdcHelpText" />
-                            </ui:panelGroup> -->
+                             <h:outputText value="The MIT montly report will be reported for each month beginning with July and ending in the current month." styleClass="vdcHelpText" />
+                            </ui:panelGroup>
                         </ui:panelGroup>
-                        <h:message id="reportTypeMsg" 
-                            for="reportType"
+                        <h:message id="reporteeMsg" 
+                            for="reportee"
                             styleClass="errorMessage"/>
                             <f:verbatim><br /></f:verbatim>
                         <ui:panelGroup rendered="#{SiteStatistics.reportType == 'mitMonthly'" separator="&lt;br /&gt;&lt;br /&gt;" block="true" id="groupPanel3" style="padding-top: 5px; padding-bottom: 20px">

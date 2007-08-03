@@ -54,7 +54,7 @@
                                      </ui:panelGroup>
                                     <ui:panelGroup block="true"  style="padding-bottom: 5px">
                                         <h:outputText id="outputText7" value="Enter the Username of the user you want to add: "/>
-                                        <h:inputText onkeypress="if (window.event) return processEvent('', 'content:NetworkPrivilegedUsersPage:NetworkPrivilegedUsersPageView:addUserbutton'); else return processEvent(event, 'content:NetworkPrivilegedUsersPage:NetworkPrivilegedUsersPageView:addUserbutton');" id="textField1" value="#{NetworkPrivilegedUsersPage.userName}"/>
+                                        <h:inputText  onkeypress="if (window.event) return processEvent('', 'content:NetworkPrivilegedUsersPage:NetworkPrivilegedUsersPageView:addUserbutton'); else return processEvent(event, 'content:NetworkPrivilegedUsersPage:NetworkPrivilegedUsersPageView:addUserbutton');" id="textField1" value="#{NetworkPrivilegedUsersPage.userName}"/>
                                         <h:commandLink  id="addUserbutton" value="Add" actionListener="#{NetworkPrivilegedUsersPage.addUser}"/>
                                         <h:outputText styleClass="errorMessage" value="User Not Found." rendered="#{NetworkPrivilegedUsersPage.userNotFound}"/>
                                   </ui:panelGroup>
@@ -77,9 +77,9 @@
                                             <f:facet name="header">
                                                 <h:outputText id="outputText16" value="Privileged Role"/>
                                             </f:facet>
-                                                     <h:selectOneRadio id="roleSelectMenu" value="#{currentRow.networkRoleId}">
-                                                     <f:selectItems id="roleSelectItems" value="#{NetworkPrivilegedUsersPage.roleSelectItems}"/>
-                                                   
+                                                    <h:selectOneRadio  id="roleSelectMenu" value="#{currentRow.networkRoleId}"> 
+                                                        <f:selectItems id="roleSelectItems" value="#{NetworkPrivilegedUsersPage.roleSelectItems}"/>
+                                                        <h:message for="roleSelectMenu"  styleClass="errorMessage"/>
                                                    </h:selectOneRadio>
                                      
                                         </h:column>
@@ -92,7 +92,7 @@
                                         style="padding-bottom: 10px; padding-top: 10px; padding-right: 5px;" styleClass="vdcTextRight">
                                         <h:outputText  styleClass="vdcHelpText" value="(Nothing in this page will be saved until you click  Save Changes)"/>  
                                         <h:commandButton id="button5" value="Save Changes" action="#{NetworkPrivilegedUsersPage.save}"/>
-                                        <h:commandButton  id = "cancelButton" value="Cancel" action="#{NetworkPrivilegedUsersPage.cancel}"/>   
+                                        <h:commandButton immediate="true" id = "cancelButton" value="Cancel" action="#{NetworkPrivilegedUsersPage.cancel}"/>   
                                         </ui:panelGroup>
                               </ui:panelLayout>
                             </ui:panelLayout>

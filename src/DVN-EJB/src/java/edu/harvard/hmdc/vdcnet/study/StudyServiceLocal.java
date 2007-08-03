@@ -71,7 +71,7 @@ public interface StudyServiceLocal {
 
     void addStudyLock(Study study, VDCUser user, String detail);
 
-
+    void deleteDataVariables(Long dataTableId);
 
     edu.harvard.hmdc.vdcnet.study.Study saveStudy(Study study, Long userId);
 

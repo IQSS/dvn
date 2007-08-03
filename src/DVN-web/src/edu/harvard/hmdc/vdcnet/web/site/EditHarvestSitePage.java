@@ -643,6 +643,18 @@ public class EditHarvestSitePage extends VDCBaseBean {
     public void setHandlePrefixSelectOneMenu(HtmlSelectOneMenu handlePrefixSelectOneMenu) {
         this.handlePrefixSelectOneMenu = handlePrefixSelectOneMenu;
     }
-   
+
+
+    public Boolean getSubsetRestrictedWrapper() {
+        return harvestingDataverse.isSubsetRestricted();
+    }
+
+    public void setSubsetRestrictedWrapper(Boolean subsetRestrictedWrapper) {
+        if (subsetRestrictedWrapper != null) {
+            harvestingDataverse.setSubsetRestricted(subsetRestrictedWrapper);
+        } else {
+            harvestingDataverse.setSubsetRestricted(false);
+        }
+    }    
     
 }

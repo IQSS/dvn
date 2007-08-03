@@ -244,6 +244,7 @@ public class PrivilegedUsersPage extends VDCBaseBean {
        this.editVDCPrivileges.save(contributorUrl);
         
         success=true;
+        editVDCPrivileges.setVdc(vdc.getId());
         vdc = editVDCPrivileges.getVdc();
       
         return "result";  // Go back to the same page
@@ -450,7 +451,7 @@ public class PrivilegedUsersPage extends VDCBaseBean {
         
     }
 
-    
+   
      public boolean validateGroupName(FacesContext context,
             UIComponent toValidate,
             Object value) {

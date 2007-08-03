@@ -18,6 +18,14 @@
       <ui:head title="#{pageTitle.value}">
          <ui:link  id="link2" url="/resources/stylesheet.css"/>
          <ui:script url="/resources/EventCapture.js"/>
+         <f:verbatim>
+             <script language="JavaScript">
+                 var isChild = true;
+                 function printMe() {
+                    window.print();
+                 }
+             </script>
+         </f:verbatim>
       </ui:head>
       <body style="background-color:#eeeeee;">
            <!-- <f:subview id="banner">

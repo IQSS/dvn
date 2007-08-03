@@ -200,8 +200,13 @@ sub parse_file {
 			if ( ($fieldcode eq '8') && ($self->getCrrntVarType()) ){
 				$fieldcode='8S';
 			}
-			
+			if ($fieldcode eq 'Z'){
+				print $FH "The parsing process cannot proceed because this file lacks the data section.\nCheck the integrity of this spsss-portable file.\n";
+				print STDERR "The pasring process cannot proceed due to the lack of a data section.\nCheck the integrity of this spsss-portable file.\n";
+				die "The process was killed due to the lack of a data section: ";
+			}
 			print $FH "recordType=",$fieldcode,"\trecordType2Method=",$fieldcode2Method->{$fieldcode},"\n" if $DEBUG;
+			
 			$method4field = "read_" . $fieldcode2Method->{$fieldcode};
 			$self->$method4field();
 			$end=time() if $DEBUG;

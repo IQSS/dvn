@@ -1,0 +1,308 @@
+AWSTATS DATA FILE 6.6 (build 1.1)
+# If you remove this file, all statistics for date 200708 will be lost/reset.
+
+# Position (offset in bytes) in this file of beginning of each section for
+# direct I/O access. If you made changes somewhere in this file, you should
+# also remove completely the MAP section (AWStats will rewrite it at next
+# update).
+BEGIN_MAP 31
+POS_GENERAL 1994                
+POS_TIME 2651                
+POS_VISITOR 7260                
+POS_DAY 7597                
+POS_DOMAIN 3178                
+POS_LOGIN 3408                
+POS_ROBOT 3563                
+POS_WORMS 3695                
+POS_EMAILSENDER 3826                
+POS_EMAILRECEIVER 3969                
+POS_SESSION 7653                
+POS_SIDER 7836                
+POS_FILETYPES 4104                
+POS_OS 4299                
+POS_BROWSER 4348                
+POS_SCREENSIZE 4435                
+POS_UNKNOWNREFERER 4509                
+POS_UNKNOWNREFERERBROWSER 4596                
+POS_ORIGIN 4678                
+POS_SEREFERRALS 4814                
+POS_PAGEREFS 4958                
+POS_SEARCHWORDS 5231                
+POS_KEYWORDS 5383                
+POS_MISC 2315                
+POS_ERRORS 5442                
+POS_CLUSTER 3264                
+POS_SIDER_404 5517                
+POS_EXTRA_1 5643                
+POS_EXTRA_2 6032                
+POS_EXTRA_3 6376                
+POS_EXTRA_4 6883                
+END_MAP
+
+# LastLine    = Date of last record processed - Last record line number in last log - Last record offset in last log - Last record signature value
+# FirstTime   = Date of first visit for history file
+# LastTime    = Date of last visit for history file
+# LastUpdate  = Date of last update - Nb of parsed records - Nb of parsed old records - Nb of parsed new records - Nb of parsed corrupted - Nb of parsed dropped
+# TotalVisits = Number of visits
+# TotalUnique = Number of unique visitors
+# MonthHostsKnown   = Number of hosts known
+# MonthHostsUnKnown = Number of hosts unknown
+BEGIN_GENERAL 8
+LastLine 20070801180356 710 205795 0
+FirstTime 0
+LastTime 20070731093047
+LastUpdate 20070802103156 710 710 0 0 0
+TotalVisits 0                   
+TotalUnique 4                   
+MonthHostsKnown 0                   
+MonthHostsUnknown 9                   
+END_GENERAL
+
+# Misc ID - Pages - Hits - Bandwidth
+BEGIN_MISC 10
+QuickTimeSupport 0 0 0
+JavaEnabled 0 0 0
+JavascriptDisabled 0 0 0
+PDFSupport 0 0 0
+WindowsMediaPlayerSupport 0 0 0
+AddToFavourites 0 0 0
+RealPlayerSupport 0 0 0
+TotalMisc 0 0 0
+DirectorSupport 0 0 0
+FlashSupport 0 0 0
+END_MISC
+
+# Hour - Pages - Hits - Bandwidth - Not viewed Pages - Not viewed Hits - Not viewed Bandwidth
+BEGIN_TIME 24
+0 0 0 0 0 0 0
+1 0 0 0 0 0 0
+2 0 0 0 0 0 0
+3 0 0 0 0 0 0
+4 0 0 0 0 0 0
+5 0 0 0 0 0 0
+6 0 0 0 0 0 0
+7 0 0 0 0 0 0
+8 0 0 0 0 0 0
+9 15 15 1433149 0 0 0
+10 19 19 1344194 0 0 0
+11 3 3 218655 0 0 0
+12 0 7 0 0 0 0
+13 33 33 2868482 0 0 0
+14 14 20 435222 0 0 0
+15 13 13 185120 0 0 0
+16 45 45 962430 0 0 0
+17 0 0 0 0 0 0
+18 0 0 0 0 0 0
+19 0 0 0 0 0 0
+20 0 0 0 0 0 0
+21 0 0 0 0 0 0
+22 0 0 0 0 0 0
+23 0 0 0 0 0 0
+END_TIME
+
+# Domain - Pages - Hits - Bandwidth
+# The 10 first Pages must be first (order not required for others)
+BEGIN_DOMAIN 1
+ip 142 155 7447252
+END_DOMAIN
+
+# Cluster ID - Pages - Hits - Bandwidth
+BEGIN_CLUSTER 0
+END_CLUSTER
+
+# Login - Pages - Hits - Bandwidth - Last visit
+# The 10 first Pages must be first (order not required for others)
+BEGIN_LOGIN 0
+END_LOGIN
+
+# Robot ID - Hits - Bandwidth - Last visit - Hits on robots.txt
+# The 10 first Hits must be first (order not required for others)
+BEGIN_ROBOT 0
+END_ROBOT
+
+# Worm ID - Hits - Bandwidth - Last visit
+# The 5 first Hits must be first (order not required for others)
+BEGIN_WORMS 0
+END_WORMS
+
+# EMail - Hits - Bandwidth - Last visit
+# The 20 first Hits must be first (order not required for others)
+BEGIN_EMAILSENDER 0
+END_EMAILSENDER
+
+# EMail - Hits - Bandwidth - Last visit
+# The 20 first hits must be first (order not required for others)
+BEGIN_EMAILRECEIVER 0
+END_EMAILRECEIVER
+
+# Files type - Hits - Bandwidth - Bandwidth without compression - Bandwidth after compression
+BEGIN_FILETYPES 9
+css 2 64932 0 0
+png 7 0 0 0
+txt 16 292160 0 0
+jsp 84 4257763 0 0
+zip 22 519116 0 0
+html 1 75095 0 0
+jpg 2 688 0 0
+tab 19 2234760 0 0
+js 2 2738 0 0
+END_FILETYPES
+
+# OS ID - Hits
+BEGIN_OS 1
+winxp 155
+END_OS
+
+# Browser ID - Hits
+BEGIN_BROWSER 2
+firefox2.0.0.4 133
+firefox2.0.0.5 22
+END_BROWSER
+
+# Screen size - Hits
+BEGIN_SCREENSIZE 0
+END_SCREENSIZE
+
+# Unknown referer OS - Last visit date
+BEGIN_UNKNOWNREFERER 0
+END_UNKNOWNREFERER
+
+# Unknown referer Browser - Last visit date
+BEGIN_UNKNOWNREFERERBROWSER 0
+END_UNKNOWNREFERERBROWSER
+
+# Origin - Pages - Hits 
+BEGIN_ORIGIN 6
+From0 0 0
+From1 53 53
+From2 0 0
+From3 41 41
+From4 48 61
+From5 0 0
+END_ORIGIN
+
+# Search engine referers ID - Pages - Hits
+BEGIN_SEREFERRALS 0
+END_SEREFERRALS
+
+# External page referers - Pages - Hits
+# The 10 first Pages must be first (order not required for others)
+BEGIN_PAGEREFS 2
+http://dvn-qa2.hmdc.harvard.edu/dvn/faces/HomePage.jsp 22 22
+http://140.247.244.178:8080/dvn/faces/study/StudyPage.jsp 19 19
+END_PAGEREFS
+
+# Search keyphrases - Number of search
+# The 10 first number of search must be first (order not required for others)
+BEGIN_SEARCHWORDS 0
+END_SEARCHWORDS
+
+# Search keywords - Number of search
+# The 10 first number of search must be first (order not required for others)
+BEGIN_KEYWORDS 0
+END_KEYWORDS
+
+# Errors - Hits - Bandwidth
+BEGIN_ERRORS 0
+END_ERRORS
+
+# URL with 404 errors - Hits - Last URL referer
+BEGIN_SIDER_404 0
+END_SIDER_404
+
+# Extra key - Pages - Hits - Bandwidth - Last access
+# The 50 first number of hits are first
+BEGIN_EXTRA_1 6
+/dvn/dv/vdc1/FileDownload/nekoinnerclass.txt 16 16 0 
+/dvn/FileDownload/ 16 16 0 
+/dvn/dv/vdc1/FileDownload/study_10012.zip 13 13 0 
+/dvn/dv/vdc1/FileDownload/EXAMPW2.DTA.tab 10 10 0 
+/dvn/FileDownload/study_10000.zip 7 7 0 
+/dvn/FileDownload/EXAMFAC2.DTA.tab 2 2 0 
+END_EXTRA_1
+
+# Extra key - Pages - Hits - Bandwidth - Last access
+# The 50 first number of hits are first
+BEGIN_EXTRA_2 7
+/dvn/FileDownload/?fileId=12345&isSSR=1 8 8 0 
+/dvn/FileDownload/?fileId=5939&isSSR=1 3 3 0 
+studyId=1&isSSR=1 1 1 0 
+studyId=3&isSSR=1 1 1 0 
+/dvn/ddi/ 1 1 0 
+/dvn/ddi/?studyId=1&isSSR=1 1 1 0 
+studyId=375&isSSR=1 1 1 0 
+END_EXTRA_2
+
+# Extra key - Pages - Hits - Bandwidth - Last access
+# The 50 first number of hits are first
+BEGIN_EXTRA_3 16
+140.247.116.247 15 15 0 
+198.125.161.1 8 8 0 
+198.125.161.5 7 7 0 
+/dvn/dv/vdc1/FileDownload/ 7 7 0 
+140.247.116.262 5 5 0 
+140.247.116.260 5 5 0 
+140.247.116.266 5 5 0 
+140.247.116.246 5 5 0 
+140.247.116.261 3 3 0 
+140.247.116.245 3 3 0 
+140.247.116.255 2 2 0 
+140.247.116.263 2 2 0 
+140.247.116.267 2 2 0 
+198.125.161.5127.0.0.1 1 1 0 
+140.247.116.256 1 1 0 
+140.247.116.257 1 1 0 
+END_EXTRA_3
+
+# Extra key - Pages - Hits - Bandwidth - Last access
+# The 50 first number of hits are first
+BEGIN_EXTRA_4 3
+198.125.161.1 4 4 0 
+198.125.161.5 3 3 0 
+198.125.161.5127.0.0.1 1 1 0 
+END_EXTRA_4
+
+# Host - Pages - Hits - Bandwidth - Last visit date - [Start date of last visit] - [Last page of last visit]
+# [Start date of last visit] and [Last page of last visit] are saved only if session is not finished
+# The 10 first Hits must be first (order not required for others)
+BEGIN_VISITOR 9
+18.51.1.222 81 81 3867038 20070731093059
+198.125.161.1 30 31 2298127 20070719132059
+198.125.163.1 23 30 318512 20070718163447
+198.125.161.5 8 8 963575 20070719140259
+198.125.160.1 0 1 0 
+198.125.162.1 0 1 0 
+192.52.61.1 0 1 0 
+192.52.65.5 0 1 0 
+192.52.63.1 0 1 0 
+END_VISITOR
+
+# Date - Pages - Hits - Bandwidth - Visits
+BEGIN_DAY 0
+END_DAY
+
+# Session range - Number of visits
+BEGIN_SESSION 5
+1h+ 2
+5mn-15mn 3
+0s-30s 1
+2mn-5mn 1
+30mn-1h 2
+END_SESSION
+
+# URL - Pages - Bandwidth - Entry - Exit
+# The 10 first Pages must be first (order not required for others)
+BEGIN_SIDER 12
+/dvn/ddi/ 19 613016 3 0
+/dvn/faces/networkAdmin/NetworkOptionsPage.jsp 19 163628 2 1
+/dvn/FileDownload/ 18 2681712 0 0
+/dvn/faces/subsetting/SubsettingPage.jsp 16 598512 0 1
+/dvn/dv/vdc1/FileDownload/nekoinnerclass.txt 16 292160 0 1
+/dvn/dv/vdc1/FileDownload/EXAMPW2.DTA.tab 15 2234760 2 4
+/dvn/dv/vdc1/FileDownload/study_10012.zip 13 519116 0 0
+/dvn/ 9 175059 0 2
+/dvn/FileDownload/study_10000.zip 9 0 1 0
+/dvn/FileDownload/EXAMFAC2.DTA.tab 4 0 1 0
+/dvn/faces/networkAdmin/WendysPage.jsp 3 25836 0 0
+/dvn/FileDownload/awstats.demo.html 1 75095 0 0
+END_SIDER

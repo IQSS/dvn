@@ -1,0 +1,268 @@
+AWSTATS DATA FILE 6.6 (build 1.1)
+# If you remove this file, all statistics for date 200708 will be lost/reset.
+
+# Position (offset in bytes) in this file of beginning of each section for
+# direct I/O access. If you made changes somewhere in this file, you should
+# also remove completely the MAP section (AWStats will rewrite it at next
+# update).
+BEGIN_MAP 31
+POS_GENERAL 1994                
+POS_TIME 2664                
+POS_VISITOR 6581                
+POS_DAY 6751                
+POS_DOMAIN 3201                
+POS_LOGIN 3430                
+POS_ROBOT 3585                
+POS_WORMS 3717                
+POS_EMAILSENDER 3848                
+POS_EMAILRECEIVER 3991                
+POS_SESSION 6833                
+POS_SIDER 6996                
+POS_FILETYPES 4126                
+POS_OS 4299                
+POS_BROWSER 4348                
+POS_SCREENSIZE 4417                
+POS_UNKNOWNREFERER 4491                
+POS_UNKNOWNREFERERBROWSER 4578                
+POS_ORIGIN 4660                
+POS_SEREFERRALS 4795                
+POS_PAGEREFS 4939                
+POS_SEARCHWORDS 5087                
+POS_KEYWORDS 5239                
+POS_MISC 2328                
+POS_ERRORS 5298                
+POS_CLUSTER 3286                
+POS_SIDER_404 5403                
+POS_EXTRA_1 5910                
+POS_EXTRA_2 6032                
+POS_EXTRA_3 6154                
+POS_EXTRA_4 6276                
+END_MAP
+
+# LastLine    = Date of last record processed - Last record line number in last log - Last record offset in last log - Last record signature value
+# FirstTime   = Date of first visit for history file
+# LastTime    = Date of last visit for history file
+# LastUpdate  = Date of last update - Nb of parsed records - Nb of parsed old records - Nb of parsed new records - Nb of parsed corrupted - Nb of parsed dropped
+# TotalVisits = Number of visits
+# TotalUnique = Number of unique visitors
+# MonthHostsKnown   = Number of hosts known
+# MonthHostsUnKnown = Number of hosts unknown
+BEGIN_GENERAL 8
+LastLine 20070801180356 710 205795 0
+FirstTime 20070801102001
+LastTime 20070801180356
+LastUpdate 20070802100900 710 710 0 0 0
+TotalVisits 4                   
+TotalUnique 1                   
+MonthHostsKnown 0                   
+MonthHostsUnknown 1                   
+END_GENERAL
+
+# Misc ID - Pages - Hits - Bandwidth
+BEGIN_MISC 10
+QuickTimeSupport 0 0 0
+JavaEnabled 0 0 0
+JavascriptDisabled 0 0 0
+PDFSupport 0 0 0
+WindowsMediaPlayerSupport 0 0 0
+AddToFavourites 0 0 0
+RealPlayerSupport 0 0 0
+TotalMisc 0 0 0
+DirectorSupport 0 0 0
+FlashSupport 0 0 0
+END_MISC
+
+# Hour - Pages - Hits - Bandwidth - Not viewed Pages - Not viewed Hits - Not viewed Bandwidth
+BEGIN_TIME 24
+0 0 0 0 0 0 0
+1 0 0 0 0 0 0
+2 0 0 0 0 0 0
+3 0 0 0 0 0 0
+4 0 0 0 0 0 0
+5 0 0 0 0 0 0
+6 0 0 0 0 0 0
+7 0 0 0 0 0 0
+8 0 0 0 0 0 0
+9 0 0 0 0 0 0
+10 2 36 106044 0 0 0
+11 4 19 170813 1 1 1022
+12 0 0 0 0 0 0
+13 4 22 333443 1 1 1022
+14 27 153 758743 3 3 1022
+15 3 17 176063 0 0 0
+16 0 0 0 4 4 4124
+17 43 407 1873613 5 5 4088
+18 2 9 11134 0 0 0
+19 0 0 0 0 0 0
+20 0 0 0 0 0 0
+21 0 0 0 0 0 0
+22 0 0 0 0 0 0
+23 0 0 0 0 0 0
+END_TIME
+
+# Domain - Pages - Hits - Bandwidth
+# The 10 first Pages must be first (order not required for others)
+BEGIN_DOMAIN 1
+ip 85 663 3429853
+END_DOMAIN
+
+# Cluster ID - Pages - Hits - Bandwidth
+BEGIN_CLUSTER 0
+END_CLUSTER
+
+# Login - Pages - Hits - Bandwidth - Last visit
+# The 10 first Pages must be first (order not required for others)
+BEGIN_LOGIN 0
+END_LOGIN
+
+# Robot ID - Hits - Bandwidth - Last visit - Hits on robots.txt
+# The 10 first Hits must be first (order not required for others)
+BEGIN_ROBOT 0
+END_ROBOT
+
+# Worm ID - Hits - Bandwidth - Last visit
+# The 5 first Hits must be first (order not required for others)
+BEGIN_WORMS 0
+END_WORMS
+
+# EMail - Hits - Bandwidth - Last visit
+# The 20 first Hits must be first (order not required for others)
+BEGIN_EMAILSENDER 0
+END_EMAILSENDER
+
+# EMail - Hits - Bandwidth - Last visit
+# The 20 first hits must be first (order not required for others)
+BEGIN_EMAILRECEIVER 0
+END_EMAILRECEIVER
+
+# Files type - Hits - Bandwidth - Bandwidth without compression - Bandwidth after compression
+BEGIN_FILETYPES 7
+css 91 939312 0 0
+png 261 41264 0 0
+html 2 158536 0 0
+js 92 737279 0 0
+jpg 82 143654 0 0
+jsp 83 1383014 0 0
+gif 52 26794 0 0
+END_FILETYPES
+
+# OS ID - Hits
+BEGIN_OS 1
+winxp 663
+END_OS
+
+# Browser ID - Hits
+BEGIN_BROWSER 1
+firefox2.0.0.6 663
+END_BROWSER
+
+# Screen size - Hits
+BEGIN_SCREENSIZE 0
+END_SCREENSIZE
+
+# Unknown referer OS - Last visit date
+BEGIN_UNKNOWNREFERER 0
+END_UNKNOWNREFERER
+
+# Unknown referer Browser - Last visit date
+BEGIN_UNKNOWNREFERERBROWSER 0
+END_UNKNOWNREFERERBROWSER
+
+# Origin - Pages - Hits 
+BEGIN_ORIGIN 6
+From0 0 0
+From1 24 24
+From2 0 0
+From3 0 0
+From4 61 639
+From5 0 0
+END_ORIGIN
+
+# Search engine referers ID - Pages - Hits
+BEGIN_SEREFERRALS 0
+END_SEREFERRALS
+
+# External page referers - Pages - Hits
+# The 10 first Pages must be first (order not required for others)
+BEGIN_PAGEREFS 0
+END_PAGEREFS
+
+# Search keyphrases - Number of search
+# The 10 first number of search must be first (order not required for others)
+BEGIN_SEARCHWORDS 0
+END_SEARCHWORDS
+
+# Search keywords - Number of search
+# The 10 first number of search must be first (order not required for others)
+BEGIN_KEYWORDS 0
+END_KEYWORDS
+
+# Errors - Hits - Bandwidth
+BEGIN_ERRORS 3
+302 3 0
+503 4 4124
+404 7 7154
+END_ERRORS
+
+# URL with 404 errors - Hits - Last URL referer
+BEGIN_SIDER_404 5
+/dvn/cgi/awstats/custom/awstats/awstats.mit.html 1 NULL-REFERER
+/dvn/faces/awstats/custom/awstats/awstats.mit.html 1 NULL-REFERER
+/dvn/faces/networkAdmin/SiteStatistics.jsp 3 http://localhost:8080/dvn/faces/networkAdmin/SiteStatistics.jsp
+/dvn/cgi-bin/awstats/custom/awstats/awstats.mit.html 1 NULL-REFERER
+/dvn/faces/cgi-bin/awstats/custom/awstats/awstats.mit.html 1 NULL-REFERER
+END_SIDER_404
+
+# Extra key - Pages - Hits - Bandwidth - Last access
+# The 50 first number of hits are first
+BEGIN_EXTRA_1 0
+END_EXTRA_1
+
+# Extra key - Pages - Hits - Bandwidth - Last access
+# The 50 first number of hits are first
+BEGIN_EXTRA_2 0
+END_EXTRA_2
+
+# Extra key - Pages - Hits - Bandwidth - Last access
+# The 50 first number of hits are first
+BEGIN_EXTRA_3 0
+END_EXTRA_3
+
+# Extra key - Pages - Hits - Bandwidth - Last access
+# The 50 first number of hits are first
+BEGIN_EXTRA_4 0
+END_EXTRA_4
+
+# Host - Pages - Hits - Bandwidth - Last visit date - [Start date of last visit] - [Last page of last visit]
+# [Start date of last visit] and [Last page of last visit] are saved only if session is not finished
+# The 10 first Hits must be first (order not required for others)
+BEGIN_VISITOR 1
+127.0.0.1 85 663 3429853 20070801180356 20070801170132 /dvn/faces/networkAdmin/SiteStatistics.jsp
+END_VISITOR
+
+# Date - Pages - Hits - Bandwidth - Visits
+BEGIN_DAY 1
+20070801 85 663 3429853 4
+END_DAY
+
+# Session range - Number of visits
+BEGIN_SESSION 3
+1h+ 1
+5mn-15mn 1
+0s-30s 1
+END_SESSION
+
+# URL - Pages - Bandwidth - Entry - Exit
+# The 10 first Pages must be first (order not required for others)
+BEGIN_SIDER 10
+/dvn/faces/networkAdmin/SiteStatistics.jsp 76 1297380 3 2
+/dvn/faces/networkAdmin/NetworkOptionsPage.jsp 1 8824 0 0
+/dvn/faces/networkAdmin/UserGroupsPage.jsp 1 6533 0 0
+/dvn/faces/ErrorPage.jsp 1 5306 0 0
+/dvn/faces/networkAdmin/SiteStatisticsViewPage.jsp 1 4833 0 0
+/dvn/faces/SiteMapPage.jsp 1 48509 0 0
+/dvn/faces/networkAdmin/ 1 4668 1 0
+/dvn/faces/login/LoginPage.jsp 1 6961 0 0
+/dvn/faces/cgi/awstats/custom/awstats.mit.html 1 79429 0 1
+/dvn/cgi/awstats/custom/awstats.mit.html 1 79107 0 0
+END_SIDER

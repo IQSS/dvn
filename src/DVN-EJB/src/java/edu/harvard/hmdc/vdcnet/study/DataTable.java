@@ -146,7 +146,7 @@ public class DataTable {
     /**
      * Holds value of property dataVariables.
      */
-    @OneToMany (mappedBy="dataTable", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany (mappedBy="dataTable", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
     @OrderBy ("name")
     private List<DataVariable> dataVariables;
 

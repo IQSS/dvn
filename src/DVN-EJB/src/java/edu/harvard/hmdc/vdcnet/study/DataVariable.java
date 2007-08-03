@@ -337,7 +337,7 @@ public class DataVariable {
     /**
      * Holds value of property summaryStatistics.
      */
-    @OneToMany (mappedBy="dataVariable", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany (mappedBy="dataVariable", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
     private Collection<SummaryStatistic> summaryStatistics;
 
     /**
@@ -380,7 +380,7 @@ public class DataVariable {
     /**
      * Holds value of property categories.
      */
-    @OneToMany (mappedBy="dataVariable", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany (mappedBy="dataVariable", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
     private Collection<VariableCategory> categories;
 
     /**

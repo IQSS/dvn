@@ -129,7 +129,7 @@
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="File Permissions"/> 
                         </ui:panelGroup>
                         <ui:panelGroup>
-                            <h:selectOneMenu  id="dropdown3" value="#{EditHarvestSitePage.harvestingDataverse.filesRestricted}">
+                            <h:selectOneMenu  id="dropdown3" value="#{EditHarvestSitePage.harvestingDataverse.filesRestricted}" onchange="checkSubsetting(this)">
                                 <f:selectItem   itemLabel="Public" itemValue="false" />
                                 <f:selectItem   itemLabel="Restricted" itemValue="true" />
                             </h:selectOneMenu>

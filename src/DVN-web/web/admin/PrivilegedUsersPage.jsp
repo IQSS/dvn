@@ -67,7 +67,7 @@
                                     <ui:panelGroup block="true" id="groupPanel3" style="padding-bottom: 10px">
                                         <h:outputText id="outputText2" value="Enter the Username of the user you want to add: "/>
                                         <h:inputText  binding="#{PrivilegedUsersPage.userInputText}" id="userName" value="#{PrivilegedUsersPage.userName}" onkeypress="if (window.event) return processEvent('', 'content:PrivilegedUsersPageView:privilegedUsersForm:addUserButton'); else return processEvent(event, 'content:PrivilegedUsersPageView:privilegedUsersForm:addUserButton');"/>
-                                        <h:commandButton id="addUserButton" value="Add" actionListener="#{PrivilegedUsersPage.addUser}" />
+                                        <h:commandButton  id="addUserButton" value="Add" actionListener="#{PrivilegedUsersPage.addUser}" />
                                         <h:message styleClass="errorMessage" for="userName"/> 
                                      </ui:panelGroup>
                                      <ui:panelGroup block="true" style="padding-bottom: 10px;">
@@ -92,7 +92,8 @@
                                                     <h:outputText styleClass="vdcHelpText" style="padding-left: 30px;" value="('Access To Site' is only applicable if site is restricted.)"/>
                                                 </ui:panelGroup>
                                             </f:facet>
-                                                     <h:selectOneRadio disabled="#{currentRow[0].vdcUser.id==PrivilegedUsersPage.vdc.creator.id}" id="roleSelectMenu" value="#{currentRow[1]}">
+                                                     <h:selectOneRadio  disabled="#{currentRow[0].vdcUser.id==PrivilegedUsersPage.vdc.creator.id}" id="roleSelectMenu" value="#{currentRow[1]}">
+                                                            <h:message for="roleSelectMenu"  styleClass="errorMessage"/>
                                                      <f:selectItems id="roleSelectItems" value="#{PrivilegedUsersPage.roleSelectItems}"/>
                                                    
                                                    </h:selectOneRadio>
@@ -146,7 +147,7 @@
                                    <ui:panelGroup block="true"  style="padding-bottom: 10px; padding-top: 10px; padding-right: 5px;" styleClass="vdcTextRight">
                                         <h:outputText  styleClass="vdcHelpText" value="(Nothing in this page will be saved until you click  Save Changes)"/>
                                         <h:commandButton  id = "saveChangesButton" value="Save Changes" action="#{PrivilegedUsersPage.saveChanges}"/>   
-                                       <h:commandButton  id = "cancelButton" value="Cancel" action="#{PrivilegedUsersPage.cancel}"/>   
+                                       <h:commandButton immediate="true" id = "cancelButton" value="Cancel" action="#{PrivilegedUsersPage.cancel}"/>   
                                     </ui:panelGroup>
    
                                   </ui:panelLayout>

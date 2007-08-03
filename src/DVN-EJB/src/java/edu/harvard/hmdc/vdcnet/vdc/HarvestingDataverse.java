@@ -107,6 +107,18 @@ public class HarvestingDataverse {
     public void setFilesRestricted(boolean filesRestricted) {
         this.filesRestricted = filesRestricted;
     }
+
+    private boolean subsetRestricted;
+
+    public boolean isSubsetRestricted() {
+        return subsetRestricted;
+    }
+
+    public void setSubsetRestricted(boolean subsetRestricted) {
+        this.subsetRestricted = subsetRestricted;
+    }
+
+
     
     /**
      * Holds value of property allowedFileGroups.
@@ -158,6 +170,14 @@ public class HarvestingDataverse {
             }
         }
         return false;
+    }
+    
+    public boolean isSubsetRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
+        if (areFilesRestrictedForUser(user, ipUserGroup)) {
+            return this.subsetRestricted;
+        } else {
+            return false;
+        }
     }
     
      /**

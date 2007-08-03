@@ -137,14 +137,15 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
    }
 
   
-    public void deleteStudy(Long studyId) {
+     public void deleteStudy(Long studyId) {
         Study study = em.find(Study.class,studyId);
         for (Iterator<VDCCollection>it = study.getStudyColls().iterator(); it.hasNext();) {
             VDCCollection elem =  it.next();
             elem.getStudies().remove(study);
             
         }
-        
+        studyService.deleteDataVariables(study.getId());
+
         study.getAllowedGroups().clear();
         study.getAllowedUsers().clear();
         study.setOwner(null);
@@ -161,6 +162,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             }
             studyDir.delete();
         }
+
+     
         
         // Save Study primary key in DeletedStudy table, so we can export
         // the study deletion to the old VDC.
@@ -176,8 +179,79 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
        
         
     }
-    
-    
+
+  private static final String DELETE_VARIABLE_CATEGORIES = " delete from variablecategory where datavariable_id in ( "+
+    "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
+        " where s.id= ? "+ 
+        " and s.id = fc.study_id "+
+        " and fc.id= sf.filecategory_id "+
+        " and sf.id=dt.studyfile_id "+
+        " and dt.id= dv.datatable_id )";
+
+ private static final String DELETE_SUMMARY_STATISTICS = " delete from summarystatistic where datavariable_id in ( "+
+    "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
+        " where s.id= ? "+ 
+        " and s.id = fc.study_id "+
+        " and fc.id= sf.filecategory_id "+
+        " and sf.id=dt.studyfile_id "+
+        " and dt.id= dv.datatable_id )";
+
+ private static final String DELETE_VARIABLE_RANGE_ITEMS = " delete from variablerangeitem where datavariable_id in ( "+
+    "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
+        " where s.id= ? "+ 
+        " and s.id = fc.study_id "+
+        " and fc.id= sf.filecategory_id "+
+        " and sf.id=dt.studyfile_id "+
+        " and dt.id= dv.datatable_id )";
+
+
+ private static final String DELETE_VARIABLE_RANGES = " delete from variablerange where datavariable_id in ( "+
+    "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
+        " where s.id= ? "+ 
+        " and s.id = fc.study_id "+
+        " and fc.id= sf.filecategory_id "+
+        " and sf.id=dt.studyfile_id "+
+        " and dt.id= dv.datatable_id )";
+
+ 
+ 
+
+private static final String DELETE_DATA_VARIABLES = " delete from datavariable where id in ( "+
+    "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
+        " where s.id= ? "+ 
+        " and s.id = fc.study_id "+
+        " and fc.id= sf.filecategory_id "+
+        " and sf.id=dt.studyfile_id "+
+        " and dt.id= dv.datatable_id )";
+
+  private static final String SELECT_DATAVARIABLE_IDS = "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
+        " where s.id= ? "+ 
+        " and s.id = fc.study_id "+
+        " and fc.id= sf.filecategory_id "+
+        " and sf.id=dt.studyfile_id "+
+        " and dt.id= dv.datatable_id ";
+
+
+   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW) 
+   public void deleteDataVariables(Long studyId) {
+        // Get list of dataVariableId's for this study
+     /*   List dvIds = em.createNativeQuery(SELECT_DATAVARIABLE_IDS).setParameter(1, studyId).getResultList();
+        
+        for (Iterator it = dvIds.iterator(); it.hasNext();) {
+            Vector elem = (Vector)it.next();
+            
+            em.createNativeQuery(DELETE_VARIABLE_CATEGORIES).setParameter(1,elem.elementAt(0)).executeUpdate();
+            em.createNativeQuery(DELETE_SUMMARY_STATISTICS).setParameter(1,elem.elementAt(0)).executeUpdate();
+       }
+*/
+            em.createNativeQuery(DELETE_VARIABLE_CATEGORIES).setParameter(1,studyId).executeUpdate();
+            em.createNativeQuery(DELETE_SUMMARY_STATISTICS).setParameter(1,studyId).executeUpdate();
+            em.createNativeQuery(DELETE_VARIABLE_RANGE_ITEMS).setParameter(1,studyId).executeUpdate();
+           em.createNativeQuery(DELETE_VARIABLE_RANGES).setParameter(1,studyId).executeUpdate();
+
+           em.createNativeQuery(DELETE_DATA_VARIABLES).setParameter(1,studyId).executeUpdate();
+
+   }    
     /**
      *  Get the Study and all it's dependent objects.
      *  Used to view/update all the Study details

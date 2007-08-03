@@ -9,10 +9,12 @@
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.net.URLEncoder;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -29,7 +31,14 @@ public class ReportWriter extends ReportConstants {
         private String reportee    = new String("");
         private String separator   = new String("");
 
-	public ReportWriter(int months, String year, String reportee, String separator) {
+	public ReportWriter(int months, String year, String reportee) {
+		this.numberOfMonths    = months;
+		this.theYear	       = year;
+                this.reportee          = reportee;
+                this.separator         = separator;
+	}
+        
+        public ReportWriter(int months, String year, String reportee, String separator) {
 		this.numberOfMonths    = months;
 		this.theYear	       = year;
                 this.reportee          = reportee;
@@ -114,13 +123,16 @@ public class ReportWriter extends ReportConstants {
             hashmap.put(ReportConstants.NUM_SUBSETJOBS_HEADING, subsetsList);
             hashmap.put(ReportConstants.NUM_UNIQUEDOWNLOADS_HEADING, downloadsIpList);
             hashmap.put(ReportConstants.NUM_UNIQUESUBSETS_HEADING, subsetsIpList);
-            writeReport(hashmap);
+            if (separator.equals(""))
+                writeReport(hashmap);
+            else 
+                writeWebReport(hashmap);
         } catch (IOException ioe) {
 			System.out.println("Error " + ioe);
 		}
     }
 
-	/**
+    /**
 	*
 	* writeReport
 	*
@@ -133,41 +145,81 @@ public class ReportWriter extends ReportConstants {
         *  TODO: Use format to write this report in the proper format and / or
         *  TODO: Use dl to format this report 
 	* @author wbossons
-	*/
-
-	private void writeReport(LinkedHashMap hashmap)
+	*/    
+    private void writeReport(LinkedHashMap hashmap)
 				throws java.io.IOException {
             BufferedWriter outputStream = null;
             try {
-                String fileToRead = awstatsDirectory + "/custom/awstats." + reportee + ".txt";
+                String fileToRead = awstatsDirectory + "/custom/" + reportee + "monthly.txt";
                 outputStream = new BufferedWriter(new FileWriter(fileToRead));
-                if (separator.contains("<br />")) {
-                    outputStream.write("<div style=\"max-width:780; margin-top:25px; margin-right:auto; margin-left:auto;\">");
-                    outputStream.write("<span style=\"font-weight:800; font-size: medium;\">Monthly Usage Report of MIT Affiliates of the Dataverse Network</span>" + separator);
-                    outputStream.write("<div style=\"text-align:right;\"><input type=\"button\" value=\"Print\" onclick=\"window.open('" + awstatsDirectory + "/custom/awstats.' + reportee + '.txt', 'newWindow','menubar=0,resizable=1,width=640,height=480');\"/></div>");
-                    outputStream.write("<div style=\"margin-left:25px; margin-right:25px; font-size:medium; text-align:left;\">");
-                } else {
-                    outputStream.write("Monthly Usage Report of MIT Affiliates of the Dataverse Network" + separator);
-                }
+                outputStream.write("Monthly Usage Report of MIT Affiliates of the Dataverse Network");
+                outputStream.newLine();
                 Iterator iterator = hashmap.keySet().iterator();
                 int count = 1;
                 while (iterator.hasNext()) {
                     String key = (String)iterator.next();
-                    outputStream.write(separator + count + ". " + key + separator);
+                    outputStream.write("\n\r" + count + ". " + key + "\n\r");
                     outputStream.newLine();
                     LinkedHashMap innermap = (LinkedHashMap)hashmap.get(key);
                     Iterator innerIterator = innermap.keySet().iterator();
                     while (innerIterator.hasNext()) {
                         String monthKey = (String)innerIterator.next();
                         outputStream.write(monthKey + ": " + innermap.get(monthKey));
-                        if (separator.contains("<br />"))
-                            outputStream.write("<br />");
                         outputStream.newLine();
                     }
                     count++;
                 }
-                if (separator.contains("<br />"))
-                    outputStream.write("</div></div>");
+
+
+            } catch (IOException ioe) {
+                    System.out.println("Error " + ioe.getCause().toString());
+            } finally {
+                    outputStream.close();
+            }
+	}
+        
+	/**
+	*
+	* writeWebReport
+	*
+	* @description This takes a linkedhashmap and then
+	* writes the textual mit report data
+	* mainly for command line use
+	*
+	* @param hashmap A hashmap with the report heading and data.
+	*
+        *  TODO: Use format to write this report in the proper format and / or
+        *  TODO: Use dl to format this report 
+	* @author wbossons
+	*/
+    
+	private void writeWebReport(LinkedHashMap hashmap)
+				throws java.io.IOException {
+            BufferedWriter outputStream = null;
+            String reportUrl = this.getReportUrl();
+            try {
+                String fileToRead = awstatsDirectory + "/custom/awstats." + reportee + ".txt";
+                outputStream = new BufferedWriter(new FileWriter(fileToRead));
+                outputStream.write("<div style=\"max-width:780; margin-top:25px; margin-right:auto; margin-left:auto;\">");
+                outputStream.write("<span style=\"font-weight:800; font-size: medium;\">Monthly Usage Report of MIT Affiliates of the Dataverse Network</span>" + separator);
+                outputStream.write("<div style=\"margin-right:25px;text-align:right;\"><input type=\"button\" value=\"Print\" onclick=\"(typeof(isChild) == 'undefined') ? window.open('" + reportUrl  + "', 'newWindow','menubar=0,resizable=1,width=640,height=480') : printMe()\"/></div>");
+                outputStream.write("<div style=\"margin-left:25px; margin-right:25px; font-size:medium; text-align:left;\">");
+                Iterator iterator = hashmap.keySet().iterator();
+                int count = 1;
+                while (iterator.hasNext()) {
+                    String key = (String)iterator.next();
+                    outputStream.write(separator + count + ". " + key + separator);
+                    //outputStream.newLine();
+                    LinkedHashMap innermap = (LinkedHashMap)hashmap.get(key);
+                    Iterator innerIterator = innermap.keySet().iterator();
+                    while (innerIterator.hasNext()) {
+                        String monthKey = (String)innerIterator.next();
+                        outputStream.write(monthKey + ": " + innermap.get(monthKey));
+                        outputStream.write("<br />");
+                    }
+                    count++;
+                }
+                outputStream.write("</div></div>");
             } catch (IOException ioe) {
                     System.out.println("Error " + ioe.getCause().toString());
             } finally {
@@ -228,6 +280,27 @@ public class ReportWriter extends ReportConstants {
                     return numberUnique;
             }
 	}
+        
+        /** getReportUrl
+         *
+         * @description Returns the url for the 
+         * print version of the web version of the monthly report
+         *
+         * @return String
+         *
+         * @author wbossons
+         */
+        private String getReportUrl() 
+            throws UnsupportedEncodingException {
+              String reportUrl = new String("");
+              HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+              Enumeration enumeration = request.getHeaderNames();
+              
+              String protocol = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase();
+              System.out.println("the url should be + " + protocol + "//" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/faces/cgi/awstats/custom/awstats." + reportee + ".txt");
+              reportUrl = request.getContextPath() + "/faces/networkAdmin/printPopup.jsp?reportee=" + reportee;
+              return reportUrl;
+        }
 
 	public boolean equals(Object obj) {
 	    return (obj instanceof String

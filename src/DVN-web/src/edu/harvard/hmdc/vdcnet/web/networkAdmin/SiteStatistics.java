@@ -64,7 +64,7 @@ public class SiteStatistics extends VDCBaseBean {
      */
     public static void main(String[] args) throws java.io.IOException {
         int months = Integer.parseInt(args[0]);
-        ReportWriter reportwriter = new ReportWriter(months, args[1], args[2], args[3]);//args[3] send a \r\n to run from command line, <br> is only for html (see below)
+        ReportWriter reportwriter = new ReportWriter(months, args[1], args[2]);
         reportwriter.writeMitReport();
     }
 

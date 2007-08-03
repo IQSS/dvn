@@ -103,8 +103,8 @@ public class SiteStatistics extends VDCBaseBean {
             } else if (this.getReportType().equals("txt")) { //TODO: parameterize monthly reports
                 setNamedConfigFile("mit");
                 boolean isUpdated = this.updateStatistics();
-                int months  = 2;
-                String year = "2007";
+                int months  = this.getMonths() ;
+                String year = this.getYear();
                 ReportWriter reportwriter = new ReportWriter(months, year, this.getNamedConfigFile(), "<br /><br />");
                 reportwriter.writeMitReport();
                 success = "monthlyReport";
@@ -253,21 +253,26 @@ public class SiteStatistics extends VDCBaseBean {
         setReportType(newValue);
     }
 
-    private String month = null;
+    private int months = 0;
 
-    public String getMonth() {
-        if (month == null) {
+    public int getMonths() {
+        if (months == 0) {
             Date date = new Date();
             String reportDate;
-            SimpleDateFormat simpledateformat = new SimpleDateFormat("MMMM");
+            int numMonths = 0;
+            SimpleDateFormat simpledateformat = new SimpleDateFormat("MM");
             reportDate = simpledateformat.format(date);
-            this.month = reportDate;
+            numMonths = Integer.parseInt(reportDate);
+            if (numMonths < 12) 
+                this.months = (numMonths + 1) - 7;
+            else 
+                this.months = (7 + 1) - numMonths;
         }
-        return month;
+        return months;
     }
 
-    public void setMonth(String month) {
-        this.month = month;
+    public void setMonth(int months) {
+        this.months = months;
     }
 
     private String year = null;
@@ -279,7 +284,6 @@ public class SiteStatistics extends VDCBaseBean {
             SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy");
             reportDate = simpledateformat.format(date);
             this.year = reportDate;
-            //int year = Calendar.get(Calendar.YEAR);
         }
         return year;
     }

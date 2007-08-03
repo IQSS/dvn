@@ -320,6 +320,15 @@ public class StudyFile implements Serializable{
     public void setDataTable(DataTable dataTable) {
         this.dataTable = dataTable;
     }
+
+    public boolean isSubsetRestrictedForUser(VDCUser user, VDC vdc, UserGroup ipUserGroup) {
+        if (this.getFileCategory().getStudy().getOwner().isHarvestingDataverse()) {
+            HarvestingDataverse hd = this.getFileCategory().getStudy().getOwner().getHarvestingDataverse();
+            return hd.isSubsetRestrictedForUser(user, ipUserGroup);
+        } else {
+            return isFileRestrictedForUser(user, vdc, ipUserGroup);
+        }
+    }    
     
     public boolean isFileRestrictedForUser( VDCUser user, VDC vdc, UserGroup ipUserGroup ) {
       // If file belongs to a study in a HarvestingDataverse,

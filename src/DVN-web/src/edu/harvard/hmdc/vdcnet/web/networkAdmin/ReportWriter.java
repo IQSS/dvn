@@ -244,8 +244,7 @@ public class ReportWriter extends ReportConstants {
 	private String[][] getReportFiles(int numberofmonths) {
             String[][] monthsAvailable = {{"07","08","09","10","11","12","01","02","03","04","05","06"},{"July", "August", "September", "October", "November", "December", "January", "February", "March", "April", "May", "June"}};
             //example of above is [0][0]=07 and [1][0]=July
-            String[][] reportFiles = new String[2][2];
-            System.out.println("the month is " + monthsAvailable[1][0]);
+            String[][] reportFiles = new String[numberofmonths][numberofmonths];
             for (int j = 0; j < numberofmonths; j++) {
                     reportFiles[0][j] = monthsAvailable[0][j];
                     reportFiles[1][j] = monthsAvailable[1][j];

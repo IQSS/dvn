@@ -325,6 +325,10 @@
        <put name="pageTitle"   type="string"        value="DVN - Import Study "/>
        <put name="content" type="template"     value="/networkAdmin/ImportStudyPage.jsp"/>
    </definition>
+   <definition name="/networkAdmin/printPopup" extends="/vanilla-layout">
+       <put name="pageTitle"   type="string"        value="Monthly Report"/>
+       <put name="content" type="template"     value="/cgi/awstats/custom/vanillaPopup.jsp"/>
+   </definition>
    <!-- **************** VDC Administration ******************** -->
    <definition name="/admin/EditBannerFooterPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Edit Banner and Footer"/>

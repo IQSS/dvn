@@ -4729,7 +4729,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
               // this info is later used to render the page differently
               HttpServletRequest request = (HttpServletRequest)this.getExternalContext().getRequest();
                  
-              if (sf.isFileRestrictedForUser(user, vdc, getVDCSessionBean().getIpUserGroup())) {
+              if (sf.isSubsetRestrictedForUser(user, vdc, getVDCSessionBean().getIpUserGroup())) {
                 out.println("restricted=yes: this user does not have the subsetting permission");
                 subsettingPageAccess =Boolean.FALSE;
                 hideSubsettingFunctions();

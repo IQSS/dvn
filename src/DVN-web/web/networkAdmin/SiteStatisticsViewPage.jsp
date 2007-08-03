@@ -7,7 +7,7 @@
                             
    <f:subview id="siteStatisticsView">
         <ui:form  id="siteStatisticsViewForm"> 
-            <jsp:include page="/cgi/awstats/custom/awstats.${requestScope.reportType}.html"/>
+                <jsp:include page="/cgi/awstats/custom/awstats.${requestScope.reportee}.${requestScope.reportType}"/>
         </ui:form>
     </f:subview>
 </jsp:root>

@@ -148,6 +148,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         study.getAllowedGroups().clear();
         study.getAllowedUsers().clear();
+        study.getOwner().getOwnedStudies().remove(study);
         study.setOwner(null);
         
         

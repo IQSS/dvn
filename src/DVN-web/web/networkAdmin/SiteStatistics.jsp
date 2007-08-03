@@ -30,10 +30,7 @@
                             for="reportee"
                             styleClass="errorMessage"/>
                             <f:verbatim><br /></f:verbatim>
-                        <ui:panelGroup rendered="#{SiteStatistics.reportType == 'mitMonthly'" separator="&lt;br /&gt;&lt;br /&gt;" block="true" id="groupPanel3" style="padding-top: 5px; padding-bottom: 20px">
-                            <h:inputText id="month" value="#{SiteStatistics.month}"/>
-                            <h:inputText id="year" value="#{SiteStatistics.year}"/>
-                        </ui:panelGroup>
+                        
                         <ui:panelGroup  block="true" id="groupPanel5" style="padding-left: 200px; padding-top: 20px">
                             <h:commandButton id="btnSubmit" action="#{SiteStatistics.viewStatistics}" value="View Statistics"/>
                             <h:commandButton  id="btnCancel" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditNetworkAnnouncementsPage.cancel_action}"/>

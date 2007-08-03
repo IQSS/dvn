@@ -9,6 +9,8 @@
 
 package edu.harvard.hmdc.vdcnet.web.servlet;
 
+import edu.harvard.hmdc.vdcnet.util.DateUtils;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.DateFormat;
@@ -88,8 +90,7 @@ public class ErrorPageServlet extends HttpServlet  {
      *
      */
     private String getTimeStamp() {
-        Date date = new Date(); 
-        timestamp = DateFormat.getDateTimeInstance().format(date);
+        timestamp = DateUtils.getTimeStamp();
         return timestamp;
     }
         

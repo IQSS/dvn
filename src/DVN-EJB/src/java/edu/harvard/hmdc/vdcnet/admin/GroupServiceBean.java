@@ -121,26 +121,24 @@ public class GroupServiceBean implements GroupServiceLocal  {
         if (group!=null) {
             
             for (Iterator it = group.getUsers().iterator(); it.hasNext();) {
-                VDCUser elem = (VDCUser)it.next();
-                elem.getUserGroups().remove(group);
-            }
-            // The UserGroup object is not the owner for these ManyToMany relationships, 
-            // so the relationships have to be removed manually (ie we can't rely on Cascade.REMOVE)
-            for (Iterator it = group.getUsers().iterator(); it.hasNext();) {
                 VDCUser elem = (VDCUser) it.next();
-                elem.getUserGroups().remove(group);
+                VDCUser user = em.find(VDCUser.class, elem.getId());
+                user.getUserGroups().remove(group);
             }
             for (Iterator it = group.getVdcs().iterator(); it.hasNext();) {
                 VDC elem = (VDC) it.next();
+                VDC vdc = em.find(VDC.class,elem.getId());
                 elem.getAllowedGroups().remove(group);
             }
             for (Iterator it = group.getStudies().iterator(); it.hasNext();) {
                 Study elem = (Study) it.next();
-                elem.getAllowedGroups().remove(group);
+                Study study = em.find(Study.class, elem.getId());
+                study.getAllowedGroups().remove(group);
             }
             for (Iterator it = group.getStudyFiles().iterator(); it.hasNext();) {
                 StudyFile elem = (StudyFile) it.next();
-                elem.getAllowedGroups().remove(group);
+                StudyFile studyFile = em.find(StudyFile.class, elem.getId());            
+                studyFile.getAllowedGroups().remove(group);
             }
             
             for (Iterator it = group.getHarvestingDataverses().iterator(); it.hasNext();) {

@@ -35,7 +35,7 @@
                         if (popup != null) {
                             popup.hidePopup();
                         }
-                        
+ 
                         //Create Popup div
                         popup = new PopupWindow(divId);
                         popup.autoHide();
@@ -464,12 +464,16 @@
                                                     </h:column>
                                                     <h:column  id="column13">
                                                         <ui:panelGroup  block="true" > 
-                                                        
+                                                            
+                                                            <h:selectOneMenu  id="dataFileFormatType" value="#{studyFileUI.format}" rendered="#{studyFileUI.studyFile.subsettable}">
+                                                                <f:selectItems  id="dataFileFormatTypeItems" value="#{studyPage.dataFileFormatTypes}" />
+                                                            </h:selectOneMenu> 
+                                                            
                                                             <h:graphicImage  styleClass="vdcNoBorders" style="margin-left: 2px; margin-right: 0px;" value="/resources/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" 
                                                                          alt="You do not have permissions to access this file." title="You do not have permissions to access this file."/>
-                                                            <h:outputLink  id="fileLink" style="padding-right: 15px" onclick="return checkTerms(this.id);" target="_file" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/#{studyFileUI.studyFile.fileName}?fileId=#{studyFileUI.studyFile.id}" rendered="#{!studyFileUI.restrictedForUser}" title="View or download this File.">
+                                                            <h:commandLink  id="fileLink" style="padding-right: 15px" onclick="return checkTerms(this.id);" target="_file" action="#{studyFileUI.fileDownload_action}" rendered="#{!studyFileUI.restrictedForUser}" title="View or download this File.">
                                                                 <h:graphicImage   styleClass="vdcNoBorders" style="margin-left: 2px; margin-right: 0px;" value="/resources/icon_download.gif"/>
-                                                            </h:outputLink> 
+                                                            </h:commandLink> 
                                                            
                                                             <h:outputLink rendered="#{studyFileUI.studyFile.subsettable}"  id="fileSubset" onclick="return checkTerms(this.id);" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.jsp?dtId=#{studyFileUI.studyFile.dataTable.id}" title="Go to Subset and Analysis page for this file." >
                                                                 <h:graphicImage  id="imagefs" styleClass="vdcNoBorders" style="margin-left: 0px; margin-right: 2px;" value="/resources/icon_subsettable.gif" />

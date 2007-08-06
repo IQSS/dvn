@@ -412,7 +412,7 @@ public class VDC {
     /**
      * Holds value of property allowedGroups.
      */
-    @ManyToMany(cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST })
+    @ManyToMany(cascade={CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<UserGroup> allowedGroups;
     
     /**
@@ -430,8 +430,9 @@ public class VDC {
     public void setAllowedGroups(Collection<UserGroup> allowedGroups) {
         this.allowedGroups = allowedGroups;
     }
-    
-    @OneToMany(mappedBy="owner", cascade={ CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+    // Don't use Cascade REMOVE here because vdcServiceBean.delete() will
+    // delete each study by calling studyService.delete() (which does special logic)
+    @OneToMany(mappedBy="owner", cascade={ CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<Study> ownedStudies;
   
     
@@ -623,7 +624,7 @@ public class VDC {
         return foundGroup;
     }
 
-    @ManyToMany(mappedBy="linkedVDCs",cascade={CascadeType.REMOVE })
+    @ManyToMany(mappedBy="linkedVDCs")
     private List<VDCCollection> linkedCollections;
 
     public List<VDCCollection> getLinkedCollections() {

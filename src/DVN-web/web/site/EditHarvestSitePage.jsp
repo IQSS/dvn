@@ -7,18 +7,22 @@
           xmlns:c="http://java.sun.com/jsp/jstl/core">
     
     <f:subview id="addHarvestSitePageView">
-          <f:verbatim>
+        <f:verbatim>
             <script language="Javascript">
-                function checkSubsetting( filesRestricted ) {
-                    subsetRestricted = getSubsetting();
-                    subsetRestricted.value = filesRestricted.value;
+                function checkSubsetting( copyValue ) {
+                    filesRestricted = getSelect("dropdown3");
+                    subsetRestricted = getSelect("dropdown4");
+                    
                     subsetRestricted.disabled = !(filesRestricted.value == 'true');
+                    if (copyValue) {
+                        subsetRestricted.value = filesRestricted.value;
+                    }
                 }
                 
-                function getSubsetting() {
+                function getSelect( id ) {
                     elements=document.getElementsByTagName("select");
                     for(i=0; i &lt; elements.length; i++) {
-                        if (elements[i].id.indexOf("dropdown4") != -1) {    
+                        if (elements[i].id.indexOf(id) != -1) {    
                             return elements[i];
                         }
                     }
@@ -129,7 +133,7 @@
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="File Permissions"/> 
                         </ui:panelGroup>
                         <ui:panelGroup>
-                            <h:selectOneMenu  id="dropdown3" value="#{EditHarvestSitePage.harvestingDataverse.filesRestricted}" onchange="checkSubsetting(this)">
+                            <h:selectOneMenu  id="dropdown3" value="#{EditHarvestSitePage.harvestingDataverse.filesRestricted}" onchange="checkSubsetting(true)">
                                 <f:selectItem   itemLabel="Public" itemValue="false" />
                                 <f:selectItem   itemLabel="Restricted" itemValue="true" />
                             </h:selectOneMenu>
@@ -140,7 +144,7 @@
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Subset Permissions"/> 
                         </ui:panelGroup>
                         <ui:panelGroup>
-                            <h:selectOneMenu  id="dropdown4" value="#{EditHarvestSitePage.subsetRestrictedWrapper}" disabled="#{!EditHarvestSitePage.harvestingDataverse.filesRestricted}">
+                            <h:selectOneMenu  id="dropdown4" value="#{EditHarvestSitePage.subsetRestrictedWrapper}">
                                 <f:selectItem   itemLabel="Public" itemValue="false" />
                                 <f:selectItem   itemLabel="Restricted" itemValue="true" />
                             </h:selectOneMenu>                                            
@@ -213,4 +217,11 @@
             </ui:panelLayout>
         </ui:form>
     </f:subview>
+    <f:verbatim>
+        <script language="Javascript">
+            // initial call to disable subsetting Restricted (if needed)
+            checkSubsetting( false );
+        </script>
+    </f:verbatim>     
+    
 </jsp:root>

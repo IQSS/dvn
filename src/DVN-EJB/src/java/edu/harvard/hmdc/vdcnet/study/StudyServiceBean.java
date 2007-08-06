@@ -139,6 +139,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
   
      public void deleteStudy(Long studyId) {
         Study study = em.find(Study.class,studyId);
+    
         for (Iterator<VDCCollection>it = study.getStudyColls().iterator(); it.hasNext();) {
             VDCCollection elem =  it.next();
             elem.getStudies().remove(study);
@@ -173,10 +174,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         ds.setStudyId(study.getStudyId());
         ds.setAuthority(study.getAuthority());
         em.persist(ds);
-        
+      
         em.remove(study);
         gnrsService.delete(study.getAuthority(),study.getStudyId());
         indexService.deleteStudy(studyId);
+     
        
         
     }
@@ -235,16 +237,7 @@ private static final String DELETE_DATA_VARIABLES = " delete from datavariable w
 
    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW) 
    public void deleteDataVariables(Long studyId) {
-        // Get list of dataVariableId's for this study
-     /*   List dvIds = em.createNativeQuery(SELECT_DATAVARIABLE_IDS).setParameter(1, studyId).getResultList();
-        
-        for (Iterator it = dvIds.iterator(); it.hasNext();) {
-            Vector elem = (Vector)it.next();
-            
-            em.createNativeQuery(DELETE_VARIABLE_CATEGORIES).setParameter(1,elem.elementAt(0)).executeUpdate();
-            em.createNativeQuery(DELETE_SUMMARY_STATISTICS).setParameter(1,elem.elementAt(0)).executeUpdate();
-       }
-*/
+  
             em.createNativeQuery(DELETE_VARIABLE_CATEGORIES).setParameter(1,studyId).executeUpdate();
             em.createNativeQuery(DELETE_SUMMARY_STATISTICS).setParameter(1,studyId).executeUpdate();
             em.createNativeQuery(DELETE_VARIABLE_RANGE_ITEMS).setParameter(1,studyId).executeUpdate();
@@ -322,6 +315,7 @@ private static final String DELETE_DATA_VARIABLES = " delete from datavariable w
      *
      */
     public Study getStudy(Long studyId) {
+        
         Study study = em.find(Study.class,studyId);
         if (study==null) {
             throw new IllegalArgumentException("Unknown studyId: "+studyId);

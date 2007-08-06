@@ -15,6 +15,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.logging.Logger;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
@@ -36,6 +37,8 @@ public class IndexMessage implements MessageListener {
     @EJB StudyServiceLocal studyService;
 //    @EJB VDCServiceLocal vdcService;
     @EJB MailServiceLocal mailService;
+    private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.index.IndexMessage");
+
     
     /** Creates a new instance of IndexMessage */
     public IndexMessage() {
@@ -84,7 +87,15 @@ public class IndexMessage implements MessageListener {
     }
     
     private void addDocument(final long studyId) {
-        Study study = studyService.getStudy(studyId);
+        Study study=null;
+        try {
+            study = studyService.getStudy(studyId);
+        } catch (IllegalArgumentException e) {
+            // The study may not exist because it was deleted before the indexer 
+            // could process the message.  Just ignore this.
+           logger.warning("Could not find study for id "+studyId+", study probably deleted before asynchronous call to Indexer.");
+            
+        }
         Indexer indexer = Indexer.getInstance();
         String indexAdminMail = System.getProperty("dvn.indexadmin");
         if (indexAdminMail == null){

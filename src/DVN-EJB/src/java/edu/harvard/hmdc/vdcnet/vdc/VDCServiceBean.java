@@ -216,21 +216,45 @@ public class VDCServiceBean implements VDCServiceLocal {
     public void delete (Long vdcId) {
         VDC vdc = em.find(VDC.class,vdcId);
         em.refresh(vdc);
+        List studyIds = new ArrayList();
         
+        // Get the studyIds separately, to avoid a ConcurrentAccess Exception
+        // (This is necessary because the studies are deleted in Native SQL)
         for (Iterator it = vdc.getOwnedStudies().iterator(); it.hasNext();) {
             Study elem = (Study) it.next();
-            studyService.deleteStudy(elem.getId());    
+            studyIds.add(elem.getId());
+        }       
+        
+        for (Iterator it = studyIds.iterator(); it.hasNext();) {
+            Long studyId = (Long) it.next();
+            studyService.deleteStudy(studyId);    
         }
-   //    vdc.getOwnedStudies().clear();
+        vdc.getOwnedStudies().clear();
+        
        
         vdc.setRootCollection(null);
        
         for (Iterator it = vdc.getOwnedCollections().iterator(); it.hasNext();) {
            VDCCollection elem = (VDCCollection) it.next();
            elem.setParentCollection(null);
-           elem.setOwner(null);           
+           elem.setOwner(null);
+           // Remove this Collection from all linked VDCs
+           for (Iterator itc = elem.getLinkedVDCs().iterator(); itc.hasNext();) {
+               VDC linkedVDC = (VDC)itc.next();
+               linkedVDC.getLinkedCollections().remove(elem);
+           }    
         }
-       
+        
+       for (Iterator it = vdc.getLinkedCollections().iterator(); it.hasNext();) {
+           VDCCollection elem = (VDCCollection) it.next();
+           VDCCollection coll = em.find(VDCCollection.class, elem.getId());
+           coll.getLinkedVDCs().remove(vdc);
+       }
+        
+       for (Iterator it = vdc.getVdcGroups().iterator(); it.hasNext();) {
+            VDCGroup vdcGroup = (VDCGroup)it.next();
+            vdcGroup.getVdcs().remove(vdc);
+       }
         em.remove(vdc);
     
     }

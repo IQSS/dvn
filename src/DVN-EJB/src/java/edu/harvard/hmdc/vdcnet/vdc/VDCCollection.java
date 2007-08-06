@@ -241,7 +241,7 @@ public class VDCCollection {
     }
     
 
-    @ManyToMany (cascade={CascadeType.REMOVE })
+    @ManyToMany //(cascade={CascadeType.REMOVE })
     @JoinTable(name="VDC_LINKED_COLLECTIONS",
             joinColumns=@JoinColumn(name="linked_collection_id"),
             inverseJoinColumns=@JoinColumn(name="vdc_id"))    

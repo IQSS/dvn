@@ -8,10 +8,12 @@ package edu.harvard.hmdc.vdcnet.web.servlet;
 
 import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Study;
+import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import java.io.*;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -31,19 +33,39 @@ public class DDIExportServlet extends HttpServlet {
      * @param response servlet response
      */
     protected void processRequest(HttpServletRequest req, HttpServletResponse res)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         String studyId = req.getParameter("studyId");
+        String fileId = req.getParameter("fileId");
         String fetchOriginal = req.getParameter("originalImport");
         String exportToLegacyVDC = req.getParameter("legacy");
         
-        if (studyId != null) {
-            try {
-                Study s = studyService.getStudy( new Long( studyId ) );
-                
-                InputStream in = null;
-                PrintWriter out= null;
-                
+        InputStream in = null; // used if getting originalImport
+        PrintWriter out= null;
+        
+        try {
+            if (fileId != null) {
                 try {
+                    StudyFile sf = studyService.getStudyFile( new Long( fileId ) );
+                    
+                    if (!sf.isSubsettable()) {
+                        createErrorResponse(res, "The file you requested is NOT a datafile.");
+                    } else {
+                        res.setContentType("text/xml");
+                        out = res.getWriter();
+                        ddiService.exportDataFile(sf, out );
+                    }
+                } catch (Exception ex) {
+                    if (ex.getCause() instanceof IllegalArgumentException) {
+                        createErrorResponse(res, "There is no file with fileId: " + fileId);    
+                    } else {
+                        ex.printStackTrace();
+                        createErrorResponse(res, "An exception ocurred while fetching the DDI for this data file.");
+                    }
+                }
+            } else if (studyId != null) {
+                try {
+                    Study s = studyService.getStudy( new Long( studyId ) );
+
                     if (fetchOriginal != null) {
                         // get the original xml from the file System
                         File studyDir = new File(FileUtil.getStudyFileDir(), s.getAuthority() + File.separator + s.getStudyId());
@@ -51,9 +73,9 @@ public class DDIExportServlet extends HttpServlet {
                         
                         if (originalImport.exists()) {
                             res.setContentType("text/xml");
-                            out = res.getWriter();   
+                            out = res.getWriter();
                             in = new FileInputStream(originalImport);
-                        
+                            
                             int i = in.read();
                             while (i != -1 ) {
                                 out.write(i);
@@ -66,20 +88,23 @@ public class DDIExportServlet extends HttpServlet {
                     } else {
                         // otherwise create ddi from data
                         res.setContentType("text/xml");
-                        out = res.getWriter();   
+                        out = res.getWriter();
                         ddiService.exportStudy(s, out, (exportToLegacyVDC != null) );
                     }
-                } finally {
-                    if (out!=null) { out.close(); }
-                    if (in!=null) { in.close(); }
+                } catch (Exception ex) {
+                    if (ex.getCause() instanceof IllegalArgumentException) {
+                        createErrorResponse(res, "There is no study with studyId: " + studyId);    
+                    } else {                    
+                        ex.printStackTrace();
+                        createErrorResponse(res, "An exception ocurred while fetching the DDI for this study.");
+                    }
                 }
-                
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                createErrorResponse(res, "An exception ocurred while fetching the DDI.");
+            } else {
+                createErrorResponse(res, "No studyId or fileId was specifed for this request.");
             }
-        } else {
-            createErrorResponse(res, "No studyId was specifed for this request.");
+        } finally {
+            if (out!=null) { out.close(); }
+            if (in!=null) { in.close(); }
         }
     }
     
@@ -97,13 +122,13 @@ public class DDIExportServlet extends HttpServlet {
         }
     }
     
-// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** Handles the HTTP <code>GET</code> method.
      * @param request servlet request
      * @param response servlet response
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
     
@@ -112,7 +137,7 @@ public class DDIExportServlet extends HttpServlet {
      * @param response servlet response
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
     
@@ -121,5 +146,5 @@ public class DDIExportServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }
-// </editor-fold>
+    // </editor-fold>
 }

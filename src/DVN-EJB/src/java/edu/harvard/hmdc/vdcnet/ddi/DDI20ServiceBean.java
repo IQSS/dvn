@@ -2569,12 +2569,40 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         
         JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
         Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, new Boolean(true));
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
         marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd");
         
-        marshaller.marshal(mapStudy(study, exportToLegacyVDC), out );
-        
-        
-        
+        marshaller.marshal(mapStudy(study, exportToLegacyVDC), out ); 
     }
+    
+    public  void exportDataFile(StudyFile sf, Writer out) throws IOException, JAXBException {
+        JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
+        Marshaller marshaller = jc.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+        marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd");
+        
+        marshaller.marshal(mapDataFile(sf), out ); 
+
+    }    
+    
+    private CodeBook mapDataFile(StudyFile sf) {
+        ObjectFactory objFactory = new ObjectFactory();
+        CodeBook _cb = objFactory.createCodeBook();
+        _cb.setVersion("2.0"); 
+
+        FileDscrType _fd = mapSubsettableFile( sf, false );
+        _cb.getFileDscr().add(_fd);
+     
+        if ( sf.getDataTable().getDataVariables().size() > 0 ) {
+            DataDscrType _dd = objFactory.createDataDscrType();   
+            Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
+            while (varIter.hasNext()) {
+                DataVariable dv = (DataVariable) varIter.next();
+                _dd.getVar().add( mapDataVariable(dv, _fd) );
+            }
+            _cb.getDataDscr().add(_dd);     
+        }
+        return _cb;
+        
+    }    
 }

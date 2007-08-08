@@ -3,6 +3,7 @@ package edu.harvard.hmdc.vdcnet.ddi;
 
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.CodeBook;
 import edu.harvard.hmdc.vdcnet.study.Study;
+import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import java.io.IOException;
 import java.io.Writer;
 import javax.ejb.Local;
@@ -24,6 +25,8 @@ public interface DDI20ServiceLocal {
     
     void exportStudy(Study study, Writer out, boolean exportToLegacyVDC) throws IOException, JAXBException;
     
-    java.lang.String determineId(CodeBook _cb, String agency);    
+    java.lang.String determineId(CodeBook _cb, String agency);  
+    
+    void exportDataFile(StudyFile sf, Writer out) throws IOException, JAXBException;
     
 }

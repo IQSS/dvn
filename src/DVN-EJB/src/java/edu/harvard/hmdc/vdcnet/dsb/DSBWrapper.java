@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -100,7 +101,7 @@ public class DSBWrapper {
             // create method
             method = new PostMethod(generateUrl(DSB_ANALYZE));
             method.addParameter("file_name", f.getName());
-            method.addParameter("file_header", new String(getHeaderFromFile(f)));
+            method.addParameter("file_header", new String(Base64.encodeBase64(getHeaderFromFile(f))) );
             
             // execute
             executeMethod(method);

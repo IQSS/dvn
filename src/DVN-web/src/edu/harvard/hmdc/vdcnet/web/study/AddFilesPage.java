@@ -171,7 +171,8 @@ public class AddFilesPage extends VDCBaseBean {
                 f.setOriginalFileName(originalName);
                 f.getStudyFile().setSubsettable(analyzeFileType.equals("application/x-stata") || 
                                                 analyzeFileType.equals("application/x-spss-por") || 
-                                                analyzeFileType.equals("application/x-spss-sav") );
+                                                analyzeFileType.equals("application/x-spss-sav") ||
+                                                analyzeFileType.equals("application/x-rlang-transport") );
                 
                 // append ".tab" to name if subsettable
                 f.getStudyFile().setFileName(f.getStudyFile().isSubsettable() ? replaceExtension(originalName): originalName);                

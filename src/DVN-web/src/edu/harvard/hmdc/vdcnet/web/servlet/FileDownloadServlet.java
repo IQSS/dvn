@@ -13,6 +13,7 @@ package edu.harvard.hmdc.vdcnet.web.servlet;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
+import edu.harvard.hmdc.vdcnet.study.DataVariable;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
@@ -26,9 +27,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map; 
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import java.net.InetAddress;
@@ -40,6 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod; 
+import org.apache.commons.httpclient.methods.PostMethod; 
 
 /**
  *
@@ -60,6 +64,17 @@ public class FileDownloadServlet extends HttpServlet{
         return client;
     }
 
+    private String generateDisseminateUrl() throws IOException{
+        String dsbUrl = System.getProperty("vdc.dsb.url");
+        
+        if (dsbUrl != null) {
+            return "http://" + dsbUrl + "/VDC/DSB/0.1/Disseminate";
+        } else {
+            throw new IOException("System property \"vdc.dsb.url\" has not been set.");
+        }
+        
+    }
+
     @EJB StudyServiceLocal studyService;
     @EJB VDCServiceLocal vdcService;
   
@@ -74,6 +89,8 @@ public class FileDownloadServlet extends HttpServlet{
             ipUserGroup= (UserGroup)req.getSession().getAttribute("ipUserGroup");
         }
         String fileId = req.getParameter("fileId");
+	String formatRequested = req.getParameter("format");
+
         if (fileId != null) {
 
 	    StudyFile file = studyService.getStudyFile( new Long(fileId));
@@ -207,25 +224,130 @@ public class FileDownloadServlet extends HttpServlet{
 		}
 
 		studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
-		try {
-		    res.setContentType(file.getFileType());
-		    // send the file as the response
-		    InputStream in = new FileInputStream(new File(file.getFileSystemLocation()));
-		    OutputStream out = res.getOutputStream();
 
-		    int i = in.read();
-		    while (i != -1 ) {
-			out.write(i);
-			i = in.read();
+		if (formatRequested != null) {
+
+		    // user requested the file in a non-default (i.e.,
+		    // not tab-delimited) format.
+		    // we are going to send a format conversion request to 
+		    // the DSB via HTTP.
+		    
+		    Map parameters = new HashMap();		    
+
+		    parameters.put("dtdwnld", formatRequested); 
+
+		    String serverPrefix = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
+
+		    parameters.put("uri", generateUrlForDDI(serverPrefix, file.getFileCategory().getStudy().getId()));
+		    parameters.put("URLdata", generateUrlForFile(serverPrefix, file.getId()));
+		    parameters.put("fileid", "f" + file.getId().toString());
+
+		    // We are requesting a conversion of the whole datafile. 
+		    // I was positive there was a simple way to ask univar (Disseminate)
+		    // for "all" variables; but I'm not so sure anymore. So 
+		    // far I've only been able to do this by listing all the 
+		    // variables in the datafile and adding them to the request.
+		    // :( -- L.A.
+
+		    List variables = file.getDataTable().getDataVariables();
+		    parameters.put("varbl", generateVariableListForDisseminate( variables ) );
+
+		    PostMethod method = null; 
+		    int status = 200;		    
+
+		    try { 
+			method = new PostMethod (generateDisseminateUrl());
+
+			Iterator iter = parameters.keySet().iterator();
+			while (iter.hasNext()) {
+			    String key = (String) iter.next();
+			    Object value = parameters.get(key);
+                
+			    if (value instanceof String) {
+				method.addParameter(key, (String) value);
+			    } else if (value instanceof List) {
+				Iterator valueIter = ((List) value).iterator();
+				while (valueIter.hasNext()) {
+				    String item = (String) valueIter.next();
+				    method.addParameter(key, (String) item);
+				}
+			    }
+			}
+
+			status = getClient().executeMethod(method);
+			
+		    } catch (IOException ex) {
+			// return 404 and
+			// generate generic error messag:
+
+			status = 404; 
+			createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
+						    ? method.getStatusLine().toString()
+						    : "DSB conversion failure");
+			if (method != null) { method.releaseConnection(); }
+			return;
 		    }
-		    in.close();
-		    out.close();
+
+		    if ( status != 200 ) {
+			createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
+						    ? method.getStatusLine().toString()
+						    : "DSB conversion failure");
+			if (method != null) { method.releaseConnection(); }
+			return;
+		    }
+
+		    try {
+			// recycle all the incoming headers 
+			for (int i = 0; i < method.getResponseHeaders().length; i++) {
+			    res.setHeader(method.getResponseHeaders()[i].getName(), method.getResponseHeaders()[i].getValue());
+			}
+
+		    
+			// send the incoming HTTP stream as the response body
+
+			InputStream in = method.getResponseBodyAsStream(); 
+			OutputStream out = res.getOutputStream();
+
+			int i = in.read();
+			while (i != -1 ) {
+			    out.write(i);
+			    i = in.read();
+			}
+			in.close();
+			out.close();
                 
                 
-		} catch (IOException ex) {
-		    ex.printStackTrace();
+		    } catch (IOException ex) {
+			ex.printStackTrace();
+		    }
+		    
+		    method.releaseConnection();
+		    
+		} else {
+
+		    // finally, the *true* local case, where we just 
+		    // read the file off disk and send the stream back.
+		   
+		    try {
+			res.setContentType(file.getFileType());
+			// send the file as the response
+			InputStream in = new FileInputStream(new File(file.getFileSystemLocation()));
+			OutputStream out = res.getOutputStream();
+			
+			int i = in.read();
+			while (i != -1 ) {
+			    out.write(i);
+			    i = in.read();
+			}
+			in.close();
+			out.close();
+                
+			
+		    } catch (IOException ex) {
+			ex.printStackTrace();
+		    }
 		}
-	    }  
+	    }
 	} else {
             // first determine which files for zip file
 
@@ -341,7 +463,36 @@ public class FileDownloadServlet extends HttpServlet{
         }
     }
 
+    // private methods for generating parameters for the DSB 
+    // conversion call;
+    // borrowed from Gustavo's code in DSBWrapper (for now)
+
+
+     public List generateVariableListForDisseminate(List dvs) {
+        List variableList = new ArrayList();
+        if (dvs != null) {
+            Iterator iter = dvs.iterator();
+            while (iter.hasNext()) {
+                DataVariable dv = (DataVariable) iter.next();
+                variableList.add("v" + dv.getId());
+            }
+        }
+        return variableList;
+    }
+
     
+
+    private String generateUrlForDDI(String serverPrefix, Long studyId) {
+        String studyDDI = serverPrefix + "/ddi/?studyId=" + studyId;
+        return studyDDI;
+    }
+    
+    private String generateUrlForFile(String serverPrefix, Long fileId) {
+        String file = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1";
+        System.out.println(file);
+        return file;
+    }
+   
     private String checkZipEntryName(String originalName, List nameList) {
         String name = originalName;
         int fileSuffix = 1;

@@ -1327,14 +1327,16 @@ public class AddCollectionsPage extends VDCBaseBean {
             //node.setName("root collection");
         }
         addCollection.setName((String)textFieldCollectionName.getValue());
-        addCollection.setOwner(thisVDC);
         addCollection.setQuery((String) textAreaQuery.getValue());
         addCollection.setVisible(true);
         if (edit){
-            vdcCollectionService.edit(addCollection);
+           addCollection.setOwner(thisVDC);
+           vdcCollectionService.edit(addCollection);
         } else {
-            addCollection.setParentRelationship(node); 
             vdcCollectionService.create(addCollection);
+            addCollection.setParentRelationship(node); 
+            addCollection.setOwner(thisVDC);
+            vdcCollectionService.edit(addCollection);
         }
         StatusMessage msg = new StatusMessage();
         msg.setMessageText("Collection "+ addCollection.getName()+ " has been saved");

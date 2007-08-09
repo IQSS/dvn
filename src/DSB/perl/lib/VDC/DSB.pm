@@ -2,11 +2,17 @@ package DSB;
 
 use CGI qw(:standard);
 
+use MIME::Base64;
+
+use Compress::Zlib;
+
+
 use DSB::Ingest;
 use DSB::RAP;
 use DSB::XML;
 use URI;
 use VDCdiag;
+
 
 require "glv03";
 
@@ -761,12 +767,16 @@ sub Analyze {
 	return (400, "syntax error: missing header");
    }
 
+###    my $header_decoded = decode_base64($header);
+       my $header_decoded = $header;
+
+
     $fragfn = $TMPDIR . "/" . "analyze_". $$. "_" . $filename ;	#should use TMP from buildit!
 
      if (!open (FRAG,">$fragfn")) 
 	{  $error="couldn't create $fragfn"; goto ABORT;  }   
      binmode(FRAG);
-     if (!syswrite(FRAG, $header)) 
+     if (!syswrite(FRAG, $header_decoded)) 
 	{  $error="couldn't write to $fragfn"; goto ABORT;  }   
      close(FRAG); 
 
@@ -774,7 +784,7 @@ sub Analyze {
 	{  $error="couldn't reopen $fragfn"; goto ABORT;  }   
 
      binmode(FRAG);
-     if ($mime=$self->_checkfile(FRAG)){
+     if ($mime=$self->_checkfile(FRAG, $fragfn)){
         
 	$a_type="datafile";
 	$a_disposition="datafile";
@@ -828,7 +838,7 @@ sub Analyze {
 	$logger->vdcLOG_fatal ( "VDC::DSB", "(Analyze)",
 				$error );
 	return (500, $error);
-	unlink $fragfn;
+###	unlink $fragfn;
     }
   
     for my $type (@codebook_types) {
@@ -847,14 +857,14 @@ sub Analyze {
     print "<Ingest type=\"$a_type\" disposition=\"$a_disposition\" />\n";
     print "</services>\n";
     print "</Analyze>\n";
-    unlink $fragfn;
+#    unlink $fragfn;
 
     return undef; 
 }    
 
 
 sub _checkfile {
-	my ($self, $dfname) = @_;
+	my ($self, $dfname, $savedfile) = @_;
 #	open(DTA, $dfname) or die "can't open $dfname: $!";
 	binmode($dfname, ":raw");
 
@@ -996,14 +1006,28 @@ sub _checkfile {
 		}
 		# wind back the file and
 		# gunzip it and check its contents
-		seek $dfname, 0, 0;
-		binmode ($dfname);
+#		seek $dfname, 0, 0;
+#		binmode ($dfname);
+
+		close $dfname; 
+
 
 		my $gzbuff;
 		my $rdheadersize= 5;
-		my $gz = gzopen($dfname, 'rb');
+		my $gz = gzopen($savedfile, 'rb');
+	
+		unless ( $gz )
+		{
+		    $self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","Error! could not open gzipped file");
+		    return undef; 		    
+		}
+
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","opened gzipped header file");
 
 		my $bytesread = $gz->gzread($gzbuff, $rdheadersize) ;
+
+		$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","read 5 bytes");
+
 
 		if ($bytesread == 5) {
 			my $first5byte = pack("H*", join('',unpack("H2H2H2H2H2", $gzbuff)));
@@ -1013,8 +1037,8 @@ sub _checkfile {
 				# cases: RDX2(non-ASCII format) or RDA2(ASCII format)
 				# cases: RDX1(non-ASCII format) or RDA1(ASCII format)
 				$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is an gzipped-RData type");
-				return undef;
-				#return("application/x-rlang-transport");
+				#return undef;
+				return("application/x-rlang-transport");
 			} else {
 				$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","The expected byte-pattern was not found; This file is not an RData type");
 				return undef;

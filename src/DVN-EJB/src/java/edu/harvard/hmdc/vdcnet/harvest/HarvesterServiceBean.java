@@ -327,7 +327,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 
                 hdLogger.log(Level.INFO,"Harvest Successful for identifier "+identifier );
             }
-            return harvestedStudy.getId();
+        
         } catch (Throwable e) {
             hdLogger.log(Level.SEVERE,"Exception processing getRecord(), oaiUrl="+oaiUrl+",identifier="+identifier +" "+ e.getClass().getName()+" "+ e.getMessage());
             Throwable cause;
@@ -342,10 +342,15 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 stackTrace+=ste[m].toString()+"\n";
             }
             hdLogger.severe(stackTrace);
-            return null;
+           
             
         }
-      
+        if (harvestedStudy!=null) {
+            return harvestedStudy.getId();
+        } else {
+            return null;
+        }
+
     }
     
     

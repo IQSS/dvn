@@ -4,62 +4,68 @@
                         xmlns:jsp="http://java.sun.com/JSP/Page" 
                         xmlns:ui="http://www.sun.com/web/ui"
                         xmlns:tiles="http://struts.apache.org/tags-tiles">
-       <f:subview id="EditHomePanelsPageView">
-                    <ui:form  id="editHomePanelsForm">
-                        <h:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-                            <ui:panelLayout  id="layoutPanel1" panelLayout="flow" styleClass="vdcSectionMiddleFixed" style="width: 700px">
-                                <ui:panelLayout  id="layoutPanel2" panelLayout="flow" styleClass="vdcSectionHeader">
-                                    <h:outputText value="#{bundle.editHomePanelsHeading}"/>
-                                </ui:panelLayout>
-                                <ui:panelLayout rendered="#{EditHomePanelsPage.success}" id="messagePanel" panelLayout="flow" styleClass="vdcSectionMiddleMessage" style="width: 400px; margin-top: 10px; margin-bottom: -10px" >
-                                     <h:messages styleClass="successMessage" layout="table" showDetail="false" showSummary="true"/>
-                                </ui:panelLayout>
-                                <ui:panelLayout  id="layoutPanel3" panelLayout="flow" style="padding: 30px 50px 30px 50px; ">
-                                    <h:outputText  id="outputText4" styleClass="vdcSubHeaderColor" value="#{bundle.announcementsPanelHeading}"/>
-                                    <ui:panelGroup  block="true" id="groupPanel2" style="padding-top: 10px; padding-bottom: 20px">
-                                        <h:outputText  id="outputText2" value="1)  #{bundle.displayNetworkAnnouncementsLabel}"/>
-                                        <h:selectBooleanCheckbox  id="chkNetworkAnnouncements" value="#{EditHomePanelsPage.chkNetworkAnnouncements}"/>
-                                        <ui:panelGroup  block="true" style="padding-right: 70px">
-                                            <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />  
-                                            <h:outputText value="By checking this, Network announcements will be displayed in your dataverse homepage only when they are available." styleClass="vdcHelpText" />
-                                        </ui:panelGroup>
-                                    </ui:panelGroup>
-                                    <ui:panelGroup  block="true" id="groupPanel3" style="padding-bottom: 10px">
-                                        <h:outputText  id="outputText3" value="2)  #{bundle.displayLocalAnnouncementsLabel}"/>
-                                        <h:selectBooleanCheckbox  id="chkLocalAnnouncements"  value="#{EditHomePanelsPage.chkLocalAnnouncements}"/>
-                                        <ui:panelGroup  block="true" style="padding-right: 70px">
-                                            <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                            <h:outputText id="htmlHelp" styleClass="vdcHelpText" value="#{bundle.htmlHelpText}"/>
-                                        </ui:panelGroup>
-                                        <h:message id="announcementsMsg" 
-                                                    for="localAnnouncements"
-                                                    styleClass="errorMessage"/>                  
-                                    </ui:panelGroup>
-                                    <ui:panelGroup  block="true" id="groupPanel5" style="padding-top: 5px; padding-bottom: 20px">
-                                        <h:inputTextarea  cols="100" 
-                                                          id="localAnnouncements" 
-                                                          rows="15"
-                                                          value="#{EditHomePanelsPage.localAnnouncements}"
-                                                          styleClass="formHtmlEnabled">
-                                            <f:validator validatorId="XhtmlValidator"/>
-                                        </h:inputTextarea>
-                                    </ui:panelGroup>
-                                    <h:outputText  id="outputText5" styleClass="vdcSubHeaderColor" value="#{bundle.newStudiesPanelHeading}"/>
-                                    <ui:panelGroup  block="true" id="groupPanel4" style="padding-top: 10px; padding-bottom: 20px">
-                                        <h:outputText  id="outputText6" value="#{bundle.displayNewStudiesPanelHeading}"/>
-                                        <h:selectBooleanCheckbox  id="chkNewStudies" value="#{EditHomePanelsPage.chkNewStudies}"/>
-                                       
-                                        <ui:panelGroup block="true" style="padding-right: 65px">
-                                         <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                         <h:outputText value="#{bundle.newStudiesMessage}" styleClass="vdcHelpText"/>
-                                        </ui:panelGroup>
-                                    </ui:panelGroup>
-                                    <ui:panelGroup  block="true" id="groupPanel1" style="padding-left: 200px; padding-top: 20px">
-                                        <h:commandButton id="btnSave" value="#{bundle.saveButtonLabel}" action="#{EditHomePanelsPage.save_action}"/>
-                                        <h:commandButton id="btnCancel" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditHomePanelsPage.cancel_action}"/>
-                                    </ui:panelGroup>
-                                </ui:panelLayout>
-                            </ui:panelLayout>
-                    </ui:form>             
-         </f:subview>
+   <f:subview id="EditHomePanelsPageView">
+        <ui:form  id="editHomePanelsForm">
+            <h:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+            
+            <div class="dvn_section">
+                <div class="dvn_sectionTitle">
+                    <h3>           
+                        <h:outputText value="#{bundle.editHomePanelsHeading}"/>
+                    </h3>
+                </div>            
+                <div class="dvn_sectionBox dvn_pad12">
+                    <ui:panelGroup styleClass="successMessage" rendered="#{EditHomePanelsPage.success}" id="messagePanel" >
+                        <h:messages styleClass="successMessage" layout="table" showDetail="false" showSummary="true"/>
+                    </ui:panelGroup>
+                    
+                    <h:outputText  id="outputText4" styleClass="vdcSubHeaderColor" value="#{bundle.announcementsPanelHeading}"/>
+                    <ui:panelGroup  block="true" id="groupPanel2" style="padding-top: 10px; padding-bottom: 20px">
+                        <h:outputText  id="outputText2" value="1)  #{bundle.displayNetworkAnnouncementsLabel}"/>
+                        <h:selectBooleanCheckbox  id="chkNetworkAnnouncements" value="#{EditHomePanelsPage.chkNetworkAnnouncements}"/>
+                        <ui:panelGroup  block="true" style="padding-right: 70px">
+                            <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />  
+                            <h:outputText value="By checking this, Network announcements will be displayed in your dataverse homepage only when they are available." styleClass="vdcHelpText" />
+                        </ui:panelGroup>
+                    </ui:panelGroup>
+                    <ui:panelGroup  block="true" id="groupPanel3" style="padding-bottom: 10px">
+                        <h:outputText  id="outputText3" value="2)  #{bundle.displayLocalAnnouncementsLabel}"/>
+                        <h:selectBooleanCheckbox  id="chkLocalAnnouncements"  value="#{EditHomePanelsPage.chkLocalAnnouncements}"/>
+                        <ui:panelGroup  block="true" style="padding-right: 70px">
+                            <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                            <h:outputText id="htmlHelp" styleClass="vdcHelpText" value="#{bundle.htmlHelpText}"/>
+                        </ui:panelGroup>
+                        <h:message id="announcementsMsg" 
+                                   for="localAnnouncements"
+                                   styleClass="errorMessage"/>                  
+                    </ui:panelGroup>
+                    <ui:panelGroup  block="true" id="groupPanel5" style="padding-top: 5px; padding-bottom: 20px">
+                        <h:inputTextarea  cols="100" 
+                                          id="localAnnouncements" 
+                                          rows="15"
+                                          value="#{EditHomePanelsPage.localAnnouncements}"
+                                          styleClass="formHtmlEnabled">
+                            <f:validator validatorId="XhtmlValidator"/>
+                        </h:inputTextarea>
+                    </ui:panelGroup>
+                    <h:outputText  id="outputText5" styleClass="vdcSubHeaderColor" value="#{bundle.newStudiesPanelHeading}"/>
+                    <ui:panelGroup  block="true" id="groupPanel4" style="padding-top: 10px; padding-bottom: 20px">
+                        <h:outputText  id="outputText6" value="#{bundle.displayNewStudiesPanelHeading}"/>
+                        <h:selectBooleanCheckbox  id="chkNewStudies" value="#{EditHomePanelsPage.chkNewStudies}"/>
+                        
+                        <ui:panelGroup block="true" style="padding-right: 65px">
+                            <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                            <h:outputText value="#{bundle.newStudiesMessage}" styleClass="vdcHelpText"/>
+                        </ui:panelGroup>
+                    </ui:panelGroup>
+                    <ui:panelGroup  block="true" id="groupPanel1" style="padding-left: 200px; padding-top: 20px">
+                        <h:commandButton id="btnSave" value="#{bundle.saveButtonLabel}" action="#{EditHomePanelsPage.save_action}"/>
+                        <h:commandButton id="btnCancel" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditHomePanelsPage.cancel_action}"/>
+                    </ui:panelGroup>
+                    
+                </div>
+            </div>
+                 
+        </ui:form>             
+     </f:subview>
 </jsp:root>

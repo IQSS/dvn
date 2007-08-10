@@ -111,21 +111,22 @@ sub vdc_generateColFile {
     # still remains, and will be addressed in the next build. \
 
 
-    open ( DDI, $dir . "/" . $ddi ) || return undef; 
-    open ( STRIPPED_DDI, ">" . $dir . "/" . $ddi . "_stripped" ) || return undef; 
+#    open ( DDI, $dir . "/" . $ddi ) || return undef; 
+#    open ( STRIPPED_DDI, ">" . $dir . "/" . $ddi . "_stripped" ) || return undef; 
 
-    while ( <DDI> )
-    {
-	chop; 
-	s/[\000-\037\200-\377]//g; 
-	print STRIPPED_DDI $_ . "\n";
-    }
+#    while ( <DDI> )
+#    {
+#	chop; 
+#	s/[\000-\037\200-\377]//g; 
+#	print STRIPPED_DDI $_ . "\n";
+#    }
 
-    close DDI; 
-    close STRIPPED_DDI; 
+#    close DDI; 
+#    close STRIPPED_DDI; 
 
 
-    system ( "/usr/local/VDC/sbin/recreatevlm.pl $dir $ddi" . "_stripped " .  "$dataset_id $type" ); 
+#    system ( "/usr/local/VDC/sbin/recreatevlm.pl $dir $ddi" . "_stripped " .  "$dataset_id $type" ); 
+    system ( "/usr/local/VDC/sbin/recreatevlm.pl $dir $ddi" . " " .  "$dataset_id $type" ); 
 
     my $col_filename = sprintf ( "%s/%s.vlm", $dir, $dataset_id );
  

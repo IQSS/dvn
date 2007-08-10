@@ -260,18 +260,50 @@ my $dtdwnldf = $CGIparamSet->getDwnldType();
 		}
 	}
 	
-	$logger->vdcLOG_warning( 'VDC::DSB', $script_name,  "got ddi"); # debug
+# below is a temporary solution (aka hack) for the problem with 
+# getting invalid DDIs from the application;
+# The DDI is created by the Dataverse and, apparently, always
+# tagged as "UTF-8" content. So it was discovered that this will 
+# cause problems for the parser in Akio's script below when there are 
+# 8-bit characters in the DDI (most often, the result of ingest from 
+# Stata and SPSS files). 
+# As an immediate fix, I'm going to preprocess the DDI and 
+# strip all such potentially-dangerous characters. This cannot 
+# possibly cause any real content loss, since at this stage we are 
+# only interested in the byte offsets of the variable columns in the 
+# datafiles, so any text in the DDI can be safely disregarded. 
+# 
+# However, the problem of exporting illegal XML by the application 
+# still remains, and will be addressed in the next build series.
+
+
+open ( DDI, $ddiforR ); 
+open ( STRIPPED_DDI, ">" . $ddiforR . "_stripped" ); 
+
+while ( <DDI> )
+{
+    chop; 
+    s/\r//g;
+    s/[\000-\037\200-\377]/\?/g; 
+    print STRIPPED_DDI $_ . "\n";
+}
+
+close DDI; 
+close STRIPPED_DDI; 
+
+
+$logger->vdcLOG_warning( 'VDC::DSB', $script_name,  "got ddi"); # debug
 
 
 ###	prog_update_and_check($progress); # 2. Extracting Variable Information
 
 	my $varIDhsh=$CGIparamSet->getVarIDhsh();
 	# Instantiate new handler and parser objects.
-	my $ddimtdt = VDC::DSB::DDISAXparser->new(DDIname =>$ddiforR, VarID=>$varIDhsh);
+	my $ddimtdt = VDC::DSB::DDISAXparser->new(DDIname =>$ddiforR . "_stripped", VarID=>$varIDhsh);
 	my $parser = XML::SAX::ParserFactory->parser(Handler => $ddimtdt);
 	# Parse the document name that was passed in off the command line.
 	eval {
-		$parser->parse_uri($ddiforR);
+		$parser->parse_uri($ddiforR . "_stripped");
 	};
 	if ($@){
 		print TMPX "entering error-follow-up routine\n";
@@ -360,7 +392,7 @@ if ($dataURL) {
 		
 	    } 
 
-	    my $datafile_format = &check_fileFormat ( $ddiforR, $fileid ); 
+	    my $datafile_format = &check_fileFormat ( $ddiforR . "_stripped", $fileid ); 
 
 	    $logger->vdcLOG_info ("VDC::DSB", "Disseminate",
 				  "datafile format detected: " . 
@@ -368,7 +400,7 @@ if ($dataURL) {
 		
 
 
-	    my $coldef_file = &locate_subsettingMetaFile ( $ddiforR, $fileid, $datafile_format ); 
+	    my $coldef_file = &locate_subsettingMetaFile ( $ddiforR . "_stripped", $fileid, $datafile_format ); 
 
 	    if ( $coldef_file )
 	    {
@@ -1199,6 +1231,7 @@ sub exitChores {
 	 	unlink($RtmpData);
 	 	unlink($RtmpDataRaw);
 	 	unlink($ddiforR);
+	 	unlink($ddiforR . "_stripped");
 	 	unlink($RtmpHtml);
 		my $nofldl =  unlink(< $TMPDIR/t.$$.*.tab >);
 		print TMPX "\n",$nofldl," sub-tab files are deleted\n";

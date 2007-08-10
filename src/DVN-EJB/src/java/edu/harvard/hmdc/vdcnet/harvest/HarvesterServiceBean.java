@@ -200,7 +200,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     
     private void harvest( HarvestingDataverse dataverse, String from, String until) {
         Logger hdLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean."+dataverse.getVdc().getAlias());
-        List<Long> harvestedStudyIds = new ArrayList();
+        List<Long> harvestedStudyIds = new ArrayList<Long>();
         try {
             hdLogger.addHandler(new FileHandler(FileUtil.getImportFileDir()+ File.separator+ "harvest_"+dataverse.getVdc().getAlias()+".log"));
         } catch(IOException e) {
@@ -234,9 +234,9 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
 
         // now index all studies (need to modify for update)
         hdLogger.log(Level.INFO,"POST HARVEST, start calls to index.");
-        for (Long studyId : harvestedStudyIds ) {
-            indexService.updateStudy( studyId );
-        }
+    
+            indexService.indexList( harvestedStudyIds );
+       
         hdLogger.log(Level.INFO,"POST HARVEST, calls to index finished.");
     }
     

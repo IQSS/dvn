@@ -20,26 +20,30 @@
          <ui:script url="/resources/EventCapture.js"/>
       </ui:head>
       <body>
-           <f:subview id="banner">
-              <tiles:insert name="banner" flush="false"/>
-           </f:subview>
-           
-          <!-- <ui:panelGroup style="max-width:1000px; text-align: center; margin-left: auto; margin-right: auto; " block="true"> -->
-           <f:subview id="menubar">
-              <tiles:insert name="menubar" flush="false"/>
-           </f:subview>
-
-           <f:subview id="content">
-                <tiles:insert name="content" flush="false"/>
-            </f:subview>
-            <!-- </ui:panelGroup> -->
-            <f:subview id="footer">
-                <tiles:insert name="footer" flush="false"/>
-            </f:subview>
-            <script language="javascript" src="/cgi/awstats/js/awstats_misc_tracker.js"></script>
-            <noscript>
-                <img src="/cgi/awstats/js/awstats_misc_tracker.js?nojs=y" height="0" width="0" border="0" style="display:block"/>
-            </noscript>
+          <div class="dvn_wrapper">
+              <div class="dvn_content">
+                  
+                  <f:subview id="banner">
+                      <tiles:insert name="banner" flush="false"/>
+                  </f:subview>
+                  
+                  <f:subview id="menubar">
+                      <tiles:insert name="menubar" flush="false"/>
+                  </f:subview>
+                  
+                  <f:subview id="content">
+                      <tiles:insert name="content" flush="false"/>
+                  </f:subview>
+                
+                  <f:subview id="footer">
+                      <tiles:insert name="footer" flush="false"/>
+                  </f:subview>
+                  <script language="javascript" src="/cgi/awstats/js/awstats_misc_tracker.js"></script>
+                  <noscript>
+                      <img src="/cgi/awstats/js/awstats_misc_tracker.js?nojs=y" height="0" width="0" border="0" style="display:block"/>
+                  </noscript>
+              </div>
+          </div>
       </body>
 </ui:html>
 </ui:page>

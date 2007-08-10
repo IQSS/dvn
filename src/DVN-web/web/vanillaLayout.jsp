@@ -27,22 +27,12 @@
              </script>
          </f:verbatim>
       </ui:head>
-      <body style="background-color:#eeeeee;">
-           <!-- <f:subview id="banner">
-              <tiles:insert name="banner" flush="false"/>
-           </f:subview> -->
-
-           <!-- <f:subview id="menubar">
-              <tiles:insert name="menubar" flush="false"/>
-           </f:subview> -->
+      <body style="background-color:#eeeeee;">        
 
            <f:subview id="content">
                 <tiles:insert name="content" flush="false"/>
             </f:subview>
   
-            <!-- <f:subview id="footer">
-                <tiles:insert name="footer" flush="false"/>
-            </f:subview> -->
       </body>
 </ui:html>
 </ui:page>

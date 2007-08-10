@@ -8,14 +8,18 @@
    <f:subview id="AnnouncementsPageView">
         <ui:form  id="announcementsForm">  
             <h:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-                <ui:panelLayout  id="layoutPanel1" panelLayout="flow" styleClass="vdcSectionMiddle">
-                    <ui:panelLayout  id="layoutPanel2" panelLayout="flow" styleClass="vdcSectionHeader">
+            
+            <div class="dvn_section">
+                <div class="dvn_sectionTitle">
+                    <h3>
                         <h:outputText  value="#{ (VDCRequest.currentVDCId != null) ? 'Local' : 'Network'} #{bundle.announcementsHeading}"/>
-                    </ui:panelLayout>
-                    <ui:panelLayout  id="layoutPanel3" panelLayout="flow" style="padding: 40px 40px 30px 40px; ">
-                        <h:outputText  escape="false" id="pageContent" value="#{ (VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.announcements : VDCRequest.currentVDC.announcements }"/>
-                    </ui:panelLayout>
-                </ui:panelLayout>
+                    </h3>
+                </div>            
+                <div class="dvn_sectionBox dvn_pad12"> 
+                    <h:outputText  escape="false" id="pageContent" value="#{ (VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.announcements : VDCRequest.currentVDC.announcements }"/>
+                </div>
+            </div>
+            
         </ui:form>
    </f:subview>
 </jsp:root>

@@ -10,15 +10,16 @@
 
         
 <ui:form  id="SiteMapForm">  
-    <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+ <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
     
-    <!-- DEBUG - start changes here  -->   
-    
-        <ui:panelLayout  id="layoutPanel1" panelLayout="flow" styleClass="vdcSectionMiddleNoBorder">
-         <ui:panelLayout  id="browseHeaderPanel" panelLayout="flow" styleClass="vdcSectionHeader">
+  <div class="dvn_section">
+        <div class="dvn_sectionTitle">
+            <h3>
                 <h:outputText value="#{bundle.sitemapHeading}"/>
-            </ui:panelLayout>
-       <!-- DEBUG  layout change to 2 column -->
+            </h3>
+        </div>            
+        <div class="dvn_sectionBox dvn_pad12"> 
+
           <h:panelGrid  cellpadding="0" cellspacing="0" columnClasses="vdcTwoColLayout, vdcTwoColLayout" columns="2" style="border-left:1px solid #cccccc; border-right:1px solid #cccccc;  border-bottom:1px solid #cccccc;" id="homeGrid" width="100%">
   
               <ui:panelLayout id="sitemapColumn1" panelLayout="flow" styleClass="vdcSectionTwoCol" style="padding-left: 60px; padding-top: 20px; padding-bottom: 30px; padding-right: 80px;">
@@ -151,8 +152,10 @@
                     
                 </ui:panelGroup>
               </ui:panelLayout>
-          </h:panelGrid>
-       </ui:panelLayout>
+              
+              </h:panelGrid>
+            </div>
+        </div>  
     </ui:form>
   </f:subview>
 </jsp:root>

@@ -1,163 +1,170 @@
-/* Style rules to make data tables look better */
-
-.list-header {
-   font-size: 1em;
-   font-weight: bold
+/* DVN GENERAL STYLE RULES */
+/* Don't forget to set a foreground and background color 
+   on the 'html' or 'body' element! */
+html, body, div, span,
+applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dd, dl, dt, li, ol, ul,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	line-height: 1;
+	font-family: inherit;
+	text-align: left;
+	vertical-align: baseline;
 }
-.list-header-left {
-   background-color: #e2e2e2;
-   font-size: 1em;
-   font-weight: bold;
-   text-align: left
-}
-.list-paging-header {
-  background-color: white;
-}
-
-.list-paging-footer {
-  background-color: white;
-}
-
-.list-row-even { 
-}
-
-.list-row-odd { 
-  background-color: #eeeeee;
-}
-
-/* Style rules for message severity levels */
-
-.infoMessage {
-  color: black;
+a img, :link img, :visited img {
+	border: 0;
 }
 
-.successMessage {
-    margin: 0px;
-    padding: 0px;
-    background: #FBD91F;
-    color: #002BB8;
-    border-width: 1px;
-    border-color: #CE8928;
-    border-style: solid;
-    text-align: center;
-    font-weight: bold;
+table {
+	border-collapse: collapse; 
+	border-spacing: 0;
 }
 
-.warnMessage {
-   color: #8B0404;
+ol, ul {
+	list-style: none;
+}
+q:before, q:after,
+blockquote:before, blockquote:after {
+	content: "";
 }
 
-.errorMessage {
-  color: red;
-  font-weight: bold;
+body {
+	width: 98%;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
-.fatalMessage {
-  color: red;
-  font-style: italic;
-  font-weight: bold;
+/* DVN SPECIFIC STYLE CLASSES */
+/* MAIN LAYOUT */
+.dvn_wrapper {
+	margin: 0 auto;
+	max-width: 980px;
+	height: 101%;
 }
 
-/* VDCNet general style rules
-*/
-
-body { 
-   font-family: Verdana, Arial, Helvetica, sans-serif; 
-   margin: 0px; /* Need to set body margin and padding to get consistency between browsers. */
-   padding: 0px;
-   text-align: center;  /* Counteract to IE/Win Hack */
-   font-size: 1em;
+.dvn_content {
+	display: inline;
+	width: 100%;
+	float: left;
 }
+
+.dvn_floatL {
+	float: left;
+}
+
+.dvn_floatR {
+	float: right;
+}
+
+/* GENERAL CONTENT */
+
+.dvn_section {margin: 1em; width: 100%; overflow: hidden;}
+
+.dvn_sectionContent {
+	display: inline;
+	width: 75%;
+	float: left;
+}
+.dvn_sectionTitle {margin: 0;}
+.dvn_sectionTitle h3 {margin: .25em .65em; color: #035899; font-weight: normal;}
+
+.dvn_sectionTitle h3 em {padding: .25em 0; font-style: normal; float: left;}
+.dvn_sectionTitle h3 span {padding: .25em 0; font-size: .75em; float: right;}
+.dvn_sectionTitle h3 a {margin-left: 12px;}
+
+.dvn_sectionBox {width: 100%; border-top: 2px solid #035899; border-left: 1px solid #ccc;}
+.dvn_pad12 {
+	padding: .75em;
+}
+
+.dvn_sectionPanels {display: inline; margin-left: 2%; width: 23%; float: left;}
+
+.dvn_sectionPanels h2 {padding: .25em 0; border-bottom: 2px solid #035899; font-size: 1em;}
+.dvn_sectionPanels div.dvn_sectionPanelText {margin-bottom: 1em; padding: .5em; border-left: 1px solid #ccc;}
+.dvn_sectionPanels span {font-size: .75em;}
+/* .dvn_sectionPanels p {padding: .5em 0; line-height: 122%;} */
+.dvn_sectionPanels ul {
+	margin-left: 2em;
+	list-style-image: url(http://dvn.iq.harvard.edu/dvn/resources/icon_bullet.gif);
+}
+.dvn_sectionPanels li {
+	padding: 1em 0;
+}
+.dvn_sectionPanels li a {
+	line-height: 1.25em;
+}
+
+/* HEADER */
+
+.dvn_headerTitle h1 {margin: .25em .5em; color: #035899; font-size: 1.2em; font-weight: normal;}
+.dvn_headerTitle h1 a:link, .headerTitle h1 a:visited, .headerTitle h1 a:active {text-decoration: none; color: #035899;}
+.dvn_headerTitle h1 a:hover {text-decoration: underline; color: #035899;}
+.dvn_headerTitle h3 {margin: 0 1.05em; color: #6D0609; font-size: .7em; font-weight: bold;}
+.dvn_headerTitle h3 a:link, .headerTitle h3 a:visited, .headerTitle h3 a:active {text-decoration: none; color: #6D0609;}
+.dvn_headerTitle h3 a:hover {text-decoration: underline; color: #6D0609;}
+
+.dvn_headerTitle h5 {display: inline; margin: 0 .75em; font-family: Times New Roman, Times, serif; font-size: .8em; text-align: right; float: right;}
+.dvn_headerTitle h5 a:link, .headerTitle h5 a:visited, .headerTitle h5 a:hover, .headerTitle h5 a:active {text-decoration: none; color: #000;}
+.dvn_headerTitle h5 span {color: #999; font-family: Arial, Helvetica, sans-serif; font-size: .85em; font-weight: normal;}
+.dvn_headerTitle h5 b {color: #6D0609;}
+.dvn_headerTitle h5 em {font-size: 1em; font-family: Lucida Console, Monaco, monospace; font-weight: normal; font-style: normal;}
+
+.dvn_headerBar {width: 100%; background: transparent; border-top: 2px solid #035899; float: left;}
+
+.dvn_headerBarContent {display: block; width: 100%; background: #ddd; float: left;}
+
+.dvn_headerBarContent ul {display: inline; margin: 0 .75em; padding: 0.25em 0; list-style: none;}
+.dvn_headerBarContent li {display: inline; margin-right: 1em; font-size: .75em; float: left;}
+
+.dvn_headerBarContent li.dvn_networkOptions {display: inline; margin-left: 1em; margin-right: 0; font-size: .75em; float: left;}
+.dvn_boldRed a{font-weight: bold; color: #6D0609;}
+
+.dvn_xbottom {display: block; width: 100%; background: transparent; font-size: 1px; float: left;}
+.dvn_xb1, .dvn_xb2, .dvn_xb3, .dvn_xb4 {display: block; overflow: hidden;}
+.dvn_xb1, .dvn_xb2, .dvn_xb3 {height: 1px;}
+.dvn_xb2, .dvn_xb3, .dvn_xb4 {background: #ddd;}
+.dvn_xb1 {margin: 0 5px; background: #ddd;}
+.dvn_xb2 {margin: 0 3px; border-width: 0 2px;}
+.dvn_xb3 {margin: 0 2px;}
+.dvn_xb4 {height: 2px; margin: 0 1px;}
+
+/* SEARCH */
+
+.dvn_searchBox {width: 100%; background: transparent; border-top: 2px solid #035899; float: left;}
+
+.dvn_searchBoxContent {display: block; width: 100%; background: #ddd; float: left;}
+.dvn_searchBoxContent form {display: inline; margin: 0 1em; padding: 0.5em 1.5em; width: 90%; font-size: .75em; vertical-align: bottom; float: left;}
+.dvn_searchBoxContent label {margin-right: 12px; padding: 0; float: left;}
+.dvn_searchBoxContent span {display: block; padding-bottom: 0.5em;}
+.dvn_searchBoxContent input.button {margin-top: 1.5em; *margin-top: 1.25em; float: left;}
+
+/* FOOTER */
+
+.dvn_footer {
+	margin: 3em 0;
+	padding: 1em;
+	color: #aaa;
+	border-top: 2px solid #ccc;
+	font-size: .7em;
+	text-align: center;
+}
+
+
+/* OLD STYLES start HERE */
+
 /* All content jsps have a panel layot (div) with style: vdcSectionMiddle, vdcSectionMiddleNoBorder (when there are more than 1 section columns), 
 *  or vdcSectionMiddleFixed (when the section needs to be of a fixed size - specify the size in the jsp)
 */
 
-.vdcSectionMiddle{
-   border: 1px solid #cccccc;
-   width: 96%;
-   margin-left: auto;
-   margin-right: auto;
-   margin-top: 50px;
-   margin-bottom: 50px; 
-   text-align: left; /* Counteract to IE/Win Hack */
-   height: 100%;
-}
-.vdcSectionMiddleNoBorder{
-   width: 96%;
-   margin-left: auto;
-   margin-right: auto;
-   margin-top: 50px;
-   margin-bottom: 50px; 
-   padding: 0px;
-   text-align: left; /* Counteract to IE/Win Hack */
-   height: 100%;   
-}
-.vdcSectionMiddleFixed {
-    margin-left: auto; /* Right and left margin widths set to "auto" */
-    margin-right: auto;
-    margin-top: 50px;
-    margin-bottom: 50px; 
-    text-align: left; /* Counteract to IE/Win Hack */
-    border: 1px solid #cccccc;
-    padding: 0px;
-    height: 100%;
-}
-
-.vdcSectionMiddleMessage {
-    margin-left: auto; /* Right and left margin widths set to "auto" */
-    margin-right: auto;
-    margin-top: 0px;
-    margin-bottom: 0px; 
-    text-align: left; /* Counteract to IE/Win Hack */
-    padding: 0px;
-    height: 100%;
-}
-/* Rules for more than 1 section column
-*/
-.vdcContentCol1{
-   padding-bottom: 0px;
-   padding-left: 0px;
-   padding-right: 15px;
-   padding-top: 0px;
-   vertical-align: top;
-   width: 75%;
-}
-
-.vdcContentCol2{
-   padding-bottom: 0px;
-   padding-left: 15px;
-   padding-right: 0px;
-   padding-top: 0px;
-   width: 25%;
-   vertical-align: top;
-}
-
-.vdcSectionCol {
-   width: 100%;
-   border: 1px solid #cccccc; 
-   padding: 0px;
-   margin: 0px;
-}
-
-.vdcSectionColRight {
-   width: 98%;
-   border: 1px solid #cccccc; 
-   padding: 0px;
-   margin: 0px;
-}
-
-.vdcTwoColLayout {
-    width: 50%; 
-    padding: 0px;
-    margin: 0px;
-    vertical-align: top;
-}
-
-.vdcSectionTwoCol {
-   width: 100%;
-   padding: 0px;
-   margin: 0px;
-}
 
 .formHtmlEnabled {
     background-color: #E4F9F9;
@@ -165,31 +172,6 @@ body {
 
 .formDateFormat {
     background-color: #F9E0BD;
-}
-/* Section Header and general text styles
-*/
-.vdcSectionHeader {
-   background-image: url(gradientbar.jpg);
-   background-repeat: repeat-x;
-   background-color: #eeeeee;
-   border-bottom-color: #999999;
-   border-bottom-style: solid;
-   border-bottom-width: 1px;
-   border-top-color: #999999;
-   border-top-style: solid;
-   border-top-width: 1px;
-   color: #062f58;
-   font-weight: bold;
-   margin: 0px;
-   padding-bottom: 7px;
-   padding-left: 0px;
-   padding-right: 4px;
-   padding-top: 2px;
-   text-align: left;
-   text-indent: 3px;
-   vertical-align: top;
-   white-space: nowrap; 
-   font-size: 1.3em;
 }
 
 .vdcTextWrap{
@@ -333,248 +315,6 @@ body {
     margin-left: 20px; 
 }
 
-/* Connected Banner style rules
-*/
-.vdcConnectBanner{
-   border-top-color: #FFFFFF;
-   border-top-style: solid;
-   border-top-width: 5px;
-   vertical-align: bottom;
-}
-.vdcConnectBannerCol0{
-   text-align: left;
-   padding-bottom: -5px;
-   width: 10px;
-   border-bottom-color: #a3b1bf;
-   border-bottom-style: solid;
-   border-bottom-width: 1px;
-   vertical-align: bottom;
-   margin: 0px;
-} 
-.vdcConnectBannerCol0n{
-   text-align: left;
-   padding-bottom: -5px;
-   width: 10px;
-   border-bottom-color: #6d0609;
-   border-bottom-style: solid;
-   border-bottom-width: 1px;
-   vertical-align: bottom;
-   margin: 0px;
-}   
-.vdcConnectBannerCola{
-   text-align: left;
-   padding-bottom: -5px;
-   width: 1%;
-   border-bottom-color: #a3b1bf;
-   border-bottom-style: solid;
-   border-bottom-width: 1px;
-   vertical-align: bottom;
-   margin: 0px;
-   padding-left: 10px;
-    white-space: nowrap;
-}  
-.vdcConnectBannerColb{
-   text-align: left;
-   padding-bottom: -5px;
-   width: 1%;
-   vertical-align: bottom;
-   margin: 0px;
-   white-space: nowrap;
-}
-
-.vdcConnectBannerColc{
-   background-color: #FFFFFF;
-   padding-right: 5px;
-   text-align: right;
-   border-bottom-color: #a3b1bf;
-   border-bottom-style: solid;
-   border-bottom-width: 1px;
-   margin: 0px;
-}
-.vdcConnectBannerColcn{
-   background-color: #FFFFFF;
-   padding-right: 5px;
-   text-align: right;
-   border-bottom-color: #6d0609;
-   border-bottom-style: solid;
-   border-bottom-width: 1px;
-   margin: 0px;
-}
-.vdcMenu0{
-   background-color: #FFFFFF;
-   text-align: left;
-   height: 23px;
-   vertical-align: bottom;
-   width: 10px;
-}
-.vdcMenua{
-   background-color: #f2f2f2;
-   text-align: left;
-   border-top-color: #6d0609;
-   border-top-style: solid;
-   border-top-width: 1px;
-   border-left-color: #6d0609;
-   border-left-style: solid;
-   border-left-width: 1px;
-   border-right-color: #6d0609;
-   border-right-style: solid;
-   border-right-width: 1px;  
-   height: 23px;
-   vertical-align: bottom;
-   padding-left: 10px;
-   padding-right: 10px;
-   padding-top: 5px;
-    white-space: nowrap;
-}
-.vdcMenub{
-   background-color: #e8e8e8;
-   text-align: left;
-   height: 25px;
-   border-top-color: #a3b1bf;
-   border-top-style: solid;
-   border-top-width: 1px;
-   border-left-color: #a3b1bf;
-   border-left-style: solid;
-   border-left-width: 1px;
-   border-right-color: #a3b1bf;
-   border-right-style: solid;
-   border-right-width: 1px;  
-   vertical-align: bottom;
-   padding-left: 10px;
-   padding-right: 10px;
-   padding-top: 5px;
-    white-space: nowrap;
-}   
-.vdcMenubn{
-   background-color: #f2f2f2;
-   text-align: left;
-   height: 25px;
-   border-top-color: #6d0609;
-   border-top-style: solid;
-   border-top-width: 1px;
-   border-left-color: #6d0609;
-   border-left-style: solid;
-   border-left-width: 1px;
-   border-right-color: #6d0609;
-   border-right-style: solid;
-   border-right-width: 1px;  
-   vertical-align: bottom;
-   padding-left: 10px;
-   padding-right: 10px;
-   padding-top: 5px;
-    white-space: nowrap;
-}   
-a.vdcConnectTextActive:link,a.vdcConnectTextActive:visited,a.vdcConnectTextActive:hover{
-    font-size: 1.2em;
-    font-weight: bold;
-    white-space: nowrap;
-}
-a.vdcConnectTextActiven:link,a.vdcConnectTextActiven:visited,a.vdcConnectTextActiven:hover{
-    color: #6d0609;
-    font-size: 1.2em;
-    font-weight: bold;
-    white-space: nowrap;
-}
-a.vdcConnectText:link,a.vdcConnectText:visited,a.vdcConnectText:hover{
-    color: #6d0609;
-    font-size: 1.2em;
-    white-space: nowrap;
-}
-
-/*Menubar Style rules
-*/
-.vdcMenubarCol1{
-   background-color: #e8e8e8;
-   padding-bottom: 5px;
-   padding-top: 5px;
-   text-align: left;
-   padding-left: 10px;
-   border-left-color: #d9dde1;
-   border-left-style: solid;
-   border-left-width: 1px;
-   border-bottom-color: #d9dde1;
-   border-bottom-style: solid;
-   border-bottom-width: 1px;
-}
-.vdcMenubarCol2{
-   background-color: #e8e8e8;
-   padding-bottom: 5px;
-   padding-top: 5px;
-   padding-right: 10px;
-   text-align: right;
-   border-right-color: #d9dde1;
-   border-right-style: solid;
-   border-right-width: 1px;
-   border-bottom-color: #d9dde1;
-   border-bottom-style: solid;
-   border-bottom-width: 1px;
-}
-.vdcMenubarCol1n{
-   background-color: #f2f2f2;
-   padding-bottom: 5px;
-   padding-top: 5px;
-   text-align: left;
-   padding-left: 10px;
-   border-left-color: #cec9d0;
-   border-left-style: solid;
-   border-left-width: 1px;
-   border-bottom-color: #cec9d0;
-   border-bottom-style: solid;
-   border-bottom-width: 1px;
-}
-.vdcMenubarCol2n{
-   background-color: #f2f2f2;
-   padding-bottom: 5px;
-   padding-top: 5px;
-   padding-right: 10px;
-   text-align: right;
-   border-right-color: #cec9d0;
-   border-right-style: solid;
-   border-right-width: 1px;
-   border-bottom-color: #cec9d0;
-   border-bottom-style: solid;
-   border-bottom-width: 1px;
-}
-.vdcMenuItemBorder{
-    margin-left: 10px; 
-    margin-right: 10px;
-}
-.vdcMenutItem{
-   font-weight: bold
-}
-
-.vdcDataverseMenu{
-    font-weight: bold;
-    font-size: 1.2em;
-    color: #820024;
-    padding-right: 5px;
-}
-
-.vdcMenuUserOptions{
-   color: #820024;
-   margin-right: 5px;
-   margin-left: 5px;
-   font-weight: bold
-}
-a.vdcMenuUserOptions:link,a.vdcMenuUserOptions:visited,a.vdcMenuUserOptions:hover{
-   color: #820024;
-   font-weight: bold
-}
-
-.vdcMenuNetworkOptions{
-   color: #820024;
-   margin-right: 5px;
-   margin-left: 5px;
-   font-weight: bold
-}
-a.vdcMenuNetworkOptions:link,a.vdcMenuNetworkOptions:visited,a.vdcMenuNetworkOptions:hover{
-   color: #820024;
-   font-weight: bold
-}
-.vdcMenuUserName{
-   margin-right: 5px
-}
-
 a.vdcSiteMapLink:link {
   text-decoration: underline;
 }
@@ -586,79 +326,6 @@ a.vdcSiteMapLink:hover {
   color: #ff0000;
   text-decoration: underline;
 }
-/* VDC Search Box Style rules
-*/
-
-.vdcSearchSection {
-   background-color: #E2E2E2 !important;
-   text-align: left;
-   width: 100%;
-   padding: 0px;
-   margin: 0px; 
-}
-
-.vdcSearchGroupFirst {
-   border-left-color: #ffffff;
-   border-left-style: solid;
-   border-left-width: 2px;
-   border-right-style: solid;
-   border-right-color: #ffffff;
-   border-right-width: 2px;
-   border-top-color: #ffffff;
-   border-top-style: solid;
-   border-top-width: 2px;
-   margin-bottom: 0px;
-   margin-left: 0px;
-   margin-right: 0px;
-   margin-top: 0px;
-   padding-bottom: 10px;
-   padding-left: 2px;
-   padding-right: 2px;
-   padding-top: 2px;
-}
-
-.vdcSearchGroupMiddle {
-   border-left-color: #ffffff;
-   border-left-style: solid;
-   border-left-width: 2px;
-   border-right-style: solid;
-   border-right-color: #ffffff;
-   border-right-width: 2px;
-   margin-bottom: 0px;
-   margin-left: 0px;
-   margin-right: 0px;
-   margin-top: 0px;
-   padding-bottom: 10px;
-   padding-left: 20px;
-   padding-right: 0px;
-   padding-top: 0px;
-}
-
-.vdcSearchGroupLast {
-   background-color:inherit !important;
-   border-left-color: #ffffff;
-   border-left-style: solid;
-   border-left-width: 2px;
-   border-right-style: solid;
-   border-right-color: #ffffff;
-   border-right-width: 2px;
-   border-bottom-color: #ffffff;
-   border-bottom-style: solid;
-   border-bottom-width: 2px;
-   margin-bottom: 0px;
-   margin-left: 0px;
-   margin-right: 0px;
-   margin-top: 0px;
-   padding-bottom: 10px;
-   padding-left: 20px;
-   padding-right: 0px;
-   padding-top: 0px;
-}
-
-.vdcSearchOptions {
-    background-color:inherit !important;
-}
-
 
 /* VDC Search Results Style rules 
 */
@@ -1202,45 +869,8 @@ a.vdcSiteMapLink:hover {
     padding-left: 0px;
     padding-right: 0px;
 }
-p { margin-top: 2px; margin-bottom: 2px; padding: 0px; }
-/* Rules for Request panel in Homepage (Become a Dataverse Creator and Contributor)
-*/
-.vdcRequestPanelDataverse{
-    padding: 10px 10px 20px 10px; 
-    font-size: 1em; 
-    text-align: left;
-    font-weight: normal;
-    background-color: #fffaf5;
-    border: 1px solid #bfb1a3; 
-}
-.vdcRequestTitleDataverse{
-    margin: 0px 0px 15px 0px;
-    padding: 4px 2px 4px 2px;
-    background-color: #f5e9d8;
-    border: 1px solid #bfb1a3;
-    font-size: 1.3em; 
-    text-align: center;
-    font-weight: bold;
-    color: #6b300c;
-}
-.vdcRequestPanelContributor{
-    padding: 10px 10px 20px 10px; 
-    font-size: 1em; 
-    text-align: left;
-    font-weight: normal;
-    background-color: #f5faff;
-    border: 1px solid #a3b1bf; 
-}
-.vdcRequestTitleContributor{
-    margin: 0px 0px 15px 0px;
-    padding: 4px 2px 4px 2px;
-    background-color: #d9e7f0;
-    border: 1px solid #a3b1bf;
-    font-size: 1.3em; 
-    text-align: center;
-    font-weight: bold;
-    color: #1a5d91;
-}
+
+
 .vdcRequestPanelFiles{
     padding: 15px 10px 15px 10px; 
     font-size: 1em; 
@@ -1258,19 +888,7 @@ a.vdcRequestPanelLink:visited{
 a.vdcRequestPanelLink:hover{
     font-weight: bold;
 }
-/* Optional Panels in Homepage
-*/
-.vdcOptionalPanel{
-    padding: 10px; 
-    background-color: #fefeee;
-}
-.vdcMostRecentCol1{
-    vertical-align: top;
-    padding-top: 4px;
-}
-.vdcMostRecentCol2{
-    vertical-align: top;
-}
+
 /* Scrollable div for terms  of use
 */
 .vdcScrollDivTermsUse {
@@ -1355,16 +973,6 @@ a.vdcRequestPanelLink:hover{
    padding-bottom: 4px;
 }
 
-/* Overwrite tabset style rules (from Creator Default Themes)
-*/
-.MniTabLnk{display: block; padding: 5px 15px 4px; font-size: 1em; }
-a.MniTabLnk:link, a.MniTabLnk:visited {font-weight: bold; }
-.MniTabSelTxt{font-weight: bold; }
-
-/* Overwrite Tree style rules (from Creator Default Themes)
-
-.TreeRow {white-space: normal}
-*/
 .vdcTreeDataverse{
     white-space: normal;
 }
@@ -1451,42 +1059,41 @@ a.MniTabLnk:link, a.MniTabLnk:visited {font-weight: bold; }
 /* subsetting page: summary statistics: ends here */
 
 /* *************** dvn network page specific ***************** */
-ul.dvnGroupListStyle { list-style-type:square; color:#035399; }
-.dvnRestricted   { margin-left:4px; vertical-align:middle; }
-.dvnChildColumn  { font-style:normal; width:33%; border:thin solid #cccccc; vertical-align:top; text-align:left; padding-top:4px; }
-.dvnChildTable   { width: 100%; background-color:#eeeeee; }
-.dvnMainColumn   {
-   font-style: oblique;
-   font-weight: bold;
-   text-align: center
-}
-.dvnMainTable    { width:98%; padding:6px 0px 6px 0px; margin:0 auto 0 auto;}
+.dvnChildColumn  { width: 33%;}
+.dvnChildTable   { width: 100%;}
+.dvnMainColumn   { width: 100%;}
+.dvnMainTable    { width: 98%;}
 .dvnMainPanel    {
-   background-color: #dce6cb;
-   border-color: #999900;
-   border-style: solid;
-   border-width: 1px;
+   margin: .4em 0;
+   padding: .25em;
+   color: #035899;
+   background: #e1e1e1;
+   border-top: 2px solid #ccc;
+   font-style: italic;
+   text-align: center;
    display: block;
-   font-size: 1.3em;
-   margin-bottom: 2px;
-   margin-left: 0px;
-   margin-right: 0px;
-   margin-top: 10px;
-   padding-bottom: 2px;
-   padding-left: 0px;
-   padding-right: 0px;
-   padding-top: 2px;
-   width: 100%
+   width: 100%;
 }
 .dvn_dvNotReleased{
-   background-color: #ffffcc;
-   color: #820024;
-   font-family: Arial, Helvetica, sans-serif;
-   font-size: 0.8em;
-   font-style: italic;
-   margin-left: 4px;
-   padding: 2px;
+	margin-left: .4em;
+	padding: .2em;
+	color: #820024;
+	background: #ffffcc;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: .9em;
+	font-style: italic;
 }
+table.dvnMainTable ul {
+	margin: 0 1.5em;
+	list-style: square;
+}
+
+table.dvnMainTable li {
+	margin: 1em 0;
+	font-size: .7em;
+}
+
+
 /* *************** vanilla pages styles ***************** */
 div.ContentArea { margin-top:150px; margin-left:auto; margin-right:auto; min-width:300px; max-width:600px; background: url(custom_corners_topleft.gif) top left no-repeat; width:50%; }
 div.ContentArea p { background: url(custom_corners_topright.gif) top right no-repeat; font-size:1.3em; padding:15px; margin:0; color: #062f58; }
@@ -1525,4 +1132,72 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 .groupEditNameColumn    { width:30%; vertical-align:top; border:1px solid silver; text-align:left; }
 .groupEditDescriptionColumn   { width:70%; border:1px solid silver; text-align:left; }
 .groupEditFooter        { width:100%; background-color:#d9e7f0; padding:0px; text-align:right;  }
+
+
+/* GENERAL DEDAULT THEME STYLES (from Creator) */
+/* Style rules to make data tables look better */
+
+.list-header {
+   font-size: 1em;
+   font-weight: bold
+}
+.list-header-left {
+   background-color: #e2e2e2;
+   font-size: 1em;
+   font-weight: bold;
+   text-align: left
+}
+.list-paging-header {
+  background-color: white;
+}
+
+.list-paging-footer {
+  background-color: white;
+}
+
+.list-row-even { 
+}
+
+.list-row-odd { 
+  background-color: #eeeeee;
+}
+
+/* Style rules for message severity levels */
+
+.infoMessage {
+  color: black;
+}
+
+.successMessage {
+    margin: 1em;
+    padding: 0px;
+    background: #FBD91F;
+    color: #002BB8;
+    border-width: 1px;
+    border-color: #CE8928;
+    border-style: solid;
+    text-align: center;
+    font-weight: bold;
+    display: block;
+}
+
+.warnMessage {
+   color: #8B0404;
+}
+
+.errorMessage {
+  color: red;
+  font-weight: bold;
+}
+
+.fatalMessage {
+  color: red;
+  font-style: italic;
+  font-weight: bold;
+}
+/* Overwrite tabset style rules (from Creator Default Themes)
+*/
+.MniTabLnk{display: block; padding: 5px 15px 4px; font-size: 1em; }
+a.MniTabLnk:link, a.MniTabLnk:visited {font-weight: bold; }
+.MniTabSelTxt{font-weight: bold; }
 

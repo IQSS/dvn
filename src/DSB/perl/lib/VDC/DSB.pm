@@ -767,8 +767,7 @@ sub Analyze {
 	return (400, "syntax error: missing header");
    }
 
-###    my $header_decoded = decode_base64($header);
-       my $header_decoded = $header;
+    my $header_decoded = decode_base64($header);
 
 
     $fragfn = $TMPDIR . "/" . "analyze_". $$. "_" . $filename ;	#should use TMP from buildit!

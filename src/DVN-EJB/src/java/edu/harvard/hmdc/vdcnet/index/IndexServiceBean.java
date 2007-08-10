@@ -209,6 +209,15 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
                 }
                 
             }
+            List <VDCCollection> linkedCollections = vdc.getLinkedCollections();
+            for (Iterator it = linkedCollections.iterator(); it.hasNext();){
+                VDCCollection elem = (VDCCollection) it.next();
+                List <Study> studies = elem.getStudies();
+                for (Iterator it2 = studies.iterator(); it2.hasNext();) {
+                    Study elem2 = (Study) it2.next();
+                    studyIds.add(elem2.getId());
+                }
+            }
         }
         return studyIds;
     }

@@ -459,12 +459,11 @@ public class HomePage extends VDCBaseBean{
             VDC vdc  = (VDC)iterator.next();
             startLinkTag = new HtmlOutputText();
             startLinkTag.setEscape(false);
-            startLinkTag.setValue("<ul class=dvnGroupListStyle><li>");
+            startLinkTag.setValue("<ul><li>");
             nodelink = new Hyperlink();
             nodelink.setText(vdc.getName());
             nodelink.setToolTip(vdc.getName() + " dataverse");
             nodelink.setUrl("/dv/" + vdc.getAlias() + defaultVdcPath);
-            nodelink.setStyle("font-size:normal; text-decoration:underline;");
             endLinkTag = new HtmlOutputText();
             endLinkTag.setEscape(false);
             endLinkTag.setValue("</li></ul>");
@@ -472,12 +471,7 @@ public class HomePage extends VDCBaseBean{
             linkPanel.getChildren().add(startLinkTag);
             linkPanel.getChildren().add(nodelink);
             if ( vdc.isRestricted() ) {
-                //image = new HtmlGraphicImage();
-                //image.setUrl("/resources/icon_lock.gif");
-                //image.setAlt("Restrcited Dataverse");
-                //image.setTitle("Restricted Dataverse");
-                //image.setStyleClass("dvnRestricted");
-                //linkPanel.getChildren().add(image);
+                
                 textTag =  new HtmlOutputText();
                 textTag.setEscape(false);
                 textTag.setValue("<span class=dvn_dvNotReleased>Not yet Released</span>");

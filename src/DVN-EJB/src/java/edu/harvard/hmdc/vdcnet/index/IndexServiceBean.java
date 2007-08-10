@@ -133,6 +133,19 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         }
     }
     
+    public void indexList(List <Long> studyIds){
+        Indexer indexer = Indexer.getInstance();
+        try {
+            indexer.setup();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        for (Iterator it = studyIds.iterator(); it.hasNext();) {
+            Long elem = (Long) it.next();
+            addDocument(elem.longValue());
+        }
+    }
+    
     public List search(String query){
         Indexer indexer = Indexer.getInstance();
         List matchingStudyIds = null;

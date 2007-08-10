@@ -6,9 +6,10 @@
           xmlns:tiles="http://struts.apache.org/tags-tiles">
     <f:subview id="vDCGroupPageView">
         <h:form id="vdcGroupPageForm">
-            <ui:panelLayout rendered="#{VDCGroupPage.success}" panelLayout="flow" styleClass="vdcSectionMiddleMessage" style="width: 400px; margin-top: 10px; margin-bottom: -10px">
+            <ui:panelGroup rendered="#{VDCGroupPage.success}" block="true" >
                  <h:messages styleClass="successMessage" layout="table" showDetail="false" showSummary="true"/>
-            </ui:panelLayout>
+            </ui:panelGroup>
+            
             <ui:panelLayout panelLayout="flow" styleClass="dvGroupAdminLayout">
                 <h:dataTable rendered="#{VDCGroupPage.VDCGroups != null}" id="VDCGroups" value="#{VDCGroupPage.VDCGroups}" var="item" cellspacing="0" styleClass="dvGroupAdminTable" headerClass="groupAdminHeader" columnClasses="groupAdminOrderColumn, groupAdminNameColumn, groupAdminDescriptionColumn, groupAdminDeleteColumn" rowClasses="whiteRow, shadedRow">
                     <f:facet name="caption">

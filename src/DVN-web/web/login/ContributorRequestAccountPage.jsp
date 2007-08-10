@@ -4,32 +4,32 @@
                         xmlns:jsp="http://java.sun.com/JSP/Page" 
                         xmlns:ui="http://www.sun.com/web/ui"
                         xmlns:tiles="http://struts.apache.org/tags-tiles">
-            <f:subview id="UnauthorizedPageView">
-                    <ui:form  id="contributorRequestForm">
-                        <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-             
+<f:subview id="UnauthorizedPageView">
+        <ui:form  id="contributorRequestForm">
+            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+
                        
-                        <ui:panelLayout  id="layoutPanel1" panelLayout="flow" styleClass="vdcSectionMiddleFixed" style="width: 500px">
-                            <ui:panelLayout  id="layoutPanel2" panelLayout="flow" styleClass="vdcSectionHeader">
-                                <h:outputText value="Request to Become a Dataverse Contributor"/>
-                            </ui:panelLayout>
-                            <ui:panelLayout panelLayout="flow" style="padding-left: 50px; padding-top: 40px; padding-bottom: 30px; padding-right: 20px;">
-                                <ui:panelGroup  block="true" >
-                                    <h:outputText value="In order to request to become a Contributor to this dataverse, please create an account. If you already have an account, please log in."/>
-                                </ui:panelGroup>
-                                <ui:panelGroup  block="true"  style="padding-top: 10px; text-align: center;" >
-                                    <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp?workflow=contributor">
-                                        <h:outputText value="Log in"/>
-                                    </h:outputLink>
-                                    <h:outputText value=" | " />
-                                    <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.jsp?workflow=contributor">
-                                        <h:outputText value="Create Account"/>
-                                    </h:outputLink>
-                                </ui:panelGroup>
-                                
-                             
-                            </ui:panelLayout> 
-                        </ui:panelLayout>
-                    </ui:form>
-            </f:subview>
+            <div class="dvn_section">
+                <div class="dvn_sectionTitle">
+                    <h3>
+                        <h:outputText value="Request to Become a Dataverse Contributor"/>
+                    </h3>
+                </div>            
+                <div class="dvn_sectionBox dvn_pad12">
+                    <h:outputText value="In order to request to become a Contributor to this dataverse, please create an account. If you already have an account, please log in."/>
+
+                    <ui:panelGroup  block="true"  style="padding-top: 10px; text-align: center;" >
+                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp?workflow=contributor">
+                            <h:outputText value="Log in"/>
+                        </h:outputLink>
+                        <h:outputText value=" | " />
+                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.jsp?workflow=contributor">
+                            <h:outputText value="Create Account"/>
+                        </h:outputLink>
+                    </ui:panelGroup>
+                                        
+                </div>
+            </div>
+        </ui:form>
+</f:subview>
 </jsp:root>

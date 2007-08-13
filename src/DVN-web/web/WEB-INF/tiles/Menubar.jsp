@@ -91,7 +91,7 @@
                     </li>
                 </ul>
             </div>
-            <span class="dvn_xbottom"><span class="dvn_xb4">&#160;</span><span class="dvn_xb3">&#160;</span><span class="dvn_xb2">&#160;</span><span class="dvn_xb1">&#160;</span></span> 
+            <span class="dvn_xbottom"><span class="dvn_xb4"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb3"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb2"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb1"><h:outputText  value="&#160;" escape="false"/></span></span>
         </div>
     
     </div>

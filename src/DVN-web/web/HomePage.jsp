@@ -20,7 +20,8 @@
                 <span>
                     <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
                         <b><h:outputText  value="Advanced Search"/></b>
-                    </h:outputLink> &#160;
+                    </h:outputLink>
+                    <h:outputText  value="&#160;" escape="false"/>
                     <h:outputLink value="http://thedata.org/help/browsesearch" target="_blank">
                         <h:outputText  value="Search Help"/>
                     </h:outputLink>                
@@ -48,47 +49,32 @@
                     </label>   
                     <h:commandButton id="searchButton" value="Search" type="submit" action="#{HomePage.search_action}"  styleClass="button"/>                        
             </div>
-            <span class="dvn_xbottom"><span class="dvn_xb4">&#160;</span><span class="dvn_xb3">&#160;</span><span class="dvn_xb2">&#160;</span><span class="dvn_xb1">&#160;</span></span> 
+            <span class="dvn_xbottom"><span class="dvn_xb4"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb3"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb2"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb1"><h:outputText  value="&#160;" escape="false"/></span></span>
         </div> 
     </div>
     <!-- Search Section ends here -->  
     
-    <!-- Browse NOT displaying right panels -->
-    <ui:panelGroup block="true" styleClass="dvn_section" rendered="#{HomePage.showRequestCreator!=true and HomePage.showRequestContributor!=true and VDCRequest.currentVDC.displayNewStudies != true and ((VDCRequest.vdcNetwork.displayAnnouncements != true and VDCRequest.currentVDC == null) or ( (VDCRequest.currentVDC.displayNetworkAnnouncements!=true or VDCRequest.vdcNetwork.displayAnnouncements!=true) and VDCRequest.currentVDC != null)) and VDCRequest.currentVDC.displayAnnouncements != true}">
-        <div class="dvn_sectionTitle">
-            <h3>Browse</h3>
-        </div>            
-        <div class="dvn_sectionBox dvn_pad12">    
-            <h:outputText value="There are no Dataverses yet in #{VDCRequest.vdcNetwork.name} Dataverse Network." rendered="#{empty HomePage.vdcs}"/>
-            
-           <!-- Display dataverses at network Level -->
-            <h:panelGrid binding="#{HomePage.mainDataTable}" rendered="#{VDCRequest.currentVDC == null}">
-            </h:panelGrid>
-            
-            <!-- Display Tree at dataverse level -->
-            <ui:tree  binding="#{HomePage.collectionTree}" id="collectionTree1" text="" rendered="#{VDCRequest.currentVDC != null}"/>
-        </div>
-    </ui:panelGroup>
- 
-    <!-- Browse displaying right panels -->
-    <ui:panelGroup block="true" styleClass="dvn_section" rendered="#{HomePage.showRequestCreator or HomePage.showRequestContributor or VDCRequest.currentVDC.displayNewStudies == true or (VDCRequest.vdcNetwork.displayAnnouncements == true and VDCRequest.currentVDC == null) or ( (VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and VDCRequest.currentVDC != null) or VDCRequest.currentVDC.displayAnnouncements == true}">
-        <div class="dvn_sectionContent">  	
+    <!-- Start Browse section (with side panels, if available) -->
+  
+    <div class="dvn_section">    
+        
+       <ui:panelGroup block="true" styleClass="#{ (HomePage.showRequestCreator or HomePage.showRequestContributor or VDCRequest.currentVDC.displayNewStudies == true or (VDCRequest.vdcNetwork.displayAnnouncements == true and VDCRequest.currentVDC == null) or ( (VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and VDCRequest.currentVDC != null) or VDCRequest.currentVDC.displayAnnouncements == true) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">    
             <div class="dvn_sectionTitle">
                 <h3>Browse</h3>
             </div>            
             <div class="dvn_sectionBox dvn_pad12">    
                 <h:outputText value="There are no Dataverses yet in #{VDCRequest.vdcNetwork.name} Dataverse Network." rendered="#{empty HomePage.vdcs}"/>
-                
+
                 <!-- Display dataverses at network Level -->
-            <h:panelGrid binding="#{HomePage.mainDataTable}" rendered="#{VDCRequest.currentVDC == null}">
-            </h:panelGrid>
-            
-            <!-- Display Tree at dataverse level -->
-            <ui:tree  binding="#{HomePage.collectionTree}" id="collectionTree2" text="" rendered="#{VDCRequest.currentVDC != null}"/>
+                <h:panelGrid binding="#{HomePage.mainDataTable}" rendered="#{VDCRequest.currentVDC == null}">
+                </h:panelGrid>
+
+                <!-- Display Tree at dataverse level -->
+                <ui:tree  binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
             </div>   
-        </div>
+        </ui:panelGroup>
         
-        <div class="dvn_sectionPanels">
+        <ui:panelGroup block="true" styleClass="dvn_sectionPanels" rendered="#{HomePage.showRequestCreator or HomePage.showRequestContributor or VDCRequest.currentVDC.displayNewStudies == true or (VDCRequest.vdcNetwork.displayAnnouncements == true and VDCRequest.currentVDC == null) or ( (VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and VDCRequest.currentVDC != null) or VDCRequest.currentVDC.displayAnnouncements == true}">    
             <ui:panelGroup  id="createDataverse" block="true" rendered="#{HomePage.showRequestCreator}">   
                 <h2>Create Your Own Dataverse</h2>
                 <div class="dvn_sectionPanelText">
@@ -162,8 +148,8 @@
                 </div>
             </ui:panelGroup>
                
-        </div>        
-    </ui:panelGroup>                                             
+        </ui:panelGroup>        
+    </div>                                             
                                     
         </h:form>
     </f:subview>

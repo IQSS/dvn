@@ -32,7 +32,7 @@
                 <span>
                     <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
                         <b><h:outputText  value="Advanced Search"/></b>
-                    </h:outputLink> &#160;
+                    </h:outputLink> <h:outputText  value="&#160;" escape="false"/>
                     <h:outputLink value="http://thedata.org/help/browsesearch" target="_blank">
                         <h:outputText  value="Search Help"/>
                     </h:outputLink>                
@@ -64,7 +64,7 @@
                         <f:selectItems id="radio1SelectItem" value="#{SearchPage.searchRadioItems}" />
                    </h:selectOneRadio>
             </div>
-            <span class="dvn_xbottom"><span class="dvn_xb4">&#160;</span><span class="dvn_xb3">&#160;</span><span class="dvn_xb2">&#160;</span><span class="dvn_xb1">&#160;</span></span> 
+            <span class="dvn_xbottom"><span class="dvn_xb4"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb3"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb2"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb1"><h:outputText  value="&#160;" escape="false"/></span></span>
         </div> 
     </div>
   
@@ -73,9 +73,9 @@
     </script>
     <!-- Search Section ends here -->
                    
-    <!-- Start Search Results and side panel -->      
+    <!-- Start Search Results (with side panel, if available) -->      
       <div class="dvn_section">  
-          <div class="dvn_sectionContent">  	
+           <ui:panelGroup block="true" styleClass="#{ (SearchPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">    	
               <div class="dvn_sectionTitle">
                   <h3><h:outputText value="#{SearchPage.listHeader}"/></h3>
               </div>            
@@ -205,7 +205,7 @@
                         </h:column>
                     </h:dataTable>
               </div>   
-          </div>
+          </ui:panelGroup>
           
           <ui:panelGroup block="true" rendered="#{SearchPage.renderTree}" styleClass="dvn_sectionPanels">
               

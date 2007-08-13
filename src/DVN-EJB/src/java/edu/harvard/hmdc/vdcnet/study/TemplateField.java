@@ -45,7 +45,7 @@ public class TemplateField {
     /**
      * Holds value of property selectValues.
      */
-    @OneToMany (mappedBy="templateField")
+    @OneToMany (mappedBy="templateField", cascade=CascadeType.PERSIST)
     private java.util.Collection<TemplateFieldSelectValue> selectValues;
 
     /**

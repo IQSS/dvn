@@ -23,7 +23,7 @@ import javax.persistence.*;
 @Entity
 public class VDCGroup implements Serializable {
     private int displayOrder;
-      @OneToMany(mappedBy="group")
+      @OneToMany(mappedBy="group", cascade=CascadeType.PERSIST)
     private List<VDCGroupRelationship> subGroups;
     
     

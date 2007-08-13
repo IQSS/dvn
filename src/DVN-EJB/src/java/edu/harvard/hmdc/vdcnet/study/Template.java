@@ -89,7 +89,7 @@ public class Template {
     /**
      * Holds value of property templateFileCategories.
      */
-    @OneToMany(mappedBy="template",cascade={CascadeType.REMOVE, CascadeType.MERGE})
+    @OneToMany(mappedBy="template",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<TemplateFileCategory> templateFileCategories;
 
     /**

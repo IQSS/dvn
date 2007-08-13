@@ -55,7 +55,7 @@ public class VDC {
     private boolean termsOfUseEnabled;
     
     private String copyright;
-    @OneToOne (cascade=CascadeType.REMOVE)
+    @OneToOne (cascade={CascadeType.REMOVE, CascadeType.PERSIST})
     private VDCCollection rootCollection;
     @ManyToMany
     //(cascade={CascadeType.REMOVE })

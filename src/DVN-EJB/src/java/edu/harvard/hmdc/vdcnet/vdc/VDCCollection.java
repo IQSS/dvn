@@ -151,7 +151,7 @@ public class VDCCollection {
     /**
      * Holds value of property subCollections.
      */
-@OneToMany(mappedBy="parentCollection",cascade={CascadeType.REMOVE,CascadeType.MERGE })
+@OneToMany(mappedBy="parentCollection",cascade={CascadeType.REMOVE,CascadeType.MERGE ,CascadeType.PERSIST })
     private Collection<VDCCollection> subCollections;
 
     /**

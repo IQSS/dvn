@@ -71,7 +71,7 @@ body {
 
 .dvn_sectionContent {
 	display: inline;
-	width: 75%;
+        width: 75%;
 	float: left;
 }
 .dvn_sectionTitle {margin: 0;}
@@ -81,7 +81,7 @@ body {
 .dvn_sectionTitle h3 span {padding: .25em 0; font-size: .75em; float: right;}
 .dvn_sectionTitle h3 a {margin-left: 12px;}
 
-.dvn_sectionBox {width: 100%; border-top: 2px solid #035899; border-left: 1px solid #ccc;}
+.dvn_sectionBox {width: 100%; border-top: 2px solid #035899; border-left: 1px solid #ccc; font-size: .75em;}
 .dvn_pad12 {
 	padding: .75em;
 }
@@ -160,11 +160,6 @@ body {
 
 
 /* OLD STYLES start HERE */
-
-/* All content jsps have a panel layot (div) with style: vdcSectionMiddle, vdcSectionMiddleNoBorder (when there are more than 1 section columns), 
-*  or vdcSectionMiddleFixed (when the section needs to be of a fixed size - specify the size in the jsp)
-*/
-
 
 .formHtmlEnabled {
     background-color: #E4F9F9;
@@ -1080,7 +1075,6 @@ a.vdcRequestPanelLink:hover{
 	color: #820024;
 	background: #ffffcc;
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: .9em;
 	font-style: italic;
 }
 table.dvnMainTable ul {
@@ -1090,7 +1084,7 @@ table.dvnMainTable ul {
 
 table.dvnMainTable li {
 	margin: 1em 0;
-	font-size: .7em;
+	font-size: .9em;
 }
 
 

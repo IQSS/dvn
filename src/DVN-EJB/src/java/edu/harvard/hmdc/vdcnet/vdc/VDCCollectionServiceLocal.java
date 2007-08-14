@@ -35,4 +35,6 @@ public interface VDCCollectionServiceLocal {
     
     public java.util.List<Study> getOrderedStudiesByCollection(Long collectionId);
     
+    public java.util.List<Long> getOrderedStudyIdsByCollection(Long collectionId);
+    
 }

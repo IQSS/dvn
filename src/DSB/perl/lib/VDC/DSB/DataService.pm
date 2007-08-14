@@ -2527,14 +2527,14 @@ sub createDataCitationFile{
 
 	
 	if ($outputType eq 'html') {
-		$cTemplate->[1]= "_Citation_ for the full data set:</pre>\n\n<blockquote>" . $self->{citation}->{OfflineCitation} . "</blockquote><pre>\n\n";
+		$cTemplate->[1]= "_Citation_ for the full data set_:</pre>\n\n<blockquote>" . $self->{citation}->{OfflineCitation} . "</blockquote><pre>\n\n";
 	}  elsif ($outputType eq 'txt') {
 		$cTemplate->[1]= "_Citation for the full data set_:\n\n" . $self->{citation}->{OfflineCitation} . "\n\n";
 	}
 	print "citation file(part 2):\n", $cTemplate->[1] if $DEBUG ;
 
 	
-	my $varId2Name="\tID\tName\n" ;
+	my $varId2Name="\tName\n" ;
 	foreach my $k (@{$self->{_varNo}}) {
 		$varId2Name .= "\t" . $self->{_varNameH}->{$k} . "\n";
 	}

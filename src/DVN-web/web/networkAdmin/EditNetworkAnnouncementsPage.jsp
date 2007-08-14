@@ -15,8 +15,8 @@
             </h3>
         </div>            
         <div class="dvn_sectionBox dvn_pad12"> 
-            <ui:panelGroup rendered="#{EditNetworkAnnouncementsPage.success}" >
-                <h:messages styleClass="successMessage" layout="table" showDetail="false" showSummary="true"/>
+            <ui:panelGroup rendered="#{EditNetworkAnnouncementsPage.success}" styleClass="successMessage">
+                <h:messages layout="table" showDetail="false" showSummary="true"/>
             </ui:panelGroup>
             
             <ui:panelGroup  block="true" id="groupPanel2">

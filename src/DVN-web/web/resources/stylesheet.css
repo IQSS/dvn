@@ -81,16 +81,17 @@ body {
 .dvn_sectionTitle h3 span {padding: .25em 0; font-size: .75em; float: right;}
 .dvn_sectionTitle h3 a {margin-left: 12px;}
 
-.dvn_sectionBox {width: 100%; border-top: 2px solid #035899; border-left: 1px solid #ccc; font-size: .75em;}
+.dvn_sectionBox {width: 100%; border-top: 2px solid #035899; border-left: 1px solid #ccc; font-size: .8em;}
+.dvn_sectionBoxNoBorders{width: 100%; font-size: .8em; padding-top: .75em} 
 .dvn_pad12 {
 	padding: .75em;
 }
 
 .dvn_sectionPanels {display: inline; margin-left: 2%; width: 23%; float: left;}
 
-.dvn_sectionPanels h2 {padding: .25em 0; border-bottom: 2px solid #035899; font-size: 1em;}
+.dvn_sectionPanels h2 {padding: .25em 0; border-bottom: 2px solid #035899; font-size: 1em; font-weight: normal;}
 .dvn_sectionPanels div.dvn_sectionPanelText {margin-bottom: 1em; padding: .5em; border-left: 1px solid #ccc;}
-.dvn_sectionPanels span {font-size: .75em;}
+ div.dvn_sectionPanelText {font-size: .8em;}
 /* .dvn_sectionPanels p {padding: .5em 0; line-height: 122%;} */
 .dvn_sectionPanels ul {
 	margin-left: 2em;
@@ -142,8 +143,8 @@ body {
 .dvn_searchBox {width: 100%; background: transparent; border-top: 2px solid #035899; float: left;}
 
 .dvn_searchBoxContent {display: block; width: 100%; background: #ddd; float: left;}
-.dvn_searchBoxContent form {display: inline; margin: 0 1em; padding: 0.5em 1.5em; width: 90%; font-size: .75em; vertical-align: bottom; float: left;}
-.dvn_searchBoxContent label {margin-right: 12px; padding: 0; float: left;}
+.dvn_searchBoxContent form {display: inline; margin: 0 1em; padding: 0.5em 1.5em; width: 90%; vertical-align: bottom; float: left;}
+.dvn_searchBoxContent label {margin-right: 12px; padding: 0; float: left; font-size: .75em; }
 .dvn_searchBoxContent span {display: block; padding-bottom: 0.5em;}
 .dvn_searchBoxContent input.button {margin-top: 1.5em; *margin-top: 1.25em; float: left;}
 
@@ -1090,9 +1091,9 @@ table.dvnMainTable li {
 
 /* *************** vanilla pages styles ***************** */
 div.ContentArea { margin-top:150px; margin-left:auto; margin-right:auto; min-width:300px; max-width:600px; background: url(custom_corners_topleft.gif) top left no-repeat; width:50%; }
-div.ContentArea p { background: url(custom_corners_topright.gif) top right no-repeat; font-size:1.3em; padding:15px; margin:0; color: #062f58; }
+div.ContentArea p { background: url(custom_corners_topright.gif) top right no-repeat; font-size:1.em; padding:15px; margin:0; color: #062f58; }
 div.ContentArea span.headingText { display:block;width:100%; background-color:#dce6cb; font-style: oblique; font-size: 1.3em; font-weight: bold; text-align: center; }
-div.ContentAreaBody { background: url(custom_corners_rightborder.gif) top right repeat-y; margin:0; margin-top:-2em; padding:15px; }
+div.ContentAreaBody { background: url(custom_corners_rightborder.gif) top right repeat-y; margin:0; margin-top:-2em; padding:15px; font-size: 0.8em;}
 div.ContentAreaFooter { background: url(custom_corners_bottomleft.gif) bottom left no-repeat; }
 div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom right no-repeat; display:block; padding:15px; margin:-2em 0 0 0; }
 
@@ -1163,16 +1164,18 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 }
 
 .successMessage {
-    margin: 1em;
-    padding: 0px;
-    background: #FBD91F;
-    color: #002BB8;
-    border-width: 1px;
-    border-color: #CE8928;
-    border-style: solid;
-    text-align: center;
-    font-weight: bold;
-    display: block;
+   background: #FBD91F;
+   border-color: #CE8928;
+   border-style: solid;
+   border-width: 1px;
+   color: #002BB8;
+   display: block;
+   font-size: 12px;
+   font-weight: bold;
+   margin: 1em;
+   padding: 0.75em;
+   text-align: center;
+   width: 500px
 }
 
 .warnMessage {

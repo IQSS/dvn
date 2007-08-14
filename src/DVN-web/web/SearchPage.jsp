@@ -83,14 +83,14 @@
                
                 <h:outputText  styleClass="vdcSubHeaderColor" value="#{SearchPage.subListHeader}"/>
                 
-                <div>
+                <div style="padding-top: 1em; padding-bottom: 1em;">
                     <h:outputText  id="listMessagePrefix" value="#{SearchPage.listMessagePrefix}"/>
                     <h:outputText  id="listMessageContent" styleClass="warnMessage" value="#{SearchPage.listMessageContent}"/>
                     <h:outputText  id="listMessageSuffix" value="#{SearchPage.listMessageSuffix}"/>
                 </div>
                 
-                <h:panelGrid  cellpadding="0" cellspacing="0" columns="2" id="gridPanel2"
-                    styleClass="vdcSResultsTop" width="100%" rendered="#{SearchPage.renderSort or SearchPage.renderScroller}">
+                <h:panelGrid  cellpadding="0" cellspacing="0" columns="2" id="gridPanel2" width="98%"
+                    styleClass="vdcSResultsTop" rendered="#{SearchPage.renderSort or SearchPage.renderScroller}">
                     <ui:panelGroup  id="groupPanel5" rendered="#{SearchPage.renderSort}">
                         <h:selectOneMenu  id="dropdown2" valueChangeListener="#{SearchPage.sort_action}" onchange="submit();">
                             <f:selectItem   itemLabel="Sort By:" itemValue="" />
@@ -112,8 +112,8 @@
                     </ui:panelGroup>
                 </h:panelGrid>
                 
-                <h:dataTable  binding="#{SearchPage.studyTable}" rows="10" headerClass="list-header" id="dataTable1"
-                        rowClasses="list-row-odd, list-row-even" columnClasses="vdcSResultsList" value="#{SearchPage.studies}" var="studyUI" width="100%">
+                <h:dataTable  binding="#{SearchPage.studyTable}" rows="10" headerClass="list-header" id="dataTable1" width="98%"
+                        rowClasses="list-row-odd, list-row-even" columnClasses="vdcSResultsList" value="#{SearchPage.studies}" var="studyUI">
                         <h:column  id="column1">
                             <ui:panelGroup  block="true" id="groupPanel1" style="padding-bottom: 5px">
                                 <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}"  id="hyperlink3" styleClass="vdcSResultsStudyTitle">

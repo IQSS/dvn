@@ -65,15 +65,20 @@
             <input type="hidden" name="pageName" value="EditStudyPage"/>
             <h:inputHidden id="studyId" value="#{EditStudyPage.studyId}" />                        
           
-            <ui:panelLayout id="ContentlayoutPanel" panelLayout="flow" styleClass="vdcSectionMiddleNoBorder">
-                <h:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%">
-                    <ui:panelGroup block="true" styleClass="vdcStudyTitle" rendered="#{EditStudyPage.study.id!=null}">
-                        <h:outputText id="outputText2" styleClass="vdcStudyTitleName" value="#{EditStudyPage.study.title}"/>
-                    </ui:panelGroup>
+            
+            <div class="dvn_section">
+                <div class="dvn_sectionTitle">
+                    <h3>
+                        <h:outputText value="#{EditStudyPage.study.title}"/>
+                    </h3>
+                </div>            
+                <div class="dvn_sectionBoxNoBorders"> 
+                    
                     <!-- validation errors occurred? -->
-                    <ui:panelLayout id="messagePanel" panelLayout="flow" styleClass="vdcSectionMiddleMessage" style="width: 400px; " >
-                        <h:outputText styleClass="errorMessage" value="Some errors occurred, please check details below" rendered="#{! empty facesContext.maximumSeverity}" />
-                    </ui:panelLayout>
+                    <ui:panelGroup id="messagePanel" styleClass="errorMessage" >
+                        <h:outputText  value="Some errors occurred, please check details below" rendered="#{! empty facesContext.maximumSeverity}" />
+                    </ui:panelGroup>
+                    
                     <ui:panelGroup block="true" id="groupPanel10" styleClass="vdcTextRight">              
                         <h:commandButton id="button1" value="Save" action="#{EditStudyPage.save}"/>
                         <h:commandButton immediate="true" id="button2" style="margin-left: 30px; margin-right: 15px" value="Cancel" action="#{EditStudyPage.cancel}"/>   
@@ -89,18 +94,18 @@
                                         <h:commandButton  value="Show Additional Fields" title="See all fields in Cataloging Information"  binding="#{EditStudyPage.commandButtonShowFields}"  action="#{EditStudyPage.showFields}"/>
                                         <h:commandButton  value="Hide Additional Fields" title="Hide additional fields in Cataloging Information"  binding="#{EditStudyPage.commandButtonHideFields}"  rendered="false" actionListener="#{EditStudyPage.hideFields}"/>                    
                                     </ui:panelGroup>
-                                         <ui:panelGroup block="true">
-                                             <h:graphicImage value="/resources/icon_required.gif"/> <h:outputText style="vdcHelpText" value="Required Fields"/>
-                                             <h:graphicImage value="/resources/icon_recommended.gif"/><h:outputText style="vdcHelpText" value="Recommended Fields"/>
-                                             <h:graphicImage value="/resources/icon_htmlformat.gif"/>
-                                             <h:outputText value="#{bundle.htmlHelpText}"/>
-                                             <ui:panelGroup block="true">
-                                                <h:graphicImage value="/resources/icon_dateformat.gif"/><h:outputText style="vdcHelpText" value="A light orange form indicates that a Date format is required. Please enter YYYY or YYYY-MM or YYYY-MM-DD."/>    
-                                             </ui:panelGroup> 
-                                             <ui:panelGroup block="true">
-                                                <h:graphicImage value="/resources/icon_add.gif"/><h:outputText style="vdcHelpText" value="Add a new row (e.g., when add multiple authors)."/><h:graphicImage value="/resources/icon_remove.gif"/><h:outputText style="vdcHelpText" value="Remove an existing row."/>    
-                                             </ui:panelGroup>
-                                         </ui:panelGroup>
+                                    <ui:panelGroup block="true">
+                                        <h:graphicImage value="/resources/icon_required.gif"/> <h:outputText style="vdcHelpText" value="Required Fields"/>
+                                        <h:graphicImage value="/resources/icon_recommended.gif"/><h:outputText style="vdcHelpText" value="Recommended Fields"/>
+                                        <h:graphicImage value="/resources/icon_htmlformat.gif"/>
+                                        <h:outputText value="#{bundle.htmlHelpText}"/>
+                                        <ui:panelGroup block="true">
+                                            <h:graphicImage value="/resources/icon_dateformat.gif"/><h:outputText style="vdcHelpText" value="A light orange form indicates that a Date format is required. Please enter YYYY or YYYY-MM or YYYY-MM-DD."/>    
+                                        </ui:panelGroup> 
+                                        <ui:panelGroup block="true">
+                                            <h:graphicImage value="/resources/icon_add.gif"/><h:outputText style="vdcHelpText" value="Add a new row (e.g., when add multiple authors)."/><h:graphicImage value="/resources/icon_remove.gif"/><h:outputText style="vdcHelpText" value="Remove an existing row."/>    
+                                        </ui:panelGroup>
+                                    </ui:panelGroup>
                                     
                                 </h:panelGrid> 
                                 
@@ -147,85 +152,85 @@
                                         <h:outputText value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/" rendered="#{EditStudyPage.study.id==null}" />                                     
                                         <h:inputText id="input_studyId" value="#{EditStudyPage.study.studyId}"  validator ="#{EditStudyPage.validateStudyId}" required="#{EditStudyPage.studyMap[sfc.studyId].required}" rendered="#{EditStudyPage.study.id==null}" />
                                         <h:outputText value="#{EditStudyPage.study.globalId}" rendered="#{EditStudyPage.study.id!=null}" />
-                                      <h:message styleClass="errorMessage" for="input_studyId"/> 
+                                        <h:message styleClass="errorMessage" for="input_studyId"/> 
                                     </ui:panelGroup>
                                     
                                     
                                 </h:panelGrid>
                                 
                                 <!-- OTHER IDS -->
-                            <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>                                  
-                                <h:dataTable cellpadding="0" cellspacing="0" 
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             binding="#{EditStudyPage.dataTableOtherIds}" 
-                                             value="#{EditStudyPage.study.studyOtherIds}" var="currentRow" width="100%" 
-                                             rendered="#{EditStudyPage.studyMap[sfc.otherId].rendered}">
-                                    
-                                    <h:column >
-                                        <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.otheridHelp}" linkText="#{editstudybundle.otheridLabel}" heading="#{editstudybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].recommended}"/>
-                                        </ui:panelGroup> 
-                                    </h:column>
-                                    <h:column >
-                                        <ui:panelGroup block="true" > 
-                                            <h:inputText binding="#{EditStudyPage.inputOtherId}" id = "input_otherId" value="#{currentRow.otherId}" required="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
-                                            <h:message styleClass="errorMessage" for="input_otherId"/> 
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.otherAgencyHelp}" linkText="#{editstudybundle.otherAgencyLabel}" heading="#{editstudybundle.otherAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherIdAgency].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherIdAgency].recommended}"/>
-                                                <h:inputText  binding="#{EditStudyPage.inputOtherIdAgency}"     validator ="#{EditStudyPage.validateStudyOtherId}" 
-                                                          id="input_otherIdAgency" value="#{currentRow.agency}"  required="#{EditStudyPage.studyMap[sfc.otherIdAgency].required}"/>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_otherIdAgency"/> 
-                                        </ui:panelGroup>
-                                    </h:column> 
-                                    <h:column id="groupPanel61">
-                                        <!--f:facet name="header">
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                    <h:column>                                  
+                                        <h:dataTable cellpadding="0" cellspacing="0" 
+                                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                     binding="#{EditStudyPage.dataTableOtherIds}" 
+                                                     value="#{EditStudyPage.study.studyOtherIds}" var="currentRow" width="100%" 
+                                                     rendered="#{EditStudyPage.studyMap[sfc.otherId].rendered}">
+                                            
+                                            <h:column >
+                                                <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.otheridHelp}" linkText="#{editstudybundle.otheridLabel}" heading="#{editstudybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].recommended}"/>
+                                                </ui:panelGroup> 
+                                            </h:column>
+                                            <h:column >
+                                                <ui:panelGroup block="true" > 
+                                                    <h:inputText binding="#{EditStudyPage.inputOtherId}" id = "input_otherId" value="#{currentRow.otherId}" required="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
+                                                    <h:message styleClass="errorMessage" for="input_otherId"/> 
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.otherAgencyHelp}" linkText="#{editstudybundle.otherAgencyLabel}" heading="#{editstudybundle.otherAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherIdAgency].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherIdAgency].recommended}"/>
+                                                        <h:inputText  binding="#{EditStudyPage.inputOtherIdAgency}"     validator ="#{EditStudyPage.validateStudyOtherId}" 
+                                                                      id="input_otherIdAgency" value="#{currentRow.agency}"  required="#{EditStudyPage.studyMap[sfc.otherIdAgency].required}"/>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_otherIdAgency"/> 
+                                                </ui:panelGroup>
+                                            </h:column> 
+                                            <h:column id="groupPanel61">
+                                                <!--f:facet name="header">
                                                     <ui:panelGroup-->
-                                        <h:commandButton  image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                        <!--/ui:panelGroup>
+                                                <h:commandButton  image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                                <!--/ui:panelGroup>
                                                 </f:facet-->
-                                        <h:commandButton  image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton  image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                            </h:column>
+                                            
+                                        </h:dataTable>
                                     </h:column>
-                                    
-                                </h:dataTable>
-                               </h:column>
-                            </h:dataTable>                                
+                                </h:dataTable>                                
                                 
                                 <!-- Authors -->
                                         
-                            <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>                                          
-                                <h:dataTable cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             binding="#{EditStudyPage.dataTableAuthors}" 
-                                             value="#{EditStudyPage.study.studyAuthors}" var="currentAuthor" width="100%"  
-                                             rendered="#{EditStudyPage.studyMap[sfc.authorName].rendered}">
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.authorHelp}" linkText="#{editstudybundle.authorLabel}" heading="#{editstudybundle.authorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].recommended}"/>
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" >
-                                            <h:inputText id="input_authorName" 
-                                                         value="#{currentAuthor.name}" 
-                                                         size="45" 
-                                                         binding="#{EditStudyPage.inputAuthorName}"                                                      
-                                                         required="#{EditStudyPage.studyMap[sfc.authorName].required}" 
-                                            /> 
-                                            <h:message styleClass="errorMessage" for="input_authorName"/>
-                                            <!-- Commenting out this code pending alpha testing input
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                    <h:column>                                          
+                                        <h:dataTable cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                     binding="#{EditStudyPage.dataTableAuthors}" 
+                                                     value="#{EditStudyPage.study.studyAuthors}" var="currentAuthor" width="100%"  
+                                                     rendered="#{EditStudyPage.studyMap[sfc.authorName].rendered}">
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.authorHelp}" linkText="#{editstudybundle.authorLabel}" heading="#{editstudybundle.authorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].recommended}"/>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" >
+                                                    <h:inputText id="input_authorName" 
+                                                                 value="#{currentAuthor.name}" 
+                                                                 size="45" 
+                                                                 binding="#{EditStudyPage.inputAuthorName}"                                                      
+                                                                 required="#{EditStudyPage.studyMap[sfc.authorName].required}" 
+                                                    /> 
+                                                    <h:message styleClass="errorMessage" for="input_authorName"/>
+                                                    <!-- Commenting out this code pending alpha testing input
                                                  To restore, add this to inputText above, onblur="validateNameFormat(this);"
                                                  and uncomment the f:verbatim block below.
                                                  <f:verbatim>
@@ -234,110 +239,110 @@
                                                         First name is optional, but should be separated by a comma from the last name if present.
                                                     </div>
                                                 </f:verbatim> end comment -->
-                                            <ui:panelGroup >
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.authorAffiliationHelp}" linkText="#{editstudybundle.authorAffiliationLabel}" heading="#{editstudybundle.authorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.authorAffiliation].required}"/>
-                                                <h:graphicImage id="image83" value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.authorAffiliation].recommended}"/>
-                                                <h:inputText id="input_authorAffiliation" size="45"
-                                                             binding="#{EditStudyPage.inputAuthorAffiliation}"
-                                                             value="#{currentAuthor.affiliation}" 
-                                                             validator ="#{EditStudyPage.validateStudyAuthor}" 
-                                                             required="#{EditStudyPage.studyMap[sfc.authorAffiliation].required}"
-                                                             styleClass="formHtmlEnabled">
-                                                    <f:validator validatorId="XhtmlValidator"/>
-                                                </h:inputText>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_authorAffiliation"/>
-                                            <f:verbatim><br /></f:verbatim>
-                                        </ui:panelGroup>
+                                                    <ui:panelGroup >
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.authorAffiliationHelp}" linkText="#{editstudybundle.authorAffiliationLabel}" heading="#{editstudybundle.authorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.authorAffiliation].required}"/>
+                                                        <h:graphicImage id="image83" value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.authorAffiliation].recommended}"/>
+                                                        <h:inputText id="input_authorAffiliation" size="45"
+                                                                     binding="#{EditStudyPage.inputAuthorAffiliation}"
+                                                                     value="#{currentAuthor.affiliation}" 
+                                                                     validator ="#{EditStudyPage.validateStudyAuthor}" 
+                                                                     required="#{EditStudyPage.studyMap[sfc.authorAffiliation].required}"
+                                                                     styleClass="formHtmlEnabled">
+                                                            <f:validator validatorId="XhtmlValidator"/>
+                                                        </h:inputText>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_authorAffiliation"/>
+                                                    <f:verbatim><br /></f:verbatim>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            
+                                            <h:column>
+                                                <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                            </h:column>               
+                                        </h:dataTable>
                                     </h:column>
-                                    
-                                    <h:column>
-                                        <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                        <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
-                                    </h:column>               
                                 </h:dataTable>
-                               </h:column>
-                            </h:dataTable>
                                 
                                 <!--Producers-->   
-                            <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>                                            
-                                <h:dataTable cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             binding="#{EditStudyPage.dataTableProducers}" 
-                                             value="#{EditStudyPage.study.studyProducers}" var="currentRow" width="100%"  
-                                             rendered="#{EditStudyPage.studyMap[sfc.producerName].rendered}">
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerName].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerName].recommended}"/>
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    <h:column>
-                                        <ui:panelGroup block="true"> 
-                                            <h:inputText  binding="#{EditStudyPage.inputProducerName}" id="input_producerName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.producerName].required}"/>
-                                            <h:message styleClass="errorMessage" for="input_producerName"/>
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.producerAffiliationHelp}" linkText="#{editstudybundle.producerAffiliationLabel}" heading="#{editstudybundle.producerAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAffiliation].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAffiliation].recommended}"/>
-                                                <h:inputText  validator ="#{EditStudyPage.validateStudyProducer}"  binding="#{EditStudyPage.inputProducerAffiliation}"    id="input_producerAffiliation" size="45" value="#{currentRow.affiliation}" required="#{EditStudyPage.studyMap[sfc.producerAffiliation].required}"
-                                                              styleClass="formHtmlEnabled">
-                                                    <f:validator validatorId="XhtmlValidator"/>
-                                                </h:inputText>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_producerAffiliation"/>
-                                            <f:verbatim><br /></f:verbatim>
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.producerAbbreviationHelp}" linkText="#{editstudybundle.producerAbbreviationLabel}" heading="#{editstudybundle.producerAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAbbreviation].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAbbreviation].recommended}"/>
-                                                <h:inputText validator ="#{EditStudyPage.validateStudyProducer}"   binding="#{EditStudyPage.inputProducerAbbreviation}"  id="input_producerAbbreviation" value="#{currentRow.abbreviation}" required="#{EditStudyPage.studyMap[sfc.producerAbbreviation].required}"/>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_producerAbbreviation"/>
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.producerURLHelp}" linkText="#{editstudybundle.producerURLLabel}" heading="#{editstudybundle.producerURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerURL].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerURL].recommended}"/>
-                                                <h:inputText id="input_producerURL" 
-                                                             validator ="#{EditStudyPage.validateStudyProducer}"
-                                                             binding="#{EditStudyPage.inputProducerUrl}" 
-                                                             value="#{currentRow.url}" 
-                                                             size="45" 
-                                                             required="#{EditStudyPage.studyMap[sfc.producerURL].required}"
-                                                >
-                                                    <f:validator validatorId="UrlValidator"/>
-                                                </h:inputText>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_producerURL"/>
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.producerLogoHelp}" linkText="#{editstudybundle.producerLogoLabel}" heading="#{editstudybundle.producerLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerLogo].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerLogo].recommended}"/>
-                                                <h:inputText id="input_producerLogo" 
-                                                             binding="#{EditStudyPage.inputProducerLogo}" 
-                                                             validator ="#{EditStudyPage.validateStudyProducer}"
-                                                             value="#{currentRow.logo}" 
-                                                             size="45" 
-                                                             required="#{EditStudyPage.studyMap[sfc.producerLogo].required}"
-                                                >
-                                                    <f:validator validatorId="UrlValidator"/>
-                                                </h:inputText>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_producerLogo"/>
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    <h:column>
-                                        <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                        <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                    <h:column>                                            
+                                        <h:dataTable cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                     binding="#{EditStudyPage.dataTableProducers}" 
+                                                     value="#{EditStudyPage.study.studyProducers}" var="currentRow" width="100%"  
+                                                     rendered="#{EditStudyPage.studyMap[sfc.producerName].rendered}">
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerName].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerName].recommended}"/>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            <h:column>
+                                                <ui:panelGroup block="true"> 
+                                                    <h:inputText  binding="#{EditStudyPage.inputProducerName}" id="input_producerName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.producerName].required}"/>
+                                                    <h:message styleClass="errorMessage" for="input_producerName"/>
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.producerAffiliationHelp}" linkText="#{editstudybundle.producerAffiliationLabel}" heading="#{editstudybundle.producerAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAffiliation].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAffiliation].recommended}"/>
+                                                        <h:inputText  validator ="#{EditStudyPage.validateStudyProducer}"  binding="#{EditStudyPage.inputProducerAffiliation}"    id="input_producerAffiliation" size="45" value="#{currentRow.affiliation}" required="#{EditStudyPage.studyMap[sfc.producerAffiliation].required}"
+                                                                      styleClass="formHtmlEnabled">
+                                                            <f:validator validatorId="XhtmlValidator"/>
+                                                        </h:inputText>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_producerAffiliation"/>
+                                                    <f:verbatim><br /></f:verbatim>
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.producerAbbreviationHelp}" linkText="#{editstudybundle.producerAbbreviationLabel}" heading="#{editstudybundle.producerAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAbbreviation].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAbbreviation].recommended}"/>
+                                                        <h:inputText validator ="#{EditStudyPage.validateStudyProducer}"   binding="#{EditStudyPage.inputProducerAbbreviation}"  id="input_producerAbbreviation" value="#{currentRow.abbreviation}" required="#{EditStudyPage.studyMap[sfc.producerAbbreviation].required}"/>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_producerAbbreviation"/>
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.producerURLHelp}" linkText="#{editstudybundle.producerURLLabel}" heading="#{editstudybundle.producerURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerURL].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerURL].recommended}"/>
+                                                        <h:inputText id="input_producerURL" 
+                                                                     validator ="#{EditStudyPage.validateStudyProducer}"
+                                                                     binding="#{EditStudyPage.inputProducerUrl}" 
+                                                                     value="#{currentRow.url}" 
+                                                                     size="45" 
+                                                                     required="#{EditStudyPage.studyMap[sfc.producerURL].required}"
+                                                        >
+                                                            <f:validator validatorId="UrlValidator"/>
+                                                        </h:inputText>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_producerURL"/>
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.producerLogoHelp}" linkText="#{editstudybundle.producerLogoLabel}" heading="#{editstudybundle.producerLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerLogo].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerLogo].recommended}"/>
+                                                        <h:inputText id="input_producerLogo" 
+                                                                     binding="#{EditStudyPage.inputProducerLogo}" 
+                                                                     validator ="#{EditStudyPage.validateStudyProducer}"
+                                                                     value="#{currentRow.logo}" 
+                                                                     size="45" 
+                                                                     required="#{EditStudyPage.studyMap[sfc.producerLogo].required}"
+                                                        >
+                                                            <f:validator validatorId="UrlValidator"/>
+                                                        </h:inputText>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_producerLogo"/>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            <h:column>
+                                                <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                            </h:column>
+                                        </h:dataTable>
                                     </h:column>
                                 </h:dataTable>
-                               </h:column>
-                            </h:dataTable>
                                 
                                 <h:panelGrid cellpadding="0" cellspacing="0"
                                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2"
@@ -371,42 +376,42 @@
                                 </h:panelGrid>     
                                 <!-- Software -->
                                             
-                            <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>
-                                <h:dataTable cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             binding="#{EditStudyPage.dataTableSoftware}" 
-                                             value="#{EditStudyPage.study.studySoftware}" var="currentRow" width="100%"  
-                                             rendered="#{EditStudyPage.studyMap[sfc.softwareName].rendered}">
-                                    
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
                                     <h:column>
-                                        <ui:panelGroup block="true" styleClass="vdcEditStudyField" > 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.softwareNameHelp}" linkText="#{editstudybundle.softwareNameLabel}" heading="#{editstudybundle.softwareNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareName].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareName].recommended}"/>
-                                        </ui:panelGroup>
+                                        <h:dataTable cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                     binding="#{EditStudyPage.dataTableSoftware}" 
+                                                     value="#{EditStudyPage.study.studySoftware}" var="currentRow" width="100%"  
+                                                     rendered="#{EditStudyPage.studyMap[sfc.softwareName].rendered}">
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" styleClass="vdcEditStudyField" > 
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.softwareNameHelp}" linkText="#{editstudybundle.softwareNameLabel}" heading="#{editstudybundle.softwareNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareName].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareName].recommended}"/>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            <h:column>
+                                                <ui:panelGroup block="true">
+                                                    <h:inputText  binding="#{EditStudyPage.inputSoftwareName}" id="input_softwareName" size="45"  value="#{currentRow.name}" required="#{EditStudyPage.studyMap[sfc.softwareName].required}"/>
+                                                    <h:message styleClass="errorMessage" for="input_softwareName"/>  
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.softwareVersionHelp}" linkText="#{editstudybundle.softwareVersionLabel}" heading="#{editstudybundle.softwareVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareVersion].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareVersion].recommended}"/>
+                                                        <h:inputText  binding="#{EditStudyPage.inputSoftwareVersion}" validator ="#{EditStudyPage.validateStudySoftware}"  id="input_softwareVersion" value="#{currentRow.softwareVersion}" required="#{EditStudyPage.studyMap[sfc.softwareVersion].required}"/>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_softwareVersion"/>                                
+                                                </ui:panelGroup>
+                                            </h:column> 
+                                            <h:column>
+                                                <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                            </h:column>                                       
+                                        </h:dataTable>
                                     </h:column>
-                                    <h:column>
-                                        <ui:panelGroup block="true">
-                                            <h:inputText  binding="#{EditStudyPage.inputSoftwareName}" id="input_softwareName" size="45"  value="#{currentRow.name}" required="#{EditStudyPage.studyMap[sfc.softwareName].required}"/>
-                                            <h:message styleClass="errorMessage" for="input_softwareName"/>  
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.softwareVersionHelp}" linkText="#{editstudybundle.softwareVersionLabel}" heading="#{editstudybundle.softwareVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareVersion].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareVersion].recommended}"/>
-                                                <h:inputText  binding="#{EditStudyPage.inputSoftwareVersion}" validator ="#{EditStudyPage.validateStudySoftware}"  id="input_softwareVersion" value="#{currentRow.softwareVersion}" required="#{EditStudyPage.studyMap[sfc.softwareVersion].required}"/>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_softwareVersion"/>                                
-                                        </ui:panelGroup>
-                                    </h:column> 
-                                    <h:column>
-                                        <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                        <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
-                                    </h:column>                                       
-                                </h:dataTable>
-                               </h:column>
-                            </h:dataTable>                                
+                                </h:dataTable>                                
                                 <h:panelGrid cellpadding="0" cellspacing="0"
                                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2"
                                              width="100%">
@@ -423,119 +428,119 @@
                                     </ui:panelGroup>
                                     
                                 </h:panelGrid>        
-                            <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>                                
-                                <h:dataTable cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             binding="#{EditStudyPage.dataTableGrants}" 
-                                             value="#{EditStudyPage.study.studyGrants}" var="currentRow" width="100%"  
-                                             rendered="#{EditStudyPage.studyMap[sfc.grantNumber].rendered}">
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" styleClass="vdcEditStudyField" > 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.grantNumberHelp}" linkText="#{editstudybundle.grantNumberLabel}" heading="#{editstudybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumber].recommended}"/>
-                                        </ui:panelGroup>                                              
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                    <h:column>                                
+                                        <h:dataTable cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                     binding="#{EditStudyPage.dataTableGrants}" 
+                                                     value="#{EditStudyPage.study.studyGrants}" var="currentRow" width="100%"  
+                                                     rendered="#{EditStudyPage.studyMap[sfc.grantNumber].rendered}">
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" styleClass="vdcEditStudyField" > 
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.grantNumberHelp}" linkText="#{editstudybundle.grantNumberLabel}" heading="#{editstudybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumber].recommended}"/>
+                                                </ui:panelGroup>                                              
+                                            </h:column>
+                                            <h:column>
+                                                <ui:panelGroup block="true">
+                                                    <h:inputText  immediate="true" binding="#{EditStudyPage.inputGrantNumber}" id="input_grantNumber" size="45"  value="#{currentRow.number}" required="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
+                                                    <h:message styleClass="errorMessage" for="input_grantNumber"/>    
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.grantingAgencyHelp}" linkText="#{editstudybundle.grantingAgencyLabel}" heading="#{editstudybundle.grantingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumberAgency].recommended}"/>
+                                                        <h:inputText  immediate="true" binding="#{EditStudyPage.inputGrantAgency}" validator ="#{EditStudyPage.validateStudyGrant}" id="input_grantNumberAgency" size="45" value="#{currentRow.agency}" required="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required}"/>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_grantNumberAgency"/>                                
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            <h:column>
+                                                <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                            </h:column>
+                                        </h:dataTable>
                                     </h:column>
-                                    <h:column>
-                                        <ui:panelGroup block="true">
-                                            <h:inputText  immediate="true" binding="#{EditStudyPage.inputGrantNumber}" id="input_grantNumber" size="45"  value="#{currentRow.number}" required="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
-                                            <h:message styleClass="errorMessage" for="input_grantNumber"/>    
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.grantingAgencyHelp}" linkText="#{editstudybundle.grantingAgencyLabel}" heading="#{editstudybundle.grantingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumberAgency].recommended}"/>
-                                                <h:inputText  immediate="true" binding="#{EditStudyPage.inputGrantAgency}" validator ="#{EditStudyPage.validateStudyGrant}" id="input_grantNumberAgency" size="45" value="#{currentRow.agency}" required="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required}"/>
+                                </h:dataTable>                                
+                                
+                                <h:column>                                
+                                    <h:dataTable cellpadding="0" cellspacing="0"
+                                                 columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                 binding="#{EditStudyPage.dataTableDistributors}" 
+                                                 value="#{EditStudyPage.study.studyDistributors}" var="currentRow" width="100%" 
+                                                 rendered="#{EditStudyPage.studyMap[sfc.distributorName].rendered}">
+                                        
+                                        <h:column>
+                                            <ui:panelGroup block="true" styleClass="vdcEditStudyField" > 
+                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorHelp}" linkText="#{editstudybundle.distributorLabel}" heading="#{editstudybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorName].required}"/>
+                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorName].recommended}"/>
                                             </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_grantNumberAgency"/>                                
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    <h:column>
-                                        <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                        <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
-                                    </h:column>
-                                </h:dataTable>
-                               </h:column>
-                            </h:dataTable>                                
-                     
-                            <h:column>                                
-                                <h:dataTable cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             binding="#{EditStudyPage.dataTableDistributors}" 
-                                             value="#{EditStudyPage.study.studyDistributors}" var="currentRow" width="100%" 
-                                             rendered="#{EditStudyPage.studyMap[sfc.distributorName].rendered}">
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" styleClass="vdcEditStudyField" > 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorHelp}" linkText="#{editstudybundle.distributorLabel}" heading="#{editstudybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorName].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorName].recommended}"/>
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    <h:column>
-                                        <ui:panelGroup block="true">
-                                            <h:inputText  binding="#{EditStudyPage.inputDistributorName}" id="input_distributorName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.distributorName].required}"/>
-                                            <h:message styleClass="errorMessage" for="input_distributorName"/> 
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorAffiliationHelp}" linkText="#{editstudybundle.distributorAffiliationLabel}" heading="#{editstudybundle.distributorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAffiliation].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAffiliation].recommended}"/>
-                                                <h:inputText id="input_distributorAffiliation" validator ="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAffiliation}" size="45"
-                                                             value="#{currentRow.affiliation}" 
-                                                             required="#{EditStudyPage.studyMap[sfc.distributorAffiliation].required}" 
-                                                             styleClass="formHtmlEnabled">
-                                                    <f:validator validatorId="XhtmlValidator"/>
-                                                </h:inputText>
+                                        </h:column>
+                                        <h:column>
+                                            <ui:panelGroup block="true">
+                                                <h:inputText  binding="#{EditStudyPage.inputDistributorName}" id="input_distributorName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.distributorName].required}"/>
+                                                <h:message styleClass="errorMessage" for="input_distributorName"/> 
+                                                <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorAffiliationHelp}" linkText="#{editstudybundle.distributorAffiliationLabel}" heading="#{editstudybundle.distributorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAffiliation].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAffiliation].recommended}"/>
+                                                    <h:inputText id="input_distributorAffiliation" validator ="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAffiliation}" size="45"
+                                                                 value="#{currentRow.affiliation}" 
+                                                                 required="#{EditStudyPage.studyMap[sfc.distributorAffiliation].required}" 
+                                                                 styleClass="formHtmlEnabled">
+                                                        <f:validator validatorId="XhtmlValidator"/>
+                                                    </h:inputText>
+                                                </ui:panelGroup>
+                                                <h:message styleClass="errorMessage" for="input_distributorAffiliation"/> 
+                                                <f:verbatim><br /></f:verbatim>
+                                                <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorAbbreviationHelp}" linkText="#{editstudybundle.distributorAbbreviationLabel}" heading="#{editstudybundle.distributorAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].recommended}"/>
+                                                    <h:inputText validator ="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"  required="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required}"/>
+                                                </ui:panelGroup>
+                                                <h:message styleClass="errorMessage" for="input_distributorAbbreviation"/>   
+                                                <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorURLHelp}" linkText="#{editstudybundle.distributorURLLabel}" heading="#{editstudybundle.distributorURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorURL].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorURL].recommended}"/>
+                                                    <h:inputText id="input_distributorURL" 
+                                                                 validator ="#{EditStudyPage.validateStudyDistributor}"
+                                                                 binding="#{EditStudyPage.inputDistributorUrl}" 
+                                                                 value="#{currentRow.url}" 
+                                                                 size="45"  
+                                                                 required="#{EditStudyPage.studyMap[sfc.distributorURL].required}"
+                                                    >
+                                                        <f:validator validatorId="UrlValidator"/>
+                                                    </h:inputText>
+                                                </ui:panelGroup>
+                                                <h:message styleClass="errorMessage" for="input_distributorURL"/>   
+                                                <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorLogoHelp}" linkText="#{editstudybundle.distributorLogoLabel}" heading="#{editstudybundle.distributorLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorLogo].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorLogo].recommended}"/>
+                                                    <h:inputText binding="#{EditStudyPage.inputDistributorLogo}" id="input_distributorLogo"  
+                                                                 validator ="#{EditStudyPage.validateStudyDistributor}"
+                                                                 value="#{currentRow.logo}" 
+                                                                 size="45"  
+                                                                 required="#{EditStudyPage.studyMap[sfc.distributorLogo].required}"
+                                                    >
+                                                        <f:validator validatorId="UrlValidator"/>
+                                                    </h:inputText>
+                                                </ui:panelGroup>
+                                                <h:message styleClass="errorMessage" for="input_distributorLogo"/>   
                                             </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_distributorAffiliation"/> 
-                                            <f:verbatim><br /></f:verbatim>
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorAbbreviationHelp}" linkText="#{editstudybundle.distributorAbbreviationLabel}" heading="#{editstudybundle.distributorAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].recommended}"/>
-                                                <h:inputText validator ="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"  required="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required}"/>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_distributorAbbreviation"/>   
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorURLHelp}" linkText="#{editstudybundle.distributorURLLabel}" heading="#{editstudybundle.distributorURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorURL].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorURL].recommended}"/>
-                                                <h:inputText id="input_distributorURL" 
-                                                            validator ="#{EditStudyPage.validateStudyDistributor}"
-                                                            binding="#{EditStudyPage.inputDistributorUrl}" 
-                                                             value="#{currentRow.url}" 
-                                                             size="45"  
-                                                             required="#{EditStudyPage.studyMap[sfc.distributorURL].required}"
-                                                >
-                                                    <f:validator validatorId="UrlValidator"/>
-                                                </h:inputText>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_distributorURL"/>   
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorLogoHelp}" linkText="#{editstudybundle.distributorLogoLabel}" heading="#{editstudybundle.distributorLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorLogo].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorLogo].recommended}"/>
-                                                <h:inputText binding="#{EditStudyPage.inputDistributorLogo}" id="input_distributorLogo"  
-                                                            validator ="#{EditStudyPage.validateStudyDistributor}"
-                                                             value="#{currentRow.logo}" 
-                                                             size="45"  
-                                                             required="#{EditStudyPage.studyMap[sfc.distributorLogo].required}"
-                                                >
-                                                    <f:validator validatorId="UrlValidator"/>
-                                                </h:inputText>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_distributorLogo"/>   
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    <h:column>
-                                        <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                        <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
-                                    </h:column>
-                                </h:dataTable>
-                               </h:column>
-                                                       
+                                        </h:column>
+                                        <h:column>
+                                            <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                            <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                
                                 <h:panelGrid cellpadding="0" cellspacing="0"
                                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2"
                                              width="100%" >
@@ -554,7 +559,7 @@
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorContactAffiliation].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorContactAffiliation].recommended}"/>
                                             <h:inputText id="distributorContactAffiliation"  maxlength="255" 
-                                                          binding ="#{EditStudyPage.inputDistributorContactAffiliation}" 
+                                                         binding ="#{EditStudyPage.inputDistributorContactAffiliation}" 
                                                          value="#{EditStudyPage.study.distributorContactAffiliation}" 
                                                          validator="#{EditStudyPage.validateDistributorContact}"
                                                          required="#{EditStudyPage.studyMap[sfc.distributorContactAffiliation].required}"
@@ -681,324 +686,324 @@
                                         <h:message styleClass="errorMessage" for="input_replicationFor"/>
                                         <f:verbatim><br /></f:verbatim>
                                     </ui:panelGroup>
-                        </h:panelGrid>        
-  
-        
-                                    
-              
+                                </h:panelGrid>        
+                                
+                                
+                                
+                                
                                 
                                 <ui:panelGroup block="true" id="groupPanel12" styleClass="vdcStudyInfoHeader">
                                     <h:outputText id="outputText65" value="Abstract and Scope"/>
                                     
                                 </ui:panelGroup>
-
-                            <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>                                
-                                <h:dataTable cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             binding="#{EditStudyPage.dataTableAbstracts}" 
-                                             value="#{EditStudyPage.study.studyAbstracts}" var="currentRow" width="100%"
-                                             rendered="#{EditStudyPage.studyMap[sfc.abstractText].rendered}">
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.abstractHelp}" linkText="#{editstudybundle.abstractLabel}" heading="#{editstudybundle.abstractHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.abstractText].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.abstractText].recommended}"/>
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    <h:column>
-                                        <ui:panelGroup block="true">
-                                            <h:inputTextarea cols="90" rows="12" 
-                                                             id="input_abstractText" 
-                                                             binding="#{EditStudyPage.inputAbstractText}"
-                                                             value="#{currentRow.text}" 
-                                                             required="#{EditStudyPage.studyMap[sfc.abstractText].required}"
-                                                             styleClass="formHtmlEnabled">
-                                                <f:validator validatorId="XhtmlValidator"/>
-                                            </h:inputTextarea>
-                                            <h:message styleClass="errorMessage" for="input_abstractText"/>                                
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.abstractDateHelp}" linkText="#{editstudybundle.abstractDateLabel}" heading="#{editstudybundle.abstractDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.abstractDate].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.abstractDate].recommended}"/>
-                                                <h:inputText binding="#{EditStudyPage.inputAbstractDate}" validator="#{EditStudyPage.validateStudyAbstract}" id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}" required="#{EditStudyPage.studyMap[sfc.abstractDate].required}">
-                                                    <f:validator validatorId="DateValidator"/>    
-                                                </h:inputText>
-                                                <h:outputText value=" (Enter date as YYYY or YYYY-MM or YYYY-MM-DD)"/>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_abstractDate"/>  
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    <h:column>
-                                        <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                        <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
-                                    </h:column>
-                                </h:dataTable>
-                               </h:column>
-                            </h:dataTable>    
-                          <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>                                
-                                <h:dataTable cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             binding="#{EditStudyPage.dataTableKeywords}" 
-                                             value="#{EditStudyPage.study.studyKeywords}" var="currentRow" width="100%" 
-                                             rendered="#{EditStudyPage.studyMap[sfc.keywordValue].rendered}">
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.keywordHelp}" linkText="#{editstudybundle.keywordLabel}" heading="#{editstudybundle.keywordHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordValue].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordValue].recommended}"/>
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    <h:column>
-                                        <ui:panelGroup block="true">
-                                            <h:inputText binding="#{EditStudyPage.inputKeywordValue}" id="input_keywordValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.keywordValue].required}"/>
-                                            <h:message styleClass="errorMessage" for="input_keywordValue"/>                                
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyHelp}" linkText="#{editstudybundle.keywordVocabularyLabel}" heading="#{editstudybundle.keywordVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocab].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocab].recommended}"/>
-                                                <h:inputText validator ="#{EditStudyPage.validateStudyKeyword}" binding="#{EditStudyPage.inputKeywordVocab}" id="input_keywordVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.keywordVocab].required}"/>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_keywordVocab"/>                                
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyURLHelp}" linkText="#{editstudybundle.keywordVocabularyURLLabel}" heading="#{editstudybundle.keywordVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocabURI].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocabURI].recommended}"/>
-                                                <h:inputText id="input_keywordVocabURI" 
-                                                             validator ="#{EditStudyPage.validateStudyKeyword}"
-                                                             binding="#{EditStudyPage.inputKeywordVocabUri}"
-                                                             size="45" 
-                                                             value="#{currentRow.vocabURI}" 
-                                                             required="#{EditStudyPage.studyMap[sfc.keywordVocabURI].required}"
-                                                >
-                                                    <f:validator validatorId="UrlValidator"/>
-                                                </h:inputText>  
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_keywordVocabURI"/>   
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    <h:column>
-                                        <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                        <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
-                                    </h:column>
-                                </h:dataTable>
-                               </h:column>
-                            </h:dataTable>                                
-                            <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>                                
-                                <h:dataTable cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             id="dataTableTopicClass"
-                                             binding="#{EditStudyPage.dataTableTopicClass}" 
-                                             value="#{EditStudyPage.study.studyTopicClasses}" var="currentRow" width="100%"
-                                             rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].rendered}">
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.topicClassificationHelp}" linkText="#{editstudybundle.topicClassificationLabel}" heading="#{editstudybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].recommended}"/>
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    <h:column>
-                                        <ui:panelGroup block="true">
-                                            <h:inputText binding="#{EditStudyPage.inputTopicClassValue}" id="input_topicClassValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.topicClassValue].required}"/>
-                                            <h:message styleClass="errorMessage" for="input_topicClassValue"/>                                
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyHelp}" linkText="#{editstudybundle.topicClassVocabularyLabel}" heading="#{editstudybundle.topicClassVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocab].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocab].recommended}"/>
-                                                <h:inputText validator ="#{EditStudyPage.validateStudyTopicClass}" binding="#{EditStudyPage.inputTopicClassVocab}" id="input_topicClassVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.topicClassVocab].required}"/>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_topicClassVocab"/>                                
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyURLHelp}" linkText="#{editstudybundle.topicClassVocabularyURLLabel}" heading="#{editstudybundle.topicClassVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocabURI].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocabURI].recommended}"/>
-                                                <h:inputText id="input_topicClassVocabURI" 
-                                                             binding="#{EditStudyPage.inputTopicClassVocabUri}"
-                                                             validator ="#{EditStudyPage.validateStudyTopicClass}"
-                                                             size="45" 
-                                                             value="#{currentRow.vocabURI}" 
-                                                             required="#{EditStudyPage.studyMap[sfc.topicClassVocabURI].required}"
-                                                >
-                                                    <f:validator validatorId="UrlValidator"/>
-                                                </h:inputText>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_topicClassVocabURI"/> 
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    <h:column>
-                                        <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                        <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
-                                    </h:column>
-                                </h:dataTable>
-                               </h:column>
-                            </h:dataTable>                                
-                            <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>                                          
-                                <h:dataTable cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             binding="#{EditStudyPage.dataTableRelPublications}" 
-                                             value="#{EditStudyPage.study.studyRelPublications}" var="currentRow" width="100%"  
-                                             rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].rendered}">
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.relatedPublicationsHelp}" linkText="#{editstudybundle.relatedPublicationsLabel}" heading="#{editstudybundle.relatedPublicationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].recommended}"/>
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" >
+                                
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                    <h:column>                                
+                                        <h:dataTable cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                     binding="#{EditStudyPage.dataTableAbstracts}" 
+                                                     value="#{EditStudyPage.study.studyAbstracts}" var="currentRow" width="100%"
+                                                     rendered="#{EditStudyPage.studyMap[sfc.abstractText].rendered}">
                                             
-                                            <h:inputTextarea cols="90" rows="4"  
-                                                         id="input_relatedPublications" 
-                                                         binding="#{EditStudyPage.inputRelPublicationName}" 
-                                                         value="#{currentRow.text}" 
-                                                         required="#{EditStudyPage.studyMap[sfc.relatedPublications].required}" 
-                                                         styleClass="formHtmlEnabled">
-                                                         <f:validator validatorId="XhtmlValidator"/>
-                                            </h:inputTextarea>
-                                            <h:message styleClass="errorMessage" for="input_relatedPublications"/>
-                                            <f:verbatim><br /></f:verbatim>
-                                        </ui:panelGroup>
+                                            <h:column>
+                                                <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.abstractHelp}" linkText="#{editstudybundle.abstractLabel}" heading="#{editstudybundle.abstractHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.abstractText].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.abstractText].recommended}"/>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            <h:column>
+                                                <ui:panelGroup block="true">
+                                                    <h:inputTextarea cols="90" rows="12" 
+                                                                     id="input_abstractText" 
+                                                                     binding="#{EditStudyPage.inputAbstractText}"
+                                                                     value="#{currentRow.text}" 
+                                                                     required="#{EditStudyPage.studyMap[sfc.abstractText].required}"
+                                                                     styleClass="formHtmlEnabled">
+                                                        <f:validator validatorId="XhtmlValidator"/>
+                                                    </h:inputTextarea>
+                                                    <h:message styleClass="errorMessage" for="input_abstractText"/>                                
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.abstractDateHelp}" linkText="#{editstudybundle.abstractDateLabel}" heading="#{editstudybundle.abstractDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.abstractDate].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.abstractDate].recommended}"/>
+                                                        <h:inputText binding="#{EditStudyPage.inputAbstractDate}" validator="#{EditStudyPage.validateStudyAbstract}" id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}" required="#{EditStudyPage.studyMap[sfc.abstractDate].required}">
+                                                            <f:validator validatorId="DateValidator"/>    
+                                                        </h:inputText>
+                                                        <h:outputText value=" (Enter date as YYYY or YYYY-MM or YYYY-MM-DD)"/>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_abstractDate"/>  
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            <h:column>
+                                                <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                            </h:column>
+                                        </h:dataTable>
                                     </h:column>
-                                    
-                                    <h:column>
-                                        <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                        <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
-                                    </h:column>               
+                                </h:dataTable>    
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                    <h:column>                                
+                                        <h:dataTable cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                     binding="#{EditStudyPage.dataTableKeywords}" 
+                                                     value="#{EditStudyPage.study.studyKeywords}" var="currentRow" width="100%" 
+                                                     rendered="#{EditStudyPage.studyMap[sfc.keywordValue].rendered}">
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.keywordHelp}" linkText="#{editstudybundle.keywordLabel}" heading="#{editstudybundle.keywordHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordValue].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordValue].recommended}"/>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            <h:column>
+                                                <ui:panelGroup block="true">
+                                                    <h:inputText binding="#{EditStudyPage.inputKeywordValue}" id="input_keywordValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.keywordValue].required}"/>
+                                                    <h:message styleClass="errorMessage" for="input_keywordValue"/>                                
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyHelp}" linkText="#{editstudybundle.keywordVocabularyLabel}" heading="#{editstudybundle.keywordVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocab].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocab].recommended}"/>
+                                                        <h:inputText validator ="#{EditStudyPage.validateStudyKeyword}" binding="#{EditStudyPage.inputKeywordVocab}" id="input_keywordVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.keywordVocab].required}"/>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_keywordVocab"/>                                
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyURLHelp}" linkText="#{editstudybundle.keywordVocabularyURLLabel}" heading="#{editstudybundle.keywordVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocabURI].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocabURI].recommended}"/>
+                                                        <h:inputText id="input_keywordVocabURI" 
+                                                                     validator ="#{EditStudyPage.validateStudyKeyword}"
+                                                                     binding="#{EditStudyPage.inputKeywordVocabUri}"
+                                                                     size="45" 
+                                                                     value="#{currentRow.vocabURI}" 
+                                                                     required="#{EditStudyPage.studyMap[sfc.keywordVocabURI].required}"
+                                                        >
+                                                            <f:validator validatorId="UrlValidator"/>
+                                                        </h:inputText>  
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_keywordVocabURI"/>   
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            <h:column>
+                                                <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                            </h:column>
+                                        </h:dataTable>
+                                    </h:column>
+                                </h:dataTable>                                
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                    <h:column>                                
+                                        <h:dataTable cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                     id="dataTableTopicClass"
+                                                     binding="#{EditStudyPage.dataTableTopicClass}" 
+                                                     value="#{EditStudyPage.study.studyTopicClasses}" var="currentRow" width="100%"
+                                                     rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].rendered}">
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.topicClassificationHelp}" linkText="#{editstudybundle.topicClassificationLabel}" heading="#{editstudybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].recommended}"/>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            <h:column>
+                                                <ui:panelGroup block="true">
+                                                    <h:inputText binding="#{EditStudyPage.inputTopicClassValue}" id="input_topicClassValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.topicClassValue].required}"/>
+                                                    <h:message styleClass="errorMessage" for="input_topicClassValue"/>                                
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyHelp}" linkText="#{editstudybundle.topicClassVocabularyLabel}" heading="#{editstudybundle.topicClassVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocab].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocab].recommended}"/>
+                                                        <h:inputText validator ="#{EditStudyPage.validateStudyTopicClass}" binding="#{EditStudyPage.inputTopicClassVocab}" id="input_topicClassVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.topicClassVocab].required}"/>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_topicClassVocab"/>                                
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyURLHelp}" linkText="#{editstudybundle.topicClassVocabularyURLLabel}" heading="#{editstudybundle.topicClassVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocabURI].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocabURI].recommended}"/>
+                                                        <h:inputText id="input_topicClassVocabURI" 
+                                                                     binding="#{EditStudyPage.inputTopicClassVocabUri}"
+                                                                     validator ="#{EditStudyPage.validateStudyTopicClass}"
+                                                                     size="45" 
+                                                                     value="#{currentRow.vocabURI}" 
+                                                                     required="#{EditStudyPage.studyMap[sfc.topicClassVocabURI].required}"
+                                                        >
+                                                            <f:validator validatorId="UrlValidator"/>
+                                                        </h:inputText>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_topicClassVocabURI"/> 
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            <h:column>
+                                                <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                            </h:column>
+                                        </h:dataTable>
+                                    </h:column>
+                                </h:dataTable>                                
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                    <h:column>                                          
+                                        <h:dataTable cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                     binding="#{EditStudyPage.dataTableRelPublications}" 
+                                                     value="#{EditStudyPage.study.studyRelPublications}" var="currentRow" width="100%"  
+                                                     rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].rendered}">
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.relatedPublicationsHelp}" linkText="#{editstudybundle.relatedPublicationsLabel}" heading="#{editstudybundle.relatedPublicationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].recommended}"/>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" >
+                                                    
+                                                    <h:inputTextarea cols="90" rows="4"  
+                                                                     id="input_relatedPublications" 
+                                                                     binding="#{EditStudyPage.inputRelPublicationName}" 
+                                                                     value="#{currentRow.text}" 
+                                                                     required="#{EditStudyPage.studyMap[sfc.relatedPublications].required}" 
+                                                                     styleClass="formHtmlEnabled">
+                                                        <f:validator validatorId="XhtmlValidator"/>
+                                                    </h:inputTextarea>
+                                                    <h:message styleClass="errorMessage" for="input_relatedPublications"/>
+                                                    <f:verbatim><br /></f:verbatim>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            
+                                            <h:column>
+                                                <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                            </h:column>               
+                                        </h:dataTable>
+                                    </h:column>
                                 </h:dataTable>
-                               </h:column>
-                            </h:dataTable>
-       <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>                                          
-                                <h:dataTable cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             binding="#{EditStudyPage.dataTableRelMaterials}" 
-                                             value="#{EditStudyPage.study.studyRelMaterials}" var="currentRow" width="100%"  
-                                             rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].rendered}">
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.relatedMaterialHelp}" linkText="#{editstudybundle.relatedMaterialLabel}" heading="#{editstudybundle.relatedMaterialHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].recommended}"/>
-                                        </ui:panelGroup>
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                    <h:column>                                          
+                                        <h:dataTable cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                     binding="#{EditStudyPage.dataTableRelMaterials}" 
+                                                     value="#{EditStudyPage.study.studyRelMaterials}" var="currentRow" width="100%"  
+                                                     rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].rendered}">
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.relatedMaterialHelp}" linkText="#{editstudybundle.relatedMaterialLabel}" heading="#{editstudybundle.relatedMaterialHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].recommended}"/>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" >
+                                                    <h:inputTextarea cols="90" rows="4"  
+                                                                     id="input_relatedMaterial" 
+                                                                     binding="#{EditStudyPage.inputRelMaterial}" 
+                                                                     value="#{currentRow.text}" 
+                                                                     required="#{EditStudyPage.studyMap[sfc.relatedMaterial].required}" 
+                                                                     styleClass="formHtmlEnabled">
+                                                        <f:validator validatorId="XhtmlValidator"/>
+                                                    </h:inputTextarea>
+                                                    <h:message styleClass="errorMessage" for="input_relatedMaterial"/>
+                                                    <f:verbatim><br /></f:verbatim>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            
+                                            <h:column>
+                                                <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                            </h:column>               
+                                        </h:dataTable>
                                     </h:column>
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" >
-                                            <h:inputTextarea cols="90" rows="4"  
-                                                         id="input_relatedMaterial" 
-                                                         binding="#{EditStudyPage.inputRelMaterial}" 
-                                                         value="#{currentRow.text}" 
-                                                         required="#{EditStudyPage.studyMap[sfc.relatedMaterial].required}" 
-                                                         styleClass="formHtmlEnabled">
-                                                         <f:validator validatorId="XhtmlValidator"/>
-                                            </h:inputTextarea>
-                                            <h:message styleClass="errorMessage" for="input_relatedMaterial"/>
-                                            <f:verbatim><br /></f:verbatim>
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    
-                                    <h:column>
-                                        <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                        <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
-                                    </h:column>               
                                 </h:dataTable>
-                               </h:column>
-                            </h:dataTable>
-      <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>                                          
-                                <h:dataTable cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             binding="#{EditStudyPage.dataTableRelStudies}" 
-                                             value="#{EditStudyPage.study.studyRelStudies}" var="currentRow" width="100%"  
-                                             rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].rendered}">
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.relatedStudiesHelp}" linkText="#{editstudybundle.relatedStudiesLabel}" heading="#{editstudybundle.relatedStudiesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].recommended}"/>
-                                        </ui:panelGroup>
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                    <h:column>                                          
+                                        <h:dataTable cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                     binding="#{EditStudyPage.dataTableRelStudies}" 
+                                                     value="#{EditStudyPage.study.studyRelStudies}" var="currentRow" width="100%"  
+                                                     rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].rendered}">
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.relatedStudiesHelp}" linkText="#{editstudybundle.relatedStudiesLabel}" heading="#{editstudybundle.relatedStudiesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].recommended}"/>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" >
+                                                    <h:inputTextarea cols="90" rows="4"  
+                                                                     id="input_relatedStudies" 
+                                                                     binding="#{EditStudyPage.inputRelStudy}" 
+                                                                     value="#{currentRow.text}" 
+                                                                     required="#{EditStudyPage.studyMap[sfc.relatedStudies].required}" 
+                                                                     styleClass="formHtmlEnabled">
+                                                        <f:validator validatorId="XhtmlValidator"/>
+                                                    </h:inputTextarea>
+                                                    <h:message styleClass="errorMessage" for="input_relatedStudies"/>
+                                                    <f:verbatim><br /></f:verbatim>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            
+                                            <h:column>
+                                                <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                            </h:column>               
+                                        </h:dataTable>
                                     </h:column>
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" >
-                                            <h:inputTextarea cols="90" rows="4"  
-                                                         id="input_relatedStudies" 
-                                                         binding="#{EditStudyPage.inputRelStudy}" 
-                                                         value="#{currentRow.text}" 
-                                                         required="#{EditStudyPage.studyMap[sfc.relatedStudies].required}" 
-                                                         styleClass="formHtmlEnabled">
-                                                         <f:validator validatorId="XhtmlValidator"/>
-                                            </h:inputTextarea>
-                                            <h:message styleClass="errorMessage" for="input_relatedStudies"/>
-                                            <f:verbatim><br /></f:verbatim>
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    
-                                    <h:column>
-                                        <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                        <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
-                                    </h:column>               
                                 </h:dataTable>
-                               </h:column>
-                            </h:dataTable>
-      <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>                                          
-                                <h:dataTable cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             binding="#{EditStudyPage.dataTableOtherReferences}" 
-                                             value="#{EditStudyPage.study.studyOtherRefs}" var="currentRow" width="100%"  
-                                             rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].rendered}">
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.otherReferencesHelp}" linkText="#{editstudybundle.otherReferencesLabel}" heading="#{editstudybundle.otherReferencesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherReferences].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherReferences].recommended}"/>
-                                        </ui:panelGroup>
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                    <h:column>                                          
+                                        <h:dataTable cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                     binding="#{EditStudyPage.dataTableOtherReferences}" 
+                                                     value="#{EditStudyPage.study.studyOtherRefs}" var="currentRow" width="100%"  
+                                                     rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].rendered}">
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.otherReferencesHelp}" linkText="#{editstudybundle.otherReferencesLabel}" heading="#{editstudybundle.otherReferencesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherReferences].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherReferences].recommended}"/>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" >
+                                                    <h:inputText id="input_otherReferences" 
+                                                                 binding="#{EditStudyPage.inputOtherReference}"
+                                                                 value="#{currentRow.text}" 
+                                                                 size="90" 
+                                                                 required="#{EditStudyPage.studyMap[sfc.otherReferences].required}"
+                                                                 styleClass="formHtmlEnabled">
+                                                        <f:validator validatorId="XhtmlValidator"/>
+                                                    </h:inputText>
+                                                    <h:message styleClass="errorMessage" for="input_otherReferences"/>
+                                                    <f:verbatim><br /></f:verbatim>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            
+                                            <h:column>
+                                                <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                            </h:column>               
+                                        </h:dataTable>
                                     </h:column>
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" >
-                                            <h:inputText id="input_otherReferences" 
-                                                         binding="#{EditStudyPage.inputOtherReference}"
-                                                         value="#{currentRow.text}" 
-                                                         size="90" 
-                                                         required="#{EditStudyPage.studyMap[sfc.otherReferences].required}"
-                                                         styleClass="formHtmlEnabled">
-                                                         <f:validator validatorId="XhtmlValidator"/>
-                                            </h:inputText>
-                                            <h:message styleClass="errorMessage" for="input_otherReferences"/>
-                                            <f:verbatim><br /></f:verbatim>
-                                        </ui:panelGroup>
-                                    </h:column>
-                                    
-                                    <h:column>
-                                        <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                        <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
-                                    </h:column>               
-                                </h:dataTable>
-                               </h:column>
-                            </h:dataTable>                            
-
+                                </h:dataTable>                            
+                                
                                 <h:panelGrid cellpadding="0" cellspacing="0"
                                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2" width="100%">
                                     
@@ -1041,7 +1046,7 @@
                                         <h:outputText value=" (Enter date as YYYY or YYYY-MM or YYYY-MM-DD)"/>
                                         <h:message styleClass="errorMessage" for="input_dateOfCollectionStart"/>                                
                                     </ui:panelGroup>
-         
+                                    
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].rendered}" styleClass="vdcEditStudyField" block="true">
                                         <ihelp:inlinehelp helpMessage="#{editstudybundle.collectionDateEndHelp}" linkText="#{editstudybundle.collectionDateEndLabel}" heading="#{editstudybundle.collectionDateEndHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required}"/>
@@ -1085,48 +1090,48 @@
                                         <h:inputText id="input_geographicUnit" size="45" maxlength="255"  value="#{EditStudyPage.study.geographicUnit}" required="#{EditStudyPage.studyMap[sfc.geographicUnit].required}"/>
                                         <h:message styleClass="errorMessage" for="input_geographicUnit"/>                                
                                     </ui:panelGroup>
-                         
+                                    
                                     <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.geographicBoundingBoxHelp}" linkText="#{editstudybundle.geographicBoundingBoxLabel}" heading="#{editstudybundle.geographicBoundingBoxHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.westLongitude].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.westLongitude].recommended}"/>
+                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.geographicBoundingBoxHelp}" linkText="#{editstudybundle.geographicBoundingBoxLabel}" heading="#{editstudybundle.geographicBoundingBoxHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.westLongitude].required}"/>
+                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.westLongitude].recommended}"/>
                                     </ui:panelGroup>
-                                   
+                                    
                                     <ui:panelGroup block="true">
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.westLongitudeHelp}" linkText="#{editstudybundle.westLongitudeLabel}" heading="#{editstudybundle.westLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:inputText id="input_westLongitude"  binding="#{EditStudyPage.inputWestLongitude}" value="#{EditStudyPage.study.studyGeoBoundings[0].westLongitude}"  validator ="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.westLongitude].required}">
+                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.westLongitudeHelp}" linkText="#{editstudybundle.westLongitudeLabel}" heading="#{editstudybundle.westLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <h:inputText id="input_westLongitude"  binding="#{EditStudyPage.inputWestLongitude}" value="#{EditStudyPage.study.studyGeoBoundings[0].westLongitude}"  validator ="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.westLongitude].required}">
+                                            
+                                        </h:inputText>
+                                        <h:message styleClass="errorMessage" for="input_westLongitude"/>        
+                                        
+                                        <ui:panelGroup styleClass="vdcEditStudyGroupField">                                                   
+                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.eastLongitudeHelp}" linkText="#{editstudybundle.eastLongitudeLabel}" heading="#{editstudybundle.eastLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                            <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.eastLongitude].required}"/>
+                                            <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.eastLongitude].recommended}"/>
+                                            <h:inputText binding="#{EditStudyPage.inputEastLongitude}" id="input_eastLongitude" value="#{EditStudyPage.study.studyGeoBoundings[0].eastLongitude}" validator ="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.eastLongitude].required}">
                                                 
                                             </h:inputText>
-                                            <h:message styleClass="errorMessage" for="input_westLongitude"/>        
-                                            
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">                                                   
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.eastLongitudeHelp}" linkText="#{editstudybundle.eastLongitudeLabel}" heading="#{editstudybundle.eastLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.eastLongitude].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.eastLongitude].recommended}"/>
-                                                <h:inputText binding="#{EditStudyPage.inputEastLongitude}" id="input_eastLongitude" value="#{EditStudyPage.study.studyGeoBoundings[0].eastLongitude}" validator ="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.eastLongitude].required}">
-                                                    
-                                                </h:inputText>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_eastLongitude"/>        
-                                            
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">                                                   
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.northLatitudeHelp}" linkText="#{editstudybundle.northLatitudeLabel}" heading="#{editstudybundle.northLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.northLatitude].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.northLatitude].recommended}"/>
-                                                <h:inputText binding="#{EditStudyPage.inputNorthLatitude}"  id="input_northLatitude" value="#{EditStudyPage.study.studyGeoBoundings[0].northLatitude}" validator ="#{EditStudyPage.validateLatitude}" required="#{EditStudyPage.studyMap[sfc.northLatitude].required}"/>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_northLatitude"/>      
-                                            
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField">                                                   
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.southLatitudeHelp}" linkText="#{editstudybundle.southLatitudeLabel}" heading="#{editstudybundle.southLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.southLatitude].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.southLatitude].recommended}"/>
-                                                <h:inputText binding="#{EditStudyPage.inputSouthLatitude}" id="input_southLatitude" value="#{EditStudyPage.study.studyGeoBoundings[0].southLatitude}" validator ="#{EditStudyPage.validateLatitude}" required="#{EditStudyPage.studyMap[sfc.southLatitude].required}"/>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_southLatitude"/>      
-                                            <h:inputHidden validator="#{EditStudyPage.validateGeographicBounding}" value="test" required="true"/>
+                                        </ui:panelGroup>
+                                        <h:message styleClass="errorMessage" for="input_eastLongitude"/>        
+                                        
+                                        <ui:panelGroup styleClass="vdcEditStudyGroupField">                                                   
+                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.northLatitudeHelp}" linkText="#{editstudybundle.northLatitudeLabel}" heading="#{editstudybundle.northLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                            <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.northLatitude].required}"/>
+                                            <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.northLatitude].recommended}"/>
+                                            <h:inputText binding="#{EditStudyPage.inputNorthLatitude}"  id="input_northLatitude" value="#{EditStudyPage.study.studyGeoBoundings[0].northLatitude}" validator ="#{EditStudyPage.validateLatitude}" required="#{EditStudyPage.studyMap[sfc.northLatitude].required}"/>
+                                        </ui:panelGroup>
+                                        <h:message styleClass="errorMessage" for="input_northLatitude"/>      
+                                        
+                                        <ui:panelGroup styleClass="vdcEditStudyGroupField">                                                   
+                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.southLatitudeHelp}" linkText="#{editstudybundle.southLatitudeLabel}" heading="#{editstudybundle.southLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                            <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.southLatitude].required}"/>
+                                            <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.southLatitude].recommended}"/>
+                                            <h:inputText binding="#{EditStudyPage.inputSouthLatitude}" id="input_southLatitude" value="#{EditStudyPage.study.studyGeoBoundings[0].southLatitude}" validator ="#{EditStudyPage.validateLatitude}" required="#{EditStudyPage.studyMap[sfc.southLatitude].required}"/>
+                                        </ui:panelGroup>
+                                        <h:message styleClass="errorMessage" for="input_southLatitude"/>      
+                                        <h:inputHidden validator="#{EditStudyPage.validateGeographicBounding}" value="test" required="true"/>
                                     </ui:panelGroup>
-                                
+                                    
                                     
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].rendered}" styleClass="vdcEditStudyField" block="true">
                                         <ihelp:inlinehelp helpMessage="#{editstudybundle.unitOfAnalysisHelp}" linkText="#{editstudybundle.unitOfAnalysisLabel}" heading="#{editstudybundle.unitOfAnalysisHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -1138,7 +1143,7 @@
                                         <h:message styleClass="errorMessage" for="input_unitOfAnalysis"/>          
                                         <h:inputHidden validator="#{EditStudyPage.validateGeographicBounding}" value="test" required="true"/>   
                                     </ui:panelGroup>
-                         
+                                    
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.universe].rendered}" styleClass="vdcEditStudyField" block="true">
                                         <ihelp:inlinehelp helpMessage="#{editstudybundle.universeHelp}" linkText="#{editstudybundle.universeLabel}" heading="#{editstudybundle.universeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.universe].required}"/>
@@ -1724,72 +1729,72 @@
                                     <h:outputText id="outputText160" value="Other Information"/>
                                     
                                 </ui:panelGroup>
-
-                            <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>                                
-                                <h:dataTable id="dataTableNotes" cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                             binding="#{EditStudyPage.dataTableNotes}" 
-                                             value="#{EditStudyPage.study.studyNotes}" var="currentRow" width="100%"
-                                             rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].rendered}">
-                                    
-                                    <h:column>
-                                        <ui:panelGroup block="true" visible = "#{EditStudyPage.studyMap[sfc.notesInformationType].rendered}" styleClass="vdcEditStudyField"> 
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                            <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].required}"/>
-                                            <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].recommended}"/>
-                                        </ui:panelGroup>
+                                
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                    <h:column>                                
+                                        <h:dataTable id="dataTableNotes" cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                                     binding="#{EditStudyPage.dataTableNotes}" 
+                                                     value="#{EditStudyPage.study.studyNotes}" var="currentRow" width="100%"
+                                                     rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].rendered}">
+                                            
+                                            <h:column>
+                                                <ui:panelGroup block="true" visible = "#{EditStudyPage.studyMap[sfc.notesInformationType].rendered}" styleClass="vdcEditStudyField"> 
+                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].required}"/>
+                                                    <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].recommended}"/>
+                                                </ui:panelGroup>
+                                            </h:column>
+                                            <h:column>
+                                                <ui:panelGroup block="true" visible = "#{EditStudyPage.studyMap[sfc.notesInformationType].rendered}">
+                                                    <h:inputText binding="#{EditStudyPage.inputNoteType}" id="input_notesInformationType" 
+                                                                 value="#{currentRow.type}" 
+                                                                 required="#{EditStudyPage.studyMap[sfc.notesInformationType].required}"
+                                                                 styleClass="formHtmlEnabled">
+                                                        <f:validator validatorId="XhtmlValidator"/>
+                                                    </h:inputText>
+                                                    <h:message styleClass="errorMessage" for="input_notesInformationType"/>   
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField"  visible="#{EditStudyPage.studyMap[sfc.notesInformationSubject].rendered}">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.notesSubjectHelp}" linkText="#{editstudybundle.notesSubjectLabel}" heading="#{editstudybundle.notesSubjectHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationSubject].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationSubject].recommended}"/>
+                                                        <h:inputText id="input_notesInformationSubject" 
+                                                                     binding="#{EditStudyPage.inputNoteSubject}"
+                                                                     value="#{currentRow.subject}" 
+                                                                     validator ="#{EditStudyPage.validateStudyNote}"
+                                                                     required="#{EditStudyPage.studyMap[sfc.notesInformationSubject].required}"
+                                                                     styleClass="formHtmlEnabled">
+                                                            <f:validator validatorId="XhtmlValidator"/>
+                                                        </h:inputText>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_notesInformationSubject"  />
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField" visible="#{EditStudyPage.studyMap[sfc.notesText].rendered}">
+                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.notesTextHelp}" linkText="#{editstudybundle.notesTextLabel}" heading="#{editstudybundle.notesTextHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesText].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesText].recommended}"/>
+                                                        <h:inputText id="input_notesText" 
+                                                                     size="90" 
+                                                                     binding="#{EditStudyPage.inputNoteText}"
+                                                                     validator ="#{EditStudyPage.validateStudyNote}"
+                                                                     value="#{currentRow.text}" 
+                                                                     required="#{EditStudyPage.studyMap[sfc.notesText].required}"
+                                                                     styleClass="formHtmlEnabled">
+                                                            <f:validator validatorId="XhtmlValidator"/>
+                                                        </h:inputText>
+                                                    </ui:panelGroup>
+                                                    <h:message styleClass="errorMessage" for="input_notesText"/>
+                                                </ui:panelGroup>
+                                            </h:column> 
+                                            <h:column>
+                                                <ui:panelGroup block="true" visible = "#{EditStudyPage.studyMap[sfc.notesInformationType].rendered}"> 
+                                                    <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
+                                                    <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                </ui:panelGroup>
+                                            </h:column>                                       
+                                        </h:dataTable>
                                     </h:column>
-                                    <h:column>
-                                        <ui:panelGroup block="true" visible = "#{EditStudyPage.studyMap[sfc.notesInformationType].rendered}">
-                                            <h:inputText binding="#{EditStudyPage.inputNoteType}" id="input_notesInformationType" 
-                                                         value="#{currentRow.type}" 
-                                                         required="#{EditStudyPage.studyMap[sfc.notesInformationType].required}"
-                                                         styleClass="formHtmlEnabled">
-                                                <f:validator validatorId="XhtmlValidator"/>
-                                            </h:inputText>
-                                            <h:message styleClass="errorMessage" for="input_notesInformationType"/>   
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField"  visible="#{EditStudyPage.studyMap[sfc.notesInformationSubject].rendered}">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.notesSubjectHelp}" linkText="#{editstudybundle.notesSubjectLabel}" heading="#{editstudybundle.notesSubjectHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationSubject].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationSubject].recommended}"/>
-                                                <h:inputText id="input_notesInformationSubject" 
-                                                             binding="#{EditStudyPage.inputNoteSubject}"
-                                                             value="#{currentRow.subject}" 
-                                                             validator ="#{EditStudyPage.validateStudyNote}"
-                                                             required="#{EditStudyPage.studyMap[sfc.notesInformationSubject].required}"
-                                                             styleClass="formHtmlEnabled">
-                                                    <f:validator validatorId="XhtmlValidator"/>
-                                                </h:inputText>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_notesInformationSubject"  />
-                                            <ui:panelGroup styleClass="vdcEditStudyGroupField" visible="#{EditStudyPage.studyMap[sfc.notesText].rendered}">
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.notesTextHelp}" linkText="#{editstudybundle.notesTextLabel}" heading="#{editstudybundle.notesTextHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesText].required}"/>
-                                                <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesText].recommended}"/>
-                                                <h:inputText id="input_notesText" 
-                                                             size="90" 
-                                                             binding="#{EditStudyPage.inputNoteText}"
-                                                             validator ="#{EditStudyPage.validateStudyNote}"
-                                                             value="#{currentRow.text}" 
-                                                             required="#{EditStudyPage.studyMap[sfc.notesText].required}"
-                                                             styleClass="formHtmlEnabled">
-                                                    <f:validator validatorId="XhtmlValidator"/>
-                                                </h:inputText>
-                                            </ui:panelGroup>
-                                            <h:message styleClass="errorMessage" for="input_notesText"/>
-                                        </ui:panelGroup>
-                                    </h:column> 
-                                    <h:column>
-                                        <ui:panelGroup block="true" visible = "#{EditStudyPage.studyMap[sfc.notesInformationType].rendered}"> 
-                                            <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                            <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
-                                        </ui:panelGroup>
-                                    </h:column>                                       
-                                </h:dataTable>
-                               </h:column>
-                            </h:dataTable>                                
+                                </h:dataTable>                                
                                 <!-- 
                                         <ui:panelGroup block="true" id="groupPanel6" style="padding-top: 10px" styleClass="vdcTextRight">
                                             <h:commandButton id="button5" value="Save" action="#{EditStudyPage.save}"/>
@@ -1808,63 +1813,63 @@
                                 <h:outputText value="No files have been provided for this study. To add files, return to the study view (by clicking Save or Cancel) and follow the Add File(s) link."/>
                             </ui:panelGroup>                                    
                             <ui:panelLayout id="layoutPanel2" panelLayout="flow" style="width: 100%;" rendered="#{!empty EditStudyPage.files}">
-                            <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                            <h:dataTable id="fileDataTableWrapper" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
-                            <h:column>
-                            <h:dataTable cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColA, vdcEditFilesColC, vdcEditFilesColC"
-                                             headerClass="vdcEditFilesHeader" id="fileDataTable" rowClasses="list-row-even,list-row-odd"
-                                             value="#{EditStudyPage.files}" var="file" width="100%">
-                                    <h:column id="column9">
-                                            <ui:panelGroup  block="true" style="white-space: nowrap;">
-                                               <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box; 
+                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                <h:dataTable id="fileDataTableWrapper" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                    <h:column>
+                                        <h:dataTable cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColA, vdcEditFilesColC, vdcEditFilesColC"
+                                                     headerClass="vdcEditFilesHeader" id="fileDataTable" rowClasses="list-row-even,list-row-odd"
+                                                     value="#{EditStudyPage.files}" var="file" width="100%">
+                                            <h:column id="column9">
+                                                <ui:panelGroup  block="true" style="white-space: nowrap;">
+                                                    <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box; 
                                                 changing them may require corresponding changes in the Javascript  -->
-                                             <h:selectBooleanCheckbox id="catCheckbox"  onclick="updateCategory(this);"/>
-                                             <h:inputText id="catTextField" size="30"  value="#{file.fileCategoryName}" onfocus="deselectCategory(this)"/>
-                                            </ui:panelGroup>
-                                            <f:facet name="header">
-                                                <ui:panelGroup id="catColPanelGroup">
-                                                    <h:outputText id="catLabel" value="Category"/>
-                                                    <h:selectOneMenu  id="catDropdown" onchange="updateAllCheckedCategories(this);">
-                                                        <f:selectItems value="#{EditStudyPage.templateFileCategories}" />
-                                                    </h:selectOneMenu>  
+                                                    <h:selectBooleanCheckbox id="catCheckbox"  onclick="updateCategory(this);"/>
+                                                    <h:inputText id="catTextField" size="30"  value="#{file.fileCategoryName}" onfocus="deselectCategory(this)"/>
                                                 </ui:panelGroup>
-                                            </f:facet>    
+                                                <f:facet name="header">
+                                                    <ui:panelGroup id="catColPanelGroup">
+                                                        <h:outputText id="catLabel" value="Category"/>
+                                                        <h:selectOneMenu  id="catDropdown" onchange="updateAllCheckedCategories(this);">
+                                                            <f:selectItems value="#{EditStudyPage.templateFileCategories}" />
+                                                        </h:selectOneMenu>  
+                                                    </ui:panelGroup>
+                                                </f:facet>    
+                                            </h:column>
+                                            <h:column id="column10">
+                                                <h:inputText id="input_fileName" size="30"  value="#{file.studyFile.fileName}" validator ="#{EditStudyPage.validateFileName}" />
+                                                <h:message styleClass="errorMessage" for="input_fileName"/> 
+                                                <f:facet name="header">
+                                                    <h:outputText id="outputText13" value="File Name"/>
+                                                </f:facet>
+                                            </h:column>
+                                            <h:column id="column11">
+                                                <h:inputTextarea cols="30" rows="2"  value="#{file.studyFile.description}"/>
+                                                <f:facet name="header">
+                                                    <h:outputText id="outputText16" value="Description"/>
+                                                </f:facet>
+                                            </h:column>
+                                            <h:column id="column12">
+                                                <h:outputText id="outputText17" value="#{file.studyFile.fileType}"/>
+                                                <f:facet name="header">
+                                                    <h:outputText id="outputText18" value="Type"/>
+                                                </f:facet>
+                                            </h:column>
+                                            <h:column id="column14">
+                                                <h:graphicImage  rendered="#{file.studyFile.subsettable}" id="imagefs" styleClass="vdcNoBorders" value="/resources/icon_subsettable.gif"/>
+                                                <f:facet name="header">
+                                                    <h:outputText id="outputText22" value="Subsetting"/>
+                                                </f:facet>
+                                            </h:column>
+                                            <h:column id="deleteColumn">
+                                                <h:selectBooleanCheckbox id="deleteCheckBox" value="#{file.deleteFlag}"/>                                                
+                                                <f:facet name="header">
+                                                    <h:outputText id="deleteText" value="Delete?"/>
+                                                </f:facet>
+                                            </h:column>                                               
+                                        </h:dataTable>
                                     </h:column>
-                                    <h:column id="column10">
-                                        <h:inputText id="input_fileName" size="30"  value="#{file.studyFile.fileName}" validator ="#{EditStudyPage.validateFileName}" />
-                                        <h:message styleClass="errorMessage" for="input_fileName"/> 
-                                        <f:facet name="header">
-                                            <h:outputText id="outputText13" value="File Name"/>
-                                        </f:facet>
-                                    </h:column>
-                                    <h:column id="column11">
-                                        <h:inputTextarea cols="30" rows="2"  value="#{file.studyFile.description}"/>
-                                        <f:facet name="header">
-                                            <h:outputText id="outputText16" value="Description"/>
-                                        </f:facet>
-                                    </h:column>
-                                    <h:column id="column12">
-                                        <h:outputText id="outputText17" value="#{file.studyFile.fileType}"/>
-                                        <f:facet name="header">
-                                            <h:outputText id="outputText18" value="Type"/>
-                                        </f:facet>
-                                    </h:column>
-                                    <h:column id="column14">
-                                        <h:graphicImage  rendered="#{file.studyFile.subsettable}" id="imagefs" styleClass="vdcNoBorders" value="/resources/icon_subsettable.gif"/>
-                                        <f:facet name="header">
-                                            <h:outputText id="outputText22" value="Subsetting"/>
-                                        </f:facet>
-                                    </h:column>
-                                    <h:column id="deleteColumn">
-                                        <h:selectBooleanCheckbox id="deleteCheckBox" value="#{file.deleteFlag}"/>                                                
-                                        <f:facet name="header">
-                                            <h:outputText id="deleteText" value="Delete?"/>
-                                        </f:facet>
-                                    </h:column>                                               
                                 </h:dataTable>
-                               </h:column>
-                            </h:dataTable>
                             </ui:panelLayout>
                         </ui:tab>
                     </ui:tabSet>
@@ -1873,8 +1878,9 @@
                         <h:commandButton id="button1b" value="Save" action="#{EditStudyPage.save}"/>
                         <h:commandButton immediate="true" id="button2b" style="margin-left: 30px; margin-right: 15px" value="Cancel" action="#{EditStudyPage.cancel}"/>   
                     </ui:panelGroup> 
-                </h:panelGrid>  
-            </ui:panelLayout>
+                    
+                </div>
+            </div>
             
         </h:form>
     </f:subview>

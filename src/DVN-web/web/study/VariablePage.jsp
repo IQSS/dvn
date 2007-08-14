@@ -11,18 +11,22 @@
         <ui:form  id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             
-            <ui:panelLayout id="ContentlayoutPanel" panelLayout="flow" styleClass="vdcSectionMiddleNoBorder">
-                
-                    <ui:panelGroup  block="true" styleClass="vdcStudyTitle">
-                        <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage?studyId=#{VariablePage.variable.dataTable.studyFile.fileCategory.study.id}">
-                            <h:outputText  styleClass="vdcStudyTitleNameSubs" value="#{VariablePage.variable.dataTable.studyFile.fileCategory.study.title}"/>                            
-                        </h:outputLink>
-                    </ui:panelGroup>
+            <div class="dvn_section">
+                <div class="dvn_sectionTitle">
+                   <h3>              
+                        <h:outputText value="#{VariablePage.variable.dataTable.studyFile.fileCategory.study.title}"/>                            
+                    </h3>
+                </div>            
+                <div class="dvn_sectionBoxNoBorders">     
                     
                     <ui:panelGroup  block="true" style="padding-bottom: 10px; padding-left: 4px;">
                         <h:outputText styleClass="vdcSubHeaderColor" style="font-size: 1.2em" value="#{VariablePage.variable.name}"/>
                         <h:outputText value=" #{VariablePage.variable.label}"/>
+                        <h:outputLink style="margin-left: 2px;" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage?studyId=#{VariablePage.variable.dataTable.studyFile.fileCategory.study.id}">
+                            <h:outputText style="font-size: 0.9em; font-weight: bold;" value="#{VariablePage.variable.dataTable.studyFile.fileCategory.study.title}"/>                            
+                        </h:outputLink>
                     </ui:panelGroup> 
+                    
                     <ui:panelGroup  block="true" style="padding-left: 4px;">
                         <h:outputText value="UNF: #{VariablePage.variable.unf}"/>
                     </ui:panelGroup> 
@@ -31,11 +35,12 @@
                             <h:outputText value="See all variables in data file: #{VariablePage.variable.dataTable.studyFile.fileName}"/>
                         </h:outputLink>
                     </ui:panelGroup>
-                    <ui:panelLayout panelLayout="flow" style="margin-bottom: 30px; padding: 20px 10px 20px 10px; border: 1px solid #cccccc; background-color: #f5faff; " rendered="#{!empty VariablePage.variable.summaryStatistics}" >
+                    
+                    <ui:panelGroup block="true" style="margin-bottom: 30px; padding: 20px 10px 20px 10px; border: 1px solid #cccccc; background-color: #f5faff; " rendered="#{!empty VariablePage.variable.summaryStatistics}" >
                         <ui:panelGroup  block="true" style="padding-bottom: 10px;" styleClass="vdcSubHeaderColor">
                             <h:outputText value="Summary Statistics"/>
                         </ui:panelGroup>  
-                        <h:dataTable     value="#{VariablePage.variable.summaryStatistics}" var="ss" width="100%">
+                        <h:dataTable     value="#{VariablePage.variable.summaryStatistics}" var="ss" >
                             <h:column>
                                 <h:outputText  value="#{ss.type.name}" />
                                 <f:facet name="header">
@@ -49,13 +54,13 @@
                                 </f:facet>
                             </h:column>                                            
                         </h:dataTable>                        
-                    </ui:panelLayout>    
-                
-                    <ui:panelLayout panelLayout="flow" style="padding: 30px 10px 30px 10px; border: 1px solid #cccccc; background-color: #f5faff;" rendered="#{!empty VariablePage.variable.categories}">
+                    </ui:panelGroup>    
+                    
+                    <ui:panelGroup block="true" style="padding: 30px 10px 30px 10px; border: 1px solid #cccccc; background-color: #f5faff;" rendered="#{!empty VariablePage.variable.categories}">
                         <ui:panelGroup  block="true" style="padding-bottom: 10px;" styleClass="vdcSubHeaderColor">
                             <h:outputText value="Category Statistics"/>
                         </ui:panelGroup>  
-                        <h:dataTable   value="#{VariablePage.variable.categories}" var="cs" width="100%">
+                        <h:dataTable   value="#{VariablePage.variable.categories}" var="cs">
                             <h:column>
                                 <h:outputText  value="#{cs.label} (#{cs.value})" />
                                 <f:facet name="header">
@@ -69,9 +74,10 @@
                                 </f:facet>
                             </h:column>                                            
                         </h:dataTable>   
-                    </ui:panelLayout>
-                
-            </ui:panelLayout>
+                    </ui:panelGroup>
+                    
+                </div>
+            </div>
         </ui:form>
     </f:subview>
 </jsp:root>

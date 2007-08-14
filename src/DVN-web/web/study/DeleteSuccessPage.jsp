@@ -7,23 +7,24 @@
     
     <f:subview id="deleteStudyPageView">
       
-                    <h:form  id="form1">
-                        <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-                        <input type="hidden" name="pageName" value="DeleteSuccessPage"/>
-  
-                        <ui:panelLayout  id="layoutPanel1" panelLayout="flow" styleClass="vdcSectionMiddle">
-                            <ui:panelLayout  id="layoutPanel2" panelLayout="flow" styleClass="vdcSectionHeader">
-                                <h:outputText value="Delete Successful"/>
-                            </ui:panelLayout>
-                            <ui:panelLayout  id="layoutPanel3" panelLayout="flow"  style="padding: 40px 50px 40px 50px; ">
-                                <ui:panelGroup  block="true" id="groupPanel1">
-                                    <h:outputText  id="outputText2" value="The study has been deleted successfully. "/>
-  
-                                </ui:panelGroup>
-                            </ui:panelLayout>
-                        </ui:panelLayout>
-                    </h:form>
+            <h:form  id="form1">
+                <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                <input type="hidden" name="pageName" value="DeleteSuccessPage"/>
 
+                <div class="dvn_section">
+                    <div class="dvn_sectionTitle">
+                        <h3>
+                            <h:outputText  value="Delete Susscessful"/>
+                        </h3>
+                    </div>            
+                    <div class="dvn_sectionBox dvn_pad12"> 
+
+                            <h:outputText  id="outputText2" value="The study has been deleted successfully. "/>
+
+                    </div>
+                </div>
+
+            </h:form>
                
     </f:subview>
 </jsp:root>

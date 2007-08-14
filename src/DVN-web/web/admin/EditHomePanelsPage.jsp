@@ -16,7 +16,7 @@
                 </div>            
                 <div class="dvn_sectionBox dvn_pad12">
                     <ui:panelGroup styleClass="successMessage" rendered="#{EditHomePanelsPage.success}" id="messagePanel" >
-                        <h:messages styleClass="successMessage" layout="table" showDetail="false" showSummary="true"/>
+                        <h:messages layout="table" showDetail="false" showSummary="true"/>
                     </ui:panelGroup>
                     
                     <h:outputText  id="outputText4" styleClass="vdcSubHeaderColor" value="#{bundle.announcementsPanelHeading}"/>

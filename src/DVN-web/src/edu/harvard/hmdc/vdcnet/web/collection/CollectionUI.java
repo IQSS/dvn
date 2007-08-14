@@ -115,13 +115,14 @@ public class CollectionUI {
     }
     
     public List getActualStudyIds() {
-        List studyIds = new ArrayList();
-        Iterator iter = getActualStudys().iterator();
-        while (iter.hasNext()) {
-            Study study = (Study) iter.next();
-            studyIds.add(study.getId());
+        VDCCollectionServiceLocal collectionService = null;
+        try {
+            collectionService=(VDCCollectionServiceLocal)new InitialContext().lookup("java:comp/env/collectionService");
+        } catch(Exception e) {
+            e.printStackTrace();
         }
-        return studyIds;
+        
+        return collectionService.getOrderedStudyIdsByCollection(coll.getId());
     }
     
     public List getQueryStudyIds() {

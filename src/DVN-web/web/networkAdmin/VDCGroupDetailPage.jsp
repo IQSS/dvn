@@ -6,8 +6,8 @@
           xmlns:tiles="http://struts.apache.org/tags-tiles">
     <f:subview id="vDCGroupPageView">
         <h:form id="vdcGroupPageForm">
-            <ui:panelGroup rendered="#{VDCGroupPage.success}" block="true" >
-                 <h:messages styleClass="successMessage" layout="table" showDetail="false" showSummary="true"/>
+            <ui:panelGroup rendered="#{VDCGroupPage.success}" styleClass="successMessage" >
+                 <h:messages  layout="table" showDetail="false" showSummary="true"/>
             </ui:panelGroup>
             
             <ui:panelLayout panelLayout="flow" styleClass="dvGroupAdminLayout">

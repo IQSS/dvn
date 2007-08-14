@@ -18,9 +18,10 @@
             </script>
         </f:verbatim>
         <h:form id="vdcGroupEditForm" onsubmit="return getAddRemoveLength();">
-            <ui:panelLayout rendered="#{VDCGroupPage.success}" panelLayout="flow" styleClass="vdcSectionMiddleMessage" style="width: 400px; margin-top: 10px; margin-bottom: -10px;">
-                 <h:messages styleClass="successMessage" layout="table" showDetail="false" showSummary="true"/>
-            </ui:panelLayout>
+            
+             <ui:panelGroup rendered="#{VDCGroupPage.success}" styleClass="successMessage">    
+                <h:messages layout="table" showDetail="false" showSummary="true"/>
+            </ui:panelGroup>
             <ui:panelLayout panelLayout="flow" styleClass="dvGroupAdminLayout">
                 <h:inputHidden id="vdcGroupId" value="#{ (VDCGroupPage.vdcGroupId != null) ? VDCGroupPage.vdcGroupId : requestScope.vdcGroupId}" immediate="true"/>
                 <h:panelGrid columns="2" cellspacing="0" styleClass="dvGroupAdminTable" headerClass="groupAdminHeader"  columnClasses="groupEditNameColumn, groupEditDescriptionColumn">

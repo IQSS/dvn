@@ -10,6 +10,7 @@
 package edu.harvard.hmdc.vdcnet.vdc;
 
 import edu.harvard.hmdc.vdcnet.study.Study;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -92,5 +93,14 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
         return studies;
         
      }
+     
+     public java.util.List<Long> getOrderedStudyIdsByCollection(Long collectionId){
+        String queryStr = "SELECT s.id FROM VDCCollection c JOIN c.studies s where c.id = " + collectionId +" ORDER BY s.title";
+        Query query =em.createQuery(queryStr);
+
+        return query.getResultList();
+
+        
+     }     
     
 }

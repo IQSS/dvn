@@ -160,6 +160,7 @@ print TMPX "\nstudy Link=$appSERVER$studyLink\n\n";
 # Create the user agent to make the HTTP call
 
 my  $ua  = new vdcLWP;
+$ua->timeout ( 15 * 60 ); 
 
 # If a cookie is passed to the function, repackage it and send it along
 

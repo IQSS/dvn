@@ -34,7 +34,7 @@ public interface StudyServiceLocal {
     public void deleteStudy(Long studyId) ;
    
     public List getStudies();
-
+        
     java.util.List getStudies(List studyIdList, String orderBy);
 
     edu.harvard.hmdc.vdcnet.study.StudyFile getStudyFile(Long fileId);
@@ -81,5 +81,8 @@ public interface StudyServiceLocal {
 
     edu.harvard.hmdc.vdcnet.study.Study doImportStudy(File xmlFile, int xmFileFormatId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier);
 
-    
+    List getVisibleStudies(List studyIds, Long vdcId);
+    List getViewableStudies(List<Long> studyIds, Long userId, Long ipUserGroupId);
+
+   
 }

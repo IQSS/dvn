@@ -10,7 +10,10 @@
 package edu.harvard.hmdc.vdcnet.web;
 
 import com.sun.rave.web.ui.component.Tree;
+import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
+import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
+import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.SearchTerm;
@@ -63,7 +66,7 @@ public class SearchPage extends VDCBaseBean{
     private Tree collectionTree;
     private UIData studyTable;
     private ScrollerComponent scroller;
-    private List studies;
+    private List studyIds;
     private String searchField;
     private String searchValue;
     private Integer searchFilter;
@@ -89,17 +92,17 @@ public class SearchPage extends VDCBaseBean{
     
     
     public Collection getStudies() {
-        if (studies == null) {
+        if (studyIds == null) {
             initStudies();
         }
         
         List studyUIList = new ArrayList();
-        Iterator iter = studies.iterator();
+        Iterator iter = studyIds.iterator();
         while (iter.hasNext()) {
-            Study s = (Study) iter.next();
-            StudyUI sui = new StudyUI(s);
+            Long sid = (Long) iter.next();
+            StudyUI sui = new StudyUI(sid);
             if (studyListing.getVariableMap() != null) {
-                List dvList = (List) studyListing.getVariableMap().get( s.getId() );
+                List dvList = (List) studyListing.getVariableMap().get( sid );
                 sui.setFoundInVariables( dvList );
             }
             studyUIList.add(sui) ;
@@ -194,7 +197,7 @@ public class SearchPage extends VDCBaseBean{
         
         
         if ( searchField.equals("variable") ) {
-            List variables = null; 
+            List variables = null;
             if ( searchFilter ==  1 ) {
                 // just this collection
                 List collections = new ArrayList();
@@ -205,8 +208,8 @@ public class SearchPage extends VDCBaseBean{
                 variables = indexService.searchVariables(studyListing.getStudyIds(), st);
             } else {
                 variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
-            }            
-
+            }
+            
             varService.determineStudiesFromVariables(variables, studyIDList, variableMap);
         } else {
             if ( searchFilter ==  1 ) {
@@ -314,38 +317,47 @@ public class SearchPage extends VDCBaseBean{
     }
     
     
-    private Collection initStudies() {
-        studies = new ArrayList();
+    private void initStudies() {
         if (studyListing.getStudyIds() != null) {
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             VDCUser user = getVDCSessionBean().getUser();
-            UserGroup usergroup = null;
-            //check group restriction if the user is null;
-            if (user == null) {
-                usergroup = getVDCSessionBean().getIpUserGroup();
+            UserGroup usergroup = getVDCSessionBean().getIpUserGroup();
+            
+            // first filter the visible studies; visible studies are those that are released
+            // and not from a restricted VDC )unless you are in that VDC)
+            studyListing.getStudyIds().retainAll( studyService.getVisibleStudies( 
+                studyListing.getStudyIds(), 
+                vdc!= null ? vdc.getId() : null 
+            ) );
+                
+            
+            // next  determine if user is admin or curator of that vdc, or networkAdmin; if they are, they
+            // can see all visible studies; otherwise we have to filter out those that are restricted to them
+            boolean isAdminOrCurator = false;
+            if (user != null) {
+                if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
+                    isAdminOrCurator = true;
+                } else {
+                    VDCRole userRole = user.getVDCRole(vdc);
+                    String userRoleName = userRole != null ? userRole.getRole().getName() : null;
+                    if (RoleServiceLocal.ADMIN.equals(userRoleName) || RoleServiceLocal.CURATOR.equals(userRoleName) ) {
+                        isAdminOrCurator = true;
+                    }
+                }
             }
             
-            Iterator iter = studyListing.getStudyIds().iterator();
-            while (iter.hasNext()) {
-                Long studyId = (Long) iter.next();
-                Study study = null;
-                
-                try {                    
-                    study =  studyService.getStudy( studyId );
-                } catch (EJBException ex) {
-                    System.out.println("Study (ID=" + studyId + ") was found in index, but is not in DB.");
-                }
-                
-                if ( study != null && (StudyUI.isStudyVisibleToUser(study, vdc, user) || StudyUI.isStudyVisibleToGroup(study, vdc, usergroup)) ) {
-                    studies.add(study) ;
-                } else {
-                    iter.remove();
-                }
+            if (!isAdminOrCurator) {    
+                studyListing.getStudyIds().retainAll( studyService.getViewableStudies(
+                    studyListing.getStudyIds(), 
+                    (user != null ? user.getId() : null), 
+                    (usergroup != null ? usergroup.getId() : null) 
+                ) );
             }
         }
-        return studies;
-    }
 
+        studyIds = studyListing.getStudyIds();
+    }
+    
     
     
     private void initText(int mode) {
@@ -376,7 +388,7 @@ public class SearchPage extends VDCBaseBean{
                 listMessageSuffix = "; " + matches + " matches were found.";
             }
             
-                // for now show tree, even if no matches.
+            // for now show tree, even if no matches.
             //if ( matches > 0 && getVDCRequestBean().getCurrentVDC() != null) {
             if ( getVDCRequestBean().getCurrentVDC() != null) {
                 renderTree = true;
@@ -395,7 +407,7 @@ public class SearchPage extends VDCBaseBean{
             
             
         } else if (mode == StudyListing.COLLECTION_STUDIES) {
-            CollectionUI collUI = new CollectionUI( vdcCollectionService.find( studyListing.getCollectionId() ) );             
+            CollectionUI collUI = new CollectionUI( vdcCollectionService.find( studyListing.getCollectionId() ) );
             subListHeader =  collUI.getShortCollectionPath(getVDCRequestBean().getCurrentVDC() );
             listHeader = vdcCollectionService.find( studyListing.getCollectionId() ).getName();
             
@@ -406,7 +418,7 @@ public class SearchPage extends VDCBaseBean{
             } else {
                 listMessageContent = "There are " +  matches + " studies in this collection.";
             }
-                
+            
             
             renderTree = true;
             treeHeader = "Browse by Collection";
@@ -490,17 +502,19 @@ public class SearchPage extends VDCBaseBean{
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             if (vdc != null) {
                 VDCUser user = getVDCSessionBean().getUser();
-                studies = StudyUI.filterVisibleStudies( studyService.getRecentStudies(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), numResults );
+                // TODO: change filter method to only return studyIds
+                List studies = StudyUI.filterVisibleStudies( studyService.getRecentStudies(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), numResults );
+                List studyIds = new ArrayList();
+                Iterator iter = studies.iterator();
+                while (iter.hasNext()) {
+                    Study study = (Study) iter.next();
+                    studyIds.add(study.getId());
+                }
+                sl.setStudyIds(studyIds);
             } else {
-                studies = new ArrayList();
+                sl.setStudyIds( new ArrayList() );
             }
-            List studyIds = new ArrayList();
-            Iterator iter = studies.iterator();
-            while (iter.hasNext()) {
-                Study study = (Study) iter.next();
-                studyIds.add(study.getId());
-            }
-            sl.setStudyIds(studyIds);
+
             setStudyListingIndex(addToStudyListingMap(sl));
             
         } else if (mode == StudyListing.VDC_SEARCH) {

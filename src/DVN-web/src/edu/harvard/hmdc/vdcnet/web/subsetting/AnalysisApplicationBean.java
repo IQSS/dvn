@@ -310,31 +310,34 @@ public class AnalysisApplicationBean extends AbstractApplicationBean {
       out.print("group ID token="+mdlGrpId+"\n");
       
       List<String> IdSet = (List)et.getValue();
+      out.println("IdSet="+IdSet+"\n");
+      
       // for each Id set
-      //List<SelectItem> tmp = new ArrayList<SelectItem>();
       List<Option> tmp = new ArrayList<Option>();
-      
+      int flcnt=0;
       for (int i=0; i<IdSet.size(); i++){
-        //tmp.add(new SelectItem(specMap.get(IdSet.get(i)).getMdlName(), specMap.get(IdSet.get(i)).getTitle()));
-        tmp.add(new Option(specMap.get(IdSet.get(i)).getMdlName(), specMap.get(IdSet.get(i)).getTitle()));
-
-        
-        out.println(specMap.get(IdSet.get(i)).getMdlName()+"\t"+specMap.get(IdSet.get(i)).getTitle());
-        
+        if (specMap.containsKey(IdSet.get(i))){
+            tmp.add(new Option(specMap.get(IdSet.get(i)).getMdlName(), specMap.get(IdSet.get(i)).getTitle()));
+            out.println(specMap.get(IdSet.get(i)).getMdlName()+"\t"+specMap.get(IdSet.get(i)).getTitle());
+        } else{
+            flcnt++;
+        }
       } // for each model
-      // modelMenuOptions.add(new SelectItemGroup(mdlGrpId, (String)et.getKey(), false, (SelectItem[])(tmp.toArray(new SelectItem[tmp.size()]))));
       
+      if (IdSet.size() > flcnt){
+          mdlGrp.setValue((String)et.getKey());
+          mdlGrp.setLabel((String)et.getKey());
+          mdlGrp.setDisabled(false);
+          mdlGrp.setOptions((Option[])(tmp.toArray(new Option[tmp.size()])));
+          modelMenuOptions.add(mdlGrp);
       
-      //modelMenuOptions.add(new SelectItemGroup((String)et.getKey(), (String)et.getKey(), false, (SelectItem[])(tmp.toArray(new SelectItem[tmp.size()]))));
-      mdlGrp.setValue((String)et.getKey());
-      mdlGrp.setLabel((String)et.getKey());
-      mdlGrp.setDisabled(false);
-      mdlGrp.setOptions((Option[])(tmp.toArray(new Option[tmp.size()])));
-      modelMenuOptions.add(mdlGrp);
+      } else {
+         out.println("former" + ii+"-th group was empty and excluded ");
+         ii--;
+      }
       out.println("end of "+ii+"-th group\n\n");
-
-    } // for model-category
-      out.println("modelMenuOptions(size)="+modelMenuOptions.size()+"\n");
+    } // for each model-category
+      out.println("\nmodelMenuOptions(size)="+modelMenuOptions.size()+"\n");
       out.println("dump of modelMenuOptions[AnalysisApplicationBean]\n"+modelMenuOptions);
 
     // contents check of modelMenuOptions

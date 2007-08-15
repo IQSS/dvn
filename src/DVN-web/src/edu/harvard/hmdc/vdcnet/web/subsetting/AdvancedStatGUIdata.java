@@ -278,11 +278,12 @@ public class AdvancedStatGUIdata {
         }
 
         int ii =0;
+        modelloop:
         for (Zelig.Model z : zlgLst){
           ii++;
           AdvancedStatGUIdata.Model mdlii = new AdvancedStatGUIdata.Model();
           // 
-          // out.println("\n+++++++++++++++ start of model("+z.getName()+") +++++++++++++++\n");
+          out.println("\n+++++++++++++++ start of model("+z.getName()+") +++++++++++++++\n");
 
           // fields that do not require calculations
 
@@ -291,7 +292,7 @@ public class AdvancedStatGUIdata {
           StringBuilder sb = new StringBuilder("zlg_");
           sb.append(id);
           String mdlId = sb.toString();
-         //  out.println("mdlId="+mdlId);
+         out.println("mdlId="+mdlId);
 
           mdlii.setMdlId(mdlId);
 
@@ -489,28 +490,37 @@ public class AdvancedStatGUIdata {
 
                   //out.println("how many modeling types="+otsize);
                   //out.println("modeling types: contents="+list2string(ot.getModelingType()));
-
+                  int fotsize =0;
                   for (int i=0; i<otsize ; i++){
                       Zelig.Model.Formula.Equation.Outcome.ModelingType mdt = ot.getModelingType().get(i);
                       // for each modelingType
                       //if  (mdt.getValue().equals("continuous")) {
                       //if ( mdt.getValue() == MODEL.fromValue("continuous")){
-                      String mdtv = mdt.getValue().value();
+                      out.print("i="+i+"\t howmany="+otsize+"\n");
+                      if (mdt.getValue() != null){
+                      //if ( (mdt.getValue().value() != null) || (mdt.getValue().value().equals(""))){
+                          String mdtv = mdt.getValue().value();
 
-                      //out.println("current("+i+"-th) modelingType="+mdtv);
+                          //out.println("current("+i+"-th) modelingType="+mdtv);
 
-                      if (mdtv.equals("continuous")){
-                        noContin++;
+                          if (mdtv.equals("continuous")){
+                            noContin++;
+                          }
+                          noMT++;
+                          // concatenate modelingType
+                          sbmt.append(mdtv);
+                          if (i < (otsize-1)) {
+                              sbmt.append("|");
+                          }
+                      } else {
+                        fotsize++;
                       }
-                      noMT++;
-                      // concatenate modelingType
-                      sbmt.append(mdtv);
-                      if (i < (otsize-1)) {
-                          sbmt.append("|");
-                      }
-
                   }  // each modelingType
-
+                    if (otsize == fotsize){
+                        ii--;
+                        out.println("skip this model="+mdlName+" (modeling type for outcome is missing");
+                        continue modelloop;
+                    }
 
                   //out.println("noContin: continuous modelingtype="+noContin);
                   //out.println("noMT: # of modelingtype tags="+noMT);
@@ -639,8 +649,10 @@ public class AdvancedStatGUIdata {
 
                       int EnoContin = 0;
                       int EnoMT =0;
+                      int fetsize=0;
                       for (int i=0; i<etsize ; i++){
                         Zelig.Model.Formula.Equation.Explanatory.ModelingType emdt = ex.getModelingType().get(i);
+                        if (emdt.getValue() != null){
                         String emdtv = emdt.getValue().value();
                         //out.println("current("+j+"-th) modelingType="+emdtv);
                         if (emdtv.equals("continuous")){
@@ -652,8 +664,15 @@ public class AdvancedStatGUIdata {
                         if (i < (etsize-1)) {
                             sbmte.append("|");
                         }
+                        } else {
+                            fetsize++;
+                        }
                       } // each modelingType
-
+                        if (fetsize == etsize){
+                            ii--;
+                            out.println("skip this model="+mdlName+" (modeling type for explanatory is missing)");
+                            continue modelloop;
+                        }
                       //out.println("EnoContin: continuous modelingtype="+EnoContin);
                       //out.println("EnoMT: # of modelingtype tags="+EnoMT);
 

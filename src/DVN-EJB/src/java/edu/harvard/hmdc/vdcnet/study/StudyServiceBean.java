@@ -9,6 +9,7 @@
 
 package edu.harvard.hmdc.vdcnet.study;
 
+import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceBean;
@@ -129,24 +130,24 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     public void updateStudy(Study detachedStudy){
         em.merge(detachedStudy);
     }
-
+    
     public Study getStudyByHarvestInfo(String authority, String harvestIdentifier) {
         String query = "SELECT s FROM Study s WHERE s.authority = "+authority+" and s.harvestIdentifier = " + harvestIdentifier ;
-        return (Study)em.createQuery(query).getSingleResult();    
-  
-   }
-
-  
-     public void deleteStudy(Long studyId) {
-        Study study = em.find(Study.class,studyId);
+        return (Study)em.createQuery(query).getSingleResult();
+        
+    }
     
+    
+    public void deleteStudy(Long studyId) {
+        Study study = em.find(Study.class,studyId);
+        
         for (Iterator<VDCCollection>it = study.getStudyColls().iterator(); it.hasNext();) {
             VDCCollection elem =  it.next();
             elem.getStudies().remove(study);
             
         }
         studyService.deleteDataVariables(study.getId());
-
+        
         study.getAllowedGroups().clear();
         study.getAllowedUsers().clear();
         study.getOwner().getOwnedStudies().remove(study);
@@ -164,8 +165,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             }
             studyDir.delete();
         }
-
-     
+        
+        
         
         // Save Study primary key in DeletedStudy table, so we can export
         // the study deletion to the old VDC.
@@ -174,78 +175,78 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         ds.setStudyId(study.getStudyId());
         ds.setAuthority(study.getAuthority());
         em.persist(ds);
-      
+        
         em.remove(study);
         gnrsService.delete(study.getAuthority(),study.getStudyId());
         indexService.deleteStudy(studyId);
-     
-       
+        
+        
         
     }
-
-  private static final String DELETE_VARIABLE_CATEGORIES = " delete from variablecategory where datavariable_id in ( "+
-    "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
-        " where s.id= ? "+ 
-        " and s.id = fc.study_id "+
-        " and fc.id= sf.filecategory_id "+
-        " and sf.id=dt.studyfile_id "+
-        " and dt.id= dv.datatable_id )";
-
- private static final String DELETE_SUMMARY_STATISTICS = " delete from summarystatistic where datavariable_id in ( "+
-    "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
-        " where s.id= ? "+ 
-        " and s.id = fc.study_id "+
-        " and fc.id= sf.filecategory_id "+
-        " and sf.id=dt.studyfile_id "+
-        " and dt.id= dv.datatable_id )";
-
- private static final String DELETE_VARIABLE_RANGE_ITEMS = " delete from variablerangeitem where datavariable_id in ( "+
-    "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
-        " where s.id= ? "+ 
-        " and s.id = fc.study_id "+
-        " and fc.id= sf.filecategory_id "+
-        " and sf.id=dt.studyfile_id "+
-        " and dt.id= dv.datatable_id )";
-
-
- private static final String DELETE_VARIABLE_RANGES = " delete from variablerange where datavariable_id in ( "+
-    "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
-        " where s.id= ? "+ 
-        " and s.id = fc.study_id "+
-        " and fc.id= sf.filecategory_id "+
-        " and sf.id=dt.studyfile_id "+
-        " and dt.id= dv.datatable_id )";
-
- 
- 
-
-private static final String DELETE_DATA_VARIABLES = " delete from datavariable where id in ( "+
-    "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
-        " where s.id= ? "+ 
-        " and s.id = fc.study_id "+
-        " and fc.id= sf.filecategory_id "+
-        " and sf.id=dt.studyfile_id "+
-        " and dt.id= dv.datatable_id )";
-
-  private static final String SELECT_DATAVARIABLE_IDS = "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
-        " where s.id= ? "+ 
-        " and s.id = fc.study_id "+
-        " and fc.id= sf.filecategory_id "+
-        " and sf.id=dt.studyfile_id "+
-        " and dt.id= dv.datatable_id ";
-
-
-   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW) 
-   public void deleteDataVariables(Long studyId) {
-  
-            em.createNativeQuery(DELETE_VARIABLE_CATEGORIES).setParameter(1,studyId).executeUpdate();
-            em.createNativeQuery(DELETE_SUMMARY_STATISTICS).setParameter(1,studyId).executeUpdate();
-            em.createNativeQuery(DELETE_VARIABLE_RANGE_ITEMS).setParameter(1,studyId).executeUpdate();
-           em.createNativeQuery(DELETE_VARIABLE_RANGES).setParameter(1,studyId).executeUpdate();
-
-           em.createNativeQuery(DELETE_DATA_VARIABLES).setParameter(1,studyId).executeUpdate();
-
-   }    
+    
+    private static final String DELETE_VARIABLE_CATEGORIES = " delete from variablecategory where datavariable_id in ( "+
+            "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
+            " where s.id= ? "+
+            " and s.id = fc.study_id "+
+            " and fc.id= sf.filecategory_id "+
+            " and sf.id=dt.studyfile_id "+
+            " and dt.id= dv.datatable_id )";
+    
+    private static final String DELETE_SUMMARY_STATISTICS = " delete from summarystatistic where datavariable_id in ( "+
+            "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
+            " where s.id= ? "+
+            " and s.id = fc.study_id "+
+            " and fc.id= sf.filecategory_id "+
+            " and sf.id=dt.studyfile_id "+
+            " and dt.id= dv.datatable_id )";
+    
+    private static final String DELETE_VARIABLE_RANGE_ITEMS = " delete from variablerangeitem where datavariable_id in ( "+
+            "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
+            " where s.id= ? "+
+            " and s.id = fc.study_id "+
+            " and fc.id= sf.filecategory_id "+
+            " and sf.id=dt.studyfile_id "+
+            " and dt.id= dv.datatable_id )";
+    
+    
+    private static final String DELETE_VARIABLE_RANGES = " delete from variablerange where datavariable_id in ( "+
+            "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
+            " where s.id= ? "+
+            " and s.id = fc.study_id "+
+            " and fc.id= sf.filecategory_id "+
+            " and sf.id=dt.studyfile_id "+
+            " and dt.id= dv.datatable_id )";
+    
+    
+    
+    
+    private static final String DELETE_DATA_VARIABLES = " delete from datavariable where id in ( "+
+            "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
+            " where s.id= ? "+
+            " and s.id = fc.study_id "+
+            " and fc.id= sf.filecategory_id "+
+            " and sf.id=dt.studyfile_id "+
+            " and dt.id= dv.datatable_id )";
+    
+    private static final String SELECT_DATAVARIABLE_IDS = "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv"+
+            " where s.id= ? "+
+            " and s.id = fc.study_id "+
+            " and fc.id= sf.filecategory_id "+
+            " and sf.id=dt.studyfile_id "+
+            " and dt.id= dv.datatable_id ";
+    
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void deleteDataVariables(Long studyId) {
+        
+        em.createNativeQuery(DELETE_VARIABLE_CATEGORIES).setParameter(1,studyId).executeUpdate();
+        em.createNativeQuery(DELETE_SUMMARY_STATISTICS).setParameter(1,studyId).executeUpdate();
+        em.createNativeQuery(DELETE_VARIABLE_RANGE_ITEMS).setParameter(1,studyId).executeUpdate();
+        em.createNativeQuery(DELETE_VARIABLE_RANGES).setParameter(1,studyId).executeUpdate();
+        
+        em.createNativeQuery(DELETE_DATA_VARIABLES).setParameter(1,studyId).executeUpdate();
+        
+    }
     /**
      *  Get the Study and all it's dependent objects.
      *  Used to view/update all the Study details
@@ -333,7 +334,7 @@ private static final String DELETE_DATA_VARIABLES = " delete from datavariable w
         return (List)em.createQuery(query).getResultList();
     }
     
-    
+
     public List getRecentStudies(Long vdcId, int numResults) {
         String query = "SELECT s FROM Study s WHERE s.owner.id = " + vdcId + " ORDER BY s.createTime desc";
         if (numResults == -1) {
@@ -616,7 +617,7 @@ private static final String DELETE_DATA_VARIABLES = " delete from datavariable w
             }
             query = "SELECT s from Study s where s.authority = '"+authority+"' " ;
             query+=" and s.lastUpdateTime >'" +beginTime+"'";
-        //    query+=" and s.lastUpdateTime <'" +endTime+"'";
+            //    query+=" and s.lastUpdateTime <'" +endTime+"'";
             query+=" order by s.studyId";
             List updatedStudies = em.createQuery(query).getResultList();
             
@@ -805,7 +806,7 @@ private static final String DELETE_DATA_VARIABLES = " delete from datavariable w
         
         if (vdc.getHarvestingDataverse() != null) {
             throw new EJBException("importLegacyStudy(...) should never be called for a harvesting dataverse.");
-        }        
+        }
         
         return importStudy(xmlFile, 0,vdcId, userId, true, false, false, true, true, null);
     }
@@ -814,7 +815,7 @@ private static final String DELETE_DATA_VARIABLES = " delete from datavariable w
     public Study importStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
         // call internal studyService to force NEW transaction
         Study study = doImportStudy(xmlFile, xmlFileFormat, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
-
+        
         
         //indexService.updateStudy(study.getId());
         return study;
@@ -830,7 +831,7 @@ private static final String DELETE_DATA_VARIABLES = " delete from datavariable w
         File ddiFile = xmlFile;
         boolean fileTransformed = false;
         
-        if (xmlFileFormat != 0) { 
+        if (xmlFileFormat != 0) {
             ddiFile = transformToDDI(xmlFile, "mif2ddi.xsl");
             fileTransformed = true;
         }
@@ -851,7 +852,7 @@ private static final String DELETE_DATA_VARIABLES = " delete from datavariable w
                 id = id.replace('/', '-').replace(' ', '_');
                 if (vdc.getHarvestingDataverse() != null) {
                     if (vdc.getHarvestingDataverse().getHandlePrefix() != null) {
-                        globalId = "hdl:" + vdc.getHarvestingDataverse().getHandlePrefix().getPrefix() + "/" + id;                    
+                        globalId = "hdl:" + vdc.getHarvestingDataverse().getHandlePrefix().getPrefix() + "/" + id;
                     } else {
                         throw new EJBException("generateHandle cannot be true for a nonregistering harvesting dataverse.");
                     }
@@ -938,13 +939,13 @@ private static final String DELETE_DATA_VARIABLES = " delete from datavariable w
             String handle = study.getAuthority() + "/" + study.getStudyId();
             gnrsService.createHandle(handle);
         }
-
-        logger.info("completed doImportStudy() returning study"+study.getGlobalId());        
+        
+        logger.info("completed doImportStudy() returning study"+study.getGlobalId());
         return study;
     }
     
     private File transformToDDI(File xmlFile, String xslFileName) {
-        File ddiFile = null;        
+        File ddiFile = null;
         InputStream in = null;
         OutputStream out = null;
         
@@ -952,35 +953,35 @@ private static final String DELETE_DATA_VARIABLES = " delete from datavariable w
             // prepare source
             in = new FileInputStream(xmlFile);
             StreamSource source = new StreamSource(in);
-
+            
             // prepare result
             ddiFile = File.createTempFile("ddi", ".xml");
             out = new FileOutputStream(ddiFile);
-            StreamResult result = new StreamResult(out);        
-
+            StreamResult result = new StreamResult(out);
+            
             // now transform
             StreamSource xslSource = new StreamSource(new File(xslFileName));
             Transformer transformer = TransformerFactory.newInstance().newTransformer(xslSource);
-            transformer.transform( source, result ); 
-        
+            transformer.transform( source, result );
+            
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new EJBException ("Error occurred while attempting to transform file.");
+            throw new EJBException("Error occurred while attempting to transform file.");
         } finally {
             try {
                 if (in != null) { in.close(); }
             } catch (Exception e) {}
             try {
                 if (out != null) { out.close(); }
-            } catch (Exception e) {}         
+            } catch (Exception e) {}
         }
         
         
         return ddiFile;
-
+        
     }
     
-   
+    
     private CodeBook generateCodeBook(Object obj ) {
         CodeBook _cb = null;
         
@@ -1091,7 +1092,7 @@ private static final String DELETE_DATA_VARIABLES = " delete from datavariable w
             }
             
             Iterator iter = study.getStudyFiles().iterator();
-             while (iter.hasNext()) {
+            while (iter.hasNext()) {
                 StudyFile file = (StudyFile) iter.next();
                 File inputFile = determineLegacyFile( file );
                 file.setFileSystemName( inputFile.getName() );
@@ -1274,4 +1275,88 @@ private static final String DELETE_DATA_VARIABLES = " delete from datavariable w
         setDisplayOrders(study);
         return study;
     }
+
+    // visible studies are defined as those that are released and not in a restricted vdc
+    // (unless you are in vdc)
+    public List getVisibleStudies(List studyIds, Long vdcId) {
+        if ( studyIds != null && studyIds.size() > 0) {
+            String query = "SELECT s.id FROM Study s WHERE s.reviewState.name = 'Released' " +
+                    "AND (s.owner.restricted = false " + 
+                    (vdcId != null ? "OR s.owner.id = " + vdcId : "") +
+                    ") AND s.id in (" + generateIdString(studyIds) + ")";
+
+            return (List)em.createQuery(query).getResultList();    
+        } else {
+            return new ArrayList();
+        }
+    } 
+   
+
+    private static final String SELECT_VIEWABLE_STUDIES = "select id from study s " +
+        "left join study_vdcuser su on (s.id = su.studies_id) " +
+        "left join study_usergroup sg on (s.id = sg.studies_id )" +
+        "where ( " +
+        "restricted = false " +
+        "or su.allowedusers_id = ? " +
+        "or sg.allowedgroups_id in (select usergroups_id from vdcuser_usergroup where users_id = ?) " + 
+        "or sg.allowedgroups_id = ? " +
+        ") ";
+
+    
+    // viewable studies are those that are defined as not restricted to the user
+    public List getViewableStudies(List<Long> studyIds, Long userId, Long ipUserGroupId) {
+        List returnList = new ArrayList();
+
+        if ( studyIds != null && studyIds.size() > 0) {
+            // first we must add the dynamic part to the query
+            StringBuffer queryString = new StringBuffer();
+            if (studyIds.size() == 1) {
+                queryString.append ( SELECT_VIEWABLE_STUDIES + "and id in ( ? ) " );    
+            } else {
+                for (int i=0; i< studyIds.size(); i++) {
+                    if (i == 0 ) {
+                            queryString.append ( SELECT_VIEWABLE_STUDIES + "and id in ( ?, " );
+                    } else if ( i == (studyIds.size() - 1) ) {
+                            queryString.append ( " ? ) " );
+                    } else {
+                            queryString.append ( " ?, " );
+                    }
+                }
+            }
+
+            Query query = em.createNativeQuery(queryString.toString());
+            query.setParameter(1,userId);
+            query.setParameter(2,userId);
+            query.setParameter(3,ipUserGroupId);
+
+            // now set dynamic paramters
+            int parameterCount = 4;
+            for (Long id : studyIds) {
+                query.setParameter( parameterCount++, id);
+            }
+            
+            // since query is native, must parse through Vector results
+            for (Object currentResult : query.getResultList() ) {
+                // convert results into Longs
+                returnList.add ( new Long( ((Integer) ((Vector) currentResult).get(0) )).longValue() );
+            };
+
+        }
+
+        return returnList;
+    
+    }     
+
+    
+    private String generateIdString(List idList) {
+        String ids = "";
+        Iterator iter = idList.iterator();
+        while (iter.hasNext()) {
+            Long id = (Long) iter.next();
+            ids += id + (iter.hasNext() ? "," : "" );
+        }
+        
+        return ids;
+    }    
+    
 }

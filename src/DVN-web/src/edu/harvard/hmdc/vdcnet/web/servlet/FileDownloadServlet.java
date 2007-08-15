@@ -91,9 +91,27 @@ public class FileDownloadServlet extends HttpServlet{
         String fileId = req.getParameter("fileId");
 	String formatRequested = req.getParameter("format");
 
+	StudyFile file = null; 
+       
+
         if (fileId != null) {
 
-	    StudyFile file = studyService.getStudyFile( new Long(fileId));
+	    try {
+		file = studyService.getStudyFile( new Long(fileId));
+
+	    } catch (IllegalArgumentException ex) {
+		createErrorResponse404(res);
+		return;
+	     }
+	    
+	    if ( file == null ) {
+	        // this check is probably unnecessary, as a non-existing file
+		// would already have produced the exception above (??)
+		// -- not sure, gotta ask Gustavo 
+
+		createErrorResponse404(res);
+		return;
+	     }		    
 
 	    // determine if the fileId represents a local object 
 	    // or a remote URL
@@ -175,28 +193,6 @@ public class FileDownloadServlet extends HttpServlet{
 	    } else {
 		// local object
 		
-		// should we catch a file-not-found exception here
-		// and return 404?
-		// like this:
-
-		// try {
-
-		// StudyFile file = studyService.getStudyFile( new Long(fileId));
-
-
-		// }
-		//  catch (IllegalArgumentException ex) {
-		//     createErrorResponse404(res);
-		//     return;
-		// }
-
-		// check if restricted:
-
-		// a temporary (?) workaround for granting access to
-		// restricted resources to the DSB component, simple 
-		// IP-based authentication: we check if the request is from 
-		// our configured DSB host; if so, no restrictions apply:
-
 		String dsbHost = System.getProperty("vdc.dsb.url");
 
 		boolean NOTaDSBrequest = true;

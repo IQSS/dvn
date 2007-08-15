@@ -63,11 +63,12 @@ public class Indexer {
     private static IndexWriter writer;
     private static IndexWriter writer2;
     private static IndexWriter writerStem;
+    private static IndexWriter writerVar;
     private static IndexReader reader;
     private static Indexer indexer;
     Directory dir;
     String indexDir = "index-dir";
-    int dvnMaxClauseCount = 2048;
+    int dvnMaxClauseCount = 4096;
 
     
     
@@ -274,6 +275,8 @@ public class Indexer {
         List <FileCategory> fileCategories = study.getFileCategories();
         writer = new IndexWriter(dir,getAnalyzer(),!(new File(indexDir+"/segments").exists()));    
         writer.setUseCompoundFile(true);
+        writer.addDocument(doc);
+        writer.close();
         for (int i = 0; i < fileCategories.size(); i++) {
             FileCategory fileCategory = fileCategories.get(i);
             Collection <StudyFile> studyFiles = fileCategory.getStudyFiles();
@@ -283,6 +286,7 @@ public class Indexer {
                 if (dataTable != null){
                     List <DataVariable> dataVariables = dataTable.getDataVariables();
                     for (int j = 0; j < dataVariables.size(); j++) {
+                        writerVar = new IndexWriter(dir,getAnalyzer(),!(new File(indexDir+"/segments").exists()));
                         Document docVariables = new Document();
                         addText(docVariables,"varStudyId",study.getId().toString());
                         addText(docVariables,"varStudyFileId",elem.getId().toString());
@@ -291,14 +295,13 @@ public class Indexer {
                         addText(docVariables,"varName",dataVariable.getName());
                         addText(docVariables,"varLabel",dataVariable.getLabel());
                         addText(docVariables,"varId",dataVariable.getId().toString());
-                        writer.addDocument(docVariables);
+                        writerVar.addDocument(docVariables);
+                        writerVar.close();
                     }
                 }
             }
         }
         
-        writer.addDocument(doc);
-        writer.close();
         writer2 = new IndexWriter(dir,new StandardAnalyzer(),!(new File(indexDir+"/segments").exists()));    
         writer2.setUseCompoundFile(true);
         writer2.addDocument(doc);

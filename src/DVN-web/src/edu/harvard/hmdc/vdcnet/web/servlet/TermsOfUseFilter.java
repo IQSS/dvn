@@ -123,8 +123,19 @@ public class TermsOfUseFilter implements Filter {
             String studyId = req.getParameter("studyId");
             
             if (fileId != null) {
-                StudyFile file = studyService.getStudyFile( new Long(fileId));
-                study = file.getFileCategory().getStudy();
+		
+                StudyFile file = null; 
+		try {
+		    file = studyService.getStudyFile( new Long(fileId));       
+		} catch (IllegalArgumentException ex) {
+		    // do nothing.
+		    // if the file does not exist, there sure 
+		    // isn't a license/terms of use for it!
+		}
+		
+		if ( file != null ) {
+		    study = file.getFileCategory().getStudy();
+		}
             } else if (catId != null) {
                 FileCategory cat = studyService.getFileCategory( new Long(catId)); 
                 study = cat.getStudy();

@@ -286,7 +286,6 @@ public class Indexer {
                 if (dataTable != null){
                     List <DataVariable> dataVariables = dataTable.getDataVariables();
                     for (int j = 0; j < dataVariables.size(); j++) {
-                        writerVar = new IndexWriter(dir,getAnalyzer(),!(new File(indexDir+"/segments").exists()));
                         Document docVariables = new Document();
                         addText(docVariables,"varStudyId",study.getId().toString());
                         addText(docVariables,"varStudyFileId",elem.getId().toString());
@@ -295,6 +294,7 @@ public class Indexer {
                         addText(docVariables,"varName",dataVariable.getName());
                         addText(docVariables,"varLabel",dataVariable.getLabel());
                         addText(docVariables,"varId",dataVariable.getId().toString());
+                        writerVar = new IndexWriter(dir,getAnalyzer(),!(new File(indexDir+"/segments").exists()));
                         writerVar.addDocument(docVariables);
                         writerVar.close();
                     }

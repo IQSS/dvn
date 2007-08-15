@@ -91,10 +91,10 @@ public class FileDownloadServlet extends HttpServlet{
         String fileId = req.getParameter("fileId");
 	String formatRequested = req.getParameter("format");
 
-	StudyFile file = null; 
-       
 
         if (fileId != null) {
+
+	    StudyFile file = null; 
 
 	    try {
 		file = studyService.getStudyFile( new Long(fileId));

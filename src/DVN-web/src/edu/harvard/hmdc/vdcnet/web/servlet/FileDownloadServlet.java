@@ -37,6 +37,8 @@ import java.util.zip.ZipOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -99,9 +101,11 @@ public class FileDownloadServlet extends HttpServlet{
 	    try {
 		file = studyService.getStudyFile( new Long(fileId));
 
-	    } catch (IllegalArgumentException ex) {
-		createErrorResponse404(res);
-		return;
+	    } catch (Exception ex) {
+		if (ex.getCause() instanceof IllegalArgumentException) {
+		    createErrorResponse404(res);
+		    return;
+		}
 	     }
 	    
 	    if ( file == null ) {

@@ -23,6 +23,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
+
 import javax.servlet.*;
 
 import javax.servlet.Filter;
@@ -127,10 +129,15 @@ public class TermsOfUseFilter implements Filter {
                 StudyFile file = null; 
 		try {
 		    file = studyService.getStudyFile( new Long(fileId));       
-		} catch (IllegalArgumentException ex) {
-		    // do nothing.
-		    // if the file does not exist, there sure 
-		    // isn't a license/terms of use for it!
+		} catch (Exception ex) {
+                    if (ex.getCause() instanceof IllegalArgumentException) {
+			// do nothing.
+			// if the file does not exist, there sure 
+			// isn't a license/terms of use for it!
+		    } else {
+			ex.printStackTrace();
+			return; 
+		    }
 		}
 		
 		if ( file != null ) {

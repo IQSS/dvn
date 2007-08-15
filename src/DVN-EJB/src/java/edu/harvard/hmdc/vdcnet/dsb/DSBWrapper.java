@@ -315,7 +315,7 @@ public class DSBWrapper {
             parameters = new HashMap();
         }
 
-        parameters.put("uri", generateUrlForDDI(serverPrefix, sf.getFileCategory().getStudy().getId()));
+        parameters.put("uri", generateUrlForDDI(serverPrefix, sf.getId()));
         parameters.put("URLdata", generateUrlForFile(serverPrefix, sf.getId()));
         parameters.put("fileid", "f" + sf.getId().toString());
         parameters.put("varbl", generateVariableListForDisseminate( variables ) );
@@ -400,15 +400,13 @@ public class DSBWrapper {
         return variableList;
     }
     
-    private String generateUrlForDDI(String serverPrefix, Long studyId) {
-        //String studyDDI = "http://vdc-build.hmdc.harvard.edu:8080/test_files/study" + studyId + ".xml";
-        String studyDDI = serverPrefix + "/ddi/?studyId=" + studyId;
+    private String generateUrlForDDI(String serverPrefix, Long fileId) {
+        String studyDDI = serverPrefix + "/ddi/?fileId=" + fileId;
         System.out.println(studyDDI);
         return studyDDI;
     }
     
     private String generateUrlForFile(String serverPrefix, Long fileId) {
-        //String file = "http://vdc-build.hmdc.harvard.edu:8080/test_files/" + fileName;
         String file = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1";
         System.out.println(file);
         return file;

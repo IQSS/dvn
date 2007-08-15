@@ -44,9 +44,10 @@ import javax.naming.InitialContext;
 public class StudyUI {
     
     private Study study;
+    private Long studyId;
     private UserGroup ipUserGroup;
     
-    /** Creates a new instance of StudyUI 
+    /** Creates a new instance of StudyUI
      *  this consturctor does not initialize the file category ui list
      *  and is meant to be used in places where you do not need them
      *  e.g. the SearchPage or the CollectionTree
@@ -55,11 +56,15 @@ public class StudyUI {
         this.study = s;
     }
     
-      /** 
-       * Creates a new instance of StudyUI 
-       * this constructor initializes the file category ui list
-       * Use this constructor if you want to set the StudyFileUI.fileRestrictedFor user value
-       */
+    public StudyUI(Long sid) {
+        this.studyId = sid;
+    }
+    
+    /**
+     * Creates a new instance of StudyUI
+     * this constructor initializes the file category ui list
+     * Use this constructor if you want to set the StudyFileUI.fileRestrictedFor user value
+     */
     
     public StudyUI(Study s, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         this.study = s;
@@ -68,20 +73,32 @@ public class StudyUI {
     }
     
     public Study getStudy() {
+        // check to see if study is loaded or if we only have the studyId
+        if ( study == null) {
+            StudyServiceLocal studyService = null;
+            try {
+                studyService=(StudyServiceLocal)new InitialContext().lookup("java:comp/env/studyService");
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+            
+            study = studyService.getStudyDetail(studyId);
+        }
+        
         return study;
     }
     
     public void setStudy(Study study) {
         this.study=study;
     }
- 
+    
     
     /**
      * Return for each studyAuthor: Author (Affiliation), only if affiliation is not empty
      */
     public String getAuthors() {
         String str="";
-        for (Iterator<StudyAuthor> it = study.getStudyAuthors().iterator(); it.hasNext();) {
+        for (Iterator<StudyAuthor> it = getStudy().getStudyAuthors().iterator(); it.hasNext();) {
             StudyAuthor sa =  it.next();
             if (!StringUtil.isEmpty(sa.getName())) {
                 if (str!="") {
@@ -100,7 +117,7 @@ public class StudyUI {
         String str="";
         boolean hasAffiliation=false;
         
-        for (Iterator<StudyAuthor> it = study.getStudyAuthors().iterator(); it.hasNext();) {
+        for (Iterator<StudyAuthor> it = getStudy().getStudyAuthors().iterator(); it.hasNext();) {
             StudyAuthor sa =  it.next();
             if (!StringUtil.isEmpty(sa.getName())) {
                 if (str!="") {
@@ -115,9 +132,9 @@ public class StudyUI {
             }
         }
         /** commented (MC) - show authors always
-        * if (!hasAffiliation) {
-        *     str="";
-        * }
+         * if (!hasAffiliation) {
+         *     str="";
+         * }
          */
         return str;
         
@@ -125,7 +142,7 @@ public class StudyUI {
     
     public String getAbstracts() {
         String str="";
-        for (Iterator<StudyAbstract> it = study.getStudyAbstracts().iterator(); it.hasNext();) {
+        for (Iterator<StudyAbstract> it = getStudy().getStudyAbstracts().iterator(); it.hasNext();) {
             StudyAbstract elem =  it.next();
             if (!StringUtil.isEmpty(elem.getText())) {
                 str+="<p>"+elem.getText()+"</p>";
@@ -137,17 +154,17 @@ public class StudyUI {
     
     public String getDistributorContact() {
         String str="";
-        if (!StringUtil.isEmpty(study.getDistributorContact())) {
-            str+=study.getDistributorContact();
+        if (!StringUtil.isEmpty(getStudy().getDistributorContact())) {
+            str+=getStudy().getDistributorContact();
         }
-        if (!StringUtil.isEmpty(study.getDistributorContactAffiliation())) {
-            str+=" ("+study.getDistributorContactAffiliation()+")";
+        if (!StringUtil.isEmpty(getStudy().getDistributorContactAffiliation())) {
+            str+=" ("+getStudy().getDistributorContactAffiliation()+")";
         }
-        if (!StringUtil.isEmpty(study.getDistributorContactEmail())) {
+        if (!StringUtil.isEmpty(getStudy().getDistributorContactEmail())) {
             if (str!="") {
                 str+=", ";
             }
-            str+=study.getDistributorContactEmail();
+            str+=getStudy().getDistributorContactEmail();
         }
         /*"Distributor Contact (affiliation), e-mail"*/
         return str;
@@ -156,14 +173,14 @@ public class StudyUI {
     
     public String getSeries() {
         String str="";
-        if (!StringUtil.isEmpty(study.getSeriesName())) {
-            str+=study.getSeriesName();
+        if (!StringUtil.isEmpty(getStudy().getSeriesName())) {
+            str+=getStudy().getSeriesName();
         }
-        if (!StringUtil.isEmpty(study.getSeriesInformation())) {
+        if (!StringUtil.isEmpty(getStudy().getSeriesInformation())) {
             if (str!="") {
                 str+=", ";
             }
-            str+=study.getSeriesInformation();
+            str+=getStudy().getSeriesInformation();
         }
         return str;
     }
@@ -171,28 +188,28 @@ public class StudyUI {
     
     public String getStudyVersion() {
         String str="";
-        if (!StringUtil.isEmpty(study.getStudyVersion())) {
-            str+=study.getStudyVersion();
+        if (!StringUtil.isEmpty(getStudy().getStudyVersion())) {
+            str+=getStudy().getStudyVersion();
         }
-        if (!StringUtil.isEmpty(study.getVersionDate())) {
+        if (!StringUtil.isEmpty(getStudy().getVersionDate())) {
             if (str!="") {
                 str+=", ";
             }
-            str+=study.getVersionDate();
+            str+=getStudy().getVersionDate();
         }
         return str;
     }
     
     public String getTimePeriodCovered() {
         String str="";
-        if (!StringUtil.isEmpty(study.getTimePeriodCoveredStart())) {
-            str+=study.getTimePeriodCoveredStart();
+        if (!StringUtil.isEmpty(getStudy().getTimePeriodCoveredStart())) {
+            str+=getStudy().getTimePeriodCoveredStart();
         }
-        if (!StringUtil.isEmpty(study.getTimePeriodCoveredEnd())) {
+        if (!StringUtil.isEmpty(getStudy().getTimePeriodCoveredEnd())) {
             if (str!="") {
                 str+=" - ";
             }
-            str+=study.getTimePeriodCoveredEnd();
+            str+=getStudy().getTimePeriodCoveredEnd();
         }
         return str;
         
@@ -200,14 +217,14 @@ public class StudyUI {
     
     public String getDateOfCollection() {
         String str="";
-        if (!StringUtil.isEmpty(study.getDateOfCollectionStart())) {
-            str+=study.getDateOfCollectionStart();
+        if (!StringUtil.isEmpty(getStudy().getDateOfCollectionStart())) {
+            str+=getStudy().getDateOfCollectionStart();
         }
-        if (!StringUtil.isEmpty(study.getDateOfCollectionEnd())) {
+        if (!StringUtil.isEmpty(getStudy().getDateOfCollectionEnd())) {
             if (str!="") {
                 str+=" - ";
             }
-            str+=study.getDateOfCollectionEnd();
+            str+=getStudy().getDateOfCollectionEnd();
         }
         return str;
     }
@@ -227,7 +244,7 @@ public class StudyUI {
     }
     
     public boolean isFiles() {
-        for (Iterator<FileCategory> it = study.getFileCategories().iterator(); it.hasNext();) {
+        for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
             if ( it.next().getStudyFiles().size() > 0) {
                 return true;
             }
@@ -237,7 +254,7 @@ public class StudyUI {
     }
     
     public boolean isSubsettable() {
-        for (Iterator<FileCategory> it = study.getFileCategories().iterator(); it.hasNext();) {
+        for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
             for (Iterator<StudyFile> fit = it.next().getStudyFiles().iterator(); fit.hasNext();) {
                 if ( fit.next().isSubsettable()) {
                     return true;
@@ -249,7 +266,7 @@ public class StudyUI {
     }
     
     public boolean isNonSubsettable() {
-        for (Iterator<FileCategory> it = study.getFileCategories().iterator(); it.hasNext();) {
+        for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
             for (Iterator<StudyFile> fit = it.next().getStudyFiles().iterator(); fit.hasNext();) {
                 if ( !fit.next().isSubsettable()) {
                     return true;
@@ -262,7 +279,7 @@ public class StudyUI {
     
     public String getProducers() {
         String str ="";
-        for (Iterator<StudyProducer> it = study.getStudyProducers().iterator(); it.hasNext();) {
+        for (Iterator<StudyProducer> it = getStudy().getStudyProducers().iterator(); it.hasNext();) {
             StudyProducer elem = it.next();
             if (!StringUtil.isEmpty(elem.getName())) {
                 if (str!="") {
@@ -330,7 +347,7 @@ public class StudyUI {
         return str;
     }
     
-     public String getRelPublications() {
+    public String getRelPublications() {
         String str="";
         for (Iterator<StudyRelPublication> it = getStudy().getStudyRelPublications().iterator(); it.hasNext();) {
             StudyRelPublication elem = it.next();
@@ -343,9 +360,9 @@ public class StudyUI {
             
         }
         return str;
-    } 
-     
-   
+    }
+    
+    
     public String getRelMaterials() {
         String str="";
         for (Iterator<StudyRelMaterial> it = getStudy().getStudyRelMaterials().iterator(); it.hasNext();) {
@@ -359,8 +376,8 @@ public class StudyUI {
             
         }
         return str;
-    } 
-      public String getRelStudies() {
+    }
+    public String getRelStudies() {
         String str="";
         for (Iterator<StudyRelStudy> it = getStudy().getStudyRelStudies().iterator(); it.hasNext();) {
             StudyRelStudy elem = it.next();
@@ -373,8 +390,8 @@ public class StudyUI {
             
         }
         return str;
-    } 
-      public String getOtherRefs() {
+    }
+    public String getOtherRefs() {
         String str="";
         for (Iterator<StudyOtherRef> it = getStudy().getStudyOtherRefs().iterator(); it.hasNext();) {
             StudyOtherRef elem = it.next();
@@ -387,12 +404,12 @@ public class StudyUI {
             
         }
         return str;
-    } 
-      
+    }
+    
     
     public String getSoftware() {
         String str="";
-        for (Iterator<StudySoftware> it = study.getStudySoftware().iterator(); it.hasNext();) {
+        for (Iterator<StudySoftware> it = getStudy().getStudySoftware().iterator(); it.hasNext();) {
             StudySoftware ss =  it.next();
             if (!StringUtil.isEmpty(ss.getName())) {
                 if (str!="") {
@@ -409,7 +426,7 @@ public class StudyUI {
     
     public String getGrants() {
         String str="";
-        for (Iterator<StudyGrant> it = study.getStudyGrants().iterator(); it.hasNext();) {
+        for (Iterator<StudyGrant> it = getStudy().getStudyGrants().iterator(); it.hasNext();) {
             StudyGrant elem =  it.next();
             if (!StringUtil.isEmpty(elem.getNumber())) {
                 if (str!="") {
@@ -430,7 +447,7 @@ public class StudyUI {
     
     public String getOtherIds() {
         String str="";
-        for (Iterator<StudyOtherId> it = study.getStudyOtherIds().iterator(); it.hasNext();) {
+        for (Iterator<StudyOtherId> it = getStudy().getStudyOtherIds().iterator(); it.hasNext();) {
             StudyOtherId elem =  it.next();
             if (!StringUtil.isEmpty(elem.getAgency())) {
                 if (str!="") {
@@ -451,7 +468,7 @@ public class StudyUI {
     
     public String getGeographicBoundings() {
         String str = "";
-        for (Iterator it = study.getStudyGeoBoundings().iterator(); it.hasNext();) {
+        for (Iterator it = getStudy().getStudyGeoBoundings().iterator(); it.hasNext();) {
             StudyGeoBounding elem = (StudyGeoBounding) it.next();
             String boundingStr = "";
             if (!StringUtil.isEmpty(elem.getWestLongitude())) {
@@ -480,7 +497,7 @@ public class StudyUI {
     
     public String getKeywords() {
         String str = "";
-        for (Iterator<StudyKeyword> it = study.getStudyKeywords().iterator(); it.hasNext();) {
+        for (Iterator<StudyKeyword> it = getStudy().getStudyKeywords().iterator(); it.hasNext();) {
             StudyKeyword elem =  it.next();
             if (!StringUtil.isEmpty(elem.getValue())) {
                 if (str!="") {
@@ -502,7 +519,7 @@ public class StudyUI {
     
     public String getTopicClasses() {
         String str = "";
-        for (Iterator<StudyTopicClass> it = study.getStudyTopicClasses().iterator(); it.hasNext();) {
+        for (Iterator<StudyTopicClass> it = getStudy().getStudyTopicClasses().iterator(); it.hasNext();) {
             StudyTopicClass elem =  it.next();
             if (!StringUtil.isEmpty(elem.getValue())) {
                 if (str!="") {
@@ -525,7 +542,7 @@ public class StudyUI {
     
     public String getDistributors() {
         String str = "";
-        for (Iterator<StudyDistributor> it = study.getStudyDistributors().iterator(); it.hasNext();) {
+        for (Iterator<StudyDistributor> it = getStudy().getStudyDistributors().iterator(); it.hasNext();) {
             StudyDistributor elem = it.next();
             if (!StringUtil.isEmpty(elem.getName())) {
                 if (str!="") {
@@ -615,16 +632,16 @@ public class StudyUI {
         } catch(Exception e) {
             e.printStackTrace();
         }
-    
-        List categories = studyService.getOrderedFileCategories(study.getId());
-      
+        
+        List categories = studyService.getOrderedFileCategories(getStudy().getId());
+        
         Iterator iter = categories.iterator();
         while (iter.hasNext()) {
             FileCategory fc = (FileCategory) iter.next();
             FileCategoryUI catUI = new FileCategoryUI(fc,vdc,user, ipUserGroup);
             categoryUIList.add(catUI);
         }
-       
+        
     }
     
     
@@ -641,7 +658,7 @@ public class StudyUI {
     }
     
     public boolean isAnyFileRestricted() {
-       for (Iterator it = categoryUIList.iterator(); it.hasNext();) {
+        for (Iterator it = categoryUIList.iterator(); it.hasNext();) {
             FileCategoryUI catUI = (FileCategoryUI) it.next();
             for (Iterator it2 = catUI.getStudyFileUIs().iterator(); it2.hasNext();) {
                 StudyFileUI studyFileUI = (StudyFileUI) it2.next();
@@ -649,7 +666,7 @@ public class StudyUI {
                     return true;
                 }
             }
-           
+            
         }
         return false;
         
@@ -660,8 +677,8 @@ public class StudyUI {
     public static List filterVisibleStudies(List originalStudies, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         return filterVisibleStudies(originalStudies, vdc, user, ipUserGroup, -1);
     }
-
-
+    
+    
     public static List filterVisibleStudies(List originalStudies, VDC vdc, VDCUser user,UserGroup ipUserGroup, int numResults) {
         List filteredStudies = new ArrayList();
         
@@ -674,7 +691,7 @@ public class StudyUI {
                     filteredStudies.add(study);
                     if (numResults > 0 && ++count >= numResults) {
                         break;
-                    }   
+                    }
                 }
             }
         }
@@ -696,11 +713,11 @@ public class StudyUI {
         
         // lastly check restrictions
         return !study.isStudyRestrictedForUser( vdc, user);
-
+        
         
     }
     
-    /** 
+    /**
      * check if this is visible for the ipgroup
      *
      * @author wbossons
@@ -721,12 +738,12 @@ public class StudyUI {
         return !study.isStudyRestrictedForGroup(usergroup);
         
     }
-
+    
     /**
      * Holds value of property categoryUIList.
      */
     private ArrayList<FileCategoryUI> categoryUIList;
-
+    
     /**
      * Getter for property categoryUIList.
      * @return Value of property categoryUIList.
@@ -734,7 +751,7 @@ public class StudyUI {
     public ArrayList<FileCategoryUI> getCategoryUIList() {
         return this.categoryUIList;
     }
-
+    
     /**
      * Setter for property categoryUIList.
      * @param categoryUIList New value of property categoryUIList.
@@ -745,14 +762,14 @@ public class StudyUI {
     
     
     private List foundInVariables;
-
+    
     public List getFoundInVariables() {
         return foundInVariables;
     }
-
+    
     public void setFoundInVariables(List foundInVariables) {
         this.foundInVariables = foundInVariables;
-    }  
+    }
     
     public static boolean isStudyInList(Study study, List list) {
         Iterator iter = list.iterator();
@@ -764,10 +781,10 @@ public class StudyUI {
         }
         
         return false;
-    }    
+    }
     
     public int getNumberOfDownloads() {
-        return (study.getStudyDownload() != null ? study.getStudyDownload().getNumberOfDownloads() : 0);
+        return (getStudy().getStudyDownload() != null ? getStudy().getStudyDownload().getNumberOfDownloads() : 0);
     }
     
     

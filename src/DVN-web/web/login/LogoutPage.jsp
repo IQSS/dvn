@@ -14,7 +14,7 @@
                     </h3>
                 </div>            
                 <div class="dvn_sectionBox dvn_pad12"> 
-                    <ui:panelGroup  block="true"  style="padding-top: 40px; padding-left:20px" >
+                    <ui:panelGroup  block="true"  style="padding-top: 40px; padding-left:20px" rendered="#{LogoutPage.success}" >
                         <h:outputText value="You are now logged out.  Thanks for visiting." styleClass="vdcTextStandOut"/>
                     </ui:panelGroup>
                     <ui:panelGroup  block="true"  style="padding-top: 20px; padding-left:70px" >

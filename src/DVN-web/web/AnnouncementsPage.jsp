@@ -15,8 +15,12 @@
                         <h:outputText  value="#{ (VDCRequest.currentVDCId != null) ? 'Local' : 'Network'} #{bundle.announcementsHeading}"/>
                     </h3>
                 </div>            
-                <div class="dvn_sectionBox dvn_pad12"> 
-                    <h:outputText  escape="false" id="pageContent" value="#{ (VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.announcements : VDCRequest.currentVDC.announcements }"/>
+                <div class="dvn_sectionBox"> 
+                    <div class="dvn_margin12">
+                        
+                        <h:outputText  escape="false" id="pageContent" value="#{ (VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.announcements : VDCRequest.currentVDC.announcements }"/>
+                        
+                    </div>
                 </div>
             </div>
             

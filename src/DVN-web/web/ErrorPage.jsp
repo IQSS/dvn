@@ -14,23 +14,27 @@
                             Error
                         </h3>
                     </div>            
-                    <div class="dvn_sectionBox dvn_pad12"> 
-                        <h:outputText styleClass="errorMessage" value="We are sorry. An application error has occurred. "/>
-                        <br /> <br />
-                        <h:outputText value="Error Message:" rendered="#{param.errorMsg!=null}"/>
-                        <h:outputText escape="false" styleClass="errorMessage" value="#{param.errorMsg}" rendered="#{param.errorMsg!=null}"/>
-
-                        <h:dataTable value="#{ErrorPage.messages}" var="currentRow">
-                            <h:column>
-                                <h:outputText escape="false" styleClass="errorMessage" value="#{currentRow}"/>
-                            </h:column>
-                        </h:dataTable>
-
-                        <f:verbatim><br /><br /></f:verbatim>
-                        <h:outputText styleClass="errorMessage" value="Event occurred at " rendered="#{param.time!=null}" />
-                        <h:outputText styleClass="errorMessage" value="#{param.time}" rendered="#{param.time!=null}">
-                            <f:convertDateTime dateStyle="full"/>
-                        </h:outputText>
+                    <div class="dvn_sectionBox"> 
+                        <div class="dvn_margin12">
+                            
+                            <h:outputText styleClass="errorMessage" value="We are sorry. An application error has occurred. "/>
+                            <br /> <br />
+                            <h:outputText value="Error Message:" rendered="#{param.errorMsg!=null}"/>
+                            <h:outputText escape="false" styleClass="errorMessage" value="#{param.errorMsg}" rendered="#{param.errorMsg!=null}"/>
+                            
+                            <h:dataTable value="#{ErrorPage.messages}" var="currentRow">
+                                <h:column>
+                                    <h:outputText escape="false" styleClass="errorMessage" value="#{currentRow}"/>
+                                </h:column>
+                            </h:dataTable>
+                            
+                            <f:verbatim><br /><br /></f:verbatim>
+                            <h:outputText styleClass="errorMessage" value="Event occurred at " rendered="#{param.time!=null}" />
+                            <h:outputText styleClass="errorMessage" value="#{param.time}" rendered="#{param.time!=null}">
+                                <f:convertDateTime dateStyle="full"/>
+                            </h:outputText>
+                            
+                        </div>
                     </div>
                 </div>
                  

@@ -16,6 +16,7 @@
 <ui:page id="layoutpage">
 <ui:html>
       <ui:head title="#{pageTitle.value}">
+         <h:outputText value="&#60;meta name='robots' content='index,nofollow'&#62;" escape="false" rendered=" " />
          <ui:link  id="link2" url="/resources/stylesheet.css"/>
          <ui:script url="/resources/EventCapture.js"/>
       </ui:head>

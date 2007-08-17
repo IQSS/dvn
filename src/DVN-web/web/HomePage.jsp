@@ -30,25 +30,27 @@
         </div>        
         <div class="dvn_searchBox">
             <div class="dvn_searchBoxContent">
-                <label for="options">
-                    <span>
-                        <h:outputText value="Search all public dataverses -" rendered="#{VDCRequest.currentVDC == null}"/>
-                        <h:outputText value="Search this dataverse -" rendered="#{VDCRequest.currentVDC != null}" />
-                    </span>
-                    <h:selectOneMenu  id="dropdown1" value="#{HomePage.searchField}">
-                        <f:selectItem   itemLabel="Cataloging Information" itemValue="any" />
-                        <f:selectItem   itemLabel="- Author" itemValue="authorName" />
-                        <f:selectItem   itemLabel="- Title" itemValue="title" />
-                        <f:selectItem   itemLabel="- Study ID" itemValue="studyId" />
-                        <f:selectItem   itemLabel="Variable Information" itemValue="variable" />
-                    </h:selectOneMenu>
-                </label>
-                    <label for="search">
-                        <span>for -</span>
-                        <h:inputText onkeypress="if (window.event) return processEvent('', 'content:homePageView:form1:searchButton'); else return processEvent(event, 'content:homePageView:form1:searchButton');" id="textField2" value="#{HomePage.searchValue}"/>
-                    </label>   
-                    <h:commandButton id="searchButton" value="Search" type="submit" action="#{HomePage.search_action}"  styleClass="button"/>                        
-            </div>
+                    <fieldset>
+                        <label for="options">
+                            <span>
+                                <h:outputText value="Search all public dataverses -" rendered="#{VDCRequest.currentVDC == null}"/>
+                                <h:outputText value="Search this dataverse -" rendered="#{VDCRequest.currentVDC != null}" />
+                            </span>
+                            <h:selectOneMenu  id="dropdown1" value="#{HomePage.searchField}">
+                                <f:selectItem   itemLabel="Cataloging Information" itemValue="any" />
+                                <f:selectItem   itemLabel="- Author" itemValue="authorName" />
+                                <f:selectItem   itemLabel="- Title" itemValue="title" />
+                                <f:selectItem   itemLabel="- Study ID" itemValue="studyId" />
+                                <f:selectItem   itemLabel="Variable Information" itemValue="variable" />
+                            </h:selectOneMenu>
+                        </label>
+                        <label for="search">
+                            <span>for -</span>
+                            <h:inputText onkeypress="if (window.event) return processEvent('', 'content:homePageView:form1:searchButton'); else return processEvent(event, 'content:homePageView:form1:searchButton');" id="textField2" value="#{HomePage.searchValue}"/>
+                        </label>   
+                        <h:commandButton id="searchButton" value="Search" type="submit" action="#{HomePage.search_action}"  styleClass="button"/>                        
+                    </fieldset>
+                </div>
             <span class="dvn_xbottom"><span class="dvn_xb4"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb3"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb2"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb1"><h:outputText  value="&#160;" escape="false"/></span></span>
         </div> 
     </div>
@@ -62,15 +64,17 @@
             <div class="dvn_sectionTitle">
                 <h3>Browse</h3>
             </div>            
-            <div class="dvn_sectionBox dvn_pad12">    
-                <h:outputText value="There are no Dataverses yet in #{VDCRequest.vdcNetwork.name} Dataverse Network." rendered="#{empty HomePage.vdcs}"/>
-
-                <!-- Display dataverses at network Level -->
-                <h:panelGrid binding="#{HomePage.mainDataTable}" rendered="#{VDCRequest.currentVDC == null}">
-                </h:panelGrid>
-
-                <!-- Display Tree at dataverse level -->
-                <ui:tree  binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
+            <div class="dvn_sectionBox">
+                <div class="dvn_margin12">
+                    <h:outputText value="There are no Dataverses yet in #{VDCRequest.vdcNetwork.name} Dataverse Network." rendered="#{empty HomePage.vdcs}"/>
+                    
+                    <!-- Display dataverses at network Level -->
+                    <h:panelGrid binding="#{HomePage.mainDataTable}" rendered="#{VDCRequest.currentVDC == null}">
+                    </h:panelGrid>
+                    
+                    <!-- Display Tree at dataverse level -->
+                    <ui:tree  binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
+                </div>
             </div>   
         </ui:panelGroup>
         
@@ -86,7 +90,7 @@
                         <h:outputText value="Create your own Dataverse."/>
                     </h:outputLink>
                     Or find out more about 
-                    <a href="http://thedata.org/help/createdataverse" target="_blank">how to create and use a dataverse</a>
+                    <a href="http://thedata.org/help/dataverseadmin" target="_blank">how to create and use a dataverse</a>
                     before sending a request.  
                 </div>     
             </ui:panelGroup>
@@ -103,11 +107,7 @@
                     <h:outputLink rendered="#{VDCSession.loginBean!=null}" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/ContributorRequestPage.jsp">
                         <h:outputText value="Become a Contributor."/>
                     </h:outputLink>
-                    <h:outputText  value=" Or find out more about "/>
-                    <h:outputLink value="http://thedata.org/help/contributor" target="_blank">
-                        <h:outputText value="being a contributor" /> 
-                    </h:outputLink>  
-                    <h:outputText value=" before sending a request."/>
+                   
                 </div>
             </ui:panelGroup>
             
@@ -118,14 +118,15 @@
                 </ui:panelGroup> 
                 <ui:panelGroup  id="yesRecentStudiesPanel" block="true" rendered="#{!empty HomePage.recentStudies}" styleClass="dvn_sectionPanelText">
                     <h:dataTable  id="dataTable1" 
-                                  value="#{HomePage.recentStudies}" var="study" width="100%" columnClasses="vdcMostRecentCol1, vdcMostRecentCol2">
-                        <h:column  id="column0">    
-                            <h:graphicImage  id="image9" style="padding-left: 4px; padding-right: 4px" value="/resources/icon_bullet.gif"/> 
-                        </h:column>
+                                  value="#{HomePage.recentStudies}" var="study" width="100%">
+                        
                         <h:column  id="column1" >
-                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{study.id}"  id="recentStudy">
-                                <h:outputText  id="outputText11"  value="#{study.title}"/>
-                            </h:outputLink>                                            
+                            <ul><li>
+                                    <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{study.id}"  id="recentStudy">
+                                        <h:outputText  id="outputText11"  value="#{study.title}"/>
+                                    </h:outputLink>
+                                </li>
+                            </ul>
                         </h:column>
                     </h:dataTable>
                     <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4&amp;numResults=100"  id="recentStudy">

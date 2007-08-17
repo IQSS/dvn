@@ -15,8 +15,12 @@
                         <h:outputText  value="About #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDCId == null}"/>
                     </h3>
                 </div>            
-                <div class="dvn_sectionBox dvn_pad12"> 
-                    <h:outputText  escape="false" id="pageContent" value="#{ (VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.aboutThisDataverseNetwork : VDCRequest.currentVDC.aboutThisDataverse }"/>
+                <div class="dvn_sectionBox"> 
+                    <div class="dvn_margin12">
+                        
+                        <h:outputText  escape="false" id="pageContent" value="#{ (VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.aboutThisDataverseNetwork : VDCRequest.currentVDC.aboutThisDataverse }"/>
+                        
+                    </div>
                 </div>
             </div>
             

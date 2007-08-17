@@ -53,10 +53,10 @@ xmlns:ui="http://www.sun.com/web/ui"
         </div>            
         <div class="dvn_sectionBoxNoBorders">  
             
-            <ui:panelGroup  block="true" styleClass="vdcFileTitle" style="padding-bottom: 10px;">
+            <ui:panelGroup  block="true" styleClass="vdcFileTitle" style="padding-bottom: 10px; padding-left: 0.65em;">
                 <h:outputText value="Data File: #{AnalysisPage.fileName}"/>
                 <h:outputLink  style="margin-left: 2px;" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{AnalysisPage.studyId}&amp;tab=files">
-                    <h:outputText style="font-size: 0.9em; font-weight: bold;" value="Back to Study Files"/>                       
+                    <h:outputText style="font-size: 0.75em; font-weight:normal;" value="Back to Study Files"/>                       
                 </h:outputLink>
             </ui:panelGroup>
             

@@ -289,12 +289,17 @@ public class StudyPage extends VDCBaseBean {
             // we need to create the studyServiceBean
             HttpServletRequest request = (HttpServletRequest)this.getExternalContext().getRequest();
             if (studyId != null) {
-                if (getVDCSessionBean().getLoginBean()!=null) {
-                    studyUI =new StudyUI(studyService.getStudyDetail(studyId),getVDCRequestBean().getCurrentVDC(),
-                                          this.getVDCSessionBean().getLoginBean().getUser(), getVDCSessionBean().getIpUserGroup()); 
+                if ( "files".equals(getTabSet1().getSelected()) ) {
+                    studyUI =new StudyUI( 
+                        studyService.getStudyDetail(studyId),
+                        getVDCSessionBean().getLoginBean()!=null ? getVDCRequestBean().getCurrentVDC() : null,
+                        getVDCSessionBean().getLoginBean()!=null ? this.getVDCSessionBean().getLoginBean().getUser() : null, 
+                        getVDCSessionBean().getIpUserGroup()
+                    );
                 } else {
-                    studyUI =new StudyUI(studyService.getStudyDetail(studyId),null,null,  getVDCSessionBean().getIpUserGroup());
+                    studyUI =new StudyUI( studyService.getStudyDetail(studyId) );
                 }
+
              
                 sessionPut( studyUI.getClass().getName(), studyUI);
                 initPanelDisplay();

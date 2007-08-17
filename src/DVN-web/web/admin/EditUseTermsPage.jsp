@@ -14,42 +14,42 @@
                     <h:outputText value="Edit Terms of Use"/>
                     </h3>
                 </div>            
-                <div class="dvn_sectionBox dvn_pad12"> 
-                                       
-                    <ui:panelGroup styleClass="successMessage"  rendered="#{EditUseTermsPage.success}">
-                        <h:messages  layout="table" showDetail="false" showSummary="true"/>
-                    </ui:panelGroup>   
-                    
-                    
-                    <h:outputText  value="Please enter the Use of Terms or Conditions you would like to define for all studies created in (owned by) this dataverse (does not include studies that you are adding from other Dataverses in the Network)."/>
-                    <ui:panelGroup block="true" style="padding-bottom: 15px">
-                        <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                        <h:outputText styleClass="vdcHelpText" value="By enabling this Terms of Use, users will be asked to agree to them before downloading a file or accessing the subsetting/analysis page."/>
-                    </ui:panelGroup>
-                    
-                    <h:outputText value="Enable Terms of Use?"/>
-                    <h:selectBooleanCheckbox value="#{EditUseTermsPage.termsOfUseEnabled}"/>
-                    <h:panelGrid  cellpadding="0" cellspacing="0"
-                                  columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
-                        <h:outputText  id="outputText2" value="Terms of Use"/>
-                        <h:panelGroup><!-- my add -->
-                            <h:message for="textArea1" styleClass="errorMessage" id="outputText2Msg"/>
-                            <f:verbatim><br /></f:verbatim>
-                            <h:inputTextarea styleClass="formHtmlEnabled" immediate="true" cols="70"
-                                             id="textArea1" 
-                                             rows="8" 
-                                             value="#{EditUseTermsPage.termsOfUse}"
-                            >
-                                <f:validator validatorId="XhtmlValidator"/>
-                            </h:inputTextarea>
-                        </h:panelGroup>
+                <div class="dvn_sectionBox"> 
+                    <div class="dvn_margin12">                    
+                        <ui:panelGroup styleClass="successMessage"  rendered="#{EditUseTermsPage.success}">
+                            <h:messages  layout="table" showDetail="false" showSummary="true"/>
+                        </ui:panelGroup>   
                         
-                    </h:panelGrid>
-                    <ui:panelGroup block="true" id="groupPanel2" style="padding-left: 140px; padding-top: 20px">
-                        <h:commandButton id="button1" value="Save" action="#{EditUseTermsPage.save_action}"/>
-                        <h:commandButton id="button2" style="margin-left: 30px" value="Cancel" action="#{EditUseTermsPage.cancel_action}"/>
-                    </ui:panelGroup>
-                    
+                        
+                        <h:outputText  value="Please enter the Use of Terms or Conditions you would like to define for all studies created in (owned by) this dataverse (does not include studies that you are adding from other Dataverses in the Network)."/>
+                        <ui:panelGroup block="true" style="padding-bottom: 15px">
+                            <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                            <h:outputText styleClass="vdcHelpText" value="By enabling this Terms of Use, users will be asked to agree to them before downloading a file or accessing the subsetting/analysis page."/>
+                        </ui:panelGroup>
+                        
+                        <h:outputText value="Enable Terms of Use?"/>
+                        <h:selectBooleanCheckbox value="#{EditUseTermsPage.termsOfUseEnabled}"/>
+                        <h:panelGrid  cellpadding="0" cellspacing="0"
+                                      columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
+                            <h:outputText  id="outputText2" value="Terms of Use"/>
+                            <h:panelGroup><!-- my add -->
+                                <h:message for="textArea1" styleClass="errorMessage" id="outputText2Msg"/>
+                                <f:verbatim><br /></f:verbatim>
+                                <h:inputTextarea styleClass="formHtmlEnabled" immediate="true" cols="70"
+                                                 id="textArea1" 
+                                                 rows="8" 
+                                                 value="#{EditUseTermsPage.termsOfUse}"
+                                >
+                                    <f:validator validatorId="XhtmlValidator"/>
+                                </h:inputTextarea>
+                            </h:panelGroup>
+                            
+                        </h:panelGrid>
+                        <ui:panelGroup block="true" id="groupPanel2" style="padding-left: 140px; padding-top: 20px">
+                            <h:commandButton id="button1" value="Save" action="#{EditUseTermsPage.save_action}"/>
+                            <h:commandButton id="button2" style="margin-left: 30px" value="Cancel" action="#{EditUseTermsPage.cancel_action}"/>
+                        </ui:panelGroup>
+                    </div> 
                 </div>
             </div>
         </ui:form>             

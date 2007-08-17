@@ -152,7 +152,13 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         study.getAllowedUsers().clear();
         study.getOwner().getOwnedStudies().remove(study);
         study.setOwner(null);
-        
+ 
+        for (Iterator<StudyFile>it = study.getStudyFiles().iterator(); it.hasNext();) {
+            StudyFile elem =  it.next();
+            elem.getAllowedGroups().clear();
+            elem.getAllowedUsers().clear();
+            
+        }       
         
         File studyDir = new File(FileUtil.getStudyFileDir()+File.separator+ study.getAuthority()+File.separator+study.getStudyId());
         if (studyDir.exists()) {

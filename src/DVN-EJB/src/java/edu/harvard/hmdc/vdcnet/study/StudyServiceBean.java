@@ -474,7 +474,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         
     }
     
-    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public java.util.List<FileCategory> getOrderedFileCategories(Long studyId) {
         // Note: This ordering is case-sensitive, so names beginning with upperclass chars will appear first.
         // (I tried using UPPER(f.name) to make the sorting case-insensitive, but the EJB query language doesn't seem
@@ -485,6 +485,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return categories;
     }
     
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public java.util.List<StudyFile> getOrderedFilesByCategory(Long fileCategoryId) {
         // Note: This ordering is case-sensitive, so names beginning with upperclass chars will appear first.
         // (I tried using UPPER(f.name) to make the sorting case-insensitive, but the EJB query language doesn't seem
@@ -496,7 +497,17 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return studyFiles;
     }
     
-    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public java.util.List<StudyFile> getOrderedFilesByStudy(Long studyId) {
+        // Note: This ordering is case-sensitive, so names beginning with upperclass chars will appear first.
+        // (I tried using UPPER(f.name) to make the sorting case-insensitive, but the EJB query language doesn't seem
+        // to like this.)
+        String queryStr = "SELECT f FROM StudyFile f WHERE f.fileCategory.study.id = " + studyId +" ORDER BY f.fileCategory.name, f.fileName";
+        Query query =em.createQuery(queryStr);
+        List <StudyFile> studyFiles = query.getResultList();
+        
+        return studyFiles;
+    }    
     
     public String generateStudyIdSequence(String protocol, String authority) {
         //   Date now = new Date();

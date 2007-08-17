@@ -310,8 +310,10 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
         Iterator iter = currentFiles.iterator();
         while (iter.hasNext()) {
             StudyFileEditBean file = (StudyFileEditBean) iter.next();
-            StudyFile f = file.getStudyFile();
+            StudyFile f = em.find(StudyFile.class,file.getStudyFile().getId());
             if (file.isDeleteFlag()) {
+                f.getAllowedGroups().clear();
+                f.getAllowedUsers().clear();
                 removeCollectionElement(f.getFileCategory().getStudyFiles(),f);
                 recalculateStudyUNF = f.isSubsettable() ? true : recalculateStudyUNF;
                 filesToBeDeleted.add(f);

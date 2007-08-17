@@ -15,31 +15,32 @@
                              <h:outputText value="User Group"/>
                          </h3>
                      </div>            
-                     <div class="dvn_sectionBox dvn_pad12"> 
-                                              
-                         <!-- group name -->
-                         <ui:panelGroup id="groupPanel1">
-                             <h:outputText value="Group Name"/>   
-                             <h:graphicImage  value="/resources/icon_required.gif"/>
-                         </ui:panelGroup>
-                         <ui:panelGroup>
-                             <h:inputText id="inputGroupName" size="40" value="#{EditUserGroupPage.group.name}" required="true" onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');">
-                                 <f:validator validatorId="CharacterValidator"/>
-                             </h:inputText>
-                             <h:message styleClass="errorMessage" for="inputGroupName"/>
-                         </ui:panelGroup> 
-                         <!-- Friendly group name -->
-                         <ui:panelGroup id="groupPanelFriendlyName">
-                             <h:outputText value="Friendly Group Name"/>   
-                             <h:graphicImage  value="/resources/icon_required.gif"/>
-                         </ui:panelGroup>
-                         <ui:panelGroup>
-                             <h:inputText id="inputFriendlyGroupName" size="40" value="#{EditUserGroupPage.group.friendlyName}" required="true" onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');"/>
-                             <h:message styleClass="errorMessage" for="inputFriendlyGroupName"/>
-                         </ui:panelGroup>
-                         <!--TBD (wjb) What type of group is this -->
-                         <f:verbatim rendered="#{param.userGroupId == null}">
-                             <script language="Javascript">
+                     <div class="dvn_sectionBox"> 
+                         <div class="dvn_margin12">
+                             
+                             <!-- group name -->
+                             <ui:panelGroup id="groupPanel1">
+                                 <h:outputText value="Group Name"/>   
+                                 <h:graphicImage  value="/resources/icon_required.gif"/>
+                             </ui:panelGroup>
+                             <ui:panelGroup>
+                                 <h:inputText id="inputGroupName" size="40" value="#{EditUserGroupPage.group.name}" required="true" onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');">
+                                     <f:validator validatorId="CharacterValidator"/>
+                                 </h:inputText>
+                                 <h:message styleClass="errorMessage" for="inputGroupName"/>
+                             </ui:panelGroup> 
+                             <!-- Friendly group name -->
+                             <ui:panelGroup id="groupPanelFriendlyName">
+                                 <h:outputText value="Friendly Group Name"/>   
+                                 <h:graphicImage  value="/resources/icon_required.gif"/>
+                             </ui:panelGroup>
+                             <ui:panelGroup>
+                                 <h:inputText id="inputFriendlyGroupName" size="40" value="#{EditUserGroupPage.group.friendlyName}" required="true" onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');"/>
+                                 <h:message styleClass="errorMessage" for="inputFriendlyGroupName"/>
+                             </ui:panelGroup>
+                             <!--TBD (wjb) What type of group is this -->
+                             <f:verbatim rendered="#{param.userGroupId == null}">
+                                 <script language="Javascript">
 
                                             function showAll(){
                                                 if (location.href.indexOf("userGroupType") != -1) {
@@ -59,97 +60,97 @@
                                                  }
                                             }
 
-                             </script>
-                         </f:verbatim>
-                         <ui:panelGroup>
-                             <h:selectOneRadio rendered="#{EditUserGroupPage.userGroupType == 'none' and param.userGroupId == null}" onclick="setUserGroupType(this);document.forms[0].submit();" value="#{EditUserGroupPage.userGroupType}">
-                                 <f:selectItems value="#{EditUserGroupPage.userGroupTypes}"/>
-                             </h:selectOneRadio>
+                                 </script>
+                             </f:verbatim>
+                             <ui:panelGroup>
+                                 <h:selectOneRadio rendered="#{EditUserGroupPage.userGroupType == 'none' and param.userGroupId == null}" onclick="setUserGroupType(this);document.forms[0].submit();" value="#{EditUserGroupPage.userGroupType}">
+                                     <f:selectItems value="#{EditUserGroupPage.userGroupTypes}"/>
+                                 </h:selectOneRadio>
+                                 
+                             </ui:panelGroup>
+                             <h:inputHidden valueChangeListener="#{EditUserGroupPage.changeUserGroupType}" value="#{EditUserGroupPage.userGroupType}" id="userGroupType"/>
                              
-                         </ui:panelGroup>
-                         <h:inputHidden valueChangeListener="#{EditUserGroupPage.changeUserGroupType}" value="#{EditUserGroupPage.userGroupType}" id="userGroupType"/>
-                         
-                         <h:message for="userGroupType" styleClass="errorMessage" id="userGroupTypeMsg"/>
-                         <!-- User Groups -->
-                         <ui:panelGroup rendered="#{ EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'usergroup'}" id="usergroups" style="display:block;">
-                             <ui:panelGroup block="true" style="padding-bottom: 10px">
-                                 <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                 <h:outputText styleClass="vdcHelpText" value="Enter usernames in the field below. Add/remove a user by clicking the icons next to the username field."/>
+                             <h:message for="userGroupType" styleClass="errorMessage" id="userGroupTypeMsg"/>
+                             <!-- User Groups -->
+                             <ui:panelGroup rendered="#{ EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'usergroup'}" id="usergroups" style="display:block;">
+                                 <ui:panelGroup block="true" style="padding-bottom: 10px">
+                                     <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                                     <h:outputText styleClass="vdcHelpText" value="Enter usernames in the field below. Add/remove a user by clicking the icons next to the username field."/>
+                                 </ui:panelGroup>
+                                 <h:outputText value="Usernames"/>
+                                 <h:dataTable binding="#{EditUserGroupPage.dataTableUserNames}" var="currentRow" cellpadding="0" cellspacing="0" value="#{EditUserGroupPage.userDetails}">
+                                     <h:column>
+                                         <h:inputText id="usertable" value="#{currentRow.userName}" validator="#{EditUserGroupPage.validateUserName}" immediate="true"/>
+                                     </h:column>
+                                     <h:column>
+                                         <h:commandButton  image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addRow}"/> 
+                                         <h:commandButton  image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeRow}" /> 
+                                         
+                                     </h:column>
+                                     <h:column>
+                                         <h:message for="usertable" styleClass="errorMessage"/>
+                                         <h:outputText styleClass="errorMessage" value="Username is invalid." rendered = "#{!currentRow.valid}"/>
+                                         <h:outputText styleClass="errorMessage" value="Duplicate username." rendered = "#{currentRow.duplicate}"/>
+                                     </h:column>
+                                 </h:dataTable> 
                              </ui:panelGroup>
-                             <h:outputText value="Usernames"/>
-                             <h:dataTable binding="#{EditUserGroupPage.dataTableUserNames}" var="currentRow" cellpadding="0" cellspacing="0" value="#{EditUserGroupPage.userDetails}">
-                                 <h:column>
-                                     <h:inputText id="usertable" value="#{currentRow.userName}" validator="#{EditUserGroupPage.validateUserName}" immediate="true"/>
-                                 </h:column>
-                                 <h:column>
-                                     <h:commandButton  image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addRow}"/> 
-                                     <h:commandButton  image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeRow}" /> 
-                                     
-                                 </h:column>
-                                 <h:column>
-                                     <h:message for="usertable" styleClass="errorMessage"/>
-                                     <h:outputText styleClass="errorMessage" value="Username is invalid." rendered = "#{!currentRow.valid}"/>
-                                     <h:outputText styleClass="errorMessage" value="Duplicate username." rendered = "#{currentRow.duplicate}"/>
-                                 </h:column>
-                             </h:dataTable> 
-                         </ui:panelGroup>
-                         <!-- IP Based Users Groups -->
-                         <ui:panelGroup rendered="#{ (EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'ipgroup')}" id="ipgroups" style="display:block;">
-                             <ui:panelGroup block="true" style="padding-bottom: 10px">
-                                 <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                 <h:outputText styleClass="vdcHelpText" value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable. Add/remove an entry by clicking the icons next to the username field."/>
+                             <!-- IP Based Users Groups -->
+                             <ui:panelGroup rendered="#{ (EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'ipgroup')}" id="ipgroups" style="display:block;">
+                                 <ui:panelGroup block="true" style="padding-bottom: 10px">
+                                     <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                                     <h:outputText styleClass="vdcHelpText" value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable. Add/remove an entry by clicking the icons next to the username field."/>
+                                 </ui:panelGroup>
+                                 <h:outputText value="IP Addresses/Domains"/>
+                                 <h:dataTable binding="#{EditUserGroupPage.dataTableIpAddresses}"  var="currentIpRow" cellpadding="0" cellspacing="0" value="#{EditUserGroupPage.group.loginDomains}">
+                                     <h:column>
+                                         <h:inputText id="iptable" immediate="true" validator="#{EditUserGroupPage.validateLoginDomain}" value="#{currentIpRow.ipAddress}"/>
+                                     </h:column>
+                                     <h:column>
+                                         <h:commandButton  image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addIpRow}"/> 
+                                         <h:commandButton  image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeIpRow}" /> 
+                                     </h:column>
+                                     <h:column>
+                                         <h:message for="iptable" styleClass="errorMessage"/>
+                                     </h:column>
+                                 </h:dataTable> 
+                                 
                              </ui:panelGroup>
-                             <h:outputText value="IP Addresses/Domains"/>
-                             <h:dataTable binding="#{EditUserGroupPage.dataTableIpAddresses}"  var="currentIpRow" cellpadding="0" cellspacing="0" value="#{EditUserGroupPage.group.loginDomains}">
-                                 <h:column>
-                                     <h:inputText id="iptable" immediate="true" validator="#{EditUserGroupPage.validateLoginDomain}" value="#{currentIpRow.ipAddress}"/>
-                                 </h:column>
-                                 <h:column>
-                                     <h:commandButton  image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addIpRow}"/> 
-                                     <h:commandButton  image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeIpRow}" /> 
-                                 </h:column>
-                                 <h:column>
-                                     <h:message for="iptable" styleClass="errorMessage"/>
-                                 </h:column>
-                             </h:dataTable> 
                              
-                         </ui:panelGroup>
-                         
-                         <!-- ******************** Affiliate login services for IP Groups ****************** -->
-                         <ui:panelGroup rendered="#{ (EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'ipgroup')}" block="true" id="affiliateLoginServices" style="#{(EditUserGroupPage.userGroupType == 'ipgroup') ? 'display:block' : 'display:none;'}">
-                             <h:selectBooleanCheckbox id="chkAffiliateLoginService" valueChangeListener="#{EditUserGroupPage.changeChkAffiliateLoginService}" onclick="this.form.submit();" immediate="true" value="#{EditUserGroupPage.chkAffiliateLoginService}">
-                                 <h:outputLabel for="chkAffiliateLoginService" value="This IP group has an affiliate login service."/>
-                             </h:selectBooleanCheckbox>
-                             <f:verbatim><br/></f:verbatim><f:verbatim><br/></f:verbatim>
-                             <ui:panelGroup block="true" style="padding-right:15px;padding-bottom: 10px; #{(EditUserGroupPage.chkAffiliateLoginService) ? 'display:block' : 'display:none;'}">
-                                 <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                 <h:outputText styleClass="vdcHelpText" value="Affiliate login services can be configured here. Enter affiliate names (ex. MySchool's Pin Service)  and urls (http://ez.pinserver.edu) in the field below."/>
+                             <!-- ******************** Affiliate login services for IP Groups ****************** -->
+                             <ui:panelGroup rendered="#{ (EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'ipgroup')}" block="true" id="affiliateLoginServices" style="#{(EditUserGroupPage.userGroupType == 'ipgroup') ? 'display:block' : 'display:none;'}">
+                                 <h:selectBooleanCheckbox id="chkAffiliateLoginService" valueChangeListener="#{EditUserGroupPage.changeChkAffiliateLoginService}" onclick="this.form.submit();" immediate="true" value="#{EditUserGroupPage.chkAffiliateLoginService}">
+                                     <h:outputLabel for="chkAffiliateLoginService" value="This IP group has an affiliate login service."/>
+                                 </h:selectBooleanCheckbox>
+                                 <f:verbatim><br/></f:verbatim><f:verbatim><br/></f:verbatim>
+                                 <ui:panelGroup block="true" style="padding-right:15px;padding-bottom: 10px; #{(EditUserGroupPage.chkAffiliateLoginService) ? 'display:block' : 'display:none;'}">
+                                     <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                                     <h:outputText styleClass="vdcHelpText" value="Affiliate login services can be configured here. Enter affiliate names (ex. MySchool's Pin Service)  and urls (http://ez.pinserver.edu) in the field below."/>
+                                 </ui:panelGroup>
+                                 <h:dataTable binding="#{EditUserGroupPage.affiliatesTable}" rendered="true" value="#{EditUserGroupPage.group.loginAffiliates}" var="affiliate" style="margin-right:50px;#{(EditUserGroupPage.chkAffiliateLoginService) ? 'display:block' : 'display:none;'}">
+                                     <h:column>
+                                         <f:facet name="header">
+                                             <h:outputText value="Affiliate Name"/>
+                                         </f:facet>
+                                         <h:inputText id="affiliateName" value="#{affiliate.name}"/> 
+                                     </h:column>
+                                     <h:column>
+                                         <f:facet name="header">
+                                             <h:outputText value="Affiliate URL"/>
+                                         </f:facet>
+                                         <h:inputText id="affiliateURL" value="#{affiliate.url}" />
+                                     </h:column>
+                                     <h:column>
+                                         <h:commandButton image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addAffiliateRow}"/> 
+                                         <h:commandButton image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeAffiliateRow}" /> 
+                                     </h:column>
+                                     <h:column>
+                                         <h:message for="affiliateName" styleClass="errorMessage"/>
+                                     </h:column>
+                                 </h:dataTable>
                              </ui:panelGroup>
-                             <h:dataTable binding="#{EditUserGroupPage.affiliatesTable}" rendered="true" value="#{EditUserGroupPage.group.loginAffiliates}" var="affiliate" style="margin-right:50px;#{(EditUserGroupPage.chkAffiliateLoginService) ? 'display:block' : 'display:none;'}">
-                                 <h:column>
-                                     <f:facet name="header">
-                                         <h:outputText value="Affiliate Name"/>
-                                     </f:facet>
-                                     <h:inputText id="affiliateName" value="#{affiliate.name}"/> 
-                                 </h:column>
-                                 <h:column>
-                                     <f:facet name="header">
-                                         <h:outputText value="Affiliate URL"/>
-                                     </f:facet>
-                                     <h:inputText id="affiliateURL" value="#{affiliate.url}" />
-                                 </h:column>
-                                 <h:column>
-                                     <h:commandButton image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addAffiliateRow}"/> 
-                                     <h:commandButton image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeAffiliateRow}" /> 
-                                 </h:column>
-                                 <h:column>
-                                     <h:message for="affiliateName" styleClass="errorMessage"/>
-                                 </h:column>
-                             </h:dataTable>
-                         </ui:panelGroup>
-                         
-                         <!-- end ip groups -->
-                         <!--<ui:panelGroup block="true">
+                             
+                             <!-- end ip groups -->
+                             <!--<ui:panelGroup block="true">
                                     <h:dataTable binding="#{EditUserGroupPage.affiliatesTable}" rendered="true" value="#{EditUserGroupPage.affiliates}" var="affiliate">
                                         <h:column>
                                             <h:outputText value="#{affiliate.affiliateName}"/>
@@ -158,23 +159,24 @@
                                         <h:column><h:outputText value="#{affiliate.affiliateUrl}"/></h:column>
                                     </h:dataTable>
                                 </ui:panelGroup>-->
-                         <!-- Commented for now - Add Later
+                             <!-- Commented for now - Add Later
                                  <h:outputText value="PIN Service Name"/>
                                 <h:inputText size="40" value="#{EditUserGroupPage.group.pinService}"/>
                                 -->
-                         <f:verbatim rendered="#{param.userGroupId == null}">
-                             <script language="JavaScript">
+                             <f:verbatim rendered="#{param.userGroupId == null}">
+                                 <script language="JavaScript">
                                         // this is done to ensure that the collections are properly inited. wjb
                                         showAll();
-                             </script>
-                         </f:verbatim>
-                         
-                         
-                         <ui:panelGroup block="true" style="padding-left: 100px; padding-top: 20px">
-                             <h:commandButton id="btnSave" value="Save" action="#{EditUserGroupPage.save}"/>
-                             <h:commandButton immediate="true" style="margin-left: 30px" value="Cancel" action="#{EditUserGroupPage.cancel}"/>
-                         </ui:panelGroup>
-                         
+                                 </script>
+                             </f:verbatim>
+                             
+                             
+                             <ui:panelGroup block="true" style="padding-left: 100px; padding-top: 20px">
+                                 <h:commandButton id="btnSave" value="Save" action="#{EditUserGroupPage.save}"/>
+                                 <h:commandButton immediate="true" style="margin-left: 30px" value="Cancel" action="#{EditUserGroupPage.cancel}"/>
+                             </ui:panelGroup>
+                             
+                         </div>
                      </div>
                  </div>
                             

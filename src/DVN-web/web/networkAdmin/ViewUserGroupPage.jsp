@@ -15,21 +15,22 @@
                              <h:outputText value="User Group Details"/>
                          </h3>
                      </div>            
-                     <div class="dvn_sectionBox dvn_pad12">                  
-                         
-                         <h:panelGrid cellpadding="0" cellspacing="0"
-                                      columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
-                             <ui:panelGroup id="groupPanel1">
-                                 <h:outputText id="outputText2" styleClass="vdcFieldTitle" value="Group Name: "/>
-                             </ui:panelGroup>
-                             <ui:panelGroup>
-                                 <h:outputText id="outputText3" value="#{ViewUserGroupPage.group.name}"/>
-                             </ui:panelGroup>
-                             <ui:panelGroup >
-                                 <h:outputText  styleClass="vdcFieldTitle" value="Users: " rendered="#{!empty ViewUserGroupPage.group.users}"/>
-                             </ui:panelGroup>
-                             <h:outputText  value="#{ViewUserGroupPage.userList}" rendered="#{!empty ViewUserGroupPage.group.users}"/>
-                             <!-- Commented for now since it's not implemented - Add later
+                     <div class="dvn_sectionBox"> 
+                         <div class="dvn_margin12">
+                             
+                             <h:panelGrid cellpadding="0" cellspacing="0"
+                                          columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
+                                 <ui:panelGroup id="groupPanel1">
+                                     <h:outputText id="outputText2" styleClass="vdcFieldTitle" value="Group Name: "/>
+                                 </ui:panelGroup>
+                                 <ui:panelGroup>
+                                     <h:outputText id="outputText3" value="#{ViewUserGroupPage.group.name}"/>
+                                 </ui:panelGroup>
+                                 <ui:panelGroup >
+                                     <h:outputText  styleClass="vdcFieldTitle" value="Users: " rendered="#{!empty ViewUserGroupPage.group.users}"/>
+                                 </ui:panelGroup>
+                                 <h:outputText  value="#{ViewUserGroupPage.userList}" rendered="#{!empty ViewUserGroupPage.group.users}"/>
+                                 <!-- Commented for now since it's not implemented - Add later
                                 <h:outputText value="IP Addresses"/>
                                 <ui:panelGroup id="groupPanel3">
                                     <h:dataTable binding="#{EditUserGroupPage.dataTableIpAddresses}"  var="currentRow" cellpadding="0" cellspacing="0" value="#{EditUserGroupPage.group.loginDomains}">
@@ -45,11 +46,13 @@
                                 </ui:panelGroup>
                                 -->
 
-                             <!-- Commented for now - Add Later
+                                 <!-- Commented for now - Add Later
                                  <h:outputText value="PIN Service Name"/>
                                 <h:inputText size="40" value="#{EditUserGroupPage.group.pinService}"/>
                                 -->
-                         </h:panelGrid>
+                             </h:panelGrid>
+                             
+                         </div>
                      </div>
                  </div>
             </ui:form>               

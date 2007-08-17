@@ -16,15 +16,6 @@
     <f:verbatim>   
     <script language="Javascript">
         var fileCitationPopup;
-        var termsPopup;
-
-        function checkTerms(anchorId) {
-            if (document.getElementById("content:studyPageView:form1:termsAcceptanceRequired").value == "true" ) {
-                termsPopup = createNewPopup(termsPopup,"content:studyPageView:form1:termsDiv",anchorId);
-                return false;
-            }
-            return true;
-        }
 
         function createFileCitationPopup(divId, anchorId) {
             fileCitationPopup = createNewPopup(fileCitationPopup,divId,anchorId);
@@ -462,12 +453,10 @@
                                             <h:column  id="column13">
                                                 <ui:panelGroup  block="true" > 
 
-
                                                     <h:graphicImage  styleClass="vdcNoBorders" style="margin-left: 2px; margin-right: 0px;" value="/resources/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" 
                                                                      alt="You do not have permissions to access this file." title="You do not have permissions to access this file."/>
-                                                    <h:commandLink  id="fileLink" style="padding-right: 15px" action="#{studyFileUI.fileDownload_action}" rendered="#{!studyFileUI.restrictedForUser}" title="View or download this File.">
-                                                        <h:graphicImage   styleClass="vdcNoBorders" style="margin-left: 2px; margin-right: 0px;" value="/resources/icon_download.gif"/>
-                                                    </h:commandLink> 
+                                                    <h:commandButton  id="fileLink" style="padding-right: 15px" action="#{studyFileUI.fileDownload_action}" rendered="#{!studyFileUI.restrictedForUser}" title="View or download this File."
+                                                    image="/resources/icon_download.gif" />
 
                                                     <h:outputLink rendered="#{studyFileUI.studyFile.subsettable}"  id="fileSubset" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.jsp?dtId=#{studyFileUI.studyFile.dataTable.id}" title="Go to Subset and Analysis page for this file." >
                                                         <h:graphicImage  id="imagefs" styleClass="vdcNoBorders" style="margin-left: 0px; margin-right: 2px;" value="/resources/icon_subsettable.gif" />
@@ -524,6 +513,7 @@
                                             <h:outputText  styleClass="vdcHelpText"  value="View Data Citation for this file"/>
                                         </ui:panelGroup>
                                     </h:panelGrid>
+                                    <h:outputText  value="If you download multiple files at once, data files will be in tab delimited format. When you choose to download a file in a format other than tab delimited, you will get a zip file."/> 
                                 </ui:panelGroup>
 
                             </ui:panelLayout>
@@ -532,59 +522,7 @@
 
                 </div>
             </div>
-            <!-- this is the panel group for terms of use, hidden and appears as a popup
-            <ui:panelGroup block="true" id="termsDiv" style="position:absolute;visibility:hidden;" styleClass="vdcScrollDivTermsUse">
-                <div style="text-align: right; font-size: 0.9em;"><a href="#" style="font-size: 0.9em;" onclick="termsPopup.hidePopup();return false;">Close</a></div>
-                <h:inputHidden id="termsAcceptanceRequired" value="#{TermsOfUsePage.termsAcceptanceRequired}"/>
-                    <ui:panelGroup  block="true" style="padding-bottom: 5px">
-                         <h:outputText styleClass="warnMessage" value="You need to agree to the Terms of Use before accessing the files  of this study. (Please click the icon again after you have agreed.)" />
-                    </ui:panelGroup>
-                    <h:panelGrid  cellpadding="0" cellspacing="0" columns="1" columnClasses="vdcTermsUseColumn" rendered="#{TermsOfUsePage.vdcTermsRequired}">
-                        <ui:panelGroup  block="true">
-                            <h:outputText styleClass="vdcFieldTitle" value="Dataverse Terms of Use:" />
-                            <h:selectBooleanCheckbox id="vdcTermsAccepted" disabled="#{!TermsOfUsePage.vdcTermsRequired}" value="#{TermsOfUsePage.vdcTermsAccepted}"/>
-                        </ui:panelGroup>
-                        <h:outputText value="#{TermsOfUsePage.study.owner.termsOfUse}" escape="false"/>
-                    </h:panelGrid>
-                    <h:panelGrid  cellpadding="0" cellspacing="0" columns="1" columnClasses="vdcTermsUseColumn" rendered="#{TermsOfUsePage.studyTermsRequired}">
-                        <ui:panelGroup  block="true" style="padding-bottom: 10px">
-                            <h:outputText styleClass="vdcFieldTitle" value="Study Terms of Use:" />
-                            <h:selectBooleanCheckbox id="studyTermsAccepted" disabled="#{!TermsOfUsePage.studyTermsRequired}" value="#{TermsOfUsePage.studyTermsAccepted}"/>
-                        </ui:panelGroup>
-                        <h:outputText value="Data Access Place:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.placeOfAccess}"/>
-                        <h:outputText  value="#{TermsOfUsePage.study.placeOfAccess}"  rendered="#{!empty TermsOfUsePage.study.placeOfAccess}" escape="false"/>
-                        <h:outputText  value="Original Archive:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.originalArchive}"/>
-                        <h:outputText  value="#{TermsOfUsePage.study.originalArchive}"  rendered="#{!empty TermsOfUsePage.study.originalArchive}" escape="false" />
-                        <h:outputText  value="Availability Status:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.availabilityStatus }"/>
-                        <h:outputText  value="#{TermsOfUsePage.study.availabilityStatus}"  rendered="#{!empty TermsOfUsePage.study.availabilityStatus}" escape="false"/>
-                        <h:outputText  value="Size of Collection:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.collectionSize}"/>
-                        <h:outputText  value="#{TermsOfUsePage.study.collectionSize}"  rendered="#{!empty TermsOfUsePage.study.collectionSize}" escape="false"/>
-                        <h:outputText  value="Study Completion:"  styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.studyCompletion}"/>
-                        <h:outputText  value="#{TermsOfUsePage.study.studyCompletion}"  rendered="#{!empty TermsOfUsePage.study.studyCompletion}" escape="false"/>
-                        <h:outputText  value="Number of Files:"  styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.numberOfFiles}"/>
-                        <h:outputText  value="#{TermsOfUsePage.study.numberOfFiles}" rendered="#{!empty TermsOfUsePage.study.numberOfFiles}" escape="false" />
-                        <h:outputText  value="Confidentiality Declaration:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.confidentialityDeclaration}" />
-                        <h:outputText  value="#{TermsOfUsePage.study.confidentialityDeclaration}" rendered="#{!empty TermsOfUsePage.study.confidentialityDeclaration}" escape="false"/>
-                        <h:outputText  value="Special Permissions:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.specialPermissions}"/>
-                        <h:outputText  value="#{TermsOfUsePage.study.specialPermissions}" rendered="#{!empty TermsOfUsePage.study.specialPermissions}" escape="false"/>
-                        <h:outputText  value="Restrictions:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.restrictions}" />
-                        <h:outputText  value="#{TermsOfUsePage.study.restrictions}" rendered="#{!empty TermsOfUsePage.study.restrictions}" escape="false"/>
-                        <h:outputText  value="Contact:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.contact}" />
-                        <h:outputText  value="#{TermsOfUsePage.study.contact}" rendered="#{!empty tudyPage.study.contact}" escape="false"/>
-                        <h:outputText  value="Citation Requirements:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.citationRequirements}"/>
-                        <h:outputText  value="#{TermsOfUsePage.study.citationRequirements}" rendered="#{!empty TermsOfUsePage.study.citationRequirements}" escape="false"/>
-                        <h:outputText  value="Depositor Requirements:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.depositorRequirements}"/>
-                        <h:outputText  value="#{TermsOfUsePage.study.depositorRequirements}" rendered="#{!empty TermsOfUsePage.study.depositorRequirements}" escape="false"/>
-                        <h:outputText  value="Conditions:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.conditions}"/>
-                        <h:outputText  value="#{TermsOfUsePage.study.conditions}" rendered="#{!empty TermsOfUsePage.study.conditions}" escape="false"/>
-                        <h:outputText  value="Disclaimer:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.disclaimer}"/>
-                        <h:outputText  value="#{TermsOfUsePage.study.disclaimer}" rendered="#{!empty TermsOfUsePage.study.disclaimer}" escape="false"/>
-                    </h:panelGrid> 
-                    <ui:panelGroup  block="true" style="padding-top: 10px; text-align:center;">
-                        <h:commandButton  id="termsButton" value="Accept" action="#{TermsOfUsePage.acceptTerms_action}"/>
-                    </ui:panelGroup>
-            </ui:panelGroup> 
-           end terms of use panel -->
+
         </ui:form>
     </f:subview>
 </jsp:root>

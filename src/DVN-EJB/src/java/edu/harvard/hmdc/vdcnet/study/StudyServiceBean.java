@@ -502,7 +502,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         // Note: This ordering is case-sensitive, so names beginning with upperclass chars will appear first.
         // (I tried using UPPER(f.name) to make the sorting case-insensitive, but the EJB query language doesn't seem
         // to like this.)
-        String queryStr = "SELECT f FROM StudyFile f WHERE f.fileCategory.study.id = " + studyId +" ORDER BY f.fileCategory.name, f.fileName";
+        String queryStr = "SELECT f FROM StudyFile f LEFT JOIN FETCH f.dataTable JOIN FETCH f.fileCategory WHERE f.fileCategory.study.id = " + studyId +" ORDER BY f.fileCategory.name, f.fileName";
         Query query =em.createQuery(queryStr);
         List <StudyFile> studyFiles = query.getResultList();
         

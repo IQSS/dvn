@@ -57,7 +57,8 @@ public interface StudyServiceLocal {
     java.util.List<FileCategory> getOrderedFileCategories(Long studyId);
     
     java.util.List<StudyFile> getOrderedFilesByCategory(Long fileCategoryId);
-   
+
+    java.util.List<StudyFile> getOrderedFilesByStudy(Long studyId);
 
     String generateStudyIdSequence(String protocol, String authority);
     

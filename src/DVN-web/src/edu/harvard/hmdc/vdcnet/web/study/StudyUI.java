@@ -633,6 +633,20 @@ public class StudyUI {
             e.printStackTrace();
         }
         
+        List files = studyService.getOrderedFilesByStudy( getStudy().getId() );
+        Iterator iter = files.iterator();
+        FileCategoryUI catUI = null;
+        while (iter.hasNext()) {
+            StudyFile sf = (StudyFile) iter.next();
+            if ( catUI == null || !sf.getFileCategory().equals(catUI.getFileCategory()) ) {
+                catUI = new FileCategoryUI(sf.getFileCategory());
+                categoryUIList.add(catUI);
+            }
+
+            catUI.getStudyFileUIs().add( new StudyFileUI(sf, vdc, user, ipUserGroup) );
+        }
+
+        /*
         List categories = studyService.getOrderedFileCategories(getStudy().getId());
         
         Iterator iter = categories.iterator();
@@ -641,6 +655,7 @@ public class StudyUI {
             FileCategoryUI catUI = new FileCategoryUI(fc,vdc,user, ipUserGroup);
             categoryUIList.add(catUI);
         }
+        */
         
     }
     
@@ -742,7 +757,7 @@ public class StudyUI {
     /**
      * Holds value of property categoryUIList.
      */
-    private ArrayList<FileCategoryUI> categoryUIList;
+    private ArrayList<FileCategoryUI> categoryUIList = new ArrayList<FileCategoryUI>();;
     
     /**
      * Getter for property categoryUIList.

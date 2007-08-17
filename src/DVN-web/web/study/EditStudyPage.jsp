@@ -125,7 +125,7 @@
                                         <h:graphicImage id="image40" value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.title].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup block="true" id="groupPanel16" >
-                                        <h:inputText id="input_title" size="90" maxlength="255" value="#{EditStudyPage.study.title}" required="#{EditStudyPage.studyMap[sfc.title].required}"/>
+                                        <h:inputText id="input_title" size="90"  value="#{EditStudyPage.study.title}" required="#{EditStudyPage.studyMap[sfc.title].required}"/>
                                         <h:message styleClass="errorMessage" for="input_title"/> 
                                     </ui:panelGroup> 
                                     
@@ -135,7 +135,7 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup block="true" rendered="#{EditStudyPage.studyMap[sfc.subTitle].rendered}">
-                                        <h:inputText id="input_subtitle" size="90" maxlength="255" value="#{EditStudyPage.study.subTitle}" required="#{EditStudyPage.studyMap[sfc.subTitle].required}"/>                                                                 
+                                        <h:inputText id="input_subtitle" size="90" value="#{EditStudyPage.study.subTitle}" required="#{EditStudyPage.studyMap[sfc.subTitle].required}"/>                                                                 
                                         <h:message styleClass="errorMessage" for="input_subtitle"/> 
                                     </ui:panelGroup> 
                                     
@@ -150,7 +150,7 @@
                                     </ui:panelGroup>
                                     <ui:panelGroup block="true" id="groupPanel35" rendered="#{EditStudyPage.studyMap[sfc.studyId].rendered} " >
                                         <h:outputText value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/" rendered="#{EditStudyPage.study.id==null}" />                                     
-                                        <h:inputText id="input_studyId" value="#{EditStudyPage.study.studyId}"  validator ="#{EditStudyPage.validateStudyId}" required="#{EditStudyPage.studyMap[sfc.studyId].required}" rendered="#{EditStudyPage.study.id==null}" />
+                                        <h:inputText maxlength="255" id="input_studyId" value="#{EditStudyPage.study.studyId}"  validator ="#{EditStudyPage.validateStudyId}" required="#{EditStudyPage.studyMap[sfc.studyId].required}" rendered="#{EditStudyPage.study.id==null}" />
                                         <h:outputText value="#{EditStudyPage.study.globalId}" rendered="#{EditStudyPage.study.id!=null}" />
                                         <h:message styleClass="errorMessage" for="input_studyId"/> 
                                     </ui:panelGroup>
@@ -369,7 +369,7 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.productionPlace].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup id="groupPanel20"  rendered="#{EditStudyPage.studyMap[sfc.productionPlace].rendered}">
-                                        <h:inputText id="input_productionPlace" size="45" maxlength="255"  value="#{EditStudyPage.study.productionPlace}" required="#{EditStudyPage.studyMap[sfc.productionPlace].required}"/>
+                                        <h:inputText id="input_productionPlace" size="45"  value="#{EditStudyPage.study.productionPlace}" required="#{EditStudyPage.studyMap[sfc.productionPlace].required}"/>
                                         <h:message styleClass="errorMessage" for="input_productionPlace"/>
                                     </ui:panelGroup>
                                     
@@ -423,7 +423,7 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup id="groupPanel22"  rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].rendered}">
-                                        <h:inputText id="input_fundingAgency" size="45" maxlength="255"  value="#{EditStudyPage.study.fundingAgency}" required="#{EditStudyPage.studyMap[sfc.fundingAgency].required}"/>
+                                        <h:inputText id="input_fundingAgency" size="45"  value="#{EditStudyPage.study.fundingAgency}" required="#{EditStudyPage.studyMap[sfc.fundingAgency].required}"/>
                                         <h:message styleClass="errorMessage" for="input_fundingAgency"/>                                
                                     </ui:panelGroup>
                                     
@@ -552,13 +552,13 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorContact].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup  rendered="#{EditStudyPage.studyMap[sfc.distributorContact].rendered}">
-                                        <h:inputText binding ="#{EditStudyPage.inputDistributorContact}" id="input_distributorContact" size="45" maxlength="255" value="#{EditStudyPage.study.distributorContact}"  required="#{EditStudyPage.studyMap[sfc.distributorContact].required}"/>
+                                        <h:inputText binding ="#{EditStudyPage.inputDistributorContact}" id="input_distributorContact" size="45"  value="#{EditStudyPage.study.distributorContact}"  required="#{EditStudyPage.studyMap[sfc.distributorContact].required}"/>
                                         <h:message styleClass="errorMessage" for="input_distributorContact"/>                                
                                         <ui:panelGroup styleClass="vdcEditStudyGroupField" rendered="#{EditStudyPage.studyMap[sfc.distributorContact].rendered}">
                                             <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorContactAffiliationHelp}" linkText="#{editstudybundle.distributorContactAffiliationLabel}" heading="#{editstudybundle.distributorContactAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorContactAffiliation].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorContactAffiliation].recommended}"/>
-                                            <h:inputText id="distributorContactAffiliation"  maxlength="255" 
+                                            <h:inputText id="distributorContactAffiliation"  
                                                          binding ="#{EditStudyPage.inputDistributorContactAffiliation}" 
                                                          value="#{EditStudyPage.study.distributorContactAffiliation}" 
                                                          validator="#{EditStudyPage.validateDistributorContact}"
@@ -572,7 +572,7 @@
                                             <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorContactEmailHelp}" linkText="#{editstudybundle.distributorContactEmailLabel}" heading="#{editstudybundle.distributorContactEmailHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorContactEmail].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorContactEmail].recommended}"/>
-                                            <h:inputText  binding ="#{EditStudyPage.inputDistributorContactEmail}"  id="input_distributorContactEmail" size="45" maxlength="255" value="#{EditStudyPage.study.distributorContactEmail}" required="#{EditStudyPage.studyMap[sfc.distributorContactEmail].required}"/>
+                                            <h:inputText  binding ="#{EditStudyPage.inputDistributorContactEmail}"  id="input_distributorContactEmail" size="45" value="#{EditStudyPage.study.distributorContactEmail}" required="#{EditStudyPage.studyMap[sfc.distributorContactEmail].required}"/>
                                             <h:message styleClass="errorMessage" for="input_distributorContactEmail"/>                                
                                         </ui:panelGroup>
                                     </ui:panelGroup>                                          
@@ -598,7 +598,7 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.depositor].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup id="groupPanel27" rendered="#{EditStudyPage.studyMap[sfc.depositor].rendered}">
-                                        <h:inputText id="input_depositor" size="45" maxlength="255" value="#{EditStudyPage.study.depositor}" required="#{EditStudyPage.studyMap[sfc.depositor].required}"/>
+                                        <h:inputText id="input_depositor" size="45"  value="#{EditStudyPage.study.depositor}" required="#{EditStudyPage.studyMap[sfc.depositor].required}"/>
                                         <h:message styleClass="errorMessage" for="input_depositor"/>                                                                                
                                     </ui:panelGroup>
                                     
@@ -623,7 +623,7 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.seriesName].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup id="groupPanel29" rendered="#{EditStudyPage.studyMap[sfc.seriesName].rendered}">
-                                        <h:inputText immediate="true" binding="#{EditStudyPage.inputSeries}" id="input_seriesName" maxlength="255"  
+                                        <h:inputText immediate="true" binding="#{EditStudyPage.inputSeries}" id="input_seriesName" 
                                                      value="#{EditStudyPage.study.seriesName}"  
                                                      required="#{EditStudyPage.studyMap[sfc.seriesName].required}" 
                                                      rendered="#{EditStudyPage.studyMap[sfc.seriesName].rendered}"
@@ -637,7 +637,7 @@
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.seriesInformation].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.seriesInformation].recommended}"/>
                                             <h:inputText immediate="true" binding ="#{EditStudyPage.inputSeriesInformation}" id="input_seriesInformation" 
-                                                         size="45"  maxlength="255" 
+                                                         size="45"  
                                                          value="#{EditStudyPage.study.seriesInformation}"  
                                                          required="#{EditStudyPage.studyMap[sfc.seriesInformation].required}"
                                                          validator="#{EditStudyPage.validateSeries}"
@@ -655,7 +655,7 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.studyVersion].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup id="groupPanel30"  rendered="#{EditStudyPage.studyMap[sfc.studyVersion].rendered}">
-                                        <h:inputText immediate="true" binding="#{EditStudyPage.inputVersion}" id="input_studyVersion" maxlength="255"  value="#{EditStudyPage.study.studyVersion}"  required="#{EditStudyPage.studyMap[sfc.studyVersion].required}"/>
+                                        <h:inputText immediate="true" binding="#{EditStudyPage.inputVersion}" id="input_studyVersion"  value="#{EditStudyPage.study.studyVersion}"  required="#{EditStudyPage.studyMap[sfc.studyVersion].required}"/>
                                         <h:message styleClass="errorMessage" for="input_studyVersion"/>                                
                                         <ui:panelGroup styleClass="vdcEditStudyGroupField">
                                             <ihelp:inlinehelp helpMessage="#{editstudybundle.seriesVersionDateHelp}" linkText="#{editstudybundle.seriesVersionDateLabel}" heading="#{editstudybundle.seriesVersionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -1067,7 +1067,7 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.country].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.country].rendered}">
-                                        <h:inputText id="input_country" size="45" maxlength="255"  value="#{EditStudyPage.study.country}" required="#{EditStudyPage.studyMap[sfc.country].required}"/>
+                                        <h:inputText id="input_country" size="45" value="#{EditStudyPage.study.country}" required="#{EditStudyPage.studyMap[sfc.country].required}"/>
                                         <h:message styleClass="errorMessage" for="input_country"/>                                
                                     </ui:panelGroup>
                                     
@@ -1077,7 +1077,7 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].rendered}">
-                                        <h:inputText id="input_geographicCoverage" size="45" maxlength="255"  value="#{EditStudyPage.study.geographicCoverage}" required="#{EditStudyPage.studyMap[sfc.geographicCoverage].required}"/>
+                                        <h:inputText id="input_geographicCoverage" size="45"  value="#{EditStudyPage.study.geographicCoverage}" required="#{EditStudyPage.studyMap[sfc.geographicCoverage].required}"/>
                                         <h:message styleClass="errorMessage" for="input_geographicCoverage"/>                                
                                     </ui:panelGroup>
                                     
@@ -1087,7 +1087,7 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].rendered}">
-                                        <h:inputText id="input_geographicUnit" size="45" maxlength="255"  value="#{EditStudyPage.study.geographicUnit}" required="#{EditStudyPage.studyMap[sfc.geographicUnit].required}"/>
+                                        <h:inputText id="input_geographicUnit" size="45"  value="#{EditStudyPage.study.geographicUnit}" required="#{EditStudyPage.studyMap[sfc.geographicUnit].required}"/>
                                         <h:message styleClass="errorMessage" for="input_geographicUnit"/>                                
                                     </ui:panelGroup>
                                     
@@ -1139,7 +1139,7 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].rendered}">
-                                        <h:inputText id="input_unitOfAnalysis" size="45" maxlength="255"   value="#{EditStudyPage.study.unitOfAnalysis}" required="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}"/>
+                                        <h:inputText id="input_unitOfAnalysis" size="45"  value="#{EditStudyPage.study.unitOfAnalysis}" required="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}"/>
                                         <h:message styleClass="errorMessage" for="input_unitOfAnalysis"/>          
                                         <h:inputHidden validator="#{EditStudyPage.validateGeographicBounding}" value="test" required="true"/>   
                                     </ui:panelGroup>
@@ -1150,7 +1150,7 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.universe].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.universe].rendered}">
-                                        <h:inputText id="input_universe" size="45" maxlength="255"  value="#{EditStudyPage.study.universe}" required="#{EditStudyPage.studyMap[sfc.universe].required}"/>
+                                        <h:inputText id="input_universe" size="45"  value="#{EditStudyPage.study.universe}" required="#{EditStudyPage.studyMap[sfc.universe].required}"/>
                                         <h:message styleClass="errorMessage" for="input_universe"/>                                
                                     </ui:panelGroup>
                                     
@@ -1161,7 +1161,7 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.kindOfData].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.kindOfData].rendered}">
-                                        <h:inputText id="input_kindOfData"  size="45" maxlength="255"  value="#{EditStudyPage.study.kindOfData}" required="#{EditStudyPage.studyMap[sfc.kindOfData].required}"/>
+                                        <h:inputText id="input_kindOfData"  size="45" value="#{EditStudyPage.study.kindOfData}" required="#{EditStudyPage.studyMap[sfc.kindOfData].required}"/>
                                         <h:message styleClass="errorMessage" for="input_kindOfData"/>                                
                                     </ui:panelGroup>
                                     

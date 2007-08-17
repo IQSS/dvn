@@ -30,6 +30,14 @@
             <div class="dvn_headerBarContent">
                 <ul class="dvn_floatL">
                     <li>
+                      <h:outputLink  value="/dvn" title="Browse and Search #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDC == null}">
+                        <h:outputText value="Search/Browse "/>
+                       </h:outputLink>
+                      <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}" title="Browse and Search #{VDCRequest.currentVDC.name} dataverse" rendered="#{VDCRequest.currentVDC != null}">
+                        <h:outputText value="Search/Browse "/>
+                      </h:outputLink>
+                    </li>
+                    <li>
                       <h:outputLink  value="/dvn/faces/AboutPage.jsp" title="About #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDC == null}">
                         <h:outputText value="#{bundle.aboutLabel} "/>
                        </h:outputLink>

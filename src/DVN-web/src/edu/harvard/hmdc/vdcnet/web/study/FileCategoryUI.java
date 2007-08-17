@@ -16,6 +16,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.faces.event.ActionEvent;
@@ -39,7 +40,6 @@ public class FileCategoryUI  {
       /** Creates a new instance of FileCategoryUI */
     public FileCategoryUI(FileCategory fileCategory) {
         this.fileCategory = fileCategory;
-        initStudyFiles(null,null,null);
 
     }  
     private void initStudyFiles(VDC vdc, VDCUser user, UserGroup ipUserGroup) {
@@ -58,7 +58,7 @@ public class FileCategoryUI  {
         }
     }
     
-    private List<StudyFileUI> studyFileUIs;
+    private List<StudyFileUI> studyFileUIs = new ArrayList();
     
     public FileCategory getFileCategory() {
         return fileCategory;

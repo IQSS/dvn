@@ -14,7 +14,9 @@
                         <h:outputText value="Manage Dataverses"/>
                      </h3>
                 </div>            
-                <div class="dvn_sectionBox dvn_pad12">
+                <div class="dvn_sectionBox">
+                  <div class="dvn_margin12">  
+                    
                     <ui:panelGroup block="true" style="padding-bottom: 10px">
                         <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                         <h:outputText  styleClass="vdcHelpText" escape="false" value="To edit a harvest dataverse settings, click on the dataverse name. If you have set up a harvest dataverse, you can schedule harvesting from this page. The harvest schedule runs every night and gets any new studies or studies that have changed in the original source (OAI server) since the last harvesting. You have also the option to run harvesting on demand." />
@@ -101,6 +103,8 @@
                         
                     </h:dataTable>
                     
+                    
+                    </div>
                 </div>
              </div>
         </ui:form>          

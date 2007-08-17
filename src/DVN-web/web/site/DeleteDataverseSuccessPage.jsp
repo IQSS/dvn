@@ -16,8 +16,12 @@
                     <h:outputText value="Delete Successful"/>
                 </h3>
                 </div>            
-                <div class="dvn_sectionBox dvn_pad12"> 
-                    <h:outputText  id="outputText2" value="The dataverse has been deleted successfully. "/> 
+                <div class="dvn_sectionBox"> 
+                    <div class="dvn_margin12">
+                        
+                        <h:outputText  id="outputText2" value="The dataverse has been deleted successfully. "/> 
+                        
+                    </div>
                 </div>
             </div>
         </h:form>   

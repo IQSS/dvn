@@ -15,12 +15,15 @@
                         <h:outputText value="Request to Become a Dataverse Contributor"/>
                     </h3>
                 </div>            
-                <div class="dvn_sectionBox dvn_pad12">
-                    
-                    <h:outputText value="Your request has been received.  Please wait for approval from the administrator."/>
-                    <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.jsp" title="Go to Dataverse Home Page">
-                        <h:outputText  value="Go to Dataverse Home Page"/>
-                    </h:outputLink>    
+                <div class="dvn_sectionBox">
+                    <div class="dvn_margin12">
+                        
+                        <h:outputText value="Your request has been received.  Please wait for approval from the administrator."/>
+                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.jsp" title="Go to Dataverse Home Page">
+                            <h:outputText  value="Go to Dataverse Home Page"/>
+                        </h:outputLink> 
+                        
+                    </div>
                 </div>
             </div>
         </ui:form>

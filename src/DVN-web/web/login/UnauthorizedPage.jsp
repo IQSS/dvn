@@ -14,8 +14,12 @@
                         <h:outputText value="Restricted Page"/>
                     </h3>
                 </div>            
-                <div class="dvn_sectionBox dvn_pad12"> 
-                    <h:outputText  id="outputText4" style="warnMessage" value="We are sorry; you do not have permissions to view this page."/>            
+                <div class="dvn_sectionBox"> 
+                    <div class="dvn_margin12">
+                        
+                        <h:outputText  id="outputText4" style="warnMessage" value="We are sorry; you do not have permissions to view this page."/>            
+                        
+                    </div>
                 </div>
             </div>
         </ui:form>

@@ -13,21 +13,25 @@
                         <h:outputText  value="Logout"/>
                     </h3>
                 </div>            
-                <div class="dvn_sectionBox dvn_pad12"> 
-                    <ui:panelGroup  block="true"  style="padding-top: 40px; padding-left:20px" rendered="#{LogoutPage.success}" >
-                        <h:outputText value="You are now logged out.  Thanks for visiting." styleClass="vdcTextStandOut"/>
-                    </ui:panelGroup>
-                    <ui:panelGroup  block="true"  style="padding-top: 20px; padding-left:70px" >
+                <div class="dvn_sectionBox">
+                    <div class="dvn_margin12">
                         
-                        <h:outputLink    value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.jsp"  >
-                            <h:outputText value="Go to the Home Page"/>
-                        </h:outputLink>
-                    </ui:panelGroup>
-                    <ui:panelGroup  block="true"  style="padding-top: 10px; padding-bottom: 40px; padding-left:70px" >
-                        <h:outputLink    value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp"  >
-                            <h:outputText value="Log in"/>
-                        </h:outputLink>
-                    </ui:panelGroup>
+                        <ui:panelGroup  block="true"  style="padding-top: 40px; padding-left:20px" rendered="#{LogoutPage.success}" >
+                            <h:outputText value="You are now logged out.  Thanks for visiting." styleClass="vdcTextStandOut"/>
+                        </ui:panelGroup>
+                        <ui:panelGroup  block="true"  style="padding-top: 20px; padding-left:70px" >
+                            
+                            <h:outputLink    value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.jsp"  >
+                                <h:outputText value="Go to the Home Page"/>
+                            </h:outputLink>
+                        </ui:panelGroup>
+                        <ui:panelGroup  block="true"  style="padding-top: 10px; padding-bottom: 40px; padding-left:70px" >
+                            <h:outputLink    value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp"  >
+                                <h:outputText value="Log in"/>
+                            </h:outputLink>
+                        </ui:panelGroup>
+                        
+                    </div>
                 </div>
             </div>
         </ui:form>

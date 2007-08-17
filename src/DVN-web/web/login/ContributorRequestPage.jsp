@@ -16,26 +16,28 @@
                     <h:outputText value="Request to Become a Dataverse Contributor"/>
                 </h3>
             </div>            
-            <div class="dvn_sectionBox dvn_pad12">
-                
-                <ui:panelGroup  block="true"  style="padding-top: 10px" rendered="#{ContributorRequestPage.alreadyRequested}">
-                    <h:outputText value="You have already requested to become a Contributor to #{VDCRequest.currentVDC.name} dataverse.  Please wait for approval from the administrator."/>
-                    <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.jsp">
-                        <h:outputText value="Go to Dataverse Home Page"/>
-                    </h:outputLink>
-                </ui:panelGroup>
-                
-                <ui:panelGroup rendered="#{!ContributorRequestPage.alreadyRequested}">
-                    <ui:panelGroup block="true"  style="padding-top: 10px"  >
-                        <!--h:selectBooleanCheckbox id="contributorCheckbox" value="#{!ContributorRequestPage.alreadyRequested}" /-->
-                        <h:outputText value="I want to become a contributor to #{VDCRequest.currentVDC.name} dataverse. This will allow me to upload my own data in this archive."/>
+            <div class="dvn_sectionBox">
+                <div class="dvn_margin12">
+                    
+                    <ui:panelGroup  block="true"  style="padding-top: 10px" rendered="#{ContributorRequestPage.alreadyRequested}">
+                        <h:outputText value="You have already requested to become a Contributor to #{VDCRequest.currentVDC.name} dataverse.  Please wait for approval from the administrator."/>
+                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.jsp">
+                            <h:outputText value="Go to Dataverse Home Page"/>
+                        </h:outputLink>
                     </ui:panelGroup>
-                    <ui:panelGroup block="true"  style="padding-top: 10px; text-align: center;"  >                                      
-                        <h:commandButton value="Submit Request" action="#{ContributorRequestPage.generateRequest}"/>
-                        <h:commandButton value="Cancel" action="home"/>
+                    
+                    <ui:panelGroup rendered="#{!ContributorRequestPage.alreadyRequested}">
+                        <ui:panelGroup block="true"  style="padding-top: 10px"  >
+                            <!--h:selectBooleanCheckbox id="contributorCheckbox" value="#{!ContributorRequestPage.alreadyRequested}" /-->
+                            <h:outputText value="I want to become a contributor to #{VDCRequest.currentVDC.name} dataverse. This will allow me to upload my own data in this archive."/>
+                        </ui:panelGroup>
+                        <ui:panelGroup block="true"  style="padding-top: 10px; text-align: center;"  >                                      
+                            <h:commandButton value="Submit Request" action="#{ContributorRequestPage.generateRequest}"/>
+                            <h:commandButton value="Cancel" action="home"/>
+                        </ui:panelGroup>
                     </ui:panelGroup>
-                </ui:panelGroup>
-                
+                    
+                </div>
             </div>
         </div>
     </ui:form>

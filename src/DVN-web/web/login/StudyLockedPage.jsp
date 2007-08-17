@@ -13,11 +13,15 @@
                         <h:outputText value="File Upload In Progress"/>   
                     </h3>
                 </div>            
-                <div class="dvn_sectionBox dvn_pad12"> 
-                    <h:outputText  style="warnMessage" value="We are sorry; this study is currently unavailable for editing because files are being uploaded.   When the file upload is completed the study will be editable again. "/>
-                    <p>
-                        <h:outputText   style="warnMessage" value="#{param.message}"/>   
-                    </p>
+                <div class="dvn_sectionBox"> 
+                    <div class="dvn_margin12">
+                        
+                        <h:outputText  style="warnMessage" value="We are sorry; this study is currently unavailable for editing because files are being uploaded.   When the file upload is completed the study will be editable again. "/>
+                        <p>
+                            <h:outputText   style="warnMessage" value="#{param.message}"/>   
+                        </p>
+                        
+                    </div>
                 </div>
             </div>
 

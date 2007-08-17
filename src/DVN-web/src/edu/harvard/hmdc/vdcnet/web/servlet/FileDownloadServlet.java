@@ -329,7 +329,29 @@ public class FileDownloadServlet extends HttpServlet{
 		    // read the file off disk and send the stream back.
 		   
 		    try {
-			res.setContentType(file.getFileType());
+			// set content type to that stored in the db,
+			// if available.
+			String dbContentType = file.getFileType();
+			if ( dbContentType != null ) {
+			    res.setContentType( dbContentType );
+			}
+
+			// specify the file name, if available:
+			String dbFileName = file.getFileName();
+			if ( dbFileName != null ) {
+			    if ( dbContentType != null &&
+				  ( dbContentType.equalsIgnoreCase("application/pdf") || 
+				    dbContentType.equalsIgnoreCase("text/xml") || 
+				    dbContentType.equalsIgnoreCase("text/plain") ) ) {
+				res.setHeader ( "Content_disposition",
+						"inline; filename=\"" + dbFileName + "\"" ); 
+
+			    } else {
+				res.setHeader ( "Content_disposition",
+						"attachment; filename=\"" + dbFileName + "\"" ); 
+			    }
+			}
+			
 			// send the file as the response
 			InputStream in = new FileInputStream(new File(file.getFileSystemLocation()));
 			OutputStream out = res.getOutputStream();
@@ -384,8 +406,9 @@ public class FileDownloadServlet extends HttpServlet{
             
             // now create zip
             try {
-                // send the file as the response
+		// set content type: 
                 res.setContentType("application/zip");
+		// send the file as the response
                 ZipOutputStream zout = new ZipOutputStream(res.getOutputStream());
                 List nameList = new ArrayList(); // used to check for duplicates
                 iter = files.iterator();

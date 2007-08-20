@@ -809,9 +809,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         boolean createNewHandle = (vdc.getHarvestingDataverse().getHandlePrefix() != null);
         int format = vdc.getHarvestingDataverse().getFormat().equals("ddi") ? 0 : 1; // 1 is mif; eventually this will be dynamic
         
-        // do not register for harvested studies (until we figure out why it's not working)
-        Study study= importStudy(xmlFile, format, vdcId, userId, false, createNewHandle, true, false, false, harvestIdentifier);
-        //Study study= importStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
+        Study study= doImportStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
         
         return study;
     }
@@ -825,22 +823,16 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             throw new EJBException("importLegacyStudy(...) should never be called for a harvesting dataverse.");
         }
         
-        return importStudy(xmlFile, 0,vdcId, userId, true, false, false, true, true, null);
+        return doImportStudy(xmlFile, 0,vdcId, userId, true, false, false, true, true, null);
     }
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Study importStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
-        // call internal studyService to force NEW transaction
-        Study study = doImportStudy(xmlFile, xmlFileFormat, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
-        
-        
-        //indexService.updateStudy(study.getId());
-        return study;
+        return doImportStudy(xmlFile, xmlFileFormat, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
     }
     
     
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Study doImportStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
+    private Study doImportStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
         logger.info("Begin doImportStudy");
         VDCNetwork vdcNetwork = vdcNetworkService.find();
         VDC vdc = em.find(VDC.class, vdcId);

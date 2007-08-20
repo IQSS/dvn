@@ -44,7 +44,7 @@
                     <distStmt>
                     <!--  We are adding this temporarily. Census should provide this information in the MIF.  -->
            			 	<distrbtr>
-               				<ExtLink URI="http://www.thedataweb.org/images/ferrett_dataweb.jpg" title="Logo"/>
+               				<ExtLink URI="http://www.thedataweb.org/images/ferrett_dataweb.jpg" title="Logo" role="image"/>
                         	U.S. Census Bureau
                         	<ExtLink URI="http://www.thedataweb.org/index.html" title="URL"/>
             			</distrbtr>
@@ -77,7 +77,7 @@
                     <distStmt>
                        <distrbtr>
                         <xsl:if test="normalize-space(a:dataSet/a:sponsorInfo/@imageUrl) != ''">
-                       		<ExtLink title="Logo">
+                       		<ExtLink title="Logo" role="image">
                        		<xsl:attribute name="URI"><xsl:value-of select="normalize-space(a:dataSet/a:sponsorInfo/@imageUrl)"/></xsl:attribute>
                        	    </ExtLink>
                        	</xsl:if>

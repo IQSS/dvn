@@ -17,8 +17,16 @@ import java.util.logging.Logger;
 
 */
 public class AdvancedStatGUIdata {
-    private static Logger theLogger = Logger.getLogger(AdvancedStatGUIdata.class.getName());
+    // static fields
     
+    private static Logger theLogger = Logger.getLogger(AdvancedStatGUIdata.class.getName());
+    private static String[] modelFilter = {"gam.logit", "gam.normal","gam.poisson","gam.probit","logit.gee"};
+    private static Set<String> excludedModels = new HashSet<String>();
+    static {
+        for (int i = 0; i < modelFilter.length;i++){
+            excludedModels.add(modelFilter[i]);
+        }
+    }
    // accessors
    // List of model-specs
     protected List<AdvancedStatGUIdata.Model> model=  new ArrayList<AdvancedStatGUIdata.Model>();
@@ -166,6 +174,7 @@ public class AdvancedStatGUIdata {
             this.maxSetx = value;
           }
 
+          @Override
           public String toString(){
             StringBuilder sb = new StringBuilder("object dump:\nclass name=model\n");
             sb.append("\nmdlName="+mdlName);
@@ -251,6 +260,7 @@ public class AdvancedStatGUIdata {
               public void setLabel(String value) {
                   this.label = value;
               }
+              @Override
               public String toString(){
                 StringBuilder sb = new StringBuilder("\nobject dump:\nclass name=varBox");
                 sb.append("\ntype="+type);
@@ -276,15 +286,18 @@ public class AdvancedStatGUIdata {
         if (this.modelCategoryId==null){
             this.modelCategoryId = new TreeMap<String, List>();
         }
-
+        
         int ii =0;
         modelloop:
         for (Zelig.Model z : zlgLst){
           ii++;
           AdvancedStatGUIdata.Model mdlii = new AdvancedStatGUIdata.Model();
-          // 
-          out.println("\n+++++++++++++++ start of model("+z.getName()+") +++++++++++++++\n");
-
+          // out.println("\n+++++++++++++++ start of model("+z.getName()+") +++++++++++++++\n");
+          if (excludedModels.contains(z.getName())){
+            ii--;
+            out.println("skip this model="+z.getName()+" (incompatible with DVN)");
+            continue modelloop;
+          }
           // fields that do not require calculations
 
           // mdlId
@@ -292,7 +305,7 @@ public class AdvancedStatGUIdata {
           StringBuilder sb = new StringBuilder("zlg_");
           sb.append(id);
           String mdlId = sb.toString();
-         out.println("mdlId="+mdlId);
+          //out.println("mdlId="+mdlId);
 
           mdlii.setMdlId(mdlId);
 
@@ -496,7 +509,7 @@ public class AdvancedStatGUIdata {
                       // for each modelingType
                       //if  (mdt.getValue().equals("continuous")) {
                       //if ( mdt.getValue() == MODEL.fromValue("continuous")){
-                      out.print("i="+i+"\t howmany="+otsize+"\n");
+                      //out.print("i="+i+"\t howmany="+otsize+"\n");
                       if (mdt.getValue() != null){
                       //if ( (mdt.getValue().value() != null) || (mdt.getValue().value().equals(""))){
                           String mdtv = mdt.getValue().value();
@@ -763,11 +776,13 @@ public class AdvancedStatGUIdata {
         } // each model
 
         // test
-        //out.println("how many models are processed="+this.getModel().size());
+        out.println("\n\nhow many models are processed="+this.getModel().size());
         /*
+        out.println("\n\nmodel ID\tmodel Name\tModel Title");
         for (AdvancedStatGUIdata.Model zl : this.getModel()){
-          out.println("title="+zl.getTitle());
+          out.println(zl.getMdlId()+","+zl.getMdlName()+","+zl.getTitle());
         }
+        out.print("\n");
         */
     }  // top: constructor
 

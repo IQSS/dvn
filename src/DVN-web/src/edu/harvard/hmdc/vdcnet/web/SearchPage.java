@@ -425,8 +425,8 @@ public class SearchPage extends VDCBaseBean{
             
             renderSearch = true;
             searchRadioItems = new ArrayList();
-            searchRadioItems.add(new SelectItem("0", "Search All Collections"));
-            searchRadioItems.add(new SelectItem("1", "Search This Collection"));
+            searchRadioItems.add(new SelectItem("0", "All Collections"));
+            searchRadioItems.add(new SelectItem("1", "This Collection"));
             searchFilter = 0;
             
         } else if (mode == StudyListing.VDC_RECENT_STUDIES) {

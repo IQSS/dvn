@@ -10,6 +10,7 @@
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
 import com.sun.rave.web.ui.model.UploadedFile;
+import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.DataTable;
 import edu.harvard.hmdc.vdcnet.study.EditStudyService;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
@@ -30,6 +31,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -40,6 +42,7 @@ public class ImportStudyPage extends VDCBaseBean  {
     
     @EJB VDCServiceLocal vdcService;
     @EJB StudyServiceLocal studyService;
+    @EJB IndexServiceLocal indexService;
     
     private UploadedFile browserFile;
     private Long vdcId;
@@ -113,8 +116,17 @@ public class ImportStudyPage extends VDCBaseBean  {
             try {
                 File xmlFile = File.createTempFile("ddi", ".xml");
                 browserFile.write(xmlFile);
-                studyService.importStudy(xmlFile, xmlFileFormat, vdcId, lb.getUser().getId(), registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles, null);
-                resultMsg = "Import succeeded.";
+                
+                Study study = studyService.importStudy(xmlFile, xmlFileFormat, vdcId, lb.getUser().getId(), registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles, null);
+                indexService.updateStudy(study.getId());
+                
+                // create result message
+                HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
+                String link = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
+                        + "/faces/study/StudyPage.jsp?studyId=" + study.getId();
+                
+                resultMsg = "Import succeeded: " + link;
+                
             } catch (Exception ex) {
                 resultMsg = "Import failed: " + ex.getMessage() ;
                 ex.printStackTrace();

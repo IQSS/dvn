@@ -474,9 +474,9 @@ public class HomePage extends VDCBaseBean{
                 
                 textTag =  new HtmlOutputText();
                 textTag.setEscape(false);
-                textTag.setValue("<span class=dvn_dvNotReleased>Not yet Released</span>");
+                textTag.setValue("<span class=dvn_dvNotReleased>Not Released</span>");
                 linkPanel.getChildren().add(textTag);
-                nodelink.setToolTip("Dataverse not yet released (under construction).");
+                nodelink.setToolTip("This dataverser is not released.");
             } 
             linkPanel.getChildren().add(endLinkTag);
             column.getChildren().add(linkPanel);

@@ -57,6 +57,7 @@ use VDC::DSB::CaseWiseSubset;
 use VDC::DSB::DDISAXparser;
 use VDC::DSB::StatCodeWriter;
 our $DEBUG;  # debugging?
+our $useDDIMethod = 1; 
 
 # performance
 our $NICE=20; # nice value
@@ -225,6 +226,9 @@ my $dtdwnldf = $CGIparamSet->getDwnldType();
 
 &crtTmpFls; 
 
+if ( $useDDIMethod )
+{
+
 # ///////////////////////////////////////////////
 # get var-data from the ddi
 # ///////////////////////////////////////////////
@@ -322,8 +326,28 @@ $logger->vdcLOG_warning( 'VDC::DSB', $script_name,  "got ddi"); # debug
 	$CGIparamSet->addMetaData($MD);
 	$CGIparamSet->setMVtypeCode();
 	print TMPX "metadata1:\n", Dumper($CGIparamSet);
+}
+else
+{
+	$logger->vdcLOG_warning('VDC::DSB', $script_name, "using alternative, direct-to-SQL mechanism for retreiving metadata"); # debug
 
+	my $varIDhsh=$CGIparamSet->getVarIDhsh();
+	my $fileid = 0; 
 
+	if ( $dataURL =~/fileId=([0-9]*)/ )
+	{
+	    $fileid = $1; 
+	}
+
+	my $metaDataDirect = VDC::DSB::varMetaDataDirect->new(FileID =>$fileid, VarID=>$varIDhsh);
+	my $MD = $metaDataDirect->obtainMeta (); 
+
+	print TMPX "metadata0: (obtained from SQL tables)\n", Dumper($MD);
+	$CGIparamSet->addMetaData($MD);
+	$CGIparamSet->setMVtypeCode();
+	print TMPX "metadata1:\n", Dumper($CGIparamSet);
+
+}
 
 
 

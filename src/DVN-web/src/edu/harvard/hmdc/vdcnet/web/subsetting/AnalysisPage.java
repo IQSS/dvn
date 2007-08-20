@@ -206,7 +206,7 @@ public class AnalysisPage extends VDCBaseBean {
     
   } // end of _init()
   
-  
+  private static final int INITIALROWNO = 20;
   
   private static final int PANE_DWNLD =   3;
   private static final int PANE_RECODE = 2;
@@ -3627,7 +3627,7 @@ if (isRecodedVar(varId)){
        out.println("current Row Index(2)="+data.getRowIndex());
         FacesContext.getCurrentInstance().renderResponse();
             howManyVarsChecked();
-      FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedNoRows", selectedNoRows);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedNoRows", selectedNoRows);
 
       out.println("+++++++++ howManyRows_processValueChange: end +++++++++");
     }
@@ -4769,7 +4769,10 @@ if (baseVarToDerivedVar.containsKey(varId)){
                 sessionMap.put("advStatVarRBox3",advStatVarRBox3);
 
                 sessionMap.put("checkboxSelectUnselectAll",checkboxSelectUnselectAll);
-                howManyRowsOptions.setSelectedValue("20");
+                selectedNoRows = Integer.toString(INITIALROWNO);
+                howManyRowsOptions.setSelectedValue(selectedNoRows);
+                sessionMap.put("selectedNoRows",selectedNoRows);
+                out.println("selectedNoRows="+selectedNoRows);
                 out.println("1st time visit: selected value for howManyRows="+howManyRowsOptions.getSelectedValue());
               } else {
                 // set the stored data to the key page-scoped objects
@@ -4795,6 +4798,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
                 checkboxSelectUnselectAll = (Checkbox) sessionMap.get("checkboxSelectUnselectAll");
                 
                 selectedNoRows = (String) sessionMap.get("selectedNoRows");
+                out.println("post-back case: returned the selected value for howManyRows="+selectedNoRows);
                 howManyRowsOptions.setSelectedValue(selectedNoRows);
                 out.println("post-back case: selected value for howManyRows="+howManyRowsOptions.getSelectedValue());
 

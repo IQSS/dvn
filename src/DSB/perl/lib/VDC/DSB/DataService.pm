@@ -2497,7 +2497,7 @@ sub createDataCitationFile{
 
 	if ($rsCriteria){
 		if ($outputType eq 'html') {
-			$rsCriteria = "_Row selection criteria for the subset used in your analysis_:</pre>\n\n<blockquote>" . $rsCriteria;
+			$rsCriteria = "<p>_Row selection criteria for the subset used in your analysis_:</p>\n\n<blockquote>" . $rsCriteria . "</blockquote>\n\n";
 		} elsif ($outputType eq 'txt') {
 			$rsCriteria = "_Row selection Criteria for the subset you chose_:\n\n" . $rsCriteria;
 		}
@@ -2517,9 +2517,11 @@ sub createDataCitationFile{
 	
 	
 	if ($outputType eq 'html') {
-		$cTemplate->[0]= "<blockquote>Extract From \"" . $self->{citation}->{studytitle} . "\"</blockquote>\n\n<pre>";
+		# $cTemplate->[0]= "<blockquote>Extract From \"" . $self->{citation}->{studytitle} . "\"</blockquote>\n\n";
+		$cTemplate->[0]= "";
 	} elsif ($outputType eq 'txt') {
-		$cTemplate->[0]= "Extract From \"" . $self->{citation}->{studytitle} . "\"\n\n";
+		# $cTemplate->[0]= "Extract From \"" . $self->{citation}->{studytitle} . "\"\n\n";
+		$cTemplate->[0]= "";
 	}
 	
 	print "citation file(part 1):\n", $cTemplate->[0] if $DEBUG ;
@@ -2540,7 +2542,7 @@ sub createDataCitationFile{
 
 	
 	if ($outputType eq 'html') {
-		$cTemplate->[1]= "_Citation_ for the full data set you chose_:</pre>\n\n<blockquote>" . $self->{citation}->{OfflineCitation} . "</blockquote>\n\n<pre>";
+		$cTemplate->[1]= "<pre>_Citation_ for the full data set you chose_:</pre>\n\n<blockquote>" . $self->{citation}->{OfflineCitation} . "</blockquote>\n\n";
 	}  elsif ($outputType eq 'txt') {
 		$cTemplate->[1]= "_Citation for the full data set you chose_:\n\n" . $self->{citation}->{OfflineCitation} . "\n\n";
 	}
@@ -2563,7 +2565,7 @@ sub createDataCitationFile{
 		$zeligString = '<pre>_Information on the statistical model you ran, including how to cite it_:</pre><blockquote><a href="' . $zeligModelURL . '" >'. $zeligModelURL . '</a></blockquote>';
 	}
 	if ($outputType eq 'html') {
-		$cTemplate->[2]= $rsCriteria . "</blockquote>\n\n<pre>_Citation for this subset used in your analysis_:</pre>\n\n<blockquote>" . $self->{citation}->{OfflineCitation} . ' ' . join(',', @{$self->{_varNameA}}) . ' [VarGrp/@var(DDI)]; ' . "\n" . $fileUNFdata . '</blockquote>' . $zeligString ;
+		$cTemplate->[2]= $rsCriteria . "<pre>_Citation for this subset used in your analysis_:</pre>\n\n<blockquote>" . $self->{citation}->{OfflineCitation} . ' ' . join(',', @{$self->{_varNameA}}) . ' [VarGrp/@var(DDI)]; ' . "\n" . $fileUNFdata . '</blockquote>' . $zeligString ;
 	}  elsif ($outputType eq 'txt') {
 		$cTemplate->[2]= $rsCriteria . "\n\n_Citation for this subset you chose_:\n\n" . $self->{citation}->{OfflineCitation} . ' ' . join(',', @{$self->{_varNameA}}) . ' [VarGrp/@var(DDI)]; ' . "\n" . $fileUNFdata . "\n";
 	}

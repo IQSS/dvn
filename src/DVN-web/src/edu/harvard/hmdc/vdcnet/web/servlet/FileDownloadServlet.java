@@ -332,25 +332,49 @@ public class FileDownloadServlet extends HttpServlet{
 			// set content type to that stored in the db,
 			// if available.
 			String dbContentType = file.getFileType();
-			if ( dbContentType != null ) {
-			    res.setContentType( dbContentType );
-			}
 
 			// specify the file name, if available:
 			String dbFileName = file.getFileName();
-			if ( dbFileName != null ) {
-			    if ( dbContentType != null &&
-				  ( dbContentType.equalsIgnoreCase("application/pdf") || 
-				    dbContentType.equalsIgnoreCase("text/xml") || 
-				    dbContentType.equalsIgnoreCase("text/plain") ) ) {
-				res.setHeader ( "Content_disposition",
-						"inline; filename=\"" + dbFileName + "\"" ); 
 
+			if ( dbFileName != null ) {
+			    if ( dbContentType != null ) {
+
+				// The "content-disposition" header is for the
+				// Mozilla family of browsers: 
+
+				if ( dbContentType.equalsIgnoreCase("application/pdf") || 
+				     dbContentType.equalsIgnoreCase("text/xml") || 
+				     dbContentType.equalsIgnoreCase("text/plain"))  {
+				    res.setHeader ( "Content-disposition",
+						    "inline; filename=\"" + dbFileName + "\"" ); 
+				    
+				} else {
+				    res.setHeader ( "Content-disposition",
+						    "attachment; filename=\"" + dbFileName + "\"" ); 
+				}
+
+				// And this one is for MS Explorer: 
+				res.setHeader ( "Content-Type",
+						dbContentType + "; name=\"" + dbFileName + "\"; charset=ISO-8859-1" ); 
+				
 			    } else {
-				res.setHeader ( "Content_disposition",
+				// Have filename, but no content-type; 
+				// All we can do is provide a Mozilla-friendly
+				// header: 
+
+				res.setHeader ( "Content-disposition",
 						"attachment; filename=\"" + dbFileName + "\"" ); 
 			    }
+			} else {
+			    // no filename available; 
+			    // but if we have content-type in the database
+			    // we'll just set that: 
+
+			    if ( dbContentType != null ) {
+				res.setContentType( dbContentType );
+			    }
 			}
+
 			
 			// send the file as the response
 			InputStream in = new FileInputStream(new File(file.getFileSystemLocation()));

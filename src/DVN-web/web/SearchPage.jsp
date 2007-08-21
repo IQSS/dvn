@@ -100,7 +100,6 @@
                                   <f:selectItem   itemLabel="Sort By:" itemValue="" />
                                   <f:selectItem   itemLabel="- Study ID" itemValue="studyId" />
                                   <f:selectItem   itemLabel="- Title" itemValue="title" />
-                                  <f:selectItem   itemLabel="- Number of Downloads" itemValue="numberOfDownloads desc" />
                               </h:selectOneMenu>
                           </ui:panelGroup>
                           

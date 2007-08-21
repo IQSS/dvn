@@ -130,16 +130,21 @@ public class VDCImportServlet extends HttpServlet {
             return;
             
         }
-        int importedStudies=0;
+
+        List successfulIds = new ArrayList();
         List<File> files = getDDIFilesFromRepository(logger,legacyFileDir,authStr);
         for (Iterator it = files.iterator(); it.hasNext();) {
             File file = (File) it.next();
-            if (doImportStudy(req,res,logger,  file, vdcId,userId)) {
-                importedStudies++;
+            Long studyId = doImportStudy(req,res,logger,  file, vdcId,userId);
+            if ( studyId != null) {
+                successfulIds.add(studyId);
             }
         }
         
-        logger.info("Import completed, imported "+importedStudies+" studies, time= "+new Date()+". \n\n");
+        // now index
+        indexService.indexList(successfulIds);
+        
+        logger.info("Import completed, imported "+ successfulIds.size() +" studies, time= "+new Date()+". \n\n");
         
     }
     
@@ -161,14 +166,13 @@ public class VDCImportServlet extends HttpServlet {
         return files;
     }
     
-    private boolean doImportStudy(HttpServletRequest req, HttpServletResponse res, Logger logger,  File studyFile,Long vdcId,Long userId ) {
+    private Long doImportStudy(HttpServletRequest req, HttpServletResponse res, Logger logger,  File studyFile,Long vdcId,Long userId ) {
         String ddiFilePath = studyFile.getParent()+studyFile.separatorChar+studyFile.getName();
         logger.info("Importing study "+ddiFilePath+"\n");
-        boolean success=false;
+        Long studyId = null;
         try {
-            studyService.importLegacyStudy(studyFile,vdcId,userId);
+            studyId = studyService.importLegacyStudy(studyFile,vdcId,userId).getId();
             logger.info("Successfully imported study "+ddiFilePath+"\n");
-            success=true;
             
         } catch(Exception e) {
             if (e.getCause()!=null && e.getCause() instanceof MappingException) {
@@ -185,9 +189,8 @@ public class VDCImportServlet extends HttpServlet {
                     logger.severe(stackTrace);
                 }
             }
-            success=false;
         }
-        return success;
+        return studyId;
     }
     
     

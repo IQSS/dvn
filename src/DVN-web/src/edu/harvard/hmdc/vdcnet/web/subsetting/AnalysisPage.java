@@ -442,14 +442,13 @@ public class AnalysisPage extends VDCBaseBean {
     // dwnldBttn:h:commandButton@action
     public boolean checkDwnldParameters (){
       boolean result=true;
-      /*
       // param-checking conditions
-      if () {
-      
+      if (dwnldFileTypeSet.getValue()== null) {
+        out.println("download radio button set: no selected value");
         result=false;
+      } else {
+        out.println("download radio button set: selected value"+(String)dwnldFileTypeSet.getValue());
       }
-      
-      */
       return result;
     }
     
@@ -1759,14 +1758,15 @@ if (isRecodedVar(varId)){
     // checking parameters before submission-
     public boolean checkEdaParameters (){
       boolean result=true;
-      /*
+      
+      Object[] vs = edaOptionSet.getSelectedValues();
       // param-checking conditions
-      if () {
-      
+      if (vs.length < 1) {
+        out.println("EDA(checkEdaParameters()): no option is checked");
         result=false;
+      } else{
+        out.println("EDA(checkEdaParameters()): number of selected options="+vs.length);
       }
-      
-      */
       return result;
     }
     

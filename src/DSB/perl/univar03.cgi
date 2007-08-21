@@ -55,9 +55,10 @@ $XML::SAX::ParserPackage = "XML::SAX::Expat";
 use VDC::DSB::DataService;
 use VDC::DSB::CaseWiseSubset;
 use VDC::DSB::DDISAXparser;
+use VDC::DSB::varMetaDataDirect;
 use VDC::DSB::StatCodeWriter;
 our $DEBUG;  # debugging?
-our $useDDIMethod = 1; 
+our $useDDIMethod = 0; 
 
 # performance
 our $NICE=20; # nice value
@@ -226,6 +227,8 @@ my $dtdwnldf = $CGIparamSet->getDwnldType();
 
 &crtTmpFls; 
 
+my $MD; 
+
 if ( $useDDIMethod )
 {
 
@@ -321,7 +324,7 @@ $logger->vdcLOG_warning( 'VDC::DSB', $script_name,  "got ddi"); # debug
 	}
 
 	# add retrieved metadata 
-	my $MD =$ddimtdt->passMetadata();
+	$MD =$ddimtdt->passMetadata();
 	print TMPX "metadata0:\n", Dumper($MD);
 	$CGIparamSet->addMetaData($MD);
 	$CGIparamSet->setMVtypeCode();
@@ -339,8 +342,12 @@ else
 	    $fileid = $1; 
 	}
 
+	$logger->vdcLOG_warning('VDC::DSB', $script_name, "fileid: " . $fileid); # debug
+	$logger->vdcLOG_warning('VDC::DSB', $script_name, "vars: " . join (",", keys (%$varIDhsh) ) ); # debug
+
+
 	my $metaDataDirect = VDC::DSB::varMetaDataDirect->new(FileID =>$fileid, VarID=>$varIDhsh);
-	my $MD = $metaDataDirect->obtainMeta (); 
+	$MD = $metaDataDirect->obtainMeta (); 
 
 	print TMPX "metadata0: (obtained from SQL tables)\n", Dumper($MD);
 	$CGIparamSet->addMetaData($MD);
@@ -416,67 +423,82 @@ if ($dataURL) {
 				      "failed to create subsetting object");
 		
 	    } 
-
-	    my $datafile_format = &check_fileFormat ( $ddiforR . "_stripped", $fileid ); 
-
-	    $logger->vdcLOG_info ("VDC::DSB", "Disseminate",
-				  "datafile format detected: " . 
-				  $datafile_format );
-		
-
-
-	    my $coldef_file = &locate_subsettingMetaFile ( $ddiforR . "_stripped", $fileid, $datafile_format ); 
-
-	    if ( $coldef_file )
-	    {
-		$logger->vdcLOG_info ("VDC::DSB", "Disseminate",
-					      "found coldef file: "
-					      . $coldef_file );
-	    }
-	    else
-	    {
-		$logger->vdcLOG_fatal ("VDC::DSB", "Disseminate",
-					       "failed to locate coldef file"); 
-	    }
 	    
-	    
-	    # below is a (bit of a hackish) fix for an exotic
-	    # problem we've discovered: rcut doesn't handle the 
-	    # case of a single variable column in a datafile 
-	    # -- it must be expecting at least one variable 
-	    # separator character. The good news is that, 
-	    # obviously, we don't need to call rcut at all when 
-	    # we need a single column from a file that only contains
-	    # one column. 
-
-	    open ( VLM, $coldef_file ); 
-	    my $v_counter = 0;
-	    while ( <VLM> )
-	    {
-		$v_counter++; 
-		last if $v_counter > 2; 
-	    }
-	    close VLM; 
+	    my $datafile_format = ""; 
 	    my $rcut_filter = ""; 
 
-	    if ( ( $v_counter == 2 ) && ( $datafile_format eq 'tab' ) )
+	    if ( $useDDIMethod )
 	    {
-		$logger->vdcLOG_info ("VDC::DSB", "Disseminate",
-				  "single-column datafile; no filter needed" );
+		my $datafile_format = &check_fileFormat ( $ddiforR . "_stripped", $fileid ); 
 
-		$rcut_filter = "/bin/cat"; 
+		$logger->vdcLOG_info ("VDC::DSB", "Disseminate",
+				      "format detected (from ddi): " . 
+				      $datafile_format );
+
+		my $coldef_file = &locate_subsettingMetaFile ( $ddiforR . "_stripped", $fileid, $datafile_format ); 
+
+		if ( $coldef_file )
+		{
+		    $logger->vdcLOG_info ("VDC::DSB", "Disseminate",
+					      "found coldef file: "
+					      . $coldef_file );
+		}
+		else
+		{
+		    $logger->vdcLOG_fatal ("VDC::DSB", "Disseminate",
+					   "failed to locate coldef file"); 
+		}
+	    
+	    
+		# below is a (bit of a hackish) fix for an exotic
+		# problem we've discovered: rcut doesn't handle the 
+		# case of a single variable column in a datafile 
+		# -- it must be expecting at least one variable 
+		# separator character. The good news is that, 
+		# obviously, we don't need to call rcut at all when 
+		# we need a single column from a file that only contains
+		# one column. 
+
+		open ( VLM, $coldef_file ); 
+		my $v_counter = 0;
+		while ( <VLM> )
+		{
+		    $v_counter++; 
+		    last if $v_counter > 2; 
+		}
+		close VLM; 
+
+		if ( ( $v_counter == 2 ) && ( $datafile_format eq 'tab' ) )
+		{
+		    $logger->vdcLOG_info ("VDC::DSB", "Disseminate",
+					  "single-column datafile; no filter needed" );
+
+		    $rcut_filter = "/bin/cat"; 
+		}
+		else
+		{
+		    my $output_filter = $subs_obj->produce_subset_filter ( $coldef_file, $datafile_format, '', $varNoStrng );
+
+		
+		    $logger->vdcLOG_info( 'VDC::DSB', $script_name,  "starting rcut pipe for new, Dataverse-style subsetting"); # 
+		    my $delim="\t";
+		    $rcut_filter = $output_filter . " -d'" . $delim . "'";  
+
+		    $logger->vdcLOG_info ("VDC::DSB", "Disseminate",
+					  "filter (ddi mtd.): "
+					  . $rcut_filter );
+		}
 	    }
 	    else
 	    {
-		my $output_filter = $subs_obj->produce_subset_filter ( $coldef_file, $datafile_format, '', $varNoStrng );
-
-		
-		$logger->vdcLOG_info( 'VDC::DSB', $script_name,  "starting rcut pipe for new, Dataverse-style subsetting"); # 
+		$logger->vdcLOG_info ("VDC::DSB", "Disseminate",
+				      "(subsetting meta via db-direct method)" );
+		my $output_filter = &make_SubsetFilter ( $MD, $varNoStrng );
 		my $delim="\t";
 		$rcut_filter = $output_filter . " -d'" . $delim . "'";  
 
 		$logger->vdcLOG_info ("VDC::DSB", "Disseminate",
-				      "filter: "
+				      "filter (NEW mtd.): "
 				      . $rcut_filter );
 	    }
 
@@ -1581,6 +1603,24 @@ sub locate_subsettingMetaFile {
 
     return $subsetting_meta_object->vdc_subsettingMetaFile ( $ddi_file, $fileid, $format ); 
 } 
+
+sub make_SubsetFilter {
+    my $metadata = shift; 
+    my $varIdSeq = shift; 
+
+    my $pat = "/usr/local/VDC/bin/rcut -f "; 
+
+    my @varseq = split ( ",", $varIdSeq ); 
+
+    for my $v (@varseq)
+    {
+	$pat .= ( $metadata->{_varNoMpTbl}->{$v} . "," );
+    }
+
+    chop $pat; 
+
+    return $pat;
+}
 
 sub check_fileFormat {
     my $ddi_file = shift; 

@@ -48,8 +48,9 @@ sub new {
 	# should be moved someplace else
 
 	$self->{sqlHost} = "localhost"; 
-	$self->{sqlUser} = "secret";
-	$self->{sqlDB} = "vdcNet-test";
+	$self->{sqlDB}   = "vdcNet-test";
+	$self->{sqlUser} = "vdcApp";
+	$self->{sqlPw}   = "secret";
 
 	$novars = scalar(keys(%{$self->{VarID}}));
 	
@@ -68,8 +69,9 @@ sub obtainMeta {
 	my $sqlHost = $self->{sqlHost}; 
 	my $sqlUser = $self->{sqlUser};
 	my $sqlDB   = $self->{sqlDB};
+	my $sqlPw   = $self->{sqlPw};
 	
-	my $dbh = DBI->connect("DBI:Pg:dbname=$database",$username,$password);
+	my $dbh = DBI->connect("DBI:Pg:dbname=$sqlDB",$sqlUser,$sqlPw);
 
 	
 	# 1st lookup: find out the datatable id by the studyfile id 
@@ -107,7 +109,7 @@ sub obtainMeta {
 	    {
 		$self->{_varNameH}->{$dv_var_id} = $var_name; 
 		push @{$self->{_varNameA}}, $var_name; 
-		$self->{_varNoMpTbl}->{$dv_var_id} = $var_order; 
+		$self->{_varNoMpTbl}->{$dv_var_id} = $var_order + 1; 
 		push @{$self->{_varNo}}, $dv_var_id; 
 		
 
@@ -138,33 +140,35 @@ sub obtainMeta {
 
 		push @{$self->{_varLabel}}, $var_label; 
 
-		# more lookups necessary: 
+		# more lookups necessary, for discrete variables:
 
-		if ( $var_type == 1 )
+		if ( $var_type == 1 || $var_type == 0 )
 		{
 		    my $sth1 = $dbh->prepare(qq {SELECT id,label,value FROM variablecategory WHERE datavariable_id=$var_id});
 		    $sth1->execute();
 		
 		    while ( my ($val_id, $val_label, $val_value) = $sth1->fetchrow() )
 		    {
-			$self->{_valLblTbl}->{$var_name} = [] unless $self->{_valLblTbl}->{$var_name}; 
-			push @{$self->{_valLblTbl}->{$var_name}}, [$val_value, $val_label]; 
+			if ( $val_label ne "" )
+			{
+			    $self->{_valLblTbl}->{$var_name} = [] unless $self->{_valLblTbl}->{$var_name}; 
+			    push @{$self->{_valLblTbl}->{$var_name}}, [$val_value, $val_label]; 
+			}
+		    }
+		    
+		    $sth1->finish; 
+
+		    my $sth1 = $dbh->prepare(qq {SELECT endvalue,beginvalue FROM variablerange WHERE datavariable_id=$var_id});
+		    $sth1->execute();
+
+		    while ( my ($endvalue, $beginvalue) = $sth1->fetchrow() )
+		    {
+			$self->{_mssvlTbl}->{$var_name} = [] unless $self->{_mssvlTbl}->{$var_name}; 
+			push @{$self->{_mssvlTbl}->{$var_name}}, [$beginvalue]; 
 		    }
 		    
 		    $sth1->finish; 
 		}
-
-		my $sth1 = $dbh->prepare(qq {SELECT endvalue,beginvalue FROM variablerange WHERE datavariable_id=$var_id});
-		$sth1->execute();
-
-		while ( my ($endvalue, $beginvalue) = $sth1->fetchrow() )
-		{
-		    $self->{_mssvlTbl}->{$var_name} = [] unless $self->{_mssvlTbl}->{$var_name}; 
-		    push @{$self->{_mssvlTbl}->{$var_name}}, [$beginvalue]; 
-		}
-
-		$sth1->finish; 
-
 	    }
 	    else
 	    { 
@@ -179,6 +183,11 @@ sub obtainMeta {
 	while ((my $key, my $value) = each(%{$self})) {
 		$temp->{$key} = $value;
 	}
+
+	# additional values: 
+
+	$temp->{unsafeVarName} = 0; 
+	
 	
 	return $temp;
 }

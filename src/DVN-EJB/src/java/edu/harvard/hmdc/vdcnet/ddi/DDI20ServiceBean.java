@@ -274,7 +274,10 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     private String getFirstId(List<IDNoType> _idList) {
         if ( _idList != null && _idList.size() > 0) {
             IDNoType _id = _idList.get(0);
-            return (String) _id.getContent().get(0);
+            String _idContent = mapFirstContent( _id.getContent() );
+            if ( _idContent != null && !_idContent.trim().equals("") ) {
+                return _idContent;
+            }
         }
         return null;
     }
@@ -282,7 +285,10 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     private String getIdByAgency(List<IDNoType> _idList, String agency) {
         for (IDNoType _id : _idList) {
             if (_id.getAgency()!=null && _id.getAgency().equals(agency)) {
-                return (String) _id.getContent().get(0);
+                String _idContent = mapFirstContent( _id.getContent() );
+                if ( _idContent != null && !_idContent.trim().equals("") ) {
+                    return _idContent;
+                }
             }
         }
 
@@ -421,9 +427,9 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         }
         
         
-        s.setTitle( mapContent( _citation.getTitlStmt().getTitl().getContent().get(0) ) );
+        s.setTitle( mapFirstContent( _citation.getTitlStmt().getTitl().getContent() ) );
         if (_citation.getTitlStmt().getSubTitl().size() != 0) {
-            s.setSubTitle( mapContent( _citation.getTitlStmt().getSubTitl().get(0).getContent().get(0) ) );
+            s.setSubTitle( mapFirstContent( _citation.getTitlStmt().getSubTitl().get(0).getContent() ) );
         }
         
         if ( _citation.getRspStmt() != null ) {
@@ -432,7 +438,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             while (authorIter.hasNext()) {
                 AuthEntyType _author = (AuthEntyType) authorIter.next();
                 StudyAuthor author = new StudyAuthor();
-                author.setName( mapContent( _author.getContent().get(0) ) );
+                author.setName( mapFirstContent( _author.getContent() ) );
                 author.setAffiliation( _author.getAffiliation() );
                 author.setDisplayOrder( authorCount++ );
                 author.setStudy(s);
@@ -447,9 +453,9 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             while (prodIter.hasNext()) {
                 ProducerType _prod = (ProducerType) prodIter.next();
                 StudyProducer prod = new StudyProducer();
-                prod.setName( mapContentList( _prod.getContent(), "value" ) );
-                prod.setUrl( mapContentList( _prod.getContent(), "uri" ) );
-                prod.setLogo( mapContentList( _prod.getContent(), "logo" ) );
+                prod.setName( mapCompoundContent( _prod.getContent(), "value" ) );
+                prod.setUrl( mapCompoundContent( _prod.getContent(), "uri" ) );
+                prod.setLogo( mapCompoundContent( _prod.getContent(), "logo" ) );
                 prod.setAbbreviation( _prod.getAbbr() );
                 prod.setAffiliation( _prod.getAffiliation() );
                 prod.setDisplayOrder( prodCount++ );
@@ -465,7 +471,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             }
             
             if ( _ps.getProdPlac().size() != 0) {
-                s.setProductionPlace( mapContent( _ps.getProdPlac().get(0).getContent().get(0) ) );
+                s.setProductionPlace( mapFirstContent( _ps.getProdPlac().get(0).getContent() ) );
             }
             
             Iterator softIter = _ps.getSoftware().iterator();
@@ -473,7 +479,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             while (softIter.hasNext()) {
                 SoftwareType _soft = (SoftwareType) softIter.next();
                 StudySoftware ss = new StudySoftware();
-                ss.setName( mapContent( _soft.getContent().get(0) ) );
+                ss.setName( mapFirstContent( _soft.getContent() ) );
                 ss.setSoftwareVersion( _soft.getVersion() );
                 ss.setDisplayOrder( softCount++ );
                 ss.setStudy(s);
@@ -481,7 +487,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             }
             
             if ( _ps.getFundAg().size() != 0) {
-                s.setFundingAgency( mapContent( _ps.getFundAg().get(0).getContent().get(0) ) );
+                s.setFundingAgency( mapFirstContent( _ps.getFundAg().get(0).getContent() ) );
             }
             
             Iterator grantIter = _ps.getGrantNo().iterator();
@@ -489,7 +495,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             while (grantIter.hasNext()) {
                 GrantNoType _grant = (GrantNoType) grantIter.next();
                 StudyGrant sg = new StudyGrant();
-                sg.setNumber( mapContent( _grant.getContent().get(0) ) );
+                sg.setNumber( mapFirstContent( _grant.getContent() ) );
                 sg.setAgency( _grant.getAgency() );
                 sg.setDisplayOrder( grantCount++ );
                 sg.setStudy(s);
@@ -503,9 +509,9 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             while (distIter.hasNext()) {
                 DistrbtrType _dist = (DistrbtrType) distIter.next();
                 StudyDistributor dist = new StudyDistributor();
-                dist.setName( mapContentList( _dist.getContent(), "value" ) );
-                dist.setUrl( mapContentList( _dist.getContent(), "uri" ) );
-                dist.setLogo( mapContentList( _dist.getContent(), "logo" ) );
+                dist.setName( mapCompoundContent( _dist.getContent(), "value" ) );
+                dist.setUrl( mapCompoundContent( _dist.getContent(), "uri" ) );
+                dist.setLogo( mapCompoundContent( _dist.getContent(), "logo" ) );
                 dist.setAbbreviation( _dist.getAbbr() );
                 dist.setAffiliation( _dist.getAffiliation() );
                 dist.setDisplayOrder( distCount++ );
@@ -516,7 +522,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             
             if ( _citation.getDistStmt().getContact().size() != 0) {
                 ContactType _contact = _citation.getDistStmt().getContact().get(0);
-                s.setDistributorContact( mapContent( _contact.getContent().get(0) ) );
+                s.setDistributorContact( mapFirstContent( _contact.getContent() ) );
                 s.setDistributorContactEmail( _contact.getEmail() );
                 s.setDistributorContactAffiliation( _contact.getAffiliation() );
             }
@@ -530,7 +536,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             List _depositerList = _citation.getDistStmt().getDepositr();
             if (_depositerList != null && _depositerList.size() != 0) {
                 DepositrType _depositor = (DepositrType) _depositerList.get(0);
-                s.setDepositor( mapContentList(_depositor.getContent(), "value") );
+                s.setDepositor( mapCompoundContent(_depositor.getContent(), "value") );
             }
             
             List _depDateList = _citation.getDistStmt().getDepDate();
@@ -543,17 +549,17 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         if ( _citation.getSerStmt() != null ) {
             SerStmtType _ss = _citation.getSerStmt();
             if (_ss.getSerName().size() != 0) {
-                s.setSeriesName( mapContent( _ss.getSerName().get(0).getContent().get(0) )  );
+                s.setSeriesName( mapFirstContent( _ss.getSerName().get(0).getContent() )  );
             }
             if (_ss.getSerInfo().size() != 0) {
-                s.setSeriesInformation( mapContent( _ss.getSerInfo().get(0).getContent().get(0) )  );
+                s.setSeriesInformation( mapFirstContent( _ss.getSerInfo().get(0).getContent() )  );
             }
         }
         
         if ( _citation.getVerStmt().size() != 0 ) {
             VerStmtType _vs = _citation.getVerStmt().get(0);
             if (_vs.getVersion() != null) {
-                s.setStudyVersion( mapContent( _vs.getVersion().getContent().get(0) ) );
+                s.setStudyVersion( mapFirstContent( _vs.getVersion().getContent() ) );
                 s.setVersionDate( _vs.getVersion().getDate() );
             }
             
@@ -569,7 +575,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         while (notesIter.hasNext()) {
             NotesType _note = (NotesType) notesIter.next();
             if ( NOTE_TYPE_UNF.equals(_note.getType()) ) {
-                s.setUNF( mapUNF( (String)_note.getContent().get(0) ) );
+                s.setUNF( mapUNF( mapFirstContent(_note.getContent() ) ) );
             } else {
                 mapStudyNote( _note, s, noteCount++ );
             }
@@ -600,7 +606,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                     StudyKeyword kw = new StudyKeyword();
                     kw.setVocab( _kw.getVocab() );
                     kw.setVocabURI( _kw.getVocabURI() );
-                    kw.setValue( mapContent(_kw.getContent().get(0)) );
+                    kw.setValue( mapFirstContent(_kw.getContent()) );
                     kw.setDisplayOrder( kwCount++ );
                     kw.setStudy(s);
                     s.getStudyKeywords().add(kw);
@@ -613,7 +619,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                     StudyTopicClass tc = new StudyTopicClass();
                     tc.setVocab( _tc.getVocab() );
                     tc.setVocabURI( _tc.getVocabURI() );
-                    tc.setValue( mapContent(_tc.getContent().get(0)) );
+                    tc.setValue( mapFirstContent(_tc.getContent()) );
                     tc.setDisplayOrder( tcCount++ );
                     tc.setStudy(s);
                     s.getStudyTopicClasses().add(tc);
@@ -691,10 +697,10 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 if (_sum.getGeoBndBox() != null) {
                     // currently we store geographic bounds as a list, although there is only ever one set
                     StudyGeoBounding geoBound = new StudyGeoBounding();
-                    geoBound.setWestLongitude( mapContent( _sum.getGeoBndBox().getWestBL().getContent().get(0) ) );
-                    geoBound.setEastLongitude( mapContent( _sum.getGeoBndBox().getEastBL().getContent().get(0) ) );
-                    geoBound.setSouthLatitude( mapContent( _sum.getGeoBndBox().getSouthBL().getContent().get(0) ) );
-                    geoBound.setNorthLatitude( mapContent( _sum.getGeoBndBox().getNorthBL().getContent().get(0) ) );
+                    geoBound.setWestLongitude( mapFirstContent( _sum.getGeoBndBox().getWestBL().getContent() ) );
+                    geoBound.setEastLongitude( mapFirstContent( _sum.getGeoBndBox().getEastBL().getContent() ) );
+                    geoBound.setSouthLatitude( mapFirstContent( _sum.getGeoBndBox().getSouthBL().getContent() ) );
+                    geoBound.setNorthLatitude( mapFirstContent( _sum.getGeoBndBox().getNorthBL().getContent() ) );
                     geoBound.setDisplayOrder(0);
                     geoBound.setStudy(s);
                     s.getStudyGeoBoundings().add(geoBound);
@@ -776,7 +782,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             String sleNote = "";
             while (methodNotesIter.hasNext()) {
                 NotesType _note = (NotesType) methodNotesIter.next();
-                sleNote +=  mapContent(_note.getContent().get(0) );
+                sleNote +=  mapFirstContent(_note.getContent() );
                 sleNote += methodNotesIter.hasNext() ? "; " : "";
             }
             
@@ -930,7 +936,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     }
     
     private void mapStudyNote(NotesType _note, Study s, int count) {
-        String _noteText = mapContent( _note.getContent().get(0) );
+        String _noteText = mapFirstContent( _note.getContent() );
         if ( _noteText != null && !_noteText.trim().equals("") ) {
             StudyNote note = new StudyNote();
             note.setText( _noteText );
@@ -955,18 +961,21 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     }
     
     private void mapIdNo(IDNoType _idNo, Study s, boolean mapAllIds){
-        String _idContent = mapContent( _idNo.getContent().get(0) );
+        String _idContent = mapFirstContent( _idNo.getContent() );
+
+        if (_idContent != null && !_idContent.trim().equals("") ) {
         
-        if (_idNo.getAgency()!=null && _idNo.getAgency().equals(AGENCY_HANDLE)) {
-            mapIdContent(s, _idContent );
-            
-        } else if (mapAllIds) {
-            StudyOtherId studyOtherId = new StudyOtherId();
-            studyOtherId.setOtherId(_idContent);
-            studyOtherId.setAgency(_idNo.getAgency());
-            studyOtherId.setStudy(s);
-            studyOtherId.setDisplayOrder(0);
-            s.getStudyOtherIds().add(studyOtherId);
+            if (_idNo.getAgency()!=null && _idNo.getAgency().equals(AGENCY_HANDLE)) {
+                mapIdContent(s, _idContent );
+
+            } else if (mapAllIds) {
+                StudyOtherId studyOtherId = new StudyOtherId();
+                studyOtherId.setOtherId(_idContent);
+                studyOtherId.setAgency(_idNo.getAgency());
+                studyOtherId.setStudy(s);
+                studyOtherId.setDisplayOrder(0);
+                s.getStudyOtherIds().add(studyOtherId);
+            }
         }
     }
     
@@ -994,13 +1003,15 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         StudyFile file = new StudyFile();
         
         if (_om.getLabl().size() > 0) {
-            file.setFileName( (String) _om.getLabl().get(0).getContent().get(0) );
-        } else {
+            file.setFileName( mapFirstContent( _om.getLabl().get(0).getContent() ) );
+        }
+        // if fileName has not been set or it is empty; set as default
+        if (file.getFileName() == null || file.getFileName().trim().equals("") ) {
             file.setFileName("file");
         }
         
         if (_om.getTxt() != null) {
-            file.setDescription( mapContent( (String) _om.getTxt().getContent().get(0) ) );
+            file.setDescription( mapFirstContent( _om.getTxt().getContent() ) );
         }
         
         file.setFileSystemLocation( _om.getURI() );
@@ -1020,10 +1031,14 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         if ( _fd.getFileTxt().size() > 0 ) {
             _fileTxt = _fd.getFileTxt().get(0);
             if (  _fileTxt.getFileName() != null ) {
-                file.setFileName( mapContent( _fd.getFileTxt().get(0).getFileName().getContent().get(0) ) );
+                file.setFileName( mapFirstContent( _fd.getFileTxt().get(0).getFileName().getContent() ) );
+                // check to make sure content wasn't empty
+                if (file.getFileName() == null || file.getFileName().trim().equals("") ) {
+                    file.setFileName("file");
+                }
             }
             if (  _fileTxt.getFileCont() != null ) {
-                file.setDescription( mapContent( _fd.getFileTxt().get(0).getFileCont().getContent().get(0) ) );
+                file.setDescription( mapFirstContent( _fd.getFileTxt().get(0).getFileCont().getContent() ) );
             }
         }
         
@@ -1038,13 +1053,13 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             if (_fileTxt != null && _fileTxt.getDimensns() != null) {
                 DimensnsType _dim = _fileTxt.getDimensns();
                 if ( _dim.getCaseQnty().size() > 0) {
-                    dt.setCaseQuantity( new Long( (String) _dim.getCaseQnty().get(0).getContent().get(0) ) );
+                    dt.setCaseQuantity( new Long( mapFirstContent( _dim.getCaseQnty().get(0).getContent() ) ) );
                 }
                 if ( _dim.getVarQnty().size() > 0) {
-                    dt.setVarQuantity( new Long( (String) _dim.getVarQnty().get(0).getContent().get(0) ) );
+                    dt.setVarQuantity( new Long( mapFirstContent( _dim.getVarQnty().get(0).getContent() ) ) );
                 }
                 if ( _dim.getRecPrCas().size() > 0) {
-                    dt.setRecordsPerCase( new Long( (String) _dim.getRecPrCas().get(0).getContent().get(0) ) );
+                    dt.setRecordsPerCase( new Long( mapFirstContent( _dim.getRecPrCas().get(0).getContent() ) ) );
                 }
             }
             
@@ -1069,7 +1084,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             
             if (catName != null) {
                 String id = mapFileNote( notes, "icpsr:category", "id");
-                if (id != null) {
+                if (id != null && !id.trim().equals("") ) {
                     catName = id + ". " + catName;
                 }
             }
@@ -1086,7 +1101,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         for (NotesType _note : notes) {
             if (_note.getType() != null &&_note.getType().equals(type) ) {
                 if (subject == null || (_note.getSubject() != null &&_note.getSubject().equals(subject) ) ) {
-                    return (String) _note.getContent().get(0);
+                    return mapFirstContent( _note.getContent() );
                 }
             }
         }
@@ -1156,7 +1171,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 while (labelIter.hasNext()) {
                     LablType _labl =  (LablType) labelIter.next();
                     if ( _labl.getLevel() != null && _labl.getLevel().toLowerCase().equals(LEVEL_VARIABLE) ) {
-                        dv.setLabel( (String) _labl.getContent().get(0) );
+                        dv.setLabel( mapFirstContent( _labl.getContent() ) );
                     }
                 }
                 
@@ -1167,7 +1182,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                     SumStatType _ss = (SumStatType) sumStatIter.next();
                     SummaryStatistic ss = new SummaryStatistic();
                     ss.setType( varService.findSummaryStatisticTypeByName( summaryStatisticTypeList, _ss.getType() ) );
-                    ss.setValue( (String) _ss.getContent().get(0) );
+                    ss.setValue( mapFirstContent( _ss.getContent() ) );
                     ss.setDataVariable(dv);
                     
                     dv.getSummaryStatistics().add(ss);
@@ -1178,7 +1193,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 while (noteIter.hasNext()) {
                     NotesType _note = (NotesType) noteIter.next();
                     if ( "VDC:UNF".equals(_note.getType()) ) {
-                        dv.setUnf( mapUNF( (String) _note.getContent().get(0) ) );
+                        dv.setUnf( mapUNF( mapFirstContent( _note.getContent() ) ) );
                     }
                 }
                 
@@ -1233,12 +1248,12 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 
                 // concept
                 if (_dv.getConcept().size() != 0) {
-                    dv.setConcept( mapContent( _dv.getConcept().get(0).getContent().get(0) ) );
+                    dv.setConcept( mapFirstContent( _dv.getConcept().get(0).getContent() ) );
                 }
                 
                 // universe
                 if (_dv.getUniverse().size() != 0) {
-                    dv.setUniverse( mapContent( _dv.getUniverse().get(0).getContent().get(0) ) );
+                    dv.setUniverse( mapFirstContent( _dv.getUniverse().get(0).getContent() ) );
                 }
                 
                 // todo: qstnTxt: wait to handle until we know more of how we will use it
@@ -1256,7 +1271,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         while (labelIter.hasNext()) {
             LablType _labl =  (LablType) labelIter.next();
             if ( _labl.getLevel() != null && _labl.getLevel().toLowerCase().equals(LEVEL_CATEGORY) ) {
-                cat.setLabel( (String) _labl.getContent().get(0) );
+                cat.setLabel( mapFirstContent( _labl.getContent() ) );
             }
         }
         
@@ -1265,14 +1280,14 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         while (catStatIter.hasNext()) {
             CatStatType _catStat =  (CatStatType) catStatIter.next();
             if ( "freq".equals(_catStat.getType()) ) {
-                String _freq = mapContent( _catStat.getContent().get(0) );
+                String _freq = mapFirstContent( _catStat.getContent() );
                 if (_freq != null && !_freq.equals("") ) {
                     cat.setFrequency( new Long( _freq ) );
                 }
             }
         }
         
-        cat.setValue( (String) _cat.getCatValu().getContent().get(0) );
+        cat.setValue( mapFirstContent( _cat.getCatValu().getContent() ) );
         cat.setMissing( "Y".equals(_cat.getMissing())  );
         
         cat.setDataVariable(dv);
@@ -1289,17 +1304,17 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             Object _elem = (Object) iter.next();
             // check type
             if (_elem instanceof NationType) {
-                returnVal += mapContent( ((NationType) _elem).getContent().get(0) );
+                returnVal += mapFirstContent( ((NationType) _elem).getContent() );
             } else if (_elem instanceof GeogCoverType) {
-                returnVal += mapContent( ((GeogCoverType) _elem).getContent().get(0) );
+                returnVal += mapFirstContent( ((GeogCoverType) _elem).getContent() );
             } else if (_elem instanceof GeogUnitType) {
-                returnVal += mapContent( ((GeogUnitType) _elem).getContent().get(0) );
+                returnVal += mapFirstContent( ((GeogUnitType) _elem).getContent() );
             } else if (_elem instanceof AnlyUnitType) {
-                returnVal += mapContent( ((AnlyUnitType) _elem).getContent().get(0) );
+                returnVal += mapFirstContent( ((AnlyUnitType) _elem).getContent() );
             } else if (_elem instanceof UniverseType) {
-                returnVal += mapContent( ((UniverseType) _elem).getContent().get(0) );
+                returnVal += mapFirstContent( ((UniverseType) _elem).getContent() );
             } else if (_elem instanceof DataKindType) {
-                returnVal += mapContent( ((DataKindType) _elem).getContent().get(0) );
+                returnVal += mapFirstContent( ((DataKindType) _elem).getContent() );
             } else {
                 throw new EJBException("Undefined type passed to mapList method");
             }
@@ -1322,16 +1337,24 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         if ( _dateAttr != null && !_dateAttr.trim().equals("") ) {
             return _dateAttr;
         } else {
-            return mapContent( _dateContent.get(0) ) ;
+            return mapFirstContent( _dateContent ) ;
         }
     }
+    
+    private String mapFirstContent(List contentList) {
+        if (contentList.size() == 0 ) {
+           return ""; 
+        } else {
+            return mapContentItem(contentList.get(0));
+        }
+    }    
     
     private String mapContentList(List contentList) {
         Iterator iter = contentList.iterator();
         String content = "";
         while (iter.hasNext()) {
             Object item = (Object) iter.next();
-            content += mapContent(item);
+            content += mapContentItem(item);
             content += iter.hasNext() ? "\n" : "";
         }
 
@@ -1339,13 +1362,13 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         return content;
     }
     
-    private String mapContent(Object _content) {
+    private String mapContentItem(Object _content) {
         if (_content instanceof String) {
             return ((String) _content).trim().replace('\n',' ');
         } else if (_content instanceof JAXBElement) {
             Object _html = ((JAXBElement)_content).getValue();
             if ( _html instanceof PType) {
-                return "<p>" + mapContent( ((PType)_html).getContent().get(0) ) + "</p>";
+                return "<p>" + mapFirstContent( ((PType)_html).getContent() ) + "</p>";
             } else if ( _html instanceof ExtLinkType) {
                 ExtLinkType _link = (ExtLinkType)_html;
                 String _linkName = StringUtil.isEmpty( _link.getContent() ) ? _link.getURI() : _link.getContent().trim();
@@ -1369,7 +1392,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 // add items
                 for (Object _item : ((ListType)_html).getLabelOrItm()) {
                     if ( _item instanceof ItmType) {
-                        listString += "<li>" + mapContent( ((ItmType) _item).getContent().get(0) ) + "</li>\n";
+                        listString += "<li>" + mapFirstContent( ((ItmType) _item).getContent() ) + "</li>\n";
                     } else {
                         throw new EJBException("mapContent: ListType does not currently supported contained LabelType.");
                     }
@@ -1379,7 +1402,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             } else if ( _html instanceof CitationType) {
                 CitationType _citation = (CitationType)_html;
                 String citation = "<!--  parsed from DDI citation title and holdings -->";
-                citation += mapContent( _citation.getTitlStmt().getTitl().getContent().get(0) );
+                citation += mapFirstContent( _citation.getTitlStmt().getTitl().getContent() );
                 
                 boolean addHoldings = false;
                 String holdings = "";
@@ -1387,10 +1410,10 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                     holdings += addHoldings ? ", " : "";
                     if (_holdings.getURI() != null && !_holdings.getURI().trim().equals("") ) {
                         holdings += "<a href=\"" + _holdings.getURI() + "\">";
-                        holdings += mapContent(_holdings.getContent().get(0));
+                        holdings += mapFirstContent(_holdings.getContent());
                         holdings += "</a>";
                     } else {
-                        holdings += mapContent(_holdings.getContent().get(0));
+                        holdings += mapFirstContent(_holdings.getContent());
                     }
                     
                     addHoldings = true;
@@ -1408,7 +1431,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         }
     }
     
-    private String mapContentList(List _content, String searchingFor) {
+    private String mapCompoundContent(List _content, String searchingFor) {
         String returnVal = "";
         Iterator iter = _content.iterator();
         
@@ -1427,8 +1450,10 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                     ExtLinkType _link = (ExtLinkType) ((JAXBElement) elem).getValue();
                     if ( searchingFor.equals("uri") && !"image".equals(_link.getRole() ) ) {
                         returnVal = _link.getURI();
+                        break;
                     } else if ( searchingFor.equals("logo") && "image".equals(_link.getRole() ) ) {
                         returnVal = _link.getURI();
+                        break;
                     }
                 }
             }

@@ -420,7 +420,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return em.createQuery("select object(t) from DataFileFormatType as t").getResultList();
     }
     
-    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void addIngestedFiles(Long studyId, List fileBeans, Long userId) {
         // first some initialization
         Study study = getStudy(studyId);
@@ -474,9 +474,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         
         study.setLastUpdateTime( new Date() );
         study.setLastUpdater( user );
-        
-        // lastly, call index
-        indexService.updateStudy(study.getId());
         
     }
     
@@ -720,7 +717,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return em.createQuery(query).getResultList().size()==0;
     }
     
-    public void addStudyLock(Study study, VDCUser user, String detail) {
+    public void addStudyLock(Long studyId, Long userId, String detail) {
+        Study study = em.find(Study.class,studyId);
+        VDCUser user = em.find(VDCUser.class,userId);
+        
         StudyLock lock = new StudyLock();
         lock.setStudy(study);
         lock.setUser(user);
@@ -736,7 +736,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         em.persist(lock);
     }
     
-    public void removeStudyLock(Study study) {
+    public void removeStudyLock(Long studyId) {
+        Study study = em.find(Study.class,studyId);
         StudyLock lock = study.getStudyLock();
         VDCUser user = lock.getUser();
         

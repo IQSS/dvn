@@ -160,7 +160,7 @@
                 <from-outcome>success</from-outcome>
                 <to-view-id>/site/DeleteDataverseSuccessPage.jsp</to-view-id>
             </navigation-case>
-   	    <navigation-case>
+        <navigation-case>
                 <from-outcome>cancel</from-outcome>
                 <to-view-id>/site/HarvestSitesPage.jsp</to-view-id>
             </navigation-case>           
@@ -368,7 +368,7 @@
     <navigation-case>
       <from-action>#{AnalysisPage.dwnldAction}</from-action>
       <from-outcome>success</from-outcome>
-      <to-view-id>/subsetting/RequestSummaryPage.jsp</to-view-id>
+      <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
     </navigation-case>
 
     <navigation-case>
@@ -381,7 +381,7 @@
     <navigation-case>
       <from-action>#{AnalysisPage.edaAction}</from-action>
       <from-outcome>success</from-outcome>
-      <to-view-id>/subsetting/RequestSummaryPage.jsp</to-view-id>
+      <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
     </navigation-case>
     
     <navigation-case>
@@ -394,7 +394,7 @@
     <navigation-case>
       <from-action>#{AnalysisPage.recodeAction}</from-action>
       <from-outcome>success</from-outcome>
-      <to-view-id>/subsetting/RequestSummaryPage.jsp</to-view-id>
+      <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
     </navigation-case>
     
     <navigation-case>
@@ -408,7 +408,7 @@
     <navigation-case>
       <from-action>#{AnalysisPage.advStatAction}</from-action>
       <from-outcome>success</from-outcome>
-      <to-view-id>/subsetting/RequestSummaryPage.jsp</to-view-id>
+      <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
     </navigation-case>
     
     <!-- advanced statistics request-->

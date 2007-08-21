@@ -3481,6 +3481,217 @@ if (isRecodedVar(varId)){
         }
     }
 
+
+    // advStatBttn:h:commandButton@actionListener
+    public void advStatActionLstnr(ActionEvent acev) {
+    
+        // check the current model
+
+        String mdlName = (String)dropDown1.getSelected();
+        out.println("model name="+mdlName);
+
+        if (checkAdvStatParameters(mdlName)){
+        
+            FacesContext cntxt = FacesContext.getCurrentInstance();
+
+            HttpServletResponse res = (HttpServletResponse) cntxt.getExternalContext().getResponse();
+            HttpServletRequest  req = (HttpServletRequest) cntxt.getExternalContext().getRequest();
+            try {
+              out.println("**************** within advStatActionLstnr() ****************");
+                // common parts
+                // data file
+                StudyFile sf = dataTable.getStudyFile();
+                // server prefix
+                
+                String dsbUrl = System.getProperty("vdc.dsb.url");
+                out.println("dsbUrl="+dsbUrl);
+
+                //String serverPrefix = "http://vdc-build.hmdc.harvard.edu:8080/dvn";
+                String serverPrefix = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath(); 
+
+                /*
+                  "optnlst_a" => "A01|A02|A03",
+                  "analysis" => "A01 A02",
+                  "varbl" => "v1.3 v1.10 v1.13 v1.22 v1.40",
+                  "charVarNoSet" => "v1.10|v1.719",
+                */
+                // common parameters
+                
+                Map <String, List<String>> mpl = new HashMap<String, List<String>>();
+                Map <String, String> mps= new HashMap<String, String>();
+                mps.put("optnlst_a", "A01|A02|A03");
+                List<String> alst = new ArrayList<String>();
+                List<String> aoplst = new ArrayList<String>();
+                aoplst.add("A01|A02|A03");
+                mpl.put("optnlst_a", aoplst);
+                // outoput options
+                
+                
+                List<String> outOptionList = new ArrayList<String>();
+                
+                if (mdlName.equals("xtb")){
+                    alst.add("A03");
+                    // output options
+                    Object[] outOptn = (Object[])checkboxGroupXtbOptions.getSelectedValue();
+                    List<String> tv = new ArrayList<String>();
+                    tv.add("T");
+                    for (int j=0;j<outOptn.length;j++){
+                      out.println("output option["+j+"]="+outOptn[j]);
+
+                      mpl.put((String)outOptn[j], new ArrayList(tv));
+                    }
+                    // variables: 1st RBox
+                    if (advStatVarRBox1.size()>=1){
+                      out.println("RB1:"+getDataVariableForRBox1());
+                      mpl.put("xtb_nmBxR1", getDataVariableForRBox1());
+                    }
+                    // variables: 2nd RBox
+                    if (advStatVarRBox2.size()>=1){
+                      out.println("RB2:"+getDataVariableForRBox2());
+                      mpl.put("xtb_nmBxR2", getDataVariableForRBox2());
+                    }
+                    
+                  mpl.put("analysis", alst);
+
+                } else {
+                    out.println("+++++++++++++++++++++++ zelig param block +++++++++++++++++++++++");
+                    // non-xtb, i.e., zelig cases
+                    // check zlg value
+                    //String mdlZname= mdlName+;
+                    out.println("model spec dump="+getAnalysisApplicationBean().getSpecMap().get(mdlName));
+                    out.println("model spec mdlId="+getAnalysisApplicationBean().getSpecMap().get(mdlName).getMdlId());
+                    String zligPrefix = getAnalysisApplicationBean().getSpecMap().get(mdlName).getMdlId();
+                    out.println("model no="+ zligPrefix);
+                    // 1-RBox case
+                    if (advStatVarRBox1.size()>=1){
+                      out.println("RB1:"+getDataVariableForRBox1());
+                      mpl.put(zligPrefix+"_nmBxR1", getDataVariableForRBox1());
+                    }
+                    // 2-RBox case
+                    if (advStatVarRBox2.size()>=1){
+                      out.println("RB2:"+getDataVariableForRBox2());
+                      mpl.put(zligPrefix+"_nmBxR2", getDataVariableForRBox2());
+                    }
+                    // 3-RBox case
+                    if (advStatVarRBox3.size()>=1){
+                      out.println("RB3:"+getDataVariableForRBox3());
+                      mpl.put(zligPrefix+"_nmBxR3", getDataVariableForRBox3());
+                    }
+                    // model name
+                    
+                    mpl.put("zlg", getZlg(zligPrefix, mdlName));
+                    // model type
+                    String sfn = getAnalysisApplicationBean().getSpecMap().get(mdlName).getSpecialFn();
+                    mpl.put("mdlType_"+mdlName, getMdlType(mdlName, sfn) );
+                    
+                    // model title
+                    String ttl = getAnalysisApplicationBean().getSpecMap().get(mdlName).getTitle();
+                    out.println("model title="+ttl);
+                    mpl.put("mdlTitle_"+mdlName, Arrays.asList(ttl));
+                    
+                    // nrBoxes
+                    int noRboxes = getAnalysisApplicationBean().getSpecMap().get(mdlName).getNoRboxes();
+                    out.println("noRboxes="+noRboxes);
+                    
+                    mpl.put("noBoxes_"+mdlName, Arrays.asList(Integer.toString(noRboxes)));
+                    
+                    // binary
+                    String mdlCategory = getAnalysisApplicationBean().getSpecMap().get(mdlName).getCategory();
+                    out.println("model category="+mdlCategory);
+                    if (mdlCategory.equals("Models for Dichotomous Dependent Variables")){
+                      mpl.put("mdlDepVarType_"+mdlName, Arrays.asList("binary"));
+                    }
+                    //  output options
+                    /*
+                    zlg_017_Summary
+                    zlg_017_Plots
+                    zlg_017_BinOutput
+                    */
+                    Object[] outOptn = (Object[])checkboxGroup2DefaultOptions.getSelectedValue();
+                    for (int j=0;j<outOptn.length;j++){
+                      String outputOptnkey = zligPrefix +"_" + (String)outOptn[j];
+                      out.println("zelig: output option["+j+"]="+outputOptnkey);
+                      mpl.put(outputOptnkey, Arrays.asList("T"));
+                    }
+                    
+                    // analysis options
+                    /*
+                    zlg_017_Sim
+                    zlg_017_setx
+                    zlg_017_setx_var
+                    zlg_017_setx_val_1
+                    zlg_017_setx_val_2
+                    
+                    zlg_017_naMethod
+                    */
+                    //
+                    if (checkbox3.isChecked()){
+                        mpl.put(zligPrefix+"_Sim",  Arrays.asList("T"));
+                        Object simOptn = radioButtonGroup1DefaultOptions.getSelectedValue();
+                        mpl.put(zligPrefix+"_setx",  Arrays.asList((String)simOptn ));
+                        if ( ((String)simOptn).equals("1")){
+                          Object v1 = dropDown2.getSelected();
+                          Object v2 = dropDown3.getSelected();
+                          Object vl1 = textField8.getValue();
+                          Object vl2 = textField10.getValue();
+                          List<String> setxVars = new ArrayList<String>();
+                          if (v1 !=null){
+                            setxVars.add((String)v1);
+                            
+                            
+                          }
+                          if (v2 !=null){
+                            setxVars.add((String)v2);
+                          }
+                          mpl.put(zligPrefix+"_setx_var", setxVars);
+                          if (vl1 !=null){
+                            mpl.put(zligPrefix+"_setx_val_1", Arrays.asList( (String)vl1 ));
+                          }
+                          if (vl2 !=null){
+                            mpl.put(zligPrefix+"_setx_val_2", Arrays.asList( (String)vl2 ));
+                          }
+                          
+                        }
+                    }
+                    
+                    
+                }
+                out.println("contents(mpl):"+mpl);
+                
+                
+                // if there is a user-defined (recoded) variables
+                if (recodedVarSet.size()>0){
+                  mpl.putAll(getRecodedVarParameters());
+                }
+
+                out.println("citation info to be sent:\n"+citation);
+                mpl.put("OfflineCitation", Arrays.asList(citation));
+                
+                mpl.put("appSERVER",Arrays.asList(req.getServerName() + ":" + req.getServerPort() + req.getContextPath()));
+                mpl.put("studytitle",Arrays.asList(studyTitle));
+                mpl.put("studyno", Arrays.asList(studyId.toString()));
+                mpl.put("studyURL", Arrays.asList(studyURL));
+                mpl.put("browserType", Arrays.asList(browserType));
+                // Disseminate Request
+                new DSBWrapper().disseminate(res, mpl, sf, serverPrefix, getDataVariableForRequest());
+                
+
+            } catch (IOException ex) {
+                out.println("disseminate: advanced Statistics failed due to io exception");
+                ex.printStackTrace();
+            }
+
+            cntxt.responseComplete();
+            
+            //return "success";
+        } else {
+            //return "failure";
+            
+        }
+        out.println("**************** advStatActionLstnr(): ends here ****************");
+    }
+
+
     public List<String> getDataVariableForRBox1(){
       List<String> dvs = new ArrayList<String>();
         for (Iterator el = advStatVarRBox1.iterator(); el.hasNext();) {

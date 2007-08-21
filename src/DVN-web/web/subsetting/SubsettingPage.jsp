@@ -839,12 +839,14 @@ xmlns:ui="http://www.sun.com/web/ui"
                                                 </ui:panelGroup><!-- analysisOptionPanel-->
 
 
-                                                <!--  -->
+                                                <!-- action="#{AnalysisPage.advStatAction}" -->
                                                 <h:commandButton id="advStatBttn" 
                                                                  disabled="true" 
                                                                  binding="#{AnalysisPage.advStatButton}" 
                                                                  value="#{bundleAnalysis['advStat.button.submit']}"
-                                                                 action="#{AnalysisPage.advStatAction}"/>
+                                                                 actionListener="#{AnalysisPage.advStatActionLstnr}"
+                                                                 
+                                                                 />
                                                 
                                                 <!-- end of  column of opion panes-->
                                             </ui:panelGroup><!-- groupPanel9: option panes -->

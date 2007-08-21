@@ -373,28 +373,79 @@ print TMPX "var ID sequence=",$varNoStrng,"\n";
 # temporarily store the data set as a temp file in $TMPDIR
 
 if ($dataURL) {
-	my $dataURLG=$dataURL; # for GET
+	my $dataURLG = $dataURL; # the url for GET requests,
+                                 # with parameters appended.
 	my $request;
 
-	# this is where the column-wise subsetting is now done:
+	my $cgi_ParamHash = {}; 
 
-#	if ( $varNoStrng ){
-#		$dataURLG .= "?vars=" . $varNoStrng;
-#	}
+	if ( $varNoStrng ){
+###	    $cgi_ParamHash->{$vars} = $varNoStrng;
+	}
 
 	$logger->vdcLOG_debug( 'VDC::DSB', $script_name,  "getting data "); # debug
 
 	$logger->vdcLOG_info( 'VDC::DSB', $script_name,  $dataURLG); # debug
 
-	if (length($dataURLG)<$MAX_URL) { 
-		$request = HTTP::Request->new('GET', $dataURLG );
-	} else {
-	  	$request = POST $dataURL, [ cols => "$varNoStrng"];	
+	# Detect and recycle some parameters sent to us by the 
+	# application (these are added to URLs for accounting/logging
+	# purposes)
+
+	my $isSSRparam = $q->param('isSSR');
+
+	if ( $isSSRparam )
+	{
+	    $cgi_ParamHash->{$isSSR} = $isSSRparam; 
 	}
+
+	my $isMITparam = $q->param('isMIT');
+
+	if ( $isMITparam )
+	{
+	    $cgi_ParamHash->{$isMIT} = $isMITparam; 
+	}
+
+	# let's cook the final URL and calculate the total
+	# length; if it's too long, we are going to use POST
+	# instead of GET.
+
+	my $cgiParams = ""; 
+
+	for my $v (keys %$cgi_ParamHash)
+	{
+	    $cgiParams .= ($v . "=" . $cgi_ParamHash->{$v} . "&"); 
+	}
+
+	if ( $cgiParams ) 
+	{
+	    chop $cgiParams; 
+	    $cgiParams = "?" . $cgiParams; 
+	}
+	
+	if (length($dataURLG) + length($cgiParams) < $MAX_URL) { 
+	    $dataURLG .= $cgiParams; 
+	    $request = HTTP::Request->new('GET', $dataURLG );
+	} else {
+	    $request = POST $dataURL, $cgi_ParamHash; 
+	}
+
+	# Detect and recycle some useful headers: 
+
 	my($tcookie) = $q->http('Cookie');
 	if ($tcookie) {
-		$request->header('cookie' => $tcookie);
+	    $request->header('cookie' => $tcookie);
 	}
+
+	# the "x-forwarded-for" is the header set up by the 
+	# mit proxy; we are sending it back for logging purposes.
+
+	my $xforward = $q->http('X-Forwarded-For');
+
+	if ( $xforward )
+	{
+	    $request->header('X-Forwarded-For' => $xforward);
+	}
+
 
 	#$ua->proxy('http', $PROXY_URL);
 	#$ua->proxy('timeout', 3600);

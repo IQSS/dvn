@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
@@ -356,7 +358,11 @@ public class DSBWrapper {
                 debug += method.getParameters()[i].getValue() + "'";
             }
             System.out.println(debug);
-            
+            HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            if (request.getHeader("X-Forwarded-For") != null) 
+                method.addRequestHeader("X-Forwarded-For", request.getHeader("X-Forwarded-For"));
+            else
+                method.addRequestHeader("X-Forwarded-For", "NULL-HEADER-X-FORWARDED-FOR");
             // execute
             executeMethod(method);
 

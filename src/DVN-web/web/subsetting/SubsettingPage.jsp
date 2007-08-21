@@ -416,7 +416,7 @@ xmlns:ui="http://www.sun.com/web/ui"
                                                   binding="#{AnalysisPage.edaButton}" 
                                                   disabled="true" 
                                                   value="#{bundleAnalysis['eda.button.submit']}" 
-                                                  action="#{AnalysisPage.edaAction}"/>
+                                                  actionListener="#{AnalysisPage.edaActionLstnr}"/>
                                 
                             </ui:panelGroup>
                             

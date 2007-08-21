@@ -1852,6 +1852,83 @@ if (isRecodedVar(varId)){
         }
     }
 
+    // edaBttn:h:commandButton@edaActionLstnr
+    public void edaActionLstnr(ActionEvent acev) {
+        if (checkEdaParameters()){
+        
+            FacesContext cntxt = FacesContext.getCurrentInstance();
+
+            HttpServletResponse res = (HttpServletResponse) cntxt.getExternalContext().getResponse();
+            HttpServletRequest  req = (HttpServletRequest) cntxt.getExternalContext().getRequest();
+            try {
+              out.println("**************** within edaActionLstnr() ****************");
+
+                StudyFile sf = dataTable.getStudyFile();
+                
+                String dsbUrl = System.getProperty("vdc.dsb.url");
+                out.println("dsbUrl="+dsbUrl);
+                
+                //String serverPrefix = "http://vdc-build.hmdc.harvard.edu:8080/dvn";
+                String serverPrefix = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath(); 
+                //String serverPrefix = req.getScheme() +"://" + dsbUrl + ":" + req.getServerPort() + req.getContextPath(); 
+
+                /*
+                  "optnlst_a" => "A01|A02|A03",
+                  "analysis" => "A01 A02",
+                  "varbl" => "v1.3 v1.10 v1.13 v1.22 v1.40",
+                  "charVarNoSet" => "v1.10|v1.719",
+                */
+                
+                
+                Map <String, List<String>> mpl = new HashMap<String, List<String>>();
+                Map <String, String> mps= new HashMap<String, String>();
+                mps.put("optnlst_a", "A01|A02|A03");
+                Object[] vs = edaOptionSet.getSelectedValues();
+                List<String> alst = new ArrayList<String>();
+                
+                for (int i=0;i<vs.length;i++){
+                  out.println("eda option["+i+"]="+vs[i]);
+                  alst.add((String)vs[i]);
+                }
+                //mps.put("analysis", "A01");
+                mpl.put("analysis", alst);
+                //List<String> aoplst = new ArrayList<String>();
+                //aoplst.add("A01|A02|A03");
+                //mpl.put("optnlst_a", aoplst);
+                mpl.put("optnlst_a", Arrays.asList("A01|A02|A03"));
+                
+                
+                // if there is a user-defined (recoded) variables
+                if (recodedVarSet.size()>0){
+                  mpl.putAll(getRecodedVarParameters());
+                }
+                
+                out.println("citation info to be sent:\n"+citation);
+                mpl.put("OfflineCitation", Arrays.asList(citation));
+                
+                mpl.put("appSERVER",Arrays.asList(req.getServerName() + ":" + req.getServerPort() + req.getContextPath()));
+                //mpl.put("appSERVER",Arrays.asList(dsbUrl + ":" + req.getServerPort() + req.getContextPath()));
+                mpl.put("studytitle",Arrays.asList(studyTitle));
+                mpl.put("studyno", Arrays.asList(studyId.toString()));
+                mpl.put("studyURL", Arrays.asList(studyURL));
+                mpl.put("browserType", Arrays.asList(browserType));
+                
+                // disseminate(HttpServletResponse res, Map parameters, StudyFile sf, String serverPrefix, List variables)
+                //new DSBWrapper().disseminate(res, mps, sf, serverPrefix, getDataVariableForRequest());
+                new DSBWrapper().disseminate(res, mpl, sf, serverPrefix, getDataVariableForRequest());
+            } catch (IOException ex) {
+                out.println("disseminate:EDA failed due to io exception");
+                ex.printStackTrace();
+            }
+
+            cntxt.responseComplete();
+            //return "success";
+        } else {
+            //return "failure";
+            out.println("exiting edaActionLstnr() due to incomplete data ");
+        }
+        out.println("**************** within edaActionLstnr(): ends here ****************");
+    }
 
 // end of eda
 //<---------------------------------------------------------------------------
@@ -3686,7 +3763,7 @@ if (isRecodedVar(varId)){
             //return "success";
         } else {
             //return "failure";
-            
+            out.println("exiting advStatActionLstnr() due to incomplete data ");
         }
         out.println("**************** advStatActionLstnr(): ends here ****************");
     }

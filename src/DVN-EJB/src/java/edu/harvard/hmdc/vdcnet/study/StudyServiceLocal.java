@@ -68,9 +68,9 @@ public interface StudyServiceLocal {
 
     boolean isUniqueFileSystemName(String fileSystemName);
 
-    void removeStudyLock(Study study);
+    void removeStudyLock(Long studyId);
 
-    void addStudyLock(Study study, VDCUser user, String detail);
+    void addStudyLock(Long studyId, Long userId, String detail);
 
     void deleteDataVariables(Long dataTableId);
 

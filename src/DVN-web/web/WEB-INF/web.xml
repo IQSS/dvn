@@ -31,7 +31,7 @@
                 to a negative value, there is no maximum.  The default
             value is 1000000.</description>
             <param-name>maxSize</param-name>
-            <param-value>500000000</param-value>
+            <param-value>1000000000</param-value>
         </init-param>
         <init-param>
             <description>The size (in bytes) of an uploaded file which, if it is

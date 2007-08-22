@@ -17,12 +17,10 @@
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12"> 
-                        
-                        
-                        <ui:panelGroup styleClass="#{AccountPage.statusMessage.styleClass}" rendered="#{!empty AccountPage.statusMessage.messageText}">
+                                        
+                        <ui:panelLayout styleClass="#{AccountPage.statusMessage.styleClass}" rendered="#{!empty AccountPage.statusMessage.messageText}">
                             <h:outputText id="statusMessage"  value="#{AccountPage.statusMessage.messageText}" />
-                        </ui:panelGroup>
-                        
+                        </ui:panelLayout>                  
                         
                         <ui:panelGroup block="true" id="groupPanel2" style="padding-right: 10px; padding-bottom: 20px; text-align: right">
                             <h:outputLink id="linkAction1" value="/dvn/faces/login/EditAccountPage.jsp?userId=#{AccountPage.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">

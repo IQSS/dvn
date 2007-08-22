@@ -153,11 +153,7 @@
 			<xsl:value-of select="a:dataSet/a:instance"/>
 			<xsl:text>/</xsl:text>	
 			<xsl:value-of select="a:dataSet/a:extractionHost/@type"/>
- 		    </xsl:attribute>
-		    <fileTxt>
-            	<fileName>Data File</fileName>
-            	<fileCont><xsl:value-of select="select="a:dataSet/a:longName"/></fileCont> 
-                 </fileTxt>
+
                </fileDscr>
             </xsl:if>
             <xsl:apply-templates select="a:variables"/>

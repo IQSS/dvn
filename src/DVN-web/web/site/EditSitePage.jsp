@@ -21,9 +21,9 @@
                      <div class="dvn_margin12">
                          
                          
-                         <ui:panelGroup styleClass="#{EditSitePage.msg.styleClass}" rendered="#{!empty EditSitePage.msg.messageText}">
+                         <ui:panelLayout styleClass="#{EditSitePage.msg.styleClass}" rendered="#{!empty EditSitePage.msg.messageText}">
                              <h:outputText id="statusMessage" value="#{EditSitePage.msg.messageText}" /> 
-                         </ui:panelGroup>
+                         </ui:panelLayout>
                          
                          <ui:panelGroup block="true" style="padding-left: 20px; padding-right: 30px">
                              <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />

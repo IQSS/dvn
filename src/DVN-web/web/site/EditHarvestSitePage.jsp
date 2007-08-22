@@ -43,9 +43,9 @@
             <div class="dvn_sectionBox"> 
                 <div class="dvn_margin12">
                     
-                    <ui:panelGroup styleClass="successMessage" rendered="#{EditHarvestSitePage.success}">
+                    <ui:panelLayout styleClass="successMessage" rendered="#{EditHarvestSitePage.success}">
                         <h:outputText value="Update Successful!" />
-                    </ui:panelGroup>
+                    </ui:panelLayout>
                     <ui:panelGroup block="true" style="padding-left: 20px; padding-right: 30px">
                         <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                         <h:outputText  id="outputText2" styleClass="vdcHelpText" value="A Harvest dataverse gathers studies from an OAI Server (which could be another Dataverse Network). A Harvest dataverse provides most of the same functionality as a regular dataverse with the following differences: 1) You cannot edit a harvested study. 2) You search for the cataloging and variable information (study metadata) locally but you access the files remotely. "/>

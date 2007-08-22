@@ -30,11 +30,9 @@
       <body style="background-color:#eeeeee;">        
           <div class="dvn_wrapper">
               <div class="dvn_content">
-                  <div class="dvn_font">
                       <f:subview id="content">
                           <tiles:insert name="content" flush="false"/>
                       </f:subview>
-                  </div>
               </div>
           </div>
       </body>

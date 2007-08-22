@@ -37,7 +37,7 @@ import java.util.zip.ZipOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
+import javax.faces.context.FacesContext;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -604,7 +604,14 @@ public class FileDownloadServlet extends HttpServlet{
     }
     
     private String generateUrlForFile(String serverPrefix, Long fileId) {
-        String file = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1";
+        //TODO: consolidate this code into a utility, wjb
+        String isMIT = new String("&isMIT=");
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        if (request.getHeader("X-Forwarded-For") != null)
+            isMIT += "1";
+        else
+            isMIT += "0";
+        String file = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1" + isMIT;
         System.out.println(file);
         return file;
     }

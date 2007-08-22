@@ -40,7 +40,7 @@ blockquote:before, blockquote:after {
 
 body {
 	width: 98%;
-	font-family: Arial, Helvetica, sans-serif;
+        font-size :100% ;
 }
 
 /* DVN SPECIFIC STYLE CLASSES */
@@ -64,7 +64,9 @@ body {
 .dvn_floatR {
 	float: right;
 }
-
+.dvn_font{
+	font: 0.8em "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif;
+}
 /* GENERAL CONTENT */
 
 .dvn_section {margin: 1em; width: 100%; overflow: hidden;}
@@ -75,58 +77,54 @@ body {
 	float: left;
 }
 .dvn_sectionTitle {margin: 0;}
-.dvn_sectionTitle h3 {margin: .25em .65em; color: #035899; font-weight: normal;}
+.dvn_sectionTitle h3 {margin: .25em .65em; color: #555; font-weight: bold; font-size: 1.2em;}
 
 .dvn_sectionTitle h3 em {padding: .25em 0; font-style: normal; float: left;}
-.dvn_sectionTitle h3 span {padding: .25em 0; font-size: .75em; float: right;}
-.dvn_sectionTitle h3 a {margin-left: 12px;}
+span.dvn_sectionTitleR  {padding: .25em 0; font-size: 0.7em; float: right;}
+.dvn_sectionTitle h3 a {margin-left: 2em; font-weight: normal;}
 
-.dvn_sectionBox {width: 100%; border-top: 2px solid #035899; border-left: 1px solid #ccc; font-size: .8em;}
-.dvn_sectionBoxNoBorders{width: 100%; font-size: .8em; padding-top: .75em} 
+.dvn_sectionBox {width: 100%; border-top: 2px solid #035899; border-left: 1px solid #ccc; line-height: 140%}
+.dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; line-height: 140%} 
 .dvn_margin12 {
-	margin: 1em 0.6em 1em 0.6em;
+	margin: 1em 1em 0em 1em; padding-bottom: 2em;
 }
 
 .dvn_sectionPanels {display: inline; margin-left: 2%; width: 23%; float: left;}
 
-.dvn_sectionPanels h2 {padding: .25em 0; border-bottom: 2px solid #035899; font-size: 1em; font-weight: normal;}
-.dvn_sectionPanels div.dvn_sectionPanelText {margin-bottom: 1em; padding: .5em; border-left: 1px solid #ccc;}
- div.dvn_sectionPanelText {font-size: .8em;}
-/* .dvn_sectionPanels p {padding: .5em 0; line-height: 122%;} */
+.dvn_sectionPanels h2 {padding: .25em 0; border-bottom: 2px solid #035899; color: #555; font-size: 1.2em; font-weight: bold;} 
+.dvn_sectionPanels div.dvn_sectionPanelText {margin-bottom: 1em; padding: .5em; border-left: 1px solid #ccc; font-size: 1em; line-height: 140%}
+
 .dvn_sectionPanels ul {
 	margin-left: 2em;
 	list-style-image: url(http://dvn.iq.harvard.edu/dvn/resources/icon_bullet.gif);
 }
 .dvn_sectionPanels li {
-	padding: 1em 0;
-}
-.dvn_sectionPanels li a {
-	line-height: 1.25em;
+	margin: 0.8em 0;
 }
 
 /* HEADER */
 
-.dvn_headerTitle h1 {margin: .25em .5em; color: #035899; font-size: 1.2em; font-weight: normal;}
+.dvn_headerTitle h1 {margin: .25em .5em; color: #035899; font-size: 1.3em; font-weight: normal;}
 .dvn_headerTitle h1 a:link, .dvn_headerTitle h1 a:visited, .dvn_headerTitle h1 a:active {text-decoration: none; color: #035899;}
 .dvn_headerTitle h1 a:hover {text-decoration: underline; color: #035899;}
-.dvn_headerTitle h3 {margin: 0 1.05em; color: #6D0609; font-size: .7em; font-weight: bold;}
+.dvn_headerTitle h3 {margin: 0 1.05em; color: #6D0609; font-size: 0.9em; font-weight: bold;}
 .dvn_headerTitle h3 a:link, .dvn_headerTitle h3 a:visited, .dvn_headerTitle h3 a:active {text-decoration: none; color: #6D0609;}
 .dvn_headerTitle h3 a:hover {text-decoration: underline; color: #6D0609;}
 
-.dvn_headerTitle h5 {display: inline; margin: 0 .75em; font-family: Times New Roman, Times, serif; font-size: .8em; text-align: right; float: right;}
+.dvn_headerTitle h5 {display: inline; margin: 0 .75em; font-size: 1em; text-align: right; float: right;}
 .dvn_headerTitle h5 a:link, .dvn_headerTitle h5 a:visited, .dvn_headerTitle h5 a:hover, .dvn_headerTitle h5 a:active {text-decoration: none; color: #000;}
-.dvn_headerTitle h5 span {color: #999; font-family: Arial, Helvetica, sans-serif; font-size: .85em; font-weight: normal;}
+.dvn_headerTitle h5 span {color: #999; font-size: 1em; font-weight: normal;}
 .dvn_headerTitle h5 b {color: #6D0609;}
-.dvn_headerTitle h5 em {font-size: 1em; font-family: Lucida Console, Monaco, monospace; font-weight: normal; font-style: normal;}
+.dvn_headerTitle h5 em {font-size: 1em; font-weight: normal; font-style: normal;}
 
 .dvn_headerBar {width: 100%; background: transparent; border-top: 2px solid #035899; float: left;}
 
 .dvn_headerBarContent {display: block; width: 100%; background: #ddd; float: left;}
 
 .dvn_headerBarContent ul {display: inline; margin: 0 .75em; padding: 0.25em 0; list-style: none;}
-.dvn_headerBarContent li {display: inline; margin-right: 1em; font-size: .75em; float: left;}
+.dvn_headerBarContent li {display: inline; margin-right: 2em; font-size: 1em; float: left;}
 
-.dvn_headerBarContent li.dvn_networkOptions {display: inline; margin-left: 1em; margin-right: 0; font-size: .75em; float: left;}
+.dvn_headerBarContent li.dvn_networkOptions {display: inline; margin-left: 1em; margin-right: 0; font-size: 1em; float: left;}
 .dvn_boldRed a{font-weight: bold; color: #6D0609;}
 
 .dvn_xbottom {display: block; width: 100%; background: transparent; font-size: 1px; float: left;}
@@ -144,22 +142,11 @@ body {
 
 .dvn_searchBoxContent {display: block; width: 100%; background: #ddd; float: left;}
 .dvn_searchBoxContent fieldset {display: inline; margin: 0 1em; padding: 0.5em 1.5em; width: 90%; vertical-align: bottom; float: left;}
-.dvn_searchBoxContent label {margin-right: 12px; padding: 0; float: left; font-size: .75em; }
+.dvn_searchBoxContent label {margin-right: 12px; padding: 0; float: left; font-size: 1em; }
 .dvn_searchBoxContent span {display: block; padding-bottom: 0.5em;}
 .dvn_searchBoxContent input.button {margin-top: 1.25em; float: left;}
 .dvn_searchRadios {margin-top: 1.25em;  margin-left:1em; float: left;}
 .dvn_searchRadios label {margin:0; padding: 0; float: none;}
-
-/* FOOTER */
-
-.dvn_footer {
-	margin: 3em 0;
-	padding: 1em;
-	color: #aaa;
-	border-top: 2px solid #ccc;
-	font-size: .7em;
-	text-align: center;
-}
 
 
 /* OLD STYLES start HERE */
@@ -200,7 +187,7 @@ body {
     padding-right: 0px;
     padding-bottom: 0px;
     z-Index:500;
-    font-size: 0.8em;  
+    font-size: 0.9em;  
 }
 
 .vdcInlineHelpLink {
@@ -216,7 +203,6 @@ body {
     padding: 3px 3px 3px 10px;
     margin-bottom: 0px;
     display: block;
-    font-size: 0.9em;
     font-weight: 400;
     text-align:left;
     color: #000000;
@@ -258,7 +244,6 @@ body {
     margin-top: 5px;
     margin-bottom: 0px;
     padding: 3px 3px 3px 10px;
-    font-size: 0.9em;
     font-weight: 400;
     text-align:left;
     color: #000000;
@@ -390,7 +375,7 @@ a.vdcSiteMapLink:hover {
 
 .vdcStudyInfoHeader {
    background-color: #E2E2E2;
-   font-size: 0.9em;
+   font-size: 1em;
    font-weight: bold;
    text-align: center;
    padding-top: 3px;
@@ -794,7 +779,7 @@ a.vdcSiteMapLink:hover {
 
 .vdcFileTitle{
    font-weight: bold;
-   font-size: 1.3em;
+   font-size: 1.2em;
    padding-left: 4px;
 }
 .MnuStdOptGrp {
@@ -887,7 +872,7 @@ a.vdcRequestPanelLink:hover{
 }
 .vdcTermsUseColumn {
     text-align: left;
-    font-size: 0.9em;
+    font-size: 1em;
 }
 
 .vdcTermsUseField {
@@ -965,7 +950,7 @@ a.vdcRequestPanelLink:hover{
 }
 .vdcTreeDataverse img{
    vertical-align: text-top;
-   padding-bottom : 0.3em;     
+   padding-bottom : 0.5em;     
 }
 .vdcTreeCollection{
    white-space: normal;
@@ -975,21 +960,25 @@ a.vdcRequestPanelLink:hover{
 }
 .vdcTreeCollection img{
    vertical-align: text-top;
-   padding-bottom : 0.3em;
+   padding-bottom : 0.5em;
 }
 .vdcTreeStudy{
    white-space: normal;
 }
 
 .vdcTreeStudy a{
-   width: 100%;
+   white-space: normal;
 }
 .vdcTreeStudy img{
    vertical-align: text-top;
-  padding-bottom : 0.3em;
+  padding-bottom : 0.5em;
 }
 .TreeContent {
     display: block;
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
+    margin-top: 0.5em;
+    margin-bottom: 0.3em;
 }
 
 
@@ -1051,22 +1040,24 @@ a.vdcRequestPanelLink:hover{
 .dvnMainColumn   { width: 100%;}
 .dvnMainTable    { width: 100%;}
 .dvnMainPanel    {
-   margin: .4em 0;
-   padding: .25em;
-   color: #035899;
-   background: #e1e1e1;
-   border-top: 2px solid #ccc;
-   font-style: italic;
-   text-align: center;
-   display: block;
-   width: 100%;
-}
+  margin: .4em 0;
+  padding: .25em 0; 
+  color: #000;
+  font-size: 1.1em;
+  font-weight: 450;
+  background: #e1e4eb;
+  border-top: 2px solid #cbd1dd;
+  font-style: italic;
+  text-align: center;
+  display: block;
+  width: 98%;
+} 
 .dvn_dvNotReleased{
 	margin-left: .4em;
-	padding: .2em;
+	padding: .1em;
 	color: #820024;
 	background: #ffffcc;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: georgia, serif;
 	font-style: italic;
         font-size: 0.9em;
 }
@@ -1083,21 +1074,21 @@ table.dvnMainTable li {
 
 /* *************** vanilla pages styles ***************** */
 div.ContentArea { margin-top:150px; margin-left:auto; margin-right:auto; min-width:300px; max-width:600px; background: url(custom_corners_topleft.gif) top left no-repeat; width:50%; }
-div.ContentArea p { background: url(custom_corners_topright.gif) top right no-repeat; font-size:1.em; padding:15px; margin:0; color: #062f58; }
-div.ContentArea span.headingText { display:block;width:100%; background-color:#dce6cb; font-style: oblique; font-size: 1.3em; font-weight: bold; text-align: center; }
-div.ContentAreaBody { background: url(custom_corners_rightborder.gif) top right repeat-y; margin:0; margin-top:-2em; padding:15px; font-size: 0.8em;}
+div.ContentArea p { background: url(custom_corners_topright.gif) top right no-repeat; font-size:1em; padding:15px; margin:0; color: #062f58; }
+div.ContentArea span.headingText { display:block;width:100%; background-color:#dce6cb; font-style: oblique; font-size: 1.2em; font-weight: bold; text-align: center; }
+div.ContentAreaBody { background: url(custom_corners_rightborder.gif) top right repeat-y; margin:0; margin-top:-2em; padding:15px; font-size: 1em;}
 div.ContentAreaFooter { background: url(custom_corners_bottomleft.gif) bottom left no-repeat; }
 div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom right no-repeat; display:block; padding:15px; margin:-2em 0 0 0; }
 
 /* *************** NetworkAdmin VDCGroup styles ******************** */
 .shadedRow              { background-color:#eeeeee; }
 .whiteRow               { background-color:#ffffff; }
-#content:vDCGroupPageView:vdcGroupPageForm:VDCGroups:dataTableCaption {font-size:1.3em; }/*overrides the default theme */
+#content:vDCGroupPageView:vdcGroupPageForm:VDCGroups:dataTableCaption {font-size:1.2em; }/*overrides the default theme */
 .Lst { max-width:700px; overflow:scroll; }
 
 .dvGroupAdminLayout     { min-width:300px; max-width:800px; margin-left:auto; margin-right:auto; margin-top:25px; border-width:1px 1px 1px 1px; border-style:solid; border-color:silver; }
 .dvGroupAdminTable      { width:100%; padding:0px; }
-#dvGroupAdminCaption    { border-left:1px solid silver; border-right:1px solid silver; font-size:1.3em; }
+#dvGroupAdminCaption    { border-left:1px solid silver; border-right:1px solid silver; font-size:1.2em; }
 .dvGroupAdminFooter     { width:100%; background-color: #d9e7f0; }
 .groupAdminHeader       { background-color: #d9e7f0; padding:0px; }
 .groupAdminOrderColumn  { width:5%; border:1px solid silver; text-align:center; }
@@ -1106,8 +1097,8 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 .groupAdminDeleteColumn { width:5%; border:1px solid silver; text-align:center; }
 .groupAdminOrderInput   { text-align:center; }
 
-#dvGroupNoneCaption    { border-left:1px solid silver; border-right:1px solid silver; font-size:1.3em; }
-#dataNoneCaption        {font-size:1.3em; }/*overrides the default theme */
+#dvGroupNoneCaption    { border-left:1px solid silver; border-right:1px solid silver; font-size:1.2em; }
+#dataNoneCaption        {font-size:1.2em; }/*overrides the default theme */
 .groupAdminNoneColumn   { width:100%; border:1px solid silver; text-align:center; }
 
 .groupAdminOrderFooter  { width:5%; border:0px; text-align:right; padding:0px 6px 0px 0px; }
@@ -1162,7 +1153,7 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
    border-width: 1px;
    color: #002BB8;
    display: block;
-   font-size: 12px;
+   font-size: 1em;
    font-weight: bold;
    margin: 1em;
    padding: 0.75em;

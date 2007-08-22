@@ -52,7 +52,7 @@
                                                  value="Remove"/>
                             </ui:panelGroup>
                             <h:dataTable binding="#{ManageCollectionsPage.dataTable1}" cellpadding="0" cellspacing="0" headerClass="" id="dataTable1"
-                                         style="padding-left: 10px; margin-top: 20px" columnClasses="vdcColPadded" value="#{ManageCollectionsPage.dataTable1Model}" var="currentRow" >
+                                         style="padding-left: 10px; margin-top: 20px" columnClasses="vdcColPadded" value="#{ManageCollectionsPage.dataTable1Model}" var="currentRow" width="100%">
                                 <h:column binding="#{ManageCollectionsPage.column1}" id="column1">
                                     <h:selectBooleanCheckbox  id="checkbox1" style="margin-left: 10px; margin-right:  #{currentRow['level']}0px;"  value="#{currentRow['selected']}"/>
                                     <h:outputLink disabled="#{currentRow['link']}" id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/#{currentRow['queryType'] ? 'AddCollectionQueryPage' : 'AddCollectionStudiesPage' }.jsp?collectionId=#{currentRow['id']}&amp;parentId=#{currentRow['parentId']}">

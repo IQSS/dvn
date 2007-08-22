@@ -49,7 +49,7 @@
                                         </ui:panelGroup>
                                     <!-- ************ Username login section ******************* -->
                                     <h:panelGrid style="margin-left:auto; margin-right:auto; background-color:#e6f2ff !important; border: 1px solid #a3b1bf; padding-left:15px;  " cellpadding="0" cellspacing="0" columnClasses="vdcLoginCol1, vdcLoginCol2" columns="2" id="gridPanel2" width="70%">
-                                        <ui:panelGroup block="true" style="padding-top: 20px; text-align:right;">
+                                        <ui:panelGroup block="true" style="padding-top: 20px; padding-right:10px; text-align:right;">
                                             <h:outputLabel  for="componentLabel1" id="componentLabel1" >
                                                 <h:outputText id="componentLabel1Text1" value="Username" />
                                             </h:outputLabel>
@@ -58,7 +58,7 @@
                                             <h:inputText id="username" value="#{LoginPage.userName}" required="true"  />
                                             <h:message for="username" styleClass="errorMessage" />
                                         </ui:panelGroup>
-                                        <ui:panelGroup block="true" style="text-align:right;">
+                                        <ui:panelGroup block="true" style="text-align:right; padding-right:10px;">
                                             <h:outputLabel for="componentLabel2" id="componentLabel2">
                                                 <h:outputText id="componentLabel2Text1" value="Password" />
                                             </h:outputLabel>

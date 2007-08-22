@@ -395,7 +395,10 @@ public class FileDownloadServlet extends HttpServlet{
 		}
 	    }
 	} else {
-            // first determine which files for zip file
+	    // a request for a zip-packaged multiple 
+	    // file archive.
+
+            // first determine which files to archive.
 
             Study study = null;
             Collection files = new ArrayList();
@@ -427,6 +430,12 @@ public class FileDownloadServlet extends HttpServlet{
                 return;
             }
             studyService.incrementNumberOfDownloads(study.getId());            
+
+	    // an HTTP GET method for remote files; 
+	    // we want it defined here so that it can be closed 
+	    // properly if an exception is caught. 
+
+	    GetMethod method = null; 
             
             // now create zip
             try {
@@ -436,10 +445,50 @@ public class FileDownloadServlet extends HttpServlet{
                 ZipOutputStream zout = new ZipOutputStream(res.getOutputStream());
                 List nameList = new ArrayList(); // used to check for duplicates
                 iter = files.iterator();
+		
+
+
                 while (iter.hasNext()) {
                     StudyFile file = (StudyFile) iter.next();
-                    InputStream in = new FileInputStream(new File(file.getFileSystemLocation()));
-                    
+
+                    InputStream in = null;
+
+		    if ( file.isRemote() ) {
+
+			// do the http magic
+
+			int status = 200;
+			
+			method = new GetMethod ( file.getFileSystemLocation() );
+			status = getClient().executeMethod(method);
+
+			if ( status != 200 ) {
+
+			    if (method != null) { 
+				method.releaseConnection(); 
+			    }
+
+			} else {
+
+			    // the incoming HTTP stream is the source of 
+			    // the current chunk of the zip stream we are
+			    // creating.
+
+			    in = method.getResponseBodyAsStream(); 
+			}
+			
+			// well, yes, the logic above will result in 
+			// adding an empty file to the zip archive in 
+			// case the remote object is not accessible. 
+
+			// I can't think of a better solution right now, 
+			// but it should work for now.
+
+		    } else {
+			// local file.		       
+			in = new FileInputStream(new File(file.getFileSystemLocation()));
+                    }
+
                     String zipEntryName = file.getFileName();
                     if (createDirectoriesForCategories) {
                         String catName = new FileCategoryUI( file.getFileCategory() ).getDownloadName();    
@@ -456,9 +505,29 @@ public class FileDownloadServlet extends HttpServlet{
                     }
                     in.close();
                     zout.closeEntry();
+
+		    // if this was a remote stream, let's close
+		    // the connection properly:
+
+		    if ( file.isRemote() ) {
+			if (method != null) { 
+			    method.releaseConnection(); 
+			}
+		    }
+
+
+		    
                 }
                 zout.close();
             } catch (IOException ex) {
+		// if the exception was caught while downloading 
+		// a remote object, let's make sure the network 
+		// connection is closed properly.
+
+		if (method != null) { 
+		    method.releaseConnection(); 
+		}
+
                 ex.printStackTrace();
             }
         }

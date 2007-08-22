@@ -13,7 +13,7 @@
 
 var helpPopup = new PopupWindow("helpDiv");
 helpPopup.offsetX=-25;
-helpPopup.offsetY=25;
+helpPopup.offsetY=15;
 
 //
 //@param anchorname the name applied to the a element

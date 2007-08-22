@@ -7,7 +7,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core">
 
    <f:subview id="customBannerView">
-       <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null}" id="customBanner" value="#{VDCRequest.currentVDC.header}"/>
-       <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId == null}" id="dataverseNetworkBanner" value="#{VDCRequest.vdcNetwork.networkPageHeader}"/>
+       <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null}" value="#{VDCRequest.currentVDC.header}"/>
+       <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId == null}" value="#{VDCRequest.vdcNetwork.networkPageHeader}"/>
    </f:subview>
 </jsp:root>

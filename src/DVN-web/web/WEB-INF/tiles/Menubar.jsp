@@ -9,11 +9,15 @@
 <div class="dvn_section">
     
         <div class="dvn_headerTitle">
-            <h5><span>powered by the </span> <a href="http://thedata.org/"><b>DATAVERSE NETWORK&#8482;</b> <em>PROJECT</em></a></h5>
+                <h5>
+                    <ui:imageHyperlink alt="Powered by the Dataverse Network Project" border="0" imageURL="/resources/poweredby_logo.gif" toolTip="Link to the Dataverse Network Project" url="http://thedata.org"/>
+                </h5>
+                
+                <!-- <h5><span>powered by the </span> <a href="http://thedata.org/"><b>DATAVERSE NETWORK&#8482;</b> <em>PROJECT</em></a></h5> -->
             <h3>
              <h:outputText  value="&#160;" rendered="#{VDCRequest.currentVDC == null}" />
              <h:outputLink value="/dvn" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" rendered="#{VDCRequest.currentVDC != null}">
-                <h:outputText  value="#{VDCRequest.vdcNetwork.name} Dataverse Network &#160;&gt;"  />
+                <h:outputText  value="All #{VDCRequest.vdcNetwork.name} Dataverses &#160;&gt;"  />
              </h:outputLink>
             </h3>
             <h1>
@@ -78,13 +82,14 @@
                 </ul>
                 <ul class="dvn_floatR">
                     <li class="dvn_networkOptions">
+                     &#160;
                     <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.jsp?userId=#{VDCSession.loginBean.user.id}" title="Edit Account Information" rendered="#{!VDCRequest.logoutPage and VDCSession.loginBean.user.firstName != null}">
                         <h:outputText value="#{VDCSession.loginBean.user.firstName} #{VDCSession.loginBean.user.lastName}"/>
                     </h:outputLink>
                     <h:outputText rendered="#{!VDCRequest.logoutPage and VDCSession.loginBean.user.firstName == null }" value="#{ VDCSession.ipUserGroup.friendlyName }"/>
                     </li>
                     <li class="dvn_networkOptions dvn_boldRed">
-                    
+                    &#160;
                     <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.jsp" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and VDCRequest.currentVDC == null and VDCSession.loginBean.networkAdmin }" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Admin Options">
                         <h:outputText  value="Network Options"/>
                     </h:outputLink>

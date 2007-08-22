@@ -6,6 +6,6 @@
     xmlns:tiles="http://struts.apache.org/tags-tiles"
     xmlns:c="http://java.sun.com/jsp/jstl/core">
         
-    <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null}" id="customFooter" value="#{VDCRequest.currentVDC.footer}"/>
-    <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId == null}" id="dataverseFooter" value="#{VDCRequest.vdcNetwork.networkPageFooter}"/>
+    <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null}" value="#{VDCRequest.currentVDC.footer}"/>
+    <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId == null}" value="#{VDCRequest.vdcNetwork.networkPageFooter}"/>
 </jsp:root>

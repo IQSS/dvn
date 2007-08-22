@@ -83,10 +83,11 @@ body {
 span.dvn_sectionTitleR  {padding: .25em 0; font-size: 0.7em; float: right;}
 .dvn_sectionTitle h3 a {margin-left: 2em; font-weight: normal;}
 
-.dvn_sectionBox {width: 100%; border-top: 2px solid #035899; border-left: 1px solid #ccc; line-height: 140%}
-.dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; line-height: 140%} 
+.dvn_sectionBox {width: 100%; border-top: 2px solid #035899; border-left: 1px solid #ccc; line-height : 140% ;}
+.dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; line-height : 140% ;} 
 .dvn_margin12 {
 	margin: 1em 1em 0em 1em; padding-bottom: 2em;
+        line-height: inherit ;
 }
 
 .dvn_sectionPanels {display: inline; margin-left: 2%; width: 23%; float: left;}
@@ -171,8 +172,9 @@ span.dvn_sectionTitleR  {padding: .25em 0; font-size: 0.7em; float: right;}
 }
 
 .vdcHelpText{
-    font-size: 1em;
+    font-size: 0.9em;
     color: #666666;
+    line-height: 140%;
 }
 
 /* start inline help support */

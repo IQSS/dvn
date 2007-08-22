@@ -19,9 +19,8 @@
         </f:verbatim>
         <h:form id="vdcGroupEditForm" onsubmit="return getAddRemoveLength();">
             
-             <ui:panelGroup rendered="#{VDCGroupPage.success}" styleClass="successMessage">    
-                <h:messages layout="table" showDetail="false" showSummary="true"/>
-            </ui:panelGroup>
+            <h:messages layout="table" showDetail="false" showSummary="true" styleClass="successMessage" />
+ 
             <ui:panelLayout panelLayout="flow" styleClass="dvGroupAdminLayout">
                 <h:inputHidden id="vdcGroupId" value="#{ (VDCGroupPage.vdcGroupId != null) ? VDCGroupPage.vdcGroupId : requestScope.vdcGroupId}" immediate="true"/>
                 <h:panelGrid columns="2" cellspacing="0" styleClass="dvGroupAdminTable" headerClass="groupAdminHeader"  columnClasses="groupEditNameColumn, groupEditDescriptionColumn">

@@ -15,9 +15,9 @@
             <div class="dvn_sectionBox"> 
                 <div class="dvn_margin12">
                     
-                    <ui:panelGroup styleClass="#{UserGroupsPage.statusMessage.styleClass}" rendered="#{!empty UserGroupsPage.statusMessage.messageText}" >
+                    <ui:panelLayout styleClass="#{UserGroupsPage.statusMessage.styleClass}" rendered="#{!empty UserGroupsPage.statusMessage.messageText}" >
                         <h:outputText id="statusMessage"  value="#{UserGroupsPage.statusMessage.messageText}" />
-                    </ui:panelGroup>
+                    </ui:panelLayout>
                     
                     <h:outputLink value="EditUserGroupPage.jsp?userGroupType=new">
                         <h:outputText value="Create a New Group"/>

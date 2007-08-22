@@ -17,9 +17,9 @@
                    <div class="dvn_sectionBox"> 
                        <div class="dvn_margin12">
                            
-                           <ui:panelGroup  styleClass="successMessage" rendered="#{NetworkPrivilegedUsersPage.success}" >
+                           <ui:panelLayout  styleClass="successMessage" rendered="#{NetworkPrivilegedUsersPage.success}" >
                                <h:outputText value="Update Successful!" />
-                           </ui:panelGroup>
+                           </ui:panelLayout>
                            
                            <h:outputText id="outputText4"
                                          styleClass="vdcSubHeaderColor" value="- Creating a New Dataverse:"/>

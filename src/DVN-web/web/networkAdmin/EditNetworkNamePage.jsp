@@ -16,9 +16,9 @@
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">
                         
-                        <ui:panelGroup styleClass="#{EditNetworkNamePage.msg.styleClass}"  rendered="#{!empty EditNetworkNamePage.msg.messageText}">
+                        <ui:panelLayout styleClass="#{EditNetworkNamePage.msg.styleClass}"  rendered="#{!empty EditNetworkNamePage.msg.messageText}">
                             <h:outputText id="statusMessage"  value="#{EditNetworkNamePage.msg.messageText}" /> 
-                        </ui:panelGroup>
+                        </ui:panelLayout>
                         
                         <ui:panelGroup block="true" style="padding-bottom: 20px">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />

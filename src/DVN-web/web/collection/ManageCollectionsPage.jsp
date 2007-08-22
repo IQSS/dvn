@@ -20,10 +20,9 @@
                 <div class="dvn_sectionBox"> 
                         <div class="dvn_margin12"> 
                             
-                            <ui:panelGroup styleClass="#{ManageCollectionsPage.msg.styleClass}" rendered="#{!empty ManageCollectionsPage.msg.messageText}">
+                            <ui:panelLayout styleClass="#{ManageCollectionsPage.msg.styleClass}" rendered="#{!empty ManageCollectionsPage.msg.messageText}">
                                 <h:outputText id="statusMessage" value="#{ManageCollectionsPage.msg.messageText}" />
-                            </ui:panelGroup>
-                            
+                            </ui:panelLayout>
                             
                             <ui:panelGroup block="true" style="padding-bottom:10px">
                                 <h:outputLink id="hyperlinkAddStudiesCollection" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddCollectionStudiesPage.jsp">

@@ -56,7 +56,7 @@ xmlns:ui="http://www.sun.com/web/ui"
             <ui:panelGroup  block="true" styleClass="vdcFileTitle" style="padding-bottom: 10px; padding-left: 0.65em;">
                 <h:outputText value="Data File: #{AnalysisPage.fileName}"/>
                 <h:outputLink  style="margin-left: 2px;" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{AnalysisPage.studyId}&amp;tab=files">
-                    <h:outputText style="font-size: 0.7em; font-weight:normal;" value="Back to Study"/>                       
+                    <h:outputText style="font-size: 0.7em; font-weight:normal;" value="Back to Study Files"/>                       
                 </h:outputLink>
             </ui:panelGroup>
             
@@ -107,12 +107,17 @@ xmlns:ui="http://www.sun.com/web/ui"
                                     <f:selectItem id="dwnldFileTypeSplus" itemLabel="#{bundleAnalysis['dwnld.fileType.Splus']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[2]}"/>
                                     <f:selectItem id="dwnldFileTypeStata" itemLabel="#{bundleAnalysis['dwnld.fileType.stata']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[3]}"/>
                                 </h:selectOneRadio>
+                                <ui:staticText id="msgDwnldButton" binding="#{AnalysisPage.msgDwnldButton}" 
+                                                visible="false" escape="false" styleClass="errorMessage"
+                                                text="#{AnalysisPage.msgDwnldButtonTxt}"
+                                                />
+                                                <br />
                                 <h:commandButton id="dwnldBttn"
                                                  binding="#{AnalysisPage.dwnldButton}" 
                                                  type="submit" 
                                                  disabled="true" 
                                                  value="#{bundleAnalysis['dwnld.button.submit']}" 
-                                                 action="#{AnalysisPage.dwnldAction}"/>
+                                                 actionListener="#{AnalysisPage.dwnldActionLstnr}"/>
                             </ui:panelGroup>
                             
                         </h:panelGrid>
@@ -411,7 +416,10 @@ xmlns:ui="http://www.sun.com/web/ui"
                                                    itemValue="#{AnalysisPage.edaOptionItems[1]}"/>
                                     
                                 </h:selectManyCheckbox>
-                                
+                                <ui:staticText  id="msgEdaButton" binding="#{AnalysisPage.msgEdaButton}" 
+                                                visible="false" escape="false" styleClass="errorMessage" 
+                                                 text="#{AnalysisPage.msgEdaButtonTxt}"/>
+                                                <br />
                                 <h:commandButton  id="edaBttn"
                                                   binding="#{AnalysisPage.edaButton}" 
                                                   disabled="true" 

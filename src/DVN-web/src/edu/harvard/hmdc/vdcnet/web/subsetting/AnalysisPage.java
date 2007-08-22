@@ -442,6 +442,7 @@ public class AnalysisPage extends VDCBaseBean {
     // dwnldBttn:h:commandButton@action
     public boolean checkDwnldParameters (){
       boolean result=true;
+      out.println("**************** within checkDwnldParameters() ****************");
       // param-checking conditions
       if (dwnldFileTypeSet.getValue()== null) {
         out.println("download radio button set: no selected value");
@@ -505,6 +506,92 @@ public class AnalysisPage extends VDCBaseBean {
         return "failure";
       }
     }
+    
+    // dwnldButton:h:commandButton@actionListener
+    public void dwnldActionLstnr(ActionEvent acev) {
+       resetMsgDwnldButton();
+      if (checkDwnldParameters()){
+          FacesContext cntxt = FacesContext.getCurrentInstance();
+
+          HttpServletResponse res = (HttpServletResponse) cntxt.getExternalContext().getResponse();
+          HttpServletRequest  req = (HttpServletRequest) cntxt.getExternalContext().getRequest();
+          try {
+              out.println("**************** within dwnldActionLstnr() ****************");
+              StudyFile sf = dataTable.getStudyFile();
+              //String formatType =  req.getParameter("formatType");
+              String formatType = (String)dwnldFileTypeSet.getValue();
+              out.println("file type from the binding="+formatType);
+              //String formatType = "D01";
+              
+              String dsbUrl = System.getProperty("vdc.dsb.url");
+              out.println("dsbUrl="+dsbUrl);
+
+              //String serverPrefix = "http://vdc-build.hmdc.harvard.edu:8080/dvn";
+              String serverPrefix = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath(); 
+              //String serverPrefix = req.getScheme() +"://" + dsbUrl + ":" + req.getServerPort() + req.getContextPath(); 
+              
+              Map <String, List<String>> mpl= new HashMap<String, List<String>>();
+              
+              // if there is a user-defined (recoded) variables
+              if (recodedVarSet.size()>0){
+                mpl.putAll(getRecodedVarParameters());
+              }
+              
+                out.println("citation info to be sent:\n"+citation);
+                mpl.put("OfflineCitation", Arrays.asList(citation));
+                
+                mpl.put("appSERVER",Arrays.asList(req.getServerName() + ":" + req.getServerPort() + req.getContextPath()));
+                //mpl.put("appSERVER",Arrays.asList(dsbUrl + ":" + req.getServerPort() + req.getContextPath()));
+                mpl.put("studytitle",Arrays.asList(studyTitle));
+                mpl.put("studyno", Arrays.asList(studyId.toString()));
+              
+              new DSBWrapper().disseminate(res, mpl, sf, serverPrefix, getDataVariableForRequest(), formatType);
+              
+          } catch (IOException ex) {
+              out.println("disseminate:download failed due to io exception");
+              ex.printStackTrace();
+          }
+          
+          cntxt.responseComplete();
+      } else {
+        // show error message;
+        msgDwnldButton.setVisible(true);
+        setMsgDwnldButtonTxt("* Select a format");
+        out.println("exiting dwnldActionLstnr() due to incomplete data ");
+      }
+      out.println("**************** within dwnldActionLstnr(): ends here ****************");
+    }
+
+    // msgDwnldButton:ui:StaticText@binding
+    private StaticText msgDwnldButton = new StaticText();
+
+    public StaticText getMsgDwnldButton() {
+        return msgDwnldButton;
+    }
+
+    public void setMsgDwnldButton(StaticText txt) {
+        this.msgDwnldButton = txt;
+    }
+    
+     private String msgDwnldButtonTxt;
+     
+     public String getMsgDwnldButtonTxt(){
+         return msgDwnldButtonTxt;
+     }
+     public void setMsgDwnldButtonTxt(String txt){
+         this.msgDwnldButtonTxt = txt;
+     }
+
+    
+    public void resetMsgDwnldButton() {
+      out.println("******* within resetMsgDwnldButton *******");
+      setMsgDwnldButtonTxt("     ");
+      FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("msgDwnldButtonTxt", msgEdaButtonTxt);
+      msgDwnldButton.setVisible(false);
+        //FacesContext.getCurrentInstance().renderResponse();
+      out.println("******* resetMsgDwnldButton: end *******");
+    }
+
     
 // end of download section
 //<---------------------------------------------------------------------------
@@ -1852,8 +1939,9 @@ if (isRecodedVar(varId)){
         }
     }
 
-    // edaBttn:h:commandButton@edaActionLstnr
+    // edaBttn:h:commandButton@actionListener
     public void edaActionLstnr(ActionEvent acev) {
+        resetMsgEdaButton(); 
         if (checkEdaParameters()){
         
             FacesContext cntxt = FacesContext.getCurrentInstance();
@@ -1922,12 +2010,44 @@ if (isRecodedVar(varId)){
             }
 
             cntxt.responseComplete();
-            //return "success";
         } else {
-            //return "failure";
+            // show error message;
+            //msgEdaButton.setText("* Select at least one option");
+            setMsgEdaButtonTxt("* Select at least one option"); 
+            msgEdaButton.setVisible(true);
             out.println("exiting edaActionLstnr() due to incomplete data ");
         }
         out.println("**************** within edaActionLstnr(): ends here ****************");
+    }
+
+
+    // msgEdaButton:ui:StaticText@binding
+    private StaticText msgEdaButton = new StaticText();
+
+    public StaticText getMsgEdaButton() {
+        return msgEdaButton;
+    }
+
+    public void setMsgEdaButton(StaticText txt) {
+        this.msgEdaButton = txt;
+    }
+    
+     private String msgEdaButtonTxt;
+     
+     public String getMsgEdaButtonTxt(){
+         return msgEdaButtonTxt;
+     }
+     public void setMsgEdaButtonTxt(String txt){
+         this.msgEdaButtonTxt = txt;
+     }
+
+    public void resetMsgEdaButton() {
+      out.println("******* within resetMsgEdaButton *******");
+      setMsgEdaButtonTxt(" "); 
+      FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("msgEdaButtonTxt", msgEdaButtonTxt);
+      msgEdaButton.setVisible(false);
+      // FacesContext.getCurrentInstance().renderResponse();
+      out.println("******* resetMsgEdaButton: end  *******");
     }
 
 // end of eda
@@ -4966,7 +5086,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
                 "groupPanel8below", "advStatVarRBox1", "advStatVarRBox2", "advStatVarRBox3",
                 "setxDiffVarBox1", "setxDiffVarBox2", "checkboxSelectUnselectAll", 
                 "currentModelName", "currentRecodeVariableId","currentRecodeVariableName", "recodedVarSet", "recodeSchema",
-                "baseVarToDerivedVar","derivedVarToBaseVar","recodeVarNameSet", "selectedNoRows");
+                "baseVarToDerivedVar","derivedVarToBaseVar","recodeVarNameSet", "selectedNoRows", "msgEdaButtonTxt", "msgDwnldButtonTxt");
 
               // clear the data for the dataTable
               for (String obj : sessionObjects){
@@ -5171,6 +5291,23 @@ if (baseVarToDerivedVar.containsKey(varId)){
                 
                 resetMsgSaveRecodeBttn();
                 resetMsgVariableSelection();
+                
+                
+                
+                if (!sessionMap.containsKey("msgDwnldButtonTxt")){
+                  sessionMap.put("msgEdaButtonTxt", msgDwnldButtonTxt);
+                } else {
+                    msgDwnldButtonTxt= (String) sessionMap.get("msgDwnldButtonTxt");
+                }
+                msgDwnldButton.setVisible(false);
+
+                if (!sessionMap.containsKey("msgEdaButtonTxt")){
+                  sessionMap.put("msgEdaButtonTxt", msgEdaButtonTxt);
+                } else {
+                    msgEdaButtonTxt= (String) sessionMap.get("msgEdaButtonTxt");
+                }
+                msgEdaButton.setVisible(false);
+
                 // end of post-back cases
               } // setup for the key data
               

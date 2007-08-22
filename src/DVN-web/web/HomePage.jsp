@@ -17,9 +17,9 @@
       <div class="dvn_section">        
         <div class="dvn_sectionTitle">
             <h3><em>Search</em> 
-                <span>
+                <span class="dvn_sectionTitleR">
                     <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
-                        <b><h:outputText  value="Advanced Search"/></b>
+                        <h:outputText  value="Advanced Search"/>
                     </h:outputLink>
                     <h:outputText  value="&#160;" escape="false"/>
                     <h:outputLink value="http://thedata.org/help/browsesearch" target="_blank">
@@ -113,8 +113,8 @@
             
             <ui:panelGroup id="recentPanel" block="true" rendered="#{VDCRequest.currentVDC.displayNewStudies == true}" >
                 <h2>Most Recent</h2>  
-                <ui:panelGroup  id="noRecentStudiesPanel" block="true" rendered="#{empty HomePage.recentStudies}" styleClass="dvn_sectionPanelText">
-                    <h:outputText value="There are no studies released in #{VDCRequest.currentVDC.name} Dataverse." styleClass="warnMessage"/>
+                <ui:panelGroup  id="noRecentStudiesPanel" block="true" rendered="#{empty HomePage.recentStudies}" styleClass="dvn_sectionPanelText warnMessage" >
+                    <h:outputText value="There are no studies released in #{VDCRequest.currentVDC.name} Dataverse." />
                 </ui:panelGroup> 
                 <ui:panelGroup  id="yesRecentStudiesPanel" block="true" rendered="#{!empty HomePage.recentStudies}" styleClass="dvn_sectionPanelText">
                     <h:dataTable  id="dataTable1" 
@@ -130,7 +130,7 @@
                         </h:column>
                     </h:dataTable>
                     <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4&amp;numResults=100"  id="recentStudy">
-                        <h:outputText  id="outputText11" value="more &gt;&gt;" escape="false"/>
+                        <h:outputText value="more &gt;&gt;" escape="false"/>
                     </h:outputLink>   
                 </ui:panelGroup>
             </ui:panelGroup>
@@ -145,7 +145,7 @@
             <ui:panelGroup rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" id="announcementsHeaderPanel" block="true">
                 <h2><h:outputText value="#{bundle.localAnnouncementsHeading}"/></h2>
                 <div class="dvn_sectionPanelText">
-                    <h:outputText rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" id="localAnnouncementsMessages" escape="false" value="#{HomePage.parsedLocalAnnouncements}"/>
+                    <h:outputText rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" escape="false" value="#{HomePage.parsedLocalAnnouncements}"/>
                 </div>
             </ui:panelGroup>
                

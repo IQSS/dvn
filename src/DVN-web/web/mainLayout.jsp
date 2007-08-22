@@ -16,26 +16,26 @@
 <ui:page id="layoutpage">
 <ui:html>
       <ui:head title="#{pageTitle.value}">
-         <h:outputText value="&#60;meta name='robots' content='index,nofollow'&#62;" escape="false" rendered=" " />
+         <h:outputText value="&#60;meta name='robots' content='index,nofollow'&#62;" escape="false" rendered="#{pageTitle.value == 'DVN - Study' }" />
          <ui:link  id="link2" url="/resources/stylesheet.css"/>
          <ui:script url="/resources/EventCapture.js"/>
       </ui:head>
       <body>
           <div class="dvn_wrapper">
-              <div class="dvn_content">
-                  
+             <div class="dvn_content">
+
                   <f:subview id="banner">
                       <tiles:insert name="banner" flush="false"/>
                   </f:subview>
-                  
-                  <f:subview id="menubar">
-                      <tiles:insert name="menubar" flush="false"/>
-                  </f:subview>
-                  
-                  <f:subview id="content">
-                      <tiles:insert name="content" flush="false"/>
-                  </f:subview>
-                
+                  <div class="dvn_font">
+                      <f:subview id="menubar">
+                          <tiles:insert name="menubar" flush="false"/>
+                      </f:subview>
+                      
+                      <f:subview id="content">
+                          <tiles:insert name="content" flush="false"/>
+                      </f:subview>
+                  </div>
                   <f:subview id="footer">
                       <tiles:insert name="footer" flush="false"/>
                   </f:subview>

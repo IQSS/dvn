@@ -17,12 +17,13 @@
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">
                         
-                        <ui:panelGroup styleClass="successMessage" rendered="#{ContactUsPage.success}">
+                        <ui:panelLayout  rendered="#{ContactUsPage.success}" styleClass="successMessage">
+                            <h:messages layout="table" globalOnly="true"  />
+                        </ui:panelLayout>
+                            
+                        <ui:panelLayout styleClass="errorMessage" rendered="#{ContactUsPage.exception}">
                             <h:messages layout="table" globalOnly="true" />
-                        </ui:panelGroup>
-                        <ui:panelGroup block="true"  styleClass="errorMessage" rendered="#{ContactUsPage.exception}">
-                            <h:messages layout="table" globalOnly="true" />
-                        </ui:panelGroup>
+                        </ui:panelLayout>
                         
                         <ui:panelGroup  block="true" id="groupPanel2"  style="padding-bottom: 20px">
                             <h:outputText  id="outputText2" value="#{bundle.contactUsFormMessage} ("/>

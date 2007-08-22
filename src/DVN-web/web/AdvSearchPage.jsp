@@ -86,7 +86,7 @@
                                 <h:outputText  styleClass="vdcHelpText" value="Note: By checking a collection you are requesting to search for studies directly associated with that collection. Your search will not necessarily include studies in sub-collections, unless the sub-collections are explicitly checked."/>
                             </ui:panelGroup>
                             <h:dataTable binding="#{AdvSearchPage.dataTable1}" cellpadding="0" cellspacing="0" headerClass="" id="dataTable1" rendered="#{AdvSearchPage.collectionsIncluded}"
-                                         style="padding-left: 10px; margin-top: 20px" columnClasses="vdcColPadded" value="#{AdvSearchPage.dataTable1Model}" var="currentRow" >
+                                         style="padding-left: 10px; margin-top: 20px" columnClasses="vdcColPadded" value="#{AdvSearchPage.dataTable1Model}" var="currentRow" width="100%">
                                 <h:column binding="#{AdvSearchPage.column1}" id="column1">
                                     <h:selectBooleanCheckbox binding="#{AdvSearchPage.checkbox1}" id="checkbox1" style="margin-left: 10px; margin-right:  #{currentRow['level']}0px;" value="#{currentRow['selected']}" />
                                     <h:graphicImage binding="#{AdvSearchPage.image1}" id="image1"  style="vertical-align: bottom" value="/resources/tree_folder.gif"/>

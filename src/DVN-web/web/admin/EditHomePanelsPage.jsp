@@ -16,9 +16,8 @@
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
-                        <ui:panelGroup styleClass="successMessage" rendered="#{EditHomePanelsPage.success}" id="messagePanel" >
-                            <h:messages layout="table" showDetail="false" showSummary="true"/>
-                        </ui:panelGroup>
+
+                       <h:messages layout="table" showDetail="false" showSummary="true" styleClass="successMessage" />
                         
                         <h:outputText  id="outputText4" styleClass="vdcSubHeaderColor" value="#{bundle.announcementsPanelHeading}"/>
                         <ui:panelGroup  block="true" id="groupPanel2" style="padding-top: 10px; padding-bottom: 20px">

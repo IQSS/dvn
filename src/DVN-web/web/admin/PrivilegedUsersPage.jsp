@@ -17,9 +17,9 @@
             </div>            
             <div class="dvn_sectionBox"> 
                 <div class="dvn_margin12">
-                    <ui:panelGroup styleClass="successMessage" rendered="#{PrivilegedUsersPage.success}">
+                    <ui:panelLayout styleClass="successMessage" rendered="#{PrivilegedUsersPage.success}">
                         <h:outputText value="Update Successful!" />
-                    </ui:panelGroup>
+                    </ui:panelLayout>
                     
                     <h:outputText id="outputText13" styleClass="vdcSubHeaderColor" value="- Site Restriction Settings:"/>
                     <ui:panelGroup block="true" id="groupPanel6" style="padding-top: 10px; padding-bottom: 10px">

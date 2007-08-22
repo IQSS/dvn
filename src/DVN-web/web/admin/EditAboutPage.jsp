@@ -18,9 +18,9 @@
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
-                        <ui:panelGroup styleClass="successMessage">
-                            <h:messages layout="table" globalOnly="true"  showSummary="true" />
-                        </ui:panelGroup>
+                   
+                            <h:messages layout="table" globalOnly="true" styleClass="successMessage" showSummary="true" />
+                     
                         
                         <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                         <h:outputText styleClass="vdcHelpText" style="padding-left:4px;" value="#{bundle.editAboutHelpMsg} #{bundle.htmlHelpText}" rendered="#{VDCRequest.currentVDCId != null}"/>

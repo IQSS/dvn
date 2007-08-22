@@ -17,11 +17,8 @@
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
-                        
-                        <ui:panelGroup styleClass="successMessage" rendered="#{EditContactUsPage.success}">
-                            <h:messages  layout="table" showDetail="false" showSummary="true"/>
-                        </ui:panelGroup>   
-                        
+ 
+                        <h:messages  layout="table" showDetail="false" showSummary="true" styleClass="successMessage" />                       
                         
                         <ui:helpInline  id="helpInline1" style="margin-bottom: 20px" text="#{bundle.editContactUsHelpMsg}"/>
                         <h:panelGrid  cellpadding="0" cellspacing="0"

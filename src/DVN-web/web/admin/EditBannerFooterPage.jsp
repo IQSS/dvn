@@ -17,9 +17,8 @@
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
-                        <ui:panelGroup styleClass="successMessage" rendered="#{EditBannerFooterPage.success}">
-                            <h:messages layout="table" globalOnly="true"/>
-                        </ui:panelGroup>
+
+                        <h:messages layout="table" globalOnly="true" styleClass="successMessage" />
                         
                         <ui:panelGroup block="true" style="padding-bottom: 10px">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />

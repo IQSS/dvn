@@ -18,10 +18,9 @@
                 </div>            
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">  
-                        <ui:panelGroup styleClass="#{SearchFieldsPage.msg.styleClass}" rendered="#{!empty SearchFieldsPage.msg.messageText}">
+                        <ui:panelLayout styleClass="#{SearchFieldsPage.msg.styleClass}" rendered="#{!empty SearchFieldsPage.msg.messageText}">
                             <h:outputText id="statusMessage" value="#{SearchFieldsPage.msg.messageText}" />
-                        </ui:panelGroup>
-                        
+                        </ui:panelLayout>    
                         
                         <h:outputText value="Select any of the cataloging information fields below to be displayed in the search results page (or studies listing). If selected, these fields will be displayed below the default information (Study ID, title, authors, production date, abstract), and will only be displayed if they are available in the study cataloging information. These settings apply to this Dataverse only."  />
                         

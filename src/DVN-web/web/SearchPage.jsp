@@ -29,9 +29,9 @@
       <div class="dvn_section">        
         <div class="dvn_sectionTitle">
             <h3><em>Search</em> 
-                <span>
+                <span class="dvn_sectionTitleR">
                     <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
-                        <b><h:outputText  value="Advanced Search"/></b>
+                        <h:outputText  value="Advanced Search"/>
                     </h:outputLink> <h:outputText  value="&#160;" escape="false"/>
                     <h:outputLink value="http://thedata.org/help/browsesearch" target="_blank">
                         <h:outputText  value="Search Help"/>
@@ -93,7 +93,7 @@
                           <h:outputText  id="listMessageSuffix" value="#{SearchPage.listMessageSuffix}"/>
                       </div>
                       
-                      <h:panelGrid  cellpadding="0" cellspacing="0" columns="2" id="gridPanel2" width="100%"
+                      <h:panelGrid  cellpadding="0" cellspacing="0" columns="2" id="gridPanel2" width="98%"
                                     styleClass="vdcSResultsTop" rendered="#{SearchPage.renderSort or SearchPage.renderScroller}">
                           <ui:panelGroup  id="groupPanel5" rendered="#{SearchPage.renderSort}">
                               <h:selectOneMenu  id="dropdown2" valueChangeListener="#{SearchPage.sort_action}" onchange="submit();">
@@ -115,7 +115,7 @@
                           </ui:panelGroup>
                       </h:panelGrid>
                       
-                      <h:dataTable  binding="#{SearchPage.studyTable}" rows="10" headerClass="list-header" id="dataTable1" width="100%"
+                      <h:dataTable  binding="#{SearchPage.studyTable}" rows="10" headerClass="list-header" id="dataTable1" width="98%"
                                     rowClasses="list-row-odd, list-row-even" columnClasses="vdcSResultsList" value="#{SearchPage.studies}" var="studyUI">
                           <h:column  id="column1">
                               <ui:panelGroup  block="true" id="groupPanel1" style="padding-bottom: 5px">

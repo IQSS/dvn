@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -90,11 +91,17 @@ public class StudyFileUI {
     
      public String fileDownload_action () {
         try {
-            String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.studyFile.getId();
+            //first, is this an MIT request?
+            String isMIT = new String("&isMIT=");
+            HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            if (request.getHeader("X-Forwarded-For") != null)
+                isMIT += "1";
+            else
+                isMIT += "0";
+            String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.studyFile.getId() + isMIT;
             if (!StringUtil.isEmpty(format)) {
                 fileDownloadURL += "&format=" + this.format;
             }
-            
             FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
             HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
             response.sendRedirect(fileDownloadURL);

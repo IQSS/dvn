@@ -45,13 +45,8 @@
                         
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                    <h3>
-                        <h:outputText   value="#{studyPage.studyUI.study.title}"/>
-                    </h3>
-                </div>            
-                <div class="dvn_sectionBoxNoBorders">                       
-                <ui:panelGroup   block="true" styleClass="vdcTextRight">
-
+                 <ui:panelGroup   block="true" styleClass="vdcTextRight">
+                        <br />
                         <h:outputText styleClass="vdcStudyStatus" value="(In Review)" rendered="#{studyPage.studyUI.study.inReview}"/>
                         <h:outputText styleClass="vdcStudyStatus" value="(New)" rendered="#{studyPage.studyUI.study.new}"/>
                         <h:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
@@ -74,7 +69,14 @@
                             <h:commandButton  value="Release" actionListener="#{studyPage.setReleased}"/>
                         </ui:panelGroup>
 
-                    </ui:panelGroup> 
+                    </ui:panelGroup>                    
+                    
+                    <h3>
+                        <h:outputText   value="#{studyPage.studyUI.study.title}"/>
+                    </h3>
+                </div>            
+                <div class="dvn_sectionBoxNoBorders">                       
+
                     <ui:tabSet binding="#{studyPage.tabSet1}" id="tabSet1" lite="true" mini="true"  styleClass="vdcStudyTabSet" >
                         <ui:tab   id="catalog" style="font-weight: bold"
                                   styleClass="vdcStudyTab" text="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog">
@@ -363,7 +365,7 @@
                             </ui:panelLayout>
                         </ui:tab>
 
-                        <ui:tab  id="files"  style="font-weight: bold" text="Study Files" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=files">
+                        <ui:tab  id="files"  style="font-weight: bold" text="Documentation, Data and Analysis" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=files">
 
                             <ui:panelLayout  id="noFilesPanel1" panelLayout="flow" style="margin: 0px; padding: 0px 0px 10px 0px; " rendered="#{empty studyPage.studyUI.study.fileCategories}">
                                 <ui:panelGroup  block="true" id="noFilesPanel2" style="padding-top: 30px; padding-bottom: 30px; padding-left: 20px;" rendered="#{!studyPage.userAuthorizedToEdit}">
@@ -513,7 +515,8 @@
                                             <h:outputText  styleClass="vdcHelpText"  value="View Data Citation for this file"/>
                                         </ui:panelGroup>
                                     </h:panelGrid>
-                                    <h:outputText  value="If you download multiple files at once, data files will be in tab delimited format. When you choose to download a file in a format other than tab delimited, you will get a zip file."/> 
+                                    <br />
+                                    <h:outputText styleClass="vdcHelpText" value="If you download multiple files at once, data files will be in tab delimited format. When you choose to download a file in a format other than tab delimited, you will get a zip file."/> 
                                 </ui:panelGroup>
 
                             </ui:panelLayout>

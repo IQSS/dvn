@@ -18,7 +18,7 @@
                 
                 <div  style="text-align:right">           
                     <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{TermsOfUsePage.study.id}&amp;tab=files">
-                        <h:outputText style="font-size: 0.75em; font-weight:normal;" value="Back to Study Files"/>                       
+                        <h:outputText style="font-size: 0.8em; font-weight:normal;" value="Back to Study"/>                       
                     </h:outputLink>
                 </div>
                 <div class="dvn_sectionTitle">

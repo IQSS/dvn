@@ -67,7 +67,7 @@ body {
 
 /* GENERAL CONTENT */
 
-.dvn_section {margin: 1em; width: 100%; overflow: hidden; font-size: 76%;}
+.dvn_section {margin: 1em 0; width: 100%; overflow: hidden; font-size: 76%;}
 div.dvn_section span, div.dvn_section p, div.dvn_section div, div.dvn_section li, div.dvn_section a {line-height: 144%; font-family: "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif;}
 
 .dvn_sectionContent {

@@ -809,10 +809,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         
         boolean createNewHandle = (vdc.getHarvestingDataverse().getHandlePrefix() != null);
         int format = vdc.getHarvestingDataverse().getFormat().equals("ddi") ? 0 : 1; // 1 is mif; eventually this will be dynamic
-        
-        Study study= doImportStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
-        
-        return study;
+
+        //return doImportStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
+        return doImportStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, false, false, false, harvestIdentifier);
     }
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

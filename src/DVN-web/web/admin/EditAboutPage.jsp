@@ -11,10 +11,10 @@
             
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                    <h3>
+                    
                         <h:outputText  value="#{bundle.editAboutHeading}" rendered="#{VDCRequest.currentVDCId != null}"/>
                         <h:outputText  value="Edit the About Page for your Dataverse Network" rendered="#{VDCRequest.currentVDCId == null}"/>
-                    </h3>
+                    
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">

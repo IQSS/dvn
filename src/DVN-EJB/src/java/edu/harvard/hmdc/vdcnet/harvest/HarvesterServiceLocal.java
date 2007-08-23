@@ -9,9 +9,10 @@
 
 package edu.harvard.hmdc.vdcnet.harvest;
 
+import edu.harvard.hmdc.vdcnet.jaxb.oai.ResumptionTokenType;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
 import java.util.List;
-import javax.xml.bind.JAXBContext;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,5 +24,6 @@ public interface HarvesterServiceLocal {
 
     public List<SetDetailBean> getSets(String oaiUrl); 
     public List<String> getMetadataFormats(String oaiUrl);
-   
+    public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds);
+     
 }

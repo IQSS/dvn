@@ -104,7 +104,7 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
        String prefix = handle.substring(0,handle.indexOf("/"));
        if (vdcNetworkService.find().isHandleRegistration() && isAuthority(prefix)){
            String localHandle = handle.substring(handle.indexOf("/")+1);
-           String authHandle =  "0.NA/" + prefix;
+           String authHandle =  getAuthHandle();
            byte[] key = null;
            int index = 300;
            String file = "/hs/svr_1/admpriv.bin";
@@ -176,7 +176,7 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
        String prefix = handle.substring(0,handle.indexOf("/"));
        if (vdcNetworkService.find().isHandleRegistration() && isAuthority(prefix)){
            String localHandle = handle.substring(handle.indexOf("/")+1);
-           String authHandle =  "0.NA/" + prefix;
+           String authHandle =  getAuthHandle();
            String file = "/hs/svr_1/admpriv.bin";
            String secret = System.getProperty("vdc.handle.admprivphrase");
            byte[] key = null;
@@ -272,7 +272,7 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
     private ResolutionRequest buildResolutionRequest(final String handle) {
         String prefix = handle.substring(0,handle.indexOf("/"));
         String localHandle = handle.substring(handle.indexOf("/")+1);
-        String authHandle =  "0.NA/" + prefix;
+        String authHandle =  getAuthHandle();
         byte[] key = null;
         String file = "/hs/svr_1/admpriv.bin";
         key = readKey(file);
@@ -365,5 +365,9 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
             }
         }
         
+    }
+    
+    private String getAuthHandle(){
+        return "0.NA/" + System.getProperty("dvn.handle.auth");
     }
 }

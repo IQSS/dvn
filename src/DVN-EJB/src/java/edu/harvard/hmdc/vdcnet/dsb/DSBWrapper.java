@@ -13,6 +13,7 @@ import edu.harvard.hmdc.vdcnet.study.DataVariable;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyFileEditBean;
+import edu.harvard.hmdc.vdcnet.util.WebStatisticsSupport;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -413,13 +414,10 @@ public class DSBWrapper {
     }
     
     private String generateUrlForFile(String serverPrefix, Long fileId) {
-        //TODO: consolidate this code into a utility, wjb
-        String isMIT = new String("&isMIT=");
-        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        if (request.getHeader("X-Forwarded-For") != null)
-            isMIT += "1";
-        else
-            isMIT += "0";
+        //get the isMIT arg
+        WebStatisticsSupport webstatistics = new WebStatisticsSupport();
+        int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");
+        String isMIT = webstatistics.getQSArgument("isMIT", headerValue);
         String file = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1" + isMIT;
         System.out.println(file);
         return file;

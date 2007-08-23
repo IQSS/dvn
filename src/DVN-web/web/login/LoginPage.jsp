@@ -10,29 +10,6 @@
                         <h:inputHidden binding="#{LoginPage.hiddenWorkflow}" value="#{LoginPage.workflow}"/>
                          <h:inputHidden binding="#{LoginPage.hiddenStudyId}" value="#{LoginPage.studyId}"/>
                          <f:verbatim>
-                 <!-- <div class="ContentArea">
-		<h3>Article header</h3> controls top right
-		
-		<div class="ContentAreaBody">
-		<p>
-
-		A few paragraphs of article text.<br />
-		A few paragraphs of article text.
-		</p>
-			
-		<p>
-		A few paragraphs of article text.<br />
-		A few paragraphs of article text.
-		</p>
-		</div>
-		
-		<div class="ContentAreaFooter">
-
-		<p>
-		A paragraph containing author information
-		</p>  writes bottom right
-		</div>
-                </div> -->
 
                          </f:verbatim>
                         <ui:panelLayout id="layoutPanel1" panelLayout="flow" styleClass="ContentArea">

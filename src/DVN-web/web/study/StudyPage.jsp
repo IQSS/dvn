@@ -45,7 +45,7 @@
                         
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                 <ui:panelGroup   block="true" styleClass="vdcTextRight">
+                 <ui:panelGroup   block="true" styleClass="dvn_studyTitleEdit">
                         <br />
                         <h:outputText styleClass="vdcStudyStatus" value="(In Review)" rendered="#{studyPage.studyUI.study.inReview}"/>
                         <h:outputText styleClass="vdcStudyStatus" value="(New)" rendered="#{studyPage.studyUI.study.new}"/>
@@ -53,14 +53,11 @@
 
                         <ui:panelGroup  rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
                             <tip:tooltip tooltipMessage="#{studybundle.editTip}" linkText="#{studybundle.editText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tabSet1.selected}" cssClass="vdcTooltipLink"/>
-                            <h:outputText value=" | "/>
 
                             <tip:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
-                            <h:outputText value=" | "/>
 
                             <tip:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
-                            <h:outputText value=" | "/>
-
+                            
                             <tip:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
 
                             <h:commandButton rendered="#{studyPage.studyUI.study.new}" value="Ready for Review" actionListener="#{studyPage.setReadyForReview}"/>
@@ -71,9 +68,9 @@
 
                     </ui:panelGroup>                    
                     
-                    <h3>
-                        <h:outputText   value="#{studyPage.studyUI.study.title}"/>
-                    </h3>
+                    <div class="dvn_studyTitle">
+                         <h:outputText   value="#{studyPage.studyUI.study.title}"/>
+                    </div>
                 </div>            
                 <div class="dvn_sectionBoxNoBorders">                       
 

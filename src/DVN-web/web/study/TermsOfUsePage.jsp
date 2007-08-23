@@ -22,9 +22,9 @@
                     </h:outputLink>
                 </div>
                 <div class="dvn_sectionTitle">
-                    <h3>
+                     
                         <h:outputText value="Terms of Use" />
-                    </h3>
+                   
                 </div>            
                 <div class="dvn_sectionBox">  
                         <div class="dvn_margin12">

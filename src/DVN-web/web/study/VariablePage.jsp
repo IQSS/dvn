@@ -13,9 +13,9 @@
             
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                   <h3>              
+                                 
                         <h:outputText value="#{VariablePage.variable.dataTable.studyFile.fileCategory.study.title}"/>                            
-                    </h3>
+                    
                 </div>            
                 <div class="dvn_sectionBoxNoBorders">     
                     

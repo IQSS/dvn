@@ -120,7 +120,7 @@
                 </ui:panelGroup> 
                 <ui:panelGroup  id="yesRecentStudiesPanel" block="true" rendered="#{!empty HomePage.recentStudies}" styleClass="dvn_sectionPanelText">
                     <h:dataTable  id="dataTable1" 
-                                  value="#{HomePage.recentStudies}" var="study" width="100%">
+                                  value="#{HomePage.recentStudies}" var="study">
                         
                         <h:column  id="column1" >
                             <ul><li>

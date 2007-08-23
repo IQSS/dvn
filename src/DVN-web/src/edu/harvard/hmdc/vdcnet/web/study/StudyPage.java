@@ -12,7 +12,6 @@ package edu.harvard.hmdc.vdcnet.web.study;
 import com.sun.jsfcl.data.DefaultTableDataModel;
 import com.sun.rave.web.ui.component.Tab;
 import com.sun.rave.web.ui.component.TabSet;
-import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
@@ -21,6 +20,7 @@ import edu.harvard.hmdc.vdcnet.study.DataFileFormatType;
 import edu.harvard.hmdc.vdcnet.study.ReviewStateServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.WebStatisticsSupport;
 import edu.harvard.hmdc.vdcnet.vdc.ReviewState;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.util.ArrayList;
@@ -552,5 +552,28 @@ public boolean getNotesIsEmpty() {
        }
         return dataFileFormatTypes;         
      }
+     
+     /**
+      * web statistics related
+      * argument and methods
+      *
+      * @author wbossons
+      */
+     private String mitFlag;
+     
+     public String getMitFlag() {
+         if (this.mitFlag == null) {
+             WebStatisticsSupport webstatistics = new WebStatisticsSupport();
+             int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");
+             setMitFlag(webstatistics.getQSArgument("isMIT", headerValue));
+         }
+         return this.mitFlag;
+     }
+     
+     public void setMitFlag(String mitflag) {
+         this.mitFlag = mitflag;
+     }
+     
+     
     
 }

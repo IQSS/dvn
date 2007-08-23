@@ -48,9 +48,8 @@ body {
 }
 
 .dvn_content {
-	display: inline;
-	float: left;
-        width: 100%;
+   padding: 12px;    
+        
 }
 
 .dvn_floatL {
@@ -72,10 +71,10 @@ div.dvn_section table, div.dvn_section caption, div.dvn_section tbody, div.dvn_s
         width: 75%;
 	float: left;
 }
-div.dvn_sectionTitle {margin: 0; padding: .25em .65em;  text-align : left; color: #555; font-weight: bold; font-size: 14px; font-style : normal;}
+div.dvn_sectionTitle {margin: 0; padding: .65em .65em .25em .65em;  text-align : left; color: #555; font-weight: bold; font-size: 14px; font-style : normal;}
 
-span.dvn_sectionTitleL {padding: .25em 0; float: left; text-align : left; color: #555; font-weight: bold; font-style : normal; font-size: 14px;}
-span.dvn_sectionTitleR  {padding: .25em 0;  float: right; }
+span.dvn_sectionTitleL {padding: 0 0 0.25em 0; float: left; text-align : left; color: #555; font-weight: bold; font-style : normal; font-size: 14px;}
+span.dvn_sectionTitleR  {padding: 0 0 0.25em 0;  float: right; }
 span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9em; font-style: normal; }
 
 .dvn_sectionBox {width: 100%; border-top: 2px solid #035899; border-left: 1px solid #ccc; line-height : 140% ;}
@@ -92,7 +91,7 @@ span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9e
 
 .dvn_sectionPanels ul {
 	margin-left: 2em;
-	list-style-image: url(http://dvn.iq.harvard.edu/dvn/resources/icon_bullet.gif);
+	list-style-image: url(icon_bullet.gif);
 }
 .dvn_sectionPanels li {
 	margin: 0.8em 0;
@@ -145,8 +144,8 @@ span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9e
 .dvn_searchBoxContent input.dvn_button {float: left;}
 .dvn_searchRadios {margin-right: 12px; float: left;}
 
-.dvn_searchRadios table td {background: inherit;}
-.dvn_searchRadios label {margin:0; padding: 0;  vertical-align: text-top; float: none; font-size: 0.9em;} 
+.dvn_searchRadios table td {background: #ddd; padding: 0; margin: 0;}
+.dvn_searchRadios label {margin:0; padding: 0;  vertical-align: text-top; float: none; font-size: 11px;} 
 
 /* STUDY */
 .dvn_studyTitleEdit{text-align : right; }

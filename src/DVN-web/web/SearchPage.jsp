@@ -60,11 +60,11 @@
                         <h:inputText onkeypress="if (window.event) return processEvent('', 'content:searchPageView:form1:search'); else return processEvent(event, 'content:searchPageView:form1:search');" id="textField2" value="#{SearchPage.searchValue}"/>
                     </label>
                     <div class="dvn_searchRadios">
-                            <h:selectOneRadio id="radioButtonList1" value="#{SearchPage.searchFilter}" layout="vertical">
+                            <h:selectOneRadio id="radioButtonList1" value="#{SearchPage.searchFilter}" layout="pageDirection">
                                 <f:selectItems id="radio1SelectItem" value="#{SearchPage.searchRadioItems}" />
                             </h:selectOneRadio>
                     </div>
-                    <label for="button"><br />
+                    <label for="button"><span><h:outputText  value="&#160;" escape="false"/></span>
                         <h:commandButton id="search" value="Search" action="#{SearchPage.search_action}"  styleClass="dvn_button"/>
                     </label>
                </fieldset>

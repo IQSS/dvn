@@ -48,7 +48,7 @@
                             <span>for -</span>
                             <h:inputText onkeypress="if (window.event) return processEvent('', 'content:homePageView:form1:searchButton'); else return processEvent(event, 'content:homePageView:form1:searchButton');" id="textField2" value="#{HomePage.searchValue}"/>
                         </label>  
-                        <label for="button"><br />
+                        <label for="button"><span><h:outputText  value="&#160;" escape="false"/></span>
                             <h:commandButton id="searchButton" value="Search" type="submit" action="#{HomePage.search_action}"  styleClass="dvn_button"/>                        
                         </label>
                     </fieldset>

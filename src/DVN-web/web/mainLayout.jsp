@@ -16,18 +16,16 @@
 <ui:page id="layoutpage">
 <ui:html>
       <ui:head title="#{pageTitle.value}">
-         <h:outputText value="&#60;meta name='robots' content='nofollow'&#62;" escape="false" rendered="#{pageTitle.value == 'DVN - Study' }" />
+         <h:outputText value="&#60;meta name='robots' content='nofollow' /&#62;" escape="false" rendered="#{pageTitle.value == 'DVN - Study' }" />
          <ui:link  id="link2" url="/resources/stylesheet.css"/>
          <ui:script url="/resources/EventCapture.js"/>
       </ui:head>
       <body>
-          <div class="dvn_wrapper">
-             <div class="dvn_content">
-
-                  <f:subview id="banner">
-                      <tiles:insert name="banner" flush="false"/>
-                  </f:subview>
-                  
+              <f:subview id="banner">
+                  <tiles:insert name="banner" flush="false"/>
+              </f:subview>
+             <div class="dvn_wrapper">
+             <div class="dvn_content">               
                   <f:subview id="menubar">
                       <tiles:insert name="menubar" flush="false"/>
                   </f:subview>
@@ -35,16 +33,16 @@
                   <f:subview id="content">
                       <tiles:insert name="content" flush="false"/>
                   </f:subview>
-                  
-                  <f:subview id="footer">
-                      <tiles:insert name="footer" flush="false"/>
-                  </f:subview>
-                  <script language="javascript" src="/cgi/awstats/js/awstats_misc_tracker.js"></script>
-                  <noscript>
-                      <img src="/cgi/awstats/js/awstats_misc_tracker.js?nojs=y" height="0" width="0" border="0" style="display:block"/>
-                  </noscript>
-              </div>
-          </div>
+                   </div>
+                </div>   
+              <f:subview id="footer">
+                  <tiles:insert name="footer" flush="false"/>
+              </f:subview>
+              <script language="javascript" src="/cgi/awstats/js/awstats_misc_tracker.js"></script>
+              <noscript>
+                  <img src="/cgi/awstats/js/awstats_misc_tracker.js?nojs=y" height="0" width="0" border="0" style="display:block"/>
+              </noscript>
+          
       </body>
 </ui:html>
 </ui:page>

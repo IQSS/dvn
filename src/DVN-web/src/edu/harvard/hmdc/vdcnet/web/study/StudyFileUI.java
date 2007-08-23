@@ -13,12 +13,12 @@ import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
+import edu.harvard.hmdc.vdcnet.util.WebStatisticsSupport;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -91,17 +91,15 @@ public class StudyFileUI {
     
      public String fileDownload_action () {
         try {
-            //TODO: consolidate this code into a utility, wjb
-            String isMIT = new String("&isMIT=");
-            HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            if (request.getHeader("X-Forwarded-For") != null)
-                isMIT += "1";
-            else
-                isMIT += "0";
+            //get the isMIT arg
+            WebStatisticsSupport webstatistics = new WebStatisticsSupport();
+            int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");
+            String isMIT = webstatistics.getQSArgument("isMIT", headerValue);
             String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.studyFile.getId() + isMIT;
             if (!StringUtil.isEmpty(format)) {
                 fileDownloadURL += "&format=" + this.format;
             }
+            System.out.println("This is the project class file ... ");
             FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
             HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
             response.sendRedirect(fileDownloadURL);

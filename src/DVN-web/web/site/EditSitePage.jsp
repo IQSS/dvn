@@ -13,9 +13,9 @@
                
              <div class="dvn_section">
                  <div class="dvn_sectionTitle">
-                     <h3>
+                     
                          <h:outputText binding="#{EditSitePage.outputText1}" value="Edit Dataverse Name and Alias"/>
-                     </h3>
+                      
                  </div>            
                  <div class="dvn_sectionBox"> 
                      <div class="dvn_margin12">

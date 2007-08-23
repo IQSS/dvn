@@ -9,9 +9,9 @@
     <ui:form  id="siteStatisticsForm"> 
         <div class="dvn_section">
             <div class="dvn_sectionTitle">
-                <h3>
+                
                     <h:outputText  value="Site Statistics Selector"/>
-                </h3>
+               
             </div>            
             <div class="dvn_sectionBox"> 
                 <div class="dvn_margin12">

@@ -37,7 +37,7 @@ import java.util.zip.ZipOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javax.ejb.EJB;
-import javax.faces.context.FacesContext;
+import javax.ejb.EJBException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -299,8 +299,12 @@ public class FileDownloadServlet extends HttpServlet{
 		    try {
 			// recycle all the incoming headers 
 			for (int i = 0; i < method.getResponseHeaders().length; i++) {
-			    res.setHeader(method.getResponseHeaders()[i].getName(), method.getResponseHeaders()[i].getValue());
+			    String headerName = method.getResponseHeaders()[i].getName();
+			    if (headerName.startsWith("Content")) {
+				res.setHeader(method.getResponseHeaders()[i].getName(), method.getResponseHeaders()[i].getValue());
+			    }
 			}
+
 
 		    
 			// send the incoming HTTP stream as the response body
@@ -604,14 +608,7 @@ public class FileDownloadServlet extends HttpServlet{
     }
     
     private String generateUrlForFile(String serverPrefix, Long fileId) {
-        //TODO: consolidate this code into a utility, wjb
-        String isMIT = new String("&isMIT=");
-        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        if (request.getHeader("X-Forwarded-For") != null)
-            isMIT += "1";
-        else
-            isMIT += "0";
-        String file = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1" + isMIT;
+        String file = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1";
         System.out.println(file);
         return file;
     }

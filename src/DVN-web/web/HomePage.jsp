@@ -16,7 +16,7 @@
       <!-- Search Section starts here -->                                       
       <div class="dvn_section">        
         <div class="dvn_sectionTitle">
-            <h3><em>Search</em> 
+             <span class="dvn_sectionTitleL">Search</span> 
                 <span class="dvn_sectionTitleR">
                     <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
                         <h:outputText  value="Advanced Search"/>
@@ -26,7 +26,7 @@
                         <h:outputText  value="Search Help"/>
                     </h:outputLink>                
                 </span>
-            </h3>
+             
         </div>        
         <div class="dvn_searchBox">
             <div class="dvn_searchBoxContent">
@@ -47,8 +47,10 @@
                         <label for="search">
                             <span>for -</span>
                             <h:inputText onkeypress="if (window.event) return processEvent('', 'content:homePageView:form1:searchButton'); else return processEvent(event, 'content:homePageView:form1:searchButton');" id="textField2" value="#{HomePage.searchValue}"/>
-                        </label>   
-                        <h:commandButton id="searchButton" value="Search" type="submit" action="#{HomePage.search_action}"  styleClass="button"/>                        
+                        </label>  
+                        <label for="button"><br />
+                            <h:commandButton id="searchButton" value="Search" type="submit" action="#{HomePage.search_action}"  styleClass="dvn_button"/>                        
+                        </label>
                     </fieldset>
                 </div>
             <span class="dvn_xbottom"><span class="dvn_xb4"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb3"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb2"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb1"><h:outputText  value="&#160;" escape="false"/></span></span>
@@ -62,7 +64,7 @@
         
        <ui:panelGroup block="true" styleClass="#{ (HomePage.showRequestCreator or HomePage.showRequestContributor or VDCRequest.currentVDC.displayNewStudies == true or (VDCRequest.vdcNetwork.displayAnnouncements == true and VDCRequest.currentVDC == null) or ( (VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and VDCRequest.currentVDC != null) or VDCRequest.currentVDC.displayAnnouncements == true) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">    
             <div class="dvn_sectionTitle">
-                <h3>Browse</h3>
+                Browse
             </div>            
             <div class="dvn_sectionBox">
                 <div class="dvn_margin12">
@@ -80,7 +82,7 @@
         
         <ui:panelGroup block="true" styleClass="dvn_sectionPanels" rendered="#{HomePage.showRequestCreator or HomePage.showRequestContributor or VDCRequest.currentVDC.displayNewStudies == true or (VDCRequest.vdcNetwork.displayAnnouncements == true and VDCRequest.currentVDC == null) or ( (VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and VDCRequest.currentVDC != null) or VDCRequest.currentVDC.displayAnnouncements == true}">    
             <ui:panelGroup  id="createDataverse" block="true" rendered="#{HomePage.showRequestCreator}">   
-                <h2>Create Your Own Dataverse</h2>
+                <div class="dvn_sectionPanelTitle">Create Your Own Dataverse</div>
                 <div class="dvn_sectionPanelText">
                     Are you interested in having your own on-line data archive? Send a request to
                     <h:outputLink rendered="#{VDCSession.loginBean==null}"  value="/dvn/faces/login/CreatorRequestAccountPage.jsp">
@@ -96,7 +98,7 @@
             </ui:panelGroup>
             
             <ui:panelGroup id="beContributor" block="true" rendered="#{HomePage.showRequestContributor}">
-                <h2>Become a Contributor</h2>
+                <div class="dvn_sectionPanelTitle">Become a Contributor</div>
                 <div class="dvn_sectionPanelText">
                     Are you interested in uploading your data to 
                     <h:outputText style="font-weight: bold;" value="#{VDCRequest.currentVDC.name}"/>
@@ -112,7 +114,7 @@
             </ui:panelGroup>
             
             <ui:panelGroup id="recentPanel" block="true" rendered="#{VDCRequest.currentVDC.displayNewStudies == true}" >
-                <h2>Most Recent</h2>  
+                <div class="dvn_sectionPanelTitle">Most Recent</div>  
                 <ui:panelGroup  id="noRecentStudiesPanel" block="true" rendered="#{empty HomePage.recentStudies}" styleClass="dvn_sectionPanelText warnMessage" >
                     <h:outputText value="There are no studies released in #{VDCRequest.currentVDC.name} Dataverse." />
                 </ui:panelGroup> 
@@ -136,14 +138,14 @@
             </ui:panelGroup>
        
            <ui:panelGroup block="true" rendered="#{( (VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) ) or ( (VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and (VDCRequest.currentVDC != null) )}" id="networkAnnouncementsHeaderPanel" >
-                <h2><h:outputText value="#{bundle.networkAnnouncementsHeading}"/></h2>
+                <div class="dvn_sectionPanelTitle"><h:outputText value="#{bundle.networkAnnouncementsHeading}"/></div>
                 <div class="dvn_sectionPanelText">
                     <h:outputText id="networkAnnouncementsMessages" escape="false" value="#{HomePage.parsedNetworkAnnouncements}"/>
                 </div>
             </ui:panelGroup>
             
             <ui:panelGroup rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" id="announcementsHeaderPanel" block="true">
-                <h2><h:outputText value="#{bundle.localAnnouncementsHeading}"/></h2>
+                <div class="dvn_sectionPanelTitle"><h:outputText value="#{bundle.localAnnouncementsHeading}"/></div>
                 <div class="dvn_sectionPanelText">
                     <h:outputText rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" escape="false" value="#{HomePage.parsedLocalAnnouncements}"/>
                 </div>

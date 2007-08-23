@@ -28,7 +28,7 @@
       <!-- Search Section starts here -->                                       
       <div class="dvn_section">        
         <div class="dvn_sectionTitle">
-            <h3><em>Search</em> 
+            <span class="dvn_sectionTitleL">Search</span> 
                 <span class="dvn_sectionTitleR">
                     <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
                         <h:outputText  value="Advanced Search"/>
@@ -37,7 +37,7 @@
                         <h:outputText  value="Search Help"/>
                     </h:outputLink>                
                 </span>
-            </h3>
+ 
         </div>        
         <div class="dvn_searchBox">
             <div class="dvn_searchBoxContent">
@@ -58,14 +58,15 @@
                     <label for="search">
                         <span>for -</span>
                         <h:inputText onkeypress="if (window.event) return processEvent('', 'content:searchPageView:form1:search'); else return processEvent(event, 'content:searchPageView:form1:search');" id="textField2" value="#{SearchPage.searchValue}"/>
-                    </label>   
-                    <h:commandButton id="search" value="Search" action="#{SearchPage.search_action}"  styleClass="button"/>
-                
-                <div class="dvn_searchRadios">
-                        <h:selectOneRadio id="radioButtonList1" value="#{SearchPage.searchFilter}" >
-                            <f:selectItems id="radio1SelectItem" value="#{SearchPage.searchRadioItems}" />
-                        </h:selectOneRadio>
-                </div>
+                    </label>
+                    <div class="dvn_searchRadios">
+                            <h:selectOneRadio id="radioButtonList1" value="#{SearchPage.searchFilter}" layout="vertical">
+                                <f:selectItems id="radio1SelectItem" value="#{SearchPage.searchRadioItems}" />
+                            </h:selectOneRadio>
+                    </div>
+                    <label for="button"><br />
+                        <h:commandButton id="search" value="Search" action="#{SearchPage.search_action}"  styleClass="dvn_button"/>
+                    </label>
                </fieldset>
             </div>
             <span class="dvn_xbottom"><span class="dvn_xb4"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb3"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb2"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb1"><h:outputText  value="&#160;" escape="false"/></span></span>
@@ -81,7 +82,7 @@
       <div class="dvn_section">  
            <ui:panelLayout styleClass="#{ (SearchPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}" >    	
               <div class="dvn_sectionTitle">
-                  <h3><h:outputText value="#{SearchPage.listHeader}"/></h3>
+                  <h:outputText value="#{SearchPage.listHeader}"/>
               </div>            
                   <div class="dvn_sectionBox">  
                      <div class="dvn_margin12">
@@ -213,7 +214,7 @@
           </ui:panelLayout>
           
           <ui:panelGroup block="true" rendered="#{SearchPage.renderTree}" styleClass="dvn_sectionPanels">    
-              <h2><h:outputText  value="#{SearchPage.treeHeader}"/> </h2>
+              <div class="dvn_sectionPanelTitle"><h:outputText  value="#{SearchPage.treeHeader}"/> </div>
               <div class="dvn_sectionPanelText">
                 <ui:tree  binding="#{SearchPage.collectionTree}" id="collectionTree" text=""  />          
               </div>    

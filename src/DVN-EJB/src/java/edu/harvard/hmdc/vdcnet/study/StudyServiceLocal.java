@@ -77,7 +77,7 @@ public interface StudyServiceLocal {
     edu.harvard.hmdc.vdcnet.study.Study saveStudy(Study study, Long userId);
 
     edu.harvard.hmdc.vdcnet.study.Study importLegacyStudy(File xmlFile, Long vdcId, Long userId);
-    edu.harvard.hmdc.vdcnet.study.Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier);
+    edu.harvard.hmdc.vdcnet.study.Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier, boolean allowUpdates);
     edu.harvard.hmdc.vdcnet.study.Study importStudy(File xmlFile,  int xmFileFormatId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier);
 
     List getVisibleStudies(List studyIds, Long vdcId);

@@ -15,18 +15,17 @@
             <h:inputHidden id="redirectPage" value="#{TermsOfUsePage.redirectPage}"/>
             
             <div class="dvn_section">
-                
-                <div  style="text-align:right">           
-                    <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{TermsOfUsePage.study.id}&amp;tab=files">
-                        <h:outputText style="font-size: 0.8em; font-weight:normal;" value="Back to Study"/>                       
-                    </h:outputLink>
-                </div>
+                <span class="dvn_sectionTitleR">
+                        <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{TermsOfUsePage.study.id}&amp;tab=files">
+                            <h:outputText value="Back to Study"/>                       
+                        </h:outputLink>
+                    </span>
                 <div class="dvn_sectionTitle">
-                     
-                        <h:outputText value="Terms of Use" />
-                   
-                </div>            
+                    Terms of Use
+                </div>   
+                
                 <div class="dvn_sectionBox">  
+                    
                         <div class="dvn_margin12">
 
                             <ui:panelGroup  block="true" style="padding-bottom: 20px;"  styleClass="warnMessage" >
@@ -36,7 +35,7 @@
                             
                              <ui:panelGroup  block="true" rendered="#{TermsOfUsePage.vdcTermsRequired}">
                              <div>
-                                 <h:outputText styleClass="vdcFieldTitle" value="Dataverse Terms of Use:" />
+                                 <h:outputText styleClass="vdcFieldTitle" value="I accept the Terms of Use for this Dataverse:" />
                                  <h:selectBooleanCheckbox id="vdcTermsAccepted" value="#{TermsOfUsePage.vdcTermsAccepted}" />
                              </div>
                             <br />
@@ -45,7 +44,7 @@
                             </ui:panelGroup>
                             <ui:panelGroup  block="true" rendered="#{TermsOfUsePage.studyTermsRequired}">
                                 <div>
-                                    <h:outputText styleClass="vdcFieldTitle" value="Study Terms of Use:" />
+                                    <h:outputText styleClass="vdcFieldTitle" value="I accept the Terms of Use for this Study:" />
                                     <h:selectBooleanCheckbox id="studyTermsAccepted" value="#{TermsOfUsePage.studyTermsAccepted}"/>
                                 </div>
                                 <br />

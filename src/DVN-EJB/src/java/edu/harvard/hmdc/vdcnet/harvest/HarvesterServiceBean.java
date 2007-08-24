@@ -272,7 +272,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                         resumptionToken= listIdentifiersType.getResumptionToken();
                         for (Iterator it = listIdentifiersType.getHeader().iterator(); it.hasNext();) {
                             HeaderType header = (HeaderType) it.next();
-                            Long studyId = getRecord(hdLogger, dataverse, header.getIdentifier(),dataverse.getFormat());
+                            Long studyId = harvesterService.getRecord(hdLogger, dataverse, header.getIdentifier(),dataverse.getFormat());
                             if (studyId!=null) {
                                 harvestedStudyIds.add(studyId);
                             }
@@ -306,8 +306,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             }
         }
         
-        
-        private Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix) {
+        @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+        public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix) {
             String oaiUrl= dataverse.getOaiServer();
             Study harvestedStudy = null;
           

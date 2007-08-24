@@ -119,8 +119,7 @@
                     <h:outputText value="There are no studies released in #{VDCRequest.currentVDC.name} Dataverse." />
                 </ui:panelGroup> 
                 <ui:panelGroup  id="yesRecentStudiesPanel" block="true" rendered="#{!empty HomePage.recentStudies}" styleClass="dvn_sectionPanelText">
-                    <h:dataTable  id="dataTable1" 
-                                  value="#{HomePage.recentStudies}" var="study">
+                    <h:dataTable  id="dataTable1" cellpadding="0" cellspacing="0" value="#{HomePage.recentStudies}" var="study">
                         
                         <h:column  id="column1" >
                             <ul><li>

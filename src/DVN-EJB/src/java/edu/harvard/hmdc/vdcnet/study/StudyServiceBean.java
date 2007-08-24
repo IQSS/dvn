@@ -796,10 +796,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
     
     
-    
+
+  
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier) {
+    public Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier, boolean allowUpdates) {
         VDC vdc = em.find(VDC.class, vdcId);
         em.refresh(vdc); // workaround to get correct value for harvesting dataverse (to be investigated)
         
@@ -811,7 +812,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         int format = vdc.getHarvestingDataverse().getFormat().equals("ddi") ? 0 : 1; // 1 is mif; eventually this will be dynamic
 
         //return doImportStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
-        return doImportStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, false, false, false, harvestIdentifier);
+        return doImportStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, allowUpdates, false, false, harvestIdentifier);
     }
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

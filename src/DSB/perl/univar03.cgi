@@ -380,36 +380,50 @@ if ($dataURL) {
 	my $cgi_ParamHash = {}; 
 
 	if ( $varNoStrng ){
-###	    $cgi_ParamHash->{$vars} = $varNoStrng;
+###	    $cgi_ParamHash->{vars} = $varNoStrng;
 	}
 
 	$logger->vdcLOG_debug( 'VDC::DSB', $script_name,  "getting data "); # debug
 
 	$logger->vdcLOG_info( 'VDC::DSB', $script_name,  $dataURLG); # debug
 
-	# Detect and recycle some parameters sent to us by the 
-	# application (these are added to URLs for accounting/logging
-	# purposes)
-
-	my $isSSRparam = $q->param('isSSR');
-
-	if ( $isSSRparam )
-	{
-	    $cgi_ParamHash->{$isSSR} = $isSSRparam; 
-	}
-
-	my $isMITparam = $q->param('isMIT');
-
-	if ( $isMITparam )
-	{
-	    $cgi_ParamHash->{$isMIT} = $isMITparam; 
-	}
 
 	# let's cook the final URL and calculate the total
 	# length; if it's too long, we are going to use POST
 	# instead of GET.
 
 	my $cgiParams = ""; 
+
+	if ( $MD->{censusURL} )
+	{
+	    $logger->vdcLOG_info ("VDC::DSB", "Disseminate",
+				  "census url detected;" );
+	    $logger->vdcLOG_info ("VDC::DSB", "Disseminate",
+				   $MD->{censusURL} );
+
+	    $dataURLG = $MD->{censusURL}; 
+	    $cgi_ParamHash->{vars} = join ( ",", @{$MD->{_varNameA}} ); 
+	}
+	else
+	{
+	    # Detect and recycle some parameters sent to us by the 
+	    # application (these are added to URLs for accounting/logging
+	    # purposes)
+
+	    my $isSSRparam = $q->param('isSSR');
+	    
+	    if ( $isSSRparam )
+	    {
+		$cgi_ParamHash->{$isSSR} = $isSSRparam; 
+	    }
+	    
+	    my $isMITparam = $q->param('isMIT');
+
+	    if ( $isMITparam )
+	    {
+		$cgi_ParamHash->{$isMIT} = $isMITparam; 
+	    }
+	}
 
 	for my $v (keys %$cgi_ParamHash)
 	{
@@ -426,7 +440,7 @@ if ($dataURL) {
 	    $dataURLG .= $cgiParams; 
 	    $request = HTTP::Request->new('GET', $dataURLG );
 	} else {
-	    $request = POST $dataURL, $cgi_ParamHash; 
+	    $request = POST $dataURLG, $cgi_ParamHash; 
 	}
 
 	# Detect and recycle some useful headers: 
@@ -436,14 +450,17 @@ if ($dataURL) {
 	    $request->header('cookie' => $tcookie);
 	}
 
-	# the "x-forwarded-for" is the header set up by the 
-	# mit proxy; we are sending it back for logging purposes.
-
-	my $xforward = $q->http('X-Forwarded-For');
-
-	if ( $xforward )
+	unless ( $MD->{censusURL} ) 
 	{
-	    $request->header('X-Forwarded-For' => $xforward);
+	    # the "x-forwarded-for" is the header set up by the 
+	    # mit proxy; we are sending it back for logging purposes.
+
+	    my $xforward = $q->http('X-Forwarded-For');
+	    
+	    if ( $xforward )
+	    {
+		$request->header('X-Forwarded-For' => $xforward);
+	    }
 	}
 
 
@@ -572,11 +589,15 @@ if ($dataURL) {
 				     );
 	    if ($buf) {print "$buf";} else { close(RCUT); }
 	} else {
-		$logger->vdcLOG_info( 'VDC::DSB', $script_name,  "starting rcut pipe"); # debug
-		my $RCUT_BIN = "${RCUTDIR}/rcut";
+	    # Census.gov url:
+
+	        $logger->vdcLOG_info( 'VDC::DSB', $script_name,  "starting rcut pipe for incoming census stream"); # debug
+	        my $RCUT_BIN = "/usr/local/VDC/bin/rcut";
 		my $buf="";
 		my $delim="\t";
-		my $fieldnames= join(',',@{$CGIparamSet->getVarNameSet()});
+
+		#my $fieldnames= join(',',@{$CGIparamSet->getVarNameSet()});
+		my $fieldnames= join( ',', @{$MD->{_varNameA}} );
 
 		my $do_stream;
 

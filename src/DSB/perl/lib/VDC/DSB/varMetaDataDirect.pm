@@ -44,6 +44,7 @@ sub new {
 	$self->{_formatCatgry}={};
 	$self->{unsafeVarName}=0;
 
+	$self->{censusURL} = "";
 	# configuration -- here temporarily; 
 	# should be moved someplace else
 
@@ -178,6 +179,24 @@ sub obtainMeta {
 
 	$sth->finish; 
 
+
+
+	# finally, one more check to see if this is a Census URL:
+
+	my $sth = $dbh->prepare(qq {SELECT filesystemlocation FROM studyfile WHERE id=$fileID});
+
+	$sth->execute();
+	my ($location) = $sth->fetchrow(); 
+
+	if ( $location =~/^http:\/\/.*census\.gov/i )
+	{
+	    $self->{censusURL} = $location; 
+	}
+	 
+	$sth->finish; 
+	
+	$dbh->disconnect; 
+
 	my $temp= {};
 
 	while ((my $key, my $value) = each(%{$self})) {
@@ -187,7 +206,6 @@ sub obtainMeta {
 	# additional values: 
 
 	$temp->{unsafeVarName} = 0; 
-	
 	
 	return $temp;
 }

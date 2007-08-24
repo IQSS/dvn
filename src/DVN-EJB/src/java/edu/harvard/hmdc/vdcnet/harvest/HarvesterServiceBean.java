@@ -190,15 +190,17 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             
             String from = null;
             Date lastHarvestTime = havestingDataverseService.getLastHarvestTime(dataverse.getId());
+            boolean allowUpdates=false;
             if (lastHarvestTime!=null) {
                 from= formatter.format( lastHarvestTime );
+                allowUpdates=true;
             }
             
-            harvest(dataverse,from, until);
+            harvest(dataverse,from, until,allowUpdates);
         }
         
      
-        private void harvest( HarvestingDataverse dataverse, String from, String until) {
+        private void harvest( HarvestingDataverse dataverse, String from, String until, boolean allowUpdates) {
             Logger hdLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean."+dataverse.getVdc().getAlias());
             List<Long> harvestedStudyIds = new ArrayList<Long>();
             try {
@@ -216,7 +218,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 ResumptionTokenType resumptionToken = null;
                 
                 do {
-                    resumptionToken= harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken,dataverse,from,until, harvestedStudyIds);
+                    resumptionToken= harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken,dataverse,from,until, harvestedStudyIds, allowUpdates);
                 } while(resumptionToken!=null && !resumptionToken.equals(""));
                 
                 
@@ -241,7 +243,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         }
         
         @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-        public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds) {
+        public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, boolean allowUpdates) {
             String encodedSet=null;
             
             try {
@@ -272,7 +274,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                         resumptionToken= listIdentifiersType.getResumptionToken();
                         for (Iterator it = listIdentifiersType.getHeader().iterator(); it.hasNext();) {
                             HeaderType header = (HeaderType) it.next();
-                            Long studyId = harvesterService.getRecord(hdLogger, dataverse, header.getIdentifier(),dataverse.getFormat());
+                            Long studyId = harvesterService.getRecord(hdLogger, dataverse, header.getIdentifier(),dataverse.getFormat(), allowUpdates);
                             if (studyId!=null) {
                                 harvestedStudyIds.add(studyId);
                             }
@@ -307,7 +309,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         }
         
         @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-        public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix) {
+        public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, boolean allowUpdates) {
             String oaiUrl= dataverse.getOaiServer();
             Study harvestedStudy = null;
           
@@ -324,7 +326,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 } else {
                     VDCUser networkAdmin = vdcNetworkService.find().getDefaultNetworkAdmin();
                     
-                    harvestedStudy = studyService.importHarvestStudy(record.getMetadataFile(),dataverse.getVdc().getId(),networkAdmin.getId(),identifier);
+                    harvestedStudy = studyService.importHarvestStudy(record.getMetadataFile(),dataverse.getVdc().getId(),networkAdmin.getId(),identifier,allowUpdates);
                     
                     hdLogger.log(Level.INFO,"Harvest Successful for identifier "+identifier );
                 }

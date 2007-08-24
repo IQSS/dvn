@@ -86,57 +86,57 @@
                                         <h:outputText value="#{studyPage.studyUI.study.citation}" escape="false"/>
                                     </ui:panelGroup>
                                     <ihelp:inlinehelp helpMessage="#{studybundle.subtitleHelp}"  linkText="#{studybundle.subtitleLabel}" heading="#{studybundle.subtitleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.subTitle!='' and studyPage.studyUI.study.subTitle!=null}"/>
-                                    <h:outputText  value="#{studyPage.studyUI.study.subTitle}" rendered="#{studyPage.studyUI.study.subTitle!='' and studyPage.studyUI.study.subTitle!=null}"/>
+                                    <h:outputText id="text1" value="#{studyPage.studyUI.study.subTitle}" rendered="#{studyPage.studyUI.study.subTitle!='' and studyPage.studyUI.study.subTitle!=null}"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.studyGlobalIdHelp}"  linkText="#{studybundle.studyGlobalIdLabel}" heading="#{studybundle.studyGlobalIdHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"/>
-                                    <h:outputText  value="#{studyPage.studyUI.study.globalId}" />
+                                    <h:outputText id="text2" value="#{studyPage.studyUI.study.globalId}" />
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.otheridHelp}"  linkText="#{studybundle.otheridLabel}" heading="#{studybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.otherIds != ''}"/>
-                                    <h:outputText  value="#{studyPage.studyUI.otherIds}" rendered="#{studyPage.studyUI.otherIds != ''}"/>
+                                    <h:outputText id="text3" value="#{studyPage.studyUI.otherIds}" rendered="#{studyPage.studyUI.otherIds != ''}"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.authorHelp}"  linkText="#{studybundle.authorLabel}" heading="#{studybundle.authorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.authorAffiliations != ''}" />
-                                    <h:outputText   value="#{studyPage.studyUI.authorAffiliations}"  rendered="#{studyPage.studyUI.authorAffiliations != ''}" escape="false"/>
+                                    <h:outputText id="text4"  value="#{studyPage.studyUI.authorAffiliations}"  rendered="#{studyPage.studyUI.authorAffiliations != ''}" escape="false"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.producerHelp}"  linkText="#{studybundle.producerLabel}" heading="#{studybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.producers != ''}" />
-                                    <h:outputText   value="#{studyPage.studyUI.producers}" rendered="#{studyPage.studyUI.producers != ''}" escape="false" />
+                                    <h:outputText id="text5"  value="#{studyPage.studyUI.producers}" rendered="#{studyPage.studyUI.producers != ''}" escape="false" />
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.productionDateHelp}"  linkText="#{studybundle.productionDateLabel}" heading="#{studybundle.productionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.productionDate != '' and studyPage.studyUI.study.productionDate != null}" />
-                                    <h:outputText   value="#{studyPage.studyUI.study.productionDate}" rendered="#{studyPage.studyUI.study.productionDate != '' and studyPage.studyUI.study.productionDate != null}" />
+                                    <h:outputText id="text6"  value="#{studyPage.studyUI.study.productionDate}" rendered="#{studyPage.studyUI.study.productionDate != '' and studyPage.studyUI.study.productionDate != null}" />
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.productionPlaceHelp}"  linkText="#{studybundle.productionPlaceLabel}" heading="#{studybundle.productionPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.productionPlace != '' and studyPage.studyUI.study.productionPlace != null }" />
-                                    <h:outputText   value="#{studyPage.studyUI.study.productionPlace}" rendered="#{studyPage.studyUI.study.productionPlace != '' and studyPage.studyUI.study.productionPlace != null}" escape="false"/>
+                                    <h:outputText id="text7"  value="#{studyPage.studyUI.study.productionPlace}" rendered="#{studyPage.studyUI.study.productionPlace != '' and studyPage.studyUI.study.productionPlace != null}" escape="false"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.softwareHelp}"  linkText="#{studybundle.softwareLabel}" heading="#{studybundle.softwareHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.software != '' and studyPage.studyUI.software != null}"/>  
-                                    <h:outputText   value="#{studyPage.studyUI.software}" rendered="#{studyPage.studyUI.software != '' and studyPage.studyUI.software!= null}" escape="false"/>
+                                    <h:outputText id="text8"  value="#{studyPage.studyUI.software}" rendered="#{studyPage.studyUI.software != '' and studyPage.studyUI.software!= null}" escape="false"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.fundingAgencyHelp}"  linkText="#{studybundle.fundingAgencyLabel}" heading="#{studybundle.fundingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.fundingAgency != '' and studyPage.studyUI.study.fundingAgency != null }" />
-                                    <h:outputText   value="#{studyPage.studyUI.study.fundingAgency}" rendered="#{studyPage.studyUI.study.fundingAgency != '' and studyPage.studyUI.study.fundingAgency != null }" escape="false"/>
+                                    <h:outputText id="text9"  value="#{studyPage.studyUI.study.fundingAgency}" rendered="#{studyPage.studyUI.study.fundingAgency != '' and studyPage.studyUI.study.fundingAgency != null }" escape="false"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.grantNumberHelp}"  linkText="#{studybundle.grantNumberLabel}" heading="#{studybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.grants != ''}" />
-                                    <h:outputText   value="#{studyPage.studyUI.grants}" rendered="#{studyPage.studyUI.grants != ''}" />
+                                    <h:outputText id="text10"  value="#{studyPage.studyUI.grants}" rendered="#{studyPage.studyUI.grants != ''}" />
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.distributorHelp}"  linkText="#{studybundle.distributorLabel}" heading="#{studybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.distributors != ''}"/>
-                                    <h:outputText  value="#{studyPage.studyUI.distributors}" rendered="#{studyPage.studyUI.distributors != ''}" escape="false"/>
+                                    <h:outputText id="text11" value="#{studyPage.studyUI.distributors}" rendered="#{studyPage.studyUI.distributors != ''}" escape="false"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.distributorContactHelp}"  linkText="#{studybundle.distributorContactLabel}" heading="#{studybundle.distributorContactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.distributorContact != ''  }"/>
-                                    <h:outputText value="#{studyPage.studyUI.distributorContact}" rendered="#{studyPage.studyUI.distributorContact != '' }"  escape="false"/>
+                                    <h:outputText id="text12" value="#{studyPage.studyUI.distributorContact}" rendered="#{studyPage.studyUI.distributorContact != '' }"  escape="false"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.distributionDateHelp}"  linkText="#{studybundle.distributionDateLabel}" heading="#{studybundle.distributionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.distributionDate != '' and studyPage.studyUI.study.distributionDate != null }"/>
-                                    <h:outputText value="#{studyPage.studyUI.study.distributionDate}" rendered="#{studyPage.studyUI.study.distributionDate != '' and studyPage.studyUI.study.distributionDate != null }"/>
+                                    <h:outputText id="text13" value="#{studyPage.studyUI.study.distributionDate}" rendered="#{studyPage.studyUI.study.distributionDate != '' and studyPage.studyUI.study.distributionDate != null }"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.depositorHelp}"  linkText="#{studybundle.depositorLabel}" heading="#{studybundle.depositorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.depositor != '' and studyPage.studyUI.study.depositor != null }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.study.depositor}" rendered="#{studyPage.studyUI.study.depositor != '' and studyPage.studyUI.study.depositor != null }" />
+                                    <h:outputText  id="text14" value="#{studyPage.studyUI.study.depositor}" rendered="#{studyPage.studyUI.study.depositor != '' and studyPage.studyUI.study.depositor != null }" />
                                     <ihelp:inlinehelp helpMessage="#{studybundle.depositDateHelp}"  linkText="#{studybundle.depositDateLabel}" heading="#{studybundle.depositDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.dateOfDeposit != '' and studyPage.studyUI.study.dateOfDeposit != null }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.study.dateOfDeposit}" rendered="#{studyPage.studyUI.study.dateOfDeposit != '' and studyPage.studyUI.study.dateOfDeposit != null }"/>
+                                    <h:outputText id="text15"  value="#{studyPage.studyUI.study.dateOfDeposit}" rendered="#{studyPage.studyUI.study.dateOfDeposit != '' and studyPage.studyUI.study.dateOfDeposit != null }"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.seriesHelp}"  linkText="#{studybundle.seriesLabel}" heading="#{studybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.series != '' }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.series}" rendered="#{studyPage.studyUI.series != '' }" escape="false"/>
+                                    <h:outputText  id="text16" value="#{studyPage.studyUI.series}" rendered="#{studyPage.studyUI.series != '' }" escape="false"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.seriesVersionHelp}"  linkText="#{studybundle.seriesVersionLabel}" heading="#{studybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.studyVersion != '' }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.studyVersion}" rendered="#{studyPage.studyUI.studyVersion!=''}"/>
+                                    <h:outputText id="text17"  value="#{studyPage.studyUI.studyVersion}" rendered="#{studyPage.studyUI.studyVersion!=''}"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.replicationForHelp}"  linkText="#{studybundle.replicationForLabel}" heading="#{studybundle.replicationForHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.replicationFor != '' and studyPage.studyUI.study.replicationFor != null }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.study.replicationFor}" rendered="#{studyPage.studyUI.study.replicationFor != '' and studyPage.studyUI.study.replicationFor != null }" escape="false" />
+                                    <h:outputText id="text18"  value="#{studyPage.studyUI.study.replicationFor}" rendered="#{studyPage.studyUI.study.replicationFor != '' and studyPage.studyUI.study.replicationFor != null }" escape="false" />
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.dataverseOwnerHelp}"  linkText="#{studybundle.dataverseOwnerLabel}" heading="#{studybundle.dataverseOwnerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"/>  
                                     <h:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}">
@@ -155,19 +155,19 @@
                                                columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelAbstractAndScope" rendered="#{studyPage.studyUI.abstractAndScopePanelIsRendered}"  width="100%">
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.abstractHelp}"  linkText="#{studybundle.abstractLabel}" heading="#{studybundle.abstractHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.abstracts != null and studyPage.studyUI.abstracts != ''}"/>
-                                    <h:outputText   value="#{studyPage.studyUI.abstracts}" rendered="#{studyPage.studyUI.abstracts !=  null and studyPage.studyUI.abstracts != ''}" escape="false"/>
+                                    <h:outputText id="text19"  value="#{studyPage.studyUI.abstracts}" rendered="#{studyPage.studyUI.abstracts !=  null and studyPage.studyUI.abstracts != ''}" escape="false"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.abstractDateHelp}"  linkText="#{studybundle.abstractDateLabel}" heading="#{studybundle.abstractDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.abstractDates != null and studyPage.studyUI.abstractDates != ''}" />
-                                    <h:outputText   value="#{studyPage.studyUI.abstractDates}" rendered="#{studyPage.studyUI.abstractDates != null and studyPage.studyUI.abstractDates != ''}"/>
+                                    <h:outputText id="text20"  value="#{studyPage.studyUI.abstractDates}" rendered="#{studyPage.studyUI.abstractDates != null and studyPage.studyUI.abstractDates != ''}"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.keywordsHelp}"  linkText="#{studybundle.keywordsLabel}" heading="#{studybundle.keywordsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.keywords != ''}"/>
-                                    <h:outputText   value="#{studyPage.studyUI.keywords}" rendered="#{studyPage.studyUI.keywords != ''}" escape="false"/>
+                                    <h:outputText id="text21"  value="#{studyPage.studyUI.keywords}" rendered="#{studyPage.studyUI.keywords != ''}" escape="false"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.topicClassificationHelp}"  linkText="#{studybundle.topicClassificationLabel}" heading="#{studybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.topicClasses != ''}"/>
-                                    <h:outputText   value="#{studyPage.studyUI.topicClasses}" rendered="#{studyPage.studyUI.topicClasses != ''}" escape="false"/>                                          
+                                    <h:outputText id="text22"  value="#{studyPage.studyUI.topicClasses}" rendered="#{studyPage.studyUI.topicClasses != ''}" escape="false"/>                                          
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.relatedPublicationsHelp}"  linkText="#{studybundle.relatedPublicationsLabel}" heading="#{studybundle.relatedPublicationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.relPublications != '' and studyPage.studyUI.relPublications != null }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.relPublications}" rendered="#{studyPage.studyUI.relPublications != '' and studyPage.studyUI.relPublications != null }" escape="false" />
+                                    <h:outputText id="text23"  value="#{studyPage.studyUI.relPublications}" rendered="#{studyPage.studyUI.relPublications != '' and studyPage.studyUI.relPublications != null }" escape="false" />
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.relatedMaterialHelp}"  linkText="#{studybundle.relatedMaterialLabel}" heading="#{studybundle.relatedMaterialHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.relMaterials != '' and studyPage.studyUI.relMaterials != null }" />
                                     <h:outputText  id="outputText150" value="#{studyPage.studyUI.relMaterials}" rendered="#{studyPage.studyUI.relMaterials != '' and studyPage.studyUI.relMaterials != null }" escape="false"/>
@@ -179,32 +179,32 @@
                                     <h:outputText  id="outputText154" value="#{studyPage.studyUI.otherRefs}" rendered="#{studyPage.studyUI.otherRefs != '' and studyPage.studyUI.otherRefs != null }" escape="false"/>                                            
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.timePeriodCoveredHelp}"  linkText="#{studybundle.timePeriodCoveredLabel}" heading="#{studybundle.timePeriodCoveredHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.timePeriodCovered != '' }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.timePeriodCovered }" rendered="#{studyPage.studyUI.timePeriodCovered != '' }" />
+                                    <h:outputText id="text24"  value="#{studyPage.studyUI.timePeriodCovered }" rendered="#{studyPage.studyUI.timePeriodCovered != '' }" />
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.collectionDateHelp}"  linkText="#{studybundle.collectionDateLabel}" heading="#{studybundle.collectionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.dateOfCollection != ''  }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.dateOfCollection} " rendered="#{studyPage.studyUI.dateOfCollection != ''  }"/>
+                                    <h:outputText id="text25"  value="#{studyPage.studyUI.dateOfCollection} " rendered="#{studyPage.studyUI.dateOfCollection != ''  }"/>
                                     
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.countryHelp}"  linkText="#{studybundle.countryLabel}" heading="#{studybundle.countryHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.country != '' and studyPage.studyUI.study.country != null }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.study.country}" rendered="#{studyPage.studyUI.study.country != '' and studyPage.studyUI.study.country != null }"/>
+                                    <h:outputText  id="text26" value="#{studyPage.studyUI.study.country}" rendered="#{studyPage.studyUI.study.country != '' and studyPage.studyUI.study.country != null }"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.geographicCoverageHelp}"  linkText="#{studybundle.geographicCoverageLabel}" heading="#{studybundle.geographicCoverageHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.geographicCoverage != '' and studyPage.studyUI.study.geographicCoverage!= null }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.study.geographicCoverage}" rendered="#{studyPage.studyUI.study.geographicCoverage != '' and studyPage.studyUI.study.geographicCoverage != null }"/>
+                                    <h:outputText id="text27"  value="#{studyPage.studyUI.study.geographicCoverage}" rendered="#{studyPage.studyUI.study.geographicCoverage != '' and studyPage.studyUI.study.geographicCoverage != null }"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.geographicUnitHelp}"  linkText="#{studybundle.geographicUnitLabel}" heading="#{studybundle.geographicUnitHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.geographicUnit != '' and studyPage.studyUI.study.geographicUnit != null }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.study.geographicUnit}" rendered="#{studyPage.studyUI.study.geographicUnit != '' and studyPage.studyUI.study.geographicUnit != null }"/>
+                                    <h:outputText id="text28"  value="#{studyPage.studyUI.study.geographicUnit}" rendered="#{studyPage.studyUI.study.geographicUnit != '' and studyPage.studyUI.study.geographicUnit != null }"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.geographicBoundingHelp}"  linkText="#{studybundle.geographicBoundingLabel}" heading="#{studybundle.geographicBoundingHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.geographicBoundings != '' and studyPage.studyUI.geographicBoundings != null }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.geographicBoundings}" rendered="#{studyPage.studyUI.geographicBoundings != '' and studyPage.studyUI.geographicBoundings != null }"/>
+                                    <h:outputText id="text29"  value="#{studyPage.studyUI.geographicBoundings}" rendered="#{studyPage.studyUI.geographicBoundings != '' and studyPage.studyUI.geographicBoundings != null }"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.unitOfAnalysisHelp}"  linkText="#{studybundle.unitOfAnalysisLabel}" heading="#{studybundle.unitOfAnalysisHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.unitOfAnalysis != '' and studyPage.studyUI.study.unitOfAnalysis != null }" />
-                                    <h:outputText   value="#{studyPage.studyUI.study.unitOfAnalysis}" rendered="#{studyPage.studyUI.study.unitOfAnalysis != '' and studyPage.studyUI.study.unitOfAnalysis != null }"/>
+                                    <h:outputText id="text30"  value="#{studyPage.studyUI.study.unitOfAnalysis}" rendered="#{studyPage.studyUI.study.unitOfAnalysis != '' and studyPage.studyUI.study.unitOfAnalysis != null }"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.universeHelp}"  linkText="#{studybundle.universeLabel}" heading="#{studybundle.universeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.universe != '' and studyPage.studyUI.study.universe != null }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.study.universe}" rendered="#{studyPage.studyUI.study.universe != '' and studyPage.studyUI.study.universe != null }"/>
+                                    <h:outputText id="text31"  value="#{studyPage.studyUI.study.universe}" rendered="#{studyPage.studyUI.study.universe != '' and studyPage.studyUI.study.universe != null }"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.kindOfDataHelp}"  linkText="#{studybundle.kindOfDataLabel}" heading="#{studybundle.kindOfDataHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.kindOfData != '' and studyPage.studyUI.study.kindOfData != null }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.study.kindOfData}" rendered="#{studyPage.studyUI.study.kindOfData != '' and studyPage.studyUI.study.kindOfData != null }"/>
+                                    <h:outputText id="text32"  value="#{studyPage.studyUI.study.kindOfData}" rendered="#{studyPage.studyUI.study.kindOfData != '' and studyPage.studyUI.study.kindOfData != null }"/>
                                 </h:panelGrid>
                                 
                                 <ui:panelGroup  block="true" id="groupPanel13" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataCollectionIsEmpty}">
@@ -216,7 +216,7 @@
                                                columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelDataCollection" 
                                                width="100%"  rendered="#{studyPage.studyUI.dataCollectionPanelIsRendered}" > 
                                     <ihelp:inlinehelp helpMessage="#{studybundle.timeMethodHelp}"  linkText="#{studybundle.timeMethodLabel}" heading="#{studybundle.timeMethodHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  rendered="#{studyPage.studyUI.study.timeMethod != '' and studyPage.studyUI.study.timeMethod != null }"/>
-                                    <h:outputText   value="#{studyPage.studyUI.study.timeMethod}"  rendered="#{studyPage.studyUI.study.timeMethod != '' and studyPage.studyUI.study.timeMethod != null }" escape="false"/>
+                                    <h:outputText  id="text33" value="#{studyPage.studyUI.study.timeMethod}"  rendered="#{studyPage.studyUI.study.timeMethod != '' and studyPage.studyUI.study.timeMethod != null }" escape="false"/>
                                     
                                     <ihelp:inlinehelp helpMessage="#{studybundle.dataCollectorHelp}"  linkText="#{studybundle.dataCollectorLabel}" heading="#{studybundle.dataCollectorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  rendered="#{studyPage.studyUI.study.dataCollector != '' and studyPage.studyUI.study.dataCollector != null }"/> 
                                     <h:outputText  id="outputText77" value="#{studyPage.studyUI.study.dataCollector}"  rendered="#{studyPage.studyUI.study.dataCollector != '' and studyPage.studyUI.study.dataCollector != null }" escape="false"/>

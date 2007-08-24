@@ -46,20 +46,19 @@ xmlns:ui="http://www.sun.com/web/ui"
     <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
     <div class="dvn_section">
-        <div class="dvn_sectionTitle">
-                          
+        <span class="dvn_sectionTitleR">
+                    <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{AnalysisPage.studyId}&amp;tab=files">
+                        <h:outputText  value="Back to Study"/>                       
+                    </h:outputLink>
+         </span>
+        <div class="dvn_sectionTitle">                
                 <h:outputText value="#{AnalysisPage.studyTitle}"/>                       
-            
+                <br />
+                <span class="dvn_preFileTitle">Data File: </span>
+                <h:outputText styleClass="dvn_fileTitle" value="#{AnalysisPage.fileName}"/>     
         </div>            
         <div class="dvn_sectionBoxNoBorders">  
-            
-            <ui:panelGroup  block="true" styleClass="vdcFileTitle" style="padding-bottom: 10px; padding-left: 0.65em;">
-                <h:outputText value="Data File: #{AnalysisPage.fileName}"/>
-                <h:outputLink  style="margin-left: 2px;" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{AnalysisPage.studyId}&amp;tab=files">
-                    <h:outputText style="font-size: 0.7em; font-weight:normal;" value="Back to Study Files"/>                       
-                </h:outputLink>
-            </ui:panelGroup>
-            
+
             <!--tab block starts here -->
         
             <ui:tabSet binding="#{AnalysisPage.tabSet1}" id="tabSet1" lite="true" mini="true" selected="tabDwnld" styleClass="vdcStudyTabSet">
@@ -1032,7 +1031,7 @@ xmlns:ui="http://www.sun.com/web/ui"
                 
                         <ui:imageHyperlink   id="showStatistics" 
                                              actionListener="#{AnalysisPage.displayQuickSumStat}"
-                                             imageURL="/resources/icon_subsettable.gif"
+                                             imageURL="/resources/icon_variables.gif"
                                              styleClass="vdcNoBorders" 
                                              alt="Click to show descriptive statistics"
                                              toolTip="Click to show/hide descriptive statistics"

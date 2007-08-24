@@ -260,7 +260,7 @@ span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9e
     font-weight: 400;
     color: #006699;
     text-decoration: none;
-    font-size: 1em; 
+    font-size: 12px; 
 }
 
 .vdcInlineHelpContents {
@@ -273,7 +273,7 @@ span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9e
     font-weight: 400;
     text-align:left;
     color: #000000;
-    font-size: 0.9em;
+    font-size: 11px;
 }
 
 .vdcInlineHelpWrapper {
@@ -444,7 +444,7 @@ span.vdcSResultsField {
 
 .vdcStudyInfoHeader {
    background-color: #E2E2E2;
-   font-size: 1em;
+   font-size: 12px;
    font-weight: bold;
    text-align: center;
    padding-top: 3px;
@@ -454,7 +454,7 @@ span.vdcSResultsField {
 }
 
 .vdcStudyInfoCol1 {
-   font-size: 1em;
+   font-size: 12px;
    border-bottom-color: #E2E2E2;
    border-bottom-style: solid;
    border-bottom-width: 1px;
@@ -467,7 +467,7 @@ span.vdcSResultsField {
    width: 200px;
 }
 .vdcStudyInfoCol2 {
-   font-size: 1em;
+   font-size: 12px;
    border-bottom-color: #E2E2E2;
    border-bottom-style: solid;
    border-bottom-width: 1px;

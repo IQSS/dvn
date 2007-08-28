@@ -152,7 +152,7 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         }
     }
     
-    public void updateIndexList(List <Long> studyIds){
+    public void updateIndexList(List<Long> studyIds) {
         Indexer indexer = Indexer.getInstance();
         try {
             indexer.setup();
@@ -161,11 +161,11 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         }
         for (Iterator it = studyIds.iterator(); it.hasNext();) {
             Long elem = (Long) it.next();
-            try{
-            deleteDocument(elem.longValue());
-            addDocument(elem.longValue());
-            } catch (IllegalArgumentException i){
-                System.out.println("Study id "+ elem.longValue() + " not found");
+            try {
+                deleteDocument(elem.longValue());
+                addDocument(elem.longValue());
+            } catch (IllegalArgumentException i) {
+                System.out.println("Study id " + elem.longValue() + " not found");
                 i.printStackTrace();
             }
         }

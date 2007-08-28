@@ -142,7 +142,7 @@ public class VDCImportServlet extends HttpServlet {
         }
         
         // now index
-        indexService.indexList(successfulIds);
+        indexService.updateIndexList(successfulIds);
         
         logger.info("Import completed, imported "+ successfulIds.size() +" studies, time= "+new Date()+". \n\n");
         

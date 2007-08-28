@@ -20,6 +20,8 @@ public interface IndexServiceLocal {
 
     public void indexList(List <Long> studyIds);
 
+    public void updateIndexList(List <Long> studyIds);
+
     public List search(VDC vdc, List<VDCCollection> searchCollections, List<SearchTerm> searchTerm);
     
     public List search(VDC vdc, List<SearchTerm> searchTerms);

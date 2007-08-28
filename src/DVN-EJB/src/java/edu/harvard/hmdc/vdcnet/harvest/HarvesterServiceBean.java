@@ -54,6 +54,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import javax.xml.bind.JAXBContext;
@@ -190,17 +191,17 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             
             String from = null;
             Date lastHarvestTime = havestingDataverseService.getLastHarvestTime(dataverse.getId());
-            boolean allowUpdates=false;
+            boolean initialHarvest=true;
             if (lastHarvestTime!=null) {
                 from= formatter.format( lastHarvestTime );
-                allowUpdates=true;
+                initialHarvest=false;
             }
             
-            harvest(dataverse,from, until,allowUpdates);
+            harvest(dataverse,from, until,initialHarvest);
         }
         
      
-        private void harvest( HarvestingDataverse dataverse, String from, String until, boolean allowUpdates) {
+        private void harvest( HarvestingDataverse dataverse, String from, String until, boolean initialHarvest) {
             Logger hdLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean."+dataverse.getVdc().getAlias());
             List<Long> harvestedStudyIds = new ArrayList<Long>();
             try {
@@ -218,7 +219,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 ResumptionTokenType resumptionToken = null;
                 
                 do {
-                    resumptionToken= harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken,dataverse,from,until, harvestedStudyIds, allowUpdates);
+                    resumptionToken= harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken,dataverse,from,until, harvestedStudyIds, initialHarvest);
                 } while(resumptionToken!=null && !resumptionToken.equals(""));
                 
                 
@@ -237,13 +238,13 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             // now index all studies (need to modify for update)
             hdLogger.log(Level.INFO,"POST HARVEST, start calls to index.");
             
-            indexService.indexList( harvestedStudyIds );
+            indexService.updateIndexList( harvestedStudyIds );
             
             hdLogger.log(Level.INFO,"POST HARVEST, calls to index finished.");
         }
         
         @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-        public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, boolean allowUpdates) {
+        public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, boolean initialHarvest) {
             String encodedSet=null;
             
             try {
@@ -274,7 +275,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                         resumptionToken= listIdentifiersType.getResumptionToken();
                         for (Iterator it = listIdentifiersType.getHeader().iterator(); it.hasNext();) {
                             HeaderType header = (HeaderType) it.next();
-                            Long studyId = harvesterService.getRecord(hdLogger, dataverse, header.getIdentifier(),dataverse.getFormat(), allowUpdates);
+                            Long studyId = harvesterService.getRecord(hdLogger, dataverse, header.getIdentifier(),dataverse.getFormat(), initialHarvest);
                             if (studyId!=null) {
                                 harvestedStudyIds.add(studyId);
                             }
@@ -309,7 +310,25 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         }
         
         @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-        public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, boolean allowUpdates) {
+        public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, boolean initialHarvest) {
+            if (initialHarvest) {
+                try {
+                    Study study = studyService.getStudyByHarvestInfo(dataverse.getHandlePrefix().getPrefix(), identifier);
+                    
+                    // if no exception, result exists in DB; skip this record    
+                    hdLogger.log(Level.INFO,"Initial Harvest AND Study with identifer '"+identifier + "' already exists in DB with id = " + study.getId() + "; skipping record.");
+                    return null;
+
+                } catch (EJBException ex) {
+                    if (ex.getCause() instanceof NoResultException) {
+                        // study does not exist; proceed
+                    } else {
+                        // there was an unexpected problem; throw the exception further up
+                        throw(ex);
+                    }
+                }
+            }
+
             String oaiUrl= dataverse.getOaiServer();
             Study harvestedStudy = null;
           
@@ -326,7 +345,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 } else {
                     VDCUser networkAdmin = vdcNetworkService.find().getDefaultNetworkAdmin();
                     
-                    harvestedStudy = studyService.importHarvestStudy(record.getMetadataFile(),dataverse.getVdc().getId(),networkAdmin.getId(),identifier,allowUpdates);
+                    harvestedStudy = studyService.importHarvestStudy(record.getMetadataFile(),dataverse.getVdc().getId(),networkAdmin.getId(),identifier, !initialHarvest);
                     
                     hdLogger.log(Level.INFO,"Harvest Successful for identifier "+identifier );
                 }

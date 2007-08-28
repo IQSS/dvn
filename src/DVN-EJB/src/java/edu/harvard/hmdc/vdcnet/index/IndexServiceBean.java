@@ -119,6 +119,12 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         }
     }
     
+    private void deleteDocument(final long studyId) {
+        Study study = studyService.getStudy(studyId);    
+        Indexer indexer = Indexer.getInstance();
+        indexer.deleteDocument(study.getId().longValue());
+    }
+    
     public void indexAll(){
         Indexer indexer = Indexer.getInstance();
         try {
@@ -142,6 +148,20 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         }
         for (Iterator it = studyIds.iterator(); it.hasNext();) {
             Long elem = (Long) it.next();
+            addDocument(elem.longValue());
+        }
+    }
+    
+    public void updateIndexList(List <Long> studyIds){
+        Indexer indexer = Indexer.getInstance();
+        try {
+            indexer.setup();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        for (Iterator it = studyIds.iterator(); it.hasNext();) {
+            Long elem = (Long) it.next();
+            deleteDocument(elem.longValue());
             addDocument(elem.longValue());
         }
     }

@@ -98,7 +98,7 @@ public class VDCIndexServlet extends HttpServlet {
                         for (Study study :  vdc.getOwnedStudies() ) {
                             studyIDList.add( study.getId() );
                         }
-                        indexService.indexList( studyIDList );
+                        indexService.updateIndexList( studyIDList );
                         displayMessage (out,"Indexing succeeded.", "(for dataverse id = " + vdcToIndex + ")");
                     } else {
                         displayMessage (out, "Indexing failed.", "There is no dataverse with dvId = " + vdcToIndex);                    
@@ -127,7 +127,7 @@ public class VDCIndexServlet extends HttpServlet {
                         failedTokens += "\"" +token + "\"";
                     }
                  }
-                indexService.indexList( studyIdList );
+                indexService.updateIndexList( studyIdList );
                 if (!failedTokens.equals("")) {
                     failedTokens = "(However, the following tokens were not of type Long: " + failedTokens + ")";
                 }

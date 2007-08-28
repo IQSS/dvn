@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -164,9 +165,13 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
             try {
                 deleteDocument(elem.longValue());
                 addDocument(elem.longValue());
-            } catch (IllegalArgumentException i) {
-                System.out.println("Study id " + elem.longValue() + " not found");
-                i.printStackTrace();
+            } catch (EJBException e) {
+                if (e.getCause() instanceof IllegalArgumentException) {
+                    System.out.println("Study id " + elem.longValue() + " not found");
+                    e.printStackTrace();
+                } else {
+                    throw e;
+                }
             }
         }
     }

@@ -87,6 +87,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean");
     private static final String HARVEST_TIMER = "HarvestTimer";
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat logFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
     
     static {
         try {
@@ -205,7 +206,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             Logger hdLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean."+dataverse.getVdc().getAlias());
             List<Long> harvestedStudyIds = new ArrayList<Long>();
             try {
-                hdLogger.addHandler(new FileHandler(FileUtil.getImportFileDir()+ File.separator+ "harvest_"+dataverse.getVdc().getAlias()+".log"));
+                hdLogger.addHandler(new FileHandler(FileUtil.getImportFileDir()+ File.separator+ "harvest_"+dataverse.getVdc().getAlias()+logFormatter.format(new Date())+".log"));
             } catch(IOException e) {
                 throw new EJBException(e);
             }

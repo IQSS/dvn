@@ -27,6 +27,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -347,6 +348,8 @@ public class Indexer {
     }
     
     public List search(List <Long> studyIds, List <SearchTerm> searchTerms) throws IOException{
+        Long[] studyIdsArray = ( Long[] ) studyIds.toArray(new Long[0]);
+        Arrays.sort(studyIdsArray);
         List <Long> results = null;
         List <BooleanQuery> searchParts = new ArrayList();
         boolean variableSearch = false;
@@ -370,7 +373,8 @@ public class Indexer {
             searchParts.add(searchTermsQuery);
             BooleanQuery searchQuery = andQueryClause(searchParts);
             nvResults = getHitIds(searchQuery);
-            filteredResults = studyIds != null ? intersectionResults(nvResults, studyIds) : nvResults;
+//            filteredResults = studyIds != null ? intersectionResults(nvResults, studyIds) : nvResults;
+            filteredResults = studyIds != null ? intersectionResults(nvResults, studyIdsArray) : nvResults;
         }
         if (variableSearch){
 //            List <Long> vResults = null;
@@ -419,6 +423,17 @@ public class Indexer {
         for (Iterator it = results1.iterator(); it.hasNext();){
             Long elem = (Long) it.next();
             if (results2.contains(elem)){
+                mergeResults.add(elem);
+            }
+        }
+        return mergeResults;
+    }
+
+    private List<Long> intersectionResults(final List<Long> results1, final Long[] results2) {
+        List <Long> mergeResults = new ArrayList();
+        for (Iterator it = results1.iterator(); it.hasNext();){
+            Long elem = (Long) it.next();
+            if (Arrays.binarySearch(results2, elem)>=0){
                 mergeResults.add(elem);
             }
         }

@@ -203,10 +203,12 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         
      
         private void harvest( HarvestingDataverse dataverse, String from, String until, boolean initialHarvest) {
-            Logger hdLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean."+dataverse.getVdc().getAlias());
+            String logTimestamp = logFormatter.format(new Date());
+            Logger hdLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean."+dataverse.getVdc().getAlias()+logTimestamp);
             List<Long> harvestedStudyIds = new ArrayList<Long>();
             try {
-                hdLogger.addHandler(new FileHandler(FileUtil.getImportFileDir()+ File.separator+ "harvest_"+dataverse.getVdc().getAlias()+logFormatter.format(new Date())+".log"));
+                
+                hdLogger.addHandler(new FileHandler(FileUtil.getImportFileDir()+ File.separator+ "harvest_"+dataverse.getVdc().getAlias()+logTimestamp+".log"));
             } catch(IOException e) {
                 throw new EJBException(e);
             }

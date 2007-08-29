@@ -81,15 +81,9 @@
                         <h:dataTable id="fileDataTableWrapper" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable">
                             <h:column>                              
                                 <h:dataTable  cellpadding="0" cellspacing="0" binding="#{AddFilesPage.filesDataTable}"
-                                              columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColC"
+                                              columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColC"
                                               headerClass="vdcEditFilesHeader" id="fileDataTable" rowClasses="list-row-even,list-row-odd"
                                               value="#{AddFilesPage.files}" var="file" width="100%">
-                                    <h:column  id="column5">
-                                        <h:outputText  id="outputText10" value="#{file.originalFileName}"/>
-                                        <f:facet name="header">
-                                            <h:outputText  id="outputText11" value="Original File Name"/>
-                                        </f:facet>
-                                    </h:column>
                                     <h:column id="catCol">
                                         <ui:panelGroup  block="true" style="white-space: nowrap;">   
                                             <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box; 
@@ -111,7 +105,7 @@
                                         <h:message styleClass="errorMessage" for="input_fileName"/>
                                         <h:message styleClass="errorMessage" for="fileBrowser" rendered="#{AddFilesPage.newFileAdded and AddFilesPage.filesDataTable.rowCount == AddFilesPage.filesDataTable.rowIndex +1}" />
                                         <f:facet name="header">
-                                            <h:outputText  id="input_fileNameHeader" value="File Name"/> 
+                                            <h:outputText  id="input_fileNameHeader2" value="File Name"/>
                                         </f:facet>
                                     </h:column>
                                     <h:column  id="column4">
@@ -123,7 +117,7 @@
                                     <h:column id="deleteColumn">
                                         <h:selectBooleanCheckbox id="deleteCheckBox" value="#{file.deleteFlag}"/>                                                
                                         <f:facet name="header">
-                                            <h:outputText id="deleteText" value="Delete?"/>
+                                            <h:outputText id="deleteText" value="Delete? "/>
                                         </f:facet>
                                     </h:column>                                      
                                 </h:dataTable>

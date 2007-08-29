@@ -44,6 +44,7 @@ body {
 .dvn_wrapper {
 	margin: 0 auto;
 	max-width: 980px;
+        min-width: 700px;  
 	height: 101%;
 }
 

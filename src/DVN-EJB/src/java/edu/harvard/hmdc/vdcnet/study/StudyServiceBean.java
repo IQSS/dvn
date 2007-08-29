@@ -132,8 +132,17 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
     
     public Study getStudyByHarvestInfo(String authority, String harvestIdentifier) {
-        String query = "SELECT s FROM Study s WHERE s.authority = "+authority+" and s.harvestIdentifier = " + harvestIdentifier ;
-        return (Study)em.createQuery(query).getSingleResult();
+        String queryStr = "SELECT s FROM Study s WHERE s.authority = '"+authority+"' and s.harvestIdentifier = '" + harvestIdentifier+"'" ;
+        Query query= em.createQuery(queryStr);
+        List resultList = query.getResultList();
+        Study study=null;
+        if (resultList.size()>1) {
+            throw new EJBException("More than one study found with authority= "+authority+" and harvestIdentifier= "+harvestIdentifier);
+        }
+        if (resultList.size()==1) {
+            study = (Study)resultList.get(0);
+        }
+        return study;
         
     }
     

@@ -311,22 +311,13 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         
         @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
         public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, boolean initialHarvest) {
-            if (initialHarvest) {
-                try {
+            if (initialHarvest && dataverse.getHandlePrefix()!=null) {            
+                    // Note, for now, don't check study if the dataverse doesn't have a handlePrefix.  We may want to change this in the future.
                     Study study = studyService.getStudyByHarvestInfo(dataverse.getHandlePrefix().getPrefix(), identifier);
-                    
-                    // if no exception, result exists in DB; skip this record    
-                    hdLogger.log(Level.INFO,"Initial Harvest AND Study with identifer '"+identifier + "' already exists in DB with id = " + study.getId() + "; skipping record.");
-                    return null;
-
-                } catch (EJBException ex) {
-                    if (ex.getCause() instanceof NoResultException) {
-                        // study does not exist; proceed
-                    } else {
-                        // there was an unexpected problem; throw the exception further up
-                        throw(ex);
+                    if (study!=null) {
+                        hdLogger.log(Level.INFO,"Initial Harvest AND Study with identifer '"+identifier + "' already exists in DB with id = " + study.getId() + "; skipping record.");            
+                        return null;
                     }
-                }
             }
 
             String oaiUrl= dataverse.getOaiServer();
@@ -334,7 +325,6 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
           
             hdLogger.log(Level.INFO,"Calling GetRecord: oaiUrl ="+oaiUrl+"?verb=GetRecord&identifier="+identifier+"&metadataPrefix="+metadataPrefix);
             try {
-                
                 GetRecord record = new GetRecord(oaiUrl, identifier, metadataPrefix);
                 String errMessage=record.getErrorMessage();
                 if (errMessage!=null) {

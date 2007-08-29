@@ -100,7 +100,7 @@ public class HomePage extends VDCBaseBean{
     
     /**
      * Getter for property collectionTree.
-     * @return Value of property collectionTree.m
+     * @return Value of property collectionTree.
      */
     public Tree getCollectionTree() {
         if (collectionTree == null) {

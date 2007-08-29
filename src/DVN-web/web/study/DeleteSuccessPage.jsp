@@ -14,7 +14,7 @@
                 <div class="dvn_section">
                     <div class="dvn_sectionTitle">
                          
-                            <h:outputText  value="Delete Susscessful"/>
+                            <h:outputText  value="Delete Successful"/>
                          
                     </div>            
                     <div class="dvn_sectionBox"> 

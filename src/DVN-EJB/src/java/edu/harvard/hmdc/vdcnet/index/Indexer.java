@@ -348,8 +348,8 @@ public class Indexer {
     }
     
     public List search(List <Long> studyIds, List <SearchTerm> searchTerms) throws IOException{
-        Long[] studyIdsArray = ( Long[] ) studyIds.toArray(new Long[0]);
-        Arrays.sort(studyIdsArray);
+//        Long[] studyIdsArray = ( Long[] ) studyIds.toArray(new Long[0]);
+//        Arrays.sort(studyIdsArray);
         List <Long> results = null;
         List <BooleanQuery> searchParts = new ArrayList();
         boolean variableSearch = false;
@@ -373,8 +373,8 @@ public class Indexer {
             searchParts.add(searchTermsQuery);
             BooleanQuery searchQuery = andQueryClause(searchParts);
             nvResults = getHitIds(searchQuery);
-//            filteredResults = studyIds != null ? intersectionResults(nvResults, studyIds) : nvResults;
-            filteredResults = studyIds != null ? intersectionResults(nvResults, studyIdsArray) : nvResults;
+            filteredResults = studyIds != null ? intersectionResults(nvResults, studyIds) : nvResults;
+//            filteredResults = studyIds != null ? intersectionResults(nvResults, studyIdsArray) : nvResults;
         }
         if (variableSearch){
 //            List <Long> vResults = null;

@@ -1817,7 +1817,7 @@
                                 <h:dataTable id="fileDataTableWrapper" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
                                     <h:column>
                                         <h:dataTable cellpadding="0" cellspacing="0"
-                                                     columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColA, vdcEditFilesColC, vdcEditFilesColC"
+                                                     columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColC"
                                                      headerClass="vdcEditFilesHeader" id="fileDataTable" rowClasses="list-row-even,list-row-odd"
                                                      value="#{EditStudyPage.files}" var="file" width="100%">
                                             <h:column id="column9">
@@ -1825,7 +1825,7 @@
                                                     <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box; 
                                                 changing them may require corresponding changes in the Javascript  -->
                                                     <h:selectBooleanCheckbox id="catCheckbox"  onclick="updateCategory(this);"/>
-                                                    <h:inputText id="catTextField" size="30"  value="#{file.fileCategoryName}" onfocus="deselectCategory(this)"/>
+                                                    <h:inputText id="catTextField" size="25"  value="#{file.fileCategoryName}" onfocus="deselectCategory(this)"/>
                                                 </ui:panelGroup>
                                                 <f:facet name="header">
                                                     <ui:panelGroup id="catColPanelGroup">
@@ -1838,7 +1838,9 @@
                                             </h:column>
                                             <h:column id="column10">
                                                 <h:inputText id="input_fileName" size="30"  value="#{file.studyFile.fileName}" validator ="#{EditStudyPage.validateFileName}" />
-                                                <h:message styleClass="errorMessage" for="input_fileName"/> 
+                                                <h:message styleClass="errorMessage" for="input_fileName"/><br />
+                                                <h:outputText id="outputText17" style="font-size: 11px" value="#{file.studyFile.fileType} "/>
+                                                <h:graphicImage  rendered="#{file.studyFile.subsettable}" id="imagefs" styleClass="vdcNoBorders" value="/resources/icon_subsettable.gif"/>
                                                 <f:facet name="header">
                                                     <h:outputText id="outputText13" value="File Name"/>
                                                 </f:facet>
@@ -1849,24 +1851,13 @@
                                                     <h:outputText id="outputText16" value="Description"/>
                                                 </f:facet>
                                             </h:column>
-                                            <h:column id="column12">
-                                                <h:outputText id="outputText17" value="#{file.studyFile.fileType}"/>
-                                                <f:facet name="header">
-                                                    <h:outputText id="outputText18" value="Type"/>
-                                                </f:facet>
-                                            </h:column>
-                                            <h:column id="column14">
-                                                <h:graphicImage  rendered="#{file.studyFile.subsettable}" id="imagefs" styleClass="vdcNoBorders" value="/resources/icon_subsettable.gif"/>
-                                                <f:facet name="header">
-                                                    <h:outputText id="outputText22" value="Subsetting"/>
-                                                </f:facet>
-                                            </h:column>
                                             <h:column id="deleteColumn">
                                                 <h:selectBooleanCheckbox id="deleteCheckBox" value="#{file.deleteFlag}"/>                                                
                                                 <f:facet name="header">
-                                                    <h:outputText id="deleteText" value="Delete?"/>
+                                                    <h:outputText id="deleteText" value="Delete? "/>
                                                 </f:facet>
-                                            </h:column>                                               
+                                            </h:column>     
+                                                                                      
                                         </h:dataTable>
                                     </h:column>
                                 </h:dataTable>

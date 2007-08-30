@@ -32,6 +32,7 @@ import net.handle.hdllib.Encoder;
 import net.handle.hdllib.HandleException;
 import net.handle.hdllib.HandleResolver;
 import net.handle.hdllib.HandleValue;
+import net.handle.hdllib.ModifyValueRequest;
 import net.handle.hdllib.PublicKeyAuthenticationInfo;
 import net.handle.hdllib.ResolutionRequest;
 import net.handle.hdllib.ResolutionResponse;
@@ -98,6 +99,66 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
        if (vdcNetwork.isHandleRegistration() && isAuthority(authority)){
            deleteHandle(handle);
        }
+   }
+
+   public void fixHandle( String handle){
+       String prefix = handle.substring(0,handle.indexOf("/"));
+       String localHandle = handle.substring(handle.indexOf("/") + 1);
+       String authHandle = getAuthHandle();
+       byte[] key = null;
+       int index = 300;
+       String file = "/hs/svr_1/admpriv.bin";
+       String secret = System.getProperty("vdc.handle.admprivphrase");
+       try {
+           File f = new File(file);
+           FileInputStream fs = new FileInputStream(f);
+           key = new byte[(int) f.length()];
+           int n = 0;
+           while (n < key.length) {
+               key[n++] = (byte) fs.read();
+           }
+           fs.read(key);
+       } catch (Throwable t) {
+           System.err.println("Cannot read private key " + file + ": " + t);
+       }
+
+       HandleResolver resolver = new HandleResolver();
+
+       PrivateKey privkey = null;
+       byte[] secKey = null;
+       try {
+           if (Util.requiresSecretKey(key)) {
+               secKey = secret.getBytes();
+           }
+           key = Util.decrypt(key, secKey);
+           privkey = Util.getPrivateKeyFromBytes(key, 0);
+       } catch (Throwable t) {
+           System.err.println("Can\'t load private key in " + file + ": " + t);
+       }
+
+       String urlStr = getUrlStr(prefix, handle);
+
+       try {
+           PublicKeyAuthenticationInfo auth = new PublicKeyAuthenticationInfo(authHandle.getBytes("UTF8"), index, privkey);
+
+           AdminRecord admin = new AdminRecord(authHandle.getBytes("UTF8"), 300, true, true, true, true, true, true, true, true, true, true, true, true);
+
+           int timestamp = (int) (System.currentTimeMillis()/1000);
+
+           HandleValue[] val = {new HandleValue(100, "HS_ADMIN".getBytes("UTF8"), Encoder.encodeAdminRecord(admin), HandleValue.TTL_TYPE_RELATIVE, 86400, timestamp, null, true, true, true, false), new HandleValue(1, "URL".getBytes("UTF8"), urlStr.getBytes(), HandleValue.TTL_TYPE_RELATIVE, 86400, timestamp, null, true, true, true, false)};
+
+           ModifyValueRequest req = new ModifyValueRequest(handle.getBytes("UTF8"), val, auth);
+
+           resolver.traceMessages = true;
+           AbstractResponse response = resolver.processRequest(req);
+           if (response.responseCode == AbstractMessage.RC_SUCCESS){
+               System.out.println("\nGot Response: \n"+response);
+           } else {
+               System.out.println("\nGot Error: \n"+response);
+           }
+       } catch (Throwable t) {
+           System.err.println("\nError: " + t);
+       }       
    }
 
    public void createHandle( String handle){
@@ -333,8 +394,12 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
         VDCNetwork network = vdcNetworkService.find();
         String vdcAuthority = network.getAuthority(); 
         String baseUrl = null;
-        if (prefix.equals(vdcAuthority)){
-            baseUrl = "http://dvn.iq.harvard.edu/dvn/study?globalId=hdl:";
+        if (isAuthority(prefix)){
+//        if (prefix.equals(vdcAuthority)){
+            baseUrl = System.getProperty("dvn.handle.baseUrl");
+            if (baseUrl == null) {
+                baseUrl = "http://dvn.iq.harvard.edu/dvn/study?globalId=hdl:";
+            }
         }
         return baseUrl + handle;
     }

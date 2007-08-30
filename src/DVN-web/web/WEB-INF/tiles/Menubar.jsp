@@ -6,7 +6,7 @@
     xmlns:tiles="http://struts.apache.org/tags-tiles"
     xmlns:c="http://java.sun.com/jsp/jstl/core">
         
-<div class="dvn_section">
+<div class="dvn_section dvn_overflow">
     
         <div class="dvn_headerTitle">
             <div class="dvn_headerTitleR">   

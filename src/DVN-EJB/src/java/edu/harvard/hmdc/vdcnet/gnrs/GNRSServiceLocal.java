@@ -18,6 +18,8 @@ public interface GNRSServiceLocal {
     public void deleteHandle(String handle);
 
     public void createHandle(String handle);
+    
+    public void fixHandle(String handle);
 
     public void registerAll();
     

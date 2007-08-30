@@ -14,7 +14,7 @@
          
          
       <!-- Search Section starts here -->                                       
-      <div class="dvn_section">        
+      <div class="dvn_section dvn_overflow">        
         <div class="dvn_sectionTitle">
              <span class="dvn_sectionTitleL">Search</span> 
                 <span class="dvn_sectionTitleR">
@@ -60,7 +60,7 @@
     
     <!-- Start Browse section (with side panels, if available) -->
   
-    <div class="dvn_section">    
+    <ui:panelGroup block="true" styleClass="#{ (HomePage.showRequestCreator or HomePage.showRequestContributor or VDCRequest.currentVDC.displayNewStudies == true or (VDCRequest.vdcNetwork.displayAnnouncements == true and VDCRequest.currentVDC == null) or ( (VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and VDCRequest.currentVDC != null) or VDCRequest.currentVDC.displayAnnouncements == true) ? 'dvn_section dvn_overflow' : 'dvn_section'}">       
         
        <ui:panelGroup block="true" styleClass="#{ (HomePage.showRequestCreator or HomePage.showRequestContributor or VDCRequest.currentVDC.displayNewStudies == true or (VDCRequest.vdcNetwork.displayAnnouncements == true and VDCRequest.currentVDC == null) or ( (VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and VDCRequest.currentVDC != null) or VDCRequest.currentVDC.displayAnnouncements == true) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">    
             <div class="dvn_sectionTitle">
@@ -151,7 +151,7 @@
             </ui:panelGroup>
                
         </ui:panelGroup>        
-    </div>                                             
+    </ui:panelGroup>                                             
                                     
         </h:form>
     </f:subview>

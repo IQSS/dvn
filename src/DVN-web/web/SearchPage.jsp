@@ -26,7 +26,7 @@
         <h:inputHidden  id="studyListingIndex" value="#{SearchPage.studyListingIndex}" />
               
       <!-- Search Section starts here -->                                       
-      <div class="dvn_section">        
+      <div class="dvn_section dvn_overflow">        
         <div class="dvn_sectionTitle">
             <span class="dvn_sectionTitleL">Search</span> 
                 <span class="dvn_sectionTitleR">
@@ -79,7 +79,7 @@
     <!-- Search Section ends here -->
                    
     <!-- Start Search Results (with side panel, if available) -->      
-      <div class="dvn_section">  
+      <ui:panelLayout styleClass="#{ (SearchPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'}" >  
            <ui:panelLayout styleClass="#{ (SearchPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}" >    	
               <div class="dvn_sectionTitle">
                   <h:outputText value="#{SearchPage.listHeader}"/>
@@ -220,8 +220,7 @@
               </div>    
           </ui:panelGroup>
           
-  
-      </div>
+      </ui:panelLayout>
       
         </ui:form>
     </f:subview>

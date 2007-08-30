@@ -437,7 +437,7 @@ public class GNRSServiceBean implements edu.harvard.hmdc.vdcnet.gnrs.GNRSService
         for (Iterator it = studies.iterator(); it.hasNext();) {
             Study elem = (Study) it.next();
             String handle = elem.getAuthority()+"/"+ elem.getStudyId();
-            if (!isHandleRegistered(handle) && !handle.startsWith("1902.1")){
+            if (isHandleRegistered(handle) && !handle.startsWith("1902.1")){
                 deleteHandle(handle);
             }
         }

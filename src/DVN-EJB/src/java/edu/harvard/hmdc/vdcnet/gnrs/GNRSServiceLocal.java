@@ -23,4 +23,5 @@ public interface GNRSServiceLocal {
 
     public void registerAll();
     
+    public void deleteAll();
 }

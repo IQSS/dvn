@@ -44,7 +44,7 @@ body {
 .dvn_wrapper {
 	margin: 0 auto;
 	max-width: 980px;
-        min-width: 700px;  
+        min-width: 700px;
 	height: 101%;
 }
 
@@ -60,10 +60,13 @@ body {
 .dvn_floatR {
 	float: right;
 }
+.dvn_overflow{
+  overflow: hidden;
+}
 
 /* GENERAL CONTENT */
 
-.dvn_section {margin: 1em 0; width: 100%;  overflow: hidden; font-size: 76%; text-align : left;}
+.dvn_section {margin: 1em 0; width: 100%; font-size: 76%; text-align : left;}
 div.dvn_section div, div.dvn_section span, div.dvn_section p, div.dvn_section li, div.dvn_section a  {line-height: 144%; font-family: "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif;}
 div.dvn_section table, div.dvn_section caption, div.dvn_section tbody, div.dvn_section tfoot, div.dvn_section thead, div.dvn_section tr, div.dvn_section th, div.dvn_section td {font-family: "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif;}
 

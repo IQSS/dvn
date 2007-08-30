@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ReportWriter extends ReportConstants {
 
 	private static String awstatsDirectory = System.getProperty("dvn.awstats.dir");
+        private static String dvnDataDirectory = System.getProperty("dvn.awstatsData.dir");
 	private static String line             = null;
         
         private int numberOfMonths = 0;
@@ -74,7 +75,8 @@ public class ReportWriter extends ReportConstants {
 
 	    String[][] monthsInReport = getReportFiles(numberOfMonths);
             for (int i = 0; i < monthsInReport.length; i++) {
-                String fileToRead = awstatsDirectory + "/data/awstats" + monthsInReport[0][i] + theYear + "." + reportee + ".txt";
+                this.setAwstatsDirData(reportee);
+                String fileToRead = this.getAwstatsDirData() + "/awstats" + monthsInReport[0][i] + theYear + "." + reportee + ".txt";
                 inputStream = new BufferedReader(new FileReader(fileToRead));
                 boolean isGeneral = false;
                 while ((line = inputStream.readLine()) != null) {
@@ -150,7 +152,7 @@ public class ReportWriter extends ReportConstants {
 				throws java.io.IOException {
             BufferedWriter outputStream = null;
             try {
-                String fileToRead = awstatsDirectory + "/custom/" + reportee + "monthly.txt";
+                String fileToRead = dvnDataDirectory + "/" + reportee + "monthly.txt";
                 outputStream = new BufferedWriter(new FileWriter(fileToRead));
                 outputStream.write("Monthly Usage Report of MIT Affiliates of the Dataverse Network");
                 outputStream.newLine();
@@ -198,7 +200,7 @@ public class ReportWriter extends ReportConstants {
             BufferedWriter outputStream = null;
             String reportUrl = this.getReportUrl();
             try {
-                String fileToRead = awstatsDirectory + "/custom/awstats." + reportee + ".txt";
+                String fileToRead = dvnDataDirectory + "/awstats." + reportee + ".txt";
                 outputStream = new BufferedWriter(new FileWriter(fileToRead));
                 outputStream.write("<div style=\"max-width:780; margin-top:25px; margin-right:auto; margin-left:auto;\">");
                 outputStream.write("<span style=\"font-weight:800; font-size: medium;\">Monthly Usage Report of MIT Affiliates of the Dataverse Network</span>" + separator);
@@ -296,9 +298,47 @@ public class ReportWriter extends ReportConstants {
               Enumeration enumeration = request.getHeaderNames();
               
               String protocol = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase();
-              System.out.println("the url should be + " + protocol + "//" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/faces/cgi/awstats/custom/awstats." + reportee + ".txt");
+              System.out.println("the url should be + " + protocol + "//" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/faces/networkAdmin/webstatistics/awstats." + reportee + ".txt");
               reportUrl = request.getContextPath() + "/faces/networkAdmin/printPopup.jsp?reportee=" + reportee;
               return reportUrl;
+        }
+        
+        /** prop and accessor/mutator method
+         * to determine the data storage location
+         * as set in awstats.<name>.conf file
+         *
+         * @author wbossons
+         *
+         */
+        
+        private String awstatsDirData = null;
+
+        public String getAwstatsDirData() {
+            return awstatsDirData;
+        }
+
+        public void setAwstatsDirData(String reportee) 
+            throws IOException {
+            try {
+                BufferedReader inputStream = null;
+                String fileToRead = awstatsDirectory + "/awstats." + reportee + ".conf";
+                inputStream = new BufferedReader(new FileReader(fileToRead));
+                boolean isGeneral = false;
+                String line = null;
+                while ((line = inputStream.readLine()) != null) {
+                    if (line.indexOf("DirData=") != -1) {
+                        this.awstatsDirData = line.substring(line.indexOf("DirData=") + 9, line.length()-1);
+                        break;
+                    }
+                }
+            } catch (IOException ioe) {
+                System.out.println("There was a problem reading the conf file. " + ioe.toString());
+            } catch (Exception e) {
+                System.out.println("An unexpected exception occurred while trying to read the conf file.");
+            } finally {
+                if (this.awstatsDirData != null)
+                    System.out.println("the awstats directory is " + this.awstatsDirData);
+            }
         }
 
 	public boolean equals(Object obj) {

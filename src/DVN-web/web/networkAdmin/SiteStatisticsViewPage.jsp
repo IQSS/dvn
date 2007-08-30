@@ -7,17 +7,17 @@
                             
    <f:subview id="graphicalIQSS" rendered="#{SiteStatistics.reportee == 'iqss' and SiteStatistics.reportType == 'html'}">
         <ui:form  id="siteStatisticsViewForm">
-                <jsp:include page="/cgi/awstats/custom/awstats.iqss.html"/>
+                <jsp:include page="webstatistics/awstats.iqss.html"/>
         </ui:form>
     </f:subview>
     <f:subview id="graphicalMIT" rendered="#{SiteStatistics.reportee == 'mit' and SiteStatistics.reportType == 'html'}">
         <ui:form  id="siteStatisticsViewForm">
-                <jsp:include page="/cgi/awstats/custom/awstats.mit.html"/>
+                <jsp:include page="webstatistics/awstats.mit.html"/>
         </ui:form>
     </f:subview>
     <f:subview id="textMIT" rendered="#{SiteStatistics.reportee == 'mitMonthly' and SiteStatistics.reportType == 'txt'}">
         <ui:form  id="siteStatisticsViewForm">
-                <jsp:include page="/cgi/awstats/custom/awstats.mit.txt"/>
+                <jsp:include page="webstatistics/awstats.mit.txt"/>
         </ui:form>
     </f:subview>
 </jsp:root>

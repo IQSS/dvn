@@ -38,6 +38,13 @@ public class SiteStatistics extends VDCBaseBean {
     public void init() {
         super.init();
         success = false;
+        setDirectory("awstats"); //TODO should this be parameterized?
+        try {
+            setDataDirectory("awstatsData");
+        } catch (IOException ioe) {
+            System.out.println("Error initializing web statistics files.");
+        }
+
         //check to see if a reportee is in request
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String reportee = request.getParameter("reportee");
@@ -48,7 +55,7 @@ public class SiteStatistics extends VDCBaseBean {
                 if ( key instanceof String && ((String) key).indexOf("reportee") != -1 && !request.getParameter((String)key).equals("")) {
                     this.setReportee(request.getParameter((String)key));
                 }
-                if ( key instanceof String && ((String) key).indexOf("reporType") != -1 && !request.getParameter((String)key).equals("")) {
+                if ( key instanceof String && ((String) key).indexOf("reportType") != -1 && !request.getParameter((String)key).equals("")) {
                     this.setReportType(request.getParameter((String)key));
                 }
             }
@@ -87,13 +94,11 @@ public class SiteStatistics extends VDCBaseBean {
             request.setAttribute("reportee", this.getReportee());//used by view page to construct include
             request.setAttribute("reportType", "html");
         }
-        setDirectory("awstats"); //TODO should this be parameterized?
         try {
             if ( this.getReportType().equals("html") ) {
                 setNamedConfigFile(this.getReportee());
                 //update the statistics database
                 boolean isUpdated = this.updateStatistics();
-                //send the response
                 if (isUpdated == false) {
                     System.out.println("Operation completed with errors. Please see the server log for details.");
                 }
@@ -109,7 +114,7 @@ public class SiteStatistics extends VDCBaseBean {
                 reportwriter.writeMitReport();
                 success = "monthlyReport";
             }
-            System.out.println("the report to print is " + this.getReportType() + " the reportee is " + this.getReportee());
+            //System.out.println("the report to print is " + this.getReportType() + " the reportee is " + this.getReportee());
         } catch (Exception e) {
             System.out.println("An error occurred. Unable to complete the operation.");
             success = "failed";
@@ -139,8 +144,11 @@ public class SiteStatistics extends VDCBaseBean {
             errorRunner.start();
             // An exitValue of 0 indicates termination with no errors
             int exitValue = process.waitFor();
-            System.out.println("ExitValue: " + exitValue);
-            isUpdated = true;
+            System.out.println("Update Statistics - ExitValue: " + exitValue);
+            if (exitValue == 0)
+                isUpdated = true;
+            else
+                isUpdated = false;
         } catch (Exception e) {
             System.out.println("An error occurred while updating awstats statistics. " + e.toString());
         } finally {
@@ -160,11 +168,11 @@ public class SiteStatistics extends VDCBaseBean {
         boolean isWritten = false;
         try {
             String awstatsDirectory = this.getDirectory();
-            if (awstatsDirectory == null) {
-                throw new Exception("System property \"dvn.awstats.dir\" has not been set.");
+            String dvnDataDirectory = this.getDataDirectory();
+            if (awstatsDirectory == null || dvnDataDirectory == null) {
+                throw new Exception("System property \"dvn.awstats.dir\" or\"dvn.awstatsData.dir\" has not been set.");
             }
-            String awstatsFilePath = awstatsDirectory + "/custom/awstats." + getNamedConfigFile() + ".html";
-            FileOutputStream fileoutput = new FileOutputStream(awstatsDirectory + "/custom/awstats." + this.getNamedConfigFile() + ".html");
+            FileOutputStream fileoutput = new FileOutputStream(dvnDataDirectory + "/awstats." + this.getNamedConfigFile() + ".html");
             Runtime runtime = Runtime.getRuntime();
             String command = "perl " + awstatsDirectory + "/awstats.pl -config=" + getNamedConfigFile() + " -output -staticlinks";
             Process process = runtime.exec(command);
@@ -175,7 +183,7 @@ public class SiteStatistics extends VDCBaseBean {
             reportRunner.start();
             // An exitValue of 0 indicates termination with no errors
             int exitValue = process.waitFor();
-            System.out.println("ExitValue: " + exitValue);
+            System.out.println("Write Statistics - ExitValue: " + exitValue);
             fileoutput.flush();
             fileoutput.close();
             isWritten = true;
@@ -199,6 +207,39 @@ public class SiteStatistics extends VDCBaseBean {
     public void setDirectory(String systemdir) {
         String systemdirectory = "dvn." + systemdir + ".dir";
         this.directory = System.getProperty(systemdirectory);
+    }
+    
+    private String dataDirectory = null;
+
+    public String getDataDirectory() {
+        return dataDirectory;
+    }
+
+    public void setDataDirectory(String systemdir) 
+            throws IOException {
+        String systemdirectory = "dvn." + systemdir + ".dir";
+        this.dataDirectory = System.getProperty(systemdirectory);
+        //also check for this dir and create if needed
+        boolean exists = (new File(this.dataDirectory)).exists();
+        if (!exists) {
+            boolean success = (new File(this.dataDirectory)).mkdir();
+            if (success) {
+                // Make the temporary files
+                try {
+                String[] files = {"awstats.iqss.html", "awstats.mit.html", "awstats.mit.txt"};
+                int i = 0;
+                while (i < files.length) {
+                    File file = new File (this.dataDirectory + "/" + files[i]);
+                    file.createNewFile();
+                    i++;
+                }
+                } catch (IOException ioe) {
+                    System.out.println("Unable to create the web statistics files.");
+                }
+            } else {
+                System.out.println("Unable to create the web statistics directory.");
+            }
+        }
     }
 
     private String namedConfigFile = null;

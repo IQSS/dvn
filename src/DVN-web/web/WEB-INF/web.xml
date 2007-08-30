@@ -254,5 +254,13 @@
     <servlet-mapping>
         <servlet-name>StudyGlobalIdServlet</servlet-name>
         <url-pattern>/study</url-pattern>
-    </servlet-mapping>      
+    </servlet-mapping>  
+    <servlet>
+        <servlet-name>VDCAdminServlet</servlet-name>
+        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCAdminServlet</servlet-class>
+    </servlet>     
+    <servlet-mapping>
+    <servlet-name>VDCAdminServlet</servlet-name>
+        <url-pattern>/admin</url-pattern>
+    </servlet-mapping> 
 </web-app>

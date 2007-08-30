@@ -53,7 +53,7 @@ public class VDCAdminServlet extends HttpServlet {
             out.println("<form method=POST>");
 
             out.println("To remove a study lock, input the study id and click on the button below.<br/>");
-            out.print("<input name=\"studyId\" size=4>");
+            out.print("<input name=\"studyId\" size=8>");
             out.print("<input name=removeLock value=\"Remove Lock\" type=submit />");
             out.print("<hr>");
             out.println("</form>");

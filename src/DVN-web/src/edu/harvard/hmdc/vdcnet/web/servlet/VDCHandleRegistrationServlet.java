@@ -73,7 +73,6 @@ public class VDCHandleRegistrationServlet extends HttpServlet {
         
         if (isNetworkAdmin(req)) {
             beginPage(out);
-            registrationService.deleteAll();
                 registrationService.registerAll();
                  out.println("<h3>Registration complete.</h3>");
             endPage(out);

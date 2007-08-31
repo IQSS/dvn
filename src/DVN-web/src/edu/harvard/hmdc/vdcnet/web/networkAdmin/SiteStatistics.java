@@ -102,6 +102,13 @@ public class SiteStatistics extends VDCBaseBean {
                 if (isUpdated == false) {
                     System.out.println("Operation completed with errors. Please see the server log for details.");
                 }
+                String command = "perl " + this.getDirectory() + "/tools/awstats_buildstaticpages.pl -config=" + this.getReportee() 
+                                + " -awstatsprog=" + this.getDirectory() 
+                                + "/awstats.pl -dir=" + this.getDataDirectory();
+                isUpdated = this.updateStatistics(command);
+                if (isUpdated == false) {
+                    System.out.println("Operation completed with errors. No static links were generated.");
+                }
                 //write out the html
                 this.writeStatistics();
                 success = "guiReport";
@@ -135,7 +142,7 @@ public class SiteStatistics extends VDCBaseBean {
         boolean isUpdated = false;
         try {
             Runtime runtime = Runtime.getRuntime();
-            String command = "perl " + this.getDirectory() + "/awstats.pl -config=" + getNamedConfigFile() + " -update";
+            String command = "perl " + this.getDirectory() + "/awstats.pl -config=" + getNamedConfigFile() + " -update -staticlinks";
             if (this.getDirectory() == null) {
                 throw new Exception("System property \"dvn.awstats.dir\" has not been set.");
             }
@@ -145,6 +152,38 @@ public class SiteStatistics extends VDCBaseBean {
             // An exitValue of 0 indicates termination with no errors
             int exitValue = process.waitFor();
             System.out.println("Update Statistics - ExitValue: " + exitValue);
+            if (exitValue == 0)
+                isUpdated = true;
+            else
+                isUpdated = false;
+        } catch (Exception e) {
+            System.out.println("An error occurred while updating awstats statistics. " + e.toString());
+        } finally {
+            return isUpdated;
+        }
+    }
+    
+    /** overloaded method to avoid changing the api
+     * this will allow other awstats scripts to be run
+     * just add the command
+     *
+     * @param command the awstats command to be run
+     *
+     * @author wbossons
+     */
+    public synchronized boolean updateStatistics(String command) {
+        boolean isUpdated = false;
+        try {
+            Runtime runtime = Runtime.getRuntime();
+            if (this.getDirectory() == null) {
+                throw new Exception("System property \"dvn.awstats.dir\" has not been set.");
+            }
+            Process process = runtime.exec(command);
+            StatisticsReportRunner errorRunner = new StatisticsReportRunner(process.getInputStream(), "ERROR");
+            errorRunner.start();
+            // An exitValue of 0 indicates termination with no errors
+            int exitValue = process.waitFor();
+            System.out.println("Update Static Pages Statistics - ExitValue: " + exitValue);
             if (exitValue == 0)
                 isUpdated = true;
             else
@@ -172,13 +211,16 @@ public class SiteStatistics extends VDCBaseBean {
             if (awstatsDirectory == null || dvnDataDirectory == null) {
                 throw new Exception("System property \"dvn.awstats.dir\" or\"dvn.awstatsData.dir\" has not been set.");
             }
+            HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            String reportUrl = request.getContextPath() + "/faces/networkAdmin/webstatistics";
+            String urlToStaticFiles = reportUrl;
             FileOutputStream fileoutput = new FileOutputStream(dvnDataDirectory + "/awstats." + this.getNamedConfigFile() + ".html");
             Runtime runtime = Runtime.getRuntime();
             String command = "perl " + awstatsDirectory + "/awstats.pl -config=" + getNamedConfigFile() + " -output -staticlinks";
             Process process = runtime.exec(command);
             // check for errors and output
             StatisticsReportRunner errorRunner = new StatisticsReportRunner(process.getErrorStream(), "ERROR");
-            StatisticsReportRunner reportRunner = new StatisticsReportRunner(process.getInputStream(), "OUTPUT", fileoutput);
+            StatisticsReportRunner reportRunner = new StatisticsReportRunner(process.getInputStream(), "OUTPUT", fileoutput, urlToStaticFiles);
             errorRunner.start();
             reportRunner.start();
             // An exitValue of 0 indicates termination with no errors

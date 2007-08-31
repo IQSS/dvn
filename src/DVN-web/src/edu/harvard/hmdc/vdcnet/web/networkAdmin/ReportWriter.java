@@ -298,7 +298,6 @@ public class ReportWriter extends ReportConstants {
               Enumeration enumeration = request.getHeaderNames();
               
               String protocol = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase();
-              System.out.println("the url should be + " + protocol + "//" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/faces/networkAdmin/webstatistics/awstats." + reportee + ".txt");
               reportUrl = request.getContextPath() + "/faces/networkAdmin/printPopup.jsp?reportee=" + reportee;
               return reportUrl;
         }

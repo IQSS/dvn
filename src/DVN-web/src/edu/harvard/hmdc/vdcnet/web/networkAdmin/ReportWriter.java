@@ -72,6 +72,7 @@ public class ReportWriter extends ReportConstants {
 	    LinkedHashMap subsetsList     = new LinkedHashMap();
 	    LinkedHashMap downloadsIpList = new LinkedHashMap();
 	    LinkedHashMap subsetsIpList   = new LinkedHashMap();
+            LinkedHashMap missingReportData    = new LinkedHashMap();
 
 	    String[][] monthsInReport = getReportFiles(numberOfMonths);
             for (int i = 0; i < monthsInReport.length; i++) {
@@ -130,8 +131,10 @@ public class ReportWriter extends ReportConstants {
             else 
                 writeWebReport(hashmap);
         } catch (IOException ioe) {
-			System.out.println("Error " + ioe);
-		}
+		System.out.println("Error " + ioe);
+                String errorMessage = "The monthly totals have not been summarized. Please check the data file and verify that there is a data file for each month from July to the present.";
+                writeErrorReport("Missing Report Data", errorMessage);
+        }
     }
 
     /**
@@ -228,6 +231,34 @@ public class ReportWriter extends ReportConstants {
                     outputStream.close();
             }
 	}
+        
+        /** writeErrorReport
+         *
+         * report writer when some data is missing
+         *
+         * @param label A string
+         * @param errorMessage A string
+         *
+         * @author wbossons
+         */
+        private void writeErrorReport(String label, String errorMessage) 
+            throws java.io.IOException {
+            BufferedWriter outputStream = null;
+            String fileToWrite = dvnDataDirectory + "/awstats." + reportee + ".txt";
+            try {
+                outputStream = new BufferedWriter(new FileWriter(fileToWrite));
+                outputStream.write("<div style=\"max-width:780; margin-top:25px; margin-right:auto; margin-left:auto;\">");
+                outputStream.write("<span style=\"font-weight:800; font-size: medium;\">Monthly Usage Report of MIT Affiliates of the Dataverse Network</span>" + separator);
+                outputStream.write("<div style=\"margin-left:25px; margin-right:25px; font-size:medium; text-align:left;\">");
+                outputStream.write(label + ": " + errorMessage);
+                outputStream.write("</div></div>");
+            } catch (IOException ioe)  {
+                System.out.println("An error occurred. Unable to write to error stream.");
+            } finally {
+                outputStream.close();
+            }
+            
+        }
 
 	/** getReportFiles
 	*

@@ -9,8 +9,9 @@
 
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
-import java.util.*;
 import java.io.*;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 /**
  *
  * @author wbossons
@@ -20,6 +21,7 @@ public class StatisticsReportRunner extends Thread {
     InputStream inputStream;
     String type;
     OutputStream outputStream;
+    String urlToStaticFiles;
     
     public StatisticsReportRunner(InputStream inputStream, String type) {
         this(inputStream, type, null);
@@ -29,6 +31,13 @@ public class StatisticsReportRunner extends Thread {
         this.inputStream = inputStream;
         this.type = type;
         this.outputStream = redirect;
+    }
+    
+    public StatisticsReportRunner (InputStream inputStream, String type, OutputStream redirect, String urlToStaticFiles) {
+        this.inputStream = inputStream;
+        this.type = type;
+        this.outputStream = redirect;
+        this.urlToStaticFiles = urlToStaticFiles;
     }
     
     public void run() {
@@ -52,9 +61,13 @@ public class StatisticsReportRunner extends Thread {
                     isIncluded = false;
                     break;
                 }
-                if (printwriter != null)
-                    printwriter.println(line);
-                System.out.println(type + ">" + line);    
+                if (printwriter != null) {
+                    if (line.indexOf("awstats.") != -1) {
+                        printwriter.println(line.replace("awstats.", urlToStaticFiles + "/awstats."));
+                    }
+                    else
+                        printwriter.println(line);
+                }
             }
             if (printwriter != null)
                 printwriter.flush();

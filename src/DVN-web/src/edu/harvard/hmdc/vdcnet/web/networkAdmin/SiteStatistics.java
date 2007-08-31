@@ -264,23 +264,23 @@ public class SiteStatistics extends VDCBaseBean {
         //also check for this dir and create if needed
         boolean exists = (new File(this.dataDirectory)).exists();
         if (!exists) {
-            boolean success = (new File(this.dataDirectory)).mkdir();
-            if (success) {
-                // Make the temporary files
-                try {
-                String[] files = {"awstats.iqss.html", "awstats.mit.html", "awstats.mit.txt"};
-                int i = 0;
-                while (i < files.length) {
+            File webStatisticsDir = new File(dataDirectory + "/");
+            webStatisticsDir.mkdir(); 
+        }
+        // Make the temporary files if no files exist
+        try {
+            String[] files = {"awstats.iqss.html", "awstats.mit.html", "awstats.mit.txt"};
+            int i = 0;
+            while (i < files.length) {
+                exists = (new File(this.dataDirectory + "/" + files[i]).exists());
+                if (!exists) {
                     File file = new File (this.dataDirectory + "/" + files[i]);
                     file.createNewFile();
-                    i++;
                 }
-                } catch (IOException ioe) {
-                    System.out.println("Unable to create the web statistics files.");
-                }
-            } else {
-                System.out.println("Unable to create the web statistics directory.");
+                i++;
             }
+        } catch (IOException ioe) {
+            System.out.println("Unable to create the web statistics files.");
         }
     }
 

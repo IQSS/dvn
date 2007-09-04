@@ -147,7 +147,7 @@ public class DataTable {
      * Holds value of property dataVariables.
      */
     @OneToMany (mappedBy="dataTable", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
-    @OrderBy ("name")
+    @OrderBy ("fileOrder")
     private List<DataVariable> dataVariables;
 
     /**

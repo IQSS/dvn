@@ -42,13 +42,18 @@ public class LoginPage extends VDCBaseBean {
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String refererUrl = new String("");
         String protocol = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase();
-        String defaultPage = protocol + request.getContextPath() + request.getServletPath() + "/HomePage.jsp";
+        String defaultPage = new String("");
+        String serverPort  = new String((request.getServerPort() != 80 ? ":" + request.getServerPort():""));
+        if (getVDCRequestBean().getCurrentVDC() != null)
+            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + "/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() +  request.getServletPath() + "/HomePage.jsp";
+        else
+            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + request.getServletPath() + "/HomePage.jsp";
         // Set referer needed by loginAffiliate -- must be passed on the querystring to the EZProxy
         if (sessionGet("refererUrl") == null) {
             if (request.getHeader("referer") != null && !request.getHeader("referer").equals("") )  {
-                    if ( request.getHeader("referer").indexOf("LogoutPage") != -1 
-                            || request.getHeader("referer").indexOf("LoginPage")!= -1 
-                            || request.getHeader("referer").contains("/networkAdmin") ) {
+                    if ( request.getHeader("referer").indexOf("/login/") != -1 
+                            || request.getHeader("referer").contains("/admin/")
+                            || request.getHeader("referer").contains("/networkAdmin/") ) {
                         refererUrl = defaultPage;
                     } else { 
                         refererUrl = request.getHeader("referer");
@@ -56,6 +61,7 @@ public class LoginPage extends VDCBaseBean {
             } else {
                 refererUrl = defaultPage;
             }
+            
             sessionPut("refererUrl", refererUrl);
         }
      }

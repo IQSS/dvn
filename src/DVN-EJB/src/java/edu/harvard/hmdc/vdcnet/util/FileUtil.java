@@ -34,8 +34,8 @@ public class FileUtil {
         try {
             in = new FileInputStream(inputFile).getChannel();
             out = new FileOutputStream(outputFile).getChannel();
-            int bytesPerIteration = 50000;
-            int start = 0;
+            long bytesPerIteration = 50000;
+            long start = 0;
             while ( start < in.size() ) {
                 in.transferTo(start, bytesPerIteration, out);
                 start += bytesPerIteration;

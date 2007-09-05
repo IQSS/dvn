@@ -19,6 +19,7 @@ import javax.ejb.EJB;
 import javax.faces.FacesException;
 import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
@@ -40,17 +41,24 @@ public class LoginPage extends VDCBaseBean {
         setAffiliateNames();
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String refererUrl = new String("");
-        if (request.getHeader("referer") != null)
-            refererUrl        = request.getHeader("referer");
-        if (refererUrl.contains("LoginPage.jsp") || refererUrl.contains("LogoutPage.jsp"))
-            refererUrl = refererUrl.substring(0,refererUrl.indexOf("/login")) + "/HomePage.jsp";//probably could get home from web.xml (TODO)
-        else if (refererUrl.contains("/networkAdmin"))
-            refererUrl = refererUrl.substring(0,refererUrl.indexOf("/networkAdmin")) + "/HomePage.jsp";//probably could get home from web.xml (TODO)
-        else if (sessionGet("refererUrl") == null)
-            refererUrl = request.getHeader("referer");
-        //TODO: add a final else condition to point to the home page when referer = null
-        sessionPut("refererUrl", refererUrl);
-    }
+        String protocol = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase();
+        String defaultPage = protocol + request.getContextPath() + request.getServletPath() + "/HomePage.jsp";
+        // Set referer needed by loginAffiliate -- must be passed on the querystring to the EZProxy
+        if (sessionGet("refererUrl") == null) {
+            if (request.getHeader("referer") != null && !request.getHeader("referer").equals("") )  {
+                    if ( request.getHeader("referer").indexOf("LogoutPage") != -1 
+                            || request.getHeader("referer").indexOf("LoginPage")!= -1 
+                            || request.getHeader("referer").contains("/networkAdmin") ) {
+                        refererUrl = defaultPage;
+                    } else { 
+                        refererUrl = request.getHeader("referer");
+                    }
+            } else {
+                refererUrl = defaultPage;
+            }
+            sessionPut("refererUrl", refererUrl);
+        }
+     }
     
     /** 
      * <p>Construct a new Page bean instance.</p>
@@ -92,6 +100,8 @@ public class LoginPage extends VDCBaseBean {
     }
     
     public String login() {
+        if (sessionGet("refererUrl") != null) //remove loginAffiliate related session vars, wjb Sept 2007
+            sessionRemove("refererUrl");
         boolean activeOnly=true;
         VDCUser user  = userService.findByUserName(userName,activeOnly);
         if (user==null || !user.getPassword().equals(password)) {
@@ -113,18 +123,17 @@ public class LoginPage extends VDCBaseBean {
             getVDCSessionBean().setLoginBean(loginBean);
             if (hiddenWorkflow.getValue().equals("contributor")) {
                    getSessionMap().put("LOGIN_REDIRECT", this.getExternalContext().getRequestContextPath()+"/dv/"+getVDCRequestBean().getCurrentVDC().getAlias()
-                    +"/faces/login/ContributorRequestPage.jsp");               
-             }
-            else if (hiddenWorkflow.getValue().equals("creator")) {
+                    + "/faces/login/ContributorRequestPage.jsp");               
+             } else if (hiddenWorkflow.getValue().equals("creator")) {
                    getSessionMap().put("LOGIN_REDIRECT", this.getExternalContext().getRequestContextPath()
-                   +"/faces/login/CreatorRequestPage.jsp");               
+                   + "/faces/login/CreatorRequestPage.jsp");               
             } else if (hiddenWorkflow.getValue().equals("fileAccess")) {
                 if (getVDCRequestBean().getCurrentVDC()!=null) {
                     getSessionMap().put("LOGIN_REDIRECT", this.getExternalContext().getRequestContextPath()+"/dv/"+getVDCRequestBean().getCurrentVDC().getAlias()
-                    +"/faces/login/FileRequestPage.jsp?studyId="+studyId);               
+                    + "/faces/login/FileRequestPage.jsp?studyId="+studyId);               
                 } else {
                    getSessionMap().put("LOGIN_REDIRECT", this.getExternalContext().getRequestContextPath()
-                   +"/faces/login/FileRequestPage.jsp");     
+                   + "/faces/login/FileRequestPage.jsp");     
                 }
             } else {
                 if (getSessionMap().get("ORIGINAL_URL")!=null ) {
@@ -238,7 +247,6 @@ public class LoginPage extends VDCBaseBean {
      */
     
     public void loginAffiliate() {
-        System.out.println("about to login affiliate: " + getAffiliateName());
         try {
             FacesContext.getCurrentInstance().getExternalContext().redirect(this.getAffiliateName() + "?url=" + sessionGet("refererUrl"));
         } catch (IOException ioe) {

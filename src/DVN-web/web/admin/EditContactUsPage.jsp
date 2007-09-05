@@ -19,21 +19,28 @@
                     <div class="dvn_margin12">
  
                         <h:messages  layout="table" showDetail="false" showSummary="true" styleClass="successMessage" />                       
-                        
                         <ui:helpInline  id="helpInline1" style="margin-bottom: 20px" text="#{bundle.editContactUsHelpMsg}"/>
+                        <ui:panelGroup>
+                            <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                            <h:outputText id="outputText4" styleClass="vdcHelpText" value="Separate multiple email addresses with a comma (and no spaces). Example: admin@mydvn.edu,user@mydvn.edu"/>
+                        </ui:panelGroup>
+                        <f:verbatim><br /></f:verbatim>
                         <h:panelGrid  cellpadding="0" cellspacing="0"
                                       columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
+                            
                             <ui:panelGroup  id="groupPanel2">
                                 <h:outputText  id="outputText5" value="#{bundle.editContactUsEmailLabel}"/>
                                 <h:graphicImage  id="image1" value="#{bundle.iconRequired}"/>
                             </ui:panelGroup>
+                            
                             <h:inputText onkeypress="if (window.event) return processEvent('', 'content:EditContactUsPageView:editContactUsForm:btnSave'); else return processEvent('content:EditContactUsPageView:editContactUsForm:btnSave');"  
                                          id="contactUsEmail" 
-                                         size="30" 
+                                         size="50" 
                                          value="#{EditContactUsPage.contactUsEmail}" 
                                          required="true">
                                 <f:validator validatorId="EmailValidator"/>
                             </h:inputText>
+                            
                             <h:message style="column-span:2;" 
                                        id="emailAddressMsg" 
                                        for="contactUsEmail"

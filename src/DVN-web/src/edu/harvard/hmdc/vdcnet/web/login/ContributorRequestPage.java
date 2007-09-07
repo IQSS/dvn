@@ -151,7 +151,7 @@ public class ContributorRequestPage extends VDCBaseBean {
             for (Iterator it = getVDCRequestBean().getCurrentVDC().getVdcRoles().iterator(); it.hasNext();) {
                 VDCRole elem = (VDCRole) it.next();
                 if (elem.getRole().getName().equals(RoleServiceLocal.ADMIN)) {
-                    mailService.sendContributorRequestNotification(elem.getVdcUser().getEmail(),
+                    mailService.sendContributorRequestNotification(getVDCRequestBean().getCurrentVDC().getContactEmail(),
                     user.getUserName(), 
                     getVDCRequestBean().getCurrentVDC().getName());
                 }

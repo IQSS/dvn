@@ -127,10 +127,19 @@
                                         style="padding-top: 20px; padding-bottom: 10px" >
                             <h:outputText  styleClass="vdcTextStandOut" value="SUBSETTABLE FILES WILL NOT BE UPLOADED IMMEDIATELY ON SAVE:"/>     
                             <h:outputText id="email" styleClass="warnMessage" value="You have selected to upload a subsettable file. Subsettable files are processed asynchronously. Please enter an e-mail address to receive a notification when the process is completed."/> 
+                            
+                            <ui:panelGroup>
+                                <f:verbatim><br /></f:verbatim>
+                                <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                                <h:outputText id="outputText4" styleClass="vdcHelpText" value="Separate multiple email addresses with a comma (and no spaces). Example: admin@mydvn.edu,user@mydvn.edu"/>
+                                <f:verbatim><br /></f:verbatim>
+                            </ui:panelGroup>
+                           
                             <h:outputText value="E-Mail Address:" styleClass="vdcTextStandOut" />
-                            <h:inputText  id="textField3" size="40" value="#{AddFilesPage.ingestEmail}">
+                            <h:inputText  id="textField3" size="50" value="#{AddFilesPage.ingestEmail}">
                                 <f:validator validatorId="EmailValidator"/>
                             </h:inputText>
+                            
                             <h:message for="textField3" id="validatorMessage" styleClass="errorMessage"/>
                         </ui:panelGroup>                                
                         <ui:panelGroup  block="true" id="groupPanel5"

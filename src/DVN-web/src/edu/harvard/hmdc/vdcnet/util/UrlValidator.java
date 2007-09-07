@@ -16,6 +16,7 @@ import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -63,5 +64,71 @@ public class UrlValidator implements Validator {
         } finally {
             return isValid;
         }
+    }
+    
+    /** buildInContextUrl
+     *
+     * @description utility method
+     * to build in-context urls.
+     *
+     * @param alias String dataverse alias, in the form /dv/<alias>If a dvn, pass this as "".
+     * @param pageName
+     *
+     * @return urlString
+     *
+     *@author wbossons
+     *
+     */
+    public String buildInContextUrl(String alias, String pageName) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        String urlString    = new String("");
+        String serverName   = new String("");
+        String contextPath  = new String("");
+        String servletPath  = new String("");
+        String protocol     = new String("");
+        String serverPort   = new String("");
+        if (facesContext != null) {
+            HttpServletRequest request = (HttpServletRequest)facesContext.getExternalContext().getRequest();
+            serverName   = request.getServerName();
+            contextPath  = request.getContextPath();
+            servletPath  = request.getServletPath();
+            protocol     = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase() + "://";
+            serverPort   = new String((request.getServerPort() != 80 ? ":" + request.getServerPort():""));
+        }
+        if (alias != null)
+            urlString = protocol + serverName + serverPort + contextPath + alias +  servletPath + pageName;
+        else
+            urlString = protocol + serverName + serverPort + contextPath + servletPath + pageName;
+        return urlString;
+    }
+
+    /** buildUrl
+     *
+     * @description utility method
+     * to build urls.
+     *
+     * @param contextPath String - self explanatory. Ex: /dvn
+     * @param scriptName String - everything after the contextPath,
+     * but before the pageName and preceded by a slash
+     * @param pageName String - page name preceded by a slash
+     *
+     * @return urlString
+     *
+     */
+    public String buildCrossContextUrl(String contextPath, String scriptName, String pageName) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        String urlString    = new String("");
+        String serverName   = new String("");
+        String protocol     = new String("");
+        String servletPath  = new String("");
+        String serverPort   = new String("");
+        if (facesContext != null) {
+            HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            serverName   = request.getServerName();
+            protocol     = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase() + "://";
+            serverPort   = new String((request.getServerPort() != 80 ? ":" + request.getServerPort():""));
+        }
+        urlString = protocol + serverName + serverPort + contextPath + scriptName + pageName;
+        return urlString;
     }
 }

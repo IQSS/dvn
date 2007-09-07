@@ -140,8 +140,8 @@ public class CreatorRequestPage extends VDCBaseBean {
             VDCUser user = userService.find(userId);
       
             networkRoleService.newCreatorRequest(userId); 
-            // Notify Admin of request       
-            mailService.sendCreatorRequestNotification(this.getVDCRequestBean().getVdcNetwork().getDefaultNetworkAdmin().getEmail(),
+            // Send notification to "Contact Us" email        
+            mailService.sendCreatorRequestNotification(this.getVDCRequestBean().getVdcNetwork().getContactEmail(),
                     user.getUserName());
             
              // Send confirmation to user

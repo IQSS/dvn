@@ -20,7 +20,6 @@
                     cells[i].className="vdcSearchOptions";
                 }
             }
-
         </script>
 
         <h:inputHidden  id="studyListingIndex" value="#{SearchPage.studyListingIndex}" />
@@ -107,10 +106,10 @@
                           <ui:panelGroup  block="true" id="groupPanel4" style="text-align: right" rendered="#{SearchPage.renderScroller}">
                               <t:scroller binding="#{SearchPage.scroller}" for="dataTable1" actionListener="#{SearchPage.scroll_action}">
                                   <f:facet name="previous">
-                                      <h:graphicImage  value="/resources/arrow-left.gif" styleClass="vdcNoBorders"/>
+                                      <h:graphicImage id="scrollBack" value="/resources/arrow-left.gif" styleClass="vdcNoBorders"/>
                                   </f:facet>
                                   <f:facet name="next">
-                                      <h:graphicImage  value="/resources/arrow-right.gif" styleClass="vdcNoBorders"/>
+                                      <h:graphicImage id="scrollNext" value="/resources/arrow-right.gif" styleClass="vdcNoBorders"/>
                                   </f:facet>                                            
                               </t:scroller>
                           </ui:panelGroup>

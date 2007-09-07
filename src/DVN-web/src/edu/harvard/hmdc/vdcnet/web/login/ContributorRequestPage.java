@@ -30,8 +30,8 @@ public class ContributorRequestPage extends VDCBaseBean {
     @EJB UserServiceLocal userService;
     @EJB RoleServiceLocal roleService;
     @EJB VDCServiceLocal vdcService;
-    @EJB MailServiceLocal mailService;     
-      
+    @EJB MailServiceLocal mailService;
+    
     
     /**
      * <p>Construct a new Page bean instance.</p>
@@ -113,16 +113,16 @@ public class ContributorRequestPage extends VDCBaseBean {
     }
     
     
-   
     
-  
-   
-
+    
+    
+    
+    
     /**
      * Holds value of property alreadyRequested.
      */
     private boolean alreadyRequested;
-
+    
     /**
      * Getter for property alreadyRequested.
      * @return Value of property alreadyRequested.
@@ -130,7 +130,7 @@ public class ContributorRequestPage extends VDCBaseBean {
     public boolean isAlreadyRequested() {
         return this.alreadyRequested;
     }
-
+    
     /**
      * Setter for property alreadyRequested.
      * @param alreadyRequested New value of property alreadyRequested.
@@ -138,42 +138,29 @@ public class ContributorRequestPage extends VDCBaseBean {
     public void setAlreadyRequested(boolean alreadyRequested) {
         this.alreadyRequested = alreadyRequested;
     }
-
-   
+    
+    
     
     public String generateRequest() {
         
-            
-    
-           VDCUser user = userService.find(userId);
-            vdcService.addContributorRequest(getVDCRequestBean().getCurrentVDCId(),userId);
-            // Notify all admins in this Dataverse of request 
-            for (Iterator it = getVDCRequestBean().getCurrentVDC().getVdcRoles().iterator(); it.hasNext();) {
-                VDCRole elem = (VDCRole) it.next();
-                if (elem.getRole().getName().equals(RoleServiceLocal.ADMIN)) {
-                    mailService.sendContributorRequestNotification(getVDCRequestBean().getCurrentVDC().getContactEmail(),
-                    user.getUserName(), 
-                    getVDCRequestBean().getCurrentVDC().getName());
-                }
-            } 
-            
-            
-             // Send confirmation to user
-             mailService.sendContributorRequestConfirmation(user.getEmail(),
-                     getVDCRequestBean().getCurrentVDC().getName());
-          
-         
-     
-       return "success";
-            
-       
+        VDCUser user = userService.find(userId);
+        vdcService.addContributorRequest(getVDCRequestBean().getCurrentVDCId(),userId);
+        
+        mailService.sendContributorRequestNotification(getVDCRequestBean().getCurrentVDC().getContactEmail(),
+                user.getUserName(), getVDCRequestBean().getCurrentVDC().getName());
+        
+        // Send confirmation to user
+        mailService.sendContributorRequestConfirmation(user.getEmail(),
+                getVDCRequestBean().getCurrentVDC().getName());
+        return "success";
+        
     }
-
+    
     /**
      * Holds value of property hiddenUserId.
      */
     private HtmlInputHidden hiddenUserId;
-
+    
     /**
      * Getter for property hiddenUserId.
      * @return Value of property hiddenUserId.
@@ -181,7 +168,7 @@ public class ContributorRequestPage extends VDCBaseBean {
     public HtmlInputHidden getHiddenUserId() {
         return this.hiddenUserId;
     }
-
+    
     /**
      * Setter for property hiddenUserId.
      * @param hiddenUserId New value of property hiddenUserId.
@@ -189,8 +176,8 @@ public class ContributorRequestPage extends VDCBaseBean {
     public void setHiddenUserId(HtmlInputHidden hiddenUserId) {
         this.hiddenUserId = hiddenUserId;
     }
-
     
-
+    
+    
 }
 

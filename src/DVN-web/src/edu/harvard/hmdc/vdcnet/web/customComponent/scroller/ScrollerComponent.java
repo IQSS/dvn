@@ -313,9 +313,7 @@ public class ScrollerComponent extends UICommand {
         String formId = getFormId(context);
         if (formId == null){
           return
-            ("href=\"#\" " +
-            "onmousedown=\"" +
-            "document.forms[0]['" + clientId +
+            ("href=\"javascript:void(0);document.forms[0]['" + clientId +
             "_action'].value='" +
             action +
             "'; " +
@@ -326,9 +324,7 @@ public class ScrollerComponent extends UICommand {
             "document.forms[0].submit()\"");
         } else {
           return
-            ("href=\"#\" " +
-            "onmousedown=\"" +
-            "document.forms['" + formId + "']['" + clientId +
+            ("href=\"javascript:void(0);document.forms['" + formId + "']['" + clientId +
             "_action'].value='" +
             action +
             "'; " +

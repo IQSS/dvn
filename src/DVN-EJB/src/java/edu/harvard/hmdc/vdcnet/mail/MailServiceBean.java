@@ -162,16 +162,9 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
     }
     
     
-    public void sendFileAccessRequestNotification(VDC currentVDC, String userName, String studyTitle, String globalId) {
-        // Send email to all admins and all curators in the vdc
-        for (Iterator it = currentVDC.getVdcRoles().iterator(); it.hasNext();) {
-            VDCRole vdcRole = (VDCRole) it.next();
-            if (vdcRole.getRole().getName().equals(RoleServiceLocal.ADMIN) ||vdcRole.getRole().getName().equals(RoleServiceLocal.CURATOR)) {
-                String email = vdcRole.getVdcUser().getEmail();
-                sendDoNotReplyMail(email,"Dataverse Network: New request to access restricted files",
+    public void sendFileAccessRequestNotification(String sendToEmail, String userName, String studyTitle, String globalId) {
+                sendDoNotReplyMail(sendToEmail,"Dataverse Network: New request to access restricted files",
                 "User '"+userName+"' has requested access to restricted files in study '"+studyTitle+"' ("+globalId+"). ");     
-            } 
-        }
     }
     
     public void sendContributorRequestConfirmation(String userEmail, String vdcName) {

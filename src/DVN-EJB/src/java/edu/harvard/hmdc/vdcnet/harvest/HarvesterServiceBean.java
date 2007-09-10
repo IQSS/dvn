@@ -24,6 +24,7 @@ import edu.harvard.hmdc.vdcnet.jaxb.oai.OAIPMHerrorType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.OAIPMHtype;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.ResumptionTokenType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.SetType;
+import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
@@ -84,6 +85,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     @EJB HarvestingDataverseServiceLocal havestingDataverseService;
     @EJB IndexServiceLocal indexService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
+    @EJB MailServiceLocal mailService;     
+
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean");
     private static final String HARVEST_TIMER = "HarvestTimer";
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -93,6 +96,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         try {
             logger.addHandler(new FileHandler(FileUtil.getImportFileDir()+ File.separator+ "harvest.log"));
         } catch(IOException e) {
+            
+
             throw new EJBException(e);
         }
     }
@@ -210,6 +215,9 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 
                 hdLogger.addHandler(new FileHandler(FileUtil.getImportFileDir()+ File.separator+ "harvest_"+dataverse.getVdc().getAlias()+logTimestamp+".log"));
             } catch(IOException e) {
+                String message = "Exception adding log file handler "+FileUtil.getImportFileDir()+ File.separator+ "harvest_"+dataverse.getVdc().getAlias()+logTimestamp+".log ";
+                mailService.sendHarvestErrorNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc().getName(), message + "Exception message - "+e.getMessage() );     
+
                 throw new EJBException(e);
             }
             
@@ -230,7 +238,9 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 hdLogger.log(Level.INFO,"COMPLETED HARVEST, oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);
                 
             } catch (ParseException ex) {
-                hdLogger.log(Level.SEVERE, "ParseException harvesting dataverse "+dataverse.getVdc().getName()+", until Str="+until+", exception: "+ex.getMessage() );
+                String message = "ParseException harvesting dataverse "+dataverse.getVdc().getName()+", until Str="+until+", exception: "+ex.getMessage();
+                mailService.sendHarvestErrorNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc().getName(), message  );     
+                hdLogger.log(Level.SEVERE, message);
             } finally {
                 havestingDataverseService.setHarvestingNow(dataverse.getId(), false);
                 
@@ -287,7 +297,10 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                     }
                 }
             } catch (Exception e) {
-                hdLogger.log(Level.SEVERE, "Exception processing listIdentifiers(), oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getFormat()+" "+ e.getClass().getName()+ " "+e.getMessage());
+                String message = "Exception processing listIdentifiers(), oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getFormat()+" "+ e.getClass().getName()+ " "+e.getMessage();
+                mailService.sendHarvestErrorNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc().getName(), message  );     
+
+                hdLogger.log(Level.SEVERE, message);
                 if (e.getCause()!=null) {
                     String stackTrace = "StackTrace: \n";
                     hdLogger.severe("Exception caused by: "+e.getCause()+"\n, nested Exception: "+e.getCause().getCause());
@@ -344,7 +357,10 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 }
                 
             } catch (Throwable e) {
-                hdLogger.log(Level.SEVERE,"Exception processing getRecord(), oaiUrl="+oaiUrl+",identifier="+identifier +" "+ e.getClass().getName()+" "+ e.getMessage());
+                String message = "Exception processing getRecord(), oaiUrl="+oaiUrl+",identifier="+identifier +" "+ e.getClass().getName()+" "+ e.getMessage();
+                mailService.sendHarvestErrorNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc().getName(), message  );     
+
+                hdLogger.log(Level.SEVERE,message);
                 Throwable cause;
                 
                 while ((cause= e.getCause())!=null) {

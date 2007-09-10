@@ -62,6 +62,6 @@ public interface MailServiceLocal {
     
     public void sendStudyEditedCuratorNotification(String curatorEmail, String userEmail, String studyName, String vdcName );
 
-    
+    public void sendHarvestErrorNotification(String email, String dataverseName, String message );
     
 }

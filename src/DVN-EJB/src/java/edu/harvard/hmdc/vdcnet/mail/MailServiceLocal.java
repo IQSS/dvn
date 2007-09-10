@@ -35,7 +35,7 @@ public interface MailServiceLocal {
     public void sendContributorRejectNotification(String userEmail, String vdcName,String adminEmail);
     
 
-    public void sendFileAccessRequestNotification(VDC vdc, String userName,String studyTitle,String globalId);
+    public void sendFileAccessRequestNotification(String sendToEmail, String userName,String studyTitle,String globalId);
     
     public void sendFileAccessRequestConfirmation(String userEmail, String studyTitle,String globalId);
     

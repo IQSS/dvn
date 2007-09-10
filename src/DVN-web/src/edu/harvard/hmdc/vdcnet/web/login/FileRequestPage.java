@@ -182,7 +182,7 @@ public class FileRequestPage extends VDCBaseBean {
            VDCUser user = userService.find(userId);
             studyRequestService.create(userId,studyId);
             // Notify Admin of request       
-            mailService.sendFileAccessRequestNotification(getVDCRequestBean().getCurrentVDC(),
+            mailService.sendFileAccessRequestNotification(getVDCRequestBean().getCurrentVDC().getContactEmail(),
                     user.getUserName(), 
                     study.getTitle(),study.getGlobalId());
             

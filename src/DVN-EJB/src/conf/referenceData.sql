@@ -718,7 +718,7 @@ ALTER TABLE variablerangetype ENABLE TRIGGER ALL;
 
 ALTER TABLE vdcuser DISABLE TRIGGER ALL;
 
-insert into vdcuser(id, version, email,  firstname, lastname, username,  password, networkRole_id,active ) VALUES ( 1, 1, 'dataverse@lists.hmdc.harvard.edu','networkAdmin','Admin', 'networkAdmin' ,'networkAdmin',2,true);
+insert into vdcuser(id, version, email,  firstname, lastname, username,  password, networkRole_id,active ) VALUES ( 1, 1, 'dataverse@lists.hmdc.harvard.edu','Network','Admin', 'networkAdmin' ,'networkAdmin',2,true);
 
 ALTER TABLE vdcuser ENABLE TRIGGER ALL;
 

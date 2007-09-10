@@ -66,7 +66,6 @@ public class SearchPage extends VDCBaseBean{
     private Tree collectionTree;
     private UIData studyTable;
     private ScrollerComponent scroller;
-    private List studyIds;
     private String searchField;
     private String searchValue;
     private Integer searchFilter;
@@ -92,21 +91,21 @@ public class SearchPage extends VDCBaseBean{
     
     
     public Collection getStudies() {
-        if (studyIds == null) {
-            initStudies();
+        List studyUIList = new ArrayList();
+ 
+        if ( studyListing != null && studyListing.getStudyIds() != null ) {
+            Iterator iter = studyListing.getStudyIds().iterator();
+            while (iter.hasNext()) {
+                Long sid = (Long) iter.next();
+                StudyUI sui = new StudyUI(sid);
+                if (studyListing.getVariableMap() != null) {
+                    List dvList = (List) studyListing.getVariableMap().get( sid );
+                    sui.setFoundInVariables( dvList );
+                }
+                studyUIList.add(sui) ;
+            }
         }
         
-        List studyUIList = new ArrayList();
-        Iterator iter = studyIds.iterator();
-        while (iter.hasNext()) {
-            Long sid = (Long) iter.next();
-            StudyUI sui = new StudyUI(sid);
-            if (studyListing.getVariableMap() != null) {
-                List dvList = (List) studyListing.getVariableMap().get( sid );
-                sui.setFoundInVariables( dvList );
-            }
-            studyUIList.add(sui) ;
-        }
         return studyUIList;
     }
     
@@ -258,7 +257,6 @@ public class SearchPage extends VDCBaseBean{
         if (studyListing.getStudyIds() != null && studyListing.getStudyIds().size() > 0) {
             List sortedStudies = studyService.getStudies(studyListing.getStudyIds(), sortBy);
             studyListing.setStudyIds(sortedStudies);
-            initStudies();
             resetScroller();
             
             
@@ -354,8 +352,6 @@ public class SearchPage extends VDCBaseBean{
                 ) );
             }
         }
-
-        studyIds = studyListing.getStudyIds();
     }
     
     
@@ -586,12 +582,15 @@ public class SearchPage extends VDCBaseBean{
     
     private StudyListing getStudyListingFromMap(Integer slIndex) {
         OrderedMap slMap = (OrderedMap) getSessionMap().get("studyListings");
-        StudyListing sl = (StudyListing) slMap.get(slIndex);
-        if (sl == null) {
-            // this means that this studyListing has expired
-            sl = new StudyListing(StudyListing.EXPIRED_LIST);
+        if (slMap != null) {
+            StudyListing sl = (StudyListing) slMap.get(slIndex);
+            if (sl != null) {
+                return sl;
+            }
         }
-        return sl;
+        
+        // this means that this studyListing or the session has expired
+        return new StudyListing(StudyListing.EXPIRED_LIST);
     }
     
     public String getSearchField() {

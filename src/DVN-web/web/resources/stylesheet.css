@@ -102,8 +102,6 @@ span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9e
 }
 
 /* HEADER */
-
-
 .dvn_headerTitleLarge {margin: .25em .5em; color: #035899; }
 .dvn_headerTitleLarge a:link, .dvn_headerTitle  a:visited, .dvn_headerTitle a:active {
    color: #035899;
@@ -123,11 +121,12 @@ span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9e
 
 .dvn_headerBarContent {display: block; width: 100%; background: #ddd; float: left;}
 
-.dvn_headerBarContent ul {display: inline; margin: 0 .75em; padding: 0.25em 0; list-style: none;}
-.dvn_headerBarContent li {display: inline; margin-right: 2em; font-size: 0.95em; float: left;}
+.dvn_headerBarContent ul {display: inline; margin: 0 .75em 0; padding: 0.25em 0; list-style: none;}
+.dvn_headerBarContent li {display: inline; margin-right: 1.5em; padding: 0; font-size: 0.95em; float: left;}
 
-.dvn_headerBarContent li.dvn_networkOptions {display: inline; margin-left: 1em; margin-right: 0; float: left; font-size: 1em;}
+.dvn_headerBarContent li.dvn_networkOptions {display: inline; float: left; font-size: 0.95em; text-align: right; margin-right: 0; margin-left: 0; padding: 0;}
 .dvn_boldRed a{font-weight: bold; color: #6D0609;}
+.dvn_red a{color: #6D0609;}
 
 .dvn_xbottom {display: block; width: 100%; background: transparent; font-size: 1px; float: left;}
 .dvn_xb1, .dvn_xb2, .dvn_xb3, .dvn_xb4 {display: block; overflow: hidden;}
@@ -156,7 +155,7 @@ span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9e
 .dvn_fileTitle{ font-weight: normal; font-size: 14px; font-style: normal; color: #000;}
 
 
-/* GENERAL DEDAULT THEME STYLES (from Creator) */
+/* GENERAL DEFAULT THEME STYLES (from Creator) */
 /* Style rules to make data tables look better */
 
 .list-header {
@@ -1145,7 +1144,7 @@ table.dvnMainTable a {
 /* *************** vanilla pages styles ***************** */
 div.ContentArea { margin-top:150px; margin-left:auto; margin-right:auto; min-width:300px; max-width:600px; background: url(custom_corners_topleft.gif) top left no-repeat; width:50%; font-family: "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif;}
 div.ContentArea p { background: url(custom_corners_topright.gif) top right no-repeat; font-family: "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif; font-size: 12px; padding:15px; margin:0; color: #062f58; }
-div.ContentArea span.headingText { display:block; width:100%; background-color:#dce6cb; font-style: oblique; font-family: "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif; font-size: 16px; font-weight: bold; text-align: center; }
+div.ContentArea span.headingText { display:block; width:100%; background-color:#dce6cb; font-style: oblique; font-family: "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif; font-size: 16px; font-weight: bold; text-align: center; padding: 0.25em 0;}
 div.ContentAreaBody { background: url(custom_corners_rightborder.gif) top right repeat-y; margin:0; margin-top:-2em; padding:15px; font-family: "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif; font-size: 12px;}
 div.ContentAreaFooter { background: url(custom_corners_bottomleft.gif) bottom left no-repeat; }
 div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom right no-repeat; display:block; padding:15px; margin:-2em 0 0 0; }

@@ -13,10 +13,10 @@
 
                          </f:verbatim>
                         <ui:panelLayout id="layoutPanel1" panelLayout="flow" styleClass="ContentArea">
-                                <h:outputText escape="false" value="&lt;p&gt;&lt;span class=&quot;headingText&quot;&gt;Login&lt;/span&gt;&lt;/p&gt;"/>
-                                
+                               <!-- <h:outputText escape="false" value="&lt;p&gt;&lt;span class=&quot;headingText&quot;&gt;Login&lt;/span&gt;&lt;/p&gt;"/> -->
+                                <p><h:outputText escape="false" styleClass="headingText" value="Login"/></p>
                                
-                                <ui:panelLayout panelLayout="flow" style="padding-top: 30px; padding-bottom: 40px" styleClass="ContentAreaBody">
+                                <ui:panelLayout panelLayout="flow" styleClass="ContentAreaBody">
                                     <ui:panelGroup styleClass="loginPageMessages"  block="true" style="padding-bottom: 15px; padding-right:50px "  rendered="#{LoginPage.redirect!=null}">
                                         <h:outputText styleClass="warnMessage" value="We are sorry, this page is restricted and you need to have special permissions to access it. Please log in if you have the appropriate permissions."/>
                                     </ui:panelGroup>
@@ -25,7 +25,7 @@
                                             <h:outputText  id="outputText4" styleClass="vdcSubHeader" value="Log in with a Dataverse account:" />
                                         </ui:panelGroup>
                                     <!-- ************ Username login section ******************* -->
-                                    <h:panelGrid style="margin-left:auto; margin-right:auto; background-color:#e6f2ff !important; border: 1px solid #a3b1bf; padding-left:15px;  " cellpadding="0" cellspacing="0" columnClasses="vdcLoginCol1, vdcLoginCol2" columns="2" id="gridPanel2" width="70%">
+                                    <h:panelGrid style="margin-left:auto; margin-right:auto; background-color:#e6f2ff !important; border: 1px solid #a3b1bf;" cellpadding="0" cellspacing="0" columnClasses="vdcLoginCol1, vdcLoginCol2" columns="2" id="gridPanel2" width="70%">
                                         <ui:panelGroup block="true" style="padding-top: 20px; padding-right:10px; text-align:right;">
                                             <h:outputLabel  for="componentLabel1" id="componentLabel1" >
                                                 <h:outputText id="componentLabel1Text1" value="Username" />
@@ -59,8 +59,8 @@
                                     <ui:panelGroup style="padding-bottom: 10px; padding-top: 20px;"  block="true" id="groupPanelAffiliate1" rendered="#{LoginPage.isAffiliates != null}" >
                                             <h:outputText  id="outputTextAffiliate" style="font-weight: bold" value="Log in through an affiliate:"/>
                                         </ui:panelGroup>
-                                    <h:panelGrid rendered="#{LoginPage.isAffiliates != null}" style="margin-left:auto; margin-right:auto; background-color:#f2ffe6;border:1px solid #a3bfb1; padding-left:15px;" cellpadding="0" cellspacing="0" columnClasses="vdcLoginCol1, vdcLoginCol2" columns="2" id="gridPanelAffiliate" width="70%">
-                                        <ui:panelGroup block="true" style="padding-top: 20px;">
+                                    <h:panelGrid rendered="#{LoginPage.isAffiliates != null}" style="margin-left:auto; margin-right:auto; background-color:#f2ffe6;border:1px solid #a3bfb1;" cellpadding="0" cellspacing="0" columnClasses="vdcLoginCol1, vdcLoginCol2" columns="2" id="gridPanelAffiliate" width="70%">
+                                        <ui:panelGroup block="true" style="padding-top: 20px; padding-right:10px; text-align:right;">
                                             <h:outputLabel  for="affiliateName" id="componentLabelAffiliateName" >
                                                 <h:outputText id="componentLabelAffiliateText" value="Affiliate Name" />
                                             </h:outputLabel>

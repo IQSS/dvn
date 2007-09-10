@@ -80,29 +80,30 @@
                     </h:outputLink>  
                     </li>
                 </ul>
-                <ul class="dvn_floatR">
-                    <li class="dvn_networkOptions">
-                     &#160;
-                    <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.jsp?userId=#{VDCSession.loginBean.user.id}" title="Edit Account Information" rendered="#{!VDCRequest.logoutPage and VDCSession.loginBean.user.firstName != null}">
-                        <h:outputText value="#{VDCSession.loginBean.user.firstName} #{VDCSession.loginBean.user.lastName}"/>
-                    </h:outputLink>
-                    <h:outputText rendered="#{!VDCRequest.logoutPage and VDCSession.loginBean.user.firstName == null }" value="#{ VDCSession.ipUserGroup.friendlyName }"/>
-                    </li>
-                    <li class="dvn_networkOptions dvn_boldRed">
-                    &#160;
-                    <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.jsp" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and VDCRequest.currentVDC == null and VDCSession.loginBean.networkAdmin }" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Admin Options">
-                        <h:outputText  value="Network Options"/>
-                    </h:outputLink>
-                    
-                    <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/site/AddSitePage.jsp" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and VDCRequest.currentVDC == null and (VDCSession.loginBean.networkCreator) }" title="Create a new dataverse in the Network">
-                        <h:outputText  value="Create a Dataverse"/>
-                    </h:outputLink>
-                    
-                    <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp"  rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}" title="My Options in #{VDCRequest.currentVDC.name} dataverse">
-                        <h:outputText  value="#{bundle.myOptionsLabel}"/>
-                    </h:outputLink>       
-                    </li>
-                </ul>
+                <ui:panelGroup rendered="#{!VDCRequest.logoutPage}">
+                    <ul class="dvn_floatR">
+                        <li class="dvn_networkOptions dvn_red">
+                            <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.jsp?userId=#{VDCSession.loginBean.user.id}" title="Edit Account Information" rendered="#{!VDCRequest.logoutPage and VDCSession.loginBean.user.firstName != null}">
+                                <h:outputText value="#{VDCSession.loginBean.user.firstName} #{VDCSession.loginBean.user.lastName}"/>
+                            </h:outputLink>
+                            <h:outputText rendered="#{!VDCRequest.logoutPage and VDCSession.loginBean.user.firstName == null }" value="#{ VDCSession.ipUserGroup.friendlyName }"/>
+                        </li>
+                        <li class="dvn_networkOptions dvn_boldRed">
+                            &#160;
+                            <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.jsp" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and VDCRequest.currentVDC == null and VDCSession.loginBean.networkAdmin }" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Admin Options">
+                                <h:outputText  value="Network Options"/>
+                            </h:outputLink>
+                            
+                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/site/AddSitePage.jsp" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and VDCRequest.currentVDC == null and (VDCSession.loginBean.networkCreator) }" title="Create a new dataverse in the Network">
+                                <h:outputText  value="Create a Dataverse"/>
+                            </h:outputLink>
+                            
+                            <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp"  rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}" title="My Options in #{VDCRequest.currentVDC.name} dataverse">
+                                <h:outputText  value="#{bundle.myOptionsLabel}"/>
+                            </h:outputLink>       
+                        </li>
+                    </ul>
+                </ui:panelGroup>
             </div>
             <span class="dvn_xbottom"><span class="dvn_xb4"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb3"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb2"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb1"><h:outputText  value="&#160;" escape="false"/></span></span>
         </div>

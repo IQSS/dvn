@@ -1142,7 +1142,7 @@ table.dvnMainTable a {
 
 
 /* *************** vanilla pages styles ***************** */
-div.ContentArea { margin-top:150px; margin-left:auto; margin-right:auto; min-width:300px; max-width:600px; background: url(custom_corners_topleft.gif) top left no-repeat; width:50%; font-family: "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif;}
+div.ContentArea { margin-top:150px; margin-left:auto; margin-right:auto; min-width:300px; max-width:600px; background: url(custom_corners_topleft.gif) top left no-repeat; width:50%; font-family: "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif; text-align: center;}
 div.ContentArea p { background: url(custom_corners_topright.gif) top right no-repeat; font-family: "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif; font-size: 12px; padding:15px; margin:0; color: #062f58; }
 div.ContentArea span.headingText { display:block; width:100%; background-color:#dce6cb; font-style: oblique; font-family: "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif; font-size: 16px; font-weight: bold; text-align: center; padding: 0.25em 0;}
 div.ContentAreaBody { background: url(custom_corners_rightborder.gif) top right repeat-y; margin:0; margin-top:-2em; padding:15px; font-family: "lucida grande", geneva, Verdana,Arial,Helvetica,sans-serif; font-size: 12px;}

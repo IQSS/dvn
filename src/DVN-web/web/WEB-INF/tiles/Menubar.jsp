@@ -34,6 +34,7 @@
             <div class="dvn_headerBarContent">
                 <ul class="dvn_floatL">
                     <li>
+                      &#160;  
                       <h:outputLink  value="/dvn" title="Browse and Search #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDC == null}">
                         <h:outputText value="Search/Browse "/>
                        </h:outputLink>
@@ -100,7 +101,8 @@
                             
                             <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp"  rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}" title="My Options in #{VDCRequest.currentVDC.name} dataverse">
                                 <h:outputText  value="#{bundle.myOptionsLabel}"/>
-                            </h:outputLink>       
+                            </h:outputLink>  
+                            &#160;
                         </li>
                     </ul>
                 </ui:panelGroup>

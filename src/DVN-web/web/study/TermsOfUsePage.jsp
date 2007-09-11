@@ -48,7 +48,7 @@
                                     <h:selectBooleanCheckbox id="studyTermsAccepted" value="#{TermsOfUsePage.studyTermsAccepted}"/>
                                 </div>
                                 <br />
-                                <h:panelGrid columnClasses="vdcColPadded">
+                                <h:panelGrid columnClasses="vdcColPadded" width="98%">
                                     <h:outputText value="Data Access Place:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.placeOfAccess}"/>
                                     
                                     <h:outputText  value="#{TermsOfUsePage.study.placeOfAccess}"  rendered="#{!empty TermsOfUsePage.study.placeOfAccess}" escape="false"/>

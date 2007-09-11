@@ -84,11 +84,9 @@
                         <h:commandButton immediate="true" id="button2" style="margin-left: 30px; margin-right: 15px" value="Cancel" action="#{EditStudyPage.cancel}"/>   
                     </ui:panelGroup> 
                     
-                    <ui:tabSet binding="#{EditStudyPage.tabSet1}" id="tabSet1" lite="true" mini="true"  styleClass="vdcStudyTabSet">
-                        <ui:tab  action="#{EditStudyPage.tab1_action}" id="catalog" style="font-weight: bold"
-                                 styleClass="vdcStudyTab" text="Cataloging Information">                                  
-                            <ui:panelLayout id="layoutPanel1" panelLayout="flow" style="margin: 0px; padding: 0px; "> 
-                                
+                    <ui:tabSet binding="#{EditStudyPage.tabSet1}" id="tabSet1" lite="true" mini="true" >
+                        <ui:tab  action="#{EditStudyPage.tab1_action}" id="catalog" text="Cataloging Information">                                  
+                           <ui:panelLayout id="layoutPanel1" panelLayout="flow" style="width: 98%"> 
                                 <h:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%" style="margin-bottom: 5px"> 
                                     <ui:panelGroup block="true" id="groupPanel9b" >
                                         <h:commandButton  value="Show Additional Fields" title="See all fields in Cataloging Information"  binding="#{EditStudyPage.commandButtonShowFields}"  action="#{EditStudyPage.showFields}"/>
@@ -113,9 +111,7 @@
                                     <h:outputText id="outputText26" value="Citation Information"/>      
                                 </ui:panelGroup>                                    
                                 
-                                <h:panelGrid cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2"
-                                             width="100%">
+                                <h:panelGrid cellpadding="0" cellspacing="0" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2" width="100%">
                                     
                                     <!-- TITLE -->
                                            
@@ -1800,19 +1796,18 @@
                                             <h:commandButton id="button5" value="Save" action="#{EditStudyPage.save}"/>
                                             <h:commandButton id="button6" style="margin-left: 30px" value="Cancel"/>
                                         </ui:panelGroup>
-                                        -->
-                                     
-                                        
+                             
+                                       -->
                             </ui:panelLayout>
                         </ui:tab>
                         
                         <!-- FILES TAB -->
                                        
-                        <ui:tab  id="files" style="font-weight: bold" text="Study Files">
+                        <ui:tab  id="files" text="Study Files">
                             <ui:panelGroup  block="true" id="noFilesPanel" style="padding-top: 30px; padding-bottom: 30px; padding-left: 20px;" rendered="#{empty EditStudyPage.files}">
                                 <h:outputText value="No files have been provided for this study. To add files, return to the study view (by clicking Save or Cancel) and follow the Add File(s) link."/>
                             </ui:panelGroup>                                    
-                            <ui:panelLayout id="layoutPanel2" panelLayout="flow" style="width: 100%;" rendered="#{!empty EditStudyPage.files}">
+                            <ui:panelLayout id="layoutPanel2" panelLayout="flow" style="width: 98%" rendered="#{!empty EditStudyPage.files}">
                                 <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                                 <h:dataTable id="fileDataTableWrapper" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
                                     <h:column>

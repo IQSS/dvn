@@ -417,7 +417,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     
     public FileCategory getFileCategory(Long fileCategoryId) {
         FileCategory fileCategory = em.find(FileCategory.class,fileCategoryId);
-        if (fileCategoryId==null) {
+        if (fileCategory==null) {
             throw new IllegalArgumentException("Unknown fileCategoryId: "+fileCategoryId);
         }
         

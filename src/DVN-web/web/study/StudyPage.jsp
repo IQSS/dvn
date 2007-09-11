@@ -70,10 +70,9 @@
                 </div>            
                 
                 <div class="dvn_sectionBoxNoBorders"> 
-                    <ui:tabSet binding="#{studyPage.tabSet1}" id="tabSet1" lite="true" mini="true"  styleClass="vdcStudyTabSet" >
-                        <ui:tab   id="catalog"
-                                  styleClass="vdcStudyTab" text="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog">
-                            <ui:panelLayout  id="layoutPanel1" panelLayout="flow" style="margin: 0px; padding: 0px 0px 10px 0px; ">
+                    <ui:tabSet binding="#{studyPage.tabSet1}" id="tabSet1" lite="true" mini="true"  >
+                        <ui:tab   id="catalog" text="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog">
+                            <ui:panelLayout id="layoutPanel1" panelLayout="flow" style="width: 98%"> 
                                 <ui:panelGroup  block="true" id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                                     <h:outputText  id="outputText11" value="Citation Information"/>
                                     <h:commandButton id="commandButtonCitationInfoContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}" />                      
@@ -349,12 +348,11 @@
                                 </h:outputLink>
                             </ui:panelGroup>
                             -->
-
                             </ui:panelLayout>
                         </ui:tab>
                         
                         <ui:tab  id="files" text="Documentation, Data and Analysis" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=files">
-                            
+                           <ui:panelLayout id="layoutPanel2" panelLayout="flow" style="width: 98%">  
                             <ui:panelLayout  id="noFilesPanel1" panelLayout="flow" style="margin: 0px; padding: 0px 0px 10px 0px; " rendered="#{empty studyPage.studyUI.study.fileCategories}">
                                 <ui:panelGroup  block="true" id="noFilesPanel2" style="padding-top: 20px; padding-bottom: 10px;" rendered="#{!studyPage.userAuthorizedToEdit}">
                                     <h:outputText value="No files have been provided for this study."/>
@@ -375,7 +373,7 @@
                                     <h:outputText value="original source." />
                                 </h:outputLink>
                             </ui:panelGroup>
-                            <ui:panelLayout  id="layoutPanel2" panelLayout="flow" style="margin: 0px; padding: 0px 0px 10px 0px; " rendered="#{!empty studyPage.studyUI.study.fileCategories}">
+                            <ui:panelLayout  id="layoutPanel3" panelLayout="flow" style="margin: 0px; padding: 0px 0px 10px 0px; " rendered="#{!empty studyPage.studyUI.study.fileCategories}">
                                 <ui:panelGroup  block="true" styleClass="vdcRequestPanelFiles" rendered="#{studyPage.studyUI.anyFileRestricted and studyPage.studyUI.study.requestAccess}">
                                     <h:outputText value="Would you like to access the restricted files in this study?" />
                                     <h:outputLink rendered="#{VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.jsp?studyId=#{studyPage.studyId}" styleClass="vdcRequestPanelLink">
@@ -511,6 +509,7 @@
                                 </ui:panelGroup>
                                 
                             </ui:panelLayout>
+                          </ui:panelLayout>
                         </ui:tab>
                     </ui:tabSet>
                 </div>

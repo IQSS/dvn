@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 import lia.analysis.positional.PositionalPorterStopAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
@@ -65,6 +66,7 @@ import org.apache.lucene.document.Field;
  */
 public class Indexer {
     
+    private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.index.Indexer");
     private static IndexWriter writer;
     private static IndexWriter writer2;
     private static IndexWriter writerStem;
@@ -352,7 +354,7 @@ public class Indexer {
     }
     
     public List search(List <Long> studyIds, List <SearchTerm> searchTerms) throws IOException{
-        System.out.println("Start search: "+DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+        logger.info("Start search: "+DateTools.dateToString(new Date(), Resolution.MILLISECOND));
         Long[] studyIdsArray = null;
         if (studyIds != null) {
             studyIdsArray = studyIds.toArray(new Long[studyIds.size()]);
@@ -380,34 +382,34 @@ public class Indexer {
             BooleanQuery searchTermsQuery = andSearchTermClause(nonVariableSearchTerms);
             searchParts.add(searchTermsQuery);
             BooleanQuery searchQuery = andQueryClause(searchParts);
-            System.out.println("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.info("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             nvResults = getHitIds(searchQuery);
-            System.out.println("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.info("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
 //            filteredResults = studyIds != null ? intersectionResults(nvResults, studyIds) : nvResults;
-            System.out.println("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.info("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             filteredResults = studyIds != null ? intersectionResults(nvResults, studyIdsArray) : nvResults;
-            System.out.println("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.info("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
         }
         if (variableSearch){
 //            List <Long> vResults = null;
             if (nonVariableSearch) {
-                System.out.println("Start nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                logger.info("Start nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
                 results = searchVariables(filteredResults, variableSearchTerms, true); // get var ids
-                System.out.println("Done nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                logger.info("Done nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
 //                List<Long> mergeResults = intersectionResults(vResults, nvResults);
 //                results = intersectionResults(vResults, nvResults);
 //                results = searchVariables(mergeResults,variableSearchTerms,true);
             } else {
 //                results = searchVariables(vResults,variableSearchTerms,true);
-                System.out.println("Start search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                logger.info("Start search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
                 results = searchVariables(studyIds, variableSearchTerms, true); // get var ids
-                System.out.println("Done search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                logger.info("Done search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             }
         } else {
             results = filteredResults;
         }
 //        List <Long> filteredResults = studyIds != null ? intersectionResults(results, studyIds) : results;
-        System.out.println("Done search: "+DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+        logger.info("Done search: "+DateTools.dateToString(new Date(), Resolution.MILLISECOND));
 
         return results;
         

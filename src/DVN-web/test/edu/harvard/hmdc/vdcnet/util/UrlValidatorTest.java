@@ -75,17 +75,11 @@ public class UrlValidatorTest extends TestCase {
      */
     public void testBuildInContextUrl() {
         System.out.println("buildInContextUrl");
-        
         String alias = "http://localhost:8080/dv/cgi/awstats/js";
-        String pageName = "/awstats_misc_tracker_url.js";
         UrlValidator instance = new UrlValidator();
-        
-        String expResult = "http://localhost:8080/dv/cgi/awstats/js/awstats_misc_tracker_url.js";
-        String result = instance.buildInContextUrl(alias, pageName);
+        String expResult = "http://localhost:8080/dv/cgi/awstats/js";
+        String result = instance.buildInContextUrl(null, alias);
         assertEquals(expResult, result);
-        
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
     }
 
     /**
@@ -94,18 +88,12 @@ public class UrlValidatorTest extends TestCase {
      */
     public void testBuildCrossContextUrl() {
         System.out.println("buildCrossContextUrl");
-        
         String contextPath = "http://localhost:8080/DvnAwstats";
         String scriptName = "/cgi/awstats/js";
-        String pageName = "/awstats_misc_trackerurl.js";
         UrlValidator instance = new UrlValidator();
-        
-        String expResult = "http://localhost:8080/DvnAwstats/cgi/awstats/js/awstats_misc_trackerurl.js";
-        String result = instance.buildCrossContextUrl(contextPath, scriptName, pageName);
+        String expResult = "http://localhost:8080/DvnAwstats/cgi/awstats/js";
+        String result = instance.buildCrossContextUrl(contextPath, scriptName);
         assertEquals(expResult, result);
-        
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
     }
     
 }

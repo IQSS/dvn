@@ -576,7 +576,10 @@ public class Indexer {
         List <Document> documents = new ArrayList();
         if (query != null){
             IndexSearcher searcher = new IndexSearcher(dir);
+            logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             hits = searcher.search(query);
+            logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             for (int i = 0; i < hits.length(); i++) {
 //                Document d = hits.doc(i);
                 documents.add(hits.doc(i));
@@ -585,6 +588,7 @@ public class Indexer {
  //               Long studyIdLong = Long.valueOf(studyIdStr);
 //                matchIdsSet.add(studyIdLong);
             }
+            logger.info("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             searcher.close();
         }
 //        documents.addAll(matchIdsSet);
@@ -597,7 +601,10 @@ public class Indexer {
         LinkedHashSet matchIdsSet = new LinkedHashSet();
         if (query != null){
             IndexSearcher searcher = new IndexSearcher(dir);
+            logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             Hits hits = searcher.search(query);
+            logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             for (int i = 0; i < hits.length(); i++) {
                 Document d = hits.doc(i);
                 Field studyId = d.getField("id");
@@ -605,6 +612,7 @@ public class Indexer {
                 Long studyIdLong = Long.valueOf(studyIdStr);
                 matchIdsSet.add(studyIdLong);
             }
+            logger.info("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             searcher.close();
         }
         matchIds.addAll(matchIdsSet);

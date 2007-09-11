@@ -72,6 +72,8 @@ public class Indexer {
     private static IndexWriter writerStem;
     private static IndexWriter writerVar;
     private static IndexReader reader;
+    private static IndexReader r;
+    private static IndexSearcher searcher;
     private static Indexer indexer;
     Directory dir;
     String indexDir = "index-dir";
@@ -99,7 +101,9 @@ public class Indexer {
             }
         }
         try {
-            dir = FSDirectory.getDirectory(indexDir,false);
+            dir = FSDirectory.getDirectory(indexDir, false);
+            r = IndexReader.open(dir);
+            searcher = new IndexSearcher(r);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -600,7 +604,11 @@ public class Indexer {
         ArrayList matchIds = new ArrayList();
         LinkedHashSet matchIdsSet = new LinkedHashSet();
         if (query != null){
-            IndexSearcher searcher = new IndexSearcher(dir);
+            if (!r.isCurrent()) {
+//            IndexSearcher searcher = new IndexSearcher(dir);
+                r = IndexReader.open(dir);
+                searcher = new IndexSearcher(r);
+            }
             logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             Hits hits = searcher.search(query);
             logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));

@@ -199,7 +199,10 @@ public class VDCRequestBean extends AbstractRequestBean {
         if (getCurrentVDC() != null) { 
             dataverseURL +="/dv/"+getCurrentVDC().getAlias();
         } 
-        
+        // needed for error page when service is passed, but still an exception thrown in the app. wjb Sept 2007
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        request.setAttribute("dataverseURL", dataverseURL); 
+        // end code for exception case
         return dataverseURL;
     }
     

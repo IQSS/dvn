@@ -430,13 +430,30 @@ public class FileDownloadServlet extends HttpServlet{
             String studyId = req.getParameter("studyId");
             
             if (catId != null) {
-                FileCategory cat = studyService.getFileCategory( new Long(catId)); 
-                study = cat.getStudy();
-                files = cat.getStudyFiles();
+                try {
+                    FileCategory cat = studyService.getFileCategory( new Long(catId));                 
+                    study = cat.getStudy();
+                    files = cat.getStudyFiles();
+                } catch (Exception ex) {
+                    if (ex.getCause() instanceof IllegalArgumentException) {
+                        createErrorResponse404(res);
+                        return;
+                    }
+                }                
             } else if (studyId != null) {
-                study = studyService.getStudy( new Long(studyId));
-                files = study.getStudyFiles();
-                createDirectoriesForCategories = true;
+                try {
+                    study = studyService.getStudy( new Long(studyId));
+                    files = study.getStudyFiles();
+                    createDirectoriesForCategories = true;
+                } catch (Exception ex) {
+                    if (ex.getCause() instanceof IllegalArgumentException) {
+                        createErrorResponse404(res);
+                        return;
+                    }
+                }                    
+            } else {
+                createErrorResponse404(res);    
+                return;
             }
  
             // check for restricted files
@@ -579,7 +596,7 @@ public class FileDownloadServlet extends HttpServlet{
             out.println("<HTML>");
             out.println("<HEAD><TITLE>File Download</TITLE></HEAD>");
             out.println("<BODY>");
-            out.println("<BIG>You do not have permission to download this file.</BIG>");
+            out.println("<BIG>Sorry. You do not have permission to download this file.</BIG>");
             out.println("</BODY></HTML>");
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -594,7 +611,7 @@ public class FileDownloadServlet extends HttpServlet{
             out.println("<HTML>");
             out.println("<HEAD><TITLE>File Download</TITLE></HEAD>");
             out.println("<BODY>");
-            out.println("<BIG>No such object found for the File Id supplied.</BIG>");
+            out.println("<BIG>Sorry. The file you are looking for could not be found.</BIG>");
             out.println("</BODY></HTML>");
         } catch (IOException ex) {
             ex.printStackTrace();

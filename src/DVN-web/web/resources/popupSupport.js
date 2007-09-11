@@ -48,7 +48,7 @@ function hideInlineHelp() {
 
 var tooltip = new PopupWindow("tooltipDiv");
 tooltip.offsetX=-30;
-tooltip.offsetY=15;
+tooltip.offsetY=10;
 
 //
 //@param anchorname the name applied to the a element
@@ -63,14 +63,16 @@ function popupTooltip(anchorname, message, heading, evt) {
     else
         message = "<p id=\"tooltipContentsDiv\" class=\"vdcTooltipContents\">" + message + "</p>";
     tooltip.populate(message);
+    rootScrollTopReference = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop; //true? ie7version otherwise ie6 version
+    rootScrollLeftReference = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft;
     if (window.event == null) {
         xCoordinate = evt.pageX - document.getElementById('tooltipDiv').offsetParent.offsetLeft;
         yCoordinate = evt.pageY - document.getElementById('tooltipDiv').offsetParent.offsetTop;
     } else if (window.event) {
-        xCoordinate = window.event.clientX - document.getElementById('tooltipDiv').offsetParent.offsetLeft;
-        yCoordinate = window.event.clientY - document.getElementById('tooltipDiv').offsetParent.offsetTop;
+        xCoordinate = window.event.clientX - document.getElementById('tooltipDiv').offsetParent.offsetLeft + rootScrollLeftReference;
+        yCoordinate = window.event.clientY - document.getElementById('tooltipDiv').offsetParent.offsetTop + rootScrollTopReference;
     }
-    tooltip.showPopup(anchorname, xCoordinate, yCoordinate);
+    tooltip.showPopup(anchorname, parseInt(xCoordinate), yCoordinate);
 }
 
 function hideTooltip() {

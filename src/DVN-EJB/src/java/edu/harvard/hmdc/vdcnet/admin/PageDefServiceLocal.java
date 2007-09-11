@@ -35,7 +35,10 @@ public interface PageDefServiceLocal {
     public static final String CREATOR_REQUEST_ACCOUNT_PAGE = "CreatorRequestAccountPage";
     public static final String CREATOR_REQUEST_SUCCESS_PAGE = "CreatorRequestSuccessPage";
     public static final String CREATOR_REQUEST_PAGE = "CreatorRequestPage";
-     
+    public static final String FILE_REQUEST_ACCOUNT_PAGE = "FileRequestAccountPage";
+    public static final String FILE_REQUEST_SUCCESS_PAGE = "FileRequestSuccessPage";
+    public static final String FILE_REQUEST_PAGE = "FileRequestPage";
+          
     Role findById(Long id);
 
     PageDef findByName(String name);

@@ -67,12 +67,24 @@ public class FileDownloadServlet extends HttpServlet{
     }
 
     private String generateDisseminateUrl() throws IOException{
-        String dsbUrl = System.getProperty("vdc.dsb.url");
+        String dsbHost = System.getProperty("vdc.dsb.host");
+	String dsbPort = System.getProperty("vdc.dsb.port");
         
-        if (dsbUrl != null) {
-            return "http://" + dsbUrl + "/VDC/DSB/0.1/Disseminate";
+        if (dsbHost != null) {
+	    if (dsbPort != null ) {
+		return "http://" + dsbHost + ":" + dsbPort + "/VDC/DSB/0.1/Disseminate";
+	    } else {
+		return "http://" + dsbHost + "/VDC/DSB/0.1/Disseminate";
+	    }
         } else {
-            throw new IOException("System property \"vdc.dsb.url\" has not been set.");
+	    // fall back to the old "vdc.dsb.url" option 
+	    dsbHost = System.getProperty("vdc.dsb.url");
+
+	    if (dsbHost != null) {
+		return "http://" + dsbHost + "/VDC/DSB/0.1/Disseminate";
+	    } else {	    
+		throw new IOException("System property \"vdc.dsb.host\" has not been set.");
+	    }
         }
         
     }
@@ -197,7 +209,13 @@ public class FileDownloadServlet extends HttpServlet{
 	    } else {
 		// local object
 		
-		String dsbHost = System.getProperty("vdc.dsb.url");
+		String dsbHost = System.getProperty("vdc.dsb.host");
+
+		// fall back to the old-style option: 
+
+		if ( dsbHost == null ) {
+		    dsbHost = System.getProperty("vdc.dsb.url");
+		}		   
 
 		boolean NOTaDSBrequest = true;
   
@@ -211,7 +229,7 @@ public class FileDownloadServlet extends HttpServlet{
 			}
 		    } catch ( UnknownHostException ex ) {
 			// do nothing; 
-			// the "vdc.dsb.url" setting is clearly misconfigured,
+			// the "vdc.dsb.host" setting is clearly misconfigured,
 			// so we just keep assuming this is NOT a DSB call
 		    }
 		}

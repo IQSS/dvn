@@ -65,12 +65,24 @@ public class DSBWrapper {
     }
     
     private String generateUrl(String verb) throws IOException{
-        String dsbUrl = System.getProperty("vdc.dsb.url");
+        String dsbHost = System.getProperty("vdc.dsb.host");
+        String dsbPort = System.getProperty("vdc.dsb.port");
         
-        if (dsbUrl != null) {
-            return "http://" + dsbUrl + "/VDC/DSB/0.1/" + verb;
+        if (dsbHost != null) {
+	    if ( dsbPort != null ) {
+		return "http://" + dsbHost + ":" + dsbPort + "/VDC/DSB/0.1/" + verb;
+	    } else {
+		return "http://" + dsbHost + "/VDC/DSB/0.1/" + verb;
+	    }
         } else {
-            throw new IOException("System property \"vdc.dsb.url\" has not been set.");
+	    // fallback to the old-style option: 
+	    dsbHost = System.getProperty("vdc.dsb.url");
+
+	    if (dsbHost != null) {
+		return "http://" + dsbHost + "/VDC/DSB/0.1/" + verb;
+	    } else {
+		throw new IOException("System property \"vdc.dsb.host\" has not been set.");
+	    }
         }
         
     }

@@ -169,7 +169,11 @@ public class TermsOfUseFilter implements Filter {
 	    // this logic is essentially cut-and-pasted from 
 	    // FileDownloadServlet.java, where I added it earlie this year. 
 
-	    String dsbHost = System.getProperty("vdc.dsb.url");
+	    String dsbHost = System.getProperty("vdc.dsb.host");
+
+	    if ( dsbHost == null ) {
+		dsbHost = System.getProperty("vdc.dsb.url");
+	    }		    
 
 	    boolean NOTaDSBrequest = true;
 
@@ -183,7 +187,7 @@ public class TermsOfUseFilter implements Filter {
 		    }
 		} catch ( UnknownHostException ex ) {
 		    // do nothing; 
-		    // the "vdc.dsb.url" setting is clearly misconfigured,
+		    // the "vdc.dsb.host" setting is clearly misconfigured,
 		    // so we just keep assuming this is NOT a DSB call
 		}
 	    }

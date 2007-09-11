@@ -469,7 +469,17 @@ public class AnalysisPage extends VDCBaseBean {
               out.println("file type from the binding="+formatType);
               //String formatType = "D01";
               
-              String dsbUrl = System.getProperty("vdc.dsb.url");
+              String dsbUrl = System.getProperty("vdc.dsb.host");
+	      String dsbPort = System.getProperty("vdc.dsb.port");
+
+	      if ( dsbPort != null ) {
+		  dsbUrl+=":" + dsbPort; 
+	      }
+		      
+	      if ( dsbUrl == null ) {
+		  dsbUrl = System.getProperty("vdc.dsb.url");
+	      }		      
+
               out.println("dsbUrl="+dsbUrl);
 
               //String serverPrefix = "http://vdc-build.hmdc.harvard.edu:8080/dvn";
@@ -523,7 +533,17 @@ public class AnalysisPage extends VDCBaseBean {
               out.println("file type from the binding="+formatType);
               //String formatType = "D01";
               
-              String dsbUrl = System.getProperty("vdc.dsb.url");
+              String dsbUrl = System.getProperty("vdc.dsb.host");
+	      String dsbPort = System.getProperty("vdc.dsb.port");
+
+	      if ( dsbPort != null ) {
+		  dsbUrl+=":" + dsbPort; 
+	      }
+		      
+	      if ( dsbUrl == null ) {
+		  dsbUrl = System.getProperty("vdc.dsb.url");
+	      }		      
+
               out.println("dsbUrl="+dsbUrl);
 
               //String serverPrefix = "http://vdc-build.hmdc.harvard.edu:8080/dvn";
@@ -1870,7 +1890,17 @@ if (isRecodedVar(varId)){
 
                 StudyFile sf = dataTable.getStudyFile();
                 
-                String dsbUrl = System.getProperty("vdc.dsb.url");
+                String dsbUrl = System.getProperty("vdc.dsb.host");
+		String dsbPort = System.getProperty("vdc.dsb.port");
+
+		if ( dsbPort != null ) {
+		    dsbUrl+=":" + dsbPort; 
+		}
+		      
+		if ( dsbUrl == null ) {
+		    dsbUrl = System.getProperty("vdc.dsb.url");
+		}		      
+
                 out.println("dsbUrl="+dsbUrl);
                 
                 //String serverPrefix = "http://vdc-build.hmdc.harvard.edu:8080/dvn";
@@ -1953,7 +1983,17 @@ if (isRecodedVar(varId)){
 
                 StudyFile sf = dataTable.getStudyFile();
                 
-                String dsbUrl = System.getProperty("vdc.dsb.url");
+                String dsbUrl = System.getProperty("vdc.dsb.host");
+		String dsbPort = System.getProperty("vdc.dsb.port");
+
+		if ( dsbPort != null ) {
+		    dsbUrl+=":" + dsbPort; 
+		}
+		      
+		if ( dsbUrl == null ) {
+		    dsbUrl = System.getProperty("vdc.dsb.url");
+		}		      
+
                 out.println("dsbUrl="+dsbUrl);
                 
                 //String serverPrefix = "http://vdc-build.hmdc.harvard.edu:8080/dvn";
@@ -3478,7 +3518,17 @@ if (isRecodedVar(varId)){
                 // server prefix
                 
               
-                String dsbUrl = System.getProperty("vdc.dsb.url");
+                String dsbUrl = System.getProperty("vdc.dsb.host");
+		String dsbPort = System.getProperty("vdc.dsb.port");
+
+		if ( dsbPort != null ) {
+		    dsbUrl+=":" + dsbPort; 
+		}
+		      
+		if ( dsbUrl == null ) {
+		    dsbUrl = System.getProperty("vdc.dsb.url");
+		}		      
+
                 out.println("dsbUrl="+dsbUrl);
 
 
@@ -3700,7 +3750,17 @@ if (isRecodedVar(varId)){
                 StudyFile sf = dataTable.getStudyFile();
                 // server prefix
                 
-                String dsbUrl = System.getProperty("vdc.dsb.url");
+                String dsbUrl = System.getProperty("vdc.dsb.host");
+		String dsbPort = System.getProperty("vdc.dsb.port");
+
+		if ( dsbPort != null ) {
+		    dsbUrl+=":" + dsbPort; 
+		}
+		      
+		if ( dsbUrl == null ) {
+		    dsbUrl = System.getProperty("vdc.dsb.url");
+		}		      
+
                 out.println("dsbUrl="+dsbUrl);
 
                 //String serverPrefix = "http://vdc-build.hmdc.harvard.edu:8080/dvn";

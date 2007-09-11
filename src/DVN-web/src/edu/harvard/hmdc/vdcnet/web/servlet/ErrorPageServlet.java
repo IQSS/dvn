@@ -57,11 +57,11 @@ public class ErrorPageServlet extends HttpServlet  {
         }
         String time="";
         if (!optimisticLock) {
-            cause += "%20%20If this continues to occur, please <a href='/dvn/faces/ContactUsPage.jsp'>Contact</a> the Dataverse Network admin with this message.";
+            cause += "%20%20If this continues to occur, please <a href=\"/dvn/faces/ContactUsPage.jsp\">Contact</a> the Dataverse Network admin with this message.";
             time = "&time=" + URLEncoder.encode(this.getTimeStamp().toString(), "UTF-8");
         }
         if (virtualPath!=null) {
-            res.sendRedirect(req.getContextPath() + virtualPath + "/faces" + "/ErrorPage.jsp?errorMsg=" + cause + time);
+            res.sendRedirect(virtualPath + "/ErrorPage.jsp?errorMsg=" + cause + time);
         } else {
            res.sendRedirect(req.getContextPath() + "/faces" + "/ErrorPage.jsp?errorMsg=" + cause + time);  
         }

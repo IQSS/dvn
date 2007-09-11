@@ -125,10 +125,9 @@ public class TermsOfUseFilter implements Filter {
             String studyId = req.getParameter("studyId");
             
             if (fileId != null) {
-		
-                StudyFile file = null; 
 		try {
-		    file = studyService.getStudyFile( new Long(fileId));       
+		    StudyFile file = studyService.getStudyFile( new Long(fileId));  
+                    study = file.getFileCategory().getStudy();     
 		} catch (Exception ex) {
                     if (ex.getCause() instanceof IllegalArgumentException) {
 			// do nothing.
@@ -139,16 +138,34 @@ public class TermsOfUseFilter implements Filter {
 			return; 
 		    }
 		}
-		
-		if ( file != null ) {
-		    study = file.getFileCategory().getStudy();
-		}
             } else if (catId != null) {
-                FileCategory cat = studyService.getFileCategory( new Long(catId)); 
-                study = cat.getStudy();
+		try {
+		    FileCategory cat = studyService.getFileCategory( new Long(catId));
+                    study = cat.getStudy();      
+		} catch (Exception ex) {
+                    if (ex.getCause() instanceof IllegalArgumentException) {
+			// do nothing.
+			// if the category does not exist, there sure 
+			// isn't a license/terms of use for it!
+		    } else {
+			ex.printStackTrace();
+			return; 
+		    }
+		}
             } else if (studyId != null) {
-                study = studyService.getStudy( new Long(studyId));
-            }  
+		try {
+                    study = studyService.getStudy( new Long(studyId));   
+		} catch (Exception ex) {
+                    if (ex.getCause() instanceof IllegalArgumentException) {
+			// do nothing.
+			// if the study does not exist, there sure 
+			// isn't a license/terms of use for it!
+		    } else {
+			ex.printStackTrace();
+			return; 
+		    }
+                }
+            } 
         } else if ( req.getServletPath().equals("/faces") ) {
             if (requestPath.startsWith("/subsetting/SubsettingPage")) {
                 String dtId = req.getParameter("dtId");

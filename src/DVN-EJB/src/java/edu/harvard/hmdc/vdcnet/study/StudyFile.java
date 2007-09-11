@@ -450,7 +450,9 @@ public class StudyFile implements Serializable{
     }
     
     public boolean isRemote() {
-        return (fileSystemLocation != null && fileSystemLocation.startsWith("http"));
+        return 
+            fileSystemLocation != null && 
+            (fileSystemLocation.startsWith("http") || fileSystemLocation.startsWith("ftp") );
     }
     
  public int hashCode() {

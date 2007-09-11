@@ -8,6 +8,7 @@
  */
 
 package edu.harvard.hmdc.vdcnet.index;
+import edu.harvard.hmdc.vdcnet.jaxb.ddi20.SouthBLType;
 import edu.harvard.hmdc.vdcnet.study.DataTable;
 import edu.harvard.hmdc.vdcnet.study.DataVariable;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -37,6 +39,8 @@ import lia.analysis.positional.PositionalPorterStopAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.DateTools;
+import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -348,6 +352,7 @@ public class Indexer {
     }
     
     public List search(List <Long> studyIds, List <SearchTerm> searchTerms) throws IOException{
+        System.out.println("Start search: "+DateTools.dateToString(new Date(), Resolution.MILLISECOND));
         Long[] studyIdsArray = null;
         if (studyIds != null) {
             studyIdsArray = studyIds.toArray(new Long[studyIds.size()]);
@@ -375,25 +380,34 @@ public class Indexer {
             BooleanQuery searchTermsQuery = andSearchTermClause(nonVariableSearchTerms);
             searchParts.add(searchTermsQuery);
             BooleanQuery searchQuery = andQueryClause(searchParts);
+            System.out.println("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             nvResults = getHitIds(searchQuery);
+            System.out.println("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
 //            filteredResults = studyIds != null ? intersectionResults(nvResults, studyIds) : nvResults;
+            System.out.println("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             filteredResults = studyIds != null ? intersectionResults(nvResults, studyIdsArray) : nvResults;
+            System.out.println("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
         }
         if (variableSearch){
 //            List <Long> vResults = null;
-            if (nonVariableSearch){
-                results = searchVariables(filteredResults,variableSearchTerms,true); // get var ids
+            if (nonVariableSearch) {
+                System.out.println("Start nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                results = searchVariables(filteredResults, variableSearchTerms, true); // get var ids
+                System.out.println("Done nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
 //                List<Long> mergeResults = intersectionResults(vResults, nvResults);
 //                results = intersectionResults(vResults, nvResults);
 //                results = searchVariables(mergeResults,variableSearchTerms,true);
-            } else{
+            } else {
 //                results = searchVariables(vResults,variableSearchTerms,true);
-                results = searchVariables(studyIds,variableSearchTerms,true); // get var ids
+                System.out.println("Start search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                results = searchVariables(studyIds, variableSearchTerms, true); // get var ids
+                System.out.println("Done search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             }
         } else {
             results = filteredResults;
         }
 //        List <Long> filteredResults = studyIds != null ? intersectionResults(results, studyIds) : results;
+        System.out.println("Done search: "+DateTools.dateToString(new Date(), Resolution.MILLISECOND));
 
         return results;
         

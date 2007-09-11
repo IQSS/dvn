@@ -9,10 +9,10 @@
 
 package edu.harvard.hmdc.vdcnet.web.servlet;
 
+import edu.harvard.hmdc.vdcnet.util.UrlValidator;
+import edu.harvard.hmdc.vdcnet.web.common.VDCRequestBean;
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.faces.FactoryFinder;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.RequestDispatcher;
@@ -60,18 +60,60 @@ public String getServletInfo() {
 
 public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
      try {
-         System.out.print("VDC Info:  Initing faces servlet....");
-         delegate.service(request,response);
+        delegate.service(request,response);
+          
+     } catch(Throwable e) {
+         if (request.getAttribute("dataverseURL") != null)
+            redirectToErrorPage((HttpServletRequest) request, (HttpServletResponse) response, (Exception) e, (String)request.getAttribute("dataverseURL"));
+         else
+             redirectToErrorPage((HttpServletRequest) request, (HttpServletResponse) response, (Exception) e, new String(""));
      } 
-     catch(Throwable e) {
-         redirectToErrorPage((HttpServletRequest) request, (HttpServletResponse) response, (Exception) e);
-     }
 }
 
+    /** 
+     * redirectToErrorPage
+     *
+     * This is essentially deprecated
+     * in the context of the VDCFacesServlet.
+     * It remains to support any portions of the
+     * code that may use it. 
+     *
+     * See overloaded redirectToErrorPage below.
+     * @author wbossons
+     *
+     *
+     */
     private void redirectToErrorPage(HttpServletRequest request, HttpServletResponse response, Exception e) throws IOException {
          if (!"".equals(errorPage) && !response.isCommitted())  {
                 request.setAttribute("exception", e);
                 String virtualPathStr = parseVirtual(request);
+                request.setAttribute("virtualPath", virtualPathStr);
+                try {
+                    getServletConfig().getServletContext().log("VDC Info:  Found an application error ...");
+                    RequestDispatcher requestdispatcher = getServletConfig().getServletContext().getRequestDispatcher(errorPage);
+                    requestdispatcher.forward(request,response);
+                } catch (ServletException se) {
+                    getServletConfig().getServletContext().log("VDC Error:  Forwarding to error page failed, attempting redirect.");
+                    response.sendRedirect(request.getContextPath() + errorPage + "?appex=" + e.getCause().toString());
+                }
+         }
+    }
+    
+    /**
+     * an overloaded method to capture the virtual
+     * address if present in the url
+     *
+     * @param request
+     * @param response
+     * @param e the exception object
+     * @param dataversePath -- a string like /dv/<alias>
+     *
+     *
+     */
+     private void redirectToErrorPage(HttpServletRequest request, HttpServletResponse response, Exception e, String dataversePath) throws IOException {
+         if (!"".equals(errorPage) && !response.isCommitted())  {
+                request.setAttribute("exception", e);
+                String virtualPathStr = parseVirtual(request, dataversePath);
                 request.setAttribute("virtualPath", virtualPathStr);
                 try {
                     getServletConfig().getServletContext().log("VDC Info:  Found an application error ...");
@@ -99,6 +141,9 @@ public void service(ServletRequest request, ServletResponse response) throws Ser
     }
     
     /**
+     * @DEPRECATED in favor of parseVirtual(String dataversePath)
+     *  See overloaded method below.
+     *
      *  parse the path from the referer
      *  get everything between the contextpath end and the beginning / of the servletcontext
      *
@@ -110,6 +155,23 @@ public void service(ServletRequest request, ServletResponse response) throws Ser
             virtualPathStr = (String)request.getHeader("referer");
             virtualPathStr = virtualPathStr.substring(virtualPathStr.indexOf("/", virtualPathStr.indexOf(request.getContextPath())+1), virtualPathStr.indexOf(request.getServletPath()));
         }
+        return virtualPathStr;
+    }
+    
+    /**  overloaded method to 
+     *   parse the path from the referer
+     *   when the intitial request has a set virtual DV path in it
+     *   such as /dv/<alias>
+     *  get everything between the contextpath end and the beginning / of the servletcontext
+     *
+     *  @param request
+     *  @param dataversePath such as /dv/<alias>
+     * @author wbossons
+     */
+    private String parseVirtual(HttpServletRequest request, String dataversePath){
+        String virtualPathStr = new String("");
+        UrlValidator urlvalidator = new UrlValidator();
+        virtualPathStr = urlvalidator.buildInContextUrl(request, dataversePath);
         return virtualPathStr;
     }
             

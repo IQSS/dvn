@@ -439,12 +439,6 @@ span.vdcSResultsField {
    font-style: italic;
    color: #8B0404;
 }
-.vdcStudyTabSet {
-   padding-left: 4px;
-   padding-right: 4px;
-   margin: 0px;
-   text-align: left;  
-}
 
 .vdcStudyInfoHeader {
    background-color: #E2E2E2;
@@ -1183,7 +1177,7 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 
 /* Overwrite tabset style rules (from Creator Default Themes)
 */
-.MniTabLnk{display: block; padding: 5px 15px 4px; font-size: 1em; }
+.MniTabLnk{display: block; font-size: 1em; }
 a.MniTabLnk:link, a.MniTabLnk:visited {font-weight: bold; }
 .MniTabSelTxt{font-weight: bold; }
 

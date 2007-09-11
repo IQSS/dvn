@@ -297,6 +297,7 @@ span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9e
     padding-right: 0px;
     padding-bottom: 0px;
     font-size: 0.9em;
+    z-Index: 500;
 }
 
 .vdcTooltipLink {

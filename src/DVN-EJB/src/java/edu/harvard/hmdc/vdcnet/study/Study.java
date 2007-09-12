@@ -2167,11 +2167,8 @@ public class Study {
     public boolean isTermsOfUseEnabled() {
         // we might make this a true boolean stored in the db at some point;
         // for now, just check if any of the "terms of use" fields are not empty
-        if ( !StringUtil.isEmpty(getPlaceOfAccess()) ) { return true; }
-        if ( !StringUtil.isEmpty(getOriginalArchive()) ) { return true; }
-        if ( !StringUtil.isEmpty(getAvailabilityStatus()) ) { return true; }
-        if ( !StringUtil.isEmpty(getCollectionSize()) ) { return true; }
-        if ( !StringUtil.isEmpty(getStudyCompletion()) ) { return true; }
+        
+        // terms of use fields are those from the "use statement" part of the ddi
         if ( !StringUtil.isEmpty(getConfidentialityDeclaration()) ) { return true; }
         if ( !StringUtil.isEmpty(getSpecialPermissions()) ) { return true; }
         if ( !StringUtil.isEmpty(getRestrictions()) ) { return true; }

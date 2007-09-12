@@ -612,14 +612,11 @@ public class Indexer {
                 searcher = new IndexSearcher(r);
             }
             logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            DocumentCollector s = new DocumentCollector(searcher);
-            searcher.search(query, s);
-//            Hits hits = searcher.search(query);
+            Hits hits = searcher.search(query);
             logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            List hits = s.getStudies();
-            for (int i = 0; i < hits.size(); i++) {
-                Document d = (Document) hits.get(i);
+            for (int i = 0; i < hits.length(); i++) {
+                Document d = hits.doc(i);
                 Field studyId = d.getField("id");
                 String studyIdStr = studyId.stringValue();
                 Long studyIdLong = Long.valueOf(studyIdStr);
@@ -673,12 +670,9 @@ public class Indexer {
         LinkedHashSet matchIdsSet = new LinkedHashSet();
         if (query != null){
             IndexSearcher searcher = new IndexSearcher(dir);
-            DocumentCollector s = new DocumentCollector(searcher);
-            searcher.search(query, s);
-            List hits = s.getStudies();
-//            Hits hits = searcher.search(query);
-            for (int i = 0; i < hits.size(); i++) {
-                Document d = (Document) hits.get(i);
+            Hits hits = searcher.search(query);
+            for (int i = 0; i < hits.length(); i++) {
+                Document d = hits.doc(i);
                 Field studyId = d.getField("varStudyId");
                 String studyIdStr = studyId.stringValue();
                 Long studyIdLong = Long.valueOf(studyIdStr);

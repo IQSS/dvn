@@ -361,7 +361,12 @@ public class AddSitePage extends VDCBaseBean {
         getVDCRequestBean().getCurrentVDCURL();
         StatusMessage msg = new StatusMessage();
         try {
-            msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://"+InetAddress.getLocalHost().getCanonicalHostName() + "/dvn"+getVDCRequestBean().getCurrentVDCURL()+" <br/>Bear in mind that it is restricted by default. Go to <a href='/dvn"+getVDCRequestBean().getCurrentVDCURL()+"/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
+            String hostUrl = System.getProperty("dvn.inetAddress");
+            if (hostUrl != null) {
+                msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is restricted by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
+            } else {
+                msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + InetAddress.getLocalHost().getCanonicalHostName() + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is restricted by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
+            }
         } catch (UnknownHostException ex) {
             ex.printStackTrace();
         }

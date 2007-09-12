@@ -582,6 +582,8 @@ public class StudyUI {
     
     private boolean notesPanelIsRendered;
     
+    private boolean dataAvailPanelIsRendered;
+    
     private boolean termsOfUsePanelIsRendered;
     
     public boolean isAbstractAndScopePanelIsRendered() {
@@ -614,6 +616,14 @@ public class StudyUI {
     
     public void setNotesPanelIsRendered(boolean notesPanelIsRendered) {
         this.notesPanelIsRendered = notesPanelIsRendered;
+    }
+   
+    public boolean isDataAvailPanelIsRendered() {
+        return dataAvailPanelIsRendered;
+    }
+    
+    public void setDataAvailPanelIsRendered(boolean dataAvailPanelIsRendered) {
+        this.dataAvailPanelIsRendered = dataAvailPanelIsRendered;
     }
     
     public boolean isTermsOfUsePanelIsRendered() {

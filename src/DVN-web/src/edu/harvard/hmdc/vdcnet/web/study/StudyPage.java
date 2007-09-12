@@ -194,7 +194,29 @@ public class StudyPage extends VDCBaseBean {
     public void setDataCollectionPanel(HtmlPanelGrid dataCollectionPanel) {
         this.dataCollectionPanel = dataCollectionPanel;
     }
+    
+    /**
+     * Holds value of property dataAvailPanel.
+     */
+    private HtmlPanelGrid dataAvailPanel;
 
+    /**
+     * Getter for property dataAvail.
+     * @return Value of property dataAvail.
+     */
+    public HtmlPanelGrid getDataAvailPanel() {
+        return this.dataAvailPanel;
+        
+        
+    }
+    /**
+     * Setter for property dataAvail.
+     * @param dataAvail New value of property dataAvail.
+     */
+    public void setDataAvailPanel(HtmlPanelGrid dataAvailPanel) {
+        this.dataAvailPanel = dataAvailPanel;
+    }
+            
     /**
      * Holds value of property termsOfUsePanel.
      */
@@ -216,6 +238,7 @@ public class StudyPage extends VDCBaseBean {
     public void setTermsOfUsePanel(HtmlPanelGrid termsOfUsePanel) {
         this.termsOfUsePanel = termsOfUsePanel;
     }
+
     
     private void updateDisplay(HtmlPanelGrid panel) {
          if (panel.isRendered()) {
@@ -231,6 +254,9 @@ public class StudyPage extends VDCBaseBean {
  
    public void  updateAbstractScopeDisplay(ActionEvent actionEvent) {
         studyUI.setAbstractAndScopePanelIsRendered(!studyUI.isAbstractAndScopePanelIsRendered());
+   } 
+   public void  updateDataAvailDisplay(ActionEvent actionEvent) {
+       studyUI.setDataAvailPanelIsRendered(!studyUI.isDataAvailPanelIsRendered());
    }    
    public void  updateTermsOfUseDisplay(ActionEvent actionEvent) {
        studyUI.setTermsOfUsePanelIsRendered(!studyUI.isTermsOfUsePanelIsRendered());
@@ -373,13 +399,20 @@ public class StudyPage extends VDCBaseBean {
         }
     } 
     
-    public boolean getTermsOfUseIsEmpty() {
+     public boolean getDataAvailIsEmpty() {
         if (isEmpty(studyUI.getStudy().getPlaceOfAccess())
         && isEmpty(studyUI.getStudy().getOriginalArchive())
         && isEmpty(studyUI.getStudy().getAvailabilityStatus())
         && isEmpty(studyUI.getStudy().getCollectionSize())
-        && isEmpty(studyUI.getStudy().getStudyCompletion())
-        && isEmpty(studyUI.getStudy().getConfidentialityDeclaration())
+        && isEmpty(studyUI.getStudy().getStudyCompletion())){
+            return true;
+        } else {
+            return false;
+        }
+    } 
+    
+    public boolean getTermsOfUseIsEmpty() {
+        if (isEmpty(studyUI.getStudy().getConfidentialityDeclaration())
         && isEmpty(studyUI.getStudy().getSpecialPermissions())
         && isEmpty(studyUI.getStudy().getRestrictions())
         && isEmpty(studyUI.getStudy().getContact())
@@ -411,6 +444,7 @@ public boolean getNotesIsEmpty() {
          // When you first go to the page, these panels will be closed regardless of 
          // whether they contain data
          studyUI.setDataCollectionPanelIsRendered(false);
+         studyUI.setDataAvailPanelIsRendered(false);
          studyUI.setTermsOfUsePanelIsRendered(false);
          studyUI.setNotesPanelIsRendered(false); 
     }

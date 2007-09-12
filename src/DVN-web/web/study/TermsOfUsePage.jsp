@@ -49,30 +49,6 @@
                                 </div>
                                 <br />
                                 <h:panelGrid columnClasses="vdcColPadded" width="98%">
-                                    <h:outputText value="Data Access Place:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.placeOfAccess}"/>
-                                    
-                                    <h:outputText  value="#{TermsOfUsePage.study.placeOfAccess}"  rendered="#{!empty TermsOfUsePage.study.placeOfAccess}" escape="false"/>
-                                    
-                                    <h:outputText  value="Original Archive:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.originalArchive}"/>
-                                    
-                                    <h:outputText  value="#{TermsOfUsePage.study.originalArchive}"  rendered="#{!empty TermsOfUsePage.study.originalArchive}" escape="false"/>
-                                    
-                                    <h:outputText  value="Availability Status:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.availabilityStatus }"/>
-                                    
-                                    <h:outputText  value="#{TermsOfUsePage.study.availabilityStatus}"  rendered="#{!empty TermsOfUsePage.study.availabilityStatus}" escape="false"/>
-                                   
-                                    <h:outputText  value="Size of Collection:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.collectionSize}" />
-                                    
-                                    <h:outputText  value="#{TermsOfUsePage.study.collectionSize}"  rendered="#{!empty TermsOfUsePage.study.collectionSize}" escape="false"/>
-                                    
-                                    <h:outputText  value="Study Completion:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.studyCompletion}"/>
-                                    
-                                    <h:outputText  value="#{TermsOfUsePage.study.studyCompletion}"  rendered="#{!empty TermsOfUsePage.study.studyCompletion}" escape="false"/>
-                                    
-                                    <h:outputText  value="Number of Files:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.numberOfFiles}"/>
-                                    
-                                    <h:outputText  value="#{TermsOfUsePage.study.numberOfFiles}" rendered="#{!empty TermsOfUsePage.study.numberOfFiles}" escape="false"/>
-                                    
                                     <h:outputText  value="Confidentiality Declaration:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.confidentialityDeclaration}"/>
                                     
                                     <h:outputText  value="#{TermsOfUsePage.study.confidentialityDeclaration}" rendered="#{!empty TermsOfUsePage.study.confidentialityDeclaration}" escape="false"/>

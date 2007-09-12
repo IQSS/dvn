@@ -119,22 +119,29 @@
                                     rowClasses="list-row-odd, list-row-even" columnClasses="vdcSResultsList" value="#{SearchPage.studies}" var="studyUI">
                           <h:column  id="column1">
                               <ui:panelGroup  block="true" id="groupPanel1" style="padding-bottom: 5px">
+                                  
                                   <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}"  id="hyperlink3" styleClass="vdcSResultsStudyTitle">
                                       <h:outputText  id="hyperlink3Text" value="#{studyUI.study.title}"/>
                                   </h:outputLink>
                                   <h:outputText  id="outputText13" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
+                                  <h:outputText value=" (#{studyUI.study.globalId})"/>
+                              </ui:panelGroup> 
+                              <ui:panelGroup  block="true" id="groupPanel1b" >
+                                  <h:graphicImage alt="This study contains no files." rendered="#{!studyUI.files}"
+                                                  title="This study contains no files." value="/resources/icon_nofiles.gif"/>
+                                  <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}&amp;tab=files" rendered="#{studyUI.files}">
+                                      <h:graphicImage styleClass="vdcNoBorders" alt="This study contains subsettable files." rendered="#{studyUI.subsettable}"
+                                                      title="This study contains subsettable files." value="/resources/icon_subsettable.gif"/>
+                                      <h:graphicImage styleClass="vdcNoBorders" alt="This study contains only non-subsettable files." rendered="#{!studyUI.subsettable}"
+                                                      title="This study contains only non-subsettable files." value="/resources/icon_files.gif"/>
+                                  </h:outputLink>
+                                  <h:outputText  id="outputText18" value=" #{studyUI.numberOfDownloads}" rendered="#{studyUI.files}" /><h:outputText  id="outputText17" value=" downloads" rendered="#{studyUI.files}" />
                               </ui:panelGroup>
-                              <ui:panelGroup  block="true">
-                                  <h:outputText  value="Study Global ID:" styleClass="vdcSResultsField"  />
-                                  <h:outputText  value="#{studyUI.study.globalId}"/>
-                              </ui:panelGroup>                                            
+                              
                               <ui:panelGroup block="true" id="groupPanel2" rendered="#{studyUI.abstracts != null and studyUI.abstracts != ''}" >
                                   <h:outputText  id="outputText10" styleClass="vdcSResultsField" value="Abstract:"/>
                                   <ui:panelGroup block="true" styleClass="vdcAbstractSResults"> 
                                       <h:outputText  id="outputText14" escape="false" value="#{studyUI.truncatedAbstracts}" />
-                                      <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}" rendered="#{studyUI.renderAbstractsMoreLink}" >
-                                          <h:outputText  value="more >>"/>
-                                      </h:outputLink>
                                   </ui:panelGroup>
                               </ui:panelGroup>
                               <ui:panelGroup  block="true" id="groupPanel7" rendered="#{studyUI.study.productionDate != null and studyUI.study.productionDate != ''}">
@@ -188,23 +195,7 @@
                                       </h:column>
                                   </h:dataTable>
                               </ui:panelGroup>                                    
-                              <h:panelGrid  cellpadding="0" cellspacing="0"
-                                            columnClasses="vdcSResultsCol1, vdcSResultsCol2" columns="2" id="gridPanel3" >
-                                  <ui:panelGroup  id="groupPanel9" >
-                                      <h:outputText  id="outputText17" styleClass="vdcSResultsField" value="Number of Downloads:"/>
-                                      <h:outputText  id="outputText18" value="#{studyUI.numberOfDownloads}"/>
-                                  </ui:panelGroup>
-                                  <ui:panelGroup  id="groupPanel10" style="padding-right: 8px">
-                                      <h:graphicImage alt="This study contains no files." rendered="#{!studyUI.files}"
-                                                      title="This study contains no files." value="/resources/icon_nofiles.gif"/>
-                                      <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}&amp;tab=files" rendered="#{studyUI.files}">
-                                          <h:graphicImage styleClass="vdcNoBorders" alt="This study contains subsettable files." rendered="#{studyUI.subsettable}"
-                                                          title="This study contains subsettable files." value="/resources/icon_subsettable.gif"/>
-                                          <h:graphicImage styleClass="vdcNoBorders" alt="This study contains only non-subsettable files." rendered="#{!studyUI.subsettable}"
-                                                          title="This study contains only non-subsettable files." value="/resources/icon_files.gif"/>
-                                      </h:outputLink>
-                                  </ui:panelGroup>
-                              </h:panelGrid>
+                          
                           </h:column>
                       </h:dataTable>
                       

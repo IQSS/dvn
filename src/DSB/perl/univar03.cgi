@@ -561,9 +561,7 @@ if ($dataURL) {
 	    {
 		$logger->vdcLOG_info ("VDC::DSB", "Disseminate",
 				      "(subsetting meta via db-direct method)" );
-		my $output_filter = &make_SubsetFilter ( $MD, $varNoStrng );
-		my $delim="\t";
-		$rcut_filter = $output_filter . " -d'" . $delim . "'";  
+		$rcut_filter = &make_SubsetFilter ( $MD, $varNoStrng );
 
 		$logger->vdcLOG_info ("VDC::DSB", "Disseminate",
 				      "filter (NEW mtd.): "
@@ -633,7 +631,7 @@ if ($dataURL) {
 		   }
  		);
 		if ($buf) {print "$buf";} else { close(RCUT); }
-    	}
+	    }
 	
 	if ( !$response->is_success ){
 		my $err= $response->status_line;
@@ -650,11 +648,11 @@ if ($dataURL) {
 			print $q->header ( -status=>'500 Server Error: empty data file', -type=>'text/html');
 			print $q->start_html ( -title=> 'error -- data file is empty after the column-wise subsetting request ');
 			print $q->end_html;
-			$logger->vdcLOG_warning('VDC::DSB',$script_name,"Server Error: empty  data file");
+			$logger->vdcLOG_warning('VDC::DSB',$script_name,"Server Error (XXX): empty  data file");
 			{my($ts)=$@; &exitChores; die $ts;}
 		}
-	}
-}
+	    }
+    }
 
 
 
@@ -1680,16 +1678,48 @@ sub make_SubsetFilter {
     my $metadata = shift; 
     my $varIdSeq = shift; 
 
-    my $pat = "/usr/local/VDC/bin/rcut -f "; 
+    my $pat = ""; 
 
     my @varseq = split ( ",", $varIdSeq ); 
 
-    for my $v (@varseq)
+    unless ( $metadata->{_varStartPos}->{$varseq[0]} )
     {
-	$pat .= ( $metadata->{_varNoMpTbl}->{$v} . "," );
+	# tab-delimited file:
+	    
+	$pat = "/usr/local/VDC/bin/rcut -f "; 
+
+	for my $v (@varseq)
+	{
+	    $pat .= ( $metadata->{_varNoMpTbl}->{$v} . "," );
+	}
+	
+	chop $pat; 
+	
+    }
+    else
+    {
+	# fixed-field:
+
+	my $logical_records = 1; 
+
+	$pat = "/usr/local/VDC/bin/rcut -r " . $logical_records . " -c"; 
+
+	for my $v (@varseq)
+	{
+	    my $v_start = $metadata->{_varStartPos}->{$v};
+	    my $v_end = $metadata->{_varEndPos}->{$v};
+
+	    $pat .= ( "1:" . $v_start . "-" . $v_end . ",");
+	}
+
+	chop $pat; 
+
+	$pat .= " -o"; 
+
     }
 
-    chop $pat; 
+    my $delim="\t";
+    $pat = $pat . " -d'" . $delim . "'";  
 
     return $pat;
 }

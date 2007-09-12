@@ -44,6 +44,13 @@ sub new {
 	$self->{_formatCatgry}={};
 	$self->{unsafeVarName}=0;
 
+	# and 2 more hashes for the fixed-style
+	# starts and ends:
+
+	$self->{_varStartPos}={};
+	$self->{_varEndPos}={};
+
+
 	$self->{censusURL} = "";
 	# configuration -- here temporarily; 
 	# should be moved someplace else
@@ -87,7 +94,7 @@ sub obtainMeta {
 
 	# 2nd lookup: we can now look up the variables: 
 
-	$sth = $dbh->prepare(qq {SELECT id,name,fileorder,label,variableformattype_id,variableintervaltype_id FROM datavariable WHERE datatable_id=$datatable_id ORDER BY fileorder});
+	$sth = $dbh->prepare(qq {SELECT id,name,fileorder,label,variableformattype_id,variableintervaltype_id,filestartposition,fileendposition FROM datavariable WHERE datatable_id=$datatable_id ORDER BY fileorder});
 	$sth->execute();
 
 	my $var_id; 
@@ -96,8 +103,10 @@ sub obtainMeta {
 	my $var_label; 
 	my $var_format; 
 	my $var_interval; 
+	my $var_start; 
+	my $var_end; 
 
-	while ( ($var_id,$var_name,$var_order,$var_label,$var_format,$var_interval)
+	while ( ($var_id,$var_name,$var_order,$var_label,$var_format,$var_interval,$var_start,$var_end)
 		= $sth->fetchrow() )
 	{
 	    # the variable id in the Dataverse notation: 
@@ -109,6 +118,11 @@ sub obtainMeta {
 	    if ( $varID->{$dv_var_id} )
 	    {
 		$self->{_varNameH}->{$dv_var_id} = $var_name; 
+
+		$self->{_varStartPos}->{$dv_var_id} = $var_start;
+		$self->{_varEndPos}->{$dv_var_id} = $var_end;
+		
+
 		push @{$self->{_varNameA}}, $var_name; 
 		$self->{_varNoMpTbl}->{$dv_var_id} = $var_order + 1; 
 		push @{$self->{_varNo}}, $dv_var_id; 

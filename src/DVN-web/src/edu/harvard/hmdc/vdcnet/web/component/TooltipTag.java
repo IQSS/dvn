@@ -22,12 +22,15 @@ import javax.faces.webapp.UIComponentTag;
 public class TooltipTag extends UIComponentTag {
     
     String tooltipMessage = null;
-    String linkText    = null;
-    String linkUrl    = null;
-    String cssClass    = null;
-    String tooltipText = null; // optional and most likely never used because it's duplicative '
-    String eventType   = null;
-    String heading     = null;// optional
+    String linkText     = null;
+    String linkUrl      = null;
+    String cssClass     = null;
+    String tooltipText  = null; // optional and most likely never used because it's duplicative '
+    String eventType    = null;
+    String heading      = null; // optional
+    String imageLink    = null; // optional
+    String imageSource  = null; // optional
+    String closeText  = null; // optional
     
        /** Creates a new instance of TooltipTag */
     public TooltipTag() {
@@ -122,6 +125,36 @@ public class TooltipTag extends UIComponentTag {
                 component.setValueBinding("heading", valuebinding);
             } else {
                 component.getAttributes().put("heading", heading);
+            }
+        }
+        if (imageLink != null) {
+            if (isValueReference(imageLink)) {
+                FacesContext facescontext = FacesContext.getCurrentInstance();
+                Application application   = facescontext.getApplication();
+                ValueBinding valuebinding = application.createValueBinding(imageLink);
+                component.setValueBinding("imageLink", valuebinding);
+            } else {
+                component.getAttributes().put("imageLink", imageLink);
+            }
+        }
+        if (imageSource != null) {
+            if (isValueReference(imageSource)) {
+                FacesContext facescontext = FacesContext.getCurrentInstance();
+                Application application   = facescontext.getApplication();
+                ValueBinding valuebinding = application.createValueBinding(imageSource);
+                component.setValueBinding("imageSource", valuebinding);
+            } else {
+                component.getAttributes().put("imageSource", imageSource);
+            }
+        }
+        if (closeText != null) {
+            if (isValueReference(closeText)) {
+                FacesContext facescontext = FacesContext.getCurrentInstance();
+                Application application   = facescontext.getApplication();
+                ValueBinding valuebinding = application.createValueBinding(closeText);
+                component.setValueBinding("closeText", valuebinding);
+            } else {
+                component.getAttributes().put("closeText", closeText);
             }
         }
     }
@@ -228,6 +261,50 @@ public class TooltipTag extends UIComponentTag {
     
     public String getHeading(){
         return heading;
+    }
+    
+    /** 
+     * setter and getter the imageLink
+     *
+     * @author wbossons
+     *
+     * 
+     */
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
+    }
+    
+    public String getImageLink(){
+        return imageLink;
+    }
+    
+    /** 
+     * setter and getter the imageLink
+     *
+     * @author wbossons
+     *
+     * 
+     */
+    public void setImageSource(String imageSource) {
+        this.imageSource = imageSource;
+    }
+    
+    public String getImageSource(){
+        return imageSource;
+    }
+    
+    /** 
+     * setter and getter the closeText
+     * @author wbossons
+     *
+     * 
+     */
+    public void setCloseText(String closeText) {
+        this.closeText = closeText;
+    }
+    
+    public String getCloseText(){
+        return imageSource;
     }
     
     /**

@@ -110,7 +110,7 @@ public class LoginPage extends VDCBaseBean {
             sessionRemove("refererUrl");
         boolean activeOnly=true;
         VDCUser user  = userService.findByUserName(userName,activeOnly);
-        if (user==null || !user.getPassword().equals(password)) {
+        if (user==null || !userService.validatePassword(user.getId(),password)) {
             loginFailed=true;
             return null;
         } else {

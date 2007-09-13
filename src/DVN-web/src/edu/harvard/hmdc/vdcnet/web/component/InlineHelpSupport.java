@@ -75,6 +75,15 @@ public class InlineHelpSupport extends UIComponentBase {
             writer.writeText("", null);
             writer.endElement("div");
         }
+        boolean writePopupDiv = Boolean.parseBoolean((String)getAttributes().get("writePopupDiv"));
+        if (writePopupDiv) {
+            writer.startElement("div", this);
+            writer.writeAttribute("id", "popupDiv", null);
+            writer.writeAttribute("style", "visibility:hidden;", null);
+            writer.writeAttribute("class", "vdcPopup", null);
+            writer.writeText("", null);
+            writer.endElement("div");
+        }
     }
     
     

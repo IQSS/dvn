@@ -299,7 +299,14 @@
             <from-outcome>result</from-outcome>
             <to-view-id>/login/AccountPage.jsp</to-view-id>       
         </navigation-case>
-    </navigation-rule>       
+    </navigation-rule>   
+       <navigation-rule>
+        <from-view-id>/login/EditPasswordPage.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/login/PasswordSuccessPage.jsp</to-view-id>       
+        </navigation-case>
+    </navigation-rule>     
      <navigation-rule>
         <from-view-id>/networkAdmin/EditUserGroupPage.jsp</from-view-id>
         <navigation-case>

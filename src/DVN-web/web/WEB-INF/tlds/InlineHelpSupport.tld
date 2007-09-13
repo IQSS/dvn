@@ -17,6 +17,9 @@
       <attribute>
           <name>writeHelpDiv</name>
       </attribute>
+       <attribute>
+          <name>writePopupDiv</name>
+      </attribute>
       <attribute>
           <name>rendered</name>
       </attribute>

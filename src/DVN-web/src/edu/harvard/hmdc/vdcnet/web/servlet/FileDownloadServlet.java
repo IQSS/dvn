@@ -136,76 +136,180 @@ public class FileDownloadServlet extends HttpServlet{
 
 		// do the http magic
 
-		GetMethod method = null; 
-		int status = 200;
+		if (formatRequested != null) {
 
-		try { 
-		    method = new GetMethod ( file.getFileSystemLocation() );
-		    status = getClient().executeMethod(method);
-		} catch (IOException ex) {
-		    // return 404 
-		    // and generate a FILE NOT FOUND message
+		    // user requested the file in a non-default (i.e.,
+		    // not tab-delimited) format.
+		    // we are going to send a format conversion request to 
+		    // the DSB via HTTP.
+		    
+		    Map parameters = new HashMap();		    
 
-		    createErrorResponse404(res);
-		    if (method != null) { method.releaseConnection(); }
-		    return;
-		}
+		    parameters.put("dtdwnld", formatRequested); 
 
+		    String serverPrefix = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
 
-		if ( status == 403 ) {
-		    // generate an HTML-ized response with a correct 
-		    // 403/FORBIDDEN code   
+		    parameters.put("uri", generateUrlForDDI(serverPrefix, file.getFileCategory().getStudy().getId()));
+		    parameters.put("URLdata", generateUrlForFile(serverPrefix, file.getId()));
+		    parameters.put("fileid", "f" + file.getId().toString());
 
-		    createErrorResponse403(res);
-		    if (method != null) { method.releaseConnection(); }
-		    return;
-		} 
+		    // We are requesting a conversion of the whole datafile. 
+		    // I was positive there was a simple way to ask univar (Disseminate)
+		    // for "all" variables; but I'm not so sure anymore. So 
+		    // far I've only been able to do this by listing all the 
+		    // variables in the datafile and adding them to the request.
+		    // :( -- L.A.
 
-		if ( status == 404 ) {
-		    // generate an HTML-ized response with a correct 
-		    // 404/FILE NOT FOUND code   
+		    List variables = file.getDataTable().getDataVariables();
+		    parameters.put("varbl", generateVariableListForDisseminate( variables ) );
 
-		    createErrorResponse404(res);
-		    if (method != null) { method.releaseConnection(); }
-		    return;
-		} 
+		    PostMethod method = null; 
+		    int status = 200;		    
 
-		// a generic response for all other failure cases:
+		    try { 
+			method = new PostMethod (generateDisseminateUrl());
 
-		if ( status != 200 ) {
-		    createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
-						? method.getStatusLine().toString()
-						: "Unknown HTTP Error");
-		    if (method != null) { method.releaseConnection(); }
-		    return;
-		}
+			Iterator iter = parameters.keySet().iterator();
+			while (iter.hasNext()) {
+			    String key = (String) iter.next();
+			    Object value = parameters.get(key);
+                
+			    if (value instanceof String) {
+				method.addParameter(key, (String) value);
+			    } else if (value instanceof List) {
+				Iterator valueIter = ((List) value).iterator();
+				while (valueIter.hasNext()) {
+				    String item = (String) valueIter.next();
+				    method.addParameter(key, (String) item);
+				}
+			    }
+			}
 
-		try {
-		    // recycle all the incoming headers 
-		    for (int i = 0; i < method.getResponseHeaders().length; i++) {
-			res.setHeader(method.getResponseHeaders()[i].getName(), method.getResponseHeaders()[i].getValue());
+			status = getClient().executeMethod(method);
+			
+		    } catch (IOException ex) {
+			// return 404 and
+			// generate generic error messag:
+
+			status = 404; 
+			createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
+						    ? method.getStatusLine().toString()
+						    : "DSB conversion failure");
+			if (method != null) { method.releaseConnection(); }
+			return;
 		    }
+
+		    if ( status != 200 ) {
+			createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
+						    ? method.getStatusLine().toString()
+						    : "DSB conversion failure");
+			if (method != null) { method.releaseConnection(); }
+			return;
+		    }
+
+		    try {
+			// recycle all the incoming headers 
+			for (int i = 0; i < method.getResponseHeaders().length; i++) {
+			    String headerName = method.getResponseHeaders()[i].getName();
+			    if (headerName.startsWith("Content")) {
+				res.setHeader(method.getResponseHeaders()[i].getName(), method.getResponseHeaders()[i].getValue());
+			    }
+			}
+
 
 		    
-		    // send the incoming HTTP stream as the response body
+			// send the incoming HTTP stream as the response body
 
-		    InputStream in = method.getResponseBodyAsStream(); 
-		    OutputStream out = res.getOutputStream();
+			InputStream in = method.getResponseBodyAsStream(); 
+			OutputStream out = res.getOutputStream();
 
-		    int i = in.read();
-    		    while (i != -1 ) {
-			out.write(i);
-			i = in.read();
+			int i = in.read();
+			while (i != -1 ) {
+			    out.write(i);
+			    i = in.read();
+			}
+			in.close();
+			out.close();
+                
+                
+		    } catch (IOException ex) {
+			ex.printStackTrace();
 		    }
-		    in.close();
-		    out.close();
-                
-                
-		} catch (IOException ex) {
-		    ex.printStackTrace();
-		}
+		    
+		    method.releaseConnection();
+		    
+		} else {
+		    GetMethod method = null; 
+		    int status = 200;
 
-		method.releaseConnection();
+		    try { 
+			method = new GetMethod ( file.getFileSystemLocation() );
+			status = getClient().executeMethod(method);
+		    } catch (IOException ex) {
+			// return 404 
+			// and generate a FILE NOT FOUND message
+
+			createErrorResponse404(res);
+			if (method != null) { method.releaseConnection(); }
+			return;
+		    }
+
+
+		    if ( status == 403 ) {
+			// generate an HTML-ized response with a correct 
+			// 403/FORBIDDEN code   
+
+			createErrorResponse403(res);
+			if (method != null) { method.releaseConnection(); }
+			return;
+		    } 
+
+		    if ( status == 404 ) {
+			// generate an HTML-ized response with a correct 
+			// 404/FILE NOT FOUND code   
+
+			createErrorResponse404(res);
+			if (method != null) { method.releaseConnection(); }
+			return;
+		    } 
+
+		    // a generic response for all other failure cases:
+		    
+		    if ( status != 200 ) {
+			createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
+						    ? method.getStatusLine().toString()
+						    : "Unknown HTTP Error");
+			if (method != null) { method.releaseConnection(); }
+			return;
+		    }
+
+		    try {
+			// recycle all the incoming headers 
+			for (int i = 0; i < method.getResponseHeaders().length; i++) {
+			    res.setHeader(method.getResponseHeaders()[i].getName(), method.getResponseHeaders()[i].getValue());
+			}
+
+		    
+			// send the incoming HTTP stream as the response body
+
+			InputStream in = method.getResponseBodyAsStream(); 
+			OutputStream out = res.getOutputStream();
+			
+			int i = in.read();
+			while (i != -1 ) {
+			    out.write(i);
+			    i = in.read();
+			}
+			in.close();
+			out.close();
+                
+			
+		    } catch (IOException ex) {
+			ex.printStackTrace();
+		    }
+
+		    method.releaseConnection();
+		}
 	    } else {
 		// local object
 		

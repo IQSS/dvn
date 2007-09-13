@@ -12,6 +12,7 @@ package edu.harvard.hmdc.vdcnet.admin;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyAccessRequest;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
@@ -30,6 +31,35 @@ public class EditUserServiceBean implements edu.harvard.hmdc.vdcnet.admin.EditUs
     @PersistenceContext (type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")  
     EntityManager em;
     VDCUser user;
+    @EJB UserServiceLocal userService;
+    private String newPassword1;
+
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
+
+    public void setCurrentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
+    }
+
+    public String getNewPassword1() {
+        return newPassword1;
+    }
+
+    public void setNewPassword1(String newPassword1) {
+        this.newPassword1 = newPassword1;
+    }
+
+    public String getNewPassword2() {
+        return newPassword2;
+    }
+
+    public void setNewPassword2(String newPassword2) {
+        this.newPassword2 = newPassword2;
+    }
+    private String newPassword2;
+    private String currentPassword;
+
   
   
     /**
@@ -71,7 +101,7 @@ public class EditUserServiceBean implements edu.harvard.hmdc.vdcnet.admin.EditUs
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)    
     public void save() {
     
-           
+        user.setEncryptedPassword(userService.encryptPassword(newPassword1));
         // Don't really need to do call flush(), because a method that 
         // requires a transaction will automatically trigger a flush to the database,
         // but include this just to show what's happening here
@@ -85,6 +115,7 @@ public class EditUserServiceBean implements edu.harvard.hmdc.vdcnet.admin.EditUs
       @Remove  
      @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)    
      public void save(Long contributorRequestVdcId, boolean creatorRequest, Long studyRequestId) {
+         user.setEncryptedPassword(userService.encryptPassword(newPassword1));
          // If user requests to be a contributor in a VDC, 
          // create a request object for this
          if (contributorRequestVdcId!=null) { 

@@ -78,18 +78,9 @@
                                <h:outputText  value="Phone Number"/>
                            </ui:panelGroup>
                            <h:inputText  id="inputPhoneNumber" value="#{EditAccountPage.user.phoneNumber}"  />
-                           <ui:panelGroup >
-                               <h:outputText  value="New Password"/>
-                           </ui:panelGroup>
-                           <ui:panelGroup> 
-                               <h:inputSecret  id="resetPassword" value="#{EditAccountPage.resetPassword}" />
-                               <h:message for="inputPassword"  styleClass="errorMessage"/>
-                           </ui:panelGroup>
+                           
                        </h:panelGrid>
-                       <ui:panelGroup>
-                           <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                           <h:outputText  styleClass="vdcHelpText" value="If you do not wish to change your password, leave the New Password field empty."/>
-                       </ui:panelGroup>        
+                          
                        
                        <ui:panelGroup block="true"  style="padding-left: 100px; padding-top: 20px">
                            <h:commandButton  value="Save" action="#{EditAccountPage.save}"/>

@@ -135,6 +135,9 @@ public class EditAccountPage extends VDCBaseBean {
         this.user = user;
     }
     
+    public EditUserService getEditUserService() {
+        return editUserService;
+    }
     
     public void validateUserName(FacesContext context, 
                           UIComponent toValidate,
@@ -161,9 +164,7 @@ public class EditAccountPage extends VDCBaseBean {
     public String save() {
         
        
-        if (resetPassword!=null && !resetPassword.equals("")) {
-            user.setPassword(resetPassword);
-        }  
+        
         editUserService.save();
         // If the currently logged-in user is updating is account, reset the User object in the session
         if (getVDCSessionBean().getLoginBean().getUser().getId().equals(user.getId())) {

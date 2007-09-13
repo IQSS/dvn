@@ -24,6 +24,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.UISelectItems;
 import javax.faces.component.html.HtmlInputHidden;
+import javax.faces.component.html.HtmlInputSecret;
 import javax.faces.component.html.HtmlSelectManyCheckbox;
 import javax.faces.context.FacesContext;
 
@@ -115,8 +116,17 @@ public class AddAccountPage extends VDCBaseBean {
     @EJB UserServiceLocal userService;
     @EJB MailServiceLocal mailService;
     @EJB StudyServiceLocal studyService;
-    
-    
+    HtmlInputSecret inputPassword;
+
+
+    public HtmlInputSecret getInputPassword() {
+        return inputPassword;
+    }
+
+    public void setInputPassword(HtmlInputSecret inputPassword) {
+        this.inputPassword = inputPassword;
+    }
+     
     /**
      * <p>Construct a new Page bean instance.</p>
      */
@@ -214,6 +224,9 @@ public class AddAccountPage extends VDCBaseBean {
         this.user = user;
     }
     
+    public EditUserService getEditUserService() {
+        return editUserService;
+    }
     
     public void validateUserName(FacesContext context,
             UIComponent toValidate,
@@ -248,7 +261,7 @@ public class AddAccountPage extends VDCBaseBean {
             StatusMessage msg = new StatusMessage();
             msg.setMessageText("User account created successfully.");
             msg.setStyleClass("successMessage");
-            getRequestMap().put("statusMessage",msg);            
+            getRequestMap().put("statusMessage",msg);
             forwardPage="viewAccount";
         } else if (workflowValue.equals("contributor")) {
             forwardPage="contributorRequest";
@@ -263,17 +276,17 @@ public class AddAccountPage extends VDCBaseBean {
         
         getVDCSessionBean().setUserService(null);
         
-       
-      
- 
-      
+        
+        
+        
+        
         if (workflowValue!=null) {
             getRequestMap().put("fromPage","AddAccountPage");
-             getRequestMap().put("userId",user.getId());
-             if (workflowValue.equals("fileAccess")) {
-                 getRequestMap().put("studyId",studyId);
-             }
-       }
+            getRequestMap().put("userId",user.getId());
+            if (workflowValue.equals("fileAccess")) {
+                getRequestMap().put("studyId",studyId);
+            }
+        }
         return forwardPage;
     }
     
@@ -366,12 +379,12 @@ public class AddAccountPage extends VDCBaseBean {
     public void setAccessStudy(boolean accessStudy) {
         this.accessStudy = accessStudy;
     }
-
+    
     /**
      * Holds value of property study.
      */
     private Study study;
-
+    
     /**
      * Getter for property study.
      * @return Value of property study.
@@ -379,7 +392,7 @@ public class AddAccountPage extends VDCBaseBean {
     public Study getStudy() {
         return this.study;
     }
-
+    
     /**
      * Setter for property study.
      * @param study New value of property study.
@@ -387,12 +400,12 @@ public class AddAccountPage extends VDCBaseBean {
     public void setStudy(Study study) {
         this.study = study;
     }
-
+    
     /**
      * Holds value of property hiddenWorkflow.
      */
     private HtmlInputHidden hiddenWorkflow;
-
+    
     /**
      * Getter for property hiddenContributorRequest.
      * @return Value of property hiddenContributorRequest.
@@ -400,7 +413,7 @@ public class AddAccountPage extends VDCBaseBean {
     public HtmlInputHidden getHiddenWorkflow() {
         return this.hiddenWorkflow;
     }
-
+    
     /**
      * Setter for property hiddenContributorRequest.
      * @param hiddenContributorRequest New value of property hiddenContributorRequest.
@@ -408,6 +421,28 @@ public class AddAccountPage extends VDCBaseBean {
     public void setHiddenWorkflow(HtmlInputHidden hiddenWorkflow) {
         this.hiddenWorkflow = hiddenWorkflow;
     }
-
+    
+    
+    public void validatePassword(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        String retypedPassword = (String) value;
+        String errorMessage = null;
+        
+        // check invalid characters
+        if (!inputPassword.getLocalValue().equals(retypedPassword)  ) {
+            errorMessage = "Passwords do not match.";
+        }
+        
+        
+        
+        if (errorMessage != null) {
+            ((UIInput)toValidate).setValid(false);
+            
+            FacesMessage message = new FacesMessage(errorMessage);
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+        
+    }
 }
 

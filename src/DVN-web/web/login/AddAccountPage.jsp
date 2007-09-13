@@ -40,9 +40,17 @@
                               <h:graphicImage  value="/resources/icon_required.gif"/>
                           </ui:panelGroup>
                           <ui:panelGroup> 
-                              <h:inputSecret  id="inputPassword" value="#{AddAccountPage.user.password}" required="true"/>
+                              <h:inputSecret binding="#{AddAccountPage.inputPassword}" id="inputPassword" value="#{AddAccountPage.editUserService.newPassword1}" required="true"/>
                               <h:message for="inputPassword"  styleClass="errorMessage"/>
                           </ui:panelGroup>
+                          <ui:panelGroup >
+                              <h:outputText  value="Retype Password"/>
+                              <h:graphicImage  value="/resources/icon_required.gif"/>
+                          </ui:panelGroup>
+                          <ui:panelGroup> 
+                              <h:inputSecret  id="retypePassword" value="#{AddAccountPage.editUserService.newPassword2}" validator="#{AddAccountPage.validatePassword}" required="true"/>
+                              <h:message for="retypePassword"  styleClass="errorMessage"/>
+                          </ui:panelGroup>                          
                           <ui:panelGroup >
                               <h:outputText  value="First Name"/>
                               <h:graphicImage  value="/resources/icon_required.gif"/>

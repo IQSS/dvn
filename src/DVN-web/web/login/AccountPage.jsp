@@ -26,6 +26,10 @@
                             <h:outputLink id="linkAction1" value="/dvn/faces/login/EditAccountPage.jsp?userId=#{AccountPage.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
                                 <h:outputText id="linkAction1Text" value="Update Account"/>
                             </h:outputLink>
+                             <h:outputText value=" | " />
+                              <h:outputLink id="linkAction2" value="/dvn/faces/login/EditPasswordPage.jsp?userId=#{AccountPage.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
+                                <h:outputText id="linkAction2Text" value="Change Password"/>
+                            </h:outputLink>
                             <h:outputText value=" | " rendered="#{VDCSession.loginBean.networkAdmin and VDCRequest.currentVDC == null}" />
                             <h:outputLink  rendered="#{VDCSession.loginBean.networkAdmin and VDCRequest.currentVDC == null}" value="/dvn/faces/networkAdmin/AllUsersPage.jsp?vdcId=#{VDCRequest.currentVDCId}">
                                 <h:outputText  value="Go To All Users List"/>

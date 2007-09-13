@@ -325,6 +325,7 @@ span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9e
     color: #000000;
 }
 
+
 .vdcTooltipWrapper {
     /*border-left: 1px solid #cccccc; 
     border-right: 1px solid #cccccc; 
@@ -333,6 +334,47 @@ span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9e
     font-weight: 800;
 }
 /* end tooltip support */
+
+/* start popup component support */
+.vdcPopup {
+    position: absolute;
+    width: 400px;
+    padding-top: 8px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    font-size: 0.9em;
+    z-Index: 1000;
+}
+
+.vdcPopupLink {
+    font-weight: 400;
+    color: #006699;
+    text-decoration: none;
+}
+
+.vdcPopupContents {
+    display: block;
+    height: 100%;
+    border:1px solid #cccccc;
+    background-color: #ffffcc;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    padding: 3px 3px 3px 10px;
+    font-weight: 400;
+    text-align:left;
+    color: #000000;
+}
+
+
+.vdcPopupWrapper {
+    /*border-left: 1px solid #cccccc; 
+    border-right: 1px solid #cccccc; 
+    border-bottom: 1px solid #cccccc;
+    background-color:#ffffcc;*/
+    font-weight: 800;
+}
+/* end popup support */
 
 .vdcNoBorders{
    border-bottom-style: none;

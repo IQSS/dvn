@@ -32,14 +32,14 @@ public final class StringUtil {
         String finalString = originalString;
         if (finalString != null && finalString.length() > maxLength ) {
              try {
-                String regexp = "[A-Za-z0-9][\\p{Punct}][\\p{Space}]";
+                String regexp = "[A-Za-z0-9][\\p{Space}]";
                 Pattern pattern = Pattern.compile(regexp);
                 String startParsedString = finalString.substring(0, maxLength);
                 String endParsedString   = finalString.substring(maxLength, finalString.length());
                 Matcher matcher          = pattern.matcher(endParsedString);
                 boolean found            = matcher.find();
                 endParsedString          = endParsedString.substring(0, matcher.end());
-                finalString              = "<div>" + startParsedString + endParsedString + "</div>";
+                finalString              = "<div>" + startParsedString + endParsedString + "></div>";
 
              } catch (Exception e) {
                 System.out.println("An issue occurred truncating the following String: " + originalString);

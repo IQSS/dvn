@@ -38,27 +38,40 @@ public class Tooltip extends UIComponentBase {
         String tooltipText = (String)getAttributes().get("tooltipText");
         String eventType   = (String)getAttributes().get("eventType");
         String heading     = (String)getAttributes().get("heading");
-        if (heading == null)
-            heading = "";
+        if (heading == null) heading="";
+        String imageLink   = (String)getAttributes().get("imageLink");
+        String imageSource = (String)getAttributes().get("imageSource");
+        
+        String closeText = (String)getAttributes().get("closeText");
         writer.startElement("a", this);
         writer.writeAttribute("id", getClientId(facescontext), null);
         writer.writeAttribute("name", getClientId(facescontext), null);
         writer.writeAttribute("href", linkUrl, null);
+        
         if (eventType.equals("mouseover")) {
             writer.writeAttribute("onmouseover", new String("javascript:popupTooltip('" + getClientId(facescontext) + "', document.getElementById('" + new String(getClientId(facescontext) + ":hidField") + "').value" + ", '" + heading + "', event);"), null);
             writer.writeAttribute("onmouseout", new String("javascript:hideTooltip();"), null);
         } else if (eventType.equals("click")) {
+            // this is a popup -- a 400 px window.
+            if (closeText != null)
+                closeText = "<span style=\"display:block;width:400;text-align:right;margin-bottom:2px;\"><a href=\"javascript:void(0);hidePopup();\" title=\"Close Window\">" + closeText + "</a></span>";
+            else
+                closeText = "<span style=\"display:block;width:400;text-align:right;margin-bottom:2px;\"><a href=\"javascript:void(0);hidePopup();\" title=\"Close Window\">Close the Window</a></span>";
             writer.writeAttribute("title", tooltipText, null);
-            writer.writeAttribute("onclick", new String("javascript:popupTooltip('" + getClientId(facescontext) + "', document.getElementById('" + new String(getClientId(facescontext) + ":hidField") + "').value" + ", '" + heading + "', event);"), null);
+            writer.writeAttribute("onclick", new String("popupPopup('" + getClientId(facescontext) + "', document.getElementById('" + new String(getClientId(facescontext) + ":hidField") + "').value" + ", '" + heading + "', event, '" + closeText + "');"), null);
         }
         
-        if (cssClass != null) {
+        if (cssClass != null) 
             writer.writeAttribute("class", cssClass, null);
-            writer.writeText(linkText, null);
+        if (imageLink != null && imageLink.equals("true")) {
+            writer.startElement("img", this);
+            writer.writeAttribute("src", imageSource, null);
+            writer.writeAttribute("alt", tooltipText, null);
+            writer.writeAttribute("title", tooltipText, null);
+            writer.endElement("img");
         } else {
             writer.writeText(linkText, null);
         }
-        
         writer.endElement("a");
     }
     

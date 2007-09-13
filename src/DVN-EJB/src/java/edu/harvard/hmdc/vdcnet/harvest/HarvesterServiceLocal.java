@@ -13,6 +13,7 @@ import edu.harvard.hmdc.vdcnet.jaxb.oai.ResumptionTokenType;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
 import java.util.List;
 import java.util.logging.Logger;
+import org.apache.commons.lang.mutable.MutableBoolean;
 
 /**
  *
@@ -24,7 +25,7 @@ public interface HarvesterServiceLocal {
 
     public List<SetDetailBean> getSets(String oaiUrl); 
     public List<String> getMetadataFormats(String oaiUrl);
-    public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, boolean allowUpdates);
-    public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, boolean allowUpdates);
+    public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, boolean allowUpdates, MutableBoolean harvestErrorOccurred);
+    public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, boolean allowUpdates, MutableBoolean harvestErrorOccurred);
           
 }

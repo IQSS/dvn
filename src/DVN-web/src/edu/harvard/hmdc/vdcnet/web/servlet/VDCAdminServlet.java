@@ -7,14 +7,25 @@
 package edu.harvard.hmdc.vdcnet.web.servlet;
 
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
+import edu.harvard.hmdc.vdcnet.admin.PasswordEncryption;
+import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import java.io.*;
 import java.net.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
+import javax.sql.DataSource;
 
 /**
  *
@@ -22,8 +33,9 @@ import javax.servlet.http.*;
  * @version
  */
 public class VDCAdminServlet extends HttpServlet {
-    
+    @Resource(name="jdbc/VDCNetDS") DataSource dvnDatasource;
     @EJB StudyServiceLocal studyService;
+    @EJB UserServiceLocal userService;
     
     private boolean isNetworkAdmin(HttpServletRequest req) {
         VDCUser user = null;
@@ -56,6 +68,9 @@ public class VDCAdminServlet extends HttpServlet {
             out.print("<input name=\"studyId\" size=8>");
             out.print("<input name=removeLock value=\"Remove Lock\" type=submit />");
             out.print("<hr>");
+            out.println("To encrypt all current passwords, click on the Encrypt Passwords button<br/>");
+            out.print("<input name=encryptPasswords value=\"Encrypt Passwords\" type=submit />");
+            out.print("<hr>");            
             out.println("</form>");
             endPage(out);
             
@@ -85,6 +100,18 @@ public class VDCAdminServlet extends HttpServlet {
                 } catch (Exception e) {
                     e.printStackTrace();
                     displayMessage (out, "Action failed.", "An unknown error occurred trying to remove lock for study id = " + studyId);
+                }
+            } else if (req.getParameter("encryptPasswords") != null) {
+                try {
+                    encryptPasswords();
+                    displayMessage(out, "Passwords encrypted.");
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                    if (e.getSQLState().equals("42703")) {
+                        displayMessage(out, "Passwords already encrypted");
+                    } else {
+                        displayMessage (out, "SQLException updating passwords");
+                    }
                 }
             } else {
                 displayMessage (out, "You have selected an action that is not allowed.");
@@ -119,12 +146,46 @@ public class VDCAdminServlet extends HttpServlet {
         }
         endPage(out);
     }
+
     
     /**
      * Returns a short description of the servlet.
      */
     public String getServletInfo() {
         return "VDC Admin Servlet";
+    }
+    
+    private void encryptPasswords() throws SQLException {
+        String selectString = "SELECT id, password from vdcuser";
+        String updateString = "update vdcUser set encryptedpassword = ? where id = ?";
+        
+        Connection conn=null;
+        PreparedStatement sth = null;
+        PreparedStatement updateStatement=null;
+        conn = dvnDatasource.getConnection();
+        sth = conn.prepareStatement(selectString);
+        ResultSet rs = sth.executeQuery();
+        
+        List<String> ids = new ArrayList<String>();
+        List<String> passwords = new ArrayList<String>();
+        
+        while(rs.next()) {
+            ids.add(rs.getString(1));
+            passwords.add(rs.getString(2));
+        }
+        updateStatement = conn.prepareStatement(updateString);
+        for (int i=0;i<ids.size();i++) {
+            if (passwords.get(i)!=null && !passwords.get(i).trim().equals("")) {
+                updateStatement.setString(1, userService.encryptPassword(passwords.get(i)));
+                updateStatement.setString(2, ids.get(i));
+                updateStatement.executeUpdate();
+            }
+     
+        }
+        updateStatement = conn.prepareStatement("alter table vdcuser drop column password");
+       
+        updateStatement.executeUpdate();
+       
     }
     // </editor-fold>
 }

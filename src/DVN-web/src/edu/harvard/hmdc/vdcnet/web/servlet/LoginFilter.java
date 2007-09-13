@@ -127,21 +127,14 @@ public class LoginFilter implements Filter {
         
         else if (isRestrictedPage(pageDef, httpRequest)) {
             //moved the loginBean instantiation to line 121 so that getIpGroup can also use. wjb
-            if (loginBean==null && this.ipUserGroup == null) {
+            if (loginBean==null ) {
                 redirectToLogin(httpRequest,httpResponse,currentVDC);
             }
         
             else {
-                if ( (loginBean != null && !userAuthorized(pageDef,loginBean, currentVDC, httpRequest)) 
-                    || (loginBean == null && this.ipUserGroup != null && !this.isGroupAuthorized(pageDef, this.ipUserGroup, currentVDC, httpRequest))) {
-                    PageDef redirectPageDef = null;
-                    if (isAddStudyPage(pageDef,httpRequest)) {
-                        redirectPageDef = pageDefService.findByName(PageDefServiceLocal.CONTRIBUTOR_REQUEST);
-                    } else if (pageDef!=null && PageDefServiceLocal.ADD_SITE_PAGE.equals(pageDef.getName())) {
-                        redirectPageDef = pageDefService.findByName(PageDefServiceLocal.CREATOR_REQUEST);
-                    } else {
-                        redirectPageDef = pageDefService.findByName(PageDefServiceLocal.UNAUTHORIZED_PAGE);
-                    }
+                if ( (loginBean != null && !userAuthorized(pageDef,loginBean, currentVDC, httpRequest)) ) {
+                    PageDef  redirectPageDef = pageDefService.findByName(PageDefServiceLocal.UNAUTHORIZED_PAGE);
+                    
                     httpResponse.sendRedirect(httpRequest.getContextPath()+"/faces"+redirectPageDef.getPath());
                     //  RequestDispatcher requestDispatcher = request.getRequestDispatcher(redirectPageDef.getPath());
                     //  requestDispatcher.forward(request,response);

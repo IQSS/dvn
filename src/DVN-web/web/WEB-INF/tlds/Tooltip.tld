@@ -22,10 +22,10 @@
           <required>true</required>
       </attribute>
       <attribute>
-          <description>The link text that triggers the popup event.</description>
+          <description>The link text that triggers the popup event. If this is not provided, provide an imageLink and Source (see below).</description>
           <name>linkText</name>
           <type>String</type>
-          <required>true</required>
+          <required>false</required>
       </attribute>
       <attribute>
           <description>The link url for the onclick event</description>
@@ -34,14 +34,14 @@
           <required>true</required>
       </attribute>
       <attribute>
-          <description>The javascript event that triggers the popup. Possible options are mouseover or click.</description>
+          <description>The javascript event that triggers the popup. Possible options are mouseover or click. Please note a click is a vdcPopup, not a tooltip.</description>
           <name>eventType</name>
           <type>String</type>
           <required>true</required>
       </attribute>
       <!-- optional arguments -->
       <attribute>
-          <description>Heading for this help.</description>
+          <description>Heading for this help.  If this is a click triggered event, then please send text that means close window. (This could be i18n'd.)</description>
           <name>heading</name>
           <type>String</type>
           <required>false</required>
@@ -55,6 +55,30 @@
       <attribute>
           <description>The tooltip text. Please use this if you're using an onclick. Tooltip text will not be rendered if the eventType is mouseover.</description>
           <name>tooltipText</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+      <attribute>
+          <description>The desired width of the popup block.</description>
+          <name>width</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+      <attribute>
+          <description>Is this an image or a text link.</description>
+          <name>imageLink</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+      <attribute>
+          <description>Required if the link type is image.</description>
+          <name>imageSource</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+      <attribute>
+          <description>Text used in link to close this block.  Send the string you wish to be painted.</description>
+          <name>closeText</name>
           <type>String</type>
           <required>false</required>
       </attribute>

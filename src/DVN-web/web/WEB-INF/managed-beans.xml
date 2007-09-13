@@ -94,6 +94,16 @@
         </managed-property>
     </managed-bean>
     <managed-bean>
+        <managed-bean-name>EditPasswordPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.EditPasswordPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>userId</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.userId}</value>
+        </managed-property>
+    </managed-bean>    
+    <managed-bean>
         <managed-bean-name>LoginPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.LoginPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>

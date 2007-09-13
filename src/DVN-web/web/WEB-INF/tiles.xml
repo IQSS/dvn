@@ -71,6 +71,14 @@
        <put name="pageTitle"   type="string"        value="DVN - User Account"/>
        <put name="content" type="template"     value="/login/EditAccountPage.jsp"/>
    </definition>
+   <definition name="/login/EditPasswordPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - User Password"/>
+       <put name="content" type="template"     value="/login/EditPasswordPage.jsp"/>
+   </definition>
+   <definition name="/login/PasswordSuccessPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - User Password"/>
+       <put name="content" type="template"     value="/login/PasswordSuccessPage.jsp"/>
+   </definition>
    <definition name="/login/LoginPage" extends="/vanilla-layout">
        <put name="pageTitle"   type="string"        value="DVN - Login"/>
        <put name="content" type="template"     value="/login/LoginPage.jsp"/>

@@ -75,6 +75,43 @@ function popupTooltip(anchorname, message, heading, evt) {
     tooltip.showPopup(anchorname, parseInt(xCoordinate), yCoordinate);
 }
 
+
 function hideTooltip() {
     tooltip.hidePopup();
+}
+
+var popup = new PopupWindow("popupDiv");
+popup.offsetX=-400;
+popup.offsetY=10;
+
+//
+//@param anchorname the name applied to the a element
+//@param message the help text
+//@param heading the heading to apply to the help popup
+// because it is overloaded. 
+// wbossons April 2007
+function popupPopup(anchorname, message, heading, evt) {
+    if (arguments.length = 5)
+        closeText = arguments[4];
+    else 
+        closeText = "";
+    if (heading != "")
+        message = "<div id=\"vdcPopupWrapperDiv\" class=\"vdcPopupWrapper\">&nbsp;&nbsp;" + heading + "<p id=\"PopupContentsDiv\" class=\"vdcPopupContents\">" + message + "</p></div>";
+    else
+        message = "<p id=\"popupContentsDiv\" class=\"vdcPopupContents\">" + closeText + message + "</p>";
+    popup.populate(message);
+    rootScrollTopReference = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop; //true? ie7version otherwise ie6 version
+    rootScrollLeftReference = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft;
+    if (window.event == null) {
+        xCoordinate = evt.pageX - document.getElementById('popupDiv').offsetParent.offsetLeft;
+        yCoordinate = evt.pageY - document.getElementById('popupDiv').offsetParent.offsetTop;
+    } else if (window.event) {
+        xCoordinate = window.event.clientX - document.getElementById('popupDiv').offsetParent.offsetLeft + rootScrollLeftReference;
+        yCoordinate = window.event.clientY - document.getElementById('popupDiv').offsetParent.offsetTop + rootScrollTopReference;
+    }
+    popup.showPopup(anchorname, parseInt(xCoordinate), yCoordinate);
+}
+
+function hidePopup() {
+    popup.hidePopup();
 }

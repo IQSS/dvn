@@ -38,4 +38,8 @@ public interface UserServiceLocal {
     
     public void setActiveStatus(Long userId, boolean active);
     
+    public boolean validatePassword(Long userId, String password);
+    
+    public String encryptPassword(String plainText);
+    
 }

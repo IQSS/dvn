@@ -141,4 +141,17 @@ public class UserServiceBean implements UserServiceLocal {
         user.setActive(active);
         
     }
+    
+    public boolean validatePassword(Long userId, String password) {
+           VDCUser user = em.find(VDCUser.class,userId);
+           String encryptedPassword = PasswordEncryption.getInstance().encrypt(password);
+           return encryptedPassword.equals(user.getEncryptedPassword());
+     
+    }
+    
+    public String encryptPassword(String plainText) {
+        return PasswordEncryption.getInstance().encrypt(plainText);
+    
+    }
+            
 }

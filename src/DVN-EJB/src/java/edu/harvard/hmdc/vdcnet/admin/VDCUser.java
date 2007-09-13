@@ -33,7 +33,19 @@ public class VDCUser {
     private String email;
     private String firstName;
     private String lastName;
-    private String password; 
+ //   private String password;
+
+    public String getEncryptedPassword() {
+        return encryptedPassword;
+    }
+
+    public void setEncryptedPassword(String encryptedPassword) {
+        this.encryptedPassword = encryptedPassword;
+    }
+    
+    @Column(columnDefinition="text")
+    private String encryptedPassword;
+    
     @ManyToMany (cascade={ CascadeType.PERSIST })
     private Collection<UserGroup> userGroups;
     
@@ -88,14 +100,14 @@ public class VDCUser {
         this.lastName = lastName;
     }
 
-    public String getPassword() {
+ /*   public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
-
+*/
     /**
      * Getter for property vdcRoles.
      * @return Value of property vdcRoles.

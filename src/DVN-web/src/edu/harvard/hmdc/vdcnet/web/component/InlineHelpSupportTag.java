@@ -23,6 +23,7 @@ public class InlineHelpSupportTag extends UIComponentTag {
     
     String writeHelpDiv = null;
     String writeTipDiv  = null;
+    String writePopupDiv = null;
     
        /** Creates a new instance of TooltipTag */
     public InlineHelpSupportTag() {
@@ -69,6 +70,16 @@ public class InlineHelpSupportTag extends UIComponentTag {
                 component.getAttributes().put("writeTipDiv", writeTipDiv);
             }
         }
+        if (writePopupDiv != null) {
+            if (isValueReference(writePopupDiv)) {
+                FacesContext facescontext = FacesContext.getCurrentInstance();
+                Application application   = facescontext.getApplication();
+                ValueBinding valuebinding = application.createValueBinding(writePopupDiv);
+                component.setValueBinding("writePopupDiv", valuebinding);
+            } else {
+                component.getAttributes().put("writePopupDiv", writePopupDiv);
+            }
+        }
     }
     
         /** 
@@ -99,6 +110,21 @@ public class InlineHelpSupportTag extends UIComponentTag {
     
     public String getWriteTipDiv(){
         return writeTipDiv;
+    }
+    
+    /** 
+     * setter and getter the writePopupDiv
+     *
+     * @author wbossons
+     *
+     * 
+     */
+    public void setWritePopupDiv(String writePopupDiv) {
+        this.writePopupDiv = writePopupDiv;
+    }
+    
+    public String getWritePopupDiv(){
+        return writePopupDiv;
     }
     
     

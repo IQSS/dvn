@@ -37,7 +37,7 @@
         }
      </script> 
      </f:verbatim>
-     <ihelpsupport:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" rendered="true"/>
+     <ihelpsupport:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" writePopupDiv="true" rendered="true"/>
         <ui:form  id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>                        
             <input type="hidden" value="StudyPage" name="pageName"/>
@@ -376,10 +376,10 @@
                                     <h:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
                                 </ui:panelGroup>
                             </ui:panelLayout>
-                            <ui:panelGroup  block="true" id="noFilesPanel4b" style="align-text: left; padding-top: 10px; padding-bottom: 10px;" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null) and !empty studyPage.studyUI.study.fileCategories}">
+                            <ui:panelGroup  block="true" id="noFilesPanel4b" style="text-align: left; padding-top: 10px; padding-bottom: 10px;" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null) and !empty studyPage.studyUI.study.fileCategories}">
                                 <h:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
                             </ui:panelGroup>
-                            <ui:panelGroup  block="true" style="align-text: left; padding-top: 10px; padding-bottom: 10px;" rendered="#{studyPage.studyUI.study.harvestHoldings!='' and studyPage.studyUI.study.isHarvested}">
+                            <ui:panelGroup  block="true" style="text-align: left; padding-top: 10px; padding-bottom: 10px;" rendered="#{studyPage.studyUI.study.harvestHoldings!='' and studyPage.studyUI.study.isHarvested}">
                                 Files for this study may also be accessed from their
                                 <h:outputLink value="#{studyPage.studyUI.study.harvestHoldings}" >
                                     <h:outputText value="original source." />
@@ -396,7 +396,7 @@
                                     </h:outputLink>            
                                 </ui:panelGroup>
                                 
-                                <ui:panelGroup  block="true" id="groupPanel7a" style="align-text: left; padding-bottom: 2px; padding-top: 5px;">
+                                <ui:panelGroup  block="true" id="groupPanel7a" style="text-align: left; padding-bottom: 2px; padding-top: 5px;">
                                     <h:outputText  id="outputText33"  value="Download all files in a single archive file (files that you cannot access will not be downloaded): "/>                                            
                                     <h:graphicImage  value="/resources/icon_downloadall_locked.gif" rendered="#{!studyPage.studyUI.anyFileUnrestricted}"
                                                      alt="You do not have permissions to access any files in this study." title="You do not have permissions to access any files in this study."/>
@@ -464,21 +464,17 @@
                                                         <h:graphicImage  id="imagefs" styleClass="vdcNoBorders" style="margin-left: 0px; margin-right: 2px;" value="/resources/icon_analyze.gif" />
                                                     </h:outputLink> 
                                                     
-                                                    <ui:panelGroup rendered="#{studyFileUI.studyFile.subsettable}">  
-                                                        <f:verbatim>
-                                                            <h:outputLink  id="citation"  onclick="createFileCitationPopup(this.nextSibling.id,this.id);return false;"  value="#">
-                                                                <h:graphicImage styleClass="vdcNoBorders" style="margin-left: 6px; margin-right: 2px;" value="/resources/icon_citation.gif" title="View data citation for this file." />
-                                                            </h:outputLink>                                                                      
-                                                            
-                                                            <ui:panelGroup block="true" id="fileCitationDiv" style="position:absolute;visibility:hidden;background-color:#FFFFCC; border-color:#000099; border-width: 1px; border-style: solid; padding: 8px;">
-                                                                <div style="text-align: right; font-size: 0.9em;"><a href="#" style="font-size: 0.9em;" onClick="fileCitationPopup.hidePopup();return false;">Hide It</a></div>
-                                                                
-                                                                <h:outputText   value="#{studyPage.studyUI.study.citation}" escape="false"/>
-                                                                <h:outputText   value="#{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)] #{studyFileUI.studyFile.dataTable.unf}" />
-                                                            </ui:panelGroup>
-                                                        </f:verbatim>
-                                                        
-                                                    </ui:panelGroup>
+                                                    <tip:tooltip rendered="#{studyFileUI.studyFile.subsettable}"  tooltipMessage="#{studyPage.studyUI.study.citation}&lt;br /&gt;#{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)] #{studyFileUI.studyFile.dataTable.unf}" 
+                                                                    imageLink="true" 
+                                                                    imageSource="/dvn/resources/icon_citation.gif"
+                                                                    tooltipText=""  
+                                                                    eventType="click" 
+                                                                    linkUrl="javascript:void(0);"
+                                                                    closeText="Close this Window"
+                                                                    cssClass="vdcPopupLink"
+                                                                    />
+                                                    
+                                                    
                                                 </ui:panelGroup>
                                             </h:column>
                                             

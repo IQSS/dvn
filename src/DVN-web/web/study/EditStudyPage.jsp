@@ -1497,7 +1497,7 @@
                                 </h:panelGrid>
                                 
                                  <ui:panelGroup block="true" id="groupPanel14a" styleClass="vdcStudyInfoHeader" rendered="#{EditStudyPage.studyMap[sfc.disclaimer].rendered or EditStudyPage.studyMap[sfc.disclaimer].rendered or EditStudyPage.studyMap[sfc.conditions].rendered or EditStudyPage.studyMap[sfc.depositorRequirements].rendered or EditStudyPage.studyMap[sfc.citationRequirements].rendered or EditStudyPage.studyMap[sfc.contact].rendered or EditStudyPage.studyMap[sfc.restrictions].rendered or EditStudyPage.studyMap[sfc.specialPermissions].rendered or EditStudyPage.studyMap[sfc.confidentialityDeclaration].rendered or EditStudyPage.studyMap[sfc.studyCompletion].rendered or EditStudyPage.studyMap[sfc.collectionSize].rendered or EditStudyPage.studyMap[sfc.availabilityStatus].rendered or EditStudyPage.studyMap[sfc.originalArchive].rendered or EditStudyPage.studyMap[sfc.placeOfAccess].rendered}">
-                                    <h:outputText id="outputText131a" value="Data Availability"/>   
+                                    <h:outputText id="outputText131a" value="Data Set Availability"/>   
                                 </ui:panelGroup>
                                 
                                 <h:panelGrid cellpadding="0" cellspacing="0"

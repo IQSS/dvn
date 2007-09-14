@@ -1200,9 +1200,9 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 .dvGroupAdminTable      { width:100%; padding:0px; }
 #dvGroupAdminCaption    { border-left:1px solid silver; border-right:1px solid silver; font-size:1.2em; }
 .dvGroupAdminFooter     { width:100%; background-color: #d9e7f0; }
-.groupAdminHeader       { background-color: #d9e7f0; padding:0px; }
-.groupAdminOrderColumn  { width:5%; border:1px solid silver; text-align:center; }
-.groupAdminNameColumn   { width:30%; border:1px solid silver; text-align:left; }
+.groupAdminHeader       { background-color: #d9e7f0; padding:0 0.3em; }
+.groupAdminOrderColumn  { width:5px; border:1px solid silver; text-align:center; }
+.groupAdminNameColumn   { width:30%; border:1px solid silver; text-align:left; padding-left: 0.3em; }
 .groupAdminDescriptionColumn   { width:60%; border:1px solid silver; text-align:left; }
 .groupAdminDeleteColumn { width:5%; border:1px solid silver; text-align:center; }
 .groupAdminOrderInput   { text-align:center; }

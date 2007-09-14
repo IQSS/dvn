@@ -48,10 +48,18 @@
 # If there are several log files from load balancing servers :
 # Example: "/pathtotools/logresolvemerge.pl *.log |"
 #
-#Sample Windows pointer with glassfish at root
+#Sample Windows pointer with glassfish at root (for dvn) wjb August 2007
 #LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "C:\\glassfish\\domains\\domain1\\logs\\access\\server_access_log.%YYYY-0-%MM-0-%DD-0.txt"|"
-#Sample Linux pointer with glassfish at /usr/local
+#
+#Sample Linux pointer with glassfish at /usr/local (for dvn wjb August 2007
 LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/server_access_log.%YYYY-0-%MM-0-%DD-0.txt"|"
+#
+# The next line is for the purpose of generating fresh daily records for the month. 
+# You must cat all of the access logs into one, name it combined_access_logs.txt and uncomment this line 
+# (comment out the one above)
+# before running the update. wjb August 2007
+#LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/combined_access_logs.txt"|"
+
 
 
 # Enter the log file type you want to analyze.

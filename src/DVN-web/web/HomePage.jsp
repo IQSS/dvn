@@ -130,8 +130,8 @@
                             </ul>
                         </h:column>
                     </h:dataTable>
-                    <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4&amp;numResults=100"  id="recentStudy">
-                        <h:outputText styleClass="dvn_more" value="more &gt;&gt;" escape="false"/>
+                    <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4&amp;numResults=100"  id="recentStudy" styleClass="dvn_more">
+                        <h:outputText  value="more &gt;&gt;" escape="false"/>
                     </h:outputLink>   
                 </ui:panelGroup>
             </ui:panelGroup>

@@ -124,7 +124,7 @@
                                       <h:outputText  id="hyperlink3Text" value="#{studyUI.study.title}"/>
                                   </h:outputLink>
                                   <h:outputText  id="outputText13" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
-                                  <h:outputText value=" (#{studyUI.study.globalId})"/>
+                                  <h:outputText styleClass="dvn_SResultsGlobalId" value=" (#{studyUI.study.globalId})"/>
                               </ui:panelGroup> 
                               <ui:panelGroup  block="true" id="groupPanel1b" >
                                   <h:graphicImage alt="This study contains no files." rendered="#{!studyUI.files}"
@@ -135,7 +135,7 @@
                                       <h:graphicImage styleClass="vdcNoBorders" alt="This study contains only non-subsettable files." rendered="#{!studyUI.subsettable}"
                                                       title="This study contains only non-subsettable files." value="/resources/icon_files.gif"/>
                                   </h:outputLink>
-                                  <h:outputText  id="outputText18" value=" #{studyUI.numberOfDownloads}" rendered="#{studyUI.files}" /><h:outputText  id="outputText17" value=" downloads" rendered="#{studyUI.files}" />
+                                  <h:outputText  id="outputText18" value=" #{studyUI.numberOfDownloads}" rendered="#{studyUI.files}" /><h:outputText value=" downloads" rendered="#{studyUI.files and studyUI.numberOfDownloads != 1}" /><h:outputText value=" download" rendered="#{studyUI.files and studyUI.numberOfDownloads == 1}" />
                               </ui:panelGroup>
                               
                               <ui:panelGroup block="true" id="groupPanel2" rendered="#{studyUI.abstracts != null and studyUI.abstracts != ''}" >

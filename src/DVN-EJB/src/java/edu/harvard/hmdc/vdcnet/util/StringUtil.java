@@ -39,7 +39,7 @@ public final class StringUtil {
                 Matcher matcher          = pattern.matcher(endParsedString);
                 boolean found            = matcher.find();
                 endParsedString          = endParsedString.substring(0, matcher.end());
-                finalString              = "<div>" + startParsedString + endParsedString + "></div>";
+                finalString              = "<div>" + startParsedString + endParsedString + "<span class='dvn_threedots'>...</span></div>";
 
              } catch (Exception e) {
                 System.out.println("An issue occurred truncating the following String: " + originalString);

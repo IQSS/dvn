@@ -276,7 +276,7 @@
                                 </h:panelGrid>
                                 
                                 <ui:panelGroup   block="true" id="groupPanel14a" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataAvailIsEmpty}">
-                                    <h:outputText  id="outputText115a" value="Data Size and Availability"/>
+                                    <h:outputText  id="outputText115a" value="Data Set Availability"/>
                                     <h:commandButton id="commandButtonDataAvailContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.dataAvailPanelIsRendered}" actionListener="#{studyPage.updateDataAvailDisplay}" />                      
                                     <h:commandButton id="commandButtonDataAvailExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.dataAvailPanelIsRendered}" actionListener="#{studyPage.updateDataAvailDisplay}"/> 
                                 </ui:panelGroup>

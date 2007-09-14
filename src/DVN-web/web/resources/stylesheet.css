@@ -224,6 +224,9 @@ span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9e
   font-style: italic;
   color: #6D0609;
 }
+a.dvn_more{
+  color: #6D0609;
+ }
 
 .dvn_threedots{
     color: #666;

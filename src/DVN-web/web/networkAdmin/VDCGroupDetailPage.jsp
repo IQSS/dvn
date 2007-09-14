@@ -14,13 +14,18 @@
             <!--<ui:panelLayout panelLayout="flow" styleClass="dvGroupAdminLayout"> -->
             
             <div class="dvn_section">
-                <div class="dvn_sectionTitle">
-                   
-                        <h:outputText  value="Dataverse Groups"/>
-                    
+                <div class="dvn_sectionTitle">    
+                        <h:outputText  value="Dataverse Groups"/> 
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
+                         <ui:panelGroup block="true" >
+                                    <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                                    <h:outputText  styleClass="vdcHelpText" value="You can create dataverse groups to organize the dataverses in the Network Homepage. A dataverse can belong to multiple groups. Any dataverse that is not part of a group will be displayed in an 'Other' category at the bottom of the Network Homepage. 
+                                    Keep in mind that if you want to move a dataverse from one group to another, you will need to explicitly remove it from one group and add it to the other. To change the order, enter a display order number, and then click Save. "/>
+                        </ui:panelGroup>
+                        <br />
+                        <br />
                         <h:dataTable rendered="#{VDCGroupPage.VDCGroups != null}" id="VDCGroups" value="#{VDCGroupPage.VDCGroups}" var="item" cellspacing="0" styleClass="dvGroupAdminTable" headerClass="groupAdminHeader" columnClasses="groupAdminOrderColumn, groupAdminNameColumn, groupAdminDescriptionColumn, groupAdminDeleteColumn" rowClasses="whiteRow, shadedRow">
                             
                             <h:column headerClass="groupAdminHeader">
@@ -50,14 +55,10 @@
                                 
                             </h:column>
                         </h:dataTable>
-                        <h:panelGrid columns="1" rendered="#{VDCGroupPage.VDCGroups == null}" style="width:100%" cellspacing="0" styleClass="dvGroupAdminTable" headerClass="groupAdminHeader" columnClasses="groupAdminNoneColumn">
-                            <f:facet name="caption">
-                                <ui:panelGroup id="dvGroupNoneCaption" block="true" styleClass="vdcSectionHeader">
-                                    <h:outputText id="dataNoneCaption" value="Dataverse Groups"/>
-                                </ui:panelGroup>
-                            </f:facet> 
-                            <h:outputText rendered="#{VDCGroupPage.VDCGroups == null}" escape="false" value="There are no Dataverse groups to display"/>
-                        </h:panelGrid>
+                        
+                        <ui:panelGroup rendered="#{VDCGroupPage.VDCGroups == null}" block="true" style="padding-top: 0.5em; padding-bottom: 0.5em;">
+                            <h:outputText escape="false" value="There are no Dataverse groups to display"/> 
+                        </ui:panelGroup>
                         <h:panelGrid columns="4" styleClass="dvGroupAdminFooter" columnClasses="groupAdminOrderFooter, groupAdminNameFooter, groupAdminDescriptionFooter, groupAdminDeleteFooter" cellspacing="0">
                             <h:column><h:outputText escape="false" value="&lt;!-- placeholder --&gt;"/></h:column>
                             <h:column><h:commandLink id="add" value="Add Group" action="#{VDCGroupPage.addGroup}"/></h:column>

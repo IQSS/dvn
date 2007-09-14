@@ -222,8 +222,12 @@ span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9e
 
 .dvn_more{
   font-style: italic;
+  color: #6D0609;
 }
 
+.dvn_threedots{
+    color: #666;
+}
 .formHtmlEnabled {
     background-color: #E4F9F9;
 }
@@ -432,6 +436,9 @@ a.vdcSiteMapLink:hover {
 
 /* VDC Search Results Style rules 
 */
+.dvn_SResultsGlobalId{
+  color : #666;
+}
 
 .vdcSResultsPageN {
    border-right-style: solid;

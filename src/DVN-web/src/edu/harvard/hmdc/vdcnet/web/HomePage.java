@@ -244,9 +244,9 @@ public class HomePage extends VDCBaseBean{
         if ( truncatedAnnouncements != null && !truncatedAnnouncements.equals(announcements) ) {
             ResourceBundle resourceBundle = ResourceBundle.getBundle("Bundle");
             if (isLocal) {
-                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.jsp?vdcId=" + getVDCRequestBean().getCurrentVDC().getId() + "\" title=\"" + resourceBundle.getString("moreLocalAnnouncementsTip") + "\"><span class='dvn_more'>more >></span></a>";
+                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.jsp?vdcId=" + getVDCRequestBean().getCurrentVDC().getId() + "\" title=\"" + resourceBundle.getString("moreLocalAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
             } else {
-                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.jsp\" title=\"" + resourceBundle.getString("moreNetworkAnnouncementsTip") + "\"><span class='dvn_more'>more >></span></a>";
+                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.jsp\" title=\"" + resourceBundle.getString("moreNetworkAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
             }
         }
         return truncatedAnnouncements;

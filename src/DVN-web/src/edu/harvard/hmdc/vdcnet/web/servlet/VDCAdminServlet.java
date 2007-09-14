@@ -59,24 +59,23 @@ public class VDCAdminServlet extends HttpServlet {
         res.setContentType("text/html;charset=UTF-8");
         PrintWriter out = res.getWriter();
         
-        if (isNetworkAdmin(req)) {
+     
             beginPage(out);
             out.println("<h3>Admin</h3>");
             out.println("<form method=POST>");
-
-            out.println("To remove a study lock, input the study id and click on the button below.<br/>");
-            out.print("<input name=\"studyId\" size=8>");
-            out.print("<input name=removeLock value=\"Remove Lock\" type=submit />");
-            out.print("<hr>");
+            if (isNetworkAdmin(req)) {
+                out.println("To remove a study lock, input the study id and click on the button below.<br/>");
+                out.print("<input name=\"studyId\" size=8>");
+                out.print("<input name=removeLock value=\"Remove Lock\" type=submit />");
+                out.print("<hr>");
+            }
             out.println("To encrypt all current passwords, click on the Encrypt Passwords button<br/>");
             out.print("<input name=encryptPasswords value=\"Encrypt Passwords\" type=submit />");
             out.print("<hr>");            
             out.println("</form>");
             endPage(out);
             
-        } else {
-            displayMessage(out, "You are not authorized for this action.");
-        }
+        
     }
     
     /** Handles the HTTP <code>POST</code> method.
@@ -88,7 +87,7 @@ public class VDCAdminServlet extends HttpServlet {
         res.setContentType("text/html;charset=UTF-8");
         PrintWriter out = res.getWriter();
 
-        if (isNetworkAdmin(req)) {        
+        if (isNetworkAdmin(req) || req.getParameter("encryptPasswords")!=null ) {        
             if ( req.getParameter("removeLock") != null) {
                 Long studyId = null;
                 try {

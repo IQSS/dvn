@@ -49,4 +49,7 @@ public interface VDCGroupServiceLocal {
     public void updateVdcGroup(VDCGroup vdcgroup);
     
     public void updateWithVdcs(VDCGroup vdcgroup, String[] vdcs);
+    
+    public int getNextInOrder();
+    
 }

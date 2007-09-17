@@ -128,6 +128,7 @@ public class VDCGroupPage extends VDCBaseBean {
                 vdcgroup = new VDCGroup();
                 vdcGroupService.create(vdcgroup);
                 this.setVdcGroup(vdcgroup);
+                vdcgroup.setDisplayOrder(vdcGroupService.getNextInOrder());
             }
            vdcgroup.setName(this.getName());
            vdcgroup.setDescription(this.getDescription());
@@ -181,7 +182,10 @@ public class VDCGroupPage extends VDCBaseBean {
                 VDCGroup vdcgroup = (VDCGroup)iterator.next();
                 this.vdcGroupService.updateVdcGroup(vdcgroup);
                 if (vdcgroup.getSelected() == true) {
+                    // See tbd below  int order = vdcgroup.getDisplayOrder();
                     this.vdcGroupService.removeVdcGroup(vdcgroup);
+                    //and reset all of the subsequent groups
+                    //this.vdcGroupService.updateGroupOrder(order); // TBD
                 }
             }
         } catch (Exception e) {

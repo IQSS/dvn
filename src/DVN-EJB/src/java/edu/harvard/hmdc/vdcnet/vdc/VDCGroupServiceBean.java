@@ -60,7 +60,7 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
     }
     
     public List<VDCGroup> findAll() {
-        List<VDCGroup> vdcgroups = (List<VDCGroup>)em.createQuery("select object(o) from VDCGroup as o order by o.displayOrder").getResultList() ;
+        List<VDCGroup> vdcgroups = (List<VDCGroup>)em.createQuery("select object(o) from VDCGroup as o order by o.displayOrder").getResultList();
         return vdcgroups;
     }
     
@@ -117,4 +117,25 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
             }
         }
     }
+    
+    /** getNextInOrder
+     *
+     * returns the next int
+     * in sequence for group 
+     * ordering
+     *
+     * @author wbossons
+     *
+     */
+    public int getNextInOrder() {
+        Integer nextInOrder = new Integer("0");
+        try {
+            nextInOrder = (Integer)em.createQuery("select MAX(v.displayOrder) from VDCGroup v").getSingleResult();
+            nextInOrder += 1;
+        } catch (Exception e) {
+           System.out.append("There was an exception in getting the next in order ... " + e.toString()); 
+        }
+        return nextInOrder.intValue();
+    }
+
 }

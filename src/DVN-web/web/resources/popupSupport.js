@@ -26,7 +26,7 @@ function popupInlineHelp(anchorname, message, heading, evt) {
     helpPopup.populate(message);
     rootScrollTopReference = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop; //true? ie7version otherwise ie6 version
     rootScrollLeftReference = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft; 
-    if (navigator.userAgent.indexOf("Safari") != -1) {
+    if (navigator.userAgent.indexOf("Safari") != -1 && navigator.userAgent.indexOf("Macintosh") != -1) {
         xCoordinate = window.event.clientX - document.getElementById('tooltipDiv').offsetParent.offsetLeft;
         yCoordinate = window.event.clientY - document.getElementById('tooltipDiv').offsetParent.offsetTop;
     } else if (window.event == null) {
@@ -68,7 +68,7 @@ function popupTooltip(anchorname, message, heading, evt) {
     tooltip.populate(message);
     rootScrollTopReference = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop; //true? ie7version otherwise ie6 version
     rootScrollLeftReference = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft;
-    if (navigator.userAgent.indexOf("Safari") != -1) {
+    if (navigator.userAgent.indexOf("Safari") != -1 && navigator.userAgent.indexOf("Macintosh") != -1) {
         xCoordinate = window.event.clientX - document.getElementById('tooltipDiv').offsetParent.offsetLeft;
         yCoordinate = window.event.clientY - document.getElementById('tooltipDiv').offsetParent.offsetTop;
     } else if (window.event == null) {
@@ -108,7 +108,7 @@ function popupPopup(anchorname, message, heading, evt) {
     popup.populate(message);
     rootScrollTopReference = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop; //true? ie7version otherwise ie6 version
     rootScrollLeftReference = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft;
-    if (navigator.userAgent.indexOf("Safari") != -1) {
+    if (navigator.userAgent.indexOf("Safari") != -1 && navigator.userAgent.indexOf("Macintosh") != -1) {
         xCoordinate = window.event.clientX - document.getElementById('tooltipDiv').offsetParent.offsetLeft;
         yCoordinate = window.event.clientY - document.getElementById('tooltipDiv').offsetParent.offsetTop;
     } else if (window.event == null) {

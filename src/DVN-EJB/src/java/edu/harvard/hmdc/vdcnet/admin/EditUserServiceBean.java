@@ -120,11 +120,13 @@ public class EditUserServiceBean implements edu.harvard.hmdc.vdcnet.admin.EditUs
   
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)    
     public void save() {
-    
-        user.setEncryptedPassword(userService.encryptPassword(newPassword1));
+        if (newPassword1!=null) {
+            user.setEncryptedPassword(userService.encryptPassword(newPassword1));
+        }
         // Don't really need to do call flush(), because a method that 
         // requires a transaction will automatically trigger a flush to the database,
         // but include this just to show what's happening here
+
         em.flush();    
     }
 
@@ -135,7 +137,9 @@ public class EditUserServiceBean implements edu.harvard.hmdc.vdcnet.admin.EditUs
       @Remove  
      @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)    
      public void save(Long contributorRequestVdcId, boolean creatorRequest, Long studyRequestId) {
-         user.setEncryptedPassword(userService.encryptPassword(newPassword1));
+         if (newPassword1!=null) {
+            user.setEncryptedPassword(userService.encryptPassword(newPassword1));
+         }
          // If user requests to be a contributor in a VDC, 
          // create a request object for this
          if (contributorRequestVdcId!=null) { 

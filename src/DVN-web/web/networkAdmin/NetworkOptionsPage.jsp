@@ -74,6 +74,13 @@
                             </h:outputLink>
                             
                         </ui:panelGroup>
+                        <ui:panelGroup  block="true" style="padding-top: 20px; padding-bottom: 15px">
+                            <h:outputText  styleClass="vdcSubHeader" value="Version and License"/> 
+                            <h:outputLink   value="/dvn/faces/VersionPage.jsp"> - 
+                                <h:outputText  value="About this Dataverse Network installation"/>
+                            </h:outputLink>
+                            
+                        </ui:panelGroup>
                         
                     </div>
                   </div>

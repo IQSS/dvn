@@ -887,6 +887,10 @@ xmlns:ui="http://www.sun.com/web/ui"
                     <h:outputText id="txtSubsettingInstruction" 
                                   binding="#{AnalysisPage.txtSubsettingInstruction}" 
                                   value="#{bundleAnalysis['subsettingInstruction']}" />
+                    <h:outputText id="txtNonSubsettingInstruction" 
+                                  binding="#{AnalysisPage.txtNonSubsettingInstruction}" 
+                                  value="#{bundleAnalysis['nonSubsettingInstruction']}" />
+
                 </ui:panelGroup>
                 
                 <ui:staticText id="msgVariableSelection"

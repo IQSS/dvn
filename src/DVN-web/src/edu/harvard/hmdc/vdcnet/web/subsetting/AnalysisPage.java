@@ -490,15 +490,15 @@ public class AnalysisPage extends VDCBaseBean {
               //String formatType = "D01";
               
               String dsbUrl = System.getProperty("vdc.dsb.host");
-	      String dsbPort = System.getProperty("vdc.dsb.port");
+          String dsbPort = System.getProperty("vdc.dsb.port");
 
-	      if ( dsbPort != null ) {
-		  dsbUrl+=":" + dsbPort; 
-	      }
-		      
-	      if ( dsbUrl == null ) {
-		  dsbUrl = System.getProperty("vdc.dsb.url");
-	      }		      
+          if ( dsbPort != null ) {
+          dsbUrl+=":" + dsbPort; 
+          }
+              
+          if ( dsbUrl == null ) {
+          dsbUrl = System.getProperty("vdc.dsb.url");
+          }           
 
               out.println("dsbUrl="+dsbUrl);
 
@@ -554,15 +554,15 @@ public class AnalysisPage extends VDCBaseBean {
               //String formatType = "D01";
               
               String dsbUrl = System.getProperty("vdc.dsb.host");
-	      String dsbPort = System.getProperty("vdc.dsb.port");
+          String dsbPort = System.getProperty("vdc.dsb.port");
 
-	      if ( dsbPort != null ) {
-		  dsbUrl+=":" + dsbPort; 
-	      }
-		      
-	      if ( dsbUrl == null ) {
-		  dsbUrl = System.getProperty("vdc.dsb.url");
-	      }		      
+          if ( dsbPort != null ) {
+          dsbUrl+=":" + dsbPort; 
+          }
+              
+          if ( dsbUrl == null ) {
+          dsbUrl = System.getProperty("vdc.dsb.url");
+          }           
 
               out.println("dsbUrl="+dsbUrl);
 
@@ -1911,15 +1911,15 @@ if (isRecodedVar(varId)){
                 StudyFile sf = dataTable.getStudyFile();
                 
                 String dsbUrl = System.getProperty("vdc.dsb.host");
-		String dsbPort = System.getProperty("vdc.dsb.port");
+        String dsbPort = System.getProperty("vdc.dsb.port");
 
-		if ( dsbPort != null ) {
-		    dsbUrl+=":" + dsbPort; 
-		}
-		      
-		if ( dsbUrl == null ) {
-		    dsbUrl = System.getProperty("vdc.dsb.url");
-		}		      
+        if ( dsbPort != null ) {
+            dsbUrl+=":" + dsbPort; 
+        }
+              
+        if ( dsbUrl == null ) {
+            dsbUrl = System.getProperty("vdc.dsb.url");
+        }             
 
                 out.println("dsbUrl="+dsbUrl);
                 
@@ -2004,15 +2004,15 @@ if (isRecodedVar(varId)){
                 StudyFile sf = dataTable.getStudyFile();
                 
                 String dsbUrl = System.getProperty("vdc.dsb.host");
-		String dsbPort = System.getProperty("vdc.dsb.port");
+        String dsbPort = System.getProperty("vdc.dsb.port");
 
-		if ( dsbPort != null ) {
-		    dsbUrl+=":" + dsbPort; 
-		}
-		      
-		if ( dsbUrl == null ) {
-		    dsbUrl = System.getProperty("vdc.dsb.url");
-		}		      
+        if ( dsbPort != null ) {
+            dsbUrl+=":" + dsbPort; 
+        }
+              
+        if ( dsbUrl == null ) {
+            dsbUrl = System.getProperty("vdc.dsb.url");
+        }             
 
                 out.println("dsbUrl="+dsbUrl);
                 
@@ -3539,15 +3539,15 @@ if (isRecodedVar(varId)){
                 
               
                 String dsbUrl = System.getProperty("vdc.dsb.host");
-		String dsbPort = System.getProperty("vdc.dsb.port");
+        String dsbPort = System.getProperty("vdc.dsb.port");
 
-		if ( dsbPort != null ) {
-		    dsbUrl+=":" + dsbPort; 
-		}
-		      
-		if ( dsbUrl == null ) {
-		    dsbUrl = System.getProperty("vdc.dsb.url");
-		}		      
+        if ( dsbPort != null ) {
+            dsbUrl+=":" + dsbPort; 
+        }
+              
+        if ( dsbUrl == null ) {
+            dsbUrl = System.getProperty("vdc.dsb.url");
+        }             
 
                 out.println("dsbUrl="+dsbUrl);
 
@@ -3771,15 +3771,15 @@ if (isRecodedVar(varId)){
                 // server prefix
                 
                 String dsbUrl = System.getProperty("vdc.dsb.host");
-		String dsbPort = System.getProperty("vdc.dsb.port");
+        String dsbPort = System.getProperty("vdc.dsb.port");
 
-		if ( dsbPort != null ) {
-		    dsbUrl+=":" + dsbPort; 
-		}
-		      
-		if ( dsbUrl == null ) {
-		    dsbUrl = System.getProperty("vdc.dsb.url");
-		}		      
+        if ( dsbPort != null ) {
+            dsbUrl+=":" + dsbPort; 
+        }
+              
+        if ( dsbUrl == null ) {
+            dsbUrl = System.getProperty("vdc.dsb.url");
+        }             
 
                 out.println("dsbUrl="+dsbUrl);
 
@@ -4041,7 +4041,7 @@ if (isRecodedVar(varId)){
 //--------------------------------------------------------------------------->
 
     
-    // message block
+    // message block: subsetting allowed
     private HtmlOutputText txtSubsettingInstruction = new HtmlOutputText();
 
     public HtmlOutputText getTxtSubsettingInstruction() {
@@ -4050,6 +4050,16 @@ if (isRecodedVar(varId)){
 
     public void setTxtSubsettingInstruction(HtmlOutputText hot) {
         this.txtSubsettingInstruction = hot;
+    }
+    // message block: subsetting not allowed
+    private HtmlOutputText txtNonSubsettingInstruction = new HtmlOutputText();
+
+    public HtmlOutputText getTxtNonSubsettingInstruction() {
+        return txtNonSubsettingInstruction;
+    }
+
+    public void setTxtNonSubsettingInstruction(HtmlOutputText hot) {
+        this.txtNonSubsettingInstruction = hot;
     }
 
 
@@ -5067,6 +5077,9 @@ if (baseVarToDerivedVar.containsKey(varId)){
       tabSet1.setRendered(false);
       // subsetting intruction text
       txtSubsettingInstruction.setRendered(false);
+      // NonSubsetting intruction text
+      txtNonSubsettingInstruction.setRendered(true);
+
       // select-all checkbox in the header(1st column) of dataTable
       checkboxSelectUnselectAll.setRendered(false);
       // variable-checkbox in the 1st column of dataTable
@@ -5220,6 +5233,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
               if (sf.isSubsetRestrictedForUser(user, vdc, getVDCSessionBean().getIpUserGroup())) {
                 out.println("restricted=yes: this user does not have the subsetting permission");
                 subsettingPageAccess =Boolean.FALSE;
+                txtNonSubsettingInstruction.setRendered(false);
                 hideSubsettingFunctions();
               } else {
                 out.println("restricted=no: this user has the subsetting permission");

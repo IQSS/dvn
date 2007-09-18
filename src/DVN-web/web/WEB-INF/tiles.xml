@@ -342,4 +342,9 @@
        <put name="pageTitle"   type="string"        value="DVN - Edit Banner and Footer"/>
        <put name="content" type="template"     value="/admin/EditBannerFooterPage.jsp"/>
    </definition>
+   <!--  ***************** Version and License ***************** -->
+     <definition name="/VersionPage" extends="/vanilla-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Version and License"/>
+       <put name="content" type="template"     value="/VersionPage.jsp"/>
+   </definition>
 </tiles-definitions>

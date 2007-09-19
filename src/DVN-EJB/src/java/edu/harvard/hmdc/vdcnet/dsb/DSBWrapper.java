@@ -446,11 +446,11 @@ public class DSBWrapper {
     }
     
     private String generateUrlForFile(String serverPrefix, Long fileId) {
-        //get the isMIT arg
+        //get the xFF arg -- used by the web stats txt report
         WebStatisticsSupport webstatistics = new WebStatisticsSupport();
         int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");
-        String isMIT = webstatistics.getQSArgument("isMIT", headerValue);
-        String file = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1" + isMIT;
+        String xFF = webstatistics.getQSArgument("xFF", headerValue);
+        String file = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1" + xFF;
         System.out.println(file);
         return file;
     }

@@ -27,37 +27,20 @@
                             <!-- sitemapHomeHeading -->
                             <ui:panelGroup block="true" id="groupPanel0">
                                 <ui:panelGroup  block="true" style="padding-top: 20px; padding-bottom: 15px">
-                                    <h:outputText  id="homeHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapHomeHeading}"/>
+                                    <h:outputText  id="homeHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapBrowseHeading}"/>
                                 </ui:panelGroup>
                                 <ui:panelGroup  block="true" id="groupPanel2" separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
-                                    <h:outputLink id="sitemaplink1"  styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}">
-                                        <h:outputText  id="sitemaplink1Text" value="#{bundle.sitemapSearchLink}"/>
+                                    <h:outputLink id="basicSearchLink"  styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}">
+                                        <h:outputText  id="basicSearchText" value="#{bundle.sitemapSearchLink}"/>
                                     </h:outputLink>
-                                    <!--  Search Tips converted to Search Help-->
-                                    <h:outputLink value="http://thedata.org/help/browsesearch" styleClass="vdcSiteMapLink" target="_blank">
-                                        <h:outputText  value="#{bundle.sitemapSearchTipsLink}"/>
+                                    <h:outputLink id="advSearchLink3" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
+                                        <h:outputText  id="advSearchText" value="#{bundle.sitemapAdvancedSearchLink}"/>
                                     </h:outputLink>
-                                    <h:outputLink id="sitemaplink3" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
-                                        <h:outputText  id="sitemaplink3Text" value="#{bundle.sitemapAdvancedSearchLink}"/>
+                                    <h:outputLink id="browseCollectionsLink" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.jsp">
+                                        <h:outputText  id="browseCollectionsText" value="#{bundle.sitemapBrowseCollectionsLink}"/>
                                     </h:outputLink>
-                                </ui:panelGroup>
-                            </ui:panelGroup>
-                            
-                            <!-- sitemapAnnouncementsHeading -->
-                            <ui:panelGroup block="true">
-                                <ui:panelGroup rendered="#{( (VDCRequest.currentVDC != null and (VDCRequest.currentVDC.displayAnnouncements or VDCRequest.currentVDC.displayNetworkAnnouncements)) or (VDCRequest.currentVDC == null and VDCRequest.vdcNetwork.displayAnnouncements) )}" block="true" id="groupPanel3" style="padding-top: 20px; padding-bottom: 15px">
-                                    <h:outputText  id="announcementsHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapAnnouncementsHeading}"/>
-                                </ui:panelGroup>
-                                <ui:panelGroup block="true" id="groupPanel4" style="padding-left: 10px">
-                                    <h:outputLink rendered="#{((VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null)) or ((VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and (VDCRequest.currentVDC != null))}" 
-                                                  id="sitemaplink4" 
-                                                  styleClass="vdcSiteMapLink" 
-                                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/AnnouncementsPage.jsp">
-                                        <h:outputText rendered="#{((VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null)) or ((VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and (VDCRequest.currentVDC != null))}" id="sitemaplink4Text" value="#{bundle.sitemapNetworkAnnouncementsLink}"/>
-                                    </h:outputLink>
-                                    <f:verbatim rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.displayAnnouncements == true and VDCRequest.currentVDC.displayNetworkAnnouncements == true}"><br /><br /></f:verbatim>
-                                    <h:outputLink rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.displayAnnouncements == true}" id="sitemaplink5" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AnnouncementsPage.jsp">
-                                        <h:outputText id="sitemaplink5Text" value="#{bundle.sitemapLocalAnnouncementsLink}"/>
+                                    <h:outputLink id="MostRecentLink" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4&amp;numResults=100">
+                                        <h:outputText  id="MostRecentText" value="#{bundle.sitemapMostRecentLink}"/>
                                     </h:outputLink>
                                 </ui:panelGroup>
                             </ui:panelGroup>
@@ -71,9 +54,6 @@
                                     <h:outputLink id="sitemaplink8" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp">
                                         <h:outputText  id="sitemaplink8Text" value="#{bundle.sitemapLoginLink}"/>
                                     </h:outputLink>
-                                    <h:outputLink  id="sitemaplink9" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.jsp">
-                                        <h:outputText id="sitemaplink9Text" value="#{bundle.sitemapCreateAccountLink}"/>
-                                    </h:outputLink>
                                     <h:outputLink id="sitemaplink10" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestPage.jsp">
                                         <h:outputText  id="sitemaplink10Text" value="#{bundle.sitemapBecomeContributorLink}"/>
                                     </h:outputLink>
@@ -83,6 +63,7 @@
                                 </ui:panelGroup>
                             </ui:panelGroup>
                             
+                           
                             <!-- sitemapAboutHeading -->
                             <ui:panelGroup block="true">
                                 <ui:panelGroup  block="true" id="groupPanel9" style="padding-top: 20px; padding-bottom: 15px">
@@ -115,6 +96,17 @@
                                     <h:outputLink id="sitemaplink15" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.jsp">
                                         <h:outputText  id="sitemaplink15Text" value="#{bundle.sitemapContactUsLink}"/>
                                     </h:outputLink>
+                                    <f:verbatim><br /><br /></f:verbatim>
+                                    <h:outputLink rendered="#{((VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null)) or ((VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and (VDCRequest.currentVDC != null))}" 
+                                                  id="sitemaplink4" 
+                                                  styleClass="vdcSiteMapLink" 
+                                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/AnnouncementsPage.jsp">
+                                        <h:outputText rendered="#{((VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null)) or ((VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and (VDCRequest.currentVDC != null))}" id="sitemaplink4Text" value="#{bundle.sitemapNetworkAnnouncementsLink}"/>
+                                    </h:outputLink>
+                                    <f:verbatim rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.displayAnnouncements == true and VDCRequest.currentVDC.displayNetworkAnnouncements == true}"><br /><br /></f:verbatim>
+                                    <h:outputLink rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.displayAnnouncements == true}" id="sitemaplink5" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AnnouncementsPage.jsp">
+                                        <h:outputText id="sitemaplink5Text" value="#{bundle.sitemapLocalAnnouncementsLink}"/>
+                                    </h:outputLink>
                                 </ui:panelGroup>
                             </ui:panelGroup>
                             
@@ -124,34 +116,17 @@
                                     <h:outputText  id="helpHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapHelpHeading}"/>
                                 </ui:panelGroup>
                                 <ui:panelGroup  block="true" id="groupPanelHelpLinks" style="padding-left: 10px;">
-                                    <h:outputLink id="sitemaplinkUserManual" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/help/Manual.doc">
+                                    <h:outputLink id="sitemaplinkUserManual" styleClass="vdcSiteMapLink" target="_blank" value="http://thedata.org/help">
                                         <h:outputText  id="sitemaplinkUserManualText" value="#{bundle.sitemapUserManualLink}"/>
+                                    </h:outputLink>
+                                    <f:verbatim><br /><br /></f:verbatim>
+                                    <!--  Search Tips converted to Search Help-->
+                                    <h:outputLink value="http://thedata.org/help/browsesearch" styleClass="vdcSiteMapLink" target="_blank">
+                                        <h:outputText  value="#{bundle.sitemapSearchTipsLink}"/>
                                     </h:outputLink>
                                 </ui:panelGroup>
                             </ui:panelGroup>
                             
-                            
-                        </ui:panelLayout>
-                        
-                        <!-- COLUMN 2 -->
-                        <ui:panelLayout id="sitemapColumn2" panelLayout="flow" styleClass="vdcSectionTwoCol" style="padding-top: 20px; padding-bottom: 30px; padding-right: 80px;">
-                            <!-- sitemapCollectionsHeading -->
-                            <ui:panelGroup block="true" id="siteMapCollectionsGroup">
-                                <ui:panelGroup  block="true" id="groupPanel5" style="padding-top: 20px; padding-bottom: 15px">
-                                    <h:outputText  id="collectionsHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapCollectionsHeading}"/>
-                                </ui:panelGroup>
-                                
-                                <ui:panelLayout  id="browsePanel" panelLayout="flow" style="margin: 0px; padding: 0px 10px 10px 10px; height: 100%; width: 100%">
-                                    <ui:tree  binding="#{CollectionTreeBuilder.collectionTree}" id="collectionTree" style="width: 80%" text="" />
-                                </ui:panelLayout>
-                                
-                                <f:verbatim><br/></f:verbatim>
-                                <h:outputLink rendered="#{(VDCRequest.currentVDCId != null and VDCRequest.currentVDC.displayNewStudies == true)}"  id="sitemaplink7" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.jsp">
-                                    <h:outputText rendered="#{(VDCRequest.currentVDCId != null and VDCRequest.currentVDC.displayNewStudies == true)}" id="sitemaplink7Text" value="#{bundle.sitemapMostRecentLink}"/>
-                                </h:outputLink>
-                                
-                                
-                            </ui:panelGroup>
                         </ui:panelLayout>
                         
                     </h:panelGrid>

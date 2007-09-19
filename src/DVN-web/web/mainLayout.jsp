@@ -17,7 +17,8 @@
 <ui:html>
       <ui:head title="#{pageTitle.value}">
          <h:outputText value="&#60;meta name='robots' content='nofollow' /&#62;" escape="false" rendered="#{pageTitle.value == 'DVN - Study' }" />
-          <h:outputText value="&#60;meta name='robots' content='nofollow' /&#62;" escape="false" rendered="#{pageTitle.value == 'DVN - Variable Information' }" />
+         <h:outputText value="&#60;meta name='robots' content='nofollow' /&#62;" escape="false" rendered="#{pageTitle.value == 'DVN - Variable Information' }" />
+         
          <ui:link  id="link2" url="/resources/stylesheet.css"/>
          <ui:script url="/resources/EventCapture.js"/>
       </ui:head>
@@ -39,10 +40,10 @@
               <f:subview id="footer">
                   <tiles:insert name="footer" flush="false"/>
               </f:subview>
-              <script language="javascript" src="/cgi/awstats/js/awstats_misc_tracker.js"></script>
+              <!-- <script language="javascript" src="http://localhost:8080/DvnAwstats/cgi/awstats/js/awstats_misc_tracker.js"></script>
               <noscript>
-                  <img src="/cgi/awstats/js/awstats_misc_tracker.js?nojs=y" height="0" width="0" border="0" style="display:block"/>
-              </noscript>
+                  <img src="http://localhost:8080/DvnAwstats/cgi/awstats/js/awstats_misc_tracker.js?nojs=y" height="0" width="0" border="0" style="display:block"/>
+              </noscript> -->
           
       </body>
 </ui:html>

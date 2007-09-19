@@ -613,19 +613,19 @@ public boolean getNotesIsEmpty() {
       *
       * @author wbossons
       */
-     private String mitFlag;
+     private String xFF;
      
-     public String getMitFlag() {
-         if (this.mitFlag == null) {
+     public String getXFF() {
+         if (this.xFF == null) {
              WebStatisticsSupport webstatistics = new WebStatisticsSupport();
              int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");
-             setMitFlag(webstatistics.getQSArgument("isMIT", headerValue));
+             setXFF(webstatistics.getQSArgument("xFF", headerValue));
          }
-         return this.mitFlag;
+         return this.xFF;
      }
      
-     public void setMitFlag(String mitflag) {
-         this.mitFlag = mitflag;
+     public void setXFF(String xFF) {
+         this.xFF = xFF;
      }
      
      

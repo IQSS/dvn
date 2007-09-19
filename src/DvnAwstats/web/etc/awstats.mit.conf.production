@@ -1488,14 +1488,14 @@ color_x="C1B2E2"				# Background color for number of exit pages (Default = "C1B2
 
 ExtraSectionName1="File Downloads"
 ExtraSectionCodeFilter1="200 304"
-ExtraSectionCondition1="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&isMIT=1))"
+ExtraSectionCondition1="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xFF=1))"
 ExtraSectionFirstColumnTitle1="Requested Page"
 ExtraSectionFirstColumnValues1="URLWITHQUERY,(.*)"
 ExtraSectionStatTypes1=PHK
 MaxNbOfExtra1=50
 MinHitExtra1=1
 #http://localhost:8080/dvn/dv/gobu/FileDownload/Data+Files.zip?catId=1
-/foo(?=.*&isMIT=1)/
+/foo(?=.*&xFF=1)/
 
 ExtraSectionName2="Subsetting Views Resulting in a Subsetting and Analysis Request"
 ExtraSectionCodeFilter2="200 304"
@@ -1508,7 +1508,7 @@ MinHitExtra2=1
 
 ExtraSectionName3="Downloads by IP Address"
 ExtraSectionCodeFilter3="200 304"
-ExtraSectionCondition3="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&isMIT=1))"
+ExtraSectionCondition3="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xFF=1))"
 ExtraSectionFirstColumnTitle3="MIT Affiliated User - IP Address"
 ExtraSectionFirstColumnValues3="extra3,(.*)"
 ExtraSectionStatTypes3=PHK

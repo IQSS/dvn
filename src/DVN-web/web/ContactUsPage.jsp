@@ -18,7 +18,7 @@
                     <div class="dvn_margin12">
                         
                         <ui:panelLayout  rendered="#{ContactUsPage.success}" styleClass="successMessage">
-                            <h:messages layout="table" globalOnly="true"  />
+                            <h:messages layout="list" globalOnly="true"  />
                         </ui:panelLayout>
                             
                         <ui:panelLayout styleClass="errorMessage" rendered="#{ContactUsPage.exception}">

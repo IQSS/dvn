@@ -18,7 +18,7 @@
                 <div class="dvn_margin12">
                     
                     <ui:panelLayout styleClass="successMessage" rendered="#{ContactUsPage.success}">
-                        <h:messages layout="table" globalOnly="true" />
+                        <h:messages layout="list" globalOnly="true" />
                     </ui:panelLayout>
                     
                     <ui:panelGroup  block="true" id="groupPanel2" style="padding-bottom: 20px; padding-top: 20px">

@@ -1156,6 +1156,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     
     private void clearStudy(Study study) {
         // should this be done with bulk deletes??
+        // Yes!!!
+        studyService.deleteDataVariables(study.getId());
         
         for (Iterator iter = study.getFileCategories().iterator(); iter.hasNext();) {
             FileCategory elem = (FileCategory) iter.next();

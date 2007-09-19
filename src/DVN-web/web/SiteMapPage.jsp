@@ -54,10 +54,10 @@
                                     <h:outputLink id="sitemaplink8" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp">
                                         <h:outputText  id="sitemaplink8Text" value="#{bundle.sitemapLoginLink}"/>
                                     </h:outputLink>
-                                    <h:outputLink id="sitemaplink10" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestPage.jsp">
+                                    <h:outputLink id="sitemaplink10" rendered="#{VDCRequest.currentVDC != null}" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestPage.jsp">
                                         <h:outputText  id="sitemaplink10Text" value="#{bundle.sitemapBecomeContributorLink}"/>
                                     </h:outputLink>
-                                    <h:outputLink rendered="#{VDCSession.loginBean.networkAdmin == true or VDCSession.loginBean.networkCreator == true}" id="sitemaplink11" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/AddSitePage.jsp">
+                                    <h:outputLink rendered="#{VDCRequest.currentVDC == null}" id="sitemaplink11" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/AddSitePage.jsp">
                                         <h:outputText  id="sitemaplink11Text" value="#{bundle.sitemapCreateDataverseLink}"/>
                                     </h:outputLink>
                                 </ui:panelGroup>

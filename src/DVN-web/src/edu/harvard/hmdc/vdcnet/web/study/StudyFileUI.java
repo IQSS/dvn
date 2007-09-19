@@ -111,11 +111,11 @@ public class StudyFileUI {
     
      public String fileDownload_action () {
         try {
-            //get the isMIT arg
+            //get the xFF arg used for web stats text report
             WebStatisticsSupport webstatistics = new WebStatisticsSupport();
             int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");
-            String isMIT = webstatistics.getQSArgument("isMIT", headerValue);
-            String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.studyFile.getId() + isMIT;
+            String xFF = webstatistics.getQSArgument("xFF", headerValue);
+            String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.studyFile.getId() + xFF;
             if (!StringUtil.isEmpty(format)) {
                 fileDownloadURL += "&format=" + this.format;
             }

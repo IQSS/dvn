@@ -17,7 +17,7 @@
         <div class="dvn_sectionBox"> 
             <div class="dvn_margin12"> 
                 
-                <h:messages layout="table" showDetail="false" showSummary="true" styleClass="successMessage" />
+                <h:messages layout="list" showDetail="false" showSummary="true" styleClass="successMessage" />
                 
                 <ui:panelGroup  block="true" id="groupPanel2">
                     <h:outputText  id="outputText4" value="#{bundle.enableNetworkAnnouncementsLabel}"/>

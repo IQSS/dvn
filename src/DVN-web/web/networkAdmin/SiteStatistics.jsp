@@ -17,7 +17,7 @@
                 <div class="dvn_margin12">
                     
                     <ui:panelGroup rendered="#{SiteStatistics.success}" >
-                        <h:messages styleClass="successMessage" layout="table" showDetail="false" showSummary="true"/>
+                        <h:messages styleClass="successMessage" layout="list" showDetail="false" showSummary="true"/>
                     </ui:panelGroup>
                     
                     <ui:panelGroup  block="true" id="groupPanel2">

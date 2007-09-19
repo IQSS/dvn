@@ -8,7 +8,7 @@
         <h:form id="vdcGroupPageForm">
             
             <ui:panelGroup rendered="#{VDCGroupPage.success}" styleClass="successMessage" >
-                 <h:messages  layout="table" showDetail="false" showSummary="true"/>
+                 <h:messages  layout="list" showDetail="false" showSummary="true"/>
             </ui:panelGroup>
             
             <!--<ui:panelLayout panelLayout="flow" styleClass="dvGroupAdminLayout"> -->

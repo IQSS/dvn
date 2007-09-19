@@ -17,7 +17,7 @@
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">                    
                         
-                       <h:messages  layout="table" showDetail="false" showSummary="true" styleClass="successMessage" />                        
+                       <h:messages  layout="list" showDetail="false" showSummary="true" styleClass="successMessage" />                        
                         
                         <h:outputText  value="Please enter the Use of Terms or Conditions you would like to define for all studies created in (owned by) this dataverse (does not include studies that you are adding from other Dataverses in the Network)."/>
                         <ui:panelGroup block="true" style="padding-bottom: 15px">

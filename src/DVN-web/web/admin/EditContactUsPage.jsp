@@ -18,7 +18,8 @@
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
  
-                        <h:messages  layout="table" showDetail="false" showSummary="true" styleClass="successMessage" />                       
+                        <h:messages  layout="list" showDetail="false" showSummary="true" styleClass="successMessage" />
+                        
                         <ui:helpInline  id="helpInline1" style="margin-bottom: 20px" text="#{bundle.editContactUsHelpMsg}"/>
                         <ui:panelGroup>
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />

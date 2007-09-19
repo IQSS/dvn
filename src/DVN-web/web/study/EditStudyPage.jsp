@@ -711,6 +711,8 @@
                                             </h:column>
                                             <h:column>
                                                 <ui:panelGroup block="true">
+                                                    <h:outputText value="Note: Copying and pasting from a Word document can create errors when you save this page."/>
+                                                    <br />
                                                     <h:inputTextarea cols="90" rows="12" 
                                                                      id="input_abstractText" 
                                                                      binding="#{EditStudyPage.inputAbstractText}"

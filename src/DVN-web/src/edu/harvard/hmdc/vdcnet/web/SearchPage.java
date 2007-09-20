@@ -117,7 +117,7 @@ public class SearchPage extends VDCBaseBean{
             Iterator iter = studyListing.getStudyIds().iterator();
             while (iter.hasNext()) {
                 Long sid = (Long) iter.next();
-                StudyUI sui = new StudyUI(sid);
+                StudyUI sui = new StudyUI(sid, getStudyFields());
                 if (studyListing.getVariableMap() != null) {
                     List dvList = (List) studyListing.getVariableMap().get( sid );
                     sui.setFoundInVariables( dvList );

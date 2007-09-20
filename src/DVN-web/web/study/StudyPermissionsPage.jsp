@@ -134,7 +134,7 @@
                             
                             <h:dataTable  cellpadding="0" cellspacing="0"
                                           headerClass="list-header-left" columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded"  rowClasses="list-row-even, list-row-odd"
-                                          value="#{StudyPermissionsPage.editStudyPermissions.fileDetails}" var="currentRow" width="100%">
+                                          value="#{StudyPermissionsPage.editStudyPermissions.fileDetails}" var="currentRow" width="98%">
                                 <h:column id="fileuser_col1">
                                     <f:facet name="header">
                                         <h:selectBooleanCheckbox id="selectAllCheckbox"  onchange="updateAllCheckboxes(this);"/>

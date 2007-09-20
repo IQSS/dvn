@@ -27,7 +27,7 @@
                         </ui:panelGroup>
                         <h:dataTable binding="#{RestrictedStudyUsersPage.dataTable3}" cellpadding="0" cellspacing="0"
                                      headerClass="list-header-left" id="dataTable3" rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
-                                     value="#{StudyPermissionsPage.dataTable2Model}" var="currentRow" width="100%">
+                                     value="#{StudyPermissionsPage.dataTable2Model}" var="currentRow" width="98%">
                             <h:column binding="#{RestrictedStudyUsersPage.column4}" id="column4">
                                 <f:facet name="header">
                                     <h:outputText binding="#{RestrictedStudyUsersPage.outputText9}" id="outputText9" value="Remove from List"/>

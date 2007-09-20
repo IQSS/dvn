@@ -68,7 +68,7 @@
                            </ui:panelGroup>
                            <h:dataTable binding="#{NetworkPrivilegedUsersPage.userTable}" cellpadding="0" cellspacing="0"
                                         columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" 
-                                        rowClasses="list-row-even,list-row-odd" value="#{NetworkPrivilegedUsersPage.privileges.privilegedUsers}" var="currentRow" width="100%">
+                                        rowClasses="list-row-even,list-row-odd" value="#{NetworkPrivilegedUsersPage.privileges.privilegedUsers}" var="currentRow" width="98%">
                                <h:column id="column1" rendered="#{currentRow.user.id!=NetworkPrivilegedUsersPage.privileges.network.defaultNetworkAdmin.id}">
                                    <f:facet name="header">
                                        <h:outputText id="outputText3" value="Username"/>

@@ -57,6 +57,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -341,13 +342,30 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             elem.getId();
         }
         
+        for (Iterator<StudyRelStudy> it = study.getStudyRelStudies().iterator(); it.hasNext();) {
+            StudyRelStudy elem = it.next();
+            elem.getId();
+        }
+
+        for (Iterator<StudyRelMaterial> it = study.getStudyRelMaterials().iterator(); it.hasNext();) {
+            StudyRelMaterial elem = it.next();
+            elem.getId();
+        }
+
+        for (Iterator<StudyRelPublication> it = study.getStudyRelPublications().iterator(); it.hasNext();) {
+            StudyRelPublication elem = it.next();
+            elem.getId();      
+        }
+        for (Iterator<StudyOtherRef> it = study.getStudyOtherRefs().iterator(); it.hasNext();) {
+            StudyOtherRef elem = it.next();
+            elem.getId();      
+        }
+        
         return study;
     }
     
     /**
-     *   Gets Study, and dependent objects that contain most-needed data.
-     *  (At this point, only StudyAuthor)
-     *  This can be used for displaying Study search results, for example.
+     *   Gets Study without any of its dependent objects
      *
      */
     public Study getStudy(Long studyId) {
@@ -356,13 +374,72 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         if (study==null) {
             throw new IllegalArgumentException("Unknown studyId: "+studyId);
         }
-        for (Iterator<StudyAuthor> it = study.getStudyAuthors().iterator(); it.hasNext();) {
-            StudyAuthor elem = it.next();
-            elem.getId();
-        }
+
         
         return study;
     }
+
+    
+    /**
+     *   Gets Study and dependent objects based on Map parameter;
+     *   used by searchPage
+     *
+     */    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public Study getStudyForSearch(Long studyId, Map studyFields) {
+        
+        Study study = em.find(Study.class,studyId);
+        if (study==null) {
+            throw new IllegalArgumentException("Unknown studyId: "+studyId);
+        }
+
+  
+        
+        if (studyFields != null) {
+            for (Object studyField : studyFields.keySet() ) {
+                String fieldName = (String) studyField;
+                if ( "authorName".equals(fieldName) ) {
+                    for (Iterator<StudyAuthor> it = study.getStudyAuthors().iterator(); it.hasNext();) {
+                        StudyAuthor elem = it.next();
+                        elem.getId();
+                    }
+                } else if ( "abstractText".equals(fieldName) ) {
+                    for (Iterator<StudyAbstract> it = study.getStudyAbstracts().iterator(); it.hasNext();) {
+                        StudyAbstract elem = it.next();
+                        elem.getId();
+                    }
+                } else if ( "producerName".equals(fieldName) ) {
+                    for (Iterator<StudyProducer> it = study.getStudyProducers().iterator(); it.hasNext();) {
+                        StudyProducer elem = it.next();
+                        elem.getId();
+                    }
+                } else if ( "distributorName".equals(fieldName) ) {
+                    for (Iterator<StudyDistributor> it = study.getStudyDistributors().iterator(); it.hasNext();) {
+                        StudyDistributor elem = it.next();
+                        elem.getId();
+                    }
+                } else if ( "relatedStudies".equals(fieldName) ) {
+                    for (Iterator<StudyRelStudy> it = study.getStudyRelStudies().iterator(); it.hasNext();) {
+                        StudyRelStudy elem = it.next();
+                        elem.getId();
+                    }
+                } else if ( "relatedMaterial".equals(fieldName) ) {
+                    for (Iterator<StudyRelMaterial> it = study.getStudyRelMaterials().iterator(); it.hasNext();) {
+                        StudyRelMaterial elem = it.next();
+                        elem.getId();
+                    }
+                } else if ( "relatedPublications".equals(fieldName) ) {
+                    for (Iterator<StudyRelPublication> it = study.getStudyRelPublications().iterator(); it.hasNext();) {
+                        StudyRelPublication elem = it.next();
+                        elem.getId();
+                    }
+                }                 
+            }
+
+        }   
+        
+        return study;
+    }    
     
     public List getStudies() {
         String query = "SELECT s FROM Study s ORDER BY s.id";

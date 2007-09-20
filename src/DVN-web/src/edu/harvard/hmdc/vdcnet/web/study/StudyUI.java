@@ -55,6 +55,7 @@ import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.naming.InitialContext;
 
 /**
@@ -65,6 +66,7 @@ public class StudyUI {
     
     private Study study;
     private Long studyId;
+    private Map studyFields;
     private UserGroup ipUserGroup;
     
     /** Creates a new instance of StudyUI
@@ -79,6 +81,11 @@ public class StudyUI {
     public StudyUI(Long sid) {
         this.studyId = sid;
     }
+
+    public StudyUI(Long sid, Map studyFields) {
+        this.studyId = sid;
+        this.studyFields = studyFields;
+    }    
     
     /**
      * Creates a new instance of StudyUI
@@ -102,7 +109,7 @@ public class StudyUI {
                 e.printStackTrace();
             }
             
-            study = studyService.getStudyDetail(studyId);
+            study = studyService.getStudyForSearch(studyId, studyFields);
         }
         
         return study;

@@ -32,6 +32,7 @@ package edu.harvard.hmdc.vdcnet.web.servlet;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -79,7 +80,24 @@ public class VDCServlet extends HttpServlet{
             }
         }
         else {
-            // todo: forward to an error page (this alias does not exist)
+            // todo: should this forward to a better error page?
+            createErrorResponse404(res);
         }
     }
+
+    private void createErrorResponse404(HttpServletResponse res) {
+        res.setContentType("text/html");
+	res.setStatus ( res.SC_NOT_FOUND ); 
+        try {
+            PrintWriter out = res.getWriter();
+            out.println("<HTML>");
+            out.println("<HEAD><TITLE>Dataverse not found!</TITLE></HEAD>");
+            out.println("<BODY>");
+            out.println("<BIG>Sorry. The dataverse URL you entered does not exist.</BIG>");
+            out.println("</BODY></HTML>");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }    
+    
 }

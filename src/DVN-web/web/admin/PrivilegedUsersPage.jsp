@@ -79,7 +79,7 @@
                     </ui:panelGroup>
                     <h:dataTable binding="#{PrivilegedUsersPage.userTable}" cellpadding="0" cellspacing="0"
                                  columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" id="dataTable1"
-                                 rowClasses="list-row-even,list-row-odd" value="#{PrivilegedUsersPage.privilegedUsers}" var="currentRow" width="100%">
+                                 rowClasses="list-row-even,list-row-odd" value="#{PrivilegedUsersPage.privilegedUsers}" var="currentRow" width="98%">
                         <h:column id="column1">
                             <f:facet name="header">
                                 <h:outputText id="outputText3" value="Username"/>
@@ -126,7 +126,7 @@
                     </ui:panelGroup>
                     <h:dataTable binding="#{PrivilegedUsersPage.groupTable}" cellpadding="0" cellspacing="0"
                                  columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" 
-                                 rowClasses="list-row-even,list-row-odd" value="#{PrivilegedUsersPage.vdc.allowedGroups}" var="currentRow" width="100%">
+                                 rowClasses="list-row-even,list-row-odd" value="#{PrivilegedUsersPage.vdc.allowedGroups}" var="currentRow" width="98%">
                         <h:column >
                             <f:facet name="header">
                                 <h:outputText id="groups_tcol1" value="Group Name"/>

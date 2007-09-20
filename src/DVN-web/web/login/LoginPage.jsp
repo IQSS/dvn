@@ -13,7 +13,7 @@
 
                          </f:verbatim>
                         <ui:panelLayout id="layoutPanel1" panelLayout="flow" styleClass="ContentArea">
-                                <p><h:outputText escape="false" styleClass="headingText" value="Login"/></p>
+                                <p><a name="login" title=""><h:outputText escape="false" styleClass="headingText" value="Login"/></a></p>
                                
                                 <ui:panelLayout panelLayout="flow" styleClass="ContentAreaBody">
                                     <ui:panelGroup styleClass="loginPageMessages"  block="true" style="padding-bottom: 15px; padding-right:50px "  rendered="#{LoginPage.redirect!=null}">

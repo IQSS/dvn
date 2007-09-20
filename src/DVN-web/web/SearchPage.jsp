@@ -81,7 +81,9 @@
       <ui:panelLayout styleClass="#{ (SearchPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'}" >  
            <ui:panelLayout styleClass="#{ (SearchPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}" >    	
               <div class="dvn_sectionTitle">
-                  <h:outputText value="#{SearchPage.listHeader}"/>
+                  <a name="recent" title="">
+                      <h:outputText value="#{SearchPage.listHeader}"/>
+                  </a>
               </div>            
                   <div class="dvn_sectionBox">  
                      <div class="dvn_margin12">

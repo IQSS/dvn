@@ -10,10 +10,10 @@
 
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                    
+                    <a name="about" title="">
                         <h:outputText  value="About #{VDCRequest.currentVDC.name} Dataverse" rendered="#{VDCRequest.currentVDCId != null}"/>
                         <h:outputText  value="About #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDCId == null}"/>
-                 
+                    </a>
                 </div>            
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">

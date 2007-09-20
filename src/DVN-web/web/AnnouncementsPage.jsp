@@ -11,9 +11,9 @@
             
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                    
+                    <a name="announcements" title="">
                         <h:outputText  value="#{ (VDCRequest.currentVDCId != null) ? 'Local' : 'Network'} #{bundle.announcementsHeading}"/>
-                     
+                    </a>
                 </div>            
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">

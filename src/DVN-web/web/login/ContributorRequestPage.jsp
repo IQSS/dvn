@@ -12,9 +12,9 @@
 
         <div class="dvn_section">
             <div class="dvn_sectionTitle">
-                
+                <a name="request" title="">
                     <h:outputText value="Request to Become a Dataverse Contributor"/>
-                
+                </a>
             </div>            
             <div class="dvn_sectionBox">
                 <div class="dvn_margin12">

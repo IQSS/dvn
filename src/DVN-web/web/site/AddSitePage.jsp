@@ -12,9 +12,9 @@
             
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                
+                    <a name="addSite" title="">
                         <h:outputText binding="#{AddSitePage.outputText1}" value="Add a New Dataverse"/>
-                    
+                    </a>
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12"> 

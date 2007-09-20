@@ -10,9 +10,9 @@
               
               <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                     
+                    <a name="contact" title="">
                         <h:outputText  value="#{bundle.contactUsHeading}"/>
-                     
+                    </a>
                 </div>            
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">

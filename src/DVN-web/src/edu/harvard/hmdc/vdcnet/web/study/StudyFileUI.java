@@ -54,6 +54,7 @@ public class StudyFileUI {
     public StudyFileUI(StudyFile studyFile, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         this.studyFile=studyFile;
         this.restrictedForUser = studyFile.isFileRestrictedForUser(user,vdc, ipUserGroup);
+        this.vdcId = vdc != null ? vdc.getId() : null;
     }
 
     /**
@@ -97,8 +98,17 @@ public class StudyFileUI {
     public void setRestrictedForUser(boolean restrictedForUser) {
         this.restrictedForUser = restrictedForUser;
     }
-    
-    
+
+    // variables used in download
+    private Long vdcId;
+
+    public Long getVdcId() {
+        return vdcId;
+    }
+
+    public void setVdcId(Long vdcId) {
+        this.vdcId = vdcId;
+    }
     private String format;
 
     public String getFormat() {
@@ -119,7 +129,10 @@ public class StudyFileUI {
             if (!StringUtil.isEmpty(format)) {
                 fileDownloadURL += "&format=" + this.format;
             }
-            System.out.println("This is the project class file ... ");
+            if (vdcId != null) {
+                fileDownloadURL += "&vdcId=" + this.vdcId;
+            }            
+
             FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
             HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
             response.sendRedirect(fileDownloadURL);

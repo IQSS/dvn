@@ -310,7 +310,7 @@ public class StudyPage extends VDCBaseBean {
     }
 
     public void init() {
-        super.init();
+        super.init();       
         // set tab if it was it was sent as pamameter or part of request bean
         if (getTab() != null) {
             getTabSet1().setSelected(getTab());
@@ -338,7 +338,7 @@ public class StudyPage extends VDCBaseBean {
                 if ( "files".equals(getTabSet1().getSelected()) ) {
                     studyUI =new StudyUI( 
                         studyService.getStudyDetail(studyId),
-                        getVDCSessionBean().getLoginBean()!=null ? getVDCRequestBean().getCurrentVDC() : null,
+                        getVDCRequestBean().getCurrentVDC(),
                         getVDCSessionBean().getLoginBean()!=null ? this.getVDCSessionBean().getLoginBean().getUser() : null, 
                         getVDCSessionBean().getIpUserGroup()
                     );
@@ -346,7 +346,13 @@ public class StudyPage extends VDCBaseBean {
                     studyUI =new StudyUI( studyService.getStudyDetail(studyId) );
                 }
 
-             
+                // flag added to start with all file categories closed
+                if (getRequestParam("renderFiles") != null &&  getRequestParam("renderFiles").equals("false") )  {
+                    for (FileCategoryUI catUI : studyUI.getCategoryUIList()) {
+                        catUI.setRendered(false);
+                    }
+                } 
+                
                 sessionPut( studyUI.getClass().getName(), studyUI);
                 initPanelDisplay();
 
@@ -629,5 +635,5 @@ public boolean getNotesIsEmpty() {
      }
      
      
-    
+
 }

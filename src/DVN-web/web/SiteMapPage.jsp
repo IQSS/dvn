@@ -33,13 +33,13 @@
                                     <h:outputLink id="basicSearchLink"  styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}#search">
                                         <h:outputText  id="basicSearchText" value="#{bundle.sitemapSearchLink}"/>
                                     </h:outputLink>
-                                    <h:outputLink id="advSearchLink3" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
+                                    <h:outputLink id="advSearchLink3" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp#advancedSearch">
                                         <h:outputText  id="advSearchText" value="#{bundle.sitemapAdvancedSearchLink}"/>
                                     </h:outputLink>
                                     <h:outputLink id="browseCollectionsLink" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.jsp#browse">
                                         <h:outputText  id="browseCollectionsText" value="#{bundle.sitemapBrowseCollectionsLink}"/>
                                     </h:outputLink>
-                                    <h:outputLink rendered="#{VDCRequest.currentVDCId != null}" id="MostRecentLink" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4&amp;numResults=100">
+                                    <h:outputLink rendered="#{VDCRequest.currentVDCId != null}" id="MostRecentLink" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4&amp;numResults=100#recent">
                                         <h:outputText  id="MostRecentText" value="#{bundle.sitemapMostRecentLink}"/>
                                     </h:outputLink>
                                 </ui:panelGroup>
@@ -51,20 +51,20 @@
                                     <h:outputText  id="accountHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapAccountHeading}"/>
                                 </ui:panelGroup>
                                 <ui:panelGroup block="true" id="groupPanel8" style="padding-left: 10px">
-                                    <h:outputLink id="sitemaplink8" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp">
+                                    <h:outputLink id="sitemaplink8" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp#login">
                                         <h:outputText  id="sitemaplink8Text" value="#{bundle.sitemapLoginLink}"/>
                                     </h:outputLink>
                                     <!-- another work-around using f:verbatim because jsf renders double breaks in separator based on the
                               pre-rendered code. Therefore, if I don't render a link, there is a big whole in the UI -->
                                     <f:verbatim rendered="#{VDCRequest.currentVDCId != null}"><br /><br /></f:verbatim>
-                                    <h:outputLink id="contributorRequestAccountLink" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean == null}" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestAccountPage.jsp">
+                                    <h:outputLink id="contributorRequestAccountLink" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean == null}" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestAccountPage.jsp#request">
                                         <h:outputText id="contributorRequestAccountText" value="#{bundle.sitemapBecomeContributorLink}"/>
                                     </h:outputLink>
-                                    <h:outputLink id="contributorRequestLink" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean != null}" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestPage.jsp">
+                                    <h:outputLink id="contributorRequestLink" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean != null}" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestPage.jsp#request">
                                         <h:outputText id="contributorRequestText" value="#{bundle.sitemapBecomeContributorLink}"/>
                                     </h:outputLink>
                                     <f:verbatim rendered="#{VDCRequest.currentVDCId == null}"><br /><br /></f:verbatim>
-                                    <h:outputLink rendered="#{VDCRequest.currentVDC == null and (VDCSession.loginBean.networkAdmin == true or VDCSession.loginBean.networkCreator == true)}" id="sitemaplink11" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/AddSitePage.jsp">
+                                    <h:outputLink rendered="#{VDCRequest.currentVDC == null and (VDCSession.loginBean.networkAdmin == true or VDCSession.loginBean.networkCreator == true)}" id="sitemaplink11" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/AddSitePage.jsp#addSite">
                                         <h:outputText  id="sitemaplink11Text" value="#{bundle.sitemapCreateDataverseLink}"/>
                                     </h:outputLink>
                                 </ui:panelGroup>
@@ -76,13 +76,13 @@
                                     <h:outputText  id="aboutHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapAboutHeading}"/>
                                 </ui:panelGroup>
                                 <ui:panelGroup block="true" id="groupPanel10" style="padding-left: 10px">
-                                    <h:outputLink rendered="#{VDCRequest.currentVDCId != null}" id="sitemaplink12" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AboutPage.jsp">
+                                    <h:outputLink rendered="#{VDCRequest.currentVDCId != null}" id="sitemaplink12" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AboutPage.jsp#about">
                                         <h:outputText  rendered="#{VDCRequest.currentVDCId != null}" id="sitemaplink12Text" value="#{bundle.sitemapAboutDataverseLink}"/>
                                     </h:outputLink>
                                     <!-- another work-around using f:verbatim because jsf renders double breaks in separator based on the
                               pre-rendered code. Therefore, if I don't render a link, there is a big whole in the UI -->
                                     <f:verbatim rendered="#{VDCRequest.currentVDCId != null}"><br /><br /></f:verbatim>
-                                    <h:outputLink  id="sitemaplink13" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AboutPage.jsp">
+                                    <h:outputLink  id="sitemaplink13" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AboutPage.jsp#about">
                                         <h:outputText id="sitemaplink13Text" value="#{bundle.sitemapAboutNetworkLink}"/>
                                     </h:outputLink>
                                     <f:verbatim><br /><br /></f:verbatim>
@@ -99,18 +99,18 @@
                                         </span>
                                     </f:verbatim>
                                     <f:verbatim><br /><br /></f:verbatim>
-                                    <h:outputLink id="sitemaplink15" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.jsp">
+                                    <h:outputLink id="sitemaplink15" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.jsp#contact">
                                         <h:outputText  id="sitemaplink15Text" value="#{bundle.sitemapContactUsLink}"/>
                                     </h:outputLink>
                                     <f:verbatim><br /><br /></f:verbatim>
                                     <h:outputLink rendered="#{((VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null)) or ((VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and (VDCRequest.currentVDC != null))}" 
                                                   id="sitemaplink4" 
                                                   styleClass="vdcSiteMapLink" 
-                                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/AnnouncementsPage.jsp">
+                                                  value="/dvn#{VDCRequest.currentVDCURL}/faces/AnnouncementsPage.jsp#announcements">
                                         <h:outputText rendered="#{((VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null)) or ((VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and (VDCRequest.currentVDC != null))}" id="sitemaplink4Text" value="#{bundle.sitemapNetworkAnnouncementsLink}"/>
                                     </h:outputLink>
                                     <f:verbatim rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.displayAnnouncements == true and VDCRequest.currentVDC.displayNetworkAnnouncements == true}"><br /><br /></f:verbatim>
-                                    <h:outputLink rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.displayAnnouncements == true}" id="sitemaplink5" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AnnouncementsPage.jsp">
+                                    <h:outputLink rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.displayAnnouncements == true}" id="sitemaplink5" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AnnouncementsPage.jsp#announcements">
                                         <h:outputText id="sitemaplink5Text" value="#{bundle.sitemapLocalAnnouncementsLink}"/>
                                     </h:outputLink>
                                 </ui:panelGroup>

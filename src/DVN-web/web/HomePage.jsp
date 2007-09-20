@@ -16,7 +16,7 @@
       <!-- Search Section starts here -->                                       
       <div class="dvn_section dvn_overflow">        
         <div class="dvn_sectionTitle">
-             <span class="dvn_sectionTitleL">Search</span> 
+                <span class="dvn_sectionTitleL"><a name="search" title="">Search</a></span> 
                 <span class="dvn_sectionTitleR">
                     <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
                         <h:outputText  value="Advanced Search"/>
@@ -30,6 +30,7 @@
         </div>        
         <div class="dvn_searchBox">
             <div class="dvn_searchBoxContent">
+                    
                     <fieldset>
                         <label for="options">
                             <span>
@@ -44,6 +45,7 @@
                                 <f:selectItem   itemLabel="Variable Information" itemValue="variable" />
                             </h:selectOneMenu>
                         </label>
+                        
                         <label for="search">
                             <span>for -</span>
                             <h:inputText onkeypress="if (window.event) return processEvent('', 'content:homePageView:form1:searchButton'); else return processEvent(event, 'content:homePageView:form1:searchButton');" id="textField2" value="#{HomePage.searchValue}"/>
@@ -64,7 +66,7 @@
         
        <ui:panelGroup block="true" styleClass="#{ (HomePage.showRequestCreator or HomePage.showRequestContributor or VDCRequest.currentVDC.displayNewStudies == true or (VDCRequest.vdcNetwork.displayAnnouncements == true and VDCRequest.currentVDC == null) or ( (VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and VDCRequest.currentVDC != null) or VDCRequest.currentVDC.displayAnnouncements == true) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">    
             <div class="dvn_sectionTitle">
-                Browse
+                <a name="browse" title="">Browse</a>
             </div>            
             <div class="dvn_sectionBox">
                 <div class="dvn_margin12">

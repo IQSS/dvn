@@ -10,11 +10,11 @@
     
         <div class="dvn_headerTitle">
             <div class="dvn_headerTitleR">   
-                <ui:imageHyperlink alt="Powered by the Dataverse Network Project" border="0" imageURL="/resources/poweredby_logo.gif" toolTip="Link to the Dataverse Network Project" url="http://thedata.org"/>
+                <ui:imageHyperlink alt="Powered by the Dataverse Network Project" border="0" imageURL="/resources/poweredby_logo.gif" toolTip="Link to the Dataverse Network Project" url="http://thedata.org" target="_blank" />
             </div>
             <div class="dvn_headerTitleL"> 
                 <h:outputText  value="&#160;" rendered="#{VDCRequest.currentVDC == null}" />
-                <h:outputLink value="/dvn" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" rendered="#{VDCRequest.currentVDC != null}">
+                <h:outputLink value="/dvn" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" target="_top" rendered="#{VDCRequest.currentVDC != null}">
                     <h:outputText  value="All #{VDCRequest.vdcNetwork.name} Dataverses &#160;&gt;"  />
                 </h:outputLink>
             </div>
@@ -51,7 +51,7 @@
                       </h:outputLink>
                     </li>
                     <li>
-                      <h:outputLink  value="http://thedata.org/help" target="_blank" title="Open Help Manual">
+                      <h:outputLink  value="http://thedata.org/help" target="_blank" title="Open On-line Help">
                          <h:outputText value="#{bundle.helpLabel}"/>
                       </h:outputLink>
                     </li>

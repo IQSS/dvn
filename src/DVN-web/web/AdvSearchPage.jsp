@@ -11,9 +11,9 @@
             
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                     
+                    <a name="advancedSearch" title="">
                         Advanced Search
-                     
+                    </a>
                 </div>            
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">

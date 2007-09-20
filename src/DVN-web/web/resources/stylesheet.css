@@ -45,7 +45,6 @@ body {
 	margin: 0 auto;
 	max-width: 980px;
         min-width: 700px;
-	height: 101%;
 }
 
 .dvn_content {
@@ -1206,10 +1205,10 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 #content:vDCGroupPageView:vdcGroupPageForm:VDCGroups:dataTableCaption {font-size:1.2em; }/*overrides the default theme */
 .Lst { max-width:700px; overflow:scroll; }
 
-.dvGroupAdminLayout     { min-width:300px; max-width:800px; margin-left:auto; margin-right:auto; margin-top:25px; border-width:1px 1px 1px 1px; border-style:solid; border-color:silver; }
-.dvGroupAdminTable      { width:100%; padding:0px; }
+.dvGroupAdminLayout     { margin-left:auto; margin-right:auto; margin-top:25px; border-width:1px 1px 1px 1px; border-style:solid; border-color:silver; }
+.dvGroupAdminTable      { width:98%; padding:0px; }
 #dvGroupAdminCaption    { border-left:1px solid silver; border-right:1px solid silver; font-size:1.2em; }
-.dvGroupAdminFooter     { width:100%; background-color: #d9e7f0; }
+.dvGroupAdminFooter     { width:98%; background-color: #d9e7f0; }
 .groupAdminHeader       { background-color: #d9e7f0; padding:0 0.3em; }
 .groupAdminOrderColumn  { width:5px; border:1px solid silver; text-align:center; }
 .groupAdminNameColumn   { width:30%; border:1px solid silver; text-align:left; padding-left: 0.3em; }
@@ -1219,7 +1218,7 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 
 #dvGroupNoneCaption    { border-left:1px solid silver; border-right:1px solid silver; font-size:1.2em; }
 #dataNoneCaption        {font-size:1.2em; }/*overrides the default theme */
-.groupAdminNoneColumn   { width:100%; border:1px solid silver; text-align:center; }
+.groupAdminNoneColumn   { width:98%; border:1px solid silver; text-align:center; }
 
 .groupAdminOrderFooter  { width:5%; border:0px; text-align:right; padding:0px 6px 0px 0px; }
 .groupAdminNameFooter   { width:30%; border:0px; padding-left:5px; text-align:left; text-decoration:underline; color:#006699; }
@@ -1229,7 +1228,7 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 .groupEditHeader        { background-color: #d9e7f0; padding:0px; }
 .groupEditNameColumn    { width:30%; vertical-align:top; border:1px solid silver; text-align:left; }
 .groupEditDescriptionColumn   { width:70%; border:1px solid silver; text-align:left; }
-.groupEditFooter        { width:100%; background-color:#d9e7f0; padding:0px; text-align:right;  }
+.groupEditFooter        { width:98%; background-color:#d9e7f0; padding:0px; text-align:right;  }
 
 /* Overwrite tabset style rules (from Creator Default Themes)
 */

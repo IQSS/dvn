@@ -84,7 +84,7 @@
                                 <ui:panelLayout panelLayout="flow" styleClass="ContentAreaFooter">
                                     <f:verbatim>
                                         <p>
-                                            <ui:imageHyperlink alt="Powered by the Dataverse Network Project" border="0" imageURL="/resources/poweredby_logo.gif" toolTip="Link to the Dataverse Network Project" url="http://thedata.org"/>
+                                            <ui:imageHyperlink alt="Powered by the Dataverse Network Project" border="0" imageURL="/resources/poweredby_logo.gif" toolTip="Link to the Dataverse Network Project" url="http://thedata.org" target="_blank" />
                                         </p>
                                     </f:verbatim>
                                

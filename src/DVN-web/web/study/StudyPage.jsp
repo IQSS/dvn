@@ -435,6 +435,7 @@
                                                       value="#{catUI.studyFileUIs}" var="studyFileUI" width="100%">
                                             <h:column  id="column9">
                                                 <h:outputText  id="outputText15" value="#{studyFileUI.studyFile.fileName}"/>
+                                                <h:inputHidden id="vdcIdforFile" value="#{studyFileUI.vdcId}"/>
                                             </h:column>
                                             <h:column  id="column10">
                                                 <h:outputText  id="outputText17" value="#{studyFileUI.studyFile.description}"/>

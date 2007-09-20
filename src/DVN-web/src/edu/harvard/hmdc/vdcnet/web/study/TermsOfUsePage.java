@@ -104,9 +104,11 @@ public class TermsOfUsePage extends VDCBaseBean {
     }       
     
     
-    private boolean vdcTermsAccepted;
-    private boolean studyTermsAccepted;
-
+    // only one checkbox for all terms
+    //private boolean vdcTermsAccepted;
+    //private boolean studyTermsAccepted;
+    private boolean termsAccepted;
+    
     public boolean isTermsAcceptanceRequired() {
         return isVdcTermsRequired() || isStudyTermsRequired();
     }
@@ -131,6 +133,7 @@ public class TermsOfUsePage extends VDCBaseBean {
         return false;
     }     
     
+    /*
     public boolean isVdcTermsAccepted() {
         return vdcTermsAccepted;
     }
@@ -146,15 +149,35 @@ public class TermsOfUsePage extends VDCBaseBean {
     public void setStudyTermsAccepted(boolean studyTermsAccepted) {
         this.studyTermsAccepted = studyTermsAccepted;
     }
+    */
 
+    public boolean isTermsAccepted() {
+        return termsAccepted;
+    }
+
+    public void setTermsAccepted(boolean termsAccepted) {
+        this.termsAccepted = termsAccepted;
+    }    
+    
     public String acceptTerms_action () {
         Map termsOfUseMap = getTermsOfUseMap();
+        
+        /*
         if ( studyTermsAccepted )  {         
             termsOfUseMap.put( "study_" + study.getId(), "accepted" );
         }
         if ( vdcTermsAccepted ) { 
             termsOfUseMap.put( "vdc_" + study.getOwner().getId(), "accepted" );
         }
+        */
+
+        if ( termsAccepted && isStudyTermsRequired() )  {         
+            termsOfUseMap.put( "study_" + study.getId(), "accepted" );
+        }
+        if ( termsAccepted && isVdcTermsRequired() ) { 
+            termsOfUseMap.put( "vdc_" + study.getOwner().getId(), "accepted" );
+        }        
+        
         if (redirectPage != null) {
             // piggy back on the login redirect logic for now
             String loginRedirect = this.getExternalContext().getRequestContextPath() + getVDCRequestBean().getCurrentVDCURL() + redirectPage;

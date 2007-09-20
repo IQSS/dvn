@@ -87,7 +87,7 @@ span.dvn_sectionTitleR a {margin-left: 2em; font-weight: normal; font-size: 0.9e
    line-height: inherit ;
 } 
 
-.dvn_sectionPanels {display: inline; margin-left: 2%; width: 23%; float: left;}
+.dvn_sectionPanels {display: inline; margin-left: 2%; width: 22%; float: right;} 
 
 .dvn_sectionPanelTitle {padding: .25em 0; border-bottom: 2px solid #035899; color: #555; font-size: 1.2em; font-weight: bold;} 
 .dvn_sectionPanels div.dvn_sectionPanelText {margin-bottom: 1em; padding: .5em; border-left: 1px solid #ccc; } 

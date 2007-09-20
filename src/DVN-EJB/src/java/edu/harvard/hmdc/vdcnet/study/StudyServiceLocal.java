@@ -24,6 +24,7 @@ import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Local;
 import javax.xml.bind.JAXBException;
 
@@ -38,7 +39,7 @@ public interface StudyServiceLocal {
      */
     
     public void exportStudyFiles(String lastUpdateTime, String authority) throws IOException, JAXBException;
-    public void addStudy(Study study);
+    public void addStudy(Study study); 
         
     public Study getStudy(Long studyId);
     
@@ -47,6 +48,8 @@ public interface StudyServiceLocal {
     public Study getStudyByHarvestInfo(String authority, String harvestIdentifier);
    
     public Study getStudyDetail(Long studyId);
+    
+    public Study getStudyForSearch(Long studyId, Map studyFields);
     
     public void updateStudy(Study study);
     

@@ -78,6 +78,7 @@ public class DSBWrapper {
     private static final String FORMAT_TYPE_SPLUS = "D02";
     private static final String FORMAT_TYPE_STATA = "D03";
     private static final String FORMAT_TYPE_R = "D03";
+    private static final String[] SUBSETTABLE_FORMAT_SET = {"POR", "SAV", "DTA"};
     
     
     /** Creates a new instance of DSBWrapper */
@@ -89,20 +90,20 @@ public class DSBWrapper {
         String dsbPort = System.getProperty("vdc.dsb.port");
         
         if (dsbHost != null) {
-	    if ( dsbPort != null ) {
-		return "http://" + dsbHost + ":" + dsbPort + "/VDC/DSB/0.1/" + verb;
-	    } else {
-		return "http://" + dsbHost + "/VDC/DSB/0.1/" + verb;
-	    }
+        if ( dsbPort != null ) {
+        return "http://" + dsbHost + ":" + dsbPort + "/VDC/DSB/0.1/" + verb;
         } else {
-	    // fallback to the old-style option: 
-	    dsbHost = System.getProperty("vdc.dsb.url");
+        return "http://" + dsbHost + "/VDC/DSB/0.1/" + verb;
+        }
+        } else {
+        // fallback to the old-style option: 
+        dsbHost = System.getProperty("vdc.dsb.url");
 
-	    if (dsbHost != null) {
-		return "http://" + dsbHost + "/VDC/DSB/0.1/" + verb;
-	    } else {
-		throw new IOException("System property \"vdc.dsb.host\" has not been set.");
-	    }
+        if (dsbHost != null) {
+        return "http://" + dsbHost + "/VDC/DSB/0.1/" + verb;
+        } else {
+        throw new IOException("System property \"vdc.dsb.host\" has not been set.");
+        }
         }
         
     }
@@ -133,6 +134,22 @@ public class DSBWrapper {
         try {
             String fileType = null;
             
+            // step 1: check whether the file is subsettable
+            
+            SubsettableFileChecker sfchk = new SubsettableFileChecker(SUBSETTABLE_FORMAT_SET);
+            
+            fileType = sfchk.detectSubsettableFormat(f);
+            
+            // setp 2: check the mime type of this file
+            /* to be implemented
+            if (fileType == null){
+                JhoveWrapper jw = new JhoveWrapper();
+                fileType = jw.checkFileType(f);
+            }
+            */
+            if (fileType == null){
+            
+            //to be deprecated
             // create method
             method = new PostMethod(generateUrl(DSB_ANALYZE));
             method.addParameter("file_name", f.getName());
@@ -152,6 +169,8 @@ public class DSBWrapper {
                     fileType = line.substring( startIndex+6,endIndex );
                     //break;
                 }
+            }
+            
             }
             
             return fileType;

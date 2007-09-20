@@ -783,13 +783,12 @@ sub Analyze {
 	{  $error="couldn't reopen $fragfn"; goto ABORT;  }   
 
      binmode(FRAG);
-     if ($mime=$self->_checkfile(FRAG, $fragfn)){
-        
-	$a_type="datafile";
-	$a_disposition="datafile";
-	$description = "Subsettable statistical data format";
-    	$success=1;
-    } else {
+    #if ($mime=$self->_checkfile(FRAG, $fragfn)){
+    # $a_type="datafile";
+    # $a_disposition="datafile";
+    # $description = "Subsettable statistical data format";
+    # $success=1;
+    #} else {
 
     	if (!open(FILEC,"file -ibn '$fragfn'|"))  {  $error="couldn't run file "; goto ABORT;  }
     	my $fres=<FILEC>;
@@ -828,7 +827,7 @@ sub Analyze {
 	    	$mime="application/octet-stream";
 	    }
     	}
-    }
+    #}
 
 
     ABORT:    unless ($success) 
@@ -1036,8 +1035,8 @@ sub _checkfile {
 				# cases: RDX2(non-ASCII format) or RDA2(ASCII format)
 				# cases: RDX1(non-ASCII format) or RDA1(ASCII format)
 				$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","This file is an gzipped-RData type");
-				#return undef;
-				return("application/x-rlang-transport");
+				return undef;
+				#return("application/x-rlang-transport");
 			} else {
 				$self->{logger}->vdcLOG_info ( "VDC::DSB", "(Analyze)","The expected byte-pattern was not found; This file is not an RData type");
 				return undef;

@@ -46,6 +46,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collection;
@@ -157,9 +159,9 @@ public class FileDownloadServlet extends HttpServlet{
 		// do the http magic
 
 		if (formatRequested != null) {
-
 		    // user requested the file in a non-default (i.e.,
 		    // not tab-delimited) format.
+
 		    // we are going to send a format conversion request to 
 		    // the DSB via HTTP.
 		    
@@ -172,7 +174,7 @@ public class FileDownloadServlet extends HttpServlet{
 		    parameters.put("uri", generateUrlForDDI(serverPrefix, file.getFileCategory().getStudy().getId()));
 		    parameters.put("URLdata", generateUrlForFile(serverPrefix, file.getId()));
 		    parameters.put("fileid", "f" + file.getId().toString());
-
+			
 		    // We are requesting a conversion of the whole datafile. 
 		    // I was positive there was a simple way to ask univar (Disseminate)
 		    // for "all" variables; but I'm not so sure anymore. So 
@@ -182,10 +184,11 @@ public class FileDownloadServlet extends HttpServlet{
 
 		    List variables = file.getDataTable().getDataVariables();
 		    parameters.put("varbl", generateVariableListForDisseminate( variables ) );
+		    parameters.put("packageType", "fileonly");
 
 		    PostMethod method = null; 
 		    int status = 200;		    
-
+			
 		    try { 
 			method = new PostMethod (generateDisseminateUrl());
 
@@ -193,7 +196,7 @@ public class FileDownloadServlet extends HttpServlet{
 			while (iter.hasNext()) {
 			    String key = (String) iter.next();
 			    Object value = parameters.get(key);
-                
+				
 			    if (value instanceof String) {
 				method.addParameter(key, (String) value);
 			    } else if (value instanceof List) {
@@ -210,7 +213,7 @@ public class FileDownloadServlet extends HttpServlet{
 		    } catch (IOException ex) {
 			// return 404 and
 			// generate generic error messag:
-
+			
 			status = 404; 
 			createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
 						    ? method.getStatusLine().toString()
@@ -218,7 +221,7 @@ public class FileDownloadServlet extends HttpServlet{
 			if (method != null) { method.releaseConnection(); }
 			return;
 		    }
-
+		    
 		    if ( status != 200 ) {
 			createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
 						    ? method.getStatusLine().toString()
@@ -242,7 +245,7 @@ public class FileDownloadServlet extends HttpServlet{
 
 			InputStream in = method.getResponseBodyAsStream(); 
 			OutputStream out = res.getOutputStream();
-
+			    
 			int i = in.read();
 			while (i != -1 ) {
 			    out.write(i);
@@ -257,7 +260,6 @@ public class FileDownloadServlet extends HttpServlet{
 		    }
 		    
 		    method.releaseConnection();
-		    
 		} else {
 		    GetMethod method = null; 
 		    int status = 200;
@@ -371,103 +373,144 @@ public class FileDownloadServlet extends HttpServlet{
 
 		    // user requested the file in a non-default (i.e.,
 		    // not tab-delimited) format.
-		    // we are going to send a format conversion request to 
-		    // the DSB via HTTP.
-		    
-		    Map parameters = new HashMap();		    
 
-		    parameters.put("dtdwnld", formatRequested); 
+		    // First, let's check if we have this file cached.
 
-		    String serverPrefix = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
+		    String cachedFileSystemLocation = file.getFileSystemLocation() + "." + formatRequested; 
 
-		    parameters.put("uri", generateUrlForDDI(serverPrefix, file.getFileCategory().getStudy().getId()));
-		    parameters.put("URLdata", generateUrlForFile(serverPrefix, file.getId()));
-		    parameters.put("fileid", "f" + file.getId().toString());
+		    if ( new File(cachedFileSystemLocation).exists() ) {
+			try {
+			    String cachedAltFormatType = generateAltFormat ( formatRequested ); 
+			    String cachedAltFormatFileName = generateAltFileName ( formatRequested, "f" + file.getId().toString() ); 
 
-		    // We are requesting a conversion of the whole datafile. 
-		    // I was positive there was a simple way to ask univar (Disseminate)
-		    // for "all" variables; but I'm not so sure anymore. So 
-		    // far I've only been able to do this by listing all the 
-		    // variables in the datafile and adding them to the request.
-		    // :( -- L.A.
-
-		    List variables = file.getDataTable().getDataVariables();
-		    parameters.put("varbl", generateVariableListForDisseminate( variables ) );
-
-		    PostMethod method = null; 
-		    int status = 200;		    
-
-		    try { 
-			method = new PostMethod (generateDisseminateUrl());
-
-			Iterator iter = parameters.keySet().iterator();
-			while (iter.hasNext()) {
-			    String key = (String) iter.next();
-			    Object value = parameters.get(key);
+			    res.setHeader ( "Content-disposition",
+					    "attachment; filename=\"" + cachedAltFormatFileName + "\"" ); 
+			    res.setHeader ( "Content-Type",
+						 cachedAltFormatType + "; name=\"" + cachedAltFormatFileName + "\"; charset=ISO-8859-1" ); 
+				
+			
+			    // send the file as the response
+			    InputStream in = new FileInputStream(new File(cachedFileSystemLocation));
+			    OutputStream out = res.getOutputStream();
+			
+			    int i = in.read();
+			    while (i != -1 ) {
+				out.write(i);
+				i = in.read();
+			    }
+			    in.close();
+			    out.close();
                 
-			    if (value instanceof String) {
-				method.addParameter(key, (String) value);
-			    } else if (value instanceof List) {
-				Iterator valueIter = ((List) value).iterator();
-				while (valueIter.hasNext()) {
-				    String item = (String) valueIter.next();
-				    method.addParameter(key, (String) item);
+			
+			} catch (IOException ex) {
+			    ex.printStackTrace();
+			}
+
+		    } else {
+
+			// we are going to send a format conversion request to 
+			// the DSB via HTTP.
+		    
+			Map parameters = new HashMap();		    
+
+			parameters.put("dtdwnld", formatRequested); 
+
+			String serverPrefix = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
+
+			parameters.put("uri", generateUrlForDDI(serverPrefix, file.getFileCategory().getStudy().getId()));
+			parameters.put("URLdata", generateUrlForFile(serverPrefix, file.getId()));
+			parameters.put("fileid", "f" + file.getId().toString());
+
+			// We are requesting a conversion of the whole datafile. 
+			// I was positive there was a simple way to ask univar (Disseminate)
+			// for "all" variables; but I'm not so sure anymore. So 
+			// far I've only been able to do this by listing all the 
+			// variables in the datafile and adding them to the request.
+			// :( -- L.A.
+
+			List variables = file.getDataTable().getDataVariables();
+			parameters.put("varbl", generateVariableListForDisseminate( variables ) );
+			parameters.put("packageType", "fileonly");
+
+			PostMethod method = null; 
+			int status = 200;		    
+
+			try { 
+			    method = new PostMethod (generateDisseminateUrl());
+
+			    Iterator iter = parameters.keySet().iterator();
+			    while (iter.hasNext()) {
+				String key = (String) iter.next();
+				Object value = parameters.get(key);
+                
+				if (value instanceof String) {
+				    method.addParameter(key, (String) value);
+				} else if (value instanceof List) {
+				    Iterator valueIter = ((List) value).iterator();
+				    while (valueIter.hasNext()) {
+					String item = (String) valueIter.next();
+					method.addParameter(key, (String) item);
+				    }
 				}
 			    }
-			}
 
-			status = getClient().executeMethod(method);
+			    status = getClient().executeMethod(method);
 			
-		    } catch (IOException ex) {
-			// return 404 and
-			// generate generic error messag:
+			} catch (IOException ex) {
+			    // return 404 and
+			    // generate generic error messag:
 
-			status = 404; 
-			createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
-						    ? method.getStatusLine().toString()
-						    : "DSB conversion failure");
-			if (method != null) { method.releaseConnection(); }
-			return;
-		    }
+			    status = 404; 
+			    createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
+							? method.getStatusLine().toString()
+							: "DSB conversion failure");
+			    if (method != null) { method.releaseConnection(); }
+			    return;
+			}
 
-		    if ( status != 200 ) {
-			createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
-						    ? method.getStatusLine().toString()
-						    : "DSB conversion failure");
-			if (method != null) { method.releaseConnection(); }
-			return;
-		    }
+			if ( status != 200 ) {
+			    createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
+							? method.getStatusLine().toString()
+							: "DSB conversion failure");
+			    if (method != null) { method.releaseConnection(); }
+			    return;
+			}
 
-		    try {
-			// recycle all the incoming headers 
-			for (int i = 0; i < method.getResponseHeaders().length; i++) {
-			    String headerName = method.getResponseHeaders()[i].getName();
-			    if (headerName.startsWith("Content")) {
-				res.setHeader(method.getResponseHeaders()[i].getName(), method.getResponseHeaders()[i].getValue());
+			try {
+			    // recycle all the incoming headers 
+			    for (int i = 0; i < method.getResponseHeaders().length; i++) {
+				String headerName = method.getResponseHeaders()[i].getName();
+				if (headerName.startsWith("Content")) {
+				    res.setHeader(method.getResponseHeaders()[i].getName(), method.getResponseHeaders()[i].getValue());
+				}
 			    }
-			}
 
 
 		    
-			// send the incoming HTTP stream as the response body
+			    // send the incoming HTTP stream as the response body
+			    InputStream in = method.getResponseBodyAsStream(); 
+			    OutputStream out = res.getOutputStream();
 
-			InputStream in = method.getResponseBodyAsStream(); 
-			OutputStream out = res.getOutputStream();
+			    // Also, we want to cache this file for future use:
 
-			int i = in.read();
-			while (i != -1 ) {
-			    out.write(i);
-			    i = in.read();
+			    BufferedWriter fileCachingStream = new BufferedWriter(new FileWriter(cachedFileSystemLocation));
+
+			    int i = in.read();
+			    while (i != -1 ) {
+				out.write(i);
+				fileCachingStream.write(i); 
+				i = in.read();
+			    }
+			    in.close();
+			    out.close();
+			    fileCachingStream.close(); 
+                
+			} catch (IOException ex) {
+			    ex.printStackTrace();
 			}
-			in.close();
-			out.close();
-                
-                
-		    } catch (IOException ex) {
-			ex.printStackTrace();
+		    
+			method.releaseConnection();
 		    }
-		    
-		    method.releaseConnection();
 		    
 		} else {
 
@@ -771,7 +814,33 @@ public class FileDownloadServlet extends HttpServlet{
         System.out.println(file);
         return file;
     }
-   
+
+    private String generateAltFormat(String formatRequested) {
+        String altFormat; 
+	
+	if ( formatRequested.equals("D02") ) {
+	    altFormat = "application/x-rlang-transport"; 
+	} else if ( formatRequested.equals("DO3") ) {
+	    altFormat = "application/x-stata-6"; 
+	} else {
+	    altFormat = "application/x-R-2"; 
+	}	    
+        return altFormat;
+    }
+
+    private String generateAltFileName(String formatRequested, String xfileId) {
+        String altFileName; 
+	
+	if ( formatRequested.equals("D02") ) {
+	    altFileName = "data_" + xfileId + ".ssc"; 
+	} else if ( formatRequested.equals("DO3") ) {
+	    altFileName = "data_" + xfileId + ".dta"; 
+	} else {
+	    altFileName = "data_" + xfileId + ".RData"; 
+	}	    
+        return altFileName;
+    }
+
     private String checkZipEntryName(String originalName, List nameList) {
         String name = originalName;
         int fileSuffix = 1;

@@ -148,18 +148,25 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         timerService.createTimer(cal.getTime(),dataverse.getId());
     }
     
-    public void createHarvestTimer() {
+    public void createScheduledHarvestTimers() {
+        // First clear all previous Harvesting timers 
         for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
             Timer timer = (Timer) it.next();
-            if (timer.getInfo().equals(HARVEST_TIMER)) {
-                logger.info("Cannot create HarvestTimer, timer already exists.");
-                logger.info("HarvestTimer next timeout is " +timer.getNextTimeout());
-                return;
+            if (timer.getInfo() instanceof HarvestTimerInfo) {
+                timer.cancel();
                 
             }
             
         }
         
+        List dataverses = havestingDataverseService.findAll();
+        for (Iterator it = dataverses.iterator(); it.hasNext();) {     
+            HarvestingDataverse dataverse = (HarvestingDataverse)it.next();
+            if (dataverse.isScheduled()) {
+                createHarvestTimer(dataverse);
+            }
+        }      
+        /*
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR,1);
         cal.set(Calendar.HOUR_OF_DAY,1);
@@ -171,10 +178,56 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         Date initialExpiration = cal.getTime();  // First timeout is 1:00 AM of next day
         long intervalDuration = 1000*60 *60*24;  // repeat every 24 hours
         timerService.createTimer(initialExpiration, intervalDuration,HARVEST_TIMER);
+        */
         
     }
+    public void removeHarvestTimer(HarvestingDataverse dataverse) {
+        // Clear dataverse timer, if one exists 
+        for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
+            Timer timer = (Timer) it.next();
+            if (timer.getInfo() instanceof HarvestTimerInfo ) {
+                HarvestTimerInfo info = (HarvestTimerInfo)timer.getInfo();
+                if (info.getHarvestingDataverseId().equals(dataverse.getId())) {
+                    timer.cancel();
+                }
+            }    
+        } 
+    }
     
+    public void updateHarvestTimer(HarvestingDataverse dataverse) {
+        removeHarvestTimer(dataverse);
+        createHarvestTimer(dataverse);
+    }
     
+    private void createHarvestTimer(HarvestingDataverse dataverse) {
+        if (dataverse.isScheduled()) {
+            long intervalDuration=0;
+            Calendar initExpiration = Calendar.getInstance();
+            initExpiration.set(Calendar.MINUTE, 0);
+            initExpiration.set(Calendar.SECOND, 0);
+            if (dataverse.getSchedulePeriod().equals(dataverse.SCHEDULE_PERIOD_DAILY)) {
+                 intervalDuration = 1000*60 *60*24; 
+                 initExpiration.set(Calendar.HOUR_OF_DAY, dataverse.getScheduleHourOfDay());  
+
+            } else if (dataverse.getSchedulePeriod().equals(dataverse.SCHEDULE_PERIOD_WEEKLY)) {
+                intervalDuration = 1000*60 *60*24*7; 
+                initExpiration.set(Calendar.HOUR_OF_DAY, dataverse.getScheduleHourOfDay());
+                initExpiration.set(Calendar.DAY_OF_WEEK, dataverse.getScheduleDayOfWeek());
+
+            } else {
+                logger.log(Level.WARNING, "Could not set timer for dataverse id, "+dataverse.getId()+", unknown schedule period: "+ dataverse.getSchedulePeriod());
+                return;
+            }
+            Date  initExpirationDate = initExpiration.getTime();
+            Date currTime = new Date();
+            if (initExpirationDate.before(currTime)) {
+                initExpirationDate.setTime(initExpiration.getTimeInMillis()+intervalDuration);
+            }
+            logger.log(Level.INFO, "Setting timer for dataverse "+dataverse.getVdc().getName()+", initial expiration: "+ initExpirationDate);
+            timerService.createTimer(initExpirationDate, intervalDuration,new HarvestTimerInfo(dataverse.getId(),dataverse.getVdc().getName(),dataverse.getSchedulePeriod(),dataverse.getScheduleHourOfDay(),dataverse.getScheduleDayOfWeek()));
+        }
+    }
+
     @Timeout
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void handleTimeout(javax.ejb.Timer timer) {
@@ -182,10 +235,9 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         // if an exception is thrown from this method, Glassfish will automatically
         // call the method a second time. (The minimum number of re-tries for a Timer method is 1)
         try {
-            if (timer.getInfo().equals(HARVEST_TIMER)) {
-                doScheduledHarvesting();
-            } else {
-                doImmediateHarvesting((Long)timer.getInfo());
+            if (timer.getInfo() instanceof HarvestTimerInfo) {
+                HarvestTimerInfo info = (HarvestTimerInfo)timer.getInfo();
+                doHarvesting(info.getHarvestingDataverseId());
             }
             
             
@@ -197,8 +249,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     
   
     
-    private void doImmediateHarvesting(Long dataverseId) {
-        System.out.println("DO immediate HARVESTING of "+dataverseId);
+    private void doHarvesting(Long dataverseId) {
+        logger.log(Level.INFO, "DO HARVESTING of dataverse "+dataverseId);
         HarvestingDataverse dataverse = em.find(HarvestingDataverse.class, dataverseId);
         
         MutableBoolean harvestErrorOccurred= new MutableBoolean(false);

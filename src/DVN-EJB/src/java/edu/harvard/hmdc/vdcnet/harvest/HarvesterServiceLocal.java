@@ -40,7 +40,10 @@ import org.apache.commons.lang.mutable.MutableBoolean;
  * @author Ellen Kraffmiller
  */
 public interface HarvesterServiceLocal {
-    public void createHarvestTimer();
+    public void createScheduledHarvestTimers();
+    public void updateHarvestTimer(HarvestingDataverse dataverse);
+    public void removeHarvestTimer(HarvestingDataverse dataverse);
+    
     public void doAsyncHarvest(HarvestingDataverse dataverse);
 
     public List<SetDetailBean> getSets(String oaiUrl); 

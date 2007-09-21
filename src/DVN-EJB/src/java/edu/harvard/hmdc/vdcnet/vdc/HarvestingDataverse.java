@@ -32,6 +32,7 @@ import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.Study;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -47,7 +48,10 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class HarvestingDataverse {
+public class HarvestingDataverse implements Serializable {
+    public static final String SCHEDULE_PERIOD_DAILY="daily";
+    public static final String SCHEDULE_PERIOD_WEEKLY="weekly";
+    
     
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastHarvestTime;
@@ -314,7 +318,7 @@ public class HarvestingDataverse {
      * Holds value of property vdc.
      */
     @OneToOne (mappedBy="harvestingDataverse",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST })
-    private VDC vdc;
+    private  VDC vdc;
 
     /**
      * Getter for property vdc.
@@ -404,6 +408,30 @@ public class HarvestingDataverse {
     @ManyToOne
     private HandlePrefix handlePrefix;
 
+    public String getSchedulePeriod() {
+        return schedulePeriod;
+    }
+
+    public void setSchedulePeriod(String schedulePeriod) {
+        this.schedulePeriod = schedulePeriod;
+    }
+
+    public int getScheduleHourOfDay() {
+        return scheduleHourOfDay;
+    }
+
+    public void setScheduleHourOfDay(int scheduleHourOfDay) {
+        this.scheduleHourOfDay = scheduleHourOfDay;
+    }
+
+    public int getScheduleDayOfWeek() {
+        return scheduleDayOfWeek;
+    }
+
+    public void setScheduleDayOfWeek(int scheduleDayOfWeek) {
+        this.scheduleDayOfWeek = scheduleDayOfWeek;
+    }
+
     /**
      * Getter for property handlePrefix.
      * @return Value of property handlePrefix.
@@ -421,6 +449,11 @@ public class HarvestingDataverse {
     }
 
    
+    private String schedulePeriod;
+
+    private int scheduleHourOfDay;
+
+    private int scheduleDayOfWeek;
 
 
 }

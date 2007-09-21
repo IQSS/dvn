@@ -29,6 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.admin;
 
+import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.harvest.SetDetailBean;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.HandlePrefix;
@@ -56,6 +57,7 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
     @EJB RoleServiceLocal roleService;
     @EJB UserServiceLocal userService;
     @EJB VDCServiceLocal vdcService;
+    @EJB HarvesterServiceLocal harvesterService;
 
     @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
     //  @EJB RoleServiceLocal roleService;
@@ -78,6 +80,7 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
      */
     public void setHarvestingDataverse(Long id ) {
         harvestingDataverse = em.find(HarvestingDataverse.class,id);
+        em.refresh(harvestingDataverse);
         if (harvestingDataverse==null) {
             throw new IllegalArgumentException("Unknown harvestingDataverse id: "+id);
         }
@@ -119,6 +122,7 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
             HandlePrefix handlePrefix = em.find(HandlePrefix.class, selectedHandlePrefixId);
             harvestingDataverse.setHandlePrefix(handlePrefix);
         }
+        harvesterService.updateHarvestTimer(harvestingDataverse);
         em.flush();
     }
     

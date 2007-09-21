@@ -46,8 +46,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collection;
@@ -184,7 +183,7 @@ public class FileDownloadServlet extends HttpServlet{
 
 		    List variables = file.getDataTable().getDataVariables();
 		    parameters.put("varbl", generateVariableListForDisseminate( variables ) );
-		    parameters.put("packageType", "fileonly");
+		    // parameters.put("packageType", "fileonly");
 
 		    PostMethod method = null; 
 		    int status = 200;		    
@@ -430,7 +429,7 @@ public class FileDownloadServlet extends HttpServlet{
 
 			List variables = file.getDataTable().getDataVariables();
 			parameters.put("varbl", generateVariableListForDisseminate( variables ) );
-			parameters.put("packageType", "fileonly");
+			// parameters.put("packageType", "fileonly");
 
 			PostMethod method = null; 
 			int status = 200;		    
@@ -493,7 +492,8 @@ public class FileDownloadServlet extends HttpServlet{
 
 			    // Also, we want to cache this file for future use:
 
-			    BufferedWriter fileCachingStream = new BufferedWriter(new FileWriter(cachedFileSystemLocation));
+			    //BufferedWriter fileCachingStream = new BufferedWriter(new FileWriter(cachedFileSystemLocation));
+			    FileOutputStream fileCachingStream = new FileOutputStream(cachedFileSystemLocation);
 
 			    int i = in.read();
 			    while (i != -1 ) {
@@ -503,6 +503,7 @@ public class FileDownloadServlet extends HttpServlet{
 			    }
 			    in.close();
 			    out.close();
+			    fileCachingStream.flush(); 
 			    fileCachingStream.close(); 
                 
 			} catch (IOException ex) {
@@ -818,26 +819,31 @@ public class FileDownloadServlet extends HttpServlet{
     private String generateAltFormat(String formatRequested) {
         String altFormat; 
 	
-	if ( formatRequested.equals("D02") ) {
-	    altFormat = "application/x-rlang-transport"; 
-	} else if ( formatRequested.equals("DO3") ) {
-	    altFormat = "application/x-stata-6"; 
-	} else {
-	    altFormat = "application/x-R-2"; 
-	}	    
+	//	if ( formatRequested.equals("D02") ) {
+	//    altFormat = "application/x-rlang-transport"; 
+	// } else if ( formatRequested.equals("DO3") ) {
+	//     altFormat = "application/x-stata-6"; 
+	// } else {
+	//     altFormat = "application/x-R-2"; 
+	// }	    
+
+	altFormat = "application/x-gzip-tar";
         return altFormat;
     }
 
     private String generateAltFileName(String formatRequested, String xfileId) {
         String altFileName; 
 	
-	if ( formatRequested.equals("D02") ) {
-	    altFileName = "data_" + xfileId + ".ssc"; 
-	} else if ( formatRequested.equals("DO3") ) {
-	    altFileName = "data_" + xfileId + ".dta"; 
-	} else {
-	    altFileName = "data_" + xfileId + ".RData"; 
-	}	    
+	//	if ( formatRequested.equals("D02") ) {
+	//    altFileName = "data_" + xfileId + ".ssc"; 
+	// } else if ( formatRequested.equals("DO3") ) {
+	//    altFileName = "data_" + xfileId + ".dta"; 
+	// } else {
+	//     altFileName = "data_" + xfileId + ".RData"; 
+	// }	    
+
+	altFileName = "data_" + xfileId + ".tar.gz"; 
+
         return altFileName;
     }
 

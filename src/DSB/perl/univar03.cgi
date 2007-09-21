@@ -82,6 +82,7 @@ my $fileid  =    $q->param('fileid');
 my $appSERVER  = $q->param('appSERVER'); 
 my $studyURL  =  $q->param('studyURL');
 my $browserType= $q->param('browserType');
+my $packageType= $q->param('packageType'); 
 
 my $studyLink =  $studyURL . "/faces/study/StudyPage.jsp?studyId=" . $stdyno  . '&tab=files';
 my($tmpurl0, $datasetname) = split('=', $dataURL);
@@ -855,11 +856,23 @@ function jump(url){
 }
 //-->
 ENDJ
+
+			my $port_requested = $q->server_port();
+			my $location_url = ""; 
+
+			if ( $port_requested != 80 )
+			{
+			    $location_url = "http://${SERVER}:${port_requested}/VDC/temp/${dirString}";
+			}
+			else
+			{
+			    $location_url = "http://${SERVER}/VDC/temp/${dirString}";
+			}
 					print $q->header (-type=>'text/html');
 					print $q->start_html (
 					-title=>'Modeling Results are Ready to Check',
 					-script=>$jumpScript,
-					-onload=>"jump(\"http://${SERVER}/VDC/temp/${dirString}\")",
+					-onload=>"jump(\"${location_url}\")",
 					);
 					print $q->end_html;
 					$logger->vdcLOG_info( 'VDC::DSB',  $script_name,  "Zelig modeling request completed");
@@ -926,7 +939,7 @@ ENDJ
 		print TMPFILE $citationMessage; 
 		close TMPFILE; 
 		if ($dtdwnldf eq 'D01'){
-			# tab-delimited case
+		        # tab-delimited case
 			$varnameline = '"'. join("\"\t\"", @{$CGIparamSet->getVarNameSet()}) . "\"\n";
 			# generate the node set string for extracting metadata
 			my $paramNodeSet=$CGIparamSet->getRsubsetparam();
@@ -945,7 +958,7 @@ ENDJ
 			
 			$DwnldPrfx = "$TMPDIR/data_$$.tar.gz";
 			$dtdwnldf="GZ";
-		} elsif ($CGIparamSet->getDwnldType() eq 'D03') {
+		    } elsif ($CGIparamSet->getDwnldType() eq 'D03') {
 			# stata case
 			my $binDwnldFile= "data_$$.dta"; 
 			
@@ -955,11 +968,19 @@ ENDJ
 			my $ccw = VDC::DSB::StatCodeWriter->new($ccMD);
 			print  TMPX "metadataset4cc(ccw):\n" . Dumper($ccw) . "\n"; 
 			$ccw->printDTAvalueLabelDoFile(CCFLPFX=>"$TMPDIR/CC$$");
+			unless ( $packageType eq 'fileonly' )
+			{
 			
-			`cd $TMPDIR; mv $DwnldPrfx $binDwnldFile;  tar -czvf data_$$.tar.gz $binDwnldFile CC$$.do citation_$$.txt ; rm -f $binDwnldFile CC$$.do citation_$$.txt`;
-			$DwnldPrfx = "$TMPDIR/data_$$.tar.gz";
-			$dtdwnldf="GZ";
-		} else {
+			    `cd $TMPDIR; mv $DwnldPrfx $binDwnldFile;  tar -czvf data_$$.tar.gz $binDwnldFile CC$$.do citation_$$.txt ; rm -f $binDwnldFile CC$$.do citation_$$.txt`;
+			    $DwnldPrfx = "$TMPDIR/data_$$.tar.gz";
+			    $dtdwnldf="GZ";
+			}
+			else
+			{
+			    `cd $TMPDIR; /bin/mv $DwnldPrfx $binDwnldFile`;
+			    $DwnldPrfx = $TMPDIR . "/" . $binDwnldFile;
+			}
+		    } else {
 			my $binDwnldFile;
 			if ($CGIparamSet->getDwnldType() eq 'D02'){
 				$binDwnldFile= "data_$$.ssc"; 
@@ -967,16 +988,29 @@ ENDJ
 				$binDwnldFile= "data_$$.RData"; 
 			}
 			
-			`cd $TMPDIR; mv $DwnldPrfx $binDwnldFile;  tar -czvf data_$$.tar.gz $binDwnldFile citation_$$.txt ; rm -f $binDwnldFile citation_$$.txt`;
+			unless ( $packageType eq 'fileonly' )
+			{
+			    `cd $TMPDIR; mv $DwnldPrfx $binDwnldFile;  tar -czvf data_$$.tar.gz $binDwnldFile citation_$$.txt ; rm -f $binDwnldFile citation_$$.txt`;
 			
-			$DwnldPrfx = "$TMPDIR/data_$$.tar.gz";
-			$dtdwnldf="GZ";
+			    $DwnldPrfx = "$TMPDIR/data_$$.tar.gz";
+			    $dtdwnldf="GZ";
+			}
+			else
+			{
+			    `cd $TMPDIR; /bin/mv $DwnldPrfx $binDwnldFile`;
+			    $DwnldPrfx = $TMPDIR . "/" . $binDwnldFile;
+			}
 			
 		}
+
+		$stdyno = $fileid unless $stdyno; 
+
 		print TMPX "DwnldPrfx=",$DwnldPrfx,"\n";
 		print TMPX "dtdwnldf=",$dtdwnldf,"\n";
 		print TMPX "stdyno=",$stdyno,"\n";
-		if (!&dataDownload(\$DwnldPrfx, \$dtdwnldf, \$stdyno, \$varnameline)) { 
+
+
+		if (!&dataDownload(\$DwnldPrfx, \$dtdwnldf, \$stdyno, \$varnameline, 0, \$packageType)) { 
 			$logger->vdcLOG_info( 'VDC::DSB',  $script_name,  "Download request completed");
 		}
 	}
@@ -1207,12 +1241,13 @@ sub get_load_avg {
 ## return the requested data file to the browser
 
 sub dataDownload  {
-	my ($rfDwnldPrfx, $rfdtdwnldf, $rfstdyno, $rfvn, $rfzlg) = @_;
+	my ($rfDwnldPrfx, $rfdtdwnldf, $rfstdyno, $rfvn, $rfzlg, $pkgType) = @_;
 	my $flnm   = $$rfDwnldPrfx;
 	my $xtsn   = $$rfdtdwnldf;
 	my $stdyno = $$rfstdyno;
 	my $varnameline = $$rfvn;
-	my $zlg    = $$rfzlg;
+	my $zlg;    $zlg = $$rfzlg if $rfzlg;
+	my $pkg    = $$pkgType; 
 	select(STDOUT);
 
 	my $buffer;
@@ -1229,6 +1264,8 @@ sub dataDownload  {
 	my $filename;
 	if ($zlg){
 		$filename = 'zelig_output.' . $stdyno . '.' . $$ . '.' . $typemap{"$xtsn"}{'ext'};
+	} elsif ( $pkg eq 'fileonly' ) {
+	    $filename = 'data_' . $stdyno . "." . $typemap{"$xtsn"}{'ext'}; 
 	} else {
 		$filename = 'da' . $stdyno . "_subset.$$." . $typemap{"$xtsn"}{'ext'};
 	}

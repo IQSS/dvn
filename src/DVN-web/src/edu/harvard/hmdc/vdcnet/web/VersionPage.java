@@ -19,7 +19,7 @@ import javax.ejb.EJB;
  * @author roberttreacy
  */
 public class VersionPage extends VDCBaseBean {
-    @EJB DVNVersionServiceLocal dvnVersionService;
+    @EJB DVNVersionServiceLocal dvnVersionS dvnVersionService;
     
     public void init() {
         super.init();

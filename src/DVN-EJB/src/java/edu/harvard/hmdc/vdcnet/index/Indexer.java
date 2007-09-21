@@ -38,6 +38,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyAuthor;
 import edu.harvard.hmdc.vdcnet.study.StudyDistributor;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyKeyword;
+import edu.harvard.hmdc.vdcnet.study.StudyNote;
 import edu.harvard.hmdc.vdcnet.study.StudyOtherId;
 import edu.harvard.hmdc.vdcnet.study.StudyOtherRef;
 import edu.harvard.hmdc.vdcnet.study.StudyProducer;
@@ -51,12 +52,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import lia.analysis.positional.PositionalPorterStopAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
@@ -99,11 +105,13 @@ public class Indexer {
     Directory dir;
     String indexDir = "index-dir";
     int dvnMaxClauseCount = 4096;
+    HashSet <IndexStudy> unindexedStudies;
 
     
     
     /** Creates a new instance of Indexer */
     public Indexer() {
+        unindexedStudies = getUnidexedStudies();
         String dvnIndexLocation = System.getProperty("dvn.index.location");
         File locationDirectory = null;
         if (dvnIndexLocation != null){
@@ -249,6 +257,13 @@ public class Indexer {
         addText(doc,"weighting",study.getWeighting());
         addText(doc,"cleaningOperations",study.getCleaningOperations());
         addText(doc,"studyLevelErrorNotes",study.getStudyLevelErrorNotes());
+        List <StudyNote> studyNotes = study.getStudyNotes();
+        for (Iterator it = studyNotes.iterator(); it.hasNext();){
+            StudyNote elem = (StudyNote) it.next(); 
+            addText(doc, "studyNoteType", elem.getType());
+            addText(doc, "studyNoteSubject", elem.getSubject());
+            addText(doc, "studyNoteText", elem.getText());
+        }
         addKeyword(doc,"responseRate",study.getResponseRate());
         addKeyword(doc,"samplingErrorEstimate",study.getSamplingErrorEstimate());
         addText(doc,"otherDataAppraisal",study.getOtherDataAppraisal());
@@ -306,7 +321,7 @@ public class Indexer {
         addText(doc,"globalId",study.getGlobalId());
         List <FileCategory> fileCategories = study.getFileCategories();
         writer = new IndexWriter(dir,getAnalyzer(),!(new File(indexDir+"/segments").exists()));    
-        writer.setMergeFactor(2);
+//        writer.setMergeFactor(2);
         writer.setUseCompoundFile(true);
         writer.addDocument(doc);
         writer.close();
@@ -626,8 +641,14 @@ public class Indexer {
         ArrayList matchIds = new ArrayList();
         LinkedHashSet matchIdsSet = new LinkedHashSet();
         if (query != null){
-            if (!r.isCurrent()) {
+            if (r != null) {
+                if (!r.isCurrent()) {
+                    while(r.isLocked(dir));
 //            IndexSearcher searcher = new IndexSearcher(dir);
+                    r = IndexReader.open(dir);
+                    searcher = new IndexSearcher(r);
+                }
+            } else {
                 r = IndexReader.open(dir);
                 searcher = new IndexSearcher(r);
             }
@@ -693,7 +714,18 @@ public class Indexer {
         ArrayList matchIds = new ArrayList();
         LinkedHashSet matchIdsSet = new LinkedHashSet();
         if (query != null){
-            IndexSearcher searcher = new IndexSearcher(dir);
+            if (r != null) {
+                if (!r.isCurrent()) {
+                    while (r.isLocked(dir));
+
+                    r = IndexReader.open(dir);
+                    searcher = new IndexSearcher(r);
+                }
+            } else {
+                r = IndexReader.open(dir);
+                searcher = new IndexSearcher(r);
+            }
+ 
             DocumentCollector s = new DocumentCollector(searcher);
             searcher.search(query, s);
             searcher.close();
@@ -910,6 +942,9 @@ public class Indexer {
         anyTerms.add(buildAnyTerm("weighting",string));
         anyTerms.add(buildAnyTerm("cleaningOperations",string));
         anyTerms.add(buildAnyTerm("studyLevelErrorNotes",string));
+        anyTerms.add(buildAnyTerm("studyNoteType",string));
+        anyTerms.add(buildAnyTerm("studyNoteSubject",string));
+        anyTerms.add(buildAnyTerm("studyNoteText",string));
         anyTerms.add(buildAnyTerm("responseRate",string));
         anyTerms.add(buildAnyTerm("samplingErrorEstimate",string));
         anyTerms.add(buildAnyTerm("otherDataAppraisal",string));
@@ -959,5 +994,12 @@ public class Indexer {
         term.setValue(value.toLowerCase().trim());
         return term;
     }
-            
+
+    public HashSet<IndexStudy> getUnidexedStudies() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("IndexStudyService");
+        EntityManager em = emf.createEntityManager();
+        List<IndexStudy> s = em.createQuery("SELECT i from IndexStudy i").getResultList();
+        return  new HashSet(s);
+    }
+    
 }

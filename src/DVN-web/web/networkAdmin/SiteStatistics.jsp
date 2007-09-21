@@ -26,7 +26,7 @@
                             <f:selectItems value="#{SiteStatistics.reportees}"/>
                         </h:selectOneRadio>
                         <h:inputHidden id="reportType" value="#{SiteStatistics.reportType}" valueChangeListener="#{SiteStatistics.changeReportType}"/>
-                        <ui:panelGroup  block="true" style="padding-right: 70px">
+                        <ui:panelGroup rendered="#{SiteStatistics.reportee == 'mitMonthly'}"  block="true" style="padding-right: 70px">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />  
                             <h:outputText value="The MIT montly report will be reported for each month beginning with July and ending in the current month." styleClass="vdcHelpText" />
                         </ui:panelGroup>

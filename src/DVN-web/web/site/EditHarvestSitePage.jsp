@@ -128,6 +128,40 @@
                             <verbatim><br /></verbatim>
                             
                         </ui:panelGroup>  
+                        <ui:panelGroup  >
+                            <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Schedule Harvesting?"/> 
+                        </ui:panelGroup >
+                      <ui:panelGroup  >
+                        <h:selectBooleanCheckbox  value="#{EditHarvestSitePage.harvestingDataverse.scheduled}"/>
+                        </ui:panelGroup >
+                          <ui:panelGroup  >
+                            <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Period"/> 
+                        </ui:panelGroup >
+                      <ui:panelGroup>    
+                            <h:selectOneMenu  value="#{EditHarvestSitePage.harvestingDataverse.schedulePeriod}" >
+                                <f:selectItem itemValue="" itemLabel="Not Selected"/>
+                                <f:selectItem itemValue="daily" itemLabel="Harvest daily"/>
+                                <f:selectItem itemValue="weekly" itemLabel="Harvest weekly"/>
+                            </h:selectOneMenu>
+                            <verbatim><br /></verbatim>
+                            
+                        </ui:panelGroup>  
+                        
+                        
+                       <ui:panelGroup  >
+                            <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Hour of Day (0-23)"/> 
+                        </ui:panelGroup >
+                      <ui:panelGroup  >
+                           <h:inputText value="#{EditHarvestSitePage.harvestingDataverse.scheduleHourOfDay}"/>
+                        </ui:panelGroup >
+
+                       <ui:panelGroup  >
+                            <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Day Of Week (1-7)"/> 
+                        </ui:panelGroup >
+                      <ui:panelGroup  >
+                          <h:inputText value="#{EditHarvestSitePage.harvestingDataverse.scheduleDayOfWeek}"/>
+                        </ui:panelGroup >
+                        
                         
                     </h:panelGrid>
                     <h:panelGrid cellpadding="0" cellspacing="0"

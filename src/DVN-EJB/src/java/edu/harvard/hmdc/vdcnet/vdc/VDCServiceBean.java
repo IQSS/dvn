@@ -34,6 +34,7 @@ import edu.harvard.hmdc.vdcnet.admin.RoleRequest;
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.ReviewStateServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyField;
@@ -63,6 +64,7 @@ public class VDCServiceBean implements VDCServiceLocal {
     @EJB UserServiceLocal userService;
     @EJB ReviewStateServiceLocal reviewStateService;
     @EJB StudyServiceLocal studyService;
+    @EJB HarvesterServiceLocal harvesterService;
 
     @PersistenceContext(unitName="VDCNet-ejbPU")
     private EntityManager em;
@@ -275,6 +277,9 @@ public class VDCServiceBean implements VDCServiceLocal {
             VDCGroup vdcGroup = (VDCGroup)it.next();
             vdcGroup.getVdcs().remove(vdc);
        }
+        if (vdc.isHarvestingDataverse()) {
+            harvesterService.removeHarvestTimer(vdc.getHarvestingDataverse());
+        }
         em.remove(vdc);
     
     }

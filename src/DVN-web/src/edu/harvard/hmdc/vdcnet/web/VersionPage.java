@@ -9,20 +9,37 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
+import edu.harvard.hmdc.vdcnet.admin.DVNVersion;
+import edu.harvard.hmdc.vdcnet.admin.DVNVersionServiceLocal;
+import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import javax.ejb.EJB;
+
 /**
  *
  * @author roberttreacy
  */
-public class VersionPage {
+public class VersionPage extends VDCBaseBean {
+    @EJB DVNVersionServiceLocal dvnVersionService;
+    
+    public void init() {
+        super.init();
+        DVNVersion version = getLatestVersion();
+        this.versionNumber = version.getVersionNumber();
+        this.buildNumber = version.getBuildNumber();
+    }
     
     public Long versionNumber;
     public Long getVersionNumber(){
-        return 1L;
+        return versionNumber;
     }
     
     public Long buildNumber;
     public Long getBuildNumber(){
-        return 15L;
+        return buildNumber;
+    }
+    
+    public DVNVersion getLatestVersion(){
+        return dvnVersionService.getLatestVersion();
     }
 
 }

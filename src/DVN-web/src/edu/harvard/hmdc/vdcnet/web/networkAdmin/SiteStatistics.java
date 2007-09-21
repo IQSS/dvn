@@ -32,8 +32,10 @@ import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.event.ValueChangeEvent;
@@ -324,9 +326,30 @@ public class SiteStatistics extends VDCBaseBean {
         this.reportee = reportee;
     }
 
-    private SelectItem[] reportees = {new SelectItem("iqss", "IQSS Dataverse Network Graphical"), new SelectItem("mit", "MIT Graphical"), new SelectItem("mitMonthly", "MIT Monthly")};
+    private List<SelectItem> reportees = null;
 
-    public SelectItem[] getReportees() {
+    public List getReportees() {
+        if (this.reportees == null) {
+            reportees = new ArrayList();
+            //which reportees are configured by awstats.
+            if (this.getDirectory() != null) {
+                File directory = new File(this.getDirectory());
+                File[] files   = directory.listFiles();
+                int i = 0;
+                while (i < files.length) {
+                    if (files[i].getName().indexOf(".conf") != -1) {
+                        int startIndex = files[i].getName().indexOf(".") + 1;
+                        int endIndex   = files[i].getName().indexOf(".", startIndex);
+                        reportees.add(new SelectItem(files[i].getName().substring(startIndex, endIndex), files[i].getName().substring(startIndex, endIndex).toUpperCase() + " Graphical Report"));
+                        if (files[i].getName().indexOf("mit") != -1) {
+                            reportees.add(new SelectItem("mitMonthly", "MIT Monthly"));
+                        }
+                    }
+                    i++;
+                }
+            }
+            return reportees;
+        }
         return reportees;
     }
 

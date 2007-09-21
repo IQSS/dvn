@@ -14,7 +14,7 @@
                 <br />
                 <span style="font-family: 'lucida grande', geneva, Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 14px; ">Dataverse Network</span>
                 <br /><br />
-                Version <h:outputText value="#{VersionPage.versionNumber}" /> - Build <h:outputText value="#{VersionPage.buildNumber}" />
+                Version 1 - Build 15 />
                 <br />
                 <br />
                 <br />

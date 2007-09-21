@@ -145,7 +145,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     public void doAsyncHarvest(HarvestingDataverse dataverse) {
         Calendar cal = Calendar.getInstance();
         
-        timerService.createTimer(cal.getTime(),dataverse.getId());
+        timerService.createTimer(cal.getTime(),new HarvestTimerInfo(dataverse.getId(),dataverse.getVdc().getName(),dataverse.getSchedulePeriod(),dataverse.getScheduleHourOfDay(),dataverse.getScheduleDayOfWeek()));
     }
     
     public void createScheduledHarvestTimers() {

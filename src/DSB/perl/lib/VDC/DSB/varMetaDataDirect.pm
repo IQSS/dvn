@@ -79,7 +79,16 @@ sub obtainMeta {
 	my $sqlDB   = $self->{sqlDB};
 	my $sqlPw   = $self->{sqlPw};
 	
-	my $dbh = DBI->connect("DBI:Pg:dbname=$sqlDB",$sqlUser,$sqlPw);
+	my $dbh; 
+
+	if ( $sqlHost ne "" )
+	{
+	    $dbh = DBI->connect("DBI:Pg:dbname=$sqlDB;host=$sqlHost",$sqlUser,$sqlPw);
+	}
+	else
+	{
+	    $dbh = DBI->connect("DBI:Pg:dbname=$sqlDB",$sqlUser,$sqlPw);
+	}
 
 	
 	# 1st lookup: find out the datatable id by the studyfile id 

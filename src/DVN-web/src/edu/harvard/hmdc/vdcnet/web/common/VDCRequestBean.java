@@ -188,13 +188,21 @@ public class VDCRequestBean extends AbstractRequestBean {
         return currentVDC;
     }
 
-   public boolean isLogoutPage() {
-       HttpServletRequest httpRequest = (HttpServletRequest)this.getExternalContext().getRequest();
-       PageDef pageDef = pageDefService.findByPath(httpRequest.getPathInfo());
-       if (pageDef!=null && pageDef.getName().equals(PageDefServiceLocal.LOGOUT_PAGE)) {
-           return true;
-       }
-       return false;
+    private Boolean logoutPage = null;
+
+    public boolean isLogoutPage() {
+        if (logoutPage == null) {
+            HttpServletRequest httpRequest = (HttpServletRequest)this.getExternalContext().getRequest();
+            PageDef pageDef = pageDefService.findByPath(httpRequest.getPathInfo());
+            if (pageDef!=null && pageDef.getName().equals(PageDefServiceLocal.LOGOUT_PAGE)) {
+                logoutPage = Boolean.TRUE;
+            } else {
+                logoutPage = Boolean.FALSE;
+            }
+        }
+
+        return logoutPage.booleanValue();
+
     }    
    
     public void setCurrentVDC(VDC currentVDC) {

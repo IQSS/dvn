@@ -38,6 +38,8 @@ public interface IndexServiceLocal {
     public void indexAll();
 
     public void indexList(List <Long> studyIds);
+    
+    public void indexBatch();
 
     public void updateIndexList(List <Long> studyIds);
 

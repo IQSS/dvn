@@ -416,19 +416,19 @@ public class HarvestingDataverse implements Serializable {
         this.schedulePeriod = schedulePeriod;
     }
 
-    public int getScheduleHourOfDay() {
+    public Integer getScheduleHourOfDay() {
         return scheduleHourOfDay;
     }
 
-    public void setScheduleHourOfDay(int scheduleHourOfDay) {
+    public void setScheduleHourOfDay(Integer scheduleHourOfDay) {
         this.scheduleHourOfDay = scheduleHourOfDay;
     }
 
-    public int getScheduleDayOfWeek() {
+    public Integer getScheduleDayOfWeek() {
         return scheduleDayOfWeek;
     }
 
-    public void setScheduleDayOfWeek(int scheduleDayOfWeek) {
+    public void setScheduleDayOfWeek(Integer scheduleDayOfWeek) {
         this.scheduleDayOfWeek = scheduleDayOfWeek;
     }
 
@@ -451,9 +451,9 @@ public class HarvestingDataverse implements Serializable {
    
     private String schedulePeriod;
 
-    private int scheduleHourOfDay;
+    private Integer scheduleHourOfDay;
 
-    private int scheduleDayOfWeek;
+    private Integer scheduleDayOfWeek;
 
 
 }

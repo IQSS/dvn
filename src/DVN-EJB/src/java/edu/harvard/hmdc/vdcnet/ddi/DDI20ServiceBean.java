@@ -196,6 +196,8 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.EJBs;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.xml.bind.JAXBContext;
@@ -208,6 +210,7 @@ import javax.xml.bind.Marshaller;
  * @author gdurand
  */
 @Stateless
+
 public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal {
     @EJB VariableServiceLocal varService;
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceBean");
@@ -250,8 +253,19 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     public List<VariableIntervalType> variableIntervalTypeList =  null;
     public List<SummaryStatisticType> summaryStatisticTypeList =  null;
     public List<VariableRangeType> variableRangeTypeList =  null;    
-    
+  
+    private JAXBContext jaxbContext;
+    private Marshaller marshaller;
+  
     public void ejbCreate() {
+        try {
+            jaxbContext = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
+            marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+            marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd");
+        } catch (JAXBException ex) {
+            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+        }
         // initialize lists
         variableFormatTypeList = varService.findAllVariableFormatType();
         variableIntervalTypeList = varService.findAllVariableIntervalType();
@@ -2605,27 +2619,17 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             return null;
         }
     }
-    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public  void exportStudy(Study study, Writer out) throws IOException, JAXBException {
         exportStudy(study, out, false);
     }
-    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public  void exportStudy(Study study, Writer out, boolean exportToLegacyVDC) throws IOException, JAXBException {
-        
-        JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
-        Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-        marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd");
-        
         marshaller.marshal(mapStudy(study, exportToLegacyVDC), out ); 
     }
     
     public  void exportDataFile(StudyFile sf, Writer out) throws IOException, JAXBException {
-        JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
-        Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-        marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd");
-        
+         
         marshaller.marshal(mapDataFile(sf), out ); 
 
     }    

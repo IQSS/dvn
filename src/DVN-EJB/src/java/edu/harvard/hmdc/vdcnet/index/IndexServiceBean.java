@@ -41,6 +41,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,12 @@ import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+
+
 /**
  *
  * @author roberttreacy
@@ -67,6 +74,8 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     @EJB MailServiceLocal mailService;
     @Resource(mappedName="jms/IndexMessage") Queue queue;
     @Resource(mappedName="jms/IndexMessageFactory") QueueConnectionFactory factory;
+    @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
+    EntityManager em;
     
     /**
      * Creates a new instance of IndexServiceBean
@@ -131,6 +140,9 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         try {
             indexer.addDocument(study);
         } catch (IOException ex) {
+            IndexStudy s = new IndexStudy();
+            s.setStudyId(studyId);
+            em.persist(s);
             ex.printStackTrace();
             try {
                 mailService.sendDoNotReplyMail(indexAdminMail ,"IO problem", "Check index write lock "+InetAddress.getLocalHost().getHostAddress() + " , study id " + studyId);
@@ -415,5 +427,19 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         }
         return matchingStudyIds == null ? new ArrayList(): matchingStudyIds;
     }
-    
+ 
+   private HashSet<IndexStudy> getUnindexedStudies() {
+        List<IndexStudy> s = em.createQuery("SELECT i from IndexStudy i").getResultList();
+        return  new HashSet(s);
+    }
+   
+   public void indexBatch(){
+       HashSet s = getUnindexedStudies();
+       for (Iterator it = s.iterator(); it.hasNext();){
+           IndexStudy study = (IndexStudy) it.next();
+           em.createQuery("DELETE FROM IndexStudy i where i.studyId =  "+ study.getStudyId()).executeUpdate();
+           addDocument(study.getStudyId());
+       }
+   }
+   
 }

@@ -29,7 +29,7 @@
                             <h:outputLink   value="/dvn/faces/networkAdmin/DVGroupDetailPage.jsp">
                                 <h:outputText  value="Manage Dataverse Groups"/>
                             </h:outputLink>
-                            <h:outputLink   value="/dvn/faces/networkAdmin/SiteStatistics.jsp">
+                            <h:outputLink rendered="#{SiteStatistics.directory != null}" value="/dvn/faces/networkAdmin/SiteStatistics.jsp">
                                 <h:outputText  value="View Web Usage Statistics"/>
                             </h:outputLink>
                         </ui:panelGroup>

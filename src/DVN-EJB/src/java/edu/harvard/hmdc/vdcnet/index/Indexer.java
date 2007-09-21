@@ -105,13 +105,10 @@ public class Indexer {
     Directory dir;
     String indexDir = "index-dir";
     int dvnMaxClauseCount = 4096;
-    HashSet <IndexStudy> unindexedStudies;
-
     
     
     /** Creates a new instance of Indexer */
     public Indexer() {
-        unindexedStudies = getUnidexedStudies();
         String dvnIndexLocation = System.getProperty("dvn.index.location");
         File locationDirectory = null;
         if (dvnIndexLocation != null){
@@ -995,11 +992,4 @@ public class Indexer {
         return term;
     }
 
-    public HashSet<IndexStudy> getUnidexedStudies() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("IndexStudyService");
-        EntityManager em = emf.createEntityManager();
-        List<IndexStudy> s = em.createQuery("SELECT i from IndexStudy i").getResultList();
-        return  new HashSet(s);
-    }
-    
 }

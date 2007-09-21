@@ -30,12 +30,14 @@ public class VersionPage extends VDCBaseBean {
     
     public Long versionNumber;
     public Long getVersionNumber(){
-        return versionNumber;
+        DVNVersion version = getLatestVersion();
+        return version.getVersionNumber();
     }
     
     public Long buildNumber;
     public Long getBuildNumber(){
-        return buildNumber;
+        DVNVersion version = getLatestVersion();
+        return version.getBuildNumber();
     }
     
     public DVNVersion getLatestVersion(){

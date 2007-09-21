@@ -517,5 +517,10 @@
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.ImportStudyPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>VersionPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.VersionPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
     <!-- rem'd the tiles classes -->
 </faces-config>

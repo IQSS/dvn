@@ -57,15 +57,18 @@
                                     <!-- another work-around using f:verbatim because jsf renders double breaks in separator based on the
                               pre-rendered code. Therefore, if I don't render a link, there is a big whole in the UI -->
                                     <f:verbatim rendered="#{VDCRequest.currentVDCId != null}"><br /><br /></f:verbatim>
-                                    <h:outputLink id="contributorRequestAccountLink" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean == null}" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestAccountPage.jsp#request">
+                                    <h:outputLink id="contributorRequestAccountLink" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean == null and HomePage.showRequestContributor}" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestAccountPage.jsp#request">
                                         <h:outputText id="contributorRequestAccountText" value="#{bundle.sitemapBecomeContributorLink}"/>
                                     </h:outputLink>
-                                    <h:outputLink id="contributorRequestLink" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean != null}" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestPage.jsp#request">
+                                    <h:outputLink id="contributorRequestLink" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean != null and HomePage.showRequestContributor}" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestPage.jsp#request">
                                         <h:outputText id="contributorRequestText" value="#{bundle.sitemapBecomeContributorLink}"/>
                                     </h:outputLink>
                                     <f:verbatim rendered="#{VDCRequest.currentVDCId == null}"><br /><br /></f:verbatim>
-                                    <h:outputLink rendered="#{VDCRequest.currentVDC == null and (VDCSession.loginBean.networkAdmin == true or VDCSession.loginBean.networkCreator == true)}" id="sitemaplink11" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/AddSitePage.jsp#addSite">
-                                        <h:outputText  id="sitemaplink11Text" value="#{bundle.sitemapCreateDataverseLink}"/>
+                                    <h:outputLink rendered="#{VDCRequest.currentVDC == null and VDCSession.loginBean == null and HomePage.showRequestCreator}"  value="/dvn/faces/login/CreatorRequestAccountPage.jsp">
+                                        <h:outputText   value="Create your own Dataverse."/>
+                                    </h:outputLink>
+                                    <h:outputLink rendered="#{VDCRequest.currentVDC == null and VDCSession.loginBean != null and HomePage.showRequestCreator}" value="/dvn/faces/login/CreatorRequestPage.jsp">
+                                        <h:outputText value="Create your own Dataverse."/>
                                     </h:outputLink>
                                 </ui:panelGroup>
                             </ui:panelGroup>

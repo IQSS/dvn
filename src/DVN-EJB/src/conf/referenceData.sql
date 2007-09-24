@@ -933,9 +933,9 @@ CREATE TABLE ejb__timer__tbl
 WITHOUT OIDS;
 ALTER TABLE ejb__timer__tbl OWNER TO "vdcApp";
 
-INSERT INTO DataFileFormatType VALUES (1, 'D02', 'Splus')
-INSERT INTO DataFileFormatType VALUES (2, 'D03', 'Stata')
-INSERT INTO DataFileFormatType VALUES (3, 'D04', 'R')
+INSERT INTO DataFileFormatType VALUES (1, 'D02', 'Splus');
+INSERT INTO DataFileFormatType VALUES (2, 'D03', 'Stata');
+INSERT INTO DataFileFormatType VALUES (3, 'D04', 'R');
 
 create index datavariable_id_index on  datavariable (id);
 create index summarystatistic_id_index on  summarystatistic (id);
@@ -945,3 +945,5 @@ create index variablecategory_datavariable_id_index on  variablecategory (datava
 create index variablerange_id_index on  variablerange (id);
 create index study_id_index on study(id);
 create index weightedvarrelationship_id_index on  weightedvarrelationship (weighted_variable_id,variable_id);
+
+insert into dvnversion( id, buildnumber,versionnumber) values (1,15,1);

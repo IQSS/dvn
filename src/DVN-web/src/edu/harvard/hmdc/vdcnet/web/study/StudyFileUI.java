@@ -121,11 +121,11 @@ public class StudyFileUI {
     
      public String fileDownload_action () {
         try {
-            //get the xFF arg used for web stats text report
+            //get the xff arg used for web stats text report
             WebStatisticsSupport webstatistics = new WebStatisticsSupport();
             int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");
-            String xFF = webstatistics.getQSArgument("xFF", headerValue);
-            String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.studyFile.getId() + xFF;
+            String xff = webstatistics.getQSArgument("xff", headerValue);
+            String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.studyFile.getId() + xff;
             if (!StringUtil.isEmpty(format)) {
                 fileDownloadURL += "&format=" + this.format;
             }

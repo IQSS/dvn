@@ -400,7 +400,7 @@
                                     <h:outputText  id="outputText33"  value="Download all files in a single archive file (files that you cannot access will not be downloaded): "/>                                            
                                     <h:graphicImage  value="/resources/icon_downloadall_locked.gif" rendered="#{!studyPage.studyUI.anyFileUnrestricted}"
                                                      alt="You do not have permissions to access any files in this study." title="You do not have permissions to access any files in this study."/>
-                                    <h:outputLink  id="linkAction7" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?studyId=#{studyPage.studyUI.study.id}#{studyPage.xFF}" title="Download all files in a single archive file." rendered="#{studyPage.studyUI.anyFileUnrestricted}">
+                                    <h:outputLink  id="linkAction7" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?studyId=#{studyPage.studyUI.study.id}#{studyPage.xff}" title="Download all files in a single archive file." rendered="#{studyPage.studyUI.anyFileUnrestricted}">
                                         <h:graphicImage  id="image7" styleClass="vdcNoBorders" value="/resources/icon_downloadall.gif"/>
                                     </h:outputLink>
                                 </ui:panelGroup>
@@ -425,7 +425,7 @@
                                             </h:commandLink>
                                             <h:outputText  id="outputText16" styleClass="vdcStudyFilesCatLabel" value="#{catUI.fileCategory.name}"/>
                                             <h:graphicImage   styleClass="vdcNoBorders" value="/resources/icon_downloadall_locked.gif" rendered="#{!catUI.anyFileUnrestricted}" alt="You do not have permissions to access any files in this category." title="You do not have permission to access any files in this category." />
-                                            <h:outputLink   id="catDownloadLink" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}_#{catUI.downloadName}.zip?catId=#{catUI.fileCategory.id}#{studyPage.xFF}" title="Download all files in this category in a single archive file." rendered="#{catUI.anyFileUnrestricted}">
+                                            <h:outputLink   id="catDownloadLink" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}_#{catUI.downloadName}.zip?catId=#{catUI.fileCategory.id}#{studyPage.xff}" title="Download all files in this category in a single archive file." rendered="#{catUI.anyFileUnrestricted}">
                                                 <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_downloadall.gif" />
                                             </h:outputLink>
                                         </ui:panelGroup>

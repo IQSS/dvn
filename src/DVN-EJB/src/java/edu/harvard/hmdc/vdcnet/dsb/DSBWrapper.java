@@ -468,8 +468,8 @@ public class DSBWrapper {
         //get the xFF arg -- used by the web stats txt report
         WebStatisticsSupport webstatistics = new WebStatisticsSupport();
         int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");
-        String xFF = webstatistics.getQSArgument("xFF", headerValue);
-        String file = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1" + xFF;
+        String xff = webstatistics.getQSArgument("xff", headerValue);
+        String file = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1" + xff;
         System.out.println(file);
         return file;
     }

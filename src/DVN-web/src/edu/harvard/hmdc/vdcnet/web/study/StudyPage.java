@@ -619,19 +619,19 @@ public boolean getNotesIsEmpty() {
       *
       * @author wbossons
       */
-     private String xFF;
+     private String xff;
      
-     public String getXFF() {
-         if (this.xFF == null) {
+     public String getXff() {
+         if (this.xff == null) {
              WebStatisticsSupport webstatistics = new WebStatisticsSupport();
              int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");
-             setXFF(webstatistics.getQSArgument("xFF", headerValue));
+             setXFF(webstatistics.getQSArgument("xff", headerValue));
          }
-         return this.xFF;
+         return this.xff;
      }
      
-     public void setXFF(String xFF) {
-         this.xFF = xFF;
+     public void setXFF(String xff) {
+         this.xff = xff;
      }
      
      

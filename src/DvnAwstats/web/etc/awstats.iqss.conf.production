@@ -1482,7 +1482,7 @@ color_x="C1B2E2"				# Background color for number of exit pages (Default = "C1B2
 
 ExtraSectionName1="File Downloads"
 ExtraSectionCodeFilter1="200 304"
-ExtraSectionCondition1="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xFF=.*))"
+ExtraSectionCondition1="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xff=.*))"
 ExtraSectionFirstColumnTitle1="Requested Page"
 ExtraSectionFirstColumnValues1="URLWITHQUERY,(.*)"
 ExtraSectionStatTypes1=PHK
@@ -1498,7 +1498,7 @@ MaxNbOfExtra2=50
 MinHitExtra2=1
 ExtraSectionName3="Downloads by IP Address"
 ExtraSectionCodeFilter3="200 304"
-ExtraSectionCondition3="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xFF=.*))"
+ExtraSectionCondition3="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xff=.*))"
 ExtraSectionFirstColumnTitle3="User - IP Address"
 ExtraSectionFirstColumnValues3="HOST,(.*)"
 ExtraSectionStatTypes3=PHK

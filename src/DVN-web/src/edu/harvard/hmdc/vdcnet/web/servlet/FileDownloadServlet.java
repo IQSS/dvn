@@ -183,7 +183,7 @@ public class FileDownloadServlet extends HttpServlet{
 
 		    List variables = file.getDataTable().getDataVariables();
 		    parameters.put("varbl", generateVariableListForDisseminate( variables ) );
-		    // parameters.put("packageType", "fileonly");
+		    parameters.put("wholefile", "true");
 
 		    PostMethod method = null; 
 		    int status = 200;		    
@@ -429,7 +429,8 @@ public class FileDownloadServlet extends HttpServlet{
 
 			List variables = file.getDataTable().getDataVariables();
 			parameters.put("varbl", generateVariableListForDisseminate( variables ) );
-			// parameters.put("packageType", "fileonly");
+			parameters.put("wholefile", "true");
+
 
 			PostMethod method = null; 
 			int status = 200;		    

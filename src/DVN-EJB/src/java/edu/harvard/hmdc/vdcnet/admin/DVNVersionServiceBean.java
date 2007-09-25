@@ -20,8 +20,8 @@ import javax.persistence.PersistenceContextType;
  */
 @Stateless
 public class DVNVersionServiceBean implements DVNVersionServiceLocal {
-    @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
-    EntityManager em;
+    @PersistenceContext(unitName="VDCNet-ejbPU")
+    private EntityManager em;
     
     // Add business logic below. (Right-click in editor and choose
     // "EJB Methods > Add Business Method" or "Web Service > Add Operation")

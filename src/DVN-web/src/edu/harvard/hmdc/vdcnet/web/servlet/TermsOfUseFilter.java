@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import java.net.InetAddress;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 
 import javax.ejb.EJB;
@@ -234,7 +235,7 @@ public class TermsOfUseFilter implements Filter {
 		if ( isVdcTermsRequired(study, termsOfUseMap) || isStudyTermsRequired(study, termsOfUseMap) ) {
 		    VDC currentVDC = vdcService.getVDCFromRequest(req);   
 		    String params = "?studyId=" + study.getId();
-		    params += "&redirectPage=" + req.getServletPath() + req.getPathInfo() +"?" + req.getQueryString();
+		    params += "&redirectPage=" + URLEncoder.encode(req.getServletPath() + req.getPathInfo() +"?" + req.getQueryString(),"UTF-8");
 		    if (currentVDC!=null) {
 			params+="&vdcId="+currentVDC.getId();
 		    }   

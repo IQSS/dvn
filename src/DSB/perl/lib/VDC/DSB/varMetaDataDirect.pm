@@ -52,13 +52,25 @@ sub new {
 
 
 	$self->{censusURL} = "";
+
+	$self->{wholeFile} = 1; 
+
 	# configuration -- here temporarily; 
 	# should be moved someplace else
 
-	$self->{sqlHost} = "localhost"; 
-	$self->{sqlDB}   = "vdcNet-test";
-	$self->{sqlUser} = "vdcApp";
-	$self->{sqlPw}   = "secret";
+        $self->{sqlHost} = "dvn.example.edu"; 
+
+	# NOTE: if you are running your DSB server on the 
+	# same host as the main DVN application, you can
+	# set the sqlHost variable above to localhost; 
+	# however, if you leave it completely blank 
+	# the module will connect to Postgres via unix 
+	# sockets, and you'll probably be better off 
+	# that way. 
+
+        $self->{sqlDB}   = "dvnDb";
+        $self->{sqlUser} = "dvnApp";
+        $self->{sqlPw}   = "secret";
 
 	$novars = scalar(keys(%{$self->{VarID}}));
 	
@@ -90,6 +102,10 @@ sub obtainMeta {
 	    $dbh = DBI->connect("DBI:Pg:dbname=$sqlDB",$sqlUser,$sqlPw);
 	}
 
+	my %disc_Var = (); 
+	my $min_disc_varid = 2**31; 
+	my $max_disc_varid = 0; 
+	my $count_disc_var = 0; 
 	
 	# 1st lookup: find out the datatable id by the studyfile id 
 	# supplied: 
@@ -118,6 +134,7 @@ sub obtainMeta {
 	while ( ($var_id,$var_name,$var_order,$var_label,$var_format,$var_interval,$var_start,$var_end)
 		= $sth->fetchrow() )
 	{
+
 	    # the variable id in the Dataverse notation: 
 
 	    my $dv_var_id = "v" . $var_id; 
@@ -161,47 +178,91 @@ sub obtainMeta {
 		{
 		    $self->{_charVarTbl}->{$dv_var_id} = 'y'; 
 		}
-
+		
+		$var_label=~s/\"/\\"/g;
 		push @{$self->{_varLabel}}, $var_label; 
 
-		# more lookups necessary, for discrete variables:
+		# for discrete variables, more lookups will have to 
+                # be done; but for now we are just going to 
+                # remember them for future lookup.
 
 		if ( $var_type == 1 || $var_type == 0 )
 		{
-		    my $sth1 = $dbh->prepare(qq {SELECT id,label,value FROM variablecategory WHERE datavariable_id=$var_id});
-		    $sth1->execute();
-		
-		    while ( my ($val_id, $val_label, $val_value) = $sth1->fetchrow() )
-		    {
-			if ( $val_label ne "" )
-			{
-			    $self->{_valLblTbl}->{$var_name} = [] unless $self->{_valLblTbl}->{$var_name}; 
-			    push @{$self->{_valLblTbl}->{$var_name}}, [$val_value, $val_label]; 
-			}
-		    }
-		    
-		    $sth1->finish; 
 
-		    my $sth1 = $dbh->prepare(qq {SELECT endvalue,beginvalue FROM variablerange WHERE datavariable_id=$var_id});
-		    $sth1->execute();
+		    $disc_Var->{$var_id} = 1; 
 
-		    while ( my ($endvalue, $beginvalue) = $sth1->fetchrow() )
+		    if ( $var_id > $max_disc_varid )
 		    {
-			$self->{_mssvlTbl}->{$var_name} = [] unless $self->{_mssvlTbl}->{$var_name}; 
-			push @{$self->{_mssvlTbl}->{$var_name}}, [$beginvalue]; 
+			$max_disc_varid = $var_id; 
 		    }
-		    
-		    $sth1->finish; 
+		    if ( $var_id < $min_disc_varid )
+		    {
+			$min_disc_varid = $var_id; 
+		    }
+	
+		    $count_disc_var++; 
 		}
+
 	    }
 	    else
 	    { 
+		$self->{wholeFile} = 0; 
 		# skip; 
 	    }
 	}
 
 	$sth->finish; 
 
+	# let's do the lookups for the discrete vars:
+
+	if ( $count_disc_var )
+	{
+	    my $sth1 = $dbh->prepare(qq {SELECT id,label,value,datavariable_id FROM variablecategory WHERE ( datavariable_id >= $min_disc_varid AND datavariable_id <= $max_disc_varid ) });
+	    $sth1->execute();
+
+	    my $dv_var_id = "";
+		
+	    while ( my ($val_id, $val_label, $val_value, $var_dbid) = $sth1->fetchrow() )
+	    {
+
+		$dv_var_id = "v" . $var_dbid; 
+		$var_name = $self->{_varNameH}->{$dv_var_id};
+
+		# check if the variable is among the ones requested, 
+		# and discrete.
+
+		if ( $varID->{$dv_var_id} && $disc_Var->{$var_dbid} == 1 )
+		{
+		    if ( $val_label ne "" )
+		    {
+			$self->{_valLblTbl}->{$var_name} = [] unless $self->{_valLblTbl}->{$var_name}; 
+			push @{$self->{_valLblTbl}->{$var_name}}, [$val_value, $val_label]; 
+		    }
+		}
+	    }
+		    
+	    $sth1->finish; 
+
+	    my $sth1 = $dbh->prepare(qq {SELECT endvalue,beginvalue,datavariable_id FROM variablerange WHERE ( datavariable_id >= $min_disc_varid AND datavariable_id <= $max_disc_varid ) });
+	    $sth1->execute();
+
+	    while ( my ($endvalue, $beginvalue, $var_dbid) = $sth1->fetchrow() )
+	    {
+		$dv_var_id = "v" . $var_dbid; 
+		$var_name = $self->{_varNameH}->{$dv_var_id};
+
+		# check if the variable is among the ones requested,
+		# and discrete.
+
+		if ( $varID->{$dv_var_id} && $disc_Var->{$var_dbid} == 1 )
+		{
+		    $self->{_mssvlTbl}->{$var_name} = [] unless $self->{_mssvlTbl}->{$var_name}; 
+		    push @{$self->{_mssvlTbl}->{$var_name}}, [$beginvalue]; 
+		}
+	    }
+		    
+	    $sth1->finish; 
+	}
 
 
 	# finally, one more check to see if this is a Census URL:

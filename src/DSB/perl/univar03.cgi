@@ -1,5 +1,4 @@
 #!/usr/bin/perl -I/usr/local/VDC/perl -I/usr/local/VDC/perl/lib 
-
 # Copyright (C) 2001-4 President and Fellows of Harvard University
 #	  (Written by Akio Sone)
 #	  (<URL:http://thedata.org/>)
@@ -1716,6 +1715,16 @@ sub make_SubsetFilter {
     my $varIdSeq = shift; 
 
     my $pat = ""; 
+
+#   below is a simple but potentially effecient 
+#   optimization -- but i want to test it 
+#   carefully before i deploy it; 
+#   so it should stay commented out.
+#
+#    if ( $metadata->{wholeFile} == 1 )
+#    {
+#	return "cat"; 
+#    }
 
     my @varseq = split ( ",", $varIdSeq ); 
 

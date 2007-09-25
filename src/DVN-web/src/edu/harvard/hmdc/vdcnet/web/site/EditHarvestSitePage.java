@@ -39,6 +39,7 @@ import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.harvest.SetDetailBean;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
 import edu.harvard.hmdc.vdcnet.util.SessionCounter;
+import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.HandlePrefix;
 import edu.harvard.hmdc.vdcnet.vdc.HandlePrefixServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
@@ -55,6 +56,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -74,10 +76,10 @@ public class EditHarvestSitePage extends VDCBaseBean {
     @EJB VDCServiceLocal vdcService;
     @EJB HarvesterServiceLocal harvesterService;
     @EJB HandlePrefixServiceLocal handlePrefixService;
-    
-    
+ 
     private HarvestingDataverse harvestingDataverse;
     private EditHarvestSiteService editHarvestSiteService;
+    
     public void init() {
         super.init();
         String harvestIdParam = getParamFromRequestOrComponent("harvestId");
@@ -140,6 +142,8 @@ public class EditHarvestSitePage extends VDCBaseBean {
      */
     public EditHarvestSitePage() {
     }
+    
+    
     
     public void validateAction(ActionEvent ae) {
         // do nothing, everthing should be done in validateOAIServer
@@ -676,5 +680,7 @@ public class EditHarvestSitePage extends VDCBaseBean {
             harvestingDataverse.setSubsetRestricted(false);
         }
     }    
+    
+   
     
 }

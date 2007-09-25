@@ -16,10 +16,55 @@
                 subsetRestricted.disabled = !(filesRestricted.value == 'true');
                 if (copyValue) {
                     subsetRestricted.value = filesRestricted.value;
+                    
                 }
             }
-
-            function getSelect( id ) {
+            function updateScheduleInput(  ) {
+            
+                scheduled = getInput("scheduledCheckBox");
+                schedulePeriod = getSelect( "selectSchedulePeriod");
+                scheduleHourOfDay = getInput("inputScheduleHourOfDay");
+                scheduleDayOfWeek = getInput("inputScheduleDayOfWeek");
+                        
+                  if (scheduled.checked == false) {
+                    
+                    schedulePeriod.value='';
+                    scheduleHourOfDay.value='';
+                    scheduleDayOfWeek.value='';
+                    schedulePeriod.disabled = true;
+                    scheduleHourOfDay.disabled = true;
+                    scheduleDayOfWeek.disabled = true;
+                } else {
+                    schedulePeriod.disabled = false;
+                    if (schedulePeriod.value=="daily") {
+                        scheduleHourOfDay.disabled = false;
+                        scheduleDayOfWeek.disabled = true;
+                        scheduleDayOfWeek.value='';
+                   } else {
+                        scheduleDayOfWeek.disabled = false;
+                        scheduleHourOfDay.disabled = false;
+                    }
+               
+                }
+                
+               
+             }
+            
+            function getInput( id ) {
+         
+                elements=document.getElementsByTagName("input");
+                for(i=0; i &lt; elements.length; i++) {
+                
+                    if (elements[i].id.indexOf(id) != -1 ) { 
+                
+                        return elements[i];
+                    }
+                }
+                               
+            }
+            
+     
+           function getSelect( id ) {
                 elements=document.getElementsByTagName("select");
                 for(i=0; i &lt; elements.length; i++) {
                     if (elements[i].id.indexOf(id) != -1) {    
@@ -27,6 +72,7 @@
                     }
                 }
             }
+            
         </script>
     </f:verbatim>        
     <ui:form id="form1">
@@ -59,8 +105,11 @@
                             </h:outputLabel>
                         </ui:panelGroup>
                         <ui:panelGroup>
-                            <h:inputText id="dataverseName" value="#{EditHarvestSitePage.dataverseName}" required="true" validator="#{EditHarvestSitePage.validateName}" size="60"/>
-                            <h:message styleClass="errorMessage" for="dataverseName"/> 
+                            
+                              <h:inputText id="dataverseName" value="#{EditHarvestSitePage.dataverseName}" required="true" validator="#{EditHarvestSitePage.validateName}" size="60">
+                                  
+                              </h:inputText>
+                          <h:message styleClass="errorMessage" for="dataverseName"/> 
                             <verbatim><br /></verbatim>
                             <h:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
                         </ui:panelGroup>
@@ -132,17 +181,18 @@
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Schedule Harvesting?"/> 
                         </ui:panelGroup >
                       <ui:panelGroup  >
-                        <h:selectBooleanCheckbox  value="#{EditHarvestSitePage.harvestingDataverse.scheduled}"/>
+                        <h:selectBooleanCheckbox id="scheduledCheckBox" value="#{EditHarvestSitePage.harvestingDataverse.scheduled}"  onchange='updateScheduleInput();'/>
                         </ui:panelGroup >
                           <ui:panelGroup  >
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Period"/> 
                         </ui:panelGroup >
                       <ui:panelGroup>    
-                            <h:selectOneMenu  value="#{EditHarvestSitePage.harvestingDataverse.schedulePeriod}" >
+                            <h:selectOneMenu required="true"  id="selectSchedulePeriod" value="#{EditHarvestSitePage.harvestingDataverse.schedulePeriod}"  onchange='updateScheduleInput();' >
                                 <f:selectItem itemValue="" itemLabel="Not Selected"/>
                                 <f:selectItem itemValue="daily" itemLabel="Harvest daily"/>
                                 <f:selectItem itemValue="weekly" itemLabel="Harvest weekly"/>
                             </h:selectOneMenu>
+                             <h:message styleClass="errorMessage" for="selectSchedulePeriod"/> 
                             <verbatim><br /></verbatim>
                             
                         </ui:panelGroup>  
@@ -152,15 +202,21 @@
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Hour of Day (0-23)"/> 
                         </ui:panelGroup >
                       <ui:panelGroup  >
-                           <h:inputText value="#{EditHarvestSitePage.harvestingDataverse.scheduleHourOfDay}"/>
-                        </ui:panelGroup >
+                           <h:inputText required="true" id="inputScheduleHourOfDay" value="#{EditHarvestSitePage.harvestingDataverse.scheduleHourOfDay}">
+                               <f:validateLongRange minimum="0" maximum="23" />
+                           </h:inputText>
+                            <h:message styleClass="errorMessage" for="inputScheduleHourOfDay"/> 
+                          </ui:panelGroup >
 
                        <ui:panelGroup  >
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Day Of Week (1-7)"/> 
                         </ui:panelGroup >
                       <ui:panelGroup  >
-                          <h:inputText value="#{EditHarvestSitePage.harvestingDataverse.scheduleDayOfWeek}"/>
-                        </ui:panelGroup >
+                          <h:inputText required="true" id="inputScheduleDayOfWeek" value="#{EditHarvestSitePage.harvestingDataverse.scheduleDayOfWeek}">
+                               <f:validateLongRange minimum="1" maximum="7" />
+                          </h:inputText>
+                             <h:message styleClass="errorMessage" for="inputScheduleDayOfWeek"/> 
+                       </ui:panelGroup >
                         
                         
                     </h:panelGrid>
@@ -261,6 +317,7 @@
  <script language="Javascript">
         // initial call to disable subsetting Restricted (if needed)
         checkSubsetting( false );
+        updateScheduleInput();
   </script> 
     
 </jsp:root>

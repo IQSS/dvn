@@ -48,9 +48,11 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.component.html.HtmlPanelGrid;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -310,7 +312,18 @@ public class StudyPage extends VDCBaseBean {
     }
 
     public void init() {
-        super.init();       
+        super.init();      
+        
+        // check for studyListingIndex param
+        if (getRequestParam("studyListingIndex") != null) {
+            studyListingIndex = getRequestParam("studyListingIndex");
+            // check if index from this session
+            String sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
+            if ( !sessionId.equals( studyListingIndex.substring( studyListingIndex.indexOf("_") + 1) ) ) {
+                studyListingIndex = null;
+            }
+        }
+        
         // set tab if it was it was sent as pamameter or part of request bean
         if (getTab() != null) {
             getTabSet1().setSelected(getTab());
@@ -358,7 +371,7 @@ public class StudyPage extends VDCBaseBean {
 
             } else {
                 // WE SHOULD HAVE A STUDY ID, throw an error
-                System.out.println("ERROR: in editStudyPage, without a serviceBean or a studyId");
+                System.out.println("ERROR: in StudyPage, without a serviceBean or a studyId");
             }        
         }        
         
@@ -634,6 +647,19 @@ public boolean getNotesIsEmpty() {
          this.xff = xff;
      }
      
+     private String studyListingIndex;
+
+    public String getStudyListingIndex() {
+        return studyListingIndex;
+    }
+
+    public void setStudyListingIndex(String studyListingIndex) {
+        this.studyListingIndex = studyListingIndex;
+    }
+
+    public String getStudyListingIndexAsParameter() {
+        return studyListingIndex != null ? "&studyListingIndex=" + studyListingIndex : ""; 
+    }
      
 
 }

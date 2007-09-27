@@ -39,6 +39,7 @@ import java.util.Map;
  * @author gdurand
  */
 public class StudyListing {
+    public static final int INCORRECT_VDC           = -2;
     public static final int EXPIRED_LIST            = -1;
     public static final int GENERIC_LIST            =  0;
     public static final int COLLECTION_STUDIES      =  1;
@@ -58,6 +59,7 @@ public class StudyListing {
     private Long collectionId;
     private Tree collectionTree;
     
+    private Long vdcId;
     private List searchTerms;
     private Map variableMap;
     
@@ -93,6 +95,14 @@ public class StudyListing {
         this.collectionTree = collectionTree;
     }
 
+    public Long getVdcId() {
+        return vdcId;
+    }
+
+    public void setVdcId(Long vdcId) {
+        this.vdcId = vdcId;
+    }    
+    
     public List getSearchTerms() {
         return searchTerms;
     }

@@ -122,7 +122,7 @@
                           <h:column  id="column1">
                               <ui:panelGroup  block="true" id="groupPanel1" style="padding-bottom: 5px">
                                   
-                                  <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}"  id="hyperlink3" styleClass="vdcSResultsStudyTitle">
+                                  <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}&amp;studyListingIndex=#{SearchPage.studyListingIndex}"  id="hyperlink3" styleClass="vdcSResultsStudyTitle">
                                       <h:outputText  id="hyperlink3Text" value="#{studyUI.study.title}"/>
                                   </h:outputLink>
                                   <h:outputText  id="outputText13" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
@@ -131,7 +131,7 @@
                               <ui:panelGroup  block="true" id="groupPanel1b" >
                                   <h:graphicImage alt="This study contains no files." rendered="#{!studyUI.files}"
                                                   title="This study contains no files." value="/resources/icon_nofiles.gif"/>
-                                  <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}&amp;tab=files" rendered="#{studyUI.files}">
+                                  <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}&amp;tab=files&amp;studyListingIndex=#{SearchPage.studyListingIndex}" rendered="#{studyUI.files}">
                                       <h:graphicImage styleClass="vdcNoBorders" alt="This study contains subsettable files." rendered="#{studyUI.subsettable}"
                                                       title="This study contains subsettable files." value="/resources/icon_subsettable.gif"/>
                                       <h:graphicImage styleClass="vdcNoBorders" alt="This study contains only non-subsettable files." rendered="#{!studyUI.subsettable}"

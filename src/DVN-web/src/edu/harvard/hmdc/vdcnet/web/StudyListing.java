@@ -41,10 +41,12 @@ import java.util.Map;
 public class StudyListing {
     public static final int INCORRECT_VDC           = -2;
     public static final int EXPIRED_LIST            = -1;
-    public static final int GENERIC_LIST            =  0;
+    public static final int GENERIC_ERROR           =  0;
+    
     public static final int COLLECTION_STUDIES      =  1;
     public static final int VDC_SEARCH              =  3;
     public static final int VDC_RECENT_STUDIES      =  4;
+    public static final int GENERIC_LIST            =  100;    
     
     /** Creates a new instance of StudyListing */
     public StudyListing() {

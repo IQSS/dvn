@@ -60,9 +60,11 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIData;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpSession;
 import org.apache.commons.collections.OrderedMap;
 import org.apache.commons.collections.map.LinkedMap;
 
@@ -91,7 +93,7 @@ public class SearchPage extends VDCBaseBean{
     private Integer searchFilter;
     private Map studyFields;
     
-    private int studyListingIndex;
+    private String studyListingIndex;
     
     // display items
     boolean renderTree;
@@ -149,11 +151,11 @@ public class SearchPage extends VDCBaseBean{
         this.studyTable = studyTable;
     }
     
-    public int getStudyListingIndex() {
+    public String getStudyListingIndex() {
         return studyListingIndex;
     }
     
-    public void setStudyListingIndex(int studyListingIndex) {
+    public void setStudyListingIndex(String studyListingIndex) {
         this.studyListingIndex = studyListingIndex;
     }
     
@@ -251,6 +253,7 @@ public class SearchPage extends VDCBaseBean{
         
         // now create the new StudyListing
         studyListing = new StudyListing(StudyListing.VDC_SEARCH);
+        studyListing.setVdcId( getVDCRequestBean().getCurrentVDCId() );
         studyListing.setStudyIds(studyIDList);
         studyListing.setSearchTerms(searchTerms);
         studyListing.setVariableMap(variableMap);
@@ -321,16 +324,27 @@ public class SearchPage extends VDCBaseBean{
         if ( isFromPage("SearchPage") ) { // this is a post, so get the studyListing and let actions handle the rest
             String slIndex = getRequestParam("content:searchPageView:form1:studyListingIndex");
             if (slIndex != null) {
-                studyListing =  getStudyListingFromMap(new Integer(slIndex));
+                studyListing =  getStudyListingFromMap(slIndex);
                 initText(studyListing.getMode());
             }
-        } else { // we are coming from this page fresh, so initialize everything
-            initNewStudyListing();
-            initStudies();
+        } else {
+            // first check for slIndex
+            String slIndex = getRequestParam("studyListingIndex");
+            if (slIndex != null) {
+                studyListing =  getStudyListingFromMap(slIndex);
+                setStudyListingIndex(slIndex);
+
+            } else {
+                // we need to create a new studyListing
+                initNewStudyListing();
+                initStudies();
+            }
+            
             initText(studyListing.getMode());
             if (renderTree) {
                 initCollectionTree();
             }
+
         }
     }
     
@@ -453,11 +467,22 @@ public class SearchPage extends VDCBaseBean{
             // this needs to be fleshed out if it's ever used
             listHeader =  "Studies";
             
-        } else if (mode == StudyListing.EXPIRED_LIST) {
-            listHeader =  "Expired Listing";
-            listMessageContent = "The results for this listing have expired.";
+        } else {
+            // in this case we have an invalid list
             renderSearch = true;
             renderTree = false;
+
+            if (mode == StudyListing.GENERIC_ERROR) {
+                listHeader =  "Error";
+                listMessageContent = "Sorry. You must specify a valid mode (and corresponding parameters) for this page.";
+            } else if (mode == StudyListing.EXPIRED_LIST) {
+                listHeader =  "Expired Listing";
+                listMessageContent = "The results for this listing have expired.";
+            }
+            else if (mode == StudyListing.INCORRECT_VDC) {
+                listHeader =  "Invalid Listing";
+                listMessageContent = "The results for this listing were generated while searching or browsing a different dataverse.";
+            }
         }
         
         
@@ -475,9 +500,9 @@ public class SearchPage extends VDCBaseBean{
             // performace of filtering the tree is slow, so for now just show entire tree
             //vdcTree.setStudyFilter(studies);
             //vdcTree.setIncludeCount(true);
-            vdcTree.setCollectionUrl("/faces/SearchPage.jsp?mode=3&studyListingIndex=" + studyListingIndex);
+            vdcTree.setCollectionUrl("/faces/SearchPage.jsp?mode=3&oslIndex=" + studyListingIndex);
         } else {
-            vdcTree.setCollectionUrl("/faces/SearchPage.jsp?mode=1&studyListingIndex=" + studyListingIndex);
+            vdcTree.setCollectionUrl("/faces/SearchPage.jsp?mode=1");
         }
         
         if (studyListing.getCollectionId() != null) {
@@ -534,11 +559,11 @@ public class SearchPage extends VDCBaseBean{
             setStudyListingIndex(addToStudyListingMap(sl));
             
         } else if (mode == StudyListing.VDC_SEARCH) {
-            String  slIndex = getRequestParam("studyListingIndex");
+            String  slIndex = getRequestParam("oslIndex");
             String collectionId = getRequestParam("collectionId");
             if (slIndex != null && collectionId != null) {
-                sl = getStudyListingFromMap(new Integer(slIndex));
-                if (sl.getMode() != studyListing.EXPIRED_LIST) {
+                sl = getStudyListingFromMap(slIndex);
+                if (sl.getMode() > 0) { // all study listings <= 0 are error type listings
                     List oldStudyIds = sl.getStudyIds();
                     List searchTerms = sl.getSearchTerms();
                     Map variableMap = sl.getVariableMap();
@@ -561,9 +586,6 @@ public class SearchPage extends VDCBaseBean{
                 }
             }
             
-        } else if (mode == StudyListing.GENERIC_LIST) {
-            // TODO
-            
         } else {
             // in this case we don't have a mode so we check to see if we
             // have a studyListing passed via the request
@@ -573,26 +595,31 @@ public class SearchPage extends VDCBaseBean{
             }
         }
         
-        // at this point we should throw an error; for now create empty expired list
+        // at this point we should throw an error
         if (sl == null) {
-            sl = new StudyListing(StudyListing.EXPIRED_LIST);
+            sl = new StudyListing(StudyListing.GENERIC_ERROR);
         }
         
         studyListing = sl;
+        studyListing.setVdcId( getVDCRequestBean().getCurrentVDCId() );
         
     }
     
-    private int addToStudyListingMap(StudyListing sl) {
+    private String addToStudyListingMap(StudyListing sl) {
         OrderedMap slMap = (OrderedMap) getSessionMap().get("studyListings");
-        int newIndex = 0;
+        String sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
+        String newIndex = "0_" + sessionId;
+        
         if (slMap == null) {
             slMap = new LinkedMap();
             getSessionMap().put("studyListings", slMap);
-            slMap.put( new Integer(0) ,sl);
+            slMap.put(newIndex ,sl);
         } else {
-            Integer lastIndex = (Integer) slMap.lastKey();
-            newIndex = lastIndex.intValue() + 1;
-            slMap.put( new Integer(newIndex), sl);
+            String lastIndex= (String) slMap.lastKey();
+            int lastIndexInt = Integer.parseInt( lastIndex.substring(0, lastIndex.indexOf("_") ) );
+            
+            newIndex = String.valueOf(lastIndexInt + 1) + "_" + sessionId;
+            slMap.put( newIndex, sl);
             if (slMap.size() > 5) {
                 slMap.remove(slMap.firstKey());
             }
@@ -600,11 +627,25 @@ public class SearchPage extends VDCBaseBean{
         return newIndex;
     }
     
-    private StudyListing getStudyListingFromMap(Integer slIndex) {
+    private StudyListing getStudyListingFromMap(String slIndex) {
         OrderedMap slMap = (OrderedMap) getSessionMap().get("studyListings");
         if (slMap != null) {
             StudyListing sl = (StudyListing) slMap.get(slIndex);
+
             if (sl != null) {
+
+                // make sure the user is in the current vdc for this study listing
+                Long currentVdcId = getVDCRequestBean().getCurrentVDCId();
+                if ( currentVdcId == null ) {
+                     if (sl.getVdcId() != null) {
+                        sl = new StudyListing(StudyListing.INCORRECT_VDC);
+                    }
+                } else {
+                    if ( !currentVdcId.equals(sl.getVdcId()) ) {
+                        sl = new StudyListing(StudyListing.INCORRECT_VDC);
+                    }
+                } 
+
                 return sl;
             }
         }

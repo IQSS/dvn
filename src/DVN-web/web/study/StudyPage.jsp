@@ -42,6 +42,7 @@
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>                        
             <input type="hidden" value="StudyPage" name="pageName"/>
             <h:inputHidden id="studyId" value="#{studyPage.studyId}"/>
+            <h:inputHidden id="slIndex" value="#{studyPage.studyListingIndex}"/>
                         
                 <div class="dvn_section">
                     <span class="dvn_sectionTitleR">
@@ -68,10 +69,14 @@
                 <div class="dvn_sectionTitle">
                          <h:outputText   value="#{studyPage.studyUI.study.title}"/>
                 </div>            
-                
+                <div>
+                  <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?studyListingIndex=#{studyPage.studyListingIndex}" rendered="#{!empty studyPage.studyListingIndex}">
+                      <h:outputText  value="View Study Listing"/>
+                  </h:outputLink>
+                </div>                 
                 <div class="dvn_sectionBoxNoBorders"> 
                     <ui:tabSet binding="#{studyPage.tabSet1}" id="tabSet1" lite="true" mini="true"  >
-                        <ui:tab   id="catalog" text="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog">
+                        <ui:tab   id="catalog" text="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
                             <ui:panelLayout id="layoutPanel1" panelLayout="flow" style="width: 98%"> 
                                 <ui:panelGroup  block="true" id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                                     <h:outputText  id="outputText11" value="Citation Information"/>
@@ -363,7 +368,7 @@
                             </ui:panelLayout>
                         </ui:tab>
                         
-                        <ui:tab  id="files" text="Documentation, Data and Analysis" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=files">
+                        <ui:tab  id="files" text="Documentation, Data and Analysis" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=files#{studyPage.studyListingIndexAsParameter}">
                            <ui:panelLayout id="layoutPanel2" panelLayout="flow" style="width: 98%">  
                             <ui:panelLayout  id="noFilesPanel1" panelLayout="flow" style="margin: 0px; padding: 0px 0px 10px 0px; " rendered="#{empty studyPage.studyUI.study.fileCategories}">
                                 <ui:panelGroup  block="true" id="noFilesPanel2" style="padding-top: 20px; padding-bottom: 10px;" rendered="#{!studyPage.userAuthorizedToEdit}">

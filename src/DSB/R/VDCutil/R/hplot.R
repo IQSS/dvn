@@ -11,19 +11,19 @@ hplot.default<-  function(x,y, ... , htmlFile=NULL,  graphfileBase=NULL, bitmapA
   
   # make base unique
   graphfileBase = paste( graphfileBase,  
-   	as.character(as.numeric(Sys.time())),
-    	as.integer(runif(1,min=0,max=.Machine$integer.max)), sep="A" )
+    as.character(as.numeric(Sys.time())),
+        as.integer(runif(1,min=0,max=.Machine$integer.max)), sep="A" )
 
   bitmapArgs$file=file.path(graphDir,paste(graphfileBase, "_%03d" ,".",ext, sep=""))
   if (class(try(do.call( "bitmap", bitmapArgs ),silent=T))=="try-error") { 
-	# bitmap failed, probably missing ghostscript
-	pngArgs=list()
-	pngArgs$filename=bitmapArgs$file # note different syntax :-(
-	pngArgs$res=bitmapArgs$res
-	pngArgs$width=bitmapArgs$width
-	pngArgs$height=bitmapArgs$height
-	pngArgs$pointsize=bitmapArgs$pointsize
-	do.call("png",pngArgs)
+    # bitmap failed, probably missing ghostscript
+    pngArgs=list()
+    pngArgs$filename=bitmapArgs$file # note different syntax :-(
+    pngArgs$res=bitmapArgs$res
+    pngArgs$width=bitmapArgs$width
+    pngArgs$height=bitmapArgs$height
+    pngArgs$pointsize=bitmapArgs$pointsize
+    do.call("png",pngArgs)
    }
   if (missing(y)) {
       plot(x,...)
@@ -32,17 +32,17 @@ hplot.default<-  function(x,y, ... , htmlFile=NULL,  graphfileBase=NULL, bitmapA
   }
   dev.off()
   for (fn in list.files(graphDir,pattern=graphfileBase)) {
-	htmlArgs$GraphFileName=fn
-	htmlArgs$file=htmlFile
-  	do.call( "HTMLInsertGraph", htmlArgs ) 
-	cat("<\/p>\n",sep="",append=TRUE,file=htmlFile)
-	
+    htmlArgs$GraphFileName=fn
+    htmlArgs$file=htmlFile
+    do.call( "HTMLInsertGraph", htmlArgs ) 
+    cat("</p>\n",sep="",append=TRUE,file=htmlFile)
+    
   }
   invisible()
 }
 
 hplot.default.args<-function (htmlFile=NULL,
-	graphfileBase=NULL,bitmapArgs=NULL,htmlArgs=NULL) {
+    graphfileBase=NULL,bitmapArgs=NULL,htmlArgs=NULL) {
 
   if (is.null(htmlFile)) {
      if ( exists(".HTML.file", envir = .GlobalEnv)) {
@@ -59,43 +59,43 @@ hplot.default.args<-function (htmlFile=NULL,
   }
 
   if (is.null(bitmapArgs)) {
-	bitmapArgs=list()
+    bitmapArgs=list()
   }
   if (is.null(bitmapArgs$type)) {
-	bitmapArgs$type="png256"
+    bitmapArgs$type="png256"
   }
   if ( bitmapArgs$type!="png256"  && bitmapArgs$type!="png16m" && bitmapArgs$type != "jpeg"){
-	bitmapArgs$type="png256"
+    bitmapArgs$type="png256"
   }
   if (bitmapArgs$type=="jpeg") {
-	ext="jpeg"
+    ext="jpeg"
   } else {
-	ext="png"
+    ext="png"
   }
   if (is.null(bitmapArgs$res)) {
-  	bitmapArgs$res=150;
+    bitmapArgs$res=150;
   }
   if (is.null(bitmapArgs$width)) {
-  	bitmapArgs$width=4;
+    bitmapArgs$width=4;
   }
   if (is.null(bitmapArgs$height)) {
-  	bitmapArgs$height=4;
+    bitmapArgs$height=4;
   }
 
   if (is.null(htmlArgs)) {
-	htmlArgs=list()
+    htmlArgs=list()
   } 
   htmlArgs$append=TRUE
   htmlArgs$file=htmlFile
   if (is.null(htmlArgs$WidthHTML)) {
-	htmlArgs$WidthHTML = bitmapArgs$width * bitmapArgs$res
+    htmlArgs$WidthHTML = bitmapArgs$width * bitmapArgs$res
   }
   if (is.null(htmlArgs$HeightHTML)) {
-	htmlArgs$HeightHTML = bitmapArgs$height * bitmapArgs$res
+    htmlArgs$HeightHTML = bitmapArgs$height * bitmapArgs$res
   }
   
   return(list("graphDir"=graphDir, "graphfileBase"=graphfileBase, "bitmapArgs"=bitmapArgs,
-	"htmlFile"=htmlFile, "htmlArgs"=htmlArgs, "ext"=ext))
+    "htmlFile"=htmlFile, "htmlArgs"=htmlArgs, "ext"=ext))
 }
   
 

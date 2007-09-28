@@ -7,3 +7,4 @@
 1.10 -- typo-correction in printZeligSchemaInstance() in zlist.R
 1.11 -- be more paranoid about plot methods, recodeVDCdf to recode data frames with VDC metadata
 1.12 -- Rendering-related changes to VDCxtabs()
+1.13 -- code clean-up in compliance with R 2.6.0

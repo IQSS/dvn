@@ -30,12 +30,12 @@ VDCgenAnalysis<-function(
       # analysis options: perform summary, plots, sensitivity, sims?
       wantSummary=T,wantPlots=F,wantSensitivity=F,wantSim=F,
       # deliver binary output?
-      wantBinOutput=F, 	
+      wantBinOutput=F,  
       debug=F) {
       
 
       # workaround Zelig 2.5.2 bug
-	attr(formula,".Environment")=environment()
+    attr(formula,".Environment")=environment()
       # list of objects to save
 
       savelist=character(0)
@@ -61,34 +61,34 @@ VDCgenAnalysis<-function(
 
       if (wantSim) {
          # setx setup
-	 setx.out<-do.call("setx",c(list(zel.out),setxArgs) )
-	 simArgs$x=setx.out
+     setx.out<-do.call("setx",c(list(zel.out),setxArgs) )
+     simArgs$x=setx.out
          # run setx2 if requested
          setx2.out=NULL
-      	 if (!is.null(setx2Args)) {
-         	setx2.out<-do.call("setx",c(list(zel.out),setxArgs ))
-		simArgs$x1=setx2.out
-      	 }
+         if (!is.null(setx2Args)) {
+            setx2.out<-do.call("setx",c(list(zel.out),setxArgs ))
+        simArgs$x1=setx2.out
+         }
       }
 
       # run sims and sentivity analysis , if requested
       if (wantSensitivity) {
-	  sensitivityArgs$ptb.s=sensitivityQ
+      sensitivityArgs$ptb.s=sensitivityQ
           savelist<-c(savelist,"zel.rob.out")
           if (wantSim) {
-	     zel.rob.out <- do.call("sensitivityZelig", 
-		c(list(zel.out), sensitivityArgs, simulate = TRUE, simArgs=list(simArgs)) )
+         zel.rob.out <- do.call("sensitivityZelig", 
+        c(list(zel.out), sensitivityArgs, simulate = TRUE, simArgs=list(simArgs)) )
 
              sim.rob.out=zel.rob.out$sim
              savelist=c(savelist,"sim.rob.out")
           } else {
              zel.rob.out<-do.call("sensitivityZelig", c(list(zel.out),sensitivityArgs,summarize=T))
-	  }
+      }
       }
       
       if (wantSim) {
          sim.out=do.call("sim", 
-		c(list(zel.out),simArgs))
+        c(list(zel.out),simArgs))
          savelist=c(savelist,"sim.out")
       }
       
@@ -113,24 +113,24 @@ VDCgenAnalysis<-function(
       copyR2HTMLfiles(outDir)
 
       if (!is.null(HTMLbodyHeading)) {
-      	HTML.title(HTMLbodyHeading,HR=1)
+        HTML.title(HTMLbodyHeading,HR=1)
       }
       if (!is.null(HTMLnote)) {
-	HTML(HTMLnote)
+    HTML(HTMLnote)
       }
 
       #print output
       if(wantSummary) {
           HTML.title("Summary Results")
-	  tmpsum = try(summary(zel.out),silent=TRUE);
+      tmpsum = try(summary(zel.out),silent=TRUE);
           if (!inherits(tmpsum,"try-error")) {
-		# HTML would warn about deprecated format.char here
-		ow=options(warn=-1)
-		HTML(tmpsum, file=htmlFilePath);
-		options(ow)
-	  }
+        # HTML would warn about deprecated format.char here
+        ow=options(warn=-1)
+        HTML(tmpsum, file=htmlFilePath);
+        options(ow)
+      }
           if (wantPlots) {
-             	try(hplot(zel.out),silent=T)
+                try(hplot(zel.out),silent=T)
           }
       }
 
@@ -144,10 +144,10 @@ VDCgenAnalysis<-function(
       
       if(wantSim) {
           HTML.title("Simulation  Results")
-	  tmpsum = try(summary(sim.out),silent=TRUE);
+      tmpsum = try(summary(sim.out),silent=TRUE);
           if (!inherits(tmpsum,"try-error")) {
-          	HTML(summary(tmpsum), file=htmlFilePath);
-	  }
+            HTML(summary(tmpsum), file=htmlFilePath);
+      }
 
           if (wantPlots) {
              try(hplot(sim.out),silent=T)
@@ -156,10 +156,10 @@ VDCgenAnalysis<-function(
       
       if(wantSim && wantSensitivity) {
           HTML.title("Simulation Sensitivity Analysis")
-	  tmpsum = try(summary(sim.rob.out),silent=TRUE);
+      tmpsum = try(summary(sim.rob.out),silent=TRUE);
           if (!inherits(tmpsum,"try-error")) {
-          	HTML(summary(tmpsum), file=htmlFilePath);
-	  }
+            HTML(summary(tmpsum), file=htmlFilePath);
+      }
 
           if (wantPlots) {
              try(hplot(sim.rob.out),silent=T)
@@ -170,13 +170,13 @@ VDCgenAnalysis<-function(
       # binary output
       if(wantBinOutput) {
           save(list=savelist,file=binFilePath)
-	  HTML( paste(
-		"<br\/><center><small><a href='",
-		 basename(binFilePath),
-		"'>[Replication data]<\/a><\/small><\center><br\/>",
-		sep="")
-	 )
-		
+      HTML( paste(
+        "<br/><center><small><a href='",
+         basename(binFilePath),
+        "'>[Replication data]</a></small></center><br/>",
+        sep="")
+     )
+        
       } else {
           binFilePath=NULL;
       }
@@ -193,20 +193,20 @@ VDCgenAnalysis<-function(
 # and change to correct special
 
 formulaAddSpecial<-function(formula,model) {
-	modelSpecial= zeligGetSpecial(model)
-	if (!is.null(modelSpecial) && is.na(modelSpecial)) {
-		modelSpecial = NULL;
-	}
-	if ( (!is.null(modelSpecial))  && 
-		length(formula[[2]])>1 &&
-		formula[[2]][[1]]=="list"
-		)  {
-		formula[[2]][[1]]=as.name(modelSpecial)
-	} else  if ((!is.null(modelSpecial))  && 
-		length(formula[[2]]==1)) {
-		formula[[2]]=call(modelSpecial,formula[[2]])
-	} 
-	return(formula)
+    modelSpecial= zeligGetSpecial(model)
+    if (!is.null(modelSpecial) && is.na(modelSpecial)) {
+        modelSpecial = NULL;
+    }
+    if ( (!is.null(modelSpecial))  && 
+        length(formula[[2]])>1 &&
+        formula[[2]][[1]]=="list"
+        )  {
+        formula[[2]][[1]]=as.name(modelSpecial)
+    } else  if ((!is.null(modelSpecial))  && 
+        length(formula[[2]]==1)) {
+        formula[[2]]=call(modelSpecial,formula[[2]])
+    } 
+    return(formula)
 }
 
 # WORKAROUND For R2HTML not copying all the supporting files

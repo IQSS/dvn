@@ -7,23 +7,23 @@
 # dependency list for models
 #################################################################
 zeligModelDependencies<-function(inZeligOnly=T,schemaVersion="1.1",uninstalledOnly=T, repos=NULL) {
-	zl=zeligListModels()
-	if (uninstalledOnly) {
-		zi=zeligInstalledModels()
-		uninstalled= zl[which(!sapply(zl,function(x)(sum(x==zi)>0)))]
-		ml = uninstalled
-	} else {
-		ml = zl
-	}
+    zl=zeligListModels()
+    if (uninstalledOnly) {
+        zi=zeligInstalledModels()
+        uninstalled= zl[which(!sapply(zl,function(x)(sum(x==zi)>0)))]
+        ml = uninstalled
+    } else {
+        ml = zl
+    }
 
-	deps=NULL
-	for (i in ml) {
-		zd = zeligModelDependency (i,repos)
-        	if (is.null(zd)) next
-		deps=rbind(deps,zd)
-	}   
-	deps=unique(deps)
-	return(deps)
+    deps=NULL
+    for (i in ml) {
+        zd = zeligModelDependency (i,repos)
+            if (is.null(zd)) next
+        deps=rbind(deps,zd)
+    }   
+    deps=unique(deps)
+    return(deps)
 }
 
 
@@ -32,31 +32,31 @@ zeligModelDependencies<-function(inZeligOnly=T,schemaVersion="1.1",uninstalledOn
 #################################################################
 
 printZeligSchemaInstance<-function(filename=NULL, serverName=NULL,vdcAbsDirPrefix=NULL){
-	# open connection 
-	schemaURL<-'http://gking.harvard.edu/zelig';
-	if (is.null(serverName)) {
-		serverName<-getHostname()
-	}
-	if (is.null(vdcAbsDirPrefix)){
-		locationURL<-paste('http://', serverName, '/VDC/Schema/analysis/ZeligInterfaceDefinition.xsd',sep="");
-	} else {
-		locationURL<-paste('file://', vdcAbsDirPrefix, '/VDC/Schema/analysis/ZeligInterfaceDefinition.xsd',sep="");
-	}
-	schemaLocation<-paste(schemaURL, ' ', locationURL, sep='');
-	con<-"";
-	if ((!is.null(filename)) && filename !="" ){
-		con<-file(filename,"w");
-	}
-	cat(file=con, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zelig xmlns=\"",schemaURL,"\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"",schemaLocation,"\">\n", sep="");
-	zi = zeligInstalledModelsVDC();
-	zi=setdiff(zi,c("irtkd","normal","normal.bayes"))	
-	CleanzeligDescribeModelXML<-function(model){
-		ret= sub("formula(.*)\/>","formula\\1>",perl=T,zeligDescribeModelXML(model))
-		ret=  sub("equation(.*)\/>","equation\\1>",perl=T,ret)
-		ret	
-	}
-	mssg<- sapply(zi,function(x){cat(file=con,CleanzeligDescribeModelXML(x),sep="")},simplify=F);
-	cat(file=con,"\n</zelig>\n",sep="");
+    # open connection 
+    schemaURL<-'http://gking.harvard.edu/zelig';
+    if (is.null(serverName)) {
+        serverName<-getHostname()
+    }
+    if (is.null(vdcAbsDirPrefix)){
+        locationURL<-paste('http://', serverName, '/VDC/Schema/analysis/ZeligInterfaceDefinition.xsd',sep="");
+    } else {
+        locationURL<-paste('file://', vdcAbsDirPrefix, '/VDC/Schema/analysis/ZeligInterfaceDefinition.xsd',sep="");
+    }
+    schemaLocation<-paste(schemaURL, ' ', locationURL, sep='');
+    con<-"";
+    if ((!is.null(filename)) && filename !="" ){
+        con<-file(filename,"w");
+    }
+    cat(file=con, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zelig xmlns=\"",schemaURL,"\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"",schemaLocation,"\">\n", sep="");
+    zi = zeligInstalledModelsVDC();
+    zi=setdiff(zi,c("irtkd","normal","normal.bayes"))   
+    CleanzeligDescribeModelXML<-function(model){
+        ret= sub("formula(.*)/>","formula\\1>",perl=T,zeligDescribeModelXML(model))
+        ret=  sub("equation(.*)/>","equation\\1>",perl=T,ret)
+        ret 
+    }
+    mssg<- sapply(zi,function(x){cat(file=con,CleanzeligDescribeModelXML(x),sep="")},simplify=F);
+    cat(file=con,"\n</zelig>\n",sep="");
 }
 
 zeligInstalledModelsVDC<-function (inZeligOnly = T, schemaVersion = "1.1") 
@@ -71,7 +71,8 @@ zeligInstalledModelsVDC<-function (inZeligOnly = T, schemaVersion = "1.1")
             return(TRUE)
         }
         ow = options(warn = -1)
-        ret = sapply(zdpd, function(x) require(x, character.only = T) ==T)
+        vdcrequire <- require
+        ret = sapply(zdpd, function(x) vdcrequire(x, character.only = T) ==T)
         options(ow)
         return(ret)
     }

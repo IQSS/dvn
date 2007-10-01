@@ -496,7 +496,7 @@ public class HomePage extends VDCBaseBean{
                 textTag.setEscape(false);
                 textTag.setValue("<span class=dvn_dvNotReleased>Not Released</span>");
                 linkPanel.getChildren().add(textTag);
-                nodelink.setToolTip("This dataverser is not released.");
+                nodelink.setToolTip("This dataverse is not released.");
             } 
             linkPanel.getChildren().add(endLinkTag);
             column.getChildren().add(linkPanel);

@@ -238,6 +238,12 @@ sub read_RT1 {
 	# read the first 64 bytes
 	read($rfh, $buff, $RT1blcks[0]);
 	my ($rcrdtyp1, $prdctnm) = unpack($tmpltRT1[0], $buff);
+	my $releaseNo;
+	if ($prdctnm =~ m/\s+Release\s+((\d+)\.\d+\.\d+)\s*/ig){
+		print $FH "release no:=", $1, "\n";
+		print $FH "release no full=", $2, "\n";
+		$releaseNo = $2;
+	}
 		print $FH "The recordtype code #1(expected value:\$FL2):$rcrdtyp1\n" if $DEBUG;
 		print $FH "The Product name:$prdctnm\n\n" if $DEBUG;
 	if ($rcrdtyp1 ne '$FL2'){
@@ -256,8 +262,8 @@ sub read_RT1 {
 	my $rbytordr = unpack($tmpltRT1[1], $rbuff);
 		print $FH " bytordr:",$bytordr, "\n" if $DEBUG;
 		print $FH "rbytordr:",$rbytordr, "\n" if $DEBUG;
-		
-	if ($bytordr == 2) {
+	my $dataEntrySection=0;
+	if (($bytordr == 2) || ($bytordr == 3)) {
 		# byte-orders are the same: no byte-reversal is necessary; use natives
 		print $FH "File Layout:$bytordr\tuse s/l template characters\n" if $DEBUG;
 		# 16 bit integer
@@ -266,7 +272,10 @@ sub read_RT1 {
 		$int32 = "l";
 		$bytrvrs = 0;
 		$fbytordr = $OSendian;
-	} elsif ($rbytordr == 2) {
+		if ($bytordr == 3){
+			$dataEntrySection=1
+		}
+	} elsif (($rbytordr == 2)||($rbytordr == 3)) {
 		# byteorders are different: byte-reveral may be necessary
 		$bytrvrs = 1;
 		if ($OSendian == 2) {
@@ -286,16 +295,22 @@ sub read_RT1 {
 			$int32 = "V";
 			$fbytordr = 2;
 		}
+		if ($rbytordr == 3){
+			$dataEntrySection=1
+		}
 	} else {
 		die "The byte order of this sav file is neither big or little endian.\nThis script cannot handle such a case.";
+		
 	} 
-		print $FH "\nbyte-reversal(bytrvrs):",$bytrvrs,"\n" if $DEBUG;
-		print $FH "file byte-order(fbytordr):",$fbytordr,"\n\n" if $DEBUG;
-	
+	print $FH "\nbyte-reversal(bytrvrs):",$bytrvrs,"\n" if $DEBUG;
+	print $FH "file byte-order(fbytordr):",$fbytordr,"\n\n" if $DEBUG;
+		
+	$self->{_fileDscr}->{dataEntrySection}=$dataEntrySection;	
 	$self->{_fileDscr}->{reverseBtyeOrder}=$bytrvrs;
 	$self->{_fileDscr}->{fileBtyeOrder}=$fbytordr;
 	$self->{_fileDscr}->{OBStemplate}=$int32;
-	
+	$self->{_fileDscr}->{releaseNo}=$releaseNo+0;;
+
 	# Read the remaining fields
 	
 	read($rfh, $buff, $RT1blcks[2]);
@@ -331,6 +346,8 @@ sub read_RT1 {
 		print $FH "\nSAV Header (RT1) Summary\n";
 		print $FH "templates for unpacking:",join('|',@tmpltRT1),"\n";
 		print $FH "Product Name:",$prdctnm,"\n";
+		print $FH "Release Number:",$releaseNo,"\n";
+		print $FH "Data Entry Section:",$dataEntrySection,"\n"; 
 		print $FH "N of OBS:", $nOBS, "\n";
 		print $FH "Compression switch:", $cmprss, "\n";
 		print $FH "case-weight index:", $wghtVarIndx, "\n";
@@ -927,8 +944,12 @@ sub read_RT7 {
 				die "The endianness code of this file differs from the counterpart based on the filelayout code: $!";
 			}
 
-			if (($mchninf[7] != 2)){
-				die "Character representation code is not 2(7-bit ASCII): this script cannot read non-7-bit ASCII file: $!";
+			if ($mchninf[7] != 2){
+				# die "Character representation code is not 2(7-bit ASCII): this script cannot read non-7-bit ASCII file: $!";
+				
+				if (($mchninf[7] >= 10) && ($self->{_fileDscr}->{releaseNo} >=14 )){
+					print $FH "code page identifier (rel=",$self->{_fileDscr}->{releaseNo},") is ",$mchninf[7], "\n";
+				}
 			}
 			print $FH "RMSINTinfo:\n",Dumper($RMSINTinfo) if $DEBUG;
 

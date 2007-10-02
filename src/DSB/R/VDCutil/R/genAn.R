@@ -124,9 +124,9 @@ VDCgenAnalysis<-function(
           HTML.title("Summary Results")
       tmpsum = try(summary(zel.out),silent=TRUE);
           if (!inherits(tmpsum,"try-error")) {
-        # HTML would warn about deprecated format.char here
+        # R2HTML bug workaround in 1.57
         ow=options(warn=-1)
-        HTML(tmpsum, file=htmlFilePath);
+        try(HTML(tmpsum, file=htmlFilePath),silent=TRUE);
         options(ow)
       }
           if (wantPlots) {
@@ -136,7 +136,10 @@ VDCgenAnalysis<-function(
 
       if(wantSummary && wantSensitivity) {
           HTML.title("Sensitivity Analysis")
-          HTML(summary(zel.rob.out), file=htmlFilePath);
+      tmpsum <-try(summary(zel.rob.out), silent=TRUE)
+          if (!inherits(tmpsum,"try-error")) {
+            HTML(tmpsum, file=htmlFilePath)
+      }
           if (wantPlots) {
              try(hplot(zel.rob.out),silent=T)
           }
@@ -146,7 +149,7 @@ VDCgenAnalysis<-function(
           HTML.title("Simulation  Results")
       tmpsum = try(summary(sim.out),silent=TRUE);
           if (!inherits(tmpsum,"try-error")) {
-            HTML(summary(tmpsum), file=htmlFilePath);
+            HTML(tmpsum, file=htmlFilePath);
       }
 
           if (wantPlots) {
@@ -158,7 +161,7 @@ VDCgenAnalysis<-function(
           HTML.title("Simulation Sensitivity Analysis")
       tmpsum = try(summary(sim.rob.out),silent=TRUE);
           if (!inherits(tmpsum,"try-error")) {
-            HTML(summary(tmpsum), file=htmlFilePath);
+            HTML(tmpsum, file=htmlFilePath);
       }
 
           if (wantPlots) {

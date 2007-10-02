@@ -72,7 +72,7 @@ zeligInstalledModelsVDC<-function (inZeligOnly = T, schemaVersion = "1.1")
         }
         ow = options(warn = -1)
         vdcrequire <- require
-        ret = sapply(zdpd, function(x) vdcrequire(x, character.only = T) ==T)
+        ret = sapply(zdpd, function(x) vdcrequire(x, character.only = TRUE) ==T)
         options(ow)
         return(ret)
     }

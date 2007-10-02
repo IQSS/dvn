@@ -1082,9 +1082,14 @@ sub getRsafeVarNameSet{
 			$raw2RsafeVarName->{$rawvarname->[$i]}=$tmpVN;
 			$RsafeVarName2raw->{$tmpVN}=$rawvarname->[$i];
 		} else {
+			# special characters
 			foreach my $token (keys %{$CNVRSNTBL}){
 				$tmpVN =~ s/[$token]/$CNVRSNTBL->{$token}/g;
 			}
+			# non-ASCII character check
+			$tmpVN = encode_entities_numeric($tmpVN);
+			$tmpVN =~ s/&#x(\w+);/hex$1/ig;
+
 			if ($tmpVN ne $rawvarname->[$i]){
 				$raw2RsafeVarName->{$rawvarname->[$i]}=$tmpVN;
 				$RsafeVarName2raw->{$tmpVN}=$rawvarname->[$i];

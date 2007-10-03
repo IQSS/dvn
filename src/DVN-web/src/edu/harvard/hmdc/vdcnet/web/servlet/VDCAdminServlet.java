@@ -91,6 +91,8 @@ public class VDCAdminServlet extends HttpServlet {
             }
             out.println("To encrypt all current passwords, click on the Encrypt Passwords button<br/>");
             out.print("<input name=encryptPasswords value=\"Encrypt Passwords\" type=submit />");
+            out.print("<hr>");     
+            out.print("<input name=exportStudies value=\"Export Studies\" type=submit />");
             out.print("<hr>");            
             out.println("</form>");
             endPage(out);
@@ -107,7 +109,7 @@ public class VDCAdminServlet extends HttpServlet {
         res.setContentType("text/html;charset=UTF-8");
         PrintWriter out = res.getWriter();
 
-        if (isNetworkAdmin(req) || req.getParameter("encryptPasswords")!=null ) {        
+        if (isNetworkAdmin(req) || req.getParameter("encryptPasswords")!=null  ) {        
             if ( req.getParameter("removeLock") != null) {
                 Long studyId = null;
                 try {
@@ -132,7 +134,9 @@ public class VDCAdminServlet extends HttpServlet {
                         displayMessage (out, "SQLException updating passwords");
                     }
                 }
-            } else {
+            } else if (req.getParameter("exportStudies") != null) { 
+                studyService.exportUpdatedStudies();
+            }else {
                 displayMessage (out, "You have selected an action that is not allowed.");
             }
         } else {

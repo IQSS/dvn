@@ -51,10 +51,17 @@
                             <h:outputLink  id="hyperlink11" value="/dvn/faces/admin/EditAboutPage.jsp">
                                 <h:outputText  id="hyperlink11Text" value="Edit About Page"/>
                             </h:outputLink>
+                            <h:outputLink  value="/dvn/faces/networkAdmin/EditExportSchedulePage.jsp">
+                                <h:outputText  value="Edit Study Export Schedule"/>
+                            </h:outputLink>                           
+                              <h:outputLink  value="/dvn/faces/networkAdmin/EditOAISetsPage.jsp">
+                                <h:outputText  value="Edit OAI Harvesting Sets"/>
+                            </h:outputLink>                           
+                             
                             <h:outputLink id="hyperlink17" value="/dvn/faces/admin/EditContactUsPage.jsp">
                                 <h:outputText id="hyperlink17Text" value="Set Contact Us E-Mail"/>
                             </h:outputLink>
-                        </ui:panelGroup>
+                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel1" style="padding-top: 20px; padding-bottom: 15px">
                             <h:outputText  id="outputText2" styleClass="vdcSubHeader" value="Users/Permissions"/>
                         </ui:panelGroup>

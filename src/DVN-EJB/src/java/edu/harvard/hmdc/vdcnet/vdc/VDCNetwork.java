@@ -41,6 +41,8 @@ import javax.persistence.*;
  */
 @Entity
 public class VDCNetwork {
+    public static final String EXPORT_PERIOD_DAILY="daily";
+    public static final String EXPORT_PERIOD_WEEKLY="weekly";
 
    
     /** Creates a new instance of VDCNetwork */
@@ -593,5 +595,35 @@ public class VDCNetwork {
         this.handleRegistration = handleRegistration;
     }
  
+   
+    public String getExportPeriod() {
+        return exportPeriod;
+    }
+
+    public void setExportPeriod(String exportPeriod) {
+        this.exportPeriod = exportPeriod;
+    }
+
+    public Integer getExportHourOfDay() {
+        return exportHourOfDay;
+    }
+
+    public void setExportHourOfDay(Integer exportHourOfDay) {
+        this.exportHourOfDay = exportHourOfDay;
+    }
+
+    public Integer getExportDayOfWeek() {
+        return exportDayOfWeek;
+    }
+
+    public void setExportDayOfWeek(Integer exportDayOfWeek) {
+        this.exportDayOfWeek = exportDayOfWeek;
+    }
+
+    private String exportPeriod;
+
+    private Integer exportHourOfDay;
+
+    private Integer exportDayOfWeek;
     
 }

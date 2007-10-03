@@ -29,6 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.util;
 
+import edu.harvard.hmdc.vdcnet.study.Study;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -96,5 +97,9 @@ public class FileUtil {
         } else {
             throw new EJBException("System property \"vdc.import.log.dir\" has not been set.");
         }
-    }            
+    }    
+
+    public static File getStudyFileDir(Study study) {
+        return new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
+    }
 }

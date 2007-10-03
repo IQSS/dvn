@@ -57,7 +57,7 @@ public class SyncVDCServiceBean implements edu.harvard.hmdc.vdcnet.study.SyncVDC
      */
     public void scheduleNow(String lastUpdateTime, String authority ) {
            try {    
-            studyService.exportStudyFiles(lastUpdateTime,authority);
+            studyService.exportStudyFilesToLegacySystem(lastUpdateTime,authority);
           } catch (Exception e) {
              throw new EJBException(e);
           }    
@@ -84,7 +84,7 @@ public class SyncVDCServiceBean implements edu.harvard.hmdc.vdcnet.study.SyncVDC
         String lastUpdateTime =(String)timer.getInfo();
          try {
            
-            studyService.exportStudyFiles(lastUpdateTime,null);
+            studyService.exportStudyFilesToLegacySystem(lastUpdateTime,null);
           } catch (Exception e) {
              throw new EJBException(e);
           }    

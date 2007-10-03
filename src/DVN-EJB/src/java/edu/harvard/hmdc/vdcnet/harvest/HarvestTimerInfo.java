@@ -33,14 +33,14 @@ public class HarvestTimerInfo implements Serializable {
     private Long harvestingDataverseId;
     private String name;
     private String schedulePeriod;
-    private int scheduleHourOfDay;
+    private Integer scheduleHourOfDay;
     
     public HarvestTimerInfo() {
         
     }
     
    
-    public HarvestTimerInfo(Long harvestingDataverseId, String name, String schedulePeriod, int scheduleHourOfDay, int scheduleDayOfWeek) {
+    public HarvestTimerInfo(Long harvestingDataverseId, String name, String schedulePeriod, Integer scheduleHourOfDay, Integer scheduleDayOfWeek) {
         this.harvestingDataverseId=harvestingDataverseId;
         this.name=name;
         this.schedulePeriod=schedulePeriod;
@@ -72,22 +72,22 @@ public class HarvestTimerInfo implements Serializable {
         this.schedulePeriod = schedulePeriod;
     }
 
-    public int getScheduleHourOfDay() {
+    public Integer getScheduleHourOfDay() {
         return scheduleHourOfDay;
     }
 
-    public void setScheduleHourOfDay(int scheduleHourOfDay) {
+    public void setScheduleHourOfDay(Integer scheduleHourOfDay) {
         this.scheduleHourOfDay = scheduleHourOfDay;
     }
 
-    public int getScheduleDayOfWeek() {
+    public Integer getScheduleDayOfWeek() {
         return scheduleDayOfWeek;
     }
 
-    public void setScheduleDayOfWeek(int scheduleDayOfWeek) {
+    public void setScheduleDayOfWeek(Integer scheduleDayOfWeek) {
         this.scheduleDayOfWeek = scheduleDayOfWeek;
     }
-    private int scheduleDayOfWeek;
+    private Integer scheduleDayOfWeek;
   
     
 }

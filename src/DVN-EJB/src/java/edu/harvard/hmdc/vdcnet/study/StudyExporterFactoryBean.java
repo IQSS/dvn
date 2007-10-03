@@ -33,7 +33,7 @@ public class StudyExporterFactoryBean implements StudyExporterFactoryLocal {
     public void ejbCreate() {
         exportFormats = new ArrayList<String>();
         exportFormats.add("ddi");
-        exportFormats.add("dc");
+     //   exportFormats.add("dc");
         
     }
     

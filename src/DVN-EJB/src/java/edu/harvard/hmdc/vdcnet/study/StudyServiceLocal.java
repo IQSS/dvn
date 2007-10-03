@@ -38,7 +38,7 @@ public interface StudyServiceLocal {
      * Add given Study to persistent storage.
      */
     
-    public void exportStudyFiles(String lastUpdateTime, String authority) throws IOException, JAXBException;
+    public void exportStudyFilesToLegacySystem(String lastUpdateTime, String authority) throws IOException, JAXBException;
     public void addStudy(Study study); 
         
     public Study getStudy(Long studyId);
@@ -105,5 +105,8 @@ public interface StudyServiceLocal {
     List getVisibleStudies(List studyIds, Long vdcId);
     List getViewableStudies(List<Long> studyIds, Long userId, Long ipUserGroupId);
 
-   
+    List getStudyIdsForExport();
+    public void exportStudy(Long studyId);
+
+    public void exportUpdatedStudies();
 }

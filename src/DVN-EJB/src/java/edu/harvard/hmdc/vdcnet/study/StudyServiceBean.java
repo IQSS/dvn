@@ -51,6 +51,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -95,6 +96,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     @EJB UserServiceLocal userService;
     @EJB IndexServiceLocal indexService;
     @EJB ReviewStateServiceLocal reviewStateService;
+   @EJB StudyExporterFactoryLocal studyExporterFactory;
+
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.study.StudyServiceBean");
     
     
@@ -456,6 +459,19 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
     }
     
+     public List<Long> getStudyIdsForExport() {
+        String queryStr = "select id from study where isharvested='false' and (lastupdatetime > lastexporttime or lastexporttime is null)";
+        Query query = em.createNativeQuery(queryStr);
+        List<Long> returnList = new ArrayList<Long>();
+        // since query is native, must parse through Vector results
+        for (Object currentResult : query.getResultList() ) {
+                // convert results into Longs
+                returnList.add ( new Long( ((Integer) ((Vector) currentResult).get(0) )).longValue() );
+        }        
+            
+        return returnList;
+    }
+    
     public List getStudies(List studyIdList, String orderBy) {
         String studyIds = "";
         Iterator iter = studyIdList.iterator();
@@ -646,7 +662,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
     
     
-    public void exportStudyFiles( String lastUpdateTime, String authority)  {
+    public void exportStudyFilesToLegacySystem( String lastUpdateTime, String authority)  {
         // Get list of studies that have been updated yesterday,
         // and export them to legacy VDC system
         
@@ -746,7 +762,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 Study study = (Study) it.next();
                 logger.info("Exporting study "+study.getStudyId());
                 
-                exportStudy(study,authority);
+                exportStudyToLegacySystem(study,authority);
                 studyCount++;
                 
             }
@@ -765,7 +781,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         logger.info("End export, "+studyCount +" studies successfully exported, "+deletedStudyCount+" studies deleted.");
     }
     
-    private void exportStudy(Study study,String authority) throws IOException, JAXBException {
+    private void exportStudyToLegacySystem(Study study,String authority) throws IOException, JAXBException {
         // For each study
         // update study file locations for legacy system
         // Write ddi to an output stream
@@ -1180,7 +1196,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     private void copyXMLFile( Study study, File xmlFile, String xmlFileName ) {
         try {
             // create, if needed, the directory
-            File newDir = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
+            File newDir = FileUtil.getStudyFileDir(study);
             if (!newDir.exists()) {
                 newDir.mkdirs();
             }
@@ -1202,7 +1218,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         try {
             
             // create, if needed, the directory
-            File newDir = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
+            File newDir = FileUtil.getStudyFileDir(study);
             if (!newDir.exists()) {
                 newDir.mkdirs();
             }
@@ -1476,5 +1492,34 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         
         return ids;
     }    
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void exportStudy(Long studyId)  {
+        Study study = em.find(Study.class, studyId);
+        File studyDir = FileUtil.getStudyFileDir(study);
+        List<String> exportFormats = studyExporterFactory.getExportFormats();
+        for (String exportFormat : exportFormats) {
+            File exportFile = new File(studyDir, "export_"+exportFormat+".xml"); 
+            StudyExporter studyExporter = studyExporterFactory.getStudyExporter(exportFormat);   
+            try {
+                Writer fileWriter = new FileWriter(exportFile);
+                studyExporter.exportStudy(study, fileWriter);
+            } catch(IOException e) {
+                throw new EJBException(e);
+            } catch (JAXBException e) {
+                throw new EJBException(e);
+            }
+        }     
+        study.setLastExportTime(new Date());
+    }
+
+
+    public void exportUpdatedStudies()  {
+        List<Long> studyIds = studyService.getStudyIdsForExport();
+        for (Long studyId: studyIds) {
+            studyService.exportStudy(studyId);        
+        }
+               
+     }
     
 }

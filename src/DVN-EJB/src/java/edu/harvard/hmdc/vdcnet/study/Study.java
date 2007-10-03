@@ -78,6 +78,8 @@ public class Study {
     private Date lastUpdateTime;
     @ManyToOne
     private ReviewState reviewState;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date lastExportTime;
     
     @Column(columnDefinition="TEXT")
     private String UNF;
@@ -2481,4 +2483,12 @@ public class Study {
     public void setHarvestIdentifier(String harvestIdentifier) {
         this.harvestIdentifier = harvestIdentifier;
     } 
+    public Date getLastExportTime() {
+        return lastExportTime;
+    }
+
+    public void setLastExportTime(Date lastExportTime) {
+        this.lastExportTime = lastExportTime;
+    }
+
 }

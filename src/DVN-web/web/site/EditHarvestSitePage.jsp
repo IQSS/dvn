@@ -25,24 +25,43 @@
                 schedulePeriod = getSelect( "selectSchedulePeriod");
                 scheduleHourOfDay = getInput("inputScheduleHourOfDay");
                 scheduleDayOfWeek = getInput("inputScheduleDayOfWeek");
+                scheduleDayOfWeekMsg = getSpan("inputScheduleDayOfWeekMsg");
                         
                   if (scheduled.checked == false) {
                     
-                    schedulePeriod.value='';
+                    schedulePeriod.value='notSelected';
                     scheduleHourOfDay.value='';
                     scheduleDayOfWeek.value='';
                     schedulePeriod.disabled = true;
                     scheduleHourOfDay.disabled = true;
                     scheduleDayOfWeek.disabled = true;
+                 //   document.getElementById("periodDiv1").style.display='none';
+                 //   document.getElementById("periodDiv2").style.display='none';
+                 //   document.getElementById("hourOfDayDiv1").style.display='none';
+                 //   document.getElementById("hourOfDayDiv2").style.display='none';
+                 //   document.getElementById("dayOfWeekDiv1").style.display='none';
+                 //   document.getElementById("dayOfWeekDiv2").style.display='none';
                 } else {
                     schedulePeriod.disabled = false;
-                    if (schedulePeriod.value=="daily") {
+                 //   document.getElementById("periodDiv1").style.display='block';
+                 //   document.getElementById("periodDiv2").style.display='block';
+                if (schedulePeriod.value=="daily") {
                         scheduleHourOfDay.disabled = false;
+                  //      document.getElementById("hourOfDayDiv1").style.display='block';
+                   //     document.getElementById("hourOfDayDiv2").style.display='block';
                         scheduleDayOfWeek.disabled = true;
                         scheduleDayOfWeek.value='';
+                  //      document.getElementById("dayOfWeekDiv1").style.display='none';
+                   //     document.getElementById("dayOfWeekDiv2").style.display='none';
+                        
                    } else {
                         scheduleDayOfWeek.disabled = false;
                         scheduleHourOfDay.disabled = false;
+                    //    document.getElementById("hourOfDayDiv1").style.display='block';
+                    //    document.getElementById("hourOfDayDiv2").style.display='block';
+                    //    document.getElementById("dayOfWeekDiv1").style.display='block';
+                    //    document.getElementById("dayOfWeekDiv2").style.display='block';
+ 
                     }
                
                 }
@@ -53,6 +72,19 @@
             function getInput( id ) {
          
                 elements=document.getElementsByTagName("input");
+                for(i=0; i &lt; elements.length; i++) {
+                
+                    if (elements[i].id.indexOf(id) != -1 ) { 
+                
+                        return elements[i];
+                    }
+                }
+                               
+            }
+            
+            function getSpan( id ) {
+         
+                elements=document.getElementsByTagName("span");
                 for(i=0; i &lt; elements.length; i++) {
                 
                     if (elements[i].id.indexOf(id) != -1 ) { 
@@ -181,41 +213,57 @@
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Schedule Harvesting?"/> 
                         </ui:panelGroup >
                       <ui:panelGroup  >
-                        <h:selectBooleanCheckbox id="scheduledCheckBox" value="#{EditHarvestSitePage.harvestingDataverse.scheduled}"  onchange='updateScheduleInput();'/>
-                        </ui:panelGroup >
-                          <ui:panelGroup  >
+                       
+                        <h:selectBooleanCheckbox binding="#{EditHarvestSitePage.scheduledCheckbox}" id="scheduledCheckBox" value="#{EditHarvestSitePage.harvestingDataverse.scheduled}"  onchange='updateScheduleInput();'/>
+                      
+                      </ui:panelGroup >
+                    
+                      <ui:panelGroup>
+                          <div id="periodDiv1">
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Period"/> 
-                        </ui:panelGroup >
-                      <ui:panelGroup>    
-                            <h:selectOneMenu required="true"  id="selectSchedulePeriod" value="#{EditHarvestSitePage.harvestingDataverse.schedulePeriod}"  onchange='updateScheduleInput();' >
-                                <f:selectItem itemValue="" itemLabel="Not Selected"/>
+                          </div>  
+                      </ui:panelGroup>                          
+                      <ui:panelGroup>
+                          <div id="periodDiv2">
+                            <h:selectOneMenu validator="#{EditHarvestSitePage.validateSchedulePeriod}" id="selectSchedulePeriod" value="#{EditHarvestSitePage.harvestingDataverse.schedulePeriod}"  onchange='updateScheduleInput();' >
+                                <f:selectItem itemValue="notSelected" itemLabel="Not Selected"/>
                                 <f:selectItem itemValue="daily" itemLabel="Harvest daily"/>
                                 <f:selectItem itemValue="weekly" itemLabel="Harvest weekly"/>
                             </h:selectOneMenu>
-                             <h:message styleClass="errorMessage" for="selectSchedulePeriod"/> 
+                          
+                             <h:message id="selectSchedulePeriodMsg" styleClass="errorMessage" for="selectSchedulePeriod"/> 
+                           
                             <verbatim><br /></verbatim>
-                            
+                            </div>
                         </ui:panelGroup>  
-                        
-                        
-                       <ui:panelGroup  >
+                        <ui:panelGroup  >
+                            <div id="hourOfDayDiv1">
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Hour of Day (0-23)"/> 
+                            </div>
                         </ui:panelGroup >
                       <ui:panelGroup  >
+                        
                            <h:inputText required="true" id="inputScheduleHourOfDay" value="#{EditHarvestSitePage.harvestingDataverse.scheduleHourOfDay}">
                                <f:validateLongRange minimum="0" maximum="23" />
                            </h:inputText>
-                            <h:message styleClass="errorMessage" for="inputScheduleHourOfDay"/> 
+                        
+                            <h:message id="inputScheduleHourOfDayMsg" styleClass="errorMessage" for="inputScheduleHourOfDay"/> 
+                             
                           </ui:panelGroup >
 
                        <ui:panelGroup  >
+                          <div id="dayOfWeekDiv1">
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Day Of Week (1-7)"/> 
+                            </div>
                         </ui:panelGroup >
                       <ui:panelGroup  >
+                          
                           <h:inputText required="true" id="inputScheduleDayOfWeek" value="#{EditHarvestSitePage.harvestingDataverse.scheduleDayOfWeek}">
                                <f:validateLongRange minimum="1" maximum="7" />
                           </h:inputText>
-                             <h:message styleClass="errorMessage" for="inputScheduleDayOfWeek"/> 
+                          
+                             <h:message id="inputScheduleDayOfWeekMsg" styleClass="errorMessage" for="inputScheduleDayOfWeek"/> 
+                       
                        </ui:panelGroup >
                         
                         

@@ -76,7 +76,7 @@ public class EditHarvestSitePage extends VDCBaseBean {
     @EJB VDCServiceLocal vdcService;
     @EJB HarvesterServiceLocal harvesterService;
     @EJB HandlePrefixServiceLocal handlePrefixService;
- 
+    HtmlSelectBooleanCheckbox scheduledCheckbox;
     private HarvestingDataverse harvestingDataverse;
     private EditHarvestSiteService editHarvestSiteService;
     
@@ -213,6 +213,10 @@ public class EditHarvestSitePage extends VDCBaseBean {
     
     public String save() {
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
+        String schedulePeriod=editHarvestSiteService.getHarvestingDataverse().getSchedulePeriod();
+        if (schedulePeriod!=null && schedulePeriod.equals("notSelected")) {
+            editHarvestSiteService.getHarvestingDataverse().setSchedulePeriod(null);
+        }
         editHarvestSiteService.save(dataverseName,dataverseAlias,userId);
         success=true;
         return "success";
@@ -681,6 +685,31 @@ public class EditHarvestSitePage extends VDCBaseBean {
         }
     }    
     
-   
+public void validateSchedulePeriod(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        
+        boolean valid=true;
+       
+         
+        if (scheduledCheckbox.getLocalValue().equals(Boolean.TRUE))
+            if ( ((String)value).equals("notSelected")  ) {
+            valid=false;
+        }
+        if (!valid) {
+            ((UIInput)toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("This field is required.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+        
+    }
+
+    public HtmlSelectBooleanCheckbox getScheduledCheckbox() {
+        return scheduledCheckbox;
+    }
+
+    public void setScheduledCheckbox(HtmlSelectBooleanCheckbox scheduledCheckbox) {
+        this.scheduledCheckbox = scheduledCheckbox;
+    }   
     
 }

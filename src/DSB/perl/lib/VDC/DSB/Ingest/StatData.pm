@@ -544,7 +544,7 @@ sub addSumstat{
 		}
 		close(PH);
 	} elsif ($divisor == 1){
-		move($Rdata,$RtmpData);
+		copy($Rdata,$RtmpData);
 	}
 	# step 3: execute the Rcode
 	my $runr=1;
@@ -2067,7 +2067,7 @@ sub unpackdata {
 			for (my $jj=0; $jj<=$#{$offsethsh->{$pstn}}; $jj++) {
 				push @tmp, substr($datacard, ($offsethsh->{$pstn}->[$jj]->[1]-1),$offsethsh->{$pstn}->[$jj]->[4] );
 			}
-			print $FH join("\t", @tmp), "\n";
+			if (($DBG)&& ($lncntr<$nolines )) {print $FH "(",$lncntr,")\t", join("\t", @tmp), "\n";}
 			# if there is no character variable, numeric cast is applied to all data
 			# no character var included
 			unless($self->{_noCharVar}){

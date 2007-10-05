@@ -78,7 +78,68 @@ public class VDCServiceBean implements VDCServiceLocal {
     public void create(VDC vDC) {
         em.persist(vDC);
     }
-
+    
+    /** scholar dataverse */
+    public void createScholarDataverse(Long userId, String firstName, String lastName, String affiliation, String alias) {
+        ScholarDataverse sDV = new ScholarDataverse();
+        em.persist(sDV);
+        String name = new String(lastName + ", " + firstName);
+        sDV.setFirstName(firstName);
+        sDV.setLastName(lastName);
+        sDV.setAffiliation(affiliation);
+        sDV.setName(name);
+        sDV.setAlias(alias);
+        VDCCollection addedRootCollection = new VDCCollection();
+        addedRootCollection.setName(name);
+        addedRootCollection.setReviewState(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED));
+        addedRootCollection.setVisible(true);
+        vdcCollectionService.create(addedRootCollection);
+        sDV.setRootCollection(addedRootCollection);
+        sDV.getOwnedCollections().add(addedRootCollection);
+        VDCNetwork vdcNetwork = vdcNetworkService.find(new Long(1));
+        sDV.setDefaultTemplate(vdcNetwork.getDefaultTemplate());
+        sDV.setHeader(vdcNetwork.getDefaultVDCHeader());
+        sDV.setFooter(vdcNetwork.getDefaultVDCFooter());
+        sDV.setRestricted(true);
+        sDV.setDisplayAnnouncements(false);
+        ArrayList advancedSearchFields = new ArrayList();
+        ArrayList searchResultsFields = new ArrayList();
+        List postgresStudyFields = studyFieldService.findAll();
+        for (Iterator it = postgresStudyFields.iterator(); it.hasNext();) {
+            StudyField elem = (StudyField) it.next();
+            if (elem.isAdvancedSearchField()){
+                advancedSearchFields.add(elem);
+            }
+            if (elem.isSearchResultField()){
+                searchResultsFields.add(elem);
+            }
+        }
+        sDV.setAdvSearchFields(advancedSearchFields);
+        sDV.setSearchResultFields(searchResultsFields);
+        sDV.setCreator(em.find(VDCUser.class,userId));
+   
+        addedRootCollection.setOwner(sDV);
+        vdcCollectionService.edit(addedRootCollection);
+        userService.addVdcRole(userId,findByAlias(sDV.getAlias()).getId(), roleService.ADMIN);
+        
+    }
+    
+    public ScholarDataverse findScholarDataverseByAlias(String alias){
+       String query="SELECT sd from ScholarDataverse sd where sd.alias = :fieldName";
+       ScholarDataverse sDV = null;
+       try {
+           sDV = (ScholarDataverse) em.createQuery(query).setParameter("fieldName",alias).getSingleResult();
+       } catch (javax.persistence.NoResultException e) {
+           // Do nothing, just return null. 
+       }
+       return sDV;
+    }
+    
+    public void edit(ScholarDataverse sDV){
+        em.merge(sDV);
+    }
+    /** end scholar dataverse methods */
+    
     public void edit(VDC vDC) {
         em.merge(vDC);
     }

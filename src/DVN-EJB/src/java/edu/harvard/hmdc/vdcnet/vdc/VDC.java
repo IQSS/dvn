@@ -50,6 +50,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class VDC {
     private String name;
     private String description;
@@ -357,7 +358,7 @@ public class VDC {
      */
     @SequenceGenerator(name="vdc_gen", sequenceName="vdc_id_seq")
     @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="vdc_gen")
-    private Long id;
+    protected Long id;
     
     /**
      * Getter for property id.
@@ -751,4 +752,8 @@ public class VDC {
     public void setVdcGroups(java.util.Collection<VDCGroup> vdcGroups) {
         this.vdcGroups = vdcGroups;
     }
+
+
+
+
 }

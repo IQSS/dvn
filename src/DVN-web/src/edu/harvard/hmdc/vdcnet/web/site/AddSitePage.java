@@ -56,9 +56,16 @@ import javax.faces.component.html.HtmlInputText;
 import com.sun.rave.web.ui.component.PanelGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
+import edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -95,6 +102,15 @@ public class AddSitePage extends VDCBaseBean {
      */
     public void init() {
         super.init();
+        //check to see if a reportee is in request
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        Iterator iterator = request.getParameterMap().keySet().iterator();
+        while (iterator.hasNext()) {
+            Object key = (Object) iterator.next();
+            if ( key instanceof String && ((String) key).indexOf("dataverseType") != -1 && !request.getParameter((String)key).equals("")) {
+                this.setDataverseType(request.getParameter((String)key));
+            }
+        }
     }
     
     private Page page1 = new Page();
@@ -361,9 +377,9 @@ public class AddSitePage extends VDCBaseBean {
     }
     
     public String create(){
-        String name = (String)dataverseName.getValue();
+        String name  = (String)dataverseName.getValue();
         String alias = (String)dataverseAlias.getValue();
-        Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
+        Long userId  = getVDCSessionBean().getLoginBean().getUser().getId();
         vdcService.create(userId,name,alias);
         VDC createdVDC = vdcService.findByAlias(alias);
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
@@ -376,6 +392,57 @@ public class AddSitePage extends VDCBaseBean {
         getVDCRequestBean().getCurrentVDC().setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
         getVDCRequestBean().getCurrentVDC().setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
         vdcService.edit(createdVDC);
+        // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
+        getVDCRequestBean().getCurrentVDCURL();
+        StatusMessage msg = new StatusMessage();
+        try {
+            String hostUrl = System.getProperty("dvn.inetAddress");
+            if (hostUrl != null) {
+                msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is restricted by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
+            } else {
+                msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + InetAddress.getLocalHost().getCanonicalHostName() + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is restricted by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
+            }
+        } catch (UnknownHostException ex) {
+            ex.printStackTrace();
+        }
+        msg.setStyleClass("successMessage");
+        Map m = getRequestMap();
+        m.put("statusMessage",msg);
+        VDCUser creator = userService.findByUserName(getVDCSessionBean().getLoginBean().getUser().getUserName());
+        String toMailAddress = getVDCSessionBean().getLoginBean().getUser().getEmail();
+        String siteAddress="unknown";
+        try {
+            siteAddress = InetAddress.getLocalHost().getCanonicalHostName() + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
+        } catch (UnknownHostException ex) {
+            ex.printStackTrace();
+        }
+        mailService.sendAddSiteNotification(toMailAddress,name,siteAddress);
+
+        getVDCSessionBean().getLoginBean().setUser(creator);
+        
+        return "home";
+    }
+    
+    public String createScholarDataverse(){
+        String dataversetype    = dataverseType;
+        String firstname        = firstName;
+        String lastname         = lastName;
+        String affiliated       = affiliation;
+        String name             = (String)dataverseName.getValue();
+        String alias            = (String)dataverseAlias.getValue();
+        Long userId             = getVDCSessionBean().getLoginBean().getUser().getId();
+        vdcService.createScholarDataverse(userId, firstName, lastName, affiliation, alias);
+        ScholarDataverse createdScholarDataverse = vdcService.findScholarDataverseByAlias(alias);
+        ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
+        getVDCRequestBean().setCurrentVDC(createdScholarDataverse);
+        //  add default values to the VDC table and commit/set the vdc bean props
+        getVDCRequestBean().getCurrentVDC().setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
+        getVDCRequestBean().getCurrentVDC().setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
+        getVDCRequestBean().getCurrentVDC().setAnnouncements(getVDCRequestBean().getVdcNetwork().getDefaultVDCAnnouncements());
+        getVDCRequestBean().getCurrentVDC().setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
+        getVDCRequestBean().getCurrentVDC().setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
+        getVDCRequestBean().getCurrentVDC().setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
+        vdcService.edit(createdScholarDataverse);
         // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
         getVDCRequestBean().getCurrentVDCURL();
         StatusMessage msg = new StatusMessage();
@@ -428,6 +495,8 @@ public class AddSitePage extends VDCBaseBean {
             FacesMessage message = new FacesMessage("This name is already taken.");
             context.addMessage(toValidate.getClientId(context), message);
         }
+        
+        resetScholarProperties();
     }
 
     public void validateAlias(FacesContext context,
@@ -449,6 +518,155 @@ public class AddSitePage extends VDCBaseBean {
             FacesMessage message = new FacesMessage("This alias is already taken.");
             context.addMessage(toValidate.getClientId(context), message);
         }
+        resetScholarProperties();
+    }
+    
+    private void resetScholarProperties() {
+        if (dataverseType != null) 
+            this.setDataverseType(dataverseType);
+    }
+    
+    /**
+     * Changes for build 16
+     * to support scholar
+     * dataverses and display
+     *
+     * @author wbossons
+     */
+    
+    /**
+     * Used to set the discriminator value
+     * in the entity
+     *
+     */
+    private String dataverseType = null;
+
+    public String getDataverseType() {
+        return dataverseType;
+    }
+    
+    public void setDataverseType(String dataverseType) {
+        this.dataverseType = dataverseType;
+    }
+    
+     /**
+     * Used to set the discriminator value
+     * in the entity
+     *
+     */
+    private String selected = null;
+
+    public String getSelected() {
+        return selected;
+    }
+
+    public void setSelected(String selected) {
+        this.selected = selected;
+    }
+    
+    /**
+     * set the possible options
+     *
+     *
+     */
+    private List<SelectItem> dataverseOptions = null;
+
+    public List getDataverseOptions() {
+        if (this.dataverseOptions == null) {
+            dataverseOptions = new ArrayList();
+            dataverseOptions.add(new SelectItem(new String("Scholar")));
+            dataverseOptions.add(new SelectItem(new String("Other")));
+        }
+        return dataverseOptions;
+    }
+    
+    /**
+     * Holds value of property firstName.
+     */
+    private String firstName = new String("");
+
+    /**
+     * Getter for property firstName.
+     * @return Value of property firstName.
+     */
+    public String getFirstName() {
+        return this.firstName;
+    }
+
+    /**
+     * Setter for property firstName.
+     * @param firstName New value of property firstName.
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * Holds value of property lastName.
+     */
+    private String lastName;
+
+    /**
+     * Getter for property lastName.
+     * @return Value of property lastName.
+     */
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    /**
+     * Setter for property lastName.
+     * @param lastName New value of property lastName.
+     */
+    public void setLastName(String lastname) {
+        this.lastName = lastname;
+    }
+
+    /**
+     * Holds value of property affiliation.
+     */
+    private String affiliation;
+
+    /**
+     * Getter for property affiliation.
+     * @return Value of property affiliation.
+     */
+    public String getAffiliation() {
+        return this.affiliation;
+    }
+
+    /**
+     * Setter for property affiliation.
+     * @param affiliation New value of property affiliation.
+     */
+    public void setAffiliation(String affiliation) {
+        this.affiliation = affiliation;
+    }
+    
+    /**
+     * capture value change event
+     *
+     */
+    public void changeAffiliation(ValueChangeEvent event) {
+        String newValue = (String) event.getNewValue();
+        this.setAffiliation(newValue);        
+    }
+    
+    public void changeDataverseOption(ValueChangeEvent event) {
+        String newValue = (String) event.getNewValue();
+        this.setDataverseType(newValue);  
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        request.setAttribute("dataverseType", newValue);
+    }
+    
+    public void changeFirstName(ValueChangeEvent event) {
+        String newValue = (String) event.getNewValue();
+        this.setFirstName(newValue);        
+    }
+    
+    public void changeLastName(ValueChangeEvent event) {
+        String newValue = (String) event.getNewValue();
+        this.setLastName(newValue);        
     }
 
 }

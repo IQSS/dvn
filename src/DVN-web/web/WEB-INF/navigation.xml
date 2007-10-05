@@ -280,6 +280,17 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
+        <from-view-id>/networkAdmin/EditOAISetPage.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/networkAdmin/OAISetsPage.jsp</to-view-id>
+        </navigation-case>
+  <navigation-case>
+            <from-outcome>cancel</from-outcome>
+            <to-view-id>/networkAdmin/OAISetsPage.jsp</to-view-id>
+        </navigation-case>       
+    </navigation-rule>    
+    <navigation-rule>
         <from-view-id>/admin/EditNetworkBannerFooterPage.jsp</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>

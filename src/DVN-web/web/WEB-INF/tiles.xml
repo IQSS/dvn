@@ -293,6 +293,18 @@
        <put name="pageTitle"   type="string"        value="DVN - Edit Dataverse Network Name"/>
        <put name="content" type="template"     value="/networkAdmin/EditNetworkNamePage.jsp"/>
    </definition>
+   <definition name="/networkAdmin/EditExportSchedulePage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Edit Export Scheduling"/>
+       <put name="content" type="template"     value="/networkAdmin/EditExportSchedulePage.jsp"/>
+   </definition>
+   <definition name="/networkAdmin/EditOAISetPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Edit OAI Set"/>
+       <put name="content" type="template"     value="/networkAdmin/EditOAISetPage.jsp"/>
+   </definition>
+   <definition name="/networkAdmin/OAISetsPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - OAI Sets"/>
+       <put name="content" type="template"     value="/networkAdmin/OAISetsPage.jsp"/>
+   </definition>
    <definition name="/networkAdmin/EditUserGroupPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Edit User Group"/>
        <put name="content" type="template"     value="/networkAdmin/EditUserGroupPage.jsp"/>      

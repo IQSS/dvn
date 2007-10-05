@@ -428,6 +428,20 @@
             <value>#{VDCRequest.vdcNetwork.announcements}</value>
         </managed-property>
     </managed-bean>
+   <managed-bean>
+        <managed-bean-name>OAISetsPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.OAISetsPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>EditOAISetPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditOAISetPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>oaiSetId</property-name>
+            <value>#{param.oaiSetId}</value>
+        </managed-property>
+    </managed-bean>    
         <managed-bean>
         <managed-bean-name>EditExportSchedulePage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditExportSchedulePage</managed-bean-class>
@@ -511,6 +525,7 @@
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.UserGroupsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+    
     <!-- utility beans -->
     <managed-bean>
         <managed-bean-name>CollectionTreeBuilder</managed-bean-name>

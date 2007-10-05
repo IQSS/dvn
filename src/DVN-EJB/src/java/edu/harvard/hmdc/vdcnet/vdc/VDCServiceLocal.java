@@ -42,6 +42,10 @@ public interface VDCServiceLocal {
     public void create(VDC vDC);
     
     public void create(Long userId, String name, String alias);
+    
+    public void createScholarDataverse(Long userId, String firstName, String lastName, String affiliation, String alias);
+
+    public ScholarDataverse findScholarDataverseByAlias(String alias);
 
     public void edit(VDC vDC);
 

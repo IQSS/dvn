@@ -37,5 +37,19 @@ public class OAISetServiceBean implements OAISetServiceLocal {
     public List findAll() {
         return em.createQuery("select object(o) from OAISet as o order by o.name").getResultList();
     }
+
+    public void remove(Long id) {
+        OAISet oaiSet = em.find(OAISet.class, id);
+        em.remove(oaiSet);
+    }
+    
+    public OAISet findById(Long id) {
+       return em.find(OAISet.class,id);
+    }   
+    
+    public void update(OAISet oaiSet) {
+        em.merge(oaiSet);
+    }
+    
     
 }

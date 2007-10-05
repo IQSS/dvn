@@ -19,5 +19,8 @@ import javax.ejb.Local;
 @Local
 public interface OAISetServiceLocal {
    public OAISet findBySpec(String spec);   
+   public void remove(Long id);
    public List findAll();
+   public OAISet findById(Long id);
+   public void update(OAISet oaiSet);
 }

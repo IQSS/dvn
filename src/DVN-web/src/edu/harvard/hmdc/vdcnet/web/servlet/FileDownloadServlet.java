@@ -531,18 +531,28 @@ public class FileDownloadServlet extends HttpServlet{
 			    if ( dbContentType != null ) {
 
 				// The "content-disposition" header is for the
-				// Mozilla family of browsers: 
+				// Mozilla family of browsers;
 
-				if ( dbContentType.equalsIgnoreCase("application/pdf") || 
-				     dbContentType.equalsIgnoreCase("text/xml") || 
-				     dbContentType.equalsIgnoreCase("text/plain"))  {
-				    res.setHeader ( "Content-disposition",
-						    "inline; filename=\"" + dbFileName + "\"" ); 
-				    
-				} else {
-				    res.setHeader ( "Content-disposition",
+				// about the commented out code below:
+				//
+				// the idea used to be that we should prompt 
+				// for the content to open in the browser 
+				// whenever possible; but lately it's been 
+				// suggested by our users that all downloads
+				// should behave the same, i.e. prompt the 
+				// use to "save as" the file. 
+
+				//if ( dbContentType.equalsIgnoreCase("application/pdf") || 
+				//     dbContentType.equalsIgnoreCase("text/xml") || 
+				//     dbContentType.equalsIgnoreCase("text/plain"))  {
+				//    res.setHeader ( "Content-disposition",
+				//		    "inline; filename=\"" + dbFileName + "\"" ); 
+				//
+				//} else {
+
+				res.setHeader ( "Content-disposition",
 						    "attachment; filename=\"" + dbFileName + "\"" ); 
-				}
+			        //}
 
 				// And this one is for MS Explorer: 
 				res.setHeader ( "Content-Type",
@@ -571,10 +581,15 @@ public class FileDownloadServlet extends HttpServlet{
 			InputStream in = new FileInputStream(new File(file.getFileSystemLocation()));
 			OutputStream out = res.getOutputStream();
 			
-			int i = in.read();
-			while (i != -1 ) {
-			    out.write(i);
-			    i = in.read();
+			// int i = in.read();
+			byte[] dataBuffer = new byte[8192]; 
+
+			//while (i != -1 ) {
+			while ( in.read (dataBuffer) > 0 ) {
+			    //out.write(i);
+			    out.write(dataBuffer); 
+			    out.flush(); 
+			    //i = in.read();
 			}
 			in.close();
 			out.close();

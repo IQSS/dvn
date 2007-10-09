@@ -100,6 +100,11 @@ public class FileUtil {
     }    
 
     public static File getStudyFileDir(Study study) {
-        return new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
+        
+        File file = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
+        if (!file.exists()) {
+             file.mkdirs();
+        }
+        return file;
     }
 }

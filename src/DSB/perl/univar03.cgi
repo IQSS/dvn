@@ -952,11 +952,17 @@ ENDJ
 			my $ccw = VDC::DSB::StatCodeWriter->new($ccMD);
 			print  TMPX "metadataset4cc(ccw):\n" . Dumper($ccw) . "\n"; 
 			$ccw->printCC(TYPE=>$ct, CCFLPFX=>"$TMPDIR/CC$$", DATA=>"data_$$.dat");
+	
+			# By popular demand, we are changing the default
+			# multi-file package format from gzipped tar to 
+			# zip:
+
+			#`cd $TMPDIR; tar -czvf data_$$.tar.gz data_$$.dat citation_$$.txt CC$$.sps CC$$.do CC$$.sas; rm -f data_$$.dat citation_$$.txt CC$$.sps CC$$.do CC$$.sas`;
+			`cd $TMPDIR; zip data_$$.zip data_$$.dat citation_$$.txt CC$$.sps CC$$.do CC$$.sas; rm -f data_$$.dat citation_$$.txt CC$$.sps CC$$.do CC$$.sas`;
 			
-			`cd $TMPDIR; tar -czvf data_$$.tar.gz data_$$.dat citation_$$.txt CC$$.sps CC$$.do CC$$.sas; rm -f data_$$.dat citation_$$.txt CC$$.sps CC$$.do CC$$.sas`;
-			
-			$DwnldPrfx = "$TMPDIR/data_$$.tar.gz";
-			$dtdwnldf="GZ";
+			$DwnldPrfx = "$TMPDIR/data_$$.zip";
+			#$dtdwnldf="GZ";
+			$dtdwnldf="ZIP";
 		    } elsif ($CGIparamSet->getDwnldType() eq 'D03') {
 			# stata case
 			my $binDwnldFile= "data_$$.dta"; 
@@ -970,9 +976,10 @@ ENDJ
 			unless ( $packageType eq 'fileonly' )
 			{
 			
-			    `cd $TMPDIR; mv $DwnldPrfx $binDwnldFile;  tar -czvf data_$$.tar.gz $binDwnldFile CC$$.do citation_$$.txt ; rm -f $binDwnldFile CC$$.do citation_$$.txt`;
-			    $DwnldPrfx = "$TMPDIR/data_$$.tar.gz";
-			    $dtdwnldf="GZ";
+			    #`cd $TMPDIR; mv $DwnldPrfx $binDwnldFile;  tar -czvf data_$$.tar.gz $binDwnldFile CC$$.do citation_$$.txt ; rm -f $binDwnldFile CC$$.do citation_$$.txt`;
+			    `cd $TMPDIR; mv $DwnldPrfx $binDwnldFile; zip data_$$.zip $binDwnldFile CC$$.do citation_$$.txt ; rm -f $binDwnldFile CC$$.do citation_$$.txt`;
+			    $DwnldPrfx = "$TMPDIR/data_$$.zip";
+			    $dtdwnldf="ZIP";
 			}
 			else
 			{
@@ -989,10 +996,11 @@ ENDJ
 			
 			unless ( $packageType eq 'fileonly' )
 			{
-			    `cd $TMPDIR; mv $DwnldPrfx $binDwnldFile;  tar -czvf data_$$.tar.gz $binDwnldFile citation_$$.txt ; rm -f $binDwnldFile citation_$$.txt`;
+			    #`cd $TMPDIR; mv $DwnldPrfx $binDwnldFile;  tar -czvf data_$$.tar.gz $binDwnldFile citation_$$.txt ; rm -f $binDwnldFile citation_$$.txt`;
+			    `cd $TMPDIR; mv $DwnldPrfx $binDwnldFile; zip data_$$.zip $binDwnldFile citation_$$.txt ; rm -f $binDwnldFile citation_$$.txt`;
 			
-			    $DwnldPrfx = "$TMPDIR/data_$$.tar.gz";
-			    $dtdwnldf="GZ";
+			    $DwnldPrfx = "$TMPDIR/data_$$.zip";
+			    $dtdwnldf="ZIP";
 			}
 			else
 			{
@@ -1257,6 +1265,7 @@ sub dataDownload  {
 		'D04'=> 	{mime=>'application/x-R-2',			ext=>'RData', bm=>1},
 		'TAR'=> 	{mime=>'application/x-tar',				ext=>'tar', bm=>1},
 		'GZ' => 	{mime=>'application/x-gzip-tar',		ext=>'tar.gz', bm=>1}, 
+		'ZIP' => 	{mime=>'application/zip',		ext=>'zip', bm=>1}, 
 		'unknown'=>	{mime=>'application/x-unknown',			ext=>'bin', bm=>1},
 	);
 	if (!$typemap{"$xtsn"}) { $xtsn="unknown";}

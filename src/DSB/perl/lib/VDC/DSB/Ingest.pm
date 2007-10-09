@@ -4,7 +4,7 @@ package DSB::Ingest;
 use vars qw(%SUPPORTED_FORMATS $VDC_SCRIPT_PATH);
 
 use Exporter;
-use CGI;
+##use CGI;
 
 #@SUPPORTED_FORMATS = ( "application/x-stata", "application/x-spss-por", "application/x-spss-sav" ); 
 %SUPPORTED_FORMATS = ( 
@@ -45,6 +45,7 @@ sub produce_TabFiles {
     my $self = shift;
     my $base = shift; 
     my $dep_object  = shift;
+    my $control_card = shift; 
 
     $self->{logger}->vdcLOG_info ( "VDC::DSB::Ingest", "(produce_TabFiles)", "attempting to convert " . ($#{$dep_object} + 1) . " datafile(s)" ); 
 
@@ -68,16 +69,23 @@ sub produce_TabFiles {
     }
 
 
-    unless  ( $format = $self->check_FileFormats ( @filetypes ) )
+    if  ( $control_card )
     {
-	# {INGEST_ERROR} has already been set; 
-	$self->{logger}->vdcLOG_fatal ( "VDC::DSB::Ingest", "(produce_TabFiles)", "bad input datafile format: " . $self->{INGEST_ERROR} ); 
-	return undef; 
+	$format = "sps"; 
+    }
+    else
+    {
+	unless  ( $format = $self->check_FileFormats ( @filetypes ) )
+	{
+	    # {INGEST_ERROR} has already been set; 
+	    $self->{logger}->vdcLOG_fatal ( "VDC::DSB::Ingest", "(produce_TabFiles)", "bad input datafile format: " . $self->{INGEST_ERROR} ); 
+	    return undef; 
+	}
     }
 
     $self->{logger}->vdcLOG_info ( "VDC::DSB::Ingest", "(produce_TabFiles)", "datafile format extension ok: " . $format ); 
 
-    my $success = $self->run_ConverterScripts ( $format, $base, $ret, $dep_object );
+    my $success = $self->run_ConverterScripts ( $format, $base, $ret, $dep_object, $control_card );
 
     return $ret if $success;
 
@@ -91,6 +99,7 @@ sub run_ConverterScripts {
     my $base   = shift; 
     my $res    = shift; 
     my $dep_object = shift; 
+    my $control_card = shift; 
 
 
     my @files; 
@@ -106,7 +115,16 @@ sub run_ConverterScripts {
     my $status; 
     my $status_code = 1; 
 
-    my $script = $DSB::Ingest::VDC_SCRIPT_PATH . "/read" . $format . ".pl"; 
+    my $script = ""; 
+
+    if ( $control_card ) 
+    {
+	$script = $DSB::Ingest::VDC_SCRIPT_PATH . "/DDIsec4sps.pl"; 
+    }
+    else
+    {
+	$script = $DSB::Ingest::VDC_SCRIPT_PATH . "/read" . $format . ".pl"; 
+    }
 
     unless  ( -f $script )
     {
@@ -119,8 +137,8 @@ sub run_ConverterScripts {
 
 
 #    my $dirandprefix="/tmp/ingest.$$";
-    my $logfile = $tmpdir . "/ingest.$$";
-    my $dataddi = $tmpdir . $$ . ".data.xml"; 
+    my $logfile = $tmpdir . "/ingest." . $$ . ".log";
+    my $dataddi = $tmpdir . "/" . $$ . ".data.xml"; 
 
 
     for $file_hold ( @files )
@@ -128,8 +146,17 @@ sub run_ConverterScripts {
 	$file_hold = "'" . $file_hold . "'"; 
     }
 
+    my $command = ""; 
 
-    my $command = join ( " ", ( $script, $logfile, $dataddi, @files ) );	
+    if ( $control_card ) 
+    {
+	$control_card = $tmpdir . "/" . $control_card;
+	$command = join ( " ", ( $script, $logfile, $dataddi, "sps", $control_card, @files ) );
+    }
+    else
+    {
+	$command = join ( " ", ( $script, $logfile, $dataddi, @files ) );
+    }
 
     $self->{logger}->vdcLOG_info ( "VDC::DSB::Ingest", "(run_ConverterScripts)", 
 				    "I'm going to run $command..." ); 
@@ -146,36 +173,41 @@ sub run_ConverterScripts {
 
     # let's check if we got the files: 
 
-    my $tabfile; 
-
-    for $f ( @$dep_object )
+    unless ( $control_card )
     {
-	next if $f->{status} ne "ok";
+	my $tabfile; 
 
-	$tabfile = $f->{input_file};
-	unless ( $tabfile =~s/\.[^\.]*$/.tab/ )
-	{	    
-	    $tabfile .= ".tab";
-	}
-
-	unless ( ( $size = (stat($tabfile))[7] ) > 0  )
+	for $f ( @$dep_object )
 	{
-	    $f->{status} = "conversion script failed";
-	    $self->{logger}->vdcLOG_info ( "VDC::DSB::Ingest", 
-					   "(run_ConverterScripts)", 
-					   "failed to produce $tabfile" ); 
-	}
-	else
-	{
-	    push @$res, $tabfile;
-	    $f->{mime} = "text/plain";
-	    $f->{mime_u} = "tab";
-	    $self->{logger}->vdcLOG_info ( "VDC::DSB::Ingest", 
-					   "(run_ConverterScripts)", 
-					   $tabfile . " produced (" . $size . " bytes)" ); 
-	
-	}
+	    next if $f->{status} ne "ok";
 
+	    $tabfile = $f->{input_file};
+	    unless ( $tabfile =~s/\.[^\.]*$/.tab/ )
+	    {	    
+		$tabfile .= ".tab";
+	    }
+
+	    unless ( ( $size = (stat($tabfile))[7] ) > 0  )
+	    {
+		$f->{status} = "conversion script failed";
+		$self->{logger}->vdcLOG_info ( "VDC::DSB::Ingest", 
+					       "(run_ConverterScripts)", 
+					       "failed to produce $tabfile" ); 
+		$self->{INGEST_DATA_STATUS} = "converter script failed to produce tab-delimited data file";
+		return undef;
+	    }
+	    else
+	    {
+		push @$res, $tabfile;
+		$f->{mime} = "text/plain";
+		$f->{mime_u} = "tab";
+		$self->{logger}->vdcLOG_info ( "VDC::DSB::Ingest", 
+					       "(run_ConverterScripts)", 
+					       $tabfile . " produced (" . $size . " bytes)" ); 
+
+	    }
+
+	}
     }
 
     $self->{'data_ddi'} = $dataddi;
@@ -234,6 +266,43 @@ sub prepare_FileDeposit {
 
     my $tmpdir = $self->{'TMPDIR'}; 
 
+    while ( defined ( $params->{'controlCard' . $c} ) )
+    {
+	$fname = $params->{'controlCard' . $c};
+
+##	$self->{logger}->vdcLOG_info ( "VDC::DSB::Ingest", 
+##				       "(prepare_FileDeposit)", 
+##				       "processing ccard " . $fname ); 
+
+	if ( ( $size = (stat( $fname ))[7] ) > 0 )
+	{
+	    my $ccard_localfile = $fname; 
+	    $ccard_localfile =~ s:^.*[\\/]::;
+	    $ccard_localfile =~ s:^:$tmpdir/:;
+	    
+	    my $bytes = 0; 
+
+	    open ( LOCAL, ">" . $ccard_localfile ); 
+
+	    while ( <$fname> )
+	    {
+		print LOCAL $_; 
+		$bytes += length ( $_ ); 
+	    }
+
+	    close LOCAL;
+#	    close UPLOADED;
+
+##	    $self->{logger}->vdcLOG_info ( "VDC::DSB::Ingest", 
+##				       "(prepare_FileDeposit)", 
+##				       "ccard: " . $bytes . " bytes read;" ); 
+	}
+	$c++;
+    }
+
+    $c = 0; 
+
+
     while ( defined ( $params->{$type . 'File' . $c} ) )
     {
 	$fname = $params->{$type . 'File' . $c};
@@ -272,7 +341,7 @@ sub prepare_FileDeposit {
 	    }
 
 	    close LOCAL;
-	    close UPLOADED;
+#	    close UPLOADED;
 
 ##	    $self->{logger}->vdcLOG_info ( "VDC::DSB::Ingest", 
 ##				       "(prepare_FileDeposit)", 

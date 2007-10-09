@@ -9,6 +9,7 @@ package dispatcher;
 use strict; 
 use POSIX; 
 
+
 #
 # We initialize once, when the Apache thread is started: 
 #
@@ -18,8 +19,8 @@ my $netloc;
 
 if ( !defined ($dispatcher::init) ) 
 {
-    #use vdcCGI;
-    use CGI;
+
+    use CGI qw/:standard/;
 
     # Unbuffer stdout:
     select(STDOUT); $| = 1;
@@ -39,8 +40,9 @@ if ( !defined ($dispatcher::init) )
 
 my $SERVICE = ( $ENV{'SERVICE'} || "Repository" );
 
-$hq = new CGI;
-$netloc = $hq->url( -base=>1 );
+$dispatcher::query = new CGI;
+
+$netloc = $dispatcher::query->url( -base=>1 );
     
 $netloc =~ s:^http\://::gi;
 $netloc =~ s/[:\/].*$//;
@@ -64,7 +66,7 @@ if ( !defined ($dispatcher::catalog{$SERVICE . ":" . $netloc}) )
 	      '<INIT>',
 	      "Service ($module) not available." ); 
 	
-	print $hq->header ( 
+	print $dispatcher::query->header ( 
 			    -status=>'404 Not Found:Service unknown', 
 			    -type=>'text/plain' 
 			  ); 
@@ -77,7 +79,7 @@ if ( !defined ($dispatcher::catalog{$SERVICE . ":" . $netloc}) )
 	      '<INIT>',
 	      "Could not load service module." ); 
 	
-	print $hq->header 
+	print $dispatcher::query->header 
 	    ( -status=>"500 Internal Server Error: $SERVICE -Could not load service module", 
 	      -type=>'text/plain' );
     }
@@ -129,17 +131,7 @@ sub Dispatch {
 							    "<Dispatch>",
 							    "dispatching" );
 
-    undef $dispatcher::query;
-    unless ( $dispatcher::query = new CGI )
-    {
-	$dispatcher::catalog{$service}->{logger}->vdcLOG_info ( "VDC::$service", 
-								 "<Dispatch>",
-								 "Could not create vdcCGI object!" );
-	return;
-    }
-
     $dispatcher::catalog{$service}->{logger}->vdcLOG_info ( "VDC::$service", 
-#							    $dispatcher::query->query_string(),
 							    "<Dispatch>",
 							    "created query" );
 
@@ -221,32 +213,6 @@ sub Dispatch {
     {
 	$context{'url'} .= '?' . $query_string;
     } 
-
-    # I'm using HTTP file upload mechanism for Digital Object deposits: 
-
-    my ($filename) = $dispatcher::query->param('uploaded_file');
-    my ($tmpfile);
-    my ($buffer, $bytes);
-
-    if ($filename ne "") 
-    {
-        # get a temporary file name and open it
-        $tmpfile = POSIX::tmpnam();
-        open(TMP, ">$tmpfile");
-
-
-        while ($bytes=read($filename, $buffer, 1024)) 
-        {
-            print TMP $buffer;
-        }
-
-        close $filename;
-        close TMP;
-
-        $context{'filename'} .= "$tmpfile";
-    }
-
-
 
     my ($ret, $msg) = &Execute_Verb ($service, $verb, \%params, \%context);
 

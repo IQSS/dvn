@@ -426,24 +426,34 @@ sub Ingest {
     $logger->vdcLOG_info ( "VDC::DSB", "(Ingest)", 
 			   "executing the verb" );
 
-    $logger->vdcLOG_info ( "VDC::DSB", "(Ingest)", 
-			   "datafile supplied: " .  $params->{'dataFile0'} );
 
+    my $sps_card = $query->param('controlCard0'); 
 
-    my $testfname = $params->{'dataFile0'}; 
-    $testfname =~s:^.*[\\/]::;
-    my $testfsize = (stat( "/tmp/VDC/" . $testfname ))[7];
-    unless ( $testfsize ) 
+    my $sps_card_size = (stat( $sps_card ))[7];    
+
+    if ( $sps_card )
     {
-	$testfsize = (stat( "/tmp/" . $testfname ))[7];
+	$logger->vdcLOG_info ( "VDC::DSB", "(Ingest)", 
+			       "spss control card uploaded: " . $sps_card_size . "  bytes;" );
     }
 
+    $sps_card =~s:^.*[\\/]::;
+
+
+    my $dfname = $query->param('dataFile0'); 
+    my $dfsize = (stat( $dfname ))[7];    
+
+
     $logger->vdcLOG_info ( "VDC::DSB", "(Ingest)", 
-			   $testfsize . " bytes uploaded" );
+			   "datafile: " . $dfsize . " bytes uploaded" );
 
 
     $logger->vdcLOG_info ( "VDC::DSB", "(Ingest)", 
 			   "Entering Ingest; (POST parameters suppressed)" );
+
+
+
+
 
     my $ingest = DSB::Ingest->new ( $query, $logger, $self->{'TMPDIR'} ); 
 
@@ -494,9 +504,9 @@ sub Ingest {
    
     if ( $n_processed > 0 )
     {
-	$tab_files = $ingest->produce_TabFiles ( $base, $datafiles_DO ); 
+	$tab_files = $ingest->produce_TabFiles ( $base, $datafiles_DO, $sps_card ); 
 
-	unless ( $#{$tab_files} >= 0 )
+	unless ( $sps_card || ( $#{$tab_files} >= 0 ) )
 	{	    
 	    my $xml; 
 	    
@@ -576,33 +586,36 @@ sub Ingest {
     close DATADDI; 
 
 
-    print "--=vdc-ingest-multipart\n";
-    print "Content-Type: text/tab-separated-values\n\n";
-
-
-    my $file_o; 
-    
-    for $file_o ( @$datafiles_DO )
+    unless ( $sps_card_size )
     {
-        next unless $file_o->{status} eq "ok";
 
-	my $file_o_name = $file_o->{'file'}; 
+	print "--=vdc-ingest-multipart\n";
+	print "Content-Type: text/tab-separated-values\n\n";
+
+
+	my $file_o; 
+    
+	for $file_o ( @$datafiles_DO )
+	{
+	    next unless $file_o->{status} eq "ok";
+
+	    my $file_o_name = $file_o->{'file'}; 
 
 
 ###    print tabfile!
 
-	open TF, $file_o_name; 
+	    open TF, $file_o_name; 
 
-	while ( <TF> )
-	{
-	    print $_; 
+	    while ( <TF> )
+	    {
+		print $_; 
+	    }
+
+	    close TF; 
 	}
 
-	close TF; 
+	print "\n";
     }
-
-    print "\n";
-
 
     print "--=vdc-ingest-multipart--\n";
 

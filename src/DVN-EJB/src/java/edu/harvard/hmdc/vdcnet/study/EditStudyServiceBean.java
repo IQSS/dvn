@@ -371,7 +371,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
         while (tbdIter.hasNext()) {
             StudyFile f = (StudyFile) tbdIter.next();
             File physicalFile = new File(f.getFileSystemLocation());
-            physicalFile.delete();
+
             if ( f.isSubsettable() ) {
                 File originalPhysicalFile = new File(physicalFile.getParent(), "_" + f.getId().toString());
                 originalPhysicalFile.delete();
@@ -386,6 +386,9 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
 		    }
 		}
             }
+
+            physicalFile.delete();
+
         }
     }
     

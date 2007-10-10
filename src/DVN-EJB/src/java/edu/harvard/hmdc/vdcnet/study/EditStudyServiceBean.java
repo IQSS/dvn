@@ -373,8 +373,12 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
             File physicalFile = new File(f.getFileSystemLocation());
 
             if ( f.isSubsettable() ) {
-                File originalPhysicalFile = new File(physicalFile.getParent(), "_" + f.getId().toString());
-                originalPhysicalFile.delete();
+		// preserved original datafile, if available:
+                //File originalPhysicalFile = new File(physicalFile.getParent(), "_" + f.getId().toString());
+		File originalPhysicalFile = new File(physicalFile.getParent(), "_" + f.getFileSystemLocation());
+		if ( originalPhysicalFile.exists() ) {
+		    originalPhysicalFile.delete();
+		}
 
 		// and any cached copies of this file in formats other 
 		// than tab-delimited: 
@@ -387,8 +391,9 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
 		}
             }
 
-            physicalFile.delete();
-
+	    if ( physicalFile.exists() ) {
+		physicalFile.delete();
+	    }
         }
     }
     

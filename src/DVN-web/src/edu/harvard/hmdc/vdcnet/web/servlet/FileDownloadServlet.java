@@ -237,19 +237,20 @@ public class FileDownloadServlet extends HttpServlet{
 				res.setHeader(method.getResponseHeaders()[i].getName(), method.getResponseHeaders()[i].getValue());
 			    }
 			}
-
-
 		    
 			// send the incoming HTTP stream as the response body
 
 			InputStream in = method.getResponseBodyAsStream(); 
 			OutputStream out = res.getOutputStream();
 			    
-			int i = in.read();
-			while (i != -1 ) {
-			    out.write(i);
-			    i = in.read();
+			byte[] dataBuffer = new byte[8192]; 
+
+			int i = 0;
+			while ( ( i = in.read (dataBuffer) ) > 0 ) {
+			    out.write(dataBuffer,0,i);
+			    out.flush(); 
 			}
+
 			in.close();
 			out.close();
                 
@@ -316,11 +317,14 @@ public class FileDownloadServlet extends HttpServlet{
 			InputStream in = method.getResponseBodyAsStream(); 
 			OutputStream out = res.getOutputStream();
 			
-			int i = in.read();
-			while (i != -1 ) {
-			    out.write(i);
-			    i = in.read();
+			byte[] dataBuffer = new byte[8192]; 
+
+			int i = 0;
+			while ( ( i = in.read (dataBuffer) ) > 0 ) {
+			    out.write(dataBuffer,0,i);
+			    out.flush(); 
 			}
+
 			in.close();
 			out.close();
                 
@@ -392,10 +396,12 @@ public class FileDownloadServlet extends HttpServlet{
 			    InputStream in = new FileInputStream(new File(cachedFileSystemLocation));
 			    OutputStream out = res.getOutputStream();
 			
-			    int i = in.read();
-			    while (i != -1 ) {
-				out.write(i);
-				i = in.read();
+			    byte[] dataBuffer = new byte[8192]; 
+
+			    int i = 0;
+			    while ( ( i = in.read (dataBuffer) ) > 0 ) {
+				out.write(dataBuffer,0,i);
+				out.flush(); 
 			    }
 			    in.close();
 			    out.close();
@@ -493,14 +499,15 @@ public class FileDownloadServlet extends HttpServlet{
 
 			    // Also, we want to cache this file for future use:
 
-			    //BufferedWriter fileCachingStream = new BufferedWriter(new FileWriter(cachedFileSystemLocation));
 			    FileOutputStream fileCachingStream = new FileOutputStream(cachedFileSystemLocation);
 
-			    int i = in.read();
-			    while (i != -1 ) {
-				out.write(i);
-				fileCachingStream.write(i); 
-				i = in.read();
+			    byte[] dataBuffer = new byte[8192]; 
+
+			    int i = 0;
+			    while ( ( i = in.read (dataBuffer) ) > 0 ) {
+				out.write(dataBuffer,0,i);
+				fileCachingStream.write(dataBuffer,0,i); 
+				out.flush(); 
 			    }
 			    in.close();
 			    out.close();
@@ -540,7 +547,7 @@ public class FileDownloadServlet extends HttpServlet{
 				// whenever possible; but lately it's been 
 				// suggested by our users that all downloads
 				// should behave the same, i.e. prompt the 
-				// use to "save as" the file. 
+				// user to "save as" the file. 
 
 				//if ( dbContentType.equalsIgnoreCase("application/pdf") || 
 				//     dbContentType.equalsIgnoreCase("text/xml") || 
@@ -581,15 +588,12 @@ public class FileDownloadServlet extends HttpServlet{
 			InputStream in = new FileInputStream(new File(file.getFileSystemLocation()));
 			OutputStream out = res.getOutputStream();
 			
-			// int i = in.read();
 			byte[] dataBuffer = new byte[8192]; 
 
-			//while (i != -1 ) {
-			while ( in.read (dataBuffer) > 0 ) {
-			    //out.write(i);
-			    out.write(dataBuffer); 
+			int i = 0;
+			while ( ( i = in.read (dataBuffer) ) > 0 ) {
+			    out.write(dataBuffer,0,i);
 			    out.flush(); 
-			    //i = in.read();
 			}
 			in.close();
 			out.close();
@@ -721,11 +725,14 @@ public class FileDownloadServlet extends HttpServlet{
                     ZipEntry e = new ZipEntry(zipEntryName);
                     
                     zout.putNextEntry(e);
-                    int i = in.read();
-                    while (i != -1 ) {
-			zout.write(i);
-                        i = in.read();
-                    }
+
+		    byte[] dataBuffer = new byte[8192]; 
+
+		    int i = 0;
+		    while ( ( i = in.read (dataBuffer) ) > 0 ) {
+			zout.write(dataBuffer,0,i);
+			zout.flush(); 
+		    }
                     in.close();
                     zout.closeEntry();
 

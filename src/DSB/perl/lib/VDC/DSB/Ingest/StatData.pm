@@ -559,9 +559,9 @@ sub addSumstat{
 	}
 	close(PH);
 	unlink($rcode);
-	if ($divisor == 1){
-		rename($RtmpData, $Rdata);
-	}
+	#if ($divisor == 1){
+	#	rename($RtmpData, $Rdata);
+	#}
 	
 	my $nofldl =  unlink(<$RtmpDataBase.*.tab>);
 	print $FH "\n",$nofldl," sub-tab files are deleted\n" if $DEBUG;
@@ -1876,6 +1876,8 @@ sub getVarTypeSet{
 	my $varname = $self->{_varNameA};
 	my $dcml    = $self->{_dcmlVarTbl};
 	my $novar   = $self->{_fileDscr}->{varQnty};
+	my $vllbmap = $self->{_valVrMpTbl};
+
 	my $varcode=[];
 
 	for (my $i=0;$i<$novar;$i++){
@@ -1884,7 +1886,13 @@ sub getVarTypeSet{
 			$varcode->[$i]=0 ;
 		} elsif (exists($dcml->{$varname->[$i]})) {
 			# numeric continuous var
-			$varcode->[$i]=2 ;
+			
+			if (!exists($vllbmap->{$varname->[$i]})){
+				$varcode->[$i]=2 ;
+			} else {
+				$varcode->[$i]=1 ;
+			}
+			
 		} else{
 			# numeric discrete var
 			$varcode->[$i]=1 ;
@@ -2067,7 +2075,7 @@ sub unpackdata {
 			for (my $jj=0; $jj<=$#{$offsethsh->{$pstn}}; $jj++) {
 				push @tmp, substr($datacard, ($offsethsh->{$pstn}->[$jj]->[1]-1),$offsethsh->{$pstn}->[$jj]->[4] );
 			}
-			if (($DBG)&& ($lncntr<$nolines )) {print $FH "(",$lncntr,")\t", join("\t", @tmp), "\n";}
+			print $FH join("\t", @tmp), "\n";
 			# if there is no character variable, numeric cast is applied to all data
 			# no character var included
 			unless($self->{_noCharVar}){

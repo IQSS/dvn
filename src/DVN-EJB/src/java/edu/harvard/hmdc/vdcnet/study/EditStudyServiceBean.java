@@ -44,6 +44,7 @@ import edu.harvard.hmdc.vdcnet.vdc.ReviewState;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
+import edu.harvard.hmdc.vdcnet.study.DataFileFormatType;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -374,6 +375,16 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
             if ( f.isSubsettable() ) {
                 File originalPhysicalFile = new File(physicalFile.getParent(), "_" + f.getId().toString());
                 originalPhysicalFile.delete();
+
+		// and any cached copies of this file in formats other 
+		// than tab-delimited: 
+		
+		for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
+		    File cachedDataFile = new File(f.getFileSystemLocation() + "." + type.getValue());
+		    if ( cachedDataFile.exists() ) {
+			cachedDataFile.delete();
+		    }
+		}
             }
         }
     }

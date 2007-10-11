@@ -50,5 +50,6 @@ public interface HarvesterServiceLocal {
     public List<String> getMetadataFormats(String oaiUrl);
     public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, boolean allowUpdates, MutableBoolean harvestErrorOccurred);
     public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, boolean allowUpdates, MutableBoolean harvestErrorOccurred);
-          
+    
+    public HarvestFormatType findHarvestFormatTypeByMetadataPrefix(String metadataPrefix);
 }

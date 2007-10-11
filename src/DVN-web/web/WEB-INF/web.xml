@@ -263,4 +263,12 @@
     <servlet-name>VDCAdminServlet</servlet-name>
         <url-pattern>/admin</url-pattern>
     </servlet-mapping> 
+    <servlet>
+        <servlet-name>VDCIngestServlet</servlet-name>
+        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCIngestServlet</servlet-class>
+    </servlet>     
+    <servlet-mapping>
+    <servlet-name>VDCIngestServlet</servlet-name>
+        <url-pattern>/ingest</url-pattern>
+    </servlet-mapping>       
 </web-app>

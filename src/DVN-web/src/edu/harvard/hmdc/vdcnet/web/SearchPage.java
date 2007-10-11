@@ -278,7 +278,7 @@ public class SearchPage extends VDCBaseBean{
         }
         
         if (studyListing.getStudyIds() != null && studyListing.getStudyIds().size() > 0) {
-            List sortedStudies = studyService.getStudies(studyListing.getStudyIds(), sortBy);
+            List sortedStudies = studyService.getOrderedStudies(studyListing.getStudyIds(), sortBy);
             studyListing.setStudyIds(sortedStudies);
             resetScroller();
             

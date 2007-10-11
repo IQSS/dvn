@@ -78,6 +78,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -385,7 +386,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                     resumptionToken= listIdentifiersType.getResumptionToken();
                     for (Iterator it = listIdentifiersType.getHeader().iterator(); it.hasNext();) {
                         HeaderType header = (HeaderType) it.next();
-                        Long studyId = harvesterService.getRecord(hdLogger, dataverse, header.getIdentifier(),dataverse.getFormat(), initialHarvest, harvestErrorOccurred);
+                        Long studyId = harvesterService.getRecord(hdLogger, dataverse, header.getIdentifier(),dataverse.getHarvestFormatType().getMetadataPrefix(), initialHarvest, harvestErrorOccurred);
                         if (studyId!=null) {
                             harvestedStudyIds.add(studyId);
                         }
@@ -554,5 +555,19 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         } while ((e=e.getCause())!=null);
          logger.severe(fullMessage);
     }    
-    
+  
+  
+    public HarvestFormatType findHarvestFormatTypeByMetadataPrefix(String metadataPrefix) {
+        String queryStr = "SELECT f FROM HarvestFormatType f WHERE f.metadataPrefix = '"+metadataPrefix+"'";
+        Query query= em.createQuery(queryStr);
+        List resultList = query.getResultList();
+        HarvestFormatType hft=null;
+        if (resultList.size()>1) {
+            throw new EJBException("More than one HarvestFormatType found with metadata Prefix= '"+metadataPrefix + "'");
+        }
+        if (resultList.size()==1) {
+            hft = (HarvestFormatType)resultList.get(0);
+        }
+        return hft;
+    }  
 }

@@ -31,6 +31,7 @@ import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import java.io.Serializable;
 import java.util.Collection;
@@ -454,6 +455,15 @@ public class HarvestingDataverse implements Serializable {
     private Integer scheduleHourOfDay;
 
     private Integer scheduleDayOfWeek;
+    
+    @ManyToOne
+    private HarvestFormatType harvestFormatType;
 
+    public HarvestFormatType getHarvestFormatType() {
+        return harvestFormatType;
+    }
 
+    public void setHarvestFormatType(HarvestFormatType harvestFormatType) {
+        this.harvestFormatType = harvestFormatType;
+    }
 }

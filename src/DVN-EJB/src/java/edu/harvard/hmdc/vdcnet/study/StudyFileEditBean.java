@@ -50,7 +50,8 @@ public class StudyFileEditBean implements Serializable{
     private String fileCategoryName;
     private String originalFileName;
     private String tempSystemFileLocation;
-    private String ingestedSystemFileLocation;
+    private String controlCardSystemFileLocation;
+    private String ingestedSystemFileLocation;    
     private boolean deleteFlag;
 
     public StudyFile getStudyFile() {
@@ -85,6 +86,14 @@ public class StudyFileEditBean implements Serializable{
         this.tempSystemFileLocation = tempSystemFileLocation;
     }
 
+    public String getControlCardSystemFileLocation() {
+        return controlCardSystemFileLocation;
+    }
+
+    public void setControlCardSystemFileLocation(String controlCardSystemFileLocation) {
+        this.controlCardSystemFileLocation = controlCardSystemFileLocation;
+    }    
+    
     public String getIngestedSystemFileLocation() {
         return ingestedSystemFileLocation;
     }

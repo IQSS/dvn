@@ -51,6 +51,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorValue("Basic")
 public class VDC {
     private String name;
     private String description;

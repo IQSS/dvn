@@ -33,3 +33,4 @@ ALTER TABLE vdc ALTER COLUMN firstname SET STORAGE EXTENDED;
 ALTER TABLE vdc ADD COLUMN affiliation varchar(255);
 ALTER TABLE vdc ALTER COLUMN affiliation SET STORAGE EXTENDED;
 
+update VDC set dtype='Basic';

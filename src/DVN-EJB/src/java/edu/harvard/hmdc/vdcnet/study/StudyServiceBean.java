@@ -36,6 +36,7 @@ import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceBean;
 import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 import edu.harvard.hmdc.vdcnet.gnrs.GNRSServiceLocal;
+import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.CodeBook;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
@@ -472,7 +473,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return returnList;
     }
     
-    public List getStudies(List studyIdList, String orderBy) {
+    public List getOrderedStudies(List studyIdList, String orderBy) {
         String studyIds = "";
         Iterator iter = studyIdList.iterator();
         while (iter.hasNext()) {
@@ -557,33 +558,44 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         Iterator iter = fileBeans.iterator();
         while (iter.hasNext()) {
             StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
-            
-            StudyFile f = fileBean.getStudyFile();
-            // attach file to study
-            fileBean.addFileToCategory(study);
-            
-            // move ingest-created file
-            File tempIngestedFile = new File(fileBean.getIngestedSystemFileLocation());
-            File newIngestedLocationFile = new File(newDir, f.getFileSystemName());
-            try {
-                FileUtil.copyFile( tempIngestedFile, newIngestedLocationFile );
-                tempIngestedFile.delete();
-                f.setFileType("text/tab-separated-values");
-                f.setFileSystemLocation(newIngestedLocationFile.getAbsolutePath());
+
+            // for now the logic is if the DSB does not return a file, don't copy
+            // over anything; this is to cover the situation with the Ingest servlet
+            // that uses takes a control card file to add a dataTable to a prexisting
+            // file; this will have to change if we do this two files method at the
+            // time of the original upload
+            if (fileBean.getIngestedSystemFileLocation() != null) {
                 
-            } catch (IOException ex) {
-                throw new EJBException(ex);
-            }
+                StudyFile f = fileBean.getStudyFile();
+                // attach file to study
+                fileBean.addFileToCategory(study);
+ 
+                // move ingest-created file
+                File tempIngestedFile = new File(fileBean.getIngestedSystemFileLocation());
+                File newIngestedLocationFile = new File(newDir, f.getFileSystemName());
+                try {
+                    FileUtil.copyFile( tempIngestedFile, newIngestedLocationFile );
+                    tempIngestedFile.delete();
+                    f.setFileType("text/tab-separated-values");
+                    f.setFileSystemLocation(newIngestedLocationFile.getAbsolutePath());
+
+                } catch (IOException ex) {
+                    throw new EJBException(ex);
+                }
             
             
-            // also move original file for archiving
-            File tempOriginalFile = new File(fileBean.getTempSystemFileLocation());
-            File newOriginalLocationFile = new File(newDir, "_" + f.getFileSystemName() );
-            try {
-                FileUtil.copyFile( tempOriginalFile, newOriginalLocationFile );
-                tempOriginalFile.delete();
-            } catch (IOException ex) {
-                throw new EJBException(ex);
+                // also move original file for archiving
+                File tempOriginalFile = new File(fileBean.getTempSystemFileLocation());
+                File newOriginalLocationFile = new File(newDir, "_" + f.getFileSystemName() );
+                try {
+                    FileUtil.copyFile( tempOriginalFile, newOriginalLocationFile );
+                    tempOriginalFile.delete();
+                } catch (IOException ex) {
+                    throw new EJBException(ex);
+                }
+            } else {
+                fileBean.getStudyFile().setSubsettable(true);
+                em.merge( fileBean.getStudyFile() );
             }
         }
         
@@ -931,10 +943,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
         
         boolean createNewHandle = (vdc.getHarvestingDataverse().getHandlePrefix() != null);
-        int format = vdc.getHarvestingDataverse().getFormat().equals("ddi") ? 0 : 1; // 1 is mif; eventually this will be dynamic
+        Long hftId = vdc.getHarvestingDataverse().getHarvestFormatType().getId();
 
         //return doImportStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
-        return doImportStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, allowUpdates, false, false, harvestIdentifier);
+        return doImportStudy(xmlFile, hftId, vdcId, userId, createNewHandle, createNewHandle, allowUpdates, false, false, harvestIdentifier);
     }
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -946,16 +958,16 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             throw new EJBException("importLegacyStudy(...) should never be called for a harvesting dataverse.");
         }
         
-        return doImportStudy(xmlFile, 0,vdcId, userId, true, false, false, true, true, null);
+        return doImportStudy(xmlFile, new Long(0),vdcId, userId, true, false, false, true, true, null);
     }
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Study importStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
-        return doImportStudy(xmlFile, xmlFileFormat, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
+    public Study importStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
+        return doImportStudy(xmlFile, harvestFormatTypeId, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
     }
     
     
-    private Study doImportStudy(File xmlFile, int xmlFileFormat, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
+    private Study doImportStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
         logger.info("Begin doImportStudy");
         VDCNetwork vdcNetwork = vdcNetworkService.find();
         VDC vdc = em.find(VDC.class, vdcId);
@@ -963,8 +975,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         File ddiFile = xmlFile;
         boolean fileTransformed = false;
         
-        if (xmlFileFormat != 0) {
-            ddiFile = transformToDDI(xmlFile, "mif2ddi.xsl");
+        HarvestFormatType hft = em.find(HarvestFormatType.class, harvestFormatTypeId);
+        if (hft.getStylesheetFileName() != null) {
+            ddiFile = transformToDDI( xmlFile, hft.getStylesheetFileName() );
             fileTransformed = true;
         }
         

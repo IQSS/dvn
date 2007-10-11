@@ -191,7 +191,7 @@
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Harvesting Format"/> 
                         </ui:panelGroup>
                         <ui:panelGroup  rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.metadataFormats}">
-                            <h:selectOneMenu   value="#{EditHarvestSitePage.harvestingDataverse.format}" >
+                            <h:selectOneMenu   value="#{EditHarvestSitePage.editHarvestSiteService.selectedMetadataPrefixId}" >
                                 <f:selectItems  value="#{EditHarvestSitePage.metadataFormatsSelect}" />
                             </h:selectOneMenu>
                             <verbatim><br /></verbatim>

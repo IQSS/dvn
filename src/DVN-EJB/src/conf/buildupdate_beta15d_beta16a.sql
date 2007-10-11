@@ -34,3 +34,33 @@ ALTER TABLE vdc ADD COLUMN affiliation varchar(255);
 ALTER TABLE vdc ALTER COLUMN affiliation SET STORAGE EXTENDED;
 
 update VDC set dtype='Basic';
+
+
+-- new queries needed to support harvestformattype
+
+CREATE TABLE harvestformattype
+(
+  id int8 NOT NULL,
+  metadataprefix varchar(255),
+  name varchar(255),
+  stylesheetfilename varchar(255),
+  CONSTRAINT harvestformattype_pkey PRIMARY KEY (id)
+) 
+WITHOUT OIDS;
+ALTER TABLE harvestformattype OWNER TO "vdcApp";
+
+ALTER TABLE harvestingdataverse ADD COLUMN harvestformattype_id int8;
+ALTER TABLE harvestingdataverse ALTER COLUMN harvestformattype_id SET STORAGE PLAIN;
+
+ALTER TABLE harvestingdataverse
+  ADD CONSTRAINT fk_harvestingdataverse_harvestformattype_id FOREIGN KEY (harvestformattype_id)
+      REFERENCES harvestformattype (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+insert into harvestformattype values (0, 'ddi', 'DDI', null);
+insert into harvestformattype values (1, 'oai_etdms', 'MIF', 'mif2ddi.xml');
+
+update harvestingdataverse hd
+set harvestformattype_id = hft.id
+from harvestformattype hft 
+where hft.metadataprefix = hd.format;

@@ -938,6 +938,9 @@ INSERT INTO DataFileFormatType VALUES (1, 'D02', 'Splus');
 INSERT INTO DataFileFormatType VALUES (2, 'D03', 'Stata');
 INSERT INTO DataFileFormatType VALUES (3, 'D04', 'R');
 
+insert into harvestformattype values (0, 'ddi', 'DDI', null);
+insert into harvestformattype values (1, 'oai_etdms', 'MIF', 'mif2ddi.xml');
+
 create index datavariable_id_index on  datavariable (id);
 create index summarystatistic_id_index on  summarystatistic (id);
 create index summarystatistic_datavariable_id_index on  summarystatistic (datavariable_id);

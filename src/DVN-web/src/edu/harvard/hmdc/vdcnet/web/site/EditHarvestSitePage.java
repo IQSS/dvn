@@ -35,6 +35,7 @@ import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.harvest.SetDetailBean;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
@@ -568,7 +569,11 @@ public class EditHarvestSitePage extends VDCBaseBean {
         if (this.editHarvestSiteService.getMetadataFormats()!=null) {
             for (Iterator it = this.editHarvestSiteService.getMetadataFormats().iterator(); it.hasNext();) {
                 String elem = (String) it.next();
-                metadataFormatsSelect.add(new SelectItem(elem,elem));
+                
+                HarvestFormatType hft = harvesterService.findHarvestFormatTypeByMetadataPrefix(elem);
+                if (hft != null) {        
+                    metadataFormatsSelect.add(new SelectItem(hft.getId(),hft.getName()));
+                }
             }
         }
         return metadataFormatsSelect;

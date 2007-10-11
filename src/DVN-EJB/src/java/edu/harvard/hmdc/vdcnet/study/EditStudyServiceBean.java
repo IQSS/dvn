@@ -375,7 +375,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
             if ( f.isSubsettable() ) {
 		// preserved original datafile, if available:
                 //File originalPhysicalFile = new File(physicalFile.getParent(), "_" + f.getId().toString());
-		File originalPhysicalFile = new File(physicalFile.getParent(), "_" + f.getFileSystemLocation());
+		File originalPhysicalFile = new File(physicalFile.getParent(), "_" + f.getFileSystemName());
 		if ( originalPhysicalFile.exists() ) {
 		    originalPhysicalFile.delete();
 		}

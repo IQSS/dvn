@@ -29,6 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.admin;
 
+import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.harvest.SetDetailBean;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
@@ -64,6 +65,7 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
     EntityManager em;
     private HarvestingDataverse harvestingDataverse;
     private Long selectedHandlePrefixId;
+    private Long selectedMetadataPrefixId;
 
     public Long getSelectedHandlePrefixId() {
         return selectedHandlePrefixId;
@@ -72,7 +74,15 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
     public void setSelectedHandlePrefixId(Long selectedHandlePrefixId) {
         this.selectedHandlePrefixId = selectedHandlePrefixId;
     }
-   
+
+    public Long getSelectedMetadataPrefixId() {
+        return selectedMetadataPrefixId;
+    }
+
+    public void setSelectedMetadataPrefixId(Long selectedMetadataPrefixId) {
+        this.selectedMetadataPrefixId = selectedMetadataPrefixId;
+    }
+
   
     
     /**
@@ -122,6 +132,14 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
             HandlePrefix handlePrefix = em.find(HandlePrefix.class, selectedHandlePrefixId);
             harvestingDataverse.setHandlePrefix(handlePrefix);
         }
+        
+        if (selectedMetadataPrefixId==null) {
+            harvestingDataverse.setHarvestFormatType(null);
+        } else {
+            HarvestFormatType hft = em.find(HarvestFormatType.class, selectedMetadataPrefixId);
+            harvestingDataverse.setHarvestFormatType(hft);
+        }
+        
         harvesterService.updateHarvestTimer(harvestingDataverse);
         em.flush();
     }

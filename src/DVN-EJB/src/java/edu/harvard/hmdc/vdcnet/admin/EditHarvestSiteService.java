@@ -53,6 +53,9 @@ public interface EditHarvestSiteService {
     
     public Long getSelectedHandlePrefixId();
     public void setSelectedHandlePrefixId(Long selectedHandlePrefixId);
+    
+    public Long getSelectedMetadataPrefixId();
+    public void setSelectedMetadataPrefixId(Long selectedMetadataPrefixId);
    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void save(String name, String alias, Long userId);

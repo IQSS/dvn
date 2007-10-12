@@ -137,7 +137,7 @@ public class ImportStudyPage extends VDCBaseBean  {
                 File xmlFile = File.createTempFile("ddi", ".xml");
                 browserFile.write(xmlFile);
                 
-                Study study = studyService.importStudy(xmlFile, xmlFileFormat, vdcId, lb.getUser().getId(), registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles, null);
+                Study study = studyService.importStudy(xmlFile, new Long(xmlFileFormat), vdcId, lb.getUser().getId(), registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles, null);
                 indexService.updateStudy(study.getId());
                 
                 // create result message

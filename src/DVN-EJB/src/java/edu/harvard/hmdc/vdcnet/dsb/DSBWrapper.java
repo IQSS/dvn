@@ -51,7 +51,7 @@ import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.codec.binary.Base64;
+//import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -128,8 +128,8 @@ public class DSBWrapper {
     
     
     public String analyze(File f) throws IOException{
-        BufferedReader rd = null;
-        PostMethod method = null;
+        //BufferedReader rd = null;
+        //PostMethod method = null;
         
         try {
             String fileType = null;
@@ -139,14 +139,18 @@ public class DSBWrapper {
             SubsettableFileChecker sfchk = new SubsettableFileChecker(SUBSETTABLE_FORMAT_SET);
             
             fileType = sfchk.detectSubsettableFormat(f);
-            
+            if (fileType != null){
+                System.out.println("DSBWrapper:Analyze:mimeType="+fileType);
+            }
             // setp 2: check the mime type of this file
-            /* to be implemented
+            /* to be implemented*/
             if (fileType == null){
                 JhoveWrapper jw = new JhoveWrapper();
-                fileType = jw.checkFileType(f);
+                fileType = jw.getFileMimeType(f);
+                 System.out.println("DSBWrapper:Analyze:mimeType by Jhove="+fileType);
             }
-            */
+            /*
+            
             if (fileType == null){
             
             //to be deprecated
@@ -172,15 +176,17 @@ public class DSBWrapper {
             }
             
             }
-            
+            */
             return fileType;
             
         } finally {
+            /*
             if (method != null) { method.releaseConnection(); }
             try {
                 if (rd != null) { rd.close(); }
             } catch (IOException ex) {
             }
+            */
         }
     }
     
@@ -218,29 +224,13 @@ public class DSBWrapper {
             // create method
             method = new PostMethod(generateUrl(DSB_INGEST));
             File tempFile = new File(file.getTempSystemFileLocation());
-            
-            if (file.getControlCardSystemFileLocation() == null) {
-                Part[] parts = {
-                    new FilePart( "dataFile0", tempFile ),
-                    new StringPart( "dataFileMime0", file.getStudyFile().getFileType() )
-                };
-
-                method.setRequestEntity(
-                        new MultipartRequestEntity(parts, method.getParams())
-                        );
-            } else {
-                File controlCardFile = new File(file.getControlCardSystemFileLocation() );
-                
-                Part[] parts = {
-                    new FilePart( "dataFile0", tempFile ),
-                    new StringPart( "dataFileMime0", file.getStudyFile().getFileType() ),
-                    new FilePart( "controlCard0", controlCardFile )
-                };
-
-                method.setRequestEntity(
-                        new MultipartRequestEntity(parts, method.getParams())
-                        );                
-            }
+            Part[] parts = {
+                new FilePart( "dataFile0", tempFile ),
+                new StringPart( "dataFileMime0", file.getStudyFile().getFileType() )
+            };
+            method.setRequestEntity(
+                    new MultipartRequestEntity(parts, method.getParams())
+                    );
             
             // execute
             executeMethod(method);

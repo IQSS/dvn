@@ -91,7 +91,7 @@
                                 <f:selectItem itemValue="weekly" itemLabel="Harvest weekly"/>
                             </h:selectOneMenu>
                              <h:message styleClass="errorMessage" for="exportPeriod"/> 
-                            <verbatim><br /></verbatim>
+                            <br />
          
                           </ui:panelGroup>
                           <ui:panelGroup >

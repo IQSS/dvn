@@ -1036,8 +1036,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         logger.info("calling mapDDI()");
         ddiService.mapDDI( _cb, study );
         logger.info("completed mapDDI, studyId = "+study.getStudyId());
-        _cb=null;
-        System.gc();
+      
         
         //post mapping processing
         if ( harvestIdentifier != null ) {
@@ -1078,6 +1077,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             copyXMLFile(study, xmlFile, "original_imported_study_pretransform.xml");
         }
         
+        copyFileForExport(study, _cb);
+        
         saveStudy(study, userId);
         
         if ( registerHandle && vdcNetworkService.find().isHandleRegistration() ) {
@@ -1088,6 +1089,29 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         logger.info("completed doImportStudy() returning study"+study.getGlobalId());
         return study;
     }
+    
+    private void copyFileForExport(Study study,  CodeBook _cb)  {
+        // Do only if generateHandle? 
+        _cb.getDocDscr().add(ddiService.createDocDscr(study));
+        FileWriter out=null;
+        try {
+            File ddiExportFile = new File(FileUtil.getStudyFileDir(study), "export_ddi.xml");
+            out = new FileWriter(ddiExportFile);
+            ddiService.exportStudy(_cb, out);
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            throw new EJBException("Error occurred while attempting to export file");
+        } finally {
+            try {
+                if (out != null) { out.close(); }
+            } catch (Exception e) {}
+        }
+        // Now, export to all other formats except DDI (because we just did that above)
+        studyService.exportStudy(study.getId(), false);
+        
+    }
+    
+    
     
     private File transformToDDI(File xmlFile, String xslFileName) {
         File ddiFile = null;
@@ -1507,20 +1531,23 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }    
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void exportStudy(Long studyId)  {
+    public void exportStudy(Long studyId, boolean exportDDI)  {
         Study study = em.find(Study.class, studyId);
         File studyDir = FileUtil.getStudyFileDir(study);
         List<String> exportFormats = studyExporterFactory.getExportFormats();
         for (String exportFormat : exportFormats) {
-            File exportFile = new File(studyDir, "export_"+exportFormat+".xml"); 
-            StudyExporter studyExporter = studyExporterFactory.getStudyExporter(exportFormat);   
-            try {
-                Writer fileWriter = new FileWriter(exportFile);
-                studyExporter.exportStudy(study, fileWriter);
-            } catch(IOException e) {
-                throw new EJBException(e);
-            } catch (JAXBException e) {
-                throw new EJBException(e);
+            if (!exportFormat.equals("ddi") || exportDDI) {
+                File exportFile = new File(studyDir, "export_"+exportFormat+".xml"); 
+                StudyExporter studyExporter = studyExporterFactory.getStudyExporter(exportFormat);   
+                try {   
+                    exportFile.createNewFile(); 
+                    Writer fileWriter = new FileWriter(exportFile);
+                    studyExporter.exportStudy(study, fileWriter);
+                } catch(IOException e) {
+                    throw new EJBException(e);
+                } catch (JAXBException e) {
+                    throw new EJBException(e);
+            }
             }
         }     
         study.setLastExportTime(new Date());
@@ -1530,7 +1557,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     public void exportUpdatedStudies()  {
         List<Long> studyIds = studyService.getStudyIdsForExport();
         for (Long studyId: studyIds) {
-            studyService.exportStudy(studyId);        
+            studyService.exportStudy(studyId, true);        
         }
                
      }

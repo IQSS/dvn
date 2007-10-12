@@ -68,8 +68,8 @@ public class StudyServiceBeanTest extends TestCase {
         edu.harvard.hmdc.vdcnet.study.StudyServiceBean instance = new edu.harvard.hmdc.vdcnet.study.StudyServiceBean();
         
         edu.harvard.hmdc.vdcnet.study.Study expResult = null;
-        edu.harvard.hmdc.vdcnet.study.Study result = instance.importStudy(doc);
-        assertEquals(expResult, result);
+    //    edu.harvard.hmdc.vdcnet.study.Study result = instance.importStudy(doc);
+    //    assertEquals(expResult, result);
         
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -86,8 +86,8 @@ public class StudyServiceBeanTest extends TestCase {
         edu.harvard.hmdc.vdcnet.study.StudyServiceBean instance = new edu.harvard.hmdc.vdcnet.study.StudyServiceBean();
         
         Document expResult = null;
-        Document result = instance.exportStudy(schemaType, study);
-        assertEquals(expResult, result);
+     //   Document result = instance.exportStudy(schemaType, study);
+    //    assertEquals(expResult, result);
         
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -102,7 +102,7 @@ public class StudyServiceBeanTest extends TestCase {
         edu.harvard.hmdc.vdcnet.study.Study study = null;
         study.setTitle("Test Title");
         StudyAuthor sa = new StudyAuthor();
-        sa.setValue("Jane Researcher");
+     //   sa.setValue("Jane Researcher");
         study.getStudyAuthors().add(sa);
         study.setCreateTime(new Date());
         edu.harvard.hmdc.vdcnet.study.StudyServiceBean instance = new edu.harvard.hmdc.vdcnet.study.StudyServiceBean();
@@ -136,7 +136,7 @@ public class StudyServiceBeanTest extends TestCase {
         edu.harvard.hmdc.vdcnet.study.Study study = null;
         edu.harvard.hmdc.vdcnet.study.StudyServiceBean instance = new edu.harvard.hmdc.vdcnet.study.StudyServiceBean();
         
-        instance.deleteStudy(study);
+     //   instance.deleteStudy(study);
         
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

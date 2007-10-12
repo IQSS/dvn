@@ -10,6 +10,7 @@
 package edu.harvard.hmdc.vdcnet.study;
 
 import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
+import edu.harvard.hmdc.vdcnet.dublinCore.DCServiceLocal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -23,6 +24,7 @@ import javax.ejb.Stateless;
 @Stateless
 public class StudyExporterFactoryBean implements StudyExporterFactoryLocal {
     @EJB DDI20ServiceLocal ddiService;
+    @EJB DCServiceLocal dcService;
     
     private List<String> exportFormats;
     
@@ -33,13 +35,15 @@ public class StudyExporterFactoryBean implements StudyExporterFactoryLocal {
     public void ejbCreate() {
         exportFormats = new ArrayList<String>();
         exportFormats.add("ddi");
-     //   exportFormats.add("dc");
+        exportFormats.add("oai_dc");
         
     }
     
     public StudyExporter getStudyExporter(String exportFormat) {
         if (exportFormat.equals("ddi")) { 
             return ddiService;
+        } else if (exportFormat.equals("oai_dc")) {
+            return dcService;
         }
         else throw new EJBException("Unknown export format: "+exportFormat);
     }

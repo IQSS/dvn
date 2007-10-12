@@ -106,7 +106,7 @@ public interface StudyServiceLocal {
     List getViewableStudies(List<Long> studyIds, Long userId, Long ipUserGroupId);
 
     List getStudyIdsForExport();
-    public void exportStudy(Long studyId);
+    public void exportStudy(Long studyId, boolean exportDDI);
 
     public void exportUpdatedStudies();
 }

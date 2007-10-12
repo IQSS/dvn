@@ -28,11 +28,11 @@
                                 <h:outputLink id="hyperlinkAddStudiesCollection" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddCollectionStudiesPage.jsp">
                                     <h:outputText  id="hyperlink3Text2" value="Add Collection by Assigning Studies"/>
                                 </h:outputLink>
-                                <verbatim> | </verbatim>
+                               | 
                                 <h:outputLink id="hyperlinkAddQueryCollection" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddCollectionQueryPage.jsp">
                                     <h:outputText  id="hyperlink3Text1" value="Add Collection as a Query"/>
                                 </h:outputLink>
-                                <verbatim> | </verbatim>
+                                |
                                 <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddLinkPage.jsp">
                                     <h:outputText value="Add Collection Link"/>
                                 </h:outputLink>

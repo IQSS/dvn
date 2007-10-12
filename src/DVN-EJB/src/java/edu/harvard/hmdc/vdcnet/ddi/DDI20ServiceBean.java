@@ -182,6 +182,7 @@ import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtil;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
@@ -213,6 +214,7 @@ import javax.xml.bind.Marshaller;
 
 public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal {
     @EJB VariableServiceLocal varService;
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceBean");
     
     
@@ -1513,15 +1515,14 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         return mapStudy( s, false );
     }
     
+    
     private CodeBook mapStudy(Study s, boolean exportToLegacyVDC) {
         ObjectFactory objFactory = new ObjectFactory();
         CodeBook _cb = objFactory.createCodeBook();
         _cb.setVersion("2.0");
         
-        // docdscr
-        DocDscrType _doc = objFactory.createDocDscrType();
-        _doc.setCitation( mapDocCitation(s) );
-        _cb.getDocDscr().add(_doc);
+        // docdscr   
+        _cb.getDocDscr().add(createDocDscr(s));
         
         // studydscr
         StdyDscrType _sd = objFactory.createStdyDscrType();
@@ -1579,9 +1580,10 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         return _cb;
     }
     
-    private CitationType mapDocCitation(Study s) {
-        // DocDscr just jas title, handle, distributor and dist date
+    // this method is public, so we can add a DocDscr to harvested ddis
+    public DocDscrType createDocDscr(Study s) {
         ObjectFactory objFactory = new ObjectFactory();
+        DocDscrType _doc = objFactory.createDocDscrType();
         CitationType _citation = objFactory.createCitationType();
         
         // titlStmt
@@ -1592,19 +1594,15 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         _title.getContent().add(s.getTitle());
         _titleStmt.setTitl(_title);
         
-        
-        IDNoType _studyId = objFactory.createIDNoType();
-        _studyId.setAgency( AGENCY_HANDLE );
-        _studyId.getContent().add( s.getGlobalId() );
-        _titleStmt.getIDNo().add(_studyId);
-        
+        mapStudyId(s, _titleStmt);
         
         // distStmt
         DistStmtType _distStmt = objFactory.createDistStmtType();
         _citation.setDistStmt(_distStmt);
         
         DistrbtrType _dist = objFactory.createDistrbtrType();
-        _dist.getContent().add( "Dataverse Network" );
+        String name = vdcNetworkService.find().getName();
+        _dist.getContent().add( name+" Dataverse Network" );
         _distStmt.getDistrbtr().add(_dist);
         
         if ( s.getLastUpdateTime() != null ) {
@@ -1616,8 +1614,20 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             _distDate.getContent().add(lastUpdateString );
             _distStmt.setDistDate( _distDate );
         }
-        
-        return _citation;
+               
+        _doc.setCitation( _citation );
+        return _doc; 
+    }
+     
+  
+    
+    private void mapStudyId(Study s, TitlStmtType _titleStmt) {
+        ObjectFactory objFactory = new ObjectFactory();
+        IDNoType _studyId = objFactory.createIDNoType();
+        _studyId.setAgency( AGENCY_HANDLE );
+        _studyId.getContent().add( s.getGlobalId() );
+        _titleStmt.getIDNo().add(_studyId);
+               
     }
     
     private CitationType mapCitation(Study s) {
@@ -1639,10 +1649,8 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         }
         
         // we will always have a handle
-        IDNoType _studyId = objFactory.createIDNoType();
-        _studyId.setAgency( AGENCY_HANDLE );
-        _studyId.getContent().add( s.getGlobalId() );
-        _titleStmt.getIDNo().add(_studyId);
+        mapStudyId(s, _titleStmt);
+        
         
         Iterator iter = s.getStudyOtherIds().iterator();
         while (iter.hasNext()) {
@@ -2620,12 +2628,17 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         }
     }
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public  void exportStudy(Study study, Writer out) throws IOException, JAXBException {
+    public  void exportStudy(Study study, Writer out) throws JAXBException {
         exportStudy(study, out, false);
     }
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public  void exportStudy(Study study, Writer out, boolean exportToLegacyVDC) throws IOException, JAXBException {
-        marshaller.marshal(mapStudy(study, exportToLegacyVDC), out ); 
+    public  void exportStudy(Study study, Writer out, boolean exportToLegacyVDC) throws  JAXBException {
+        exportStudy(mapStudy(study, exportToLegacyVDC), out ); 
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public void exportStudy(CodeBook _cb, Writer out) throws JAXBException {
+        marshaller.marshal(_cb,out);
     }
     
     public  void exportDataFile(StudyFile sf, Writer out) throws IOException, JAXBException {
@@ -2653,5 +2666,5 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         }
         return _cb;
         
-    }    
+    }   
 }

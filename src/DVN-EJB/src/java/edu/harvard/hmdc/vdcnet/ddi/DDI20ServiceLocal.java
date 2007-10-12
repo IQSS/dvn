@@ -21,6 +21,7 @@
 package edu.harvard.hmdc.vdcnet.ddi;
 
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.CodeBook;
+import edu.harvard.hmdc.vdcnet.jaxb.ddi20.DocDscrType;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyExporter;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
@@ -44,5 +45,9 @@ public interface DDI20ServiceLocal extends StudyExporter  {
     java.lang.String determineId(CodeBook _cb, String agency);  
     
     void exportDataFile(StudyFile sf, Writer out) throws IOException, JAXBException;
+    
+    public DocDscrType createDocDscr(Study s);
+    
+    public void exportStudy(CodeBook _cb, Writer out) throws JAXBException;
     
 }

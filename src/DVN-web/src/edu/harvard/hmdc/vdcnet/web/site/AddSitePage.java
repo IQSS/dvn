@@ -56,6 +56,7 @@ import javax.faces.component.html.HtmlInputText;
 import com.sun.rave.web.ui.component.PanelGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
+import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -395,27 +396,18 @@ public class AddSitePage extends VDCBaseBean {
         // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
         getVDCRequestBean().getCurrentVDCURL();
         StatusMessage msg = new StatusMessage();
-        try {
-            String hostUrl = System.getProperty("dvn.inetAddress");
-            if (hostUrl != null) {
-                msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is restricted by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
-            } else {
-                msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + InetAddress.getLocalHost().getCanonicalHostName() + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is restricted by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
-            }
-        } catch (UnknownHostException ex) {
-            ex.printStackTrace();
-        }
+        
+        String hostUrl = PropertyUtil.getHostUrl();    
+        msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is restricted by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
         msg.setStyleClass("successMessage");
         Map m = getRequestMap();
         m.put("statusMessage",msg);
         VDCUser creator = userService.findByUserName(getVDCSessionBean().getLoginBean().getUser().getUserName());
         String toMailAddress = getVDCSessionBean().getLoginBean().getUser().getEmail();
         String siteAddress="unknown";
-        try {
-            siteAddress = InetAddress.getLocalHost().getCanonicalHostName() + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
-        } catch (UnknownHostException ex) {
-            ex.printStackTrace();
-        }
+       
+        siteAddress = hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
+       
         mailService.sendAddSiteNotification(toMailAddress,name,siteAddress);
 
         getVDCSessionBean().getLoginBean().setUser(creator);
@@ -446,27 +438,20 @@ public class AddSitePage extends VDCBaseBean {
         // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
         getVDCRequestBean().getCurrentVDCURL();
         StatusMessage msg = new StatusMessage();
-        try {
-            String hostUrl = System.getProperty("dvn.inetAddress");
-            if (hostUrl != null) {
-                msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is restricted by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
-            } else {
-                msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + InetAddress.getLocalHost().getCanonicalHostName() + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is restricted by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
-            }
-        } catch (UnknownHostException ex) {
-            ex.printStackTrace();
-        }
+        
+        String hostUrl = PropertyUtil.getHostUrl();
+            
+        msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is restricted by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
+
         msg.setStyleClass("successMessage");
         Map m = getRequestMap();
         m.put("statusMessage",msg);
         VDCUser creator = userService.findByUserName(getVDCSessionBean().getLoginBean().getUser().getUserName());
         String toMailAddress = getVDCSessionBean().getLoginBean().getUser().getEmail();
         String siteAddress="unknown";
-        try {
-            siteAddress = InetAddress.getLocalHost().getCanonicalHostName() + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
-        } catch (UnknownHostException ex) {
-            ex.printStackTrace();
-        }
+     
+        siteAddress = hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
+     
         mailService.sendAddSiteNotification(toMailAddress,name,siteAddress);
 
         getVDCSessionBean().getLoginBean().setUser(creator);

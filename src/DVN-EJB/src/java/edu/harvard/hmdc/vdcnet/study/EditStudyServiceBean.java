@@ -112,26 +112,14 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
         }
         
         // now set the files
-        for (Iterator catIt = studyService.getOrderedFileCategories(study.getId()).iterator(); catIt.hasNext();) {
-            FileCategory fc = (FileCategory) catIt.next();
-            for (Iterator fileIt = studyService.getOrderedFilesByCategory(fc.getId()).iterator(); fileIt.hasNext();) {
-                StudyFile sf = (StudyFile) fileIt.next();
-                StudyFileEditBean fileBean = new StudyFileEditBean(em.find(StudyFile.class,sf.getId()));
-                fileBean.setFileCategoryName(sf.getFileCategory().getName());
-                getCurrentFiles().add(fileBean);
-                
-            }
-            
-        }
-        /*
-        Iterator iter = study.getStudyFiles().iterator();
-        while (iter.hasNext()) {
-            StudyFile sf = (StudyFile) iter.next();
-            StudyFileEditBean fileBean = new StudyFileEditBean(sf);
+        for (Iterator fileIt = studyService.getOrderedFilesByStudy(study.getId()).iterator(); fileIt.hasNext();) {
+            StudyFile sf = (StudyFile) fileIt.next();
+            StudyFileEditBean fileBean = new StudyFileEditBean(em.find(StudyFile.class,sf.getId()));
             fileBean.setFileCategoryName(sf.getFileCategory().getName());
             getCurrentFiles().add(fileBean);
+
         }
-         */
+
     }
     
     public void newStudy(Long vdcId, Long userId) {

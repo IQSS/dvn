@@ -24,7 +24,7 @@
                                 
                                 <ui:panelGroup  block="true" id="groupPanel1">
                                     <h:outputText  styleClass="warnMessage" value="By deleting a dataverse, you are removing it permanently from the Archive. All studies and collections owned by this dataverse will also be deleted."/>
-                                    <verbatim> <br /></verbatim>
+                                     <br />
                                     <h:outputText  styleClass="warnMessage" value="Are you sure you want to delete "/>
                                     <h:outputFormat  id="outputText3" styleClass="vdcTextStandOut" value="{0}">
                                         <f:param value="#{DeleteDataversePage.vdcName}"/>

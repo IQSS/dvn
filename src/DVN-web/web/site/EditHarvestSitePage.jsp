@@ -142,7 +142,7 @@
                                   
                               </h:inputText>
                           <h:message styleClass="errorMessage" for="dataverseName"/> 
-                            <verbatim><br /></verbatim>
+                            <br />
                             <h:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
                         </ui:panelGroup>
                         <ui:panelGroup block="true" style="vertical-align: top;">
@@ -154,7 +154,7 @@
                             <h:inputText id="dataverseAlias" value="#{EditHarvestSitePage.dataverseAlias}" validator="#{EditHarvestSitePage.validateAlias}" required="true"  />
                             <h:message styleClass="errorMessage" for="dataverseAlias"/> 
                             
-                            <verbatim><br /></verbatim>
+                            <br />
                             <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, i.e., http://.../dv/'alias'."/>
                         </ui:panelGroup>
                         <ui:panelGroup block="true" style="vertical-align: top;">
@@ -167,7 +167,7 @@
                             <h:commandButton  value="Validate" />
                             <h:message styleClass="errorMessage" for="dataverseOaiServer"/> 
                             
-                            <verbatim><br /></verbatim>
+                            <br />
                             <h:outputText styleClass="vdcHelpText" value="Enter OAI server name, e.g., http://..."/> 
                         </ui:panelGroup>
                     </h:panelGrid>
@@ -194,7 +194,7 @@
                             <h:selectOneMenu   value="#{EditHarvestSitePage.editHarvestSiteService.selectedMetadataPrefixId}" >
                                 <f:selectItems  value="#{EditHarvestSitePage.metadataFormatsSelect}" />
                             </h:selectOneMenu>
-                            <verbatim><br /></verbatim>
+                            <br />
                             <h:outputText styleClass="vdcHelpText" value="This is the XML format when used harvesting studies from this OAI Server."/>
                         </ui:panelGroup>  
                         
@@ -206,7 +206,7 @@
                                 <f:selectItem itemValue="" itemLabel="Do not register harvested studies (studies must already have a handle)"/>
                                 <f:selectItems  value="#{EditHarvestSitePage.handlePrefixSelect}" />
                             </h:selectOneMenu>
-                            <verbatim><br /></verbatim>
+                            <br />
                             
                         </ui:panelGroup>  
                         <ui:panelGroup  >
@@ -233,7 +233,7 @@
                           
                              <h:message id="selectSchedulePeriodMsg" styleClass="errorMessage" for="selectSchedulePeriod"/> 
                            
-                            <verbatim><br /></verbatim>
+                            <br />
                             </div>
                         </ui:panelGroup>  
                         <ui:panelGroup  >
@@ -278,7 +278,7 @@
                                 <f:selectItem   itemLabel="Public" itemValue="false" />
                                 <f:selectItem   itemLabel="Restricted" itemValue="true" />
                             </h:selectOneMenu>
-                            <verbatim><br /></verbatim>
+                            <br />
                             <h:outputText styleClass="vdcHelpText" value="Select to make all files for all studies in this dataverse public or restricted."/>
                         </ui:panelGroup>
                         <ui:panelGroup block="true" style="vertical-align: top;">
@@ -289,7 +289,7 @@
                                 <f:selectItem   itemLabel="Public" itemValue="false" />
                                 <f:selectItem   itemLabel="Restricted" itemValue="true" />
                             </h:selectOneMenu>                                            
-                            <verbatim><br /></verbatim>
+                            <br />
                             <h:outputText styleClass="vdcHelpText" value="Select to make subsetting for all studies in this dataverse public or restricted."/>
                         </ui:panelGroup>                                           
                         <ui:panelGroup block="true" style="vertical-align: top;">
@@ -299,7 +299,7 @@
                             <h:inputText binding="#{EditHarvestSitePage.userInputText}" value="#{EditHarvestSitePage.addUserName}" />
                             <h:commandButton  value="Add" actionListener="#{EditHarvestSitePage.addUser}" />
                             
-                            <verbatim><br /></verbatim>
+                            <br />
                             <h:outputText styleClass="vdcHelpText" value="Enter username to allow them to access restricted studies."/>
                             <h:dataTable binding="#{EditHarvestSitePage.userTable}" cellpadding="0" cellspacing="0"
                                          columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" 
@@ -325,7 +325,7 @@
                         <ui:panelGroup>
                             <h:inputText value="#{EditHarvestSitePage.addGroupName}" /> <h:commandButton  value="Add"  actionListener="#{EditHarvestSitePage.addGroup}" />
                             
-                            <verbatim><br /></verbatim>
+                            <br />
                             <h:outputText styleClass="vdcHelpText" value="Enter group name to allow them to access restricted studies."/>
                             <h:dataTable binding="#{EditHarvestSitePage.groupTable}" cellpadding="0" cellspacing="0"
                                          columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" 

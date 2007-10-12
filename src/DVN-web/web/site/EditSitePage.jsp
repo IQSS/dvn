@@ -38,7 +38,7 @@
                              </ui:panelGroup>
                              <ui:panelGroup>
                                  <h:inputText binding="#{EditSitePage.dataverseName}" id="dataverseName" required="true" validator="#{EditSitePage.validateName}" size="60" value="#{VDCRequest.currentVDC.name}"/>
-                                 <verbatim><br /></verbatim>
+                                 <br />
                                  <h:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
                                  <h:message for="dataverseName" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                              </ui:panelGroup>
@@ -49,7 +49,7 @@
                              </ui:panelGroup>
                              <ui:panelGroup>
                                  <h:inputText binding="#{EditSitePage.dataverseAlias}" id="dataverseAlias" required="true" validator="#{EditSitePage.validateAlias}" value="#{VDCRequest.currentVDC.alias}"/>
-                                 <verbatim><br /></verbatim>
+                                <br />
                                  <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, i.e., http://.../dv/'alias'. It is case sensitive."/>
                                  <h:message for="dataverseAlias" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                              </ui:panelGroup>

@@ -668,8 +668,15 @@ public class FileDownloadServlet extends HttpServlet{
             try {
 		// set content type: 
                 res.setContentType("application/zip");
+
+		// create zipped output stream: 
+
+		OutputStream out = res.getOutputStream();
+                ZipOutputStream zout = new ZipOutputStream(out);
+
+
 		// send the file as the response
-                ZipOutputStream zout = new ZipOutputStream(res.getOutputStream());
+
                 List nameList = new ArrayList(); // used to check for duplicates
                 iter = files.iterator();
 		
@@ -731,7 +738,7 @@ public class FileDownloadServlet extends HttpServlet{
 		    int i = 0;
 		    while ( ( i = in.read (dataBuffer) ) > 0 ) {
 			zout.write(dataBuffer,0,i);
-			zout.flush(); 
+			out.flush(); 
 		    }
                     in.close();
                     zout.closeEntry();
@@ -744,10 +751,8 @@ public class FileDownloadServlet extends HttpServlet{
 			    method.releaseConnection(); 
 			}
 		    }
-
-
 		    
-                }
+		}
                 zout.close();
             } catch (IOException ex) {
 		// if the exception was caught while downloading 
@@ -865,7 +870,7 @@ public class FileDownloadServlet extends HttpServlet{
 	//     altFileName = "data_" + xfileId + ".RData"; 
 	// }	    
 
-	altFileName = "data_" + xfileId + ".tar.gz"; 
+	altFileName = "data_" + xfileId + ".zip"; 
 
         return altFileName;
     }

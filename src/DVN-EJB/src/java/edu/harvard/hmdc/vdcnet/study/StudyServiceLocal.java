@@ -21,6 +21,7 @@
 package edu.harvard.hmdc.vdcnet.study;
 
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -65,7 +66,7 @@ public interface StudyServiceLocal {
 
     java.util.List getRecentStudies(Long vdcId, int numResults);
 
-    java.util.List <Study> getContributorStudies(VDCUser contributor);
+    java.util.List <Study> getContributorStudies(VDCUser contributor, VDC vdc);
 
     java.util.List<edu.harvard.hmdc.vdcnet.study.Study> getReviewerStudies(Long vdcId);
    java.util.List<edu.harvard.hmdc.vdcnet.study.Study> getNewStudies(Long vdcId);

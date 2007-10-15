@@ -169,6 +169,7 @@ public class Indexer {
         addKeyword(doc,"id",study.getId().toString());
         addKeyword(doc,"studyId", study.getStudyId());
         addText(doc,"studyId", study.getStudyId());
+        addText(doc,"owner",study.getOwner().getName());
         addKeyword(doc,"productionDate", study.getProductionDate());
         addKeyword(doc,"distributionDate", study.getDistributionDate());
         Collection <StudyKeyword> keywords = study.getStudyKeywords();

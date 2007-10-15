@@ -1183,9 +1183,9 @@ table.dvnMainTable ul {
         font-size: 11px;
 }
 
-table.dvnMainTable li {
+/*table.dvnMainTable li {
      margin: 0.5em 0;
-}
+}*/
 table.dvnMainTable a {
 	font-size: 0.95em;
 }
@@ -1236,3 +1236,16 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 a.MniTabLnk:link, a.MniTabLnk:visited {font-weight: bold; }
 .MniTabSelTxt{font-weight: bold; }
 
+/* Special styles for the network home page */
+li.activeBullet {
+    list-style-image: url(icon_activebullet.gif);
+    padding-left:2px;
+}
+li.affiliationBullet {
+    list-style-type:square ! important;
+    line-height:80%;
+    vertical-align:top;
+    margin-top:0;
+    color:#999999;
+    padding:0 0 .5em 0;
+}

@@ -180,6 +180,10 @@
     <servlet>
         <servlet-name>OAIHandler</servlet-name>
         <servlet-class>ORG.oclc.oai.server.OAIHandler</servlet-class>
+        <init-param>
+          <param-name>properties</param-name>
+          <param-value>oaicat.properties</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
        <servlet-name>cgi</servlet-name>

@@ -38,6 +38,7 @@ import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyLock;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.OAISetServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
@@ -72,7 +73,9 @@ import javax.servlet.http.HttpSession;
 @EJBs({
     @EJB(name="collectionService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.VDCCollectionServiceLocal.class),
     @EJB(name="studyService", beanInterface=edu.harvard.hmdc.vdcnet.study.StudyServiceLocal.class),
-    @EJB(name="indexService", beanInterface=edu.harvard.hmdc.vdcnet.index.IndexServiceLocal.class)
+    @EJB(name="indexService", beanInterface=edu.harvard.hmdc.vdcnet.index.IndexServiceLocal.class),
+    @EJB(name="catalogService", beanInterface=edu.harvard.hmdc.vdcnet.catalog.CatalogServiceLocal.class),
+    @EJB(name="oaiSetService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.OAISetServiceLocal.class)
 })
 public class LoginFilter implements Filter {
     

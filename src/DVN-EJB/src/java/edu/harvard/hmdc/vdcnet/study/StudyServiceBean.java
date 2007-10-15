@@ -567,6 +567,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             if (fileBean.getIngestedSystemFileLocation() != null) {
                 
                 StudyFile f = fileBean.getStudyFile();
+                String originalFileType = f.getFileType();
                 // attach file to study
                 fileBean.addFileToCategory(study);
  
@@ -590,6 +591,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 try {
                     FileUtil.copyFile( tempOriginalFile, newOriginalLocationFile );
                     tempOriginalFile.delete();
+                    f.setOriginalFileType( originalFileType );
                 } catch (IOException ex) {
                     throw new EJBException(ex);
                 }

@@ -31,6 +31,7 @@ package edu.harvard.hmdc.vdcnet.web.study;
 
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.study.DataFileFormatType;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.util.WebStatisticsSupport;
@@ -127,7 +128,11 @@ public class StudyFileUI {
             String xff = webstatistics.getQSArgument("xff", headerValue);
             String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.studyFile.getId() + xff;
             if (!StringUtil.isEmpty(format)) {
-                fileDownloadURL += "&format=" + this.format;
+                if ( format.equals(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT) ) {
+                    fileDownloadURL += "&downloadOriginalFormat=true";    
+                } else {
+                    fileDownloadURL += "&format=" + this.format;
+                }
             }
             if (vdcId != null) {
                 fileDownloadURL += "&vdcId=" + this.vdcId;
@@ -142,5 +147,5 @@ public class StudyFileUI {
         }
         
         return null;
-     }    
+     }  
 }

@@ -48,6 +48,6 @@ public interface DDI20ServiceLocal extends StudyExporter  {
     
     public DocDscrType createDocDscr(Study s);
     
-    public void exportStudy(CodeBook _cb, Writer out) throws JAXBException;
+    public void exportCodeBook(CodeBook _cb, Writer out) throws JAXBException;
     
 }

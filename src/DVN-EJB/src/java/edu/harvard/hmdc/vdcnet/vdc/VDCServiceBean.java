@@ -40,15 +40,20 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyField;
 import edu.harvard.hmdc.vdcnet.study.StudyFieldServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.sql.DataSource;
 
 
 /**
@@ -65,6 +70,7 @@ public class VDCServiceBean implements VDCServiceLocal {
     @EJB ReviewStateServiceLocal reviewStateService;
     @EJB StudyServiceLocal studyService;
     @EJB HarvesterServiceLocal harvesterService;
+    @Resource(name="jdbc/VDCNetDS") DataSource dvnDatasource;
 
     @PersistenceContext(unitName="VDCNet-ejbPU")
     private EntityManager em;
@@ -80,10 +86,10 @@ public class VDCServiceBean implements VDCServiceLocal {
     }
     
     /** scholar dataverse */
-    public void createScholarDataverse(Long userId, String firstName, String lastName, String affiliation, String alias) {
+    public void createScholarDataverse(Long userId, String firstName, String lastName, String name, String affiliation, String alias) {
         ScholarDataverse sDV = new ScholarDataverse();
         em.persist(sDV);
-        String name = new String(lastName + ", " + firstName);
+        sDV.setName(name);
         sDV.setFirstName(firstName);
         sDV.setLastName(lastName);
         sDV.setAffiliation(affiliation);
@@ -135,8 +141,47 @@ public class VDCServiceBean implements VDCServiceLocal {
        return sDV;
     }
     
+    public ScholarDataverse findScholarDataverseById(Long id) {
+        ScholarDataverse o = (ScholarDataverse) em.find(ScholarDataverse.class, id);
+        return o;
+    }
+    
     public void edit(ScholarDataverse sDV){
         em.merge(sDV);
+    }
+    
+    /* updateScholarDVs
+     *
+     * This is not currently used. It was 
+     * developed for 16a, but there is an 
+     * issue with casting and the java
+     * persistence layer. 
+     * Leaving it here as a placeholder.
+     *
+     *
+     * @author wbossons
+     */
+    public ScholarDataverse updateScholarDVs(ScholarDataverse scholarDV) {
+        //
+        String updateString = "update vdc set firstname = '" 
+                + scholarDV.getFirstName() + "', lastname='" 
+                + scholarDV.getLastName() + "', name='"
+                + scholarDV.getName() + "', alias='"
+                + scholarDV.getAlias() + "', affiliation='"
+                + scholarDV.getAffiliation() + "', dtype = 'Scholar' where id = " + scholarDV.getId();
+        Connection conn=null;
+        PreparedStatement updateStatement=null;
+        try {
+            conn = dvnDatasource.getConnection();
+            updateStatement = conn.prepareStatement(updateString);
+            int rowcount = updateStatement.executeUpdate();
+        } catch (java.sql.SQLException e) {
+           // Do nothing, just return null. 
+        }
+        em.flush();
+        ScholarDataverse scholardataverse = em.find(ScholarDataverse.class, scholarDV.getId());
+        return scholardataverse;
+        //
     }
     /** end scholar dataverse methods */
     
@@ -185,7 +230,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         VDC o = (VDC) em.find(VDC.class, id);
         return o;
     }
-    
+        
     public VDC findByName(String name) {
      String query="SELECT v from VDC v where v.name = :fieldName";
        VDC vdc=null;

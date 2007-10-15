@@ -100,6 +100,7 @@ public class EditSitePage extends VDCBaseBean {
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         //DEBUG
         //check to see if a dataverse type is in request
+         
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Iterator iterator = request.getParameterMap().keySet().iterator();
         while (iterator.hasNext()) {
@@ -126,15 +127,17 @@ public class EditSitePage extends VDCBaseBean {
                 setDataverseName(nameText);
                 HtmlInputText aliasText = new HtmlInputText();
                 aliasText.setValue(scholardataverse.getAlias());
-                setDataverseAlias(aliasText);
             } else if (!this.dataverseType.equals("Scholar")) {
                 setDataverseType("Basic");
                 HtmlInputText nameText = new HtmlInputText();
                 nameText.setValue(thisVDC.getName());
                 setDataverseName(nameText);
+                if (thisVDC.getAffiliation() != null)
+                    this.setAffiliation(thisVDC.getAffiliation());
+                else
+                    this.setAffiliation(new String(""));
                 HtmlInputText aliasText = new HtmlInputText();
                 aliasText.setValue(thisVDC.getAlias());
-                setDataverseAlias(aliasText);
             }
         } catch (ClassNotFoundException nfe) {
             System.out.println("the class was not found");
@@ -408,7 +411,7 @@ public class EditSitePage extends VDCBaseBean {
     
     public String edit(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        try {
+        /*try {
             if (Class.forName("edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse").isInstance(thisVDC)) {
                 ScholarDataverse scholardataverse = (ScholarDataverse)vdcService.findById(thisVDC.getId());
                 //delete the first and last name
@@ -420,10 +423,10 @@ public class EditSitePage extends VDCBaseBean {
         } catch (ClassNotFoundException nfe) {
             System.err.println("The class was not found");
         }
+        */
         thisVDC.setName((String)dataverseName.getValue());
         thisVDC.setAlias((String)dataverseAlias.getValue());
         thisVDC.setAffiliation(this.getAffiliation());
-        thisVDC.setDtype(this.getDataverseType());
         vdcService.edit(thisVDC);
         getVDCRequestBean().setCurrentVDC(thisVDC);
         msg = new StatusMessage();
@@ -434,36 +437,13 @@ public class EditSitePage extends VDCBaseBean {
     
     public String editScholarDataverse(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        //new ScholarDataverse(thisVDC.getId());
-        ScholarDataverse scholardataverse = null;
-        try {
-            if (!Class.forName("edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse").isInstance(thisVDC)) {
-                thisVDC.setDtype(this.getDataverseType());
-                ScholarDataverse scholarDV = new ScholarDataverse(thisVDC.getId());
-                scholarDV.setFirstName(this.firstName);
-                scholarDV.setLastName(this.lastName);
-                scholarDV.setVersion(thisVDC.getVersion());
-                scholarDV.setName((String)dataverseName.getValue());
-                scholarDV.setAlias((String)dataverseAlias.getValue());
-                scholarDV.setFirstName(this.firstName);
-                scholarDV.setLastName(this.lastName);
-                scholarDV.setAffiliation(this.affiliation);
-                vdcService.updateScholarDVs(scholarDV);
-                scholardataverse = vdcService.findScholarDataverseById(scholarDV.getId());
-            } else {
-                scholardataverse = (ScholarDataverse)thisVDC;
-                scholardataverse.setDtype(this.getDataverseType());
-                //
-                scholardataverse.setName((String)dataverseName.getValue());
-                scholardataverse.setAlias((String)dataverseAlias.getValue());
-                scholardataverse.setFirstName(this.firstName);
-                scholardataverse.setLastName(this.lastName);
-                scholardataverse.setAffiliation(this.affiliation);
-                vdcService.edit(scholardataverse);
-                }
-        } catch (ClassNotFoundException nfe) {
-            System.err.println("the class was not found");
-        }
+        ScholarDataverse scholardataverse = (ScholarDataverse)thisVDC;
+        scholardataverse.setName((String)dataverseName.getValue());
+        scholardataverse.setAlias((String)dataverseAlias.getValue());
+        scholardataverse.setFirstName(this.firstName);
+        scholardataverse.setLastName(this.lastName);
+        scholardataverse.setAffiliation(this.affiliation);
+        vdcService.edit(scholardataverse);
         getVDCRequestBean().setCurrentVDC(scholardataverse);
         msg = new StatusMessage();
         msg.setMessageText("Update Successful!");
@@ -544,25 +524,14 @@ public class EditSitePage extends VDCBaseBean {
         this.dataverseType = dataverseType;
     }
     
-     /**
-     * Used to set the discriminator value
-     * in the entity
-     *
-     */
-    private String selected = null;
-
-    public String getSelected() {
-        return selected;
-    }
-
-    public void setSelected(String selected) {
-        this.selected = selected;
-    }
-    
     /**
-     * set the possible options
+     * set the possible options 
+     * please note, this was for 16a,
+     * but is not used because of 
+     * issues with type casting - inheritance issues.
+     * Keeping it pending a solution ...
      *
-     *
+     * @author wbossons
      */
     private List<SelectItem> dataverseOptions = null;
 

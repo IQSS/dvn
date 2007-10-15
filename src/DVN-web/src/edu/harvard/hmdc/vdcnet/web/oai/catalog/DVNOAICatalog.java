@@ -41,10 +41,26 @@
 
 package edu.harvard.hmdc.vdcnet.web.oai.catalog;
 
+import edu.harvard.hmdc.vdcnet.study.Study;
+import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.FileUtil;
+import edu.harvard.hmdc.vdcnet.vdc.OAISet;
+import edu.harvard.hmdc.vdcnet.vdc.OAISetServiceLocal;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
@@ -56,6 +72,9 @@ import ORG.oclc.oai.server.verb.BadResumptionTokenException;
 import ORG.oclc.oai.server.verb.CannotDisseminateFormatException;
 import ORG.oclc.oai.server.verb.IdDoesNotExistException;
 import ORG.oclc.oai.server.verb.NoMetadataFormatsException;
+import edu.harvard.hmdc.vdcnet.catalog.CatalogServiceLocal;
+import java.util.logging.Logger;
+import javax.naming.InitialContext;
 
 /**
  * DVNOAICatalog is an example of how to implement the AbstractCatalog interface.
@@ -65,9 +84,11 @@ import ORG.oclc.oai.server.verb.NoMetadataFormatsException;
  * you can do things however you want, as long as the non-private methods return
  * what they're supposed to.
  *
+
  * @author Jeffrey A. Young, OCLC Online Computer Library Center
  */
 public class DVNOAICatalog extends AbstractCatalog {
+    private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.web.oai.catalog.DVNOAICatalog");
     /**
      * maximum number of entries to return for ListRecords and ListIdentifiers
      */
@@ -83,13 +104,14 @@ public class DVNOAICatalog extends AbstractCatalog {
      * delete dummyDb and create new private variables
      * to manage your database here
      **************************************************************/
-    
+
     /**
      * Dummy database. Note that the two items each contain two metadataFormats;
      * oai_dc and oai_etdms
      */
+    
     private String[] dummyDb = {
-        "<record><header><identifier>oai:oaicat.oclc.org:OCLCNo/ocm00000012</identifier><datestamp>2001-02-02</datestamp><setSpec>music</setSpec><setSpec>music:(muzak)</setSpec></header><metadata><oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd\"><dc:language>eng</dc:language><dc:date>1964</dc:date><dc:type>Text data</dc:type><dc:identifier>ocm00000012</dc:identifier><dc:identifier>64063999 //r83</dc:identifier><dc:coverage>n-us---</dc:coverage><dc:subject>KF6369.3--.G3</dc:subject><dc:subject>340</dc:subject><dc:creator>Galles, George Raymond,--1918-</dc:creator><dc:title>Involuntary conversions under the Federal income tax laws.</dc:title><dc:publisher>[University of Idaho, Bureau of Business and Economic Research]</dc:publisher><dc:publisher>Moscow</dc:publisher><dc:format>v, 46 l.</dc:format><dc:format>28 cm.</dc:format><dc:relation>Idaho BBER--monograph no. 2</dc:relation><dc:subject>Income tax--Law and legislation--United States.</dc:subject><dc:relation>University of Idaho.--Bureau of Business and Economic Research.--Idaho BBER monograph ;--no. 2.</dc:relation></oai_dc:dc><oai_etdms:thesis xmlns:oai_etdms=\"http://www.ndltd.org/standards/metadata/etdms/1.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.ndltd.org/standards/metadata/etdms/1.0/ http://www.ndltd.org/standards/metadata/etdms/1.0/etdms.xsd\"><oai_etdms:title>Involuntary conversions under the Federal income tax laws.</oai_etdms:title><oai_etdms:creator>Galles, George Raymond,--1918-</oai_etdms:creator><oai_etdms:subject>KF6369.3--.G3</oai_etdms:subject><oai_etdms:subject>340</oai_etdms:subject><oai_etdms:subject>Income tax--Law and legislation--United States.</oai_etdms:subject><oai_etdms:publisher>[University of Idaho, Bureau of Business and Economic Research]</oai_etdms:publisher><oai_etdms:publisher>Moscow</oai_etdms:publisher><oai_etdms:date>1964</oai_etdms:date><oai_etdms:type>Text data</oai_etdms:type><oai_etdms:format>v, 46 l.--28 cm.</oai_etdms:format><oai_etdms:identifier>ocm00000012</oai_etdms:identifier><oai_etdms:identifier>64063999 //r83</oai_etdms:identifier><oai_etdms:language>eng</oai_etdms:language><oai_etdms:coverage>n-us---</oai_etdms:coverage></oai_etdms:thesis></metadata></record>",
+        "<record><header><identifier>oai:oaicat.oclc.org:OCLCNo/ocm00000012</identifier><datestamp>2001-02-02</datestamp><setSpec>music</setSpec><setSpec>music:(muzak)</setSpec></header><metadata><oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd\"><dc:language>eng</dc:language><dc:date>1964</dc:date><dc:type>Text data</dc:type><dc:identifier>ocm00000012</dc:identifier><dc:identifier>64063999 //r83</dc:identifier><dc:coverage>n-us---</dc:coverage><dc:subject>KF6369.3--.G3</dc:subject><dc:subject>340</dc:subject><dc:creator>Galles, George Raymond,--1918-</dc:creator><dc:title>Involuntary conversions under the Federal income tax laws.</dc:title><dc:publisher>[University of Idaho, Bureau of Business and Economic Research]</dc:publisher><dc:publisher>Moscow</dc:publisher><dc:format>v, 46 l.</dc:format><dc:format>28 cm.</dc:format><dc:relation>Idaho BBER--monograph no. 2</dc:relation><dc:subject>Income tax--Law and legislation--United States.</dc:subject><dc:relation>University of Idaho.--Bureau of Business and Economic Research.--Idaho BBER monograph ;--no. 2.</dc:relation></oai_dc:dc><oai_etdms:thesis xmlns:oai_etdms=\"http://www.ndltd.org/standards/metadata/etdms/1.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.ndltd.org/standards/metadata/etdms/1.0/ http://www.ndltd.org/standards/metadata/etdms/1.0/etdms.xsd\"><oai_etdms:title>Involuntary conversions under the Federal income tax laws.</oai_etdms:title><oai_etdms:creator>Galles, George Raymond,--1918-</oai_etdms:creator><oai_etdms:subject>KF6369.3--.G3</oai_etdms:subject><oai_etdms:subject>340</oai_etdms:subject><oai_etdms:subject>Income tax--Law and legislation--United States.</oai_etdms:subject><oai_etdms:publisher>[University of Idaho, Bureau of Business and Economic Research]</oai_etdms:publisher><oai_etdms:publisher>Moscow</oai_etdms:publisher><oai_etdms:date>1964</oai_etdms:date><oai_etdms:type>Text data</oai_etdms:type><oai_etdms:format>v, 46 l.--28 cm.</oai_etdms:format><oai_etdms:identifier>ocm00000012</oai_etdms:identifier><oai_etdms:identifier>64063999 //r83</oai_etdms:identifier><oai_etdms:language>eng</oai_etdms:language><oai_etdms:coverage>n-us---</oai_etdms:coverage></oai_etdms:thesis><codebook version=\"2.0\" xsi:schemaLocation=\"http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.icpsr.umich.edu/DDI\"/></metadata></record>",
         "<rec><header><identifier>oai:oaicat.oclc.org:OCLCNo/ocm00003601</identifier><datestamp>2001-02-02</datestamp><setSpec>music</setSpec></header><metadata><oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd\"><dc:language>eng</dc:language><dc:date>1967</dc:date><dc:type>Text data</dc:type><dc:identifier>ocm00003600</dc:identifier><dc:identifier>68066972 //r915</dc:identifier><dc:subject>E78.W3--W3 no. 25</dc:subject><dc:subject>970.4/96/37</dc:subject><dc:creator>Barnes, Paul L.</dc:creator><dc:title>Archaeology of the Dean Site, Twin Falls County, Idaho,</dc:title><dc:publisher>[Pullman,</dc:publisher><dc:format>vii, 89 p.--illus., maps.</dc:format><dc:format>28 cm.</dc:format><dc:relation>Laboratory of Anthropology, Washington State University. Report of investigations,--no. 25</dc:relation><dc:subject>Dean site.</dc:subject><dc:subject>Idaho--Antiquities.</dc:subject><dc:relation>Reports of investigations (Washington State University. Laboratory of Anthropology) ;--no. 25.</dc:relation></oai_dc:dc><oai_etdms:thesis xmlns:oai_etdms=\"http://www.ndltd.org/standards/metadata/etdms/1.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.ndltd.org/standards/metadata/etdms/1.0/ http://www.ndltd.org/standards/metadata/etdms/1.0/etdms.xsd\"><oai_etdms:title>Archaeology of the Dean Site, Twin Falls County, Idaho,</oai_etdms:title><oai_etdms:creator>Barnes, Paul L.</oai_etdms:creator><oai_etdms:subject>E78.W3--W3 no. 25</oai_etdms:subject><oai_etdms:subject>970.4/96/37</oai_etdms:subject><oai_etdms:subject>Dean site.</oai_etdms:subject><oai_etdms:subject>Idaho--Antiquities.</oai_etdms:subject><oai_etdms:publisher>[Pullman,</oai_etdms:publisher><oai_etdms:date>1967</oai_etdms:date><oai_etdms:type>Text data</oai_etdms:type><oai_etdms:format>vii, 89 p.--illus., maps.--28 cm.</oai_etdms:format><oai_etdms:identifier>ocm00003600</oai_etdms:identifier><oai_etdms:identifier>68066972 //r915</oai_etdms:identifier><oai_etdms:language>eng</oai_etdms:language></oai_etdms:thesis></metadata></rec>"
     };
     
@@ -118,6 +140,7 @@ public class DVNOAICatalog extends AbstractCatalog {
      * @param properties a properties object containing initialization parameters
      */
     public DVNOAICatalog(Properties properties) {
+//    dummyDb[0] =  records ;
         String maxListSize = properties.getProperty("DVNOAICatalog.maxListSize");
         if (maxListSize == null) {
             throw new IllegalArgumentException("DVNOAICatalog.maxListSize is missing from the properties file");
@@ -150,6 +173,7 @@ public class DVNOAICatalog extends AbstractCatalog {
      * but the item is flagged as deleted and thus no schemaLocations (i.e.
      * metadataFormats) can be produced.
      */
+
     public Vector getSchemaLocations(String identifier)
         throws IdDoesNotExistException, NoMetadataFormatsException {
         /**********************************************************************
@@ -157,6 +181,7 @@ public class DVNOAICatalog extends AbstractCatalog {
          * Retrieve the specified native item from your database.
          **********************************************************************/
         Object nativeItem = dummyDb[0];
+//        Object nativeItem = records;
         /***********************************************************************
          * END OF CUSTOM CODE SECTION
          ***********************************************************************/
@@ -202,9 +227,17 @@ public class DVNOAICatalog extends AbstractCatalog {
         /**********************************************************************
          * YOUR CODE GOES HERE
          **********************************************************************/
+        CatalogServiceLocal catalogService = null;
+        try {
+            catalogService=(CatalogServiceLocal)new InitialContext().lookup("java:comp/env/catalogService");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         
+        String[]  xmlRecords = catalogService.listRecords(from, until, set, metadataPrefix);  //ejb
+
         /* Get some records from your database */
-        Object[] nativeItems = dummyDb;
+        String[] nativeItems = xmlRecords; //ejb
         int count;
         
         /* load the headers and identifiers ArrayLists. */
@@ -372,7 +405,22 @@ public class DVNOAICatalog extends AbstractCatalog {
          * YOUR CODE GOES HERE
          * Replace this nativeItem assignment with your database API code.
          **********************************************************************/
-        Object nativeItem = dummyDb[0];
+        StudyServiceLocal studyService = null;
+        try {
+            studyService=(StudyServiceLocal)new InitialContext().lookup("java:comp/env/studyService");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        Study study = studyService.getStudyByGlobalId(identifier);
+        String identifierElement = "<identifier>" + study.getGlobalId() + "</identifier>";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStamp = "<datestamp>"+sdf.format(study.getLastExportTime())+"</datestamp>";
+        String setSpec = "<setSpec>"+study.getAuthority()+"</setSpec>";
+        Date lastUpdateTime = study.getLastUpdateTime();
+        File studyFileDir = FileUtil.getStudyFileDir(study);
+        String exportFileName= studyFileDir.getAbsolutePath() + File.separator + "export_" + metadataPrefix+".xml";
+        String record = identifierElement+dateStamp+setSpec+readFile(new File(exportFileName));
+        String nativeItem = record;
         if (nativeItem == null)
             throw new IdDoesNotExistException(identifier);
         /***********************************************************************
@@ -381,6 +429,19 @@ public class DVNOAICatalog extends AbstractCatalog {
         return constructRecord(nativeItem, metadataPrefix);
     }
 
+    private String getRecord(Study study, String metadataPrefix) {
+        String oai_dc = "<oai_dc:dc>";
+        String identifier = "<identifier>" + study.getGlobalId() + "</identifier>";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStamp = "<datestamp>"+sdf.format(study.getLastExportTime())+"</datestamp>";
+        String setSpec = "<setSpec>"+study.getAuthority()+"</setSpec>";
+        Date lastUpdateTime = study.getLastUpdateTime();
+        File studyFileDir = FileUtil.getStudyFileDir(study);
+        String exportFileName= studyFileDir.getAbsolutePath() + File.separator + "export_" + metadataPrefix+".xml";
+        String record = identifier+dateStamp+setSpec+readFile(new File(exportFileName));
+        System.out.println("RECORD:\n"+record);
+        return record;
+    }
     /**
      * Retrieve a list of records that satisfy the specified criteria. Note, though,
      * that unlike the other OAI verb type methods implemented here, both of the
@@ -409,9 +470,32 @@ public class DVNOAICatalog extends AbstractCatalog {
         /**********************************************************************
          * YOUR CODE GOES HERE
          **********************************************************************/
+        CatalogServiceLocal catalogService = null;
+        try {
+            catalogService=(CatalogServiceLocal)new InitialContext().lookup("java:comp/env/catalogService");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        /* web
+        Study [] updatedStudies = catalogService.listStudies(from, until, "TEST", "ddi");
+            
+            
+            for (int i=0; i<updatedStudies.length;i++) {
+                Study study = updatedStudies[i];
+                logger.info("Exporting study "+study.getStudyId());
+                records.add(getRecord(study, metadataPrefix));
+                
+            }
+         */
+                 
+//        String[]  xmlRecords = new String[records.size()]; //web
+        
+         
+        String[]  xmlRecords = catalogService.listRecords(from, until, set, metadataPrefix);  //ejb
 
         /* Get some records from your database */
-        Object[] nativeItem = dummyDb;
+        String[] nativeItem = xmlRecords; //ejb
+//        String[] nativeItem = (String[]) records.toArray(xmlRecords); //web
         int count;
 
         /* load the records ArrayList */
@@ -596,9 +680,22 @@ public class DVNOAICatalog extends AbstractCatalog {
         /**********************************************************************
          * YOUR CODE GOES HERE
          **********************************************************************/
+        OAISetServiceLocal oaiSetService = null;
+        try {
+            oaiSetService=(OAISetServiceLocal)new InitialContext().lookup("java:comp/env/oaiSetService");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+         List <OAISet> oaiSets = oaiSetService.findAll();
 
         /* decide which sets you're going to support */
-        String[] dbSets = dummySets;
+//        String[] dbSets = dummySets;
+        String[] dbSets = new String[oaiSets.size()];
+        int i = 0;
+        for (Iterator it = oaiSets.iterator(); it.hasNext();) {
+            OAISet elem = (OAISet) it.next();
+            dbSets[i++] = "<set><setSpec>"+elem.getSpec()+"</setSpec><setName>"+elem.getName()+"</setName>"+(elem.getDescription()!= null?"<setDescription>"+elem.getDescription()+"</setDescription)":"")+"</set>";
+        }
         int count;
 
         /* load the sets ArrayList */
@@ -770,4 +867,58 @@ public class DVNOAICatalog extends AbstractCatalog {
         Date now = new Date();
         return Long.toString(now.getTime());
     }
+
+    public static void copy(InputStream in, OutputStream out)
+    throws IOException {
+        byte[] buffer = new byte[8192];
+        while (true) {
+            int bytesRead = in.read(buffer);
+            if (bytesRead == -1) break;
+            out.write(buffer, 0, bytesRead);
+            out.flush();
+        }
+    }
+    public String readFile(File inputFile) {
+        FileInputStream instream = null;
+        FileChannel in = null;
+        ByteArrayOutputStream out = null;
+        String outString = null;
+        InputStream instream2 = null;
+        
+        try {
+            try {
+                instream = new FileInputStream(inputFile);
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+            in = instream.getChannel();
+            instream2 = Channels.newInputStream(in);
+            out = new ByteArrayOutputStream();
+            try {
+                copy(instream2, out);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            outString = out.toString();
+        } finally {
+            if (instream != null) {
+                try {instream.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } }
+            if (in != null) {
+                try {in.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } }
+            if (out != null) {
+                try {out.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } }
+        }
+        return outString;
+    }
+    
 }
+

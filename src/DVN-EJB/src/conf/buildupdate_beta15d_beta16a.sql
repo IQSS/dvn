@@ -64,3 +64,8 @@ update harvestingdataverse hd
 set harvestformattype_id = hft.id
 from harvestformattype hft 
 where hft.metadataprefix = hd.format;
+
+-- to support originalFileType
+
+ALTER TABLE studyfile ADD COLUMN originalfiletype varchar(255);
+ALTER TABLE studyfile ALTER COLUMN originalfiletype SET STORAGE EXTENDED;

@@ -453,9 +453,12 @@
                                             </h:column>
                                             <h:column  id="column11">
                                                 <h:outputText  id="outputText19" value="#{studyFileUI.studyFile.fileType}" rendered="#{!studyFileUI.studyFile.subsettable}" />
-                                                <h:selectOneMenu  id="dataFileFormatType" value="#{studyFileUI.format}" rendered="#{studyFileUI.studyFile.subsettable}">
-                                                    <f:selectItems  id="dataFileFormatTypeItems" value="#{studyPage.dataFileFormatTypes}" />
+                                                <h:selectOneMenu  id="dataFileFormatType" value="#{studyFileUI.format}" rendered="#{studyFileUI.studyFile.subsettable and (empty studyFileUI.studyFile.originalFileType)}">
+                                                    <f:selectItems   value="#{studyPage.dataFileFormatTypes}" />
                                                 </h:selectOneMenu>
+                                                <h:selectOneMenu  id="dataFileFormatTypeWithOriginalFile" value="#{studyFileUI.format}" rendered="#{studyFileUI.studyFile.subsettable and (!empty studyFileUI.studyFile.originalFileType)}">
+                                                    <f:selectItems   value="#{studyPage.dataFileFormatTypesWithOriginalFile}" />
+                                                </h:selectOneMenu>                                                
                                             </h:column>
                                             
                                             <h:column  id="column13">

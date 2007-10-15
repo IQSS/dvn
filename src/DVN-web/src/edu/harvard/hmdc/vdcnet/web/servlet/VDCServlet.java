@@ -94,6 +94,9 @@ public class VDCServlet extends HttpServlet{
             out.println("<HEAD><TITLE>Dataverse not found!</TITLE></HEAD>");
             out.println("<BODY>");
             out.println("<BIG>Sorry. The dataverse URL you entered does not exist.</BIG>");
+            for (int i = 0; i < 10; i++) {
+                out.println("<!-- This line is filler to handle IE case for 404 errors   -->");
+            }
             out.println("</BODY></HTML>");
         } catch (IOException ex) {
             ex.printStackTrace();

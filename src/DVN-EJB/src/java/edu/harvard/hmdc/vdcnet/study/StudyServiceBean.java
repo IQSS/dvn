@@ -509,8 +509,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return studies;
     }
     
-    public List <Study> getContributorStudies(VDCUser contributor){
-        String query = "SELECT s FROM Study s WHERE s.creator.id = " + contributor.getId().toString();
+    public List <Study> getContributorStudies(VDCUser contributor, VDC vdc){
+        String query = "SELECT s FROM Study s WHERE s.creator.id = " + contributor.getId().toString()+" and s.owner.id ="+vdc.getId();
         List <Study> studies = em.createQuery(query).getResultList();
         for (Iterator it = studies.iterator(); it.hasNext();) {
             Study elem = (Study) it.next();

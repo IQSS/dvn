@@ -2633,11 +2633,11 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     }
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public  void exportStudy(Study study, Writer out, boolean exportToLegacyVDC) throws  JAXBException {
-        exportStudy(mapStudy(study, exportToLegacyVDC), out ); 
+        exportCodeBook(mapStudy(study, exportToLegacyVDC), out ); 
     }
     
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void exportStudy(CodeBook _cb, Writer out) throws JAXBException {
+    public void exportCodeBook(CodeBook _cb, Writer out) throws JAXBException {
         marshaller.marshal(_cb,out);
     }
     

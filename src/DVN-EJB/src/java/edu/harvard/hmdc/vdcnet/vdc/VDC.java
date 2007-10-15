@@ -56,6 +56,8 @@ public class VDC {
     private String name;
     private String description;
     private String visibility;
+    private String affiliation;
+    private String dtype;
     /**
      * Make the text the default db type for header.
      */
@@ -736,6 +738,37 @@ public class VDC {
         return true;
     }       
 
+    /**
+     * Getter for property affiliation.
+     * @return Value of property affiliation.
+     */
+    public String getAffiliation() {
+        return this.affiliation;
+    }
+
+    /**
+     * Setter for property affiliation.
+     * @param affiliation New value of property affiliation.
+     */
+    public void setAffiliation(String affiliation) {
+        this.affiliation = affiliation;
+    }
+    
+    /**
+     * Getter for property dtype.
+     * @return Value of property dtype.
+     */
+    public String getDtype() {
+        return this.dtype;
+    }
+
+    /**
+     * Setter for property dtype.
+     * @param affiliation New value of property dtype.
+     */
+    public void setDtype(String dtype) {
+        this.dtype = dtype;
+    }
  /** ********************* add for VDCGroup support *********************** */
      /**
      * Holds value of property memberVdcs.

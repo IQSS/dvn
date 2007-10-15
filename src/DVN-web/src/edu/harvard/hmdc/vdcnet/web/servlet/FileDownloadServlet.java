@@ -125,6 +125,7 @@ public class FileDownloadServlet extends HttpServlet{
         }
         String fileId = req.getParameter("fileId");
 	String formatRequested = req.getParameter("format");
+	String downloadOriginalFormat = req.getParameter("downloadOriginalFormat");
 
 
         if (fileId != null) {
@@ -529,10 +530,21 @@ public class FileDownloadServlet extends HttpServlet{
 		    try {
 			// set content type to that stored in the db,
 			// if available.
-			String dbContentType = file.getFileType();
+			
+			String dbContentType = null; 
+
+			if ( downloadOriginalFormat != null ) {
+			    dbContentType = file.getOriginalFileType();
+			} else {
+			    dbContentType = file.getFileType();
+			}
 
 			// specify the file name, if available:
-			String dbFileName = file.getFileName();
+			String dbFileName = null; 
+
+			if ( downloadOriginalFormat == null ) {
+			    file.getFileName();
+			}
 
 			if ( dbFileName != null ) {
 			    if ( dbContentType != null ) {
@@ -583,9 +595,18 @@ public class FileDownloadServlet extends HttpServlet{
 			    }
 			}
 
-			
+			// open the appropriate physical file
+
+			File inFile = new File(file.getFileSystemLocation());  
+
+			if ( downloadOriginalFormat != null ) {
+			    inFile = new File ( inFile.getParent(), "_" + file.getFileSystemName()); 
+			} 
+
 			// send the file as the response
-			InputStream in = new FileInputStream(new File(file.getFileSystemLocation()));
+
+
+			InputStream in = new FileInputStream(inFile);
 			OutputStream out = res.getOutputStream();
 			
 			byte[] dataBuffer = new byte[8192]; 

@@ -43,7 +43,6 @@ import javax.persistence.Entity;
 public class ScholarDataverse extends VDC implements Serializable {
      private String firstName;
      private String lastName;
-     private String affiliation;
     
     /** Creates a new instance of ScholarDataverse */
     public ScholarDataverse() {
@@ -51,6 +50,12 @@ public class ScholarDataverse extends VDC implements Serializable {
     
     public ScholarDataverse(Long id) {
         this.id = id;
+    }
+    
+    public ScholarDataverse(Long id, String firstName, String lastName) {
+        this.id        = id;
+        this.firstName = firstName;
+        this.lastName  = lastName;
     }
 
     /**
@@ -142,20 +147,6 @@ public class ScholarDataverse extends VDC implements Serializable {
         this.lastName = lastName;
     }
 
-    /**
-     * Getter for property affiliation.
-     * @return Value of property affiliation.
-     */
-    public String getAffiliation() {
-        return this.affiliation;
-    }
-
-    /**
-     * Setter for property affiliation.
-     * @param affiliation New value of property affiliation.
-     */
-    public void setAffiliation(String affiliation) {
-        this.affiliation = affiliation;
-    }
+    
     
 }

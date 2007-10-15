@@ -694,7 +694,7 @@ public class DVNOAICatalog extends AbstractCatalog {
         int i = 0;
         for (Iterator it = oaiSets.iterator(); it.hasNext();) {
             OAISet elem = (OAISet) it.next();
-            dbSets[i++] = "<set><setSpec>"+elem.getSpec()+"</setSpec><setName>"+elem.getName()+"</setName>"+(elem.getDescription()!= null?"<setDescription>"+elem.getDescription()+"</setDescription)":"")+"</set>";
+            dbSets[i++] = "<set><setSpec>"+elem.getSpec()+"</setSpec><setName>"+elem.getName()+"</setName>"+(elem.getDescription()!= null?"<setDescription>"+elem.getDescription()+"</setDescription>":"")+"</set>";
         }
         int count;
 

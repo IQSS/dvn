@@ -105,12 +105,12 @@
                                 <h:inputText id="affiliation" immediate="true" value="#{AddSitePage.affiliation}" valueChangeListener="#{AddSitePage.changeAffiliation}" required="true" />
                             </ui:panelGroup>
                             <!-- Dataverse Name -->
-                            <ui:panelGroup rendered="#{AddSitePage.dataverseType != 'Scholar'}" block="true" style="vertical-align: top;">
+                            <ui:panelGroup block="true" style="vertical-align: top;">
                                 <h:outputLabel binding="#{AddSitePage.componentLabel1}" for="componentLabel1" id="componentLabel1">
                                     <h:outputText binding="#{AddSitePage.componentLabel1Text}" id="componentLabel1Text" style="white-space: nowrap; padding-right: 10px; " value="Dataverse Name"/>                                              
                                 </h:outputLabel>
                             </ui:panelGroup>
-                            <ui:panelGroup rendered="#{AddSitePage.dataverseType != 'Scholar'}">
+                            <ui:panelGroup>
                                 <h:inputText binding="#{AddSitePage.dataverseName}" id="dataverseName" required="true" validator="#{AddSitePage.validateName}" size="60"/>
                                 <f:verbatim><br /></f:verbatim>
                                 <h:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>

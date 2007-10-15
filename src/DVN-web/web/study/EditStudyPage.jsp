@@ -173,13 +173,13 @@
                                             </h:column>
                                             <h:column >
                                                 <ui:panelGroup block="true" > 
-                                                    <h:inputText binding="#{EditStudyPage.inputOtherId}" id = "input_otherId" value="#{currentRow.otherId}" required="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
+                                                    <h:inputText maxlength="255" binding="#{EditStudyPage.inputOtherId}" id = "input_otherId" value="#{currentRow.otherId}" required="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
                                                     <h:message styleClass="errorMessage" for="input_otherId"/> 
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
                                                         <ihelp:inlinehelp helpMessage="#{editstudybundle.otherAgencyHelp}" linkText="#{editstudybundle.otherAgencyLabel}" heading="#{editstudybundle.otherAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherIdAgency].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherIdAgency].recommended}"/>
-                                                        <h:inputText  binding="#{EditStudyPage.inputOtherIdAgency}"     validator ="#{EditStudyPage.validateStudyOtherId}" 
+                                                        <h:inputText maxlength="255" binding="#{EditStudyPage.inputOtherIdAgency}"     validator ="#{EditStudyPage.validateStudyOtherId}" 
                                                                       id="input_otherIdAgency" value="#{currentRow.agency}"  required="#{EditStudyPage.studyMap[sfc.otherIdAgency].required}"/>
                                                     </ui:panelGroup>
                                                     <h:message styleClass="errorMessage" for="input_otherIdAgency"/> 
@@ -222,6 +222,7 @@
                                                     <h:inputText id="input_authorName" 
                                                                  value="#{currentAuthor.name}" 
                                                                  size="45" 
+                                                                 maxlength="255"
                                                                  binding="#{EditStudyPage.inputAuthorName}"                                                      
                                                                  required="#{EditStudyPage.studyMap[sfc.authorName].required}" 
                                                     /> 
@@ -239,7 +240,7 @@
                                                         <ihelp:inlinehelp helpMessage="#{editstudybundle.authorAffiliationHelp}" linkText="#{editstudybundle.authorAffiliationLabel}" heading="#{editstudybundle.authorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.authorAffiliation].required}"/>
                                                         <h:graphicImage id="image83" value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.authorAffiliation].recommended}"/>
-                                                        <h:inputText id="input_authorAffiliation" size="45"
+                                                        <h:inputText id="input_authorAffiliation" size="45" maxlength="255"
                                                                      binding="#{EditStudyPage.inputAuthorAffiliation}"
                                                                      value="#{currentAuthor.affiliation}" 
                                                                      validator ="#{EditStudyPage.validateStudyAuthor}" 
@@ -280,13 +281,13 @@
                                             </h:column>
                                             <h:column>
                                                 <ui:panelGroup block="true"> 
-                                                    <h:inputText  binding="#{EditStudyPage.inputProducerName}" id="input_producerName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.producerName].required}"/>
+                                                    <h:inputText maxlength="255" binding="#{EditStudyPage.inputProducerName}" id="input_producerName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.producerName].required}"/>
                                                     <h:message styleClass="errorMessage" for="input_producerName"/>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
                                                         <ihelp:inlinehelp helpMessage="#{editstudybundle.producerAffiliationHelp}" linkText="#{editstudybundle.producerAffiliationLabel}" heading="#{editstudybundle.producerAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAffiliation].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAffiliation].recommended}"/>
-                                                        <h:inputText  validator ="#{EditStudyPage.validateStudyProducer}"  binding="#{EditStudyPage.inputProducerAffiliation}"    id="input_producerAffiliation" size="45" value="#{currentRow.affiliation}" required="#{EditStudyPage.studyMap[sfc.producerAffiliation].required}"
+                                                        <h:inputText  maxlength="255" validator ="#{EditStudyPage.validateStudyProducer}"  binding="#{EditStudyPage.inputProducerAffiliation}"    id="input_producerAffiliation" size="45" value="#{currentRow.affiliation}" required="#{EditStudyPage.studyMap[sfc.producerAffiliation].required}"
                                                                       styleClass="formHtmlEnabled">
                                                             <f:validator validatorId="XhtmlValidator"/>
                                                         </h:inputText>
@@ -297,7 +298,7 @@
                                                         <ihelp:inlinehelp helpMessage="#{editstudybundle.producerAbbreviationHelp}" linkText="#{editstudybundle.producerAbbreviationLabel}" heading="#{editstudybundle.producerAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAbbreviation].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAbbreviation].recommended}"/>
-                                                        <h:inputText validator ="#{EditStudyPage.validateStudyProducer}"   binding="#{EditStudyPage.inputProducerAbbreviation}"  id="input_producerAbbreviation" value="#{currentRow.abbreviation}" required="#{EditStudyPage.studyMap[sfc.producerAbbreviation].required}"/>
+                                                        <h:inputText maxlength="255" validator ="#{EditStudyPage.validateStudyProducer}"   binding="#{EditStudyPage.inputProducerAbbreviation}"  id="input_producerAbbreviation" value="#{currentRow.abbreviation}" required="#{EditStudyPage.studyMap[sfc.producerAbbreviation].required}"/>
                                                     </ui:panelGroup>
                                                     <h:message styleClass="errorMessage" for="input_producerAbbreviation"/>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
@@ -309,6 +310,7 @@
                                                                      binding="#{EditStudyPage.inputProducerUrl}" 
                                                                      value="#{currentRow.url}" 
                                                                      size="45" 
+                                                                     maxlength="255"
                                                                      required="#{EditStudyPage.studyMap[sfc.producerURL].required}"
                                                         >
                                                             <f:validator validatorId="UrlValidator"/>
@@ -324,6 +326,7 @@
                                                                      validator ="#{EditStudyPage.validateStudyProducer}"
                                                                      value="#{currentRow.logo}" 
                                                                      size="45" 
+                                                                     maxlength="255"
                                                                      required="#{EditStudyPage.studyMap[sfc.producerLogo].required}"
                                                         >
                                                             <f:validator validatorId="UrlValidator"/>
@@ -390,13 +393,13 @@
                                             </h:column>
                                             <h:column>
                                                 <ui:panelGroup block="true">
-                                                    <h:inputText  binding="#{EditStudyPage.inputSoftwareName}" id="input_softwareName" size="45"  value="#{currentRow.name}" required="#{EditStudyPage.studyMap[sfc.softwareName].required}"/>
+                                                    <h:inputText maxlength="255" binding="#{EditStudyPage.inputSoftwareName}" id="input_softwareName" size="45"  value="#{currentRow.name}" required="#{EditStudyPage.studyMap[sfc.softwareName].required}"/>
                                                     <h:message styleClass="errorMessage" for="input_softwareName"/>  
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
                                                         <ihelp:inlinehelp helpMessage="#{editstudybundle.softwareVersionHelp}" linkText="#{editstudybundle.softwareVersionLabel}" heading="#{editstudybundle.softwareVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareVersion].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareVersion].recommended}"/>
-                                                        <h:inputText  binding="#{EditStudyPage.inputSoftwareVersion}" validator ="#{EditStudyPage.validateStudySoftware}"  id="input_softwareVersion" value="#{currentRow.softwareVersion}" required="#{EditStudyPage.studyMap[sfc.softwareVersion].required}"/>
+                                                        <h:inputText maxlength="255" binding="#{EditStudyPage.inputSoftwareVersion}" validator ="#{EditStudyPage.validateStudySoftware}"  id="input_softwareVersion" value="#{currentRow.softwareVersion}" required="#{EditStudyPage.studyMap[sfc.softwareVersion].required}"/>
                                                     </ui:panelGroup>
                                                     <h:message styleClass="errorMessage" for="input_softwareVersion"/>                                
                                                 </ui:panelGroup>
@@ -442,13 +445,13 @@
                                             </h:column>
                                             <h:column>
                                                 <ui:panelGroup block="true">
-                                                    <h:inputText  immediate="true" binding="#{EditStudyPage.inputGrantNumber}" id="input_grantNumber" size="45"  value="#{currentRow.number}" required="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
+                                                    <h:inputText maxlength="255" immediate="true" binding="#{EditStudyPage.inputGrantNumber}" id="input_grantNumber" size="45"  value="#{currentRow.number}" required="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
                                                     <h:message styleClass="errorMessage" for="input_grantNumber"/>    
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
                                                         <ihelp:inlinehelp helpMessage="#{editstudybundle.grantingAgencyHelp}" linkText="#{editstudybundle.grantingAgencyLabel}" heading="#{editstudybundle.grantingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumberAgency].recommended}"/>
-                                                        <h:inputText  immediate="true" binding="#{EditStudyPage.inputGrantAgency}" validator ="#{EditStudyPage.validateStudyGrant}" id="input_grantNumberAgency" size="45" value="#{currentRow.agency}" required="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required}"/>
+                                                        <h:inputText  maxlength="255" immediate="true" binding="#{EditStudyPage.inputGrantAgency}" validator ="#{EditStudyPage.validateStudyGrant}" id="input_grantNumberAgency" size="45" value="#{currentRow.agency}" required="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required}"/>
                                                     </ui:panelGroup>
                                                     <h:message styleClass="errorMessage" for="input_grantNumberAgency"/>                                
                                                 </ui:panelGroup>
@@ -477,13 +480,13 @@
                                         </h:column>
                                         <h:column>
                                             <ui:panelGroup block="true">
-                                                <h:inputText  binding="#{EditStudyPage.inputDistributorName}" id="input_distributorName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.distributorName].required}"/>
+                                                <h:inputText maxlength="255" binding="#{EditStudyPage.inputDistributorName}" id="input_distributorName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.distributorName].required}"/>
                                                 <h:message styleClass="errorMessage" for="input_distributorName"/> 
                                                 <ui:panelGroup styleClass="vdcEditStudyGroupField">
                                                     <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorAffiliationHelp}" linkText="#{editstudybundle.distributorAffiliationLabel}" heading="#{editstudybundle.distributorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAffiliation].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAffiliation].recommended}"/>
-                                                    <h:inputText id="input_distributorAffiliation" validator ="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAffiliation}" size="45"
+                                                    <h:inputText maxlength="255" id="input_distributorAffiliation" validator ="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAffiliation}" size="45"
                                                                  value="#{currentRow.affiliation}" 
                                                                  required="#{EditStudyPage.studyMap[sfc.distributorAffiliation].required}" 
                                                                  styleClass="formHtmlEnabled">
@@ -496,7 +499,7 @@
                                                     <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorAbbreviationHelp}" linkText="#{editstudybundle.distributorAbbreviationLabel}" heading="#{editstudybundle.distributorAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].recommended}"/>
-                                                    <h:inputText validator ="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"  required="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required}"/>
+                                                    <h:inputText maxlength="255" validator ="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"  required="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required}"/>
                                                 </ui:panelGroup>
                                                 <h:message styleClass="errorMessage" for="input_distributorAbbreviation"/>   
                                                 <ui:panelGroup styleClass="vdcEditStudyGroupField">
@@ -508,6 +511,7 @@
                                                                  binding="#{EditStudyPage.inputDistributorUrl}" 
                                                                  value="#{currentRow.url}" 
                                                                  size="45"  
+                                                                 maxlength="255"
                                                                  required="#{EditStudyPage.studyMap[sfc.distributorURL].required}"
                                                     >
                                                         <f:validator validatorId="UrlValidator"/>
@@ -522,6 +526,7 @@
                                                                  validator ="#{EditStudyPage.validateStudyDistributor}"
                                                                  value="#{currentRow.logo}" 
                                                                  size="45"  
+                                                                 maxlength="255"
                                                                  required="#{EditStudyPage.studyMap[sfc.distributorLogo].required}"
                                                     >
                                                         <f:validator validatorId="UrlValidator"/>
@@ -759,23 +764,24 @@
                                             </h:column>
                                             <h:column>
                                                 <ui:panelGroup block="true">
-                                                    <h:inputText binding="#{EditStudyPage.inputKeywordValue}" id="input_keywordValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.keywordValue].required}"/>
+                                                    <h:inputText binding="#{EditStudyPage.inputKeywordValue}" id="input_keywordValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.keywordValue].required}" maxlength="255"/>
                                                     <h:message styleClass="errorMessage" for="input_keywordValue"/>                                
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
                                                         <ihelp:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyHelp}" linkText="#{editstudybundle.keywordVocabularyLabel}" heading="#{editstudybundle.keywordVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocab].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocab].recommended}"/>
-                                                        <h:inputText validator ="#{EditStudyPage.validateStudyKeyword}" binding="#{EditStudyPage.inputKeywordVocab}" id="input_keywordVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.keywordVocab].required}"/>
+                                                        <h:inputText validator ="#{EditStudyPage.validateStudyKeyword}" binding="#{EditStudyPage.inputKeywordVocab}" id="input_keywordVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.keywordVocab].required}" maxlength="255"/>
                                                     </ui:panelGroup>
                                                     <h:message styleClass="errorMessage" for="input_keywordVocab"/>                                
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
                                                         <ihelp:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyURLHelp}" linkText="#{editstudybundle.keywordVocabularyURLLabel}" heading="#{editstudybundle.keywordVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocabURI].required}"/>
+                                                        <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocabURI].required}" />
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocabURI].recommended}"/>
                                                         <h:inputText id="input_keywordVocabURI" 
                                                                      validator ="#{EditStudyPage.validateStudyKeyword}"
                                                                      binding="#{EditStudyPage.inputKeywordVocabUri}"
                                                                      size="45" 
+                                                                     maxlength="255"
                                                                      value="#{currentRow.vocabURI}" 
                                                                      required="#{EditStudyPage.studyMap[sfc.keywordVocabURI].required}"
                                                         >
@@ -811,13 +817,13 @@
                                             </h:column>
                                             <h:column>
                                                 <ui:panelGroup block="true">
-                                                    <h:inputText binding="#{EditStudyPage.inputTopicClassValue}" id="input_topicClassValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.topicClassValue].required}"/>
+                                                    <h:inputText  binding="#{EditStudyPage.inputTopicClassValue}" id="input_topicClassValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.topicClassValue].required}"/>
                                                     <h:message styleClass="errorMessage" for="input_topicClassValue"/>                                
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
                                                         <ihelp:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyHelp}" linkText="#{editstudybundle.topicClassVocabularyLabel}" heading="#{editstudybundle.topicClassVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocab].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocab].recommended}"/>
-                                                        <h:inputText validator ="#{EditStudyPage.validateStudyTopicClass}" binding="#{EditStudyPage.inputTopicClassVocab}" id="input_topicClassVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.topicClassVocab].required}"/>
+                                                        <h:inputText maxlength="255" validator ="#{EditStudyPage.validateStudyTopicClass}" binding="#{EditStudyPage.inputTopicClassVocab}" id="input_topicClassVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.topicClassVocab].required}"/>
                                                     </ui:panelGroup>
                                                     <h:message styleClass="errorMessage" for="input_topicClassVocab"/>                                
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
@@ -828,6 +834,7 @@
                                                                      binding="#{EditStudyPage.inputTopicClassVocabUri}"
                                                                      validator ="#{EditStudyPage.validateStudyTopicClass}"
                                                                      size="45" 
+                                                                     maxlength="255" 
                                                                      value="#{currentRow.vocabURI}" 
                                                                      required="#{EditStudyPage.studyMap[sfc.topicClassVocabURI].required}"
                                                         >
@@ -1753,7 +1760,7 @@
                                             </h:column>
                                             <h:column>
                                                 <ui:panelGroup block="true" visible = "#{EditStudyPage.studyMap[sfc.notesInformationType].rendered}">
-                                                    <h:inputText binding="#{EditStudyPage.inputNoteType}" id="input_notesInformationType" 
+                                                    <h:inputText maxlength="255" binding="#{EditStudyPage.inputNoteType}" id="input_notesInformationType" 
                                                                  value="#{currentRow.type}" 
                                                                  required="#{EditStudyPage.studyMap[sfc.notesInformationType].required}"
                                                                  styleClass="formHtmlEnabled">
@@ -1765,6 +1772,7 @@
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationSubject].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationSubject].recommended}"/>
                                                         <h:inputText id="input_notesInformationSubject" 
+                                                                     maxlength="255"
                                                                      binding="#{EditStudyPage.inputNoteSubject}"
                                                                      value="#{currentRow.subject}" 
                                                                      validator ="#{EditStudyPage.validateStudyNote}"

@@ -136,8 +136,9 @@ public class DCServiceBean implements DCServiceLocal {
         }
 
         // Date
-        out.write("<dc:date>"+study.getDistributionDate()+"</dc:date>");
-        
+        if (!StringUtil.isEmpty(study.getDistributionDate())) {
+            out.write("<dc:date>"+study.getDistributionDate()+"</dc:date>");
+        }
         // Identifier (holdings??)
         out.write("<dc:identifier>"+study.getGlobalId()+"</dc:identifier>");
 

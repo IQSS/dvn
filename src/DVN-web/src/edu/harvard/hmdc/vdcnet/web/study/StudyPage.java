@@ -613,18 +613,37 @@ public boolean getNotesIsEmpty() {
         }
     }
      
-     private List dataFileFormatTypes;
+     private List<DataFileFormatType> dataFileFormatTypes;
      
      public List getDataFileFormatTypes() {
-         if (dataFileFormatTypes == null) {
-            dataFileFormatTypes = new ArrayList();
-            dataFileFormatTypes.add( new SelectItem("", "Tab delimited") );
-            for (DataFileFormatType type : studyService.getDataFileFormatTypes()) {
-                dataFileFormatTypes.add( new SelectItem(type.getValue(), type.getName()) );
-            }
-       }
-        return dataFileFormatTypes;         
+        return getDataFileFormatTypes(false);
+     }   
+     
+     public List getDataFileFormatTypesWithOriginalFile() {
+        return getDataFileFormatTypes(true);
      }
+     
+     public List getDataFileFormatTypes(boolean includeOriginalFile) {
+        // initialize once
+        if (dataFileFormatTypes == null) {
+            dataFileFormatTypes = studyService.getDataFileFormatTypes();
+        }
+
+        List selectItems = new ArrayList();
+        selectItems.add( new SelectItem("", "Tab delimited") );
+        
+        if (includeOriginalFile) {
+            selectItems.add( new SelectItem(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT, "Original File") );
+        }
+
+        for (DataFileFormatType type : dataFileFormatTypes) {
+            selectItems.add( new SelectItem(type.getValue(), type.getName()) );
+        }
+       
+        return selectItems;         
+     }
+
+     
      
      /**
       * web statistics related

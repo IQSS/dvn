@@ -60,6 +60,9 @@ public class StudyFile implements Serializable{
     private String fileSystemLocation;
     private String label;
     
+    private String originalFileType;
+
+    
     @Column(columnDefinition="TEXT")
     private String description;
     
@@ -116,6 +119,14 @@ public class StudyFile implements Serializable{
     public void setLabel(String label) {
         this.label = label;
     }
+    
+    public String getOriginalFileType() {
+        return originalFileType;
+    }
+
+    public void setOriginalFileType(String originalFileType) {
+        this.originalFileType = originalFileType;
+    }    
    
     public String getDescription() {
         return description;

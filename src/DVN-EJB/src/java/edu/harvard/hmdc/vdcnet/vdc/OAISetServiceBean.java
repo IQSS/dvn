@@ -25,7 +25,7 @@ public class OAISetServiceBean implements OAISetServiceLocal {
     
     
     public OAISet findBySpec(String spec) {
-     String query="SELECT o from OAISelect o where o.spec = :fieldName";
+     String query="SELECT o from OAISet o where o.spec = :fieldName";
        OAISet oaiSet=null;
        try {
            oaiSet=(OAISet)em.createQuery(query).setParameter("fieldName",spec).getSingleResult();

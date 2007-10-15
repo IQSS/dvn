@@ -30,6 +30,7 @@ import edu.harvard.hmdc.vdcnet.index.SearchTerm;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
+import edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
@@ -466,12 +467,13 @@ public class HomePage extends VDCBaseBean{
         childTable.setColumns(3);
         childTable.setColumnClasses("dvnChildColumn");
         UIColumn column           = null;
-        HtmlPanelGroup linkPanel  = null;
-        HtmlOutputText startLinkTag = null;
-        HtmlOutputText endLinkTag = null;
-        Hyperlink nodelink        = null;
-        HtmlGraphicImage image    = null;
-        HtmlOutputText textTag = null;
+        HtmlPanelGroup linkPanel     = null;
+        HtmlOutputText startLinkTag  = null;
+        HtmlOutputText endLinkTag    = null;
+        HtmlOutputText affiliationTag = null;
+        Hyperlink nodelink           = null;
+        HtmlGraphicImage image       = null;
+        HtmlOutputText textTag       = null;
         while (iterator.hasNext()) {
             if (startPos == 0) {
                 column = new UIColumn();
@@ -479,10 +481,16 @@ public class HomePage extends VDCBaseBean{
             VDC vdc  = (VDC)iterator.next();
             startLinkTag = new HtmlOutputText();
             startLinkTag.setEscape(false);
-            startLinkTag.setValue("<ul><li>");
+            startLinkTag.setValue("<ul><li class='activeBullet'>");
             nodelink = new Hyperlink();
+            if (vdc instanceof ScholarDataverse) {
+                ScholarDataverse scholardataverse = (ScholarDataverse)vdc;
+                nodelink.setText(scholardataverse.getLastName() + ", " + scholardataverse.getFirstName());
+                nodelink.setToolTip(scholardataverse.getLastName() + ", " + scholardataverse.getFirstName() + " dataverse");
+            } else {
             nodelink.setText(vdc.getName());
             nodelink.setToolTip(vdc.getName() + " dataverse");
+            }
             nodelink.setUrl("/dv/" + vdc.getAlias() + defaultVdcPath);
             endLinkTag = new HtmlOutputText();
             endLinkTag.setEscape(false);
@@ -498,6 +506,12 @@ public class HomePage extends VDCBaseBean{
                 linkPanel.getChildren().add(textTag);
                 nodelink.setToolTip("This dataverse is not released.");
             } 
+            if (vdc.getAffiliation() != null) {
+                affiliationTag = new HtmlOutputText();
+                affiliationTag.setEscape(false);
+                affiliationTag.setValue("<ul class=affiliationBullet><li class=affiliationBullet>" + vdc.getAffiliation() + "</li></ul>");
+                linkPanel.getChildren().add(affiliationTag);
+            }
             linkPanel.getChildren().add(endLinkTag);
             column.getChildren().add(linkPanel);
             startPos++;

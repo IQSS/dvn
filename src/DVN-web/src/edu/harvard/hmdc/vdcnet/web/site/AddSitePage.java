@@ -103,7 +103,7 @@ public class AddSitePage extends VDCBaseBean {
      */
     public void init() {
         super.init();
-        //check to see if a reportee is in request
+        //check to see if a dataverse type is in request
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Iterator iterator = request.getParameterMap().keySet().iterator();
         while (iterator.hasNext()) {
@@ -423,7 +423,7 @@ public class AddSitePage extends VDCBaseBean {
         String name             = (String)dataverseName.getValue();
         String alias            = (String)dataverseAlias.getValue();
         Long userId             = getVDCSessionBean().getLoginBean().getUser().getId();
-        vdcService.createScholarDataverse(userId, firstName, lastName, affiliation, alias);
+        vdcService.createScholarDataverse(userId, firstName, lastName, name, affiliation, alias);
         ScholarDataverse createdScholarDataverse = vdcService.findScholarDataverseByAlias(alias);
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
         getVDCRequestBean().setCurrentVDC(createdScholarDataverse);
@@ -560,7 +560,7 @@ public class AddSitePage extends VDCBaseBean {
         if (this.dataverseOptions == null) {
             dataverseOptions = new ArrayList();
             dataverseOptions.add(new SelectItem(new String("Scholar")));
-            dataverseOptions.add(new SelectItem(new String("Other")));
+            dataverseOptions.add(new SelectItem(new String("Basic")));
         }
         return dataverseOptions;
     }

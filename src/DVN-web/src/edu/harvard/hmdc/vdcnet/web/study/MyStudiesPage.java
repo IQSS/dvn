@@ -339,7 +339,7 @@ public class MyStudiesPage extends VDCBaseBean {
     
     public DataModel getContributorStudies(){
         VDCUser thisUser = getVDCSessionBean().getLoginBean().getUser();
-        List <Study> myStudies = studyService.getContributorStudies(thisUser);
+        List <Study> myStudies = studyService.getContributorStudies(thisUser,getVDCRequestBean().getCurrentVDC());
         List displayFields = new ArrayList();
         SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
         for (Iterator it = myStudies.iterator(); it.hasNext();) {

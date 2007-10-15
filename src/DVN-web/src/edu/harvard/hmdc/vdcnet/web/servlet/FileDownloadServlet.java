@@ -534,8 +534,7 @@ public class FileDownloadServlet extends HttpServlet{
 			String dbContentType = null; 
 
 			if ( downloadOriginalFormat != null ) {
-			    //dbContentType = file.getOriginalFileType();
-			    dbContentType = file.getFileType();
+			    dbContentType = file.getOriginalFileType();
 			} else {
 			    dbContentType = file.getFileType();
 			}

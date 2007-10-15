@@ -1097,7 +1097,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         try {
             File ddiExportFile = new File(FileUtil.getStudyFileDir(study), "export_ddi.xml");
             out = new FileWriter(ddiExportFile);
-            ddiService.exportStudy(_cb, out);
+            ddiService.exportCodeBook(_cb, out);
         }catch (Exception ex) {
             ex.printStackTrace();
             throw new EJBException("Error occurred while attempting to export file");

@@ -216,7 +216,10 @@ public class CatalogServiceBean implements CatalogServiceLocal {
                 String setSpec = "<setSpec>"+study.getAuthority()+"</setSpec>";
                 logger.info("Exporting study "+study.getStudyId());
                 if (oaiSet == null || indexedIds.contains(study.getId())){
-                    records.add(getRecord(study, metadataPrefix));
+                    String record = getRecord(study, metadataPrefix);
+                    if (record.length()>0){
+                        records.add(record);
+                    }
                 }
                 
             }
@@ -243,7 +246,8 @@ public class CatalogServiceBean implements CatalogServiceLocal {
         Date lastUpdateTime = study.getLastUpdateTime();
         File studyFileDir = FileUtil.getStudyFileDir(study);
         String exportFileName= studyFileDir.getAbsolutePath() + File.separator + "export_" + metadataPrefix+".xml";
-        String record = identifier+dateStamp+setSpec+readFile(new File(exportFileName));
+        File exportFile = new File(exportFileName);
+        String record = exportFile.exists()?identifier+dateStamp+setSpec+readFile(exportFile): "";
         System.out.println("RECORD:\n"+record);
         return record;
     }

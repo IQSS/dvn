@@ -327,14 +327,14 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             
             havestingDataverseService.setHarvestingNow(dataverse.getId(), true);
             lastHarvestTime = formatter.parse(until);
-            hdLogger.log(Level.INFO,"BEGIN HARVEST..., oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);
+            hdLogger.log(Level.INFO,"BEGIN HARVEST..., oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getHarvestFormatType().getMetadataPrefix()+ ", from="+from+", until="+until);
             ResumptionTokenType resumptionToken = null;
             
             do {
                 resumptionToken= harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken,dataverse,from,until, harvestedStudyIds, initialHarvest, harvestErrorOccurred);
             } while(resumptionToken!=null && !resumptionToken.equals(""));
             
-            hdLogger.log(Level.INFO,"COMPLETED HARVEST, oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getFormat()+ ", from="+from+", until="+until);
+            hdLogger.log(Level.INFO,"COMPLETED HARVEST, oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getHarvestFormatType().getMetadataPrefix()+ ", from="+from+", until="+until);
             
         } catch (ParseException ex) {
             harvestErrorOccurred.setValue(true);
@@ -366,7 +366,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                         from,
                         until,
                         encodedSet,
-                        URLEncoder.encode(dataverse.getFormat(),"UTF-8"));
+                        URLEncoder.encode(dataverse.getHarvestFormatType().getMetadataPrefix(),"UTF-8"));
             } else {
                 listIdentifiers= new ListIdentifiers(dataverse.getOaiServer(), resumptionToken.getValue());
             }
@@ -378,7 +378,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             OAIPMHtype oaiObj = (OAIPMHtype)unmarshalObj.getValue();
             
             if (oaiObj.getError()!=null && oaiObj.getError().size()>0) {
-                handleOAIError(hdLogger, oaiObj, "calling listIdentifiers, oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getFormat());
+                handleOAIError(hdLogger, oaiObj, "calling listIdentifiers, oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getHarvestFormatType().getMetadataPrefix());
                 return null; // this will halt the loop to this method
             } else {
                 ListIdentifiersType listIdentifiersType = oaiObj.getListIdentifiers();
@@ -396,7 +396,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             }
         } catch (Throwable e) {
             harvestErrorOccurred.setValue(true);
-            String message = "Exception processing listIdentifiers(), oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getFormat()+" "+ e.getClass().getName()+ " "+e.getMessage();
+            String message = "Exception processing listIdentifiers(), oaiServer= "+dataverse.getOaiServer()+",from="+from+",until="+until+",encodedSet="+encodedSet+",format="+dataverse.getHarvestFormatType().getMetadataPrefix()+" "+ e.getClass().getName()+ " "+e.getMessage();
             hdLogger.log(Level.SEVERE,message);
             logException(e,hdLogger);
             return null;

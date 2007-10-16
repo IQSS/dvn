@@ -798,6 +798,13 @@ public class FileDownloadServlet extends HttpServlet{
             out.println("<HEAD><TITLE>File Download</TITLE></HEAD>");
             out.println("<BODY>");
             out.println("<BIG>" + statusLine + "</BIG>");
+            
+            if (status == res.SC_NOT_FOUND) {
+                for (int i = 0; i < 10; i++) {
+                    out.println("<!-- This line is filler to handle IE case for 404 errors   -->");
+                }
+            }
+            
             out.println("</BODY></HTML>");
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -806,35 +813,13 @@ public class FileDownloadServlet extends HttpServlet{
 
     
     private void createErrorResponse403(HttpServletResponse res) {
-        res.setContentType("text/html");
-	res.setStatus ( res.SC_FORBIDDEN ); 
-        try {
-            PrintWriter out = res.getWriter();
-            out.println("<HTML>");
-            out.println("<HEAD><TITLE>File Download</TITLE></HEAD>");
-            out.println("<BODY>");
-            out.println("<BIG>Sorry. You do not have permission to download this file.</BIG>");
-            out.println("</BODY></HTML>");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this file.");
     }
 
     private void createErrorResponse404(HttpServletResponse res) {
-        res.setContentType("text/html");
-	res.setStatus ( res.SC_NOT_FOUND ); 
-        try {
-            PrintWriter out = res.getWriter();
-            out.println("<HTML>");
-            out.println("<HEAD><TITLE>File Download</TITLE></HEAD>");
-            out.println("<BODY>");
-            out.println("<BIG>Sorry. The file you are looking for could not be found.</BIG>");
-            out.println("</BODY></HTML>");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        createErrorResponseGeneric(res, res.SC_NOT_FOUND, "Sorry. The file you are looking for could not be found.");
     }
-
+    
     // private methods for generating parameters for the DSB 
     // conversion call;
     // borrowed from Gustavo's code in DSBWrapper (for now)

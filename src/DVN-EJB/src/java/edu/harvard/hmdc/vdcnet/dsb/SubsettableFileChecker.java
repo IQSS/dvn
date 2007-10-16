@@ -282,69 +282,102 @@ public class SubsettableFileChecker {
             return result;
         }
 
-        //windows [0D0A]=> [1310]
-        //unix    [0A]  => [10]
-        //mac     [0D]  => [13]
-        
+        //windows [0D0A]=>   [1310] = [CR/LF]
+        //unix    [0A]  =>   [10]
+        //mac     [0D]  =>   [13]
+        // 3char  [0D0D0A]=> [131310] spss for windows rel 15
         // expected results
         // unix    case: [0A]   : [80], [161], [242], [323], [404], [485]
         // windows case: [0D0A] : [81], [163], [245], [327], [409], [491]
-        
+        //  : [0D0D0A] : [82], [165], [248], [331], [414], [495]
         
         buff.rewind();
-        byte[] nlch = new byte[18];
+        byte[] nlch = new byte[36];
         int pos1;
         int pos2;
+        int pos3;
         int ucase=0;
         int wcase=0;
         int mcase=0;
-        for (int i=0; i<6; ++i){
-            pos1 = 80*(i+1) + i;
+        int three=0;
+        int nolines = 6;
+        int nocols = 80;
+        for (int i=0; i< nolines; ++i){
+            int baseBias = nocols*(i+1);
+            // 1-char case
+            pos1 = baseBias + i;
             buff.position(pos1);
-            int j = 3*i;
+            if (DEBUG){
+                out.println("\tposition(1)="+buff.position());
+            }
+            int j = 6*i;
             nlch[j]= buff.get();
+            
             if (nlch[j] == 10){
                 ucase++;
             } else if (nlch[j]== 13){
                 mcase++;
             }
-            pos2 = 80*(i+1) +2*i;
+            
+            // 2-char case
+            pos2 = baseBias +2*i;
             buff.position(pos2);
             if (DEBUG){
-                out.println("\tposition="+buff.position());
+                out.println("\tposition(2)="+buff.position());
             }
             nlch[j+1] = buff.get();
             nlch[j+2] = buff.get();
             
+            // 3-char case
+            pos3 = baseBias +3*i;
+            buff.position(pos3);
+            if (DEBUG){
+                out.println("\tposition(3)="+buff.position());
+            }
+            nlch[j+3] = buff.get();
+            nlch[j+4] = buff.get();
+            nlch[j+5] = buff.get();
+            
             if (DEBUG){
                 out.println(i+"-th iteration position ="+nlch[j]+"\t"+nlch[j+1] +"\t"+nlch[j+2]);
+                out.println(i+"-th iteration position ="+nlch[j+3]+"\t"+nlch[j+4] +"\t"+nlch[j+5]);
             }
-            if ( (nlch[j+1] == 13) && (nlch[j+2] == 10) ){
+            if ( (nlch[j+3] == 13) && (nlch[j+4] == 13) && (nlch[j+5] == 10) ){
+                three++;
+            } else if ( (nlch[j+1] == 13) && (nlch[j+2] == 10) ){
                 wcase++;
             }
+            
             buff.rewind();
         }
-
-        if ((ucase == 6) && (wcase < 6)){
+        if (three == nolines){
+            if (DEBUG){
+                out.println("0D0D0A case");
+            }
+            windowsNewLine = false;
+        } else if ((ucase == nolines) && (wcase < nolines)){
             if (DEBUG){
                 out.println("0A case");
             }
             windowsNewLine = false;
-        } else if ((ucase < 6) && (wcase == 6)){
+        } else if ((ucase < nolines) && (wcase == nolines)){
             if (DEBUG){
                 out.println("0D0A case");
             }
-        } else if ( (mcase == 6) && (wcase < 6) ){
+        } else if ( (mcase == nolines) && (wcase < nolines) ){
             if (DEBUG){
                 out.println("0D case");
             }
+            windowsNewLine = false;
         }
         
-
+        
         buff.rewind();
         int PORmarkPosition = POR_MARK_POSITION_DEFAULT;
         if (windowsNewLine){
             PORmarkPosition = PORmarkPosition+5;
+        } else if (three == nolines){
+            PORmarkPosition = PORmarkPosition+10;
         }
         
         byte[] pormark = new byte[8];

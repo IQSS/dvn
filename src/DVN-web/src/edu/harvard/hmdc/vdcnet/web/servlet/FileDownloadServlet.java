@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Map; 
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import java.util.regex.PatternSyntaxException; 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javax.ejb.EJB;
@@ -540,10 +541,20 @@ public class FileDownloadServlet extends HttpServlet{
 			}
 
 			// specify the file name, if available:
-			String dbFileName = null; 
+			String dbFileName = file.getFileName();
 
-			if ( downloadOriginalFormat == null ) {
-			    dbFileName = file.getFileName();
+			if ( dbFileName != null && downloadOriginalFormat != null ) {
+			    //try {
+				    
+			    if ( dbContentType != null ) {
+				String origFileExtension = generateOriginalExtension ( dbContentType ); 
+				dbFileName.replaceAll ( ".tab$", origFileExtension ); 
+			    } else {
+				dbFileName.replaceAll ( ".tab$", "" ); 
+			    }
+			    //} catch ( PatternSyntaxException patex ) {
+			    //dbFileName = ""; 
+			    //}
 			}
 
 			if ( dbFileName != null ) {
@@ -811,7 +822,7 @@ public class FileDownloadServlet extends HttpServlet{
         }
     }
 
-    
+
     private void createErrorResponse403(HttpServletResponse res) {
         createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this file.");
     }
@@ -819,7 +830,7 @@ public class FileDownloadServlet extends HttpServlet{
     private void createErrorResponse404(HttpServletResponse res) {
         createErrorResponseGeneric(res, res.SC_NOT_FOUND, "Sorry. The file you are looking for could not be found.");
     }
-    
+
     // private methods for generating parameters for the DSB 
     // conversion call;
     // borrowed from Gustavo's code in DSBWrapper (for now)
@@ -864,6 +875,20 @@ public class FileDownloadServlet extends HttpServlet{
 	altFormat = "application/x-gzip-tar";
         return altFormat;
     }
+
+    private String generateOriginalExtension (String fileType) {
+	
+	if ( fileType.equalsIgnoreCase("application/x-spss-sav") ) {
+	    return ".sav";
+	} else if ( fileType.equalsIgnoreCase("application/x-spss-por") ) {
+	    return ".por"; 
+	} else if ( fileType.equalsIgnoreCase("application/x-stata") ) {
+	    return ".dta"; 
+	}	    
+
+        return "";
+    }
+
 
     private String generateAltFileName(String formatRequested, String xfileId) {
         String altFileName; 

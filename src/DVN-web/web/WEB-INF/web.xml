@@ -20,6 +20,10 @@
        <param-name>edu.harvard.hmdc.export</param-name>
         <param-value>false</param-value>        
     </context-param>
+    <context-param>
+       <param-name>properties</param-name>
+        <param-value>oaicat.properties</param-value>        
+    </context-param>
     <listener>
         <listener-class>edu.harvard.hmdc.vdcnet.util.VDCContextListener</listener-class>
     </listener>
@@ -180,10 +184,6 @@
     <servlet>
         <servlet-name>OAIHandler</servlet-name>
         <servlet-class>ORG.oclc.oai.server.OAIHandler</servlet-class>
-        <init-param>
-          <param-name>properties</param-name>
-          <param-value>oaicat.properties</param-value>
-        </init-param>
     </servlet>
     <servlet-mapping>
        <servlet-name>cgi</servlet-name>

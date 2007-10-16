@@ -108,6 +108,6 @@ public interface StudyServiceLocal {
 
     List getStudyIdsForExport();
     public void exportStudy(Long studyId, boolean exportDDI);
-
+    public void exportStudy(Study study, boolean exportDDI);
     public void exportUpdatedStudies();
 }

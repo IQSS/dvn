@@ -1109,7 +1109,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             } catch (Exception e) {}
         }
         // Now, export to all other formats except DDI (because we just did that above)
-        studyService.exportStudy(study.getId(), false);
+        studyService.exportStudy(study, false);
         
     }
     
@@ -1532,9 +1532,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return ids;
     }    
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void exportStudy(Long studyId, boolean exportDDI)  {
-        Study study = em.find(Study.class, studyId);
+   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void exportStudy(Study study, boolean exportDDI) {
         File studyDir = FileUtil.getStudyFileDir(study);
         List<String> exportFormats = studyExporterFactory.getExportFormats();
         for (String exportFormat : exportFormats) {
@@ -1553,6 +1552,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             }
         }     
         study.setLastExportTime(new Date());
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void exportStudy(Long studyId, boolean exportDDI)  {
+        Study study = em.find(Study.class, studyId); 
     }
 
 

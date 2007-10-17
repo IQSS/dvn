@@ -212,16 +212,17 @@ public class CatalogServiceBean implements CatalogServiceLocal {
                 Study study = (Study) it.next();
                 String identifier = "<identifier>" + study.getGlobalId() + "</identifier>";
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String dateStamp = "<datestamp>"+sdf.format(study.getLastExportTime())+"</datestamp>";
-                String setSpec = "<setSpec>"+study.getAuthority()+"</setSpec>";
-                logger.info("Exporting study "+study.getStudyId());
-                if (oaiSet == null || indexedIds.contains(study.getId())){
-                    String record = getRecord(study, metadataPrefix);
-                    if (record.length()>0){
-                        records.add(record);
+                if (study.getLastExportTime() != null) {
+                    String dateStamp = "<datestamp>" + sdf.format(study.getLastExportTime()) + "</datestamp>";
+                    String setSpec = "<setSpec>" + study.getAuthority() + "</setSpec>";
+                    logger.info("Exporting study " + study.getStudyId());
+                    if (oaiSet == null || indexedIds.contains(study.getId())) {
+                        String record = getRecord(study, metadataPrefix);
+                        if (record.length() > 0) {
+                            records.add(record);
+                        }
                     }
                 }
-                
             }
         } catch(Exception e) {
             logger.severe(e.getMessage());

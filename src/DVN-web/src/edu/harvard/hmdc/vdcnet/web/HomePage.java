@@ -508,7 +508,7 @@ public class HomePage extends VDCBaseBean{
                 linkPanel.getChildren().add(textTag);
                 nodelink.setToolTip("This dataverse is not released.");
             } 
-            if (ndv.getAffiliation() != null) {
+            if (ndv.getAffiliation() != null && !ndv.getAffiliation().equals("")) {
                 affiliationTag = new HtmlOutputText();
                 affiliationTag.setEscape(false);
                 affiliationTag.setValue("<ul class=affiliationBullet><li class=affiliationBullet>" + ndv.getAffiliation() + "</li></ul>");
@@ -565,22 +565,29 @@ public class HomePage extends VDCBaseBean{
         List<NetworkDataverseListing> listToSort = new ArrayList<NetworkDataverseListing>();
         List<NetworkDataverseListing> sortedList = new ArrayList<NetworkDataverseListing>();
         NetworkDataverseListing ndvList = null;
+        System.out.println("The number of member vdcs are  " + memberVDCs.size());
         Iterator iterator = memberVDCs.iterator();
         while (iterator.hasNext()) {
             VDC vdc = (VDC)iterator.next();
             String restricted = null;
-            if (vdc.isRestricted())
+            if (vdc.isRestricted()) 
                 restricted = new String("yes");
             else
                 restricted = new String("no");
-            if (vdc.getDtype().equals("Scholar")) {
+            String affiliation = null;
+            if (vdc.getAffiliation() != null)
+                affiliation = new String(vdc.getAffiliation());
+            else
+                affiliation = new String("");
+            if (vdc instanceof ScholarDataverse) {
                 ScholarDataverse scholarDV = (ScholarDataverse)vdc;
                 String name = new String(scholarDV.getLastName() + ", " + scholarDV.getFirstName());
-                ndvList = new NetworkDataverseListing(name, scholarDV.getAlias(), scholarDV.getAffiliation(), restricted);
+                ndvList = new NetworkDataverseListing(name, scholarDV.getAlias(), affiliation, restricted);
             } else {
                 ndvList = new NetworkDataverseListing(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), restricted);
             }
             listToSort.add(ndvList);
+            System.out.println("The number of vdcs to sort are " + listToSort.size());
         }
         synchronized(listToSort){
             Collections.sort(listToSort);
@@ -591,7 +598,6 @@ public class HomePage extends VDCBaseBean{
         try {
           Iterator setIterator = set.iterator();
           while (setIterator.hasNext()) {
-              System.out.println("Adding a network dataverse to the list");
               NetworkDataverseListing ndvListing = (NetworkDataverseListing)setIterator.next();
               sortedList.add(ndvListing);
           }
@@ -599,6 +605,7 @@ public class HomePage extends VDCBaseBean{
           System.out.println("No elements to printout");
         }
         // END DEBUG
+        System.out.println("The number of sorted vdcs to sort are " + sortedList.size());
        return sortedList;
     }
  

@@ -136,11 +136,13 @@ public class VDCAdminServlet extends HttpServlet {
                 }
             } else if (req.getParameter("exportStudies") != null) { 
                 studyService.exportUpdatedStudies();
+                displayMessage(out, "Export completed.");
+              
             }else {
                 displayMessage (out, "You have selected an action that is not allowed.");
             }
         } else {
-            displayMessage(out, "You are not authorized for this action.");
+            displayMessage(out, "You are not authorized for this action, please log in as a network administrator.");
         }        
     }
     

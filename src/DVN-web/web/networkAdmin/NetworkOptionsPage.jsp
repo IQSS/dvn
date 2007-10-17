@@ -54,7 +54,7 @@
                             <h:outputLink  value="/dvn/faces/networkAdmin/EditExportSchedulePage.jsp">
                                 <h:outputText  value="Edit Study Export Schedule"/>
                             </h:outputLink>                           
-                              <h:outputLink  value="/dvn/faces/networkAdmin/EditOAISetsPage.jsp">
+                              <h:outputLink  value="/dvn/faces/networkAdmin/OAISetsPage.jsp">
                                 <h:outputText  value="Edit OAI Harvesting Sets"/>
                             </h:outputLink>                           
                              

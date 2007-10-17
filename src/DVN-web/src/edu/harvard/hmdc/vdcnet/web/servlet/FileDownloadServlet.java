@@ -364,7 +364,7 @@ public class FileDownloadServlet extends HttpServlet{
 		    }
 		}
 		
-		if ( NOTaDSBrequest && file.isRestricted() && (user == null || file.isFileRestrictedForUser(user, vdc,ipUserGroup)) ) {
+		if ( NOTaDSBrequest && file.isFileRestrictedForUser(user, vdc,ipUserGroup) ) {
 		    // generate a response with a correct 403/FORBIDDEN code   
 
 		    createErrorResponse403(res);
@@ -674,7 +674,7 @@ public class FileDownloadServlet extends HttpServlet{
             Iterator iter = files.iterator();
             while (iter.hasNext()) {
                 StudyFile file = (StudyFile) iter.next();
-                if (file.isRestricted() && (user == null || file.isFileRestrictedForUser(user, vdc,ipUserGroup)) ) {
+                if (file.isFileRestrictedForUser(user, vdc,ipUserGroup) ) {
                     iter.remove();
                 }  
             }

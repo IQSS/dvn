@@ -73,6 +73,7 @@
                             <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Scholar'}" block="true" style="vertical-align: top;">
                                 <h:outputLabel for="firstName" id="firstnameLabel">
                                     <h:outputText style="white-space: nowrap; padding-right: 10px; " value="First Name"/>                                              
+                                    <h:graphicImage value="#{bundle.iconRequired}"/>
                                 </h:outputLabel>
                             </ui:panelGroup>
                             <ui:panelGroup block="true" style="vertical-align: top;">
@@ -85,7 +86,8 @@
                             <!-- last name -->
                             <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Scholar'}" block="true" style="vertical-align: top;">
                                 <h:outputLabel for="lastName" id="lastnameLabel">
-                                    <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Last Name"/>                                              
+                                    <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Last Name"/> 
+                                    <h:graphicImage value="#{bundle.iconRequired}"/>
                                 </h:outputLabel>
                             </ui:panelGroup>
                             <ui:panelGroup block="true" style="vertical-align: top;">
@@ -102,12 +104,13 @@
                                 </h:outputLabel>
                             </ui:panelGroup>
                             <ui:panelGroup block="true" style="vertical-align: top;">
-                                <h:inputText id="affiliation" immediate="true" value="#{AddSitePage.affiliation}" valueChangeListener="#{AddSitePage.changeAffiliation}" required="true" />
+                                <h:inputText id="affiliation" immediate="true" value="#{AddSitePage.affiliation}" valueChangeListener="#{AddSitePage.changeAffiliation}" />
                             </ui:panelGroup>
                             <!-- Dataverse Name -->
                             <ui:panelGroup block="true" style="vertical-align: top;">
                                 <h:outputLabel binding="#{AddSitePage.componentLabel1}" for="componentLabel1" id="componentLabel1">
                                     <h:outputText binding="#{AddSitePage.componentLabel1Text}" id="componentLabel1Text" style="white-space: nowrap; padding-right: 10px; " value="Dataverse Name"/>                                              
+                                    <h:graphicImage value="#{bundle.iconRequired}"/>
                                 </h:outputLabel>
                             </ui:panelGroup>
                             <ui:panelGroup>
@@ -120,6 +123,7 @@
                             <ui:panelGroup block="true" style="vertical-align: top;">
                                 <h:outputLabel binding="#{AddSitePage.componentLabel2}" for="componentLabel2" id="componentLabel2">
                                     <h:outputText binding="#{AddSitePage.componentLabel2Text}" id="componentLabel2Text" style="white-space: nowrap; padding-right: 10px; " value="Dataverse Alias"/> 
+                                    <h:graphicImage value="#{bundle.iconRequired}"/>
                                 </h:outputLabel>
                             </ui:panelGroup>
                             <ui:panelGroup>

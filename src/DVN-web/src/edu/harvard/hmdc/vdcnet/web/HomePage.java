@@ -29,6 +29,7 @@ import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.SearchTerm;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.NetworkDataverseListing;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
@@ -43,11 +44,17 @@ import edu.harvard.hmdc.vdcnet.web.component.VDCCollectionTree;
 import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import javax.ejb.EJB;
 import javax.faces.component.UIColumn;
 import javax.faces.component.UIOutput;
@@ -455,11 +462,12 @@ public class HomePage extends VDCBaseBean{
      */
     private HtmlPanelGrid formatChildTable(List vdcs) {
         List membervdcs   = (List)vdcs;
+        List<NetworkDataverseListing> sortedMemberVdcs = sortVdcs(membervdcs);//return a sorted list instead.
         HtmlPanelGrid childTable = new HtmlPanelGrid();
-        Iterator iterator = membervdcs.iterator();
+        Iterator iterator = sortedMemberVdcs.iterator();
         //Set no. of records per column
         int totalColumns = 3;
-        int startNew = setColumnLength(membervdcs.size(), totalColumns);
+        int startNew = setColumnLength(sortedMemberVdcs.size(), totalColumns);
         int startPos = 0;
         // these next three lines can exist in the method
         childTable = new HtmlPanelGrid(); // start the child table which eventually must be added to the view
@@ -478,27 +486,21 @@ public class HomePage extends VDCBaseBean{
             if (startPos == 0) {
                 column = new UIColumn();
             }
-            VDC vdc  = (VDC)iterator.next();
+            NetworkDataverseListing ndv  = (NetworkDataverseListing)iterator.next();
             startLinkTag = new HtmlOutputText();
             startLinkTag.setEscape(false);
             startLinkTag.setValue("<ul><li class='activeBullet'>");
             nodelink = new Hyperlink();
-            if (vdc instanceof ScholarDataverse) {
-                ScholarDataverse scholardataverse = (ScholarDataverse)vdc;
-                nodelink.setText(scholardataverse.getLastName() + ", " + scholardataverse.getFirstName());
-                nodelink.setToolTip(scholardataverse.getLastName() + ", " + scholardataverse.getFirstName() + " dataverse");
-            } else {
-            nodelink.setText(vdc.getName());
-            nodelink.setToolTip(vdc.getName() + " dataverse");
-            }
-            nodelink.setUrl("/dv/" + vdc.getAlias() + defaultVdcPath);
+            nodelink.setText(ndv.getName());
+            nodelink.setToolTip(ndv.getName() + " dataverse");
+            nodelink.setUrl("/dv/" + ndv.getAlias() + defaultVdcPath);
             endLinkTag = new HtmlOutputText();
             endLinkTag.setEscape(false);
             endLinkTag.setValue("</li></ul>");
             linkPanel = new HtmlPanelGroup();
             linkPanel.getChildren().add(startLinkTag);
             linkPanel.getChildren().add(nodelink);
-            if ( vdc.isRestricted() ) {
+            if ( ndv.getRestricted().equals("yes") ) {
                 
                 textTag =  new HtmlOutputText();
                 textTag.setEscape(false);
@@ -506,10 +508,10 @@ public class HomePage extends VDCBaseBean{
                 linkPanel.getChildren().add(textTag);
                 nodelink.setToolTip("This dataverse is not released.");
             } 
-            if (vdc.getAffiliation() != null) {
+            if (ndv.getAffiliation() != null) {
                 affiliationTag = new HtmlOutputText();
                 affiliationTag.setEscape(false);
-                affiliationTag.setValue("<ul class=affiliationBullet><li class=affiliationBullet>" + vdc.getAffiliation() + "</li></ul>");
+                affiliationTag.setValue("<ul class=affiliationBullet><li class=affiliationBullet>" + ndv.getAffiliation() + "</li></ul>");
                 linkPanel.getChildren().add(affiliationTag);
             }
             linkPanel.getChildren().add(endLinkTag);
@@ -557,5 +559,50 @@ public class HomePage extends VDCBaseBean{
         double doubleColumns = ((Integer)numColumns).doubleValue();
         startNew = ((Number)Math.ceil(doubleRecords/doubleColumns)).intValue();
         return startNew;
+    }
+    
+    private List sortVdcs(List memberVDCs) {
+        List<NetworkDataverseListing> listToSort = new ArrayList<NetworkDataverseListing>();
+        List<NetworkDataverseListing> sortedList = new ArrayList<NetworkDataverseListing>();
+        NetworkDataverseListing ndvList = null;
+        Iterator iterator = memberVDCs.iterator();
+        while (iterator.hasNext()) {
+            VDC vdc = (VDC)iterator.next();
+            String restricted = null;
+            if (vdc.isRestricted())
+                restricted = new String("yes");
+            else
+                restricted = new String("no");
+            if (vdc.getDtype().equals("Scholar")) {
+                ScholarDataverse scholarDV = (ScholarDataverse)vdc;
+                String name = new String(scholarDV.getLastName() + ", " + scholarDV.getFirstName());
+                ndvList = new NetworkDataverseListing(name, scholarDV.getAlias(), scholarDV.getAffiliation(), restricted);
+            } else {
+                ndvList = new NetworkDataverseListing(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), restricted);
+            }
+            listToSort.add(ndvList);
+        }
+        synchronized(listToSort){
+            Collections.sort(listToSort);
+        }
+        SortedSet set = new TreeSet(listToSort);
+        //System.out.println(set); leave this for debugging purposes
+
+        try {
+          Iterator setIterator = set.iterator();
+          while (setIterator.hasNext()) {
+              System.out.println("Adding a network dataverse to the list");
+              NetworkDataverseListing ndvListing = (NetworkDataverseListing)setIterator.next();
+              sortedList.add(ndvListing);
+          }
+        } catch (NoSuchElementException e) {
+          System.out.println("No elements to printout");
+        }
+        // END DEBUG
+       return sortedList;
+    }
+ 
+    public String getDefaultVdcPath() {
+        return defaultVdcPath;
     }
 }

@@ -125,7 +125,7 @@
                    
                       <ui:panelGroup block="true"  style="padding-left: 100px; padding-top: 20px">
                           <h:commandButton  value="Save" action="#{EditExportSchedulePage.save}"/>
-                          <h:commandButton  immediate="true" value="Cancel" action="#{EditExportSchedulePage.cancel}"/>
+                          <h:commandButton  immediate="true" value="Cancel" action="myNetworkOptions"/>
                       </ui:panelGroup>
                       
                   </div>

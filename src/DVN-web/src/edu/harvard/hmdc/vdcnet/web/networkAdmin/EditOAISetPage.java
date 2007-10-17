@@ -37,7 +37,7 @@ public class EditOAISetPage extends VDCBaseBean {
     public void init() {
         super.init();
         oaiSet = new OAISet();
-        if ( !isFromPage("EditOAISetPage")) {
+        if ( !isFromPage("EditOAISetPage") && oaiSetId!=null) {
             oaiSet = oaiSetService.findById(oaiSetId);
         }
     }

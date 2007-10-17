@@ -91,14 +91,25 @@ public class FileUtil {
         if (importFileDir != null) {
             File importLogDir = new File(importFileDir);
             if (!importLogDir.exists()) {
-                importLogDir.mkdir();
+                importLogDir.mkdirs();
             }            
             return importFileDir;
         } else {
             throw new EJBException("System property \"vdc.import.log.dir\" has not been set.");
         }
     }    
-
+ public static String getExportFileDir() {
+        String exportFileDir = System.getProperty("vdc.export.log.dir");
+        if (exportFileDir != null) {
+            File exportLogDir = new File(exportFileDir);
+            if (!exportLogDir.exists()) {
+                exportLogDir.mkdirs();
+            }            
+            return exportFileDir;
+        } else {
+            throw new EJBException("System property \"vdc.export.log.dir\" has not been set.");
+        }
+    }    
     public static File getStudyFileDir(Study study) {
         
         File file = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());

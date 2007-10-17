@@ -100,6 +100,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
    @EJB StudyExporterFactoryLocal studyExporterFactory;
 
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.study.StudyServiceBean");
+    private static final SimpleDateFormat exportLogFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
     
     
     private JAXBContext jaxbContext = null;
@@ -1534,6 +1535,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void exportStudy(Study study, boolean exportDDI) {
+       
         File studyDir = FileUtil.getStudyFileDir(study);
         List<String> exportFormats = studyExporterFactory.getExportFormats();
         for (String exportFormat : exportFormats) {
@@ -1557,15 +1559,31 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void exportStudy(Long studyId, boolean exportDDI)  {
         Study study = em.find(Study.class, studyId); 
+        exportStudy(study,exportDDI);
     }
 
 
     public void exportUpdatedStudies()  {
-        List<Long> studyIds = studyService.getStudyIdsForExport();
-        for (Long studyId: studyIds) {
-            studyService.exportStudy(studyId, true);        
+        String logTimestamp = exportLogFormatter.format(new Date());
+        Logger exportLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.study.StudyServiceBean.export."+logTimestamp);
+        List<Long> harvestedStudyIds = new ArrayList<Long>();
+        try {
+            
+            exportLogger.addHandler(new FileHandler(FileUtil.getExportFileDir()+ File.separator+ "export_"+logTimestamp+".log"));
+        } catch(IOException e) {
+           
+            logger.severe("Exception adding log file handler "+FileUtil.getExportFileDir()+ File.separator+ "export_"+logTimestamp+".log");
+            return;
         }
-               
+        List<Long> studyIds = studyService.getStudyIdsForExport();
+        exportLogger.info("Begin exporting studies, number of studies to export: "+studyIds.size());
+        for (Long studyId: studyIds) {
+            exportLogger.info("Begin export for study primary key "+studyId);
+            studyService.exportStudy(studyId, true);        
+            exportLogger.info("Complete export for study primary key "+studyId);
+        }
+        exportLogger.info("Completed exporting studies.");
+              
      }
     
 }

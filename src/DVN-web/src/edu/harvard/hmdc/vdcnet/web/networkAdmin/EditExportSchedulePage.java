@@ -125,12 +125,7 @@ public class EditExportSchedulePage extends VDCBaseBean {
      
     }
     
-    public String cancel_action(){
-        if (getVDCRequestBean().getCurrentVDCId() == null)
-            return "cancelNetwork";
-        else
-            return "cancelVDC";
-    }
+   
     
     //UTILITY METHODS
     

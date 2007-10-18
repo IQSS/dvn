@@ -378,11 +378,15 @@ public class AddSitePage extends VDCBaseBean {
     }
     
     public String create(){
-        String name  = (String)dataverseName.getValue();
-        String alias = (String)dataverseAlias.getValue();
-        Long userId  = getVDCSessionBean().getLoginBean().getUser().getId();
-        vdcService.create(userId,name,alias);
-        VDC createdVDC = vdcService.findByAlias(alias);
+        String name         = (String)dataverseName.getValue();
+        String alias        = (String)dataverseAlias.getValue();
+        String affiliation   = this.getAffiliation();
+        Long userId         = getVDCSessionBean().getLoginBean().getUser().getId();
+        if (affiliation != null && affiliation != "")
+            vdcService.create(userId, name, alias, affiliation);
+        else
+            vdcService.create(userId, name, alias);
+        VDC createdVDC      = vdcService.findByAlias(alias);
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
         getVDCRequestBean().setCurrentVDC(createdVDC);
         //  add default values to the VDC table and commit/set the vdc bean props

@@ -565,7 +565,6 @@ public class HomePage extends VDCBaseBean{
         List<NetworkDataverseListing> listToSort = new ArrayList<NetworkDataverseListing>();
         List<NetworkDataverseListing> sortedList = new ArrayList<NetworkDataverseListing>();
         NetworkDataverseListing ndvList = null;
-        System.out.println("The number of member vdcs are  " + memberVDCs.size());
         Iterator iterator = memberVDCs.iterator();
         while (iterator.hasNext()) {
             VDC vdc = (VDC)iterator.next();
@@ -587,14 +586,12 @@ public class HomePage extends VDCBaseBean{
                 ndvList = new NetworkDataverseListing(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), restricted);
             }
             listToSort.add(ndvList);
-            System.out.println("The number of vdcs to sort are " + listToSort.size());
         }
         synchronized(listToSort){
             Collections.sort(listToSort);
         }
         SortedSet set = new TreeSet(listToSort);
         //System.out.println(set); leave this for debugging purposes
-
         try {
           Iterator setIterator = set.iterator();
           while (setIterator.hasNext()) {
@@ -604,8 +601,6 @@ public class HomePage extends VDCBaseBean{
         } catch (NoSuchElementException e) {
           System.out.println("No elements to printout");
         }
-        // END DEBUG
-        System.out.println("The number of sorted vdcs to sort are " + sortedList.size());
        return sortedList;
     }
  

@@ -7,29 +7,29 @@
                             
       <f:verbatim>
         <script language="Javascript">                        
-         function updateScheduleInput(  ) {
+         function updateExportInput(  ) {
                 exportPeriod = getSelect("exportPeriod");
                 exportHourOfDay = getInput("exportHourOfDay");
                 exportDayOfWeek = getInput("exportDayOfWeek");
                 
-                requiredPeriod = getSelect("requiredPeriod");
-               
-                requiredDayOfWeek = document.getElementById("requiredDayOfWeek");
-                requiredDayOfWeekText = document.getElementById("requiredDayOfWeekText");
-          
-                  
-                if (exportPeriod.value=="daily") {
+      
+                 
+                 
+                   if (exportPeriod.value=="daily") {
                         exportHourOfDay.disabled = false;
-                        requiredDayOfWeek.style.display='none';
-                        requiredDayOfWeekText.style.display='none';
                         exportDayOfWeek.disabled = true;
-                        exportDayOfWeek.value='';
-                } else {
+                        exportDayOfWeek.value='';     
+                    } else if (exportPeriod.value=="weekly") {
                         exportDayOfWeek.disabled = false;
                         exportHourOfDay.disabled = false;
-                        requiredDayOfWeek.style.display='block';
-                        requiredDayOfWeekText.style.display='block';
-                 }
+                    } else {
+                        exportDayOfWeek.disabled = true;
+                        exportHourOfDay.disabled = true;
+                        exportHourOfDay.value='';
+                        exportDayOfWeek.value='';
+                  
+                    }                
+                 
                               
              }
             
@@ -75,17 +75,17 @@
                         <h:outputText value="Update Successful!" />
                   </ui:panelLayout>
                   <ui:panelGroup block="true" style="padding-bottom: 15px;">
-                          <h:graphicImage value="/resources/icon_required.gif"/> <h:outputText style="vdcHelpText" value="Indicates a required field."/>
+                          <!--h:graphicImage value="/resources/icon_required.gif"/--> <!--h:outputText style="vdcHelpText" value="Indicates a required field."/-->
                       </ui:panelGroup>
                       <h:panelGrid  cellpadding="0" cellspacing="0"
                                     columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
                           <ui:panelGroup >
                               <h:outputText   value="Export Period"/>
-                              <h:graphicImage  id="requiredPeriod" value="/resources/icon_required.gif"/>
+                              <!--h:graphicImage  id="requiredPeriod" value="/resources/icon_required.gif"/-->
                           </ui:panelGroup>
                           <ui:panelGroup>
                           
-                            <h:selectOneMenu required="true"  id="exportPeriod" value="#{EditExportSchedulePage.exportPeriod}"  onchange='updateScheduleInput();' >
+                            <h:selectOneMenu required="true"  id="exportPeriod" value="#{EditExportSchedulePage.exportPeriod}"  onchange='updateExportInput();' >
                                 <f:selectItem itemValue="" itemLabel="Not Selected"/>
                                 <f:selectItem itemValue="daily" itemLabel="Harvest daily"/>
                                 <f:selectItem itemValue="weekly" itemLabel="Harvest weekly"/>
@@ -96,7 +96,7 @@
                           </ui:panelGroup>
                           <ui:panelGroup >
                               <h:outputText  value="Export Hour of Day (0-23)"/>
-                              <h:graphicImage id="requiredHourOfDay" value="/resources/icon_required.gif"/>
+                              <!--h:graphicImage id="requiredHourOfDay" value="/resources/icon_required.gif"/-->
                           </ui:panelGroup>
                           <ui:panelGroup> 
                               <h:inputText id="exportHourOfDay" value="#{EditExportSchedulePage.exportHourOfDay}" required="true">
@@ -108,7 +108,7 @@
                           <ui:panelGroup >
                           <div id="requiredDayOfWeek">
                               <h:outputText  value="Export Day of Week (1-7)"/>
-                              <h:graphicImage  value="/resources/icon_required.gif"/>
+                              <!--h:graphicImage  value="/resources/icon_required.gif"/-->
                           </div>
                           </ui:panelGroup>
                            
@@ -136,6 +136,6 @@
    </f:subview>
    <script language="Javascript">
         // initial call to disable subsetting Restricted (if needed)
-        updateScheduleInput();
+        updateExportInput();
   </script> 
 </jsp:root>

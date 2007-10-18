@@ -84,7 +84,7 @@ import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 import javax.servlet.http.*;
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 import java.io.*;
-
+import java.util.Collections;
 
 public class AnalysisPage extends VDCBaseBean {
 
@@ -4674,7 +4674,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
 //    colQS.append("QS requested for variableId="+varId);
       String columnHeaderCat = "Value(Label)";
       Collection<SummaryStatistic> sumStat=null;
-      Collection<VariableCategory> catStat=null;
+      List catStat=null;
       int counter=0;
       int dbglns  = 50;
       DataVariable dv=null;
@@ -4684,7 +4684,10 @@ if (baseVarToDerivedVar.containsKey(varId)){
             // Id is Long
             if (dv.getId().toString().equals(varId)){
               sumStat = dv.getSummaryStatistics();
-              catStat = dv.getCategories();
+              
+              catStat = new ArrayList();
+              catStat.addAll(dv.getCategories());
+              Collections.sort(catStat);
               break;
             }
       }

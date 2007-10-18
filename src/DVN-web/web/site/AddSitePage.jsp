@@ -34,6 +34,12 @@
                         document.getElementById('content:addSitePageView:form1:lastName').style.display = 'none';
                     }
                 }
+                
+                function createDvName() {
+                    if (document.getElementById('content:addSitePageView:form1:firstName').value != "" &amp;&amp; document.getElementById('content:addSitePageView:form1:lastName').value != "") {
+                        document.getElementById('content:addSitePageView:form1:dataverseName').value = document.getElementById('content:addSitePageView:form1:firstName').value + " " + document.getElementById('content:addSitePageView:form1:lastName').value;
+                    }
+                }
             </script>
         </f:verbatim>
         <h:outputText id="statusMessage" styleClass="#{AddSitePage.msg.styleClass}" value="#{AddSitePage.msg.messageText}" />
@@ -78,7 +84,10 @@
                             </ui:panelGroup>
                             <ui:panelGroup block="true" style="vertical-align: top;">
                                 <h:inputText id="firstName" 
-                                                immediate="true" 
+                                                immediate="true"
+                                                onblur="createDvName();"
+                                                required="true"
+                                                requiredMessage="This field is required."
                                                 value="#{AddSitePage.firstName}" 
                                                 valueChangeListener="#{AddSitePage.changeFirstName}"
                                                 style="display:block;"/>
@@ -92,7 +101,10 @@
                             </ui:panelGroup>
                             <ui:panelGroup block="true" style="vertical-align: top;">
                                 <h:inputText id="lastName" 
-                                                immediate="true" 
+                                                immediate="true"
+                                                onblur="createDvName();"
+                                                required="true"
+                                                requiredMessage="This field is required."
                                                 value="#{AddSitePage.lastName}" 
                                                 valueChangeListener="#{AddSitePage.changeLastName}"
                                                 style="display:block;"/>

@@ -68,7 +68,7 @@ public class NetworkDataverseListing implements Comparable {
     }
     
     public String toString() {
-        return "name=" + name + "| affiliation=" + affiliation + "| alias=" + alias + "| restricted=" + restricted;
+        return "[name=" + name + "| affiliation=" + affiliation + "| alias=" + alias + "| restricted=" + restricted + "]";
       }
 
   public int compareTo(Object obj) {

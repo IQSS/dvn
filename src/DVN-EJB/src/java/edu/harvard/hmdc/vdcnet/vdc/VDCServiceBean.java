@@ -285,6 +285,47 @@ public class VDCServiceBean implements VDCServiceLocal {
         
     }
     
+    public void create(Long userId,String name, String alias, String affiliation) {
+        VDC addedSite = new VDC();
+        em.persist(addedSite);
+        addedSite.setName(name);
+        addedSite.setAlias(alias);
+        addedSite.setAffiliation(affiliation);
+        VDCCollection addedRootCollection = new VDCCollection();
+        addedRootCollection.setName(name);
+        addedRootCollection.setReviewState(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED));
+        addedRootCollection.setVisible(true);
+        vdcCollectionService.create(addedRootCollection);
+        addedSite.setRootCollection(addedRootCollection);
+        addedSite.getOwnedCollections().add(addedRootCollection);
+        VDCNetwork vdcNetwork = vdcNetworkService.find(new Long(1));
+        addedSite.setDefaultTemplate(vdcNetwork.getDefaultTemplate());
+        addedSite.setHeader(vdcNetwork.getDefaultVDCHeader());
+        addedSite.setFooter(vdcNetwork.getDefaultVDCFooter());
+        addedSite.setRestricted(true);
+        addedSite.setDisplayAnnouncements(false);
+        ArrayList advancedSearchFields = new ArrayList();
+        ArrayList searchResultsFields = new ArrayList();
+        List postgresStudyFields = studyFieldService.findAll();
+        for (Iterator it = postgresStudyFields.iterator(); it.hasNext();) {
+            StudyField elem = (StudyField) it.next();
+            if (elem.isAdvancedSearchField()){
+                advancedSearchFields.add(elem);
+            }
+            if (elem.isSearchResultField()){
+                searchResultsFields.add(elem);
+            }
+        }
+        addedSite.setAdvSearchFields(advancedSearchFields);
+        addedSite.setSearchResultFields(searchResultsFields);
+        addedSite.setCreator(em.find(VDCUser.class,userId));
+   
+        addedRootCollection.setOwner(addedSite);
+        vdcCollectionService.edit(addedRootCollection);
+        userService.addVdcRole(userId,findByAlias(addedSite.getAlias()).getId(), roleService.ADMIN);
+        
+    }
+    
     public VDC getVDCFromRequest(HttpServletRequest request) {
         VDC vdc = (VDC)request.getAttribute("vdc");
         

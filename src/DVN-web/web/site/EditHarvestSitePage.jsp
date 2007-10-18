@@ -20,7 +20,6 @@
                 }
             }
             function updateScheduleInput(  ) {
-            
                 scheduled = getInput("scheduledCheckBox");
                 schedulePeriod = getSelect( "selectSchedulePeriod");
                 scheduleHourOfDay = getInput("inputScheduleHourOfDay");
@@ -35,33 +34,22 @@
                     schedulePeriod.disabled = true;
                     scheduleHourOfDay.disabled = true;
                     scheduleDayOfWeek.disabled = true;
-                 //   document.getElementById("periodDiv1").style.display='none';
-                 //   document.getElementById("periodDiv2").style.display='none';
-                 //   document.getElementById("hourOfDayDiv1").style.display='none';
-                 //   document.getElementById("hourOfDayDiv2").style.display='none';
-                 //   document.getElementById("dayOfWeekDiv1").style.display='none';
-                 //   document.getElementById("dayOfWeekDiv2").style.display='none';
+              
                 } else {
                     schedulePeriod.disabled = false;
-                 //   document.getElementById("periodDiv1").style.display='block';
-                 //   document.getElementById("periodDiv2").style.display='block';
-                if (schedulePeriod.value=="daily") {
+                    if (schedulePeriod.value=="daily") {
                         scheduleHourOfDay.disabled = false;
-                  //      document.getElementById("hourOfDayDiv1").style.display='block';
-                   //     document.getElementById("hourOfDayDiv2").style.display='block';
                         scheduleDayOfWeek.disabled = true;
-                        scheduleDayOfWeek.value='';
-                  //      document.getElementById("dayOfWeekDiv1").style.display='none';
-                   //     document.getElementById("dayOfWeekDiv2").style.display='none';
-                        
-                   } else {
+                        scheduleDayOfWeek.value='';     
+                    } else if (schedulePeriod.value=="weekly") {
                         scheduleDayOfWeek.disabled = false;
                         scheduleHourOfDay.disabled = false;
-                    //    document.getElementById("hourOfDayDiv1").style.display='block';
-                    //    document.getElementById("hourOfDayDiv2").style.display='block';
-                    //    document.getElementById("dayOfWeekDiv1").style.display='block';
-                    //    document.getElementById("dayOfWeekDiv2").style.display='block';
- 
+                    } else {
+                        scheduleDayOfWeek.disabled = true;
+                        scheduleHourOfDay.disabled = true;
+                        scheduleHourOfDay.value='';
+                        scheduleDayOfWeek.value='';
+                  
                     }
                
                 }
@@ -214,7 +202,7 @@
                         </ui:panelGroup >
                       <ui:panelGroup  >
                        
-                        <h:selectBooleanCheckbox binding="#{EditHarvestSitePage.scheduledCheckbox}" id="scheduledCheckBox" value="#{EditHarvestSitePage.harvestingDataverse.scheduled}"  onchange='updateScheduleInput();'/>
+                        <h:selectBooleanCheckbox binding="#{EditHarvestSitePage.scheduledCheckbox}" id="scheduledCheckBox" value="#{EditHarvestSitePage.harvestingDataverse.scheduled}"  onclick='updateScheduleInput();'/>
                       
                       </ui:panelGroup >
                     

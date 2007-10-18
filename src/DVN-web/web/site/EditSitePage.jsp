@@ -89,6 +89,8 @@
                             <ui:panelGroup rendered="#{EditSitePage.dataverseType == 'Scholar'}" block="true" style="vertical-align: top;">
                                 <h:inputText id="firstName" 
                                                 immediate="true"
+                                                required="true"
+                                                requiredMessage="This field is required."
                                                 rendered="#{EditSitePage.dataverseType == 'Scholar'}"
                                                 value="#{EditSitePage.firstName}" 
                                                 valueChangeListener="#{EditSitePage.changeFirstName}"
@@ -104,6 +106,8 @@
                             <ui:panelGroup rendered="#{EditSitePage.dataverseType == 'Scholar'}" block="true" style="vertical-align: top;">
                                 <h:inputText id="lastName" 
                                                 immediate="true"
+                                                required="true"
+                                                requiredMessage="This field is required."
                                                 rendered="#{EditSitePage.dataverseType == 'Scholar'}"
                                                 value="#{EditSitePage.lastName}" 
                                                 valueChangeListener="#{EditSitePage.changeLastName}"

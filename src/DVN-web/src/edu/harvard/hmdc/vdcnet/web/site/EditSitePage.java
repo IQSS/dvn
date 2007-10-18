@@ -596,6 +596,8 @@ public class EditSitePage extends VDCBaseBean {
      * @return Value of property affiliation.
      */
     public String getAffiliation() {
+        if (affiliation == null)
+            this.setAffiliation(getVDCRequestBean().getCurrentVDC().getAffiliation());
         return this.affiliation;
     }
 

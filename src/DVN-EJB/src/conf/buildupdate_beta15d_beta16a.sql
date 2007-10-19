@@ -58,7 +58,7 @@ ALTER TABLE harvestingdataverse
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 insert into harvestformattype values (0, 'ddi', 'DDI', null);
-insert into harvestformattype values (1, 'oai_etdms', 'MIF', 'mif2ddi.xml');
+insert into harvestformattype values (1, 'oai_etdms', 'MIF', 'mif2ddi.xsl');
 
 update harvestingdataverse hd
 set harvestformattype_id = hft.id

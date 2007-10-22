@@ -16,6 +16,31 @@ uninstall:
 
 build: inst_rcut inst_cgi-bin inst_etc inst_perl inst_R inst_sbin inst_xslt inst_tmp
 
+build-mini: inst_etc_mini inst_perl_mini inst_R_mini inst_sbin_mini
+
+inst_etc_mini: 
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/etc
+	install -m 0775 etc/Rmodules.txt ${RPM_PREFIX}/${INSTALL_ROOT}/etc
+
+inst_perl_mini:	inst_etc_mini
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/perl
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/perl/lib
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/perl/lib/VDC
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/perl/lib/Parse
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/perl/lib/VDC/Ingest
+	install -m 0775  perl/lib/VDC/DSB/Ingest/SPS.pm ${RPM_PREFIX}/${INSTALL_ROOT}/perl/lib/VDC/DSB/Ingest
+	install -m 0775  perl/lib/VDC/DSB/Ingest/StatDataFileReaderFactory.pm ${RPM_PREFIX}/${INSTALL_ROOT}/perl/lib/VDC/DSB/Ingest
+	install -m 0775  perl/lib/VDC/DSB/Ingest/StatData.pm ${RPM_PREFIX}/${INSTALL_ROOT}/perl/lib/VDC/DSB/Ingest
+	install -m 0775  perl/lib/Parse/RecDescent.pm ${RPM_PREFIX}/${INSTALL_ROOT}/perl/lib/Parse
+	install -m 0775  perl/lib/Parse/RecDescent.pod ${RPM_PREFIX}/${INSTALL_ROOT}/perl/lib/Parse
+
+inst_R_mini:
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/R
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/R/library
+	install -m 0775 R/installR.sh ${RPM_PREFIX}/${INSTALL_ROOT}/R
+	install -m 0775 R/library/vdc_startup.R ${RPM_PREFIX}/${INSTALL_ROOT}/R/library
+
 inst_rcut: 
 	(cd rcut; make VDC_DIR=${RPM_PREFIX}/${INSTALL_ROOT})
 
@@ -73,13 +98,21 @@ inst_tmp:
 
 #rpm:	clean update-spec
 rpm:	clean
+	/bin/rm -rf `find . -type d -name '.svn'`
+	chown -R root.root . 
 	(cd ..; ln -s DSB DVN-DSB-`cat DSB/VERSION`; \
 	tar chzf /usr/src/redhat/SOURCES/DVN-DSB-`cat DSB/VERSION`.tar.gz DVN-DSB-`cat DSB/VERSION`/; /bin/rm DVN-DSB-`cat DSB/VERSION`)
 	rpmbuild -ba dvn-dsb.spec
 	#rpmbuild -bb --target i686 dvn-dsb.spec
 	#rpmbuild -bb --target x86_64 dvn-dsb.spec
-	@echo "don't forget to run cvs commit to properly update the build version!"
+
+
+rpm-mini:	clean
+	/bin/rm -rf `find . -type d -name '.svn'`
+	chown -R root.root . 
+	(cd ..; ln -s DSB DVN-DSB-`cat DSB/VERSION`; \
+	tar chzf /usr/src/redhat/SOURCES/DVN-DSB-`cat DSB/VERSION`.tar.gz DVN-DSB-`cat DSB/VERSION`/; /bin/rm DVN-DSB-`cat DSB/VERSION`)
+	rpmbuild -ba dvn-dsb-mini.spec
 
 update-spec:	dvn-dsb.spec
 	./update-spec.pl dvn-dsb.spec
-

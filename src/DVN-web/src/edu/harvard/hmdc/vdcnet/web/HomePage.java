@@ -504,14 +504,14 @@ public class HomePage extends VDCBaseBean{
                 
                 textTag =  new HtmlOutputText();
                 textTag.setEscape(false);
-                textTag.setValue("<span class=dvn_dvNotReleased>Not Released</span>");
+                textTag.setValue("<span class='dvn_dvNotReleased'>Not Released</span>");
                 linkPanel.getChildren().add(textTag);
                 nodelink.setToolTip("This dataverse is not released.");
             } 
             if (ndv.getAffiliation() != null && !ndv.getAffiliation().equals("")) {
                 affiliationTag = new HtmlOutputText();
                 affiliationTag.setEscape(false);
-                affiliationTag.setValue("<ul class=affiliationBullet><li class=affiliationBullet>" + ndv.getAffiliation() + "</li></ul>");
+                affiliationTag.setValue("<ul class='affiliationBullet'><li class='affiliationBullet'>" + ndv.getAffiliation() + "</li></ul>");
                 linkPanel.getChildren().add(affiliationTag);
             }
             linkPanel.getChildren().add(endLinkTag);

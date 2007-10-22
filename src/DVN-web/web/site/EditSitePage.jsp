@@ -148,7 +148,7 @@
                              <ui:panelGroup>
                                  <h:inputText binding="#{EditSitePage.dataverseAlias}" id="dataverseAlias" required="true" validator="#{EditSitePage.validateAlias}" value="#{VDCRequest.currentVDC.alias}"/>
                                 <br />
-                                 <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, i.e., http://.../dv/'alias'. It is case sensitive."/>
+                                 <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
                                  <h:message for="dataverseAlias" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                              </ui:panelGroup>
                          </h:panelGrid>

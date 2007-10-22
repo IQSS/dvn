@@ -118,7 +118,7 @@
                         <h:outputText   styleClass="vdcHelpText" value="Any changes you make to this page will not be saved until you click the Save button. "/>
                     </ui:panelGroup>
                     <h:panelGrid cellpadding="0" cellspacing="0"
-                                 columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" id="gridPanel1" style="margin-top: 30px; margin-bottom: 30px">
+                                 columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" id="gridPanel1" style="margin-top: 30px; margin-bottom: 30px;">
                         <ui:panelGroup block="true" style="vertical-align: top;">
                             <h:outputLabel  for="componentLabel1" id="componentLabel1">
                                 <h:outputText  id="componentLabel1Text" style="white-space: nowrap; padding-right: 10px; " value="Dataverse Name"/>                                              
@@ -143,25 +143,22 @@
                             <h:message styleClass="errorMessage" for="dataverseAlias"/> 
                             
                             <br />
-                            <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, i.e., http://.../dv/'alias'."/>
+                            <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
                         </ui:panelGroup>
                         <ui:panelGroup block="true" style="vertical-align: top;">
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="OAI Server"/> 
                         </ui:panelGroup>
                         <ui:panelGroup>
-                            <h:inputText id="dataverseOaiServer" validator="#{EditHarvestSitePage.validateOAIServer}"  value="#{EditHarvestSitePage.harvestingDataverse.oaiServer}"  required="true" >
+                            <h:inputText id="dataverseOaiServer" validator="#{EditHarvestSitePage.validateOAIServer}"  value="#{EditHarvestSitePage.harvestingDataverse.oaiServer}"  required="true" size="60">
                                 <f:validator validatorId="UrlValidator"/>
                             </h:inputText>  
                             <h:commandButton  value="Validate" />
                             <h:message styleClass="errorMessage" for="dataverseOaiServer"/> 
                             
                             <br />
-                            <h:outputText styleClass="vdcHelpText" value="Enter OAI server name, e.g., http://..."/> 
-                        </ui:panelGroup>
-                    </h:panelGrid>
-                    
-                    <h:panelGrid cellpadding="0" cellspacing="0"
-                                 columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" style="margin-top: 30px; margin-bottom: 30px">
+                            <h:outputText styleClass="vdcHelpText" value="Enter OAI server name, e.g., http://dvn.iq.harvard.edu/dvn/OAIHandler."/> 
+                        </ui:panelGroup>               
+                   
                         <ui:panelGroup block="true" style="vertical-align: top;" rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.harvestingSets}" > 
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Harvesting Set"/> 
                         </ui:panelGroup>
@@ -170,10 +167,10 @@
                                 <f:selectItems  id="radio1SelectItem" value="#{EditHarvestSitePage.harvestingSetsSelect}" />
                             </h:selectOneMenu>
                             <verbatim><br /></verbatim>
-                            <h:outputText styleClass="vdcHelpText" value="Select the set you would like to harvest."/>
+                            <h:outputText styleClass="vdcHelpText" value="Select the set you would like to harvest. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."/>
                         </ui:panelGroup>  
                         <ui:panelGroup rendered="#{ EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and  EditHarvestSitePage.harvestingDataverse.oaiServer !=null}">   
-                            <h:outputText value="This OAI Server does not support sets"/>
+                            <h:outputText value="This OAI Server does not support sets. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."/>
                         </ui:panelGroup>
                         <ui:panelGroup block="true" style="vertical-align: top;" rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.metadataFormats}">
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Harvesting Format"/> 
@@ -185,7 +182,10 @@
                             <br />
                             <h:outputText styleClass="vdcHelpText" value="This is the XML format when used harvesting studies from this OAI Server."/>
                         </ui:panelGroup>  
-                        
+                       </h:panelGrid>
+                       
+                        <h:panelGrid cellpadding="0" cellspacing="0"
+                                 columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" style="margin-top: 30px; margin-bottom: 30px">                       
                         <ui:panelGroup  >
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Handle Registration"/> 
                         </ui:panelGroup >

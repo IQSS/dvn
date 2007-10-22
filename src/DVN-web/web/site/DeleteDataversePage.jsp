@@ -5,18 +5,18 @@
     xmlns:tiles="http://struts.apache.org/tags-tiles"
     xmlns:c="http://java.sun.com/jsp/jstl/core">
     
-    <f:subview id="deleteStudyPageView">
+    <f:subview id="deleteDataversePageView">
       
         <h:form  id="form1">
 
-            <input type="hidden" name="pageName" value="DeleteStudyPage"/>
+            <input type="hidden" name="pageName" value="DeleteDataversePage"/>
             <h:inputHidden id="deleteId" value="#{DeleteDataversePage.deleteId}"  binding="#{DeleteDataversePage.hiddenVdcId}" />                                    
             <h:inputHidden binding="#{DeleteDataversePage.hiddenVdcName}" id="vdcName" value="#{DeleteDataversePage.vdcName}"/>                                    
 
                     <div class="dvn_section">
                         <div class="dvn_sectionTitle">
                              
-                                <h:outputText  value="Deleting a Study"/>
+                                <h:outputText  value="Deleting a Dataverse"/>
                              
                         </div>            
                         <div class="dvn_sectionBox"> 

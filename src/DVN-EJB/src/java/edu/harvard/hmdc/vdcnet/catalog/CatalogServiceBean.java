@@ -140,8 +140,8 @@ public class CatalogServiceBean implements CatalogServiceLocal {
                 endTime =new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
             }
             String query = "SELECT s from Study s where " ;
-            query+="s.lastUpdateTime >'" +beginTime+"'";
-            query+=" and s.lastUpdateTime <'" +endTime+"'";
+            query+="s.lastUpdateTime >='" +beginTime+"'";
+            query+=" and s.lastUpdateTime <='" +endTime+"'";
             query+=" order by s.studyId";
             List updatedStudies = em.createQuery(query).getResultList();
             
@@ -172,7 +172,7 @@ public class CatalogServiceBean implements CatalogServiceLocal {
         List <Long> indexedIds = null;
         if (set != null){
             oaiSet = oaiSetService.findBySpec(set);
-        }
+        } 
         if (oaiSet != null){
             String definition = oaiSet.getDefinition();
             indexedIds = indexService.query(definition);
@@ -202,8 +202,9 @@ public class CatalogServiceBean implements CatalogServiceLocal {
                 endTime =new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
             }
             String query = "SELECT s from Study s where " ;
-            query+="s.lastUpdateTime >'" +beginTime+"'";
-            query+=" and s.lastUpdateTime <'" +endTime+"'";
+            query+="s.lastUpdateTime >='" +beginTime+"'";
+            query+=" and s.lastUpdateTime <='" +endTime+"' and s.reviewState.name = 'Released' ";
+            query+=" and s.owner.restricted = false and s.restricted = false ";
             query+=" order by s.studyId";
             List updatedStudies = em.createQuery(query).getResultList();
             
@@ -216,7 +217,7 @@ public class CatalogServiceBean implements CatalogServiceLocal {
                     String dateStamp = "<datestamp>" + sdf.format(study.getLastExportTime()) + "</datestamp>";
                     String setSpec = "<setSpec>" + study.getAuthority() + "</setSpec>";
                     logger.info("Exporting study " + study.getStudyId());
-                    if (oaiSet == null || indexedIds.contains(study.getId())) {
+                    if ((oaiSet == null && !study.isIsHarvested()) || (indexedIds != null && indexedIds.contains(study.getId()))) {
                         String record = getRecord(study, metadataPrefix);
                         if (record.length() > 0) {
                             records.add(record);
@@ -249,7 +250,6 @@ public class CatalogServiceBean implements CatalogServiceLocal {
         String exportFileName= studyFileDir.getAbsolutePath() + File.separator + "export_" + metadataPrefix+".xml";
         File exportFile = new File(exportFileName);
         String record = exportFile.exists()?identifier+dateStamp+setSpec+readFile(exportFile): "";
-        System.out.println("RECORD:\n"+record);
         return record;
     }
 

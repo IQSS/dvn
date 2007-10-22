@@ -147,6 +147,10 @@
                                         <h:outputText value="#{studyPage.studyUI.study.owner.name} Dataverse" />
                                     </h:outputLink> 
                                     
+                                    <ihelp:inlinehelp helpMessage="#{studybundle.harvestHoldingsHelp}"  linkText="#{studybundle.harvestHoldingsLabel}" heading="#{studybundle.harvestHoldingsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{ !empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}"/>  
+                                    <h:outputLink value="#{studyPage.studyUI.study.harvestHoldings}" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
+                                        <h:outputText value="#{studyPage.studyUI.study.harvestHoldings}" />
+                                    </h:outputLink> 
                                 </h:panelGrid>
                                 
                                 <ui:panelGroup block="true" id="groupPanel12" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.abstractAndScopePanelIsEmpty}" >
@@ -384,7 +388,7 @@
                             <ui:panelGroup  block="true" id="noFilesPanel4b" style="text-align: left; padding-top: 10px; padding-bottom: 10px;" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null) and !empty studyPage.studyUI.study.fileCategories}">
                                 <h:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
                             </ui:panelGroup>
-                            <ui:panelGroup  block="true" style="text-align: left; padding-top: 10px; padding-bottom: 10px;" rendered="#{studyPage.studyUI.study.harvestHoldings!='' and studyPage.studyUI.study.isHarvested}">
+                            <ui:panelGroup  block="true" style="text-align: left; padding-top: 10px; padding-bottom: 10px;" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
                                 Files for this study may also be accessed from their
                                 <h:outputLink value="#{studyPage.studyUI.study.harvestHoldings}" >
                                     <h:outputText value="original source." />

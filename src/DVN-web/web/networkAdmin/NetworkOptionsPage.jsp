@@ -14,9 +14,11 @@
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
-                        
+                         <ui:panelGroup  block="true" style="padding-top: 20px; padding-bottom: 15px">
+                            <h:outputText   styleClass="vdcSubHeader" value="Dataverses, Harvesting, Exporting and OAI Sets"/>
+                        </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel7"
-                                        separator="&lt;br /&gt;&lt;br /&gt;">
+                                        separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
                             <h:outputLink  id="hyperlink4" value="/dvn/faces/site/AddSitePage.jsp">
                                 <h:outputText  id="hyperlink4Text" value="Create a New Dataverse"/>
                             </h:outputLink>                  
@@ -29,11 +31,19 @@
                             <h:outputLink   value="/dvn/faces/networkAdmin/DVGroupDetailPage.jsp">
                                 <h:outputText  value="Manage Dataverse Groups"/>
                             </h:outputLink>
-                            <h:outputLink rendered="#{SiteStatistics.directory != null}" value="/dvn/faces/networkAdmin/SiteStatistics.jsp">
-                                <h:outputText  value="View Web Usage Statistics"/>
+                            <h:outputLink  value="/dvn/faces/networkAdmin/EditExportSchedulePage.jsp">
+                                <h:outputText  value="Study Export Schedule"/>
+                            </h:outputLink>                           
+                              <h:outputLink  value="/dvn/faces/networkAdmin/OAISetsPage.jsp">
+                                <h:outputText  value="OAI Harvesting Sets"/>
                             </h:outputLink>
+                            <ui:panelGroup  block="true">
+                                <h:outputLink rendered="#{SiteStatistics.directory != null}" id="siteStatslink" value="/dvn/faces/networkAdmin/SiteStatistics.jsp">
+                                    <h:outputText  value="View Web Usage Statistics"/>
+                                </h:outputLink>
+                                <h:outputText rendered="#{SiteStatistics.directory == null}" id="siteStatstext" value="Note: Web Usage Statistics are not configured for this Dataverse Network."/>
+                            </ui:panelGroup>
                         </ui:panelGroup>
-                        
                         <ui:panelGroup  block="true" id="groupPanel3" style="padding-top: 20px; padding-bottom: 15px">
                             <h:outputText  id="outputText3" styleClass="vdcSubHeader" value="Network Customization"/>
                         </ui:panelGroup>
@@ -50,14 +60,7 @@
                             </h:outputLink>
                             <h:outputLink  id="hyperlink11" value="/dvn/faces/admin/EditAboutPage.jsp">
                                 <h:outputText  id="hyperlink11Text" value="Edit About Page"/>
-                            </h:outputLink>
-                            <h:outputLink  value="/dvn/faces/networkAdmin/EditExportSchedulePage.jsp">
-                                <h:outputText  value="Edit Study Export Schedule"/>
-                            </h:outputLink>                           
-                              <h:outputLink  value="/dvn/faces/networkAdmin/OAISetsPage.jsp">
-                                <h:outputText  value="Edit OAI Harvesting Sets"/>
-                            </h:outputLink>                           
-                             
+                            </h:outputLink>                                                    
                             <h:outputLink id="hyperlink17" value="/dvn/faces/admin/EditContactUsPage.jsp">
                                 <h:outputText id="hyperlink17Text" value="Set Contact Us E-Mail"/>
                             </h:outputLink>

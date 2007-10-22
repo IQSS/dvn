@@ -33,6 +33,10 @@ import com.sun.rave.web.ui.component.Tree;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
+import org.apache.commons.collections.OrderedMap;
+import org.apache.commons.collections.map.LinkedMap;
 
 /**
  *
@@ -121,5 +125,64 @@ public class StudyListing {
         this.variableMap = variableMap;
     }
     
+    public static String addToStudyListingMap(StudyListing sl, Map sessionMap) {
+        Long slCount = (Long) sessionMap.get("studyListingsCount");
+        OrderedMap slMap = (OrderedMap) sessionMap.get("studyListings");
+        String sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
+        
+        if (slCount == null) {
+            slCount = new Long(0);
+            
+        } else {
+            slCount = slCount + 1;
+        }
+
+
+        if (slMap == null) {
+            slMap = new LinkedMap();
+            sessionMap.put("studyListings", slMap);
+        }
+
+        sessionMap.put("studyListingsCount", slCount);
+        String newIndex = slCount + "_" + sessionId;
+        slMap.put(newIndex ,sl);
+
+        if (slMap.size() > 5) {
+            slMap.remove(slMap.firstKey());
+        }
+
+        return newIndex;
+    }
+    
+    public static StudyListing getStudyListingFromMap(String slIndex, Map sessionMap, Long currentVdcId) {
+        OrderedMap slMap = (OrderedMap) sessionMap.get("studyListings");
+        if (slMap != null) {
+            StudyListing sl = (StudyListing) slMap.get(slIndex);
+
+            if (sl != null) {
+
+                // make sure the user is in the current vdc for this study listing
+                //Long currentVdcId = getVDCRequestBean().getCurrentVDCId();
+                if ( currentVdcId == null ) {
+                     if (sl.getVdcId() != null) {
+                        sl = new StudyListing(StudyListing.INCORRECT_VDC);
+                    }
+                } else {
+                    if ( !currentVdcId.equals(sl.getVdcId()) ) {
+                        sl = new StudyListing(StudyListing.INCORRECT_VDC);
+                    }
+                } 
+
+                return sl;
+            }
+        }
+        
+        // this means that this studyListing or the session has expired
+        return new StudyListing(StudyListing.EXPIRED_LIST);
+    }
+
+    public static void clearStudyListingMap(Map sessionMap) {
+        sessionMap.remove("studyListings");
+    }
     
 }

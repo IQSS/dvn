@@ -29,6 +29,7 @@ import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.LoginAffiliate;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.web.StudyListing;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.io.IOException;
@@ -140,10 +141,15 @@ public class LoginPage extends VDCBaseBean {
                 session.removeAttribute("isIpGroupChecked");
             }
             LoginBean loginBean = new LoginBean();
+
             // copy all terms of use from session TermsOfUseMap
             loginBean.getTermsfUseMap().putAll( getVDCSessionBean().getTermsfUseMap() );
             // then clear the sessions version
             getVDCSessionBean().getTermsfUseMap().clear();
+
+            // celar the studylistings from prelogin
+            StudyListing.clearStudyListingMap( this.getSessionMap() );
+
             loginBean.setUser(user);
             getVDCSessionBean().setLoginBean(loginBean);
             if (hiddenWorkflow.getValue().equals("contributor")) {

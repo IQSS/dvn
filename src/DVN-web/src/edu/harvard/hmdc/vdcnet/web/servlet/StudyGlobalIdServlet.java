@@ -28,6 +28,7 @@ package edu.harvard.hmdc.vdcnet.web.servlet;
 
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import java.io.*;
 import javax.ejb.EJB;
 
@@ -45,7 +46,7 @@ public class StudyGlobalIdServlet extends HttpServlet {
     
     /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
-     * @param response servlet response
+     * @param response servlet response 
      */
     protected void processRequest(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
@@ -55,8 +56,7 @@ public class StudyGlobalIdServlet extends HttpServlet {
         if (globalId != null) {
             Study study = studyService.getStudyByGlobalId( globalId );
             if (study != null) {
-                String locationPrefix = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();        
-                res.sendRedirect(locationPrefix + "/faces/study/StudyPage.jsp?studyId=" + study.getId() );
+                res.sendRedirect("http://" + PropertyUtil.getHostUrl() + "/dvn/dv/" + study.getOwner().getAlias() + "/faces/study/StudyPage.jsp?studyId=" + study.getId() );
             } else {
                 createErrorResponse(res, "No study exists for the specified Global Id.");
             }

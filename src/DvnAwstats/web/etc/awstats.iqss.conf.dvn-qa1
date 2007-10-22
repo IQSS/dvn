@@ -52,6 +52,11 @@
 #LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "C:\\glassfish\\domains\\domain1\\logs\\access\\server_access_log.%YYYY-0-%MM-0-%DD-0.txt"|"
 #Sample Linux pointer with glassfish at /usr/local
 LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/server_access_log.%YYYY-0-%MM-0-%DD-0.txt"|"
+# To update missing daily stats, you can cat
+# the old log files to one, in this case,
+# combined_YYYY-MM-DD.txt, where the date is
+# the date of creation of the combined log. wjb 09-2007
+#LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/combined_2007-09-10.txt"|"
 
 
 # Enter the log file type you want to analyze.
@@ -1474,24 +1479,26 @@ color_x="C1B2E2"				# Background color for number of exit pages (Default = "C1B2
 
 ExtraSectionName1="File Downloads"
 ExtraSectionCodeFilter1="200 304"
-ExtraSectionCondition1="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xff=.*))"
+ExtraSectionCondition1="URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isMIT=[0-9].*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&xff=[0-9].*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&xFF=[0-9].*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xFF=[0-9].*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xff=[0-9].*))"
 ExtraSectionFirstColumnTitle1="Requested Page"
 ExtraSectionFirstColumnValues1="URLWITHQUERY,(.*)"
 ExtraSectionStatTypes1=PHK
 MaxNbOfExtra1=50
 MinHitExtra1=1
+
 ExtraSectionName2="Subsetting Views Resulting in a Subsetting and Analysis Request"
 ExtraSectionCodeFilter2="200 304"
-ExtraSectionCondition2="URLWITHQUERY,(.*isSSR=1.*)"
+ExtraSectionCondition2="URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&isMIT=[0-9].*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xff=[0-9].*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xFF=[0-9].*))"
 ExtraSectionFirstColumnTitle2="Requested Page"
 ExtraSectionFirstColumnValues2="URLWITHQUERY,(.*)"
 ExtraSectionStatTypes2=PHK
 MaxNbOfExtra2=50
 MinHitExtra2=1
+
 ExtraSectionName3="Downloads by IP Address"
 ExtraSectionCodeFilter3="200 304"
-ExtraSectionCondition3="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+.*))"
-ExtraSectionFirstColumnTitle3="User - IP Address"
+ExtraSectionCondition3="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&isMIT=[0-9].*))||URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xff=[0-9].*))||URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xFF=[0-9].*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xFF=[0-9].*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xff=[0-9].*))"
+ExtraSectionFirstColumnTitle3="MIT Affiliated User - IP Address"
 ExtraSectionFirstColumnValues3="HOST,(.*)"
 ExtraSectionStatTypes3=PHK
 MaxNbOfExtra3=50
@@ -1499,7 +1506,7 @@ MinHitExtra3=1
 
 ExtraSectionName4="Subsetting Views by IP Address"
 ExtraSectionCodeFilter4="200 304"
-ExtraSectionCondition4="URLWITHQUERY,(.*isSSR=1.*)"
+ExtraSectionCondition4="URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&isMIT=[0-9].*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xff=[0-9].*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xFF=[0-9].*))"
 ExtraSectionFirstColumnTitle4="User - IP Address"
 ExtraSectionFirstColumnValues4="HOST,(.*)"
 ExtraSectionStatTypes4=PHK

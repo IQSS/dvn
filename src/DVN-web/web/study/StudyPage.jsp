@@ -375,7 +375,7 @@
                                     <h:outputText value="No files have been provided for this study."/>
                                 </ui:panelGroup>
                                 <ui:panelGroup  block="true" id="noFilesPanel3" style="padding-top: 30px; padding-bottom: 30px;" rendered="#{studyPage.userAuthorizedToEdit and (studyPage.studyUI.study.studyLock==null)}">
-                                    <h:outputText value="No files have been yet been uploaded to this study. To add a file, follow the 'Add File(s)' link on the top right of this page."/>
+                                    <h:outputText value="No files have been uploaded to this study. To add a file, follow the 'Add File(s)' link on the top right of this page."/>
                                 </ui:panelGroup>
                                 <ui:panelGroup  block="true" id="noFilesPanel4a" style="padding-top: 30px; padding-bottom: 30px;" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
                                     <h:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>

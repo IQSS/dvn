@@ -180,6 +180,7 @@ import edu.harvard.hmdc.vdcnet.study.VariableRange;
 import edu.harvard.hmdc.vdcnet.study.VariableRangeType;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtil;
+import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
@@ -1614,6 +1615,11 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             _distDate.getContent().add(lastUpdateString );
             _distStmt.setDistDate( _distDate );
         }
+        
+        // holdings
+        HoldingsType _holdings = objFactory.createHoldingsType();
+        _holdings.setURI( "http://" + PropertyUtil.getHostUrl() + "/dvn/study?globalId=" + s.getGlobalId() );
+        _citation.getHoldings().add(_holdings);
                
         _doc.setCitation( _citation );
         return _doc; 
@@ -2611,10 +2617,10 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         }
         
         // otherwise, determine whether file is local or harvested
-        if (sf.getFileSystemLocation() != null && sf.getFileSystemLocation().startsWith("http") ) {
+        if (sf.isRemote() ) {
             return sf.getFileSystemLocation();
         } else {
-            fileLocation = URL_PREFIX + "/dvn/dv/" + s.getOwner().getAlias() + "/FileDownload/";
+            fileLocation = "http://" + PropertyUtil.getHostUrl() + "/dvn/dv/" + s.getOwner().getAlias() + "/FileDownload/";
             fileLocation += sf.getFileName()+ "?fileId=" + sf.getId();
             return fileLocation;
         }

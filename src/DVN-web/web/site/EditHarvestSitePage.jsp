@@ -164,6 +164,7 @@
                         </ui:panelGroup>
                         <ui:panelGroup rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.harvestingSets}">                          
                             <h:selectOneMenu  id="radioButtonList1" value="#{EditHarvestSitePage.harvestingDataverse.harvestingSet}"  >
+                                   <f:selectItem itemValue="" itemLabel="No Set (harvest all)"/>
                                 <f:selectItems  id="radio1SelectItem" value="#{EditHarvestSitePage.harvestingSetsSelect}" />
                             </h:selectOneMenu>
                             <verbatim><br /></verbatim>
@@ -177,6 +178,7 @@
                         </ui:panelGroup>
                         <ui:panelGroup  rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.metadataFormats}">
                             <h:selectOneMenu   value="#{EditHarvestSitePage.editHarvestSiteService.selectedMetadataPrefixId}" >
+                             
                                 <f:selectItems  value="#{EditHarvestSitePage.metadataFormatsSelect}" />
                             </h:selectOneMenu>
                             <br />

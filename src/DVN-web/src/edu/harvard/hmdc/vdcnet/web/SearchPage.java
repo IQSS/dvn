@@ -606,52 +606,11 @@ public class SearchPage extends VDCBaseBean{
     }
     
     private String addToStudyListingMap(StudyListing sl) {
-        OrderedMap slMap = (OrderedMap) getSessionMap().get("studyListings");
-        String sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
-        String newIndex = "0_" + sessionId;
-        
-        if (slMap == null) {
-            slMap = new LinkedMap();
-            getSessionMap().put("studyListings", slMap);
-            slMap.put(newIndex ,sl);
-        } else {
-            String lastIndex= (String) slMap.lastKey();
-            int lastIndexInt = Integer.parseInt( lastIndex.substring(0, lastIndex.indexOf("_") ) );
-            
-            newIndex = String.valueOf(lastIndexInt + 1) + "_" + sessionId;
-            slMap.put( newIndex, sl);
-            if (slMap.size() > 5) {
-                slMap.remove(slMap.firstKey());
-            }
-        }
-        return newIndex;
+        return StudyListing.addToStudyListingMap(sl, getSessionMap());
     }
     
     private StudyListing getStudyListingFromMap(String slIndex) {
-        OrderedMap slMap = (OrderedMap) getSessionMap().get("studyListings");
-        if (slMap != null) {
-            StudyListing sl = (StudyListing) slMap.get(slIndex);
-
-            if (sl != null) {
-
-                // make sure the user is in the current vdc for this study listing
-                Long currentVdcId = getVDCRequestBean().getCurrentVDCId();
-                if ( currentVdcId == null ) {
-                     if (sl.getVdcId() != null) {
-                        sl = new StudyListing(StudyListing.INCORRECT_VDC);
-                    }
-                } else {
-                    if ( !currentVdcId.equals(sl.getVdcId()) ) {
-                        sl = new StudyListing(StudyListing.INCORRECT_VDC);
-                    }
-                } 
-
-                return sl;
-            }
-        }
-        
-        // this means that this studyListing or the session has expired
-        return new StudyListing(StudyListing.EXPIRED_LIST);
+        return StudyListing.getStudyListingFromMap(slIndex, getSessionMap(), getVDCRequestBean().getCurrentVDCId());
     }
     
     public String getSearchField() {

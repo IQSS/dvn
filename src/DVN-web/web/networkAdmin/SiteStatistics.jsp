@@ -7,6 +7,15 @@
                             
    <f:subview id="siteStatistics">
     <ui:form  id="siteStatisticsForm"> 
+        <f:verbatim>
+            <script language="JavaScript">
+                function changeValue(obj) {
+                    if (window.event)
+                        obj.value = window.event.srcElement.value;
+                        document.forms['content:siteStatistics:siteStatisticsForm'].submit();
+                }
+            </script>
+        </f:verbatim>
         <div class="dvn_section">
             <div class="dvn_sectionTitle">
                 
@@ -22,7 +31,7 @@
                     
                     <ui:panelGroup  block="true" id="groupPanel2">
                         <h:outputText  id="viewNetwork" value="Select a Report Type"/>
-                        <h:selectOneRadio id="reportee" layout="pageDirection" onchange="submit();" required="true" value="#{SiteStatistics.reportee}" valueChangeListener="#{SiteStatistics.changeReportee}">
+                        <h:selectOneRadio id="reportee" layout="pageDirection" onclick="changeValue(this);" required="true" value="#{SiteStatistics.reportee}" valueChangeListener="#{SiteStatistics.changeReportee}">
                             <f:selectItems value="#{SiteStatistics.reportees}"/>
                         </h:selectOneRadio>
                         <h:inputHidden id="reportType" value="#{SiteStatistics.reportType}" valueChangeListener="#{SiteStatistics.changeReportType}"/>

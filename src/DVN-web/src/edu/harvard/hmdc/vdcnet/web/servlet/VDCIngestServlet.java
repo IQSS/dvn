@@ -180,7 +180,7 @@ public class VDCIngestServlet extends HttpServlet {
             displayMessage(out,"Request in process. You will receive an e-mail when it is complete.", 
                     "(for study id = " + studyId + 
                     "; data file id = " + dataFileId + 
-                    "; controCardFileId = " +controlCardFileId + ")");
+                    "; control card file id = " +controlCardFileId + ")");
             
         } else {
             displayMessage(out, "You are not authorized for this action.");

@@ -175,7 +175,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     
     public void deleteStudy(Long studyId) {
         Study study = em.find(Study.class,studyId);
-        
+        if (study==null) {
+            return; 
+        }
         for (Iterator<VDCCollection>it = study.getStudyColls().iterator(); it.hasNext();) {
             VDCCollection elem =  it.next();
             elem.getStudies().remove(study);
@@ -1092,6 +1094,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         logger.info("completed doImportStudy() returning study"+study.getGlobalId());
         return study;
     }
+    
+    
+ 
     
     private void copyFileForExport(Study study,  CodeBook _cb)  {
         // Do only if generateHandle? 

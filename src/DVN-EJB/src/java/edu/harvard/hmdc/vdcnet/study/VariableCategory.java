@@ -29,6 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.study;
 
+import edu.harvard.hmdc.vdcnet.util.AlphaNumericComparator;
 import java.math.BigDecimal;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,7 +43,8 @@ import javax.persistence.SequenceGenerator;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class VariableCategory {
+public class VariableCategory implements Comparable {
+    private static AlphaNumericComparator alphaNumericComparator = new AlphaNumericComparator();
     
     /** Creates a new instance of VariableRange */
     public VariableCategory() {
@@ -186,5 +188,9 @@ public class VariableCategory {
         return true;
     }             
 
-    
+ public int compareTo(Object obj) {
+        VariableCategory ss = (VariableCategory)obj;     
+        return alphaNumericComparator.compare(this.getValue(),ss.getValue());
+        
+    }    
 }

@@ -151,6 +151,41 @@ public class FileDownloadServlet extends HttpServlet{
 		return;
 	     }		    
 
+	    // perform access authorization check:
+
+	    String dsbHost = System.getProperty("vdc.dsb.host");
+
+	    if ( dsbHost == null ) {
+		// vdc.dsb.host isn't set; 
+		// fall back to the old-style option: 
+		dsbHost = System.getProperty("vdc.dsb.url");
+	    }		   
+
+	    boolean NOTaDSBrequest = true;
+  
+	    if ( dsbHost.equals(req.getRemoteHost()) ) {
+		NOTaDSBrequest = false; 
+	    } else { 
+		try {
+		    String dsbHostIPAddress = InetAddress.getByName(dsbHost).getHostAddress(); 
+		    if ( dsbHostIPAddress.equals(req.getRemoteHost()) ) {
+			NOTaDSBrequest = false;
+		    }
+		} catch ( UnknownHostException ex ) {
+		    // do nothing; 
+		    // the "vdc.dsb.host" setting is clearly misconfigured,
+		    // so we just keep assuming this is NOT a DSB call
+		}
+	    }
+		
+	    if ( NOTaDSBrequest && file.isFileRestrictedForUser(user, vdc, ipUserGroup) ) {
+		// generate a response with a correct 403/FORBIDDEN code   
+
+		createErrorResponse403(res);
+		return;
+	    }
+
+
 	    // determine if the fileId represents a local object 
 	    // or a remote URL
 
@@ -338,38 +373,6 @@ public class FileDownloadServlet extends HttpServlet{
 		}
 	    } else {
 		// local object
-		
-		String dsbHost = System.getProperty("vdc.dsb.host");
-
-		// fall back to the old-style option: 
-
-		if ( dsbHost == null ) {
-		    dsbHost = System.getProperty("vdc.dsb.url");
-		}		   
-
-		boolean NOTaDSBrequest = true;
-  
-		if ( dsbHost.equals(req.getRemoteHost()) ) {
-		    NOTaDSBrequest = false; 
-		} else { 
-		    try {
-			String dsbHostIPAddress = InetAddress.getByName(dsbHost).getHostAddress(); 
-			if ( dsbHostIPAddress.equals(req.getRemoteHost()) ) {
-			    NOTaDSBrequest = false;
-			}
-		    } catch ( UnknownHostException ex ) {
-			// do nothing; 
-			// the "vdc.dsb.host" setting is clearly misconfigured,
-			// so we just keep assuming this is NOT a DSB call
-		    }
-		}
-		
-		if ( NOTaDSBrequest && file.isFileRestrictedForUser(user, vdc,ipUserGroup) ) {
-		    // generate a response with a correct 403/FORBIDDEN code   
-
-		    createErrorResponse403(res);
-		    return;
-		}
 
 		studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
 
@@ -866,7 +869,8 @@ public class FileDownloadServlet extends HttpServlet{
 	//     altFormat = "application/x-R-2"; 
 	// }	    
 
-	altFormat = "application/x-gzip-tar";
+	// altFormat = "application/x-gzip-tar";
+	altFormat = "application/zip";
         return altFormat;
     }
 

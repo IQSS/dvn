@@ -224,13 +224,29 @@ public class DSBWrapper {
             // create method
             method = new PostMethod(generateUrl(DSB_INGEST));
             File tempFile = new File(file.getTempSystemFileLocation());
-            Part[] parts = {
-                new FilePart( "dataFile0", tempFile ),
-                new StringPart( "dataFileMime0", file.getStudyFile().getFileType() )
-            };
-            method.setRequestEntity(
-                    new MultipartRequestEntity(parts, method.getParams())
-                    );
+            
+            if (file.getControlCardSystemFileLocation() == null) {
+                Part[] parts = {
+                    new FilePart( "dataFile0", tempFile ),
+                    new StringPart( "dataFileMime0", file.getStudyFile().getFileType() )
+                };
+
+                method.setRequestEntity(
+                        new MultipartRequestEntity(parts, method.getParams())
+                        );
+            } else {
+                File controlCardFile = new File(file.getControlCardSystemFileLocation() );
+                
+                Part[] parts = {
+                    new FilePart( "dataFile0", tempFile ),
+                    new StringPart( "dataFileMime0", file.getStudyFile().getFileType() ),
+                    new FilePart( "controlCard0", controlCardFile )
+                };
+
+                method.setRequestEntity(
+                        new MultipartRequestEntity(parts, method.getParams())
+                        );                
+            }
             
             // execute
             executeMethod(method);

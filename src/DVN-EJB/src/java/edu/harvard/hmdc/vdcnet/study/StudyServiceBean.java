@@ -1029,11 +1029,17 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             ReviewState reviewState = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
             study = new Study(vdc, creator, reviewState);
             em.persist(study);
-        } else if (allowUpdates) {
-            registerHandle = false; // this is an update, study should already be registered
-            clearStudy(study);
         } else {
-            throw new EJBException("Study already exists and this import was called with allowUpdates = false.");
+            if ( harvestIdentifier!=null && !study.isIsHarvested() ) {
+                // This study actually belongs to the local DVN, so don't continue with harvest
+                throw new EJBException("This study originated in the local DVN - we don't need to harvest it.");
+            }
+            if (allowUpdates) {
+                registerHandle = false; // this is an update, study should already be registered
+                clearStudy(study);
+            } else {
+                throw new EJBException("Study already exists and this import was called with allowUpdates = false.");
+            }
         }
         
         

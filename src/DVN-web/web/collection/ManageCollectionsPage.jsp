@@ -39,17 +39,20 @@
                             </ui:panelGroup>
                             <ui:panelGroup block="true">    
                                 <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                <h:outputText  styleClass="vdcHelpText" value="Select a collection before applying one of the actions below. Collection Links (links to collection from other Dataverses) are only editable in their original Dataverse."/>
+                                <h:outputText  styleClass="vdcHelpText" value="To edit a collection, click the collection name. Collection Links (links to collection from other Dataverses) are only editable in their original Dataverse."/>
                             </ui:panelGroup>
                             
                             <ui:panelGroup binding="#{ManageCollectionsPage.groupPanel1}" block="true" id="groupPanel1" style="background-color: rgb(226, 226, 226); font-size: 1em; margin-right: 10px; margin-top: 20px; margin-bottom: 5px; padding-top: 10px; padding-bottom: 5px">
+                               <!--
                                 <h:outputText binding="#{ManageCollectionsPage.outputText2}" id="outputText2" style="padding-left: 30px" value="Change Status to: "/>
                                 <h:selectOneMenu binding="#{ManageCollectionsPage.dropdown1}" id="dropdown1">
                                     <f:selectItems binding="#{ManageCollectionsPage.dropdown1SelectItems}" id="dropdown1SelectItems" value="#{ManageCollectionsPage.dropdown1DefaultItems}"/>
                                 </h:selectOneMenu>
                                 <h:commandButton binding="#{ManageCollectionsPage.changeStatusButton}" action="#{ManageCollectionsPage.changeStatusButton_action}" id="changeStatusButton" value="Change Status"/>
+                                -->
                                 <h:commandButton binding="#{ManageCollectionsPage.removeButton}" action="#{ManageCollectionsPage.removeButton_action}" id="removeButton" style="margin-left: 30px"
                                                  value="Remove"/>
+                                <h:outputText  styleClass="vdcHelpText" value="Check collection(s) you wish to remove from your dataverse and then click the Remove button."/>                 
                             </ui:panelGroup>
                             <h:dataTable binding="#{ManageCollectionsPage.dataTable1}" cellpadding="0" cellspacing="0" headerClass="" id="dataTable1"
                                          style="padding-left: 10px; margin-top: 20px" columnClasses="vdcColPadded" value="#{ManageCollectionsPage.dataTable1Model}" var="currentRow" width="100%">

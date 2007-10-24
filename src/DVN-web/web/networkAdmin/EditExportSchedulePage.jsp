@@ -87,8 +87,8 @@
                           
                             <h:selectOneMenu required="true"  id="exportPeriod" value="#{EditExportSchedulePage.exportPeriod}"  onchange='updateExportInput();' >
                                 <f:selectItem itemValue="" itemLabel="Not Selected"/>
-                                <f:selectItem itemValue="daily" itemLabel="Harvest daily"/>
-                                <f:selectItem itemValue="weekly" itemLabel="Harvest weekly"/>
+                                <f:selectItem itemValue="daily" itemLabel="Export daily"/>
+                                <f:selectItem itemValue="weekly" itemLabel="Export weekly"/>
                             </h:selectOneMenu>
                              <h:message styleClass="errorMessage" for="exportPeriod"/> 
                             <br />

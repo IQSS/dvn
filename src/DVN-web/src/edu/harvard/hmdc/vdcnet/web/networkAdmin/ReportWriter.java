@@ -225,10 +225,18 @@ public class ReportWriter extends ReportConstants {
             try {
                 String fileToRead = dvnDataDirectory + "/awstats." + reportee + ".txt";
                 outputStream = new BufferedWriter(new FileWriter(fileToRead));
-                outputStream.write("<div style=\"max-width:780; margin-top:25px; margin-right:auto; margin-left:auto;\">");
-                outputStream.write("<span style=\"font-weight:800; font-size: medium;\">Monthly Usage Report of MIT Affiliates of the Dataverse Network</span>" + separator);
-                outputStream.write("<div style=\"margin-right:25px;text-align:right;\"><input type=\"button\" value=\"Print\" onclick=\"(typeof(isChild) == 'undefined') ? window.open('" + reportUrl  + "', 'newWindow','menubar=0,resizable=1,width=640,height=480') : printMe()\"/></div>");
-                outputStream.write("<div style=\"margin-left:25px; margin-right:25px; font-size:medium; text-align:left;\">");
+                outputStream.write("<div style=\"max-width:780; margin-top:25px; margin-right:auto; margin-left:auto;\">" +
+                    "<span style=\"font-weight:800; font-size: medium;\">Monthly Usage Report of MIT Affiliates of the Dataverse Network</span>" + separator +
+                    "<div style=\"margin-right:25px;text-align:right;\">" +
+                        "<script language=\"JavaScript\">" +
+                            "if (typeof(isChild) == 'undefined') { " +
+                                "document.write(\"<input type=\\\"button\\\" value=\\\"Print\\\" " +
+                                    "onclick=\\\"window.open('" + reportUrl  + "', 'newWindow','menubar=0,resizable=1,width=640,height=480')\\\"/>\") } else {" +
+                                    "var scriptBegin = \"<scr\" + \"ipt language=\\\"JavaScript\\\">\"" +
+                                    ";document.write(scriptBegin + \"onLoad=window.print();setTimeout('self.close()', 5000);<\\/scr\" + \"ipt>\") }" +
+                        "</script>" +
+                    "</div>" +
+                    "<div style=\"margin-left:25px; margin-right:25px; font-size:medium; text-align:left;\">");
                 Iterator iterator = hashmap.keySet().iterator();
                 int count = 1;
                 while (iterator.hasNext()) {

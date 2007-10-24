@@ -215,8 +215,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         // the study deletion to the old VDC.
         DeletedStudy ds = new DeletedStudy();
         ds.setId(study.getId());
-        ds.setStudyId(study.getStudyId());
-        ds.setAuthority(study.getAuthority());
+        ds.setGlobalId(study.getGlobalId());
+        ds.setDeletedTime(new Date());
         em.persist(ds);
         
         em.remove(study);
@@ -730,9 +730,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             for (Iterator it = deletedStudies.iterator(); it.hasNext();) {
                 DeletedStudy deletedStudy = (DeletedStudy) it.next();
                 
-                logger.info("Deleting study "+deletedStudy.getStudyId());
-                
-                File legacyStudyDir = new File(FileUtil.getLegacyFileDir()+File.separatorChar + authority + File.separatorChar + deletedStudy.getStudyId());
+                logger.info("Deleting study "+deletedStudy.getGlobalId());
+                Study study = em.find(Study.class, deletedStudy.getId());
+                File legacyStudyDir = new File(FileUtil.getLegacyFileDir()+File.separatorChar + study.getAuthority() + File.separatorChar + study.getStudyId());
                 
                 // Remove files in the directory, then delete the directory.
                 File[] studyFiles = legacyStudyDir.listFiles();

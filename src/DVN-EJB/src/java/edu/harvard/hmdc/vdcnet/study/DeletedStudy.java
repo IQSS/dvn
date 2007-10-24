@@ -30,10 +30,13 @@
 package edu.harvard.hmdc.vdcnet.study;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Entity class DeletedStudy
@@ -114,47 +117,27 @@ public class DeletedStudy implements Serializable {
         return "edu.harvard.hmdc.vdcnet.study.ExportDeletedStudy[id=" + id + "]";
     }
 
-    /**
-     * Holds value of property authority.
-     */
-    private String authority;
-
-    /**
-     * Getter for property authority.
-     * @return Value of property authority.
-     */
-    public String getAuthority() {
-        return this.authority;
+    public String getGlobalId() {
+        return globalId;
     }
 
-    /**
-     * Setter for property authority.
-     * @param authority New value of property authority.
-     */
-    public void setAuthority(String authority) {
-        this.authority = authority;
+    public void setGlobalId(String globalId) {
+        this.globalId = globalId;
     }
 
-    /**
-     * Holds value of property studyId.
-     */
-    private String studyId;
-
-    /**
-     * Getter for property studyId.
-     * @return Value of property studyId.
-     */
-    public String getStudyId() {
-        return this.studyId;
+    public Date getDeletedTime() {
+        return deletedTime;
     }
 
-    /**
-     * Setter for property studyId.
-     * @param studyId New value of property studyId.
-     */
-    public void setStudyId(String studyId) {
-        this.studyId = studyId;
+    public void setDeletedTime(Date deletedTime) {
+        this.deletedTime = deletedTime;
     }
+
+    
+    private String globalId;
+    
+   @Temporal(value = TemporalType.TIMESTAMP)
+    private Date deletedTime;
     
     
     

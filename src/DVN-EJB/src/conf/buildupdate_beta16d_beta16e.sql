@@ -1,4 +1,5 @@
 ALTER TABLE deletedstudy ADD COLUMN globalid varchar(255);
+ALTER TABLE deletedstudy ALTER COLUMN globalid SET STORAGE EXTENDED;
 
 ALTER TABLE deletedstudy ADD COLUMN deletedtime timestamp;
 ALTER TABLE deletedstudy ALTER COLUMN deletedtime SET STORAGE PLAIN;

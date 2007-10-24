@@ -84,7 +84,7 @@ import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 import javax.servlet.http.*;
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 import java.io.*;
-import java.util.Collections;
+
 
 public class AnalysisPage extends VDCBaseBean {
 
@@ -2140,6 +2140,26 @@ if (isRecodedVar(varId)){
       this.currentModelName=cmn;
     }
     
+    private String modelHelpLinkURL;
+    public String getModelHelpLinkURL(){
+      return modelHelpLinkURL;
+    }
+    public void setModelHelpLinkURL(String url){
+      this.modelHelpLinkURL=url;
+    }
+    
+    
+     private HtmlPanelGrid gridPanelModelInfoBox = new HtmlPanelGrid();
+     public HtmlPanelGrid getGridPanelModelInfoBox() {
+         return gridPanelModelInfoBox;
+     }
+     public void setGridPanelModelInfoBox(HtmlPanelGrid hpg) {
+         this.gridPanelModelInfoBox = hpg;
+     }
+
+    
+    
+    
     // dropDown1: ui: dropDown@valueChangeListener
     public void dropDown1_processValueChange(ValueChangeEvent vce) {
         String lastModelName = getCurrentModelName();
@@ -2150,6 +2170,21 @@ if (isRecodedVar(varId)){
         out.println("pass the valueChangeListener dropDown1_processValueChange");
         String newModelName = (String)vce.getNewValue();
         out.println("Newly selected model="+newModelName);
+        
+        // this model's name
+        //String selectedModelName= (String)dropDown1.getSelected();
+        setCurrentModelName((String)dropDown1.getSelected());
+        out.println("selected model="+getCurrentModelName());
+        cntxt.getExternalContext().getSessionMap().put("currentModelName",currentModelName);
+
+        // this model's spec
+        AdvancedStatGUIdata.Model selectedModelSpec = getAnalysisApplicationBean().getSpecMap().get(getCurrentModelName());
+        out.println("model info:\n"+selectedModelSpec);
+        //cntxt.getExternalContext().getSessionMap().put("selectedModelSpec",selectedModelSpec);
+        
+        
+        // 
+        
         // for the first time only
         if (!groupPanel8below.isRendered()){
           out.println("this is the first time to render the model-option panel");
@@ -2165,17 +2200,14 @@ if (isRecodedVar(varId)){
           }
           
         }
-        
-        // this model's name
-        //String selectedModelName= (String)dropDown1.getSelected();
-        setCurrentModelName((String)dropDown1.getSelected());
-        out.println("selected model="+getCurrentModelName());
-        cntxt.getExternalContext().getSessionMap().put("currentModelName",currentModelName);
-
-        // this model's spec
-        AdvancedStatGUIdata.Model selectedModelSpec = getAnalysisApplicationBean().getSpecMap().get(getCurrentModelName());
-        out.println("model info:\n"+selectedModelSpec);
-        //cntxt.getExternalContext().getSessionMap().put("selectedModelSpec",selectedModelSpec);
+        String modelHelp = selectedModelSpec.getHelplink();
+        if ((modelHelp != null) && (!modelHelp.equals(""))){
+            setModelHelpLinkURL(modelHelp);
+            gridPanelModelInfoBox.setRendered(true);
+        } else {
+            gridPanelModelInfoBox.setRendered(false);
+        }
+        out.println("help Link="+modelHelp);
         
         // this model's required variable boxes
         int noRboxes= selectedModelSpec.getNoRboxes();
@@ -4674,6 +4706,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
 //    colQS.append("QS requested for variableId="+varId);
       String columnHeaderCat = "Value(Label)";
       Collection<SummaryStatistic> sumStat=null;
+      //Collection<VariableCategory> catStat=null;
       List catStat=null;
       int counter=0;
       int dbglns  = 50;
@@ -4684,7 +4717,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
             // Id is Long
             if (dv.getId().toString().equals(varId)){
               sumStat = dv.getSummaryStatistics();
-              
+              // catStat = dv.getCategories();
               catStat = new ArrayList();
               catStat.addAll(dv.getCategories());
               Collections.sort(catStat);
@@ -5182,7 +5215,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
                 "groupPanel8below", "advStatVarRBox1", "advStatVarRBox2", "advStatVarRBox3",
                 "setxDiffVarBox1", "setxDiffVarBox2", "checkboxSelectUnselectAll", 
                 "currentModelName", "currentRecodeVariableId","currentRecodeVariableName", "recodedVarSet", "recodeSchema",
-                "baseVarToDerivedVar","derivedVarToBaseVar","recodeVarNameSet", "selectedNoRows", "msgEdaButtonTxt", "msgDwnldButtonTxt");
+                "baseVarToDerivedVar","derivedVarToBaseVar","recodeVarNameSet", "selectedNoRows", "msgEdaButtonTxt", "msgDwnldButtonTxt", "gridPanelModelInfoBox");
 
               // clear the data for the dataTable
               for (String obj : sessionObjects){
@@ -5268,6 +5301,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
                 sessionMap.put("varSetAdvStat",varSetAdvStat);
 
                 sessionMap.put("groupPanel8below",groupPanel8below);
+                sessionMap.put("gridPanelModelInfoBox",gridPanelModelInfoBox);
 
                 sessionMap.put("advStatVarRBox1",advStatVarRBox1);
                 sessionMap.put("advStatVarRBox2",advStatVarRBox2);

@@ -31,6 +31,7 @@ import static java.lang.System.*;
 import java.math.*;
 import edu.harvard.hmdc.vdcnet.dsb.zelig.*;
 import java.util.logging.Logger;
+import java.util.regex.*;
 
 /*
 *  AdvancedStatGUIdata
@@ -39,6 +40,8 @@ import java.util.logging.Logger;
 public class AdvancedStatGUIdata {
     // static fields
     
+    private static String regex = "/zelig/doc/";
+    private static Pattern p;
     private static Logger theLogger = Logger.getLogger(AdvancedStatGUIdata.class.getName());
     private static String[] modelFilter = {"gam.logit", "gam.normal","gam.poisson","gam.probit","logit.gee"};
     private static Set<String> excludedModels = new HashSet<String>();
@@ -46,6 +49,7 @@ public class AdvancedStatGUIdata {
         for (int i = 0; i < modelFilter.length;i++){
             excludedModels.add(modelFilter[i]);
         }
+        p = Pattern.compile(regex);
     }
    // accessors
    // List of model-specs
@@ -378,8 +382,17 @@ public class AdvancedStatGUIdata {
           mdlii.setCategory(category);
 
           // helplink
-          String helplink = z.getHelpLink().getUrl();
+          String helplinkRaw = z.getHelpLink().getUrl();
           // out.println("helplink="+ helplink );
+
+
+          // temporary fix: until zelig package is updated
+          Matcher matcher = p.matcher(helplinkRaw);
+          String helplink = null;
+          if (matcher.find()){
+            helplink = matcher.replaceFirst("/zelig/docs/");
+          }
+
 
           mdlii.setHelplink(helplink);
 

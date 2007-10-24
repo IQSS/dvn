@@ -491,8 +491,27 @@ xmlns:ui="http://www.sun.com/web/ui"
                                         <!-- 
                             </ui:panelGroup>
                             -->
+                                    <h:panelGrid id="modelInfoBox"
+                                                 binding="#{AnalysisPage.gridPanelModelInfoBox}"
+                                                 cellpadding="0" 
+                                                 cellspacing="0" 
+                                                 columns="2" 
+                                                 rendered="false" >
 
+                                        <h:graphicImage 
+                                            alt="Information" 
+                                            title="Information" 
+                                            styleClass="vdcNoBorders" 
+                                            style="vertical-align: bottom" 
+                                            value="/resources/icon_info.gif" />
+                                            
+                                            <h:outputLink value="#{AnalysisPage.modelHelpLinkURL}"
+                                            target="_blank">
+                                            <h:outputText value="#{bundleAnalysis['advStat.model.helpInfo.header']}"/>                       
+                                            </h:outputLink>
+                                    </h:panelGrid>
                                     </h:panelGrid><!-- end: gridPanel8above -->
+                                    
                                     <ui:panelGroup id="groupPanel8below" 
                                                    binding="#{AnalysisPage.groupPanel8below}" 
                                                    rendered="false">

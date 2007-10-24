@@ -69,15 +69,17 @@
                 <div class="dvn_sectionTitle">
                          <h:outputText   value="#{studyPage.studyUI.study.title}"/>
                 </div>            
-                <div>
-                  <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?studyListingIndex=#{studyPage.studyListingIndex}" rendered="#{!empty studyPage.studyListingIndex}">
-                      <h:outputText  value="View Study Listing"/>
-                  </h:outputLink>
-                </div>                 
+             
+                    <span class="dvn_sectionTitleR">
+                      <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?studyListingIndex=#{studyPage.studyListingIndex}" rendered="#{!empty studyPage.studyListingIndex}">
+                          <h:outputText  value="View Previous Study Listing"/>
+                      </h:outputLink>
+                 </span>                 
                 <div class="dvn_sectionBoxNoBorders"> 
                     <ui:tabSet binding="#{studyPage.tabSet1}" id="tabSet1" lite="true" mini="true"  >
                         <ui:tab   id="catalog" text="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
                             <ui:panelLayout id="layoutPanel1" panelLayout="flow" style="width: 98%"> 
+                                
                                 <ui:panelGroup  block="true" id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                                     <h:outputText  id="outputText11" value="Citation Information"/>
                                     <h:commandButton id="commandButtonCitationInfoContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}" />                      
@@ -142,8 +144,9 @@
                                     <ihelp:inlinehelp helpMessage="#{studybundle.replicationForHelp}"  linkText="#{studybundle.replicationForLabel}" heading="#{studybundle.replicationForHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.replicationFor != '' and studyPage.studyUI.study.replicationFor != null }"/>
                                     <h:outputText id="text18"  value="#{studyPage.studyUI.study.replicationFor}" rendered="#{studyPage.studyUI.study.replicationFor != '' and studyPage.studyUI.study.replicationFor != null }" escape="false" />
                                     
-                                    <ihelp:inlinehelp helpMessage="#{studybundle.dataverseOwnerHelp}"  linkText="#{studybundle.dataverseOwnerLabel}" heading="#{studybundle.dataverseOwnerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"/>  
-                                    <h:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}">
+                                    <!--
+                                    <ihelp:inlinehelp helpMessage="#{studybundle.dataverseOwnerHelp}"  linkText="#{studybundle.dataverseOwnerLabel}" heading="#{studybundle.dataverseOwnerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.owner.Id != VDCRequest.currentVDCId}" />  
+                                    <h:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}" rendered="#{studyPage.studyUI.study.owner.Id != VDCRequest.currentVDCId}" >
                                         <h:outputText value="#{studyPage.studyUI.study.owner.name} Dataverse" />
                                     </h:outputLink> 
                                     
@@ -151,6 +154,20 @@
                                     <h:outputLink value="#{studyPage.studyUI.study.harvestHoldings}" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
                                         <h:outputText value="#{studyPage.studyUI.study.harvestHoldings}" />
                                     </h:outputLink> 
+                                    -->
+                                    
+                                    <ihelp:inlinehelp helpMessage="#{studybundle.provenanceHelp}"  linkText="#{studybundle.provenanceLabel}" heading="#{studybundle.provenanceHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.owner.id != VDCRequest.currentVDCId or (studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested)}" />  
+                                    <ui:panelGroup block="true" rendered="#{studyPage.studyUI.study.owner.id != VDCRequest.currentVDCId or (studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested)}"> 
+                                       
+                                            <h:outputLink value="#{studyPage.studyUI.study.harvestHoldings}" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
+                                                <h:outputText value="Original Source" />
+                                            </h:outputLink>
+                                          <h:outputText id="proven" value=" > "  rendered="#{studyPage.studyUI.study.owner.id != VDCRequest.currentVDCId and (studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested)}" />
+                                        <h:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog" rendered="#{studyPage.studyUI.study.owner.id != VDCRequest.currentVDCId}" >
+                                            <h:outputText value="#{studyPage.studyUI.study.owner.name} Dataverse" />
+                                        </h:outputLink>
+                                        
+                                    </ui:panelGroup>
                                 </h:panelGrid>
                                 
                                 <ui:panelGroup block="true" id="groupPanel12" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.abstractAndScopePanelIsEmpty}" >

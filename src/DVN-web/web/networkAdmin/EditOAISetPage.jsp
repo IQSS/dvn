@@ -41,6 +41,8 @@
                               <h:inputText id="oaiSetName" value="#{EditOAISetPage.oaiSet.name}" required="true">                                  
                               </h:inputText>
                               <h:message for="oaiSetName"  styleClass="errorMessage"/>
+                              <br />
+                              <h:outputText  styleClass="vdcHelpText" value="User friendly name to display when OAI is called." />
                           </ui:panelGroup>
                            <ui:panelGroup >
                               <h:outputText  value="Set Spec"/>
@@ -50,24 +52,29 @@
                               <h:inputText id="oaiSetSpec" value="#{EditOAISetPage.oaiSet.spec}" required="true">                                  
                               </h:inputText>
                               <h:message for="oaiSetSpec"  styleClass="errorMessage"/>
+                              <br />
+                              <h:outputText  styleClass="vdcHelpText" value="Unique Identifier for the set. It's the token passed from OAI server to client." />
                           </ui:panelGroup>
                            <ui:panelGroup >
                               <h:outputText  value="Query Definition"/>
                               <h:graphicImage  value="/resources/icon_required.gif"/>
                           </ui:panelGroup>
                          <ui:panelGroup> 
-                              <h:inputText id="oaiSetDefiniton" value="#{EditOAISetPage.oaiSet.definition}" required="true">                                  
+                              <h:inputText id="oaiSetDefiniton" value="#{EditOAISetPage.oaiSet.definition}" required="true" size="100">                                  
                               </h:inputText>
                               <h:message for="oaiSetDefiniton"  styleClass="errorMessage"/>
+                              <br />
+                              <h:outputText  styleClass="vdcHelpText" value="Query that defines set. It uses the same syntax as query collections." />
                           </ui:panelGroup>
                             <ui:panelGroup >
                               <h:outputText  value="Description"/>
-                              <h:graphicImage  value="/resources/icon_required.gif"/>
                           </ui:panelGroup>
                          <ui:panelGroup> 
-                              <h:inputText id="oaiSetDescription" value="#{EditOAISetPage.oaiSet.description}" >                                  
+                              <h:inputText id="oaiSetDescription" value="#{EditOAISetPage.oaiSet.description}" size="100">                                  
                               </h:inputText>
                               <h:message for="oaiSetDescription"  styleClass="errorMessage"/>
+                              <br />
+                              <h:outputText  styleClass="vdcHelpText" value="Optional description about the OAI set." />
                           </ui:panelGroup>
                           
                        

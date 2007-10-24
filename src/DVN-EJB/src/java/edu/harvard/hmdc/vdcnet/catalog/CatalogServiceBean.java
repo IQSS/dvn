@@ -9,8 +9,10 @@
 
 package edu.harvard.hmdc.vdcnet.catalog;
 
+import com.sun.tools.jdi.EventSetImpl.Itr;
 import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
+import edu.harvard.hmdc.vdcnet.study.DeletedStudy;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyExporter;
 import edu.harvard.hmdc.vdcnet.study.StudyExporterFactoryLocal;
@@ -202,8 +204,8 @@ public class CatalogServiceBean implements CatalogServiceLocal {
                 endTime =new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
             }
             String query = "SELECT s from Study s where " ;
-            query+="s.lastUpdateTime >='" +beginTime+"'";
-            query+=" and s.lastUpdateTime <='" +endTime+"' and s.reviewState.name = 'Released' ";
+            query+="s.lastExportTime >='" +beginTime+"'";
+            query+=" and s.lastExportTime <='" +endTime+"' and s.reviewState.name = 'Released' ";
             query+=" and s.owner.restricted = false and s.restricted = false ";
             query+=" order by s.studyId";
             List updatedStudies = em.createQuery(query).getResultList();
@@ -223,6 +225,24 @@ public class CatalogServiceBean implements CatalogServiceLocal {
                             records.add(record);
                         }
                     }
+                }
+            }
+            String deleteQuery = "SELECT d from DeletedStudy d where ";
+            query+="d.deletedTime >='" +beginTime+"'";
+            query+=" and d.deletedTime <='" +endTime+"'";
+            List deletedStudies = em.createQuery(deleteQuery).getResultList();
+            String deleteStatus = "<status>deleted</status>";
+            for (Iterator it = deletedStudies.iterator(); it.hasNext();) {
+                String record = null;
+                DeletedStudy deletedStudy = (DeletedStudy) it.next();
+                String identifier = "<identifier>" + deletedStudy.getGlobalId() + "</identifier>";
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                if (deletedStudy.getDeletedTime() != null) {
+                    String dateStamp = "<datestamp>" + sdf.format(deletedStudy.getDeletedTime()) + "</datestamp>";
+                    record = identifier+dateStamp+deleteStatus;
+                    records.add(record);
+                } else {
+                    logger.severe("Deleted time is a mandatory field for deleted study " + deletedStudy.getGlobalId());
                 }
             }
         } catch(Exception e) {
@@ -245,7 +265,7 @@ public class CatalogServiceBean implements CatalogServiceLocal {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateStamp = "<datestamp>"+sdf.format(study.getLastExportTime())+"</datestamp>";
         String setSpec = "<setSpec>"+study.getAuthority()+"</setSpec>";
-        Date lastUpdateTime = study.getLastUpdateTime();
+//        Date lastUpdateTime = study.getLastUpdateTime();
         File studyFileDir = FileUtil.getStudyFileDir(study);
         String exportFileName= studyFileDir.getAbsolutePath() + File.separator + "export_" + metadataPrefix+".xml";
         File exportFile = new File(exportFileName);

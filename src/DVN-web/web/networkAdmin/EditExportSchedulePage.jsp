@@ -66,7 +66,7 @@
           <div class="dvn_section">
               <div class="dvn_sectionTitle">
                  
-                      <h:outputText value="Edit Export Schedule"/>
+                      <h:outputText value="Study Export Schedule"/>
                  
               </div>            
               <div class="dvn_sectionBox">
@@ -75,6 +75,10 @@
                         <h:outputText value="Update Successful!" />
                   </ui:panelLayout>
                   <ui:panelGroup block="true" style="padding-bottom: 15px;">
+                       <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                      <h:outputText  styleClass="vdcHelpText" value=" Here you can schedule how often the studies in your Dataverse Network (DVN) will be exported into XML, 
+                      using DDI (with study and variable metadata) and Dublin Core (with study metadata only) formats. 
+                      These export files are used by the OAI server that comes with your DVN and, in general, for preservation and sharing of your DVN data."/>
                           <!--h:graphicImage value="/resources/icon_required.gif"/--> <!--h:outputText style="vdcHelpText" value="Indicates a required field."/-->
                       </ui:panelGroup>
                       <h:panelGrid  cellpadding="0" cellspacing="0"

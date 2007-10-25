@@ -29,6 +29,8 @@
 
 package edu.harvard.hmdc.vdcnet.util;
 
+import edu.harvard.hmdc.vdcnet.dsb.JhoveWrapper;
+import edu.harvard.hmdc.vdcnet.dsb.SubsettableFileChecker;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,6 +46,8 @@ import javax.ejb.EJBException;
  */
 public class FileUtil {
     
+    private static final String[] SUBSETTABLE_FORMAT_SET = {"POR", "SAV", "DTA"};
+
     /** Creates a new instance of FileUtil */
     public FileUtil() {
     }
@@ -66,6 +70,26 @@ public class FileUtil {
             if (in != null) { in.close(); }
             if (out != null) { out.close(); }
         }
+    }
+
+    public static String analyzeFile(File f) throws IOException{
+        String fileType = null;
+
+        // step 1: check whether the file is subsettable
+        SubsettableFileChecker sfchk = new SubsettableFileChecker(SUBSETTABLE_FORMAT_SET);
+
+        fileType = sfchk.detectSubsettableFormat(f);
+        if (fileType != null){
+            System.out.println("FileUtil:Analyze:mimeType="+fileType);
+        }
+        // setp 2: check the mime type of this file
+        /* to be implemented*/
+        if (fileType == null){
+            JhoveWrapper jw = new JhoveWrapper();
+            fileType = jw.getFileMimeType(f);
+            System.out.println("FileUtil:Analyze:mimeType by Jhove="+fileType);
+        }
+        return fileType;
     }
       
     public static String getStudyFileDir() {

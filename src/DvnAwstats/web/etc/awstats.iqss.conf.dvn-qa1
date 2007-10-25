@@ -1477,7 +1477,7 @@ color_x="C1B2E2"				# Background color for number of exit pages (Default = "C1B2
 #MaxNbOfExtra1=20
 #MinHitExtra1=1
 
-ExtraSectionName1="File Downloads"
+ExtraSectionName1="Downloads of data and documentation from the IQSS Dataverse Network"
 ExtraSectionCodeFilter1="200 304"
 ExtraSectionCondition1="URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isMIT=[0-9].*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&xff=[0-9].*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&xFF=[0-9].*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xFF=[0-9].*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xff=[0-9].*))"
 ExtraSectionFirstColumnTitle1="Requested Page"
@@ -1486,20 +1486,20 @@ ExtraSectionStatTypes1=PHK
 MaxNbOfExtra1=50
 MinHitExtra1=1
 
-ExtraSectionName2="Subsetting Views Resulting in a Subsetting and Analysis Request"
+ExtraSectionName2="Downloads of data and documentation by IP Address"
 ExtraSectionCodeFilter2="200 304"
-ExtraSectionCondition2="URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&isMIT=[0-9].*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xff=[0-9].*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xFF=[0-9].*))"
-ExtraSectionFirstColumnTitle2="Requested Page"
-ExtraSectionFirstColumnValues2="URLWITHQUERY,(.*)"
+ExtraSectionCondition2="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&isMIT=[0-9].*))||URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xff=[0-9].*))||URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xFF=[0-9].*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xFF=[0-9].*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xff=[0-9].*))"
+ExtraSectionFirstColumnTitle2="User IP Address"
+ExtraSectionFirstColumnValues2="HOST,(.*)"
 ExtraSectionStatTypes2=PHK
 MaxNbOfExtra2=50
 MinHitExtra2=1
 
-ExtraSectionName3="Downloads by IP Address"
+ExtraSectionName3="Subsetting Views Resulting in a Subsetting and Analysis Request"
 ExtraSectionCodeFilter3="200 304"
-ExtraSectionCondition3="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&isMIT=[0-9].*))||URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xff=[0-9].*))||URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xFF=[0-9].*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xFF=[0-9].*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xff=[0-9].*))"
-ExtraSectionFirstColumnTitle3="MIT Affiliated User - IP Address"
-ExtraSectionFirstColumnValues3="HOST,(.*)"
+ExtraSectionCondition3="URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&isMIT=[0-9].*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xff=[0-9].*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xFF=[0-9].*))"
+ExtraSectionFirstColumnTitle3="Requested Page"
+ExtraSectionFirstColumnValues3="URLWITHQUERY,(.*)"
 ExtraSectionStatTypes3=PHK
 MaxNbOfExtra3=50
 MinHitExtra3=1
@@ -1513,6 +1513,7 @@ ExtraSectionStatTypes4=PHK
 MaxNbOfExtra4=50
 MinHitExtra4=1
 
+
 # There is also a global parameter ExtraTrackedRowsLimit that limits the
 # number of possible rows an ExtraSection can report. This parameter is
 # here to protect too much memory use when you make a bad setup in your
@@ -1525,9 +1526,11 @@ MinHitExtra4=1
 #
 ExtraTrackedRowsLimit=500
 
+
 #-----------------------------------------------------------------------------
 # INCLUDES
 #-----------------------------------------------------------------------------
+
 # You can include other config files using the directive with the name of the
 # config file.
 # This is particularly useful for users who have a lot of virtual servers, so
@@ -1537,5 +1540,6 @@ ExtraTrackedRowsLimit=500
 # contains one value and AWStats will concat all values from both files for
 # parameters that are lists of values.
 #
+
 #Include ""
 

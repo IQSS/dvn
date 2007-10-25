@@ -764,7 +764,7 @@
                                             </h:column>
                                             <h:column>
                                                 <ui:panelGroup block="true">
-                                                    <h:inputText binding="#{EditStudyPage.inputKeywordValue}" id="input_keywordValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.keywordValue].required}" maxlength="255"/>
+                                                    <h:inputText binding="#{EditStudyPage.inputKeywordValue}" id="input_keywordValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.keywordValue].required}"/>
                                                     <h:message styleClass="errorMessage" for="input_keywordValue"/>                                
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
                                                         <ihelp:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyHelp}" linkText="#{editstudybundle.keywordVocabularyLabel}" heading="#{editstudybundle.keywordVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>

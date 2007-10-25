@@ -2102,6 +2102,11 @@ public class Study {
     
     
     public boolean isStudyRestrictedForUser(VDC vdc, VDCUser user) {
+        
+        if (this.getOwner().isVDCRestrictedForUser(user, null) ) {
+            return true;
+        }
+
         return isRestricted() && isUserRestricted(vdc,user);
     }
     
@@ -2112,6 +2117,10 @@ public class Study {
      *  use isStudyRestrictedForUser(), above.
      */
     public  boolean isUserRestricted( VDC vdc, VDCUser user) {
+
+        // the restrictions should be checked on the owner of the study, not the currentVDC (needs cleanup)
+        vdc = this.getOwner();
+        
         if (user == null) {
             return true;
         }
@@ -2136,7 +2145,7 @@ public class Study {
         
     }
     
-    public boolean userInAllowedUsers(VDCUser user) {
+    private boolean userInAllowedUsers(VDCUser user) {
         for (Iterator it = allowedUsers.iterator(); it.hasNext();) {
             VDCUser allowedUser = (VDCUser) it.next();
             if (allowedUser.getId().equals(user.getId())) {
@@ -2153,6 +2162,9 @@ public class Study {
      * @author wbossons
      */
     public boolean isStudyRestrictedForGroup(UserGroup usergroup) {
+        if (this.getOwner().isVDCRestrictedForUser(null, usergroup) ) {
+            return true;
+        }
         return isRestricted() && isRestrictedForUserGroup(usergroup);
     }
     

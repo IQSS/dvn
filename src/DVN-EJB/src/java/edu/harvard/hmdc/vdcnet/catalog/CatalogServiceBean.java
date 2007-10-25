@@ -13,7 +13,6 @@ import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.DeletedStudy;
 import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyExporter;
 import edu.harvard.hmdc.vdcnet.study.StudyExporterFactoryLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.vdc.OAISet;
@@ -22,16 +21,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
-import java.nio.channels.WritableByteChannel;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,10 +35,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.jws.WebService;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.xml.bind.JAXBException;
 
 /**
  *

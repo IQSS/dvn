@@ -365,6 +365,10 @@ public class StudyFile implements Serializable{
     }    
     
     public boolean isFileRestrictedForUser( VDCUser user, VDC vdc, UserGroup ipUserGroup ) {
+
+        // the restrictions should be checked on the owner of the study, not the currentVDC (needs cleanup)
+        vdc = this.getFileCategory().getStudy().getOwner();
+
       // If file belongs to a study in a HarvestingDataverse,
         // Check dataverse permisssions
         if (this.getFileCategory().getStudy().getOwner().isHarvestingDataverse()) {
@@ -373,6 +377,13 @@ public class StudyFile implements Serializable{
                  return true;
              }
         }
+        
+        // first check if study is restricted, regardless of file permissions
+        Study study = getFileCategory().getStudy();
+        if (study.isStudyRestrictedForUser(vdc,user)){
+            return true;
+        }
+
         if ( isRestricted() ) {
             if (user == null) {
                 if (ipUserGroup==null) {
@@ -389,12 +400,7 @@ public class StudyFile implements Serializable{
                 }
             }
           
-            // 1. check if study is restricted
-            Study study = getFileCategory().getStudy();
-            if (study.isStudyRestrictedForUser(vdc,user)){
-                return true;
-            }
-            //
+            // 1. check if study is restricted (this part was moved a little higher; still need more cleanup)    
             // 2. check network role
             if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN) ) {
                 // If you are network admin, you can do anything!

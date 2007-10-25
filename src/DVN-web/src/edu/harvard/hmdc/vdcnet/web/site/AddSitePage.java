@@ -471,13 +471,16 @@ public class AddSitePage extends VDCBaseBean {
             UIComponent toValidate,
             Object value) {
         String name = (String) value;
-        
+        if (name != null && name.trim().length() == 0) {
+            FacesMessage message = new FacesMessage("The dataverse name field must have a value.");
+            context.addMessage(toValidate.getClientId(context), message);
+            context.renderResponse();
+        }
         boolean nameFound = false;
         VDC vdc = vdcService.findByName(name);
         if (vdc != null) {
             nameFound=true;
         }
-        
         if (nameFound) {
             ((UIInput)toValidate).setValid(false);
             

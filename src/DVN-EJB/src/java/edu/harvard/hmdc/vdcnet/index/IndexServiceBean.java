@@ -32,23 +32,31 @@ package edu.harvard.hmdc.vdcnet.index;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.ejb.Timer;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Queue;
@@ -58,7 +66,6 @@ import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 
@@ -69,6 +76,7 @@ import javax.persistence.PersistenceContextType;
  */
 @Stateless
 public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServiceLocal {
+    @Resource javax.ejb.TimerService timerService;
     @EJB StudyServiceLocal studyService;
     @EJB VDCServiceLocal vdcService;
     @EJB MailServiceLocal mailService;
@@ -76,6 +84,18 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     @Resource(mappedName="jms/IndexMessageFactory") QueueConnectionFactory factory;
     @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
     EntityManager em;
+    private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.index.IndexServiceBean");
+    private static final String INDEX_TIMER = "IndexTimer";
+
+    static {
+        try {
+            logger.addHandler(new FileHandler(FileUtil.getImportFileDir()+ File.separator+ "index.log"));
+        } catch(IOException e) {
+            
+            
+            throw new EJBException(e);
+        }
+    }
     
     /**
      * Creates a new instance of IndexServiceBean
@@ -83,6 +103,29 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     public IndexServiceBean() {
     }
     
+    public void createIndexTimer() {
+        for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
+            Timer timer = (Timer) it.next();
+            if (timer.getInfo().equals(INDEX_TIMER)) {
+                logger.info("Cannot create IndexTimer, timer already exists.");
+                logger.info("IndexTimer next timeout is " +timer.getNextTimeout());
+                return;
+                
+            }
+            
+        }
+        
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR,1);
+        cal.set(Calendar.HOUR_OF_DAY,1);
+        
+        logger.log(Level.INFO,"Indexer timer set for "+cal.getTime());
+        System.out.println("Indexer timer set for "+cal.getTime());
+        Date initialExpiration = cal.getTime();  // First timeout is 1:00 AM of next day
+        long intervalDuration = 1000*60 *60*24;  // repeat every 24 hours
+        timerService.createTimer(initialExpiration, intervalDuration,INDEX_TIMER);
+        
+    }
     public void indexStudy(long studyId){
         IndexEdit op = new IndexEdit();
         op.setStudyId(studyId);
@@ -197,6 +240,28 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
             try {
                 deleteDocument(elem.longValue());
                 addDocument(elem.longValue());
+            } catch (EJBException e) {
+                if (e.getCause() instanceof IllegalArgumentException) {
+                    System.out.println("Study id " + elem.longValue() + " not found");
+                    e.printStackTrace();
+                } else {
+                    throw e;
+                }
+            }
+        }
+    }
+    
+    public void deleteIndexList(List<Long> studyIds) {
+        Indexer indexer = Indexer.getInstance();
+        try {
+            indexer.setup();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        for (Iterator it = studyIds.iterator(); it.hasNext();) {
+            Long elem = (Long) it.next();
+            try {
+                deleteDocument(elem.longValue());
             } catch (EJBException e) {
                 if (e.getCause() instanceof IllegalArgumentException) {
                     System.out.println("Study id " + elem.longValue() + " not found");

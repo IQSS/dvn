@@ -1491,7 +1491,7 @@ color_x="C1B2E2"				# Background color for number of exit pages (Default = "C1B2
 #MaxNbOfExtra1=20
 #MinHitExtra1=1
 
-ExtraSectionName1="File Downloads"
+ExtraSectionName1="Downloads of Data and Documentation"
 ExtraSectionCodeFilter1="200 304"
 ExtraSectionCondition1="URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isMIT=1.*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&xff=1.*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&xFF=1.*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xFF=1.*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xff=1.*))"
 ExtraSectionFirstColumnTitle1="Requested Page"
@@ -1500,20 +1500,20 @@ ExtraSectionStatTypes1=PHK
 MaxNbOfExtra1=50
 MinHitExtra1=1
 
-ExtraSectionName2="Subsetting Views Resulting in a Subsetting and Analysis Request"
+ExtraSectionName2="Downloads of Data and Documentation by IP Address"
 ExtraSectionCodeFilter2="200 304"
-ExtraSectionCondition2="URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&isMIT=1.*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xff=1.*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xFF=1.*))"
-ExtraSectionFirstColumnTitle2="Requested Page"
-ExtraSectionFirstColumnValues2="URLWITHQUERY,(.*)"
+ExtraSectionCondition2="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&isMIT=1.*))||URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xff=1.*))||URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xFF=1.*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xFF=1.*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xff=1.*))"
+ExtraSectionFirstColumnTitle2="MIT Affiliated User - IP Address"
+ExtraSectionFirstColumnValues2="extra3,(.*)"
 ExtraSectionStatTypes2=PHK
 MaxNbOfExtra2=50
 MinHitExtra2=1
 
-ExtraSectionName3="Downloads by IP Address"
+ExtraSectionName3="Subsetting Views Resulting in a Subsetting and Analysis Request"
 ExtraSectionCodeFilter3="200 304"
-ExtraSectionCondition3="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&isMIT=1.*))||URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xff=1.*))||URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xFF=1.*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xFF=1.*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xff=1.*))"
-ExtraSectionFirstColumnTitle3="MIT Affiliated User - IP Address"
-ExtraSectionFirstColumnValues3="extra3,(.*)"
+ExtraSectionCondition3="URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&isMIT=1.*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xff=1.*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xFF=1.*))"
+ExtraSectionFirstColumnTitle3="Requested Page"
+ExtraSectionFirstColumnValues3="URLWITHQUERY,(.*)"
 ExtraSectionStatTypes3=PHK
 MaxNbOfExtra3=50
 MinHitExtra3=1

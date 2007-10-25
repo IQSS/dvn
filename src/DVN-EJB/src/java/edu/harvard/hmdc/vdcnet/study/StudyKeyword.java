@@ -94,6 +94,7 @@ public class StudyKeyword {
     /**
      * Holds value of property value.
      */
+    @Column(columnDefinition="TEXT")
     private String value;
 
     /**

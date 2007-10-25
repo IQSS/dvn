@@ -69,7 +69,7 @@ public class ReportConstants {
   public static final String END_EXTRA_3 		= "END_EXTRA_3";
   //BEGIN_EXTRA_4
   public static final String BEGIN_EXTRA_4 		= "BEGIN_EXTRA_4";
-  public static final String NUM_UNIQUESUBSETS_HEADING = "Subsetting interface views by IP Address.";
+  public static final String NUM_UNIQUESUBSETS_HEADING = "Subsetting interface views by MIT-assigned IP Address.";
   public static final String END_EXTRA_4 		= "END_EXTRA_4";
 
   public static final String COMMA = ",";

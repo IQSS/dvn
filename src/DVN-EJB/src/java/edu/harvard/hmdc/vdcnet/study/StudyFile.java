@@ -369,19 +369,19 @@ public class StudyFile implements Serializable{
         // the restrictions should be checked on the owner of the study, not the currentVDC (needs cleanup)
         vdc = this.getFileCategory().getStudy().getOwner();
 
-      // If file belongs to a study in a HarvestingDataverse,
-        // Check dataverse permisssions
-        if (this.getFileCategory().getStudy().getOwner().isHarvestingDataverse()) {
-            HarvestingDataverse hd = this.getFileCategory().getStudy().getOwner().getHarvestingDataverse();
-             if (hd.areFilesRestrictedForUser(user, ipUserGroup)) {
-                 return true;
-             }
-        }
         
         // first check if study is restricted, regardless of file permissions
         Study study = getFileCategory().getStudy();
         if (study.isStudyRestrictedForUser(vdc,user)){
             return true;
+        }
+
+        // If file belongs to a study in a HarvestingDataverse, check dataverse permisssions
+        if (this.getFileCategory().getStudy().getOwner().isHarvestingDataverse()) {
+            HarvestingDataverse hd = this.getFileCategory().getStudy().getOwner().getHarvestingDataverse();
+             if (hd.areFilesRestrictedForUser(user, ipUserGroup)) {
+                 return true;
+             }
         }
 
         if ( isRestricted() ) {

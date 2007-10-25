@@ -300,7 +300,7 @@ public class LoginFilter implements Filter {
         boolean restricted = false;
         
         if (pageDef!=null &&(pageDef.getNetworkRole()!=null || pageDef.getRole()!=null)
-        || isStudyRestricted(pageDef, request)
+        || isViewStudyPage(pageDef)
         || isVdcRestricted(pageDef, request)) {
             restricted= true;
         }
@@ -308,15 +308,11 @@ public class LoginFilter implements Filter {
     }
     
     
-    private boolean isStudyRestricted(PageDef pageDef, HttpServletRequest request) {
-        boolean restricted=false;
+    private boolean isViewStudyPage(PageDef pageDef) {
         if (pageDef!=null && pageDef.getName().equals(pageDefService.VIEW_STUDY_PAGE)) {
-            if (request.getParameter("studyId")!=null) {
-                Study study = studyService.getStudy(Long.parseLong(request.getParameter("studyId")));
-                restricted = study.isRestricted();
-            }
+            return true;
         }
-        return restricted;
+        return false;
     }
     
     
@@ -335,15 +331,15 @@ public class LoginFilter implements Filter {
     
     private boolean isGroupAuthorized(PageDef pageDef, UserGroup ipusergroup, VDC currentVDC, HttpServletRequest request) {
         boolean authorized = false;
-        if (isVdcRestricted(pageDef, request)) {
+
+        if (this.isViewStudyPage(pageDef)) {
+            Study study = studyService.getStudy(Long.parseLong(request.getParameter("studyId")));
+            authorized = !study.isStudyRestrictedForGroup( ipusergroup);
+        } else if (isVdcRestricted(pageDef, request)) {
             if (currentVDC.isAllowedGroup(ipusergroup)) {
                 authorized=true;
             }
-        } else if (this.isStudyRestricted(pageDef,request)) {
-            Study study = studyService.getStudy(Long.parseLong(request.getParameter("studyId")));
-            authorized = study.isAllowedGroup( ipusergroup);
-            
-        }
+        } 
         
         return authorized;
     }
@@ -412,7 +408,11 @@ public class LoginFilter implements Filter {
         }
         
         else {
-            if (isVdcRestricted(pageDef, request)) {
+            if ( isViewStudyPage(pageDef) ) {
+                Study study = studyService.getStudy(Long.parseLong(request.getParameter("studyId")));
+                authorized = !study.isStudyRestrictedForUser( currentVDC, user);
+
+            } else if (isVdcRestricted(pageDef, request)) {
                 if (RoleServiceLocal.PRIVILEGED_VIEWER.equals(userRoleName)
                 || RoleServiceLocal.ADMIN.equals(userRoleName)
                 || RoleServiceLocal.CURATOR.equals(userRoleName)
@@ -420,12 +420,9 @@ public class LoginFilter implements Filter {
                 || currentVDC.userInAllowedGroups(user)) {
                     authorized=true;
                 }
-            } else if (this.isStudyRestricted(pageDef,request)) {
-                Study study = studyService.getStudy(Long.parseLong(request.getParameter("studyId")));
-                authorized = !study.isStudyRestrictedForUser( currentVDC, user);
-                
             }
         }
+
         return authorized;
         
     }

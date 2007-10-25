@@ -531,6 +531,9 @@ public class AddSitePage extends VDCBaseBean {
     private String dataverseType = null;
 
     public String getDataverseType() {
+        if (dataverseType == null) {
+            setDataverseType("Basic");
+        }
         return dataverseType;
     }
     

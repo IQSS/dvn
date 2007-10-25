@@ -29,7 +29,6 @@
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -89,8 +88,8 @@ public class ReportWriter extends ReportConstants {
 	    LinkedHashMap totalVisitsList = new LinkedHashMap();
 	    LinkedHashMap totalUniqueList = new LinkedHashMap();
 	    LinkedHashMap downloadsList   = new LinkedHashMap();
+            LinkedHashMap downloadsIpList = new LinkedHashMap();
 	    LinkedHashMap subsetsList     = new LinkedHashMap();
-	    LinkedHashMap downloadsIpList = new LinkedHashMap();
 	    LinkedHashMap subsetsIpList   = new LinkedHashMap();
             LinkedHashMap missingReportData    = new LinkedHashMap();
 
@@ -100,6 +99,7 @@ public class ReportWriter extends ReportConstants {
                 String fileToRead = this.getAwstatsDirData() + "/awstats" + monthsInReport[0][i] + theYear + "." + reportee + ".txt";
                 inputStream = new BufferedReader(new FileReader(fileToRead));
                 boolean isGeneral = false;
+                OUTER_LOOP:
                 while ((line = inputStream.readLine()) != null) {
                     if (line.contains(ReportConstants.BEGIN_GENERAL)) {
                             isGeneral = true;
@@ -112,26 +112,22 @@ public class ReportWriter extends ReportConstants {
                             String reportValue = line.substring(line.indexOf(ReportConstants.DELIMITER) + 1);
                             totalUniqueList.put(monthsInReport[1][i], reportValue);
                     }
-
                     //extra1 (File Downloads)
                     if (line.contains(ReportConstants.BEGIN_EXTRA_1)) {
-                            String reportValue = line.substring(line.indexOf(ReportConstants.DELIMITER) + 1);
-                            downloadsList.put(monthsInReport[1][i], reportValue);
+                            downloadsList.put(monthsInReport[1][i], this.getPageViews(inputStream, ReportConstants.END_EXTRA_1));
                     }
-                    //extra2 (Subsetting Views Resulting in a Subsetting and Analysis Request)
+                    //extra2 (number of unique ip addresses downloading data and documentation)
                     if (line.contains(ReportConstants.BEGIN_EXTRA_2)) {
-                            String reportValue = line.substring(line.indexOf(ReportConstants.DELIMITER) + 1);
-                            subsetsList.put(monthsInReport[1][i], reportValue);
-                    }
-                    //extra3 (number of unique ip addresses downloading data and documentation
-                    if (line.contains(ReportConstants.BEGIN_EXTRA_3)) {
-                            String reportValue = Integer.toString(getUniqueIps(inputStream, ReportConstants.END_EXTRA_3));//line.substring(line.indexOf(ReportConstants.DELIMITER) + 1);
-                            System.out.println("the report value is " + reportValue);
+                            String reportValue = Integer.toString(getUniqueIps(inputStream, ReportConstants.END_EXTRA_2));
                             downloadsIpList.put(monthsInReport[1][i], reportValue);
+                    }
+                    //extra3 (Subsetting Views Resulting in a Subsetting and Analysis Request)
+                    if (line.contains(ReportConstants.BEGIN_EXTRA_3)) {
+                            subsetsList.put(monthsInReport[1][i], this.getPageViews(inputStream, ReportConstants.END_EXTRA_3));
                     }
                     //extra4 (number of unique ip addresses from which subsetting interface views were made)
                     if (line.contains(ReportConstants.BEGIN_EXTRA_4)) {
-                            String reportValue = Integer.toString(getUniqueIps(inputStream, ReportConstants.END_EXTRA_4));//line.substring(line.indexOf(ReportConstants.DELIMITER) + 1);
+                            String reportValue = Integer.toString(getUniqueIps(inputStream, ReportConstants.END_EXTRA_4));
                             subsetsIpList.put(monthsInReport[1][i], reportValue);
                     }
                 }
@@ -143,8 +139,8 @@ public class ReportWriter extends ReportConstants {
             hashmap.put(ReportConstants.TOTAL_VISITS_HEADING, totalVisitsList);
             hashmap.put(ReportConstants.TOTAL_UNIQUE_HEADING, totalUniqueList);
             hashmap.put(ReportConstants.NUM_DOWNLOADS_HEADING, downloadsList);
-            hashmap.put(ReportConstants.NUM_SUBSETJOBS_HEADING, subsetsList);
             hashmap.put(ReportConstants.NUM_UNIQUEDOWNLOADS_HEADING, downloadsIpList);
+            hashmap.put(ReportConstants.NUM_SUBSETJOBS_HEADING, subsetsList);
             hashmap.put(ReportConstants.NUM_UNIQUESUBSETS_HEADING, subsetsIpList);
             if (separator.equals(""))
                 writeReport(hashmap);
@@ -341,6 +337,40 @@ public class ReportWriter extends ReportConstants {
             }
 	}
         
+       /** getPageViews
+	*
+	* @description this method returns the
+	* number of page views associated with
+	* a category like subsetting or downloads
+	*
+	* @param inputstream - the inputstream being read
+	* @param lineend - string representing end of this section
+	* @return String - the number of the downloads
+	*
+	* @author wbossons
+	*/
+	private String getPageViews(BufferedReader inputstream, String lineend)
+						throws IOException {
+            int pageViews = 0;
+            String reportValue = null;
+            try {
+                //DEBUG
+                Integer count    = new Integer(0);
+                while ( (line = inputstream.readLine()) != null) {
+                    if (line.contains(lineend))
+                        break;
+                    count += Integer.parseInt(Character.toString(line.charAt(line.indexOf(ReportConstants.DELIMITER) + 1)));
+                }
+                reportValue = count.toString();
+                //downloadsList.put(monthsInReport[1][i], reportValue);
+                //END DEBUG
+            } catch (IOException ioe) {
+                    System.out.println("An error occurred in getPageViews");
+            } finally {
+                    return reportValue;
+            }
+	}
+        
         /** getReportUrl
          *
          * @description Returns the url for the 
@@ -393,10 +423,7 @@ public class ReportWriter extends ReportConstants {
                 System.out.println("There was a problem reading the conf file. " + ioe.toString());
             } catch (Exception e) {
                 System.out.println("An unexpected exception occurred while trying to read the conf file.");
-            } finally {
-                if (this.awstatsDirData != null)
-                    System.out.println("the awstats directory is " + this.awstatsDirData);
-            }
+            } 
         }
 
 	public boolean equals(Object obj) {

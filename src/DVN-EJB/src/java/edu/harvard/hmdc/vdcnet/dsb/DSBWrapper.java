@@ -51,7 +51,7 @@ import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-//import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -78,7 +78,6 @@ public class DSBWrapper {
     private static final String FORMAT_TYPE_SPLUS = "D02";
     private static final String FORMAT_TYPE_STATA = "D03";
     private static final String FORMAT_TYPE_R = "D03";
-    private static final String[] SUBSETTABLE_FORMAT_SET = {"POR", "SAV", "DTA"};
     
     
     /** Creates a new instance of DSBWrapper */
@@ -128,32 +127,12 @@ public class DSBWrapper {
     
     
     public String analyze(File f) throws IOException{
-        //BufferedReader rd = null;
-        //PostMethod method = null;
+        BufferedReader rd = null;
+        PostMethod method = null;
         
         try {
             String fileType = null;
             
-            // step 1: check whether the file is subsettable
-            
-            SubsettableFileChecker sfchk = new SubsettableFileChecker(SUBSETTABLE_FORMAT_SET);
-            
-            fileType = sfchk.detectSubsettableFormat(f);
-            if (fileType != null){
-                System.out.println("DSBWrapper:Analyze:mimeType="+fileType);
-            }
-            // setp 2: check the mime type of this file
-            /* to be implemented*/
-            if (fileType == null){
-                JhoveWrapper jw = new JhoveWrapper();
-                fileType = jw.getFileMimeType(f);
-                 System.out.println("DSBWrapper:Analyze:mimeType by Jhove="+fileType);
-            }
-            /*
-            
-            if (fileType == null){
-            
-            //to be deprecated
             // create method
             method = new PostMethod(generateUrl(DSB_ANALYZE));
             method.addParameter("file_name", f.getName());
@@ -175,18 +154,14 @@ public class DSBWrapper {
                 }
             }
             
-            }
-            */
             return fileType;
             
         } finally {
-            /*
             if (method != null) { method.releaseConnection(); }
             try {
                 if (rd != null) { rd.close(); }
             } catch (IOException ex) {
             }
-            */
         }
     }
     

@@ -26,6 +26,8 @@
 
 package edu.harvard.hmdc.vdcnet.web.servlet;
 
+import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
+import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
@@ -47,84 +49,106 @@ public class DDIExportServlet extends HttpServlet {
     
     @EJB DDI20ServiceLocal ddiService;
     @EJB StudyServiceLocal studyService;
-    
+ 
+    private boolean isNetworkAdmin(HttpServletRequest req) {
+        VDCUser user = null;
+        if ( LoginFilter.getLoginBean(req) != null ) {
+            user= LoginFilter.getLoginBean(req).getUser();
+            if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN) ) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+   
     /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
      */
     protected void processRequest(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-        String studyId = req.getParameter("studyId");
-        String fileId = req.getParameter("fileId");
-        String fetchOriginal = req.getParameter("originalImport");
-        String exportToLegacyVDC = req.getParameter("legacy");
-        
-        InputStream in = null; // used if getting originalImport
-        PrintWriter out= null;
-        
-        try {
-            if (fileId != null) {
-                try {
-                    StudyFile sf = studyService.getStudyFile( new Long( fileId ) );
-                    
-                    if (!sf.isSubsettable()) {
-                        createErrorResponse(res, "The file you requested is NOT a datafile.");
-                    } else {
-                        res.setContentType("text/xml");
-                        out = res.getWriter();
-                        ddiService.exportDataFile(sf, out );
-                    }
-                } catch (Exception ex) {
-                    if (ex.getCause() instanceof IllegalArgumentException) {
-                        createErrorResponse(res, "There is no file with fileId: " + fileId);    
-                    } else {
-                        ex.printStackTrace();
-                        createErrorResponse(res, "An exception ocurred while fetching the DDI for this data file.");
-                    }
-                }
-            } else if (studyId != null) {
-                try {
-                    Study s = studyService.getStudy( new Long( studyId ) );
 
-                    if (fetchOriginal != null) {
-                        // get the original xml from the file System
-                        File studyDir = new File(FileUtil.getStudyFileDir(), s.getAuthority() + File.separator + s.getStudyId());
-                        File originalImport = new File(studyDir, "original_imported_study.xml");
-                        
-                        if (originalImport.exists()) {
+
+       if (isNetworkAdmin(req)) {
+            String studyId = req.getParameter("studyId");
+            String fileId = req.getParameter("fileId");
+            String fetchOriginal = req.getParameter("originalImport");
+            String exportToLegacyVDC = req.getParameter("legacy");
+
+            InputStream in = null; // used if getting originalImport
+            PrintWriter out= null;
+            OutputStream out2 = null;
+
+            try {
+                if (fileId != null) {
+                    try {
+                        StudyFile sf = studyService.getStudyFile( new Long( fileId ) );
+
+                        if (!sf.isSubsettable()) {
+                            createErrorResponse(res, "The file you requested is NOT a datafile.");
+                        } else {
                             res.setContentType("text/xml");
                             out = res.getWriter();
-                            in = new FileInputStream(originalImport);
-                            
-                            int i = in.read();
-                            while (i != -1 ) {
-                                out.write(i);
-                                i = in.read();
-                            }
-                        } else {
-                            createErrorResponse(res, "There is no original import DDI for this study.");
+                            ddiService.exportDataFile(sf, out );
                         }
-                        
-                    } else {
-                        // otherwise create ddi from data
-                        res.setContentType("text/xml");
-                        out = res.getWriter();
-                        ddiService.exportStudy(s, out, (exportToLegacyVDC != null) );
+                    } catch (Exception ex) {
+                        if (ex.getCause() instanceof IllegalArgumentException) {
+                            createErrorResponse(res, "There is no file with fileId: " + fileId);    
+                        } else {
+                            ex.printStackTrace();
+                            createErrorResponse(res, "An exception ocurred while fetching the DDI for this data file.");
+                        }
                     }
-                } catch (Exception ex) {
-                    if (ex.getCause() instanceof IllegalArgumentException) {
-                        createErrorResponse(res, "There is no study with studyId: " + studyId);    
-                    } else {                    
-                        ex.printStackTrace();
-                        createErrorResponse(res, "An exception ocurred while fetching the DDI for this study.");
+                } else if (studyId != null) {
+                    try {
+                        Study s = studyService.getStudy( new Long( studyId ) );
+
+                        if (fetchOriginal != null) {
+                            // get the original xml from the file System
+                            File studyDir = new File(FileUtil.getStudyFileDir(), s.getAuthority() + File.separator + s.getStudyId());
+                            File originalImport = new File(studyDir, "original_imported_study.xml");
+
+                            if (originalImport.exists()) {
+                                res.setContentType("text/xml");
+                                out2 = res.getOutputStream();
+                                in = new FileInputStream(originalImport);
+
+                                byte[] dataBuffer = new byte[8192]; 
+
+                                int i = 0;
+                                while ( ( i = in.read (dataBuffer) ) > 0 ) {
+                                    out2.write(dataBuffer,0,i);
+                                    out2.flush(); 
+                                }
+                            } else {
+                                createErrorResponse(res, "There is no original import DDI for this study.");
+                            }
+
+                        } else {
+                            // otherwise create ddi from data
+                            res.setContentType("text/xml");
+                            out = res.getWriter();
+                            ddiService.exportStudy(s, out, (exportToLegacyVDC != null) );
+                        }
+                    } catch (Exception ex) {
+                        if (ex.getCause() instanceof IllegalArgumentException) {
+                            createErrorResponse(res, "There is no study with studyId: " + studyId);    
+                        } else {                    
+                            ex.printStackTrace();
+                            createErrorResponse(res, "An exception ocurred while fetching the DDI for this study.");
+                        }
                     }
+                } else {
+                    createErrorResponse(res, "No studyId or fileId was specifed for this request.");
                 }
-            } else {
-                createErrorResponse(res, "No studyId or fileId was specifed for this request.");
+            } finally {
+                if (out!=null) { out.close(); }
+                if (out2!=null) { out2.close(); }
+                if (in!=null) { in.close(); }
             }
-        } finally {
-            if (out!=null) { out.close(); }
-            if (in!=null) { in.close(); }
+        } else {
+            createErrorResponse(res, "You are not authorized for this action.");
         }
     }
     

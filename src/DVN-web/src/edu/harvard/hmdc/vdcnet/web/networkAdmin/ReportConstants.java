@@ -50,25 +50,27 @@ public class ReportConstants {
   public static final String PATH_SEPARATOR = System.getProperty("path.separator");
   public static final String DELIMITER = " ";
 
-  public static final String BEGIN_GENERAL = "BEGIN_GENERAL";
-  public static final String TOTAL_VISITS  = "TotalVisits";
-  public static final String TOTAL_VISITS_HEADING 	= "Total number of hits by MIT users.";
-  public static final String TOTAL_UNIQUE  			= "TotalUnique";
-  public static final String TOTAL_UNIQUE_HEADING  	= "Number of Unique MIT-assigned IP Addresses Accessing the IQSS Dataverse Network";
+  public static final String BEGIN_GENERAL              = "BEGIN_GENERAL";
+  public static final String TOTAL_VISITS               = "TotalVisits";
+  public static final String TOTAL_VISITS_HEADING 	= "Total number of visits by MIT users.";
+  public static final String TOTAL_UNIQUE  		= "TotalUnique";
+  public static final String TOTAL_UNIQUE_HEADING  	= "Unique MIT-assigned IP Addresses accessing the IQSS Dataverse Network.";
   //BEGIN_EXTRA_1
-  public static final String BEGIN_EXTRA_1 			= "BEGIN_EXTRA_1";
-  public static final String NUM_DOWNLOADS_HEADING 	= "Number of downloads of data and documentation from the IQSS Dataverse Network by MIT Users";
+  public static final String BEGIN_EXTRA_1 		= "BEGIN_EXTRA_1";
+  public static final String NUM_DOWNLOADS_HEADING 	= "Downloads of data and documentation from the IQSS Dataverse Network by MIT Users";
+  public static final String END_EXTRA_1 		= "END_EXTRA_1";
  //BEGIN_EXTRA_2
-  public static final String BEGIN_EXTRA_2 			= "BEGIN_EXTRA_2";
-  public static final String NUM_SUBSETJOBS_HEADING = "Number of  subsetting interface views resulting in one or more actions of running an actual subsetting/statistical job by MIT Users";
+  public static final String BEGIN_EXTRA_2 		= "BEGIN_EXTRA_2";
+  public static final String NUM_UNIQUEDOWNLOADS_HEADING = "Downloads of data and documentation by MIT-assigned IP Address";
+  public static final String END_EXTRA_2 		= "END_EXTRA_2";
   //BEGIN_EXTRA_3
-  public static final String BEGIN_EXTRA_3 			= "BEGIN_EXTRA_3";
-  public static final String NUM_UNIQUEDOWNLOADS_HEADING = "Number of unique ip addresses downloading data and documentation from the VDC";
-  public static final String END_EXTRA_3 			= "END_EXTRA_3";
+  public static final String BEGIN_EXTRA_3 		= "BEGIN_EXTRA_3";
+  public static final String NUM_SUBSETJOBS_HEADING     = "Subsetting interface views resulting in one or more actions of running an actual subsetting/statistical job by MIT Users";
+  public static final String END_EXTRA_3 		= "END_EXTRA_3";
   //BEGIN_EXTRA_4
-  public static final String BEGIN_EXTRA_4 			= "BEGIN_EXTRA_4";
-  public static final String NUM_UNIQUESUBSETS_HEADING = "Number of unique ip addresses generating subsetting interface views.";
-  public static final String END_EXTRA_4 			= "END_EXTRA_4";
+  public static final String BEGIN_EXTRA_4 		= "BEGIN_EXTRA_4";
+  public static final String NUM_UNIQUESUBSETS_HEADING = "Subsetting interface views by IP Address.";
+  public static final String END_EXTRA_4 		= "END_EXTRA_4";
 
   public static final String COMMA = ",";
   public static final String DOUBLE_QUOTE = "\"";

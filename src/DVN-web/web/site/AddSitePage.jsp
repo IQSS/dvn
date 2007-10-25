@@ -9,15 +9,11 @@
     <f:subview id="addSitePageView">
          <f:verbatim>
             <script language="JavaScript">
-                function setCheckedValue(frmElement) {
-                    var theForm = document.forms['content:addSitePageView:form1'];
-                    for (var i = 0; i &lt; theForm.elements.length; i++) {
-                        if (theForm.elements[i].checked) {
-                            frmElement.value = theForm.elements[i].value;
-                            break;
-                        }
-                    }
-                 }
+                 function changeValue(obj) {
+                    if (window.event)
+                        obj.value = window.event.srcElement.value;
+                        document.forms['content:addSitePageView:form1'].submit();
+                }
                  
                  //init the hidden fields
                  function showAll(){
@@ -61,19 +57,20 @@
                                      columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" id="gridPanel1" style="margin-top: 30px; margin-bottom: 30px">
                             <!-- dataverse type -->
                             <ui:panelGroup block="true" style="vertical-align: top;">
-                                <h:outputLabel for="dataverseOption" id="dataverseLabel">
+                                <h:outputLabel for="dataverseType" id="dataverseLabel">
                                     <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Type of Dataverse"/>                                              
                                 </h:outputLabel>
                             </ui:panelGroup>
                             <ui:panelGroup block="true" style="vertical-align: top;">
-                                <h:selectOneRadio id="dataverseOption" 
+                                <h:selectOneRadio id="dataverseType" 
                                                     layout="lineDirection" 
-                                                    onchange="setCheckedValue(document.getElementById('content:addSitePageView:form1:dataverseType'));submit();"
+                                                    onclick="changeValue(this);"
+                                                    value="#{AddSitePage.dataverseType}"
                                                     valueChangeListener="#{AddSitePage.changeDataverseOption}"
-                                                    required="true">
+                                                    required="true"
+                                                    requiredMessage="This field is required.">
                                     <f:selectItems value="#{AddSitePage.dataverseOptions}"/>
                                 </h:selectOneRadio>
-                             <h:inputHidden id="dataverseType" immediate="true" value="#{AddSitePage.dataverseType}" valueChangeListener="#{AddSitePage.changeDataverseOption}"/>
                             </ui:panelGroup>
                             <!-- first name -->
                             <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Scholar'}" block="true" style="vertical-align: top;">

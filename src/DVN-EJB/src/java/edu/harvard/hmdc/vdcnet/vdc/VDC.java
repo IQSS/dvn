@@ -27,7 +27,9 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
+import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleRequest;
+import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCRole;
@@ -788,6 +790,58 @@ public class VDC {
     }
 
 
+    public boolean isVDCRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
 
+        if ( isRestricted() ) {
+            if (user == null) {
+                if (ipUserGroup==null) {
+                    return true;
+                } else {
+                    Iterator iter = this.getAllowedGroups().iterator();
+                    while (iter.hasNext()) {
+                        UserGroup allowedGroup = (UserGroup) iter.next();
+                        if (allowedGroup.equals(ipUserGroup)) {
+                            return false;
+                        }    
+                    } 
+                    return true;
+                }
+            }
+          
+            // 1. check network role
+            if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN) ) {
+                // If you are network admin, you can do anything!
+                return false;
+            }
+            
+            // 2. check vdc role
+            VDCRole userRole = user.getVDCRole(this);
+            if (userRole != null) {
+                String userRoleName = userRole.getRole().getName();
+                if ( userRoleName.equals(RoleServiceLocal.ADMIN) || 
+                     userRoleName.equals(RoleServiceLocal.CURATOR) ||
+                     userRoleName.equals(RoleServiceLocal.CONTRIBUTOR) ||
+                     userRoleName.equals(RoleServiceLocal.PRIVILEGED_VIEWER)
+                   ) {
+                    return false;
+                }
+            }
+           
+            // 3. check users
+            // (this step is not necessary for dataverse restriction check)
+
+            // 4. check groups
+            Iterator iter = this.getAllowedGroups().iterator();
+            while (iter.hasNext()) {
+                UserGroup allowedGroup = (UserGroup) iter.next();
+                if (user.getUserGroups().contains(allowedGroup)) {
+                    return false;
+                }
+            }
+            return true;
+        }      
+
+        return false;
+    }
 
 }

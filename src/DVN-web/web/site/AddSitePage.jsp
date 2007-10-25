@@ -123,7 +123,7 @@
                                 </h:outputLabel>
                             </ui:panelGroup>
                             <ui:panelGroup>
-                                <h:inputText binding="#{AddSitePage.dataverseName}" id="dataverseName" required="true" validator="#{AddSitePage.validateName}" size="60"/>
+                                <h:inputText binding="#{AddSitePage.dataverseName}" id="dataverseName" immediate="true" required="true" requiredMessage="This field is required." validator="#{AddSitePage.validateName}" size="60"/>
                                 <f:verbatim><br /></f:verbatim>
                                 <h:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
                                 <h:message for="dataverseName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>

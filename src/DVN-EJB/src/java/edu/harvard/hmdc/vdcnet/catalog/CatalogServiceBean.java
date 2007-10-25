@@ -9,7 +9,6 @@
 
 package edu.harvard.hmdc.vdcnet.catalog;
 
-import com.sun.tools.jdi.EventSetImpl.Itr;
 import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.DeletedStudy;

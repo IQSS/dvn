@@ -76,27 +76,4 @@ public class ReportConstants {
   public static final String DOUBLE_QUOTE = "\"";
   public static final String SINGLE_QUOTE = "'";
 
-  //public static final int FAILURE = -1;
-  //public static final int NOT_FOUND = -1;
-  //public static final boolean PASS = true;
-  //public static final boolean FAIL = false;
-
-  // PRIVATE //
-  /*
-  * Implementation Note :
-  * Only refer to primitives and immutable objects.
-  *
-  * Arrays present a problem since arrays are always mutable.
-  * DO NOT USE public static final array fields.
-  * One style is to replace with an umodifiable List, built in a static initializer block.
-  *
-  * Another style is to use a private array and wrap it up like so:
-  * <pre>
-  *  private static final Vehicle[] PRIVATE_VEHICLES = {...};
-  *  public static final List VEHICLES =
-  *    Collections.unmodifiableList(Arrays.asList(PRIVATE_VEHICLES))
-  *  ;
-  * </pre>
-  */
-
 }

@@ -383,7 +383,8 @@ public class StudyFile implements Serializable{
                  return true;
              }
         }
-
+        
+        // otherwise check for restriction on file itself
         if ( isRestricted() ) {
             if (user == null) {
                 if (ipUserGroup==null) {

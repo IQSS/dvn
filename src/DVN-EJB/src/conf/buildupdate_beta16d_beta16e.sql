@@ -9,3 +9,8 @@ update deletedstudy set deletedtime = current_timestamp(3);
 
 ALTER TABLE deletedstudy DROP COLUMN authority;
 ALTER TABLE deletedstudy DROP COLUMN studyid;
+
+
+ALTER TABLE studykeyword ALTER COLUMN value type text;
+ALTER TABLE studykeyword ALTER COLUMN value SET STORAGE EXTENDED;
+

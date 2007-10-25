@@ -37,6 +37,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyFileEditBean;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.TemplateFileCategory;
+import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.io.File;
 import java.util.ArrayList;
@@ -183,7 +184,7 @@ public class AddFilesPage extends VDCBaseBean {
                 uploadedFile.write( file );
                 
                 DSBWrapper dsb = new DSBWrapper();
-                String analyzeFileType = dsb.analyze( file );
+                String analyzeFileType = FileUtil.analyzeFile( file );
 
                 
                 // now add the studyfile
@@ -197,9 +198,8 @@ public class AddFilesPage extends VDCBaseBean {
                 // append ".tab" to name if subsettable
                 f.getStudyFile().setFileName(f.getStudyFile().isSubsettable() ? replaceExtension(originalName): originalName);                
                 
-                // currently, analyze is only precise enough when files are subsettable; therefore
-                // for other files, use the originalFileType determined by the upload
-                f.getStudyFile().setFileType( f.getStudyFile().isSubsettable() ? analyzeFileType : originalFileType);
+                // for unknown file types, use the originalFileType determined by the upload
+                f.getStudyFile().setFileType( analyzeFileType.equals("application/octet-stream") ? originalFileType : analyzeFileType);
                 
                 f.setTempSystemFileLocation( file.getAbsolutePath() );
                 f.getStudyFile().setFileSystemName(fileSystemNameService.generateFileSystemNameSequence());

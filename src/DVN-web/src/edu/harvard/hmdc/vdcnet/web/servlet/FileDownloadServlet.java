@@ -342,11 +342,14 @@ public class FileDownloadServlet extends HttpServlet{
 		    }
 
 		    try {
-			// recycle all the incoming headers 
-			for (int i = 0; i < method.getResponseHeaders().length; i++) {
-			    res.setHeader(method.getResponseHeaders()[i].getName(), method.getResponseHeaders()[i].getValue());
-			}
+			// recycle the Content-* headers from the incoming HTTP stream:
 
+			for (int i = 0; i < method.getResponseHeaders().length; i++) {
+			    String headerName = method.getResponseHeaders()[i].getName();
+			    if (headerName.startsWith("Content")) {
+				res.setHeader(method.getResponseHeaders()[i].getName(), method.getResponseHeaders()[i].getValue());
+			    }
+			}
 		    
 			// send the incoming HTTP stream as the response body
 

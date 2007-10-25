@@ -2066,56 +2066,94 @@ public class Study {
         this.studyRequests = studyRequests;
     }
     
-    public boolean userInAllowedGroups(VDCUser user) {
-        boolean foundUser=false;
-        for (Iterator it = allowedGroups.iterator(); it.hasNext();) {
-            UserGroup userGroup = (UserGroup) it.next();
-            for (Iterator it2 = userGroup.getUsers().iterator(); it2.hasNext();) {
-                VDCUser allowedUser = (VDCUser) it2.next();
-                if (allowedUser.getId().equals(user.getId())) {
-                    foundUser=true;
-                    break;
-                }
-                
-            }
-            
-            
-        }
-        return foundUser;
-    }
+
     
-    public boolean isAllowedGroup(UserGroup userGroup) {
-        boolean foundGroup=false;
-        for (Iterator it = allowedGroups.iterator(); it.hasNext();) {
-            UserGroup allowedGroup = (UserGroup) it.next();
-            
-            if (allowedGroup.getId().equals(userGroup.getId())) {
-                foundGroup=true;
-                break;
-            }
-            
-        }
-        
-        return foundGroup;
-    }
-    
-    
-    
+    // these are wrapper methods to support old code; once old calls are
+    // cleaned up and use the method directly, these should be removed
     public boolean isStudyRestrictedForUser(VDC vdc, VDCUser user) {
+        return isStudyRestrictedForUser(user, null);
+    }
+    
+    public boolean isStudyRestrictedForGroup(UserGroup usergroup) {
+        return isStudyRestrictedForUser(null, usergroup);
+    }    
+    
+    public boolean isStudyRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
         
+        // the restrictions should be checked on the owner of the study, not the currentVDC (needs cleanup)
+        VDC vdc = this.getOwner();
+      
+        // first check restrictions at the dataverse level
         if (this.getOwner().isVDCRestrictedForUser(user, null) ) {
             return true;
         }
 
-        return isRestricted() && isUserRestricted(vdc,user);
-    }
-    
-    /**
-     *  Checks whether the user has a VDCRole or is an allowed list, or is the study creator.
-     *  If any of these are true, than user is not restricted.
-     *  (This DOES NOT check the restricted status of the study.  If you want to check that as well,
-     *  use isStudyRestrictedForUser(), above.
-     */
+        // otherwise check for restriction on study itself
+        if ( isRestricted() ) {
+            if (user == null) {
+                if (ipUserGroup==null) {
+                    return true;
+                } else {
+                    Iterator iter = this.getAllowedGroups().iterator();
+                    while (iter.hasNext()) {
+                        UserGroup allowedGroup = (UserGroup) iter.next();
+                        if (allowedGroup.equals(ipUserGroup)) {
+                            return false;
+                        }    
+                    } 
+                    return true;
+                }
+            }
+          
+            // 1. check network role
+            if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN) ) {
+                // If you are network admin, you can do anything!
+                return false;
+            }
+            
+            // 2. check vdc role
+            VDCRole userRole = user.getVDCRole(vdc);
+            if (userRole != null) {
+                String userRoleName = userRole.getRole().getName();
+                if ( userRoleName.equals(RoleServiceLocal.ADMIN) || userRoleName.equals(RoleServiceLocal.CURATOR) ) {
+                    return false;
+                }
+            }
+            
+            // 2a. check if creator
+            if (user.getId().equals(this.getCreator().getId())) {
+                return false;
+            }
+            
+            // 3. check user
+            Iterator iter = this.getAllowedUsers().iterator();
+            while (iter.hasNext()) {
+                VDCUser allowedUser = (VDCUser) iter.next();
+                if ( allowedUser.getId().equals(user.getId()) ) {
+                    return false;
+                }
+            }
+            
+            // 4. check groups
+            iter = this.getAllowedGroups().iterator();
+            while (iter.hasNext()) {
+                UserGroup allowedGroup = (UserGroup) iter.next();
+                if (user.getUserGroups().contains(allowedGroup)) {
+                    return false;
+                }
+            }
+            return true;
+        }      
+        else {
+            return false;
+        }
+     }
+
+
+/*********************************************************************
+The methods in this section are the old way and need to be removed, once they are no longer called;
+I left in for now because I want to make sure that using new code doesn't break anything
+*********************************************************************/
     public  boolean isUserRestricted( VDC vdc, VDCUser user) {
 
         // the restrictions should be checked on the owner of the study, not the currentVDC (needs cleanup)
@@ -2154,39 +2192,29 @@ public class Study {
         }
         return false;
     }
-    
-    /** check restriction for usergroup
-     *
-     * // should return false if usergroup is entitled to
-     * view the study
-     * @author wbossons
-     */
-    public boolean isStudyRestrictedForGroup(UserGroup usergroup) {
-        if (this.getOwner().isVDCRestrictedForUser(null, usergroup) ) {
-            return true;
-        }
-        return isRestricted() && isRestrictedForUserGroup(usergroup);
-    }
-    
-    /**  Checks whether the usergroup is in an allowed list.
-     *
-     *
-     *@author wbossons
-     */
-    private  boolean isRestrictedForUserGroup(UserGroup usergroup) {
-        if (usergroup == null) {
-            return true;
-        }
-        Iterator iterator = allowedGroups.iterator();
-        while (iterator.hasNext()) {
-            UserGroup allowedUserGroup = (UserGroup)iterator.next();
-            if (allowedUserGroup.getId().equals(usergroup.getId())) {
-                return false;
+
+    public boolean userInAllowedGroups(VDCUser user) {
+        boolean foundUser=false;
+        for (Iterator it = allowedGroups.iterator(); it.hasNext();) {
+            UserGroup userGroup = (UserGroup) it.next();
+            for (Iterator it2 = userGroup.getUsers().iterator(); it2.hasNext();) {
+                VDCUser allowedUser = (VDCUser) it2.next();
+                if (allowedUser.getId().equals(user.getId())) {
+                    foundUser=true;
+                    break;
+                }
+                
             }
+            
+            
         }
-        return true;
+        return foundUser;
     }
-    
+/*********************************************************************
+End of deprecated methods section
+*********************************************************************/
+
+
     public List<StudyFile> getStudyFiles() {
         List files = new ArrayList();
         

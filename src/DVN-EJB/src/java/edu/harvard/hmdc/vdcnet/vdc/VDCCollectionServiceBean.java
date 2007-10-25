@@ -73,6 +73,11 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void destroy(VDCCollection vDCCollection) {
         VDCCollection mCollection = em.find(VDCCollection.class, vDCCollection.getId());
+        // Remove this Collection from all linked VDCs
+        for (Iterator itc = mCollection.getLinkedVDCs().iterator(); itc.hasNext();) {
+            VDC linkedVDC = (VDC) itc.next();
+            linkedVDC.getLinkedCollections().remove(mCollection);
+        }
         em.merge(mCollection);
         em.remove(mCollection);
     }

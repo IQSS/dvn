@@ -49,6 +49,8 @@ public interface IndexServiceLocal {
 
     public void updateStudy(long studyId);
 
+    public void deleteIndexList(List<Long> studyIds);
+
     public List search(List<Long> studyIds, List<SearchTerm> searchTerms);
 
     public void deleteStudy(long studyId);
@@ -64,5 +66,7 @@ public interface IndexServiceLocal {
     public List searchVariables(List studyIds, SearchTerm searchTerm);
 
     public List searchVariables(VDC vdc, List<VDCCollection> searchCollections, SearchTerm searchTerm);
+
+    public void createIndexTimer();
     
 }

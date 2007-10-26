@@ -88,13 +88,14 @@
                             </ui:panelGroup>
                             <ui:panelGroup rendered="#{EditSitePage.dataverseType == 'Scholar'}" block="true" style="vertical-align: top;">
                                 <h:inputText id="firstName" 
-                                                immediate="true"
                                                 required="true"
                                                 requiredMessage="This field is required."
                                                 rendered="#{EditSitePage.dataverseType == 'Scholar'}"
+                                                validator="#{EditSitePage.validateIsEmpty}"
                                                 value="#{EditSitePage.firstName}" 
                                                 valueChangeListener="#{EditSitePage.changeFirstName}"
                                                 style="display:block;"/>
+                                <h:message for="firstName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                             </ui:panelGroup>
                             <!-- last name -->
                             <ui:panelGroup rendered="#{EditSitePage.dataverseType == 'Scholar'}" block="true" style="vertical-align: top;">
@@ -105,13 +106,14 @@
                             </ui:panelGroup>
                             <ui:panelGroup rendered="#{EditSitePage.dataverseType == 'Scholar'}" block="true" style="vertical-align: top;">
                                 <h:inputText id="lastName" 
-                                                immediate="true"
                                                 required="true"
                                                 requiredMessage="This field is required."
                                                 rendered="#{EditSitePage.dataverseType == 'Scholar'}"
+                                                validator="#{EditSitePage.validateIsEmpty}"
                                                 value="#{EditSitePage.lastName}" 
                                                 valueChangeListener="#{EditSitePage.changeLastName}"
                                                 style="display:block;"/>
+                                <h:message for="lastName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                             </ui:panelGroup>
                             <!-- affiliation -->
                             <ui:panelGroup block="true" style="vertical-align: top;">
@@ -134,14 +136,22 @@
                                  </h:outputLabel>
                              </ui:panelGroup>
                              <ui:panelGroup>
-                                 <h:inputText binding="#{EditSitePage.dataverseName}" id="dataverseName" required="true" validator="#{EditSitePage.validateName}" size="60" value="#{VDCRequest.currentVDC.name}"/>
+                                 <h:inputText binding="#{EditSitePage.dataverseName}" 
+                                                id="dataverseName" 
+                                                required="true" 
+                                                validator="#{EditSitePage.validateName}" 
+                                                size="60" 
+                                                value="#{VDCRequest.currentVDC.name}"/>
                                  <br />
                                  <h:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
                                  <h:message for="dataverseName" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                              </ui:panelGroup>
                              <ui:panelGroup block="true" style="vertical-align: top;">
                                  <h:outputLabel binding="#{EditSitePage.componentLabel2}" for="componentLabel2" id="componentLabel2">
-                                     <h:outputText binding="#{EditSitePage.componentLabel2Text}" id="componentLabel2Text" style="white-space: nowrap; padding-right: 10px; " value="Dataverse Alias"/>
+                                     <h:outputText binding="#{EditSitePage.componentLabel2Text}" 
+                                                    id="componentLabel2Text" 
+                                                    style="white-space: nowrap; padding-right: 10px; " 
+                                                    value="Dataverse Alias"/>
                                      <h:graphicImage value="#{bundle.iconRequired}"/>
                                  </h:outputLabel>
                              </ui:panelGroup>

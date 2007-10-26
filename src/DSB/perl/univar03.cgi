@@ -385,9 +385,6 @@ if ($dataURL) {
 
 	$logger->vdcLOG_debug( 'VDC::DSB', $script_name,  "getting data "); # debug
 
-	$logger->vdcLOG_info( 'VDC::DSB', $script_name,  $dataURLG); # debug
-
-
 	# let's cook the final URL and calculate the total
 	# length; if it's too long, we are going to use POST
 	# instead of GET.
@@ -439,8 +436,10 @@ if ($dataURL) {
 	if (length($dataURLG) + length($cgiParams) < $MAX_URL) { 
 	    $dataURLG .= $cgiParams; 
 	    $request = HTTP::Request->new('GET', $dataURLG );
+	    $logger->vdcLOG_info( 'VDC::DSB', 'Disseminate',  $dataURLG . "(GET)" );
 	} else {
 	    $request = POST $dataURLG, $cgi_ParamHash; 
+	    $logger->vdcLOG_info( 'VDC::DSB', 'Disseminate',  $dataURLG . "(POST)" );
 	}
 
 	# Detect and recycle some useful headers: 
@@ -614,17 +613,28 @@ if ($dataURL) {
         			if (my($header,$remainder)=$buf=~/(.*\n)((.|\n)*)/) {
                 			$buf="";
                 			$do_stream=1;
-					$logger->vdcLOG_info ( 'VDC::DSB',  '', $header . ", " . $fieldnames . ", " . $delim );
-
 
                 			my ($offsets)=create_rcut_field_offsets
 						($header,$fieldnames,$delim);
 
-					$logger->vdcLOG_info ( 'VDC::DSB',  $script_name, "$RCUT_BIN -f" . $offsets . " -d'" . $delim . "'" . " >  $RtmpDataFile" );
-                			open(RCUT,"|$RCUT_BIN -f" 
+					$header=~s/[ \r\t\n]//g; 
+					$logger->vdcLOG_info ( 'VDC::DSB',  'Disseminate', ":" . $header . ":" . $fieldnames . ":" . $delim );
+
+					if ( $header eq $fieldnames )
+					{
+					    open(RCUT,"|cat > $RtmpDataFile") 
+						||  $logger->vdcLOG_warning ( 'VDC::DSB', "Disseminate", "error opening cat");
+
+					    $logger->vdcLOG_info ( 'VDC::DSB', "Disseminate", "using cat" );
+					}
+					else
+					{
+					    open(RCUT,"|$RCUT_BIN -f" 
 						. $offsets . " -d'" . $delim .
 						 "'" . " >  $RtmpDataFile") 
-					    ||  $logger->vdcLOG_warning ( 'VDC::DSB',  $script_name, "error opening rcut");
+						||  $logger->vdcLOG_warning ( 'VDC::DSB',  "Disseminate", "error opening rcut");
+					    $logger->vdcLOG_info ( 'VDC::DSB',  "Disseminate", "$RCUT_BIN -f" . $offsets . " -d'" . $delim . "'" . " >  $RtmpDataFile" );
+					}
                 			print RCUT  $remainder;
 				}
         		}
@@ -633,25 +643,53 @@ if ($dataURL) {
 		if ($buf) {print "$buf";} else { close(RCUT); }
 	    }
 	
-	if ( !$response->is_success ){
-		my $err= $response->status_line;
-		print $q->header ( -status=>"$err : could not access data file", -type=>'text/html');
-		print $q->start_html ( -title=> "error -- could not access datafile ($err)");
-		print $q->h2("The cgi script failed to access the requested data file:");
-		print $q->h2("$dataURL");
-		print $q->h2("($err)");
-		print $q->end_html;
-		$logger->vdcLOG_warning('VDC::DSB',$script_name,"Server Error: could not access datafile");
-		{my($ts)=$@; &exitChores; die $ts;}
-	} else {
-		if (-z $RtmpDataRaw) {
-			print $q->header ( -status=>'500 Server Error: empty data file', -type=>'text/html');
-			print $q->start_html ( -title=> 'error -- data file is empty after the column-wise subsetting request ');
-			print $q->end_html;
-			$logger->vdcLOG_warning('VDC::DSB',$script_name,"Server Error (XXX): empty  data file");
-			{my($ts)=$@; &exitChores; die $ts;}
-		}
+	if ( !$response->is_success )
+	{
+	    my $err= $response->status_line;
+	    print $q->header;
+	    print $q->start_html ( -title=> "error -- could not access datafile ($err)");
+	    print $q->h2("The DSB subsystem failed to access the requested data file:");
+
+	    if ( $MD->{censusURL} )
+	    {
+		print $q->h2( $MD->{censusURL} );
 	    }
+	    else
+	    {
+		print $q->h2("$dataURL");
+	    }
+
+	    print $q->h2("the remote server response:");
+	    print $q->h2("($err)");
+	    print $q->p; 
+	    print $q->h2("It is possible that the resource is temporarily unavailable; please try again later. If this behavior persists, please contact the administrators of the Dataverse network"); 
+
+	    print $q->end_html;
+	    $logger->vdcLOG_warning('VDC::DSB',$script_name,"Server Error: could not access datafile");
+	    {my($ts)=$@; &exitChores; die $ts;}
+	} 
+	elsif (-z $RtmpDataRaw) 
+	{
+	    print $q->header;
+	    print $q->start_html ( -title=> 'error -- data file is empty after the column-wise subsetting request ');
+	    print $q->h2 ( "ERROR: The DSB subsystem failed to perform column-wise subsetting on the requested data file:" );
+
+	    if ( $MD->{censusURL} )
+	    {
+		print $q->h2( $MD->{censusURL} );
+	    }
+	    else
+	    {
+		print $q->h2("$dataURL");
+	    }
+	    
+	    print $q->p; 
+	    print $q->h2("It is possible that the resource is temporarily unavailable; please try again later. If this behavior persists, please contact the administrators of the Dataverse network"); 
+
+	    print $q->end_html;
+	    $logger->vdcLOG_warning('VDC::DSB',$script_name,"Server Error (XXX): empty  data file");
+	    {my($ts)=$@; &exitChores; die $ts;}
+	}
     }
 
 
@@ -1725,21 +1763,16 @@ sub make_SubsetFilter {
 
     my $pat = ""; 
 
-#   below is a simple but potentially effecient 
-#   optimization -- but i want to test it 
-#   carefully before i deploy it; 
-#   so it should stay commented out.
-#
-#    if ( $metadata->{wholeFile} == 1 )
-#    {
-#	return "cat"; 
-#    }
-
     my @varseq = split ( ",", $varIdSeq ); 
 
     unless ( $metadata->{_varStartPos}->{$varseq[0]} )
     {
 	# tab-delimited file:
+
+	if ( $metadata->{wholeFile} == 1 )
+	{
+	    return "cat"; 
+	}
 	    
 	$pat = "/usr/local/VDC/bin/rcut -f "; 
 

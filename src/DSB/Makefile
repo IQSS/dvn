@@ -41,6 +41,10 @@ inst_R_mini:
 	install -m 0775 R/installR.sh ${RPM_PREFIX}/${INSTALL_ROOT}/R
 	install -m 0775 R/library/vdc_startup.R ${RPM_PREFIX}/${INSTALL_ROOT}/R/library
 
+inst_sbin_mini: 	
+	install -m 0775 -d ${RPM_PREFIX}/${INSTALL_ROOT}/sbin
+	install -m 0775 perl/sbin/DDIsec4sps.pl ${RPM_PREFIX}/${INSTALL_ROOT}/sbin
+
 inst_rcut: 
 	(cd rcut; make VDC_DIR=${RPM_PREFIX}/${INSTALL_ROOT})
 
@@ -84,6 +88,7 @@ inst_sbin:
 	install -m 0775 perl/sbin/readdta.pl ${RPM_PREFIX}/${INSTALL_ROOT}/sbin
 	install -m 0775 perl/sbin/readpor.pl ${RPM_PREFIX}/${INSTALL_ROOT}/sbin
 	install -m 0775 perl/sbin/readsav.pl ${RPM_PREFIX}/${INSTALL_ROOT}/sbin
+	install -m 0775 perl/sbin/DDIsec4sps.pl ${RPM_PREFIX}/${INSTALL_ROOT}/sbin
 	install -m 0775 perl/sbin/recreatevlm.pl ${RPM_PREFIX}/${INSTALL_ROOT}/sbin
 
 inst_xslt: 

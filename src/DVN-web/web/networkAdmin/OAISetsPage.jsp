@@ -17,7 +17,7 @@
                     <div style="padding-bottom: 15px;">
                         <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                         <h:outputText  styleClass="vdcHelpText" value=" The sets defined here are used by the OAI server that comes with your DVN. Another DVN (or any other remote site) 
-                        will be able to harvest the sets you define. If not sets are defined, the default OAI call (http://localhost/dvn/OAIHandler) will return all the studies owned by this DVN.
+                        will be able to harvest the sets you define. If no sets are defined, the default OAI call (http://localhost/dvn/OAIHandler) will return all the studies owned by this DVN.
                         Once you've created a set, you can edit it by clicking on the set name."/>
                     </div>
                       

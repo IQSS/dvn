@@ -37,7 +37,7 @@ package edu.harvard.hmdc.vdcnet.util;
  * @author wbossons
  */
 public class NetworkDataverseListing implements Comparable {
-    private String name, affiliation, alias, restricted;
+    private String name, affiliation, alias, restricted, tooltip;
        
     /** Creates a new instance of NetworkDataverseListing */
     public NetworkDataverseListing() {
@@ -49,6 +49,14 @@ public class NetworkDataverseListing implements Comparable {
         this.alias       = alias;
         this.affiliation = affiliation;
         this.restricted  = restricted;
+    }
+    
+    public NetworkDataverseListing(String name, String alias, String affiliation, String restricted, String tooltip) {
+        this.name        = name;
+        this.alias       = alias;
+        this.affiliation = affiliation;
+        this.restricted  = restricted;
+        this.tooltip     = tooltip;
     }
     
     public String getName() {
@@ -67,8 +75,12 @@ public class NetworkDataverseListing implements Comparable {
             return this.restricted;
     }
     
+    public String getTooltip() {
+            return this.tooltip;
+    }
+    
     public String toString() {
-        return "[name=" + name + "| affiliation=" + affiliation + "| alias=" + alias + "| restricted=" + restricted + "]";
+        return "[name=" + name + " | affiliation=" + affiliation + " | alias=" + alias + " | restricted=" + restricted + " | tooltip=" + tooltip + "]";
       }
 
   public int compareTo(Object obj) {

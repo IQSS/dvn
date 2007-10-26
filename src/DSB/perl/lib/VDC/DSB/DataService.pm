@@ -27,6 +27,7 @@ use strict;
 use Data::Dumper;
 use URI::Escape;
 use File::Copy;
+use HTML::Entities qw(encode_entities_numeric);
 
 #use Switch;
 
@@ -632,12 +633,17 @@ sub addMetaData{
 			$RsafeVarName2raw->{$tmpVN}=$rawvarname->[$i];
 			$count++;
 		} else {
+			# special characters
 			foreach my $token (keys %{$CNVRSNTBL}){
 				if ($token eq '_'){
 					
 				}
 				$tmpVN =~ s/[$token]/$CNVRSNTBL->{$token}/g;
 			}
+			# non-ASCII character check
+			$tmpVN = encode_entities_numeric($tmpVN);
+			$tmpVN =~ s/&#x(\w+);/hex$1/ig;
+
 			if ($tmpVN ne $rawvarname->[$i]){
 				$raw2RsafeVarName->{$rawvarname->[$i]}=$tmpVN;
 				$RsafeVarName2raw->{$tmpVN}=$rawvarname->[$i];

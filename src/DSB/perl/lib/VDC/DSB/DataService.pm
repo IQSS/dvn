@@ -61,6 +61,8 @@ my $CNVRSNTBL = {
 	'$'=>'hex24',
 	'@'=>'hex40',
 	'_'=>'hex5F',
+	'?'=>'hex3F',
+	
 };
 
 # R-safe variable Name Mapping table
@@ -635,9 +637,6 @@ sub addMetaData{
 		} else {
 			# special characters
 			foreach my $token (keys %{$CNVRSNTBL}){
-				if ($token eq '_'){
-					
-				}
 				$tmpVN =~ s/[$token]/$CNVRSNTBL->{$token}/g;
 			}
 			# non-ASCII character check

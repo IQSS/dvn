@@ -36,6 +36,8 @@ import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.ejb.Stateless;
 import javax.faces.FacesException;
 import javax.persistence.EntityManager;
@@ -116,9 +118,15 @@ public class GroupServiceBean implements GroupServiceLocal  {
                     }
                 }
                 // integer substring match.
-                String parseIp = logindomain.getIpAddress().replace("*", "");
-                if (remotehost.contains(parseIp)) {
-                   group = logindomain.getUserGroup();
+                String parseIp = new String();
+                if (logindomain.getIpAddress().indexOf(".*",0) != -1)
+                    parseIp = logindomain.getIpAddress().replace(".*", "\\.");
+                String regexp = "^" + parseIp + ".*";
+                Pattern pattern = Pattern.compile(regexp);
+                Matcher matcher = pattern.matcher(remotehost);
+                boolean isNotValid = matcher.find();
+                if (isNotValid) {
+                    group = logindomain.getUserGroup();
                    break;
                 }
             }

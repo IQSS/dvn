@@ -492,7 +492,7 @@ public class HomePage extends VDCBaseBean{
             startLinkTag.setValue("<ul><li class='activeBullet'>");
             nodelink = new Hyperlink();
             nodelink.setText(ndv.getName());
-            nodelink.setToolTip(ndv.getName() + " dataverse");
+            nodelink.setToolTip(ndv.getTooltip() + " dataverse");
             nodelink.setUrl("/dv/" + ndv.getAlias() + defaultVdcPath);
             endLinkTag = new HtmlOutputText();
             endLinkTag.setEscape(false);
@@ -581,9 +581,10 @@ public class HomePage extends VDCBaseBean{
             if (vdc instanceof ScholarDataverse) {
                 ScholarDataverse scholarDV = (ScholarDataverse)vdc;
                 String name = new String(scholarDV.getLastName() + ", " + scholarDV.getFirstName());
-                ndvList = new NetworkDataverseListing(name, scholarDV.getAlias(), affiliation, restricted);
+                String tooltip = new String(scholarDV.getName());
+                ndvList = new NetworkDataverseListing(name, scholarDV.getAlias(), affiliation, restricted, tooltip);
             } else {
-                ndvList = new NetworkDataverseListing(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), restricted);
+                ndvList = new NetworkDataverseListing(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), restricted, vdc.getName());
             }
             listToSort.add(ndvList);
         }

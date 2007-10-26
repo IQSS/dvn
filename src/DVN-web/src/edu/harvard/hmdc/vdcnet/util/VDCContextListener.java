@@ -32,6 +32,7 @@ package edu.harvard.hmdc.vdcnet.util;
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.SyncVDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import javax.ejb.EJB;
 import javax.ejb.EJBs;
 import javax.naming.InitialContext;
@@ -44,7 +45,8 @@ import javax.servlet.ServletContextListener;
  */
 @EJBs({
  @EJB(name="harvesterService", beanInterface=edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal.class),
- @EJB(name="harvestingDataverseService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal.class)
+ @EJB(name="harvestingDataverseService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal.class),
+ @EJB(name="vdcNetworkService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal.class)
 })
 public class VDCContextListener implements ServletContextListener {
     @EJB SyncVDCServiceLocal syncVDCService;
@@ -73,14 +75,19 @@ public class VDCContextListener implements ServletContextListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // This initializes the export Timer - runs once a day and exports changes to old VDC
-        String export = event.getServletContext().getInitParameter("edu.harvard.hmdc.export");
-        if (export!=null && export.equalsIgnoreCase("true")) {
-            System.out.println("Found export initParameter, scheduling study export.");
-            syncVDCService.scheduleDaily();
-        } else {
-            System.out.println("Export not scheduled.");
+        
+        VDCNetworkServiceLocal vdcNetworkService=null;
+        
+        try {
+            System.out.println("VDContextListener, scheduling export now....");
+                    
+            vdcNetworkService = (VDCNetworkServiceLocal)new InitialContext().lookup("java:comp/env/vdcNetworkService");
+            vdcNetworkService.createExportTimer();
+        } catch(Exception e) {
+            e.printStackTrace();
         }
+        
+     
 
     }
     /** Creates a new instance of VDCContextListener */

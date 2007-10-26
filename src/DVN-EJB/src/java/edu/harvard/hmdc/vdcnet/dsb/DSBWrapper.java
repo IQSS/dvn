@@ -6,7 +6,7 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -89,20 +89,20 @@ public class DSBWrapper {
         String dsbPort = System.getProperty("vdc.dsb.port");
         
         if (dsbHost != null) {
-        if ( dsbPort != null ) {
-        return "http://" + dsbHost + ":" + dsbPort + "/VDC/DSB/0.1/" + verb;
+            if ( dsbPort != null ) {
+                return "http://" + dsbHost + ":" + dsbPort + "/VDC/DSB/0.1/" + verb;
+            } else {
+                return "http://" + dsbHost + "/VDC/DSB/0.1/" + verb;
+            }
         } else {
-        return "http://" + dsbHost + "/VDC/DSB/0.1/" + verb;
-        }
-        } else {
-        // fallback to the old-style option: 
-        dsbHost = System.getProperty("vdc.dsb.url");
-
-        if (dsbHost != null) {
-        return "http://" + dsbHost + "/VDC/DSB/0.1/" + verb;
-        } else {
-        throw new IOException("System property \"vdc.dsb.host\" has not been set.");
-        }
+            // fallback to the old-style option:
+            dsbHost = System.getProperty("vdc.dsb.url");
+            
+            if (dsbHost != null) {
+                return "http://" + dsbHost + "/VDC/DSB/0.1/" + verb;
+            } else {
+                throw new IOException("System property \"vdc.dsb.host\" has not been set.");
+            }
         }
         
     }
@@ -205,7 +205,7 @@ public class DSBWrapper {
                     new FilePart( "dataFile0", tempFile ),
                     new StringPart( "dataFileMime0", file.getStudyFile().getFileType() )
                 };
-
+                
                 method.setRequestEntity(
                         new MultipartRequestEntity(parts, method.getParams())
                         );
@@ -217,10 +217,10 @@ public class DSBWrapper {
                     new StringPart( "dataFileMime0", file.getStudyFile().getFileType() ),
                     new FilePart( "controlCard0", controlCardFile )
                 };
-
+                
                 method.setRequestEntity(
                         new MultipartRequestEntity(parts, method.getParams())
-                        );                
+                        );
             }
             
             // execute
@@ -345,7 +345,7 @@ public class DSBWrapper {
             if (method != null) { method.releaseConnection(); }
         }
     }
-
+    
     public void disseminate(HttpServletResponse res, StudyFile sf, String serverPrefix, String formatType) throws IOException{
         Map parameters = new HashMap();
         List variables = sf.getDataTable().getDataVariables();
@@ -365,7 +365,7 @@ public class DSBWrapper {
         if (parameters == null) {
             parameters = new HashMap();
         }
-
+        
         parameters.put("uri", generateUrlForDDI(serverPrefix, sf.getId()));
         parameters.put("URLdata", generateUrlForFile(serverPrefix, sf.getId()));
         parameters.put("fileid", "f" + sf.getId().toString());
@@ -377,7 +377,7 @@ public class DSBWrapper {
     public void disseminate(HttpServletResponse res, Map parameters) throws IOException{
         PostMethod method = null;
         InputStream in = null;
-        OutputStream out = null;   
+        OutputStream out = null;
         
         try {
             // create method
@@ -408,13 +408,13 @@ public class DSBWrapper {
             }
             System.out.println(debug);
             HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            if (request.getHeader("X-Forwarded-For") != null) 
+            if (request.getHeader("X-Forwarded-For") != null)
                 method.addRequestHeader("X-Forwarded-For", request.getHeader("X-Forwarded-For"));
             else
                 method.addRequestHeader("X-Forwarded-For", "NULL-HEADER-X-FORWARDED-FOR");
             // execute
             executeMethod(method);
-
+            
             debug = "Disseminate - Recycled response headers:\n";
             // set headers on the response
             for (int i = 0; i < method.getResponseHeaders().length; i++) {
@@ -426,15 +426,20 @@ public class DSBWrapper {
                 }
             }
             System.out.println(debug);
-
+            
             in = method.getResponseBodyAsStream();
             out = res.getOutputStream();
-
-            int read = in.read();
-            while (read != -1) {
-                out.write(read);
-                read = in.read();
+            
+            
+            byte[] dataBuffer = new byte[8192];
+            
+            int i = 0;
+            while ( ( i = in.read(dataBuffer) ) > 0 ) {
+                out.write(dataBuffer,0,i);
+                out.flush();
             }
+            
+            
             
         } finally {
             if (method != null) { method.releaseConnection(); }

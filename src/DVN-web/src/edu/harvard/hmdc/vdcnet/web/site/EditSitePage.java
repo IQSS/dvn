@@ -459,6 +459,11 @@ public class EditSitePage extends VDCBaseBean {
             UIComponent toValidate,
             Object value) {
         String name = (String) value;
+        if (name != null && name.trim().length() == 0) {
+            FacesMessage message = new FacesMessage("The dataverse name field must have a value.");
+            context.addMessage(toValidate.getClientId(context), message);
+            context.renderResponse();
+        }
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         if (!name.equals(thisVDC.getName())){
             boolean nameFound = false;
@@ -635,4 +640,14 @@ public class EditSitePage extends VDCBaseBean {
         this.setLastName(newValue);        
     }
 
+    public void validateIsEmpty(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        String newValue = (String)value;
+         if (newValue == null || newValue.trim().length() == 0)  {
+            FacesMessage message = new FacesMessage("The field must have a value.");
+            context.addMessage(toValidate.getClientId(context), message);
+            context.renderResponse();
+        }
+    }
 }

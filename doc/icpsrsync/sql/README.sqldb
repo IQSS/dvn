@@ -1,0 +1,49 @@
+study db:
+========
+
+stdynum stdytitle date procdir ndsets nfiles status* 
+
+* status: 
+
+0	not processed (?)
+1	processed and ingested
+2	failed to download
+3	invalid xml
+4 	failed to process 
+5 	failed to ingest
+
+
+dataset db: 
+==========
+
+stdynum dsnum dstitle nfiles
+
+
+file db:
+=======
+
+"native" fields: 
+
+istdynum idsetnum ifileid ifilename imaxlinesize icases idate istatus
+
+custom vdc fields: 
+
+vsyncdate vprocdate vtype vsize vstatus* 
+
+* vstatus: 
+
+0	not processed
+1 	added to the study as "other material" 
+2	(data file) processed and ingested as subsettable
+3 	skipped becasue of the "unavailable" status
+4	(data file) processing skipped because of size (added as otherMat)
+5	(data file) file is being processed
+6	(data file) failed to download the file (still added as otherMat)
+7	(data file) processing script failed (added as otherMat)
+8	(data file) processing was taking too long; gave up
+9	(data file) processing script ran, but resulting data-level DDI invalid
+10	removed from the study because the status changed to "unavailable"
+
+
+
+

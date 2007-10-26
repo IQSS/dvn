@@ -136,8 +136,9 @@ public class LoginFilter implements Filter {
         setOriginalUrl( httpRequest, httpResponse, currentVDC);
         
         LoginBean loginBean = getLoginBean(request);
+        UserGroup ipUserGroup = null;
         if (loginBean == null) {
-            getIpGroup(httpRequest);
+            ipUserGroup=getIpGroup(httpRequest);
         } else {
             HttpSession session =
                     ((HttpServletRequest)request).getSession(false);
@@ -147,94 +148,159 @@ public class LoginFilter implements Filter {
             httpResponse.sendRedirect((String)httpRequest.getSession().getAttribute("LOGIN_REDIRECT"));
             httpRequest.getSession().removeAttribute("LOGIN_REDIRECT");
         }
-        
-        else if (isRestrictedPage(pageDef, httpRequest)) {
-            //moved the loginBean instantiation to line 121 so that getIpGroup can also use. wjb
-            if (loginBean==null && ipUserGroup==null ) {
-                redirectToLogin(httpRequest,httpResponse,currentVDC);
+        boolean authorized=false;
+        if (isRolePage(pageDef,httpRequest) ) {
+            if (isUserAuthorizedForRolePage(pageDef, httpRequest, loginBean)) {
+                authorized=true;
             }
-        
-            else {
-                if ( (loginBean != null && !userAuthorized(pageDef,loginBean, currentVDC, httpRequest)) ) {
-                    PageDef  redirectPageDef = pageDefService.findByName(PageDefServiceLocal.UNAUTHORIZED_PAGE);                    
-                    httpResponse.sendRedirect(httpRequest.getContextPath()+"/faces"+redirectPageDef.getPath());
-                     
-                } else if((this.ipUserGroup != null && loginBean==null && !this.isGroupAuthorized(pageDef, this.ipUserGroup, currentVDC, httpRequest))) {
-                      redirectToLogin(httpRequest,httpResponse,currentVDC);
-                }else {
-                    // User is authorized to view restricted page
-                    
-                    if (isEditStudyPage(pageDef) && studyLockedMessage(httpRequest)!=null  ) {
-                        
-                        PageDef redirectPageDef = pageDefService.findByName(PageDefServiceLocal.STUDYLOCKED_PAGE);
-                        httpResponse.sendRedirect(httpRequest.getContextPath()+"/faces"+redirectPageDef.getPath()+"?message="+studyLockedMessage(httpRequest));
-                   
-                    } else {
-                    
-                        try {
-                            chain.doFilter(request, response);
-                        } catch(Throwable t) {
-                            //
-                            // If an exception is thrown somewhere down the filter chain,
-                            // we still want to execute our after processing, and then
-                            // rethrow the problem after that.
-                            //
-
-                            t.printStackTrace();
-                        }
-                    }
-                }
-                
-            }
-            
-        } else {
-            try {
-                chain.doFilter(request, response);
-            } catch(Throwable t) {
-                //
-                // If an exception is thrown somewhere down the filter chain,
-                // we still want to execute our after processing, and then
-                // rethrow the problem after that.
-                //
-                
-                t.printStackTrace();
-            }
+      
+        } else if (isUserAuthorizedForNonRolePage(pageDef, httpRequest, loginBean, ipUserGroup)) {
+            authorized=true;
         }
         
+        if (!authorized){
+           if (loginBean==null  ) {
+                redirectToLogin(httpRequest,httpResponse,currentVDC);
+           } else {
+                PageDef  redirectPageDef = pageDefService.findByName(PageDefServiceLocal.UNAUTHORIZED_PAGE);                    
+                httpResponse.sendRedirect(httpRequest.getContextPath()+"/faces"+redirectPageDef.getPath());
+           }
+        } else {              
+            if (isEditStudyPage(pageDef) && studyLockedMessage(httpRequest)!=null  ) {
+
+                PageDef redirectPageDef = pageDefService.findByName(PageDefServiceLocal.STUDYLOCKED_PAGE);
+                httpResponse.sendRedirect(httpRequest.getContextPath()+"/faces"+redirectPageDef.getPath()+"?message="+studyLockedMessage(httpRequest));
+
+            } else {
+
+                try {
+                    chain.doFilter(request, response);
+                } catch(Throwable t) {
+                    //
+                    // If an exception is thrown somewhere down the filter chain,
+                    // we still want to execute our after processing, and then
+                    // rethrow the problem after that.
+                    //
+
+                    t.printStackTrace();
+                }
+            }
+        }
+     
     }
     
-    private void getIpGroup(HttpServletRequest request){
+    
+    private boolean isUserAuthorizedForRolePage(PageDef pageDef, HttpServletRequest request,  LoginBean loginBean) {
+        if (loginBean==null ) {
+            return false;
+        }
+        VDC currentVDC = vdcService.getVDCFromRequest(request);
+        VDCUser user = loginBean.getUser();
+        
+        VDCRole userRole =null; 
+        String userRoleName=null;
+        if (currentVDC!=null) {
+            userRole = loginBean.getVDCRole(currentVDC);
+        }
+        if (userRole!=null) {
+            userRoleName = userRole.getRole().getName();
+        }
+       
+        
+        if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN) ) {
+            // If you are network admin, you can do anything!
+            return true;
+            
+        }
+        // Do special authorization for EditStudyPages 
+        if (isEditStudyPage(pageDef)) {
+            return isAuthorizedToEditStudy(pageDef,user,request,currentVDC);
+        }
+        
+        // If this page has a network role, and it is being requested in a network context,
+        // (that is, there is no current vdc), authorize the user if his network role matches the page role.
+        if (pageDef!=null && pageDef.getNetworkRole()!=null && currentVDC==null) {
+            if (user.getNetworkRole()!=null) {
+                if (user.getNetworkRole().getId().equals(pageDef.getNetworkRole().getId())) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+        }
+        // If this page has a VDC Role, and it is being requested in a VDC Context,
+        // authorize the user if his Role has the required privileges
+        if (pageDef!=null && pageDef.getRole()!=null && currentVDC!=null) {
+            String pageRoleName=pageDef.getRole().getName();
+            if (userRoleName==null && !isUserStudyCreator(user, request) ) {
+                return false;
+            }
+            if (pageRoleName.equals(RoleServiceLocal.ADMIN)) {
+                if (userRoleName.equals(RoleServiceLocal.ADMIN)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if (pageRoleName.equals(RoleServiceLocal.CURATOR)) {
+                if (userRoleName.equals(RoleServiceLocal.CURATOR) || userRoleName.equals(RoleServiceLocal.ADMIN) || isUserStudyCreator(user,request) ) {
+                    return true;
+                } else{
+                    return false;
+                }
+            }
+            if (pageRoleName.equals(RoleServiceLocal.CONTRIBUTOR)) {
+                if (userRoleName.equals(RoleServiceLocal.CONTRIBUTOR) ||userRoleName.equals(RoleServiceLocal.CURATOR) || userRoleName.equals(RoleServiceLocal.ADMIN) ) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+        }       
+         
+        return true;
+    }
+    
+    private boolean isUserAuthorizedForNonRolePage( PageDef pageDef, HttpServletRequest request,  LoginBean loginBean, UserGroup ipUserGroup  ) {
+        VDCUser user = null;
+        if (loginBean!=null) {
+            user=loginBean.getUser();
+        }
+        VDC currentVDC = vdcService.getVDCFromRequest(request);
+        if ( currentVDC!=null && isVdcRestricted(pageDef,request)) {
+            if ( currentVDC.isVDCRestrictedForUser(user, ipUserGroup)) {
+                return false;
+            }
+        } else if (isViewStudyPage(pageDef)) {
+             Study study = studyService.getStudy(Long.parseLong(request.getParameter("studyId")));
+             if (study.isStudyRestrictedForUser(user, ipUserGroup)) {
+                 return false;
+             }
+            
+        }
+        return true;
+    }
+    
+    private UserGroup getIpGroup(HttpServletRequest request){
+        UserGroup ipUserGroup=null;
         HttpSession session = ((HttpServletRequest)request).getSession(true);
         if (session.getAttribute("isIpGroupChecked") == null){
-            this.ipUserGroup = groupService.findIpGroupUser(request.getRemoteHost());
-            if (this.ipUserGroup != null) {
+            ipUserGroup = groupService.findIpGroupUser(request.getRemoteHost());
+            if (ipUserGroup != null) {
                 session.setAttribute("ipUserGroup", ipUserGroup);
                 session.setAttribute("isIpGroupChecked", true);
             }
+        } else {
+            ipUserGroup = (UserGroup)session.getAttribute("ipUserGroup");
         }
+        return ipUserGroup;
     }
     
     
-    /**
-     * Holds value of property ipUserGroup.
-     */
-    private UserGroup ipUserGroup;
-    
-    /**
-     * Getter for property ipUserGroup.
-     * @return Value of property ipUserGroup.
-     */
-    public UserGroup getIpUserGroup() {
-        return this.ipUserGroup;
-    }
-    
-    /**
-     * Setter for property ipUserGroup.
-     * @param ipUserGroup New value of property ipUserGroup.
-     */
-    public void setIpUserGroup(UserGroup ipUserGroup) {
-        this.ipUserGroup = ipUserGroup;
-    }
+  
+   
     
     
     private boolean isEditStudyPage(PageDef pageDef) {
@@ -292,7 +358,7 @@ public class LoginFilter implements Filter {
         }
     }
     
-    private boolean isRestrictedPage(PageDef pageDef, HttpServletRequest request) {
+    private boolean isRolePage(PageDef pageDef, HttpServletRequest request) {
         //
         // Return true if pageDef has a network role or a vdc role
         // or (isViewStudyPage and study is restricted) or (haveCurrentVDC and vdc is restricted)
@@ -300,8 +366,8 @@ public class LoginFilter implements Filter {
         boolean restricted = false;
         
         if (pageDef!=null &&(pageDef.getNetworkRole()!=null || pageDef.getRole()!=null)
-        || isViewStudyPage(pageDef)
-        || isVdcRestricted(pageDef, request)) {
+     /*   || isViewStudyPage(pageDef)
+          || isVdcRestricted(pageDef, request) */) {
             restricted= true;
         }
         return restricted;
@@ -328,105 +394,7 @@ public class LoginFilter implements Filter {
         
         return restricted;
     }
-    
-    private boolean isGroupAuthorized(PageDef pageDef, UserGroup ipusergroup, VDC currentVDC, HttpServletRequest request) {
-        boolean authorized = false;
-
-        if (this.isViewStudyPage(pageDef)) {
-            Study study = studyService.getStudy(Long.parseLong(request.getParameter("studyId")));
-            authorized = !study.isStudyRestrictedForGroup( ipusergroup);
-        } else if (isVdcRestricted(pageDef, request)) {
-            if (currentVDC.isAllowedGroup(ipusergroup)) {
-                authorized=true;
-            }
-        } 
-        
-        return authorized;
-    }
-    
-    private boolean userAuthorized(PageDef pageDef, LoginBean loginBean, VDC currentVDC, HttpServletRequest request) {
-        
-        VDCUser user = loginBean.getUser();
-        VDCRole userRole = loginBean.getVDCRole(currentVDC);
-        String userRoleName=null;
-        if (userRole!=null) {
-            userRoleName = userRole.getRole().getName();
-        }
-        boolean authorized = false;
-        
-        if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN) ) {
-            // If you are network admin, you can do anything!
-            return true;
-            
-        }
-        // Do special authorization for EditStudyPages 
-        if (isEditStudyPage(pageDef)) {
-            return isAuthorizedToEditStudy(pageDef,user,request,currentVDC);
-        }
-        
-        // If this page has a network role, and it is being requested in a network context,
-        // (that is, there is no current vdc), authorize the user if his network role matches the page role.
-        if (pageDef!=null && pageDef.getNetworkRole()!=null && currentVDC==null) {
-            if (user.getNetworkRole()!=null) {
-                if (user.getNetworkRole().getId().equals(pageDef.getNetworkRole().getId())) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-            
-        }
-        // If this page has a VDC Role, and it is being requested in a VDC Context,
-        // authorize the user if his Role has the required privileges
-        if (pageDef!=null && pageDef.getRole()!=null && currentVDC!=null) {
-            String pageRoleName=pageDef.getRole().getName();
-            if (userRoleName==null && !isUserStudyCreator(user, request) ) {
-                return false;
-            }
-            if (pageRoleName.equals(RoleServiceLocal.ADMIN)) {
-                if (userRoleName.equals(RoleServiceLocal.ADMIN)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-            if (pageRoleName.equals(RoleServiceLocal.CURATOR)) {
-                if (userRoleName.equals(RoleServiceLocal.CURATOR) || userRoleName.equals(RoleServiceLocal.ADMIN) || isUserStudyCreator(user,request) ) {
-                    return true;
-                } else{
-                    return false;
-                }
-            }
-            if (pageRoleName.equals(RoleServiceLocal.CONTRIBUTOR)) {
-                if (userRoleName.equals(RoleServiceLocal.CONTRIBUTOR) ||userRoleName.equals(RoleServiceLocal.CURATOR) || userRoleName.equals(RoleServiceLocal.ADMIN) ) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-            
-        }
-        
-        else {
-            if ( isViewStudyPage(pageDef) ) {
-                Study study = studyService.getStudy(Long.parseLong(request.getParameter("studyId")));
-                authorized = !study.isStudyRestrictedForUser( currentVDC, user);
-
-            } else if (isVdcRestricted(pageDef, request)) {
-                if (RoleServiceLocal.PRIVILEGED_VIEWER.equals(userRoleName)
-                || RoleServiceLocal.ADMIN.equals(userRoleName)
-                || RoleServiceLocal.CURATOR.equals(userRoleName)
-                || RoleServiceLocal.CONTRIBUTOR.equals(userRoleName)
-                || currentVDC.userInAllowedGroups(user)) {
-                    authorized=true;
-                }
-            }
-        }
-
-        return authorized;
-        
-    }
-    
+ 
     
     
     private void setOriginalUrl( HttpServletRequest request, HttpServletResponse response, VDC currentVDC) {
@@ -496,13 +464,7 @@ public class LoginFilter implements Filter {
         
     }
     
-    private void redirectToVDCRequired(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, ServletException  {
-        httpRequest.setAttribute("errorMsg", "This page requires a VDC context. Request parameter vdcId is missing.");
-        PageDef redirectPageDef = pageDefService.findByName(PageDefServiceLocal.ERROR_PAGE);
-        httpResponse.sendRedirect(httpRequest.getContextPath()+"/faces"+redirectPageDef.getPath());
-        
-        
-    }
+  
     
     /**
      * Return the filter configuration object for this filter.

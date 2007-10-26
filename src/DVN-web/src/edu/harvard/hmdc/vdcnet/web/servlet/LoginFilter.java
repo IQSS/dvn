@@ -42,6 +42,7 @@ import edu.harvard.hmdc.vdcnet.vdc.OAISetServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
+import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import edu.harvard.hmdc.vdcnet.web.common.VDCSessionBean;
 import java.io.*;
 import java.util.Enumeration;
@@ -274,7 +275,8 @@ public class LoginFilter implements Filter {
                 return false;
             }
         } else if (isViewStudyPage(pageDef)) {
-             Study study = studyService.getStudy(Long.parseLong(request.getParameter("studyId")));
+             String studyId = VDCBaseBean.getParamFromRequestOrComponent("studyId", request);
+             Study study = studyService.getStudy(Long.parseLong(studyId));
              if (study.isStudyRestrictedForUser(user, ipUserGroup)) {
                  return false;
              }

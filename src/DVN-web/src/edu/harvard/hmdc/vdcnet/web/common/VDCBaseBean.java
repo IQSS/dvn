@@ -150,9 +150,13 @@ public class VDCBaseBean extends  com.sun.rave.web.ui.appbase.AbstractPageBean {
  * Either by the exact parameter name, or as part of a String (if this is a faces component)
  *  
  */
- public String getParamFromRequestOrComponent(String paramName) {
+ public  String getParamFromRequestOrComponent(String paramName) {
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        String paramValue =request.getParameter(paramName);
+        return getParamFromRequestOrComponent(paramName,request);       
+    }               
+ 
+ public static String getParamFromRequestOrComponent(String paramName, HttpServletRequest request)    {
+       String paramValue =request.getParameter(paramName);
         if (paramValue==null) {
             Iterator iter = request.getParameterMap().keySet().iterator();
             while (iter.hasNext()) {
@@ -164,7 +168,5 @@ public class VDCBaseBean extends  com.sun.rave.web.ui.appbase.AbstractPageBean {
             }
         }
         return paramValue;
-        
-    }               
-    
+ }
 }

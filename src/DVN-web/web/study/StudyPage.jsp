@@ -156,17 +156,14 @@
                                     </h:outputLink> 
                                     -->
                                     
-                                    <ihelp:inlinehelp helpMessage="#{studybundle.provenanceHelp}"  linkText="#{studybundle.provenanceLabel}" heading="#{studybundle.provenanceHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.owner.id != VDCRequest.currentVDCId or (!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested)}" />  
-                                    <ui:panelGroup block="true" rendered="#{studyPage.studyUI.study.owner.id != VDCRequest.currentVDCId or (!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested)}"> 
-                                       
+                                    <ihelp:inlinehelp helpMessage="#{studybundle.provenanceHelp}"  linkText="#{studybundle.provenanceLabel}" heading="#{studybundle.provenanceHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  />  
+                                    <ui:panelGroup block="true"> 
                                             <h:outputLink value="#{studyPage.studyUI.study.harvestHoldings}" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
-                                                <h:outputText value="Original Source" />
+                                                <h:outputText value="Original Source > " />
                                             </h:outputLink>
-                                          <h:outputText id="proven" value=" > "  rendered="#{studyPage.studyUI.study.owner.id != VDCRequest.currentVDCId and (!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested)}" />
-                                        <h:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog" rendered="#{studyPage.studyUI.study.owner.id != VDCRequest.currentVDCId}" >
+                                        <h:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog" >
                                             <h:outputText value="#{studyPage.studyUI.study.owner.name} Dataverse" />
-                                        </h:outputLink>
-                                        
+                                        </h:outputLink>    
                                     </ui:panelGroup>
                                 </h:panelGrid>
                                 

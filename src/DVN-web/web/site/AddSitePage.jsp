@@ -81,13 +81,14 @@
                             </ui:panelGroup>
                             <ui:panelGroup block="true" style="vertical-align: top;">
                                 <h:inputText id="firstName" 
-                                                immediate="true"
                                                 onblur="createDvName();"
                                                 required="#{(AddSitePage.dataverseType == 'Scholar') ? true : false}"
                                                 requiredMessage="This field is required."
+                                                validator="#{AddSitePage.validateIsEmpty}"
                                                 value="#{AddSitePage.firstName}" 
                                                 valueChangeListener="#{AddSitePage.changeFirstName}"
                                                 style="display:block;"/>
+                                 <h:message for="firstName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                             </ui:panelGroup>
                             <!-- last name -->
                             <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Scholar'}" block="true" style="vertical-align: top;">
@@ -98,13 +99,14 @@
                             </ui:panelGroup>
                             <ui:panelGroup block="true" style="vertical-align: top;">
                                 <h:inputText id="lastName" 
-                                                immediate="true"
-                                                onblur="createDvName();"
-                                                required="#{(AddSitePage.dataverseType == 'Scholar') ? true : false}"
-                                                requiredMessage="This field is required."
-                                                value="#{AddSitePage.lastName}" 
-                                                valueChangeListener="#{AddSitePage.changeLastName}"
-                                                style="display:block;"/>
+                                             onblur="createDvName();"
+                                             required="#{(AddSitePage.dataverseType == 'Scholar') ? true : false}"
+                                             requiredMessage="This field is required."
+                                             validator="#{AddSitePage.validateIsEmpty}"
+                                             value="#{AddSitePage.lastName}" 
+                                             valueChangeListener="#{AddSitePage.changeLastName}"
+                                             style="display:block;"/>
+                                <h:message for="lastName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                             </ui:panelGroup>
                             <!-- affiliation -->
                             <ui:panelGroup block="true" style="vertical-align: top;">
@@ -123,7 +125,11 @@
                                 </h:outputLabel>
                             </ui:panelGroup>
                             <ui:panelGroup>
-                                <h:inputText binding="#{AddSitePage.dataverseName}" id="dataverseName" immediate="true" required="true" requiredMessage="This field is required." validator="#{AddSitePage.validateName}" size="60"/>
+                                <h:inputText binding="#{AddSitePage.dataverseName}" 
+                                                id="dataverseName" 
+                                                required="true" 
+                                                requiredMessage="This field is required." 
+                                                validator="#{AddSitePage.validateName}" size="60"/>
                                 <f:verbatim><br /></f:verbatim>
                                 <h:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
                                 <h:message for="dataverseName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
@@ -136,7 +142,10 @@
                                 </h:outputLabel>
                             </ui:panelGroup>
                             <ui:panelGroup>
-                                <h:inputText binding="#{AddSitePage.dataverseAlias}" id="dataverseAlias" required="true" validator="#{AddSitePage.validateAlias}" />
+                                <h:inputText binding="#{AddSitePage.dataverseAlias}" 
+                                                id="dataverseAlias" 
+                                                required="true" 
+                                                validator="#{AddSitePage.validateAlias}" />
                                 <f:verbatim><br /></f:verbatim>
                                 <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
                                 <h:message for="dataverseAlias" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>

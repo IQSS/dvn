@@ -163,7 +163,7 @@
                                             </h:outputLink>
                                         <h:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog" >
                                             <h:outputText value="#{studyPage.studyUI.study.owner.name} Dataverse" />
-                                        </h:outputLink>    
+                                        </h:outputLink> 
                                     </ui:panelGroup>
                                 </h:panelGrid>
                                 

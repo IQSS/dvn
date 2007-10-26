@@ -42,6 +42,7 @@
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>                        
             <input type="hidden" value="StudyPage" name="pageName"/>
             <h:inputHidden id="studyId" value="#{studyPage.studyId}"/>
+              <input type="hidden"  name="studyId" value="${studyPage.studyId}"/>
             <h:inputHidden id="slIndex" value="#{studyPage.studyListingIndex}"/>
                         
                 <div class="dvn_section">

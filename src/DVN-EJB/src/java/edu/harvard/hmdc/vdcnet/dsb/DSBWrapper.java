@@ -43,6 +43,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -474,5 +476,36 @@ public class DSBWrapper {
         String file = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1" + xff;
         System.out.println(file);
         return file;
+    }
+
+    public static boolean isDSBRequest(HttpServletRequest req) {
+        boolean dsbRequest = false;
+        
+        String dsbHost = System.getProperty("vdc.dsb.host");
+
+        if ( dsbHost == null ) {
+            // vdc.dsb.host isn't set; 
+            // fall back to the old-style option: 
+            dsbHost = System.getProperty("vdc.dsb.url");
+        }		   
+
+
+        if ( dsbHost.equals(req.getRemoteHost()) ) {
+            dsbRequest = true; 
+        } else { 
+            try {
+                String dsbHostIPAddress = InetAddress.getByName(dsbHost).getHostAddress(); 
+                if ( dsbHostIPAddress.equals(req.getRemoteHost()) ) {
+                    dsbRequest = true;
+                }
+            } catch ( UnknownHostException ex ) {
+                // do nothing; 
+                // the "vdc.dsb.host" setting is clearly misconfigured,
+                // so we just keep assuming this is NOT a DSB call
+            }
+        }
+
+        return dsbRequest;
+       
     }
 }

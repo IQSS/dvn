@@ -43,6 +43,10 @@ public interface VDCNetworkServiceLocal {
     void edit(VDCNetwork vDCNetwork);
 
     void destroy(VDCNetwork vDCNetwork);
+    
+    void updateExportTimer();
+    
+    void createExportTimer();
 
     VDCNetwork find(Object pk);
     VDCNetwork find();

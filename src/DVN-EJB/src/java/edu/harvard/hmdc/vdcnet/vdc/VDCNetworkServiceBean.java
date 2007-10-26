@@ -35,6 +35,7 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyExporter;
 import edu.harvard.hmdc.vdcnet.study.StudyExporterFactoryLocal;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.util.Calendar;
@@ -117,20 +118,26 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         createExportTimer();
     }
     
-    private void createExportTimer() {
+    public void createExportTimer() {
             VDCNetwork vdcNetwork = this.find();
             long intervalDuration=0;
             Calendar initExpiration = Calendar.getInstance();
             initExpiration.set(Calendar.MINUTE, 0);
             initExpiration.set(Calendar.SECOND, 0);
-            if (vdcNetwork.getExportPeriod().equals(vdcNetwork.EXPORT_PERIOD_DAILY)) {
-                 intervalDuration = 1000*60 *60*24; 
-                 initExpiration.set(Calendar.HOUR_OF_DAY, vdcNetwork.getExportHourOfDay());  
-
+            if (StringUtil.isEmpty(vdcNetwork.getExportPeriod())) {
+                logger.log(Level.INFO, "No export period found, export not scheduled.");  
+                return;
             } else if (vdcNetwork.getExportPeriod().equals(vdcNetwork.EXPORT_PERIOD_WEEKLY)) {
                 intervalDuration = 1000*60 *60*24*7; 
                 initExpiration.set(Calendar.HOUR_OF_DAY, vdcNetwork.getExportHourOfDay());
                 initExpiration.set(Calendar.DAY_OF_WEEK, vdcNetwork.getExportDayOfWeek());
+                logger.log(Level.INFO, "Scheduling weekly export");  
+ 
+
+            } else if (vdcNetwork.getExportPeriod().equals(vdcNetwork.EXPORT_PERIOD_DAILY)) {
+                 intervalDuration = 1000*60 *60*24; 
+                 initExpiration.set(Calendar.HOUR_OF_DAY, vdcNetwork.getExportHourOfDay());  
+                 logger.log(Level.INFO, "Scheduling daily export");  
 
             } else {
                 logger.log(Level.WARNING, "Could not set timer for export, unknown schedule period: "+ vdcNetwork.getExportPeriod());

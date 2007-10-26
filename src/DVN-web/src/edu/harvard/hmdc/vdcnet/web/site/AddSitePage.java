@@ -663,6 +663,17 @@ public class AddSitePage extends VDCBaseBean {
         String newValue = (String) event.getNewValue();
         this.setLastName(newValue);        
     }
+    
+    public void validateIsEmpty(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        String newValue = (String)value;
+         if (newValue == null || newValue.trim().length() == 0)  {
+            FacesMessage message = new FacesMessage("The field must have a value.");
+            context.addMessage(toValidate.getClientId(context), message);
+            context.renderResponse();
+        }
+    }
 
 }
 

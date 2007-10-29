@@ -82,7 +82,7 @@ public class VDCContextListener implements ServletContextListener {
             System.out.println("VDContextListener, scheduling export now....");
                     
             vdcNetworkService = (VDCNetworkServiceLocal)new InitialContext().lookup("java:comp/env/vdcNetworkService");
-            vdcNetworkService.createExportTimer();
+            vdcNetworkService.updateExportTimer();
         } catch(Exception e) {
             e.printStackTrace();
         }

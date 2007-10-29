@@ -55,6 +55,8 @@ public interface StudyServiceLocal {
     public void updateStudy(Study study);
     
     public void deleteStudy(Long studyId) ;
+    
+    public void deleteStudyList(List<Long> studyIds);
    
     public List getStudies();
         

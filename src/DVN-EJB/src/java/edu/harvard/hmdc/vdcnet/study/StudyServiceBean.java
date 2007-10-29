@@ -56,6 +56,7 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -172,8 +173,19 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         
     }
     
+    public void deleteStudy(Long studyId ) {
+        deleteStudy(studyId,true);
+    }
     
-    public void deleteStudy(Long studyId) {
+    public void deleteStudyList(List<Long> studyIds) {
+       indexService.deleteIndexList(studyIds);
+       for (Long studyId : studyIds) {
+            deleteStudy(studyId,false);
+        }
+         
+    }
+    
+    public void deleteStudy(Long studyId, boolean deleteFromIndex) {
         Study study = em.find(Study.class,studyId);
         if (study==null) {
             return; 
@@ -221,8 +233,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         
         em.remove(study);
         gnrsService.delete(study.getAuthority(),study.getStudyId());
-        indexService.deleteStudy(studyId);
-        
+        if (deleteFromIndex){
+            indexService.deleteStudy(studyId);
+        }
         
         
     }

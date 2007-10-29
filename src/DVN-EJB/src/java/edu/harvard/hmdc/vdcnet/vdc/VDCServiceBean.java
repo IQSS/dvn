@@ -394,10 +394,9 @@ public class VDCServiceBean implements VDCServiceLocal {
             studyIds.add(elem.getId());
         }       
         
-        for (Iterator it = studyIds.iterator(); it.hasNext();) {
-            Long studyId = (Long) it.next();
-            studyService.deleteStudy(studyId);    
-        }
+       
+        studyService.deleteStudyList(studyIds);    
+        
         vdc.getOwnedStudies().clear();
         
        

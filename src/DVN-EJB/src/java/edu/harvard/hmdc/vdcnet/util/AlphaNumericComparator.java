@@ -65,9 +65,10 @@ public class AlphaNumericComparator implements Comparator {
     public AlphaNumericComparator() {
     }
 
-    private  BigDecimal getNumber(String s) {
+     public BigDecimal getNumber(String s) {
         char period = '.';
         char comma = ',';
+        char minus='-';
         BigDecimal bigDecimal=null;
         StringBuffer strBuff = new StringBuffer("");
         char[] charArray = s.trim().toCharArray();
@@ -76,7 +77,8 @@ public class AlphaNumericComparator implements Comparator {
             boolean isNextChar = i+1<charArray.length;
             if(Character.isDigit(c) || 
                 (c==period && isNextChar && Character.isDigit(charArray[i+1])) ||
-                (c==comma && isNextChar && Character.isDigit(charArray[i+1]))){
+                (c==comma  && isNextChar && Character.isDigit(charArray[i+1])) ||
+                (c==minus  && i==0 && isNextChar && Character.isDigit(charArray[i+1]))){
                 strBuff.append(c);
             }
         }

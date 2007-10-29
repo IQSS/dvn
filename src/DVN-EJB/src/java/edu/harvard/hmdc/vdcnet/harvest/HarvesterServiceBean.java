@@ -243,7 +243,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             
             
         } catch (Throwable e) {
-            mailService.sendHarvestErrorNotification(vdcNetworkService.find().getContactEmail());
+            mailService.sendHarvestErrorNotification(vdcNetworkService.find().getContactEmail(),vdcNetworkService.find().getName());
            logException(e,logger);
         }
     }

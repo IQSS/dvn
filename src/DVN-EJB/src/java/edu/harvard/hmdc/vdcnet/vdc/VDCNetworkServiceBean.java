@@ -131,12 +131,14 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
                 intervalDuration = 1000*60 *60*24*7; 
                 initExpiration.set(Calendar.HOUR_OF_DAY, vdcNetwork.getExportHourOfDay());
                 initExpiration.set(Calendar.DAY_OF_WEEK, vdcNetwork.getExportDayOfWeek());
+               
                 logger.log(Level.INFO, "Scheduling weekly export");  
  
 
             } else if (vdcNetwork.getExportPeriod().equals(vdcNetwork.EXPORT_PERIOD_DAILY)) {
                  intervalDuration = 1000*60 *60*24; 
                  initExpiration.set(Calendar.HOUR_OF_DAY, vdcNetwork.getExportHourOfDay());  
+              //   initExpiration.set(Calendar.MINUTE,15);  //REMOVE!!!!!
                  logger.log(Level.INFO, "Scheduling daily export");  
 
             } else {
@@ -153,7 +155,11 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
             Integer exportHourOfDay= vdcNetwork.getExportHourOfDay();
             Integer exportDayOfWeek = vdcNetwork.getExportDayOfWeek();
             ExportTimerInfo exportTimerInfo = new ExportTimerInfo(exportPeriod,exportHourOfDay, exportDayOfWeek);
-            logger.info("Just checking timerService: "+timerService.getTimers());
+            
+            logger.info("Just checking timerService: ");
+            for (Object timer:timerService.getTimers()) {
+                logger.info("Found timer: "+((Timer)timer).getInfo());
+            }
             timerService.createTimer(initExpirationDate, intervalDuration,exportTimerInfo);
       
     }
@@ -171,7 +177,7 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
                 studyService.exportUpdatedStudies();             
             }
          } catch (Throwable e) {
-            mailService.sendHarvestErrorNotification(find().getContactEmail());
+            mailService.sendExportErrorNotification(find().getContactEmail(), this.find().getName());
            logException(e,logger);
         }
     }

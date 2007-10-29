@@ -82,5 +82,6 @@ public interface MailServiceLocal {
     public void sendStudyEditedCuratorNotification(String curatorEmail, String userEmail, String studyName, String vdcName );
 
     public void sendHarvestErrorNotification(String email,VDC vdc);
-    public void sendHarvestErrorNotification(String email );   
+    public void sendHarvestErrorNotification(String email, String vdcNetworkName );   
+    public void sendExportErrorNotification(String email, String vdcNetworkName ); 
 }

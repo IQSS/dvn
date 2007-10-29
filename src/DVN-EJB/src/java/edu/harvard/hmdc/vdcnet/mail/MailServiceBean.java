@@ -292,9 +292,17 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
           String messageText = "An exception occurred while harvesting from "+vdc.getName()+" dataverse. See harvest_"+vdc.getAlias()+" log and server.log for more details. ";
               sendDoNotReplyMail(email,subject,messageText);
       }
-      public void sendHarvestErrorNotification(String email) {
+      public void sendHarvestErrorNotification(String email, String vdcNetworkName) {
           String subject = "Dataverse Network: Harvesting error notification";
-          String messageText = "An exception occurred during harvesting. See server.log for more details. ";
+          String messageText = "An exception occurred during harvesting in DVN "+vdcNetworkName+". See server.log for more details. ";
+          
               sendDoNotReplyMail(email,subject,messageText);
       }
+      
+      public void sendExportErrorNotification(String email, String vdcNetworkName) { 
+          String subject = "Dataverse Network: Export error notification";
+          String messageText = "An exception occurred during exporting in DVN "+vdcNetworkName+". See server.log for more details. ";
+              sendDoNotReplyMail(email,subject,messageText);
+      }
+
 }

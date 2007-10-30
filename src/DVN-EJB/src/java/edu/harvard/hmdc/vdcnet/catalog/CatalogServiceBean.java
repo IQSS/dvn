@@ -135,22 +135,22 @@ public class CatalogServiceBean implements CatalogServiceLocal {
             if (from==null) {
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.DAY_OF_YEAR, -1);
-                beginTime =new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());  // Use yesterday as default value
+                beginTime =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());  // Use yesterday as default value
                 cal.add(Calendar.DAY_OF_YEAR,1);
-                endTime =new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+                endTime =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
             }    else {
                 beginTime=from;
-                Date date=new SimpleDateFormat("yyyy-MM-dd").parse(from);
+                Date date=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(from);
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(date);
-                beginTime = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+                beginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
                 if (until == null){
                     cal.add(Calendar.DAY_OF_YEAR,1);
                 } else {
-                    Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(until);
+                    Date endDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(until);
                     cal.setTime(endDate);
                 }
-                endTime =new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+                endTime =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
             }
             String query = "SELECT s from Study s where " ;
             query+="s.lastUpdateTime >='" +beginTime+"'";
@@ -250,7 +250,7 @@ public class CatalogServiceBean implements CatalogServiceLocal {
                 String record = null;
                 DeletedStudy deletedStudy = (DeletedStudy) it.next();
                 String identifier = "<identifier>" + deletedStudy.getGlobalId() + "</identifier>";
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 if (deletedStudy.getDeletedTime() != null) {
                     String dateStamp = "<datestamp>" + sdf.format(deletedStudy.getDeletedTime()) + "</datestamp>";
                     record = identifier+dateStamp+deleteStatus;
@@ -276,7 +276,7 @@ public class CatalogServiceBean implements CatalogServiceLocal {
     
     public String getRecord(Study study, String metadataPrefix) {
         String identifier = "<identifier>" + study.getGlobalId() + "</identifier>";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateStamp = "<datestamp>"+sdf.format(study.getLastExportTime())+"</datestamp>";
         String setSpec = "<setSpec>"+study.getAuthority()+"</setSpec>";
 //        Date lastUpdateTime = study.getLastUpdateTime();

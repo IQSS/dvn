@@ -295,8 +295,9 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             throw new EJBException("Cannot begin harvesting, Dataverse "+dataverse.getVdc().getName()+" is currently being harvested.");
         }
         
-        Date today = new Date();
-        String until= formatter.format(today);
+        //Date today = new Date();
+        //String until= formatter.format(today);
+        String until =null;  // If we don't set until date, we will get all the changes since the last harvest.
         
         String from = null;
         Date lastHarvestTime = havestingDataverseService.getLastHarvestTime(dataverse.getId());
@@ -322,11 +323,12 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             return;
         }
         
-        Date lastHarvestTime=null;
+    
         try {
             
             havestingDataverseService.setHarvestingNow(dataverse.getId(), true);
-            lastHarvestTime = formatter.parse(until);
+            Date lastHarvestTime=new Date();
+            
             hdLogger.log(Level.INFO,"BEGIN HARVEST..., oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getHarvestFormatType().getMetadataPrefix()+ ", from="+from+", until="+until);
             ResumptionTokenType resumptionToken = null;
             
@@ -335,16 +337,13 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             } while(resumptionToken!=null && !resumptionToken.equals(""));
             
             hdLogger.log(Level.INFO,"COMPLETED HARVEST, oaiUrl="+dataverse.getOaiServer()+",set="+ dataverse.getHarvestingSet()+", metadataPrefix="+dataverse.getHarvestFormatType().getMetadataPrefix()+ ", from="+from+", until="+until);
-            
-        } catch (ParseException ex) {
-            harvestErrorOccurred.setValue(true);
-            hdLogger.severe( "ParseException harvesting dataverse "+dataverse.getVdc().getName()+", until Str="+until+", exception: "+ex.getMessage());
-            logException(ex, hdLogger);
+            havestingDataverseService.setLastHarvestTime(dataverse.getId(), lastHarvestTime);
+             
+        
         } finally {
             havestingDataverseService.setHarvestingNow(dataverse.getId(), false);            
         }
-        
-        havestingDataverseService.setLastHarvestTime(dataverse.getId(), lastHarvestTime);
+   
         
         // now index all studies (need to modify for update)
         hdLogger.log(Level.INFO,"POST HARVEST, start calls to index.");

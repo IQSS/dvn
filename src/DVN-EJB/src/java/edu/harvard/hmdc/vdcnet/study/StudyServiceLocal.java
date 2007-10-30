@@ -46,6 +46,8 @@ public interface StudyServiceLocal {
     
     public Study getStudyByGlobalId(String globalId);
    
+    public DeletedStudy getDeletedStudyByGlobalId(String identifier);
+    
     public Study getStudyByHarvestInfo(String authority, String harvestIdentifier);
    
     public Study getStudyDetail(Long studyId);

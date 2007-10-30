@@ -949,6 +949,21 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     
     
 
+    public DeletedStudy getDeletedStudyByGlobalId(String identifier) {
+        
+        
+        String queryStr="SELECT s from DeletedStudy s where s.globalId = :identifier";
+        
+        DeletedStudy study=null;
+        try {
+            Query query = em.createQuery(queryStr);
+            query.setParameter("identifier",identifier);
+            study=(DeletedStudy)query.getSingleResult();
+        } catch (javax.persistence.NoResultException e) {
+            // DO nothing, just return null.
+        }
+        return study;
+    }
   
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

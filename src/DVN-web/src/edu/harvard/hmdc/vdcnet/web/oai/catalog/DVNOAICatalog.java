@@ -416,7 +416,7 @@ public class DVNOAICatalog extends AbstractCatalog {
         String nativeItem = null;
         if (study != null) {
             String identifierElement = "<identifier>" + study.getGlobalId() + "</identifier>";
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String dateStamp = "<datestamp>" + sdf.format(study.getLastExportTime()) + "</datestamp>";
             String setSpec = "<setSpec>" + study.getAuthority() + "</setSpec>";
             Date lastUpdateTime = study.getLastUpdateTime();
@@ -432,7 +432,7 @@ public class DVNOAICatalog extends AbstractCatalog {
             if (deletedStudy != null) {
                 String deleteStatus = "<header status=\"deleted\" />";
                 String identifierElement = "<identifier>" + identifier + "</identifier>";
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 if (deletedStudy.getDeletedTime() != null) {
                     String dateStamp = "<datestamp>" + sdf.format(deletedStudy.getDeletedTime()) + "</datestamp>";
                     String record = deleteStatus + identifierElement + dateStamp + deleteStatus;
@@ -451,7 +451,7 @@ public class DVNOAICatalog extends AbstractCatalog {
     private String getRecord(Study study, String metadataPrefix) {
         String oai_dc = "<oai_dc:dc>";
         String identifier = "<identifier>" + study.getGlobalId() + "</identifier>";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateStamp = "<datestamp>"+sdf.format(study.getLastExportTime())+"</datestamp>";
         String setSpec = "<setSpec>"+study.getAuthority()+"</setSpec>";
         Date lastUpdateTime = study.getLastUpdateTime();

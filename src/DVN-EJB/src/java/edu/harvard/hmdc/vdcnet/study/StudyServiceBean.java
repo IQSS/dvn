@@ -1599,15 +1599,41 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             logger.severe("Exception adding log file handler "+FileUtil.getExportFileDir()+ File.separator+ "export_"+logTimestamp+".log");
             return;
         }
-        List<Long> studyIds = studyService.getStudyIdsForExport();
-        exportLogger.info("Begin exporting studies, number of studies to export: "+studyIds.size());
-        for (Long studyId: studyIds) {
-            exportLogger.info("Begin export for study primary key "+studyId);
-            studyService.exportStudy(studyId, true);        
-            exportLogger.info("Complete export for study primary key "+studyId);
+        try {
+            List<Long> studyIds = studyService.getStudyIdsForExport();
+            exportLogger.info("Begin exporting studies, number of studies to export: "+studyIds.size());
+            for (Long studyId: studyIds) {
+                Study study = em.find(Study.class, studyId);
+                exportLogger.info("Begin export for study "+study.getGlobalId());
+                studyService.exportStudy(studyId, true);        
+                exportLogger.info("Complete export for study "+study.getGlobalId());
+            }
+            exportLogger.info("Completed exporting studies.");
+        } catch (Throwable e) {
+            logException(e,exportLogger);
+         
         }
-        exportLogger.info("Completed exporting studies.");
-              
      }
+    
+    
+       private void logException(Throwable e, Logger logger) {
+     
+       boolean cause=false;
+       String fullMessage = "";
+        do  {   
+            String message = e.getClass().getName()+ " " +e.getMessage();
+            if (cause) {
+                message = "\nCaused By Exception.................... "+e.getClass().getName()+" "+e.getMessage();
+            }
+            StackTraceElement[] ste = e.getStackTrace();
+            message+= "\nStackTrace: \n";
+            for(int m=0;m<ste.length;m++) {
+                message+=ste[m].toString()+"\n";
+            }
+            fullMessage+=message;
+            cause=true;
+        } while ((e=e.getCause())!=null);
+         logger.severe(fullMessage);
+    }    
     
 }

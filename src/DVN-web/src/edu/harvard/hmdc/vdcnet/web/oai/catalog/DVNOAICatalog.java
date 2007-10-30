@@ -73,6 +73,7 @@ import ORG.oclc.oai.server.verb.CannotDisseminateFormatException;
 import ORG.oclc.oai.server.verb.IdDoesNotExistException;
 import ORG.oclc.oai.server.verb.NoMetadataFormatsException;
 import edu.harvard.hmdc.vdcnet.catalog.CatalogServiceLocal;
+import edu.harvard.hmdc.vdcnet.study.DeletedStudy;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 
@@ -412,17 +413,35 @@ public class DVNOAICatalog extends AbstractCatalog {
             e.printStackTrace();
         }
         Study study = studyService.getStudyByGlobalId(identifier);
-        String identifierElement = "<identifier>" + study.getGlobalId() + "</identifier>";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String dateStamp = "<datestamp>"+sdf.format(study.getLastExportTime())+"</datestamp>";
-        String setSpec = "<setSpec>"+study.getAuthority()+"</setSpec>";
-        Date lastUpdateTime = study.getLastUpdateTime();
-        File studyFileDir = FileUtil.getStudyFileDir(study);
-        String exportFileName= studyFileDir.getAbsolutePath() + File.separator + "export_" + metadataPrefix+".xml";
-        String record = identifierElement+dateStamp+setSpec+readFile(new File(exportFileName));
-        String nativeItem = record;
-        if (nativeItem == null)
-            throw new IdDoesNotExistException(identifier);
+        String nativeItem = null;
+        if (study != null) {
+            String identifierElement = "<identifier>" + study.getGlobalId() + "</identifier>";
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String dateStamp = "<datestamp>" + sdf.format(study.getLastExportTime()) + "</datestamp>";
+            String setSpec = "<setSpec>" + study.getAuthority() + "</setSpec>";
+            Date lastUpdateTime = study.getLastUpdateTime();
+            File studyFileDir = FileUtil.getStudyFileDir(study);
+            String exportFileName = studyFileDir.getAbsolutePath() + File.separator + "export_" + metadataPrefix + ".xml";
+            String record = identifierElement + dateStamp + setSpec + readFile(new File(exportFileName));
+            nativeItem = record;
+            if (nativeItem == null) {
+                throw new IdDoesNotExistException(identifier);
+            }
+        } else {
+            DeletedStudy deletedStudy = studyService.getDeletedStudyByGlobalId(identifier);
+            if (deletedStudy != null) {
+                String deleteStatus = "<header status=\"deleted\" />";
+                String identifierElement = "<identifier>" + identifier + "</identifier>";
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                if (deletedStudy.getDeletedTime() != null) {
+                    String dateStamp = "<datestamp>" + sdf.format(deletedStudy.getDeletedTime()) + "</datestamp>";
+                    String record = deleteStatus + identifierElement + dateStamp + deleteStatus;
+                    nativeItem = record;
+                } else {
+                    logger.severe("Deleted time is a mandatory field for deleted study " + deletedStudy.getGlobalId());
+                }
+            }
+        }
         /***********************************************************************
          * END OF CUSTOM CODE SECTION
          ***********************************************************************/

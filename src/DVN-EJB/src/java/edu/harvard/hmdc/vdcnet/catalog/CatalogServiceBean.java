@@ -56,6 +56,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -196,35 +197,37 @@ public class CatalogServiceBean implements CatalogServiceLocal {
             if (from==null) {
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.DAY_OF_YEAR, -1);
-                beginTime =new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());  // Use yesterday as default value
+                beginTime =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());  // Use yesterday as default value
                 cal.add(Calendar.DAY_OF_YEAR,1);
-                endTime =new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+                endTime =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
             }    else {
                 beginTime=from;
-                Date date=new SimpleDateFormat("yyyy-MM-dd").parse(from);
+                Date date=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(from);
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(date);
-                beginTime = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+                beginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
                 if (until == null){
                     cal.add(Calendar.DAY_OF_YEAR,1);
                 } else {
-                    Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(until);
+                    Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(until);
                     cal.setTime(endDate);
                 }
-                endTime =new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+//                untilCal = cal;
+                endTime =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
             }
             String query = "SELECT s from Study s where " ;
             query+="s.lastExportTime >='" +beginTime+"'";
             query+=" and s.lastExportTime <='" +endTime+"' and s.reviewState.name = 'Released' ";
             query+=" and s.owner.restricted = false and s.restricted = false ";
             query+=" order by s.studyId";
-            List updatedStudies = em.createQuery(query).getResultList();
+            Query q = em.createQuery(query);
+            List updatedStudies = q.getResultList();
             
             
             for (Iterator it = updatedStudies.iterator(); it.hasNext();) {
                 Study study = (Study) it.next();
                 String identifier = "<identifier>" + study.getGlobalId() + "</identifier>";
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                 if (study.getLastExportTime() != null) {
                     String dateStamp = "<datestamp>" + sdf.format(study.getLastExportTime()) + "</datestamp>";
                     String setSpec = "<setSpec>" + study.getAuthority() + "</setSpec>";
@@ -238,9 +241,10 @@ public class CatalogServiceBean implements CatalogServiceLocal {
                 }
             }
             String deleteQuery = "SELECT d from DeletedStudy d where ";
-            query+="d.deletedTime >='" +beginTime+"'";
-            query+=" and d.deletedTime <='" +endTime+"'";
-            List deletedStudies = em.createQuery(deleteQuery).getResultList();
+            deleteQuery+="d.deletedTime >='" + beginTime+"'";
+            deleteQuery+=" and d.deletedTime <='" + endTime+"'";
+            Query dq = em.createQuery(deleteQuery);
+            List deletedStudies = dq.getResultList();
             String deleteStatus = "<status>deleted</status>";
             for (Iterator it = deletedStudies.iterator(); it.hasNext();) {
                 String record = null;

@@ -158,13 +158,13 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         em.merge(detachedStudy);
     }
     
-    public Study getStudyByHarvestInfo(String authority, String harvestIdentifier) {
-        String queryStr = "SELECT s FROM Study s WHERE s.authority = '"+authority+"' and s.harvestIdentifier = '" + harvestIdentifier+"'" ;
+    public Study getStudyByHarvestInfo(VDC dataverse, String harvestIdentifier) {
+        String queryStr = "SELECT s FROM Study s WHERE s.owner.id = '"+dataverse.getId()+"' and s.harvestIdentifier = '" + harvestIdentifier+"'" ;
         Query query= em.createQuery(queryStr);
         List resultList = query.getResultList();
         Study study=null;
         if (resultList.size()>1) {
-            throw new EJBException("More than one study found with authority= "+authority+" and harvestIdentifier= "+harvestIdentifier);
+            throw new EJBException("More than one study found with owner_id= "+dataverse.getId()+" and harvestIdentifier= "+harvestIdentifier);
         }
         if (resultList.size()==1) {
             study = (Study)resultList.get(0);

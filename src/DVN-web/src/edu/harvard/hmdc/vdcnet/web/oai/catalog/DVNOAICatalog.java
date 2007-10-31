@@ -71,6 +71,7 @@ import ORG.oclc.oai.server.catalog.AbstractCatalog;
 import ORG.oclc.oai.server.verb.BadResumptionTokenException;
 import ORG.oclc.oai.server.verb.CannotDisseminateFormatException;
 import ORG.oclc.oai.server.verb.IdDoesNotExistException;
+import ORG.oclc.oai.server.verb.NoItemsMatchException;
 import ORG.oclc.oai.server.verb.NoMetadataFormatsException;
 import edu.harvard.hmdc.vdcnet.catalog.CatalogServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.DeletedStudy;
@@ -481,7 +482,7 @@ public class DVNOAICatalog extends AbstractCatalog {
      * supported by the item.
      */
     public Map listRecords(String from, String until, String set, String metadataPrefix)
-        throws CannotDisseminateFormatException {
+        throws CannotDisseminateFormatException, NoItemsMatchException {
         purge(); // clean out old resumptionTokens
         Map listRecordsMap = new HashMap();
         ArrayList records = new ArrayList();
@@ -514,6 +515,9 @@ public class DVNOAICatalog extends AbstractCatalog {
 
         /* Get some records from your database */
         String[] nativeItem = xmlRecords; //ejb
+        if (nativeItem.length == 0){
+            throw new NoItemsMatchException();
+        }
 //        String[] nativeItem = (String[]) records.toArray(xmlRecords); //web
         int count;
 

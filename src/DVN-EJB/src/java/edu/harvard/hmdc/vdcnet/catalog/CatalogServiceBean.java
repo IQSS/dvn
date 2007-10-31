@@ -227,7 +227,7 @@ public class CatalogServiceBean implements CatalogServiceLocal {
             for (Iterator it = updatedStudies.iterator(); it.hasNext();) {
                 Study study = (Study) it.next();
                 String identifier = "<identifier>" + study.getGlobalId() + "</identifier>";
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
                 if (study.getLastExportTime() != null) {
                     String dateStamp = "<datestamp>" + sdf.format(study.getLastExportTime()) + "</datestamp>";
                     String setSpec = "<setSpec>" + study.getAuthority() + "</setSpec>";
@@ -250,7 +250,7 @@ public class CatalogServiceBean implements CatalogServiceLocal {
                 String record = null;
                 DeletedStudy deletedStudy = (DeletedStudy) it.next();
                 String identifier = "<identifier>" + deletedStudy.getGlobalId() + "</identifier>";
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 if (deletedStudy.getDeletedTime() != null) {
                     String dateStamp = "<datestamp>" + sdf.format(deletedStudy.getDeletedTime()) + "</datestamp>";
                     record = identifier+dateStamp+deleteStatus;
@@ -276,7 +276,7 @@ public class CatalogServiceBean implements CatalogServiceLocal {
     
     public String getRecord(Study study, String metadataPrefix) {
         String identifier = "<identifier>" + study.getGlobalId() + "</identifier>";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         String dateStamp = "<datestamp>"+sdf.format(study.getLastExportTime())+"</datestamp>";
         String setSpec = "<setSpec>"+study.getAuthority()+"</setSpec>";
 //        Date lastUpdateTime = study.getLastUpdateTime();

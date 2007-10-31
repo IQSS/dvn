@@ -46,10 +46,11 @@ public interface StudyServiceLocal {
     
     public Study getStudyByGlobalId(String globalId);
    
+
+    public Study getStudyByHarvestInfo(VDC vdc, String harvestIdentifier);
+
     public DeletedStudy getDeletedStudyByGlobalId(String identifier);
-    
-    public Study getStudyByHarvestInfo(String authority, String harvestIdentifier);
-   
+       
     public Study getStudyDetail(Long studyId);
     
     public Study getStudyForSearch(Long studyId, Map studyFields);

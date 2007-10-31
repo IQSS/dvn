@@ -205,7 +205,7 @@ public class CatalogServiceBean implements CatalogServiceLocal {
                 Date date=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(from);
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(date);
-                beginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
+                beginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss':000'").format(cal.getTime());
                 if (until == null){
                     cal.add(Calendar.DAY_OF_YEAR,1);
                 } else {
@@ -213,7 +213,7 @@ public class CatalogServiceBean implements CatalogServiceLocal {
                     cal.setTime(endDate);
                 }
 //                untilCal = cal;
-                endTime =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
+                endTime =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss':999'").format(cal.getTime());
             }
             String query = "SELECT s from Study s where " ;
             query+="s.lastExportTime >='" +beginTime+"'";

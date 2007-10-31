@@ -417,8 +417,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, boolean initialHarvest, MutableBoolean harvestErrorOccurred) {
         if (initialHarvest && dataverse.getHandlePrefix()!=null) {
-            // Note, for now, don't check study if the dataverse doesn't have a handlePrefix.  We may want to change this in the future.
-            Study study = studyService.getStudyByHarvestInfo(dataverse.getHandlePrefix().getPrefix(), identifier);
+           
+            Study study = studyService.getStudyByHarvestInfo(dataverse.getVdc(), identifier);
             if (study!=null) {
                 hdLogger.log(Level.INFO,"Initial Harvest AND Study with identifer '"+identifier + "' already exists in DB with id = " + study.getId() + "; skipping record.");
                 return null;
@@ -435,8 +435,15 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             if (errMessage!=null) {
                 hdLogger.log(Level.SEVERE,"Error calling GetRecord - "+errMessage);
             } else if (record.isDeleted()) {
-                Study study = studyService.getStudyByHarvestInfo(dataverse.getHandlePrefix().getPrefix(), identifier);
-                studyService.deleteStudy(study.getId());
+                hdLogger.log(Level.INFO, "Received 'deleted' status from OAI Server.");
+                Study study = studyService.getStudyByHarvestInfo(dataverse.getVdc(), identifier);
+                if (study!=null) {
+                    hdLogger.log(Level.INFO,"Deleting study "+study.getGlobalId());
+                    studyService.deleteStudy(study.getId());
+                } else {
+                    hdLogger.log(Level.INFO, "No study found for this record, skipping delete. ");                  
+                }
+                
             } else {
                 VDCUser networkAdmin = vdcNetworkService.find().getDefaultNetworkAdmin();                
                 harvestedStudy = studyService.importHarvestStudy(record.getMetadataFile(),dataverse.getVdc().getId(),networkAdmin.getId(),identifier, !initialHarvest);

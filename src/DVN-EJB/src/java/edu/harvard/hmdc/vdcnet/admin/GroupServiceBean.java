@@ -121,7 +121,9 @@ public class GroupServiceBean implements GroupServiceLocal  {
                 String parseIp = new String();
                 if (logindomain.getIpAddress().indexOf(".*",0) != -1)
                     parseIp = logindomain.getIpAddress().replace(".*", "\\.");
-                String regexp = "^" + parseIp + ".*";
+                else
+                    parseIp = logindomain.getIpAddress();
+                String regexp = "^" + parseIp;
                 Pattern pattern = Pattern.compile(regexp);
                 Matcher matcher = pattern.matcher(remotehost);
                 boolean isNotValid = matcher.find();

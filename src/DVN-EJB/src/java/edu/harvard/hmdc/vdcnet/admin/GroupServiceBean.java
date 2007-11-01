@@ -118,16 +118,23 @@ public class GroupServiceBean implements GroupServiceLocal  {
                     }
                 }
                 // integer substring match.
-                String parseIp = new String();
-                if (logindomain.getIpAddress().indexOf(".*",0) != -1)
+                String parseIp      = new String();
+                String regexp       = null;
+                Pattern pattern     = null;
+                Matcher matcher     = null;
+                boolean isMatch     = false;
+                if (logindomain.getIpAddress().indexOf(".*",0) != -1) {
                     parseIp = logindomain.getIpAddress().replace(".*", "\\.");
-                else
+                    regexp  = "^" + parseIp;
+                    pattern = Pattern.compile(regexp);
+                    matcher = pattern.matcher(remotehost);
+                    isMatch = matcher.find();
+                } else {
                     parseIp = logindomain.getIpAddress();
-                String regexp = "^" + parseIp;
-                Pattern pattern = Pattern.compile(regexp);
-                Matcher matcher = pattern.matcher(remotehost);
-                boolean isNotValid = matcher.find();
-                if (isNotValid) {
+                    if (parseIp.equals(remotehost))
+                        isMatch = true;
+                }
+                if (isMatch) {
                     group = logindomain.getUserGroup();
                    break;
                 }

@@ -49,6 +49,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import javax.ejb.EJB;
 import javax.ejb.EJBs;
+import javax.faces.context.FacesContext;
 import javax.servlet.*;
 
 import javax.servlet.Filter;
@@ -148,42 +149,42 @@ public class LoginFilter implements Filter {
         if (httpRequest.getSession().getAttribute("LOGIN_REDIRECT")!=null) {
             httpResponse.sendRedirect((String)httpRequest.getSession().getAttribute("LOGIN_REDIRECT"));
             httpRequest.getSession().removeAttribute("LOGIN_REDIRECT");
-        }
-        boolean authorized=false;
-        if (isRolePage(pageDef,httpRequest) ) {
-            if (isUserAuthorizedForRolePage(pageDef, httpRequest, loginBean)) {
+        }else {
+            boolean authorized=false;
+            if (isRolePage(pageDef,httpRequest) ) {
+                if (isUserAuthorizedForRolePage(pageDef, httpRequest, loginBean)) {
+                    authorized=true;
+                }
+
+            } else if (isUserAuthorizedForNonRolePage(pageDef, httpRequest, loginBean, ipUserGroup)) {
                 authorized=true;
             }
-      
-        } else if (isUserAuthorizedForNonRolePage(pageDef, httpRequest, loginBean, ipUserGroup)) {
-            authorized=true;
-        }
-        
-        if (!authorized){
-           if (loginBean==null  ) {
-                redirectToLogin(httpRequest,httpResponse,currentVDC);
-           } else {
-                PageDef  redirectPageDef = pageDefService.findByName(PageDefServiceLocal.UNAUTHORIZED_PAGE);                    
-                httpResponse.sendRedirect(httpRequest.getContextPath()+"/faces"+redirectPageDef.getPath());
-           }
-        } else {              
-            if (isEditStudyPage(pageDef) && studyLockedMessage(httpRequest)!=null  ) {
 
-                PageDef redirectPageDef = pageDefService.findByName(PageDefServiceLocal.STUDYLOCKED_PAGE);
-                httpResponse.sendRedirect(httpRequest.getContextPath()+"/faces"+redirectPageDef.getPath()+"?message="+studyLockedMessage(httpRequest));
+            if (!authorized){
+               if (loginBean==null  ) {
+                    redirectToLogin(httpRequest,httpResponse,currentVDC);
+               } else {
+                    PageDef  redirectPageDef = pageDefService.findByName(PageDefServiceLocal.UNAUTHORIZED_PAGE);                    
+                    httpResponse.sendRedirect(httpRequest.getContextPath()+"/faces"+redirectPageDef.getPath());
+               }
+            } else {              
+                if (isEditStudyPage(pageDef) && studyLockedMessage(httpRequest)!=null  ) {
 
-            } else {
+                    PageDef redirectPageDef = pageDefService.findByName(PageDefServiceLocal.STUDYLOCKED_PAGE);
+                    httpResponse.sendRedirect(httpRequest.getContextPath()+"/faces"+redirectPageDef.getPath()+"?message="+studyLockedMessage(httpRequest));
+                } else {
 
-                try {
-                    chain.doFilter(request, response);
-                } catch(Throwable t) {
-                    //
-                    // If an exception is thrown somewhere down the filter chain,
-                    // we still want to execute our after processing, and then
-                    // rethrow the problem after that.
-                    //
+                    try {
+                        chain.doFilter(request, response);
+                    } catch(Throwable t) {
+                        //
+                        // If an exception is thrown somewhere down the filter chain,
+                        // we still want to execute our after processing, and then
+                        // rethrow the problem after that.
+                        //
 
-                    t.printStackTrace();
+                        t.printStackTrace();
+                    }
                 }
             }
         }
@@ -462,6 +463,7 @@ public class LoginFilter implements Filter {
             
         }
         response.sendRedirect(request.getContextPath()+"/faces"+loginPage.getPath()+vdcParam);
+   
         
         
     }

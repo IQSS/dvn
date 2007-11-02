@@ -961,6 +961,19 @@ univarDataDwnld<-function(dtfrm, dwnldoptn, dsnprfx) {
         #dump(ls(dtfrm), file=dsnprfx)
         #detach(dtfrm)
     } else if (dwnldoptn == 'D03') {
+        # truncate over-sized string variables
+        MaxLenStringVar <- 127
+        vt <- attr(dtfrm, 'var.type')
+        for (i in 1:length(vt)){
+            if (vt[i] == 0){
+                #cat(paste(i, "-th var is char type", sep=""), "\n")
+                maxlen <- max(unlist(lapply(dtfrm[[i]],nchar)))
+                if (maxlen > MaxLenStringVar) {
+                    #cat(paste(i, "-th var is over-sized string var", sep=""), "\n")
+                    dtfrm[[i]] <- strtrim(dtfrm[[i]], MaxLenStringVar)
+                }
+            }
+        }
         write.dta(dtfrm, file=dsnprfx, version=7)
     } else if (dwnldoptn == 'D04') {
         save(x,file=dsnprfx)

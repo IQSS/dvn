@@ -135,8 +135,12 @@ public class VDCAdminServlet extends HttpServlet {
                     }
                 }
             } else if (req.getParameter("exportStudies") != null) { 
-                studyService.exportUpdatedStudies();
-                displayMessage(out, "Export completed.");
+                try {
+                    studyService.exportUpdatedStudies();
+                    displayMessage(out, "Export completed.");
+                } catch (Exception e) {
+                    displayMessage(out, "Exception occurred while exporting studies.  See export log for details.");
+                }
               
             }else {
                 displayMessage (out, "You have selected an action that is not allowed.");

@@ -1624,8 +1624,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 exportLogger.info("Complete export for study "+study.getGlobalId());
             }
             exportLogger.info("Completed exporting studies.");
-        } catch (Throwable e) {
+        } catch (EJBException e) {
             logException(e,exportLogger);
+            throw e;
          
         }
      }

@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -70,12 +71,13 @@ public class DSBWrapper {
     
     private HttpClient client = null;
     
-    private static final String DSB_ANALYZE = "Analyze";
-    private static final String DSB_INGEST = "Ingest";
-    private static final String DSB_CALCULATE_UNF = "CalculateUNF";
-    private static final String DSB_GET_ZELIG_CONFIG = "GetZeligConfig";
-    private static final String DSB_DISSEMINATE = "Disseminate";
-    
+    public static final String DSB_ANALYZE = "Analyze";
+    public static final String DSB_INGEST = "Ingest";
+    public static final String DSB_CALCULATE_UNF = "CalculateUNF";
+    public static final String DSB_GET_ZELIG_CONFIG = "GetZeligConfig";
+    public static final String DSB_DISSEMINATE = "Disseminate";
+    public static final String DSB_FILE_CONVERSION = "FileConversion";
+
     private static final String FORMAT_TYPE_TAB = "D01";
     private static final String FORMAT_TYPE_SPLUS = "D02";
     private static final String FORMAT_TYPE_STATA = "D03";
@@ -84,6 +86,20 @@ public class DSBWrapper {
     
     /** Creates a new instance of DSBWrapper */
     public DSBWrapper() {
+    }
+
+    public static boolean useNew(String verb) {
+        String useNewProperty = System.getProperty("vdc.dsb.useNew");
+        if (useNewProperty != null && verb != null) {
+            StringTokenizer st = new StringTokenizer(useNewProperty, "|");
+            while ( st.hasMoreTokens() ) {
+                if ( st.nextToken().toUpperCase().equals( verb.toUpperCase() ) ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;    
     }
     
     private String generateUrl(String verb) throws IOException{

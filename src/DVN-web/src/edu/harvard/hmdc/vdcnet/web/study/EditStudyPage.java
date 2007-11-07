@@ -59,11 +59,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlDataTable;
+import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlInputTextarea;
 import javax.faces.context.FacesContext;
@@ -72,6 +74,7 @@ import javax.faces.model.SelectItem;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.OptimisticLockException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -101,10 +104,10 @@ public class EditStudyPage extends VDCBaseBean {
         if (tab != null) {
             tabSet1.setSelected(tab);
         }
-        
-        if ( isFromPage("EditStudyPage")) {
-            if ( sessionGet(EditStudyService.class.getName()+getStudyIdFromRequest())!=null) {
-                editStudyService = (EditStudyService) sessionGet(EditStudyService.class.getName()+getStudyIdFromRequest());
+        token = this.getRequestParam("content:editStudyPageView:studyForm:token" );
+        if ( token!=null) {
+            if ( sessionGet(token)!=null) {
+                editStudyService = (EditStudyService) sessionGet(token);
                 study = editStudyService.getStudy();
                 setFiles(editStudyService.getCurrentFiles());
             } else {
@@ -114,10 +117,12 @@ public class EditStudyPage extends VDCBaseBean {
            }
         } else {
             
-            // we need to create the editStudyService bean
+            // we need to create the token and the editStudyService bean
+            token=java.util.UUID.randomUUID().toString();
             try {
                 Context ctx = new InitialContext();
                 editStudyService = (EditStudyService) ctx.lookup("java:comp/env/editStudy");
+                sessionPut( token, editStudyService);
             } catch(NamingException e) {
                 e.printStackTrace();
                 FacesContext context = FacesContext.getCurrentInstance();
@@ -126,8 +131,7 @@ public class EditStudyPage extends VDCBaseBean {
                 
             }
             if (getStudyId() != null) {
-                editStudyService.setStudy(studyId);
-                sessionPut( EditStudyService.class.getName()+studyId, editStudyService);
+                editStudyService.setStudy(studyId);            
                 study = editStudyService.getStudy();
                 setFiles(editStudyService.getCurrentFiles());
             } else {
@@ -135,7 +139,7 @@ public class EditStudyPage extends VDCBaseBean {
                 editStudyService.newStudy(vdcId, getVDCSessionBean().getLoginBean().getUser().getId());
                 study = editStudyService.getStudy();
                 studyId = SessionCounter.getNext();
-                sessionPut( EditStudyService.class.getName()+studyId, editStudyService);
+               
 
                  study.setStudyId(studyService.generateStudyIdSequence(study.getProtocol(),study.getAuthority()));
                 // prefill date of deposit
@@ -645,7 +649,7 @@ public class EditStudyPage extends VDCBaseBean {
             forwardPage="myOptions";
         }
         editStudyService.cancel();
-        this.sessionRemove(EditStudyService.class.getName());
+        this.sessionRemove(token);
         getVDCRequestBean().setStudyId(study.getId());
         getVDCRequestBean().setSelectedTab(tabSet1.getSelected());
         getVDCSessionBean().setStudyService(null);
@@ -935,7 +939,17 @@ public class EditStudyPage extends VDCBaseBean {
     public void setStudyId(Long studyId) {
         this.studyId = studyId;
     }
-    
+
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+        
     private List files;
     
     public List getFiles() {
@@ -957,11 +971,13 @@ public class EditStudyPage extends VDCBaseBean {
                 study.setTitle("Replication data for: "+study.getTitle());
             }
         }
+       
         editStudyService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
+       
         getVDCRequestBean().setStudyId(study.getId());
         getVDCRequestBean().setSelectedTab(tabSet1.getSelected());
         getVDCSessionBean().setStudyService(null);
-        this.sessionRemove(EditStudyService.class.getName()+getStudyIdFromRequest());
+        this.sessionRemove(token);
         return "viewStudy";
     }
     
@@ -2456,6 +2472,8 @@ public class EditStudyPage extends VDCBaseBean {
         this.inputSouthLatitude = inputSouthLatitude;
     }
     
+    
+  
     
 }
 

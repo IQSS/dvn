@@ -64,7 +64,8 @@
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             <input type="hidden" name="pageName" value="EditStudyPage"/>
             <h:inputHidden id="studyId" value="#{EditStudyPage.studyId}" />                        
-          
+            <h:inputHidden id="token" value="#{EditStudyPage.token}" />                        
+        
             
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">

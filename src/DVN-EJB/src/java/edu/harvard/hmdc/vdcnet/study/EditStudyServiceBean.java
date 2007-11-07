@@ -213,14 +213,16 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
                 // we need to flush to get the id for the indexer
                 em.flush();
             }
-            
+            em.flush(); // Always call flush(), so that we can detect an OptimisticLockException
             indexService.updateStudy(study.getId());
-            
-        } catch (EJBException e) {
+        } catch(EJBException e) {
             System.out.println("EJBException "+e.getMessage()+" saving study "+study.getId()+" edited by " + user.getUserName() + " at "+ new Date().toString());
             e.printStackTrace();
             throw e;
+        
         }
+            
+      
     }
     
     

@@ -1203,7 +1203,7 @@ sub writeDDIinXML{
 		# @name
 		$varName = $self->{_varNameA}->[$j];
 		$varNameL = $varNameSet->[$j];
-		$output->print(join('', ("\t<var ID=\"",$varid,"\" name=\"",$varNameL,"\"")));
+		$output->print(join('', ("\t<var ID=\"",$varid,"\" name=\"",encode_entities_numeric($varNameL),"\"")));
 		
 		# @intrvl & @dcml 
 		$attIntrvl='discrete';
@@ -1547,7 +1547,7 @@ sub writeDDIsec4{
 		# @name
 		$varName = $self->{_varNameA}->[$j];
 		$varNameL = $varNameSet->[$j];
-		$output->print(join('', ("\t<var ID=\"",$varid,"\" name=\"",$varNameL,"\"")));
+		$output->print(join('', ("\t<var ID=\"",$varid,"\" name=\"",encode_entities_numeric($varNameL),"\"")));
 		
 		# @intrvl & @dcml 
 		$attIntrvl='discrete';

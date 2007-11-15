@@ -52,6 +52,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1579,12 +1580,17 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         List<String> exportFormats = studyExporterFactory.getExportFormats();
         for (String exportFormat : exportFormats) {
             if (!exportFormat.equals("ddi") || exportDDI) {
-                File exportFile = new File(studyDir, "export_"+exportFormat+".xml"); 
-                StudyExporter studyExporter = studyExporterFactory.getStudyExporter(exportFormat);   
-                try {   
+                 StudyExporter studyExporter = studyExporterFactory.getStudyExporter(exportFormat);   
+                 String fileName = "export_"+exportFormat;
+                 if (studyExporter.isXmlFormat()) {
+                     fileName+=".xml";
+                 }
+                 File exportFile = new File(studyDir,fileName); 
+                 try {   
                     exportFile.createNewFile(); 
-                    Writer fileWriter = new FileWriter(exportFile);
-                    studyExporter.exportStudy(study, fileWriter);
+                    OutputStream os = new FileOutputStream(exportFile);
+                        
+                    studyExporter.exportStudy(study, os);
                 } catch(IOException e) {
                     throw new EJBException(e);
                 } catch (JAXBException e) {

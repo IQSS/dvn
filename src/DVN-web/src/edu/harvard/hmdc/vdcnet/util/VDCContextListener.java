@@ -56,9 +56,7 @@ public class VDCContextListener implements ServletContextListener {
     }
     
     public void contextInitialized(ServletContextEvent event) {
-        // This call initializes the Harvest Timer that will activate once a day and 
-        // run all scheduled Harvest Dataverses.
-      
+       
         HarvesterServiceLocal harvesterService = null;
         HarvestingDataverseServiceLocal harvestingDataverseService = null;
          

@@ -123,15 +123,15 @@ public class VDCExportServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        
+        OutputStream os = response.getOutputStream();
+        PrintWriter out = new PrintWriter(os);
         if (isNetworkAdmin(request)) {
             if (request.getParameter("getDDI")!=null) {
                 if (request.getParameter("studyId")!=null) {
                     Long studyId = Long.parseLong(request.getParameter("studyId"));
                     try {
                         Study study = studyService.getStudy(studyId);
-                        ddiService.exportStudy(study, out);
+                        ddiService.exportStudy(study, os);
                     } catch(Exception e) {
                         e.printStackTrace();
                         displayMessage(out,"Exception exporting study to DDI, see server.log for details.");

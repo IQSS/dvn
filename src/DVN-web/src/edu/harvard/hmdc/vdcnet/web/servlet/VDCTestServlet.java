@@ -133,9 +133,10 @@ public class VDCTestServlet extends HttpServlet {
         
         try {
             res.setContentType("text/xml");
+            OutputStream os = res.getOutputStream();
             PrintWriter out = res.getWriter();
-            ddiService.exportStudy(s, out);
-            out.close();
+            ddiService.exportStudy(s, os);
+            os.close();
             
             
         } catch (JAXBException ex) {

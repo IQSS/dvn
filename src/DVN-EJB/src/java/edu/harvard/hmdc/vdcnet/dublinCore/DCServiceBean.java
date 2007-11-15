@@ -44,6 +44,8 @@ import edu.harvard.hmdc.vdcnet.study.StudyProducer;
 import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import java.text.SimpleDateFormat;
@@ -83,88 +85,82 @@ public class DCServiceBean implements DCServiceLocal {
     public DCServiceBean() {
     }
    
-    
+    public boolean isXmlFormat() {return true;}
     
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public  void exportStudy(Study study, Writer out) throws IOException, JAXBException {
+    public  void exportStudy(Study study,OutputStream out) throws IOException, JAXBException {
      
-      
-        
-        out.write("<oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd\">");
-        
-        // Title
-        out.write("<dc:title>"+study.getTitle()+"</dc:title>");
+        OutputStreamWriter writer = new OutputStreamWriter(out);
+        writer.write("<oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd\">");
+        writer.write("<dc:title>" + study.getTitle() + "</dc:title>");
 
         // Creator
         for (StudyAuthor author : study.getStudyAuthors()) {
-            out.write("<dc:creator>");
-            out.write(author.getName());
-            out.write("</dc:creator>");
+            writer.write("<dc:creator>");
+            writer.write(author.getName());
+            writer.write("</dc:creator>");
         }
       
         //Subject
        for (StudyKeyword keyword : study.getStudyKeywords()) {
-            out.write("<dc:subject>");
-            out.write(keyword.getValue());
-            out.write("</dc:subject>");
+            writer.write("<dc:subject>");
+            writer.write(keyword.getValue());
+            writer.write("</dc:subject>");
         }
        for (StudyTopicClass topicClass : study.getStudyTopicClasses()) {
-            out.write("<dc:subject>");
-            out.write(topicClass.getValue());
-            out.write("</dc:subject>");
+            writer.write("<dc:subject>");
+            writer.write(topicClass.getValue());
+            writer.write("</dc:subject>");
         }
  
         // Description
         for (StudyAbstract studyAbstract: study.getStudyAbstracts()) {
-            out.write("<dc:description>");
-            out.write(studyAbstract.getText());
-            out.write("</dc:description>");
+            writer.write("<dc:description>");
+            writer.write(studyAbstract.getText());
+            writer.write("</dc:description>");
         }
 
         // Publisher
         for (StudyProducer producer : study.getStudyProducers()) {
-            out.write("<dc:publisher>");
-            out.write(producer.getName());
-            out.write("</dc:publisher>");
+            writer.write("<dc:publisher>");
+            writer.write(producer.getName());
+            writer.write("</dc:publisher>");
         }
 
         // Contributor
         for (StudyOtherId otherId: study.getStudyOtherIds()) {
-            out.write("<dc:contributor>");
-            out.write( otherId.getAgency()+ " "+otherId.getOtherId());
-            out.write("</dc:contributor>");
+            writer.write("<dc:contributor>");
+            writer.write(otherId.getAgency() + " " + otherId.getOtherId());
+            writer.write("</dc:contributor>");
         }
 
         // Date
         if (!StringUtil.isEmpty(study.getDistributionDate())) {
-            out.write("<dc:date>"+study.getDistributionDate()+"</dc:date>");
+            writer.write("<dc:date>"+study.getDistributionDate()+"</dc:date>");
         }
-        // Identifier (holdings??)
-        out.write("<dc:identifier>"+study.getGlobalId()+"</dc:identifier>");
+        writer.write("<dc:identifier>" + study.getGlobalId() + "</dc:identifier>");
 
         // Coverage
         if (!StringUtil.isEmpty(study.getTimePeriodCoveredStart())) {
-            out.write("<dc:coverage>"+study.getTimePeriodCoveredStart()+"</dc:coverage>");
+            writer.write("<dc:coverage>"+study.getTimePeriodCoveredStart()+"</dc:coverage>");
         }
         if (!StringUtil.isEmpty(study.getTimePeriodCoveredEnd())) {
-            out.write("<dc:coverage>"+study.getTimePeriodCoveredEnd()+"</dc:coverage>");
+            writer.write("<dc:coverage>"+study.getTimePeriodCoveredEnd()+"</dc:coverage>");
         }
         if (!StringUtil.isEmpty(study.getDateOfCollectionStart())) {
-            out.write("<dc:coverage>"+study.getDateOfCollectionStart()+"</dc:coverage>");
+            writer.write("<dc:coverage>"+study.getDateOfCollectionStart()+"</dc:coverage>");
         }
         if (!StringUtil.isEmpty(study.getDateOfCollectionEnd())) {
-            out.write("<dc:coverage>"+study.getDateOfCollectionEnd()+"</dc:coverage>");
+            writer.write("<dc:coverage>"+study.getDateOfCollectionEnd()+"</dc:coverage>");
         }
         if (!StringUtil.isEmpty(study.getCountry())) {
-            out.write("<dc:coverage>"+study.getCountry()+"</dc:coverage>");
+            writer.write("<dc:coverage>"+study.getCountry()+"</dc:coverage>");
         }
         if (!StringUtil.isEmpty(study.getGeographicCoverage())) {
-            out.write("<dc:coverage>"+study.getGeographicCoverage()+"</dc:coverage>");
+            writer.write("<dc:coverage>"+study.getGeographicCoverage()+"</dc:coverage>");
         }
-
-
-        out.write("</oai_dc:dc>");
-        out.flush();
+        writer.write("</oai_dc:dc>");
+        writer.flush();
     }
     
 

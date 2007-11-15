@@ -185,6 +185,8 @@ import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -2633,9 +2635,13 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             return null;
         }
     }
+    
+    public boolean isXmlFormat() {
+        return true;
+    }
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public  void exportStudy(Study study, Writer out) throws JAXBException {
-        exportStudy(study, out, false);
+    public  void exportStudy(Study study,OutputStream os) throws JAXBException {
+        exportStudy(study, new OutputStreamWriter(os), false);
     }
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public  void exportStudy(Study study, Writer out, boolean exportToLegacyVDC) throws  JAXBException {

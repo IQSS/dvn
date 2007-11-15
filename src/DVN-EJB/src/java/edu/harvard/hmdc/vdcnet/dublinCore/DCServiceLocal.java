@@ -25,6 +25,7 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyExporter;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Writer;
 import javax.ejb.Local;
 import javax.xml.bind.JAXBException;
@@ -36,8 +37,8 @@ import javax.xml.bind.JAXBException;
 @Local
 public interface DCServiceLocal extends StudyExporter  {
   
-  
-    void exportStudy(Study study, Writer out) throws IOException, JAXBException;
+ 
+    void exportStudy(Study study, OutputStream out) throws IOException, JAXBException;
     
  
     

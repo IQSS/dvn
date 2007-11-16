@@ -38,6 +38,7 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyAbstract;
 import edu.harvard.hmdc.vdcnet.study.StudyAuthor;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
+import edu.harvard.hmdc.vdcnet.study.StudyGeoBounding;
 import edu.harvard.hmdc.vdcnet.study.StudyKeyword;
 import edu.harvard.hmdc.vdcnet.study.StudyOtherId;
 import edu.harvard.hmdc.vdcnet.study.StudyProducer;
@@ -158,6 +159,9 @@ public class DCServiceBean implements DCServiceLocal {
         }
         if (!StringUtil.isEmpty(study.getGeographicCoverage())) {
             writer.write("<dc:coverage>"+study.getGeographicCoverage()+"</dc:coverage>");
+        }
+        for (StudyGeoBounding geoBounding : study.getStudyGeoBoundings()) {
+            writer.write("<dc:coverage>"+geoBounding+"</dc:coverage>");
         }
         writer.write("</oai_dc:dc>");
         writer.flush();

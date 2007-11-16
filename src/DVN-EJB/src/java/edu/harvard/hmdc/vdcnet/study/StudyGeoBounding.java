@@ -6,7 +6,7 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -39,17 +39,17 @@ public class StudyGeoBounding {
     /** Creates a new instance of StudyAuthor */
     public StudyGeoBounding() {
     }
-
+    
     /**
      * Holds value of property id.
      */
-
-   
     
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="studygeobounding_gen") 
+    
+    
+    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="studygeobounding_gen")
     @SequenceGenerator(name="studygeobounding_gen", sequenceName="studygeobounding_id_seq")
-   private Long id;
-
+    private Long id;
+    
     /**
      * Getter for property id.
      * @return Value of property id.
@@ -57,21 +57,21 @@ public class StudyGeoBounding {
     public Long getId() {
         return this.id;
     }
-
+    
     /**
      * Setter for property id.
      * @param id New value of property id.
      */
-
+    
     public void setId(Long id) {
         this.id = id;
     }
-
+    
     /**
      * Holds value of property displayOrder.
      */
     private int displayOrder;
-
+    
     /**
      * Getter for property order.
      * @return Value of property order.
@@ -79,7 +79,7 @@ public class StudyGeoBounding {
     public int getDisplayOrder() {
         return this.displayOrder;
     }
-
+    
     /**
      * Setter for property order.
      * @param order New value of property order.
@@ -87,14 +87,14 @@ public class StudyGeoBounding {
     public void setDisplayOrder(int displayOrder) {
         this.displayOrder = displayOrder;
     }
-
+    
     /**
      * Holds value of property study.
      */
-    @ManyToOne 
+    @ManyToOne
     @JoinColumn(nullable=false)
     private Study study;
-
+    
     /**
      * Getter for property study.
      * @return Value of property study.
@@ -102,7 +102,7 @@ public class StudyGeoBounding {
     public Study getStudy() {
         return this.study;
     }
-
+    
     /**
      * Setter for property study.
      * @param study New value of property study.
@@ -110,12 +110,12 @@ public class StudyGeoBounding {
     public void setStudy(Study study) {
         this.study = study;
     }
-      /**
+    /**
      * Holds value of property version.
      */
     @Version
     private Long version;
-
+    
     /**
      * Getter for property version.
      * @return Value of property version.
@@ -123,7 +123,7 @@ public class StudyGeoBounding {
     public Long getVersion() {
         return this.version;
     }
-
+    
     /**
      * Setter for property version.
      * @param version New value of property version.
@@ -131,12 +131,12 @@ public class StudyGeoBounding {
     public void setVersion(Long version) {
         this.version = version;
     }
-
+    
     /**
      * Holds value of property westLongitude.
      */
     private String westLongitude;
-
+    
     /**
      * Getter for property westLongitude.
      * @return Value of property westLongitude.
@@ -144,7 +144,7 @@ public class StudyGeoBounding {
     public String getWestLongitude() {
         return this.westLongitude;
     }
-
+    
     /**
      * Setter for property westLongitude.
      * @param westLongitude New value of property westLongitude.
@@ -152,12 +152,12 @@ public class StudyGeoBounding {
     public void setWestLongitude(String westLongitude) {
         this.westLongitude = westLongitude;
     }
-
+    
     /**
      * Holds value of property eastLongitude.
      */
     private String eastLongitude;
-
+    
     /**
      * Getter for property eastLongitude.
      * @return Value of property eastLongitude.
@@ -165,7 +165,7 @@ public class StudyGeoBounding {
     public String getEastLongitude() {
         return this.eastLongitude;
     }
-
+    
     /**
      * Setter for property eastLongitude.
      * @param eastLongitude New value of property eastLongitude.
@@ -173,12 +173,12 @@ public class StudyGeoBounding {
     public void setEastLongitude(String eastLongitude) {
         this.eastLongitude = eastLongitude;
     }
-
+    
     /**
      * Holds value of property northLatitude.
      */
     private String northLatitude;
-
+    
     /**
      * Getter for property northLatitude.
      * @return Value of property northLatitude.
@@ -186,7 +186,7 @@ public class StudyGeoBounding {
     public String getNorthLatitude() {
         return this.northLatitude;
     }
-
+    
     /**
      * Setter for property northLatitude.
      * @param northLatitude New value of property northLatitude.
@@ -194,12 +194,12 @@ public class StudyGeoBounding {
     public void setNorthLatitude(String northLatitude) {
         this.northLatitude = northLatitude;
     }
-
+    
     /**
      * Holds value of property southLatitude.
      */
     private String southLatitude;
-
+    
     /**
      * Getter for property southLatitude.
      * @return Value of property southLatitude.
@@ -207,7 +207,7 @@ public class StudyGeoBounding {
     public String getSouthLatitude() {
         return this.southLatitude;
     }
-
+    
     /**
      * Setter for property southLatitude.
      * @param southLatitude New value of property southLatitude.
@@ -216,18 +216,22 @@ public class StudyGeoBounding {
         this.southLatitude = southLatitude;
     }
     
-      public boolean isEmpty() {
+    public boolean isEmpty() {
         return ((eastLongitude==null || eastLongitude.trim().equals(""))
-            && (westLongitude==null || westLongitude.trim().equals(""))
-            && (northLatitude==null || northLatitude.trim().equals(""))
-            && (southLatitude==null || southLatitude.trim().equals("")));
+                && (westLongitude==null || westLongitude.trim().equals(""))
+                && (northLatitude==null || northLatitude.trim().equals(""))
+                && (southLatitude==null || southLatitude.trim().equals("")));
     }
-  public int hashCode() {
+    public int hashCode() {
         int hash = 0;
         hash += (this.id != null ? this.id.hashCode() : 0);
         return hash;
     }
-
+    
+    public String toString() {
+        
+        return eastLongitude+" East Longitude,"+ westLongitude+" West Longitude, "+northLatitude+" North Latitude "+southLatitude+" South Latitude ";
+    }
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof StudyGeoBounding)) {

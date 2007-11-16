@@ -230,7 +230,7 @@ public class StudyGeoBounding {
     
     public String toString() {
         
-        return eastLongitude+" East Longitude,"+ westLongitude+" West Longitude, "+northLatitude+" North Latitude "+southLatitude+" South Latitude ";
+        return eastLongitude+" East Longitude,"+ westLongitude+" West Longitude, "+northLatitude+" North Latitude, "+southLatitude+" South Latitude ";
     }
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set

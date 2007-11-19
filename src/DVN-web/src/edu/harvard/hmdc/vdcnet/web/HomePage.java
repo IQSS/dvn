@@ -20,7 +20,6 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
-import com.sun.rave.web.ui.component.Hyperlink;
 import com.sun.rave.web.ui.component.Tree;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleRequestServiceLocal;
@@ -39,7 +38,6 @@ import edu.harvard.hmdc.vdcnet.web.collection.CollectionUI;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
 import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import edu.harvard.hmdc.vdcnet.web.component.DataListBean;
 import edu.harvard.hmdc.vdcnet.web.component.DataListing;
 import edu.harvard.hmdc.vdcnet.web.component.VDCCollectionTree;
 import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
@@ -56,14 +54,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.ejb.EJB;
-import javax.faces.component.UIColumn;
-import javax.faces.component.UIOutput;
-import javax.faces.component.html.HtmlGraphicImage;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.component.html.HtmlPanelGroup;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /*
  * HomePageBean.java

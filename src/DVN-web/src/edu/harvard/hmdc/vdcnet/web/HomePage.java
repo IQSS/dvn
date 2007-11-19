@@ -29,7 +29,6 @@ import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.SearchTerm;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
-import edu.harvard.hmdc.vdcnet.util.NetworkDataverseListing;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
@@ -40,13 +39,13 @@ import edu.harvard.hmdc.vdcnet.web.collection.CollectionUI;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
 import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import edu.harvard.hmdc.vdcnet.web.component.DataListBean;
+import edu.harvard.hmdc.vdcnet.web.component.DataListing;
 import edu.harvard.hmdc.vdcnet.web.component.VDCCollectionTree;
 import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -54,6 +53,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.ejb.EJB;
 import javax.faces.component.UIColumn;
@@ -78,7 +78,7 @@ import javax.faces.el.ValueBinding;
  *
  * @author gdurand
  */
-public class HomePage extends VDCBaseBean{
+public class HomePage extends VDCBaseBean {
     
     @EJB VDCServiceLocal vdcService;
     @EJB StudyServiceLocal studyService;
@@ -94,6 +94,7 @@ public class HomePage extends VDCBaseBean{
     private Tree collectionTree;
     private String searchField;
     private String searchValue;
+    private Map dataMap = new TreeMap();
     
     StatusMessage msg;
     
@@ -333,12 +334,47 @@ public class HomePage extends VDCBaseBean{
     @EJB VDCGroupServiceLocal vdcGroupService;
      
     private final String defaultVdcPath = "";//TODO: Calculate this from the faces configuration
+    //getters
+    public Map getDataMap() {
+        return this.dataMap;
+    }
     
-    private void initVdcGroupData() {
+    //setters
+    public void setDataMap(TreeMap map) {
+        this.dataMap = map;
+    }
+        
+    /** ************ Add support for VDC Groups on the network home page *************** 
+     *
+     *
+     *
+     *
+     * @author wbossons
+     *
+     */
+     
+   
+    
+    public void initVdcGroupData() {
         // Get all the vdc groups
         List list = (List)vdcGroupService.findAll();
         setVdcGroups(list);
+        List localList = vdcGroups;
+        Iterator iterator = localList.iterator();
+        VDCGroup vdcgroup = null;
+        // add the vdc children who are members of a group
+        
+        while (iterator.hasNext()) {
+            vdcgroup = (VDCGroup)iterator.next();
+            //add the heading row.
+            //dataMap.put(vdcgroup.getId(), vdcgroup.getName());
+            // add the vdcs
+            List<DataListing> dataList = sortVdcs(vdcgroup.getVdcs());
+            //DEBUG
+            dataMap.put(vdcgroup.getName(), dataList);
+        }
     }
+    
     private List vdcGroups;
     
     public List getVdcGroups() {
@@ -349,62 +385,7 @@ public class HomePage extends VDCBaseBean{
         this.vdcGroups = vdcgroups;
     }
     
-    private HtmlPanelGrid mainDataTable;
-    
-    public HtmlPanelGrid getMainDataTable() {
-        //first iterate through the vdcGroups to get the int to split on
-        // and to get the vdcs to display etc !
-        List localList = vdcGroups;
-        mainDataTable = new HtmlPanelGrid();
-        mainDataTable.setColumns(1);
-        mainDataTable.setColumnClasses("dvnMainColumn");
-        mainDataTable.setStyleClass("dvnMainTable");
-        UIColumn mainTableColumn = new UIColumn(); // the main data table column used for appending later.
-        Iterator iterator = localList.iterator();
-        HtmlPanelGrid childTable = null;
-        VDCGroup vdcgroup = null;
-        // add the vdc children who are members of a group
-        while (iterator.hasNext()) {
-            vdcgroup = (VDCGroup)iterator.next();
-            //add the heading row.
-            HtmlPanelGroup panelGroup = formatHeading(vdcgroup.getName());
-            mainTableColumn.getChildren().add(panelGroup);
-            childTable = formatChildTable(vdcgroup.getVdcs());
-            mainTableColumn.getChildren().add(childTable);
-            childTable = null;
-        }
-        // now add the other vdcs sans groups
-        if (!localList.isEmpty() && !this.vdcsSansGroups.isEmpty()) {
-           HtmlPanelGroup panelGroup = formatHeading("Other");
-           mainTableColumn.getChildren().add(panelGroup); 
-           childTable = formatChildTable(this.vdcsSansGroups);
-           mainTableColumn.getChildren().add(childTable);
-        } else if (localList.isEmpty() && !this.vdcsSansGroups.isEmpty()) {
-            childTable = formatChildTable(this.vdcsSansGroups);
-            mainTableColumn.getChildren().add(childTable);
-        } else {
-            HtmlOutputText noOutputText = new HtmlOutputText();
-            noOutputText.setEscape(false);
-            noOutputText.setValue("<br />");
-            mainTableColumn.getChildren().add(noOutputText);
-            //TODO: See if this can be eliminated.
-        }
-        // end get other vdcs
-        HtmlPanelGrid panelGrid = new HtmlPanelGrid();
-        mainDataTable.getChildren().add(mainTableColumn);
-        return this.mainDataTable;
-    }
-    
-    /** 
-     * Setter method for the mainDataTable
-     *
-     */
-    
-    public void setMainDataTable(HtmlPanelGrid panelgrid) {
-        this.mainDataTable = panelgrid;
-    }
-
-    /**
+     /**
      * Holds value of property vdcsSansGroups.
      */
     private List<VDC> vdcsSansGroups;
@@ -423,148 +404,23 @@ public class HomePage extends VDCBaseBean{
      */
     public void setVdcsSansGroups(List<VDC> vdcsSansGroups) {
         this.vdcsSansGroups = vdcsSansGroups;
+        
     }
     
-    private void initVdcsSansGroups() {
+   public void initVdcsSansGroups() {
         // Get all the vdc groups
         List list = (List)vdcService.findVdcsNotInGroups();
         setVdcsSansGroups(list);
-    }
-    
-    /** Utility methods
-     *
-     * @author wbossons
-     *
-     */
-    
-    /** formatHeading
-     *
-     *
-     * formats the heading for the 
-     * VDCGroup
-     */
-    private HtmlPanelGroup formatHeading(String vdcName) {
-        HtmlPanelGroup panelGroup = new HtmlPanelGroup();
-        panelGroup.setStyleClass("dvnMainPanel");
-        UIOutput headingText = new UIOutput();
-        ValueBinding outervaluebinding = FacesContext.getCurrentInstance().getApplication().createValueBinding(vdcName);
-        headingText.setValueBinding("value", outervaluebinding);
-        panelGroup.getChildren().add(headingText);
-        return panelGroup;
-    }
-    
-    /* formatChildTable
-     *
-     * formats the nested tables
-     * of the Vdc groups
-     *
-     * @author wbossons
-     */
-    private HtmlPanelGrid formatChildTable(List vdcs) {
-        List membervdcs   = (List)vdcs;
-        List<NetworkDataverseListing> sortedMemberVdcs = sortVdcs(membervdcs);//return a sorted list instead.
-        HtmlPanelGrid childTable = new HtmlPanelGrid();
-        Iterator iterator = sortedMemberVdcs.iterator();
-        //Set no. of records per column
-        int totalColumns = 3;
-        int startNew = setColumnLength(sortedMemberVdcs.size(), totalColumns);
-        int startPos = 0;
-        // these next three lines can exist in the method
-        childTable = new HtmlPanelGrid(); // start the child table which eventually must be added to the view
-        childTable.setStyleClass("dvnChildTable");
-        childTable.setColumns(3);
-        childTable.setColumnClasses("dvnChildColumn");
-        UIColumn column           = null;
-        HtmlPanelGroup linkPanel     = null;
-        HtmlOutputText startLinkTag  = null;
-        HtmlOutputText endLinkTag    = null;
-        HtmlOutputText affiliationTag = null;
-        Hyperlink nodelink           = null;
-        HtmlGraphicImage image       = null;
-        HtmlOutputText textTag       = null;
-        while (iterator.hasNext()) {
-            if (startPos == 0) {
-                column = new UIColumn();
-            }
-            NetworkDataverseListing ndv  = (NetworkDataverseListing)iterator.next();
-            startLinkTag = new HtmlOutputText();
-            startLinkTag.setEscape(false);
-            startLinkTag.setValue("<ul><li class='activeBullet'>");
-            nodelink = new Hyperlink();
-            nodelink.setText(ndv.getName());
-            nodelink.setToolTip(ndv.getTooltip() + " dataverse");
-            nodelink.setUrl("/dv/" + ndv.getAlias() + defaultVdcPath);
-            endLinkTag = new HtmlOutputText();
-            endLinkTag.setEscape(false);
-            endLinkTag.setValue("</li></ul>");
-            linkPanel = new HtmlPanelGroup();
-            linkPanel.getChildren().add(startLinkTag);
-            linkPanel.getChildren().add(nodelink);
-            if ( ndv.getRestricted().equals("yes") ) {
-                
-                textTag =  new HtmlOutputText();
-                textTag.setEscape(false);
-                textTag.setValue("<span class='dvn_dvNotReleased'>Not Released</span>");
-                linkPanel.getChildren().add(textTag);
-                nodelink.setToolTip("This dataverse is not released.");
-            } 
-            if (ndv.getAffiliation() != null && !ndv.getAffiliation().equals("")) {
-                affiliationTag = new HtmlOutputText();
-                affiliationTag.setEscape(false);
-                affiliationTag.setValue("<ul class='affiliationBullet'><li class='affiliationBullet'>" + ndv.getAffiliation() + "</li></ul>");
-                linkPanel.getChildren().add(affiliationTag);
-            }
-            linkPanel.getChildren().add(endLinkTag);
-            column.getChildren().add(linkPanel);
-            startPos++;
-            if (startPos == startNew || iterator.hasNext() == false) {
-                childTable.getChildren().add(column);
-                startPos = 0;
-            }
-        }
-        //manage the condition where there were only enough records
-        // to build two columns -- to achieve balance in the presentation
-        if (childTable.getChildCount() < totalColumns) {
-            int remainder = totalColumns - childTable.getChildCount();
-            int i = 0;
-            HtmlOutputText placeholder = null;
-            while (i < remainder) {
-                column = new UIColumn();
-                placeholder = new HtmlOutputText();
-                placeholder.setEscape(false);
-                placeholder.setValue("<br />");
-                column.getChildren().add(placeholder);
-                childTable.getChildren().add(column);
-                i++;
-            }
-        }
-        return childTable;
-    }
-    
-    /** setColumnLength();
-     *
-     * used to set the no of
-     * records per column
-     *
-     * @param numRecords
-     * @param numColumns
-     * @return int
-     *
-     * @author wbossons
-     *
-     */
-    private int setColumnLength(int numRecords, int numColumns) {
-        int startNew = 0;
-        double doubleRecords = ((Integer)numRecords).doubleValue();
-        double doubleColumns = ((Integer)numColumns).doubleValue();
-        startNew = ((Number)Math.ceil(doubleRecords/doubleColumns)).intValue();
-        return startNew;
-    }
+        List localList = vdcsSansGroups;
+        Iterator iterator = localList.iterator();
+        List<DataListing> dataList = sortVdcs(this.vdcsSansGroups);
+        dataMap.put("Other", dataList);
+     }
     
     private List sortVdcs(List memberVDCs) {
-        List<NetworkDataverseListing> listToSort = new ArrayList<NetworkDataverseListing>();
-        List<NetworkDataverseListing> sortedList = new ArrayList<NetworkDataverseListing>();
-        NetworkDataverseListing ndvList = null;
+        List<DataListing> listToSort = new ArrayList<DataListing>();
+        List<DataListing> sortedList = new ArrayList<DataListing>();
+        DataListing ndvList = null;
         Iterator iterator = memberVDCs.iterator();
         while (iterator.hasNext()) {
             VDC vdc = (VDC)iterator.next();
@@ -582,9 +438,9 @@ public class HomePage extends VDCBaseBean{
                 ScholarDataverse scholarDV = (ScholarDataverse)vdc;
                 String name = new String(scholarDV.getLastName() + ", " + scholarDV.getFirstName());
                 String tooltip = new String(scholarDV.getName());
-                ndvList = new NetworkDataverseListing(name, scholarDV.getAlias(), affiliation, restricted, tooltip);
+                ndvList = new DataListing(name, scholarDV.getAlias(), affiliation, restricted, tooltip);
             } else {
-                ndvList = new NetworkDataverseListing(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), restricted, vdc.getName());
+                ndvList = new DataListing(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), restricted, vdc.getName());
             }
             listToSort.add(ndvList);
         }
@@ -596,7 +452,7 @@ public class HomePage extends VDCBaseBean{
         try {
           Iterator setIterator = set.iterator();
           while (setIterator.hasNext()) {
-              NetworkDataverseListing ndvListing = (NetworkDataverseListing)setIterator.next();
+              DataListing ndvListing = (DataListing)setIterator.next();
               sortedList.add(ndvListing);
           }
         } catch (NoSuchElementException e) {

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.1" xmlns="http://java.sun.com/xml/ns/j2ee" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-jsptaglibrary_2_0.xsd">
+  <description>A tag for creating a filterable, paged panelGrid</description>
+  <display-name>datalist</display-name>
+  <tlib-version>1.1</tlib-version>
+  <short-name>datalist</short-name>
+  <uri>/WEB-INF/tlds/DataList</uri>
+    <tag>
+        <description>This is a simple tooltip component</description>
+        <name>datalist</name>
+        <tag-class>edu.harvard.hmdc.vdcnet.web.component.DataListTag</tag-class>
+        <attribute>
+            <name>contents</name>
+            <description>A string representation of the map of the data lists</description>
+            <required>false</required>
+            <deferred-value>
+                <type>java.util.Map</type>
+            </deferred-value>
+        </attribute>
+        <attribute>
+        </attribute>
+        <attribute>
+            <name>id</name>
+            <description>The client id of this component</description>
+        </attribute>
+        <attribute>
+            <name>rendered</name>
+            <description>Is this component rendered?</description>
+        </attribute>
+    </tag>
+</taglib>

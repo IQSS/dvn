@@ -3,7 +3,9 @@
                         xmlns:h="http://java.sun.com/jsf/html" 
                         xmlns:jsp="http://java.sun.com/JSP/Page" 
                         xmlns:ui="http://www.sun.com/web/ui"
-                        xmlns:tiles="http://struts.apache.org/tags-tiles">
+                        xmlns:tiles="http://struts.apache.org/tags-tiles"
+                        xmlns:dmap="/WEB-INF/tlds/DataList">
+                            
     <f:subview id="homePageView">
        <h:form  id="form1">
            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -71,11 +73,10 @@
             <div class="dvn_sectionBox">
                 <div class="dvn_margin12">
                     <h:outputText value="There are no Dataverses yet in #{VDCRequest.vdcNetwork.name} Dataverse Network." rendered="#{empty HomePage.vdcs}"/>
-                    
-                    <!-- Display dataverses at network Level -->
-                    <h:panelGrid binding="#{HomePage.mainDataTable}" rendered="#{VDCRequest.currentVDC == null}">
+                    <!-- datalist component for NETWORK HOME PAGE -->
+                    <h:panelGrid rendered="#{VDCRequest.currentVDC == null}">
+                        <dmap:datalist contents="#{HomePage.dataMap}" id="dataMap" />
                     </h:panelGrid>
-                    
                     <!-- Display Tree at dataverse level -->
                     <ui:tree  binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
                 </div>

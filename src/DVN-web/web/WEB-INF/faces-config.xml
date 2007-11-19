@@ -56,6 +56,10 @@
       <component-type>InlineHelpSupport</component-type>
       <component-class>edu.harvard.hmdc.vdcnet.web.component.InlineHelpSupport</component-class>
   </component>
+  <component>
+      <component-type>DataList</component-type>
+      <component-class>edu.harvard.hmdc.vdcnet.web.component.DataList</component-class>
+    </component>
   <!-- validators -->
   <validator>
       <validator-id>CharacterValidator</validator-id>

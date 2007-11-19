@@ -1150,7 +1150,8 @@ a.vdcRequestPanelLink:hover{
 /* subsetting page: summary statistics: ends here */
 
 /* *************** dvn network page specific ***************** */
-.dvnChildColumn  { width: 33%; vertical-align: top;}
+.dvnLineSpacer   { visibility:hidden; }
+.dvnChildColumn  { width: 33%; padding:15px; vertical-align: top;}
 .dvnChildTable   { width: 100%; }
 .dvnMainColumn   { width: 100%;}
 .dvnMainTable    { width: 98%;}

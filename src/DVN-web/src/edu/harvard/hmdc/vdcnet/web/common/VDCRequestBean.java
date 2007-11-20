@@ -34,6 +34,7 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.StudyListing;
 import java.util.Iterator;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
@@ -270,5 +271,27 @@ public class VDCRequestBean extends AbstractRequestBean {
 
     public void setStudyListing(StudyListing studyListing) {
         this.studyListing = studyListing;
-    }    
+    }
+
+    private Long dtId;
+    
+    public Long getDtId() {
+        return dtId;
+    }
+
+    public void setDtId(Long dtId) {
+        this.dtId = dtId;
+    }
+    
+    private String dvFilter;
+
+    public String getDvFilter() {
+        return dvFilter;
+    }
+
+    public void setDvFilter(String dvFilter) {
+        this.dvFilter = dvFilter;
+    }
+    
+    
 }

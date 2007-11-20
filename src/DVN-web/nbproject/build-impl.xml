@@ -400,11 +400,7 @@
     </target>
     <target name="do-dist" depends="init,compile,compile-jsps,-pre-dist,-do-dist-with-manifest,-do-dist-without-manifest"/>
     <target name="library-inclusion-in-manifest" depends="init" if="dist.ear.dir">
-        <basename property="included.lib.libs.dvn-webui-runtime.classpath.3" file="${libs.dvn-webui-runtime.classpath.libfile.3}"/>
-        <basename property="included.lib.libs.dvn-webui-runtime.classpath.2" file="${libs.dvn-webui-runtime.classpath.libfile.2}"/>
         <basename property="included.lib.libs.dvn-webui-runtime.classpath.1" file="${libs.dvn-webui-runtime.classpath.libfile.1}"/>
-        <copy-ear-war file="${libs.dvn-webui-runtime.classpath.libfile.3}" propname="included.lib.libs.dvn-webui-runtime.classpath.3.X"/>
-        <copy-ear-war file="${libs.dvn-webui-runtime.classpath.libfile.2}" propname="included.lib.libs.dvn-webui-runtime.classpath.2.X"/>
         <copy-ear-war file="${libs.dvn-webui-runtime.classpath.libfile.1}" propname="included.lib.libs.dvn-webui-runtime.classpath.1.X"/>
         <basename property="included.lib.libs.dvn-theme-default.classpath" file="${libs.dvn-theme-default.classpath}"/>
         <copy-ear-war file="${libs.dvn-theme-default.classpath}" propname="included.lib.libs.dvn-theme-default.classpath.X"/>
@@ -450,9 +446,7 @@
         <copy file="${file.reference.tiles-core-2.0-SNAPSHOT.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${file.reference.commons-logging-1.1.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${file.reference.xalan.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-webui-runtime.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-webui-runtime.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-webui-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+         <copy file="${libs.dvn-webui-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.dvn-theme-default.classpath}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <mkdir dir="${build.web.dir.real}/META-INF"/>
         <manifest file="${build.web.dir.real}/META-INF/MANIFEST.MF" mode="update">
@@ -461,8 +455,6 @@
         <delete dir="${dist.ear.dir}/temp"/>
     </target>
     <target name="library-inclusion-in-archive" depends="init" unless="dist.ear.dir">
-        <copy file="${libs.dvn-webui-runtime.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-webui-runtime.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.dvn-webui-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.dvn-theme-default.classpath}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${reference.DVN-ejb.dist}" todir="${build.web.dir.real}/WEB-INF/lib"/>
@@ -493,8 +485,6 @@
         <copy file="${file.reference.tiles-core-2.0-SNAPSHOT.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${file.reference.commons-logging-1.1.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${file.reference.xalan.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-webui-runtime.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-webui-runtime.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.dvn-webui-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.dvn-theme-default.classpath}" todir="${build.web.dir.real}/WEB-INF/lib"/>
     </target>

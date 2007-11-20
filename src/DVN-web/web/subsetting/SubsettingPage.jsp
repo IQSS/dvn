@@ -29,6 +29,9 @@ xmlns:ui="http://www.sun.com/web/ui"
   Map hm = request.getParameterMap();
   Set es = hm.entrySet();
   String dataFileId = request.getParameter("dtId");
+  if (dataFileId == null) {
+    dataFileId = (String) request.getAttribute("dtId");
+  }
 ]]></jsp:scriptlet>
 
 
@@ -87,6 +90,10 @@ xmlns:ui="http://www.sun.com/web/ui"
                                 
                                 <ui:helpInline id="helpInline2" text="#{bundleAnalysis['dwnld.selectedvarBox.bttmHelpText']}" type="field" rendered="false"/>
                                 
+                            <h:commandLink id="linkAction5" action="#{AnalysisPage.gotoEditVariableAction}" rendered="#{AnalysisPage.editVariableActionRendered}">
+                                <h:outputText id="linkAction5Text" value="Edit selected variables"/>
+                            </h:commandLink>
+                            
                             </ui:panelGroup>
                             
                             <ui:panelGroup block="true" id="groupPanel5">

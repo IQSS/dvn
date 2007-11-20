@@ -38,6 +38,7 @@ import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyLock;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.OAISetServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
@@ -83,6 +84,7 @@ public class LoginFilter implements Filter {
     
     @EJB PageDefServiceLocal pageDefService;
     @EJB StudyServiceLocal studyService;
+    @EJB VariableServiceLocal varService;
     @EJB UserServiceLocal userService;
     @EJB VDCServiceLocal vdcService;
     @EJB GroupServiceLocal groupService;
@@ -168,10 +170,10 @@ public class LoginFilter implements Filter {
                     httpResponse.sendRedirect(httpRequest.getContextPath()+"/faces"+redirectPageDef.getPath());
                }
             } else {              
-                if (isEditStudyPage(pageDef) && studyLockedMessage(httpRequest)!=null  ) {
+                if (isEditStudyPage(pageDef) && studyLockedMessage(pageDef, httpRequest)!=null  ) {
 
                     PageDef redirectPageDef = pageDefService.findByName(PageDefServiceLocal.STUDYLOCKED_PAGE);
-                    httpResponse.sendRedirect(httpRequest.getContextPath()+"/faces"+redirectPageDef.getPath()+"?message="+studyLockedMessage(httpRequest));
+                    httpResponse.sendRedirect(httpRequest.getContextPath()+"/faces"+redirectPageDef.getPath()+"?message="+studyLockedMessage(pageDef, httpRequest));
                 } else {
 
                     try {
@@ -310,6 +312,7 @@ public class LoginFilter implements Filter {
         
         if (pageDef!=null &&
                 (pageDef.getName().equals(PageDefServiceLocal.EDIT_STUDY_PAGE)  
+                || pageDef.getName().equals(PageDefServiceLocal.EDIT_VARIABLE_PAGE)                 
                 || pageDef.getName().equals(PageDefServiceLocal.ADD_FILES_PAGE)  
                 || pageDef.getName().equals(PageDefServiceLocal.DELETE_STUDY_PAGE) 
                 || pageDef.getName().equals(PageDefServiceLocal.STUDY_PERMISSIONS_PAGE))) {
@@ -337,12 +340,16 @@ public class LoginFilter implements Filter {
      * based on where it is in the component tree.)
      */
     private String getStudyIdFromRequest(HttpServletRequest request) {
-        String studyIdParam=request.getParameter("studyId");
+        return getIdFromRequest("studyId", request);
+    }
+
+    private String getIdFromRequest(String idName, HttpServletRequest request) {    
+        String studyIdParam=request.getParameter(idName);
         if (studyIdParam==null) {
             Iterator iter = request.getParameterMap().keySet().iterator();
             while (iter.hasNext()) {
                 Object key = (Object) iter.next();
-                if ( key instanceof String && ((String) key).indexOf("studyId") != -1 ) {
+                if ( key instanceof String && ((String) key).indexOf(idName) != -1 ) {
                     studyIdParam = request.getParameter((String)key);
                     break;
                 }
@@ -617,13 +624,12 @@ public class LoginFilter implements Filter {
         }
         return authorized;
     }
-    private String studyLockedMessage(HttpServletRequest request) {
-        String studyIdParam = getStudyIdFromRequest(request);
+    private String studyLockedMessage(PageDef pageDef, HttpServletRequest request) {
+        Long studyId = determineStudyId(pageDef, request);
         String studyLockMessage=null;
         StudyLock studyLock=null;
-        if (studyIdParam!=null) {
+        if (studyId!=null) {
             Study study = null;
-            Long studyId = Long.parseLong(studyIdParam);
             if (studyId>0) { // If Id<0, this means we are adding a new study, no need to check for a lock
                 study = studyService.getStudy(studyId);
                 studyLock = study.getStudyLock();
@@ -637,7 +643,21 @@ public class LoginFilter implements Filter {
         return studyLockMessage;
         
     }
-    
+
+    private Long determineStudyId (PageDef pageDef, HttpServletRequest request) {
+        if (pageDef.getName().equals(PageDefServiceLocal.EDIT_VARIABLE_PAGE) ) {
+            String dtIdParam = getIdFromRequest("dtId", request);
+            return varService.getDataTable(new Long(dtIdParam)).getStudyFile().getFileCategory().getStudy().getId();
+        } 
+        
+        String studyIdParam = getStudyIdFromRequest(request);
+        
+        if (studyIdParam!=null) {
+            return new Long(studyIdParam);
+        }
+        
+        return null;
+    }    
    
 }
 

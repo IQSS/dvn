@@ -53,7 +53,7 @@ public class VariablePage extends VDCBaseBean {
         super.init();
         
         // we need to create the studyServiceBean
-        if (getDvId() != null) {
+        if (dvId != null) {
             setVariable(varService.getDataVariable(getDvId()));
             
         } else {

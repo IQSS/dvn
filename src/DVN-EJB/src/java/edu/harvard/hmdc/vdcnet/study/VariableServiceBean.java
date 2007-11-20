@@ -29,10 +29,12 @@
 
 package edu.harvard.hmdc.vdcnet.study;
 
+import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -47,6 +49,8 @@ public class VariableServiceBean implements edu.harvard.hmdc.vdcnet.study.Variab
     
     @PersistenceContext(unitName="VDCNet-ejbPU")
     private EntityManager em;
+    @EJB IndexServiceLocal indexService;
+    @EJB StudyServiceLocal studyService;
     
     /** Creates a new instance of VariableServiceBean */
     public VariableServiceBean() {
@@ -244,4 +248,17 @@ public class VariableServiceBean implements edu.harvard.hmdc.vdcnet.study.Variab
             
         }
     }
+        
+        public void updateDataTable(DataTable dt, Long userId) {
+            em.merge(dt);
+
+            // mark study as updated
+            Study study = dt.getStudyFile().getFileCategory().getStudy();
+            studyService.saveStudy( study, userId ); 
+            em.merge(study);
+            
+            // lastly, reindex
+            indexService.updateStudy(study.getId());
+            
+        }
 }

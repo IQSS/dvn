@@ -92,7 +92,15 @@
            
         </navigation-case>
     </navigation-rule>
-    
+
+    <navigation-rule>
+         <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>subsetting</from-outcome>
+            <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
+        </navigation-case>
+     </navigation-rule>  
+
     <navigation-rule>
         <from-view-id>/login/ContributorRequestPage.jsp</from-view-id>
         <navigation-case>
@@ -436,7 +444,11 @@
       <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
     </navigation-case>
 
-   
+    <navigation-case>
+      <from-action>#{AnalysisPage.gotoEditVariableAction}</from-action>
+      <from-outcome>editVariable</from-outcome>
+      <to-view-id>/study/EditVariablePage.jsp</to-view-id>
+    </navigation-case>   
 
   </navigation-rule> 
 <!-- 

@@ -58,6 +58,7 @@ public interface PageDefServiceLocal {
     public static final String FILE_REQUEST_ACCOUNT_PAGE = "FileRequestAccountPage";
     public static final String FILE_REQUEST_SUCCESS_PAGE = "FileRequestSuccessPage";
     public static final String FILE_REQUEST_PAGE = "FileRequestPage";
+    public static final String EDIT_VARIABLE_PAGE = "EditVariablePage";
           
     Role findById(Long id);
 

@@ -5206,7 +5206,7 @@ if (baseVarToDerivedVar.containsKey(varId)){
 
 
           // clear session-scoped objects if this page is rendered for the first time
-          if (currentViewStateValue == null){
+          if ( currentViewStateValue == null || getVDCRequestBean().getDtId() != null ){
             // first time visit to the SubsettingPage.jsp
 
               List<String> sessionObjects = new ArrayList<String>();
@@ -5227,13 +5227,12 @@ if (baseVarToDerivedVar.containsKey(varId)){
           } 
           // get the dtId
           //Long dtId = getDtId();
-          /*
-          // If we're coming from studyPage
+
+          // If we're coming from editVariabePage
           if (dtId==null) {
               dtId = getVDCRequestBean().getDtId();
           }
-          */
-
+          
           // we need to create the VariableServiceBean
           if (dtId != null) {
               out.println("The process enters non-null-dtId case: dtId="+dtId);
@@ -5500,5 +5499,30 @@ public void resetSetxDiffVarBox(String modelName){
     }
 //</editor-fold>
 
+    public String gotoEditVariableAction() {
+        String dvFilter = "";
+        for (Option item : getVarSetAdvStat() ) {
+            dvFilter += (String) item.getValue() + ",";
+        }
+        
+        getVDCRequestBean().setDtId( dtId );
+        getVDCRequestBean().setDvFilter( dvFilter );
+             
+        return "editVariable";
+    }
 
+    public boolean isEditVariableActionRendered() {
+        boolean render=false;
+        
+        if (getVDCSessionBean().getLoginBean()!=null) {
+            Study study = dataTable.getStudyFile().getFileCategory().getStudy();
+            boolean authorized = study.isUserAuthorizedToEdit(getVDCSessionBean().getLoginBean().getUser());
+            boolean locked = study.getStudyLock() != null;
+            
+            render = authorized && !locked;
+        }
+        
+        
+        return render;        
+    }
 }

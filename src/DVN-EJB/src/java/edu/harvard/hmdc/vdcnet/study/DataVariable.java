@@ -39,6 +39,7 @@ import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 /**
  *
@@ -530,6 +531,28 @@ public class DataVariable {
         DataVariable other = (DataVariable)object;
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
         return true;
-    }      
+    }    
+    
+    /**
+     * Holds value of property version.
+     */
+    @Version
+    private Long version;
+
+    /**
+     * Getter for property version.
+     * @return Value of property version.
+     */
+    public Long getVersion() {
+        return this.version;
+    }
+
+    /**
+     * Setter for property version.
+     * @param version New value of property version.
+     */
+    public void setVersion(Long version) {
+        this.version = version;
+    }        
     
 }

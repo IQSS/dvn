@@ -58,5 +58,7 @@ public interface VariableServiceLocal {
 
     List<VariableRangeType> findAllVariableRangeType();
     VariableRangeType findVariableRangeTypeByName(List<VariableRangeType> typeList, String name);
+    
+    public void updateDataTable(DataTable dt);
      
 }

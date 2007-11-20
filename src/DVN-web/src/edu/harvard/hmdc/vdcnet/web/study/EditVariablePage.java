@@ -56,7 +56,6 @@ import javax.servlet.http.HttpServletRequest;
 public class EditVariablePage extends VDCBaseBean {
 
     @EJB VariableServiceLocal varService;
-    @EJB StudyServiceLocal studyService;
     
     
     public EditVariablePage() {
@@ -162,7 +161,7 @@ public class EditVariablePage extends VDCBaseBean {
    
     public String save_action() {
 
-         varService.updateDataTable(dt);
+         varService.updateDataTable( dt, getVDCSessionBean().getLoginBean().getUser().getId() );
          
          // this lets the Analysis page know which dt, and also to reset the session
          getVDCRequestBean().setDtId(dtId);

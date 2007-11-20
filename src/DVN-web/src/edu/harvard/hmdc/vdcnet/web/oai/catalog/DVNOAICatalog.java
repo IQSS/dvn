@@ -73,6 +73,7 @@ import ORG.oclc.oai.server.verb.CannotDisseminateFormatException;
 import ORG.oclc.oai.server.verb.IdDoesNotExistException;
 import ORG.oclc.oai.server.verb.NoItemsMatchException;
 import ORG.oclc.oai.server.verb.NoMetadataFormatsException;
+import ORG.oclc.oai.server.verb.NoSetHierarchyException;
 import edu.harvard.hmdc.vdcnet.catalog.CatalogServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.DeletedStudy;
 import java.util.logging.Logger;
@@ -696,7 +697,7 @@ public class DVNOAICatalog extends AbstractCatalog {
      * <setSpec/> XML Strings) as well as an optional resumptionMap Map.
      * @exception OAIBadRequestException signals an http status code 400 problem
      */
-    public Map listSets() {
+    public Map listSets() throws NoSetHierarchyException{
         purge(); // clean out old resumptionTokens
         Map listSetsMap = new HashMap();
         ArrayList sets = new ArrayList();
@@ -710,6 +711,9 @@ public class DVNOAICatalog extends AbstractCatalog {
             e.printStackTrace();
         }
          List <OAISet> oaiSets = oaiSetService.findAll();
+         if (oaiSets.size() == 0){
+             throw new NoSetHierarchyException();
+         }
 
         /* decide which sets you're going to support */
 //        String[] dbSets = dummySets;

@@ -280,6 +280,21 @@
             <value>#{param.dvId}</value>
         </managed-property>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>EditVariablePage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.EditVariablePage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>dtId</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.dtId}</value>
+        </managed-property>        
+        <managed-property>
+            <property-name>dvFilter</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.dvFilter}</value>
+        </managed-property>
+    </managed-bean>    
     <!-- **************** Collection and Site Management  ****************  -->
       <managed-bean>
         <managed-bean-name>DeleteDataversePage</managed-bean-name>

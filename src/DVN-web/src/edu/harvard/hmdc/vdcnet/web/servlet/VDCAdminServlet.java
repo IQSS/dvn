@@ -31,7 +31,10 @@ import edu.harvard.hmdc.vdcnet.admin.PasswordEncryption;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
+import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import java.io.*;
 import java.net.*;
 import java.sql.Connection;
@@ -40,6 +43,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -56,6 +60,7 @@ import javax.sql.DataSource;
 public class VDCAdminServlet extends HttpServlet {
     @Resource(name="jdbc/VDCNetDS") DataSource dvnDatasource;
     @EJB StudyServiceLocal studyService;
+    @EJB VDCServiceLocal vdcService;
     @EJB UserServiceLocal userService;
     
     private boolean isNetworkAdmin(HttpServletRequest req) {
@@ -85,7 +90,7 @@ public class VDCAdminServlet extends HttpServlet {
             out.println("<h3>Admin</h3>");
             out.println("<form method=POST>");
 
-            out.println("Current DSB usage setup (from 'vdc.dsb.useNew' JVM Option):<br/>");
+            out.println("<b>Current DSB usage setup (from 'vdc.dsb.useNew' JVM Option):</b><br/><br/>");
             out.println("<table border=1>");
 
             out.println("<tr><td>" + DSBWrapper.DSB_INGEST + "</td>");
@@ -104,19 +109,30 @@ public class VDCAdminServlet extends HttpServlet {
             out.println("<td>" + (DSBWrapper.useNew(DSBWrapper.DSB_GET_ZELIG_CONFIG) ? "Use New" : "Use DSB") + "</td></tr>");
 
             out.println("</table>");
-            out.print("<hr>");
+            out.print("<br/><hr>");
 
+            out.println("<b>Study Locks:</b><br/><br/>");
             out.println("To remove a study lock, input the study id and click on the button below.<br/>");
             out.print("<input name=\"studyId\" size=8>");
             out.print("<input name=removeLock value=\"Remove Lock\" type=submit />");
-            out.print("<hr>");
+            out.print("<br/><br/><hr>");
 
-            out.print("<input name=exportStudies value=\"Export Studies\" type=submit />");
-            out.print("<hr>");
+            out.println("<b>Export:</b><br/><br/>");
+            out.println("To export studies owned by a specific dataverse (regardless of update time), input the dataverse id and click on the button below.<br/>");
+            out.print("<input name=\"vdcToExport\" size=4>");
+            out.print("<input name=export value=Dataverse type=submit /><br/><br/>");
+            out.println("To export arbitrary studies (regardless of update time), input the study ids and click on the button below.<br/>");        
+            out.print("<textarea name=\"studyIds\" rows=10></textarea><br/>");
+            out.print("<input name=export value=Studies type=submit /><br/><br/>");
+            out.println("To export all updated studies, click on the button below.<br/>");
+            out.print("<input name=export value=\"Updated Studies\" type=submit />");            
+            out.print("<br/><br/><hr>");
+            
 
-            out.println("To encrypt all current passwords, click on the Encrypt Passwords button<br/>");
+            out.println("<b>Passwords:</b><br/><br/>");
+            out.println("To encrypt all current passwords, click on the Encrypt Passwords button.<br/>");
             out.print("<input name=encryptPasswords value=\"Encrypt Passwords\" type=submit />");
-            out.print("<hr>"); 
+            out.print("<br/><br/><hr>"); 
 
             out.println("</form>");
             endPage(out);
@@ -161,16 +177,64 @@ public class VDCAdminServlet extends HttpServlet {
                         displayMessage (out, "SQLException updating passwords");
                     }
                 }
-            } else if (req.getParameter("exportStudies") != null) { 
+            } else if (req.getParameter("export") != null) { 
+                String exportParam = req.getParameter("export");
+        
+                if ("Dataverse".equals(exportParam)) {
+                Long vdcToIndex = null;
                 try {
-                    studyService.exportUpdatedStudies();
-                    displayMessage(out, "Export completed.");
+                    vdcToIndex = new Long(req.getParameter("vdcToIndex"));
+                    VDC vdc =  vdcService.findById(vdcToIndex);
+                    if (vdc != null) { 
+                        List studyIDList = new ArrayList();
+                        for (Study study :  vdc.getOwnedStudies() ) {
+                            studyIDList.add( study.getId() );
+                        }
+                        studyService.exportStudies(studyIDList);
+                        displayMessage (out,"Export succeeded.", "(for dataverse id = " + vdcToIndex + ")");
+                    } else {
+                        displayMessage (out, "Export failed.", "There is no dataverse with dvId = " + vdcToIndex);                    
+                    }
+                } catch (NumberFormatException nfe) {
+                    displayMessage (out, "Export failed.", "The dataverse id must be of type Long.");
                 } catch (Exception e) {
-                    displayMessage(out, "Exception occurred while exporting studies.  See export log for details.");
+                    e.printStackTrace();
+                    displayMessage (out, "Export failed.", "An unknown error occurred trying to index dataverse with id = " + vdcToIndex);
                 }
-              
-            }else {
-                displayMessage (out, "You have selected an action that is not allowed.");
+                
+                } else if ("Studies".equals(exportParam)) {
+                    String studyIds = req.getParameter("studyIds");
+                    List<Long> studyIdList = new ArrayList();
+                    String failedTokens = "";
+
+                    StringTokenizer st = new StringTokenizer(studyIds, ",; \t\n\r\f");
+                     while (st.hasMoreTokens()) {
+                         String token = st.nextToken();
+                         try {
+                            studyIdList.add( new Long(token) );
+                         } catch (NumberFormatException nfe) {
+                            if (!failedTokens.equals("")) {
+                                failedTokens += ", ";
+                            }
+                            failedTokens += "\"" +token + "\"";
+                        }
+                     }
+                    studyService.exportStudies(studyIdList);
+                    if (!failedTokens.equals("")) {
+                        failedTokens = "(However, the following tokens were not of type Long: " + failedTokens + ")";
+                    }
+                    displayMessage (out,"Export succeeded.", failedTokens);
+                } else if ("Updated Studies".equals(exportParam)) {
+                    try {
+                        studyService.exportUpdatedStudies();
+                        displayMessage(out, "Export succeeded (for updayed studies).");
+                    } catch (Exception e) {
+                        displayMessage(out, "Exception occurred while exporting studies.  See export log for details.");
+                    }
+
+                } else {
+                 displayMessage (out, "You have selected an action that is not allowed.");
+                }
             }
         } else {
             displayMessage(out, "You are not authorized for this action, please log in as a network administrator.");

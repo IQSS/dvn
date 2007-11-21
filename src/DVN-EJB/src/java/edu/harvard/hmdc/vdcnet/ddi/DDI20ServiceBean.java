@@ -180,13 +180,21 @@ import edu.harvard.hmdc.vdcnet.study.VariableRange;
 import edu.harvard.hmdc.vdcnet.study.VariableRangeType;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtil;
+import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -208,6 +216,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.namespace.QName;
 
 /**
  *
@@ -2641,11 +2650,15 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     }
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public  void exportStudy(Study study,OutputStream os) throws JAXBException {
-        exportStudy(study, new OutputStreamWriter(os), false);
+        exportStudy(study, new OutputStreamWriter(os), false, false);
     }
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public  void exportStudy(Study study, Writer out, boolean exportToLegacyVDC) throws  JAXBException {
-        exportCodeBook(mapStudy(study, exportToLegacyVDC), out ); 
+    public  void exportStudy(Study study, Writer out, boolean generateCodeBookForHarvestedStudy, boolean exportToLegacyVDC) throws  JAXBException {
+        if ( study.isIsHarvested() && !generateCodeBookForHarvestedStudy) {
+            exportOriginalDDIPlus(study, out);
+        } else {
+            exportCodeBook(mapStudy(study, exportToLegacyVDC), out ); 
+        }
     }
     
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -2679,4 +2692,69 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         return _cb;
         
     }   
+    
+    private void exportOriginalDDIPlus (Study s, Writer out) throws JAXBException {
+        File studyDir = new File(FileUtil.getStudyFileDir(), s.getAuthority() + File.separator + s.getStudyId());
+        File originalImport = new File(studyDir, "original_imported_study.xml");
+        BufferedReader in = null;      
+        
+        if (originalImport.exists()) {
+            try {
+                in = new BufferedReader( new FileReader(originalImport) );
+                String line = null; //not declared within while loop
+                /*
+                * readLine is a bit quirky :
+                * it returns the content of a line MINUS the newline.
+                * it returns null only for the END of the stream.
+                * it returns an empty String if two newlines appear in a row.
+                */
+                while (( line = in.readLine()) != null){
+                    // check to see if this is the StudyDscr in order to add the extra docDscr
+                    if (line.indexOf("<stdyDscr>") != -1) {
+                        out.write(createDocDscrSnippet(s));
+                        out.write(System.getProperty("line.separator"));
+                        out.flush();                        
+                    }
+                    
+                    out.write(line);
+                    out.write(System.getProperty("line.separator"));
+                    out.flush();
+                }     
+                               
+            } catch (IOException ex) {
+                throw new EJBException ("A problem occurred trying to export this study (original DDI Plus).");                
+            } finally {
+                try {
+                    if (out!=null) { out.close(); }
+                    if (in!=null) { in.close(); }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            } 
+        } else {
+            throw new EJBException ("There is no original import DDI for this study.");
+        }     
+    }
+    
+    private String createDocDscrSnippet(Study s) throws JAXBException {
+        // create dummy Codebook for purpose of generate extra DocDesc
+        ObjectFactory objFactory = new ObjectFactory();
+        CodeBook _cb = objFactory.createCodeBook();
+        _cb.setVersion("2.0");
+        _cb.getDocDscr().add(createDocDscr(s));
+        
+        StringWriter sw = new StringWriter();
+        marshaller.marshal( _cb , sw );
+
+        // commented out attempt to marshall just DocDscrType; still needs more investigation
+        //marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+        //marshaller.marshal( new JAXBElement( new QName("","rootTag"),DocDscrType.class, createDocDscr(s) ) ,out );
+        
+        
+        // now remove the codebook and return
+        String returnString = sw.toString();
+        returnString = returnString.substring(returnString.indexOf("<docDscr>"));
+        returnString = returnString.substring(0, returnString.lastIndexOf("</docDscr>") + 10);
+        return returnString;
+    }
 }

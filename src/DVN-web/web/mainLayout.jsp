@@ -21,6 +21,9 @@
          
          <ui:link  id="link2" url="/resources/stylesheet.css"/>
          <ui:script url="/resources/EventCapture.js"/>
+         <ui:script url="/resources/jquery.js"/>
+         <ui:script url="/resources/jquery.corner.pack.js"/>
+         <ui:script url="/resources/excanvas.pack.js"/>
       </ui:head>
       <body>
               <f:subview id="banner">

@@ -16,8 +16,7 @@
          
          
       <!-- Search Section starts here -->                                       
-      <div class="dvn_section dvn_overflow">        
-        <div class="dvn_sectionTitle">
+      <div class="dvn_searchblock">        
                 <span class="dvn_sectionTitleL"><a name="search" title="">Search</a></span> 
                 <span class="dvn_sectionTitleR">
                     <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
@@ -28,9 +27,6 @@
                         <h:outputText  value="Search Help"/>
                     </h:outputLink>                
                 </span>
-             
-        </div>        
-        <div class="dvn_searchBox">
             <div class="dvn_searchBoxContent">
                     
                     <fieldset>
@@ -57,8 +53,6 @@
                         </label>
                     </fieldset>
                 </div>
-            <span class="dvn_xbottom"><span class="dvn_xb4"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb3"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb2"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb1"><h:outputText  value="&#160;" escape="false"/></span></span>
-        </div> 
     </div>
     <!-- Search Section ends here -->  
     
@@ -84,20 +78,14 @@
         </ui:panelGroup>
         
         <ui:panelGroup block="true" styleClass="dvn_sectionPanels" rendered="#{HomePage.showRequestCreator or HomePage.showRequestContributor or VDCRequest.currentVDC.displayNewStudies == true or (VDCRequest.vdcNetwork.displayAnnouncements == true and VDCRequest.currentVDC == null) or ( (VDCRequest.currentVDC.displayNetworkAnnouncements and VDCRequest.vdcNetwork.displayAnnouncements) and VDCRequest.currentVDC != null) or VDCRequest.currentVDC.displayAnnouncements == true}">    
-            <ui:panelGroup  id="createDataverse" block="true" rendered="#{HomePage.showRequestCreator}">   
-                <div class="dvn_sectionPanelTitle">Create Your Own Dataverse</div>
-                <div class="dvn_sectionPanelText">
-                    Are you interested in having your own on-line data archive? Send a request to
-                    <h:outputLink rendered="#{VDCSession.loginBean==null}"  value="/dvn/faces/login/CreatorRequestAccountPage.jsp">
-                        <h:outputText   value="Create your own Dataverse."/>
+            <ui:panelGroup id="createDataverse" block="true" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestCreator}">   
+
+                    <h:outputLink styleClass="requestHmpgSideLink" rendered="#{VDCSession.loginBean==null}" value="/dvn/faces/login/CreatorRequestAccountPage.jsp">
+                        <h:outputText   value="Create your &lt;br /&gt; own Dataverse." escape="false"/>
                     </h:outputLink>
-                    <h:outputLink rendered="#{VDCSession.loginBean!=null}" value="/dvn/faces/login/CreatorRequestPage.jsp">
-                        <h:outputText value="Create your own Dataverse."/>
+                    <h:outputLink styleClass="requestHmpgSideLink" rendered="#{VDCSession.loginBean!=null}" value="/dvn/faces/login/CreatorRequestPage.jsp">
+                        <h:outputText value="Create your &lt;br /&gt; own Dataverse." escape="false"/>
                     </h:outputLink>
-                    Or find out more about 
-                    <a href="http://thedata.org/help/dataverseadmin" target="_blank">how to create and use a dataverse</a>
-                    before sending a request.  
-                </div>     
             </ui:panelGroup>
             
             <ui:panelGroup id="beContributor" block="true" rendered="#{HomePage.showRequestContributor}">

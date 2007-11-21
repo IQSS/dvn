@@ -14,7 +14,7 @@
     <f:subview id="studyPageView">
                 
     <f:verbatim>   
-    <script language="Javascript">
+    <script type="text/javascript">
         var fileCitationPopup;
 
         function createFileCitationPopup(divId, anchorId) {

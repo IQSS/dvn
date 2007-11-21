@@ -40,7 +40,7 @@ public interface DDI20ServiceLocal extends StudyExporter  {
 
     edu.harvard.hmdc.vdcnet.study.Study mapDDI(CodeBook _cb, Study study);
   
-    void exportStudy(Study study, Writer out, boolean exportToLegacyVDC) throws IOException, JAXBException;
+    void exportStudy(Study study, Writer out, boolean generateCodeBookForHarvestedStudy, boolean exportToLegacyVDC) throws IOException, JAXBException;
     
     java.lang.String determineId(CodeBook _cb, String agency);  
     

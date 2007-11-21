@@ -101,7 +101,7 @@
                                         </f:facet>   
                                     </h:column>
                                     <h:column  id="column3">
-                                        <h:inputText  id="input_fileName" size="30" value="#{file.studyFile.fileName}" validator ="#{AddFilesPage.validateFileName}"/>
+                                        <h:inputText  id="input_fileName" size="30" value="#{file.studyFile.fileName}" required="true" validator ="#{AddFilesPage.validateFileName}"/>
                                         <h:message styleClass="errorMessage" for="input_fileName"/>
                                         <h:message styleClass="errorMessage" for="fileBrowser" rendered="#{AddFilesPage.newFileAdded and AddFilesPage.filesDataTable.rowCount == AddFilesPage.filesDataTable.rowIndex +1}" />
                                         <f:facet name="header">

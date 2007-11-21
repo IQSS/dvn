@@ -131,6 +131,19 @@
        <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
        <put name="content" type="template"     value="/login/CreatorRequestSuccessPage.jsp"/>
    </definition>
+   <definition name="/login/CreatorRequestInfoPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
+       <put name="content" type="template"     value="/login/CreatorRequestInfoPage.jsp"/>
+   </definition>
+      <definition name="/login/CreatorRequestTermsPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
+       <put name="content" type="template"     value="/login/CreatorRequestTermsPage.jsp"/>
+   </definition>
+   <definition name="/login/CreatorRequestQuestionsPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
+       <put name="content" type="template"     value="/login/CreatorRequestQuestionsPage.jsp"/>
+   </definition>
+   
    <!-- Privileged User Pages -->
   <!-- *******************  Study Management *********************** -->
    <definition name="/study/AddFilesPage" extends="/main-layout">

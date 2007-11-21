@@ -130,7 +130,7 @@ public class DDIExportServlet extends HttpServlet {
                             // otherwise create ddi from data
                             res.setContentType("text/xml");
                             out = res.getWriter();
-                            ddiService.exportStudy(s, out, (exportToLegacyVDC != null) );
+                            ddiService.exportStudy(s, out, true, (exportToLegacyVDC != null) );
                         }
                     } catch (Exception ex) {
                         if (ex.getCause() instanceof IllegalArgumentException) {

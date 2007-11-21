@@ -835,7 +835,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         // Export the study to study.xml in the legacy directory
         FileWriter fileWriter = new FileWriter(new File(legacyStudyDir,"study.xml"));
         try {
-            ddiService.exportStudy(study, fileWriter, true);
+            ddiService.exportStudy(study, fileWriter, true, true);
             fileWriter.flush();
         } finally{
             fileWriter.close();
@@ -1607,8 +1607,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         exportStudy(study,exportDDI);
     }
 
-
     public void exportUpdatedStudies()  {
+        exportStudies( studyService.getStudyIdsForExport() );
+    }    
+
+    public void exportStudies(List<Long> studyIds)  {
         String logTimestamp = exportLogFormatter.format(new Date());
         Logger exportLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.study.StudyServiceBean.export."+logTimestamp);
         List<Long> harvestedStudyIds = new ArrayList<Long>();
@@ -1621,7 +1624,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             return;
         }
         try {
-            List<Long> studyIds = studyService.getStudyIdsForExport();
             exportLogger.info("Begin exporting studies, number of studies to export: "+studyIds.size());
             for (Long studyId: studyIds) {
                 Study study = em.find(Study.class, studyId);

@@ -6,11 +6,22 @@
     xmlns:tiles="http://struts.apache.org/tags-tiles"
     xmlns:c="http://java.sun.com/jsp/jstl/core">
         
-<div class="dvn_section dvn_overflow">
+  <f:verbatim>   
+    <script type="text/javascript">
+             $(document).ready(function(){
+		$("div.dvn_navblock").corner("10px bottom");
+		$("div.dvn_searchblock").corner("10px");
+		$("div.dvn_block").corner("10px");
+		$("div.dvn_blockTitleBar").corner("10px");
+	});   
+    </script>
+    </f:verbatim> 
+    
+        <div class="dvn_section dvn_overflow">
     
         <div class="dvn_headerTitle">
             <div class="dvn_headerTitleR">   
-                <ui:imageHyperlink alt="Powered by the Dataverse Network Project" border="0" imageURL="/resources/poweredby_logo.gif" toolTip="Link to the Dataverse Network Project" url="http://thedata.org" target="_blank" />
+                <ui:imageHyperlink alt="Powered by the Dataverse Network Project" border="0" imageURL="/resources/dvnPoweredByLogo.gif" toolTip="Link to the Dataverse Network Project" url="http://thedata.org" target="_blank" />
             </div>
             <div class="dvn_headerTitleL"> 
                 <h:outputText  value="&#160;" rendered="#{VDCRequest.currentVDC == null}" />
@@ -30,7 +41,7 @@
              
         </div>
         
-        <div class="dvn_headerBar">
+        <div class="dvn_navblock">
             <div class="dvn_headerBarContent">
                 <ul class="dvn_floatL">
                     <li>

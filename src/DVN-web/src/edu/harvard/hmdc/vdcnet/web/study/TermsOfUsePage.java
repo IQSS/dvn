@@ -1,7 +1,7 @@
 /*
  * Dataverse Network - A web application to distribute, share and analyze quantitative data.
  * Copyright (C) 2007
- *
+ *  
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
@@ -116,7 +116,7 @@ public class TermsOfUsePage extends VDCBaseBean {
     public void setTermsAcceptanceRequired(boolean termsAcceptanceRequired) {} // dummy method since the get is just a wrapper
     
     public boolean isVdcTermsRequired() {
-        boolean vdcTermsRequired = study.getOwner().isTermsOfUseEnabled();
+        boolean vdcTermsRequired = study.getOwner().isDownloadTermsOfUseEnabled();
         if (vdcTermsRequired) {
             return getTermsOfUseMap().get("vdc_" + study.getOwner().getId() ) == null;
         }

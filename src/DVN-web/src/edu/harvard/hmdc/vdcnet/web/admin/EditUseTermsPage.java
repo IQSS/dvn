@@ -1,7 +1,7 @@
 /*
  * Dataverse Network - A web application to distribute, share and analyze quantitative data.
  * Copyright (C) 2007
- *
+ *  
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
@@ -73,8 +73,8 @@ public class EditUseTermsPage extends VDCBaseBean {
             if (validateTerms()) {
                 // action code here
                 VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
-                vdc.setTermsOfUse(termsOfUse);
-                vdc.setTermsOfUseEnabled(termsOfUseEnabled);
+                vdc.setDownloadTermsOfUse(termsOfUse);
+                vdc.setDownloadTermsOfUseEnabled(termsOfUseEnabled);
                 vdcService.edit(vdc);
                 FacesContext.getCurrentInstance().addMessage("editUseTermsPage:button1", new FacesMessage(msg));
             } else {

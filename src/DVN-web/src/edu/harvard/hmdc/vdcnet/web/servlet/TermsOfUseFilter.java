@@ -1,7 +1,7 @@
 /*
  * Dataverse Network - A web application to distribute, share and analyze quantitative data.
  * Copyright (C) 2007
- *
+ *  
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
@@ -83,7 +83,7 @@ public class TermsOfUseFilter implements Filter {
     
     
     public static boolean isVdcTermsRequired(Study study, Map termsOfUseMap) {
-        boolean vdcTermsRequired = study.getOwner().isTermsOfUseEnabled();
+        boolean vdcTermsRequired = study.getOwner().isDownloadTermsOfUseEnabled();
         if (vdcTermsRequired) {
             return termsOfUseMap.get("vdc_" + study.getOwner().getId() ) == null;
         }

@@ -183,7 +183,7 @@ public class VDCAdminServlet extends HttpServlet {
                 if ("Dataverse".equals(exportParam)) {
                 Long vdcToIndex = null;
                 try {
-                    vdcToIndex = new Long(req.getParameter("vdcToIndex"));
+                    vdcToIndex = new Long(req.getParameter("vdcToExport"));
                     VDC vdc =  vdcService.findById(vdcToIndex);
                     if (vdc != null) { 
                         List studyIDList = new ArrayList();

@@ -223,8 +223,23 @@ public class DataList extends UIComponentBase {
                 childTable.encodeChildren(FacesContext.getCurrentInstance());
             }
             childTable.encodeEnd(FacesContext.getCurrentInstance());
+            FacesContext context = FacesContext.getCurrentInstance();
+        Application application = context.getApplication();
+        ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+        ExpressionFactory expressionFactory = application.getExpressionFactory();
+
+        HtmlAjaxCommandLink previousLink = new HtmlAjaxCommandLink();
+        previousLink.setId("previous_" + heading); // Custom ID is required in dynamic UIInput and UICommand.
+        //previousLink.setValue("Previous | ");
+        previousLink.setReRender("form1" + heading);//content:homePageView:form1:
+        //HtmlOutputText uiText = new HtmlOutputText();
+        //uiText.setValue(heading);
+        MethodExpression previousActionListener = expressionFactory.createMethodExpression(elContext, "#{HomePage.page_action}", null, new Class[] {ActionEvent.class});
+        previousLink.addActionListener(new MethodExpressionActionListener(previousActionListener));
+        
+        
         } catch (IOException ioe) {
-            System.out.println("A problem occurred in the custom tag while formatting the heading.");
+            System.out.println("A problem occurred in the custom tag while formatting the child table.");
         }
     }
     
@@ -237,26 +252,26 @@ public class DataList extends UIComponentBase {
 
         HtmlAjaxCommandLink previousLink = new HtmlAjaxCommandLink();
         previousLink.setId("previous_" + heading); // Custom ID is required in dynamic UIInput and UICommand.
-        previousLink.setValue("<< Previous | ");
-        previousLink.setReRender("content:homePageView:form1:" + heading);
+        previousLink.setValue("Previous | ");
+        previousLink.setReRender("content:homePageView:form1:" + heading);//content:homePageView:form1:
         MethodExpression previousActionListener = expressionFactory.createMethodExpression(elContext, "#{HomePage.page_action}", null, new Class[] {ActionEvent.class});
         previousLink.addActionListener(new MethodExpressionActionListener(previousActionListener));
         
         HtmlAjaxCommandLink nextLink = new HtmlAjaxCommandLink();
         nextLink.setId("next_" + heading); // Custom ID is required in dynamic UIInput and UICommand.
-        nextLink.setValue("Next >>");
-        nextLink.setReRender("content:homePageView:form1:" + heading);
+        nextLink.setValue("Next");
+        nextLink.setReRender("content:homePageView:form1:" + heading);//
         MethodExpression nextActionListener = expressionFactory.createMethodExpression(elContext, "#{HomePage.page_action}", null, new Class[] {ActionEvent.class});
         nextLink.addActionListener(new MethodExpressionActionListener(nextActionListener));
         
         this.getChildren().add(previousLink);
-        this.getChildren().add(nextLink);
         previousLink.encodeBegin(FacesContext.getCurrentInstance());
         previousLink.encodeEnd(FacesContext.getCurrentInstance());
+        this.getChildren().add(nextLink);
         nextLink.encodeBegin(FacesContext.getCurrentInstance());
         nextLink.encodeEnd(FacesContext.getCurrentInstance());
         } catch (IOException ioe) {
-            System.out.println("There was an IO Exception while creating the previous and next links." + ioe.toString());
+           System.out.println("There was an IO Exception while creating the previous and next links." + ioe.toString());
         } catch (Exception e) {
             System.out.println("There was an issue in the create links area " + e.toString());
         } /*finally {

@@ -9,7 +9,7 @@
                             
     <f:subview id="homePageView">
         <script type='text/javascript' src='/dvn/faces/a4j.res/org.ajax4jsf.framework.ajax.AjaxScript'></script>
-       <h:form  id="form1">
+       <a4j:form  id="form1">
            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
            <!-- Success Message -->
          <ui:panelGroup styleClass="#{HomePage.msg.styleClass}" rendered="#{!empty HomePage.msg.messageText}">
@@ -77,10 +77,6 @@
                     <h:outputText value="There are no Dataverses yet in #{VDCRequest.vdcNetwork.name} Dataverse Network." rendered="#{empty HomePage.vdcs}"/>
                     <!-- datalist component for NETWORK HOME PAGE -->
                     <a4j:log rendered="true"/>
-                    <h:inputText size="50" value="#{HomePage.text}" > 
-                      <a4j:support event="onkeyup" reRender="rep"/>
-                    </h:inputText>
-            <h:outputText value="#{HomePage.text}" id="rep"/>
                         <h:panelGrid rendered="#{VDCRequest.currentVDC == null}">
                             <dmap:datalist contents="#{HomePage.dataMap}" id="dataMap" />
                         </h:panelGrid>
@@ -163,6 +159,6 @@
         </ui:panelGroup>        
     </ui:panelGroup>                                             
                                     
-        </h:form>
+        </a4j:form>
     </f:subview>
 </jsp:root>

@@ -47,6 +47,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
@@ -54,6 +55,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -100,7 +102,16 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     }
     
       
-        
+   public TermsOfUse getCurrentTermsOfUse() {
+        String queryStr = "SELECT t FROM TermsOfUse t WHERE t.vdc_id  is null order by createTime";
+        Query query= em.createQuery(queryStr);
+        List resultList = query.getResultList();
+        TermsOfUse termsOfUse=null;
+        if (resultList.size()>0) {
+            termsOfUse = (TermsOfUse)resultList.get(resultList.size()-1);
+        }
+        return termsOfUse;
+   }     
     
     private void removeExportTimer() {
         // Clear dataverse timer, if one exists 
@@ -201,4 +212,8 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         } while ((e=e.getCause())!=null);
          logger.severe(fullMessage);
     }    
+     
+    public void addTermsOfUse(TermsOfUse termsOfUse) {
+        em.persist(termsOfUse);  
+    }
 }

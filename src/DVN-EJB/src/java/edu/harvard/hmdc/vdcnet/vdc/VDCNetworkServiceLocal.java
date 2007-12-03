@@ -47,6 +47,10 @@ public interface VDCNetworkServiceLocal {
     void updateExportTimer();
     
     void createExportTimer();
+    
+    TermsOfUse getCurrentTermsOfUse();
+    
+    public void addTermsOfUse(TermsOfUse tou);  
 
     VDCNetwork find(Object pk);
     VDCNetwork find();

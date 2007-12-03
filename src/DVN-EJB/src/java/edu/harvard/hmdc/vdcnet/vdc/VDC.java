@@ -76,10 +76,17 @@ public class VDC {
     @Column(name="announcements", columnDefinition="TEXT")
     private String announcements;
     
-    @Column(name="termsOfUse", columnDefinition="TEXT")
-    private String termsOfUse;
-    private boolean termsOfUseEnabled;
+    @Column(name="downloadTermsOfUse", columnDefinition="TEXT")
+    private String downloadTermsOfUse;
+     @Column(name="downloadTermsOfUseEnabled")
+    private boolean downloadTermsOfUseEnabled;
     
+     
+ 
+    @Column(name="termsOfUseEnabled")
+    private boolean termsOfUseEnabled;
+     
+     
     private String copyright;
     @OneToOne (cascade={CascadeType.REMOVE, CascadeType.PERSIST})
     private VDCCollection rootCollection;
@@ -120,6 +127,14 @@ public class VDC {
     /** Creates a new instance of VDC */
     public VDC() {
         
+    }
+
+    public boolean isTermsOfUseEnabled() {
+        return termsOfUseEnabled;
+    }
+
+    public void setTermsOfUseEnabled(boolean termsOfUseEnabled) {
+        this.termsOfUseEnabled = termsOfUseEnabled;
     }
     
     public String getName() {
@@ -169,23 +184,24 @@ public class VDC {
     public void setAnnouncements(String announcements) {
         this.announcements = announcements;
     }
-    
-    public String getTermsOfUse() {
-        return termsOfUse;
-    }
-    
-    public void setTermsOfUse(String termsOfUse) {
-        this.termsOfUse = termsOfUse;
+
+    public String getDownloadTermsOfUse() {
+        return downloadTermsOfUse;
     }
 
-    public boolean isTermsOfUseEnabled() {
-        return termsOfUseEnabled;
+    public void setDownloadTermsOfUse(String downloadTermsOfUse) {
+        this.downloadTermsOfUse = downloadTermsOfUse;
+    }
+
+    public boolean isDownloadTermsOfUseEnabled() {
+        return downloadTermsOfUseEnabled;
+    }
+
+    public void setDownloadTermsOfUseEnabled(boolean downloadTermsOfUseEnabled) {
+        this.downloadTermsOfUseEnabled = downloadTermsOfUseEnabled;
     }
     
-    public void setTermsOfUseEnabled(boolean termsOfUseEnabled) {
-        this.termsOfUseEnabled = termsOfUseEnabled;
-    }   
-    
+  
     public String getCopyright() {
         return copyright;
     }
@@ -789,6 +805,29 @@ public class VDC {
         this.vdcGroups = vdcGroups;
     }
 
+    @OneToMany(mappedBy="vdc", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OrderBy("createTime")
+    private List<TermsOfUse> termsOfUseList;
+    
+    /**
+     * Getter for property studyNotes.
+     * @return Value of property studyNotes.
+     */
+    public List<TermsOfUse> getTermsOfUseList() {
+        return this.termsOfUseList;
+    }
+    
+    public TermsOfUse getCurrentTermsOfUse() {
+        return termsOfUseList.get(termsOfUseList.size()-1);
+    }
+    
+    /**
+     * Setter for property studyNotes.
+     * @param studyNotes New value of property studyNotes.
+     */
+    public void setTermsOfUseList(List<TermsOfUse> termsOfUseList) {
+        this.termsOfUseList = termsOfUseList;
+    }    
 
     public boolean isVDCRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
 
@@ -843,5 +882,7 @@ public class VDC {
 
         return false;
     }
+    
+    
 
 }

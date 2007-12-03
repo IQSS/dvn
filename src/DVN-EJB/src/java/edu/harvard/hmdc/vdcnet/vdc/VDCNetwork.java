@@ -616,6 +616,14 @@ public class VDCNetwork {
         return exportDayOfWeek;
     }
 
+    public boolean isTermsOfUseEnabled() {
+        return termsOfUseEnabled;
+    }
+
+    public void setTermsOfUseEnabled(boolean termsOfUseEnabled) {
+        this.termsOfUseEnabled = termsOfUseEnabled;
+    }
+
     public void setExportDayOfWeek(Integer exportDayOfWeek) {
         this.exportDayOfWeek = exportDayOfWeek;
     }
@@ -626,4 +634,5 @@ public class VDCNetwork {
 
     private Integer exportDayOfWeek;
     
+    private boolean termsOfUseEnabled;  
 }

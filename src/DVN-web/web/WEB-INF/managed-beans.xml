@@ -407,11 +407,11 @@
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>termsOfUse</property-name>
-            <value>#{VDCRequest.currentVDC.termsOfUse}</value>
+            <value>#{VDCRequest.currentVDC.downloadTermsOfUse}</value>
         </managed-property>
         <managed-property>
             <property-name>termsOfUseEnabled</property-name>
-            <value>#{VDCRequest.currentVDC.termsOfUseEnabled}</value>
+            <value>#{VDCRequest.currentVDC.downloadTermsOfUseEnabled}</value>
         </managed-property>
     </managed-bean>
     <managed-bean>

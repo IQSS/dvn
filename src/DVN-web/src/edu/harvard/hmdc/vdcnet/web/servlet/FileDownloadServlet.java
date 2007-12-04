@@ -47,6 +47,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
+import java.nio.ByteBuffer; 
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collection;
@@ -277,14 +281,16 @@ public class FileDownloadServlet extends HttpServlet{
 			// send the incoming HTTP stream as the response body
 
 			InputStream in = method.getResponseBodyAsStream(); 
-			OutputStream out = res.getOutputStream();
+			//OutputStream out = res.getOutputStream();
+			WritableByteChannel out = Channels.newChannel (res.getOutputStream()); 
 			    
-			byte[] dataBuffer = new byte[8192]; 
+			byte[] dataReadBuffer = new byte[8192 * 4]; 
+			ByteBuffer dataWriteBuffer = ByteBuffer.allocate ( 8192 * 4 ); 
 
-			int i = 0;
-			while ( ( i = in.read (dataBuffer) ) > 0 ) {
-			    out.write(dataBuffer,0,i);
-			    out.flush(); 
+			while ( in.read (dataReadBuffer) > 0 ) {
+			    dataWriteBuffer.put ( dataReadBuffer ); 
+			    out.write(dataWriteBuffer);
+			    //out.flush(); 
 			}
 
 			in.close();
@@ -354,15 +360,20 @@ public class FileDownloadServlet extends HttpServlet{
 			// send the incoming HTTP stream as the response body
 
 			InputStream in = method.getResponseBodyAsStream(); 
-			OutputStream out = res.getOutputStream();
-			
-			byte[] dataBuffer = new byte[8192]; 
+			//OutputStream out = res.getOutputStream();
+			WritableByteChannel out = Channels.newChannel (res.getOutputStream()); 
+			    
+			byte[] dataReadBuffer = new byte[4 * 8192]; 
+			ByteBuffer dataWriteBuffer = ByteBuffer.allocate ( 4 * 8192 ); 
 
-			int i = 0;
-			while ( ( i = in.read (dataBuffer) ) > 0 ) {
-			    out.write(dataBuffer,0,i);
-			    out.flush(); 
+			while ( in.read (dataReadBuffer) > 0 ) {
+			    dataWriteBuffer.put ( dataReadBuffer ); 
+			    out.write(dataWriteBuffer);
+			    //out.flush(); 
 			}
+
+			in.close();
+			out.close();
 
 			in.close();
 			out.close();
@@ -400,16 +411,18 @@ public class FileDownloadServlet extends HttpServlet{
 				
 			
 			    // send the file as the response
-			    InputStream in = new FileInputStream(new File(cachedFileSystemLocation));
-			    OutputStream out = res.getOutputStream();
-			
-			    byte[] dataBuffer = new byte[8192]; 
 
-			    int i = 0;
-			    while ( ( i = in.read (dataBuffer) ) > 0 ) {
-				out.write(dataBuffer,0,i);
-				out.flush(); 
+			    FileChannel in = new FileInputStream(new File(cachedFileSystemLocation)).getChannel();
+			    WritableByteChannel out = Channels.newChannel ( res.getOutputStream() ); 
+
+			    long bytesPerIteration = 4 * 8192; 
+			    long start = 0;
+
+			    while ( start < in.size() ) {
+				in.transferTo(start, bytesPerIteration, out);
+				start += bytesPerIteration;
 			    }
+
 			    in.close();
 			    out.close();
                 
@@ -617,16 +630,23 @@ public class FileDownloadServlet extends HttpServlet{
 			// send the file as the response
 
 
-			InputStream in = new FileInputStream(inFile);
-			OutputStream out = res.getOutputStream();
+			// InputStream in = new FileInputStream(inFile);
 			
-			byte[] dataBuffer = new byte[8192]; 
+			FileChannel in = new FileInputStream(inFile).getChannel();
+			
+			// OutputStream out = res.getOutputStream();
 
-			int i = 0;
-			while ( ( i = in.read (dataBuffer) ) > 0 ) {
-			    out.write(dataBuffer,0,i);
-			    out.flush(); 
+			WritableByteChannel out = Channels.newChannel ( res.getOutputStream() ); 
+
+
+			long bytesPerIteration = 4 * 8192; 
+			long start = 0;
+
+			while ( start < in.size() ) {
+			    in.transferTo(start, bytesPerIteration, out);
+			    start += bytesPerIteration;
 			}
+            
 			in.close();
 			out.close();
                 
@@ -718,6 +738,7 @@ public class FileDownloadServlet extends HttpServlet{
                     StudyFile file = (StudyFile) iter.next();
 
                     InputStream in = null;
+		    //ReadableByteChannel in = null; 
 
 		    if ( file.isRemote() ) {
 

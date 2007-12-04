@@ -76,10 +76,12 @@
                 <div class="dvn_margin12">
                     <h:outputText value="There are no Dataverses yet in #{VDCRequest.vdcNetwork.name} Dataverse Network." rendered="#{empty HomePage.vdcs}"/>
                     <!-- datalist component for NETWORK HOME PAGE -->
+                    <a4j:region>
                     <a4j:log rendered="true"/>
                         <h:panelGrid rendered="#{VDCRequest.currentVDC == null}">
                             <dmap:datalist contents="#{HomePage.dataMap}" id="dataMap" />
                         </h:panelGrid>
+                        </a4j:region>
                     <!-- Display Tree at dataverse level -->
                     <ui:tree  binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
                 </div>

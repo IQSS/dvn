@@ -36,7 +36,7 @@
                         <ui:panelGroup  block="true">
                             <h:panelGrid columnClasses="vdcColPadded" width="98%">
                                 <h:outputText  value="General Terms of Use:" styleClass="vdcTermsUseField" rendered="#{TermsOfUsePage.vdcTermsRequired}" />
-                                
+                                <h:outputText  value="(This Terms of Use apply to all studies owned by the original dataverse)" rendered="#{TermsOfUsePage.vdcTermsRequired}" />
                                 <h:outputText value="#{TermsOfUsePage.study.owner.downloadTermsOfUse}" rendered="#{TermsOfUsePage.vdcTermsRequired}" escape="false"/>
                                 
                                 <h:outputText  value="Confidentiality Declaration:" styleClass="vdcTermsUseField" rendered="#{!empty TermsOfUsePage.study.confidentialityDeclaration}"/>

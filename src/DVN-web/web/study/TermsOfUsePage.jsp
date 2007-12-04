@@ -79,7 +79,7 @@
                         </ui:panelGroup>
                         
                         <ui:panelGroup block="true" style="padding-top: 20px; text-align: center">
-                            <h:commandButton  id="termsButton" value="Accept" action="#{TermsOfUsePage.acceptTerms_action}"/>
+                            <h:commandButton  id="termsButton" value="Continue" action="#{TermsOfUsePage.acceptTerms_action}"/>
                         </ui:panelGroup>
                         
                     </div>

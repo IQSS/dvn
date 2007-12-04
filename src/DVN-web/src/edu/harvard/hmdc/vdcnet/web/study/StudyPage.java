@@ -451,7 +451,8 @@ public class StudyPage extends VDCBaseBean {
     } 
     
     public boolean getTermsOfUseIsEmpty() {
-        if (isEmpty(studyUI.getStudy().getConfidentialityDeclaration())
+        if (!studyUI.getStudy().getOwner().isDownloadTermsOfUseEnabled()
+        && isEmpty(studyUI.getStudy().getConfidentialityDeclaration())
         && isEmpty(studyUI.getStudy().getSpecialPermissions())
         && isEmpty(studyUI.getStudy().getRestrictions())
         && isEmpty(studyUI.getStudy().getContact())

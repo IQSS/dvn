@@ -136,12 +136,16 @@ public class DCServiceBean implements DCServiceLocal {
         if ( !StringUtil.isEmpty(study.getSpecialPermissions())) {
             writer.write("<dc:rights>" + study.getSpecialPermissions() + "</dc:rights>");
         }
+<<<<<<< .mine
+        
+=======
         if ( !StringUtil.isEmpty(study.getRestrictions())) {
             writer.write("<dc:rights>" + study.getRestrictions() + "</dc:rights>");
         }
         if ( !StringUtil.isEmpty(study.getContact())) {
             writer.write("<dc:rights>" + study.getContact() + "</dc:rights>");
         }
+>>>>>>> .r1455
         if ( !StringUtil.isEmpty(study.getCitationRequirements())) {
             writer.write("<dc:rights>" + study.getCitationRequirements() + "</dc:rights>");
         }

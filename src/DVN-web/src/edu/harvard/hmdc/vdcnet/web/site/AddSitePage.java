@@ -37,12 +37,11 @@ import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.StudyFieldServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollectionServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Map;
 import javax.ejb.EJB;
 import com.sun.rave.web.ui.component.PanelLayout;
@@ -53,11 +52,13 @@ import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.component.html.HtmlOutputLabel;
 import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlSelectOneMenu;
 import com.sun.rave.web.ui.component.PanelGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
 import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse;
+import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -76,26 +77,35 @@ import javax.servlet.http.HttpServletRequest;
  * to respond to incoming events.</p>
  */
 public class AddSitePage extends VDCBaseBean {
-    @EJB VDCServiceLocal vdcService;
-    @EJB VDCCollectionServiceLocal vdcCollectionService;
-    @EJB VDCNetworkServiceLocal vdcNetworkService;
-    @EJB StudyFieldServiceLocal studyFieldService;
-    @EJB UserServiceLocal userService;
-    @EJB RoleServiceLocal roleService;
-    @EJB MailServiceLocal mailService;
+
+    @EJB
+    VDCServiceLocal vdcService;
+    @EJB
+    VDCGroupServiceLocal vdcGroupService;
+    @EJB
+    VDCCollectionServiceLocal vdcCollectionService;
+    @EJB
+    VDCNetworkServiceLocal vdcNetworkService;
+    @EJB
+    StudyFieldServiceLocal studyFieldService;
+    @EJB
+    UserServiceLocal userService;
+    @EJB
+    RoleServiceLocal roleService;
+    @EJB
+    MailServiceLocal mailService;
     StatusMessage msg;
-    
-    public StatusMessage getMsg(){
+
+    public StatusMessage getMsg() {
         return msg;
     }
-    
-    public void setMsg(StatusMessage msg){
+
+    public void setMsg(StatusMessage msg) {
         this.msg = msg;
     }
-    
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
-    
+
     /**
      * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
      * This method is automatically generated, so any user-specified code inserted
@@ -104,76 +114,80 @@ public class AddSitePage extends VDCBaseBean {
     public void init() {
         super.init();
         //check to see if a dataverse type is in request
-        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Iterator iterator = request.getParameterMap().keySet().iterator();
         while (iterator.hasNext()) {
             Object key = (Object) iterator.next();
-            if ( key instanceof String && ((String) key).indexOf("dataverseType") != -1 && !request.getParameter((String)key).equals("")) {
-                this.setDataverseType(request.getParameter((String)key));
+            if (key instanceof String && ((String) key).indexOf("dataverseType") != -1 && !request.getParameter((String) key).equals("")) {
+                this.setDataverseType(request.getParameter((String) key));
             }
         }
+        if (groupItems == null) {
+            groupItems = new ArrayList<SelectItem>();
+            List list = (List) vdcGroupService.findAll();
+            iterator = list.iterator();
+            groupItems.add(new SelectItem(0, "None"));
+            while (iterator.hasNext()) {
+                VDCGroup vdcgroup = (VDCGroup) iterator.next();
+                groupItems.add(new SelectItem(vdcgroup.getId(), vdcgroup.getName()));
+            }
+            setGroupItems(groupItems);
+        }
     }
-    
     private Page page1 = new Page();
-    
+
     public Page getPage1() {
         return page1;
     }
-    
+
     public void setPage1(Page p) {
         this.page1 = p;
     }
-    
     private Html html1 = new Html();
-    
+
     public Html getHtml1() {
         return html1;
     }
-    
+
     public void setHtml1(Html h) {
         this.html1 = h;
     }
-    
     private Head head1 = new Head();
-    
+
     public Head getHead1() {
         return head1;
     }
-    
+
     public void setHead1(Head h) {
         this.head1 = h;
     }
-    
     private Link link1 = new Link();
-    
+
     public Link getLink1() {
         return link1;
     }
-    
+
     public void setLink1(Link l) {
         this.link1 = l;
     }
-    
     private Body body1 = new Body();
-    
+
     public Body getBody1() {
         return body1;
     }
-    
+
     public void setBody1(Body b) {
         this.body1 = b;
     }
-    
     private Form form1 = new Form();
-    
+
     public Form getForm1() {
         return form1;
     }
-    
+
     public void setForm1(Form f) {
         this.form1 = f;
     }
-
     private PanelLayout layoutPanel1 = new PanelLayout();
 
     public PanelLayout getLayoutPanel1() {
@@ -183,7 +197,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setLayoutPanel1(PanelLayout pl) {
         this.layoutPanel1 = pl;
     }
-
     private PanelLayout layoutPanel2 = new PanelLayout();
 
     public PanelLayout getLayoutPanel2() {
@@ -193,7 +206,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setLayoutPanel2(PanelLayout pl) {
         this.layoutPanel2 = pl;
     }
-
     private HtmlOutputText outputText1 = new HtmlOutputText();
 
     public HtmlOutputText getOutputText1() {
@@ -203,7 +215,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setOutputText1(HtmlOutputText hot) {
         this.outputText1 = hot;
     }
-
     private PanelLayout layoutPanel3 = new PanelLayout();
 
     public PanelLayout getLayoutPanel3() {
@@ -213,7 +224,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setLayoutPanel3(PanelLayout pl) {
         this.layoutPanel3 = pl;
     }
-
     private HtmlOutputText outputText2 = new HtmlOutputText();
 
     public HtmlOutputText getOutputText2() {
@@ -223,7 +233,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setOutputText2(HtmlOutputText hot) {
         this.outputText2 = hot;
     }
-
     private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
 
     public HtmlPanelGrid getGridPanel1() {
@@ -233,7 +242,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setGridPanel1(HtmlPanelGrid hpg) {
         this.gridPanel1 = hpg;
     }
-
     private HtmlOutputLabel componentLabel1 = new HtmlOutputLabel();
 
     public HtmlOutputLabel getComponentLabel1() {
@@ -243,7 +251,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setComponentLabel1(HtmlOutputLabel hol) {
         this.componentLabel1 = hol;
     }
-
     private HtmlOutputText componentLabel1Text = new HtmlOutputText();
 
     public HtmlOutputText getComponentLabel1Text() {
@@ -253,7 +260,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setComponentLabel1Text(HtmlOutputText hot) {
         this.componentLabel1Text = hot;
     }
-
     private HtmlInputText dataverseName = new HtmlInputText();
 
     public HtmlInputText getDataverseName() {
@@ -263,7 +269,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setDataverseName(HtmlInputText hit) {
         this.dataverseName = hit;
     }
-
     private HtmlOutputLabel componentLabel2 = new HtmlOutputLabel();
 
     public HtmlOutputLabel getComponentLabel2() {
@@ -273,7 +278,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setComponentLabel2(HtmlOutputLabel hol) {
         this.componentLabel2 = hol;
     }
-
     private HtmlOutputText componentLabel2Text = new HtmlOutputText();
 
     public HtmlOutputText getComponentLabel2Text() {
@@ -283,7 +287,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setComponentLabel2Text(HtmlOutputText hot) {
         this.componentLabel2Text = hot;
     }
-
     private HtmlInputText dataverseAlias = new HtmlInputText();
 
     public HtmlInputText getDataverseAlias() {
@@ -293,7 +296,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setDataverseAlias(HtmlInputText hit) {
         this.dataverseAlias = hit;
     }
-
     private HtmlPanelGrid gridPanel2 = new HtmlPanelGrid();
 
     public HtmlPanelGrid getGridPanel2() {
@@ -303,7 +305,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setGridPanel2(HtmlPanelGrid hpg) {
         this.gridPanel2 = hpg;
     }
-
     private PanelGroup groupPanel1 = new PanelGroup();
 
     public PanelGroup getGroupPanel1() {
@@ -313,7 +314,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setGroupPanel1(PanelGroup pg) {
         this.groupPanel1 = pg;
     }
-
     private HtmlCommandButton button1 = new HtmlCommandButton();
 
     public HtmlCommandButton getButton1() {
@@ -323,7 +323,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setButton1(HtmlCommandButton hcb) {
         this.button1 = hcb;
     }
-
     private HtmlCommandButton button2 = new HtmlCommandButton();
 
     public HtmlCommandButton getButton2() {
@@ -333,17 +332,14 @@ public class AddSitePage extends VDCBaseBean {
     public void setButton2(HtmlCommandButton hcb) {
         this.button2 = hcb;
     }
-    
+
     // </editor-fold>
-
-
     /** 
      * <p>Construct a new Page bean instance.</p>
      */
     public AddSitePage() {
+
     }
-
-
 
     /** 
      * <p>Callback method that is called after the component tree has been
@@ -376,17 +372,39 @@ public class AddSitePage extends VDCBaseBean {
      */
     public void destroy() {
     }
-    
-    public String create(){
-        String name         = (String)dataverseName.getValue();
-        String alias        = (String)dataverseAlias.getValue();
-        String affiliation   = this.getAffiliation();
-        Long userId         = getVDCSessionBean().getLoginBean().getUser().getId();
-        if (affiliation != null && affiliation != "")
+
+    public String create() {
+        if (this.selectedGroup != null) {
+            System.out.println("the group is" + this.getSelectedGroup());
+        }
+        Long selectedgroup = this.getSelectedGroup();
+        String name = (String) dataverseName.getValue();
+        String alias = (String) dataverseAlias.getValue();
+        String affiliation = this.getAffiliation();
+        Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
+        if (affiliation != null && affiliation != "") {
             vdcService.create(userId, name, alias, affiliation);
-        else
+        } else {
             vdcService.create(userId, name, alias);
-        VDC createdVDC      = vdcService.findByAlias(alias);
+        }
+        if (selectedGroup != null && selectedGroup > 0) {
+            //the following method requires a string array
+            VDCGroup vdcgroup = vdcGroupService.findById(selectedGroup);
+            List list = vdcgroup.getVdcs();
+            Iterator iterator = list.iterator();
+            int i = 0;
+            String[] stringArray = new String[(list.size() + 1)];
+            while (iterator.hasNext()) {
+                VDC vdc        = (VDC)iterator.next();
+                stringArray[i] = vdc.getId().toString();
+                i++;
+                if (!iterator.hasNext()) {
+                    stringArray[i] = vdcService.findByAlias(alias).getId().toString();
+                }
+            }
+            vdcGroupService.updateWithVdcs(vdcGroupService.findById(selectedGroup), stringArray);
+        }
+        VDC createdVDC = vdcService.findByAlias(alias);
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
         getVDCRequestBean().setCurrentVDC(createdVDC);
         //  add default values to the VDC table and commit/set the vdc bean props
@@ -400,33 +418,33 @@ public class AddSitePage extends VDCBaseBean {
         // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
         getVDCRequestBean().getCurrentVDCURL();
         StatusMessage msg = new StatusMessage();
-        
-        String hostUrl = PropertyUtil.getHostUrl();    
+
+        String hostUrl = PropertyUtil.getHostUrl();
         msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is restricted by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
         msg.setStyleClass("successMessage");
         Map m = getRequestMap();
-        m.put("statusMessage",msg);
+        m.put("statusMessage", msg);
         VDCUser creator = userService.findByUserName(getVDCSessionBean().getLoginBean().getUser().getUserName());
         String toMailAddress = getVDCSessionBean().getLoginBean().getUser().getEmail();
-        String siteAddress="unknown";
-       
+        String siteAddress = "unknown";
+
         siteAddress = hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
-       
-        mailService.sendAddSiteNotification(toMailAddress,name,siteAddress);
+
+        mailService.sendAddSiteNotification(toMailAddress, name, siteAddress);
 
         getVDCSessionBean().getLoginBean().setUser(creator);
-        
+
         return "home";
     }
-    
-    public String createScholarDataverse(){
-        String dataversetype    = dataverseType;
-        String firstname        = firstName;
-        String lastname         = lastName;
-        String affiliated       = affiliation;
-        String name             = (String)dataverseName.getValue();
-        String alias            = (String)dataverseAlias.getValue();
-        Long userId             = getVDCSessionBean().getLoginBean().getUser().getId();
+
+    public String createScholarDataverse() {
+        String dataversetype = dataverseType;
+        String firstname = firstName;
+        String lastname = lastName;
+        String affiliated = affiliation;
+        String name = (String) dataverseName.getValue();
+        String alias = (String) dataverseAlias.getValue();
+        Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
         vdcService.createScholarDataverse(userId, firstName, lastName, name, affiliation, alias);
         ScholarDataverse createdScholarDataverse = vdcService.findScholarDataverseByAlias(alias);
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
@@ -442,28 +460,28 @@ public class AddSitePage extends VDCBaseBean {
         // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
         getVDCRequestBean().getCurrentVDCURL();
         StatusMessage msg = new StatusMessage();
-        
+
         String hostUrl = PropertyUtil.getHostUrl();
-            
+
         msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is set to 'Not Released' by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to release it.");
 
         msg.setStyleClass("successMessage");
         Map m = getRequestMap();
-        m.put("statusMessage",msg);
+        m.put("statusMessage", msg);
         VDCUser creator = userService.findByUserName(getVDCSessionBean().getLoginBean().getUser().getUserName());
         String toMailAddress = getVDCSessionBean().getLoginBean().getUser().getEmail();
-        String siteAddress="unknown";
-     
+        String siteAddress = "unknown";
+
         siteAddress = hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
-     
-        mailService.sendAddSiteNotification(toMailAddress,name,siteAddress);
+
+        mailService.sendAddSiteNotification(toMailAddress, name, siteAddress);
 
         getVDCSessionBean().getLoginBean().setUser(creator);
-        
+
         return "home";
     }
-    
-    public String cancel(){
+
+    public String cancel() {
         return "home";
     }
 
@@ -479,15 +497,15 @@ public class AddSitePage extends VDCBaseBean {
         boolean nameFound = false;
         VDC vdc = vdcService.findByName(name);
         if (vdc != null) {
-            nameFound=true;
+            nameFound = true;
         }
         if (nameFound) {
-            ((UIInput)toValidate).setValid(false);
-            
+            ((UIInput) toValidate).setValid(false);
+
             FacesMessage message = new FacesMessage("This name is already taken.");
             context.addMessage(toValidate.getClientId(context), message);
         }
-        
+
         resetScholarProperties();
     }
 
@@ -497,27 +515,27 @@ public class AddSitePage extends VDCBaseBean {
         CharacterValidator charactervalidator = new CharacterValidator();
         charactervalidator.validate(context, toValidate, value);
         String alias = (String) value;
-        
+
         boolean aliasFound = false;
         VDC vdc = vdcService.findByAlias(alias);
         if (vdc != null) {
-            aliasFound=true;
+            aliasFound = true;
         }
-        
+
         if (aliasFound) {
-            ((UIInput)toValidate).setValid(false);
-            
+            ((UIInput) toValidate).setValid(false);
+
             FacesMessage message = new FacesMessage("This alias is already taken.");
             context.addMessage(toValidate.getClientId(context), message);
         }
         resetScholarProperties();
     }
-    
+
     private void resetScholarProperties() {
-        if (dataverseType != null) 
+        if (dataverseType != null) {
             this.setDataverseType(dataverseType);
+        }
     }
-    
     /**
      * Changes for build 16
      * to support scholar
@@ -525,7 +543,6 @@ public class AddSitePage extends VDCBaseBean {
      *
      * @author wbossons
      */
-    
     /**
      * Used to set the discriminator value
      * in the entity
@@ -539,12 +556,11 @@ public class AddSitePage extends VDCBaseBean {
         }
         return dataverseType;
     }
-    
+
     public void setDataverseType(String dataverseType) {
         this.dataverseType = dataverseType;
     }
-    
-     /**
+    /**
      * Used to set the discriminator value
      * in the entity
      *
@@ -558,7 +574,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setSelected(String selected) {
         this.selected = selected;
     }
-    
     /**
      * set the possible options
      *
@@ -574,7 +589,6 @@ public class AddSitePage extends VDCBaseBean {
         }
         return dataverseOptions;
     }
-    
     /**
      * Holds value of property firstName.
      */
@@ -595,7 +609,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-
     /**
      * Holds value of property lastName.
      */
@@ -616,7 +629,6 @@ public class AddSitePage extends VDCBaseBean {
     public void setLastName(String lastname) {
         this.lastName = lastname;
     }
-
     /**
      * Holds value of property affiliation.
      */
@@ -637,43 +649,93 @@ public class AddSitePage extends VDCBaseBean {
     public void setAffiliation(String affiliation) {
         this.affiliation = affiliation;
     }
-    
+    /**
+     *
+     * Add group select
+     *
+     */
+    private List<SelectItem> groupItems;
+
+    public List<SelectItem> getGroupItems() {
+        return this.groupItems;
+    }
+
+    public void setGroupItems(List<SelectItem> groupitems) {
+        this.groupItems = groupitems;
+    }
+    /**
+     *
+     * Add group select
+     *
+     */
+    private Long selectedGroup;
+
+    public Long getSelectedGroup() {
+        if (selectedGroup == null) {
+            selectedGroup = new Long("0"); // This will be the default selected item.
+        }
+        return selectedGroup;
+    }
+
+    public void setSelectedGroup(Long selectedGroup) {
+        this.selectedGroup = selectedGroup;
+    }
+    private HtmlSelectOneMenu groupMenu;
+
+    public HtmlSelectOneMenu getGroupMenu() {
+        return this.groupMenu;
+    }
+
+    public void setGroupMenu(HtmlSelectOneMenu groupmenu) {
+        this.groupMenu = groupmenu;
+    }
+
+    public void changeSelectedGroup(ValueChangeEvent event) {
+        Long groupId = (Long) event.getNewValue();
+        setSelectedGroup(groupId);
+    }
+
+    //END Group Select widgets
+    /**
+     * value change listeners and validators
+     *
+     *
+     */
     /**
      * capture value change event
      *
      */
     public void changeAffiliation(ValueChangeEvent event) {
         String newValue = (String) event.getNewValue();
-        this.setAffiliation(newValue);        
+        this.setAffiliation(newValue);
     }
-    
+
     public void changeDataverseOption(ValueChangeEvent event) {
         String newValue = (String) event.getNewValue();
-        this.setDataverseType(newValue);  
-        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        this.setDataverseType(newValue);
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         request.setAttribute("dataverseType", newValue);
     }
-    
+
     public void changeFirstName(ValueChangeEvent event) {
         String newValue = (String) event.getNewValue();
-        this.setFirstName(newValue);        
+        this.setFirstName(newValue);
     }
-    
+
     public void changeLastName(ValueChangeEvent event) {
         String newValue = (String) event.getNewValue();
-        this.setLastName(newValue);        
+        this.setLastName(newValue);
     }
-    
+
     public void validateIsEmpty(FacesContext context,
             UIComponent toValidate,
             Object value) {
-        String newValue = (String)value;
-         if (newValue == null || newValue.trim().length() == 0)  {
+        String newValue = (String) value;
+        if (newValue == null || newValue.trim().length() == 0) {
             FacesMessage message = new FacesMessage("The field must have a value.");
             context.addMessage(toValidate.getClientId(context), message);
             context.renderResponse();
         }
     }
-
 }
 

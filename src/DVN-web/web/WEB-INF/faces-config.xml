@@ -11,7 +11,9 @@
       <render-kit-factory>com.sun.faces.renderkit.RenderKitFactoryImpl</render-kit-factory>
   </factory>
   <application>
-     
+     <view-handler>
+          org.apache.shale.tiles.TilesViewHandler
+     </view-handler>
    <!-- Set default locale and add supported locales here... -->
    <locale-config>
       <default-locale>en</default-locale>

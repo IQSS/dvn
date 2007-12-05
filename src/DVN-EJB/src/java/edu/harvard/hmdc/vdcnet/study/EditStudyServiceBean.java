@@ -119,7 +119,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
             getCurrentFiles().add(fileBean);
 
         }
-
+   
     }
     
     public void newStudy(Long vdcId, Long userId) {
@@ -200,7 +200,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
                 // otherwise we are coming from edit; check current files for changes
                 editFiles();
             }
-            
+       
             studyService.saveStudy(study, userId);
             
             // if new, register the handle
@@ -370,6 +370,11 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
 		    originalPhysicalFile.delete();
 		}
 
+               // Delete DataVariables and related data thru nativeSQL:
+                studyService.deleteDataVariables(f.getDataTable().getId());
+             
+           
+                 
 		// and any cached copies of this file in formats other 
 		// than tab-delimited: 
 		

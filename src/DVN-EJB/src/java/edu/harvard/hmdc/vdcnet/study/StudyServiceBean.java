@@ -100,7 +100,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     @EJB IndexServiceLocal indexService;
     @EJB ReviewStateServiceLocal reviewStateService;
    @EJB StudyExporterFactoryLocal studyExporterFactory;
-
+  
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.study.StudyServiceBean");
     private static final SimpleDateFormat exportLogFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
     
@@ -207,6 +207,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             StudyFile elem =  it.next();
             elem.getAllowedGroups().clear();
             elem.getAllowedUsers().clear();
+            elem.getDataTable().getDataVariables().clear();
             
         }       
         

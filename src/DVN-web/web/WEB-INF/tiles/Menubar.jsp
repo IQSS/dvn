@@ -117,10 +117,8 @@
                         </li>
                     </ul>
                 </ui:panelGroup>
-            </div>
-            <span class="dvn_xbottom"><span class="dvn_xb4"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb3"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb2"><h:outputText  value="&#160;" escape="false"/></span><span class="dvn_xb1"><h:outputText  value="&#160;" escape="false"/></span></span>
-        </div>
-    
+            </div> 
+        </div>    
     </div>
 
 </jsp:root>

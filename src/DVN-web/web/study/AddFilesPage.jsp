@@ -125,8 +125,15 @@
                         </h:dataTable>                                        
                         <ui:panelGroup  block="true" rendered="#{AddFilesPage.emailRequested}"
                                         style="padding-top: 20px; padding-bottom: 10px" >
-                            <h:outputText  styleClass="vdcTextStandOut" value="SUBSETTABLE FILES WILL NOT BE UPLOADED IMMEDIATELY ON SAVE:"/>     
-                            <h:outputText id="email" styleClass="warnMessage" value="You have selected to upload a subsettable file. Subsettable files are processed asynchronously. Please enter an e-mail address to receive a notification when the process is completed."/> 
+                            <h:outputText  styleClass="vdcTextStandOut" value="NOTE: "/>     
+                            <h:outputText id="email" escape="false" styleClass="warnMessage" value="SPSS and STATA files will be converted to a &lt;b&gt; tab delimited &lt;/b&gt; format and become &lt;b&gt; subsettable &lt;/b&gt; . You will still be able to download the original file, as well as other formats.
+               Subsettable files might take long time to upload and be processed. We will send you an e-mail notification when the upload process starts and when it completes."/> 
+                          <f:verbatim><br /></f:verbatim>
+                            <h:outputText value="E-Mail Address:"/>
+                            <h:inputText  id="textField3" size="50" value="#{AddFilesPage.ingestEmail}">
+                                <f:validator validatorId="EmailValidator"/>
+                            </h:inputText>
+                            <h:message for="textField3" id="validatorMessage" styleClass="errorMessage"/>
                             
                             <ui:panelGroup>
                                 <f:verbatim><br /></f:verbatim>
@@ -134,13 +141,7 @@
                                 <h:outputText id="outputText4" styleClass="vdcHelpText" value="Separate multiple email addresses with a comma (and no spaces). Example: admin@mydvn.edu,user@mydvn.edu"/>
                                 <f:verbatim><br /></f:verbatim>
                             </ui:panelGroup>
-                           
-                            <h:outputText value="E-Mail Address:" styleClass="vdcTextStandOut" />
-                            <h:inputText  id="textField3" size="50" value="#{AddFilesPage.ingestEmail}">
-                                <f:validator validatorId="EmailValidator"/>
-                            </h:inputText>
                             
-                            <h:message for="textField3" id="validatorMessage" styleClass="errorMessage"/>
                         </ui:panelGroup>                                
                         <ui:panelGroup  block="true" id="groupPanel5"
                                         style="padding-top: 20px; " styleClass="vdcTextRight">

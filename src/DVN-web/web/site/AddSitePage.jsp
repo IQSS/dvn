@@ -8,7 +8,7 @@
 
     <f:subview id="addSitePageView">
          <f:verbatim>
-            <script language="JavaScript">
+            <script language="JavaScript" type="text/javascript">
                  function changeValue(obj) {
                     if (window.event)
                         obj.value = window.event.srcElement.value;
@@ -20,7 +20,7 @@
                     var theForm = document.forms['content:addSitePageView:form1'];
                     var showScholarFields = false;
                     for (var i = 0; i &lt; theForm.elements.length; i++) {
-                        if (theForm.elements[i].checked &amp;&amp; theForm.elements[i].value == "Scholar") {
+                        if ( (theForm.elements[i].checked) &amp;&amp; (theForm.elements[i].value == "Scholar") ) {
                             showScholarFields = true;
                             break;
                         }
@@ -149,6 +149,25 @@
                                 <f:verbatim><br /></f:verbatim>
                                 <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
                                 <h:message for="dataverseAlias" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
+                            </ui:panelGroup>
+                            <!-- Group Assignment -->
+                            <ui:panelGroup block="true" style="vertical-align: top;">
+                                <h:outputLabel for="selectedGroup" id="selectedGroupLabel">
+                                    <h:outputText id="selectedGroupText" style="white-space: nowrap; padding-right: 10px; " value="Group Assignment"/> 
+                                </h:outputLabel>
+                            </ui:panelGroup>
+                            <ui:panelGroup>
+                                <h:selectOneMenu id="selectedGroup" 
+                                    immediate="true"
+                                    onchange="this.form.submit();"
+                                    value="#{AddSitePage.selectedGroup}"
+                                    valueChangeListener="#{AddSitePage.changeSelectedGroup}">
+                                    <f:selectItems value="#{AddSitePage.groupItems}" />
+                                </h:selectOneMenu>
+                            </ui:panelGroup>
+                            <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Scholar'}">
+                                <h:outputText id="scholarDataverseGroup" 
+                                    value="Scholar Dataverse Group" />
                             </ui:panelGroup>
                         </h:panelGrid>
                         <ui:panelGroup binding="#{AddSitePage.groupPanel1}" block="true" id="groupPanel1" style="padding-left: 160px">

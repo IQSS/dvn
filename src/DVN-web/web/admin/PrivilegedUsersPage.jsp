@@ -21,16 +21,16 @@
                         <h:outputText value="Update Successful!" />
                     </ui:panelLayout>
                     
-                    <h:outputText id="outputText13" styleClass="vdcSubHeaderColor" value="- Site Restriction Settings:"/>
+                    <h:outputText id="outputText13" styleClass="vdcSubHeaderColor" value="- Dataverse Release Settings:"/>
                     <ui:panelGroup block="true" id="groupPanel6" style="padding-top: 10px; padding-bottom: 10px">
                         <h:outputText id="outputText12" value="This dataverse is set as: "/>
                         <h:selectOneMenu value="#{PrivilegedUsersPage.siteRestriction}">
-                            <f:selectItem itemLabel="Restricted" itemValue="Restricted"/>
-                            <f:selectItem itemLabel="Public" itemValue="Public"/>
+                            <f:selectItem itemLabel="Not Released" itemValue="Restricted"/>
+                            <f:selectItem itemLabel="Released" itemValue="Public"/>
                         </h:selectOneMenu>
                         <ui:panelGroup block="true" >
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                            <h:outputText styleClass="vdcHelpText" value="If site is set as restricted, only users with appropriate privileges can access the site by logging in."/>
+                            <h:outputText styleClass="vdcHelpText" value="By default, a new dataverse is set to 'Not Released' and only appropriate privileges can access it. Change it to 'Released' once is ready for others to view, and click Save."/>
                         </ui:panelGroup>  
                     </ui:panelGroup>
                     
@@ -75,7 +75,7 @@
                     </ui:panelGroup>
                     <ui:panelGroup block="true" style="padding-bottom: 10px;">
                         <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                        <h:outputText styleClass="vdcHelpText" value="You can add a privileged user to be a contributor, curator or admin for this dataverse, or to gain access to this dataverse, if it's restricted. "/>
+                        <h:outputText styleClass="vdcHelpText" value="You can add a privileged user to be a contributor, curator or admin for this dataverse, or to gain access to this dataverse, if it's not released. "/>
                     </ui:panelGroup>
                     <h:dataTable binding="#{PrivilegedUsersPage.userTable}" cellpadding="0" cellspacing="0"
                                  columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" id="dataTable1"
@@ -92,7 +92,7 @@
                             <f:facet name="header">
                                 <ui:panelGroup  block="true"  >
                                     <h:outputText id="outputText16" value="Privileged Role"/>
-                                    <h:outputText styleClass="vdcHelpText" style="padding-left: 30px;" value="('Access To Site' is only applicable if site is restricted.)"/>
+                                    <h:outputText styleClass="vdcHelpText" style="padding-left: 30px;" value="('Access To Site' is only applicable if dataverse is not released.)"/>
                                 </ui:panelGroup>
                             </f:facet>
                             <h:selectOneRadio  disabled="#{currentRow[0].vdcUser.id==PrivilegedUsersPage.vdc.creator.id}" id="roleSelectMenu" value="#{currentRow[1]}">
@@ -122,7 +122,7 @@
                     </ui:panelGroup>
                     <ui:panelGroup block="true" style="padding-bottom: 10px;">
                         <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                        <h:outputText styleClass="vdcHelpText" value="You can add a privileged group to gain access to this dataverse, if it is restricted. "/>
+                        <h:outputText styleClass="vdcHelpText" value="You can add a privileged group to gain access to this dataverse, if it is not released. "/>
                     </ui:panelGroup>
                     <h:dataTable binding="#{PrivilegedUsersPage.groupTable}" cellpadding="0" cellspacing="0"
                                  columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" 

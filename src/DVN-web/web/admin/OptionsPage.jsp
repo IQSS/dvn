@@ -95,7 +95,7 @@
                                 <ui:panelGroup block="true" id="groupPanel8"
                                                separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
                                     <h:outputLink id="hyperlink11" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.jsp">
-                                        <h:outputText id="hyperlink1Text3" value="Manage Dataverse Restrictions and Users' Privileges (restricted/public dataverse, contributors, curators, admins)"/>
+                                        <h:outputText id="hyperlink1Text3" value="Release Dataverse and Set Users Privileges (contributors, curators, admins)"/>
                                     </h:outputLink>
                                     <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.jsp">
                                         <h:outputText styleClass="vdcMenuItem" value="Add New User Account"/>

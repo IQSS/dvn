@@ -445,7 +445,7 @@ public class AddSitePage extends VDCBaseBean {
         
         String hostUrl = PropertyUtil.getHostUrl();
             
-        msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is restricted by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
+        msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is set to 'Not Released' by default. Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to release it.");
 
         msg.setStyleClass("successMessage");
         Map m = getRequestMap();

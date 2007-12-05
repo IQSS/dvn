@@ -645,7 +645,7 @@ ALTER TABLE vdcgrouprelationship ENABLE TRIGGER ALL;
 
 ALTER TABLE vdcnetwork DISABLE TRIGGER ALL;
 
-INSERT INTO vdcnetwork (id, version, name, networkpageheader, networkpagefooter, announcements, displayannouncements, aboutthisdataversenetwork, contactemail, defaultvdcheader, defaultvdcfooter, defaultvdcabouttext, defaultvdcannouncements, displayvdcannouncements, displayvdcrecentstudies, defaulttemplate_id, allowcreaterequest, defaultnetworkadmin_id,protocol,authority,handleregistration) VALUES (1, 1, '[Your]', ' ', ' ', 'There are no network announcements.', TRUE, 'A description about this Dataverse Network has not been entered yet.', 'dataverse@lists.hmdc.harvard.edu', ' ', ' ', 'A description about this dataverse has not been entered yet.', 'There are no local announcements', TRUE, TRUE, 1, FALSE,1,'hdl','TEST',false);
+INSERT INTO vdcnetwork (id, version, name, networkpageheader, networkpagefooter, announcements, displayannouncements, aboutthisdataversenetwork, contactemail, defaultvdcheader, defaultvdcfooter, defaultvdcabouttext, defaultvdcannouncements, displayvdcannouncements, displayvdcrecentstudies, defaulttemplate_id, allowcreaterequest, defaultnetworkadmin_id,protocol,authority,handleregistration,termsofuseenabled) VALUES (1, 1, '[Your]', ' ', ' ', 'There are no network announcements.', TRUE, 'A description about this Dataverse Network has not been entered yet.', 'dataverse@lists.hmdc.harvard.edu', ' ', ' ', 'A description about this dataverse has not been entered yet.', 'There are no local announcements', TRUE, TRUE, 1, FALSE,1,'hdl','TEST',false,false);
 
 ALTER TABLE vdcnetwork ENABLE TRIGGER ALL;
 
@@ -939,8 +939,8 @@ INSERT INTO DataFileFormatType VALUES (1, 'D02', 'Splus');
 INSERT INTO DataFileFormatType VALUES (2, 'D03', 'Stata');
 INSERT INTO DataFileFormatType VALUES (3, 'D04', 'R');
 
-insert into harvestformattype values (0, 'ddi', 'DDI', null);
-insert into harvestformattype values (1, 'oai_etdms', 'MIF', 'mif2ddi.xsl');
+insert into harvestformattype (id,metadataprefix, name, stylesheetfilename) values(0, 'ddi', 'DDI', null);
+insert into harvestformattype (id,metadataprefix, name, stylesheetfilename) values (1, 'oai_etdms', 'MIF', 'mif2ddi.xsl');
 
 create index datavariable_id_index on  datavariable (id);
 create index summarystatistic_id_index on  summarystatistic (id);

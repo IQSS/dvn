@@ -1,5 +1,3 @@
-/* DVN styles */
-
 /* DVN SPECIFIC STYLE CLASSES */
 /* MAIN LAYOUT */
 .dvn_wrapper {
@@ -15,10 +13,13 @@
 }
 .dvn_content a:link, .dvn_content a:visited {
 	color: #3e5f9d;
+        text-decoration: none;
 }
  .dvn_content a:hover, .dvn_content a:active {
 	color: #9c4606;
+        text-decoration: underline;
 }
+.dvn_content img {margin: 0; padding: 0; border: 0;}
 
 .dvn_floatL {
 	float: left;
@@ -33,6 +34,10 @@
 
 /* GENERAL CONTENT */
 
+/* MAIN SECTION */
+#dvn_mainSection {position: relative;}
+#dvn_mainSectionTitle {padding: .25em 0; color: #768891; font-size: 125%; text-transform: uppercase;}
+
 .dvn_section {margin: 1em 0; width: 100%; text-align: left;}
 div.dvn_section div, div.dvn_section span, div.dvn_section p, div.dvn_section li, div.dvn_section a {line-height: 144%;}
 div.dvn_section table, div.dvn_section caption, div.dvn_section tbody, div.dvn_section tfoot, div.dvn_section thead, div.dvn_section tr, div.dvn_section th, div.dvn_section td {}
@@ -42,74 +47,71 @@ div.dvn_section table, div.dvn_section caption, div.dvn_section tbody, div.dvn_s
         width: 75%;
 	float: left;
 }
-div.dvn_sectionTitle {margin: 0; padding: .65em .65em .25em .65em; color: #768891; font-size: 112%; font-weight: bold; text-transform: uppercase; text-align: left;}
 
+div.dvn_sectionTitle {margin: 0; padding: .65em .65em .25em .65em; color: #768891; font-size: 112%; font-weight: bold; text-transform: uppercase; text-align: left;}
 span.dvn_sectionTitleL {float: left; padding: 0 0 0.25em 0; color: #768891; font-size: 112%; font-weight: bold; text-transform: uppercase; text-align: left;}
 span.dvn_sectionTitleR  {float: right; padding: 0 0 0.25em 0; }
 span.dvn_sectionTitleR a {margin-left: 2em; }
 
 .dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; }
 .dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; } 
+
 .dvn_margin12 {
    margin: 1em 0em 0em 1em; padding-bottom: 2em;
    line-height: inherit ;
-} 
+}
 
+.Tree .float {
+    float: left;
+}
+
+/* SIDE SECTION PANELS */
 .dvn_sectionPanels {display: inline; margin-left: 2%; width: 22%; float: left;} 
-
 .dvn_sectionPanelTitle {padding: .25em 0; border-bottom: 2px solid #91a5a9; color: #555; font-weight: bold;} 
-.dvn_sectionPanels div.dvn_sectionPanelText {margin-bottom: 1em; padding: .5em; border-left: 1px solid #ccc; } 
-
-.dvn_sectionPanels ul {
-	margin-left: 2em;
-	list-style-image: url(icon_bullet.gif);
-}
-.dvn_sectionPanels li {
-	margin: 0.5em 0;
-}
+.dvn_sectionPanels div.dvn_sectionPanelText {margin-bottom: 1em; padding: .5em; } 
+.dvn_sectionPanels ul {margin-left: 2em; list-style-image: url(icon_bullet.gif);}
+.dvn_sectionPanels li {margin: 0.5em 0;}
 
 /* HEADER */
-.dvn_headerTitleLarge {margin: .25em .5em; color: #30646f; font-size: 124%; }
-.dvn_headerTitleLarge a:link, .dvn_headerTitle  a:visited, .dvn_headerTitle a:active {
-   color: #30646f;
-   text-decoration: none;
-}
-.dvn_headerTitleLarge a:hover {text-decoration: underline;}
-.dvn_headerTitleL { margin: 0 .5em;}
-.dvn_headerTitleL a:link, .dvn_headerTitleL a:visited, .dvn_headerTitleL a:active {text-decoration: none; color: #6D0609; font-weight: bold;}
-.dvn_headerTitleL a:hover {text-decoration: underline;}
+.dvn_headerTitle {position: relative;}
+.dvn_headerTitleLarge {margin: .25em 12px; font-size: 124%;}
+.dvn_headerTitleLarge a:link, .dvn_headerTitleLarge a:visited, .dvn_headerTitleLarge a:hover, .dvn_headerTitleLarge a:active {color: #768891;}
+.dvn_headerTitleL {margin: 0 12px;}
+.dvn_headerTitleL a:link, .dvn_headerTitleL a:visited, .dvn_headerTitleL a:hover, .dvn_headerTitleL a:active {color: #c55b28; font-weight: bold;}
+.dvn_headerTitleR {position: absolute; right: 12px; bottom: 0;}
 
-.dvn_headerTitleR {display: inline; margin: 0 .75em; text-align: right; float: right;}.dvn_headerBarContent {overflow: hidden;}
-
+.dvn_headerBarContent {overflow: hidden;}
 .dvn_headerBarContent ul {margin: 0; padding: 0; list-style: none;}
 .dvn_headerBarContent li {margin-right: 1.5em; padding: 0; float: left;}
+.dvn_headerBarContent li.dvn_networkOptions {display: inline; float: left; margin-right: 0; padding: 0; text-align: right;}
+.dvn_navNetworkName a:link, .dvn_navNetworkName a:visited, .dvn_navNetworkName a:hover, .dvn_navNetworkName a:active {color: #c55b28;}
+.dvn_navNetworkOptEdit {margin-left: 1.5em;}
+.dvn_navNetworkOptEdit a:link, .dvn_navNetworkOptEdit a:visited, .dvn_navNetworkOptEdit a:hover, .dvn_navNetworkOptEdit a:active {font-weight: bold; color: #c55b28;}
 
-.dvn_headerBarContent li.dvn_networkOptions {display: inline; float: left; text-align: right; margin-right: 0; margin-left: 0; padding: 0;}
-.dvn_boldRed a{font-weight: bold; color: #6D0609;}
-.dvn_red a{color: #6D0609;}
-
-div.dvn_navblock {margin-bottom: 12px; padding: 12px; background: #dadee0; border-top: 2px solid #91a5a9;}
-div.dvn_searchblock {margin-bottom: 12px; padding: 12px; background: #e6ebed; border: 1px solid #ddd;}
+div.dvn_navblock {margin-bottom: 12px; padding: 4px 12px 6px 12px; background: #dadee0; border-top: 2px solid #91a5a9;}
+div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 6px 12px; background: #e6ebed; border: 1px solid #ddd;}
 div.dvn_block {margin-bottom: 12px; padding: 12px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
 div.dvn_block h3 {margin: 0; padding: 0; color: #768891; font-size: 112%; font-weight: bold; text-transform: uppercase;}
 div.dvn_blockTitleBar {margin-bottom: 12px; padding: 6px; background: #e6ebed; border: 1px solid #ddd; font-style: italic; text-align: center;}
 
 /* SEARCH */
+.dvn_searchTitle {float: left; margin-right: 12px; color: #999; font-size: 112%;}
+.dvn_searchLinks {position: absolute; top: 0; right: 0;}
+.dvn_searchLinks a {margin-left: 2em;}
+.dvn_searchBoxContent {position: relative; width: 100%;}
+.dvn_searchBoxContent fieldset {margin: 0; padding: 0; border: 0;}
+.dvn_searchBoxContent label {float: left;}
+.dvn_searchBoxContent span {margin: 0 12px 0 0; vertical-align: top;}
+.dvn_searchBoxContent input, .dvn_searchBoxContent select {margin: 2px 12px 2px 0;} 
 
-.dvn_searchBoxContent {clear: both;}
-.dvn_searchBoxContent fieldset {margin: 0; padding: 0.5em 0; width: 90%; border: 0; vertical-align: bottom;}
-.dvn_searchBoxContent label {margin: 0 1.5em; padding: 0; float: left; }
-.dvn_searchBoxContent span {display: block; padding-bottom: 0.5em;}
-.dvn_searchBoxContent input.dvn_button {float: left;}
-.dvn_searchRadios {margin-right: 12px; float: left;}
+/* MAIN SECTION: DATAVERSE LIST + STUDIES TREE */
 
-.dvn_searchRadios table td {background: inherit; padding: 0; margin: 0;}
-.dvn_searchRadios label {margin:0; padding: 0; vertical-align: text-top; float: none;} 
+#dvn_hmpgMainSection {position: relative;}
+#dvn_MainSectionCount {position: absolute; top: 0; right: 0;}
 
 /* ANALYSIS PAGE */
 .dvn_preFileTitle{ font-weight: bold; font-style: normal; color: #000;}
 .dvn_fileTitle{ font-weight: normal; font-style: normal; color: #000;}
-
 
 /* GENERAL DEFAULT THEME STYLES (from Creator) */
 /* Style rules to make data tables look better */
@@ -1089,6 +1091,7 @@ a.vdcRequestPanelLink:hover{
 .dvnLineSpacer   { visibility:hidden; }
 .dvnChildColumn  { width: 33%; vertical-align: top;}
 .dvnChildTable   { width: 100%; }
+.dvnChildTable ul, .dvnChildTable ol { list-style: none; }
 .dvnMainColumn   { width: 100%;}
 .dvnMainTable    { width: 98%; font-size: 85%;}
 .dvnMainPanel    {
@@ -1183,9 +1186,17 @@ li.affiliationBullet {
     padding:0 0 .5em 0;
 }
 
+/**** Login ****/
+table#loginBlock {width: 300px; line-height: 2.5; font:90%/180% "HelveticaNeue",Helvetica,Arial,sans-serif;}
+table#loginBlock td {padding: 2px;}
+span.loginHeader {color: #c55b28; font-size: 112%; line-height: 2;}
+table#loginBlock label {color: #768891;}
+table#loginBlock select {margin: 0;}
+table#loginBlock img {margin: 1em 0 0 0;}
+
 /**** Create a Dataverse ****/
-.dvn_sectionPanels .requestHmpgSide {margin-bottom: 18px; text-align: left;}
-.dvn_sectionPanels a.requestHmpgSideLink:link, .dvn_sectionPanels a.requestHmpgSideLink:visited, .dvn_sectionPanels a.requestHmpgSideLink:hover, .dvn_sectionPanels a.requestHmpgSideLink:active {padding-right: 28px; background: url(../images/start-arrows.png) 100% 52% no-repeat; color: #c55b28; font-size: 124%; text-decoration: none; text-transform: uppercase;}
+.requestHmpgSide {position: absolute; top: 0; right: 0; margin-bottom: 18px;}
+a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active {padding-right: 28px; color: #c55b28; background: url(start-arrows.png) 100% 52% no-repeat; font-size: 95%; text-decoration: none;} 
 #dvn_createDvRequest #requestHeader {font-size: 26px; color: #d67730;}
 #dvn_createDvRequest #requestHeader #requestContentTitle {float: left; width: 340px; padding: 0 0 6px 0; color: #c55b28; font-weight: normal; line-height: 50px; text-transform: uppercase;}
 #dvn_createDvRequest #requestHeader span {color: #ccc;}
@@ -1194,10 +1205,10 @@ li.affiliationBullet {
 #dvn_createDvRequest .requestIntroStepCard {position: relative; width: 260px; height: 300px; float: left; text-align: left;}
 #dvn_createDvRequest .requestIntroStepCard h3 {margin: 1em 3.5em 1.25em 3.5em; font-size: 160%; color: #c55b28; text-transform: uppercase;}
 #dvn_createDvRequest .requestIntroStepCard p {margin: 1em; font-size: 120%; font-weight: bold;}
-#dvn_createDvRequest .requestIntroStepCard div.stepCardBtm {position: absolute; top: 292px; left: 0; width: 260px; height: 8px; background: #f4ebc7 url(images/request-intro-rndbtm.png) no-repeat;}
+#dvn_createDvRequest .requestIntroStepCard div.stepCardBtm {position: absolute; top: 292px; left: 0; width: 260px; height: 8px; background: #f4ebc7 url(request-intro-rndbtm.png) no-repeat;}
 #dvn_createDvRequest #requestIntroCont {width: 828px; margin: 0 auto; text-align: right;}
-#dvn_createDvRequest #requestIntroContLink {padding-right: 28px; background: url(../images/start-arrows.png) 100% 52% no-repeat; color: #c55b28; text-decoration: none; text-transform: uppercase;}
-#dvn_createDvRequest #requestTimeline {position: relative; margin: 20px 0 60px 0; height: 4px; background: #ccc url(images/fourpoint-timeline.gif);}
+#dvn_createDvRequest #requestIntroContLink {padding-right: 28px; background: url(start-arrows.png) 100% 52% no-repeat; color: #c55b28; text-decoration: none; text-transform: uppercase;}
+#dvn_createDvRequest #requestTimeline {position: relative; margin: 20px 0 60px 0; height: 4px; background: #ccc url(fourpoint-timeline.gif);}
 #dvn_createDvRequest .requestTimelinePoint {position: absolute; top: -6px; text-align: center;}
 #dvn_createDvRequest .requestTimelinePoint strong {color: #91a5a9; font-weight: normal; line-height: 3.5;}
 #dvn_createDvRequest #requestContent {margin: 0 auto; width: 880px; border-top: 1px solid #ccc;}

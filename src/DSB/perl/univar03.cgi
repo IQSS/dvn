@@ -56,8 +56,8 @@ use VDC::DSB::CaseWiseSubset;
 use VDC::DSB::DDISAXparser;
 use VDC::DSB::varMetaDataDirect;
 use VDC::DSB::StatCodeWriter;
+use VDC::DSB::Temp; 
 our $DEBUG;  # debugging?
-our $useDDIMethod = 0; 
 
 # performance
 our $NICE=20; # nice value
@@ -68,7 +68,6 @@ my $QWAIT= 20; #active memory threshold to pause
 my($script_name) = $ENV{'SCRIPT_URL'};
 
 require "glv03";
-#require "ds-lib03.pl";
 
 our $q = new CGI;
 our ($Rcode,$RtxtOutput, $RtmpData, $RvlsPrfx, $SRVRCGI, $RtmpHtml, $DwnldPrfx, $DataPrfx,$ddiforR, $RtmpDataRaw);
@@ -88,62 +87,27 @@ my($tmpurl0, $datasetname) = split('=', $dataURL);
 $script_name .="($dataURL)";
 
 # temp dir check
+
+my $temp_monitor = new VDC::DSB::Temp $TMPDIR; 
+unless ( $temp_monitor->check_TempDirectory )
+{
+		print $q->start_html ( -title=> "error -- failed to create temp directories");
+		print $q->h2("The cgi script failed to create a working directory ($TMPDIR, etc.)" );
+		print $q->end_html;
+		$logger->vdcLOG_warning( 'VDC::DSB',  $script_name,  "Server Error: could not create temp directories.");
+		{my($ts)=$@; &exitChores; die $ts;}
+}
+
 # working dir
 my $TMPDSBDIR =   "DSB";
 my $TMPDSBDIRFULL = "${TMPDIR}/${TMPDSBDIR}";
-unless(-d $TMPDSBDIRFULL){
-	# working dir does not exist
-	unless (mkdir $TMPDSBDIRFULL, 0777) {
-		# working directory-creation failed
-		my $err= $response1->status_line;
-		print $q->header ( -status=>"Error: failed to create a working directory", -type=>'text/html');
-		print $q->start_html ( -title=> "error --  failed to create a working directory");
-		print $q->h2("The cgi script failed to create a working directory ($TMPDSBDIRFULL)" );
-		print $q->end_html;
-		$logger->vdcLOG_warning( 'VDC::DSB',  $script_name,  "Server Error: could not create a working dir: $TMPDSBDIRFULL ");
-		{my($ts)=$@; &exitChores; die $ts;}
-	}
-} else {
-	# working directory exists, but is it writable?
-	unless (-w $TMPDSBDIRFULL){
-		# ${TMPDIR}/DSB exists
-		# but somehow it's not writable; 
-		# then create a new wriable working dir 
-		# rather than chmod 0777, ${TMPDIR}/DSB
-		$TMPDSBDIRFULL .= 'ZLG';
-		$TMPDSBDIR     .= 'ZLG';
-		unless (mkdir $TMPDSBDIRFULL, 0777) {
-			# new working directory-creation failed
-			my $err= $response1->status_line;
-			print $q->header ( -status=>"Error: failed to create a working directory", -type=>'text/html');
-			print $q->start_html ( -title=> "error --  failed to create a working directory");
-			print $q->h2("The cgi script failed to create a working directory ($TMPDSBDIRFULL)" );
-			print $q->end_html;
-			$logger->vdcLOG_warning( 'VDC::DSB',  $script_name,  "Server Error: could not create a working dir: $TMPDSBDIRFULL ");
-			{my($ts)=$@; &exitChores; die $ts;}
-		}
-	}
-}
-# result-presentation dir
-unless(-d $WEBTEMPDIR){
-	unless (mkdir $WEBTEMPDIR, 0751) {
-		# directory-creation failed
-		my $err= $response1->status_line;
-		print $q->header ( -status=>"Error: failed to create the temp directory for result pages", -type=>'text/html');
-		print $q->start_html ( -title=> "error --  failed to create the temp directory for result pages");
-		print $q->h2("The cgi script failed to create the temp directory ($WEBTEMPDIR) for result pages");
-		print $q->end_html;
-		$logger->vdcLOG_warning( 'VDC::DSB',  $script_name,  "Server Error: could not create the web-temp dir: $WEBTEMPDIR ");
-		{my($ts)=$@; &exitChores; die $ts;}
-	}
-}
 
 
-	open(TMPX, ">${TMPDIR}/${TMPDSBDIR}/args.$$.svd");
-	print TMPX "CGI-pm object:\n", Dumper($q);
+open(TMPX, ">${TMPDIR}/${TMPDSBDIR}/args.$$.svd");
+print TMPX "CGI-pm object:\n", Dumper($q);
 my $frmprm  = { %{$q->Vars} };
-	print TMPX "raw CGI params:\n", Dumper($frmprm);
-	print TMPX "appServer:". $appSERVER . "\n";
+print TMPX "raw CGI params:\n", Dumper($frmprm);
+print TMPX "appServer:". $appSERVER . "\n";
 my $DSBWRKDIR=$TMPDIR;
 my $CGIparamSet = VDC::DSB::DataService->new(RAWCGIPARAM=>$frmprm, WRKDIR=>$DSBWRKDIR);
 
@@ -229,7 +193,51 @@ my $dtdwnldf = $CGIparamSet->getDwnldType();
 
 my $MD; 
 
-if ( $useDDIMethod )
+if ( $USE_SQL_DIRECT )
+{
+	$logger->vdcLOG_warning('VDC::DSB', $script_name, "using alternative, direct-to-SQL mechanism for retreiving metadata"); # debug
+
+	my $varIDhsh=$CGIparamSet->getVarIDhsh();
+	my $fileid = 0; 
+
+	if ( $dataURL =~/fileId=([0-9]*)/ )
+	{
+	    $fileid = $1; 
+	}
+
+	$logger->vdcLOG_warning('VDC::DSB', $script_name, "fileid: " . $fileid); # debug
+	$logger->vdcLOG_warning('VDC::DSB', $script_name, "vars: " . join (",", keys (%$varIDhsh) ) ); # debug
+
+
+	my $metaDataDirect = VDC::DSB::varMetaDataDirect->new
+	    (FileID  => $fileid, 
+	     VarID   => $varIDhsh,
+	     sqlHost => $SQLHOST,
+	     sqlPort => $SQLPORT,
+	     sqlDB   => $SQLDB,
+	     sqlUser => $SQLUSER,
+	     sqlPw   => $SQLPW );
+
+	$MD = $metaDataDirect->obtainMeta (); 
+
+	unless ( $MD )
+	{
+	    $logger->vdcLOG_info ("VDC::DSB", "Disseminate",
+				  "SQL connect failed; switching to DDI." );
+
+	    $USE_SQL_DIRECT = 0; 
+
+	}
+	else
+	{
+	    print TMPX "metadata0: (obtained from SQL tables)\n", Dumper($MD);
+	    $CGIparamSet->addMetaData($MD);
+	    $CGIparamSet->setMVtypeCode();
+	    print TMPX "metadata1:\n", Dumper($CGIparamSet);
+	}
+}
+
+unless ( $USE_SQL_DIRECT )
 {
 
 # ///////////////////////////////////////////////
@@ -329,31 +337,6 @@ $logger->vdcLOG_warning( 'VDC::DSB', $script_name,  "got ddi"); # debug
 	$CGIparamSet->addMetaData($MD);
 	$CGIparamSet->setMVtypeCode();
 	print TMPX "metadata1:\n", Dumper($CGIparamSet);
-}
-else
-{
-	$logger->vdcLOG_warning('VDC::DSB', $script_name, "using alternative, direct-to-SQL mechanism for retreiving metadata"); # debug
-
-	my $varIDhsh=$CGIparamSet->getVarIDhsh();
-	my $fileid = 0; 
-
-	if ( $dataURL =~/fileId=([0-9]*)/ )
-	{
-	    $fileid = $1; 
-	}
-
-	$logger->vdcLOG_warning('VDC::DSB', $script_name, "fileid: " . $fileid); # debug
-	$logger->vdcLOG_warning('VDC::DSB', $script_name, "vars: " . join (",", keys (%$varIDhsh) ) ); # debug
-
-
-	my $metaDataDirect = VDC::DSB::varMetaDataDirect->new(FileID =>$fileid, VarID=>$varIDhsh);
-	$MD = $metaDataDirect->obtainMeta (); 
-
-	print TMPX "metadata0: (obtained from SQL tables)\n", Dumper($MD);
-	$CGIparamSet->addMetaData($MD);
-	$CGIparamSet->setMVtypeCode();
-	print TMPX "metadata1:\n", Dumper($CGIparamSet);
-
 }
 
 
@@ -494,7 +477,7 @@ if ($dataURL) {
 	    my $datafile_format = ""; 
 	    my $rcut_filter = ""; 
 
-	    if ( $useDDIMethod )
+	    unless ( $USE_SQL_DIRECT )
 	    {
 		my $datafile_format = &check_fileFormat ( $ddiforR . "_stripped", $fileid ); 
 

@@ -29,6 +29,12 @@ sub init {
 
     $self->{'TMPDIR'} = $TMPDIR; 
 
+    # check the temp directories: 
+
+    my $temp_monitor = new VDC::DSB::Temp ( $TMPDIR ); 
+
+    return 0 unless $temp_monitor->check_TempDirectory; 
+
     return 1; 
 }
 

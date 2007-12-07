@@ -219,10 +219,12 @@ public class VDCServiceBean implements VDCServiceLocal {
      String query="SELECT v from VDC v where v.alias = :fieldName";
        VDC vdc=null;
        try {
-           vdc=(VDC)em.createQuery(query).setParameter("fieldName",alias).getSingleResult();
+            vdc=(VDC)em.createQuery(query).setParameter("fieldName",alias).getSingleResult();
+            em.refresh(vdc); // Refresh because the cached object doesn't include harvestingDataverse object - need to review why this is happening
        } catch (javax.persistence.NoResultException e) {
            // Do nothing, just return null. 
        }
+
        return vdc;
     }
     

@@ -78,7 +78,7 @@
                         </ui:panelGroup>
                         -->
                         <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                        <h:dataTable id="fileDataTableWrapper" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable">
+                        <h:dataTable id="fileDataTableWrapper" cellpadding="0" cellspacing="0" width="98%" value="dummy_datatable">
                             <h:column>                              
                                 <h:dataTable  cellpadding="0" cellspacing="0" binding="#{AddFilesPage.filesDataTable}"
                                               columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColC"

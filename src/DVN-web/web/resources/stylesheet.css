@@ -1,4 +1,5 @@
 /* DVN SPECIFIC STYLE CLASSES */
+
 /* MAIN LAYOUT */
 .dvn_wrapper {
 	margin: 0 auto;
@@ -11,12 +12,12 @@
 	font:90%/180% "HelveticaNeue",Helvetica,Arial,sans-serif;
 	color: #464646;
 }
-.dvn_content a:link, .dvn_content a:visited {
+.dvn_content a {
 	color: #3e5f9d;
         text-decoration: none;
 }
  .dvn_content a:hover, .dvn_content a:active {
-	color: #9c4606;
+	color: #c55b28;
         text-decoration: underline;
 }
 .dvn_content img {margin: 0; padding: 0; border: 0;}
@@ -33,10 +34,7 @@
 }
 
 /* GENERAL CONTENT */
-
-/* MAIN SECTION */
-#dvn_mainSection {position: relative;}
-#dvn_mainSectionTitle {padding: .25em 0; color: #768891; font-size: 125%; text-transform: uppercase;}
+.dvn_hmpgMainMessage {margin-bottom: 1em;}
 
 .dvn_section {margin: 1em 0; width: 100%; text-align: left;}
 div.dvn_section div, div.dvn_section span, div.dvn_section p, div.dvn_section li, div.dvn_section a {line-height: 144%;}
@@ -56,14 +54,25 @@ span.dvn_sectionTitleR a {margin-left: 2em; }
 .dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; }
 .dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; } 
 
+div.dvn_block {margin-bottom: 12px; padding: 12px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
+div.dvn_block h3 {margin: 0; padding: 0; color: #768891; font-size: 112%; font-weight: bold; text-transform: uppercase;}
+div.dvn_blockTitleBar {margin-bottom: 12px; padding: 6px; background: #e6ebed; border: 1px solid #ddd; font-style: italic; text-align: center;}
+
 .dvn_margin12 {
    margin: 1em 0em 0em 1em; padding-bottom: 2em;
    line-height: inherit ;
 }
 
+.Tree {
+    background: none !important;
+}
 .Tree .float {
     float: left;
 }
+
+/* MAIN SECTION */
+#dvn_mainSection {position: relative; width: 100%;}
+#dvn_mainSectionTitle {padding: .25em 0; color: #768891; font-size: 125%; text-transform: uppercase;}
 
 /* SIDE SECTION PANELS */
 .dvn_sectionPanels {display: inline; margin-left: 2%; width: 22%; float: left;} 
@@ -78,34 +87,33 @@ span.dvn_sectionTitleR a {margin-left: 2em; }
 .dvn_headerTitleLarge a:link, .dvn_headerTitleLarge a:visited, .dvn_headerTitleLarge a:hover, .dvn_headerTitleLarge a:active {color: #768891;}
 .dvn_headerTitleL {margin: 0 12px;}
 .dvn_headerTitleL a:link, .dvn_headerTitleL a:visited, .dvn_headerTitleL a:hover, .dvn_headerTitleL a:active {color: #c55b28; font-weight: bold;}
-.dvn_headerTitleR {position: absolute; right: 12px; bottom: 0;}
+.dvn_headerTitleR {position: absolute; right: 12px; top: 6px;}
 
-.dvn_headerBarContent {overflow: hidden;}
-.dvn_headerBarContent ul {margin: 0; padding: 0; list-style: none;}
-.dvn_headerBarContent li {margin-right: 1.5em; padding: 0; float: left;}
-.dvn_headerBarContent li.dvn_networkOptions {display: inline; float: left; margin-right: 0; padding: 0; text-align: right;}
-.dvn_navNetworkName a:link, .dvn_navNetworkName a:visited, .dvn_navNetworkName a:hover, .dvn_navNetworkName a:active {color: #c55b28;}
-.dvn_navNetworkOptEdit {margin-left: 1.5em;}
-.dvn_navNetworkOptEdit a:link, .dvn_navNetworkOptEdit a:visited, .dvn_navNetworkOptEdit a:hover, .dvn_navNetworkOptEdit a:active {font-weight: bold; color: #c55b28;}
-
-div.dvn_navblock {margin-bottom: 12px; padding: 4px 12px 6px 12px; background: #dadee0; border-top: 2px solid #91a5a9;}
-div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 6px 12px; background: #e6ebed; border: 1px solid #ddd;}
-div.dvn_block {margin-bottom: 12px; padding: 12px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
-div.dvn_block h3 {margin: 0; padding: 0; color: #768891; font-size: 112%; font-weight: bold; text-transform: uppercase;}
-div.dvn_blockTitleBar {margin-bottom: 12px; padding: 6px; background: #e6ebed; border: 1px solid #ddd; font-style: italic; text-align: center;}
+/* NAV MENU */
+div.dvn_navblock {margin-bottom: 12px; padding: 0 12px 0 12px; background: #dadee0; border-top: 2px solid #91a5a9;}
+.dvn_navblockLinks {white-space:nowrap /*IE hack*/; border:none;} /*Color navigation bar normal mode*/
+.dvn_navblockLinks:after {content:"."; display:block; height:0; clear:both; visibility:hidden;} /*Clear floats*/
+.dvn_navblockLinks ul {margin: 0; padding: 0; list-style-type:none;}
+.dvn_navblockLinks ul li {float:left; z-index:auto !important /*Non-IE6*/; z-index:1000 /*IE6*/;}
+.dvn_navblockLinks ul li a {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; height:1.75em; line-height:1.75em; padding:0 .75em 0 .75em; text-decoration:none;}
+.dvn_navblockLinks ul li:hover {position:relative;} /*Sylvain IE hack*/
+.dvn_navblockLinks ul li:hover a {background-color: #c55b28; text-decoration:none;} /*Color main cells hovering mode*/
+.dvn_navblockLinks ul li a:hover {position:relative /*Sylvain IE hack*/; z-index:1000 /*Sylvain IE hack*/; background-color: #c55b28; color: #fff; text-decoration:underline;} /*Color main cells hovering mode*/
+.dvn_networkOptions a {color: #c55b28; font-weight: bold;}
+.dvn_navNetworkName a {font-weight: normal;}
 
 /* SEARCH */
+div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background: #e6ebed; border: 1px solid #ddd;}
 .dvn_searchTitle {float: left; margin-right: 12px; color: #999; font-size: 112%;}
 .dvn_searchLinks {position: absolute; top: 0; right: 0;}
 .dvn_searchLinks a {margin-left: 2em;}
 .dvn_searchBoxContent {position: relative; width: 100%;}
 .dvn_searchBoxContent fieldset {margin: 0; padding: 0; border: 0;}
 .dvn_searchBoxContent label {float: left;}
-.dvn_searchBoxContent span {margin: 0 12px 0 0; vertical-align: top;}
-.dvn_searchBoxContent input, .dvn_searchBoxContent select {margin: 2px 12px 2px 0;} 
+.dvn_searchBoxContent span {margin: 0 12px 0 0;}
+.dvn_searchBoxContent input, .dvn_searchBoxContent select {margin: 2px 12px 2px 0;}
 
 /* MAIN SECTION: DATAVERSE LIST + STUDIES TREE */
-
 #dvn_hmpgMainSection {position: relative;}
 #dvn_MainSectionCount {position: absolute; top: 0; right: 0;}
 
@@ -225,10 +233,8 @@ a.dvn_more{
 }
 
 .vdcInlineHelpLink {
-    font-weight: 400;
     color: #006699;
     text-decoration: none;
-    font-size: 12px; 
 }
 
 .vdcInlineHelpContents {
@@ -238,7 +244,6 @@ a.dvn_more{
     padding: 3px 3px 3px 10px;
     margin-bottom: 0px;
     display: block;
-    font-weight: 400;
     text-align:left;
     color: #000000;
 }
@@ -264,7 +269,6 @@ a.dvn_more{
 }
 
 .vdcTooltipLink {
-    font-weight: 400;
     margin-left:15px;
     margin-right:15px;
     color: #006699;
@@ -279,11 +283,9 @@ a.dvn_more{
     margin-top: 5px;
     margin-bottom: 0px;
     padding: 3px 3px 3px 10px;
-    font-weight: 400;
     text-align:left;
     color: #000000;
 }
-
 
 .vdcTooltipWrapper {
     /*border-left: 1px solid #cccccc; 
@@ -306,7 +308,6 @@ a.dvn_more{
 }
 
 .vdcPopupLink {
-    font-weight: 400;
     color: #006699;
     text-decoration: none;
 }
@@ -319,11 +320,9 @@ a.dvn_more{
     margin-top: 5px;
     margin-bottom: 0px;
     padding: 3px 3px 3px 10px;
-    font-weight: 400;
     text-align:left;
     color: #000000;
 }
-
 
 .vdcPopupWrapper {
     /*border-left: 1px solid #cccccc; 
@@ -1168,9 +1167,15 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 
 /* Overwrite tabset style rules (from Creator Default Themes)
 */
-.MniTabLnk{display: block; font-size: 1em; }
-a.MniTabLnk:link, a.MniTabLnk:visited {font-weight: bold; }
-.MniTabSelTxt{font-weight: bold; }
+.MniTabLnk {display: block;}
+a.MniTabLnk:link, a.MniTabLnk:visited {font-weight: bold;}
+.MniTabSelTxt {font-size: auto !important; font-weight: bold;}
+
+.vdcStudyInfoCol1 a {font-size: 90%;}
+.vdcStudyInfoCol2 div, .vdcStudyInfoCol2 span {font-size: 90%;}
+.vdcStudyFilesCol1, .vdcStudyFilesCol2, .vdcStudyFilesCol3, .vdcStudyFilesCol4, .vdcStudyFilesCol5, .vdcStudyFilesCol6 {
+    font-size: inherit;
+}
 
 /* Special styles for the network home page */
 li.activeBullet {
@@ -1178,7 +1183,8 @@ li.activeBullet {
     padding-left:2px;
 }
 li.affiliationBullet {
-    list-style-type:square ! important;
+    list-style-type: square;
+    list-style-image: none;
     line-height:80%;
     vertical-align:top;
     margin-top:0;
@@ -1187,6 +1193,10 @@ li.affiliationBullet {
 }
 
 /**** Login ****/
+div.loginPageWrap {margin: 0 auto; text-align: center;}
+div.loginPageWrap p#loginPageHeader span.headingText {font-size: 120%; color: #c55b28 !important; background: #dadee0 !important;}
+div.loginPageWrap div.ContentAreaFooter img {margin: 0.25em 0;}
+
 table#loginBlock {width: 300px; line-height: 2.5; font:90%/180% "HelveticaNeue",Helvetica,Arial,sans-serif;}
 table#loginBlock td {padding: 2px;}
 span.loginHeader {color: #c55b28; font-size: 112%; line-height: 2;}

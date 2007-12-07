@@ -14,16 +14,12 @@
            <h:outputText id="statusMessage" escape="false" value="#{HomePage.msg.messageText}" />
          </ui:panelGroup>
        
-           <ui:panelGroup block="true" rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
-                <div class="dvn_sectionPanelText">
-                    <h:outputText id="networkAnnouncementsMessages" escape="false" value="#{HomePage.parsedNetworkAnnouncements}"/>
-                </div>
+           <ui:panelGroup styleClass="dvn_hmpgMainMessage" block="true" rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
+                <h:outputText id="networkAnnouncementsMessages" escape="false" value="#{HomePage.parsedNetworkAnnouncements}"/>
             </ui:panelGroup>
             
-            <ui:panelGroup rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" id="announcementsHeaderPanel" block="true">
-                <div class="dvn_sectionPanelText">
-                    <h:outputText rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" escape="false" value="#{HomePage.parsedLocalAnnouncements}"/>
-                </div>
+            <ui:panelGroup styleClass="dvn_hmpgMainMessage" rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" id="announcementsHeaderPanel" block="true">
+                <h:outputText rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" escape="false" value="#{HomePage.parsedLocalAnnouncements}"/>
             </ui:panelGroup>
       
          <!-- Main Section starts here -->
@@ -75,10 +71,6 @@
                     <div class="dvn_searchLinks">
                         <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
                             <h:outputText value="Advanced Search"/>
-                        </h:outputLink>
-                        <h:outputText value="&#160;" escape="false"/>
-                        <h:outputLink value="http://thedata.org/help/browsesearch" target="_blank">
-                            <h:outputText value="Search Help"/>
                         </h:outputLink>
                     </div>
                 </div>

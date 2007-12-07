@@ -19,11 +19,25 @@
          <h:outputText value="&#60;meta name='robots' content='nofollow' /&#62;" escape="false" rendered="#{pageTitle.value == 'DVN - Study' }" />
          <h:outputText value="&#60;meta name='robots' content='nofollow' /&#62;" escape="false" rendered="#{pageTitle.value == 'DVN - Variable Information' }" />
          
-         <ui:link  id="link2" url="/resources/stylesheet.css"/>
+         <ui:link id="link2" url="/resources/stylesheet.css"/>
+         <ui:link id="link3" url="/resources/thickbox.css"/>
          <ui:script url="/resources/EventCapture.js"/>
          <ui:script url="/resources/jquery.js"/>
          <ui:script url="/resources/jquery.corner.pack.js"/>
          <ui:script url="/resources/excanvas.pack.js"/>
+         <ui:script url="/resources/jquery.ifixpng.js"/>
+         
+         <ui:script type="text/javascript">
+             $(document).ready(function(){
+		$("div.dvn_navblock").corner("10px bottom");
+		$("div.dvn_searchblock").corner("10px");
+		$("div.dvn_block").corner("10px");
+		$("div.dvn_blockTitleBar").corner("10px");
+                $.ifixpng('/dvn/resources/pixel.gif');
+                $('img[@src$=.png], a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active').ifixpng();
+              });
+         </ui:script>
+         
       </ui:head>
       <body>
               <f:subview id="banner">

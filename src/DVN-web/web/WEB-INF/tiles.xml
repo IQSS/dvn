@@ -37,13 +37,15 @@
        <put name="content" type="template"     value="/ContactUsConfirmPage.jsp"/>
    </definition>
    <definition name="/AnnouncementsPage" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Announcements"/>
+       <put name="pageTitle"   type="string"        value="DVN - Description"/>
        <put name="content" type="template"     value="/AnnouncementsPage.jsp"/>
    </definition>
+   <!-- About page has been removed: Announcements and About are combined to Homepage description.
    <definition name="/AboutPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - About" />
        <put name="content" type="template"     value="/AboutPage.jsp"/>
    </definition>
+   -->
    <definition name="/ErrorPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Error" />
        <put name="content" type="template"     value="/ErrorPage.jsp"/>
@@ -253,10 +255,12 @@
        <put name="pageTitle"   type="string"        value="DVN - Search Results Fields"/>
        <put name="content" type="template"     value="/admin/SearchFieldsPage.jsp"/>
    </definition>
+   <!-- About page has been removed: Announcements and About are combined to Homepage description.
    <definition name="/admin/EditAboutPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Edit About"/>
        <put name="content" type="template"     value="/admin/EditAboutPage.jsp"/>
    </definition>
+   -->
    <definition name="/admin/EditBannerFooterPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Edit Banner and Footer"/>
        <put name="content" type="template"     value="/admin/EditBannerFooterPage.jsp"/>
@@ -266,7 +270,7 @@
        <put name="content" type="template"     value="/admin/EditContactUsPage.jsp"/>
    </definition>  
    <definition name="/admin/EditHomePanelsPage" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Edit Homepage Panels"/>
+       <put name="pageTitle"   type="string"        value="DVN - Edit Dataverse Homepage Description"/>
        <put name="content" type="template"     value="/admin/EditHomePanelsPage.jsp"/>
    </definition>  
    <definition name="/admin/EditUseTermsPage" extends="/main-layout">
@@ -286,16 +290,18 @@
        <put name="content" type="template"     value="/admin/WebStatisticsPage.jsp"/>
    </definition>
    <!-- **************** Network Admin  ****************  -->
+    <!-- About page has been removed: Announcements and About are combined to Homepage description.
    <definition name="/networkAdmin/EditNetworkAboutPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Edit Dataverse Network About"/>
        <put name="content" type="template"     value="/networkAdmin/EditNetworkAboutPage.jsp"/>
    </definition>
+   -->
    <definition name="/networkAdmin/AllUsersPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Dataverse Network Users"/>
        <put name="content" type="template"     value="/networkAdmin/AllUsersPage.jsp"/>
    </definition>  
    <definition name="/networkAdmin/EditNetworkAnnouncementsPage" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Edit Dataverse Network Announcements"/>
+       <put name="pageTitle"   type="string"        value="DVN - Edit Network Homepage Description"/>
        <put name="content" type="template"     value="/networkAdmin/EditNetworkAnnouncementsPage.jsp"/>
    </definition>
    <definition name="/networkAdmin/EditNetworkBannerFooterPage" extends="/main-layout">

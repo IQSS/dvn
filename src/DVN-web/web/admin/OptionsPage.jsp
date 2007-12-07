@@ -100,7 +100,7 @@
                                     <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.jsp">
                                         <h:outputText styleClass="vdcMenuItem" value="Add New User Account"/>
                                     </h:outputLink>
-                                    <h:outputLink id="hyperlink14" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.jsp">
+                                    <h:outputLink id="hyperlink14" rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.jsp">
                                         <h:outputText id="hyperlink4Text3" value="Set Terms of Use"/>
                                     </h:outputLink>
                                 </ui:panelGroup>

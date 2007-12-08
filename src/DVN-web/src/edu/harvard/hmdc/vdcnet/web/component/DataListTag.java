@@ -30,7 +30,10 @@
 package edu.harvard.hmdc.vdcnet.web.component;
 
 import javax.el.ValueExpression;
+import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
 import javax.faces.webapp.UIComponentTag;
 
 /**
@@ -40,6 +43,8 @@ import javax.faces.webapp.UIComponentTag;
 public class DataListTag  extends UIComponentTag {
     
     private ValueExpression contents;
+    private ValueExpression tabs;
+    private ValueExpression tab;
     
     /** Creates a new instance of DataListTag */
     public DataListTag() {
@@ -73,6 +78,22 @@ public class DataListTag  extends UIComponentTag {
                 datalist.getAttributes().put("contents",contents.getExpressionString());
               }
         }
+        if(tabs != null) {
+              if (!tabs.isLiteralText()) {
+                datalist.setValueExpression("tabs", tabs);
+              }
+              else {
+                datalist.getAttributes().put("tabs", tabs.getExpressionString());
+              }
+        }
+        if(tab != null) {
+              if (!tab.isLiteralText()) {
+                datalist.setValueExpression("tab", tab);
+              }
+              else {
+                datalist.getAttributes().put("tab", tab.getExpressionString());
+              }
+        }
     }
     
     /** 
@@ -87,6 +108,34 @@ public class DataListTag  extends UIComponentTag {
     public void setContents(ValueExpression contents) {
     this.contents = contents;
   }
+    
+    /** 
+     * setter and getter the tabs
+     * @author wbossons
+     *
+     * 
+     */
+    public ValueExpression getTabs() {
+        return this.tabs;
+    }
+    public void setTabs(ValueExpression tabs) {
+        this.tabs = tabs;
+  }
+    
+    /** 
+     * setter and getter the tab
+     *
+     * @author wbossons
+     *
+     * 
+     */
+    public void setTab(ValueExpression tab) {
+        this.tab = tab;
+    }
+    
+    public ValueExpression getTab(){
+        return tab;
+    }
 
     
     public void release() {

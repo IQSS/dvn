@@ -259,7 +259,7 @@ public class HomePage extends VDCBaseBean {
      *
      */
     public String parseAnnouncements(String announcements, boolean isLocal) {
-        String truncatedAnnouncements = StringUtil.truncateString(announcements, 400);
+        String truncatedAnnouncements = StringUtil.truncateString(announcements, 1000);
         if ( truncatedAnnouncements != null && !truncatedAnnouncements.equals(announcements) ) {
             ResourceBundle resourceBundle = ResourceBundle.getBundle("Bundle");
             if (isLocal) {

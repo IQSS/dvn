@@ -25,6 +25,11 @@
         <managed-bean-name>HomePage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.HomePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>selectedTab</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{requestScope.tab}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>ErrorPage</managed-bean-name>

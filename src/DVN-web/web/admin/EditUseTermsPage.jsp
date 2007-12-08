@@ -22,7 +22,7 @@
                         <h:outputText  value="Please enter the Terms of Use or Conditions you would like to define for all studies created in (owned by) this dataverse (does not include studies that you are adding from other Dataverses in the Network)."/>
                         <ui:panelGroup block="true" style="padding-bottom: 15px">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                            <h:outputText styleClass="vdcHelpText" value="By enabling this Terms of Use, users will be asked to agree to them before downloading a file or accessing the subsetting/analysis page."/>
+                            <h:outputText styleClass="vdcHelpText" value="By enabling these Terms of Use, users will be asked to agree to them before downloading a file or accessing the subsetting/analysis page. These Terms of Use will be also displayed in the Cataloging Information under the Terms of Use section as 'General Term of Use'."/>
                         </ui:panelGroup>
                         
                         <h:outputText value="Enable Terms of Use?"/>

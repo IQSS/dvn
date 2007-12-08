@@ -14,12 +14,26 @@
         <attribute>
             <name>contents</name>
             <description>A string representation of the map of the data lists</description>
-            <required>false</required>
+            <required>true</required>
             <deferred-value>
                 <type>java.util.Map</type>
             </deferred-value>
         </attribute>
         <attribute>
+            <name>tabs</name>
+            <description>A string representation of the tabnames.</description>
+            <required>true</required>
+            <deferred-value>
+                <type>java.util.Map</type>
+            </deferred-value>
+        </attribute>
+        <attribute>
+            <name>tab</name>
+            <description>A string representation of the tabnames.</description>
+            <required>true</required>
+            <deferred-value>
+                <type>java.lang.String</type>
+            </deferred-value>
         </attribute>
         <attribute>
             <name>id</name>

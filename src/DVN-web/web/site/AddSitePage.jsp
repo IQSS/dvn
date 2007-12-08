@@ -156,7 +156,7 @@
                                     <h:outputText id="selectedGroupText" style="white-space: nowrap; padding-right: 10px; " value="Group Assignment"/> 
                                 </h:outputLabel>
                             </ui:panelGroup>
-                            <ui:panelGroup>
+                            <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Basic'}">
                                 <h:selectOneMenu id="selectedGroup" 
                                     immediate="true"
                                     onchange="this.form.submit();"

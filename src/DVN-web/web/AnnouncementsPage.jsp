@@ -10,18 +10,12 @@
             <h:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             
             <div class="dvn_section">
-                <div class="dvn_sectionTitle">
-                    <a name="announcements" title="">
-                        <h:outputText  value="#{ (VDCRequest.currentVDCId != null) ? 'Local' : 'Network'} #{bundle.announcementsHeading}"/>
-                    </a>
-                </div>            
-                <div class="dvn_sectionBox"> 
+                         
                     <div class="dvn_margin12">
                         
                         <h:outputText  escape="false" value="#{ (VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.announcements : VDCRequest.currentVDC.announcements }"/>
                         
                     </div>
-                </div>
             </div>
             
         </ui:form>

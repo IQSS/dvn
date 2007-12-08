@@ -19,17 +19,8 @@
 
                        <h:messages layout="list" showDetail="false" showSummary="true" styleClass="successMessage" />
                         
-                        <h:outputText  id="outputText4" styleClass="vdcSubHeaderColor" value="#{bundle.announcementsPanelHeading}"/>
-                        <ui:panelGroup  block="true" id="groupPanel2" style="padding-top: 10px; padding-bottom: 20px">
-                            <h:outputText  id="outputText2" value="1)  #{bundle.displayNetworkAnnouncementsLabel}"/>
-                            <h:selectBooleanCheckbox  id="chkNetworkAnnouncements" value="#{EditHomePanelsPage.chkNetworkAnnouncements}"/>
-                            <ui:panelGroup  block="true" style="padding-right: 70px">
-                                <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />  
-                                <h:outputText value="By checking this, Network announcements will be displayed in your dataverse homepage only when they are available." styleClass="vdcHelpText" />
-                            </ui:panelGroup>
-                        </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel3" style="padding-bottom: 10px">
-                            <h:outputText  id="outputText3" value="2)  #{bundle.displayLocalAnnouncementsLabel}"/>
+                            <h:outputText  id="outputText3" value="#{bundle.displayLocalAnnouncementsLabel}"/>
                             <h:selectBooleanCheckbox  id="chkLocalAnnouncements"  value="#{EditHomePanelsPage.chkLocalAnnouncements}"/>
                             <ui:panelGroup  block="true" style="padding-right: 70px">
                                 <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
@@ -48,16 +39,7 @@
                                 <f:validator validatorId="XhtmlValidator"/>
                             </h:inputTextarea>
                         </ui:panelGroup>
-                        <h:outputText  id="outputText5" styleClass="vdcSubHeaderColor" value="#{bundle.newStudiesPanelHeading}"/>
-                        <ui:panelGroup  block="true" id="groupPanel4" style="padding-top: 10px; padding-bottom: 20px">
-                            <h:outputText  id="outputText6" value="#{bundle.displayNewStudiesPanelHeading}"/>
-                            <h:selectBooleanCheckbox  id="chkNewStudies" value="#{EditHomePanelsPage.chkNewStudies}"/>
-                            
-                            <ui:panelGroup block="true" style="padding-right: 65px">
-                                <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                <h:outputText value="#{bundle.newStudiesMessage}" styleClass="vdcHelpText"/>
-                            </ui:panelGroup>
-                        </ui:panelGroup>
+                                             
                         <ui:panelGroup  block="true" id="groupPanel1" style="padding-left: 200px; padding-top: 20px">
                             <h:commandButton id="btnSave" value="#{bundle.saveButtonLabel}" action="#{EditHomePanelsPage.save_action}"/>
                             <h:commandButton id="btnCancel" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditHomePanelsPage.cancel_action}"/>

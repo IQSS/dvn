@@ -79,10 +79,7 @@
                                         <h:outputText id="hyperlink1Text2" value="Edit Banner and Footer"/>
                                     </h:outputLink>
                                     <h:outputLink id="hyperlink4" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditHomePanelsPage.jsp">
-                                        <h:outputText id="hyperlink2Text2" value="Edit Homepage Panels (Announcements, Most Recent)"/>
-                                    </h:outputLink>
-                                    <h:outputLink id="hyperlink10" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditAboutPage.jsp">
-                                        <h:outputText id="hyperlink4Text2" value="Edit About Page"/>
+                                        <h:outputText id="hyperlink2Text2" value="Edit Homepage Description"/>
                                     </h:outputLink>
                                     <h:outputLink id="hyperlink17" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditContactUsPage.jsp">
                                         <h:outputText id="hyperlink17Text" value="Set Contact Us E-Mail"/>
@@ -101,7 +98,7 @@
                                         <h:outputText styleClass="vdcMenuItem" value="Add New User Account"/>
                                     </h:outputLink>
                                     <h:outputLink id="hyperlink14" rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.jsp">
-                                        <h:outputText id="hyperlink4Text3" value="Set Terms of Use"/>
+                                        <h:outputText id="hyperlink4Text3" value="Set Dataverse Terms of Use for Study Download"/>
                                     </h:outputLink>
                                 </ui:panelGroup>
                             </ui:panelGroup>

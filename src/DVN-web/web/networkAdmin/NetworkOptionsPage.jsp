@@ -56,11 +56,8 @@
                                 <h:outputText  id="hyperlink1Text2" value="Edit Banner and Footer for Network Pages"/>
                             </h:outputLink>
                             <h:outputLink  id="hyperlink5" value="/dvn/faces/networkAdmin/EditNetworkAnnouncementsPage.jsp">
-                                <h:outputText  id="hyperlink3Text1" value="Edit Network Announcements"/>
-                            </h:outputLink>
-                            <h:outputLink  id="hyperlink11" value="/dvn/faces/admin/EditAboutPage.jsp">
-                                <h:outputText  id="hyperlink11Text" value="Edit About Page"/>
-                            </h:outputLink>                                                    
+                                <h:outputText  id="hyperlink3Text1" value="Edit Network Homepage description"/>
+                            </h:outputLink>                                                  
                             <h:outputLink id="hyperlink17" value="/dvn/faces/admin/EditContactUsPage.jsp">
                                 <h:outputText id="hyperlink17Text" value="Set Contact Us E-Mail"/>
                             </h:outputLink>

@@ -55,6 +55,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.ejb.EJB;
 
+
+
 /*
  * HomePageBean.java
  *
@@ -63,6 +65,8 @@ import javax.ejb.EJB;
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -85,6 +89,7 @@ public class HomePage extends VDCBaseBean {
     private String searchField;
     private String searchValue;
     private Map dataMap = new TreeMap();
+    private Map tabsMap = new TreeMap();
     
     StatusMessage msg;
     
@@ -113,8 +118,27 @@ public class HomePage extends VDCBaseBean {
             }
         }
         //Add support for VDC Groups on VDC network home page
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String tab = request.getParameter("tab");
+        if (tab == null) {
+            Iterator iterator = request.getParameterMap().keySet().iterator();
+            while (iterator.hasNext()) {
+                Object key = (Object) iterator.next();
+                if ( key instanceof String && ((String) key).indexOf("tab") != -1 && !request.getParameter((String)key).equals("")) {
+                    tab = request.getParameter((String)key);
+                }
+            }
+        }
+        if (tab != null) {
+            setSelectedTab(tab);
+        } else {
+            setSelectedTab("nowavailable"); //default value
+        }
+        request.setAttribute("tab", getSelectedTab());
+        initTabsMap();
         initVdcGroupData();
         initVdcsSansGroups();
+        initScholarDVGroup();
     }
     
     /**
@@ -329,9 +353,17 @@ public class HomePage extends VDCBaseBean {
         return this.dataMap;
     }
     
+    public Map getTabsMap() {
+        return this.tabsMap;
+    }
+    
     //setters
     public void setDataMap(TreeMap map) {
         this.dataMap = map;
+    }
+    
+    public void setTabsMap(TreeMap map) {
+        this.tabsMap = map;
     }
         
     /** ************ Add support for VDC Groups on the network home page *************** 
@@ -343,7 +375,10 @@ public class HomePage extends VDCBaseBean {
      *
      */
      
-   
+   public void initTabsMap() {
+       tabsMap.put("tab1", new String("Now Available"));
+       tabsMap.put("tab2", new String("Coming Soon"));
+   }
     
     public void initVdcGroupData() {
         // Get all the vdc groups
@@ -356,13 +391,29 @@ public class HomePage extends VDCBaseBean {
         
         while (iterator.hasNext()) {
             vdcgroup = (VDCGroup)iterator.next();
-            //add the heading row.
-            //dataMap.put(vdcgroup.getId(), vdcgroup.getName());
-            // add the vdcs
-            List<DataListing> dataList = sortVdcs(vdcgroup.getVdcs());
-            //DEBUG
+            //check coming soon or is available
+            List<VDC> innerlist = vdcgroup.getVdcs();
+            Iterator inneriterator = innerlist.iterator();
+            while (inneriterator.hasNext()) {
+                VDC vdc = (VDC)inneriterator.next();
+                if (this.selectedTab.equals("comingsoon") && !vdc.isRestricted())
+                    inneriterator.remove();
+                else if (this.selectedTab.equals("nowavailable") && vdc.isRestricted())
+                    inneriterator.remove();  
+            }
+            List<DataListing> dataList = sortVdcs(innerlist);
             dataMap.put(vdcgroup.getName(), dataList);
         }
+    }
+    
+    private String selectedTab;
+    
+    public String getSelectedTab() {
+        return this.selectedTab;
+    }
+    
+    public void setSelectedTab(String selected) {
+        this.selectedTab = selected;
     }
     
     private List vdcGroups;
@@ -400,11 +451,53 @@ public class HomePage extends VDCBaseBean {
    public void initVdcsSansGroups() {
         // Get all the vdc groups
         List list = (List)vdcService.findVdcsNotInGroups();
+        Iterator iterator = list.iterator();
+            while (iterator.hasNext()) {
+                VDC vdc = (VDC)iterator.next();
+                String name = vdc.getName();
+                if (this.selectedTab.equals("comingsoon") && !vdc.isRestricted()) {
+                    iterator.remove();
+                } else if (this.selectedTab.equals("nowavailable") && vdc.isRestricted()) {
+                    iterator.remove();  
+                }
+            }
+
         setVdcsSansGroups(list);
-        List localList = vdcsSansGroups;
-        Iterator iterator = localList.iterator();
-        List<DataListing> dataList = sortVdcs(this.vdcsSansGroups);
+        List<DataListing> dataList = sortVdcs(this.getVdcsSansGroups());
         dataMap.put("Other", dataList);
+     }
+   
+   private List scholarDvGroup;
+    
+    public List getScholarDvGroup() {
+        return (List)scholarDvGroup;
+    }
+    
+    public void setScholarDvGroup(List groups) {
+        this.scholarDvGroup = groups;
+    }
+    
+   public void initScholarDVGroup() {
+        // Get all the vdc groups
+        List list = (List)vdcService.findVdcsNotInGroups();
+        Iterator iterator = list.iterator();
+            while (iterator.hasNext()) {
+                Object object = (Object)iterator.next();
+                ScholarDataverse sdv = null;
+                if (object instanceof ScholarDataverse) {
+                    sdv = (ScholarDataverse)object;
+                } else {
+                    iterator.remove();
+                    continue;
+                }
+                if (this.selectedTab.equals("comingsoon") && !sdv.isRestricted())
+                    iterator.remove();
+                else if (this.selectedTab.equals("nowavailable") && sdv.isRestricted())
+                    iterator.remove();
+            }
+        setScholarDvGroup(list);
+        List<DataListing> dataList = sortVdcs(this.getScholarDvGroup());
+        dataMap.put("ScholarDVs", dataList);
      }
     
     private List sortVdcs(List memberVDCs) {

@@ -89,7 +89,7 @@
                           </ui:panelGroup>
                           <ui:panelGroup>
                           
-                            <h:selectOneMenu required="true"  id="exportPeriod" value="#{EditExportSchedulePage.exportPeriod}"  onchange='updateExportInput();' >
+                            <h:selectOneMenu  id="exportPeriod" value="#{EditExportSchedulePage.exportPeriod}"  onchange='updateExportInput();' >
                                 <f:selectItem itemValue="" itemLabel="Not Selected"/>
                                 <f:selectItem itemValue="daily" itemLabel="Export daily"/>
                                 <f:selectItem itemValue="weekly" itemLabel="Export weekly"/>

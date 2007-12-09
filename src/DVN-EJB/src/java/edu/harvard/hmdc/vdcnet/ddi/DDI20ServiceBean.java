@@ -255,6 +255,9 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
     public static final String NOTE_TYPE_UNF = "VDC:UNF";
     public static final String NOTE_SUBJECT_UNF = "Universal Numeric Fingerprint";
     
+    public static final String NOTE_TYPE_TERMS_OF_USE = "DVN:TOU";
+    public static final String NOTE_SUBJECT_TERMS_OF_USE = "Dataverse Terms Of Use";
+    
     // db constants
     public static final String DB_VAR_INTERVAL_TYPE_CONTINUOUS = "continuous";
     public static final String DB_VAR_RANGE_TYPE_POINT = "point";
@@ -2312,6 +2315,14 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         if (addUseStmt) {
             _da.getUseStmt().add(_us);
             addDataAccess = true;
+        }
+        if (!StringUtil.isEmpty(s.getOwner().getDownloadTermsOfUse()) && s.getOwner().isDownloadTermsOfUseEnabled()){
+              NotesType _notes = objFactory.createNotesType();
+              _notes.setType(NOTE_TYPE_TERMS_OF_USE);
+              _notes.setSubject(NOTE_SUBJECT_TERMS_OF_USE);
+              _notes.getContent().add( s.getOwner().getDownloadTermsOfUse() );
+              _da.getNotes().add(_notes);
+              addDataAccess = true;
         }
         
         return addDataAccess ? _da : null;

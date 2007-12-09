@@ -334,7 +334,7 @@
                                              columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelTermsOfUse"  rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}"
                                              width="100%">
                                     <ihelp:inlinehelp helpMessage="#{studybundle.generalTermsofUseHelp}"  linkText="#{studybundle.generalTermsofUseLabel}" heading="#{studybundle.generalTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.owner.downloadTermsOfUseEnabled}"/>
-                                    <h:outputText  id="outputText129b" value="#{studyPage.studyUI.study.owner.downloadTermsOfUse}" rendered="#{studyPage.studyUI.study.owner.downloadTermsOfUseEnabled}" escape="false"/>
+                                    <h:outputText  id="outputText129b" value="#{studyPage.studyUI.dataverseTermsOfUse}" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}" escape="false"/>
                                    
                                     <ihelp:inlinehelp helpMessage="#{studybundle.confidentialityHelp}"  linkText="#{studybundle.confidentialityLabel}" heading="#{studybundle.confidentialityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.confidentialityDeclaration != '' and studyPage.studyUI.study.confidentialityDeclaration != null }"/>
                                     <h:outputText  id="outputText129" value="#{studyPage.studyUI.study.confidentialityDeclaration}" rendered="#{!empty studyPage.studyUI.study.confidentialityDeclaration}" escape="false"/>

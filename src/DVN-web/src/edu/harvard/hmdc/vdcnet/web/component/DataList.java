@@ -88,7 +88,7 @@ public class DataList extends UIComponentBase {
         writer.writeAttribute("id", "tabSet1skipLink_skipHyperlinkId_image", null);
         writer.writeAttribute("src", "/dvn/theme/com/sun/rave/web/ui/defaulttheme/images/other/dot.gif", null);
         writer.writeAttribute("alt", "Jump Over Tab Navigation Area. Current selection is ", null);
-        writer.writeAttribute("border", "0", null);
+        writer.writeAttribute("border", "1", null);
         writer.endElement("img");
         writer.endElement("a");
     }
@@ -111,16 +111,17 @@ public class DataList extends UIComponentBase {
         writer.startElement("div", this);
         writer.writeAttribute("class", "TabGrpBox", null);
         Map map = (Map)getAttributes().get("contents");
+        if (map.isEmpty()) 
+            formatMessage("There are no dataverses to display.");
         Set keys = map.keySet();
-        
         Iterator iterator = keys.iterator();
         for (int i = 0; i < map.size(); i++){
           String key = iterator.next().toString();
           Object object = map.get(key);
           List<DataListing> datalistings = (List<DataListing>)map.get(key);
           if (datalistings.isEmpty()) {
-              formatMessage("There are no dataverses to display.");
-              break;
+              //formatMessage("There are no dataverses to display.");
+              continue;
           } else {
             formatHeading(key);
             formatChildTable(datalistings, key);

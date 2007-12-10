@@ -42,14 +42,6 @@
                       </h:outputLink>
                     </li>
                     <li>
-                      <h:outputLink  value="/dvn/faces/AboutPage.jsp" title="About #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDC == null}">
-                        <h:outputText value="#{bundle.aboutLabel}"/>
-                       </h:outputLink>
-                      <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/AboutPage.jsp" title="About #{VDCRequest.currentVDC.name} dataverse" rendered="#{VDCRequest.currentVDC != null}">
-                        <h:outputText value="#{bundle.aboutLabel}"/>
-                      </h:outputLink>
-                    </li>
-                    <li>
                       <h:outputLink  value="http://thedata.org/guides" target="_blank" title="Go to User Guides">
                          <h:outputText value="#{bundle.helpLabel}"/>
                       </h:outputLink>

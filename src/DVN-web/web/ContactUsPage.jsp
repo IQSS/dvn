@@ -92,7 +92,7 @@
                                 <h:graphicImage  id="image4" value="/resources/icon_required.gif"/>
                             </ui:panelGroup>
                             <ui:panelGroup block="true" separator="&lt;br /&gt;"> 
-                                <h:inputTextarea cols="80" id="emailBody" 
+                                <h:inputTextarea cols="50" id="emailBody" 
                                                  value="#{ContactUsPage.emailBody}" 
                                                  required="true" 
                                                  rows="8"/>

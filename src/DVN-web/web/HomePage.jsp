@@ -81,9 +81,8 @@
             <div id="dvn_hmpgMainSection">
                 <div class="dvn_margin12">
                   <!-- Network Homepage -->
-                    <h:outputText value="There are no Dataverses yet in #{VDCRequest.vdcNetwork.name} Dataverse Network." rendered="#{empty HomePage.vdcs}"/>
                     <!-- datalist component for NETWORK HOME PAGE -->
-                    <h:panelGrid rendered="#{VDCRequest.currentVDC == null and !empty HomePage.vdcs}" style="width:98%"> 
+                    <h:panelGrid rendered="#{VDCRequest.currentVDC == null}" style="width:98%;">
                         <dmap:datalist contents="#{HomePage.dataMap}" tabs="#{HomePage.tabsMap}" tab="#{HomePage.selectedTab != null ? HomePage.selectedTab : requestScope.tab}" id="dataMap" />
                     </h:panelGrid>
                   <!-- Dataverse Hoempage -->

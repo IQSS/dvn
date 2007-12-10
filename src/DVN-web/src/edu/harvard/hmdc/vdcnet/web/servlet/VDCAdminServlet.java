@@ -117,13 +117,21 @@ public class VDCAdminServlet extends HttpServlet {
             out.print("<input name=removeLock value=\"Remove Lock\" type=submit />");
             out.print("<br/><br/><hr>");
 
-            out.println("<b>Export:</b><br/><br/>");
+            out.println("<b>Custom Export:</b><br/><br/>");
+            out.println("Select export format(s) for custom export<br/>");
+            out.print("<select name=\"exportFormat\" size=\"1\">");
+            out.print("<option value=\"\">Export To All Formats</option>");
+            out.print("<option value=\"ddi\">Export DDI Only</option>");
+            out.print("<option value=\"oai_dc\">Export Dublin Core Only</option>");
+            out.print("<option value=\"marc\">Export Marc Only</option>");
+            out.print("</select></br></br>");
             out.println("To export studies owned by a specific dataverse (regardless of update time), input the dataverse id and click on the button below.<br/>");
             out.print("<input name=\"vdcToExport\" size=4>");
             out.print("<input name=export value=Dataverse type=submit /><br/><br/>");
             out.println("To export arbitrary studies (regardless of update time), input the study ids and click on the button below.<br/>");        
             out.print("<textarea name=\"studyIds\" rows=10></textarea><br/>");
             out.print("<input name=export value=Studies type=submit /><br/><br/>");
+            out.println("<b>Export All:</b><br/><br/>");;
             out.println("To export all updated studies, click on the button below.<br/>");
             out.print("<input name=export value=\"Updated Studies\" type=submit />");            
             out.print("<br/><br/><hr>");
@@ -179,7 +187,8 @@ public class VDCAdminServlet extends HttpServlet {
                 }
             } else if (req.getParameter("export") != null) { 
                 String exportParam = req.getParameter("export");
-        
+                String exportFormat = req.getParameter("exportFormat").equals("") ? null:req.getParameter("exportFormat") ;
+              
                 if ("Dataverse".equals(exportParam)) {
                 Long vdcToIndex = null;
                 try {
@@ -190,7 +199,8 @@ public class VDCAdminServlet extends HttpServlet {
                         for (Study study :  vdc.getOwnedStudies() ) {
                             studyIDList.add( study.getId() );
                         }
-                        studyService.exportStudies(studyIDList);
+                  
+                        studyService.exportStudies(studyIDList, exportFormat);
                         displayMessage (out,"Export succeeded.", "(for dataverse id = " + vdcToIndex + ")");
                     } else {
                         displayMessage (out, "Export failed.", "There is no dataverse with dvId = " + vdcToIndex);                    
@@ -219,7 +229,7 @@ public class VDCAdminServlet extends HttpServlet {
                             failedTokens += "\"" +token + "\"";
                         }
                      }
-                    studyService.exportStudies(studyIdList);
+                    studyService.exportStudies(studyIdList, exportFormat);
                     if (!failedTokens.equals("")) {
                         failedTokens = "(However, the following tokens were not of type Long: " + failedTokens + ")";
                     }

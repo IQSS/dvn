@@ -6,7 +6,7 @@
           xmlns:tiles="http://struts.apache.org/tags-tiles"
           xmlns:c="http://java.sun.com/jsp/jstl/core">
     
-    <f:subview id="variablePageView">
+    <f:subview id="editVariablePageView">
         
         <ui:form  id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -34,7 +34,7 @@
                             </f:facet>
                         </h:column>
                         <h:column>
-                            <h:inputText  id="dv_label" value="#{dv.label}"/>
+                            <h:inputText  id="dv_label" value="#{dv.label}" size="80"/>
                             <h:message styleClass="errorMessage" for="dv_label"/>
                             <f:facet name="header">
                                 <h:outputText   value="Label"/>

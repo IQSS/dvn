@@ -451,18 +451,22 @@ public class HomePage extends VDCBaseBean {
    public void initVdcsSansGroups() {
         // Get all the vdc groups
         List list = (List)vdcService.findVdcsNotInGroups();
+        List newlist = new ArrayList();
         Iterator iterator = list.iterator();
-            while (iterator.hasNext()) {
-                VDC vdc = (VDC)iterator.next();
-                String name = vdc.getName();
-                if (this.selectedTab.equals("comingsoon") && !vdc.isRestricted()) {
-                    iterator.remove();
-                } else if (this.selectedTab.equals("nowavailable") && vdc.isRestricted()) {
-                    iterator.remove();  
+        while (iterator.hasNext()) {
+            Object object = (Object)iterator.next();
+            if (object instanceof ScholarDataverse) {
+                continue;
+            } else {
+                VDC vdc = (VDC)object;
+                if (this.selectedTab.equals("comingsoon") && vdc.isRestricted()) {
+                    newlist.add(vdc);
+                } else if (this.selectedTab.equals("nowavailable") && !vdc.isRestricted()) {
+                    newlist.add(vdc);
                 }
             }
-
-        setVdcsSansGroups(list);
+        }
+        setVdcsSansGroups(newlist);
         List<DataListing> dataList = sortVdcs(this.getVdcsSansGroups());
         dataMap.put("Other", dataList);
      }
@@ -480,22 +484,21 @@ public class HomePage extends VDCBaseBean {
    public void initScholarDVGroup() {
         // Get all the vdc groups
         List list = (List)vdcService.findVdcsNotInGroups();
+        List newlist = new ArrayList();
         Iterator iterator = list.iterator();
-            while (iterator.hasNext()) {
-                Object object = (Object)iterator.next();
-                ScholarDataverse sdv = null;
-                if (object instanceof ScholarDataverse) {
-                    sdv = (ScholarDataverse)object;
-                } else {
-                    iterator.remove();
-                    continue;
+        while (iterator.hasNext()) {
+            Object object = (Object)iterator.next();
+            ScholarDataverse sdv = null;
+            if (object instanceof ScholarDataverse) {
+                sdv = (ScholarDataverse)object;
+                if (this.selectedTab.equals("comingsoon") && sdv.isRestricted()) {
+                    newlist.add(sdv);
+                } else if (this.selectedTab.equals("nowavailable") && !sdv.isRestricted()) {
+                    newlist.add(sdv);
                 }
-                if (this.selectedTab.equals("comingsoon") && !sdv.isRestricted())
-                    iterator.remove();
-                else if (this.selectedTab.equals("nowavailable") && sdv.isRestricted())
-                    iterator.remove();
             }
-        setScholarDvGroup(list);
+        }
+        setScholarDvGroup(newlist);
         List<DataListing> dataList = sortVdcs(this.getScholarDvGroup());
         dataMap.put("ScholarDVs", dataList);
      }

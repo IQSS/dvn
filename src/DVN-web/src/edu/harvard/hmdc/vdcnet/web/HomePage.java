@@ -402,7 +402,8 @@ public class HomePage extends VDCBaseBean {
                     inneriterator.remove();  
             }
             List<DataListing> dataList = sortVdcs(innerlist);
-            dataMap.put(vdcgroup.getName(), dataList);
+            if (!dataList.isEmpty()) 
+                dataMap.put(vdcgroup.getName(), dataList);
         }
     }
     
@@ -468,7 +469,8 @@ public class HomePage extends VDCBaseBean {
         }
         setVdcsSansGroups(newlist);
         List<DataListing> dataList = sortVdcs(this.getVdcsSansGroups());
-        dataMap.put("Other", dataList);
+        if (!dataList.isEmpty()) 
+                dataMap.put("Other", dataList);
      }
    
    private List scholarDvGroup;
@@ -500,7 +502,8 @@ public class HomePage extends VDCBaseBean {
         }
         setScholarDvGroup(newlist);
         List<DataListing> dataList = sortVdcs(this.getScholarDvGroup());
-        dataMap.put("ScholarDVs", dataList);
+        if (!dataList.isEmpty()) 
+            dataMap.put("ScholarDVs", dataList);
      }
     
     private List sortVdcs(List memberVDCs) {

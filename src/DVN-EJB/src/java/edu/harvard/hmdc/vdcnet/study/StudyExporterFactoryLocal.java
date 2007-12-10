@@ -18,6 +18,10 @@ import javax.ejb.Local;
  */
 @Local
 public interface StudyExporterFactoryLocal {
+    public static final String EXPORT_FORMAT_DDI="ddi";
+    public static final String EXPORT_FORMAT_DC="oai_dc";
+    public static final String EXPORT_FORMAT_MARC="marc";
+ 
     public List<String> getExportFormats();
     
     public StudyExporter getStudyExporter(String exportFormat);

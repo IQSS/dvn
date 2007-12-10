@@ -27,7 +27,7 @@ public class StudyExporterFactoryBean implements StudyExporterFactoryLocal {
     @EJB DDI20ServiceLocal ddiService;
     @EJB DCServiceLocal dcService;
     @EJB MarcServiceLocal marcService;
-    
+  
     private List<String> exportFormats;
     
     public List<String> getExportFormats() {
@@ -36,18 +36,18 @@ public class StudyExporterFactoryBean implements StudyExporterFactoryLocal {
     
     public void ejbCreate() {
         exportFormats = new ArrayList<String>();
-        exportFormats.add("ddi");
-        exportFormats.add("oai_dc");
-        exportFormats.add("marc");
+        exportFormats.add(EXPORT_FORMAT_DDI);
+        exportFormats.add(EXPORT_FORMAT_DC);
+        exportFormats.add(EXPORT_FORMAT_MARC);
         
     }
     
     public StudyExporter getStudyExporter(String exportFormat) {
-        if (exportFormat.equals("ddi")) { 
+        if (exportFormat.equals(EXPORT_FORMAT_DDI)) { 
             return ddiService;
-        } else if (exportFormat.equals("oai_dc")) {
+        } else if (exportFormat.equals(EXPORT_FORMAT_DC)) {
             return dcService;
-        } else if (exportFormat.equals("marc")) {
+        } else if (exportFormat.equals(EXPORT_FORMAT_MARC)) {
             return marcService;
         }
         else throw new EJBException("Unknown export format: "+exportFormat);

@@ -128,7 +128,7 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
    font-weight: bold
 }
 .list-header-left {
-   background-color: #e2e2e2;
+   background-color: #dadee0;
    font-weight: bold;
    text-align: left
 }
@@ -239,7 +239,7 @@ a.dvn_more{
 
 .vdcInlineHelpContents {
     height: 100%;
-    background-color: #e2e2e2;
+    background-color: #dadee0;
     margin-top: 5px;
     padding: 3px 3px 3px 10px;
     margin-bottom: 0px;
@@ -444,17 +444,18 @@ span.vdcSResultsField {
 }
 
 .vdcStudyInfoHeader {
-   background-color: #E2E2E2;
+   background-color: #dadee0;
    font-weight: bold;
    text-align: center;
    padding-top: 3px;
    padding-bottom: 3px;
    margin-top: -1px;
    margin-bottom: 4px;
+   width: 100%;
 }
 
 .vdcStudyInfoCol1 {
-   border-bottom-color: #E2E2E2;
+   border-bottom-color: #dadee0;
    border-bottom-style: solid;
    border-bottom-width: 1px;
    font-weight: bold;
@@ -466,7 +467,7 @@ span.vdcSResultsField {
    width: 200px;
 }
 .vdcStudyInfoCol2 {
-   border-bottom-color: #E2E2E2;
+   border-bottom-color: #dadee0;
    border-bottom-style: solid;
    border-bottom-width: 1px;
    font-weight: normal;
@@ -548,7 +549,7 @@ span.vdcSResultsField {
 .vdcStudyFilesCol1{
    white-space: normal;
    width: 150px;
-   border-color: #e2e2e2;
+   border-color: #dadee0;
    border-style: solid;
    border-width: 1px;
    padding-right: 2px;
@@ -556,7 +557,7 @@ span.vdcSResultsField {
 }
 .vdcStudyFilesCol2{
    white-space: normal; 
-   border-color: #E2E2E2;
+   border-color: #dadee0;
    border-style: solid;
    border-width: 1px;
    padding-right: 2px;
@@ -565,7 +566,7 @@ span.vdcSResultsField {
 .vdcStudyFilesCol3{
    white-space: normal;  
    width: 130px;
-   border-color: #E2E2E2;
+   border-color: #dadee0;
    border-style: solid;
    border-width: 1px;
    padding-right: 2px;
@@ -574,7 +575,7 @@ span.vdcSResultsField {
 .vdcStudyFilesCol4{
    white-space: normal;  
    width: 30px;
-   border-color: #E2E2E2;
+   border-color: #dadee0;
    border-style: solid;
    border-width: 1px;
    padding-right: 2px;
@@ -583,7 +584,7 @@ span.vdcSResultsField {
 .vdcStudyFilesCol5{
    white-space: normal;  
    width: 30px;
-   border-color: #E2E2E2;
+   border-color: #dadee0;
    border-style: solid;
    border-width: 1px;
    padding-right: 2px;
@@ -592,7 +593,7 @@ span.vdcSResultsField {
 .vdcStudyFilesCol6{
    white-space: normal;  
    width: 90px;
-   border-color: #E2E2E2;
+   border-color: #dadee0;
    border-style: solid;
    border-width: 1px;
    padding-left: 4px;  
@@ -626,7 +627,7 @@ span.vdcSResultsField {
 }
 
 .vdcEditFilesHeader{
-   background-color: #E2E2E2;
+   background-color: #dadee0;
    font-weight: bold;
    text-align: left
 }
@@ -817,13 +818,13 @@ span.vdcSResultsField {
    vertical-align: top
 }
 .vdcVarHeaderCol1{
-   background-color: #E2E2E2;
+   background-color: #dadee0;
    padding-bottom: 5px;
    padding-left: 20px;
    padding-top: 10px
 }
 .vdcVarHeaderCol2{
-   background-color: #E2E2E2;
+   background-color: #dadee0;
    padding-bottom: 5px;
    padding-top: 10px;
    padding-right: 4px;
@@ -1086,45 +1087,20 @@ a.vdcRequestPanelLink:hover{
 	}
 /* subsetting page: summary statistics: ends here */
 
-/* *************** dvn network page specific ***************** */
+/* *************** dvn network homepage page specific ***************** */
 .dvnLineSpacer   { visibility:hidden; }
-.dvnChildColumn  { width: 33%; vertical-align: top;}
-.dvnChildTable   { width: 100%; }
+.dvnChildColumn  { width: 32%; vertical-align: top;}
 .dvnChildTable ul, .dvnChildTable ol { list-style: none; }
 .dvnMainColumn   { width: 100%;}
-.dvnMainTable    { width: 98%; font-size: 85%;}
 .dvnMainPanel    {
-  margin: .4em 0;
-  padding: .25em 0; 
-  color: #000;
-  background: #e1e4eb;
-  border-top: 2px solid #cbd1dd;
-  font-style: italic;
-  text-align: center;
-  display: block;
-  width: 98%;
+   background-color: #dadee0;
+   font-weight: bold;
+   text-align: center;
+   padding-top: 3px;
+   padding-bottom: 3px;
+   width: 100%;
+   display: block;
 } 
-.dvn_dvNotReleased{
-	margin-left: .4em;
-	padding: .1em;
-	color: #820024;
-	background: #ffffcc;
-	font-size: 85%;
-	font-style: italic;
-}
-table.dvnMainTable ul {
-	margin: 0;
-	padding: 0 2em;
-	list-style-type: square;
-        color: #cbd1dd;
-}
-table.dvnMainTable ul ul {
-	margin: 0;
-	padding: 0 2em;
-	list-style-type: square;
-    color: #cbd1dd;
-}
-
 
 /* *************** vanilla pages styles ***************** */
 div.ContentArea { margin-top:150px; margin-left:auto; margin-right:auto; width:500px; background: url(custom_corners_topleft.gif) top left no-repeat; text-align: center;}

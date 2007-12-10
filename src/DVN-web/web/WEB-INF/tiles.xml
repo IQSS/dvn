@@ -200,6 +200,10 @@
        <put name="pageTitle"   type="string"        value="DVN - Variable Information"/>
        <put name="content" type="template"     value="/study/VariablePage.jsp"/>
    </definition>
+   <definition name="/study/EditVariablePage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Edit Variable Information"/>
+       <put name="content" type="template"     value="/study/EditVariablePage.jsp"/>
+   </definition>
    <!-- **************** Collection and Site Management  ****************  -->
    <definition name="/collection/AddCollectionsPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Add Collection"/>

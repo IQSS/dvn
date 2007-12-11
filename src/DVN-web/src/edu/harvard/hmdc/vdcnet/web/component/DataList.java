@@ -32,6 +32,7 @@ package edu.harvard.hmdc.vdcnet.web.component;
 import com.sun.rave.web.ui.component.Hyperlink;
 import java.io.IOException;
 import java.lang.String;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -54,7 +55,6 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.MethodExpressionActionListener;
-import javax.servlet.http.HttpServletRequest;
 import org.ajax4jsf.ajax.html.HtmlAjaxCommandLink;
 
 /**
@@ -100,27 +100,41 @@ public class DataList extends UIComponentBase {
         Set tabsKeys = tabsMap.keySet();
         Iterator tabsIterator = tabsKeys.iterator();
         String[] tabNames = new String[tabsMap.size()];
+        String[] tabkeys = new String[tabsMap.size()];
+        String nodisplaymsg = new String("");
         for (int i = 0; i < tabsMap.size(); i++){
-          String key = tabsIterator.next().toString();
-          Object object = tabsMap.get(key);
-          tabNames[i] = (String)tabsMap.get(key);
+              String key = tabsIterator.next().toString();
+              Object object = tabsMap.get(key);
+              //object is a Tab, get it
+              try {
+                  if (key.equals(tab)) {
+                        Method getNoDisplayMsg = object.getClass().getMethod("getNoDisplayMsg", new Class[0]);
+                        nodisplaymsg = (String)getNoDisplayMsg.invoke(object);
+                  }
+                  Method getTabName = object.getClass().getMethod("getName", new Class[0]);
+                  tabNames[i] = (String)getTabName.invoke(object);
+                  Method getKey = object.getClass().getMethod("getKey", new Class[0]);
+                  tabkeys[i] = (String)getKey.invoke(object);
+             } catch (NoSuchMethodException nme) {
+                  throw new FacesException(nme.toString());
+             } catch (Exception e) {
+                  throw new FacesException(e.toString());
+             }
         }
-        
-        formatTabs(tabNames, tab);
+        formatTabs(tabNames, tab, tabkeys);
         ResponseWriter writer = FacesContext.getCurrentInstance().getResponseWriter();
         writer.startElement("div", this);
         writer.writeAttribute("class", "TabGrpBox", null);
         Map map = (Map)getAttributes().get("contents");
         if (map.isEmpty()) 
-            formatMessage("There are no dataverses to display.");
+            formatMessage(nodisplaymsg);
         Set keys = map.keySet();
         Iterator iterator = keys.iterator();
         for (int i = 0; i < map.size(); i++){
           String key = iterator.next().toString();
           Object object = map.get(key);
           List<DataListing> datalistings = (List<DataListing>)map.get(key);
-          if (datalistings.isEmpty()) {
-              //formatMessage("There are no dataverses to display.");
+          if (datalistings.isEmpty()) { //TODO: remove and test this.
               continue;
           } else {
             formatHeading(key);
@@ -137,7 +151,7 @@ public class DataList extends UIComponentBase {
         writer.endElement("div");
     }
     
-    private void formatTabs(String[] tabNames, String tab) {
+    private void formatTabs(String[] tabNames, String tab, String[]keys) {
         /** write this out
          *  because there is some kind of bug where this
          *  is not formatting the table correctly when written
@@ -157,24 +171,24 @@ public class DataList extends UIComponentBase {
         writer.startElement("tr", this);
         for (int i = 0; i < tabNames.length; i++) {
             writer.startElement("td", this);
-            if (tabNames[i].replaceAll(" ", "").toLowerCase().equals(tab)) {
+            if (keys[i].equals(tab)) {
                 writer.writeAttribute("class", "MniTabTblSelTd", null);//TODO parameterize this from the url or jsp
                 writer.startElement("div", this);
                 // title="Current Selection: Cataloging Information"
                 writer.writeAttribute("title", "Current Selection: " + tabNames[i], null);//TODO: set this according to url param
                 writer.writeAttribute("class", "MniTabSelTxt", null);
                 writer.startElement("span", this);
-                writer.writeAttribute("id", tabNames[i].replaceAll(" ", "").toLowerCase(), null);//TODO, set this to the key
+                writer.writeAttribute("id", keys[i], null);//TODO, set this to the key
                 writer.writeAttribute("class", "disabled", null);
                 writer.writeText(tabNames[i], null);
                 writer.endElement("span");
                 writer.endElement("div");
             } else {
                 writer.startElement("a", this);
-                writer.writeAttribute("id", tabNames[i].replaceAll(" ", "").toLowerCase(), null);
+                writer.writeAttribute("id", keys[i], null);
                 writer.writeAttribute("class", "MniTabLnk", null);
                 writer.writeAttribute("title", tabNames[i], null);
-                writer.writeAttribute("href", "/dvn/?tab=" + tabNames[i].replaceAll(" ", "").toLowerCase(), null);//TODO parameterize the link to the home page.
+                writer.writeAttribute("href", "/dvn/?tab=" + keys[i], null);//TODO parameterize the link to the home page.
                 writer.writeText(tabNames[i], null);
                 writer.endElement("a");
             }

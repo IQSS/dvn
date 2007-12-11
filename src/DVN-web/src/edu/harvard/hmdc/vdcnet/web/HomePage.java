@@ -44,8 +44,11 @@ import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -89,7 +92,7 @@ public class HomePage extends VDCBaseBean {
     private String searchField;
     private String searchValue;
     private Map dataMap = new TreeMap();
-    private Map tabsMap = new TreeMap();
+    private Map tabsMap = new LinkedHashMap();
     
     StatusMessage msg;
     
@@ -132,7 +135,7 @@ public class HomePage extends VDCBaseBean {
         if (tab != null) {
             setSelectedTab(tab);
         } else {
-            setSelectedTab("nowavailable"); //default value
+            setSelectedTab(ResourceBundle.getBundle("DataListBundle").getString("tab1key")); //default value
         }
         request.setAttribute("tab", getSelectedTab());
         initTabsMap();
@@ -374,11 +377,6 @@ public class HomePage extends VDCBaseBean {
      * @author wbossons
      *
      */
-     
-   public void initTabsMap() {
-       tabsMap.put("tab1", new String("Now Available"));
-       tabsMap.put("tab2", new String("Coming Soon"));
-   }
     
     public void initVdcGroupData() {
         // Get all the vdc groups
@@ -553,4 +551,103 @@ public class HomePage extends VDCBaseBean {
     public String getDefaultVdcPath() {
         return defaultVdcPath;
     }
+    
+    /** TABS */
+    
+    public void initTabsMap() {
+       ResourceBundle labels = ResourceBundle.getBundle("DataListBundle");
+       Enumeration bundleKeys = labels.getKeys();
+       ArrayList<Tab> tabs = new ArrayList<Tab>();
+       int i = 1;
+       while (i <= Integer.parseInt(ResourceBundle.getBundle("DataListBundle").getString("numberOfTabs"))) {
+          String tabkey  = ResourceBundle.getBundle("DataListBundle").getString("tab" + i + "key");
+          String tabname = ResourceBundle.getBundle("DataListBundle").getString("tab" + i + "name");
+          String tabnodisplaymsg = ResourceBundle.getBundle("DataListBundle").getString("tab" + i + "nodisplaymsg");
+          Integer taborder   = new Integer(ResourceBundle.getBundle("DataListBundle").getString("tab" + i + "order"));
+          Tab tab = new Tab(tabkey, tabname, tabnodisplaymsg, taborder);
+          tabs.add(tab);
+          i++;
+       }
+       TabSort tabsort = new TabSort();
+       synchronized(tabsort){
+            Collections.sort(tabs, tabsort.TAB_ORDER);
+        }
+      
+       Iterator iterator = tabs.iterator();
+       while (iterator.hasNext()) {
+           Tab tab = (Tab)iterator.next();
+           tabsMap.put(tab.getKey(), tab);
+       }
+   }
+    
+    
+    public class Tab implements Comparable {
+        
+        private String key;
+        private String name;
+        private String noDisplayMsg;
+        private Integer order;
+        
+        /**
+         * Creates a new instance of DataListing
+         */
+        public Tab() {
+
+        }
+
+        public Tab(String key, String name, String noDisplayMsg, int order) {
+            this.key        = key;
+            this.name       = name;
+            this.noDisplayMsg = noDisplayMsg;
+            this.order      = order;
+        }
+
+        public String getKey() {
+                return this.key;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public String getNoDisplayMsg() {
+                return this.noDisplayMsg;
+        }
+        
+        public Integer getOrder() {
+                return this.order;
+        }
+        
+        public String toString() {
+        return "[key=" + key + " | name=" + name + " | noDisplayMsg=" + noDisplayMsg + " | order=" + order + "\n\r";
+      }
+        
+        public int compareTo(Object obj) {
+            Tab tab = (Tab) obj;
+            int keyComparison = key.toUpperCase().compareTo(tab.getKey().toUpperCase());
+            return ((keyComparison == 0) ? name.compareTo(tab.getName()) : keyComparison);
+          }
+
+          public boolean equals(Object obj) {
+            if (!(obj instanceof Tab)) {
+              return false;
+            }
+            Tab tab = (Tab) obj;
+            return key.equals(tab.getKey())
+                && name.equals(tab.getName());
+          }
+
+          public int hashCode() {
+            return 31 * key.hashCode() + name.hashCode();
+          }
+      }
+    
+    public class TabSort {
+        final Comparator<Tab> TAB_ORDER =
+                                     new Comparator<Tab>() {
+            public int compare(Tab e1, Tab e2) {
+                return e1.getOrder().compareTo(e2.getOrder());
+            }
+        };
+    }   
 }

@@ -398,9 +398,9 @@ public class AddSitePage extends VDCBaseBean {
                 VDC vdc        = (VDC)iterator.next();
                 stringArray[i] = vdc.getId().toString();
                 i++;
-                if (!iterator.hasNext()) {
-                    stringArray[i] = vdcService.findByAlias(alias).getId().toString();
-                }
+            }
+            if (!iterator.hasNext()) {
+                stringArray[i] = vdcService.findByAlias(alias).getId().toString();
             }
             vdcGroupService.updateWithVdcs(vdcGroupService.findById(selectedGroup), stringArray);
         }

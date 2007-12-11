@@ -351,7 +351,7 @@ public class StudyUI {
         String str = "";
         for (Iterator<StudyNote> it = getStudy().getStudyNotes().iterator(); it.hasNext();) {
             StudyNote elem = it.next();
-            if (!elem.getType().equals(DDI20ServiceBean.NOTE_TYPE_TERMS_OF_USE)) {
+            if (elem.getType()==null || !elem.getType().equals(DDI20ServiceBean.NOTE_TYPE_TERMS_OF_USE)) {
                 if (!StringUtil.isEmpty(elem.getType())) {
                     if (str != "") {
                         str += "; ";

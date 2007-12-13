@@ -4,7 +4,8 @@
                         xmlns:jsp="http://java.sun.com/JSP/Page" 
                         xmlns:ui="http://www.sun.com/web/ui"
                         xmlns:tiles="http://struts.apache.org/tags-tiles"
-                        xmlns:dmap="/WEB-INF/tlds/DataList">
+                        xmlns:dmap="/WEB-INF/tlds/DataList"
+                        >
                             
     <f:subview id="homePageView">
        <h:form id="form1">
@@ -83,6 +84,9 @@
                   <!-- Network Homepage -->
                     <!-- datalist component for NETWORK HOME PAGE -->
                     <h:panelGrid rendered="#{VDCRequest.currentVDC == null}" style="width:98%;">
+                        <h:panelGrid>
+                            <h:outputText value="#{HomePage.networkData}"/>
+                        </h:panelGrid>
                         <dmap:datalist contents="#{HomePage.dataMap}" tabs="#{HomePage.tabsMap}" tab="#{HomePage.selectedTab != null ? HomePage.selectedTab : requestScope.tab}" id="dataMap" />
                     </h:panelGrid>
                   <!-- Dataverse Hoempage -->

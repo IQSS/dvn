@@ -54,6 +54,12 @@ public interface VDCNetworkServiceLocal {
 
     VDCNetwork find(Object pk);
     VDCNetwork find();
+    
+    Long getTotalDataverses(boolean isreleased);
+    
+    Long getTotalStudies(boolean isreleased);
+    
+    Long getTotalFiles(boolean isreleased);
 
     
     

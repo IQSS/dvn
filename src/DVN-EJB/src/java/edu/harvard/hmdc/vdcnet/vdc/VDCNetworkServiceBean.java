@@ -29,25 +29,18 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
-import edu.harvard.hmdc.vdcnet.harvest.HarvestTimerInfo;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
-import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyExporter;
-import edu.harvard.hmdc.vdcnet.study.StudyExporterFactoryLocal;
+import edu.harvard.hmdc.vdcnet.study.ReviewStateServiceBean;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
-import java.io.FileWriter;
-import java.io.Writer;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
@@ -215,5 +208,30 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
      
     public void addTermsOfUse(TermsOfUse termsOfUse) {
         em.persist(termsOfUse);  
+    }
+       
+    public Long getTotalDataverses(boolean released) {
+        Long total = new Long("0");
+        boolean bool = !released;
+        Object object = ((List)em.createNativeQuery("select COUNT(id) from vdc where vdc.restricted = " + bool).getSingleResult()).get(0);
+        total = (Long)object;
+        return total;
+
+    }
+    
+    public Long getTotalStudies(boolean released) {
+        Long total = new Long("0");
+        boolean bool = !released;
+        Object object = ((List)em.createNativeQuery("select COUNT(study.id) from study, vdc, reviewstate where study.owner_id = vdc.id AND study.reviewstate_id = reviewstate.id AND reviewstate.name = '" + ReviewStateServiceBean.REVIEW_STATE_RELEASED + "' AND vdc.restricted = " + bool).getSingleResult()).get(0);
+        total = (Long)object;
+        return total;
+    }
+    
+    public Long getTotalFiles(boolean released) {
+        Long total = new Long("0");
+        boolean bool = !released;
+        Object object = ((List)em.createNativeQuery("select COUNT(studyfile.id) from studyfile, vdc, reviewstate, filecategory, study where study.owner_id = vdc.id AND study.reviewstate_id = reviewstate.id AND reviewstate.name = '" + ReviewStateServiceBean.REVIEW_STATE_RELEASED + "' AND filecategory.study_id = study.id AND studyfile.filecategory_id = filecategory.id AND vdc.restricted = " + bool).getSingleResult()).get(0);
+        total = (Long)object;
+        return total;
     }
 }

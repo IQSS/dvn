@@ -33,6 +33,7 @@ import edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.collection.CollectionUI;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
@@ -142,6 +143,7 @@ public class HomePage extends VDCBaseBean {
         initVdcGroupData();
         initVdcsSansGroups();
         initScholarDVGroup();
+        initNetworkData();
     }
     
     /**
@@ -405,16 +407,6 @@ public class HomePage extends VDCBaseBean {
         }
     }
     
-    private String selectedTab;
-    
-    public String getSelectedTab() {
-        return this.selectedTab;
-    }
-    
-    public void setSelectedTab(String selected) {
-        this.selectedTab = selected;
-    }
-    
     private List vdcGroups;
     
     public List getVdcGroups() {
@@ -649,5 +641,76 @@ public class HomePage extends VDCBaseBean {
                 return e1.getOrder().compareTo(e2.getOrder());
             }
         };
-    }   
+    } 
+    
+    private String selectedTab;
+    
+    public String getSelectedTab() {
+        return this.selectedTab;
+    }
+    
+    public void setSelectedTab(String selected) {
+        this.selectedTab = selected;
+    }
+    
+    //network data
+    private Long totalDataverses;
+    private Long totalStudies;
+    private Long totalFiles;
+    
+    private String networkData = new String();
+    
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
+       /**
+     * Holds value of property total.
+     */
+     private void initNetworkData() {
+         String totalDvsLabel       = ResourceBundle.getBundle("Bundle").getString("totalDataverses");
+         String totalStudiesLabel   = ResourceBundle.getBundle("Bundle").getString("totalStudies");
+         String totalFilesLabel     = ResourceBundle.getBundle("Bundle").getString("totalFiles");
+         boolean isReleased         = true;
+         if (this.selectedTab.equals("comingsoon"))
+             isReleased = false;
+         setNetworkData(totalDvsLabel + ": " + this.getTotalDataverses(isReleased) + "  " + totalStudiesLabel + ": " + this.getTotalStudies(isReleased) + "  " + totalFilesLabel + ": " + this.getTotalFiles(isReleased));
+     }
+    
+    /**
+     * Getters 
+     */
+    public Long getTotalDataverses(boolean released) {
+        return vdcNetworkService.getTotalDataverses(released);
+    }
+    
+    public Long getTotalStudies(boolean released) {
+        return vdcNetworkService.getTotalStudies(released);
+    }
+    
+    public Long getTotalFiles(boolean released) {
+        return vdcNetworkService.getTotalFiles(released);
+    }
+    
+    public String getNetworkData() {
+        return this.networkData;
+    }
+
+    /**
+     * Setters
+     */
+    public void setTotalDataverses(Long totalDvs) {
+        this.totalDataverses = totalDvs;
+    }
+    
+    public void setTotalStudies(Long totalstudies) {
+        this.totalStudies = totalstudies;
+    }
+    
+    public void setTotalFiles(Long totalfiles) {
+        this.totalFiles = totalfiles;
+    }
+    
+    public void setNetworkData(String networkdata) {
+        this.networkData = networkdata;
+    }
+    
+    
 }

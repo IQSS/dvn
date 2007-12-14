@@ -85,7 +85,7 @@
                     <!-- datalist component for NETWORK HOME PAGE -->
                     <h:panelGrid rendered="#{VDCRequest.currentVDC == null}" style="width:98%;">
                         <h:panelGrid>
-                            <h:outputText value="#{HomePage.networkData}"/>
+                            <h:outputText escape="false" value="#{HomePage.networkData}"/>
                         </h:panelGrid>
                         <dmap:datalist contents="#{HomePage.dataMap}" tabs="#{HomePage.tabsMap}" tab="#{HomePage.selectedTab != null ? HomePage.selectedTab : requestScope.tab}" id="dataMap" />
                     </h:panelGrid>

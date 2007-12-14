@@ -403,12 +403,17 @@ public class HomePage extends VDCBaseBean {
                     inneriterator.remove();  
             }
             List<DataListing> dataList = sortVdcs(innerlist);
-            if (!dataList.isEmpty()) 
+            if (!dataList.isEmpty()) {
                 dataMap.put(vdcgroup.getName(), dataList);
+                vdcGroupCount++;
+            } else {
+                vdcGroupCount = 0;
+            }
         }
     }
     
     private List vdcGroups;
+    private static int vdcGroupCount = 0;
     
     public List getVdcGroups() {
         return (List)vdcGroups;
@@ -460,8 +465,9 @@ public class HomePage extends VDCBaseBean {
         }
         setVdcsSansGroups(newlist);
         List<DataListing> dataList = sortVdcs(this.getVdcsSansGroups());
+        String heading = (vdcGroupCount > 0) ? "Other" : "";
         if (!dataList.isEmpty()) 
-                dataMap.put("Other", dataList);
+                dataMap.put(heading, dataList);
      }
    
    private List scholarDvGroup;

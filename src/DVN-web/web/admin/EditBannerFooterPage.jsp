@@ -33,8 +33,7 @@
                                             for="banner"
                                             styleClass="errorMessage"/>
                                 <f:verbatim><br /><br /></f:verbatim>
-                                <h:inputTextarea    cols="100" 
-                                                    id="banner" 
+                                <h:inputTextarea    id="banner" 
                                                     rows="15" 
                                                     value="#{EditBannerFooterPage.banner}"
                                                     styleClass="formHtmlEnabled">
@@ -48,8 +47,7 @@
                                             styleClass="errorMessage"/>
                                 
                                 <f:verbatim><br /></f:verbatim>
-                                <h:inputTextarea    cols="100" 
-                                                    id="footer" 
+                                <h:inputTextarea    id="footer" 
                                                     rows="7" 
                                                     value="#{EditBannerFooterPage.footer}"
                                                     styleClass="formHtmlEnabled">

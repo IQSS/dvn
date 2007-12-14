@@ -2,30 +2,44 @@
 
 /* MAIN LAYOUT */
 .dvn_wrapper {
-	margin: 0 auto;
-	max-width: 980px;
-        min-width: 700px;
+    min-width: 700px;
 }
 
 .dvn_content {
-   padding: 12px;    
-	font:90%/180% "HelveticaNeue",Helvetica,Arial,sans-serif;
-	color: #464646;
+    padding: 12px;
+    color: #464646;
 }
-.dvn_content a {
-	color: #3e5f9d;
-        text-decoration: none;
+
+.dvn_content div, .dvn_content span, .dvn_content p, .dvn_content li, 
+.dvn_content table, .dvn_content caption, .dvn_content tbody, .dvn_content tfoot, .dvn_content thead, .dvn_content tr, .dvn_content th, .dvn_content td {
+    font-family: "HelveticaNeue", Helvetica, Arial, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 25.2px !important;
+}
+
+.dvn_content a, .dvn_content a:link, .dvn_content a:visited, .dvn_content a:hover, .dvn_content a:active {
+    font-family: "HelveticaNeue", Helvetica, Arial, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 25.2px !important;
+}
+
+.dvn_content a:link, .dvn_content a:visited {
+        color: #3e5f9d;
+        text-decoration: none !important;
 }
  .dvn_content a:hover, .dvn_content a:active {
-	color: #c55b28;
-        text-decoration: underline;
+        color: #c55b28;
+        text-decoration: underline !important;
 }
+
 .dvn_content img {margin: 0; padding: 0; border: 0;}
+.dvn_content ul {list-style: none; margin: 0; padding: 0;}
+.dvn_content li {margin: 0; padding: 0; vertical-align: middle;}
+.dvn_content textarea {width: 40em;}
 
 .dvn_floatL {
 	float: left;
 }
-
 .dvn_floatR {
 	float: right;
 }
@@ -37,8 +51,6 @@
 .dvn_hmpgMainMessage {margin-bottom: 1em;}
 
 .dvn_section {margin: 1em 0; width: 100%; text-align: left;}
-div.dvn_section div, div.dvn_section span, div.dvn_section p, div.dvn_section li, div.dvn_section a {line-height: 144%;}
-div.dvn_section table, div.dvn_section caption, div.dvn_section tbody, div.dvn_section tfoot, div.dvn_section thead, div.dvn_section tr, div.dvn_section th, div.dvn_section td {}
 
 .dvn_sectionContent {
 	display: inline;
@@ -46,16 +58,16 @@ div.dvn_section table, div.dvn_section caption, div.dvn_section tbody, div.dvn_s
 	float: left;
 }
 
-div.dvn_sectionTitle {margin: 0; padding: .65em .65em .25em .65em; color: #768891; font-size: 112%; font-weight: bold; text-transform: uppercase; text-align: left;}
-span.dvn_sectionTitleL {float: left; padding: 0 0 0.25em 0; color: #768891; font-size: 112%; font-weight: bold; text-transform: uppercase; text-align: left;}
+div.dvn_sectionTitle {margin: 0; padding: .65em .65em .25em .65em; color: #768891; font-size: 112% !important; font-weight: bold; text-transform: uppercase; text-align: left;}
+span.dvn_sectionTitleL {float: left; padding: 0 0 0.25em 0; color: #768891; font-size: 112% !important; font-weight: bold; text-transform: uppercase; text-align: left;}
 span.dvn_sectionTitleR  {float: right; padding: 0 0 0.25em 0; }
-span.dvn_sectionTitleR a {margin-left: 2em; }
+span.dvn_sectionTitleR a:link, span.dvn_sectionTitleR a:visited, span.dvn_sectionTitleR a:hover, span.dvn_sectionTitleR a:active {margin-left: 2em; }
 
 .dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; }
 .dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; } 
 
 div.dvn_block {margin-bottom: 12px; padding: 12px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
-div.dvn_block h3 {margin: 0; padding: 0; color: #768891; font-size: 112%; font-weight: bold; text-transform: uppercase;}
+div.dvn_block h3 {margin: 0; padding: 0; color: #768891; font-size: 112% !important; font-weight: bold; text-transform: uppercase;}
 div.dvn_blockTitleBar {margin-bottom: 12px; padding: 6px; background: #e6ebed; border: 1px solid #ddd; font-style: italic; text-align: center;}
 
 .dvn_margin12 {
@@ -70,9 +82,11 @@ div.dvn_blockTitleBar {margin-bottom: 12px; padding: 6px; background: #e6ebed; b
     float: left;
 }
 
+span.disabled {font-weight: bold;}
+
 /* MAIN SECTION */
 #dvn_mainSection {position: relative; width: 100%;}
-#dvn_mainSectionTitle {padding: .25em 0; color: #768891; font-size: 125%; text-transform: uppercase;}
+#dvn_mainSectionTitle {padding: .25em 0; color: #768891; font-size: 124% !important; text-transform: uppercase;}
 
 /* SIDE SECTION PANELS */
 .dvn_sectionPanels {display: inline; margin-left: 2%; width: 22%; float: left;} 
@@ -83,8 +97,8 @@ div.dvn_blockTitleBar {margin-bottom: 12px; padding: 6px; background: #e6ebed; b
 
 /* HEADER */
 .dvn_headerTitle {position: relative;}
-.dvn_headerTitleLarge {margin: .25em 12px; font-size: 124%;}
-.dvn_headerTitleLarge a:link, .dvn_headerTitleLarge a:visited, .dvn_headerTitleLarge a:hover, .dvn_headerTitleLarge a:active {color: #768891;}
+.dvn_headerTitleLarge {margin: .25em 12px;}
+.dvn_headerTitleLarge a:link, .dvn_headerTitleLarge a:visited, .dvn_headerTitleLarge a:hover, .dvn_headerTitleLarge a:active {color: #768891; font-size: 124% !important;}
 .dvn_headerTitleL {margin: 0 12px;}
 .dvn_headerTitleL a:link, .dvn_headerTitleL a:visited, .dvn_headerTitleL a:hover, .dvn_headerTitleL a:active {color: #c55b28; font-weight: bold;}
 .dvn_headerTitleR {position: absolute; right: 12px; top: 6px;}
@@ -95,18 +109,18 @@ div.dvn_navblock {margin-bottom: 12px; padding: 0 12px 0 12px; background: #dade
 .dvn_navblockLinks:after {content:"."; display:block; height:0; clear:both; visibility:hidden;} /*Clear floats*/
 .dvn_navblockLinks ul {margin: 0; padding: 0; list-style-type:none;}
 .dvn_navblockLinks ul li {float:left; z-index:auto !important /*Non-IE6*/; z-index:1000 /*IE6*/;}
-.dvn_navblockLinks ul li a {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; height:1.75em; line-height:1.75em; padding:0 .75em 0 .75em; text-decoration:none;}
+.dvn_navblockLinks ul li a:link, .dvn_navblockLinks ul li a:visited, .dvn_navblockLinks ul li a:hover, .dvn_navblockLinks ul li a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; height:1.75em; line-height:1.75em; padding:0 .75em 0 .75em; text-decoration:none;}
 .dvn_navblockLinks ul li:hover {position:relative;} /*Sylvain IE hack*/
-.dvn_navblockLinks ul li:hover a {background-color: #c55b28; text-decoration:none;} /*Color main cells hovering mode*/
+.dvn_navblockLinks ul li:hover a:link, .dvn_navblockLinks ul li:hover a:visited, .dvn_navblockLinks ul li:hover a:hover, .dvn_navblockLinks ul li:hover a:active {background-color: #c55b28; text-decoration:underline;} /*Color main cells hovering mode*/
 .dvn_navblockLinks ul li a:hover {position:relative /*Sylvain IE hack*/; z-index:1000 /*Sylvain IE hack*/; background-color: #c55b28; color: #fff; text-decoration:underline;} /*Color main cells hovering mode*/
-.dvn_networkOptions a {color: #c55b28; font-weight: bold;}
-.dvn_navNetworkName a {font-weight: normal;}
+.dvn_networkOptions a:link, .dvn_networkOptions a:visited, .dvn_networkOptions a:hover, .dvn_networkOptions a:active {color: #c55b28; font-weight: bold;}
+.dvn_navNetworkName a:link, .dvn_navNetworkName a:visited, .dvn_navNetworkName a:hover, .dvn_navNetworkName a:active {font-weight: normal;}
 
 /* SEARCH */
 div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background: #e6ebed; border: 1px solid #ddd;}
-.dvn_searchTitle {float: left; margin-right: 12px; color: #999; font-size: 112%;}
+.dvn_searchTitle {float: left; margin-right: 12px; color: #999; font-size: 112% !important;}
 .dvn_searchLinks {position: absolute; top: 0; right: 0;}
-.dvn_searchLinks a {margin-left: 2em;}
+.dvn_searchLinks a:link, .dvn_searchLinks a:visited, .dvn_searchLinks a:hover, .dvn_searchLinks a:active {margin-left: 2em;}
 .dvn_searchBoxContent {position: relative; width: 100%;}
 .dvn_searchBoxContent fieldset {margin: 0; padding: 0; border: 0;}
 .dvn_searchBoxContent label {float: left;}
@@ -155,16 +169,18 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
 
 .successMessage {
    background: #FBD91F;
-   border-color: #CE8928;
-   border-style: solid;
-   border-width: 1px;
-   color: #002BB8;
+   border: 1px solid #CE8928;
+   color: #464646;
    display: block;
    font-weight: bold;
-   margin: 1em;
    padding: 0.75em;
    text-align: center;
-   width: 500px
+   width: 70%;
+   margin: 0 auto 12px auto;
+}
+
+.successMessage a:link, .successMessage a:visited, .successMessage a:hover, .successMessage a:active {
+    color: #c55b28;
 }
 
 .warnMessage {
@@ -187,7 +203,7 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
   font-style: italic;
   color: #6D0609;
 }
-a.dvn_more{
+a.dvn_more:link, a.dvn_more:visited, a.dvn_more:hover, a.dvn_more:active{
   color: #6D0609;
  }
 
@@ -214,6 +230,7 @@ a.dvn_more{
 }
 
 .vdcHelpText{
+    font: 70%;
     color: #666666;
     line-height: 140%;
 }
@@ -246,6 +263,7 @@ a.dvn_more{
     display: block;
     text-align:left;
     color: #000000;
+    font-weight: normal;
 }
 
 .vdcInlineHelpWrapper {
@@ -384,6 +402,10 @@ a.vdcSiteMapLink:hover {
   color: #ff0000;
   text-decoration: underline;
 }
+a.vdcSiteMapLink:active {
+  color: #ff0000;
+  text-decoration: underline;
+}
 
 /* VDC Search Results Style rules 
 */
@@ -436,6 +458,7 @@ span.vdcSResultsField {
 
 /* Style rules for Study Page (Cataloging Info and Files)
 */
+
 .vdcStudyStatus {
    font-weight: bold;
    color: black;
@@ -458,7 +481,7 @@ span.vdcSResultsField {
    border-bottom-color: #dadee0;
    border-bottom-style: solid;
    border-bottom-width: 1px;
-   font-weight: bold;
+   /* font-weight: bold; */
    padding-bottom: 5px;
    padding-left: 0px;
    padding-right: 10px;
@@ -598,6 +621,9 @@ span.vdcSResultsField {
    border-width: 1px;
    padding-left: 4px;  
 }
+
+.vdcLegendHeader {padding-top: 15px; font-weight: bold !important; color: #666; font-style: italic;}
+
 .vdcCitationText{
     text-indent: -15px; 
     padding-left: 15px;
@@ -919,6 +945,9 @@ a.vdcRequestPanelLink:visited{
 a.vdcRequestPanelLink:hover{
     font-weight: bold;
 }
+a.vdcRequestPanelLink:active{
+    font-weight: bold;
+}
 
 /* Scrollable div for terms  of use
 */
@@ -1005,7 +1034,7 @@ a.vdcRequestPanelLink:hover{
 .vdcTreeDataverse{
     white-space: normal;
 }
-.vdcTreeDataverse a{
+.vdcTreeDataverse a:link, .vdcTreeDataverse a:visited, .vdcTreeDataverse a:hover, .vdcTreeDataverse a:active{
     font-weight: bold; 
 }
 .vdcTreeDataverse img{
@@ -1015,7 +1044,7 @@ a.vdcRequestPanelLink:hover{
 .vdcTreeCollection{
    white-space: normal;
 }
-.vdcTreeCollection a{
+.vdcTreeCollection a:link, .vdcTreeCollection a:visited, .vdcTreeCollection a:hover, .vdcTreeCollection a:active{
    white-space: normal;
 }
 .vdcTreeCollection img{
@@ -1026,7 +1055,7 @@ a.vdcRequestPanelLink:hover{
    white-space: normal;
 }
 
-.vdcTreeStudy a{
+.vdcTreeStudy a:link, .vdcTreeStudy a:visited, .vdcTreeStudy a:hover, .vdcTreeStudy a:active{
    white-space: normal;
 }
 .vdcTreeStudy img{
@@ -1091,17 +1120,32 @@ a.vdcRequestPanelLink:hover{
 .dvnLineSpacer   { visibility:hidden; }
 .dvnChildColumn  { width: 25%; vertical-align: top;}
 .dvnChildTable { width:100%; }
-.dvnChildTable ul, .dvnChildTable ol { list-style: none; }
+.dvnChildTable {width: 100%;}
+.dvnChildTable ul, .dvnChildTable ol { list-style: none; margin-left: 1.1em; }
+.dvnChildTable li {vertical-align: middle;}
 .dvnMainColumn   { width: 100%;}
 .dvnMainPanel    {
-   background-color: #dadee0;
+   background-color: #e6ebed;
    font-weight: bold;
    text-align: center;
    padding-top: 3px;
    padding-bottom: 3px;
    width: 100%;
    display: block;
-} 
+}
+
+li.activeBullet {
+    list-style-image: url(icon_activebullet.gif);
+    padding-left:2px;
+}
+li.affiliationBullet {
+    list-style-type: square;
+    list-style-image: none;
+    line-height:80%;
+    margin-top:0;
+    color:#999999;
+    padding:0 0 .5em 0;
+}
 
 /* *************** vanilla pages styles ***************** */
 div.ContentArea { margin-top:150px; margin-left:auto; margin-right:auto; width:500px; background: url(custom_corners_topleft.gif) top left no-repeat; text-align: center;}
@@ -1142,40 +1186,16 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 .groupEditDescriptionColumn   { width:70%; border:1px solid silver; text-align:left; }
 .groupEditFooter        { width:98%; background-color:#d9e7f0; padding:0px; text-align:right;  }
 
-/* Overwrite tabset style rules (from Creator Default Themes)
-*/
-.MniTabLnk {display: block;}
-a.MniTabLnk:link, a.MniTabLnk:visited {font-weight: bold;}
-.MniTabSelTxt {font-size: auto !important; font-weight: bold;}
-
-.vdcStudyInfoCol1 a {font-size: 90%;}
-.vdcStudyInfoCol2 div, .vdcStudyInfoCol2 span {font-size: 90%;}
-.vdcStudyFilesCol1, .vdcStudyFilesCol2, .vdcStudyFilesCol3, .vdcStudyFilesCol4, .vdcStudyFilesCol5, .vdcStudyFilesCol6 {
-    font-size: inherit;
-}
-
-/* Special styles for the network home page */
-li.activeBullet {
-    list-style-image: url(icon_activebullet.gif);
-    padding-left:2px;
-}
-li.affiliationBullet {
-    list-style-type: square;
-    list-style-image: none;
-    line-height:80%;
-    vertical-align:top;
-    margin-top:0;
-    color:#999999;
-    padding:0 0 .5em 0;
-}
 
 .dvn_totalsLabel { color: #336699; font-size: 112%;}
 .dvn_totalsValue { color: red; font-weight: bold; }
 
 /**** Login ****/
-div.loginPageWrap {margin: 0 auto; text-align: center;}
+div.loginPageWrap {position: absolute; left: 25%; top: 25%; margin: 0; padding: 0; height: 50%; width: 50%;}
 div.loginPageWrap p#loginPageHeader span.headingText {font-size: 120%; color: #c55b28 !important; background: #dadee0 !important;}
 div.loginPageWrap div.ContentAreaFooter img {margin: 0.25em 0;}
+
+div.loginPageWrap div.ContentArea {margin: 0 auto; padding: 0;}
 
 table#loginBlock {width: 300px; line-height: 2.5; font:90%/180% "HelveticaNeue",Helvetica,Arial,sans-serif;}
 table#loginBlock td {padding: 2px;}

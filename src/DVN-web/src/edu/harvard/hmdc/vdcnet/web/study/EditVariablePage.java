@@ -82,7 +82,7 @@ public class EditVariablePage extends VDCBaseBean {
         super.init();
         
         if ( isFromPage("EditVariablePage") ) {
-            dtId = new Long(getRequestParam("content:variablePageView:form1:dtId"));
+        dtId = new Long(getRequestParam("content:editVariablePageView:form1:dtId"));
         dvFilter = getRequestParam("content:variablePageView:form1:dvFilter");
         }
         

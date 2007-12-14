@@ -415,15 +415,15 @@ public class DataList extends UIComponentBase {
      * 
      */
     private String formatId(String heading) {
-        String safeId = new String("");
+        String safeId = heading;
         //String regexp = "['\\@\\#\\$%\\^&\\*\\(\\)_\\+\\:\\<\\>\\/\\[\\]\\\\{\\}\\|\\p{Punct}\\p{Space}]";
         String regexp = "[^A-Za-z0-9]";
         Pattern pattern = Pattern.compile(regexp);
         Matcher matcher = pattern.matcher(heading);
         Boolean isInvalidChars  = matcher.find();
         if (isInvalidChars)
-            safeId = heading.replaceAll(regexp, "").toLowerCase();
+            safeId = heading.replaceAll(regexp, "");
         safeId = "dvn" + safeId;
-        return safeId;
+        return safeId.toLowerCase();
     }
 }

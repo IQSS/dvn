@@ -1089,7 +1089,8 @@ a.vdcRequestPanelLink:hover{
 
 /* *************** dvn network homepage page specific ***************** */
 .dvnLineSpacer   { visibility:hidden; }
-.dvnChildColumn  { width: 32%; vertical-align: top;}
+.dvnChildColumn  { width: 25%; vertical-align: top;}
+.dvnChildTable { width:100%; }
 .dvnChildTable ul, .dvnChildTable ol { list-style: none; }
 .dvnMainColumn   { width: 100%;}
 .dvnMainPanel    {

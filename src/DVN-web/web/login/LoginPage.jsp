@@ -59,7 +59,7 @@
                                     <ui:panelGroup style="padding-bottom: 10px; padding-top: 20px;"  block="true" id="groupPanelAffiliate1" rendered="#{LoginPage.isAffiliates != null}" >
                                             <h:outputText  id="outputTextAffiliate" style="font-weight: bold" value="Log in through an affiliate:"/>
                                         </ui:panelGroup>
-                                    <h:panelGrid rendered="#{LoginPage.isAffiliates != null}" style="margin-left:auto; margin-right:auto; background-color:#f2ffe6;border:1px solid #a3bfb1;" cellpadding="0" cellspacing="0" columnClasses="vdcLoginCol1, vdcLoginCol2" columns="2" id="gridPanelAffiliate" width="70%">
+                                    <h:panelGrid rendered="#{LoginPage.isAffiliates != null}" style="margin-left:auto; margin-right:auto; background-color: #f4ebc7; border: 1px solid #ddd;" cellpadding="0" cellspacing="0" columnClasses="vdcLoginCol1, vdcLoginCol2" columns="2" id="gridPanelAffiliate" width="70%">
                                         <ui:panelGroup block="true" style="padding-top: 20px; padding-right:10px; text-align:right;">
                                             <h:outputLabel  for="affiliateName" id="componentLabelAffiliateName" >
                                                 <h:outputText id="componentLabelAffiliateText" value="Affiliate Name" />

@@ -90,11 +90,6 @@
                         <dmap:datalist contents="#{HomePage.dataMap}" tabs="#{HomePage.tabsMap}" tab="#{HomePage.selectedTab != null ? HomePage.selectedTab : requestScope.tab}" id="dataMap" />
                     </h:panelGrid>
                   <!-- Dataverse Hoempage -->
-                    <ui:panelGroup id="recentPanel" block="true" rendered="#{VDCRequest.currentVDC.displayNewStudies == true}" >
-                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4&amp;numResults=100"  id="recentStudy" styleClass="dvn_more">
-                        <h:outputText  value="Most Recent" escape="false"/>
-                        </h:outputLink>
-                     </ui:panelGroup>
                     <!-- Display Tree at dataverse level -->
                     <ui:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
                 </div>

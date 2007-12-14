@@ -43,7 +43,10 @@
                                 <h:outputLink  id="hyperlink6" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/ReviewStudiesPage.jsp">
                                     <h:outputText id="hyperlink2Text1" value="Review Studies (see and review all New Studies and Studies In Review)"/>
                                 </h:outputLink>
-                                <h:outputText value=""/> <!-- a hack to make the spacing work (sorry Merce) -->
+                                <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4"  id="recentStudy">
+                                    <h:outputText  value="All Studies Uploaded and Released to this Dataverse (starting with most recent)" escape="false"/>
+                                </h:outputLink>
+                            <h:outputText value=""/> <!-- a hack to make the spacing work (sorry Merce) -->
                             </ui:panelGroup>
                             <ui:panelGroup block="true"  separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
                                 <h:outputLink id="hyperlink7b" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddCollectionStudiesPage.jsp">

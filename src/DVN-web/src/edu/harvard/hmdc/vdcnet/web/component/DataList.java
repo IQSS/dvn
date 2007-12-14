@@ -214,22 +214,23 @@ public class DataList extends UIComponentBase {
     // helper methods
       //utils
     private void formatHeading(String heading) {
-      
-        HtmlPanelGroup panelGroup = new HtmlPanelGroup();
-        panelGroup.setStyleClass("dvnMainPanel");
-        UIOutput headingText = new UIOutput();
-        ValueBinding outervaluebinding = FacesContext.getCurrentInstance().getApplication().createValueBinding(heading);
-        headingText.setValueBinding("value", outervaluebinding);
-        try {
-            panelGroup.getChildren().add(headingText);
-            this.getChildren().add(panelGroup);
-            panelGroup.encodeBegin(FacesContext.getCurrentInstance());
-            if (panelGroup.getRendersChildren()) {
-                panelGroup.encodeChildren(FacesContext.getCurrentInstance());
+        if (heading != "") {
+            HtmlPanelGroup panelGroup = new HtmlPanelGroup();
+            panelGroup.setStyleClass("dvnMainPanel");
+            UIOutput headingText = new UIOutput();
+            ValueBinding outervaluebinding = FacesContext.getCurrentInstance().getApplication().createValueBinding(heading);
+            headingText.setValueBinding("value", outervaluebinding);
+            try {
+                panelGroup.getChildren().add(headingText);
+                this.getChildren().add(panelGroup);
+                panelGroup.encodeBegin(FacesContext.getCurrentInstance());
+                if (panelGroup.getRendersChildren()) {
+                    panelGroup.encodeChildren(FacesContext.getCurrentInstance());
+                }
+                panelGroup.encodeEnd(FacesContext.getCurrentInstance());
+            } catch (IOException ioe) {
+                throw new FacesException();
             }
-            panelGroup.encodeEnd(FacesContext.getCurrentInstance());
-        } catch (IOException ioe) {
-            throw new FacesException();
         }
     }
     
@@ -241,20 +242,20 @@ public class DataList extends UIComponentBase {
      * @author wbossons
      */
     private void formatChildTable(List ndvs, String heading) {
-        int totalColumns = 3;
+        int totalColumns = 4;
         int columns = 0;
         int startNew = 0;
         if (totalColumns <= ndvs.size())
             startNew = setColumnLength(ndvs.size(), totalColumns);
         else
-            startNew = setColumnLength(3);//was (ndvs.size(), totalColumns);
+            startNew = setColumnLength(totalColumns);//was (ndvs.size(), totalColumns);
         int startPos = 0;
         ListIterator iterator = ndvs.listIterator();
         HtmlPanelGrid childTable = new HtmlPanelGrid();
         childTable = new HtmlPanelGrid(); // start the child table which eventually must be added to the view
         childTable.setId(formatId(heading));
         childTable.setStyleClass("dvnChildTable");
-        childTable.setColumns(3);
+        childTable.setColumns(totalColumns);
         childTable.setColumnClasses("dvnChildColumn");
         UIColumn column              = null;
         HtmlPanelGroup linkPanel     = null;

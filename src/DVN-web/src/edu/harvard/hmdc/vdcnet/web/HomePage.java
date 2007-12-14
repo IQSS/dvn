@@ -43,6 +43,7 @@ import edu.harvard.hmdc.vdcnet.web.component.DataListing;
 import edu.harvard.hmdc.vdcnet.web.component.VDCCollectionTree;
 import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -665,13 +666,21 @@ public class HomePage extends VDCBaseBean {
      * Holds value of property total.
      */
      private void initNetworkData() {
-         String totalDvsLabel       = ResourceBundle.getBundle("Bundle").getString("totalDataverses");
-         String totalStudiesLabel   = ResourceBundle.getBundle("Bundle").getString("totalStudies");
-         String totalFilesLabel     = ResourceBundle.getBundle("Bundle").getString("totalFiles");
+         
+        // String totalDvsLabel       = ResourceBundle.getBundle("Bundle").getString("totalDataverses");
+         //String totalStudiesLabel   = ResourceBundle.getBundle("Bundle").getString("totalStudies");
+         //String totalFilesLabel     = ResourceBundle.getBundle("Bundle").getString("totalFiles");
          boolean isReleased         = true;
          if (this.selectedTab.equals("comingsoon"))
              isReleased = false;
-         setNetworkData(totalDvsLabel + ": " + this.getTotalDataverses(isReleased) + "  " + totalStudiesLabel + ": " + this.getTotalStudies(isReleased) + "  " + totalFilesLabel + ": " + this.getTotalFiles(isReleased));
+         ResourceBundle messages = ResourceBundle.getBundle("Bundle");
+         Object[] messageArguments = { this.getTotalDataverses(isReleased), this.getTotalStudies(isReleased), this.getTotalFiles(isReleased) };
+         MessageFormat formatter = new MessageFormat("");
+         formatter.applyPattern(messages.getString("totals"));
+         String output = formatter.format(messageArguments);
+         System.out.println(output);
+         setNetworkData(output);
+         //setNetworkData(totalDvsLabel + ": " + this.getTotalDataverses(isReleased) + "  " + totalStudiesLabel + ": " + this.getTotalStudies(isReleased) + "  " + totalFilesLabel + ": " + this.getTotalFiles(isReleased));
      }
     
     /**

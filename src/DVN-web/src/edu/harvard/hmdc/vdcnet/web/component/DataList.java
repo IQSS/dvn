@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
@@ -250,7 +252,7 @@ public class DataList extends UIComponentBase {
         ListIterator iterator = ndvs.listIterator();
         HtmlPanelGrid childTable = new HtmlPanelGrid();
         childTable = new HtmlPanelGrid(); // start the child table which eventually must be added to the view
-        childTable.setId(heading.replaceAll(" ", "").toLowerCase());
+        childTable.setId(formatId(heading));
         childTable.setStyleClass("dvnChildTable");
         childTable.setColumns(3);
         childTable.setColumnClasses("dvnChildColumn");
@@ -399,5 +401,29 @@ public class DataList extends UIComponentBase {
     //overload (under?) for when the records are contracted
     private int setColumnLength(int rows) {
         return rows;
+    }
+    
+    /**  formatId
+     * @description
+     * 
+     * headings are used to build ids
+     * This function munges the heading
+     * into a safe form for ids
+     * 
+     * 
+     * @author wbossons
+     * 
+     */
+    private String formatId(String heading) {
+        String safeId = new String("");
+        //String regexp = "['\\@\\#\\$%\\^&\\*\\(\\)_\\+\\:\\<\\>\\/\\[\\]\\\\{\\}\\|\\p{Punct}\\p{Space}]";
+        String regexp = "[^A-Za-z0-9]";
+        Pattern pattern = Pattern.compile(regexp);
+        Matcher matcher = pattern.matcher(heading);
+        Boolean isInvalidChars  = matcher.find();
+        if (isInvalidChars)
+            safeId = heading.replaceAll(regexp, "").toLowerCase();
+        safeId = "dvn" + safeId;
+        return safeId;
     }
 }

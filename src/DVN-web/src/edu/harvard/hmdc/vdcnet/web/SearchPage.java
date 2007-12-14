@@ -460,7 +460,7 @@ public class SearchPage extends VDCBaseBean{
             searchFilter = 0;
             
         } else if (mode == StudyListing.VDC_RECENT_STUDIES) {
-            listHeader =  "Most Recent";
+            listHeader =  "Studies Uploaded and Released to This Dataverse";
             renderSearch = true;
             
         } else if (mode == StudyListing.GENERIC_LIST) {

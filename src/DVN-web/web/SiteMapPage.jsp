@@ -35,12 +35,7 @@
                                 <h:outputText  id="browseCollectionsText" value="#{bundle.sitemapBrowseCollectionsLink}"/>
                             </h:outputLink>
                         </ui:panelGroup>
-                        <ui:panelGroup  block="true" id="groupPanel2b" style="padding-left: 10px" rendered="#{VDCRequest.currentVDCId != null}" >
-                            <br />
-                            <h:outputLink id="MostRecentLink" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4&amp;numResults=100#recent">
-                                <h:outputText  id="MostRecentText" value="#{bundle.sitemapMostRecentLink}"/>
-                            </h:outputLink>
-                          </ui:panelGroup>  
+
                     </ui:panelGroup>
 
                     <!-- sitemapAccountHeading -->

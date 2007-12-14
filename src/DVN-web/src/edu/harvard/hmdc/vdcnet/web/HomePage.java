@@ -678,7 +678,6 @@ public class HomePage extends VDCBaseBean {
          MessageFormat formatter = new MessageFormat("");
          formatter.applyPattern(messages.getString("totals"));
          String output = formatter.format(messageArguments);
-         System.out.println(output);
          setNetworkData(output);
          //setNetworkData(totalDvsLabel + ": " + this.getTotalDataverses(isReleased) + "  " + totalStudiesLabel + ": " + this.getTotalStudies(isReleased) + "  " + totalFilesLabel + ": " + this.getTotalFiles(isReleased));
      }

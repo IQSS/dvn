@@ -18,10 +18,10 @@
                 <h:outputText value="Site Map for this Dataverse" rendered="#{VDCRequest.currentVDC != null}" />
         </div>            
         <div class="dvn_sectionBox"> 
-                <div class="dvn_margin12" style="padding-left: 40px;"> 
+                <div class="dvn_margin12">
                     <!-- sitemapHomeHeading -->
                     <ui:panelGroup block="true" id="groupPanel0">
-                        <ui:panelGroup  block="true" style="padding-top: 20px; padding-bottom: 15px">
+                        <ui:panelGroup  block="true">
                             <h:outputText  id="homeHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapBrowseHeading}"/>
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel2" separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">

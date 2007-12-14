@@ -512,8 +512,8 @@
                                 </h:dataTable>
                                 
                                 <ui:panelGroup style="margin-top:10px;" block="true" rendered="#{!empty studyPage.studyUI.study.fileCategories}" >
-                                    <ui:panelGroup style="padding-top: 15px; font-weight: bold; font-size:1.2em; color:#666666; font-style:italic;" block="true">
-                                        <h:outputText    value="Legend:"/>                                              
+                                    <ui:panelGroup styleClass="vdcLegendHeader" block="true">
+                                        <h:outputText value="Legend:"/>                                              
                                     </ui:panelGroup>
                                     <h:panelGrid cellpadding="3" cellspacing="0" columns="3" style="border-width:0px; border-style:solid; border-color: #ffff66;" > 
                                         <ui:panelGroup  block="true">

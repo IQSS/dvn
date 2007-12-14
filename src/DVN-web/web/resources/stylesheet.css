@@ -1168,6 +1168,9 @@ li.affiliationBullet {
     padding:0 0 .5em 0;
 }
 
+.dvn_totalsLabel { color: #336699; font-size: 112%;}
+.dvn_totalsValue { color: red; font-weight: bold; }
+
 /**** Login ****/
 div.loginPageWrap {margin: 0 auto; text-align: center;}
 div.loginPageWrap p#loginPageHeader span.headingText {font-size: 120%; color: #c55b28 !important; background: #dadee0 !important;}

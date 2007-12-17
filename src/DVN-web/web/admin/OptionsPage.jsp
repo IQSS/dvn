@@ -20,7 +20,7 @@
                             <ui:panelGroup  block="true" id="groupPanel1" style="padding-top: 20px; padding-bottom: 15px">
                                 <h:outputText  id="outputText2" styleClass="vdcSubHeader" value="Contributor Options"/>
                             </ui:panelGroup>
-                            <ui:panelGroup  block="true" id="groupPanel2" separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
+                            <ui:panelGroup  block="true" id="groupPanel2" separator="&lt;br /&gt;" style="padding-left: 10px">
                                 <h:outputLink id="hyperlink1" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.jsp">
                                     <h:outputText  id="hyperlink1Text" value="Add New Study"/>
                                 </h:outputLink>
@@ -33,7 +33,7 @@
                             <ui:panelGroup  block="true" id="groupPanel3" style="padding-top: 20px; padding-bottom: 15px">
                                 <h:outputText  id="outputText3" styleClass="vdcSubHeader" value="Curator Options"/>
                             </ui:panelGroup>
-                            <ui:panelGroup block="true"  rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
+                            <ui:panelGroup block="true"  rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" separator="&lt;br /&gt;" style="padding-left: 10px">
                                 <h:outputLink id="hyperlink5"  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.jsp">
                                     <h:outputText  id="hyperlink1Text1" value="Add New Study"/>
                                 </h:outputLink>
@@ -48,7 +48,7 @@
                                 </h:outputLink>
                             <h:outputText value=""/> <!-- a hack to make the spacing work (sorry Merce) -->
                             </ui:panelGroup>
-                            <ui:panelGroup block="true"  separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
+                            <ui:panelGroup block="true"  separator="&lt;br /&gt;" style="padding-left: 10px">
                                 <h:outputLink id="hyperlink7b" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddCollectionStudiesPage.jsp">
                                     <h:outputText  id="hyperlink3Text2" value="Add Collection by Assigning Studies"/>
                                 </h:outputLink>
@@ -71,10 +71,10 @@
                             <ui:panelGroup block="true" id="groupPanel5" style="padding-top: 20px; padding-bottom: 15px">
                                 <h:outputText id="outputText5" styleClass="vdcSubHeader" value="Admin Options"/>
                             </ui:panelGroup>
-                            <ui:panelGroup block="true" id="groupPanel6" separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px" >
+                            <ui:panelGroup block="true" id="groupPanel6" separator="&lt;br /&gt;" style="padding-left: 10px" >
                                 <h:outputText id="outputText7" styleClass="vdcSubHeaderColor" value="Customization:"/>
                                 <ui:panelGroup block="true" id="groupPanel7"
-                                               separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
+                                               separator="&lt;br /&gt;" style="padding-left: 10px">
                                     <h:outputLink id="hyperlink15" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditSitePage.jsp">
                                         <h:outputText id="hyperlink15Text" value="Edit Name and Alias"/>
                                     </h:outputLink>
@@ -93,7 +93,7 @@
                                 </ui:panelGroup>
                                 <h:outputText id="outputText6" styleClass="vdcSubHeaderColor" value="Users/Permissions/Conditions:"/>
                                 <ui:panelGroup block="true" id="groupPanel8"
-                                               separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
+                                               separator="&lt;br /&gt;" style="padding-left: 10px">
                                     <h:outputLink id="hyperlink11" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.jsp">
                                         <h:outputText id="hyperlink1Text3" value="Release Dataverse and Set Users Privileges (contributors, curators, admins)"/>
                                     </h:outputLink>

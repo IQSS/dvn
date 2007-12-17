@@ -286,7 +286,7 @@ public class FileDownloadServlet extends HttpServlet{
 			byte[] dataReadBuffer = new byte[8192 * 4]; 
 
 			int i = 0; 
-			while ( i = (in.read (dataReadBuffer)) > 0 ) {
+			while ( ( i = in.read (dataReadBuffer)) > 0 ) {
 			    out.write(dataReadBuffer, 0, i);
 			    out.flush(); 
 			}

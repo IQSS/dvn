@@ -93,7 +93,7 @@ public class HomePage extends VDCBaseBean {
     private Tree collectionTree;
     private String searchField;
     private String searchValue;
-    private Map dataMap = new TreeMap();
+    private Map dataMap = new LinkedHashMap();
     private Map tabsMap = new LinkedHashMap();
     private BundleReader datalistbundle = new BundleReader("DataListBundle");
     

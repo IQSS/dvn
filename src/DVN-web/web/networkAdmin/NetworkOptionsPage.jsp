@@ -18,7 +18,7 @@
                             <h:outputText   styleClass="vdcSubHeader" value="Dataverses, Harvesting, Exporting and OAI Sets"/>
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel7"
-                                        separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
+                                        separator="&lt;br /&gt;" style="padding-left: 10px">
                             <h:outputLink  id="hyperlink4" value="/dvn/faces/site/AddSitePage.jsp">
                                 <h:outputText  id="hyperlink4Text" value="Create a New Dataverse"/>
                             </h:outputLink>                  
@@ -48,7 +48,7 @@
                             <h:outputText  id="outputText3" styleClass="vdcSubHeader" value="Network Customization"/>
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel4"
-                                        separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
+                                        separator="&lt;br /&gt;" style="padding-left: 10px">
                             <h:outputLink  id="hyperlink12" value="/dvn/faces/networkAdmin/EditNetworkNamePage.jsp">
                                 <h:outputText  id="hyperlink12Text" value="Edit Dataverse Network Name"/>
                             </h:outputLink>
@@ -66,7 +66,7 @@
                             <h:outputText  id="outputText2" styleClass="vdcSubHeader" value="Users/Permissions"/>
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel2"
-                                        separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
+                                        separator="&lt;br /&gt;" style="padding-left: 10px">
                             <h:outputLink  id="hyperlink1" value="/dvn/faces/networkAdmin/NetworkPrivilegedUsersPage.jsp">
                                 <h:outputText  id="hyperlink1Text1" value="Manage Network Users' Privileges (Dataverse creators and Network admins)"/>
                             </h:outputLink>

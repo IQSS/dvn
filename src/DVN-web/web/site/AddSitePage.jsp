@@ -59,8 +59,8 @@
                             fit your dataverse, be it a university department, a journal, a research center, etc. If you create
                             a Scholar dataverse, it will be automatically entered under the Scholar group."/>
                             <br />
-                            <h:outputText id="outputText2c" styleClass="vdcHelpText" value="3) Once your dataverse is created, it will be set to 'Coming Soon' by
-                            default. As soon as you are ready to make it available, you can do so by going to 'My Options' in your new dataverse."/>
+                            <h:outputText id="outputText2c" styleClass="vdcHelpText" value="3) Once your dataverse is created, it will be set to 'Coming Soon' (Not Released) by
+                            default. As soon as you are ready to make it available (Released), you can do so by going to 'My Options' in your new dataverse."/>
                         </ui:panelGroup>
                         <h:panelGrid binding="#{AddSitePage.gridPanel1}" cellpadding="0" cellspacing="0"
                                      columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" id="gridPanel1" style="margin-top: 30px; margin-bottom: 30px">

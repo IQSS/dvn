@@ -80,11 +80,10 @@
     
             <!-- Start Browse section (with side panels, if available) -->
             <div id="dvn_hmpgMainSection">
-                <div class="dvn_margin12">
                   <!-- Network Homepage -->
                     <!-- datalist component for NETWORK HOME PAGE -->
-                    <ui:panelLayout rendered="#{VDCRequest.currentVDC == null}" style="width:98%;">
-                        <div>
+                    <ui:panelLayout rendered="#{VDCRequest.currentVDC == null}">
+                        <div class="dvn_Totals">
                             <h:outputText escape="false" value="#{HomePage.networkData}"/>
                         </div>
                         <dmap:datalist contents="#{HomePage.dataMap}" tabs="#{HomePage.tabsMap}" tab="#{HomePage.selectedTab != null ? HomePage.selectedTab : requestScope.tab}" id="dataMap" />
@@ -92,7 +91,6 @@
                   <!-- Dataverse Hoempage -->
                     <!-- Display Tree at dataverse level -->
                     <ui:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
-                </div>
             </div>
 
       </div>

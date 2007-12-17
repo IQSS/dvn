@@ -95,6 +95,7 @@ public class HomePage extends VDCBaseBean {
     private String searchValue;
     private Map dataMap = new TreeMap();
     private Map tabsMap = new LinkedHashMap();
+    private BundleReader datalistbundle = new BundleReader("DataListBundle");
     
     StatusMessage msg;
     
@@ -137,13 +138,13 @@ public class HomePage extends VDCBaseBean {
         if (tab != null) {
             setSelectedTab(tab);
         } else {
-            setSelectedTab(ResourceBundle.getBundle("DataListBundle").getString("tab1key")); //default value
+            setSelectedTab(datalistbundle.getMessageValue("tab1key")); //default value
         }
         request.setAttribute("tab", getSelectedTab());
         initTabsMap();
         initVdcGroupData();
-        initVdcsSansGroups();
         initScholarDVGroup();
+        initVdcsSansGroups();
         initNetworkData();
     }
     
@@ -397,9 +398,9 @@ public class HomePage extends VDCBaseBean {
             Iterator inneriterator = innerlist.iterator();
             while (inneriterator.hasNext()) {
                 VDC vdc = (VDC)inneriterator.next();
-                if (this.selectedTab.equals("comingsoon") && !vdc.isRestricted())
+                if (this.selectedTab.equals(datalistbundle.getMessageValue("tab2key")) && !vdc.isRestricted()) // coming soon
                     inneriterator.remove();
-                else if (this.selectedTab.equals("nowavailable") && vdc.isRestricted())
+                else if (this.selectedTab.equals(datalistbundle.getMessageValue("tab1key")) && vdc.isRestricted()) // now available
                     inneriterator.remove();  
             }
             List<DataListing> dataList = sortVdcs(innerlist);
@@ -456,17 +457,16 @@ public class HomePage extends VDCBaseBean {
                 continue;
             } else {
                 VDC vdc = (VDC)object;
-                if (this.selectedTab.equals("comingsoon") && vdc.isRestricted()) {
+                if (this.selectedTab.equals(datalistbundle.getMessageValue("tab2key")) && vdc.isRestricted()) {
                     newlist.add(vdc);
-                } else if (this.selectedTab.equals("nowavailable") && !vdc.isRestricted()) {
+                } else if (this.selectedTab.equals(datalistbundle.getMessageValue("tab1key")) && !vdc.isRestricted()) {
                     newlist.add(vdc);
                 }
             }
         }
         setVdcsSansGroups(newlist);
         List<DataListing> dataList = sortVdcs(this.getVdcsSansGroups());
-        BundleReader bundlereader = new BundleReader("DataListBundle", "otherGroupLabel");
-        String heading = (vdcGroupCount > 0) ? bundlereader.getMessageValue() : "";
+        String heading = (vdcGroupCount > 0) ? datalistbundle.getMessageValue("otherGroupLabel") : "";
         if (!dataList.isEmpty()) 
                 dataMap.put(heading, dataList);
      }
@@ -491,18 +491,17 @@ public class HomePage extends VDCBaseBean {
             ScholarDataverse sdv = null;
             if (object instanceof ScholarDataverse) {
                 sdv = (ScholarDataverse)object;
-                if (this.selectedTab.equals("comingsoon") && sdv.isRestricted()) {
+                if (this.selectedTab.equals(datalistbundle.getMessageValue("tab2key")) && sdv.isRestricted()) {
                     newlist.add(sdv);
-                } else if (this.selectedTab.equals("nowavailable") && !sdv.isRestricted()) {
+                } else if (this.selectedTab.equals(datalistbundle.getMessageValue("tab1key")) && !sdv.isRestricted()) {
                     newlist.add(sdv);
                 }
             }
         }
         setScholarDvGroup(newlist);
         List<DataListing> dataList = sortVdcs(this.getScholarDvGroup());
-        BundleReader bundlereader = new BundleReader("DataListBundle", "scholarDvGroupLabel");
         if (!dataList.isEmpty()) 
-            dataMap.put(bundlereader.getMessageValue(), dataList);
+            dataMap.put(this.datalistbundle.getMessageValue("scholarDvGroupLabel"), dataList);
      }
     
     private List sortVdcs(List memberVDCs) {
@@ -558,11 +557,11 @@ public class HomePage extends VDCBaseBean {
     public void initTabsMap() {
        ArrayList<Tab> tabs = new ArrayList<Tab>();
        int i = 1;
-       while (i <= Integer.parseInt(ResourceBundle.getBundle("DataListBundle").getString("numberOfTabs"))) {
-          String tabkey  = ResourceBundle.getBundle("DataListBundle").getString("tab" + i + "key");
-          String tabname = ResourceBundle.getBundle("DataListBundle").getString("tab" + i + "name");
-          String tabnodisplaymsg = ResourceBundle.getBundle("DataListBundle").getString("tab" + i + "nodisplaymsg");
-          Integer taborder   = new Integer(ResourceBundle.getBundle("DataListBundle").getString("tab" + i + "order"));
+       while (i <= Integer.parseInt(datalistbundle.getMessageValue("numberOfTabs"))) {
+          String tabkey  = datalistbundle.getMessageValue("tab" + i + "key");
+          String tabname = datalistbundle.getMessageValue("tab" + i + "name");
+          String tabnodisplaymsg = datalistbundle.getMessageValue("tab" + i + "nodisplaymsg");
+          Integer taborder   = new Integer(datalistbundle.getMessageValue("tab" + i + "order"));
           Tab tab = new Tab(tabkey, tabname, tabnodisplaymsg, taborder);
           tabs.add(tab);
           i++;
@@ -672,12 +671,8 @@ public class HomePage extends VDCBaseBean {
      * Holds value of property total.
      */
      private void initNetworkData() {
-         
-        // String totalDvsLabel       = ResourceBundle.getBundle("Bundle").getString("totalDataverses");
-         //String totalStudiesLabel   = ResourceBundle.getBundle("Bundle").getString("totalStudies");
-         //String totalFilesLabel     = ResourceBundle.getBundle("Bundle").getString("totalFiles");
          boolean isReleased         = true;
-         if (this.selectedTab.equals("comingsoon"))
+         if (this.selectedTab.equals(datalistbundle.getMessageValue("tab2key"))); //comingsoon
              isReleased = false;
          ResourceBundle messages = ResourceBundle.getBundle("Bundle");
          Object[] messageArguments = { this.getTotalDataverses(isReleased), this.getTotalStudies(isReleased), this.getTotalFiles(isReleased) };
@@ -685,7 +680,6 @@ public class HomePage extends VDCBaseBean {
          formatter.applyPattern(messages.getString("totals"));
          String output = formatter.format(messageArguments);
          setNetworkData(output);
-         //setNetworkData(totalDvsLabel + ": " + this.getTotalDataverses(isReleased) + "  " + totalStudiesLabel + ": " + this.getTotalStudies(isReleased) + "  " + totalFilesLabel + ": " + this.getTotalFiles(isReleased));
      }
     
     /**

@@ -7,20 +7,22 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <f:subview id="addSitePageView">
-         <f:verbatim>
-            <script language="JavaScript" type="text/javascript">
+        <h:outputText id="statusMessage" styleClass="#{AddSitePage.msg.styleClass}" value="#{AddSitePage.msg.messageText}" />
+        <ui:form binding="#{AddSitePage.form1}" id="form1">
+            <ui:script type="text/javascript">
+                //<![CDATA[
                  function changeValue(obj) {
                     if (window.event)
                         obj.value = window.event.srcElement.value;
-                        document.forms['content:addSitePageView:form1'].submit();
+                        document.getElementById('content:addSitePageView:form1').submit();
                 }
                  
                  //init the hidden fields
                  function showAll(){
-                    var theForm = document.forms['content:addSitePageView:form1'];
+                    var theForm = document.getElementById('content:addSitePageView:form1');
                     var showScholarFields = false;
-                    for (var i = 0; i &lt; theForm.elements.length; i++) {
-                        if ( (theForm.elements[i].checked) &amp;&amp; (theForm.elements[i].value == "Scholar") ) {
+                    for (var i = 0; i < theForm.elements.length; i++) {
+                        if ( (theForm.elements[i].checked) && (theForm.elements[i].value == "Scholar") ) {
                             showScholarFields = true;
                             break;
                         }
@@ -32,15 +34,12 @@
                 }
                 
                 function createDvName() {
-                    if (document.getElementById('content:addSitePageView:form1:firstName').value != "" &amp;&amp; document.getElementById('content:addSitePageView:form1:lastName').value != "") {
+                    if (document.getElementById('content:addSitePageView:form1:firstName').value != "" && document.getElementById('content:addSitePageView:form1:lastName').value != "") {
                         document.getElementById('content:addSitePageView:form1:dataverseName').value = document.getElementById('content:addSitePageView:form1:firstName').value + " " + document.getElementById('content:addSitePageView:form1:lastName').value;
                     }
                 }
-            </script>
-        </f:verbatim>
-        <h:outputText id="statusMessage" styleClass="#{AddSitePage.msg.styleClass}" value="#{AddSitePage.msg.messageText}" />
-        <ui:form binding="#{AddSitePage.form1}" id="form1">
-            
+                 // ]]>
+            </ui:script>
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                     <a name="addSite" title="">
@@ -156,6 +155,7 @@
                                 <h:inputText binding="#{AddSitePage.dataverseAlias}" 
                                                 id="dataverseAlias" 
                                                 required="true" 
+                                                requiredMessage="This field is required."
                                                 validator="#{AddSitePage.validateAlias}" />
                                 <f:verbatim><br /></f:verbatim>
                                 <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
@@ -186,12 +186,13 @@
                             <h:commandButton rendered="#{AddSitePage.dataverseType == 'Scholar'}" id="btnCreateSdv" value="Save" action="#{AddSitePage.createScholarDataverse}"/>
                             <h:commandButton binding="#{AddSitePage.button2}" id="button2" style="margin-left: 20px" immediate="true" value="Cancel" action="#{AddSitePage.cancel}"/>
                         </ui:panelGroup>
-                        <f:verbatim>
-                             <script language="JavaScript">
+                       <ui:script type="text/javascript">
+                            //<![CDATA[
+                                 
                                     // this is done to ensure that the scholar fields are properly inited. wjb
                                     showAll();
-                             </script>
-                         </f:verbatim>
+                            // ]]>
+                        </ui:script>
                     </div>
                 </div>
             </div>

@@ -51,7 +51,16 @@
                     <div class="dvn_margin12"> 
                         <ui:panelGroup block="true" style="padding-left: 20px; padding-right: 30px">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                            <h:outputText binding="#{AddSitePage.outputText2}" id="outputText2" styleClass="vdcHelpText" value="When your dataverse is  created, it will be set to 'restricted' by default. As soon as you are ready to make it public, you can do so by going to 'My Options' in your new dataverse.  "/>
+                            <br />
+                            <h:outputText id="outputText2a" styleClass="vdcHelpText" value="1) Choose 'Scholar' if this dataverse will 
+                            have your own name and will contain your own research, and 'Basic' for any other dataverse."/>
+                             <br />
+                            <h:outputText id="outputText2b" styleClass="vdcHelpText" value="2) Select the group that will most likely 
+                            fit your dataverse, be it a university department, a journal, a research center, etc. If you create
+                            a Scholar dataverse, it will be automatically entered under the Scholar group."/>
+                            <br />
+                            <h:outputText id="outputText2c" styleClass="vdcHelpText" value="3) Once your dataverse is created, it will be set to 'Coming Soon' by
+                            default. As soon as you are ready to make it available, you can do so by going to 'My Options' in your new dataverse."/>
                         </ui:panelGroup>
                         <h:panelGrid binding="#{AddSitePage.gridPanel1}" cellpadding="0" cellspacing="0"
                                      columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" id="gridPanel1" style="margin-top: 30px; margin-bottom: 30px">
@@ -116,6 +125,8 @@
                             </ui:panelGroup>
                             <ui:panelGroup block="true" style="vertical-align: top;">
                                 <h:inputText id="affiliation" immediate="true" value="#{AddSitePage.affiliation}" valueChangeListener="#{AddSitePage.changeAffiliation}" />
+                                <br />
+                                <h:outputText styleClass="vdcHelpText" value="University, center, or research project."/>
                             </ui:panelGroup>
                             <!-- Dataverse Name -->
                             <ui:panelGroup block="true" style="vertical-align: top;">
@@ -130,7 +141,7 @@
                                                 required="true" 
                                                 requiredMessage="This field is required." 
                                                 validator="#{AddSitePage.validateName}" size="60"/>
-                                <f:verbatim><br /></f:verbatim>
+                                <br />
                                 <h:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
                                 <h:message for="dataverseName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                             </ui:panelGroup>

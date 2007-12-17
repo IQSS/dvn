@@ -21,6 +21,10 @@ public class BundleReader {
         //default constructor
     }
     
+    public BundleReader(String bundlename) {
+        this.bundleName = bundlename;
+    }
+    
     public BundleReader(String bundlename, String messagekey) {
         this.bundleName = bundlename;
         this.messageKey = messagekey;
@@ -47,6 +51,18 @@ public class BundleReader {
     public String getMessageValue() {
         try {
             setMessageValue(ResourceBundle.getBundle(this.bundleName).getString(this.messageKey));
+        } catch (NullPointerException npe) {
+            setMessageValue("The resource was not found due to a null value: " + npe.getMessage());
+        } catch (Exception e) {
+            setMessageValue("An unexpected exception occurred " + e.getMessage());
+        } finally {
+            return this.messageValue;
+        }
+    }
+    
+    public String getMessageValue(String messagekey) {
+        try {
+            setMessageValue(ResourceBundle.getBundle(this.bundleName).getString(messagekey));
         } catch (NullPointerException npe) {
             setMessageValue("The resource was not found due to a null value: " + npe.getMessage());
         } catch (Exception e) {

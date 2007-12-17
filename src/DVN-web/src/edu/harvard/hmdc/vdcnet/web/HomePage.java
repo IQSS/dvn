@@ -90,6 +90,11 @@ public class HomePage extends VDCBaseBean {
     public HomePage() {
     }
     
+    private static int vdcGroupCount;
+    private static int scholarDvCount;
+    private List<ScholarDataverse> scholarDvGroup;
+    private List<VDC> vdcGroups;
+    private List<VDC> vdcsSansGroups;
     private Tree collectionTree;
     private String searchField;
     private String searchValue;
@@ -373,7 +378,7 @@ public class HomePage extends VDCBaseBean {
         this.tabsMap = map;
     }
         
-    /** ************ Add support for VDC Groups on the network home page *************** 
+    /** ************ support for VDC Groups on the network home page *************** 
      *
      *
      *
@@ -382,8 +387,10 @@ public class HomePage extends VDCBaseBean {
      *
      */
     
+    //init groups
     public void initVdcGroupData() {
         // Get all the vdc groups
+        vdcGroupCount = 0;
         List list = (List)vdcGroupService.findAll();
         setVdcGroups(list);
         List localList = vdcGroups;
@@ -407,46 +414,11 @@ public class HomePage extends VDCBaseBean {
             if (!dataList.isEmpty()) {
                 dataMap.put(vdcgroup.getName(), dataList);
                 vdcGroupCount++;
-            } else {
-                vdcGroupCount = 0;
-            }
+            } 
         }
     }
     
-    private List vdcGroups;
-    private static int vdcGroupCount = 0;
-    
-    public List getVdcGroups() {
-        return (List)vdcGroups;
-    }
-    
-    public void setVdcGroups(List vdcgroups) {
-        this.vdcGroups = vdcgroups;
-    }
-    
-     /**
-     * Holds value of property vdcsSansGroups.
-     */
-    private List<VDC> vdcsSansGroups;
-
-    /**
-     * Getter for property vdcsSansGroups.
-     * @return Value of property vdcsSansGroups.
-     */
-    public List<VDC> getVdcsSansGroups() {
-        return this.vdcsSansGroups;
-    }
-
-    /**
-     * Setter for property vdcsSansGroups.
-     * @param vdcsSansGroups New value of property vdcsSansGroups.
-     */
-    public void setVdcsSansGroups(List<VDC> vdcsSansGroups) {
-        this.vdcsSansGroups = vdcsSansGroups;
-        
-    }
-    
-   public void initVdcsSansGroups() {
+    public void initVdcsSansGroups() {
         // Get all the vdc groups
         List list = (List)vdcService.findVdcsNotInGroups();
         List newlist = new ArrayList();
@@ -466,23 +438,14 @@ public class HomePage extends VDCBaseBean {
         }
         setVdcsSansGroups(newlist);
         List<DataListing> dataList = sortVdcs(this.getVdcsSansGroups());
-        String heading = (vdcGroupCount > 0) ? datalistbundle.getMessageValue("otherGroupLabel") : "";
+        String heading = (vdcGroupCount > 0 || scholarDvCount > 0) ? datalistbundle.getMessageValue("otherGroupLabel") : "";
         if (!dataList.isEmpty()) 
                 dataMap.put(heading, dataList);
-     }
-   
-   private List scholarDvGroup;
-    
-    public List getScholarDvGroup() {
-        return (List)scholarDvGroup;
-    }
-    
-    public void setScholarDvGroup(List groups) {
-        this.scholarDvGroup = groups;
-    }
+   }
     
    public void initScholarDVGroup() {
         // Get all the vdc groups
+        scholarDvCount = 0;
         List list = (List)vdcService.findVdcsNotInGroups();
         List newlist = new ArrayList();
         Iterator iterator = list.iterator();
@@ -500,9 +463,40 @@ public class HomePage extends VDCBaseBean {
         }
         setScholarDvGroup(newlist);
         List<DataListing> dataList = sortVdcs(this.getScholarDvGroup());
-        if (!dataList.isEmpty()) 
+        if (!dataList.isEmpty()) {
             dataMap.put(this.datalistbundle.getMessageValue("scholarDvGroupLabel"), dataList);
+            scholarDvCount++;
+        }
      }
+    
+    //getters
+    public List getVdcGroups() {
+        return (List)vdcGroups;
+    }
+    
+    public List<VDC> getVdcsSansGroups() {
+        return this.vdcsSansGroups;
+    }
+    
+    public List getScholarDvGroup() {
+        return (List)scholarDvGroup;
+    }
+    
+    // setters
+    
+    public void setVdcGroups(List vdcgroups) {
+        this.vdcGroups = vdcgroups;
+    }
+
+    public void setVdcsSansGroups(List<VDC> vdcsSansGroups) {
+        this.vdcsSansGroups = vdcsSansGroups;
+    }
+    
+    public void setScholarDvGroup(List groups) {
+        this.scholarDvGroup = groups;
+    }
+    
+    //utils
     
     private List sortVdcs(List memberVDCs) {
         List<DataListing> listToSort = new ArrayList<DataListing>();
@@ -552,7 +546,7 @@ public class HomePage extends VDCBaseBean {
         return defaultVdcPath;
     }
     
-    /** TABS */
+    /******************** TABS *******************/
     
     public void initTabsMap() {
        ArrayList<Tab> tabs = new ArrayList<Tab>();

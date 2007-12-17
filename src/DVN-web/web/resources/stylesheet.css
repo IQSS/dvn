@@ -32,7 +32,7 @@
         text-decoration: underline !important;
 }
 
-.dvn_content img {margin: 0; padding: 0; border: 0;}
+.dvn_content img {margin: 0 !important; padding: 0 !important; border: 0 !important;}
 .dvn_content ul {list-style: none; margin: 0; padding: 0;}
 .dvn_content li {margin: 0; padding: 0; vertical-align: middle;}
 .dvn_content textarea {width: 40em;}
@@ -104,12 +104,12 @@ span.disabled {font-weight: bold;}
 .dvn_headerTitleR {position: absolute; right: 12px; top: 6px;}
 
 /* NAV MENU */
-div.dvn_navblock {margin-bottom: 12px; padding: 0 12px 0 12px; background: #dadee0; border-top: 2px solid #91a5a9;}
+div.dvn_navblock {margin-bottom: 12px; padding: 0 10px 0 10px; background: #dadee0; border-top: 2px solid #91a5a9;}
 .dvn_navblockLinks {white-space:nowrap /*IE hack*/; border:none;} /*Color navigation bar normal mode*/
 .dvn_navblockLinks:after {content:"."; display:block; height:0; clear:both; visibility:hidden;} /*Clear floats*/
 .dvn_navblockLinks ul {margin: 0; padding: 0; list-style-type:none;}
 .dvn_navblockLinks ul li {float:left; z-index:auto !important /*Non-IE6*/; z-index:1000 /*IE6*/;}
-.dvn_navblockLinks ul li a:link, .dvn_navblockLinks ul li a:visited, .dvn_navblockLinks ul li a:hover, .dvn_navblockLinks ul li a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; height:1.75em; line-height:1.75em; padding:0 .75em 0 .75em; text-decoration:none;}
+.dvn_navblockLinks ul li a:link, .dvn_navblockLinks ul li a:visited, .dvn_navblockLinks ul li a:hover, .dvn_navblockLinks ul li a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; height:1.75em; line-height:1.75em; padding:0 .5em 0 .5em; text-decoration:none;}
 .dvn_navblockLinks ul li:hover {position:relative;} /*Sylvain IE hack*/
 .dvn_navblockLinks ul li:hover a:link, .dvn_navblockLinks ul li:hover a:visited, .dvn_navblockLinks ul li:hover a:hover, .dvn_navblockLinks ul li:hover a:active {background-color: #c55b28; text-decoration:underline;} /*Color main cells hovering mode*/
 .dvn_navblockLinks ul li a:hover {position:relative /*Sylvain IE hack*/; z-index:1000 /*Sylvain IE hack*/; background-color: #c55b28; color: #fff; text-decoration:underline;} /*Color main cells hovering mode*/
@@ -1117,10 +1117,13 @@ a.vdcRequestPanelLink:active{
 /* subsetting page: summary statistics: ends here */
 
 /* *************** dvn network homepage page specific ***************** */
+.dvn_Totals {position: absolute; top: .75em; right: .75em;}
+.dvn_totalsLabel {color: #336699; font-size: 112%;}
+.dvn_totalsValue {color: #c55b28; font-weight: bold;}
+
 .dvnLineSpacer   { visibility:hidden; }
 .dvnChildColumn  { width: 25%; vertical-align: top;}
-.dvnChildTable { width:100%; }
-.dvnChildTable {width: 100%;}
+.dvnChildTable { width: 98%; border-collapse: collapse; }
 .dvnChildTable ul, .dvnChildTable ol { list-style: none; margin-left: 1.1em; }
 .dvnChildTable li {vertical-align: middle;}
 .dvnMainColumn   { width: 100%;}
@@ -1186,10 +1189,6 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 .groupEditDescriptionColumn   { width:70%; border:1px solid silver; text-align:left; }
 .groupEditFooter        { width:98%; background-color:#d9e7f0; padding:0px; text-align:right;  }
 
-
-.dvn_totalsLabel { color: #336699; font-size: 112%;}
-.dvn_totalsValue { color: red; font-weight: bold; }
-
 /**** Login ****/
 div.loginPageWrap {position: absolute; left: 25%; top: 25%; margin: 0; padding: 0; height: 50%; width: 50%;}
 div.loginPageWrap p#loginPageHeader span.headingText {font-size: 120%; color: #c55b28 !important; background: #dadee0 !important;}
@@ -1206,7 +1205,7 @@ table#loginBlock img {margin: 1em 0 0 0;}
 
 /**** Create a Dataverse ****/
 .requestHmpgSide {position: absolute; top: 0; right: 0; margin-bottom: 18px;}
-a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active {padding-right: 28px; color: #c55b28; background: url(start-arrows.png) 100% 52% no-repeat; font-size: 95%; text-decoration: none;} 
+a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active {padding-right: 28px; color: #c55b28; background: url(start-arrows.gif) 100% 52% no-repeat; font-size: 95%; text-decoration: none;} 
 #dvn_createDvRequest #requestHeader {font-size: 26px; color: #d67730;}
 #dvn_createDvRequest #requestHeader #requestContentTitle {float: left; width: 340px; padding: 0 0 6px 0; color: #c55b28; font-weight: normal; line-height: 50px; text-transform: uppercase;}
 #dvn_createDvRequest #requestHeader span {color: #ccc;}
@@ -1217,7 +1216,7 @@ a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink
 #dvn_createDvRequest .requestIntroStepCard p {margin: 1em; font-size: 120%; font-weight: bold;}
 #dvn_createDvRequest .requestIntroStepCard div.stepCardBtm {position: absolute; top: 292px; left: 0; width: 260px; height: 8px; background: #f4ebc7 url(request-intro-rndbtm.png) no-repeat;}
 #dvn_createDvRequest #requestIntroCont {width: 828px; margin: 0 auto; text-align: right;}
-#dvn_createDvRequest #requestIntroContLink {padding-right: 28px; background: url(start-arrows.png) 100% 52% no-repeat; color: #c55b28; text-decoration: none; text-transform: uppercase;}
+#dvn_createDvRequest #requestIntroContLink {padding-right: 28px; background: url(start-arrows.gif) 100% 52% no-repeat; color: #c55b28; text-decoration: none; text-transform: uppercase;}
 #dvn_createDvRequest #requestTimeline {position: relative; margin: 20px 0 60px 0; height: 4px; background: #ccc url(fourpoint-timeline.gif);}
 #dvn_createDvRequest .requestTimelinePoint {position: absolute; top: -6px; text-align: center;}
 #dvn_createDvRequest .requestTimelinePoint strong {color: #91a5a9; font-weight: normal; line-height: 3.5;}

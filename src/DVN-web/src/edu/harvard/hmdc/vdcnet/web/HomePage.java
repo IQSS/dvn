@@ -28,6 +28,7 @@ import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.SearchTerm;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.BundleReader;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
@@ -47,7 +48,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -465,7 +465,8 @@ public class HomePage extends VDCBaseBean {
         }
         setVdcsSansGroups(newlist);
         List<DataListing> dataList = sortVdcs(this.getVdcsSansGroups());
-        String heading = (vdcGroupCount > 0) ? "Other" : "";
+        BundleReader bundlereader = new BundleReader("DataListBundle", "otherGroupLabel");
+        String heading = (vdcGroupCount > 0) ? bundlereader.getMessageValue() : "";
         if (!dataList.isEmpty()) 
                 dataMap.put(heading, dataList);
      }
@@ -499,8 +500,9 @@ public class HomePage extends VDCBaseBean {
         }
         setScholarDvGroup(newlist);
         List<DataListing> dataList = sortVdcs(this.getScholarDvGroup());
+        BundleReader bundlereader = new BundleReader("DataListBundle", "scholarDvGroupLabel");
         if (!dataList.isEmpty()) 
-            dataMap.put("ScholarDVs", dataList);
+            dataMap.put(bundlereader.getMessageValue(), dataList);
      }
     
     private List sortVdcs(List memberVDCs) {
@@ -554,8 +556,6 @@ public class HomePage extends VDCBaseBean {
     /** TABS */
     
     public void initTabsMap() {
-       ResourceBundle labels = ResourceBundle.getBundle("DataListBundle");
-       Enumeration bundleKeys = labels.getKeys();
        ArrayList<Tab> tabs = new ArrayList<Tab>();
        int i = 1;
        while (i <= Integer.parseInt(ResourceBundle.getBundle("DataListBundle").getString("numberOfTabs"))) {

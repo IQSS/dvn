@@ -281,16 +281,14 @@ public class FileDownloadServlet extends HttpServlet{
 			// send the incoming HTTP stream as the response body
 
 			InputStream in = method.getResponseBodyAsStream(); 
-			//OutputStream out = res.getOutputStream();
-			WritableByteChannel out = Channels.newChannel (res.getOutputStream()); 
+			OutputStream out = res.getOutputStream();
 			    
 			byte[] dataReadBuffer = new byte[8192 * 4]; 
-			ByteBuffer dataWriteBuffer = ByteBuffer.allocate ( 8192 * 4 ); 
 
-			while ( in.read (dataReadBuffer) > 0 ) {
-			    dataWriteBuffer.put ( dataReadBuffer ); 
-			    out.write(dataWriteBuffer);
-			    //out.flush(); 
+			int i = 0; 
+			while ( i = (in.read (dataReadBuffer)) > 0 ) {
+			    out.write(dataReadBuffer, 0, i);
+			    out.flush(); 
 			}
 
 			in.close();
@@ -360,20 +358,20 @@ public class FileDownloadServlet extends HttpServlet{
 			// send the incoming HTTP stream as the response body
 
 			InputStream in = method.getResponseBodyAsStream(); 
-			//OutputStream out = res.getOutputStream();
-			WritableByteChannel out = Channels.newChannel (res.getOutputStream()); 
+			OutputStream out = res.getOutputStream();
+			//WritableByteChannel out = Channels.newChannel (res.getOutputStream()); 
 			    
 			byte[] dataReadBuffer = new byte[4 * 8192]; 
-			ByteBuffer dataWriteBuffer = ByteBuffer.allocate ( 4 * 8192 ); 
+			//ByteBuffer dataWriteBuffer = ByteBuffer.allocate ( 4 * 8192 ); 
 
-			while ( in.read (dataReadBuffer) > 0 ) {
-			    dataWriteBuffer.put ( dataReadBuffer ); 
-			    out.write(dataWriteBuffer);
-			    //out.flush(); 
+			int i = 0;
+			while ( (i = in.read (dataReadBuffer)) > 0 ) {
+			    //dataWriteBuffer.put ( dataReadBuffer ); 
+			    //out.write(dataWriteBuffer);
+			    out.write(dataReadBuffer,0,i);
+			    //dataWriteBuffer.rewind (); 
+			    out.flush(); 
 			}
-
-			in.close();
-			out.close();
 
 			in.close();
 			out.close();
@@ -639,12 +637,12 @@ public class FileDownloadServlet extends HttpServlet{
 			WritableByteChannel out = Channels.newChannel ( res.getOutputStream() ); 
 
 
-			long bytesPerIteration = 4 * 8192; 
-			long start = 0;
+			long position = 0;
+			long howMany = 32 * 1024; 
 
-			while ( start < in.size() ) {
-			    in.transferTo(start, bytesPerIteration, out);
-			    start += bytesPerIteration;
+			while ( position < in.size() ) {
+			    in.transferTo(position, howMany, out);
+			    position += howMany;
 			}
             
 			in.close();

@@ -83,12 +83,12 @@
                 <div class="dvn_margin12">
                   <!-- Network Homepage -->
                     <!-- datalist component for NETWORK HOME PAGE -->
-                    <h:panelGrid rendered="#{VDCRequest.currentVDC == null}" style="width:98%;">
-                        <h:panelGrid>
+                    <ui:panelLayout rendered="#{VDCRequest.currentVDC == null}" style="width:98%;">
+                        <div>
                             <h:outputText escape="false" value="#{HomePage.networkData}"/>
-                        </h:panelGrid>
+                        </div>
                         <dmap:datalist contents="#{HomePage.dataMap}" tabs="#{HomePage.tabsMap}" tab="#{HomePage.selectedTab != null ? HomePage.selectedTab : requestScope.tab}" id="dataMap" />
-                    </h:panelGrid>
+                    </ui:panelLayout>
                   <!-- Dataverse Hoempage -->
                     <!-- Display Tree at dataverse level -->
                     <ui:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>

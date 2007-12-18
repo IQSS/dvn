@@ -8,6 +8,7 @@
 .dvn_content {
     padding: 12px;
     color: #464646;
+    text-align: left;
 }
 
 .dvn_content div, .dvn_content span, .dvn_content p, .dvn_content li, 
@@ -58,7 +59,9 @@
 	float: left;
 }
 
-div.dvn_sectionTitle {margin: 0; padding: .65em .65em .25em .65em; color: #768891; font-size: 112% !important; font-weight: bold; text-transform: uppercase; text-align: left;}
+div.dvn_sectionTitle {margin: 0; padding: 0 .65em .25em .65em; font-size: 112% !important; color: #768891; text-transform: uppercase; text-align: left;}
+div.dvn_sectionTitle a {font-size: inherit !important; font-size: 100% !important;}
+div.dvn_sectionTitle a:hover, div.dvn_sectionTitle a:active {font-size: inherit !important; font-size: 100% !important; color: #768891; text-decoration: none !important; cursor: text;}
 span.dvn_sectionTitleL {float: left; padding: 0 0 0.25em 0; color: #768891; font-size: 112% !important; font-weight: bold; text-transform: uppercase; text-align: left;}
 span.dvn_sectionTitleR  {float: right; padding: 0 0 0.25em 0; }
 span.dvn_sectionTitleR a:link, span.dvn_sectionTitleR a:visited, span.dvn_sectionTitleR a:hover, span.dvn_sectionTitleR a:active {margin-left: 2em; }
@@ -66,8 +69,8 @@ span.dvn_sectionTitleR a:link, span.dvn_sectionTitleR a:visited, span.dvn_sectio
 .dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; }
 .dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; } 
 
-div.dvn_block {margin-bottom: 12px; padding: 12px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
-div.dvn_block h3 {margin: 0; padding: 0; color: #768891; font-size: 112% !important; font-weight: bold; text-transform: uppercase;}
+div.dvn_block {margin-bottom: 12px; padding: 6px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
+div.dvn_block h3 {margin: 0; padding: 0; color: #768891; font-weight: bold; text-transform: uppercase;}
 div.dvn_blockTitleBar {margin-bottom: 12px; padding: 6px; background: #e6ebed; border: 1px solid #ddd; font-style: italic; text-align: center;}
 
 .dvn_margin12 {
@@ -101,7 +104,7 @@ span.disabled {font-weight: bold;}
 .dvn_headerTitleLarge a:link, .dvn_headerTitleLarge a:visited, .dvn_headerTitleLarge a:hover, .dvn_headerTitleLarge a:active {color: #768891; font-size: 124% !important;}
 .dvn_headerTitleL {margin: 0 12px;}
 .dvn_headerTitleL a:link, .dvn_headerTitleL a:visited, .dvn_headerTitleL a:hover, .dvn_headerTitleL a:active {color: #c55b28; font-weight: bold;}
-.dvn_headerTitleR {position: absolute; right: 12px; top: 6px;}
+.dvn_headerTitleR {position: absolute; right: 12px; top: 10px;}
 
 /* NAV MENU */
 div.dvn_navblock {margin-bottom: 12px; padding: 0 10px 0 10px; background: #dadee0; border-top: 2px solid #91a5a9;}
@@ -427,8 +430,7 @@ a.vdcSiteMapLink:active {
 }
 
 .vdcSResultsTop{
-   padding-bottom: 5px;
-   padding-top: 20px;
+   padding: 0;
 }
 
 span.vdcSResultsField {
@@ -1125,7 +1127,6 @@ a.vdcRequestPanelLink:active{
 .dvnChildColumn  { width: 25%; vertical-align: top;}
 .dvnChildTable { width: 98%; border-collapse: collapse; }
 .dvnChildTable ul, .dvnChildTable ol { list-style: none; margin-left: 1.1em; }
-.dvnChildTable li {vertical-align: middle;}
 .dvnMainColumn   { width: 100%;}
 .dvnMainPanel    {
    background-color: #e6ebed;
@@ -1139,15 +1140,12 @@ a.vdcRequestPanelLink:active{
 
 li.activeBullet {
     list-style-image: url(icon_activebullet.gif);
-    padding-left:2px;
+    padding-left: 2px;
 }
 li.affiliationBullet {
     list-style-type: square;
     list-style-image: none;
-    line-height:80%;
-    margin-top:0;
-    color:#999999;
-    padding:0 0 .5em 0;
+    color: #999999;
 }
 
 /* *************** vanilla pages styles ***************** */

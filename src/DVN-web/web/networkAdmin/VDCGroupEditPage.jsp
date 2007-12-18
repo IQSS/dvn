@@ -3,21 +3,32 @@
           xmlns:h="http://java.sun.com/jsf/html" 
           xmlns:jsp="http://java.sun.com/JSP/Page" 
           xmlns:ui="http://www.sun.com/web/ui"
-          xmlns:tiles="http://struts.apache.org/tags-tiles">
+          xmlns:tiles="http://struts.apache.org/tags-tiles"
+          xmlns:webuijsf="http://www.sun.com/webui/webuijsf"
+          >
 <f:subview id="vDCGroupEditView">
     <f:verbatim>
         <script language="JavaScript">
-        function getAddRemoveLength() {
-            if (document.getElementById('content:vDCGroupEditView:vdcGroupEditForm:addRemoveList_selected').length > 1) {
-                return true;
-            } else {
-                alert("Validation Error: There must be at least one entry in the Selected Dataverse(s) list." + "\n\r" + "Please add a Dataverse to continue.");
-                return false;
-            }
-        }
+            //<![CDATA[
+                function getAddRemoveLength() {
+                    if (document.getElementById('content:vDCGroupEditView:vdcGroupEditForm:addRemoveList_selected').length > 1) {
+                        return true;
+                    } else {
+                        alert("Validation Error: There must be at least one entry in the Selected Dataverse(s) list." + "\n\r" + "Please add a Dataverse to continue.");
+                        return false;
+                    }
+                }
+
+                //workaround for the issue in Opera where the dvs are not getting added to the group.
+                 function highlightSelectedItems() {
+                    for (var i = 0; i < document.getElementById('content:vDCGroupEditView:vdcGroupEditForm:addRemoveList_list_value').length; i++) {
+                        document.getElementById('content:vDCGroupEditView:vdcGroupEditForm:addRemoveList_list_value').options[i].selected = true;
+                    }
+                }
+            // ]]>
         </script>
     </f:verbatim>
-    <h:form id="vdcGroupEditForm" onsubmit="return getAddRemoveLength();">
+    <h:form onclick="highlightSelectedItems();" id="vdcGroupEditForm" onsubmit="return getAddRemoveLength();">
 
         <h:messages layout="list" showDetail="false" showSummary="true" styleClass="successMessage" />
 
@@ -50,10 +61,11 @@
                             </h:column>
                         </h:panelGrid>
                         <h:panelGrid columns="1" style="width:98%" cellspacing="0" styleClass="dvGroupAdminTable" headerClass="groupAdminHeader" columnClasses="groupAdminNoneColumn">
-                            <ui:addRemove vertical="true" availableItemsLabel="All Dataverses:" 
+                            <ui:addRemove  vertical="true" availableItemsLabel="All Dataverses:" 
                                           id="addRemoveList" items="#{VDCGroupPage.addRemoveListDefaultOptions.items}" rows="8"  binding="#{VDCGroupPage.addRemoveList}"
                                           selectAll="false" selected="#{VDCGroupPage.addRemoveListDefaultOptions.selected}"
                                           selectedItemsLabel="Dataverse(s) in this Group:" style="margin-top: 10px; margin-bottom: 10px;"/>
+                                          <input type="button" value="selected values for Opera" onclick="alert(document.getElementById('content:vDCGroupEditView:vdcGroupEditForm:addRemoveList_list_value').length);"/>
                         </h:panelGrid>
                         <h:panelGrid columns="1" styleClass="dvGroupAdminFooter" columnClasses="groupEditFooter" cellspacing="0">
                             <h:commandButton id="btnSave" action="#{VDCGroupPage.update}" value="Save" immediate="true"/>

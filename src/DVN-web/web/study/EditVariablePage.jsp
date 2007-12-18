@@ -43,7 +43,8 @@
                             </f:facet>
                         </h:column>                                            
                     </h:dataTable>    
-                    <h:commandButton  id="saveButton" value="Save" action="#{EditVariablePage.save_action}"/>                    
+                    <h:commandButton  id="saveButton" value="Save" action="#{EditVariablePage.save_action}"/>  
+                    <h:commandButton  id="cancelButton" value="Cancel" action="#{EditVariablePage.cancel_action}" immediate="true" />
                 </div>            
             </div>
         </ui:form>

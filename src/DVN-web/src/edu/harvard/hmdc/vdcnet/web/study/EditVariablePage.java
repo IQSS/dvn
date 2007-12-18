@@ -1,17 +1,17 @@
 /*
  * Dataverse Network - A web application to distribute, share and analyze quantitative data.
  * Copyright (C) 2007
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  *  along with this program; if not, see <http://www.gnu.org/licenses
  * or write to the Free Software Foundation,Inc., 51 Franklin Street,
@@ -19,11 +19,11 @@
  */
 
 /*
-
+ 
  * EditVariablePage.java
- * 
+ *
  * Created on Nov 7, 2007, 2:08:08 PM
- * 
+ *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
@@ -54,20 +54,20 @@ import javax.servlet.http.HttpServletRequest;
  * @author Gustavo
  */
 public class EditVariablePage extends VDCBaseBean {
-
+    
     @EJB VariableServiceLocal varService;
     
     
     public EditVariablePage() {
     }
-
+    
     private Long dtId;
     private DataTable dt;
-
+    
     public DataTable getDt() {
         return dt;
     }
-
+    
     public void setDt(DataTable dt) {
         this.dt = dt;
     }
@@ -82,8 +82,8 @@ public class EditVariablePage extends VDCBaseBean {
         super.init();
         
         if ( isFromPage("EditVariablePage") ) {
-        dtId = new Long(getRequestParam("content:editVariablePageView:form1:dtId"));
-        dvFilter = getRequestParam("content:variablePageView:form1:dvFilter");
+            dtId = new Long(getRequestParam("content:editVariablePageView:form1:dtId"));
+            dvFilter = getRequestParam("content:variablePageView:form1:dvFilter");
         }
         
         if (dtId == null) {
@@ -102,7 +102,7 @@ public class EditVariablePage extends VDCBaseBean {
                 // iterate through the filter
                 for (DataVariable dv : dt.getDataVariables()) {
                     validationDvNames.add(dv.getName());
-                } 
+                }
                 
                 StringTokenizer st = new StringTokenizer( dvFilter, ",");
                 while (st.hasMoreTokens()) {
@@ -111,7 +111,7 @@ public class EditVariablePage extends VDCBaseBean {
                         for (DataVariable dv : dt.getDataVariables()) {
                             if ( dv.getId().equals(dvId) ) {
                                 dataVariables.add(dv);
-                                // since we are editing this one, remove it from the validation names 
+                                // since we are editing this one, remove it from the validation names
                                 validationDvNames.remove(dv.getName());
                             }
                         }
@@ -129,50 +129,60 @@ public class EditVariablePage extends VDCBaseBean {
             // WE SHOULD HAVE A DTID ID, throw an error
             System.out.println("ERROR: in EditVariablePage, without a dtId");
         }
-    
+        
     }
     
     public Long getDtId() {
         return dtId;
     }
-
+    
     public void setDtId(Long dtId) {
         this.dtId = dtId;
-    }    
+    }
     
-
+    
     public List<DataVariable> getDataVariables() {
         return dataVariables;
     }
-
+    
     public void setDataVariables(List<DataVariable> dataVariables) {
         this.dataVariables = dataVariables;
     }
-
+    
     public String getDvFilter() {
         return dvFilter;
     }
-
+    
     public void setDvFilter(String dvFilter) {
         this.dvFilter = dvFilter;
     }
     
- 
-   
+    
+    
     public String save_action() {
-
-         varService.updateDataTable( dt, getVDCSessionBean().getLoginBean().getUser().getId() );
-         
-         // this lets the Analysis page know which dt, and also to reset the session
-         getVDCRequestBean().setDtId(dtId);
-
-         // this is used by the jsp itself to set hidden dt variable
-         HttpServletRequest req = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest());
-         req.setAttribute("dtId", dtId.toString() );
-         
+        
+        varService.updateDataTable( dt, getVDCSessionBean().getLoginBean().getUser().getId() );
+        
+        // this lets the Analysis page know which dt, and also to reset the session
+        getVDCRequestBean().setDtId(dtId);
+        
+        // this is used by the jsp itself to set hidden dt variable
+        HttpServletRequest req = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest());
+        req.setAttribute("dtId", dtId.toString() );
+        
         return "subsetting";
     }
-
+    
+    
+    public String cancel_action() {
+        // this lets the Analysis page know which dt, and also to reset the session
+        getVDCRequestBean().setDtId(dtId);
+        
+        // this is used by the jsp itself to set hidden dt variable
+        HttpServletRequest req = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest());
+        req.setAttribute("dtId", dtId.toString() );
+        return "subsetting";
+    }
     
     public void validateDVName(FacesContext context,
             UIComponent toValidate,
@@ -194,7 +204,7 @@ public class EditVariablePage extends VDCBaseBean {
                 dvName.contains("#")) {
             errorMessage = "cannot contain any of the following characters: \\ / : * ? \" < > | ; #";
         }
-
+        
         // now check unique varName against other dv names
         Iterator iter = validationDvNames.iterator();
         while (iter.hasNext()) {
@@ -205,7 +215,7 @@ public class EditVariablePage extends VDCBaseBean {
         }
         
         // now add this name to the validation list
-        validationDvNames.add(dvName);        
+        validationDvNames.add(dvName);
         
         if (errorMessage != null) {
             ((UIInput)toValidate).setValid(false);
@@ -214,8 +224,8 @@ public class EditVariablePage extends VDCBaseBean {
             context.addMessage(toValidate.getClientId(context), message);
         }
         
-    }    
+    }
     
-  
+    
     
 }

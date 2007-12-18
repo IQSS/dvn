@@ -82,8 +82,7 @@
                   <div class="dvn_sectionBox">  
                      <div class="dvn_margin12">
                        <h:outputText styleClass="vdcSubHeaderColor" value="#{SearchPage.subListHeader}" />
-                       
-                       <div style="padding-top: 1em; padding-bottom: 1em;">
+                       <div>
                           <h:outputText id="listMessagePrefix" value="#{SearchPage.listMessagePrefix}" />
                           <h:outputText id="listMessageContent" styleClass="warnMessage" value="#{SearchPage.listMessageContent}" />
                           <h:outputText id="listMessageSuffix" value="#{SearchPage.listMessageSuffix}" />
@@ -99,7 +98,7 @@
                               </h:selectOneMenu>
                           </ui:panelGroup>
                           
-                          <ui:panelGroup block="true" id="groupPanel4" style="text-align: right" rendered="#{SearchPage.renderScroller}">
+                          <ui:panelGroup block="true" id="groupPanel4" rendered="#{SearchPage.renderScroller}">
                               <t:scroller binding="#{SearchPage.scroller}" for="dataTable1" actionListener="#{SearchPage.scroll_action}">
                                   <f:facet name="previous">
                                       <h:graphicImage id="scrollBack" value="/resources/arrow-left.gif" styleClass="vdcNoBorders" />

@@ -17,6 +17,8 @@
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                     <h:outputText value="#{EditVariablePage.dt.studyFile.fileName}"/>
+                 </div>   
+                 <div class="dvn_sectionBoxNoBorders">    
                     <br />
                     <span class="dvn_preFileTitle">Variables: </span>
                     <br />
@@ -24,7 +26,7 @@
                         <h:outputText value="Some errors occurred, please check details below" rendered="#{! empty facesContext.maximumSeverity}" />
                     </ui:panelGroup>
                     <br />
-                    <h:dataTable   value="#{EditVariablePage.dataVariables}"  var="dv" width="500px;" columnClasses="vdcColPadded">
+                    <h:dataTable   value="#{EditVariablePage.dataVariables}"  var="dv"  columnClasses="vdcColPadded">
                         <h:column>
                             <h:inputHidden  value="#{dv.id}" />
                             <h:inputText  id="dv_name" value="#{dv.name}" required="true" validator ="#{EditVariablePage.validateDVName}"/>

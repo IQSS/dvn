@@ -118,7 +118,7 @@
                            
                           <ui:panelGroup> 
                                 <div id="requiredDayOfWeekText">
-                              <h:inputText  id="exportDayOfWeek" value="#{EditExportSchedulePage.exportDayOfWeek}" required="true">
+                              <h:inputText  id="exportDayOfWeek" value="#{EditExportSchedulePage.exportDayOfWeek}" required="true" requiredMessage="This field is required.">
                                      <f:validateLongRange minimum="1" maximum="7" />
                               </h:inputText>
                               <h:message  for="exportDayOfWeek"  styleClass="errorMessage"/>

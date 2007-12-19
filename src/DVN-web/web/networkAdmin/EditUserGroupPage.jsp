@@ -24,7 +24,7 @@
                                  <h:graphicImage  value="/resources/icon_required.gif"/>
                              </ui:panelGroup>
                              <ui:panelGroup>
-                                 <h:inputText id="inputGroupName" size="40" value="#{EditUserGroupPage.group.name}" required="true" onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');">
+                                 <h:inputText id="inputGroupName" size="40" value="#{EditUserGroupPage.group.name}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');">
                                      <f:validator validatorId="CharacterValidator"/>
                                  </h:inputText>
                                  <h:message styleClass="errorMessage" for="inputGroupName"/>

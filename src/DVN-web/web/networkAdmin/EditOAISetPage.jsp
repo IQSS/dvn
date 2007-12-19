@@ -38,7 +38,7 @@
                               <h:graphicImage  value="/resources/icon_required.gif"/>
                           </ui:panelGroup>
                           <ui:panelGroup> 
-                              <h:inputText id="oaiSetName" value="#{EditOAISetPage.oaiSet.name}" required="true">                                  
+                              <h:inputText id="oaiSetName" value="#{EditOAISetPage.oaiSet.name}" required="true" requiredMessage="This field is required.">                                  
                               </h:inputText>
                               <h:message for="oaiSetName"  styleClass="errorMessage"/>
                               <br />
@@ -49,7 +49,7 @@
                               <h:graphicImage  value="/resources/icon_required.gif"/>
                           </ui:panelGroup>
                          <ui:panelGroup> 
-                              <h:inputText id="oaiSetSpec" value="#{EditOAISetPage.oaiSet.spec}" required="true">                                  
+                              <h:inputText id="oaiSetSpec" value="#{EditOAISetPage.oaiSet.spec}" required="true" requiredMessage="This field is required.">                                  
                               </h:inputText>
                               <h:message for="oaiSetSpec"  styleClass="errorMessage"/>
                               <br />
@@ -60,7 +60,7 @@
                               <h:graphicImage  value="/resources/icon_required.gif"/>
                           </ui:panelGroup>
                          <ui:panelGroup> 
-                              <h:inputText id="oaiSetDefiniton" value="#{EditOAISetPage.oaiSet.definition}" required="true" size="100">                                  
+                              <h:inputText id="oaiSetDefiniton" value="#{EditOAISetPage.oaiSet.definition}" required="true" requiredMessage="This field is required." size="100">                                  
                               </h:inputText>
                               <h:message for="oaiSetDefiniton"  styleClass="errorMessage"/>
                               <br />

@@ -24,7 +24,7 @@
                                <h:graphicImage  id="image1" value="/resources/icon_required.gif"/>
                            </ui:panelGroup>
                            <ui:panelGroup>
-                               <h:inputText immediate="true" id="inputUserName" validator ="#{EditAccountPage.validateUserName}" value="#{EditAccountPage.user.userName}" required="true">
+                               <h:inputText immediate="true" id="inputUserName" validator ="#{EditAccountPage.validateUserName}" value="#{EditAccountPage.user.userName}" required="true" requiredMessage="This field is required.">
                                </h:inputText>
                                <h:message styleClass="errorMessage" for="inputUserName"/>
                            </ui:panelGroup>
@@ -33,7 +33,7 @@
                                <h:graphicImage  value="/resources/icon_required.gif"/>
                            </ui:panelGroup>
                            <ui:panelGroup>
-                               <h:inputText id="inputFirstName" value="#{EditAccountPage.user.firstName}" required="true"/> 
+                               <h:inputText id="inputFirstName" value="#{EditAccountPage.user.firstName}" required="true" requiredMessage="This field is required."/> 
                                <h:message styleClass="errorMessage" for="inputFirstName"/>
                            </ui:panelGroup>
                            
@@ -43,7 +43,7 @@
                                <h:graphicImage  value="/resources/icon_required.gif"/>
                            </ui:panelGroup>
                            <ui:panelGroup>
-                               <h:inputText id="inputLastName" value="#{EditAccountPage.user.lastName}" required="true"/> 
+                               <h:inputText id="inputLastName" value="#{EditAccountPage.user.lastName}" required="true" requiredMessage="This field is required."/> 
                                <h:message styleClass="errorMessage" for="inputLastName"/>
                            </ui:panelGroup>
                            
@@ -52,7 +52,7 @@
                                <h:graphicImage  value="/resources/icon_required.gif"/>
                            </ui:panelGroup>
                            <ui:panelGroup>
-                               <h:inputText id="inputEmail" value="#{EditAccountPage.user.email}" size="40" required="true">
+                               <h:inputText id="inputEmail" value="#{EditAccountPage.user.email}" size="40" required="true" requiredMessage="This field is required.">
                                    <f:validator validatorId="EmailValidator"/>
                                </h:inputText>
                                <h:message styleClass="errorMessage" for="inputEmail"/>

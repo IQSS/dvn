@@ -31,7 +31,7 @@
                               <h:graphicImage  id="image1" value="/resources/icon_required.gif"/>
                           </ui:panelGroup>
                           <ui:panelGroup>
-                              <h:inputText id="inputUserName" validator="#{AddAccountPage.validateUserName}" value="#{AddAccountPage.user.userName}" required="true">
+                              <h:inputText id="inputUserName" validator="#{AddAccountPage.validateUserName}" value="#{AddAccountPage.user.userName}" required="true" requiredMessage="This field is required.">
                               </h:inputText>
                               <h:message for="inputUserName"  styleClass="errorMessage"/>
                           </ui:panelGroup>
@@ -40,7 +40,7 @@
                               <h:graphicImage  value="/resources/icon_required.gif"/>
                           </ui:panelGroup>
                           <ui:panelGroup> 
-                              <h:inputSecret binding="#{AddAccountPage.inputPassword}" id="inputPassword" value="#{AddAccountPage.editUserService.newPassword1}" required="true"/>
+                              <h:inputSecret binding="#{AddAccountPage.inputPassword}" id="inputPassword" value="#{AddAccountPage.editUserService.newPassword1}" required="true" requiredMessage="This field is required."/>
                               <h:message for="inputPassword"  styleClass="errorMessage"/>
                           </ui:panelGroup>
                           <ui:panelGroup >
@@ -48,7 +48,7 @@
                               <h:graphicImage  value="/resources/icon_required.gif"/>
                           </ui:panelGroup>
                           <ui:panelGroup> 
-                              <h:inputSecret  id="retypePassword" value="#{AddAccountPage.editUserService.newPassword2}" validator="#{AddAccountPage.validatePassword}" required="true"/>
+                              <h:inputSecret  id="retypePassword" value="#{AddAccountPage.editUserService.newPassword2}" validator="#{AddAccountPage.validatePassword}" required="true" requiredMessage="This field is required."/>
                               <h:message for="retypePassword"  styleClass="errorMessage"/>
                           </ui:panelGroup>                          
                           <ui:panelGroup >
@@ -56,7 +56,7 @@
                               <h:graphicImage  value="/resources/icon_required.gif"/>
                           </ui:panelGroup>
                           <ui:panelGroup>
-                              <h:inputText id="inputFirstName" value="#{AddAccountPage.user.firstName}" required="true"/> 
+                              <h:inputText id="inputFirstName" value="#{AddAccountPage.user.firstName}" required="true" requiredMessage="This field is required."/> 
                               <h:message for="inputFirstName"  styleClass="errorMessage"/>
                           </ui:panelGroup>
                           
@@ -66,7 +66,7 @@
                               <h:graphicImage  value="/resources/icon_required.gif"/>
                           </ui:panelGroup>
                           <ui:panelGroup>
-                              <h:inputText id="inputLastName" value="#{AddAccountPage.user.lastName}" required="true"/> 
+                              <h:inputText id="inputLastName" value="#{AddAccountPage.user.lastName}" required="true" requiredMessage="This field is required."/> 
                               <h:message for="inputLastName"  styleClass="errorMessage"/>
                           </ui:panelGroup>
                           
@@ -75,7 +75,7 @@
                               <h:graphicImage  value="/resources/icon_required.gif"/>
                           </ui:panelGroup>
                           <ui:panelGroup>
-                              <h:inputText  id="inputEmail" value="#{AddAccountPage.user.email}" size="40" required="true">
+                              <h:inputText  id="inputEmail" value="#{AddAccountPage.user.email}" size="40" required="true" requiredMessage="This field is required.">
                                   <f:validator validatorId="EmailValidator"/>
                               </h:inputText>
                               <h:message for="inputEmail"  styleClass="errorMessage"/>

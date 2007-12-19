@@ -40,7 +40,7 @@
                                <h:graphicImage  value="/resources/icon_required.gif"/>
                            </ui:panelGroup>
                            <ui:panelGroup>
-                               <h:inputSecret id="inputNewPassword1" binding="#{EditPasswordPage.inputNewPassword}"  value="#{EditPasswordPage.editUserService.newPassword1}" required="true"/> 
+                               <h:inputSecret id="inputNewPassword1" binding="#{EditPasswordPage.inputNewPassword}"  value="#{EditPasswordPage.editUserService.newPassword1}" required="true" requiredMessage="This field is required."/> 
                                <h:message styleClass="errorMessage" for="inputNewPassword1"/>
                            </ui:panelGroup>
                            
@@ -50,7 +50,7 @@
                                <h:graphicImage  value="/resources/icon_required.gif"/>
                            </ui:panelGroup>
                            <ui:panelGroup>
-                               <h:inputSecret id="inputNewPassword2" validator="#{EditPasswordPage.validateConfirmPassword}" value="#{EditPasswordPage.editUserService.newPassword2}" required="true"/> 
+                               <h:inputSecret id="inputNewPassword2" validator="#{EditPasswordPage.validateConfirmPassword}" value="#{EditPasswordPage.editUserService.newPassword2}" required="true" requiredMessage="This field is required."/> 
                                <h:message styleClass="errorMessage" for="inputNewPassword2"/>
                            </ui:panelGroup>
                            

@@ -1850,7 +1850,7 @@
                                                 </f:facet>    
                                             </h:column>
                                             <h:column id="column10">
-                                                <h:inputText id="input_fileName" size="30"  value="#{file.studyFile.fileName}" required="true" validator ="#{EditStudyPage.validateFileName}" />
+                                                <h:inputText id="input_fileName" size="30"  value="#{file.studyFile.fileName}" required="true" requiredMessage="This field is required."  validator ="#{EditStudyPage.validateFileName}" />
                                                 <h:message styleClass="errorMessage" for="input_fileName"/><br />
                                                 <h:outputText id="outputText17" style="font-size: 11px" value="#{file.studyFile.fileType} "/>
                                                 <h:graphicImage  rendered="#{file.studyFile.subsettable}" id="imagefs" styleClass="vdcNoBorders" value="/resources/icon_subsettable.gif"/>

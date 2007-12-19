@@ -31,7 +31,7 @@
                                <h:graphicImage  id="image1" value="/resources/icon_required.gif"/>
                            </ui:panelGroup>
                            <ui:panelGroup>
-                               <h:inputSecret id="inputCurrentPassword"  validator="#{EditPasswordPage.validateOldPassword}" value="#{EditPasswordPage.editUserService.currentPassword}" required="true">
+                               <h:inputSecret id="inputCurrentPassword"  validator="#{EditPasswordPage.validateOldPassword}" value="#{EditPasswordPage.editUserService.currentPassword}" required="true" requiredMessage="This field is required.">
                                </h:inputSecret>
                                <h:message styleClass="errorMessage" for="inputCurrentPassword"/>
                            </ui:panelGroup>

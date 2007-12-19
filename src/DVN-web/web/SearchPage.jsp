@@ -199,7 +199,7 @@
           </ui:panelLayout>
           
           <ui:panelGroup block="true" rendered="#{SearchPage.renderTree}" styleClass="dvn_sectionPanels">
-              <div class="dvn_block"><h3><h:outputText value="#{SearchPage.treeHeader}"/></h3>
+              <div class="dvn_block"><span><h:outputText value="#{SearchPage.treeHeader}"/></span>
                 <ui:tree binding="#{SearchPage.collectionTree}" id="collectionTree" text="" />
               </div>    
           </ui:panelGroup>

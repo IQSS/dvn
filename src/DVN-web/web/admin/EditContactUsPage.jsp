@@ -38,7 +38,8 @@
                                          id="contactUsEmail" 
                                          size="50" 
                                          value="#{EditContactUsPage.contactUsEmail}" 
-                                         required="true">
+                                         required="true"
+                                         requiredMessage="This field is required.">
                                 <f:validator validatorId="EmailValidator"/>
                             </h:inputText>
                             

@@ -381,6 +381,8 @@ a.dvn_more:link, a.dvn_more:visited, a.dvn_more:hover, a.dvn_more:active{
    padding-bottom: 3px;
    padding-left: 4px;
    padding-top: 3px;
+   text-align: left;
+   vertical-align: top;
 }
 
 .vdcSmallButton{
@@ -914,11 +916,13 @@ span.vdcSResultsField {
    padding-bottom: 6px;
    padding-top: 6px;
    white-space: nowrap;
+   vertical-align: top;
 }
 .vdcLoginCol2{
    background-color:inherit !important;
    padding-bottom: 6px;
    padding-top: 6px; 
+   vertical-align: top;
 }
 
 /* Rules for paragraphs in abstract

@@ -37,7 +37,7 @@
                                 <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems3}" id="dropdown4SelectItems3" value="#{AdvSearchPage.dateItem1 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
                             </h:selectOneMenu>
                             <ui:panelGroup>
-                                <h:inputText binding="#{AdvSearchPage.textField1}" id="textField1" size="40" required="true"/>
+                                <h:inputText binding="#{AdvSearchPage.textField1}" id="textField1" size="40" required="true" requiredMessage="This field is required."/>
                                 <h:message for="textField1" errorClass="errorMessage" showDetail="false" showSummary="true" />
                             </ui:panelGroup>
                             <ui:panelGroup binding="#{AdvSearchPage.groupPanel1}" id="groupPanel1" style="white-space: nowrap;">

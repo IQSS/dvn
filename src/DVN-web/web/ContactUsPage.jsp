@@ -45,7 +45,8 @@
                             <ui:panelGroup block="true" separator="&lt;br /&gt;"> 
                                 <h:inputText  id="emailAddress" size="30"
                                               value="#{ContactUsPage.emailAddress}" 
-                                              required="true">
+                                              required="true"
+                                              requiredMessage="This field is required.">
                                     <f:validator validatorId="EmailValidator"/>
                                 </h:inputText>
                                 <h:message id="emailAddressMsg" 
@@ -62,6 +63,7 @@
                                              size="30"
                                              value       = "#{ContactUsPage.fullName}"
                                              required="true"
+                                             requiredMessage="This field is required."
                                 />
                                 
                                 <h:message id="fullNameMsg" 
@@ -95,6 +97,7 @@
                                 <h:inputTextarea cols="50" id="emailBody" 
                                                  value="#{ContactUsPage.emailBody}" 
                                                  required="true" 
+                                                 requiredMessage="This field is required."
                                                  rows="8"/>
                                 
                                 <h:message id="emailBodyMsg"

@@ -32,7 +32,8 @@
                                             </h:outputLabel>
                                         </ui:panelGroup>
                                         <ui:panelGroup block="true" style="padding-top: 20px;">
-                                            <h:inputText id="username" value="#{LoginPage.userName}" required="true"  />
+                                            <h:inputText id="username" value="#{LoginPage.userName}" required="true" requiredMessage="This field is required."  />
+                                            <br />
                                             <h:message for="username" styleClass="errorMessage" />
                                         </ui:panelGroup>
                                         <ui:panelGroup block="true" style="text-align:right; padding-right:10px;">
@@ -41,7 +42,8 @@
                                             </h:outputLabel>
                                         </ui:panelGroup>
                                         <ui:panelGroup>
-                                            <h:inputSecret onkeypress="if (window.event) return processEvent('', 'content:LoginPageView:loginForm:button1'); else return processEvent(event, 'content:LoginPageView:loginForm:button1');" id="password" value="#{LoginPage.password}" required="true" />
+                                            <h:inputSecret onkeypress="if (window.event) return processEvent('', 'content:LoginPageView:loginForm:button1'); else return processEvent(event, 'content:LoginPageView:loginForm:button1');" id="password" value="#{LoginPage.password}" required="true" requiredMessage="This field is required."/>
+                                            <br />
                                             <h:message for="password" styleClass="errorMessage"/>
                                         </ui:panelGroup>
                                         <ui:panelGroup>

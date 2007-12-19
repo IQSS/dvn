@@ -29,7 +29,8 @@
                     <h:dataTable   value="#{EditVariablePage.dataVariables}"  var="dv"  columnClasses="vdcColPadded">
                         <h:column>
                             <h:inputHidden  value="#{dv.id}" />
-                            <h:inputText  id="dv_name" value="#{dv.name}" required="true" validator ="#{EditVariablePage.validateDVName}"/>
+                            <h:inputText  id="dv_name" value="#{dv.name}" required="true" requiredMessage="This field is required." validator ="#{EditVariablePage.validateDVName}"/>
+                            <br />
                             <h:message styleClass="errorMessage" for="dv_name"/>
                             <f:facet name="header">
                                 <h:outputText   value="Name"/>
@@ -37,6 +38,7 @@
                         </h:column>
                         <h:column>
                             <h:inputText  id="dv_label" value="#{dv.label}" size="80"/>
+                            <br />
                             <h:message styleClass="errorMessage" for="dv_label"/>
                             <f:facet name="header">
                                 <h:outputText   value="Label"/>

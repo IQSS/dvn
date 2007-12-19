@@ -18,6 +18,7 @@
       <ui:head title="#{pageTitle.value}">
          <ui:link  id="link2" url="/resources/stylesheet.css"/>
          <ui:script url="/resources/EventCapture.js"/>
+         <ui:script url="/resources/dvn_ui.js"/>
          <f:verbatim>
              <script language="JavaScript">
                  var isChild = true;

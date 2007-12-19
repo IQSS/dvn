@@ -14,7 +14,7 @@
                 <div class="dvn_section">
                     <div class="dvn_sectionTitle">
                          
-                            <h:outputText  value="Update Susscessful"/>
+                            <h:outputText  value="Password Update"/>
                          
                     </div>            
                     <div class="dvn_sectionBox"> 

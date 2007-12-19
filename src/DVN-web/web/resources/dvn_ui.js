@@ -1,4 +1,5 @@
 
+// SCRIPT: Login form, vertically align center
 window.onload   = initPage;
 window.onresize = initPage;
 
@@ -30,3 +31,4 @@ function getWindowHeight() {
 	
   return windowHeight;
 };
+// END SCRIPT: Login form, vertically align center

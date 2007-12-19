@@ -5,7 +5,7 @@
                         xmlns:ui="http://www.sun.com/web/ui"
                         xmlns:tiles="http://struts.apache.org/tags-tiles">
             <f:subview id="vanillaLoginPageView">
-                <div class="loginPageWrap">
+                <div id="loginPageWrap">
                     <ui:form id="vanillaLoginForm">
                         <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
                         <h:inputHidden binding="#{LoginPage.hiddenWorkflow}" value="#{LoginPage.workflow}"/>

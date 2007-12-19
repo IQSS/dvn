@@ -70,6 +70,7 @@
                                                     onchange="setCheckedValue(document.getElementById('content:editSitePageView:form1:dataverseType'));submit();"
                                                     valueChangeListener="#{AddSitePage.changeDataverseOption}"
                                                     required="true"
+                                                    requiredMessage="This field is required."
                                                     value="#{EditSitePage.dataverseType}">
                                     <f:selectItems value="#{AddSitePage.dataverseOptions}"/>
                                 </h:selectOneRadio>
@@ -138,7 +139,8 @@
                              <ui:panelGroup>
                                  <h:inputText binding="#{EditSitePage.dataverseName}" 
                                                 id="dataverseName" 
-                                                required="true" 
+                                                required="true"
+                                                requiredMessage="This field is required."
                                                 validator="#{EditSitePage.validateName}" 
                                                 size="60" 
                                                 value="#{VDCRequest.currentVDC.name}"/>
@@ -156,7 +158,7 @@
                                  </h:outputLabel>
                              </ui:panelGroup>
                              <ui:panelGroup>
-                                 <h:inputText binding="#{EditSitePage.dataverseAlias}" id="dataverseAlias" required="true" validator="#{EditSitePage.validateAlias}" value="#{VDCRequest.currentVDC.alias}"/>
+                                 <h:inputText binding="#{EditSitePage.dataverseAlias}" id="dataverseAlias" required="true" requiredMessage="This field is required." validator="#{EditSitePage.validateAlias}" value="#{VDCRequest.currentVDC.alias}"/>
                                 <br />
                                  <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
                                  <h:message for="dataverseAlias" showSummary="true" showDetail="false" styleClass="errorMessage"/>

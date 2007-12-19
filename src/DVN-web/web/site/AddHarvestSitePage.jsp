@@ -37,7 +37,7 @@
                                             </h:outputLabel>
                                         </ui:panelGroup>
                                         <ui:panelGroup>
-                                            <h:inputText id="dataverseAlias" required="true"  />
+                                            <h:inputText id="dataverseAlias" required="true"  requiredMessage="This field is required."/>
                                             <verbatim><br /></verbatim>
                                             <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, i.e., http://.../dv/'alias'."/>
                                         </ui:panelGroup>
@@ -45,7 +45,7 @@
                                            <h:outputText style="white-space: nowrap; padding-right: 10px; " value="OAI Server"/> 
                                         </ui:panelGroup>
                                         <ui:panelGroup>
-                                            <h:inputText  required="true" />  <h:commandButton  value="Validate" />
+                                            <h:inputText  required="true" requiredMessage="This field is required."/>  <h:commandButton  value="Validate" />
                                             <verbatim><br /></verbatim>
                                             <h:outputText styleClass="vdcHelpText" value="Enter OAI server name, e.g., http://..."/> 
                                         </ui:panelGroup>
@@ -94,7 +94,7 @@
                                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Allowed Users, if Files are Restricted"/> 
                                         </ui:panelGroup>
                                         <ui:panelGroup>
-                                            <h:inputText required="true"  /> <h:commandButton  value="Add" />
+                                            <h:inputText required="true" requiredMessage="This field is required." /> <h:commandButton  value="Add" />
                                             <verbatim><br /></verbatim>
                                             <h:outputText styleClass="vdcHelpText" value="Enter username to allow them to access restricted studies."/>
                                         </ui:panelGroup>
@@ -102,7 +102,7 @@
                                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Allowed Groups, if Files are Restricted"/> 
                                         </ui:panelGroup>
                                         <ui:panelGroup>
-                                            <h:inputText required="true"  /> <h:commandButton  value="Add" />
+                                            <h:inputText required="true" requiredMessage="This field is required." /> <h:commandButton  value="Add" />
                                             <verbatim><br /></verbatim>
                                             <h:outputText styleClass="vdcHelpText" value="Enter group name to allow them to access restricted studies."/>
                                         </ui:panelGroup>

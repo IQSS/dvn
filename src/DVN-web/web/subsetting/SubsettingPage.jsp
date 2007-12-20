@@ -25,16 +25,115 @@ xmlns:ui="http://www.sun.com/web/ui"
         vec.add( "<tr><td>"+name + "</td><td>" + (String)emx.nextElement() +"</td></tr>");
       }
   }
-
+    String cntxpth = request.getContextPath();    
   Map hm = request.getParameterMap();
   Set es = hm.entrySet();
   String dataFileId = request.getParameter("dtId");
   if (dataFileId == null) {
     dataFileId = (String) request.getAttribute("dtId");
   }
+  String shlurl = cntxpth + "/sumStat?" + "dtId="+dataFileId+"&varId=";
 ]]></jsp:scriptlet>
 
-
+    <script type="text/javascript">
+        <![CDATA[
+            // share-remoting related code
+            var req;
+            var cellId;
+            var QSrootNodeIdPrefix = "quickSummaryStatTableRootDiv_";
+            //var rx =   /\S+:(\d+):showStatistics$/ ;
+            
+            function isQStableAttached(rowId){
+             // this function tells whether a QS table is already
+             // attached to the cell
+                //var QSrootId = getQSrootId(imageBttnId);
+                var QSrootNode = document.getElementById(QSrootNodeIdPrefix+rowId);
+                
+                var attached=false;
+                if (QSrootNode){
+                    attached = true;
+                    //alert("QS table is attached");
+                }
+                return attached;
+            }
+            
+            function getQSrootId(imageBttnId){
+                var tokens = imageBttnId.split(/:/); 
+                var vId = tokens[tokens.length - 2];
+                var QSrootId = imageBttnId.replace(/showStatistics$/, "varSummaryTable");
+                return QSrootId;
+            }
+            
+            function QSrequested(bttnId, rowId){
+                /*
+                var tokens = bttnId.split(/:/); 
+                var vId = tokens[tokens.length - 2];
+                cellId = bttnId.replace(/showStatistics$/, "varSummaryTable");
+                */
+                cellId = getQSrootId(bttnId);
+                var displayRootNode = document.getElementById(cellId);
+                //alert("display attr="+displayRootNode.style.display);
+                if (displayRootNode.style.display == "") {
+                    //alert("display attr is ''");
+                }
+                if (displayRootNode.style.display == undefined) {
+                    //alert("display attr is undefined");
+                }                
+                if ((displayRootNode.style.display == "none") || 
+                    (displayRootNode.style.display == "")){
+                    // show the cell
+                    displayRootNode.style.display = "inline";
+                    // attache the table if not attached
+                    //alert("show case");
+                    if (!isQStableAttached(rowId)){
+                        //alert("make an ajax call");
+                        var qsString = "]]><jsp:expression>shlurl</jsp:expression><![CDATA[";
+                        qsString = qsString + rowId;
+                        sendRequest(qsString, processQSrequest);
+                    }                    
+                } else if (displayRootNode.style.display == "inline"){
+                    // hide the cell
+                    //alert("hide case");
+                    displayRootNode.style.display = "none";
+                }
+            }
+            
+            function sendRequest(url, handler) {
+                initXHR();
+                req.onreadystatechange = handler;
+                req.open("GET", url, true);
+                req.send(null);
+            }
+            
+            function initXHR() {
+                if(window.XMLHttpRequest) {
+                    req = new XMLHttpRequest();
+                }
+                else if(window.ActiveXObject) {
+                    req = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+            }
+            
+            function processQSrequest() {
+                if (req.readyState != 4) {
+                    return;
+                }
+                if (req.status == 200){
+                    var QStable = req.responseText;
+                    //alert("returned contents = "+QStable);
+                    document.getElementById(cellId).innerHTML = QStable;
+                } else if (req.status == 304){
+                    alert("Summary statistics cannot be displayed: 304 error");
+                } else if (req.status >= 400 && req.status < 500){
+                    alert("Summary statistics cannot be displayed: 4xxx error");
+                } else if (req.status >= 500 && req.status < 600){
+                    alert("Summary statistics cannot be displayed: 5xxx error");
+                } else {
+                    alert("Summary statistics cannot be displayed: unknown error");
+                }
+            }
+            
+        ]]></script>
 <!-- to be renamed to subview -->
 
 
@@ -1059,20 +1158,31 @@ xmlns:ui="http://www.sun.com/web/ui"
                    onClick="submit();" >
                 </ui:checkbox  -->
                 
-                        <ui:imageHyperlink   id="showStatistics" 
+                        <!--ui:imageHyperlink   id="showStatistics" 
                                              actionListener="#{AnalysisPage.displayQuickSumStat}"
                                              imageURL="/resources/icon_variables.gif"
                                              styleClass="vdcNoBorders" 
                                              alt="Click to show descriptive statistics"
                                              toolTip="Click to show/hide descriptive statistics"
-                        />
+                        / -->
+<h:commandButton 
+id="showStatistics" 
+onclick="QSrequested(this.id, '#{currentRow[2]}');return false;" 
+alt="Click to show descriptive statistics"
+title="Click to show/hide descriptive statistics"
+image="/resources/icon_variables.gif"
+type="submit" />                              
+                             <!--rendered="{currentRow[6]}" -->
+                        <h:outputText escape="false" id="varSummaryTable"
+                        value="#{currentRow[5]}"  />                          
+
                         <!--
       
       <ui:panelGroup binding="#{AnalysisPage.gPquickSumStat}" block="true" id="gPquickSumStat" visible="#{currentRow[6]}">  </ui:panelGroup>    
--->
+
       
                         <h:outputText escape="false" id="varSummaryTable" value="#{currentRow[5]}"  rendered="#{currentRow[6]}"/>
-                        
+-->                        
                         
                     </h:column>
                 </h:dataTable>    

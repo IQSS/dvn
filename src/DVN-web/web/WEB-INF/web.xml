@@ -283,4 +283,12 @@
     <servlet-name>VDCIngestServlet</servlet-name>
         <url-pattern>/ingest</url-pattern>
     </servlet-mapping>       
+    <servlet>
+        <servlet-name>VDCSummaryStatisticsServlet</servlet-name>
+        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCSummaryStatisticsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>VDCSummaryStatisticsServlet</servlet-name>
+        <url-pattern>/sumStat</url-pattern>
+    </servlet-mapping>
 </web-app>

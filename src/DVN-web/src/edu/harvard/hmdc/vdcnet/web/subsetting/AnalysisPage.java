@@ -4994,7 +4994,8 @@ if (baseVarToDerivedVar.containsKey(varId)){
 
           // 5 summary statistics(removed)
 
-            rw.add("contents_here_"+counter);
+            //rw.add("contents_here_"+counter);
+          rw.add("");
           // 6 panelgroup state
           rw.add(Boolean.FALSE);
           dt4Display.add(rw);

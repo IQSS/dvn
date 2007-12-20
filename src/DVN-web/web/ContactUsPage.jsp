@@ -26,7 +26,7 @@
                         </ui:panelLayout>
                         
                         <ui:panelGroup  block="true" id="groupPanel2"  style="padding-bottom: 20px">
-                            <h:outputText  id="outputText2" value="#{bundle.contactUsFormMessage} ("/>
+                            <h:outputText  id="outputText2" escape="false"  value="#{bundle.contactUsFormMessage} ("/>
                             <h:graphicImage value="/resources/icon_required.gif"/> <h:outputText style="vdcHelpText" value="Indicates a required field.)"/>
                         </ui:panelGroup>
                         <h:panelGrid  cellpadding="0" cellspacing="0"

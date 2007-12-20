@@ -65,7 +65,6 @@
                                           id="addRemoveList" items="#{VDCGroupPage.addRemoveListDefaultOptions.items}" rows="8"  binding="#{VDCGroupPage.addRemoveList}"
                                           selectAll="false" selected="#{VDCGroupPage.addRemoveListDefaultOptions.selected}"
                                           selectedItemsLabel="Dataverse(s) in this Group:" style="margin-top: 10px; margin-bottom: 10px;"/>
-                                          <input type="button" value="selected values for Opera" onclick="alert(document.getElementById('content:vDCGroupEditView:vdcGroupEditForm:addRemoveList_list_value').length);"/>
                         </h:panelGrid>
                         <h:panelGrid columns="1" styleClass="dvGroupAdminFooter" columnClasses="groupEditFooter" cellspacing="0">
                             <h:commandButton id="btnSave" action="#{VDCGroupPage.update}" value="Save" immediate="true"/>

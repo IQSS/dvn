@@ -1,0 +1,99 @@
+This document describes installing/upgrading to R version
+2.6.0; it may need to be updated when next stable version of
+R is released and the DVN DSB switches to it. 
+
+PLEASE NOTE: we very strongly recommend specifically using
+the R version currently recommended by the DVN team. As of
+now (Dec. 2007) it is 2.6.0. The DSB functionality relies on
+a number of 3rd party R modules (UNF, Foreign, Zelig and
+more) which in turn rely on further R modules. It has
+definitely happened in the past that something in that
+hierarchy would break when new versions of the main R
+program come out. So now we carefully test all these
+dependencies when new major versions are released and only
+recommend uograding once all such problems are resolved. 
+HOWEVER, we also strongly recommend to go ahead and upgrade
+once the DVN/DSB team advises to do so. 
+
+The upgrade process step by step. 
+
+1. Obtain the right R rpm. It is important to get the rpm
+   that matches your architecture. Most of the tasks
+   performed by R are very CPU-intensive. So if you have 64
+   bit hardware, you will definitely observe significant 
+   performance gains by using the native 64 bit version. 
+
+   So, depending on your hardware, choose the right rpm: 
+
+   R-2.6.0-3.i686.rpm or
+   R-2.6.0-3.x86_64.rpm or		
+   R-2.6.0-3.amd64.rpm
+
+2. Install the rpm. 
+   If you already have an older version installed, DO NOT
+   upgrade! i.e., don't use rpm -U R...; instead, uninstall 
+   the old version first: 
+
+       rpm -e R
+       
+   then (important!) delete all the 3rd-party packages left
+   over from the old installation: 
+
+	rm -rf /usr/lib/R
+   or
+	rm -rf /usr/lib64/R 
+
+   depending on the architecture; 
+
+   then install the new rpm from scratch: 
+
+	rpm -ivh R-2.6.0.XXX.rpm
+ 
+   We are not done yet! 
+   Now we need to obtain and rebuild all the 3rd-party
+   modules. The DSB installation comes with a script that
+   does that through the R's builtin mechanism for resolving
+   such dependencies. 
+
+3. Before we begin, however, make sure your system has all
+   the necessary build components installed. ("building" R
+   modules actually involve compiling binaries from
+   sources!). 
+
+   The following packages are available as RedHat rpms,
+   however, they are not by default installed with the
+   RedHat's standard "server" configuration, so make sure
+   you obtain and install them: 
+
+   
+	tk-devel
+	tcl-devel
+	xorg-x11-devel
+	libpng-devel
+	gcc-g77	(yep, this is Fortran 77!)
+
+   On a RedHat 4 system this can be done by running
+
+	up2date tk-devel tcl-devel ... etc.
+
+   Under RedHat 5 you have to do this utilizing the RH new
+   yum framework. 
+
+4. Now we are ready to download and build the modules: 
+
+       cd /usr/local/VDC/R
+       ./installR.sh
+
+   This will produce a ton of debugging info (it is also
+   saved in the file /tmp/RINSTALL.<PID>.LOG). 
+   You are likely to see a few warning messages about the
+   following packages at the end of the debugging output: 
+   rgenoud, anchors and MCMCpack. These are OK to ignore!
+   If however you see more warnings/errors, please report
+   them to the DVN team. 
+
+You should be ready now. Test your new R installation by
+attempting to upload a new subsettable data file
+(specifically, check if the UNF signatures have been
+generated for the file and its variables) and running a
+couple of simple data analysis jobs. 

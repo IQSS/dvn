@@ -666,7 +666,7 @@ public class HomePage extends VDCBaseBean {
      */
      private void initNetworkData() {
          boolean isReleased         = true;
-         if (this.selectedTab.equals(datalistbundle.getMessageValue("tab2key"))); //comingsoon
+         if (this.selectedTab.equals(datalistbundle.getMessageValue("tab2key"))) //comingsoon
              isReleased = false;
          ResourceBundle messages = ResourceBundle.getBundle("Bundle");
          Object[] messageArguments = { this.getTotalDataverses(isReleased), this.getTotalStudies(isReleased), this.getTotalFiles(isReleased) };

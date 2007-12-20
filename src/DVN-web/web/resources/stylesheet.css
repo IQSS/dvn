@@ -1076,6 +1076,7 @@ a.vdcRequestPanelLink:active{
     /* padding: 0.1em; *********************************************************************/
     margin: 0;
 }
+.TreeImgHeight {line-height: 50.4px !important;}
 
 /* subsetting page: summary statistics: starts here */
 
@@ -1162,7 +1163,6 @@ li.affiliationBullet {
     list-style-type: square;
     list-style-image: none;
     color: #999999;
-    height: 1.4em;
 }
 
 /* *************** vanilla pages styles ***************** */

@@ -97,3 +97,23 @@ attempting to upload a new subsettable data file
 (specifically, check if the UNF signatures have been
 generated for the file and its variables) and running a
 couple of simple data analysis jobs. 
+
+
+TODO: note that while the installation of the R program
+itself (first 2 steps) is rather simple and straighforward,
+installing the 3rd-party dependencies is a fairly complex
+process; it relies on software dependencies not listed in
+the main R rpm and is prone to breaking between R releases,
+etc. Even if it worked reliably, it is still a fairly
+inefficient mechanism when you need to maintain a few
+identical servers, as it involves having to compile the
+modules on each of the systems (and having to replicate the
+build environment with all the build dependencies installed
+on each of them!). So it could be useful to invest some
+effort into making this process simpler, by building and
+packaging these required modules as rpms. We would still
+need to build multiple, architecture-dependant rpms for
+i686, x86_64, etc. (and, possibly, different rpms for
+different RedHat versions we want to support?). But it could
+still make things easier, specifically for our partners at
+places like the Odum center.

@@ -1031,7 +1031,7 @@ xmlns:ui="http://www.sun.com/web/ui"
             <h:panelGrid  cellpadding="0" cellspacing="0"
                           columnClasses="vdcVarHeaderCol1, vdcVarHeaderCol1, vdcVarHeaderCol2" 
                           columns="3" id="gridPanel9"
-                          style="margin-left: 8px; margin-top: 10px" width="750px">
+                          style="margin-left: 8px; margin-top: 10px" width="100%">
                 <!--column 1 -->
                 <ui:panelGroup id="groupPanel16">
                     

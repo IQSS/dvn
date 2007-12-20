@@ -784,34 +784,34 @@ span.vdcSResultsField {
 /* Analysis Page Style Rules
 */
 .vdcVariablesCol1{
-   width: 24px;
+/*   width: 24px;*/
    padding-left: 2px;
    padding-right: 2px;
 }
 .vdcVariablesCol2{
    padding-left: 2px;
    padding-right: 2px;
-   width: 100px
+/*   width: 100px*/
 }
 .vdcVariablesCol3{
    padding-left: 2px;
    padding-right: 2px;
-   width: 50px
+/*   width: 50px*/
 }
 .vdcVariablesCol4{
    padding-left: 2px;
    padding-right: 2px;
-   width: 100px;
+/*   width: 100px;*/
 }
 .vdcVariablesCol5{
    padding-left: 2px;
    padding-right: 2px;
-   width: 200px;
+/*   width: 200px;*/
 }
 .vdcVariablesCol6{
    padding-left: 2px;
    padding-right: 2px;
-   width: 250px;
+/*   width: 250px;*/
 }
 
 .vdcAnalysisCol1 {

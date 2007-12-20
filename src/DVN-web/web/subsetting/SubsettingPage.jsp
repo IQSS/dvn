@@ -38,11 +38,11 @@ xmlns:ui="http://www.sun.com/web/ui"
     <script type="text/javascript">
         <![CDATA[
             // share-remoting related code
-            var req;
+            var req=null;
             var cellId;
             var QSrootNodeIdPrefix = "quickSummaryStatTableRootDiv_";
             //var rx =   /\S+:(\d+):showStatistics$/ ;
-            
+            var timeoutId;
             function isQStableAttached(rowId){
              // this function tells whether a QS table is already
              // attached to the cell
@@ -100,9 +100,22 @@ xmlns:ui="http://www.sun.com/web/ui"
             
             function sendRequest(url, handler) {
                 initXHR();
-                req.onreadystatechange = handler;
-                req.open("GET", url, true);
-                req.send(null);
+                if (req) {
+                    try {
+                        req.onreadystatechange = handler;
+                        req.open("GET", url, true);
+                        timeoutId = setTimeout(timesUp, 10000);
+                        req.send(null);
+                    } catch (errv){
+                        alert(
+                            "The browser failed to contact the server.\n"+
+                            "Please try again later.\n"+
+                            "Error message:"+errv.message);
+                    }
+                } else {
+                    alert("Summary statistics cannot be displayed:\n"+
+                            "Your browser is incapable of remote-scripting.");
+                }
             }
             
             function initXHR() {
@@ -118,10 +131,16 @@ xmlns:ui="http://www.sun.com/web/ui"
                 if (req.readyState != 4) {
                     return;
                 }
+                clearTimeout(timeoutId);
                 if (req.status == 200){
                     var QStable = req.responseText;
-                    //alert("returned contents = "+QStable);
-                    document.getElementById(cellId).innerHTML = QStable;
+                    if (QStable){
+                        //alert("returned contents = "+QStable);
+                        document.getElementById(cellId).innerHTML = QStable;
+                    } else {
+                        alert("Summary statistics cannot be displayed.\n"+
+                        "The browser got an empty string from the server");                        
+                    }
                 } else if (req.status == 304){
                     alert("Summary statistics cannot be displayed: 304 error");
                 } else if (req.status >= 400 && req.status < 500){
@@ -131,6 +150,12 @@ xmlns:ui="http://www.sun.com/web/ui"
                 } else {
                     alert("Summary statistics cannot be displayed: unknown error");
                 }
+            }
+            
+            function timesUp (){
+                req.abort();
+                alert("The browser failed to get summary statistics from the server.\n"+
+                      "Please make sure of your internet connection and try again later");
             }
             
         ]]></script>

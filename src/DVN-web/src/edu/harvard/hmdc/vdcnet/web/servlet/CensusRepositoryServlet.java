@@ -171,8 +171,16 @@ public class CensusRepositoryServlet extends HttpServlet{
     
 
     private ResultSet generateListOfDatafiles () throws SQLException {
-	String sqlCmd= "SELECT id from studyfile WHERE restricted = false AND subsettable = true AND !(filesystemlocation LIKE 'http%')"; 
-	    
+	// We are looking for the files that are
+	// a. subsettable
+	// b. public (non-restricted)
+	// c. locally-produced
+	String sqlCmd= "SELECT id from studyfile WHERE restricted = false AND subsettable = true AND NOT (filesystemlocation LIKE 'http%')"; 
+	// we only run the search, then return the SQL
+	// handle; the actual retrieval of individual records
+	// will be done by the code in the body of the service 
+	// routine.
+  
 	Connection sqlConn = dvnDatasource.getConnection();	 
 	PreparedStatement sth = sqlConn.prepareStatement(sqlCmd);
 	

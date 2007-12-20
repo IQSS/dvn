@@ -232,7 +232,9 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
                 Map.Entry et = (Map.Entry)elsx.next();
                 // key  et.getKey()
                 // value et.getValue()
-                sumStatSet.put((String) et.getValue(),sumStatSetus.get((String)et.getKey()));
+                if (sumStatSetus.get((String)et.getKey()) != null){
+                    sumStatSet.put((String) et.getValue(), sumStatSetus.get((String)et.getKey()));
+                }
             }
             sumStatSet.put("UNF", dv.getUnf());
 

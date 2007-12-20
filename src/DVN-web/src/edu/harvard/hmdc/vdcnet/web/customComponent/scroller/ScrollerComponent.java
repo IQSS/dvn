@@ -137,7 +137,7 @@ public class ScrollerComponent extends UICommand {
         }
         int totalPages = getTotalPages(context);
 
-        writer.write("<table border=\"0\" cellpadding=\"0\" align=\"center\">");
+        writer.write("<table border=\"0\" cellpadding=\"0\" align=\"right\">");
         writer.write("<tr align=\"center\" valign=\"top\">");
         //writer.write(
         //    "<td><font size=\"-1\">Result&nbsp;Page:&nbsp;</font></td>");

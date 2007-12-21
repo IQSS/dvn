@@ -34,7 +34,7 @@
       <!-- Search Section starts here -->
       <div class="dvn_searchblock">
         <div class="dvn_searchBoxContent">
-            <div class="dvn_searchTitle">Search</div>
+            <div class="dvn_searchTitle"><a title="" name="search">Search</a></div>
             <fieldset>
                 <label id="dvn_searchMenuFilter" for="filter">
                     <h:selectOneMenu id="dropdown3" value="#{SearchPage.searchFilter}">

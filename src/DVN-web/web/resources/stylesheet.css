@@ -6,7 +6,7 @@
 }
 
 .dvn_content {
-    padding: 12px;
+    padding: 0 12px 12px 12px;
     color: #464646;
     text-align: left;
 }
@@ -14,18 +14,18 @@
 .dvn_content div, .dvn_content span, .dvn_content p, .dvn_content li, 
 .dvn_content table, .dvn_content caption, .dvn_content tbody, .dvn_content tfoot, .dvn_content thead, .dvn_content tr, .dvn_content th, .dvn_content td {
     font-family: "HelveticaNeue", Helvetica, Arial, sans-serif !important;
-    font-size: 14px !important;
-    line-height: 25.2px !important;
+    font-size: 12px !important;
+    line-height: 18px !important;
 }
 
 .dvn_content a, .dvn_content a:link, .dvn_content a:visited, .dvn_content a:hover, .dvn_content a:active {
     font-family: "HelveticaNeue", Helvetica, Arial, sans-serif !important;
-    font-size: 14px !important;
-    line-height: 25.2px !important;
+    font-size: 12px !important;
+    line-height: 18px !important;
 }
 
 .dvn_content a:link, .dvn_content a:visited {
-        color: #3e5f9d;
+        color: #448ccb;
         text-decoration: none !important;
 }
  .dvn_content a:hover, .dvn_content a:active {
@@ -59,10 +59,10 @@
 	float: left;
 }
 
-div.dvn_sectionTitle {margin: 0; padding: 0 .65em .25em .65em; font-size: 112% !important; color: #768891; text-transform: uppercase; text-align: left;}
+div.dvn_sectionTitle {margin: 0; padding: 0 .65em .25em .65em; font-size: 112% !important; color: #526f76; text-transform: uppercase; text-align: left;}
 div.dvn_sectionTitle a {font-size: inherit !important; font-size: 100% !important;}
-div.dvn_sectionTitle a:hover, div.dvn_sectionTitle a:active {font-size: inherit !important; font-size: 100% !important; color: #768891; text-decoration: none !important; cursor: text;}
-span.dvn_sectionTitleL {float: left; padding: 0 0 0.25em 0; color: #768891; font-size: 112% !important; font-weight: bold; text-transform: uppercase; text-align: left;}
+div.dvn_sectionTitle a:hover, div.dvn_sectionTitle a:active {font-size: inherit !important; font-size: 100% !important; color: #526f76; text-decoration: none !important; cursor: text;}
+span.dvn_sectionTitleL {float: left; padding: 0 0 0.25em 0; color: #526f76; font-size: 112% !important; font-weight: bold; text-transform: uppercase; text-align: left;}
 span.dvn_sectionTitleR  {float: right; padding: 0 0 0.25em 0; }
 span.dvn_sectionTitleR a:link, span.dvn_sectionTitleR a:visited, span.dvn_sectionTitleR a:hover, span.dvn_sectionTitleR a:active {margin-left: 2em; }
 
@@ -70,7 +70,7 @@ span.dvn_sectionTitleR a:link, span.dvn_sectionTitleR a:visited, span.dvn_sectio
 .dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; } 
 
 div.dvn_block {margin-bottom: 12px; padding: 6px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
-div.dvn_block span {margin: 0; padding: 0; color: #768891; font-weight: bold; text-transform: uppercase;}
+div.dvn_block span {margin: 0; padding: 0; color: #526f76; font-weight: bold; text-transform: uppercase;}
 div.dvn_blockTitleBar {margin-bottom: 12px; padding: 6px; background: #e6ebed; border: 1px solid #ddd; font-style: italic; text-align: center;}
 
 .dvn_margin12 {
@@ -89,7 +89,7 @@ span.disabled {font-weight: bold;}
 
 /* MAIN SECTION */
 #dvn_mainSection {position: relative; width: 100%;}
-#dvn_mainSectionTitle {padding: .25em 0; color: #768891; font-size: 124% !important; text-transform: uppercase;}
+#dvn_mainSectionTitle {padding: .25em 0; color: #526f76; font-size: 124% !important; text-transform: uppercase;}
 
 /* SIDE SECTION PANELS */
 .dvn_sectionPanels {display: inline; margin-left: 2%; width: 22%; float: left;} 
@@ -98,13 +98,15 @@ span.disabled {font-weight: bold;}
 .dvn_sectionPanels ul {margin-left: 2em; list-style-image: url(icon_bullet.gif);}
 .dvn_sectionPanels li {margin: 0.5em 0;}
 
+.dvn_sectionPanels .TreeContent a {font-size: 90% !important;}
+
 /* HEADER */
 .dvn_headerTitle {position: relative;}
 .dvn_headerTitleLarge {margin: .25em 12px;}
-.dvn_headerTitleLarge a:link, .dvn_headerTitleLarge a:visited, .dvn_headerTitleLarge a:hover, .dvn_headerTitleLarge a:active {color: #768891; font-size: 124% !important;}
+.dvn_headerTitleLarge a:link, .dvn_headerTitleLarge a:visited, .dvn_headerTitleLarge a:hover, .dvn_headerTitleLarge a:active {color: #526f76; font-size: 124% !important;}
 .dvn_headerTitleL {margin: 0 12px;}
 .dvn_headerTitleL a:link, .dvn_headerTitleL a:visited, .dvn_headerTitleL a:hover, .dvn_headerTitleL a:active {color: #c55b28; font-weight: bold;}
-.dvn_headerTitleR {position: absolute; right: 12px; top: 10px;}
+.dvn_headerTitleR {position: absolute; right: 12px; top: 0;}
 
 /* NAV MENU */
 div.dvn_navblock {margin-bottom: 12px; padding: 0 10px 0 10px; background: #dadee0; border-top: 2px solid #91a5a9;}
@@ -112,7 +114,7 @@ div.dvn_navblock {margin-bottom: 12px; padding: 0 10px 0 10px; background: #dade
 .dvn_navblockLinks:after {content:"."; display:block; height:0; clear:both; visibility:hidden;} /*Clear floats*/
 .dvn_navblockLinks ul {margin: 0; padding: 0; list-style-type:none;}
 .dvn_navblockLinks ul li {float:left; z-index:auto !important /*Non-IE6*/; z-index:1000 /*IE6*/;}
-.dvn_navblockLinks ul li a:link, .dvn_navblockLinks ul li a:visited, .dvn_navblockLinks ul li a:hover, .dvn_navblockLinks ul li a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; height:1.75em; line-height:1.75em; padding:0 .5em 0 .5em; text-decoration:none;}
+.dvn_navblockLinks ul li a:link, .dvn_navblockLinks ul li a:visited, .dvn_navblockLinks ul li a:hover, .dvn_navblockLinks ul li a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; height:1.75em; line-height:1.75em; padding:.1em .5em 0 .5em; text-decoration:none;}
 .dvn_navblockLinks ul li:hover {position:relative;} /*Sylvain IE hack*/
 .dvn_navblockLinks ul li:hover a:link, .dvn_navblockLinks ul li:hover a:visited, .dvn_navblockLinks ul li:hover a:hover, .dvn_navblockLinks ul li:hover a:active {background-color: #c55b28; text-decoration:underline;} /*Color main cells hovering mode*/
 .dvn_navblockLinks ul li a:hover {position:relative /*Sylvain IE hack*/; z-index:1000 /*Sylvain IE hack*/; background-color: #c55b28; color: #fff; text-decoration:underline;} /*Color main cells hovering mode*/
@@ -122,11 +124,12 @@ div.dvn_navblock {margin-bottom: 12px; padding: 0 10px 0 10px; background: #dade
 /* SEARCH */
 div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background: #e6ebed; border: 1px solid #ddd;}
 .dvn_searchBoxContent {overflow: hidden;}
-.dvn_searchTitle {float: left; margin-right: 12px; color: #999; font-size: 112% !important;}
-.dvn_searchTitle a:hover, .dvn_searchTitle a:active {color: #999; text-decoration: none !important; cursor: text;}
+.dvn_searchTitle {float: left; margin-right: 12px; color: #526f76; font-size: 124% !important; line-height: 155% !important;}
+.dvn_searchTitle a {color: #526f76; font-size: 124% !important; line-height: 155% !important;}
+.dvn_searchTitle a:hover, .dvn_searchTitle a:active {color: #526f76; font-size: 124% !important; line-height: 155% !important; text-decoration: none !important; cursor: text;}
 .dvn_searchBoxContent fieldset {float: left;}
 .dvn_searchLinks {float: right;}
-.dvn_searchLinks a:link, .dvn_searchLinks a:visited, .dvn_searchLinks a:hover, .dvn_searchLinks a:active {margin-left: 2em;}
+.dvn_searchLinks a:link, .dvn_searchLinks a:visited, .dvn_searchLinks a:hover, .dvn_searchLinks a:active {margin-left: 2em; line-height: 210% !important;}
 .dvn_searchBoxContent {position: relative; width: 100%;}
 .dvn_searchBoxContent fieldset {margin: 0; padding: 0; border: 0;}
 .dvn_searchBoxContent label {float: left;}
@@ -936,7 +939,7 @@ span.vdcSResultsField {
     padding-left: 0px;
     padding-right: 0px;
 }
-
+.vdcAbstractSResults div, .vdcAbstractSResults p {margin: 0; padding: 0; display: inline;}
 
 .vdcRequestPanelFiles{
     padding: 15px 10px 15px 10px; 
@@ -1128,7 +1131,7 @@ a.vdcRequestPanelLink:active{
 
 /* *************** dvn network homepage page specific ***************** */
 .dvn_Totals {position: absolute; top: .75em; right: .75em;}
-.dvn_totalsLabel {color: #336699; font-size: 112%;}
+.dvn_totalsLabel {color: #526f76; font-size: 112%;}
 .dvn_totalsValue {color: #c55b28; font-weight: bold;}
 
 .dvnLineSpacer   { visibility:hidden; }
@@ -1169,6 +1172,7 @@ li.affiliationBullet {
     list-style-type: square;
     list-style-image: none;
     color: #999999;
+    font-size: 90% !important;
 }
 
 /* *************** vanilla pages styles ***************** */
@@ -1219,7 +1223,7 @@ div.ContentArea {margin: 0 auto; padding: 0;}
 table#loginBlock {width: 300px; line-height: 2.5; font:90%/180% "HelveticaNeue",Helvetica,Arial,sans-serif;}
 table#loginBlock td {padding: 2px;}
 span.loginHeader {color: #c55b28; font-size: 112%; line-height: 2;}
-table#loginBlock label {color: #768891;}
+table#loginBlock label {color: #526f76;}
 table#loginBlock select {margin: 0;}
 table#loginBlock img {margin: 1em 0 0 0;}
 

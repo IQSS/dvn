@@ -14,18 +14,16 @@
                 <br />
                 <span style="font-family: 'lucida grande', geneva, Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 14px; ">Dataverse Network</span>
                 <br /><br />
-                Version <h:outputText value="#{VersionPage.versionNumber}" /> - Build <h:outputText value="#{VersionPage.buildNumber}" />
-                <br />
+                Version <h:outputText value="#{VersionPage.versionNumber}" />.<h:outputText value="#{VersionPage.buildNumber}" />
                 <br />
                 <br />
                 This software is distributed under the <a href="http://www.affero.org/oagpl.html" target="_blank">Affero General Public License</a>    
                 <br />
-                 <br />
             </div>
             
             <div class="ContentAreaFooter">
                 <p>
-                    <ui:imageHyperlink alt="Powered by the Dataverse Network Project" border="0" imageURL="/resources/poweredby_logo.gif" toolTip="Link to the Dataverse Network Project" url="http://thedata.org"/>
+                    <ui:imageHyperlink alt="Powered by the Dataverse Network Project" border="0" imageURL="/resources/dvnPoweredByLogo.gif" toolTip="Link to the Dataverse Network Project" url="http://thedata.org"/>
                 </p>
             </div>
         </div>

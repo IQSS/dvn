@@ -273,7 +273,10 @@ public class DataList extends UIComponentBase {
             }
             startLinkTag = new HtmlOutputText();
             startLinkTag.setEscape(false);
-            startLinkTag.setValue("<ul><li class='activeBullet'>");
+            if ( ndv.getRestricted().equals("yes") )
+                startLinkTag.setValue("<ul><li class='inActiveBullet'>");
+            else
+                startLinkTag.setValue("<ul><li class='activeBullet'>");
             nodelink = new Hyperlink();
             nodelink.setText(ndv.getName());
             nodelink.setToolTip(ndv.getTooltip() + " dataverse");
@@ -285,7 +288,7 @@ public class DataList extends UIComponentBase {
             linkPanel.getChildren().add(startLinkTag);
             linkPanel.getChildren().add(nodelink);
             if ( ndv.getRestricted().equals("yes") ) {
-                nodelink.setToolTip("This dataverse is not released.");
+                nodelink.setToolTip(ndv.getName() + " is not released. Come back soon to check on its availability.");
             }
             if (ndv.getAffiliation() != null && !ndv.getAffiliation().equals("")) {
             affiliationTag = new HtmlOutputText();

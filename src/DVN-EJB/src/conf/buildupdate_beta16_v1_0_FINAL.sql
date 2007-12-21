@@ -22,3 +22,5 @@ ALTER TABLE vdcnetwork ALTER COLUMN termsofuseenabled SET STORAGE PLAIN;
 update vdcnetwork set termsofuseenabled=false;
 
 update vdcnetwork set defaultvdcabouttext='This About page is not used anymore in the DVN application.', defaultvdcannouncements='A description of your Dataverse or announcements may be added here. Use My Options to edit or remove this text.';
+
+update dvnversion set versionnumber=1, buildnumber=0;

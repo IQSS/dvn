@@ -135,9 +135,11 @@
                               
                               <ui:panelGroup block="true" id="groupPanel2" rendered="#{studyUI.abstracts != null and studyUI.abstracts != ''}" >
                                   <h:outputText id="outputText10" styleClass="vdcSResultsField" value="Abstract:" />
-                                  <ui:panelGroup block="true" styleClass="vdcAbstractSResults"> 
+                                  <h:outputText id="outputText14" styleClass="vdcAbstractSResults" escape="false" value="#{studyUI.truncatedAbstracts}" />
+                                  
+                                  <!-- <ui:panelGroup block="true" styleClass="vdcAbstractSResults"> 
                                       <h:outputText  id="outputText14" escape="false" value="#{studyUI.truncatedAbstracts}" />
-                                  </ui:panelGroup>
+                                  </ui:panelGroup> -->
                               </ui:panelGroup>
                               <ui:panelGroup block="true" id="groupPanel7" rendered="#{studyUI.study.productionDate != null and studyUI.study.productionDate != ''}">
                                   <h:outputText id="outputText15" styleClass="vdcSResultsField" value="Production Date:" />

@@ -24,7 +24,7 @@
                         <ui:panelGroup  block="true">
                             <h:outputText  id="homeHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapBrowseHeading}"/>
                         </ui:panelGroup>
-                        <ui:panelGroup  block="true" id="groupPanel2" separator="&lt;br /&gt;&lt;br /&gt;" style="padding-left: 10px">
+                        <ui:panelGroup  block="true" id="groupPanel2" separator="&lt;br /&gt;" style="padding-left: 10px">
                             <h:outputLink id="basicSearchLink"  styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}#search">
                                 <h:outputText  id="basicSearchText" value="#{bundle.sitemapSearchLink}"/>
                             </h:outputLink>
@@ -40,7 +40,7 @@
 
                     <!-- sitemapAccountHeading -->
                     <ui:panelGroup block="true">
-                        <ui:panelGroup  block="true" id="groupPanel7" style="padding-top: 20px; padding-bottom: 15px">
+                        <ui:panelGroup  block="true" id="groupPanel7" style="padding-top: 20px;">
                             <h:outputText  id="accountHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapAccountHeading}"/>
                         </ui:panelGroup>
                         <ui:panelGroup block="true" id="groupPanel8" style="padding-left: 10px">
@@ -49,14 +49,14 @@
                             </h:outputLink>
                             <!-- another work-around using f:verbatim because jsf renders double breaks in separator based on the
                       pre-rendered code. Therefore, if I don't render a link, there is a big whole in the UI -->
-                            <f:verbatim rendered="#{(VDCRequest.currentVDC != null and VDCSession.loginBean == null and HomePage.showRequestContributor) or (VDCRequest.currentVDC != null and VDCSession.loginBean != null and HomePage.showRequestContributor)}"><br /><br /></f:verbatim>
+                            <f:verbatim rendered="#{(VDCRequest.currentVDC != null and VDCSession.loginBean == null and HomePage.showRequestContributor) or (VDCRequest.currentVDC != null and VDCSession.loginBean != null and HomePage.showRequestContributor)}"><br /></f:verbatim>
                             <h:outputLink id="contributorRequestAccountLink" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean == null and HomePage.showRequestContributor}" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestAccountPage.jsp#request">
                                 <h:outputText id="contributorRequestAccountText" value="#{bundle.sitemapBecomeContributorLink}"/>
                             </h:outputLink>
                             <h:outputLink id="contributorRequestLink" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean != null and HomePage.showRequestContributor}" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestPage.jsp#request">
                                 <h:outputText id="contributorRequestText" value="#{bundle.sitemapBecomeContributorLink}"/>
                             </h:outputLink>
-                            <f:verbatim rendered="#{(VDCRequest.currentVDC == null and VDCSession.loginBean == null and HomePage.showRequestCreator) or (VDCRequest.currentVDC == null and VDCSession.loginBean != null and HomePage.showRequestCreator)}"><br /><br /></f:verbatim>
+                            <f:verbatim rendered="#{(VDCRequest.currentVDC == null and VDCSession.loginBean == null and HomePage.showRequestCreator) or (VDCRequest.currentVDC == null and VDCSession.loginBean != null and HomePage.showRequestCreator)}"><br /></f:verbatim>
                             <h:outputLink rendered="#{VDCRequest.currentVDC == null and VDCSession.loginBean == null and HomePage.showRequestCreator}"  styleClass="vdcSiteMapLink" value="/dvn/faces/login/CreatorRequestAccountPage.jsp">
                                 <h:outputText   value="Create your own Dataverse"/>
                             </h:outputLink>
@@ -68,7 +68,7 @@
 
                     <!-- sitemapAboutHeading -->
                     <ui:panelGroup block="true">
-                        <ui:panelGroup  block="true" id="groupPanel9" style="padding-top: 20px; padding-bottom: 15px">
+                        <ui:panelGroup  block="true" id="groupPanel9" style="padding-top: 20px;">
                             <h:outputText  id="aboutHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapAboutHeading}"/>
                         </ui:panelGroup>
                         <ui:panelGroup block="true" id="groupPanel10" style="padding-left: 10px">
@@ -82,21 +82,21 @@
                                         <h:outputText  id="sitemaplink14Text" value="#{bundle.sitemapSitemapLink}"/>
                                     </h:outputLink>
                                     &amp;nbsp;&amp;nbsp;
-                                    <h:outputText id="aboutHere" style="display:inline;" value="#{bundle.sitemapHereMsg}"/>
+                                    <h:outputText id="aboutHere" style="display:inline;font-style:italic;" value="#{bundle.sitemapHereMsg}"/>
                                 </span>
                             </f:verbatim>
-                            <f:verbatim><br /><br /></f:verbatim>
+                            <f:verbatim><br /></f:verbatim>
                             <h:outputLink id="sitemaplink15" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.jsp#contact">
                                 <h:outputText  id="sitemaplink15Text" value="#{bundle.sitemapContactUsLink}"/>
                             </h:outputLink>
-                            <f:verbatim rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null)}" ><br /><br /></f:verbatim>
+                            <f:verbatim rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null)}" ><br /></f:verbatim>
                             <h:outputLink rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null)}" 
                                           id="sitemaplink4" 
                                           styleClass="vdcSiteMapLink" 
                                           value="/dvn#{VDCRequest.currentVDCURL}/faces/AnnouncementsPage.jsp#announcements">
                                 <h:outputText rendered="#{((VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null))}" id="sitemaplink4Text" value="#{bundle.sitemapNetworkAnnouncementsLink}"/>
                             </h:outputLink>
-                            <f:verbatim rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.displayAnnouncements == true}"><br /><br /></f:verbatim>
+                            <f:verbatim rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.displayAnnouncements == true}"><br /></f:verbatim>
                             <h:outputLink rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.displayAnnouncements == true}" id="sitemaplink5" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/AnnouncementsPage.jsp#announcements">
                                 <h:outputText id="sitemaplink5Text" value="#{bundle.sitemapLocalAnnouncementsLink}"/>
                             </h:outputLink>
@@ -105,7 +105,7 @@
 
                     <!-- HELP -->
                     <ui:panelGroup block="true">
-                        <ui:panelGroup  block="true" id="groupPanelHelp" style="padding-top: 20px; padding-bottom: 15px">
+                        <ui:panelGroup  block="true" id="groupPanelHelp" style="padding-top: 20px;">
                             <h:outputText  id="helpHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapHelpHeading}"/>
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanelHelpLinks" style="padding-left: 10px;">

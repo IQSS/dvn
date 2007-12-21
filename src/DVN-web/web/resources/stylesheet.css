@@ -1151,6 +1151,12 @@ list-style-type: none; /* removes default bullet */
 background: url(icon_activebullet.gif) no-repeat 0 .2em; /* ONE bullet only, .45em from top (vertical) */
 padding-left: 1.4em; /* space between bullet and text */
 }
+
+li.inActiveBullet a {
+list-style-type: none; /* removes default bullet */
+background: url(icon_inactivebullet.gif) no-repeat 0 .2em; /* ONE bullet only, .45em from top (vertical) */
+padding-left: 1.4em; /* space between bullet and text */
+}
 /* li.activeBullet {
     list-style-image: url(icon_activebullet.gif);
     padding-left: 2px;

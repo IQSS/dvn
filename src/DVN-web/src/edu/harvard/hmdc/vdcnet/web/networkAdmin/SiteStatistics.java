@@ -385,14 +385,15 @@ public class SiteStatistics extends VDCBaseBean {
         if (months == 0) {
             Date date = new Date();
             String reportDate;
-            int numMonths = 0;
+            int currentMonth = 0;
             SimpleDateFormat simpledateformat = new SimpleDateFormat("MM");
             reportDate = simpledateformat.format(date);
-            numMonths = Integer.parseInt(reportDate);
-            if (numMonths < 12) 
-                this.months = (numMonths + 1) - 7;
-            else 
-                this.months = (7 + 1) - numMonths;
+            currentMonth = Integer.parseInt(reportDate);
+            int startIndex = 6;
+            if (currentMonth < 7)
+                months = (currentMonth + 13) - 7;
+            else if (currentMonth >= 7) 
+                months = (currentMonth + 1) - 7;
         }
         return months;
     }

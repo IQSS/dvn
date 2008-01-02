@@ -32,6 +32,8 @@ import java.io.*;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -96,7 +98,8 @@ public class ReportWriter extends ReportConstants {
 	    String[][] monthsInReport = getReportFiles(numberOfMonths);
             for (int i = 0; i < monthsInReport.length; i++) {
                 this.setAwstatsDirData(reportee);
-                String fileToRead = this.getAwstatsDirData() + "/awstats" + monthsInReport[0][i] + theYear + "." + reportee + ".txt";
+                Integer year = getYear(monthsInReport[0][i]);
+                String fileToRead = this.getAwstatsDirData() + "/awstats" + monthsInReport[0][i] + year.toString() + "." + reportee + ".txt";
                 inputStream = new BufferedReader(new FileReader(fileToRead));
                 boolean isGeneral = false;
                 OUTER_LOOP:
@@ -389,6 +392,28 @@ public class ReportWriter extends ReportConstants {
               String protocol = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase();
               reportUrl = request.getContextPath() + "/faces/networkAdmin/printPopup.jsp?reportee=" + reportee;
               return reportUrl;
+        }
+        
+        /** getYear
+         * 
+         * selects year needed for
+         * file reading -- when the year
+         * turns, it must be decremented for 
+         * the months leading up to the new
+         * year
+         * 
+         */
+        
+        private Integer getYear(String monthsInReport) {
+              Integer year = new Integer(0);
+              Pattern pattern = Pattern.compile("(0[7-9])|(1[0-2])");
+              Matcher match = pattern.matcher(monthsInReport);
+              if (match.find())
+                    year = Integer.parseInt(theYear) - 1;
+                else
+                    year = Integer.parseInt(theYear);
+              match.reset();
+              return year;
         }
         
         /** prop and accessor/mutator method

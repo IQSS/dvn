@@ -38,8 +38,7 @@
             <fieldset>
                 <label id="dvn_searchMenuFilter" for="filter">
                     <h:selectOneMenu id="dropdown3" value="#{SearchPage.searchFilter}">
-                            <f:selectItem itemLabel="All Collections" itemValue="allCollections" />
-                            <f:selectItem itemLabel="This Collection" itemValue="thisCollection" />
+                            <f:selectItems id="radio1SelectItem" value="#{SearchPage.searchRadioItems}" />>
                     </h:selectOneMenu>
                 </label>
                 <label for="options">

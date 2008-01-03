@@ -56,7 +56,10 @@ LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/us
 # the old log files to one, in this case,
 # combined_YYYY-MM-DD.txt, where the date is
 # the date of creation of the combined log. wjb 09-2007
-#LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/combined_2007-09-10.txt"|"
+#LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/combined_july.txt"|"
+#LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/combined_august.txt"|"
+#LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/combined_september.txt"|"
+#LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/combined_october.txt"|"
 
 
 # Enter the log file type you want to analyze.
@@ -229,7 +232,7 @@ DirCgi="/cgi-bin/awstats"
 # Example: "../icon"
 # Default: "/icon" (means you must copy icon directories in "/mywwwroot/icon")
 #
-DirIcons="/dvn/cgi/awstats/awstats_icon"
+DirIcons="http://dvn-qa1.hmdc.harvard.edu:8080/DvnAwstats/cgi/awstats/awstats_icon"
 
 
 # When this parameter is set to 1, AWStats adds a button on report page to

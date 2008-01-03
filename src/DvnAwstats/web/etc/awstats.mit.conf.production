@@ -52,6 +52,14 @@
 #LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "C:\\glassfish\\domains\\domain1\\logs\\access\\server_access_log.%YYYY-0-%MM-0-%DD-0.txt"|"
 #Sample Linux pointer with glassfish at /usr/local
 LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/server_access_log.%YYYY-0-%MM-0-%DD-0.txt"|"
+# To update missing daily stats, you can cat
+# the old log files to one, in this case,
+# combined_YYYY-MM-DD.txt, where the date is
+# the date of creation of the combined log. wjb 09-2007
+#LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/combined_july.txt"|"
+#LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/combined_august.txt"|"
+#LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/combined_september.txt"|"
+#LogFile="sed -e 's/"\([0-9\.]*\)"/\1/g' -e 's/"\([^"]* -0500\)"/- - [\1]/g' "/usr/local/glassfish/domains/domain1/logs/access/combined_october.txt"|"
 
 
 # Enter the log file type you want to analyze.
@@ -170,7 +178,7 @@ SiteDomain="dvn.iq.harvard.edu"
 # Example: "www.myserver.com localhost 127.0.0.1 REGEX[mydomain\.(net|org)$]"
 #
 #Edit this for the DVN server
-HostAliases="dvn-1.hmdc.harvard.edu REGEX[hmdc\.harvard\.edu:8080$]"
+HostAliases="dvn-1.hmdc.harvard.edu REGEX[hmdc\.harvard\.edu$]"
 
 
 # If you want to have hosts reported by name instead of ip address, AWStats
@@ -224,7 +232,7 @@ DirCgi="/cgi-bin/awstats"
 # Example: "../icon"
 # Default: "/icon" (means you must copy icon directories in "/mywwwroot/icon")
 #
-DirIcons="/dvn/cgi/awstats/awstats_icon"
+DirIcons="http://dvn.iq.harvard.edu/DvnAwstats/cgi/awstats/awstats_icon"
 
 
 # When this parameter is set to 1, AWStats adds a button on report page to
@@ -531,7 +539,7 @@ SkipReferrersBlackList=""
 # Example: "127.0.0.1 REGEX[^192\.168\.] REGEX[^10\.]"
 # Default: ""
 #
-OnlyHosts="140.247.115.232 REGEX[^18\.] REGEX[^128\.30\.] REGEX[^128\.31\.] REGEX[^128\.52\.] REGEX[^129\.55\.] REGEX[^192\.52\.61\.] REGEX[^192\.52\.63\.] REGEX[^192\.52\.65] REGEX[^198\.125\.160\.] REGEX[^198\.125\.161\.] REGEX[^198\.125\.162\.] REGEX[^198\.125\.163\.] REGEX[^198\.125\.176\.] REGEX[^198\.125\.177\.] REGEX[^198\.125\.178\.] REGEX[^198\.125\.179\.]"
+OnlyHosts="140.247.115.95 REGEX[^18\.] REGEX[^128\.30\.] REGEX[^128\.31\.] REGEX[^128\.52\.] REGEX[^129\.55\.] REGEX[^192\.52\.61\.] REGEX[^192\.52\.63\.] REGEX[^192\.52\.65] REGEX[^198\.125\.160\.] REGEX[^198\.125\.161\.] REGEX[^198\.125\.162\.] REGEX[^198\.125\.163\.] REGEX[^198\.125\.176\.] REGEX[^198\.125\.177\.] REGEX[^198\.125\.178\.] REGEX[^198\.125\.179\.]"
 #MIT
 #18.*.*.*
 #128.30.*.*
@@ -544,7 +552,7 @@ OnlyHosts="140.247.115.232 REGEX[^18\.] REGEX[^128\.30\.] REGEX[^128\.31\.] REGE
 #198.125.160.*-198.125.163.*
 #198.125.176.*-198.125.179.*
 #ALSO THE DSB SERVER
-#VDC-BUILD IS 147.247.115.232
+#dsb-1 IS 147.247.115.95
 
 
 # Include in stats, only accesses from user agent that match one of following
@@ -1486,38 +1494,36 @@ color_x="C1B2E2"				# Background color for number of exit pages (Default = "C1B2
 #MaxNbOfExtra1=20
 #MinHitExtra1=1
 
-ExtraSectionName1="File Downloads"
+ExtraSectionName1="Downloads of Data and Documentation"
 ExtraSectionCodeFilter1="200 304"
-ExtraSectionCondition1="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xff=1))"
+ExtraSectionCondition1="URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isMIT=1.*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&xff=1.*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&xFF=1.*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xFF=1.*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xff=1.*))"
 ExtraSectionFirstColumnTitle1="Requested Page"
 ExtraSectionFirstColumnValues1="URLWITHQUERY,(.*)"
 ExtraSectionStatTypes1=PHK
 MaxNbOfExtra1=50
 MinHitExtra1=1
-#http://localhost:8080/dvn/dv/gobu/FileDownload/Data+Files.zip?catId=1
-/foo(?=.*&xff=1)/
 
-ExtraSectionName2="Subsetting Views Resulting in a Subsetting and Analysis Request"
+ExtraSectionName2="Downloads of Data and Documentation by IP Address"
 ExtraSectionCodeFilter2="200 304"
-ExtraSectionCondition2="URLWITHQUERY,(.*isSSR=1&xff=1.*)"
-ExtraSectionFirstColumnTitle2="Requested Page"
-ExtraSectionFirstColumnValues2="URLWITHQUERY,(.*)"
+ExtraSectionCondition2="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&isMIT=1.*))||URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xff=1.*))||URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xFF=1.*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xFF=1.*))||URLWITHQUERY,(.*\/dvn\/dv\/[a-zA-Z0-9]+\/FileDownload\/.*zip(?=\?[a-zA-Z]+=[0-9]+&xff=1.*))"
+ExtraSectionFirstColumnTitle2="MIT Affiliated User - IP Address"
+ExtraSectionFirstColumnValues2="extra3,(.*)"
 ExtraSectionStatTypes2=PHK
 MaxNbOfExtra2=50
 MinHitExtra2=1
 
-ExtraSectionName3="Downloads by IP Address"
+ExtraSectionName3="Subsetting Views Resulting in a Subsetting and Analysis Request"
 ExtraSectionCodeFilter3="200 304"
-ExtraSectionCondition3="URLWITHQUERY,(.*\/FileDownload\/(?=\?fileId=[0-9]+&xff=1))"
-ExtraSectionFirstColumnTitle3="MIT Affiliated User - IP Address"
-ExtraSectionFirstColumnValues3="extra3,(.*)"
+ExtraSectionCondition3="URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&isMIT=1.*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xff=1.*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xFF=1.*))"
+ExtraSectionFirstColumnTitle3="Requested Page"
+ExtraSectionFirstColumnValues3="URLWITHQUERY,(.*)"
 ExtraSectionStatTypes3=PHK
 MaxNbOfExtra3=50
 MinHitExtra3=1
 
 ExtraSectionName4="Subsetting Views by IP Address"
 ExtraSectionCodeFilter4="200 304"
-ExtraSectionCondition4="URLWITHQUERY,(.*isSSR=1&xff=1.*)"
+ExtraSectionCondition4="URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&isMIT=1.*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xff=1.*))||URLWITHQUERY,(.*\/dvn\/FileDownload\/(?=\?fileId=[0-9]+&isSSR=1&xFF=1.*))"
 ExtraSectionFirstColumnTitle4="MIT Affiliated User - IP Address"
 ExtraSectionFirstColumnValues4="extra3,(.*)"
 ExtraSectionStatTypes4=PHK

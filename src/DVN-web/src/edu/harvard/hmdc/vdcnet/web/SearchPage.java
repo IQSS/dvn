@@ -462,6 +462,10 @@ public class SearchPage extends VDCBaseBean{
         } else if (mode == StudyListing.VDC_RECENT_STUDIES) {
             listHeader =  "Studies Uploaded and Released to This Dataverse";
             renderSearch = true;
+            searchRadioItems = new ArrayList();
+            searchRadioItems.add(new SelectItem("0", "New Search"));
+            searchRadioItems.add(new SelectItem("2", "Search These Results"));
+            searchFilter = 0;            
             
         } else if (mode == StudyListing.GENERIC_LIST) {
             // this needs to be fleshed out if it's ever used
@@ -483,6 +487,12 @@ public class SearchPage extends VDCBaseBean{
                 listHeader =  "Invalid Listing";
                 listMessageContent = "The results for this listing were generated while searching or browsing a different dataverse.";
             }
+        }
+        
+        // lastly if no search radio items have been set, add a default
+        if (searchRadioItems == null || searchRadioItems.size() == 0) {
+            searchRadioItems = new ArrayList();
+            searchRadioItems.add(new SelectItem("0", "New Search"));
         }
         
         

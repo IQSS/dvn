@@ -460,7 +460,6 @@ public class DVNOAICatalog extends AbstractCatalog {
         File studyFileDir = FileUtil.getStudyFileDir(study);
         String exportFileName= studyFileDir.getAbsolutePath() + File.separator + "export_" + metadataPrefix+".xml";
         String record = identifier+dateStamp+setSpec+readFile(new File(exportFileName));
-        System.out.println("RECORD:\n"+record);
         return record;
     }
     /**

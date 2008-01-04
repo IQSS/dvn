@@ -125,6 +125,9 @@ public class VDCAdminServlet extends HttpServlet {
             out.print("<option value=\"oai_dc\">Export Dublin Core Only</option>");
             out.print("<option value=\"marc\">Export Marc Only</option>");
             out.print("</select></br></br>");
+            out.println("To export all studies (regardless of update time), click the button below.<br/>");
+            out.print("<input name=export value=\"All Studies\" type=submit /><br/><br/>");
+           
             out.println("To export studies owned by a specific dataverse (regardless of update time), input the dataverse id and click on the button below.<br/>");
             out.print("<input name=\"vdcToExport\" size=4>");
             out.print("<input name=export value=Dataverse type=submit /><br/><br/>");
@@ -190,29 +193,44 @@ public class VDCAdminServlet extends HttpServlet {
                 String exportFormat = req.getParameter("exportFormat").equals("") ? null:req.getParameter("exportFormat") ;
               
                 if ("Dataverse".equals(exportParam)) {
-                Long vdcToIndex = null;
-                try {
-                    vdcToIndex = new Long(req.getParameter("vdcToExport"));
-                    VDC vdc =  vdcService.findById(vdcToIndex);
-                    if (vdc != null) { 
-                        List studyIDList = new ArrayList();
-                        for (Study study :  vdc.getOwnedStudies() ) {
-                            studyIDList.add( study.getId() );
+                    Long vdcToIndex = null;
+                    try {
+                        vdcToIndex = new Long(req.getParameter("vdcToExport"));
+                        VDC vdc =  vdcService.findById(vdcToIndex);
+                        if (vdc != null) { 
+                            List studyIDList = new ArrayList();
+                            for (Study study :  vdc.getOwnedStudies() ) {
+                                studyIDList.add( study.getId() );
+                            }
+
+                            studyService.exportStudies(studyIDList, exportFormat);
+                            displayMessage (out,"Export succeeded.", "(for dataverse id = " + vdcToIndex + ")");
+                        } else {
+                            displayMessage (out, "Export failed.", "There is no dataverse with dvId = " + vdcToIndex);                    
                         }
-                  
-                        studyService.exportStudies(studyIDList, exportFormat);
-                        displayMessage (out,"Export succeeded.", "(for dataverse id = " + vdcToIndex + ")");
-                    } else {
-                        displayMessage (out, "Export failed.", "There is no dataverse with dvId = " + vdcToIndex);                    
+                    } catch (NumberFormatException nfe) {
+                        displayMessage (out, "Export failed.", "The dataverse id must be of type Long.");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        displayMessage (out, "Export failed.", "An unknown error occurred trying to index dataverse with id = " + vdcToIndex);
                     }
-                } catch (NumberFormatException nfe) {
-                    displayMessage (out, "Export failed.", "The dataverse id must be of type Long.");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    displayMessage (out, "Export failed.", "An unknown error occurred trying to index dataverse with id = " + vdcToIndex);
-                }
                 
-                } else if ("Studies".equals(exportParam)) {
+                } else  if ("All Studies".equals(exportParam)) {
+                    Long vdcToIndex = null;
+                    try {
+                        List<Long> allStudyIds = studyService.getAllStudyIds();
+                      
+                        studyService.exportStudies(allStudyIds, exportFormat);
+                        displayMessage (out,"Export succeeded for all studies.");
+                       
+                    } catch (NumberFormatException nfe) {
+                        displayMessage (out, "Export failed.", "The dataverse id must be of type Long.");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        displayMessage (out, "Export failed.", "An unknown error occurred trying to index dataverse with id = " + vdcToIndex);
+                    }
+                
+                }  else if ("Studies".equals(exportParam)) {
                     String studyIds = req.getParameter("studyIds");
                     List<Long> studyIdList = new ArrayList();
                     String failedTokens = "";
@@ -237,7 +255,7 @@ public class VDCAdminServlet extends HttpServlet {
                 } else if ("Updated Studies".equals(exportParam)) {
                     try {
                         studyService.exportUpdatedStudies();
-                        displayMessage(out, "Export succeeded (for updayed studies).");
+                        displayMessage(out, "Export succeeded (for updated studies).");
                     } catch (Exception e) {
                         displayMessage(out, "Exception occurred while exporting studies.  See export log for details.");
                     }

@@ -26,119 +26,97 @@
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-
 package edu.harvard.hmdc.vdcnet.marc;
-
-
-
-
-
 
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyAbstract;
 import edu.harvard.hmdc.vdcnet.study.StudyOtherId;
 import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
+import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Writer;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
-import javax.ejb.EJBException;
-import javax.ejb.EJBs;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import org.marc4j.MarcStreamWriter;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
-import org.marc4j.marc.Subfield;
 
 /**
  *
  * @author ekraffmiller
  */
 @Stateless
-
 public class MarcServiceBean implements MarcServiceLocal {
 
-    
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.marc.MarcServiceBean");
-    
-    
+
     /** Creates a new instance of DDI20ServiceBean */
     public MarcServiceBean() {
     }
-   
-    public boolean isXmlFormat(){return false; }
-    
+
+    public boolean isXmlFormat() {
+        return false;
+    }
+
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public  void exportStudy(Study study, OutputStream out) throws IOException, JAXBException {
-     
+    public void exportStudy(Study study, OutputStream out) throws IOException, JAXBException {
+
         MarcFactory factory = MarcFactory.newInstance();
         Record record = factory.newRecord();
-   
-        
-        DataField title = factory.newDataField("245",'0',' ');
+
+
+        DataField title = factory.newDataField("245", '0', ' ');
         title.addSubfield(factory.newSubfield('a', study.getTitle()));
         if (!StringUtil.isEmpty(study.getAuthorsStr())) {
             title.addSubfield(factory.newSubfield('c', study.getAuthorsStr()));
         }
         if (!StringUtil.isEmpty(study.getDistributionDate())) {
-            title.addSubfield(factory.newSubfield('s', study.getDistributionDate()));    
+            title.addSubfield(factory.newSubfield('s', study.getDistributionDate()));
         }
         record.addVariableField(title);
-        
-        DataField globalId = factory.newDataField("440",' ',' ');
+
+        DataField globalId = factory.newDataField("440", ' ', ' ');
         globalId.addSubfield(factory.newSubfield('v', study.getGlobalId()));
         record.addVariableField(globalId);
-        
-        
+
+
         for (StudyOtherId studyOtherId : study.getStudyOtherIds()) {
-             DataField otherId = factory.newDataField("440",' ',' ');
+            DataField otherId = factory.newDataField("440", ' ', ' ');
             otherId.addSubfield(factory.newSubfield('v', studyOtherId.getOtherId()));
-            record.addVariableField(otherId);  
+            record.addVariableField(otherId);
         }
         for (StudyAbstract studyAbstract : study.getStudyAbstracts()) {
-            DataField abstractField = factory.newDataField("520",' ',' ');
+            DataField abstractField = factory.newDataField("520", ' ', ' ');
             abstractField.addSubfield(factory.newSubfield('a', studyAbstract.getText()));
             record.addVariableField(abstractField);
         }
-        
-        DataField handle = factory.newDataField("535",' ',' ');
-        handle.addSubfield(factory.newSubfield('d', "http://hdl.handle.net/"+study.getAuthority()+"/"+study.getStudyId()));
+
+        DataField handle = factory.newDataField("856", ' ', ' ');
+        handle.addSubfield(factory.newSubfield('u', "http://hdl.handle.net/" + study.getAuthority() + "/" + study.getStudyId()));
         record.addVariableField(handle);
+
+        DataField dataverseUrl = factory.newDataField("535", ' ', ' ');
+        dataverseUrl.addSubfield(factory.newSubfield('d', "http://" + PropertyUtil.getHostUrl() + "/dvn/study?globalId=" + study.getGlobalId()));
+        record.addVariableField(dataverseUrl);
         
-        for(StudyTopicClass studyTopicClass : study.getStudyTopicClasses()) {
-            DataField topicClass = factory.newDataField("650",' ',' ');
+        for (StudyTopicClass studyTopicClass : study.getStudyTopicClasses()) {
+            DataField topicClass = factory.newDataField("650", ' ', ' ');
             topicClass.addSubfield(factory.newSubfield('a', studyTopicClass.getValue()));
             record.addVariableField(topicClass);
-           
-        }
-        MarcStreamWriter writer = new MarcStreamWriter(out); 
-      
-         writer.write(record);
-         
-         out.flush();
-    }
-    
 
- 
+        }
+        MarcStreamWriter writer = new MarcStreamWriter(out);
+
+        writer.write(record);
+
+        out.flush();
+    }
 }

@@ -480,6 +480,20 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         return returnList;
     }
+    
+    public List<Long> getAllStudyIds() {
+      String queryStr = "select id from study";
+        Query query = em.createNativeQuery(queryStr);
+        List<Long> returnList = new ArrayList<Long>();
+        // since query is native, must parse through Vector results
+        for (Object currentResult : query.getResultList()) {
+            // convert results into Longs
+            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+        }
+
+        return returnList;
+    }
+    
 
     public List getOrderedStudies(List studyIdList, String orderBy) {
         String studyIds = "";

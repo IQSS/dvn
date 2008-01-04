@@ -112,6 +112,7 @@ public interface StudyServiceLocal {
     List getViewableStudies(List<Long> studyIds, Long userId, Long ipUserGroupId);
 
     List getStudyIdsForExport();
+    public List<Long> getAllStudyIds(); 
     public void exportStudy(Long studyId);
     public void exportStudy(Study study);
     public void exportStudyToFormat(Long studyId, String exportFormat);

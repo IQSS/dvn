@@ -30,7 +30,7 @@
                   <ui:panelGroup block="true" style="padding-bottom: 15px;">
                           <h:graphicImage value="/resources/icon_required.gif"/> <h:outputText style="vdcHelpText" value="Indicates a required field."/>
                       </ui:panelGroup>
-                      <h:panelGrid  cellpadding="0" cellspacing="0"
+                      <h:panelGrid  cellpadding="0" cellspacing="0" width="98%"
                                     columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
                         
                           <ui:panelGroup >

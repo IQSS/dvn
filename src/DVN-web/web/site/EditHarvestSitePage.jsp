@@ -126,7 +126,7 @@
                         </ui:panelGroup>
                         <ui:panelGroup>
                             
-                              <h:inputText id="dataverseName" value="#{EditHarvestSitePage.dataverseName}" required="true" validator="#{EditHarvestSitePage.validateName}" size="60">
+                              <h:inputText id="dataverseName" value="#{EditHarvestSitePage.dataverseName}" required="true" requiredMessage="This field is required." validator="#{EditHarvestSitePage.validateName}" size="60">
                                   
                               </h:inputText>
                           <h:message styleClass="errorMessage" for="dataverseName"/> 
@@ -139,7 +139,7 @@
                             </h:outputLabel>
                         </ui:panelGroup>
                         <ui:panelGroup>
-                            <h:inputText id="dataverseAlias" value="#{EditHarvestSitePage.dataverseAlias}" validator="#{EditHarvestSitePage.validateAlias}" required="true"  />
+                            <h:inputText id="dataverseAlias" value="#{EditHarvestSitePage.dataverseAlias}" validator="#{EditHarvestSitePage.validateAlias}" required="true" requiredMessage="This field is required." />
                             <h:message styleClass="errorMessage" for="dataverseAlias"/> 
                             
                             <br />
@@ -149,7 +149,7 @@
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="OAI Server"/> 
                         </ui:panelGroup>
                         <ui:panelGroup>
-                            <h:inputText id="dataverseOaiServer" validator="#{EditHarvestSitePage.validateOAIServer}"  value="#{EditHarvestSitePage.harvestingDataverse.oaiServer}"  required="true" size="60">
+                            <h:inputText id="dataverseOaiServer" validator="#{EditHarvestSitePage.validateOAIServer}"  value="#{EditHarvestSitePage.harvestingDataverse.oaiServer}"  required="true" requiredMessage="This field is required." size="60">
                                 <f:validator validatorId="UrlValidator"/>
                             </h:inputText>  
                             <h:commandButton  value="Validate" />
@@ -169,7 +169,10 @@
                             </h:selectOneMenu>
                             <verbatim><br /></verbatim>
                             <h:outputText styleClass="vdcHelpText" value="Select the set you would like to harvest. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."/>
-                        </ui:panelGroup>  
+                        </ui:panelGroup> 
+                        <ui:panelGroup rendered="#{ EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and  EditHarvestSitePage.harvestingDataverse.oaiServer !=null}"> 
+                         <verbatim><br /></verbatim>
+                        </ui:panelGroup>
                         <ui:panelGroup rendered="#{ EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and  EditHarvestSitePage.harvestingDataverse.oaiServer !=null}">   
                             <h:outputText value="This OAI Server does not support sets. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."/>
                         </ui:panelGroup>
@@ -233,7 +236,7 @@
                         </ui:panelGroup >
                       <ui:panelGroup  >
                         
-                           <h:inputText required="true" id="inputScheduleHourOfDay" value="#{EditHarvestSitePage.harvestingDataverse.scheduleHourOfDay}">
+                           <h:inputText required="true" requiredMessage="This field is required." id="inputScheduleHourOfDay" value="#{EditHarvestSitePage.harvestingDataverse.scheduleHourOfDay}">
                                <f:validateLongRange minimum="0" maximum="23" />
                            </h:inputText>
                         
@@ -248,7 +251,7 @@
                         </ui:panelGroup >
                       <ui:panelGroup  >
                           
-                          <h:inputText required="true" id="inputScheduleDayOfWeek" value="#{EditHarvestSitePage.harvestingDataverse.scheduleDayOfWeek}">
+                          <h:inputText required="true" requiredMessage="This field is required." id="inputScheduleDayOfWeek" value="#{EditHarvestSitePage.harvestingDataverse.scheduleDayOfWeek}">
                                <f:validateLongRange minimum="1" maximum="7" />
                           </h:inputText>
                           

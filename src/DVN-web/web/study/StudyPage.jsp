@@ -44,8 +44,16 @@
             <h:inputHidden id="studyId" value="#{studyPage.studyId}"/>
             <h:inputHidden id="slIndex" value="#{studyPage.studyListingIndex}"/>
                         
-                <div class="dvn_section">
-                    <span class="dvn_sectionTitleR">
+                <div class="dvn_section">       
+                    <div class="dvn_sectionTitle">
+                             <h:outputText   value="#{studyPage.studyUI.study.title}"/>
+                    </div>
+                    <span class="dvn_sectionTitleLinksL">
+                      <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?studyListingIndex=#{studyPage.studyListingIndex}" rendered="#{!empty studyPage.studyListingIndex}">
+                          <h:outputText  value="&lt; View Previous Study Listing"/>
+                      </h:outputLink>
+                    </span>
+                    <span class="dvn_sectionTitleLinksR">
                     <h:outputText styleClass="vdcStudyStatus" value="(In Review)" rendered="#{studyPage.studyUI.study.inReview}"/>
                     <h:outputText styleClass="vdcStudyStatus" value="(New)" rendered="#{studyPage.studyUI.study.new}"/>
                     <h:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
@@ -65,16 +73,8 @@
                         <h:commandButton  value="Release" actionListener="#{studyPage.setReleased}"/>
                     </ui:panelGroup>
                     
-                </span>        
-                <div class="dvn_sectionTitle">
-                         <h:outputText   value="#{studyPage.studyUI.study.title}"/>
-                </div>            
+                    </span>           
              
-                    <span class="dvn_sectionTitleR">
-                      <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?studyListingIndex=#{studyPage.studyListingIndex}" rendered="#{!empty studyPage.studyListingIndex}">
-                          <h:outputText  value="View Previous Study Listing"/>
-                      </h:outputLink>
-                 </span>                 
                 <div class="dvn_sectionBoxNoBorders"> 
                     <ui:tabSet binding="#{studyPage.tabSet1}" id="tabSet1" lite="true" mini="true"  >
                         <ui:tab   id="catalog" text="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">

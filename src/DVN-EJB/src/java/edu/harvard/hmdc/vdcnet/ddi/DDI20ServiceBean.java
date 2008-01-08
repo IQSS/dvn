@@ -2678,7 +2678,17 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         if ( study.isIsHarvested() && !generateCodeBookForHarvestedStudy) {
             exportOriginalDDIPlus(study, out);
         } else {
-            exportCodeBook(mapStudy(study, exportToLegacyVDC), out ); 
+
+            int exportMode = 0;
+            try {
+                exportMode = Integer.parseInt( System.getProperty("dvn.test.export.mode") );
+            } catch (Exception e) {}
+
+            if (exportMode == 0 || exportMode == 1) {
+                exportCodeBook(mapStudy(study, exportToLegacyVDC), out ); 
+            } else {
+                exportTest(study, out);
+            }
         }
     }
     
@@ -2778,4 +2788,259 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         returnString = returnString.substring(0, returnString.lastIndexOf("</docDscr>") + 10);
         return returnString;
     }
+
+
+
+    /** This is test code to see how it goes writing out the XML not suing JAXB
+    *   For now it is only writing out the DataDscr, which is the largest part
+    **/
+
+    private void exportTest (Study s, Writer out) {
+        try {
+            out.write("<codeBook version=\"2.0\" xsi:schemaLocation=\"http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.icpsr.umich.edu/DDI\">");
+            out.write(System.getProperty("line.separator"));
+
+            out.write("\t<dataDscr>");
+            out.write(System.getProperty("line.separator"));
+
+            Iterator iter = s.getStudyFiles().iterator();
+            while (iter.hasNext()) {
+                StudyFile sf = (StudyFile) iter.next();
+
+                if ( sf.isSubsettable() ) {
+                    if ( sf.getDataTable().getDataVariables().size() > 0 ) {
+                        Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
+                        while (varIter.hasNext()) {
+                            DataVariable dv = (DataVariable) varIter.next();
+                            exportDataVariable(dv, null, out);
+                        }
+                    }
+                }
+
+
+            }
+
+            out.write("\t</dataDscr>");
+            out.write(System.getProperty("line.separator"));
+
+            out.write("</codeBook>");
+            out.flush(); 
+
+        } catch (IOException ex) {
+            throw new EJBException ("A problem occurred trying to export this study (original DDI Plus).");                
+        } finally {
+            try {
+                if (out!=null) { out.close(); }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }                       
+    }
+
+    
+private void exportDataVariable(DataVariable dv, FileDscrType _fd, Writer out) throws IOException {
+        
+        out.write("\t\t<var ");
+        out.write("ID=\"V" + dv.getId().toString() +"\" ");
+        out.write("name=\"" + dv.getName() +"\" ");
+        //out.write("intrvl\"" + dv.getId() +"\" ");
+        //out.write("wgt=\"" + dv.getId() +"\" ");
+        out.write(">" + System.getProperty("line.separator"));
+        
+        //location
+        out.write("\t\t\t<location ");
+        //out.write("fileid=\"V" + dv.getId().toString() +"\" ");
+        out.write("/>" + System.getProperty("line.separator"));
+
+        // label
+        out.write("\t\t\t<labl level=\"variable\">");
+        out.write("/>" + parseForXML(dv.getLabel()) );
+        out.write("</labl>" + System.getProperty("line.separator"));
+
+        //sum stats
+        for (SummaryStatistic sumStat : dv.getSummaryStatistics()) {
+            out.write("\t\t\t<sumStat type=\"" +  sumStat.getType().getName() + "\">");
+            out.write("/>" + sumStat.getValue() );
+            out.write("</sumStat>" + System.getProperty("line.separator"));
+        }
+
+        // categories
+        for (VariableCategory cat : dv.getCategories()) {
+            out.write("\t\t\t<catgry>" + System.getProperty("line.separator"));
+
+            // catValu
+            out.write("\t\t\t\t<catValu>");
+            out.write( cat.getValue() );
+            out.write("</catValu>" + System.getProperty("line.separator"));
+
+            // label
+            out.write("\t\t\t\t<labl level=\"category\">");
+            out.write("/>" + cat.getLabel() );
+            out.write("</labl>" + System.getProperty("line.separator"));
+
+            // catStat
+            out.write("\t\t\t\t<catStat type=\"freq\">");
+            out.write("/>" + cat.getFrequency() );
+            out.write("</catStat>" + System.getProperty("line.separator"));
+
+            out.write("\t\t\t</catgry>" + System.getProperty("line.separator"));
+        }
+
+        // varFormat
+        out.write("\t\t\t<varFormat ");
+        out.write("/>" + System.getProperty("line.separator"));
+
+        // notes
+        out.write("\t\t\t<notes subject=\"Universal Numeric Fingerprint\" level=\"variable\" type=\"VDC:UNF\">");
+        out.write("/>" + dv.getUnf());
+        out.write("</notes>" + System.getProperty("line.separator"));
+
+        out.write("\t\t</var>" + System.getProperty("line.separator"));
+        /*
+        ObjectFactory objFactory = new ObjectFactory();
+        VarType _dv = objFactory.createVarType();
+        if (dv.getVariableIntervalType() != null) {
+            String interval = dv.getVariableIntervalType().getName();
+            interval = DB_VAR_INTERVAL_TYPE_CONTINUOUS.equals(interval) ? VAR_INTERVAL_CONTIN : interval;
+            _dv.setIntrvl( interval );
+        }
+        
+        LocationType _loc = objFactory.createLocationType();
+        _loc.setFileid( _fd );
+        _loc.setRecSegNo( dv.getRecordSegmentNumber() != null ? dv.getRecordSegmentNumber().toString() : null );
+        _loc.setStartPos( dv.getFileStartPosition() != null ? dv.getFileStartPosition().toString() : null );
+        _loc.setEndPos( dv.getFileEndPosition() != null ? dv.getFileEndPosition().toString() : null );
+        _dv.getLocation().add( _loc );
+        
+        if (!StringUtil.isEmpty( dv.getLabel() )) {
+            LablType _labl = objFactory.createLablType();
+            _labl.setLevel(LEVEL_VARIABLE);
+            _labl.getContent().add(dv.getLabel());
+            _dv.getLabl().add(_labl);
+        }
+        
+        // summary stats
+        Iterator iter = dv.getSummaryStatistics().iterator();
+        while (iter.hasNext()) {
+            SummaryStatistic ss = (SummaryStatistic) iter.next();
+            SumStatType _ss = objFactory.createSumStatType();
+            _ss.setType(ss.getType().getName());
+            _ss.getContent().add(ss.getValue());
+            _dv.getSumStat().add(_ss);
+            
+        }
+        
+        // category
+        iter = dv.getCategories().iterator();
+        while (iter.hasNext()) {
+            VariableCategory cat = (VariableCategory) iter.next();
+            CatgryType _cat = objFactory.createCatgryType();
+            _cat.setMissing( cat.isMissing() ? "Y" : "N" );
+            
+            // catValu
+            CatValuType _catValu = objFactory.createCatValuType();
+            _catValu.getContent().add(cat.getValue());
+            _cat.setCatValu(_catValu);
+            
+            // label
+            if (!StringUtil.isEmpty( cat.getLabel() )) {
+                LablType _catLabl = objFactory.createLablType();
+                _catLabl.setLevel(LEVEL_CATEGORY);
+                _catLabl.getContent().add(cat.getLabel());
+                _cat.getLabl().add(_catLabl);
+            }
+            
+            // catStat: freq
+            if (cat.getFrequency() != null) {
+                CatStatType _catStat = objFactory.createCatStatType();
+                _catStat.setType("freq");
+                _catStat.getContent().add(cat.getFrequency().toString());
+                _cat.getCatStat().add(_catStat);
+            }
+            
+            _dv.getCatgry().add(_cat);
+            
+        }
+        
+        // invalid ranges
+        iter = dv.getInvalidRanges().iterator();
+        InvalrngType _invalidRange = objFactory.createInvalrngType();
+        
+        while (iter.hasNext()) {
+            VariableRange range = (VariableRange) iter.next();
+            if (range.getBeginValueType() != null && range.getBeginValueType().getName().equals(DB_VAR_RANGE_TYPE_POINT)) {
+                // create item
+                if (range.getBeginValue() != null ) {
+                    ItemType _item = objFactory.createItemType();
+                    _item.setVALUE( range.getBeginValue() );
+                    _invalidRange.getItemOrRange().add( _item );
+                }
+                
+            } else {
+                //create range
+                RangeType _range = objFactory.createRangeType();
+                _invalidRange.getItemOrRange().add( _range );
+                
+                if ( range.getBeginValueType() != null && range.getBeginValue() != null ) {
+                    if ( range.getBeginValueType().getName().equals(DB_VAR_RANGE_TYPE_MIN) ) {
+                        _range.setMin( range.getBeginValue() );
+                    } else if ( range.getBeginValueType().getName().equals(DB_VAR_RANGE_TYPE_MIN_EX) ) {
+                        _range.setMinExclusive( range.getBeginValue() );
+                    }
+                }
+                
+                if ( range.getEndValueType() != null && range.getEndValue() != null) {
+                    if ( range.getEndValueType().getName().equals(DB_VAR_RANGE_TYPE_MAX) ) {
+                        _range.setMax( range.getEndValue() );
+                    } else if ( range.getEndValueType().getName().equals(DB_VAR_RANGE_TYPE_MAX_EX) ) {
+                        _range.setMaxExclusive( range.getEndValue() );
+                    }
+                    
+                }
+            }
+        }
+        
+        if (_invalidRange.getItemOrRange().size() > 0) {
+            _dv.getInvalrng().add(_invalidRange);
+        }
+        
+        VarFormatType _format = objFactory.createVarFormatType();
+        _format.setType(dv.getVariableFormatType().getName());
+        _format.setSchema( dv.getFormatSchema() );
+        _format.setFormatname( dv.getFormatSchemaName() );
+        _dv.setVarFormat(_format);
+        
+        //concept
+        if (!StringUtil.isEmpty( dv.getConcept() )) {
+            ConceptType _concept = objFactory.createConceptType();
+            _concept.getContent().add( dv.getConcept() );
+            _dv.getConcept().add( _concept );
+        }
+        //universe
+        if (!StringUtil.isEmpty( dv.getUniverse() )) {
+            UniverseType _universe = objFactory.createUniverseType();
+            _universe.getContent().add( dv.getUniverse() );
+            _dv.getUniverse().add( _universe );
+        }
+        
+        // notes
+        NotesType _unf = objFactory.createNotesType();
+        _unf.setLevel(LEVEL_VARIABLE);
+        _unf.setType(NOTE_TYPE_UNF);
+        _unf.setSubject(NOTE_SUBJECT_UNF);
+        _unf.getContent().add(dv.getUnf());
+        _dv.getNotes().add(_unf);
+        
+        return _dv;
+        */
+    }
+
+    private String parseForXML(String s) {
+        if (s != null) {
+            s = s.replaceAll("&", "&amp;");
+        }
+        
+        return s;
+    }
+
 }

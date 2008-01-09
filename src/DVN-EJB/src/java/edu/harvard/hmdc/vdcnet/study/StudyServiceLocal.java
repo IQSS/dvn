@@ -96,6 +96,8 @@ public interface StudyServiceLocal {
 
     boolean isUniqueFileSystemName(String fileSystemName);
 
+    List<StudyLock> getStudyLocks();
+    
     void removeStudyLock(Long studyId);
 
     void addStudyLock(Long studyId, Long userId, String detail);

@@ -874,6 +874,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return em.createQuery(query).getResultList().size() == 0;
     }
 
+    public List<StudyLock> getStudyLocks() {
+        String query = "SELECT sl FROM StudyLock sl";
+        return (List<StudyLock>) em.createQuery(query).getResultList();
+    }
+
     public void addStudyLock(Long studyId, Long userId, String detail) {
         Study study = em.find(Study.class, studyId);
         VDCUser user = em.find(VDCUser.class, userId);

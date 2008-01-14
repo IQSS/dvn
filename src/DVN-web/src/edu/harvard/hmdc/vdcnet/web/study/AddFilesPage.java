@@ -52,6 +52,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
+import java.util.*;
 
 /**
  *
@@ -60,7 +61,12 @@ import javax.servlet.http.HttpSession;
 public class AddFilesPage extends VDCBaseBean {
     @EJB EditStudyService studyService;
     @EJB StudyServiceLocal fileSystemNameService;
-    
+    private static Map<String, String> STATISTICAL_SYNTAX_FILE_EXTENSION = new HashMap<String, String>();
+    static {
+        STATISTICAL_SYNTAX_FILE_EXTENSION.put("do",  "x-stata-syntax");
+        STATISTICAL_SYNTAX_FILE_EXTENSION.put("sas", "x-sas-syntax");
+        STATISTICAL_SYNTAX_FILE_EXTENSION.put("sps", "x-spss-syntax");
+    }
     /** Creates a new instance of AddFilesPage */
     public AddFilesPage() {
     }
@@ -201,6 +207,30 @@ public class AddFilesPage extends VDCBaseBean {
                 // for unknown file types, use the originalFileType determined by the upload
                 f.getStudyFile().setFileType( analyzeFileType.equals("application/octet-stream") ? originalFileType : analyzeFileType);
                 
+                // update the MIME-type if necessary
+                if (analyzeFileType.equals("application/octet-stream")) {
+                    System.out.println("use MIME-type identified by the browser="+originalFileType);
+                    f.getStudyFile().setFileType( originalFileType );
+                } else {
+                    if (analyzeFileType.startsWith("text/plain")){
+                        String finalMIMEtype = null;
+                        String ext = getFileExtension(originalName);
+                        if (( ext != null) && (STATISTICAL_SYNTAX_FILE_EXTENSION.containsKey(ext))) {
+                            // replace the mime type with the value of the HashMap
+                            System.out.println("file extension="+ext);
+                            System.out.println("new mime type="+STATISTICAL_SYNTAX_FILE_EXTENSION.get(ext));
+                            finalMIMEtype = analyzeFileType.replace("plain",STATISTICAL_SYNTAX_FILE_EXTENSION.get(ext));
+                            System.out.println("updated MIME-Type="+finalMIMEtype);
+                        } else {
+                            finalMIMEtype = analyzeFileType;
+                        }
+                        f.getStudyFile().setFileType(finalMIMEtype);
+                    } else {
+                        f.getStudyFile().setFileType(analyzeFileType);
+                        System.out.println("non-octet-stream case="+analyzeFileType);
+                    }
+                }
+                
                 f.setTempSystemFileLocation( file.getAbsolutePath() );
                 f.getStudyFile().setFileSystemName(fileSystemNameService.generateFileSystemNameSequence());
                 files.add(f);          
@@ -222,6 +252,14 @@ public class AddFilesPage extends VDCBaseBean {
         } else {
             return originalName + ".tab";    
         }
+    }
+    
+   private String getFileExtension(String originalName){
+    	String ext = null;
+    	if ( originalName.lastIndexOf(".") != -1){
+    		ext = (originalName.substring( originalName.lastIndexOf(".") + 1 )).toLowerCase();
+    	}
+    	return ext;
     }
     
     public String save_action () {

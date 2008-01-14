@@ -82,7 +82,28 @@ public class VDC {
     private boolean downloadTermsOfUseEnabled;
     
      
- 
+    @Column(name="termsOfUse", columnDefinition="TEXT")
+    private String depositTermsOfUse;
+
+    public String getDepositTermsOfUse() {
+        return depositTermsOfUse;
+    }
+
+    public void setDepositTermsOfUse(String depositTermsOfUse) {
+        this.depositTermsOfUse = depositTermsOfUse;
+    }
+
+    public boolean isDepositTermsOfUseEnabled() {
+        return depositTermsOfUseEnabled;
+    }
+
+    public void setDepositTermsOfUseEnabled(boolean depositTermsOfUseEnabled) {
+        this.depositTermsOfUseEnabled = depositTermsOfUseEnabled;
+    }
+     @Column(name="depositTermsOfUseEnabled")
+    private boolean depositTermsOfUseEnabled;
+    
+
     @Column(name="termsOfUseEnabled")
     private boolean termsOfUseEnabled;
      
@@ -805,30 +826,8 @@ public class VDC {
         this.vdcGroups = vdcGroups;
     }
 
-    @OneToMany(mappedBy="vdc", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("createTime")
-    private List<TermsOfUse> termsOfUseList;
-    
-    /**
-     * Getter for property studyNotes.
-     * @return Value of property studyNotes.
-     */
-    public List<TermsOfUse> getTermsOfUseList() {
-        return this.termsOfUseList;
-    }
-    
-    public TermsOfUse getCurrentTermsOfUse() {
-        return termsOfUseList.get(termsOfUseList.size()-1);
-    }
-    
-    /**
-     * Setter for property studyNotes.
-     * @param studyNotes New value of property studyNotes.
-     */
-    public void setTermsOfUseList(List<TermsOfUse> termsOfUseList) {
-        this.termsOfUseList = termsOfUseList;
-    }    
-
+  
+   
     public boolean isVDCRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
 
         if ( isRestricted() ) {

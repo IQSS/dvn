@@ -558,6 +558,30 @@ public class VDCNetwork {
         this.authority = authority;
     }
 
+    public String getDepositTermsOfUse() {
+        return depositTermsOfUse;
+    }
+
+    public void setDepositTermsOfUse(String depositTermsOfUse) {
+        this.depositTermsOfUse = depositTermsOfUse;
+    }
+
+    public boolean isDepositTermsOfUseEnabled() {
+        return depositTermsOfUseEnabled;
+    }
+
+    public void setDepositTermsOfUseEnabled(boolean depositTermsOfUseEnabled) {
+        this.depositTermsOfUseEnabled = depositTermsOfUseEnabled;
+    }
+
+    public String getTermsOfUse() {
+        return termsOfUse;
+    }
+
+    public void setTermsOfUse(String termsOfUse) {
+        this.termsOfUse = termsOfUse;
+    }
+
       public int hashCode() {
         int hash = 0;
         hash += (this.id != null ? this.id.hashCode() : 0);
@@ -627,12 +651,52 @@ public class VDCNetwork {
     public void setExportDayOfWeek(Integer exportDayOfWeek) {
         this.exportDayOfWeek = exportDayOfWeek;
     }
-
+   
+ 
     private String exportPeriod;
 
     private Integer exportHourOfDay;
 
     private Integer exportDayOfWeek;
     
+    @Column(name="termsOfUse", columnDefinition="TEXT")
+    /**
+     * Holds value of property announcements.
+     */
+    private String termsOfUse;
+
+    public String getDownloadTermsOfUse() {
+        return downloadTermsOfUse;
+    }
+
+    public void setDownloadTermsOfUse(String downloadTermsOfUse) {
+        this.downloadTermsOfUse = downloadTermsOfUse;
+    }
+
+    public boolean isDownloadTermsOfUseEnabled() {
+        return downloadTermsOfUseEnabled;
+    }
+
+    public void setDownloadTermsOfUseEnabled(boolean downloadTermsOfUseEnabled) {
+        this.downloadTermsOfUseEnabled = downloadTermsOfUseEnabled;
+    }
+
     private boolean termsOfUseEnabled;  
+    
+    @Column(name="depositTermsOfUse", columnDefinition="TEXT")
+    /**
+     * Holds value of property announcements.
+     */
+    private String depositTermsOfUse;
+    
+    private boolean depositTermsOfUseEnabled;  
+    
+     @Column(name="downloadTermsOfUse", columnDefinition="TEXT")
+    /**
+     * Holds value of property announcements.
+     */
+    private String downloadTermsOfUse;
+    
+    private boolean downloadTermsOfUseEnabled;  
+    
 }

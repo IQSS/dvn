@@ -53,6 +53,7 @@ public class VDCUser {
     private String email;
     private String firstName;
     private String lastName;
+    private boolean agreedTermsOfUse;
  //   private String password;
 
     public String getEncryptedPassword() {
@@ -387,6 +388,16 @@ public class VDCUser {
     public void setStudyLocks(List<StudyLock> studyLocks) {
         this.studyLocks = studyLocks;
     }
+
+    public boolean isAgreedTermsOfUse() {
+        return agreedTermsOfUse;
+    }
+
+    public void setAgreedTermsOfUse(boolean agreedTermsOfUse) {
+        this.agreedTermsOfUse = agreedTermsOfUse;
+    }
+    
+    
      public int hashCode() {
         int hash = 0;
         hash += (this.id != null ? this.id.hashCode() : 0);

@@ -61,6 +61,16 @@
                             <h:outputLink id="hyperlink17" value="/dvn/faces/admin/EditContactUsPage.jsp">
                                 <h:outputText id="hyperlink17Text" value="Set Contact Us E-Mail"/>
                             </h:outputLink>
+                             <h:outputLink  value="/dvn/faces/networkAdmin/EditAccountUseTermsPage.jsp">
+                                <h:outputText  value="Edit General Terms of Use for this Dataverse Network"/>
+                            </h:outputLink>                                                  
+                           <h:outputLink  value="/dvn/faces/networkAdmin/EditNetworkDepositUseTermsPage.jsp">
+                                <h:outputText  value="Edit Network Terms Of Use for Study Creation"/>
+                            </h:outputLink>                                                  
+                            <h:outputLink  value="/dvn/faces/networkAdmin/EditNetworkDownloadUseTermsPage.jsp">
+                                <h:outputText  value="Edit Network Terms Of Use for Data Download"/>
+                            </h:outputLink>   
+                            
                          </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel1" style="padding-top: 20px; padding-bottom: 15px">
                             <h:outputText  id="outputText2" styleClass="vdcSubHeader" value="Users/Permissions"/>

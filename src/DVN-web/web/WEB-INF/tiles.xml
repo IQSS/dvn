@@ -129,6 +129,22 @@
        <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
        <put name="content" type="template"     value="/login/CreatorRequestAccountPage.jsp"/>
    </definition>
+      <definition name="/login/CreatorRequestAccountPage_new" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
+       <put name="content" type="template"     value="/login/CreatorRequestAccountPage_new.jsp"/>
+   </definition>
+   <definition name="/login/CreatorRequestQuestionsPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
+       <put name="content" type="template"     value="/login/CreatorRequestQuestionsPage.jsp"/>
+   </definition>
+   <definition name="/login/CreatorRequestTermsPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
+       <put name="content" type="template"     value="/login/CreatorRequestTermsPage.jsp"/>
+   </definition>
+   <definition name="/login/CreatorRequestInfoPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
+       <put name="content" type="template"     value="/login/CreatorRequestInfoPage.jsp"/>
+   </definition>
      <definition name="/login/CreatorRequestSuccessPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
        <put name="content" type="template"     value="/login/CreatorRequestSuccessPage.jsp"/>
@@ -281,6 +297,10 @@
        <put name="pageTitle"   type="string"        value="DVN - Edit Use Terms"/>
        <put name="content" type="template"     value="/admin/EditUseTermsPage.jsp"/>
    </definition>  
+   <definition name="/admin/EditDepositUseTermsPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Edit Data Deposit Use Terms"/>
+       <put name="content" type="template"     value="/admin/EditDepositUseTermsPage.jsp"/>
+   </definition>  
    <definition name="/admin/OptionsPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - My Options"/>
        <put name="content" type="template"     value="/admin/OptionsPage.jsp"/>
@@ -308,6 +328,19 @@
        <put name="pageTitle"   type="string"        value="DVN - Edit Network Homepage Description"/>
        <put name="content" type="template"     value="/networkAdmin/EditNetworkAnnouncementsPage.jsp"/>
    </definition>
+   <definition name="/networkAdmin/EditNetworkDepositUseTermsPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Edit Data Deposit Use Terms"/>
+       <put name="content" type="template"     value="/networkAdmin/EditNetworkDepositUseTermsPage.jsp"/>
+   </definition>  
+   <definition name="/networkAdmin/EditAccountUseTermsPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Edit Account Use Terms"/>
+       <put name="content" type="template"     value="/networkAdmin/EditAccountUseTermsPage.jsp"/>
+   </definition>  
+    <definition name="/networkAdmin/EditNetworkDownloadUseTermsPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Edit Download Use Terms"/>
+       <put name="content" type="template"     value="/networkAdmin/EditNetworkDownloadUseTermsPage.jsp"/>
+   </definition>  
+     
    <definition name="/networkAdmin/EditNetworkBannerFooterPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Edit Dataverse Network Banner and Footer"/>
        <put name="content" type="template"     value="/networkAdmin/EditNetworkBannerFooterPage.jsp"/>

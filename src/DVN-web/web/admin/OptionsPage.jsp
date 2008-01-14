@@ -103,6 +103,9 @@
                                     <h:outputLink id="hyperlink14" rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.jsp">
                                         <h:outputText id="hyperlink4Text3" value="Set Dataverse Terms of Use for Study Download"/>
                                     </h:outputLink>
+                                    <h:outputLink  rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditDepositUseTermsPage.jsp">
+                                        <h:outputText id="hyperlink5Text3" value="Set Dataverse Terms of Use for Study Creation and Data Deposit"/>
+                                    </h:outputLink>
                                 </ui:panelGroup>
                             </ui:panelGroup>
                         </ui:panelGroup>

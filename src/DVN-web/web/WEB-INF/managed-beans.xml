@@ -420,6 +420,33 @@
         </managed-property>
     </managed-bean>
     <managed-bean>
+        <managed-bean-name>EditDepositUseTermsPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.EditDepositUseTermsPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>termsOfUse</property-name>
+            <value>#{VDCRequest.currentVDC.depositTermsOfUse}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>termsOfUseEnabled</property-name>
+            <value>#{VDCRequest.currentVDC.depositTermsOfUseEnabled}</value>
+        </managed-property>
+    </managed-bean>
+        <managed-bean>
+        <managed-bean-name>EditNetworkDownloadUseTermsPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditNetworkDownloadUseTermsPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>termsOfUse</property-name>
+            <value>#{VDCRequest.vdcNetwork.downloadTermsOfUse}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>termsOfUseEnabled</property-name>
+            <value>#{VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}</value>
+        </managed-property>
+    </managed-bean>
+
+    <managed-bean>
         <managed-bean-name>WebStatisticsPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.WebStatisticsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
@@ -430,6 +457,33 @@
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditNetworkAboutPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+   <managed-bean>
+        <managed-bean-name>EditAccountUseTermsPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditAccountUseTermsPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>termsOfUse</property-name>
+            <value>#{VDCRequest.vdcNetwork.termsOfUse}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>termsOfUseEnabled</property-name>
+            <value>#{VDCRequest.vdcNetwork.termsOfUseEnabled}</value>
+        </managed-property>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>EditNetworkDepositUseTermsPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditNetworkDepositUseTermsPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>termsOfUse</property-name>
+            <value>#{VDCRequest.vdcNetwork.depositTermsOfUse}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>termsOfUseEnabled</property-name>
+            <value>#{VDCRequest.vdcNetwork.depositTermsOfUseEnabled}</value>
+        </managed-property>
+    </managed-bean>
+  
     <managed-bean>
         <managed-bean-name>AllUsersPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.AllUsersPage</managed-bean-class>

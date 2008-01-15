@@ -14,8 +14,8 @@ ALTER TABLE vdcnetwork ADD COLUMN downloadtermsofuseenabled bool;
 ALTER TABLE vdcnetwork ALTER COLUMN downloadtermsofuseenabled SET STORAGE PLAIN;
 
 
-ALTER TABLE vdc ADD COLUMN depositTermsOfUse text;
-ALTER TABLE vdc ALTER COLUMN depositTermsOfUse SET STORAGE EXTENDED;
+ALTER TABLE vdc ADD COLUMN termsofuse text;
+ALTER TABLE vdc ALTER COLUMN termsofuse SET STORAGE EXTENDED;
 
 ALTER TABLE vdc ADD COLUMN deposittermsofuseenabled bool;
 ALTER TABLE vdc ALTER COLUMN deposittermsofuseenabled SET STORAGE PLAIN;
@@ -27,3 +27,4 @@ update vdc set deposittermsofuseenabled=false;
 update vdcnetwork set deposittermsofuseenabled=false;
 update vdcnetwork set downloadtermsofuseenabled=false;
 update vdcuser set agreedtermsofuse=false;
+

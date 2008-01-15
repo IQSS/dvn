@@ -522,7 +522,6 @@ public class EditUserGroupPage extends VDCBaseBean {
         }
         
         public void setAffiliatesTable(HtmlDataTable datatable){
-            datatable.setBgcolor("LightPink");
             datatable.setSummary("Table showing the affiliate information for the current ip group.");
             datatable.setCellpadding("3");
             datatable.setCellspacing("3");

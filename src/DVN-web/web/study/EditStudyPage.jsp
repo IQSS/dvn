@@ -77,7 +77,7 @@
                     
                     <!-- validation errors occurred? -->
                     <ui:panelGroup id="messagePanel" styleClass="errorMessage" >
-                        <h:outputText  value="Some errors occurred, please check details below" rendered="#{! empty facesContext.maximumSeverity}" />
+                        <h:outputText  value="Please check messages below" rendered="#{! empty facesContext.maximumSeverity}" />
                     </ui:panelGroup>
                     
                     <ui:panelGroup block="true" id="groupPanel10" styleClass="vdcTextRight">              
@@ -122,7 +122,7 @@
                                         <h:graphicImage id="image40" value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.title].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup block="true" id="groupPanel16" >
-                                        <h:inputText id="input_title" size="90"  value="#{EditStudyPage.study.title}" required="#{EditStudyPage.studyMap[sfc.title].required}"/>
+                                        <h:inputText id="input_title" size="90"  value="#{EditStudyPage.study.title}" required="#{EditStudyPage.studyMap[sfc.title].required}" requiredMessage="This field is required."/>
                                         <h:message styleClass="errorMessage" for="input_title"/> 
                                     </ui:panelGroup> 
                                     
@@ -147,7 +147,7 @@
                                     </ui:panelGroup>
                                     <ui:panelGroup block="true" id="groupPanel35" rendered="#{EditStudyPage.studyMap[sfc.studyId].rendered} " >
                                         <h:outputText value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/" rendered="#{EditStudyPage.study.id==null}" />                                     
-                                        <h:inputText maxlength="255" id="input_studyId" value="#{EditStudyPage.study.studyId}"  validator ="#{EditStudyPage.validateStudyId}" required="#{EditStudyPage.studyMap[sfc.studyId].required}" rendered="#{EditStudyPage.study.id==null}" />
+                                        <h:inputText maxlength="255" id="input_studyId" value="#{EditStudyPage.study.studyId}"  validator ="#{EditStudyPage.validateStudyId}" required="#{EditStudyPage.studyMap[sfc.studyId].required}" requiredMessage="This field is required." rendered="#{EditStudyPage.study.id==null}" />
                                         <h:outputText value="#{EditStudyPage.study.globalId}" rendered="#{EditStudyPage.study.id!=null}" />
                                         <h:message styleClass="errorMessage" for="input_studyId"/> 
                                     </ui:panelGroup>

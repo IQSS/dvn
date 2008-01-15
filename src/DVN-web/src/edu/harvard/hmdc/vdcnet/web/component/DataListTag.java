@@ -45,7 +45,6 @@ public class DataListTag  extends UIComponentTag {
     private ValueExpression contents;
     private ValueExpression tabs;
     private ValueExpression tab;
-    private ValueExpression idName;
     
     /** Creates a new instance of DataListTag */
     public DataListTag() {
@@ -95,17 +94,8 @@ public class DataListTag  extends UIComponentTag {
                 datalist.getAttributes().put("tab", tab.getExpressionString());
               }
         }
-        if (idName != null) {
-            if (!idName.isLiteralText()) {
-                datalist.setValueExpression("idName", idName);
-              }
-              else {
-                datalist.getAttributes().put("idName", idName.getExpressionString());
-              }
-        }
     }
     
-
     /** 
      * setter and getter the contents
      * @author wbossons
@@ -145,21 +135,6 @@ public class DataListTag  extends UIComponentTag {
     
     public ValueExpression getTab(){
         return tab;
-    }
-    
-        /** 
-     * setter and getter the idName
-     *
-     * @author wbossons
-     *
-     * 
-     */
-    public void setIdName(ValueExpression idName) {
-        this.idName = idName;
-    }
-    
-    public ValueExpression getIdName(){
-        return idName;
     }
 
     

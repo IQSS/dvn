@@ -213,12 +213,8 @@ xmlns:ui="http://www.sun.com/web/ui"
                                 
                                 
                                 <ui:helpInline id="helpInline2" text="#{bundleAnalysis['dwnld.selectedvarBox.bttmHelpText']}" type="field" rendered="false"/>
-                                
-                            <h:commandLink id="linkAction5" action="#{AnalysisPage.gotoEditVariableAction}" rendered="#{AnalysisPage.editVariableActionRendered}">
-                                <h:outputText id="linkAction5Text" value="Edit selected variables"/>
-                            </h:commandLink>
-                            
-                            </ui:panelGroup>
+   
+                         </ui:panelGroup>
                             
                             <ui:panelGroup block="true" id="groupPanel5">
                                 <h:graphicImage 
@@ -249,8 +245,15 @@ xmlns:ui="http://www.sun.com/web/ui"
                                                  value="#{bundleAnalysis['dwnld.button.submit']}" 
                                                  actionListener="#{AnalysisPage.dwnldActionLstnr}"/>
                             </ui:panelGroup>
-                            
+   
                         </h:panelGrid>
+                        
+                        <ui:panelGroup block="true" rendered="#{AnalysisPage.editVariableActionRendered}" style="padding-top:10px; padding-bottom:10px;">
+                            <h:commandLink id="linkAction5" action="#{AnalysisPage.gotoEditVariableAction}">
+                                    <h:outputText id="linkAction5Text" value="Edit selected variables"/>   
+                            </h:commandLink>
+                            <h:outputText id="linkAction5HelpText" styleClass="vdcHelpText" value="(If no variables are selected, all variables will be displayed in Edit Variables page.)"/>
+                        </ui:panelGroup>
                     </ui:panelLayout>
                 </ui:tab>
                 
@@ -1108,7 +1111,7 @@ xmlns:ui="http://www.sun.com/web/ui"
             
             
             <!-- data table -->
-            <h:panelGrid id="pgDataTable">
+            <h:panelGrid id="pgDataTable" style="width:100%">
                 
                 <h:dataTable id="dataTable1" 
                              binding="#{AnalysisPage.data}"
@@ -1121,7 +1124,6 @@ xmlns:ui="http://www.sun.com/web/ui"
                              style="margin: 10px 4px 10px 8px; "
                              title="Variable Information"
                              rowClasses="list-row-odd, list-row-even"  
-
                              width="98%">
                     
                     <h:column id="column1">
@@ -1181,7 +1183,7 @@ xmlns:ui="http://www.sun.com/web/ui"
                    selected="#{currentRow[6]}" 
                    valueChangeListener="#{AnalysisPage.showNoShowQuickSumStat}" 
                    onClick="submit();" >
-                </ui:checkbox  -->
+                    ui:checkbox  -->
                 
                         <!--ui:imageHyperlink   id="showStatistics" 
                                              actionListener="#{AnalysisPage.displayQuickSumStat}"

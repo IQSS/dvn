@@ -324,7 +324,6 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditNetwor
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditExportSchedulePage', '/networkAdmin/EditExportSchedulePage.jsp', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditOAISetPage', '/networkAdmin/EditOAISetPage.jsp', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditOAISetPage', '/networkAdmin/EditOAISetPage.jsp', null,2 );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditAccountUseTermsPage', '/networkAdmin/EditAccountUseTermsPage.jsp', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditNetworkDownloadUseTermsPage', '/networkAdmin/EditNetworkDownloadUseTermsPage.jsp', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditNetworkDepositUseTermsPage', '/networkAdmin/EditNetworkDepositUseTermsPage.jsp', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditAccountUseTermsPage', '/networkAdmin/EditAccountUseTermsPage.jsp', null,2 );

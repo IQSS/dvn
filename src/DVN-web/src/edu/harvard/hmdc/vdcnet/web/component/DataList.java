@@ -46,10 +46,8 @@ import javax.el.MethodExpression;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.component.UIColumn;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
+import javax.faces.component.UIComponentBase;
 import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlGraphicImage;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGrid;
@@ -61,21 +59,18 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.MethodExpressionActionListener;
 import org.ajax4jsf.ajax.html.HtmlAjaxCommandLink;
 
-
 /**
  *
  * @author wbossons
  */
-public class DataList extends UICommand {
+public class DataList extends UIComponentBase {
 
-    private String idName;
     /** Creates a new instance of DataList */
     public DataList() {
-        super();
     }
 
     public String getFamily() {
-        return ("datalist");
+        return null;
     }
 
     @Override
@@ -88,9 +83,6 @@ public class DataList extends UICommand {
         ResponseWriter writer = facescontext.getResponseWriter();
         writer.startElement("div", this);
         writer.writeAttribute("class", "TabGrp", null);
-        idName = getClientId(facescontext) + "_" + (String)getAttributes().get("idName");
-        writer.writeAttribute("id", idName, null);
-        writeIdAttributeIfNecessary(facescontext, writer, this);
         writer.startElement("a", this);
         writer.writeAttribute("id", "tabSet1skipLink_skipHyperlinkId", null);
         writer.writeAttribute("href", "#tabSet1skipLink_skipHyperlinkId", null);
@@ -149,58 +141,16 @@ public class DataList extends UICommand {
           } else {
             formatHeading(key);
             formatChildTable(datalistings, key);
-            createNavigationLinks(key.replaceAll(" ", "").toLowerCase());
-         
+          }
         }
-        }
+        
         writer.endElement("div");
     }
 
     public void encodeEnd(FacesContext facescontext)
         throws IOException {
-        String clientId = getClientId(facescontext);
         ResponseWriter writer = FacesContext.getCurrentInstance().getResponseWriter();
-        String totalRecords   = (String)getAttributes().get("totalRecords");
-        String lastRecord    = (String)getAttributes().get("lastRecord");
-        if (totalRecords != null) {
-            writer.writeText("the current page is " + totalRecords + "the last record was hardcoded too and = " + lastRecord, null);
-        }
-        writer.write(getHiddenFields(clientId, lastRecord, totalRecords));
         writer.endElement("div");
-    }
-    
-    @Override
-    public void decode(FacesContext context) {
-        System.out.println("in the decode . . .");
-        String clientId = getClientId(context);
-        System.out.println("the client id is " + clientId);
-        
-        //DEBUG
-        Map<String,String> requestParameterMap = context.getExternalContext(). getRequestParameterMap();
-        //String action = requestParameterMap.get(clientId + "_action");
-        //if (action == null || action.length() == 0) {
-            // nothing to decode
-            //return;
-        //}
-        //MethodExpression me = context.getApplication().getExpressionFactory()
-              //.createMethodExpression(context.getELContext(),
-                                      //action,
-                                      //null,
-                                      //new Class[]{});        
-        //this.setActionExpression(me);
-        String totalRecords = requestParameterMap.get(clientId + "_totalRecords");
-        String lastRecord  = requestParameterMap.get(clientId + "_lastRecord");
-        if (lastRecord == null) {
-            lastRecord   = "14"; //15 default records minus 1 for 0 index.
-            totalRecords = "15"; //get the total number of records.
-        }
-        System.out.println("The current page is " + totalRecords);
-        this.getAttributes().put("totalRecords", totalRecords);
-        this.getAttributes().put("lastRecord", lastRecord);
-        
-        //int totalRecords = Integer.valueOf(curPage);
-        //int actionInt = Integer.valueOf(action);
-        
     }
     
     private void formatTabs(String[] tabNames, String tab, String[]keys) {
@@ -230,14 +180,14 @@ public class DataList extends UICommand {
                 writer.writeAttribute("title", "Current Selection: " + tabNames[i], null);//TODO: set this according to url param
                 writer.writeAttribute("class", "MniTabSelTxt", null);
                 writer.startElement("span", this);
-                //writer.writeAttribute("id", keys[i], null);//TODO, set this to the key
+                writer.writeAttribute("id", keys[i], null);//TODO, set this to the key
                 writer.writeAttribute("class", "disabled", null);
                 writer.writeText(tabNames[i], null);
                 writer.endElement("span");
                 writer.endElement("div");
             } else {
                 writer.startElement("a", this);
-                //writer.writeAttribute("id", keys[i], null);
+                writer.writeAttribute("id", keys[i], null);
                 writer.writeAttribute("class", "MniTabLnk", null);
                 writer.writeAttribute("title", tabNames[i], null);
                 writer.writeAttribute("href", "/dvn/?tab=" + keys[i], null);//TODO parameterize the link to the home page.
@@ -303,7 +253,7 @@ public class DataList extends UICommand {
         ListIterator iterator = ndvs.listIterator();
         HtmlPanelGrid childTable = new HtmlPanelGrid();
         childTable = new HtmlPanelGrid(); // start the child table which eventually must be added to the view
-        //childTable.setId(formatId(heading));
+        childTable.setId(formatId(heading));
         childTable.setStyleClass("dvnChildTable");
         childTable.setColumns(totalColumns);
         childTable.setColumnClasses("dvnChildColumn");
@@ -386,7 +336,10 @@ public class DataList extends UICommand {
        
             } catch (IOException ioe) {
             throw new FacesException();
-        } 
+        } //TODO: implment ajax command links 
+        //finally {
+            //createNavigationLinks(heading);
+        //}
     }
     
     private void formatMessage(String message) {
@@ -409,39 +362,23 @@ public class DataList extends UICommand {
         Application application = context.getApplication();
         ELContext elContext = FacesContext.getCurrentInstance().getELContext();
         ExpressionFactory expressionFactory = application.getExpressionFactory();
-        //Start debug
-        HtmlAjaxCommandLink previousLink = new HtmlAjaxCommandLink();
-        //previousLink.setId("previous" + formatId(heading)); // Custom ID is required in dynamic UIInput and UICommand.
-        previousLink.setValue(new String("\u003c" + "\u003c") + " Previous  |  ");
-        previousLink.setReRender("content:homePageView:form1:dataMapOutput");
-        previousLink.setImmediate(true);
-        MethodExpression previousActionListener = expressionFactory.createMethodExpression(elContext, "#{HomePage.page_action}", null, new Class[] {ActionEvent.class});
-        previousLink.addActionListener(new MethodExpressionActionListener(previousActionListener));
-        
-        HtmlAjaxCommandLink nextLink = new HtmlAjaxCommandLink();
-        //nextLink.setId("next" + formatId(heading));// Custom ID is required in dynamic UIInput and UICommand.
-        nextLink.setValue("Next " + new String("\u003e" + "\u003e"));
-        nextLink.setReRender("content:homePageView:form1:dataMapOutput");
-        MethodExpression nextActionListener = expressionFactory.createMethodExpression(elContext, "#{HomePage.page_action}", null, new Class[] {ActionEvent.class});
-        nextLink.addActionListener(new MethodExpressionActionListener(nextActionListener));
-        
-        this.getChildren().add(previousLink);
-        previousLink.encodeBegin(context);
-        if (previousLink.getRendersChildren()) {
-            previousLink.encodeChildren(context);
-        }
-        previousLink.encodeEnd(context);
-        this.getChildren().add(nextLink);
-        nextLink.encodeBegin(context);
-        if (nextLink.getRendersChildren()) {
-            nextLink.encodeChildren(context);
-        }
-        nextLink.encodeEnd(context);
-        //end debug
 
+        HtmlAjaxCommandLink previousLink = new HtmlAjaxCommandLink();
+        previousLink.setId("previous_" + heading); // Custom ID is required in dynamic UIInput and UICommand.
+        previousLink.setValue("<< Previous | ");
+        MethodExpression previousActionListener = expressionFactory.createMethodExpression(elContext, "#{list.page_action}", null, new Class[] {ActionEvent.class});
+        previousLink.addActionListener(new MethodExpressionActionListener(previousActionListener));
+        this.getChildren().add(previousLink);
+
+        HtmlAjaxCommandLink nextLink = new HtmlAjaxCommandLink();
+        nextLink.setId("next_" + heading); // Custom ID is required in dynamic UIInput and UICommand.
+        nextLink.setValue("Next >>");
+        MethodExpression nextActionListener = expressionFactory.createMethodExpression(elContext, "#{list.page_action}", null, new Class[] {ActionEvent.class});
+        nextLink.addActionListener(new MethodExpressionActionListener(nextActionListener));
+
+        this.getChildren().add(nextLink);
         } catch (Exception e) {
             System.out.println("there was an issue in the create links area " + e.toString());
-            e.printStackTrace();
         } 
     }
     
@@ -483,6 +420,7 @@ public class DataList extends UICommand {
      */
     private String formatId(String heading) {
         String safeId = heading;
+        //String regexp = "['\\@\\#\\$%\\^&\\*\\(\\)_\\+\\:\\<\\>\\/\\[\\]\\\\{\\}\\|\\p{Punct}\\p{Space}]";
         String regexp = "[^A-Za-z0-9]";
         Pattern pattern = Pattern.compile(regexp);
         Matcher matcher = pattern.matcher(heading);
@@ -491,30 +429,5 @@ public class DataList extends UICommand {
             safeId = heading.replaceAll(regexp, "");
         safeId = "dvn" + safeId;
         return safeId.toLowerCase();
-    }
-    
-    protected void writeIdAttributeIfNecessary(FacesContext context,
-                                           ResponseWriter writer,
-                                           UIComponent component) {
-        String id;
-        if ((id = component.getId()) != null &&
-            !id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX)) {
-            try {
-                writer.writeAttribute("id", component.getClientId(context),
-                                      null);
-            } catch (IOException e) {
-               /* if (log.isDebugEnabled()) {
-                    log.debug("Can't write ID attribute" + e.getMessage());
-                } */
-            }
-        }
-    }
-    
-    private String getHiddenFields(String clientId, String lastrecord, String totalrecords) {
-        
-        return  
-            ("<input type=\"hidden\" name=\"" + clientId + "_lastRecord\" value=\"" + lastrecord + "\"/>\n" +
-            "<input type=\"hidden\" name=\"" + clientId + "_totalRecords\" value=\"" + totalrecords + "\"/>");
-        
     }
 }

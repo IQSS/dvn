@@ -42,7 +42,7 @@
                                 <ui:panelGroup block="true" style="padding-top: 10px">   
                                     <h:outputText id="outputText10" value="Enter query: "/>
                                 </ui:panelGroup>
-                                <h:inputTextarea rows="5" cols="100" binding="#{AddCollectionsPage.textAreaQuery}"  id="textArea1" required="true" />  
+                                <h:inputTextarea rows="5" cols="100" binding="#{AddCollectionsPage.textAreaQuery}"  id="textArea1" required="true" requiredMessage="This field is required."/>  
                                 <h:message for="textArea1" showSummary="true" showDetail="false"  errorClass="errorMessage"/>
                             </ui:panelGroup>
                             

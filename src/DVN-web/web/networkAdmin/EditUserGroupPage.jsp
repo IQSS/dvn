@@ -18,6 +18,7 @@
                      <div class="dvn_sectionBox"> 
                          <div class="dvn_margin12">
                              
+                             <br />
                              <!-- group name -->
                              <ui:panelGroup id="groupPanel1">
                                  <h:outputText value="Group Name"/>   
@@ -31,13 +32,14 @@
                              </ui:panelGroup> 
                              <!-- Friendly group name -->
                              <ui:panelGroup id="groupPanelFriendlyName">
-                                 <h:outputText value="Friendly Group Name"/>   
+                                 <h:outputText value=" Friendly Group Name"/>   
                                  <h:graphicImage  value="/resources/icon_required.gif"/>
                              </ui:panelGroup>
                              <ui:panelGroup>
-                                 <h:inputText id="inputFriendlyGroupName" size="40" value="#{EditUserGroupPage.group.friendlyName}" required="true" onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');"/>
+                                 <h:inputText id="inputFriendlyGroupName" size="40" value="#{EditUserGroupPage.group.friendlyName}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');"/>
                                  <h:message styleClass="errorMessage" for="inputFriendlyGroupName"/>
                              </ui:panelGroup>
+                             <br /><br />
                              <!--TBD (wjb) What type of group is this -->
                              <f:verbatim rendered="#{param.userGroupId == null}">
                                  <script language="Javascript">
@@ -71,6 +73,7 @@
                              <h:inputHidden valueChangeListener="#{EditUserGroupPage.changeUserGroupType}" value="#{EditUserGroupPage.userGroupType}" id="userGroupType"/>
                              
                              <h:message for="userGroupType" styleClass="errorMessage" id="userGroupTypeMsg"/>
+                             <br />
                              <!-- User Groups -->
                              <ui:panelGroup rendered="#{ EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'usergroup'}" id="usergroups" style="display:block;">
                                  <ui:panelGroup block="true" style="padding-bottom: 10px">
@@ -94,6 +97,7 @@
                                      </h:column>
                                  </h:dataTable> 
                              </ui:panelGroup>
+                             
                              <!-- IP Based Users Groups -->
                              <ui:panelGroup rendered="#{ (EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'ipgroup')}" id="ipgroups" style="display:block;">
                                  <ui:panelGroup block="true" style="padding-bottom: 10px">
@@ -121,7 +125,7 @@
                                  <h:selectBooleanCheckbox id="chkAffiliateLoginService" valueChangeListener="#{EditUserGroupPage.changeChkAffiliateLoginService}" onclick="this.form.submit();" immediate="true" value="#{EditUserGroupPage.chkAffiliateLoginService}">
                                      <h:outputLabel for="chkAffiliateLoginService" value="This IP group has an affiliate login service."/>
                                  </h:selectBooleanCheckbox>
-                                 <f:verbatim><br/></f:verbatim><f:verbatim><br/></f:verbatim>
+                                 <f:verbatim><br /></f:verbatim><f:verbatim><br /></f:verbatim>
                                  <ui:panelGroup block="true" style="padding-right:15px;padding-bottom: 10px; #{(EditUserGroupPage.chkAffiliateLoginService) ? 'display:block' : 'display:none;'}">
                                      <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                                      <h:outputText styleClass="vdcHelpText" value="Affiliate login services can be configured here. Enter affiliate names (ex. MySchool's Pin Service)  and urls (http://ez.pinserver.edu) in the field below."/>
@@ -171,7 +175,7 @@
                              </f:verbatim>
                              
                              
-                             <ui:panelGroup block="true" style="padding-left: 100px; padding-top: 20px">
+                             <ui:panelGroup block="true" style="padding-left: 100px; padding-top: 10px">
                                  <h:commandButton id="btnSave" value="Save" action="#{EditUserGroupPage.save}"/>
                                  <h:commandButton immediate="true" style="margin-left: 30px" value="Cancel" action="#{EditUserGroupPage.cancel}"/>
                              </ui:panelGroup>

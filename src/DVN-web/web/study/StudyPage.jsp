@@ -54,8 +54,8 @@
                       </h:outputLink>
                     </span>
                     <span class="dvn_sectionTitleLinksR">
-                    <h:outputText styleClass="vdcStudyStatus" value="(In Review)" rendered="#{studyPage.studyUI.study.inReview}"/>
-                    <h:outputText styleClass="vdcStudyStatus" value="(New)" rendered="#{studyPage.studyUI.study.new}"/>
+                    <h:outputText styleClass="vdcStudyStatus" value=" (In Review) " rendered="#{studyPage.studyUI.study.inReview}"/>
+                    <h:outputText styleClass="vdcStudyStatus" value=" (New) " rendered="#{studyPage.studyUI.study.new}"/>
                     <h:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
                     
                     <ui:panelGroup  rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">

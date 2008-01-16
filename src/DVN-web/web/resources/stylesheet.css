@@ -25,7 +25,7 @@
 }
 
 .dvn_content a:link, .dvn_content a:visited {
-        color: #448ccb;
+        color: blue;
         text-decoration: none !important;
 }
  .dvn_content a:hover, .dvn_content a:active {
@@ -64,10 +64,14 @@ div.dvn_sectionTitle a {font-size: inherit !important; font-size: 100% !importan
 div.dvn_sectionTitle a:hover, div.dvn_sectionTitle a:active {font-size: inherit !important; font-size: 100% !important; color: #526f76; text-decoration: none !important; cursor: text;}
 span.dvn_sectionTitleL {float: left; padding: 0 0 0.25em 0; color: #526f76; font-size: 112% !important; font-weight: bold; text-transform: uppercase; text-align: left;}
 span.dvn_sectionTitleR  {float: right; padding: 0 0 0.25em 0; }
-span.dvn_sectionTitleR a:link, span.dvn_sectionTitleR a:visited, span.dvn_sectionTitleR a:hover, span.dvn_sectionTitleR a:active {margin-left: 2em; }
+span.dvn_sectionTitleR a:link, span.dvn_sectionTitleR a:visited, span.dvn_sectionTitleR a:hover, span.dvn_sectionTitleR a:active {margin-left: 2em;}
+
+span.dvn_sectionTitleLinksL {float: left;}
+span.dvn_sectionTitleLinksR  {float: right;}
+span.dvn_sectionTitleLinksR a:link, span.dvn_sectionTitleLinksR a:visited, span.dvn_sectionTitleLinksR a:hover, span.dvn_sectionTitleLinksR a:active {margin-left: 2em;}
 
 .dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; }
-.dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; } 
+.dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; clear: both;} 
 
 div.dvn_block {margin-bottom: 12px; padding: 6px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
 div.dvn_block span {margin: 0; padding: 0; color: #526f76; font-weight: bold; text-transform: uppercase;}
@@ -103,9 +107,9 @@ span.disabled {font-weight: bold;}
 /* HEADER */
 .dvn_headerTitle {position: relative;}
 .dvn_headerTitleLarge {margin: .25em 12px;}
-.dvn_headerTitleLarge a:link, .dvn_headerTitleLarge a:visited, .dvn_headerTitleLarge a:hover, .dvn_headerTitleLarge a:active {color: #526f76; font-size: 124% !important;}
+.dvn_headerTitleLarge a:link, .dvn_headerTitleLarge a:visited, .dvn_headerTitleLarge a:hover, .dvn_headerTitleLarge a:active {color: #526f76; font-size: 148% !important;}
 .dvn_headerTitleL {margin: 0 12px;}
-.dvn_headerTitleL a:link, .dvn_headerTitleL a:visited, .dvn_headerTitleL a:hover, .dvn_headerTitleL a:active {color: #c55b28; font-weight: bold;}
+.dvn_headerTitleL a:link, .dvn_headerTitleL a:visited, .dvn_headerTitleL a:hover, .dvn_headerTitleL a:active {color: #c55b28; font-size: 90% !important;}
 .dvn_headerTitleR {position: absolute; right: 12px; top: 0;}
 
 /* NAV MENU */
@@ -129,12 +133,12 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
 .dvn_searchTitle a:hover, .dvn_searchTitle a:active {color: #526f76; font-size: 124% !important; line-height: 155% !important; text-decoration: none !important; cursor: text;}
 .dvn_searchBoxContent fieldset {float: left;}
 .dvn_searchLinks {float: right;}
-.dvn_searchLinks a:link, .dvn_searchLinks a:visited, .dvn_searchLinks a:hover, .dvn_searchLinks a:active {margin-left: 2em; line-height: 210% !important;}
+.dvn_searchLinks a:link, .dvn_searchLinks a:visited, .dvn_searchLinks a:hover, .dvn_searchLinks a:active {margin-left: 2em; line-height: 224% !important;}
 .dvn_searchBoxContent {position: relative; width: 100%;}
 .dvn_searchBoxContent fieldset {margin: 0; padding: 0; border: 0;}
 .dvn_searchBoxContent label {float: left;}
-.dvn_searchBoxContent span {margin: 0 12px 0 0;}
-.dvn_searchBoxContent input, .dvn_searchBoxContent select {margin: 2px 12px 2px 0;}
+.dvn_searchBoxContent span {margin-right: 12px; line-height: 224% !important;}
+.dvn_searchBoxContent input, .dvn_searchBoxContent select {margin: 2px 6px 2px 0;}
 
 /* MAIN SECTION: DATAVERSE LIST + STUDIES TREE */
 #dvn_hmpgMainSection {position: relative;}

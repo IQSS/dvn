@@ -36,11 +36,6 @@
         <div class="dvn_searchBoxContent">
             <div class="dvn_searchTitle"><a title="" name="search">Search</a></div>
             <fieldset>
-                <label id="dvn_searchMenuFilter" for="filter">
-                    <h:selectOneMenu id="dropdown3" value="#{SearchPage.searchFilter}">
-                            <f:selectItems id="radio1SelectItem" value="#{SearchPage.searchRadioItems}" />>
-                    </h:selectOneMenu>
-                </label>
                 <label for="options">
                     <h:selectOneMenu id="dropdown1" value="#{SearchPage.searchField}">
                         <f:selectItem itemLabel="Cataloging Information" itemValue="any" />
@@ -51,16 +46,24 @@
                     </h:selectOneMenu>
                 </label>
                 <label for="search">
-                    <span>for -</span><h:inputText onkeypress="if (window.event) return processEvent('', 'content:searchPageView:form1:search'); else return processEvent(event, 'content:searchPageView:form1:search');" id="textField2" value="#{SearchPage.searchValue}" />
+                    <h:inputText onkeypress="if (window.event) return processEvent('', 'content:searchPageView:form1:search'); else return processEvent(event, 'content:searchPageView:form1:search');" id="textField2" value="#{SearchPage.searchValue}" />
+                </label>
+                <label id="dvn_searchMenuFilter" for="filter">
+                    <h:selectBooleanCheckbox value="" />
+                    <span><h:outputText value="within these results" /></span>
                 </label>
                 <label for="button">
-                    <h:commandButton id="search" value="Search" action="#{SearchPage.search_action}" />
+                    <h:commandButton id="search" value="Go" action="#{SearchPage.search_action}" />
                 </label>
            </fieldset>
            <div class="dvn_searchLinks">
                 <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
                     <h:outputText value="Advanced Search" />
-                </h:outputLink> <h:outputText  value="&#160;" escape="false" />            
+                </h:outputLink>
+                &#160; | &#160;
+                <h:outputLink value="http://thedata.org/guides/users/search/tips" target="_blank" style="margin: 0;">
+                    <h:outputText value="Search Tips"/>
+                </h:outputLink>
             </div>
         </div>
       </div>

@@ -63,15 +63,19 @@
                             </h:selectOneMenu>
                         </label>
                         <label for="search">
-                            <span>for -</span><h:inputText onkeypress="if (window.event) return processEvent('', 'content:homePageView:form1:searchButton'); else return processEvent(event, 'content:homePageView:form1:searchButton');" id="textField2" value="#{HomePage.searchValue}"/>
+                            <h:inputText onkeypress="if (window.event) return processEvent('', 'content:homePageView:form1:searchButton'); else return processEvent(event, 'content:homePageView:form1:searchButton');" id="textField2" value="#{HomePage.searchValue}"/>
                         </label>
                         <label for="button">
-                            <h:commandButton id="searchButton" value="Search" type="submit" action="#{HomePage.search_action}"/>                        
+                            <h:commandButton id="searchButton" value="Go" type="submit" action="#{HomePage.search_action}"/>                        
                         </label>
                     </fieldset>
                     <div class="dvn_searchLinks">
                         <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
                             <h:outputText value="Advanced Search"/>
+                        </h:outputLink>
+                        &#160; | &#160;
+                        <h:outputLink value="http://thedata.org/guides/users/search/tips" target="_blank" style="margin: 0;">
+                            <h:outputText value="Search Tips"/>
                         </h:outputLink>
                     </div>
                 </div>

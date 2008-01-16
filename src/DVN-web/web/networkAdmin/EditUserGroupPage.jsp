@@ -17,29 +17,32 @@
                      </div>            
                      <div class="dvn_sectionBox"> 
                          <div class="dvn_margin12">
-                             
-                             <br />
+                             <ui:panelGroup block="true" style="padding-bottom: 15px;">
+                                 <h:graphicImage value="/resources/icon_required.gif"/> <h:outputText style="vdcHelpText" value="Indicates a required field."/>
+                             </ui:panelGroup>
                              <!-- group name -->
-                             <ui:panelGroup id="groupPanel1">
-                                 <h:outputText value="Group Name"/>   
-                                 <h:graphicImage  value="/resources/icon_required.gif"/>
-                             </ui:panelGroup>
-                             <ui:panelGroup>
-                                 <h:inputText id="inputGroupName" size="40" value="#{EditUserGroupPage.group.name}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');">
-                                     <f:validator validatorId="CharacterValidator"/>
-                                 </h:inputText>
-                                 <h:message styleClass="errorMessage" for="inputGroupName"/>
-                             </ui:panelGroup> 
-                             <!-- Friendly group name -->
-                             <ui:panelGroup id="groupPanelFriendlyName">
-                                 <h:outputText value=" Friendly Group Name"/>   
-                                 <h:graphicImage  value="/resources/icon_required.gif"/>
-                             </ui:panelGroup>
-                             <ui:panelGroup>
-                                 <h:inputText id="inputFriendlyGroupName" size="40" value="#{EditUserGroupPage.group.friendlyName}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');"/>
-                                 <h:message styleClass="errorMessage" for="inputFriendlyGroupName"/>
-                             </ui:panelGroup>
-                             <br /><br />
+                             <h:panelGrid  cellpadding="0" cellspacing="0"
+                                    columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
+                                  <ui:panelGroup id="groupPanel1">
+                                      <h:outputText value="Group Name"/>
+                                      <h:graphicImage id="image1" value="/resources/icon_required.gif"/>
+                                  </ui:panelGroup>
+                                  <ui:panelGroup>
+                                      <h:inputText id="inputGroupName" size="40" value="#{EditUserGroupPage.group.name}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');">
+                                         <f:validator validatorId="CharacterValidator"/>
+                                      </h:inputText>
+                                      <h:message styleClass="errorMessage" for="inputGroupName"/>
+                                  </ui:panelGroup>
+                                  <ui:panelGroup id="groupPanelFriendlyName">
+                                      <h:outputText value="Friendly Group Name"/>
+                                      <h:graphicImage value="/resources/icon_required.gif"/>
+                                  </ui:panelGroup>
+                                  <ui:panelGroup>
+                                      <h:inputText id="inputFriendlyGroupName" size="40" value="#{EditUserGroupPage.group.friendlyName}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');"/>
+                                      <h:message styleClass="errorMessage" for="inputFriendlyGroupName"/>
+                                  </ui:panelGroup>
+                             </h:panelGrid>
+                             <br />
                              <!--TBD (wjb) What type of group is this -->
                              <f:verbatim rendered="#{param.userGroupId == null}">
                                  <script language="Javascript">

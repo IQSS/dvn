@@ -25,7 +25,7 @@
 }
 
 .dvn_content a:link, .dvn_content a:visited {
-        color: blue;
+        color: #2357c3;
         text-decoration: none !important;
 }
  .dvn_content a:hover, .dvn_content a:active {

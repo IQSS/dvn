@@ -48,10 +48,14 @@
                 <label for="search">
                     <h:inputText onkeypress="if (window.event) return processEvent('', 'content:searchPageView:form1:search'); else return processEvent(event, 'content:searchPageView:form1:search');" id="textField2" value="#{SearchPage.searchValue}" />
                 </label>
-                <label id="dvn_searchMenuFilter" for="filter">
-                    <h:selectBooleanCheckbox value="" />
+                <h:outputLabel for="filter" rendered="#{SearchPage.renderSearchResultsFilter}" >
+                    <h:selectBooleanCheckbox value="#{SearchPage.searchResultsFilter}" />
                     <span><h:outputText value="within these results" /></span>
-                </label>
+                </h:outputLabel>
+                <h:outputLabel  for="filter" rendered="#{SearchPage.renderSearchCollectionFilter}" >
+                    <h:selectBooleanCheckbox value="#{SearchPage.searchCollectionFilter}" />
+                    <span><h:outputText value="within this collection" /></span>
+                </h:outputLabel>
                 <label for="button">
                     <h:commandButton id="search" value="Go" action="#{SearchPage.search_action}" />
                 </label>

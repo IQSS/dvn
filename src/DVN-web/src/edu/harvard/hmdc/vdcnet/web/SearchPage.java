@@ -214,8 +214,11 @@ public class SearchPage extends VDCBaseBean{
         List studyIDList = new ArrayList();
         Map variableMap = new HashMap();
         
-        if (searchFilter == null) { searchFilter = 0;}
+        if (searchFilter == null) { searchFilter = 0; }
         
+        // currently search filter is determined from a set of boolean checkboxes
+        if (searchResultsFilter) { searchFilter = 2; }
+        if (searchCollectionFilter) { searchFilter = 1; }
         
         if ( searchField.equals("variable") ) {
             List variables = null;
@@ -394,7 +397,13 @@ public class SearchPage extends VDCBaseBean{
         int matches = studyListing.getStudyIds() != null ? studyListing.getStudyIds().size() : 0;
         renderSort = matches == 0 ? false : true;
         renderScroller = matches == 0 ? false : true;
+        
+        // dafeult the following to false; will likely change after checking mode
+        renderSearchResultsFilter = false;
+        renderSearchCollectionFilter = false;
+                
         subListHeader = null;
+        
         
         if (mode == StudyListing.VDC_SEARCH) {
             listHeader =  "Results";
@@ -429,11 +438,13 @@ public class SearchPage extends VDCBaseBean{
             }
             
             renderSearch = true;
-            searchRadioItems = new ArrayList();
+            renderSearchResultsFilter = matches == 0 ? false : true;
+            /*
+             searchRadioItems = new ArrayList();
             searchRadioItems.add(new SelectItem("0", "New Search"));
             searchRadioItems.add(new SelectItem("2", "Search These Results"));
             searchFilter = 0;
-            
+            */
             
             
         } else if (mode == StudyListing.COLLECTION_STUDIES) {
@@ -454,18 +465,24 @@ public class SearchPage extends VDCBaseBean{
             treeHeader = "Browse by Collection";
             
             renderSearch = true;
+            renderSearchCollectionFilter = true;
+            /*
             searchRadioItems = new ArrayList();
             searchRadioItems.add(new SelectItem("0", "All Collections"));
             searchRadioItems.add(new SelectItem("1", "This Collection"));
             searchFilter = 0;
+             * */
             
         } else if (mode == StudyListing.VDC_RECENT_STUDIES) {
             listHeader =  "Studies Uploaded and Released to This Dataverse";
             renderSearch = true;
+            renderSearchResultsFilter = matches == 0 ? false : true;
+            /*
             searchRadioItems = new ArrayList();
             searchRadioItems.add(new SelectItem("0", "New Search"));
             searchRadioItems.add(new SelectItem("2", "Search These Results"));
-            searchFilter = 0;            
+            searchFilter = 0;  
+             * */          
             
         } else if (mode == StudyListing.GENERIC_LIST) {
             // this needs to be fleshed out if it's ever used
@@ -489,11 +506,12 @@ public class SearchPage extends VDCBaseBean{
             }
         }
         
-        // lastly if no search radio items have been set, add a default
+        /* lastly if no search radio items have been set, add a default
         if (searchRadioItems == null || searchRadioItems.size() == 0) {
             searchRadioItems = new ArrayList();
             searchRadioItems.add(new SelectItem("0", "New Search"));
         }
+        */
         
         
     }
@@ -669,6 +687,45 @@ public class SearchPage extends VDCBaseBean{
         }
         
         return studyFields;
+    }
+    
+    // booleans for search filters 
+    boolean searchResultsFilter;
+    boolean searchCollectionFilter;
+    
+    boolean renderSearchResultsFilter;
+    boolean renderSearchCollectionFilter;
+    
+    public boolean isSearchResultsFilter() {
+        return searchResultsFilter;
+    }
+
+    public void setSearchResultsFilter(boolean searchResultsFilter) {
+        this.searchResultsFilter = searchResultsFilter;
+    }
+
+    public boolean isSearchCollectionFilter() {
+        return searchCollectionFilter;
+    }
+
+    public void setSearchCollectionFilter(boolean searchCollectionFilter) {
+        this.searchCollectionFilter = searchCollectionFilter;
+    }
+
+    public boolean isRenderSearchResultsFilter() {
+        return renderSearchResultsFilter;
+    }
+
+    public void setRenderSearchResultsFilter(boolean renderSearchResultsFilter) {
+        this.renderSearchResultsFilter = renderSearchResultsFilter;
+    }
+
+    public boolean isRenderSearchCollectionFilter() {
+        return renderSearchCollectionFilter;
+    }
+
+    public void setRenderSearchCollectionFilter(boolean renderSearchCollectionFilter) {
+        this.renderSearchCollectionFilter = renderSearchCollectionFilter;
     }
     
     

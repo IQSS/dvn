@@ -11,23 +11,23 @@
 
            <input type="hidden" name="pageName" value="EditPasswordPage"/>
            <div class="dvn_section">
-               <div class="dvn_sectionTitle">
-                
-                       <h:outputText value="Edit Dataverse Network Account"/>
-                 
+               <div class="dvn_sectionTitle">   
+                       <h:outputText value="Edit Password for "/> 
+                       <h:outputText value="#{EditPasswordPage.user.userName}"/>
                </div>            
                <div class="dvn_sectionBox"> 
                    <div class="dvn_margin12"> 
                        <ui:panelGroup block="true" style="padding-bottom: 15px" rendered="#{VDCSession.loginBean.networkAdmin}">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                            <h:outputText styleClass="vdcHelpText" value="If you a Network Administrator updating another users's password, enter the administrator password in the 'Current Password' field."/>
+                            <h:outputText styleClass="vdcHelpText" value="If you are a Network Administrator updating another user's password, enter your administrator password below."/>
                         </ui:panelGroup>   
                                   
                        <h:panelGrid  cellpadding="0" cellspacing="0"
                                      columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
                       
                            <ui:panelGroup >
-                               <h:outputText   value="Current Password"/>
+                               <h:outputText   value="Administrator Password" rendered="#{VDCSession.loginBean.networkAdmin}"/>
+                               <h:outputText   value="Current Password" rendered="#{!VDCSession.loginBean.networkAdmin}"/>
                                <h:graphicImage  id="image1" value="/resources/icon_required.gif"/>
                            </ui:panelGroup>
                            <ui:panelGroup>

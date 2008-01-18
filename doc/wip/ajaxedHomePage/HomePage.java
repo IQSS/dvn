@@ -57,7 +57,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.SortedSet;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.ejb.EJB;
 
@@ -71,13 +70,11 @@ import javax.ejb.EJB;
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
+import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -740,57 +737,51 @@ public class HomePage extends VDCBaseBean {
        */
       public void page_action(ActionEvent event) {
         if (event.getComponent().getClientId(FacesContext.getCurrentInstance()).contains("previous_")) {
-            //this.pagePrevious();
+            dataList.getAttributes().put("pagingDirection", "previous");
+            pagePrevious();
+            System.out.println("Strip off the previous_ and then compare to the regex'd group name before repop'ing map.");
         } else {
-            //this.pageNext();
+            dataList.getAttributes().put("pagingDirection", "next");
+            pageNext();
+            System.out.println("Strip off the next_ and then compare to the regex'd group name before repop'ing map.");
         }
-        HttpServletResponse response = (HttpServletResponse)FacesContext.getCurrentInstance().getExternalContext().getResponse();
-        response.setContentType("text/html, UTF-8");
-        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        HttpServletRequest request  = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         request.setAttribute("AjaxRequest", "page_action");
-        System.out.println("An action was initiated by " + event.getComponent().getClientId(FacesContext.getCurrentInstance()));
-        System.out.println("The parent of this component was " + event.getComponent().getParent().getClientId(FacesContext.getCurrentInstance()));
-        Map myMap = initSampleData();
-        this.dataList.setValueExpression("binding", 
-                FacesContext.getCurrentInstance().getApplication().getExpressionFactory()
-                .createValueExpression(FacesContext.getCurrentInstance().getELContext(), 
-                "#{HomePage.dataList}", DataList.class));
-        setDataMapId("dataMap");
-        dataList.getAttributes().put("idName", "dataMap");
-        dataList.getAttributes().put("contents", myMap);
-        dataList.getAttributes().put("tabs", tabsMap);
-        dataList.getAttributes().put("tab", selectedTab);
-       
-
+        String clientId = event.getComponent().getClientId(FacesContext.getCurrentInstance());
+        String targetGroup = getTargetGroup(clientId);
+        dataList.getAttributes().put("targetGroup", targetGroup);
+        //end paging model
+ 
       }
       
-      
-      
-      private Map initSampleData() {
-      List<DataListing> mylist = new ArrayList<DataListing>();
-      //
-        mylist.add(new DataListing("Rho Dataverse", "rho", "Harvard", "yes", "Browse the Alpha Dataverse"));
-        mylist.add(new DataListing("Kappa Dataverse", "kappa", "Harvard", "yes", "Browse the Alpha Dataverse"));
-        mylist.add(new DataListing("Theta Dataverse", "theta", "Harvard", "yes", "Browse the Alpha Dataverse"));
-        Map myMap = new LinkedHashMap();
-        //
-        myMap.put("Ajax Collections", mylist);
-        return myMap;
+      /**
+       * paging methods to set attributes needed by
+       * the paging component.
+       */
+      private void pagePrevious() {
+          
       }
       
+      private void pageNext() {
+          
+      }
+      
+      //getters for paging
+      private String getTargetGroup(String clientid) {
+          return clientid.substring(clientid.indexOf("_") + 1, clientid.indexOf("_", clientid.indexOf("_") + 1));
+      }
       //END DEBUG
     
     //DataList
       HtmlPanelGrid mainDataTable = new HtmlPanelGrid();
       DataList dataList;
+      
       //Getters
       public DataList getDataList() {
           if (dataList == null) {
               dataList = new DataList();
               populateDataList();
-          } else {
-                System.out.println("the size is greater than 0");
-          }
+          } 
           return dataList;
       }
       
@@ -811,12 +802,17 @@ public class HomePage extends VDCBaseBean {
            dataMapId = new String(datamapid);
       }
       
+      private int defaultDisplayNumber = 15;
+      
       private void populateDataList() {
         setDataMapId("dataMap");
+        dataList.getAttributes().put("defaultDisplayNumber", defaultDisplayNumber);
         dataList.getAttributes().put("idName", "dataMap");
         dataList.getAttributes().put("contents", dataMap);
         dataList.getAttributes().put("tabs", tabsMap);
         dataList.getAttributes().put("tab", selectedTab);
+        dataList.getAttributes().put("lastRecord", "none");
+        dataList.getAttributes().put("targetGroup", "none");
     }
       
       //Test

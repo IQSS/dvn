@@ -52,43 +52,32 @@ public class AjaxPhaseListener implements PhaseListener {
             return PhaseId.RENDER_RESPONSE;
      } 
      public void beforePhase(PhaseEvent pe){
-        System.out.println("I am in the before phase ...");
-        System.out.println("I am still in the before phase");
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         if (request.getParameter("AjaxRequest") != null || request.getAttribute("AjaxRequest") != null) {
             handleAjaxRequest(pe);
         }
-
      }
      
      private void handleAjaxRequest(PhaseEvent pe) {
-         FacesContext context = pe.getFacesContext();
-          String contenttype = context.getExternalContext().getResponseContentType();
-          AjaxContext ajaxcontext = AjaxContext.getCurrentInstance(context);
-          HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
-          response.setContentType("text/html");
-         // if (contenttype != null) {
-              //try {
-          response.setContentType("text/html");
-          //Render the response if it's ajax
-           HttpServletRequest request = (HttpServletRequest)context.getExternalContext().getRequest();
-           String name = (String)request.getAttribute("AjaxRequest");
-           //if (name != null && name.equals("page_action")) {
-                try {
-                UIComponent component = context.getViewRoot().findComponent(ajaxcontext.getSubmittedRegionClientId(context));
-                System.out.println("the component to rerender is in" + component.getClientId(context));
-                ajaxcontext.renderAjaxRegion(context, component, true);
-                //context.responseComplete();
-                }catch(Exception exception) {
-                    exception.printStackTrace();
-                }
-                    System.out.println("The content type is " + response.getContentType());
-           // }
-         // } 
-     }
+
+        FacesContext context = pe.getFacesContext();
+        String contenttype = context.getExternalContext().getResponseContentType();
+        AjaxContext ajaxcontext = AjaxContext.getCurrentInstance(context);
+        //Render the response
+        HttpServletRequest request = (HttpServletRequest)context.getExternalContext().getRequest();
+        String name = (String)request.getAttribute("AjaxRequest");
+        try {
+            UIComponent component = context.getViewRoot().findComponent(ajaxcontext.getSubmittedRegionClientId(context));
+            System.out.println("the component to rerender is in" + component.getClientId(context));
+            ajaxcontext.renderAjaxRegion(context, component, true);
+            //ajaxcontext.renderSubmittedAjaxRegion(context);//this line works as well as renderAjaxRegion
+        }catch(Exception exception) {
+            exception.printStackTrace();
+        }
+    }
      
      public void afterPhase(PhaseEvent pe) {
-         System.out.println("in render response after phase ...");
+        //nothing to do.
      }
      
      //private void writeAjaxResponse(FacesContext context)

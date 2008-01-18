@@ -192,7 +192,8 @@ xmlns:ui="http://www.sun.com/web/ui"
                 
                 
                 <!-- 1. Download -->
-                <ui:tab id="tabDwnld" text="#{bundleAnalysis['dwnld.tab.text']}" actionListener="#{AnalysisPage.resetVariableInLBox}">
+                <ui:tab id="tabDwnld" text="#{bundleAnalysis['dwnld.tab.text']}" 
+                    actionListener="#{AnalysisPage.resetVariableInLBox}" toolTip="Variable Selection and Downloading">
                     <ui:panelLayout id="layoutPanel3" panelLayout="flow" style="width: 100%;">
                         
                         <h:panelGrid cellpadding="0" cellspacing="0" columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" columns="2" id="gridPanel4" width="100%">
@@ -261,7 +262,9 @@ xmlns:ui="http://www.sun.com/web/ui"
                 <!-- 2. Recode -->
 
                 <ui:tab  id="tabRecode" 
-                         text="#{bundleAnalysis['recode.tab.text']}" actionListener="#{AnalysisPage.resetVariableInLBox}">
+                         text="#{bundleAnalysis['recode.tab.text']}" 
+                         actionListener="#{AnalysisPage.resetVariableInLBox}"
+                         toolTip="Rocoding and Case Selection">
                     <ui:panelLayout id="layoutPanel2" panelLayout="flow" style="width: 100%;">
                         <h:panelGrid  id="gridPanel7"
                                       cellpadding="0" cellspacing="0" columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" columns="2" width="100%">
@@ -508,7 +511,9 @@ xmlns:ui="http://www.sun.com/web/ui"
                 
                 
                 <!-- 3. EDA -->
-                <ui:tab id="tabEda" text="#{bundleAnalysis['eda.tab.text']}" actionListener="#{AnalysisPage.resetVariableInLBox}">
+                <ui:tab id="tabEda" text="#{bundleAnalysis['eda.tab.text']}" 
+                    actionListener="#{AnalysisPage.resetVariableInLBox}"
+                    toolTip="Calculate Numeric and Graphic Summaries">
                     <ui:panelLayout id="layoutPanel4" panelLayout="flow" style="width: 100%;">
                         
                         <h:panelGrid cellpadding="0" cellspacing="0" columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" columns="2" id="gridPanel2" width="100%">
@@ -568,7 +573,8 @@ xmlns:ui="http://www.sun.com/web/ui"
                 
                 
                 <!-- 5. advStat -->
-                <ui:tab id="tabAdvStat" text="#{bundleAnalysis['advStat.tab.text']}">
+                <ui:tab id="tabAdvStat" text="#{bundleAnalysis['advStat.tab.text']}"
+                    toolTip="Advanced Statistical Modeling">
                     <ui:panelLayout id="layoutPanel5" panelLayout="flow" style="width: 100%;">
                         
                         <h:panelGrid id="gridPanel5"

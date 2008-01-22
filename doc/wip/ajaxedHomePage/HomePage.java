@@ -811,7 +811,8 @@ public class HomePage extends VDCBaseBean {
         dataList.getAttributes().put("contents", dataMap);
         dataList.getAttributes().put("tabs", tabsMap);
         dataList.getAttributes().put("tab", selectedTab);
-        dataList.getAttributes().put("lastRecord", "none");
+        dataList.getAttributes().put("lastRecord", "");
+        dataList.getAttributes().put("firstRecord", "");
         dataList.getAttributes().put("targetGroup", "none");
     }
       

@@ -60,6 +60,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.MethodExpressionActionListener;
+import javax.servlet.http.HttpServletResponse;
 import org.ajax4jsf.ajax.html.HtmlAjaxCommandLink;
 
 
@@ -69,7 +70,8 @@ import org.ajax4jsf.ajax.html.HtmlAjaxCommandLink;
  */
 public class DataList extends UICommand {
 
-    private String lastRecord  = new String("");//TODO: move lastRecord declaration to here.
+    private String lastRecord  = new String("");
+    private String firstRecord  = new String("");
     private String targetGroup = new String("");
     int defaultDisplayNumber = 0;
     
@@ -113,7 +115,7 @@ public class DataList extends UICommand {
         Map tabsMap = (Map)getAttributes().get("tabs");
         Set tabsKeys = tabsMap.keySet();
         //DEBUG paging mechanism
-        String targetGroup     = (String)getAttributes().get("targetGroup");
+        targetGroup     = (String)getAttributes().get("targetGroup");
         String pagingDirection = (String)getAttributes().get("pagingDirection");
         //END DEBUG
         Iterator tabsIterator = tabsKeys.iterator();
@@ -174,7 +176,16 @@ public class DataList extends UICommand {
         throws IOException {
         String clientId = getClientId(facescontext);
         ResponseWriter writer = FacesContext.getCurrentInstance().getResponseWriter();
-        writer.write(getHiddenFields(clientId));
+        writer.startElement("input", this);
+        writer.writeAttribute("type", "hidden", null);
+        writer.writeAttribute("name", clientId + "_firstRecord", null);
+        writer.writeAttribute("value", firstRecord, null);
+        writer.endElement("input");
+        writer.startElement("input", this);
+        writer.writeAttribute("type", "hidden", null);
+        writer.writeAttribute("name", clientId + "_lastRecord", null);
+        writer.writeAttribute("value", lastRecord, null);
+        writer.endElement("input");
         writer.endElement("div");
     }
     
@@ -183,17 +194,20 @@ public class DataList extends UICommand {
         System.out.println("in the decode . . .");
         String clientId = getClientId(context);
 
-        Map<String,String> requestParameterMap = context.getExternalContext().getRequestParameterMap();
-        
-        String lastRecord   = requestParameterMap.get(clientId + "_lastRecord");
-        String targetGroup  = new String("");
-        if (lastRecord == null) {
-            lastRecord = "";
-        }
-        if (targetGroup == null) {
-            targetGroup = "";
-        }
-        this.getAttributes().put("lastRecord", lastRecord);
+        if (this.getAttributes().get("lastRecord") == null) {
+            Map<String,String> requestParameterMap = context.getExternalContext().getRequestParameterMap();
+            lastRecord   = requestParameterMap.get(clientId + "_lastRecord");
+            this.getAttributes().put("lastRecord", lastRecord);
+        } else {
+           lastRecord = (String)this.getAttributes().get("lastRecord"); 
+        }  
+        if (this.getAttributes().get("firstRecord") == null) {
+            Map<String,String> requestParameterMap = context.getExternalContext().getRequestParameterMap();
+            firstRecord   = requestParameterMap.get(clientId + "_firstRecord");
+            this.getAttributes().put("firstRecord", lastRecord);
+        } else {
+           firstRecord = (String)this.getAttributes().get("firstRecord"); 
+        }  
     }
     
     private void formatTabs(String[] tabNames, String tab, String[]keys) {
@@ -311,10 +325,28 @@ public class DataList extends UICommand {
         HtmlGraphicImage image        = null;
         HtmlOutputText textTag        = null;
         //DEBUG
+        
         defaultDisplayNumber = (Integer)getAttributes().get("defaultDisplayNumber");
-        startCount = this.getRecordCount(idstring);
-        endCount = startCount + defaultDisplayNumber > ndvs.size() ? ndvs.size()-1 : startCount + (defaultDisplayNumber-1);
-        this.addLastRecordCount(idstring, String.valueOf(endCount));
+        //pageNext
+        startCount = this.getLastRecordCount(idstring);
+        if (istarget || targetGroup.equals("none")) {
+            if ( (startCount + 1) >= ndvs.size() ) {
+                //nothing to do except redisplay the same ones
+                startCount = this.getFirstRecordCount(idstring);
+                endCount   = this.getLastRecordCount(idstring);
+            } else if ( (startCount + 1) < ndvs.size()) {
+                startCount = this.getLastRecordCount(idstring) + 1;
+                endCount   = startCount + defaultDisplayNumber > ndvs.size() ? ndvs.size()-1 : startCount + (defaultDisplayNumber - 1);
+            }
+            this.addFirstRecordCount(idstring, String.valueOf(startCount));
+            this.addLastRecordCount(idstring, String.valueOf(endCount));
+        } else {
+            endCount   = this.getLastRecordCount(idstring);
+            startCount = this.getFirstRecordCount(idstring);
+        }
+        
+        //end pageNext
+        
         //TODO: output only those records that are within the range I want.
         //maybe use a listiterator
         //END DEBUG
@@ -471,29 +503,69 @@ public class DataList extends UICommand {
      */
 
     private void addLastRecordCount(String key, String count){
-        if (!lastRecord.equals("") && lastRecord.contains(key)) {
-            int indexOfKey   = lastRecord.indexOf(key);
-            int indexOfComma = lastRecord.indexOf(",", indexOfKey);
-            String toReplace = lastRecord.substring(indexOfKey, indexOfComma);
-            lastRecord.replace(toReplace, new String(key + "=" + count));
+        String localRecord = lastRecord;
+        if (localRecord.contains(key)) {
+            int indexOfKey   = localRecord.indexOf(key);
+            //localRecord.indexOf(",", indexOfKey);
+            int indexOfComma = (localRecord.indexOf(",", indexOfKey) != -1) ? localRecord.indexOf(",", indexOfKey) : localRecord.length();
+            String toReplace = localRecord.substring(indexOfKey, indexOfComma);
+            String replaceWith = key + "=" + count;
+            localRecord = localRecord.replaceAll(toReplace, replaceWith);
         } else {
-            lastRecord+=key + "=" + count + ",";
+            localRecord+=(!lastRecord.equals("")) ? "," + key + "=" + count : key + "=" + count;
         }
+        lastRecord = localRecord;
+        this.getAttributes().put("lastRecord", lastRecord);
+    }
+    
+    private void addFirstRecordCount(String key, String count){
+        String localRecord = firstRecord;
+        if (localRecord.contains(key)) {
+            int indexOfKey   = localRecord.indexOf(key);
+            //localRecord.indexOf(",", indexOfKey);
+            int indexOfComma = (localRecord.indexOf(",", indexOfKey) != -1) ? localRecord.indexOf(",", indexOfKey) : localRecord.length();
+            String toReplace = localRecord.substring(indexOfKey, indexOfComma);
+            String replaceWith = key + "=" + count;
+            localRecord = localRecord.replaceAll(toReplace, replaceWith);
+        } else {
+            localRecord+=(!firstRecord.equals("")) ? "," + key + "=" + count : key + "=" + count;
+        }
+        firstRecord = localRecord;
+        this.getAttributes().put("firstRecord", firstRecord);
     }
     
     //placeholder TODO: add getRecordCount to be used by decode.
-    private int getRecordCount(String key) {
+    private int getLastRecordCount(String key) {
         //DEBUG
         int lastrecord      = 0;
-        if (this.getAttributes().get("lastRecord") != null)
-            lastRecord = (String)this.getAttributes().get("lastRecord");
+        //if (this.getAttributes().get("lastRecord") != null)
+            //lastRecord = (String)this.getAttributes().get("lastRecord");
+        if (targetGroup.equals("none"))
+            return lastrecord;
         if (!lastRecord.equals("") && lastRecord.contains(key)) {
             int indexOfKey   = lastRecord.indexOf(key) + key.length() + 1;//including the equals sign
-            int indexOfComma = lastRecord.indexOf(",", indexOfKey);
+            int indexOfComma = (lastRecord.indexOf(",", lastRecord.indexOf(key)) != -1) ? lastRecord.indexOf(",", lastRecord.indexOf(key)) : lastRecord.length();//index is -1 for the last record
             lastrecord       = Integer.parseInt(lastRecord.substring(indexOfKey, indexOfComma));
         }
         //END DEBUG
          return lastrecord;
+    }
+    
+    //placeholder TODO: add getRecordCount to be used by decode.
+    private int getFirstRecordCount(String key) {
+        //DEBUG
+        int firstrecord      = 0;
+        //if (this.getAttributes().get("lastRecord") != null)
+            //lastRecord = (String)this.getAttributes().get("lastRecord");
+        if (targetGroup.equals("none"))
+            return firstrecord;
+        if (!firstRecord.equals("") && firstRecord.contains(key)) {
+            int indexOfKey   = firstRecord.indexOf(key) + key.length() + 1;//including the equals sign
+            int indexOfComma = (firstRecord.indexOf(",", firstRecord.indexOf(key)) != -1) ? firstRecord.indexOf(",", firstRecord.indexOf(key)) : firstRecord.length();//index is -1 for the last record
+            firstrecord       = Integer.parseInt(firstRecord.substring(indexOfKey, indexOfComma));
+        }
+        //END DEBUG
+         return firstrecord;
     }
     
         /** setColumnLength();

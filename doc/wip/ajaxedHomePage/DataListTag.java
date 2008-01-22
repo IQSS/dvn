@@ -47,6 +47,7 @@ public class DataListTag  extends UIComponentTag {
     private ValueExpression tab;
     private ValueExpression idName;
     private ValueExpression lastRecord;
+    private ValueExpression firstRecord;
     private ValueExpression pagingDirection;
     private ValueExpression targetGroup;
     private ValueExpression defaultDisplayNumber;
@@ -112,6 +113,13 @@ public class DataListTag  extends UIComponentTag {
                 datalist.setValueExpression("lastRecord", lastRecord);
             } else {
                 datalist.getAttributes().put("lastRecord", lastRecord);
+            }
+        }
+        if (firstRecord != null) {
+            if (!firstRecord.isLiteralText()) {
+                datalist.setValueExpression("firstRecord", firstRecord);
+            } else {
+                datalist.getAttributes().put("firstRecord", firstRecord);
             }
         }
         if (pagingDirection != null) {
@@ -207,6 +215,21 @@ public class DataListTag  extends UIComponentTag {
     
     public ValueExpression getLastRecord(){
         return lastRecord;
+    }
+    
+     /** 
+     * setter and getter the firstRecord
+     *
+     * @author wbossons
+     *
+     * 
+     */
+    public void setFirstRecord(ValueExpression firstrecord) {
+        this.firstRecord = firstrecord;
+    }
+    
+    public ValueExpression getFirstRecord(){
+        return firstRecord;
     }
     
     /** 

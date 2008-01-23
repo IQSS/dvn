@@ -4,16 +4,18 @@
     xmlns:jsp="http://java.sun.com/JSP/Page" 
     xmlns:ui="http://www.sun.com/web/ui"
     xmlns:tiles="http://struts.apache.org/tags-tiles"
-    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:a4j="https://ajax4jsf.dev.java.net/ajax">
 
-<jsp:directive.page errorPage="/ExceptionHandler" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"/>       
-   
+<jsp:directive.page errorPage="/ExceptionHandler" pageEncoding="UTF-8"/>       
+  
 <tiles:importAttribute name="pageTitle" scope="request"/>
 
 <f:loadBundle basename="Bundle" var="bundle"/>
 <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 <f:view>
-<ui:page id="layoutpage">
+    <ui:page xhtml="true">
+   <!-- <a4j:page contentType="text/html" id="layoutpage"> -->
 <ui:html>
       <ui:head title="#{pageTitle.value}">
          <h:outputText value="&#60;meta name='robots' content='nofollow' /&#62;" escape="false" rendered="#{pageTitle.value == 'DVN - Study' }" />
@@ -38,6 +40,7 @@
               });
          </ui:script>
          
+         <ui:script url='/faces/a4j.res/org.ajax4jsf.framework.ajax.AjaxScript'/>
       </ui:head>
       <body>
               <f:subview id="banner">
@@ -64,6 +67,7 @@
           
       </body>
 </ui:html>
+<!-- </a4j:page> -->
 </ui:page>
 </f:view>
 </jsp:root>

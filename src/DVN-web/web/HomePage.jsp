@@ -5,8 +5,9 @@
                         xmlns:ui="http://www.sun.com/web/ui"
                         xmlns:tiles="http://struts.apache.org/tags-tiles"
                         xmlns:dmap="/WEB-INF/tlds/DataList"
+                        xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
                         >
-                            
+    
     <f:subview id="homePageView">
        <h:form id="form1">
            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -91,8 +92,18 @@
                         <div class="dvn_Totals">
                             <h:outputText escape="false" value="#{HomePage.networkData}"/>
                         </div>
-                        <dmap:datalist contents="#{HomePage.dataMap}" tabs="#{HomePage.tabsMap}" tab="#{HomePage.selectedTab != null ? HomePage.selectedTab : requestScope.tab}" id="dataMap" />
                     </ui:panelLayout>
+                    
+                    <a4j:region id="ajaxRegionBak" renderRegionOnly="true">
+                        <h:messages layout="table"/>
+                        <a4j:outputPanel id="dataMapOutput" layout="block" ajaxRendered="true">
+                                <dmap:datalist binding="#{HomePage.dataList}" 
+                                                rendered="#{VDCRequest.currentVDC == null}"
+                                                idName="#{HomePage.dataMapId}"/>
+                        </a4j:outputPanel> 
+                   </a4j:region>
+                   
+                  
                   <!-- Dataverse Hoempage -->
                     <!-- Display Tree at dataverse level -->
                     <ui:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>

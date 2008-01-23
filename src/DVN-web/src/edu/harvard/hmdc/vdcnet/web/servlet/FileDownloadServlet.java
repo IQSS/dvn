@@ -130,6 +130,7 @@ public class FileDownloadServlet extends HttpServlet{
         String fileId = req.getParameter("fileId");
 	String formatRequested = req.getParameter("format");
 	String downloadOriginalFormat = req.getParameter("downloadOriginalFormat");
+	String imageThumb = req.getParameter("imageThumb"); 
 
 
         if (fileId != null) {
@@ -556,6 +557,7 @@ public class FileDownloadServlet extends HttpServlet{
 			    dbContentType = file.getFileType();
 			}
 
+
 			// specify the file name, if available:
 			String dbFileName = file.getFileName();
 
@@ -616,17 +618,29 @@ public class FileDownloadServlet extends HttpServlet{
 				res.setContentType( dbContentType );
 			    }
 			}
-
+			
 			// open the appropriate physical file
 
-			File inFile = new File(file.getFileSystemLocation());  
+			File inFile = null; 
 
-			if ( downloadOriginalFormat != null ) {
+			// but first, see if they have requested a 
+			// thumbnail for an image, or if it's a request
+			// for the datafile in the "original format":
+			
+			if ( imageThumb != null && dbContentType.substring(0, 6).equalsIgnoreCase ("image/") ) {
+			    if ( generateImageThumb(file.getFileSystemLocation()) ) {
+				inFile = new File (file.getFileSystemLocation() + ".thumb"); 
+			    }
+			} else if ( downloadOriginalFormat != null ) {
 			    inFile = new File ( inFile.getParent(), "_" + file.getFileSystemName()); 
 			} 
 
-			// send the file as the response
+			if ( inFile == null ) {
+			    inFile = new File(file.getFileSystemLocation());  
+			}
 
+
+			// send the file as the response
 
 			// InputStream in = new FileInputStream(inFile);
 			
@@ -909,6 +923,39 @@ public class FileDownloadServlet extends HttpServlet{
         return "";
     }
 
+
+    private boolean generateImageThumb (String fileLocation) {
+
+	String thumbFileLocation = fileLocation + ".thumb"; 
+
+	// see if the thumb is already generated and saved: 
+
+	if (new File (thumbFileLocation).exists()) {
+	    return true; 
+	}
+
+	// let's attempt to generate the thumb:
+
+	
+	String ImageMagick = "/usr/bin/convert -size 64x64" + fileLocation + "-resize 64" +  thumbFileLocation; 
+	int exitValue = 1; 
+	
+	try {
+	    Runtime runtime = Runtime.getRuntime();
+	    Process process = runtime.exec(ImageMagick);
+	    exitValue = process.waitFor(); 
+	} catch (Exception e) {
+	    return false; 
+	}
+
+	if ( exitValue == 0 ) {
+	    return true; 
+	}
+
+	// something failed, returning "false":
+
+	return false;
+    }
 
     private String generateAltFileName(String formatRequested, String xfileId) {
         String altFileName; 

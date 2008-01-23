@@ -25,10 +25,12 @@
  */
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
+import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.ExceptionMessageWriter;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import java.util.Date;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -45,6 +47,7 @@ public class EditAccountUseTermsPage extends VDCBaseBean {
 
     @EJB
     VDCNetworkServiceLocal vdcNetworkService;
+    @EJB UserServiceLocal userService;
     private String SUCCESS_MESSAGE = new String("Update Successful!");
     private boolean termsOfUseEnabled;
     private String termsOfUse;
@@ -74,7 +77,9 @@ public class EditAccountUseTermsPage extends VDCBaseBean {
                 VDCNetwork vdcNetwork = vdcNetworkService.find();
                 vdcNetwork.setTermsOfUse(termsOfUse);
                 vdcNetwork.setTermsOfUseEnabled(termsOfUseEnabled);
+                vdcNetwork.setTermsOfUseUpdated(new Date());
                 vdcNetworkService.edit(vdcNetwork);
+                userService.clearAgreedTermsOfUse();
                 FacesContext.getCurrentInstance().addMessage("editAccountUseTermsPage:button1", new FacesMessage(msg));
             } else {
                 ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);

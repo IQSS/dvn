@@ -272,8 +272,14 @@ public class AddAccountPage extends VDCBaseBean {
         String forwardPage=null;
         Long contributorRequestVdcId = null;
         String workflowValue=null;
+        user.setActive(true);
+        editUserService.save();
+        
         if (hiddenWorkflow.getValue()!=null) {
             workflowValue=hiddenWorkflow.getValue().toString();
+            this.sessionPut("loginWorkflow", workflowValue);
+            this.sessionPut("loginStudyId", studyId);
+            this.sessionPut("loginUser", user);
         }
         
         if (StringUtil.isEmpty(workflowValue)) {
@@ -283,15 +289,14 @@ public class AddAccountPage extends VDCBaseBean {
             getRequestMap().put("statusMessage",msg);
             forwardPage="viewAccount";
         } else if (workflowValue.equals("contributor")) {
-            forwardPage="contributorRequest";
+            forwardPage="accountTermsOfUse";
         } else if (workflowValue.equals("creator")) {
-            forwardPage="creatorRequest";
+            forwardPage="accountTermsOfUse";
         } else if (workflowValue.equals("fileAccess")) {
             forwardPage="fileRequest";
         }
         
-        user.setActive(true);
-        editUserService.save();
+     
         
         getVDCSessionBean().setUserService(null);
         

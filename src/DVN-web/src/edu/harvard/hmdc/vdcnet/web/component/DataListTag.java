@@ -45,6 +45,12 @@ public class DataListTag  extends UIComponentTag {
     private ValueExpression contents;
     private ValueExpression tabs;
     private ValueExpression tab;
+    private ValueExpression idName;
+    private ValueExpression lastRecord;
+    private ValueExpression firstRecord;
+    private ValueExpression pagingDirection;
+    private ValueExpression targetGroup;
+    private ValueExpression defaultDisplayNumber;
     
     /** Creates a new instance of DataListTag */
     public DataListTag() {
@@ -94,8 +100,52 @@ public class DataListTag  extends UIComponentTag {
                 datalist.getAttributes().put("tab", tab.getExpressionString());
               }
         }
+        if (idName != null) {
+            if (!idName.isLiteralText()) {
+                datalist.setValueExpression("idName", idName);
+              }
+              else {
+                datalist.getAttributes().put("idName", idName.getExpressionString());
+              }
+        }
+        if (lastRecord != null) {
+            if (!lastRecord.isLiteralText()) {
+                datalist.setValueExpression("lastRecord", lastRecord);
+            } else {
+                datalist.getAttributes().put("lastRecord", lastRecord);
+            }
+        }
+        if (firstRecord != null) {
+            if (!firstRecord.isLiteralText()) {
+                datalist.setValueExpression("firstRecord", firstRecord);
+            } else {
+                datalist.getAttributes().put("firstRecord", firstRecord);
+            }
+        }
+        if (pagingDirection != null) {
+            if (!pagingDirection.isLiteralText()) {
+                datalist.setValueExpression("pagingDirection", pagingDirection);
+            } else {
+                datalist.getAttributes().put("pagingDirection", pagingDirection);
+            }
+        }
+        if (targetGroup != null) {
+            if (!targetGroup.isLiteralText()) {
+                datalist.setValueExpression("targetGroup", targetGroup);
+            } else {
+                datalist.getAttributes().put("targetGroup", targetGroup);
+            }
+        }
+        if (defaultDisplayNumber != null) {
+            if (!defaultDisplayNumber.isLiteralText()) {
+                datalist.setValueExpression("defaultDisplayNumber", defaultDisplayNumber);
+            } else {
+                datalist.getAttributes().put("defaultDisplayNumber", defaultDisplayNumber);
+            }
+        }
     }
     
+
     /** 
      * setter and getter the contents
      * @author wbossons
@@ -136,6 +186,97 @@ public class DataListTag  extends UIComponentTag {
     public ValueExpression getTab(){
         return tab;
     }
+    
+        /** 
+     * setter and getter the idName
+     *
+     * @author wbossons
+     *
+     * 
+     */
+    public void setIdName(ValueExpression idName) {
+        this.idName = idName;
+    }
+    
+    public ValueExpression getIdName(){
+        return idName;
+    }
+   
+    /** 
+     * setter and getter the lastRecord
+     *
+     * @author wbossons
+     *
+     * 
+     */
+    public void setLastRecord(ValueExpression lastrecord) {
+        this.lastRecord = lastrecord;
+    }
+    
+    public ValueExpression getLastRecord(){
+        return lastRecord;
+    }
+    
+     /** 
+     * setter and getter the firstRecord
+     *
+     * @author wbossons
+     *
+     * 
+     */
+    public void setFirstRecord(ValueExpression firstrecord) {
+        this.firstRecord = firstrecord;
+    }
+    
+    public ValueExpression getFirstRecord(){
+        return firstRecord;
+    }
+    
+    /** 
+     * setter and getter the pagingDirection
+     *
+     * @author wbossons
+     *
+     * 
+     */
+    public void setPagingDirection(ValueExpression pagingdirection) {
+        this.pagingDirection = pagingdirection;
+    }
+    
+    public ValueExpression getPagingDirection(){
+        return pagingDirection;
+    }
+    
+   /** 
+     * setter and getter the targetGroup
+     *
+     * @author wbossons
+     *
+     * 
+     */
+    public void setTargetGroup(ValueExpression targetgroup) {
+        this.targetGroup = targetgroup;
+    }
+    
+    public ValueExpression getTargetGroup(){
+        return targetGroup;
+    }
+    
+         /** 
+     * setter and getter the defaultDisplayNumber
+     *
+     * @author wbossons
+     *
+     * 
+     */
+    public void setDefaultDisplayNumber(ValueExpression defaultdisplaynumber) {
+        this.defaultDisplayNumber = defaultdisplaynumber;
+    }
+    
+    public ValueExpression getDefaultDisplayNumber(){
+        return defaultDisplayNumber;
+    }
+
 
     
     public void release() {

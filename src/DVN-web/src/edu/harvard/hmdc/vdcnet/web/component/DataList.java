@@ -33,6 +33,7 @@ import com.sun.rave.web.ui.component.Hyperlink;
 import java.io.IOException;
 import java.lang.String;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -46,8 +47,10 @@ import javax.el.MethodExpression;
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.component.UIColumn;
-import javax.faces.component.UIComponentBase;
+import javax.faces.component.UICommand;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
+import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlGraphicImage;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGrid;
@@ -57,20 +60,28 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.MethodExpressionActionListener;
+import javax.servlet.http.HttpServletResponse;
 import org.ajax4jsf.ajax.html.HtmlAjaxCommandLink;
+
 
 /**
  *
  * @author wbossons
  */
-public class DataList extends UIComponentBase {
+public class DataList extends UICommand {
 
+    private String lastRecord  = new String("");
+    private String firstRecord  = new String("");
+    private String targetGroup = new String("");
+    int defaultDisplayNumber = 0;
+    
     /** Creates a new instance of DataList */
     public DataList() {
+        super();
     }
 
     public String getFamily() {
-        return null;
+        return ("datalist");
     }
 
     @Override
@@ -83,6 +94,9 @@ public class DataList extends UIComponentBase {
         ResponseWriter writer = facescontext.getResponseWriter();
         writer.startElement("div", this);
         writer.writeAttribute("class", "TabGrp", null);
+        String idName = getClientId(facescontext) + "_" + (String)getAttributes().get("idName");
+        writer.writeAttribute("id", idName, null);
+        writeIdAttributeIfNecessary(facescontext, writer, this);
         writer.startElement("a", this);
         writer.writeAttribute("id", "tabSet1skipLink_skipHyperlinkId", null);
         writer.writeAttribute("href", "#tabSet1skipLink_skipHyperlinkId", null);
@@ -100,6 +114,10 @@ public class DataList extends UIComponentBase {
         String tab = (String)getAttributes().get("tab");
         Map tabsMap = (Map)getAttributes().get("tabs");
         Set tabsKeys = tabsMap.keySet();
+        //DEBUG paging mechanism
+        targetGroup     = (String)getAttributes().get("targetGroup");
+        String pagingDirection = (String)getAttributes().get("pagingDirection");
+        //END DEBUG
         Iterator tabsIterator = tabsKeys.iterator();
         String[] tabNames = new String[tabsMap.size()];
         String[] tabkeys = new String[tabsMap.size()];
@@ -139,33 +157,63 @@ public class DataList extends UIComponentBase {
           if (datalistings.isEmpty()) { //TODO: remove and test this.
               continue;
           } else {
+            String idString = key.replaceAll(" ", "").toLowerCase();
+            boolean isTarget = false;
+            if (idString.equals(targetGroup))
+                isTarget = true;
             formatHeading(key);
-            formatChildTable(datalistings, key);
+            formatChildTable(datalistings, idString, isTarget, pagingDirection);
+            formatNavigationLinks(idString);
           }
         }
-        
         writer.endElement("div");
     }
 
     public void encodeEnd(FacesContext facescontext)
         throws IOException {
+        String clientId = getClientId(facescontext);
         ResponseWriter writer = FacesContext.getCurrentInstance().getResponseWriter();
+        writer.startElement("input", this);
+        writer.writeAttribute("type", "hidden", null);
+        writer.writeAttribute("name", clientId + "_firstRecord", null);
+        writer.writeAttribute("value", firstRecord, null);
+        writer.endElement("input");
+        writer.startElement("input", this);
+        writer.writeAttribute("type", "hidden", null);
+        writer.writeAttribute("name", clientId + "_lastRecord", null);
+        writer.writeAttribute("value", lastRecord, null);
+        writer.endElement("input");
         writer.endElement("div");
     }
     
+    @Override
+    public void decode(FacesContext context) {
+        System.out.println("in the decode . . .");
+        String clientId = getClientId(context);
+
+        if (this.getAttributes().get("lastRecord") == null) {
+            Map<String,String> requestParameterMap = context.getExternalContext().getRequestParameterMap();
+            lastRecord   = requestParameterMap.get(clientId + "_lastRecord");
+            this.getAttributes().put("lastRecord", lastRecord);
+        } else {
+           lastRecord = (String)this.getAttributes().get("lastRecord"); 
+        }  
+        if (this.getAttributes().get("firstRecord") == null) {
+            Map<String,String> requestParameterMap = context.getExternalContext().getRequestParameterMap();
+            firstRecord   = requestParameterMap.get(clientId + "_firstRecord");
+            this.getAttributes().put("firstRecord", lastRecord);
+        } else {
+           firstRecord = (String)this.getAttributes().get("firstRecord"); 
+        }  
+    }
+    
     private void formatTabs(String[] tabNames, String tab, String[]keys) {
-        /** write this out
-         *  because there is some kind of bug where this
-         *  is not formatting the table correctly when written
-         *  similarly to the formatChild method
-         */
         ResponseWriter writer = FacesContext.getCurrentInstance().getResponseWriter();
         try {
         writer.startElement("div", this);
         writer.writeAttribute("class", "MniTabDiv", null);
         writer.startElement("table", this);
         writer.writeAttribute("class", "MniTabTbl", null);
-        //title="" border="0" cellpadding="0" cellspacing="0"
         writer.writeAttribute("title", "", null);
         writer.writeAttribute("border", "0", null);
         writer.writeAttribute("cellpadding", "0", null);
@@ -174,23 +222,20 @@ public class DataList extends UIComponentBase {
         for (int i = 0; i < tabNames.length; i++) {
             writer.startElement("td", this);
             if (keys[i].equals(tab)) {
-                writer.writeAttribute("class", "MniTabTblSelTd", null);//TODO parameterize this from the url or jsp
+                writer.writeAttribute("class", "MniTabTblSelTd", null);
                 writer.startElement("div", this);
-                // title="Current Selection: Cataloging Information"
-                writer.writeAttribute("title", "Current Selection: " + tabNames[i], null);//TODO: set this according to url param
+                writer.writeAttribute("title", "Current Selection: " + tabNames[i], null);
                 writer.writeAttribute("class", "MniTabSelTxt", null);
                 writer.startElement("span", this);
-                writer.writeAttribute("id", keys[i], null);//TODO, set this to the key
                 writer.writeAttribute("class", "disabled", null);
                 writer.writeText(tabNames[i], null);
                 writer.endElement("span");
                 writer.endElement("div");
             } else {
                 writer.startElement("a", this);
-                writer.writeAttribute("id", keys[i], null);
                 writer.writeAttribute("class", "MniTabLnk", null);
                 writer.writeAttribute("title", tabNames[i], null);
-                writer.writeAttribute("href", "/dvn/?tab=" + keys[i], null);//TODO parameterize the link to the home page.
+                writer.writeAttribute("href", "/dvn/?tab=" + keys[i], null);
                 writer.writeText(tabNames[i], null);
                 writer.endElement("a");
             }
@@ -241,32 +286,70 @@ public class DataList extends UIComponentBase {
      *
      * @author wbossons
      */
-    private void formatChildTable(List ndvs, String heading) {
+    private void formatChildTable(List ndvs, String idstring, boolean istarget, String pagingDirection) {
         int totalColumns = 4;
-        int columns = 0;
-        int startNew = 0;
+        int columns      = 0;
+        int startNew     = 0;
+        int startPos     = 0;
+        int startCount   = 0;//count is used to track lastRecords for ajaxed transactions.
+        int endCount   = 0;//count is used to track lastRecords for ajaxed transactions.
         if (totalColumns <= ndvs.size())
-            startNew = setColumnLength(ndvs.size(), totalColumns);
+            startNew = setColumnLength(((Integer)this.getAttributes().get("defaultDisplayNumber")), totalColumns);
         else
-            startNew = setColumnLength(totalColumns);//was (ndvs.size(), totalColumns);
-        int startPos = 0;
-        ListIterator iterator = ndvs.listIterator();
+            startNew = setColumnLength(totalColumns);
+        
         HtmlPanelGrid childTable = new HtmlPanelGrid();
         childTable = new HtmlPanelGrid(); // start the child table which eventually must be added to the view
-        childTable.setId(formatId(heading));
         childTable.setStyleClass("dvnChildTable");
         childTable.setColumns(totalColumns);
         childTable.setColumnClasses("dvnChildColumn");
-        UIColumn column              = null;
-        HtmlPanelGroup linkPanel     = null;
-        HtmlOutputText startLinkTag  = null;
-        HtmlOutputText endLinkTag    = null;
+        UIColumn column               = null;
+        HtmlPanelGroup linkPanel      = null;
+        HtmlOutputText startLinkTag   = null;
+        HtmlOutputText endLinkTag     = null;
         HtmlOutputText affiliationTag = null;
-        Hyperlink nodelink           = null;
-        HtmlGraphicImage image       = null;
-        HtmlOutputText textTag       = null;
+        Hyperlink nodelink            = null;
+        HtmlGraphicImage image        = null;
+        HtmlOutputText textTag        = null;
         
-        while (iterator.hasNext()) {
+        defaultDisplayNumber = (Integer)getAttributes().get("defaultDisplayNumber");
+        //pageNext
+        if (pagingDirection == null) pagingDirection = "next";
+        if (pagingDirection.equals("next")) {
+            startCount = this.getLastRecordCount(idstring);
+            if (istarget || targetGroup.equals("none")) {
+                if ( (startCount + 1) >= ndvs.size() ) {
+                    //nothing to do except redisplay the same ones
+                    startCount = this.getFirstRecordCount(idstring);
+                    endCount   = this.getLastRecordCount(idstring);
+                } else if ( (startCount + 1) < ndvs.size()) {
+                    startCount = startCount == 0 ? startCount : this.getLastRecordCount(idstring) + 1;//this is wrong for 1st visit
+                    endCount   = startCount + defaultDisplayNumber > ndvs.size() ? ndvs.size()-1 : startCount + (defaultDisplayNumber - 1);
+                }
+                this.addFirstRecordCount(idstring, String.valueOf(startCount));
+                this.addLastRecordCount(idstring, String.valueOf(endCount));
+            } else {
+                endCount   = this.getLastRecordCount(idstring);
+                startCount = this.getFirstRecordCount(idstring);
+            }
+        } else if (pagingDirection.equals("previous")) {
+            //end pageNext
+            
+            //pagePrevious
+            if (istarget || targetGroup.equals("none")) {
+                endCount     = this.getFirstRecordCount(idstring) - 1;
+                startCount   = endCount - (defaultDisplayNumber - 1);
+                this.addFirstRecordCount(idstring, String.valueOf(startCount));
+                this.addLastRecordCount(idstring, String.valueOf(endCount));
+            } else {
+                endCount   = this.getLastRecordCount(idstring);
+                startCount = this.getFirstRecordCount(idstring);
+            }
+        }
+        //end pagePrevious
+        
+        ListIterator iterator    = ndvs.listIterator(startCount);
+        while (startCount <= endCount) {
             DataListing ndv  = (DataListing)iterator.next();
             if (startPos == 0) {
             column = new UIColumn();
@@ -300,25 +383,26 @@ public class DataList extends UIComponentBase {
             linkPanel.getChildren().add(endLinkTag);
             column.getChildren().add(linkPanel);
                 startPos++;
-            if (startPos == startNew || iterator.hasNext() == false) {
+            if (startPos == startNew || startCount == endCount) {//iterator.hasNext() == false
                 childTable.getChildren().add(column);
                     startPos = 0;
                 }
-            }
+                startCount++;
+            } 
             //manage the condition where there were only enough records
-            // to build two columns -- to achieve balance in the presentation
+            // to build less than 4 columns -- to achieve balance in the presentation
         if (childTable.getChildCount() < totalColumns) {
             int remainder = totalColumns - childTable.getChildCount();
-                int i = 0;
+                int j = 0;
                 HtmlOutputText placeholder = null;
-                while (i < remainder) {
+                while (j < remainder) {
                 column = new UIColumn();
                 placeholder = new HtmlOutputText();
                 placeholder.setEscape(false);
                 placeholder.setValue("<br />");
                 column.getChildren().add(placeholder);
                 childTable.getChildren().add(column);
-                    i++;
+                    j++;
                 }
             }
         
@@ -336,10 +420,7 @@ public class DataList extends UIComponentBase {
        
             } catch (IOException ioe) {
             throw new FacesException();
-        } //TODO: implment ajax command links 
-        //finally {
-            //createNavigationLinks(heading);
-        //}
+        } 
     }
     
     private void formatMessage(String message) {
@@ -356,30 +437,169 @@ public class DataList extends UIComponentBase {
         }
     }
     
-    private void createNavigationLinks(String heading) {
+    private void formatNavigationLinks(String heading) {
         try {
-        FacesContext context = FacesContext.getCurrentInstance();
-        Application application = context.getApplication();
-        ELContext elContext = FacesContext.getCurrentInstance().getELContext();
-        ExpressionFactory expressionFactory = application.getExpressionFactory();
+            FacesContext context = FacesContext.getCurrentInstance();
+            Application application = context.getApplication();
+            ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+            ExpressionFactory expressionFactory = application.getExpressionFactory();
+            String clientId                     = getClientId(context);
 
-        HtmlAjaxCommandLink previousLink = new HtmlAjaxCommandLink();
-        previousLink.setId("previous_" + heading); // Custom ID is required in dynamic UIInput and UICommand.
-        previousLink.setValue("<< Previous | ");
-        MethodExpression previousActionListener = expressionFactory.createMethodExpression(elContext, "#{list.page_action}", null, new Class[] {ActionEvent.class});
-        previousLink.addActionListener(new MethodExpressionActionListener(previousActionListener));
-        this.getChildren().add(previousLink);
+            //TODO: create a timstamp method that is called in the setId method call
+            Date date = new Date();
+            Long timestamp = date.getTime();
+            String appendToId = timestamp.toString();
+            //END TODO
+            String previousText = new String("\u003c" + "\u003c") + " Previous  |  ";
+            if (this.getFirstRecordCount(heading) == 0) {
+                HtmlOutputText prevOut = new HtmlOutputText();
+                prevOut.setValue(previousText);
+                prevOut.setStyleClass("dvnDisabled");
+                this.getChildren().add(prevOut);
+                prevOut.encodeBegin(context);
+                if (prevOut.getRendersChildren()) {
+                    prevOut.encodeChildren(context);
+                }
+                prevOut.encodeEnd(context);
+            } else {
+                HtmlAjaxCommandLink previousLink = new HtmlAjaxCommandLink();
+                previousLink.setId("previous_" + heading + "_" + appendToId); // Custom ID is required in dynamic UIInput and UICommand.
+                previousLink.getClientId(context);
+                previousLink.setValue(previousText);
+                previousLink.setReRender("content:homePageView:form1:dataMapOutput");
+                previousLink.setImmediate(true);
+                MethodExpression previousActionListener = expressionFactory.createMethodExpression(elContext, "#{HomePage.page_action}", null, new Class[] {ActionEvent.class});
+                previousLink.addActionListener(new MethodExpressionActionListener(previousActionListener));
+                this.getChildren().add(previousLink);
+                previousLink.encodeBegin(context);
+                if (previousLink.getRendersChildren()) {
+                    previousLink.encodeChildren(context);
+                }
+                previousLink.encodeEnd(context);
+            }
 
-        HtmlAjaxCommandLink nextLink = new HtmlAjaxCommandLink();
-        nextLink.setId("next_" + heading); // Custom ID is required in dynamic UIInput and UICommand.
-        nextLink.setValue("Next >>");
-        MethodExpression nextActionListener = expressionFactory.createMethodExpression(elContext, "#{list.page_action}", null, new Class[] {ActionEvent.class});
-        nextLink.addActionListener(new MethodExpressionActionListener(nextActionListener));
-
-        this.getChildren().add(nextLink);
+            String nextText = "Next " + new String("\u003e" + "\u003e");
+            if (this.getLastRecordCount(heading) == (getNdvSize(heading)-1)) {
+                HtmlOutputText nextOut = new HtmlOutputText();
+                nextOut.setValue(nextText);
+                nextOut.setStyleClass("dvnDisabled");
+                this.getChildren().add(nextOut);
+                nextOut.encodeBegin(context);
+                if (nextOut.getRendersChildren()) {
+                    nextOut.encodeChildren(context);
+                }
+                nextOut.encodeEnd(context);
+            } else {
+                HtmlAjaxCommandLink nextLink = new HtmlAjaxCommandLink();
+                nextLink.setId("next_" + heading + "_" + appendToId); // Custom ID is required in dynamic UIInput and UICommand.
+                nextLink.getClientId(context);
+                nextLink.setValue(nextText);
+                nextLink.setReRender("content:homePageView:form1:dataMapOutput");
+                nextLink.setImmediate(true);
+                MethodExpression nextActionListener = expressionFactory.createMethodExpression(elContext, "#{HomePage.page_action}", null, new Class[] {ActionEvent.class});
+                nextLink.addActionListener(new MethodExpressionActionListener(nextActionListener));
+                this.getChildren().add(nextLink);
+                nextLink.encodeBegin(context);
+                if (nextLink.getRendersChildren()) {
+                    nextLink.encodeChildren(context);
+                }
+                nextLink.encodeEnd(context);
+            }
         } catch (Exception e) {
             System.out.println("there was an issue in the create links area " + e.toString());
+            e.printStackTrace();
         } 
+    }
+    
+    //UTILS
+    
+    /** addToRecordCount
+     * 
+     * 
+     * @author wbossons
+     * 
+     */
+
+    private void addLastRecordCount(String key, String count){
+        String localRecord = lastRecord;
+        if (localRecord.contains(key)) {
+            int indexOfKey   = localRecord.indexOf(key);
+            int indexOfComma = (localRecord.indexOf(",", indexOfKey) != -1) ? localRecord.indexOf(",", indexOfKey) : localRecord.length();
+            String toReplace = localRecord.substring(indexOfKey, indexOfComma);
+            String replaceWith = key + "=" + count;
+            localRecord = localRecord.replaceAll(toReplace, replaceWith);
+        } else {
+            localRecord+=(!lastRecord.equals("")) ? "," + key + "=" + count : key + "=" + count;
+        }
+        lastRecord = localRecord;
+        this.getAttributes().put("lastRecord", lastRecord);
+    }
+    
+    private void addFirstRecordCount(String key, String count){
+        String localRecord = firstRecord;
+        if (localRecord.contains(key)) {
+            int indexOfKey   = localRecord.indexOf(key);
+            int indexOfComma = (localRecord.indexOf(",", indexOfKey) != -1) ? localRecord.indexOf(",", indexOfKey) : localRecord.length();
+            String toReplace = localRecord.substring(indexOfKey, indexOfComma);
+            String replaceWith = key + "=" + count;
+            localRecord = localRecord.replaceAll(toReplace, replaceWith);
+        } else {
+            localRecord+=(!firstRecord.equals("")) ? "," + key + "=" + count : key + "=" + count;
+        }
+        firstRecord = localRecord;
+        this.getAttributes().put("firstRecord", firstRecord);
+    }
+    
+    private int getLastRecordCount(String key) {
+        int lastrecord      = 0;
+        if (targetGroup.equals("none") && lastRecord.equals(""))
+            return lastrecord;
+        if (!lastRecord.equals("") && lastRecord.contains(key)) {
+            int indexOfKey   = lastRecord.indexOf(key) + key.length() + 1;
+            int indexOfComma = (lastRecord.indexOf(",", lastRecord.indexOf(key)) != -1) ? lastRecord.indexOf(",", lastRecord.indexOf(key)) : lastRecord.length();//index is -1 for the last record
+            lastrecord       = Integer.parseInt(lastRecord.substring(indexOfKey, indexOfComma));
+        }
+         return lastrecord;
+    }
+    
+    private int getFirstRecordCount(String key) {
+        int firstrecord      = 0;
+        if (targetGroup.equals("none"))
+            return firstrecord;
+        if (!firstRecord.equals("") && firstRecord.contains(key)) {
+            int indexOfKey   = firstRecord.indexOf(key) + key.length() + 1;
+            int indexOfComma = (firstRecord.indexOf(",", firstRecord.indexOf(key)) != -1) ? firstRecord.indexOf(",", firstRecord.indexOf(key)) : firstRecord.length();//index is -1 for the last record
+            firstrecord       = Integer.parseInt(firstRecord.substring(indexOfKey, indexOfComma));
+        }
+         return firstrecord;
+    }
+    
+    /**
+     * getNdvSize(String idstring)
+     * 
+     * @description Returns the size of the
+     * group that is being output.
+     * 
+     * @param idstring
+     * 
+     * @author wbossons
+     */
+    private int getNdvSize(String idstring) {
+        int size = 0;
+        Map map = (Map)getAttributes().get("contents");
+        Set keys = map.keySet();
+        Iterator iterator = keys.iterator();
+        for (int i = 0; i < map.size(); i++){
+          String key = iterator.next().toString();
+          Object object = map.get(key);
+          List<DataListing> datalistings = (List<DataListing>)map.get(key);
+          String idString = key.replaceAll(" ", "").toLowerCase();
+          if (idString.equals(idstring)) {
+              size = datalistings.size();
+              break;
+          }
+        }
+        return size;
     }
     
         /** setColumnLength();
@@ -420,7 +640,6 @@ public class DataList extends UIComponentBase {
      */
     private String formatId(String heading) {
         String safeId = heading;
-        //String regexp = "['\\@\\#\\$%\\^&\\*\\(\\)_\\+\\:\\<\\>\\/\\[\\]\\\\{\\}\\|\\p{Punct}\\p{Space}]";
         String regexp = "[^A-Za-z0-9]";
         Pattern pattern = Pattern.compile(regexp);
         Matcher matcher = pattern.matcher(heading);
@@ -429,5 +648,30 @@ public class DataList extends UIComponentBase {
             safeId = heading.replaceAll(regexp, "");
         safeId = "dvn" + safeId;
         return safeId.toLowerCase();
+    }
+    
+    protected void writeIdAttributeIfNecessary(FacesContext context,
+                                           ResponseWriter writer,
+                                           UIComponent component) {
+        String id;
+        if ((id = component.getId()) != null &&
+            !id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX)) {
+            try {
+                writer.writeAttribute("id", component.getClientId(context),
+                                      null);
+            } catch (IOException e) {
+               /* if (log.isDebugEnabled()) {
+                    log.debug("Can't write ID attribute" + e.getMessage());
+                } */
+            }
+        }
+    }
+    
+    //TODO: remove this after testing if okay
+    private String getHiddenFields(String clientId) {
+        
+        return  
+            ("<input type=\"hidden\" name=\"" + clientId + "_lastRecord\" value=\"" + lastRecord + "\"/>\n");
+        
     }
 }

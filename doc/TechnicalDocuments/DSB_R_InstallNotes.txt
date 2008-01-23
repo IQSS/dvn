@@ -1,10 +1,10 @@
-This document describes installing/upgrading to R version
-2.6.0; it may need to be updated when next stable version of
-R is released and the DVN DSB switches to it. 
+This document describes installing/upgrading R to use with
+the DVN-DSB system; the current version of R is 2.6.1.
+
 
 PLEASE NOTE: we very strongly recommend specifically using
 the R version currently recommended by the DVN team. As of
-now (Dec. 2007) it is 2.6.0. The DSB functionality relies on
+now (Dec. 2007) it is 2.6.1. The DSB functionality relies on
 a number of 3rd party R modules (UNF, Foreign, Zelig and
 more) which in turn rely on further R modules. It has
 definitely happened in the past that something in that
@@ -17,17 +17,22 @@ once the DVN/DSB team advises to do so.
 
 The upgrade process step by step. 
 
-1. Obtain the right R rpm. It is important to get the rpm
-   that matches your architecture. Most of the tasks
-   performed by R are very CPU-intensive. So if you have 64
-   bit hardware, you will definitely observe significant 
-   performance gains by using the native 64 bit version. 
+1. Obtain the right R rpm. You can get it from the official 
+   CRAN site (http://http://cran.r-project.org/) or a
+   mirror. If the version recommended by the DVN project is
+   no longer on CRAN, please contact the DVN team for the 
+   rpm. 
+   It is important to get the rpm that matches your
+   architecture. Most of the tasks performed by R are very 
+   CPU-intensive. So if you have 64 bit hardware, you will 
+   definitely observe significant performance gains by using 
+   the native 64 bit version. 
 
    So, depending on your hardware, choose the right rpm: 
 
-   R-2.6.0-3.i686.rpm or
-   R-2.6.0-3.x86_64.rpm or		
-   R-2.6.0-3.amd64.rpm
+   R-2.6.1-x.x.i386.rpm or
+   R-2.6.1-x.x.i686.rpm or
+   R-2.6.1-x.x.x86_64.rpm or amd64, etc. 	
 
 2. Install the rpm. 
    If you already have an older version installed, DO NOT
@@ -47,7 +52,7 @@ The upgrade process step by step.
 
    then install the new rpm from scratch: 
 
-	rpm -ivh R-2.6.0.XXX.rpm
+	rpm -ivh R-2.6.1-x.x.xxx.rpm
  
    We are not done yet! 
    Now we need to obtain and rebuild all the 3rd-party

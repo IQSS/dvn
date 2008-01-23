@@ -55,7 +55,14 @@
             <to-view-id>/networkAdmin/NetworkOptionsPage.jsp</to-view-id>
         </navigation-case>
     </navigation-rule>
-   <navigation-rule>
+      <navigation-rule>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>addSite</from-outcome>
+            <to-view-id>/site/AddSitePage.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+  <navigation-rule>
      <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>deleteStudy</from-outcome>
@@ -100,6 +107,13 @@
             <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
         </navigation-case>
      </navigation-rule>  
+  <navigation-rule>
+         <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>accountTermsOfUse</from-outcome>
+            <to-view-id>/login/AccountTermsOfUsePage.jsp</to-view-id>
+        </navigation-case>
+     </navigation-rule>  
 
     <navigation-rule>
         <from-view-id>/login/ContributorRequestPage.jsp</from-view-id>
@@ -116,6 +130,23 @@
             <to-view-id>/login/CreatorRequestSuccessPage.jsp</to-view-id>        
         </navigation-case>         
     </navigation-rule>
+    
+      <navigation-rule>
+        <from-view-id>/login/CreatorRequestTermsPage.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>login</from-outcome>
+            <to-view-id>/login/CreatorRequestAccountPage.jsp</to-view-id>        
+        </navigation-case>         
+    </navigation-rule>
+    
+      <navigation-rule>
+        <from-view-id>/login/CreatorRequestTermsPage.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>questions</from-outcome>
+            <to-view-id>/login/CreatorRequestQuestionsPage.jsp</to-view-id>        
+        </navigation-case>         
+    </navigation-rule>
+    
     
     <navigation-rule>
         <from-view-id>/login/FileRequestPage.jsp</from-view-id>

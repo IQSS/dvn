@@ -31,12 +31,13 @@
               </div>
       
               <ui:panelGroup id="createDataverse" block="true" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestCreator}">
-                  <h:outputLink styleClass="requestHmpgSideLink" rendered="#{VDCSession.loginBean==null}" value="/dvn/faces/login/CreatorRequestAccountPage.jsp">
+                  <h:outputLink styleClass="requestHmpgSideLink" rendered="#{VDCSession.loginBean==null}" value="/dvn/faces/login/CreatorRequestInfoPage.jsp">
                                 <h:outputText value="Create your own Dataverse" escape="false"/>
                   </h:outputLink>
-                  <h:outputLink styleClass="requestHmpgSideLink" rendered="#{VDCSession.loginBean!=null}" value="/dvn/faces/login/CreatorRequestPage.jsp">
+                  <h:commandLink styleClass="requestHmpgSideLink" rendered="#{VDCSession.loginBean!=null}" action="#{HomePage.makeCreatorAction}">
                                 <h:outputText value="Create your own Dataverse" escape="false"/>
-                  </h:outputLink>
+                  </h:commandLink>
+                  
               </ui:panelGroup>
               
                <ui:panelGroup id="beContributor" block="true" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestContributor}">

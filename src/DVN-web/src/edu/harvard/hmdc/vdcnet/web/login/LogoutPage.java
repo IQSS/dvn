@@ -25,13 +25,10 @@
  */
 package edu.harvard.hmdc.vdcnet.web.login;
 
-import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
-import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.web.StudyListing;
-import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import javax.ejb.EJB;
-import javax.servlet.http.HttpSession;
+import edu.harvard.hmdc.vdcnet.web.common.VDCSessionBean;
+import java.util.Map;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -87,9 +84,7 @@ public class LogoutPage extends VDCBaseBean {
     public void init() {
         super.init();
         // Do logout here
-        this.getVDCSessionBean().setLoginBean(null);
-        this.getSessionMap().remove("ORIGINAL_URL");
-        StudyListing.clearStudyListingMap( this.getSessionMap() );
+        doLogout(getVDCSessionBean(), getSessionMap());
         success=true;
         
     }
@@ -115,7 +110,11 @@ public class LogoutPage extends VDCBaseBean {
         this.success = success;
     }
     
-    
+    public static void doLogout(VDCSessionBean vdcSessionBean, Map sessionMap) {
+        vdcSessionBean.setLoginBean(null);
+        sessionMap.remove("ORIGINAL_URL");
+        StudyListing.clearStudyListingMap( sessionMap );       
+    }
     
 }
 

@@ -29,17 +29,20 @@ import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.LoginAffiliate;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.web.StudyListing;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import edu.harvard.hmdc.vdcnet.web.common.VDCSessionBean;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.FacesException;
 import javax.faces.component.html.HtmlInputHidden;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
@@ -53,45 +56,46 @@ import javax.servlet.http.HttpSession;
  * to respond to incoming events.</p>
  */
 public class LoginPage extends VDCBaseBean {
-     @EJB UserServiceLocal userService;
-     @EJB GroupServiceLocal groupService;
+
+    @EJB
+    UserServiceLocal userService;
+    @EJB
+    GroupServiceLocal groupService;
 
     public void init() {
         super.init();
         setAffiliateNames();
-        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String refererUrl = new String("");
         String protocol = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase();
         String defaultPage = new String("");
-        String serverPort  = new String((request.getServerPort() != 80 ? ":" + request.getServerPort():""));
-        if (getVDCRequestBean().getCurrentVDC() != null)
-            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + "/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() +  request.getServletPath() + "/HomePage.jsp";
-        else
+        String serverPort = new String((request.getServerPort() != 80 ? ":" + request.getServerPort() : ""));
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + "/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() + request.getServletPath() + "/HomePage.jsp";
+        } else {
             defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + request.getServletPath() + "/HomePage.jsp";
+        }
         // Set referer needed by loginAffiliate -- must be passed on the querystring to the EZProxy
         if (sessionGet("refererUrl") == null) {
-            if (request.getHeader("referer") != null && !request.getHeader("referer").equals("") )  {
-                    if ( request.getHeader("referer").indexOf("/login/") != -1 
-                            || request.getHeader("referer").contains("/admin/")
-                            || request.getHeader("referer").contains("/networkAdmin/") ) {
-                        refererUrl = defaultPage;
-                    } else { 
-                        refererUrl = request.getHeader("referer");
-                    }
+            if (request.getHeader("referer") != null && !request.getHeader("referer").equals("")) {
+                if (request.getHeader("referer").indexOf("/login/") != -1 || request.getHeader("referer").contains("/admin/") || request.getHeader("referer").contains("/networkAdmin/")) {
+                    refererUrl = defaultPage;
+                } else {
+                    refererUrl = request.getHeader("referer");
+                }
             } else {
                 refererUrl = defaultPage;
             }
-            
+
             sessionPut("refererUrl", refererUrl);
         }
-     }
-    
+    }
+
     /** 
      * <p>Construct a new Page bean instance.</p>
      */
     public LoginPage() {
     }
-
 
     /** 
      * <p>Callback method that is called after the component tree has been
@@ -124,68 +128,87 @@ public class LoginPage extends VDCBaseBean {
      */
     public void destroy() {
     }
-    
+
     public String login() {
         if (sessionGet("refererUrl") != null) //remove loginAffiliate related session vars, wjb Sept 2007
+        {
             sessionRemove("refererUrl");
-        boolean activeOnly=true;
-        VDCUser user  = userService.findByUserName(userName,activeOnly);
-        if (user==null || !userService.validatePassword(user.getId(),password)) {
-            loginFailed=true;
+        }
+        boolean activeOnly = true;
+        VDCUser user = userService.findByUserName(userName, activeOnly);
+        if (user == null || !userService.validatePassword(user.getId(), password)) {
+            loginFailed = true;
             return null;
         } else {
-            //first remove any existing ipUserGroup info from the session
-            if (getVDCSessionBean().getIpUserGroup() != null) {
-                HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-                session.removeAttribute("ipUserGroup");
-                session.removeAttribute("isIpGroupChecked");
-            }
-            LoginBean loginBean = new LoginBean();
-
-            // copy all terms of use from session TermsOfUseMap
-            loginBean.getTermsfUseMap().putAll( getVDCSessionBean().getTermsfUseMap() );
-            // then clear the sessions version
-            getVDCSessionBean().getTermsfUseMap().clear();
-
-            // celar the studylistings from prelogin
-            StudyListing.clearStudyListingMap( this.getSessionMap() );
-
-            loginBean.setUser(user);
-            getVDCSessionBean().setLoginBean(loginBean);
-            if (hiddenWorkflow.getValue().equals("contributor")) {
-                   getSessionMap().put("LOGIN_REDIRECT", this.getExternalContext().getRequestContextPath()+"/dv/"+getVDCRequestBean().getCurrentVDC().getAlias()
-                    + "/faces/login/ContributorRequestPage.jsp");               
-             } else if (hiddenWorkflow.getValue().equals("creator")) {
-                   getSessionMap().put("LOGIN_REDIRECT", this.getExternalContext().getRequestContextPath()
-                   + "/faces/login/CreatorRequestPage.jsp");               
-            } else if (hiddenWorkflow.getValue().equals("fileAccess")) {
-                if (getVDCRequestBean().getCurrentVDC()!=null) {
-                    getSessionMap().put("LOGIN_REDIRECT", this.getExternalContext().getRequestContextPath()+"/dv/"+getVDCRequestBean().getCurrentVDC().getAlias()
-                    + "/faces/login/FileRequestPage.jsp?studyId="+studyId);               
-                } else {
-                   getSessionMap().put("LOGIN_REDIRECT", this.getExternalContext().getRequestContextPath()
-                   + "/faces/login/FileRequestPage.jsp");     
-                }
+            String forward = null;
+            if (user.isAgreedTermsOfUse()) {
+               updateSessionForLogin(getExternalContext(),  getSessionMap(), getVDCSessionBean(), user);
+               setLoginRedirect(getSessionMap(), this.getExternalContext().getRequestContextPath(), getVDCRequestBean().getCurrentVDC(), (String) hiddenWorkflow.getValue(), studyId);
+                forward = "home";
             } else {
-                if (getSessionMap().get("ORIGINAL_URL")!=null ) {
-                    getSessionMap().put("LOGIN_REDIRECT",getSessionMap().get("ORIGINAL_URL"));
-                    getSessionMap().remove("ORIGINAL_URL");
-                } else {
-                  //  HttpServletRequest request = this.getExternalContext().getRequestContextPath()
-                    if (getVDCRequestBean().getCurrentVDC()!=null) {
-                        getSessionMap().put("LOGIN_REDIRECT", this.getExternalContext().getRequestContextPath()+"/dv/"+getVDCRequestBean().getCurrentVDC().getAlias()+"/faces/HomePage.jsp");
-                    } else {
-                       getSessionMap().put("LOGIN_REDIRECT", this.getExternalContext().getRequestContextPath()+"/faces/HomePage.jsp");          
-                    }
-                }
+                // Put login data in session so it can be read by Account Terms of Use page
+                this.sessionPut("loginWorkflow", (String) hiddenWorkflow.getValue());
+                this.sessionPut("loginStudyId", studyId);
+                this.sessionPut("loginUser", user);
+                forward = "accountTermsOfUse";
             }
-            return "home";
-            
+            return forward;
         }
-        
-        
+    }
+    /**
+     *  Create loginBean and add it to the Session, do other session-related updates.
+     * @param session
+     * @param sessionMap
+     * @param vdcSessionBean
+     * @param user
+     */
+    public static void updateSessionForLogin(ExternalContext externalContext, Map sessionMap, VDCSessionBean vdcSessionBean, VDCUser user) {
+        //first remove any existing ipUserGroup info from the session
+        HttpSession session = (HttpSession)externalContext.getSession(true);
+        if (vdcSessionBean.getIpUserGroup() != null) {
+
+            session.removeAttribute("ipUserGroup");
+            session.removeAttribute("isIpGroupChecked");
+        }
+        LoginBean loginBean = new LoginBean();
+
+        // copy all terms of use from session TermsOfUseMap
+        loginBean.getTermsfUseMap().putAll(vdcSessionBean.getTermsfUseMap());
+        // then clear the sessions version
+        vdcSessionBean.getTermsfUseMap().clear();
+
+        // celar the studylistings from prelogin
+        StudyListing.clearStudyListingMap(sessionMap);
+
+        loginBean.setUser(user);
+        vdcSessionBean.setLoginBean(loginBean);
     }
 
+    public static void setLoginRedirect(Map sessionMap, String requestContextPath, VDC currentVDC, String hiddenWorkflow, Long studyId) {
+        if (hiddenWorkflow.equals("contributor")) {
+            sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/admin/OptionsPage.jsp");
+        } else if (hiddenWorkflow.equals("creator")) {
+            sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/site/AddSitePage.jsp");
+        } else if (hiddenWorkflow.equals("fileAccess")) {
+            if (currentVDC != null) {
+                sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/login/FileRequestPage.jsp?studyId=" + studyId);
+            } else {
+                sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/login/FileRequestPage.jsp");
+            }
+        } else {
+            if (sessionMap.get("ORIGINAL_URL") != null) {
+                sessionMap.put("LOGIN_REDIRECT", sessionMap.get("ORIGINAL_URL"));
+                sessionMap.remove("ORIGINAL_URL");
+            } else {
+                //  HttpServletRequest request = this.getExternalContext().getRequestContextPath()
+                if (currentVDC != null) {
+                    sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/HomePage.jsp");
+                } else {
+                    sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/HomePage.jsp");
+                }
+            }
+        }
+    }
     /**
      * Holds value of property userName.
      */
@@ -206,7 +229,6 @@ public class LoginPage extends VDCBaseBean {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
     /**
      * Holds value of property password.
      */
@@ -227,7 +249,6 @@ public class LoginPage extends VDCBaseBean {
     public void setPassword(String password) {
         this.password = password;
     }
-
     /**
      * Holds value of property loginFailed.
      */
@@ -248,7 +269,6 @@ public class LoginPage extends VDCBaseBean {
     public void setLoginFailed(boolean loginFailed) {
         this.loginFailed = loginFailed;
     }
-
     /**
      * Holds value of property redirect.
      */
@@ -276,7 +296,6 @@ public class LoginPage extends VDCBaseBean {
      *
      * @author wbossons
      */
-    
     public void loginAffiliate() {
         try {
             FacesContext.getCurrentInstance().getExternalContext().redirect(this.getAffiliateName() + "?url=" + sessionGet("refererUrl"));
@@ -286,7 +305,6 @@ public class LoginPage extends VDCBaseBean {
             sessionRemove("refererUrl");
         }
     }
-
     /**
      * Holds value of property affiliateName.
      */
@@ -307,36 +325,33 @@ public class LoginPage extends VDCBaseBean {
     public void setAffiliateName(String affiliateName) {
         this.affiliateName = affiliateName;
     }
-    
     private SelectItem[] affiliateNames;
-    
+
     private void setAffiliateNames() {
-        List list = (List)groupService.findAllLoginAffiliates();
-        Iterator iterator =  list.iterator();
+        List list = (List) groupService.findAllLoginAffiliates();
+        Iterator iterator = list.iterator();
         affiliateNames = new SelectItem[list.size()];
         int i = 0;
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             //now populate this
             this.setIsAffiliates("true");
-            LoginAffiliate loginaffiliate = (LoginAffiliate)iterator.next();
+            LoginAffiliate loginaffiliate = (LoginAffiliate) iterator.next();
             SelectItem selectitem = new SelectItem();
-            selectitem.setLabel((String)loginaffiliate.getName());
-            selectitem.setValue((String)loginaffiliate.getUrl());
+            selectitem.setLabel((String) loginaffiliate.getName());
+            selectitem.setValue((String) loginaffiliate.getUrl());
             affiliateNames[i] = selectitem;
             i++;
         }
     }
 
-    
-        public SelectItem[] getAffiliateNames() {
-            return affiliateNames;
-        } 
-        
-        public void changeAffiliateName(ValueChangeEvent event){
-            String newValue = (String)event.getNewValue();
-            setAffiliateName(newValue);
-        } 
+    public SelectItem[] getAffiliateNames() {
+        return affiliateNames;
+    }
 
+    public void changeAffiliateName(ValueChangeEvent event) {
+        String newValue = (String) event.getNewValue();
+        setAffiliateName(newValue);
+    }
     /**
      * Holds value of property isAffiliates.
      */
@@ -357,7 +372,6 @@ public class LoginPage extends VDCBaseBean {
     public void setIsAffiliates(String isAffiliates) {
         this.isAffiliates = isAffiliates;
     }
-
     /**
      * Holds value of property workflow.
      */
@@ -378,7 +392,6 @@ public class LoginPage extends VDCBaseBean {
     public void setWorkflow(String workflow) {
         this.workflow = workflow;
     }
-
     /**
      * Holds value of property hiddenWorkflow.
      */
@@ -399,7 +412,6 @@ public class LoginPage extends VDCBaseBean {
     public void setHiddenWorkflow(javax.faces.component.html.HtmlInputHidden hiddenWorkflow) {
         this.hiddenWorkflow = hiddenWorkflow;
     }
-
     /**
      * Holds value of property studyId.
      */
@@ -420,7 +432,6 @@ public class LoginPage extends VDCBaseBean {
     public void setStudyId(Long studyId) {
         this.studyId = studyId;
     }
-
     /**
      * Holds value of property hiddenStudyId.
      */
@@ -441,6 +452,5 @@ public class LoginPage extends VDCBaseBean {
     public void setHiddenStudyId(HtmlInputHidden hiddenStudyId) {
         this.hiddenStudyId = hiddenStudyId;
     }
-    
 }
 

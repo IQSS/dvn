@@ -138,6 +138,11 @@
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.ContributorRequestPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+   <managed-bean>
+        <managed-bean-name>AccountTermsOfUsePage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.AccountTermsOfUsePage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>    
     <managed-bean>
         <managed-bean-name>FileRequestPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.FileRequestPage</managed-bean-class>

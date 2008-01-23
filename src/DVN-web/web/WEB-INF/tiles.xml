@@ -157,9 +157,9 @@
        <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
        <put name="content" type="template"     value="/login/CreatorRequestTermsPage.jsp"/>
    </definition>
-   <definition name="/login/CreatorRequestQuestionsPage" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
-       <put name="content" type="template"     value="/login/CreatorRequestQuestionsPage.jsp"/>
+   <definition name="/login/AccountTermsOfUsePage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Account Terms of Use" />
+       <put name="content" type="template"     value="/login/AccountTermsOfUsePage.jsp"/>
    </definition>
    
    <!-- Privileged User Pages -->

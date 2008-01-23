@@ -23,6 +23,7 @@ package edu.harvard.hmdc.vdcnet.web;
 import com.sun.rave.web.ui.component.Tree;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleRequestServiceLocal;
+import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.SearchTerm;
@@ -85,6 +86,7 @@ public class HomePage extends VDCBaseBean {
     @EJB IndexServiceLocal indexService;
     @EJB NetworkRoleServiceLocal networkRoleService;
     @EJB RoleRequestServiceLocal roleRequestService;
+    @EJB UserServiceLocal userService;
     
     /** Creates a new instance of HomePageBean */
     public HomePage() {
@@ -544,6 +546,12 @@ public class HomePage extends VDCBaseBean {
  
     public String getDefaultVdcPath() {
         return defaultVdcPath;
+    }
+    
+    public String makeCreatorAction() {
+        userService.makeCreator(getVDCSessionBean().getLoginBean().getUser().getId());
+        System.out.println("In makeCreatorAction");
+        return "addSite";
     }
     
     /******************** TABS *******************/

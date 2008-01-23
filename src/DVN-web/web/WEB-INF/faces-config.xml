@@ -3,7 +3,11 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
          version="1.2">
-  <lifecycle><phase-listener>edu.harvard.hmdc.vdcnet.util.RestoreViewPhaseListener</phase-listener></lifecycle>           
+  <lifecycle>
+            <phase-listener>edu.harvard.hmdc.vdcnet.util.AllPhaseListener</phase-listener>
+            <phase-listener>edu.harvard.hmdc.vdcnet.util.AjaxPhaseListener</phase-listener>
+            <phase-listener>edu.harvard.hmdc.vdcnet.util.RestoreViewPhaseListener</phase-listener>
+  </lifecycle>           
   <factory>
       <application-factory>com.sun.faces.application.ApplicationFactoryImpl</application-factory>
       <faces-context-factory>com.sun.faces.context.FacesContextFactoryImpl</faces-context-factory>
@@ -11,9 +15,6 @@
       <render-kit-factory>com.sun.faces.renderkit.RenderKitFactoryImpl</render-kit-factory>
   </factory>
   <application>
-     <view-handler>
-          org.apache.shale.tiles.TilesViewHandler
-     </view-handler>
    <!-- Set default locale and add supported locales here... -->
    <locale-config>
       <default-locale>en</default-locale>

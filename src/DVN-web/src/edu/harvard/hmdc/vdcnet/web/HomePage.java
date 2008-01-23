@@ -41,6 +41,7 @@ import edu.harvard.hmdc.vdcnet.web.collection.CollectionUI;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
 import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import edu.harvard.hmdc.vdcnet.web.component.DataList;
 import edu.harvard.hmdc.vdcnet.web.component.DataListing;
 import edu.harvard.hmdc.vdcnet.web.component.VDCCollectionTree;
 import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
@@ -57,7 +58,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.SortedSet;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.ejb.EJB;
 
@@ -71,7 +71,10 @@ import javax.ejb.EJB;
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
+import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -372,11 +375,11 @@ public class HomePage extends VDCBaseBean {
     }
     
     //setters
-    public void setDataMap(TreeMap map) {
+    public void setDataMap(Map map) {
         this.dataMap = map;
     }
     
-    public void setTabsMap(TreeMap map) {
+    public void setTabsMap(Map map) {
         this.tabsMap = map;
     }
         
@@ -722,5 +725,91 @@ public class HomePage extends VDCBaseBean {
         this.networkData = networkdata;
     }
     
+    //AJAX related code
+    // actionlisteners associated with the component
+    //action listeners
     
+      /**
+       * page_action
+       * 
+       * @description This method tags an ajax paging event
+       * for the DataList on the network version of the
+       * home page and also sets some of the attributes
+       * needed to page the correct group in the correct direction
+       * 
+       * @author wbossons
+       */
+      public void page_action(ActionEvent event) {
+        if (event.getComponent().getClientId(FacesContext.getCurrentInstance()).contains("previous_")) {
+            dataList.getAttributes().put("pagingDirection", "previous");
+        } else {
+            dataList.getAttributes().put("pagingDirection", "next");
+        }
+        HttpServletRequest request  = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        request.setAttribute("AjaxRequest", "page_action");
+        String clientId = event.getComponent().getClientId(FacesContext.getCurrentInstance());
+        String targetGroup = getTargetGroup(clientId);
+        dataList.getAttributes().put("targetGroup", targetGroup);
+      }
+      
+      //getters for paging
+      private String getTargetGroup(String clientid) {
+          return clientid.substring(clientid.indexOf("_") + 1, clientid.indexOf("_", clientid.indexOf("_") + 1));
+      }
+    
+    //DataList initialization
+      HtmlPanelGrid mainDataTable = new HtmlPanelGrid();
+      DataList dataList;
+      
+      //Getters
+      public DataList getDataList() {
+          if (dataList == null) {
+              dataList = new DataList();
+              populateDataList();
+          } 
+          return dataList;
+      }
+      
+      //Setters
+      public void setDataList(DataList datalist) {
+          this.dataList = datalist;
+      }
+      
+      //Utils
+      
+      private String dataMapId;
+      
+      public String getDataMapId() {
+          return this.dataMapId;
+      }
+      
+      public void setDataMapId(String datamapid) {
+           dataMapId = new String(datamapid);
+      }
+      
+      private int defaultDisplayNumber = 15;
+      
+      private void populateDataList() {
+        setDataMapId("dataMap");
+        dataList.getAttributes().put("defaultDisplayNumber", defaultDisplayNumber);
+        dataList.getAttributes().put("idName", "dataMap");
+        dataList.getAttributes().put("contents", dataMap);
+        dataList.getAttributes().put("tabs", tabsMap);
+        dataList.getAttributes().put("tab", selectedTab);
+        dataList.getAttributes().put("lastRecord", "");
+        dataList.getAttributes().put("firstRecord", "");
+        dataList.getAttributes().put("targetGroup", "none");
+    }
+      
+      /**Test
+      private String wendyBean = new String("");
+      
+      public String getWendyBean() {
+          return wendyBean;
+      }
+      
+      public void setWendyBean(String wendy) {
+          this.wendyBean = wendy;
+      }
+       */
 }

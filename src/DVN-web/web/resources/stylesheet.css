@@ -919,6 +919,7 @@ span.vdcSResultsField {
    padding-right: 20px;
    padding-top: 9px;
 }
+
 /* Rules for Login Page
 */
 .vdcLoginCol1{
@@ -1151,6 +1152,10 @@ a.vdcRequestPanelLink:active{
    padding-bottom: 3px;
    width: 100%;
    display: block;
+}
+
+.dvnDisabled {
+    color:#dddddd;
 }
 
 li.activeBullet a {

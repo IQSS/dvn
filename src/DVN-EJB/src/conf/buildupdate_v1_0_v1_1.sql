@@ -13,9 +13,10 @@ ALTER TABLE vdcnetwork ALTER COLUMN downloadTermsOfUse SET STORAGE EXTENDED;
 ALTER TABLE vdcnetwork ADD COLUMN downloadtermsofuseenabled bool;
 ALTER TABLE vdcnetwork ALTER COLUMN downloadtermsofuseenabled SET STORAGE PLAIN;
 
+ALTER TABLE vdcnetwork ADD COLUMN termsofuseupdated timestamp;
+ALTER TABLE vdcnetwork ALTER COLUMN termsofuseupdated SET STORAGE PLAIN;
 
-ALTER TABLE vdc ADD COLUMN termsofuse text;
-ALTER TABLE vdc ALTER COLUMN termsofuse SET STORAGE EXTENDED;
+
 
 ALTER TABLE vdc ADD COLUMN deposittermsofuseenabled bool;
 ALTER TABLE vdc ALTER COLUMN deposittermsofuseenabled SET STORAGE PLAIN;

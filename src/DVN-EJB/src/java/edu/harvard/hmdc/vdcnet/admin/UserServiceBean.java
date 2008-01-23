@@ -37,6 +37,8 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -46,6 +48,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class UserServiceBean implements UserServiceLocal {
     @EJB RoleServiceLocal roleService;
+    @EJB NetworkRoleServiceLocal networkRoleService;
     
     @PersistenceContext(unitName="VDCNet-ejbPU")
     private EntityManager em;
@@ -156,6 +159,11 @@ public class UserServiceBean implements UserServiceLocal {
         
     }
     
+    public void makeCreator(Long userId) {
+           VDCUser user = em.find(VDCUser.class,userId);
+           user.setNetworkRole(networkRoleService.getCreatorRole());
+    }
+    
     public void setActiveStatus(Long userId, boolean active) {
         VDCUser user = em.find(VDCUser.class,userId);
         user.setActive(active);
@@ -172,6 +180,22 @@ public class UserServiceBean implements UserServiceLocal {
     public String encryptPassword(String plainText) {
         return PasswordEncryption.getInstance().encrypt(plainText);
     
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void clearAgreedTermsOfUse() {
+        System.out.println("IN clearAgreedTermsOfUse");
+        em.createQuery("update VDCUser u set u.agreedTermsOfUse=false "//where " 
+               // " u.networkRole is null or "
+              //  +" u.networkRole.name <> '"
+             //   +NetworkRoleServiceBean.ADMIN+"'"
+                ).executeUpdate();
+        
+    }
+    
+    public void setAgreedTermsOfUse(Long userId, boolean agreed) {
+        VDCUser user = em.find(VDCUser.class,userId);
+        user.setAgreedTermsOfUse(agreed);     
     }
             
 }

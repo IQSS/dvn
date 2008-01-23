@@ -53,7 +53,7 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
    @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
    EntityManager em;
    @EJB MailServiceLocal mailService;
-    
+   @EJB UserServiceLocal userService; 
     private VDCNetwork network;
     private List<NetworkPrivilegedUserBean> privilegedUsers;
     private List<CreatorRequestBean> creatorRequests;
@@ -93,22 +93,17 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
      
    }
     
-   private NetworkRole  getCreatorRole() {
-       String query ="Select n from NetworkRole n where n.name = '"+NetworkRoleServiceLocal.CREATOR+"'";
-       return (NetworkRole) em.createQuery(query).getSingleResult(); 
-       
-   }
+
    // @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void save(String creatorUrl) {
         
         // Update Creator Role Requests based on Acceptions and Rejections
-        NetworkRole creator = getCreatorRole();
         for (Iterator<CreatorRequestBean> it = getCreatorRequests().iterator(); it.hasNext();) {
             CreatorRequestBean elem = it.next();
             VDCUser user = elem.getNetworkRoleRequest().getVdcUser();
-            if (Boolean.TRUE.equals(elem.getAccept()) ){            
-                user.setNetworkRole(creator);
+            if (Boolean.TRUE.equals(elem.getAccept()) ){  
+                userService.makeCreator(user.getId());    
                 em.remove(elem.getNetworkRoleRequest());
                 mailService.sendCreatorApprovalNotification(user.getEmail(),creatorUrl);
             } else if (Boolean.FALSE.equals(elem.getAccept()) ){

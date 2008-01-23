@@ -31,6 +31,7 @@ import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.Template;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Id;
 import javax.persistence.Entity;
 import javax.persistence.*;
@@ -664,6 +665,20 @@ public class VDCNetwork {
      * Holds value of property announcements.
      */
     private String termsOfUse;
+    
+    private boolean termsOfUseEnabled;  
+    
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date termsOfUseUpdated;
+
+    public Date getTermsOfUseUpdated() {
+        return termsOfUseUpdated;
+    }
+
+    public void setTermsOfUseUpdated(Date termsOfUseUpdated) {
+        this.termsOfUseUpdated = termsOfUseUpdated;
+    }
+
 
     public String getDownloadTermsOfUse() {
         return downloadTermsOfUse;
@@ -681,7 +696,6 @@ public class VDCNetwork {
         this.downloadTermsOfUseEnabled = downloadTermsOfUseEnabled;
     }
 
-    private boolean termsOfUseEnabled;  
     
     @Column(name="depositTermsOfUse", columnDefinition="TEXT")
     /**
@@ -698,5 +712,7 @@ public class VDCNetwork {
     private String downloadTermsOfUse;
     
     private boolean downloadTermsOfUseEnabled;  
+    
+    
     
 }

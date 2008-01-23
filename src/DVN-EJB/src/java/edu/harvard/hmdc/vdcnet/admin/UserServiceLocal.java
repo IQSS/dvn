@@ -62,4 +62,10 @@ public interface UserServiceLocal {
     
     public String encryptPassword(String plainText);
     
+    public void clearAgreedTermsOfUse(); 
+    
+    public void setAgreedTermsOfUse(Long userId, boolean agreed);
+    
+    public void makeCreator(Long userId);
+    
 }

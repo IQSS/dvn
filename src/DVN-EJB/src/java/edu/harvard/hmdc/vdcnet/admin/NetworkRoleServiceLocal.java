@@ -50,5 +50,6 @@ public interface NetworkRoleServiceLocal {
     
     public NetworkRoleRequest findCreatorRequest(Long userId);
     
+    public NetworkRole  getCreatorRole();     
     
 }

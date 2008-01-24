@@ -26,6 +26,20 @@
                         </ui:panelGroup>
                         <br />
                         <br />
+                        <h:panelGroup layout="block">
+                            <h:outputLabel value="1)  Number of dataverses to display per group, per page."/>
+                            <h:inputText size="4" maxlength="2" value="#{VDCGroupPage.defaultDisplayNumber}"/>
+                        </h:panelGroup>
+                        <h:panelGroup layout="block">
+                                <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                                    <h:outputText  styleClass="vdcHelpText" value="Each dataverse group will display up to this number of its dataverses on the network home page. Move next and previous with links
+                                    at the bottom of each listed dataverse group."/>
+                        </h:panelGroup>
+                        <br />
+                        <br />
+                        <h:panelGroup layout="block">
+                            <h:outputLabel value="2)  Add/Edit a Dataverse group."/>
+                        </h:panelGroup>
                         <h:dataTable rendered="#{VDCGroupPage.VDCGroups != null}" id="VDCGroups" value="#{VDCGroupPage.VDCGroups}" var="item" cellspacing="0" styleClass="dvGroupAdminTable" headerClass="groupAdminHeader" columnClasses="groupAdminOrderColumn, groupAdminNameColumn, groupAdminDescriptionColumn, groupAdminDeleteColumn" rowClasses="whiteRow, shadedRow">
                             
                             <h:column headerClass="groupAdminHeader">
@@ -49,6 +63,12 @@
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
+                                    <h:outputText value="Display Number"/>
+                                </f:facet>
+                                <h:inputText size="4" maxlength="2" value="#{item.defaultDisplayNumber}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
                                     <h:outputText value="Delete"/>
                                 </f:facet>
                                 <h:selectBooleanCheckbox valueChangeListener="#{VDCGroupPage.changeSelect}" onchange="submit();" id="selected" immediate="true" label="delete" value="#{item.selected}"/>
@@ -59,9 +79,10 @@
                         <ui:panelGroup rendered="#{VDCGroupPage.VDCGroups == null}" block="true" style="padding-top: 0.5em; padding-bottom: 0.5em;">
                             <h:outputText escape="false" value="There are no Dataverse groups to display"/> 
                         </ui:panelGroup>
-                        <h:panelGrid columns="4" styleClass="dvGroupAdminFooter" columnClasses="groupAdminOrderFooter, groupAdminNameFooter, groupAdminDescriptionFooter, groupAdminDeleteFooter" cellspacing="0">
+                        <h:panelGrid columns="5" styleClass="dvGroupAdminFooter" columnClasses="groupAdminOrderFooter, groupAdminNameFooter, groupAdminDescriptionFooter, groupAdminDeleteFooter" cellspacing="0">
                             <h:column><h:outputText escape="false" value="&lt;!-- placeholder --&gt;"/></h:column>
                             <h:column><h:commandLink id="add" value="Add Group" action="#{VDCGroupPage.addGroup}"/></h:column>
+                            <h:column><h:outputText escape="false" value="&lt;!-- placeholder --&gt;"/></h:column>
                             <h:column><h:outputText escape="false" value="&lt;!-- placeholder --&gt;"/></h:column>
                             <h:column><h:commandButton rendered="#{VDCGroupPage.VDCGroups != null}" id="save" value="Save" action="#{VDCGroupPage.save}"/></h:column>
                         </h:panelGrid>

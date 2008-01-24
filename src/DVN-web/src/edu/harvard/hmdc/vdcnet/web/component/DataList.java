@@ -73,7 +73,7 @@ public class DataList extends UICommand {
     private String lastRecord  = new String("");
     private String firstRecord  = new String("");
     private String targetGroup = new String("");
-    int defaultDisplayNumber = 0;
+    
     
     /** Creates a new instance of DataList */
     public DataList() {
@@ -114,9 +114,9 @@ public class DataList extends UICommand {
         String tab = (String)getAttributes().get("tab");
         Map tabsMap = (Map)getAttributes().get("tabs");
         Set tabsKeys = tabsMap.keySet();
-        //DEBUG paging mechanism
-        targetGroup     = (String)getAttributes().get("targetGroup");
         String pagingDirection = (String)getAttributes().get("pagingDirection");
+        int defaultDisplayNumber = 0;
+        targetGroup     = (String)getAttributes().get("targetGroup");
         //END DEBUG
         Iterator tabsIterator = tabsKeys.iterator();
         String[] tabNames = new String[tabsMap.size()];
@@ -162,7 +162,9 @@ public class DataList extends UICommand {
             if (idString.equals(targetGroup))
                 isTarget = true;
             formatHeading(key);
-            formatChildTable(datalistings, idString, isTarget, pagingDirection);
+            Map showMap = (Map)this.getAttributes().get("defaultDisplayNumber");
+            defaultDisplayNumber = Integer.parseInt(((Long)showMap.get(key)).toString());//showMap has the same keys as contents
+            formatChildTable(datalistings, idString, isTarget, pagingDirection, defaultDisplayNumber);
             formatNavigationLinks(idString);
           }
         }
@@ -286,7 +288,7 @@ public class DataList extends UICommand {
      *
      * @author wbossons
      */
-    private void formatChildTable(List ndvs, String idstring, boolean istarget, String pagingDirection) {
+    private void formatChildTable(List ndvs, String idstring, boolean istarget, String pagingDirection, int defaultDisplayNumber) {
         int totalColumns = 4;
         int columns      = 0;
         int startNew     = 0;
@@ -294,7 +296,7 @@ public class DataList extends UICommand {
         int startCount   = 0;//count is used to track lastRecords for ajaxed transactions.
         int endCount   = 0;//count is used to track lastRecords for ajaxed transactions.
         if (totalColumns <= ndvs.size())
-            startNew = setColumnLength(((Integer)this.getAttributes().get("defaultDisplayNumber")), totalColumns);
+            startNew = setColumnLength(defaultDisplayNumber, totalColumns);
         else
             startNew = setColumnLength(totalColumns);
         
@@ -312,7 +314,7 @@ public class DataList extends UICommand {
         HtmlGraphicImage image        = null;
         HtmlOutputText textTag        = null;
         
-        defaultDisplayNumber = (Integer)getAttributes().get("defaultDisplayNumber");
+        //defaultDisplayNumber = (Integer)getAttributes().get("defaultDisplayNumber");
         //pageNext
         if (pagingDirection == null) pagingDirection = "next";
         if (pagingDirection.equals("next")) {
@@ -323,7 +325,7 @@ public class DataList extends UICommand {
                     startCount = this.getFirstRecordCount(idstring);
                     endCount   = this.getLastRecordCount(idstring);
                 } else if ( (startCount + 1) < ndvs.size()) {
-                    startCount = startCount == 0 ? startCount : this.getLastRecordCount(idstring) + 1;//this is wrong for 1st visit
+                    startCount = startCount == 0 ? startCount : this.getLastRecordCount(idstring) + 1;
                     endCount   = startCount + defaultDisplayNumber > ndvs.size() ? ndvs.size()-1 : startCount + (defaultDisplayNumber - 1);
                 }
                 this.addFirstRecordCount(idstring, String.valueOf(startCount));
@@ -331,10 +333,8 @@ public class DataList extends UICommand {
             } else {
                 endCount   = this.getLastRecordCount(idstring);
                 startCount = this.getFirstRecordCount(idstring);
-            }
+            }//end pageNext
         } else if (pagingDirection.equals("previous")) {
-            //end pageNext
-            
             //pagePrevious
             if (istarget || targetGroup.equals("none")) {
                 endCount     = this.getFirstRecordCount(idstring) - 1;

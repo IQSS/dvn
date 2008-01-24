@@ -35,6 +35,7 @@ import edu.harvard.hmdc.vdcnet.util.ExceptionMessageWriter;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.util.ArrayList;
@@ -56,18 +57,23 @@ import javax.servlet.http.HttpServletRequest;
 public class VDCGroupPage extends VDCBaseBean {
      @EJB VDCGroupServiceLocal vdcGroupService;
      @EJB VDCServiceLocal vdcService;
+     @EJB VDCNetworkServiceLocal vdcNetworkService;
     /** Creates a new instance of VDCGroupPage */
     public VDCGroupPage() {
     }
 
+    private Long vdcGroupId;
     //the model for the detail page
-    private DataModel model;
-    private List groupList;
+    private DataModel  model;
+    private List       groupList;
     
     //the model for the edit page
     private DataModel editModel;
-    private List     editList;
-    private VDCGroup vdcGroup;
+    private List      editList;
+    private VDCGroup  vdcGroup;
+    private Long      defaultDisplayNumber;
+    private String    description;
+    private String    name;
 
     public void init() {
         super.init();
@@ -93,15 +99,7 @@ public class VDCGroupPage extends VDCBaseBean {
             }
         }
     }
-    private Long vdcGroupId;
     
-    public Long getVdcGroupId() {
-        return this.vdcGroupId;
-    }
-    
-    public void setVdcGroupId(Long vdcgroupid) {
-        this.vdcGroupId = vdcgroupid;
-    }
     public String edit() {
         VDCGroup vdcgroup = (VDCGroup)model.getRowData();
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -161,20 +159,13 @@ public class VDCGroupPage extends VDCBaseBean {
             return result;
         }
     }
-    
-    public void setVDCGroupFromRequestParam() {
-        VDCGroup VdcGroup = getVDCGroupFromRequestParam();
-        setVdcGroup(VdcGroup);
-    }
-    
-    public VDCGroup getVDCGroupFromRequestParam() {
-        VDCGroup o = this.vdcGroupService.findById((Long)model.getRowData());
-        return o;
-    }
-    
+      
     public String save() {
         String msg = SUCCESS_MESSAGE;
         success    = true;
+        System.out.println("the value of the network default is " + defaultDisplayNumber);
+        getVDCRequestBean().getVdcNetwork().setDefaultDisplayNumber(defaultDisplayNumber);
+        vdcNetworkService.updateDefaultDisplayNumber(getVDCRequestBean().getVdcNetwork());
         try {
             List list = (List)model.getWrappedData();
             Iterator iterator = list.iterator();
@@ -197,6 +188,11 @@ public class VDCGroupPage extends VDCBaseBean {
         }
     }
     
+    //getters
+    public Long getVdcGroupId() {
+        return this.vdcGroupId;
+    }
+    
     public DataModel getVDCGroups() {
         try {
             List list = this.getGroupList();
@@ -213,13 +209,14 @@ public class VDCGroupPage extends VDCBaseBean {
             return model;
         }
     }
+    
+    public VDCGroup getVDCGroupFromRequestParam() {
+        VDCGroup o = this.vdcGroupService.findById((Long)model.getRowData());
+        return o;
+    }
 
     public DataModel getDetailVDCGroups() {
         return model;
-    }
-
-    public void setDetailVDCGroups(Collection<VDCGroup> m) {
-        model = new ListDataModel(new ArrayList(m));
     }
     
     public List getGroupList() {
@@ -230,17 +227,60 @@ public class VDCGroupPage extends VDCBaseBean {
         return this.groupList;
     }
     
+     public VDCGroup getVdcGroup() {
+        return this.vdcGroup;
+    }
+
+     public String getName() {
+        if (name == null && this.getVdcGroup() != null) {
+            setName(this.getVdcGroup().getName());
+        }
+        return this.name;
+    }
+     
+     public String getDescription() {
+        if (description == null && this.getVdcGroup() != null) {
+            setDescription(this.getVdcGroup().getDescription());
+        }
+        return this.description;
+    }
+     
+     public Long getDefaultDisplayNumber() {
+         return getVDCRequestBean().getVdcNetwork().getDefaultDisplayNumber();
+     }
+     
+    //setters
+    public void setVdcGroupId(Long vdcgroupid) {
+        this.vdcGroupId = vdcgroupid;
+    }
+    
+    public void setDetailVDCGroups(Collection<VDCGroup> m) {
+        model = new ListDataModel(new ArrayList(m));
+    }
+    
+    public void setVDCGroupFromRequestParam() {
+        VDCGroup VdcGroup = getVDCGroupFromRequestParam();
+        setVdcGroup(VdcGroup);
+    }
+    
     public void setGroupList(List grouplist) {
         this.groupList = grouplist;
     }
     
-   //The edit page
-    public VDCGroup getVdcGroup() {
-        return this.vdcGroup;
-    }
-    
     public void setVdcGroup(VDCGroup vdcgroup) {
         this.vdcGroup = vdcgroup;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    public void setDefaultDisplayNumber(Long defaultdisplaynumber) {
+        this.defaultDisplayNumber = defaultdisplaynumber;
     }
     
     /** add/edit add and remove widge
@@ -307,31 +347,12 @@ public class VDCGroupPage extends VDCBaseBean {
     }
     
    /** end new */ 
-    private String name;
     
-    public String getName() {
-        if (name == null && this.getVdcGroup() != null) {
-            setName(this.getVdcGroup().getName());
-        }
-        return this.name;
-    }
     
-    public void setName(String name) {
-        this.name = name;
-    }
     
-    private String description;
     
-    public String getDescription() {
-        if (description == null && this.getVdcGroup() != null) {
-            setDescription(this.getVdcGroup().getDescription());
-        }
-        return this.description;
-    }
     
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    
    /** some helper methods
      *
      *
@@ -408,6 +429,7 @@ public class VDCGroupPage extends VDCBaseBean {
             String newValue = (String)event.getNewValue();
             this.setDescription(newValue);
     }
+    
     
     /** commonly used iteration
      * (by change listeners)

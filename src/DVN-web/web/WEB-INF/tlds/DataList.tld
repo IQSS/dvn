@@ -71,6 +71,9 @@
         <attribute>
               <name>defaultDisplayNumber</name>
               <required>false</required>
+              <deferred-value>
+                <type>java.util.Map</type>
+            </deferred-value>
         </attribute>
     </tag>
 </taglib>

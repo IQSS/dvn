@@ -713,6 +713,14 @@ public class VDCNetwork {
     
     private boolean downloadTermsOfUseEnabled;  
     
-    
+    private Long defaultDisplayNumber;
+
+    public Long getDefaultDisplayNumber() {
+        return defaultDisplayNumber;
+    }
+
+    public void setDefaultDisplayNumber(Long defaultDisplayNumber) {
+        this.defaultDisplayNumber = defaultDisplayNumber;
+    }
     
 }

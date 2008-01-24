@@ -936,8 +936,12 @@ public class FileDownloadServlet extends HttpServlet{
 
 	// let's attempt to generate the thumb:
 
+	// (I'm scaling all the images down to 64 pixels horizontally;
+	// I picked the number 64 totally arbitrarily;
+	// TODO: (?) make the default thumb size configurable
+	// through a JVM option??
 	
-	String ImageMagick = "/usr/bin/convert -size 64x64" + fileLocation + "-resize 64" +  thumbFileLocation; 
+	String ImageMagick = "/usr/bin/convert -size 64x64 " + fileLocation + " -resize 64 " +  thumbFileLocation; 
 	int exitValue = 1; 
 	
 	try {

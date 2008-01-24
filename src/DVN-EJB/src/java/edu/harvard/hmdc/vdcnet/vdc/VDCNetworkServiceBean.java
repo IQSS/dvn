@@ -234,4 +234,9 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         total = (Long)object;
         return total;
     }
+    
+    public void updateDefaultDisplayNumber(VDCNetwork vdcnetwork) {
+        if (em.find(VDCNetwork.class, new Long(1)) != null)
+            em.merge(vdcnetwork);
+    }
 }

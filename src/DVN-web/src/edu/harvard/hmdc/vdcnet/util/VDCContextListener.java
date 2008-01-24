@@ -49,7 +49,7 @@ import javax.servlet.ServletContextListener;
  @EJB(name="vdcNetworkService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal.class)
 })
 public class VDCContextListener implements ServletContextListener {
-    @EJB SyncVDCServiceLocal syncVDCService;
+  
 
     public void contextDestroyed(ServletContextEvent event) {
     

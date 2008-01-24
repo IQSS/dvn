@@ -8,8 +8,7 @@
                 <div id="loginPageWrap">
                     <ui:form id="vanillaLoginForm">
                         <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-                        <h:inputHidden binding="#{LoginPage.hiddenWorkflow}" value="#{LoginPage.workflow}"/>
-                         <h:inputHidden binding="#{LoginPage.hiddenStudyId}" value="#{LoginPage.studyId}"/>
+                           <h:inputHidden binding="#{LoginPage.hiddenStudyId}" value="#{LoginPage.studyId}"/>
                          <f:verbatim>
 
                          </f:verbatim>

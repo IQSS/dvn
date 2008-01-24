@@ -125,7 +125,10 @@ public class HomePage extends VDCBaseBean {
         LoginBean loginBean = getVDCSessionBean().getLoginBean();
         
         if (getVDCRequestBean().getCurrentVDC() == null && getVDCRequestBean().getVdcNetwork().isAllowCreateRequest()) {
-            if (loginBean==null || (loginBean!=null && !loginBean.isNetworkAdmin() && !loginBean.isNetworkCreator() && networkRoleService.findCreatorRequest(loginBean.getUser().getId())==null )) {
+            if (loginBean==null || 
+                    (loginBean!=null  && 
+                      !loginBean.isNetworkAdmin()    && 
+                      (!loginBean.isNetworkCreator() || (loginBean.isNetworkCreator() && !userService.hasUserCreatedDataverse(loginBean.getUser().getId()))))) {
                 showRequestCreator=true;
             }
         }

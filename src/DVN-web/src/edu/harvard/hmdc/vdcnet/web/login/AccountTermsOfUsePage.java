@@ -31,21 +31,25 @@ package edu.harvard.hmdc.vdcnet.web.login;
 
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
-import javax.faces.component.html.HtmlInputHidden;
 
 /**
  *
  * @author Gustavo Durand
  */
 public class AccountTermsOfUsePage extends VDCBaseBean {
-    @EJB UserServiceLocal userService; 
+    @EJB UserServiceLocal userService;
+    private String termsOfUse; 
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
+ 
     public AccountTermsOfUsePage() {}
-    
-  
-   
-    
+
+    public String getTermsOfUse() {
+        return vdcNetworkService.find().getTermsOfUse();
+        
+    }
 
   
 
@@ -74,29 +78,10 @@ public class AccountTermsOfUsePage extends VDCBaseBean {
     }    
     
     public String acceptTerms_action () {
-            VDCUser user = (VDCUser)sessionGet("loginUser");
-            String loginWorkflow = (String)sessionGet("loginWorkflow");
-            Long studyId = (Long)sessionGet("loginStudyId");
-            String forward=null;
-            if (user!=null) {
-                if (termsAccepted) {
-                    if (loginWorkflow!=null && loginWorkflow.equals("creator")) {
-                        userService.makeCreator(user.getId());
-                        
-                    }
-                    userService.setAgreedTermsOfUse(user.getId(), termsAccepted);
-                    user.setAgreedTermsOfUse(termsAccepted);  // update detached object because it will be added to the loginBean
-                    LoginPage.updateSessionForLogin(getExternalContext(),  getSessionMap(), getVDCSessionBean(), user);
-                    LoginPage.setLoginRedirect(getSessionMap(), this.getExternalContext().getRequestContextPath(),getVDCRequestBean().getCurrentVDC(), loginWorkflow,studyId);
-                }
-              
-            }    
-         
-            sessionRemove("loginWorkflow");
-            sessionRemove("loginStudyId");
-            sessionRemove("loginUser");
-            forward="home";
-           
+    
+             LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean)this.getBean("LoginWorkflowBean");
+            String forward = loginWorkflowBean.processTermsOfUse(termsAccepted);
+        
             return forward;      
         
     }    

@@ -118,11 +118,6 @@
             <value>#{param.redirect}</value>
         </managed-property>
         <managed-property>
-            <property-name>workflow</property-name>
-            <property-class>java.lang.String</property-class>
-            <value>#{param.workflow}</value>
-        </managed-property>
-        <managed-property>
             <property-name>studyId</property-name>
             <property-class>java.lang.Long</property-class>
             <value>#{param.studyId}</value>
@@ -622,4 +617,9 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <!-- rem'd the tiles classes -->
+    <managed-bean>
+        <managed-bean-name>LoginWorkflowBean</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.LoginWorkflowBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
 </faces-config>

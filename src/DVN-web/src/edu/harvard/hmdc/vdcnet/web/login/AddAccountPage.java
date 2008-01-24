@@ -35,6 +35,7 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
@@ -135,6 +136,7 @@ public class AddAccountPage extends VDCBaseBean {
     @EJB UserServiceLocal userService;
     @EJB MailServiceLocal mailService;
     @EJB StudyServiceLocal studyService;
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
     HtmlInputSecret inputPassword;
 
 
@@ -274,44 +276,16 @@ public class AddAccountPage extends VDCBaseBean {
         String workflowValue=null;
         user.setActive(true);
         editUserService.save();
-        
-        if (hiddenWorkflow.getValue()!=null) {
-            workflowValue=hiddenWorkflow.getValue().toString();
-            this.sessionPut("loginWorkflow", workflowValue);
-            this.sessionPut("loginStudyId", studyId);
-            this.sessionPut("loginUser", user);
-        }
-        
         if (StringUtil.isEmpty(workflowValue)) {
             StatusMessage msg = new StatusMessage();
             msg.setMessageText("User account created successfully.");
             msg.setStyleClass("successMessage");
             getRequestMap().put("statusMessage",msg);
             forwardPage="viewAccount";
-        } else if (workflowValue.equals("contributor")) {
-            forwardPage="accountTermsOfUse";
-        } else if (workflowValue.equals("creator")) {
-            forwardPage="accountTermsOfUse";
-        } else if (workflowValue.equals("fileAccess")) {
-            forwardPage="fileRequest";
-        }
-        
-     
-        
-        getVDCSessionBean().setUserService(null);
-        
-        
-        
-        
-        
-        if (workflowValue!=null) {
-            getRequestMap().put("fromPage","AddAccountPage");
-            getRequestMap().put("userId",user.getId());
-            if (workflowValue.equals("fileAccess")) {
-                getRequestMap().put("studyId",studyId);
-            }
-        }
-        return forwardPage;
+        } 
+        LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean)this.getBean("LoginWorkflowBean");       
+        return loginWorkflowBean.processAddAccount(user);
+      
     }
     
     public String cancel() {

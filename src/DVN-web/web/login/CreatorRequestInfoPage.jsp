@@ -42,9 +42,13 @@
 			</div>
         </div>
         <div id="requestIntroCont">
-                   <h:outputLink id="requestIntroContLink1" rendered="#{VDCSession.loginBean==null }" value="/dvn/faces/login/CreatorRequestAccountPage.jsp">
-                                <h:outputText value="Start. Create your own Dataverse" escape="false"/>
-                  </h:outputLink>
+                  <h:commandLink  action="#{LoginWorkflowBean.beginCreatorWorkflow}">
+                                <h:outputText value="Continue" escape="false"/>
+                  </h:commandLink>
+                  <br></br>
+                   <h:commandLink rendered="#{VDCSession.loginBean==null }" action="#{LoginWorkflowBean.beginLoginCreatorWorkflow}">
+                                <h:outputText value="If you already have an account, login and continue" escape="false"/>
+                  </h:commandLink>
 
             <!--a href="#" id="requestIntroContLink">Start. Create Your Own Dataverse /a-->
             </div>

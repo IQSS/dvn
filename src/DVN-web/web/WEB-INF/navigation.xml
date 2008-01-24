@@ -114,7 +114,20 @@
             <to-view-id>/login/AccountTermsOfUsePage.jsp</to-view-id>
         </navigation-case>
      </navigation-rule>  
-
+  <navigation-rule>
+         <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>addAccount</from-outcome>
+            <to-view-id>/login/AddAccountPage.jsp</to-view-id>
+        </navigation-case>
+     </navigation-rule>       
+  <navigation-rule>
+         <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>login</from-outcome>
+            <to-view-id>/login/LoginPage.jsp</to-view-id>
+        </navigation-case>
+     </navigation-rule>       
     <navigation-rule>
         <from-view-id>/login/ContributorRequestPage.jsp</from-view-id>
         <navigation-case>
@@ -131,22 +144,7 @@
         </navigation-case>         
     </navigation-rule>
     
-      <navigation-rule>
-        <from-view-id>/login/CreatorRequestTermsPage.jsp</from-view-id>
-        <navigation-case>
-            <from-outcome>login</from-outcome>
-            <to-view-id>/login/CreatorRequestAccountPage.jsp</to-view-id>        
-        </navigation-case>         
-    </navigation-rule>
-    
-      <navigation-rule>
-        <from-view-id>/login/CreatorRequestTermsPage.jsp</from-view-id>
-        <navigation-case>
-            <from-outcome>questions</from-outcome>
-            <to-view-id>/login/CreatorRequestQuestionsPage.jsp</to-view-id>        
-        </navigation-case>         
-    </navigation-rule>
-    
+   
     
     <navigation-rule>
         <from-view-id>/login/FileRequestPage.jsp</from-view-id>

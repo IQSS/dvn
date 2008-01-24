@@ -103,8 +103,9 @@ public class HomePage extends VDCBaseBean {
     private Tree collectionTree;
     private String searchField;
     private String searchValue;
-    private Map dataMap = new LinkedHashMap();
-    private Map tabsMap = new LinkedHashMap();
+    private Map dataMap    = new LinkedHashMap();
+    private Map tabsMap    = new LinkedHashMap();
+    private Map showMap = new LinkedHashMap(); //stores display numbers for all of the groups
     private BundleReader datalistbundle = new BundleReader("DataListBundle");
     
     StatusMessage msg;
@@ -418,9 +419,11 @@ public class HomePage extends VDCBaseBean {
             List<DataListing> dataList = sortVdcs(innerlist);
             if (!dataList.isEmpty()) {
                 dataMap.put(vdcgroup.getName(), dataList);
+                showMap.put(vdcgroup.getName(), vdcgroup.getDefaultDisplayNumber());
                 vdcGroupCount++;
             } 
         }
+        //finally, add the default display numbers 
     }
     
     public void initVdcsSansGroups() {
@@ -444,8 +447,10 @@ public class HomePage extends VDCBaseBean {
         setVdcsSansGroups(newlist);
         List<DataListing> dataList = sortVdcs(this.getVdcsSansGroups());
         String heading = (vdcGroupCount > 0 || scholarDvCount > 0) ? datalistbundle.getMessageValue("otherGroupLabel") : "";
-        if (!dataList.isEmpty()) 
+        if (!dataList.isEmpty()) {
                 dataMap.put(heading, dataList);
+                showMap.put(heading, getVDCRequestBean().getVdcNetwork().getDefaultDisplayNumber());
+        }
    }
     
    public void initScholarDVGroup() {
@@ -470,6 +475,7 @@ public class HomePage extends VDCBaseBean {
         List<DataListing> dataList = sortVdcs(this.getScholarDvGroup());
         if (!dataList.isEmpty()) {
             dataMap.put(this.datalistbundle.getMessageValue("scholarDvGroupLabel"), dataList);
+            showMap.put(this.datalistbundle.getMessageValue("scholarDvGroupLabel"), getVDCRequestBean().getVdcNetwork().getDefaultDisplayNumber());
             scholarDvCount++;
         }
      }
@@ -786,12 +792,21 @@ public class HomePage extends VDCBaseBean {
       public void setDataMapId(String datamapid) {
            dataMapId = new String(datamapid);
       }
+      /**
+      private int defaultDisplayNumber = 0;
       
-      private int defaultDisplayNumber = 15;
+      private int getDefaultDisplayNumber() {
+          if (defaultDisplayNumber == 0) {
+              defaultDisplayNumber = Integer.parseInt(getVDCRequestBean().getVdcNetwork().getDefaultDisplayNumber().toString());
+          }
+          return defaultDisplayNumber;
+          
+      }*/
       
       private void populateDataList() {
         setDataMapId("dataMap");
-        dataList.getAttributes().put("defaultDisplayNumber", defaultDisplayNumber);
+        //dataList.getAttributes().put("defaultDisplayNumber", getDefaultDisplayNumber());
+        dataList.getAttributes().put("defaultDisplayNumber", showMap);
         dataList.getAttributes().put("idName", "dataMap");
         dataList.getAttributes().put("contents", dataMap);
         dataList.getAttributes().put("tabs", tabsMap);

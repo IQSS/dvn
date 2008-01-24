@@ -60,6 +60,8 @@ public interface VDCNetworkServiceLocal {
     Long getTotalStudies(boolean isreleased);
     
     Long getTotalFiles(boolean isreleased);
+    
+    void updateDefaultDisplayNumber(VDCNetwork vdcnetwork);
 
     
     

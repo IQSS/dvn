@@ -194,6 +194,18 @@ public class VDCGroup implements Serializable {
         this.description = description;
     }  
     
+    private Long defaultDisplayNumber;
+
+    public void setDefaultDisplayNumber(Long defaultDisplayNumber) {
+        this.defaultDisplayNumber = defaultDisplayNumber;
+    }
+
+    public Long getDefaultDisplayNumber() {
+        return defaultDisplayNumber;
+    }
+   
+    
+    
     @Transient
     private boolean selected = false;
     

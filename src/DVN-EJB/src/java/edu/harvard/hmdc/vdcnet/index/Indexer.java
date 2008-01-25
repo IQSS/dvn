@@ -323,31 +323,30 @@ public class Indexer {
         writer.setUseCompoundFile(true);
         writer.addDocument(doc);
         writer.close();
+        writerVar = new IndexWriter(dir, getAnalyzer(), !(new File(indexDir + "/segments").exists()));
         for (int i = 0; i < fileCategories.size(); i++) {
             FileCategory fileCategory = fileCategories.get(i);
-            Collection <StudyFile> studyFiles = fileCategory.getStudyFiles();
+            Collection<StudyFile> studyFiles = fileCategory.getStudyFiles();
             for (Iterator it = studyFiles.iterator(); it.hasNext();) {
                 StudyFile elem = (StudyFile) it.next();
                 DataTable dataTable = elem.getDataTable();
-                if (dataTable != null){
-                    List <DataVariable> dataVariables = dataTable.getDataVariables();
+                if (dataTable != null) {
+                    List<DataVariable> dataVariables = dataTable.getDataVariables();
                     for (int j = 0; j < dataVariables.size(); j++) {
                         Document docVariables = new Document();
-                        addText(docVariables,"varStudyId",study.getId().toString());
-                        addText(docVariables,"varStudyFileId",elem.getId().toString());
+                        addText(docVariables, "varStudyId", study.getId().toString());
+                        addText(docVariables, "varStudyFileId", elem.getId().toString());
                         DataVariable dataVariable = dataVariables.get(j);
-                        addText(docVariables,"id",dataVariable.getId().toString());
-                        addText(docVariables,"varName",dataVariable.getName());
-                        addText(docVariables,"varLabel",dataVariable.getLabel());
-                        addText(docVariables,"varId",dataVariable.getId().toString());
-                        writerVar = new IndexWriter(dir,getAnalyzer(),!(new File(indexDir+"/segments").exists()));
+                        addText(docVariables, "id", dataVariable.getId().toString());
+                        addText(docVariables, "varName", dataVariable.getName());
+                        addText(docVariables, "varLabel", dataVariable.getLabel());
+                        addText(docVariables, "varId", dataVariable.getId().toString());
                         writerVar.addDocument(docVariables);
-                        writerVar.close();
                     }
                 }
             }
         }
-        
+        writerVar.close();
         writer2 = new IndexWriter(dir,new StandardAnalyzer(),!(new File(indexDir+"/segments").exists()));    
         writer2.setUseCompoundFile(true);
         writer2.addDocument(doc);

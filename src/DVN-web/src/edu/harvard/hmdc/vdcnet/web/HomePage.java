@@ -795,17 +795,7 @@ public class HomePage extends VDCBaseBean {
       public void setDataMapId(String datamapid) {
            dataMapId = new String(datamapid);
       }
-      /**
-      private int defaultDisplayNumber = 0;
-      
-      private int getDefaultDisplayNumber() {
-          if (defaultDisplayNumber == 0) {
-              defaultDisplayNumber = Integer.parseInt(getVDCRequestBean().getVdcNetwork().getDefaultDisplayNumber().toString());
-          }
-          return defaultDisplayNumber;
-          
-      }*/
-      
+            
       private void populateDataList() {
         setDataMapId("dataMap");
         //dataList.getAttributes().put("defaultDisplayNumber", getDefaultDisplayNumber());
@@ -819,15 +809,4 @@ public class HomePage extends VDCBaseBean {
         dataList.getAttributes().put("targetGroup", "none");
     }
       
-      /**Test
-      private String wendyBean = new String("");
-      
-      public String getWendyBean() {
-          return wendyBean;
-      }
-      
-      public void setWendyBean(String wendy) {
-          this.wendyBean = wendy;
-      }
-       */
 }

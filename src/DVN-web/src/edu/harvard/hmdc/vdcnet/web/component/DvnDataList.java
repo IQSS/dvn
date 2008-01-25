@@ -19,7 +19,7 @@
  */
 
 /*
- * DataList.java
+ * DvnDataList.java
  *
  * Created on November 15, 2007, 11:16 AM
  *
@@ -68,15 +68,15 @@ import org.ajax4jsf.ajax.html.HtmlAjaxCommandLink;
  *
  * @author wbossons
  */
-public class DataList extends UICommand {
+public class DvnDataList extends UICommand {
 
     private String lastRecord  = new String("");
     private String firstRecord  = new String("");
     private String targetGroup = new String("");
     
     
-    /** Creates a new instance of DataList */
-    public DataList() {
+    /** Creates a new instance of DvnDataList */
+    public DvnDataList() {
         super();
     }
 

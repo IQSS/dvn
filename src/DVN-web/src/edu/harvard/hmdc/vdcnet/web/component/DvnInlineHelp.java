@@ -19,7 +19,7 @@
  */
 
 /*
- * InlineHelp.java
+ * DvnInlineHelp.java
  *
  * Created on March 29, 2007, 11:13 AM
  *
@@ -38,10 +38,10 @@ import javax.faces.context.ResponseWriter;
  *
  * @author wbossons
  */
-public class InlineHelp extends UIComponentBase {
+public class DvnInlineHelp extends UIComponentBase {
     
-    /** Creates a new instance of InlineHelp */
-    public InlineHelp() {
+    /** Creates a new instance of DvnInlineHelp */
+    public DvnInlineHelp() {
     }
     
     public String getFamily() {

@@ -19,7 +19,7 @@
  */
 
 /*
- * DataListTag.java
+ * DvnDataListTag.java
  *
  * Created on November 15, 2007, 11:16 AM
  *
@@ -40,7 +40,7 @@ import javax.faces.webapp.UIComponentTag;
  *
  * @author wbossons
  */
-public class DataListTag  extends UIComponentTag {
+public class DvnDataListTag  extends UIComponentTag {
     
     private ValueExpression contents;
     private ValueExpression tabs;
@@ -52,13 +52,13 @@ public class DataListTag  extends UIComponentTag {
     private ValueExpression targetGroup;
     private ValueExpression defaultDisplayNumber;
     
-    /** Creates a new instance of DataListTag */
-    public DataListTag() {
+    /** Creates a new instance of DvnDataListTag */
+    public DvnDataListTag() {
     }
     
     public String getComponentType() {
         //Associates tag with UI Component registered in faces-config.xml
-        return "DataList";
+        return "DvnDataList";
     }
   
     public String getRendererType() {
@@ -75,7 +75,7 @@ public class DataListTag  extends UIComponentTag {
      */
     protected void setProperties(UIComponent component) {
         super.setProperties(component);
-        DataList datalist = (DataList)component;
+        DvnDataList datalist = (DvnDataList)component;
          if(contents != null) {
               if (!contents.isLiteralText()) {
                 datalist.setValueExpression("contents", contents);

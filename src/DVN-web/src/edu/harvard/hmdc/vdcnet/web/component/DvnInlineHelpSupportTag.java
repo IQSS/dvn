@@ -19,7 +19,7 @@
  */
 
 /*
- * InlineHelpSupportTag.java
+ * DvnInlineHelpSupportTag.java
  *
  * Created on May 3, 2007, 2:12 PM
  *
@@ -39,19 +39,19 @@ import javax.faces.webapp.UIComponentTag;
  *
  * @author wbossons
  */
-public class InlineHelpSupportTag extends UIComponentTag {
+public class DvnInlineHelpSupportTag extends UIComponentTag {
     
     String writeHelpDiv = null;
     String writeTipDiv  = null;
     String writePopupDiv = null;
     
-       /** Creates a new instance of TooltipTag */
-    public InlineHelpSupportTag() {
+       /** Creates a new instance of DvnInlineHelpTag */
+    public DvnInlineHelpSupportTag() {
     }
     
     public String getComponentType() {
         //Associates tag with UI Component registered in faces-config.xml
-        return "InlineHelpSupport";
+        return "DvnInlineHelpSupport";
     }
     
     public String getRendererType() {

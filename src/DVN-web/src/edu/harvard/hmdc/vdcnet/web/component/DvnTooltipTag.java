@@ -19,7 +19,7 @@
  */
 
 /*
- * TooltipTag.java
+ * DvnTooltipTag.java
  *
  * Created on April 30, 2007, 2:50 PM
  *
@@ -39,7 +39,7 @@ import javax.faces.webapp.UIComponentTag;
  *
  * @author wbossons
  */
-public class TooltipTag extends UIComponentTag {
+public class DvnTooltipTag extends UIComponentTag {
     
     String tooltipMessage = null;
     String linkText     = null;
@@ -52,13 +52,13 @@ public class TooltipTag extends UIComponentTag {
     String imageSource  = null; // optional
     String closeText  = null; // optional
     
-       /** Creates a new instance of TooltipTag */
-    public TooltipTag() {
+       /** Creates a new instance of DvnTooltipTag */
+    public DvnTooltipTag() {
     }
     
     public String getComponentType() {
         //Associates tag with UI Component registered in faces-config.xml
-        return "Tooltip";
+        return "DvnTooltip";
     }
     
     public String getRendererType() {

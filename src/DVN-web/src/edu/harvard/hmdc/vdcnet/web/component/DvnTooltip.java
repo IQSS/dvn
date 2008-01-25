@@ -19,7 +19,7 @@
  */
 
 /*
- * Tooltip.java
+ * DvnTooltip.java
  *
  * Created on April 30, 2007, 2:44 PM
  *
@@ -37,10 +37,10 @@ import javax.faces.context.ResponseWriter;
  *
  * @author wbossons
  */
-public class Tooltip extends UIComponentBase {
+public class DvnTooltip extends UIComponentBase {
     
-    /** Creates a new instance of Tooltip */
-    public Tooltip() {
+    /** Creates a new instance of DvnTooltip */
+    public DvnTooltip() {
     }
     
     public String getFamily() {

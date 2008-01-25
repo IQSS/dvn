@@ -19,7 +19,7 @@
  */
 
 /*
- * InlineHelpSupport.java
+ * DvnInlineHelpSupport.java
  *
  * Created on May 3, 2007, 2:07 PM
  */
@@ -37,10 +37,10 @@ import javax.faces.context.ResponseWriter;
  * @version
  */
 
-public class InlineHelpSupport extends UIComponentBase {
+public class DvnInlineHelpSupport extends UIComponentBase {
     
     /** Creates new instance of tag handler */
-    public InlineHelpSupport() {
+    public DvnInlineHelpSupport() {
         super();
     }
     

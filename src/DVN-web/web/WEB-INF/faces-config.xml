@@ -47,20 +47,20 @@
 	  <component-class>edu.harvard.hmdc.vdcnet.web.customComponent.scroller.ScrollerComponent</component-class>
   </component>
   <component>
-      <component-type>InlineHelp</component-type>
-      <component-class>edu.harvard.hmdc.vdcnet.web.component.InlineHelp</component-class>
+      <component-type>DvnInlineHelp</component-type>
+      <component-class>edu.harvard.hmdc.vdcnet.web.component.DvnInlineHelp</component-class>
   </component>
   <component>
-      <component-type>Tooltip</component-type>
-      <component-class>edu.harvard.hmdc.vdcnet.web.component.Tooltip</component-class>
+      <component-type>DvnTooltip</component-type>
+      <component-class>edu.harvard.hmdc.vdcnet.web.component.DvnTooltip</component-class>
   </component>
   <component>
-      <component-type>InlineHelpSupport</component-type>
-      <component-class>edu.harvard.hmdc.vdcnet.web.component.InlineHelpSupport</component-class>
+      <component-type>DvnInlineHelpSupport</component-type>
+      <component-class>edu.harvard.hmdc.vdcnet.web.component.DvnInlineHelpSupport</component-class>
   </component>
   <component>
-      <component-type>DataList</component-type>
-      <component-class>edu.harvard.hmdc.vdcnet.web.component.DataList</component-class>
+      <component-type>DvnDataList</component-type>
+      <component-class>edu.harvard.hmdc.vdcnet.web.component.DvnDataList</component-class>
     </component>
   <!-- validators -->
   <validator>

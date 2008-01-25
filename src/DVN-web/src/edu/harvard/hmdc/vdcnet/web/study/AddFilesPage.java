@@ -189,7 +189,7 @@ public class AddFilesPage extends VDCBaseBean {
                 
                 uploadedFile.write( file );
                 
-                DSBWrapper dsb = new DSBWrapper();
+                // DSBWrapper dsb = new DSBWrapper();
                 String analyzeFileType = FileUtil.analyzeFile( file );
 
                 
@@ -205,7 +205,7 @@ public class AddFilesPage extends VDCBaseBean {
                 f.getStudyFile().setFileName(f.getStudyFile().isSubsettable() ? replaceExtension(originalName): originalName);                
                 
                 // for unknown file types, use the originalFileType determined by the upload
-                f.getStudyFile().setFileType( analyzeFileType.equals("application/octet-stream") ? originalFileType : analyzeFileType);
+                // f.getStudyFile().setFileType( analyzeFileType.equals("application/octet-stream") ? originalFileType : analyzeFileType);
                 
                 // update the MIME-type if necessary
                 if (analyzeFileType.equals("application/octet-stream")) {

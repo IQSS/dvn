@@ -5,14 +5,15 @@
           xmlns:ui="http://www.sun.com/web/ui"
           xmlns:tiles="http://struts.apache.org/tags-tiles"
           xmlns:c="http://java.sun.com/jsp/jstl/core"
-          xmlns:ihelp="/WEB-INF/tlds/InlineHelp"
-          xmlns:ihelpsupport="/WEB-INF/tlds/InlineHelpSupport">
+          xmlns:dvn="/WEB-INF/tlds/dvn-components"
+          >
         
     <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
     
     <f:subview id="editStudyPageView">
         <f:verbatim>           
             <script language="Javascript">
+                // <![CDATA[ 
                     // functions to work with category selection
                     // note a few assumptions that these functions have:
                     // the id of the dropdown (including parent nodes); the partial id of the checkboxes;
@@ -31,8 +32,8 @@
                     }
                     function updateAllCheckedCategories( dropdown ) {
                         checkboxes=document.getElementsByTagName("input");
-                         for(i=0; i &lt; checkboxes.length; i++) {
-                            if (checkboxes[i].id.indexOf("catCheckbox") != -1 &amp;&amp; checkboxes[i].checked == true) {
+                         for(i=0; i < checkboxes.length; i++) {
+                            if (checkboxes[i].id.indexOf("catCheckbox") != -1 && checkboxes[i].checked == true) {
                                 textField = checkboxes[i].nextSibling.nextSibling;
                                 textField.value = dropdown.value;                            
                             }
@@ -56,9 +57,10 @@
                                 helpObj.style.display = 'block';
                         } 
                     }
+                   // ]]> 
             </script> 
         </f:verbatim>
-        <ihelpsupport:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" rendered="true"/>
+        <dvn:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" rendered="true"/>
         <f:loadBundle  basename="BundleHelp" var="helpText" />
         <h:form id="studyForm">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -117,7 +119,7 @@
                                     <!-- TITLE -->
                                            
                                     <ui:panelGroup block="true" id="groupPanel37" styleClass="vdcEditStudyField">                                              
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.titleHelp}" linkText="#{editstudybundle.titleLabel}" heading="#{editstudybundle.titleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>                                            
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.titleHelp}" linkText="#{editstudybundle.titleLabel}" heading="#{editstudybundle.titleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>                                            
                                         <h:graphicImage id="image39" value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.title].required}" />
                                         <h:graphicImage id="image40" value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.title].recommended}"/>
                                     </ui:panelGroup>
@@ -127,7 +129,7 @@
                                     </ui:panelGroup> 
                                     
                                     <ui:panelGroup block="true"  styleClass="vdcEditStudyField"  rendered="#{EditStudyPage.studyMap[sfc.subTitle].rendered}">                                              
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.subtitleHelp}" linkText="#{editstudybundle.subtitleLabel}" heading="#{editstudybundle.subtitleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>                                             
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.subtitleHelp}" linkText="#{editstudybundle.subtitleLabel}" heading="#{editstudybundle.subtitleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>                                             
                                         <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].required}" />
                                         <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].recommended}"/>
                                     </ui:panelGroup>
@@ -140,7 +142,7 @@
                                             
                                     <!--ui:panelGroup id="groupPanel38" rendered="#{!EditStudyPage.studyMap[sfc.studyId].rendered or EditStudyPage.commandButtonHideFields.rendered}"-->
                                     <ui:panelGroup block="true"  id="groupPanel38" rendered="#{EditStudyPage.studyMap[sfc.studyId].rendered}" styleClass="vdcEditStudyField">                                              
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.studyidHelp}" linkText="#{editstudybundle.studyidLabel}" heading="#{editstudybundle.studyidHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.studyidHelp}" linkText="#{editstudybundle.studyidLabel}" heading="#{editstudybundle.studyidHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         
                                         <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyId].required and EditStudyPage.study.id==null}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyId].recommended and EditStudyPage.study.id==null}"/>
@@ -167,7 +169,7 @@
                                             
                                             <h:column >
                                                 <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.otheridHelp}" linkText="#{editstudybundle.otheridLabel}" heading="#{editstudybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.otheridHelp}" linkText="#{editstudybundle.otheridLabel}" heading="#{editstudybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].recommended}"/>
                                                 </ui:panelGroup> 
@@ -177,7 +179,7 @@
                                                     <h:inputText maxlength="255" binding="#{EditStudyPage.inputOtherId}" id = "input_otherId" value="#{currentRow.otherId}" required="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
                                                     <h:message styleClass="errorMessage" for="input_otherId"/> 
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.otherAgencyHelp}" linkText="#{editstudybundle.otherAgencyLabel}" heading="#{editstudybundle.otherAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.otherAgencyHelp}" linkText="#{editstudybundle.otherAgencyLabel}" heading="#{editstudybundle.otherAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherIdAgency].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherIdAgency].recommended}"/>
                                                         <h:inputText maxlength="255" binding="#{EditStudyPage.inputOtherIdAgency}"     validator ="#{EditStudyPage.validateStudyOtherId}" 
@@ -212,7 +214,7 @@
                                             
                                             <h:column>
                                                 <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.authorHelp}" linkText="#{editstudybundle.authorLabel}" heading="#{editstudybundle.authorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.authorHelp}" linkText="#{editstudybundle.authorLabel}" heading="#{editstudybundle.authorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].recommended}"/>
                                                 </ui:panelGroup>
@@ -238,7 +240,7 @@
                                                     </div>
                                                 </f:verbatim> end comment -->
                                                     <ui:panelGroup >
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.authorAffiliationHelp}" linkText="#{editstudybundle.authorAffiliationLabel}" heading="#{editstudybundle.authorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.authorAffiliationHelp}" linkText="#{editstudybundle.authorAffiliationLabel}" heading="#{editstudybundle.authorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.authorAffiliation].required}"/>
                                                         <h:graphicImage id="image83" value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.authorAffiliation].recommended}"/>
                                                         <h:inputText id="input_authorAffiliation" size="45" maxlength="255"
@@ -275,7 +277,7 @@
                                             
                                             <h:column>
                                                 <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerName].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerName].recommended}"/>
                                                 </ui:panelGroup>
@@ -285,7 +287,7 @@
                                                     <h:inputText maxlength="255" binding="#{EditStudyPage.inputProducerName}" id="input_producerName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.producerName].required}"/>
                                                     <h:message styleClass="errorMessage" for="input_producerName"/>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.producerAffiliationHelp}" linkText="#{editstudybundle.producerAffiliationLabel}" heading="#{editstudybundle.producerAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.producerAffiliationHelp}" linkText="#{editstudybundle.producerAffiliationLabel}" heading="#{editstudybundle.producerAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAffiliation].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAffiliation].recommended}"/>
                                                         <h:inputText  maxlength="255" validator ="#{EditStudyPage.validateStudyProducer}"  binding="#{EditStudyPage.inputProducerAffiliation}"    id="input_producerAffiliation" size="45" value="#{currentRow.affiliation}" required="#{EditStudyPage.studyMap[sfc.producerAffiliation].required}"
@@ -296,14 +298,14 @@
                                                     <h:message styleClass="errorMessage" for="input_producerAffiliation"/>
                                                     <f:verbatim><br /></f:verbatim>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.producerAbbreviationHelp}" linkText="#{editstudybundle.producerAbbreviationLabel}" heading="#{editstudybundle.producerAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.producerAbbreviationHelp}" linkText="#{editstudybundle.producerAbbreviationLabel}" heading="#{editstudybundle.producerAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAbbreviation].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerAbbreviation].recommended}"/>
                                                         <h:inputText maxlength="255" validator ="#{EditStudyPage.validateStudyProducer}"   binding="#{EditStudyPage.inputProducerAbbreviation}"  id="input_producerAbbreviation" value="#{currentRow.abbreviation}" required="#{EditStudyPage.studyMap[sfc.producerAbbreviation].required}"/>
                                                     </ui:panelGroup>
                                                     <h:message styleClass="errorMessage" for="input_producerAbbreviation"/>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.producerURLHelp}" linkText="#{editstudybundle.producerURLLabel}" heading="#{editstudybundle.producerURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.producerURLHelp}" linkText="#{editstudybundle.producerURLLabel}" heading="#{editstudybundle.producerURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerURL].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerURL].recommended}"/>
                                                         <h:inputText id="input_producerURL" 
@@ -319,7 +321,7 @@
                                                     </ui:panelGroup>
                                                     <h:message styleClass="errorMessage" for="input_producerURL"/>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.producerLogoHelp}" linkText="#{editstudybundle.producerLogoLabel}" heading="#{editstudybundle.producerLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.producerLogoHelp}" linkText="#{editstudybundle.producerLogoLabel}" heading="#{editstudybundle.producerLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerLogo].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.producerLogo].recommended}"/>
                                                         <h:inputText id="input_producerLogo" 
@@ -350,7 +352,7 @@
                                     
                                     
                                     <ui:panelGroup id="groupPanel42"  rendered="#{EditStudyPage.studyMap[sfc.productionDate].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.productionDateHelp}" linkText="#{editstudybundle.productionDateLabel}" heading="#{editstudybundle.productionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.productionDateHelp}" linkText="#{editstudybundle.productionDateLabel}" heading="#{editstudybundle.productionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.productionDate].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.productionDate].recommended}"/>
                                     </ui:panelGroup>
@@ -364,7 +366,7 @@
                                     
                                     
                                     <ui:panelGroup id="groupPanel43"  rendered="#{EditStudyPage.studyMap[sfc.productionPlace].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.productionPlaceHelp}" linkText="#{editstudybundle.productionPlaceLabel}" heading="#{editstudybundle.productionPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.productionPlaceHelp}" linkText="#{editstudybundle.productionPlaceLabel}" heading="#{editstudybundle.productionPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.productionPlace].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.productionPlace].recommended}"/>
                                     </ui:panelGroup>
@@ -387,7 +389,7 @@
                                             
                                             <h:column>
                                                 <ui:panelGroup block="true" styleClass="vdcEditStudyField" > 
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.softwareNameHelp}" linkText="#{editstudybundle.softwareNameLabel}" heading="#{editstudybundle.softwareNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.softwareNameHelp}" linkText="#{editstudybundle.softwareNameLabel}" heading="#{editstudybundle.softwareNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareName].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareName].recommended}"/>
                                                 </ui:panelGroup>
@@ -397,7 +399,7 @@
                                                     <h:inputText maxlength="255" binding="#{EditStudyPage.inputSoftwareName}" id="input_softwareName" size="45"  value="#{currentRow.name}" required="#{EditStudyPage.studyMap[sfc.softwareName].required}"/>
                                                     <h:message styleClass="errorMessage" for="input_softwareName"/>  
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.softwareVersionHelp}" linkText="#{editstudybundle.softwareVersionLabel}" heading="#{editstudybundle.softwareVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.softwareVersionHelp}" linkText="#{editstudybundle.softwareVersionLabel}" heading="#{editstudybundle.softwareVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareVersion].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.softwareVersion].recommended}"/>
                                                         <h:inputText maxlength="255" binding="#{EditStudyPage.inputSoftwareVersion}" validator ="#{EditStudyPage.validateStudySoftware}"  id="input_softwareVersion" value="#{currentRow.softwareVersion}" required="#{EditStudyPage.studyMap[sfc.softwareVersion].required}"/>
@@ -418,7 +420,7 @@
                                     
                                     
                                     <ui:panelGroup id="groupPanel45"  rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.fundingAgencyHelp}" linkText="#{editstudybundle.fundingAgencyLabel}" heading="#{editstudybundle.fundingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.fundingAgencyHelp}" linkText="#{editstudybundle.fundingAgencyLabel}" heading="#{editstudybundle.fundingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].recommended}"/>
                                     </ui:panelGroup>
@@ -439,7 +441,7 @@
                                             
                                             <h:column>
                                                 <ui:panelGroup block="true" styleClass="vdcEditStudyField" > 
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.grantNumberHelp}" linkText="#{editstudybundle.grantNumberLabel}" heading="#{editstudybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.grantNumberHelp}" linkText="#{editstudybundle.grantNumberLabel}" heading="#{editstudybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumber].recommended}"/>
                                                 </ui:panelGroup>                                              
@@ -449,7 +451,7 @@
                                                     <h:inputText maxlength="255" immediate="true" binding="#{EditStudyPage.inputGrantNumber}" id="input_grantNumber" size="45"  value="#{currentRow.number}" required="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
                                                     <h:message styleClass="errorMessage" for="input_grantNumber"/>    
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.grantingAgencyHelp}" linkText="#{editstudybundle.grantingAgencyLabel}" heading="#{editstudybundle.grantingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.grantingAgencyHelp}" linkText="#{editstudybundle.grantingAgencyLabel}" heading="#{editstudybundle.grantingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.grantNumberAgency].recommended}"/>
                                                         <h:inputText  maxlength="255" immediate="true" binding="#{EditStudyPage.inputGrantAgency}" validator ="#{EditStudyPage.validateStudyGrant}" id="input_grantNumberAgency" size="45" value="#{currentRow.agency}" required="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required}"/>
@@ -474,7 +476,7 @@
                                         
                                         <h:column>
                                             <ui:panelGroup block="true" styleClass="vdcEditStudyField" > 
-                                                <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorHelp}" linkText="#{editstudybundle.distributorLabel}" heading="#{editstudybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                <dvn:inlinehelp helpMessage="#{editstudybundle.distributorHelp}" linkText="#{editstudybundle.distributorLabel}" heading="#{editstudybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                 <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorName].required}"/>
                                                 <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorName].recommended}"/>
                                             </ui:panelGroup>
@@ -484,7 +486,7 @@
                                                 <h:inputText maxlength="255" binding="#{EditStudyPage.inputDistributorName}" id="input_distributorName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.distributorName].required}"/>
                                                 <h:message styleClass="errorMessage" for="input_distributorName"/> 
                                                 <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorAffiliationHelp}" linkText="#{editstudybundle.distributorAffiliationLabel}" heading="#{editstudybundle.distributorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.distributorAffiliationHelp}" linkText="#{editstudybundle.distributorAffiliationLabel}" heading="#{editstudybundle.distributorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAffiliation].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAffiliation].recommended}"/>
                                                     <h:inputText maxlength="255" id="input_distributorAffiliation" validator ="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAffiliation}" size="45"
@@ -497,14 +499,14 @@
                                                 <h:message styleClass="errorMessage" for="input_distributorAffiliation"/> 
                                                 <f:verbatim><br /></f:verbatim>
                                                 <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorAbbreviationHelp}" linkText="#{editstudybundle.distributorAbbreviationLabel}" heading="#{editstudybundle.distributorAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.distributorAbbreviationHelp}" linkText="#{editstudybundle.distributorAbbreviationLabel}" heading="#{editstudybundle.distributorAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].recommended}"/>
                                                     <h:inputText maxlength="255" validator ="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"  required="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required}"/>
                                                 </ui:panelGroup>
                                                 <h:message styleClass="errorMessage" for="input_distributorAbbreviation"/>   
                                                 <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorURLHelp}" linkText="#{editstudybundle.distributorURLLabel}" heading="#{editstudybundle.distributorURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.distributorURLHelp}" linkText="#{editstudybundle.distributorURLLabel}" heading="#{editstudybundle.distributorURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorURL].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorURL].recommended}"/>
                                                     <h:inputText id="input_distributorURL" 
@@ -520,7 +522,7 @@
                                                 </ui:panelGroup>
                                                 <h:message styleClass="errorMessage" for="input_distributorURL"/>   
                                                 <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorLogoHelp}" linkText="#{editstudybundle.distributorLogoLabel}" heading="#{editstudybundle.distributorLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.distributorLogoHelp}" linkText="#{editstudybundle.distributorLogoLabel}" heading="#{editstudybundle.distributorLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorLogo].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorLogo].recommended}"/>
                                                     <h:inputText binding="#{EditStudyPage.inputDistributorLogo}" id="input_distributorLogo"  
@@ -549,7 +551,7 @@
                                     
                                     
                                     <ui:panelGroup  rendered="#{EditStudyPage.studyMap[sfc.distributorContact].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorContactHelp}" linkText="#{editstudybundle.distributorContactLabel}" heading="#{editstudybundle.distributorContactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactHelp}" linkText="#{editstudybundle.distributorContactLabel}" heading="#{editstudybundle.distributorContactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorContact].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorContact].recommended}"/>
                                     </ui:panelGroup>
@@ -557,7 +559,7 @@
                                         <h:inputText binding ="#{EditStudyPage.inputDistributorContact}" id="input_distributorContact" size="45"  value="#{EditStudyPage.study.distributorContact}"  required="#{EditStudyPage.studyMap[sfc.distributorContact].required}"/>
                                         <h:message styleClass="errorMessage" for="input_distributorContact"/>                                
                                         <ui:panelGroup styleClass="vdcEditStudyGroupField" rendered="#{EditStudyPage.studyMap[sfc.distributorContact].rendered}">
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorContactAffiliationHelp}" linkText="#{editstudybundle.distributorContactAffiliationLabel}" heading="#{editstudybundle.distributorContactAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                            <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactAffiliationHelp}" linkText="#{editstudybundle.distributorContactAffiliationLabel}" heading="#{editstudybundle.distributorContactAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorContactAffiliation].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorContactAffiliation].recommended}"/>
                                             <h:inputText id="distributorContactAffiliation"  
@@ -571,7 +573,7 @@
                                             <h:message styleClass="errorMessage" for="distributorContactAffiliation"/>                                
                                         </ui:panelGroup>
                                         <ui:panelGroup styleClass="vdcEditStudyGroupField" rendered="#{EditStudyPage.studyMap[sfc.distributorContactEmail].rendered}">
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.distributorContactEmailHelp}" linkText="#{editstudybundle.distributorContactEmailLabel}" heading="#{editstudybundle.distributorContactEmailHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                            <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactEmailHelp}" linkText="#{editstudybundle.distributorContactEmailLabel}" heading="#{editstudybundle.distributorContactEmailHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorContactEmail].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributorContactEmail].recommended}"/>
                                             <h:inputText  binding ="#{EditStudyPage.inputDistributorContactEmail}"  id="input_distributorContactEmail" size="45" value="#{EditStudyPage.study.distributorContactEmail}" required="#{EditStudyPage.studyMap[sfc.distributorContactEmail].required}"/>
@@ -581,7 +583,7 @@
                                     
                                     
                                     <ui:panelGroup id="groupPanel49" rendered="#{EditStudyPage.studyMap[sfc.distributionDate].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.distributionDateHelp}" linkText="#{editstudybundle.distributionDateLabel}" heading="#{editstudybundle.distributionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.distributionDateHelp}" linkText="#{editstudybundle.distributionDateLabel}" heading="#{editstudybundle.distributionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributionDate].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.distributionDate].recommended}"/>
                                     </ui:panelGroup>
@@ -595,7 +597,7 @@
                                     
                                     
                                     <ui:panelGroup id="groupPanel50" rendered="#{EditStudyPage.studyMap[sfc.depositor].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.depositorHelp}" linkText="#{editstudybundle.depositorLabel}" heading="#{editstudybundle.depositorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.depositorHelp}" linkText="#{editstudybundle.depositorLabel}" heading="#{editstudybundle.depositorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.depositor].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.depositor].recommended}"/>
                                     </ui:panelGroup>
@@ -606,7 +608,7 @@
                                     
                                     
                                     <ui:panelGroup id="groupPanel51" rendered="#{EditStudyPage.studyMap[sfc.dateOfDeposit].rendered}">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.depositDateHelp}" linkText="#{editstudybundle.depositDateLabel}" heading="#{editstudybundle.depositDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.depositDateHelp}" linkText="#{editstudybundle.depositDateLabel}" heading="#{editstudybundle.depositDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.dateOfDeposit].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.dateOfDeposit].recommended}"/>
                                     </ui:panelGroup>
@@ -620,7 +622,7 @@
                                     
                                     
                                     <ui:panelGroup id="groupPanel52" rendered="#{EditStudyPage.studyMap[sfc.seriesName].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.seriesHelp}" linkText="#{editstudybundle.seriesLabel}" heading="#{editstudybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.seriesHelp}" linkText="#{editstudybundle.seriesLabel}" heading="#{editstudybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.seriesName].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.seriesName].recommended}"/>
                                     </ui:panelGroup>
@@ -635,7 +637,7 @@
                                         </h:inputText>
                                         <h:message styleClass="errorMessage" for="input_seriesName"/>                                                                               
                                         <ui:panelGroup styleClass="vdcEditStudyGroupField" rendered="#{EditStudyPage.studyMap[sfc.seriesInformation].rendered}">
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.seriesInformationHelp}" linkText="#{editstudybundle.seriesInformationLabel}" heading="#{editstudybundle.seriesInformationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                            <dvn:inlinehelp helpMessage="#{editstudybundle.seriesInformationHelp}" linkText="#{editstudybundle.seriesInformationLabel}" heading="#{editstudybundle.seriesInformationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.seriesInformation].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.seriesInformation].recommended}"/>
                                             <h:inputText immediate="true" binding ="#{EditStudyPage.inputSeriesInformation}" id="input_seriesInformation" 
@@ -652,7 +654,7 @@
                                     
                                     
                                     <ui:panelGroup id="groupPanel53"  rendered="#{EditStudyPage.studyMap[sfc.studyVersion].rendered}" styleClass="vdcEditStudyField" block="true" >
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.seriesVersionHelp}" linkText="#{editstudybundle.seriesVersionLabel}" heading="#{editstudybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionHelp}" linkText="#{editstudybundle.seriesVersionLabel}" heading="#{editstudybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.studyVersion].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.studyVersion].recommended}"/>
                                     </ui:panelGroup>
@@ -660,7 +662,7 @@
                                         <h:inputText immediate="true" binding="#{EditStudyPage.inputVersion}" id="input_studyVersion"  value="#{EditStudyPage.study.studyVersion}"  required="#{EditStudyPage.studyMap[sfc.studyVersion].required}"/>
                                         <h:message styleClass="errorMessage" for="input_studyVersion"/>                                
                                         <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.seriesVersionDateHelp}" linkText="#{editstudybundle.seriesVersionDateLabel}" heading="#{editstudybundle.seriesVersionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                            <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionDateHelp}" linkText="#{editstudybundle.seriesVersionDateLabel}" heading="#{editstudybundle.seriesVersionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.versionDate].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.versionDate].recommended}"/>
                                             <h:inputText immediate="true" binding="#{EditStudyPage.inputVersionDate}" validator="#{EditStudyPage.validateVersion}" id="input_versionDate" styleClass="formDateFormat" value="#{EditStudyPage.study.versionDate}" required="#{EditStudyPage.studyMap[sfc.versionDate].required}" >
@@ -672,7 +674,7 @@
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup  rendered="#{EditStudyPage.studyMap[sfc.replicationFor].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.replicationForHelp}" linkText="#{editstudybundle.replicationForLabel}" heading="#{editstudybundle.replicationForHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.replicationForHelp}" linkText="#{editstudybundle.replicationForLabel}" heading="#{editstudybundle.replicationForHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.replicationFor].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.replicationFor].recommended}"/>
                                     </ui:panelGroup>
@@ -710,7 +712,7 @@
                                             
                                             <h:column>
                                                 <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.abstractHelp}" linkText="#{editstudybundle.abstractLabel}" heading="#{editstudybundle.abstractHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.abstractHelp}" linkText="#{editstudybundle.abstractLabel}" heading="#{editstudybundle.abstractHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.abstractText].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.abstractText].recommended}"/>
                                                 </ui:panelGroup>
@@ -729,7 +731,7 @@
                                                     </h:inputTextarea>
                                                     <h:message styleClass="errorMessage" for="input_abstractText"/>                                
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.abstractDateHelp}" linkText="#{editstudybundle.abstractDateLabel}" heading="#{editstudybundle.abstractDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.abstractDateHelp}" linkText="#{editstudybundle.abstractDateLabel}" heading="#{editstudybundle.abstractDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.abstractDate].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.abstractDate].recommended}"/>
                                                         <h:inputText binding="#{EditStudyPage.inputAbstractDate}" validator="#{EditStudyPage.validateStudyAbstract}" id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}" required="#{EditStudyPage.studyMap[sfc.abstractDate].required}">
@@ -758,7 +760,7 @@
                                             
                                             <h:column>
                                                 <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.keywordHelp}" linkText="#{editstudybundle.keywordLabel}" heading="#{editstudybundle.keywordHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.keywordHelp}" linkText="#{editstudybundle.keywordLabel}" heading="#{editstudybundle.keywordHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordValue].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordValue].recommended}"/>
                                                 </ui:panelGroup>
@@ -768,14 +770,14 @@
                                                     <h:inputText binding="#{EditStudyPage.inputKeywordValue}" id="input_keywordValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.keywordValue].required}"/>
                                                     <h:message styleClass="errorMessage" for="input_keywordValue"/>                                
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyHelp}" linkText="#{editstudybundle.keywordVocabularyLabel}" heading="#{editstudybundle.keywordVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyHelp}" linkText="#{editstudybundle.keywordVocabularyLabel}" heading="#{editstudybundle.keywordVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocab].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocab].recommended}"/>
                                                         <h:inputText validator ="#{EditStudyPage.validateStudyKeyword}" binding="#{EditStudyPage.inputKeywordVocab}" id="input_keywordVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.keywordVocab].required}" maxlength="255"/>
                                                     </ui:panelGroup>
                                                     <h:message styleClass="errorMessage" for="input_keywordVocab"/>                                
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyURLHelp}" linkText="#{editstudybundle.keywordVocabularyURLLabel}" heading="#{editstudybundle.keywordVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyURLHelp}" linkText="#{editstudybundle.keywordVocabularyURLLabel}" heading="#{editstudybundle.keywordVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocabURI].required}" />
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.keywordVocabURI].recommended}"/>
                                                         <h:inputText id="input_keywordVocabURI" 
@@ -811,7 +813,7 @@
                                             
                                             <h:column>
                                                 <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.topicClassificationHelp}" linkText="#{editstudybundle.topicClassificationLabel}" heading="#{editstudybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassificationHelp}" linkText="#{editstudybundle.topicClassificationLabel}" heading="#{editstudybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].recommended}"/>
                                                 </ui:panelGroup>
@@ -821,14 +823,14 @@
                                                     <h:inputText  binding="#{EditStudyPage.inputTopicClassValue}" id="input_topicClassValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.topicClassValue].required}"/>
                                                     <h:message styleClass="errorMessage" for="input_topicClassValue"/>                                
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyHelp}" linkText="#{editstudybundle.topicClassVocabularyLabel}" heading="#{editstudybundle.topicClassVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyHelp}" linkText="#{editstudybundle.topicClassVocabularyLabel}" heading="#{editstudybundle.topicClassVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocab].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocab].recommended}"/>
                                                         <h:inputText maxlength="255" validator ="#{EditStudyPage.validateStudyTopicClass}" binding="#{EditStudyPage.inputTopicClassVocab}" id="input_topicClassVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.topicClassVocab].required}"/>
                                                     </ui:panelGroup>
                                                     <h:message styleClass="errorMessage" for="input_topicClassVocab"/>                                
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyURLHelp}" linkText="#{editstudybundle.topicClassVocabularyURLLabel}" heading="#{editstudybundle.topicClassVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyURLHelp}" linkText="#{editstudybundle.topicClassVocabularyURLLabel}" heading="#{editstudybundle.topicClassVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocabURI].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.topicClassVocabURI].recommended}"/>
                                                         <h:inputText id="input_topicClassVocabURI" 
@@ -863,7 +865,7 @@
                                             
                                             <h:column>
                                                 <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.relatedPublicationsHelp}" linkText="#{editstudybundle.relatedPublicationsLabel}" heading="#{editstudybundle.relatedPublicationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.relatedPublicationsHelp}" linkText="#{editstudybundle.relatedPublicationsLabel}" heading="#{editstudybundle.relatedPublicationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].recommended}"/>
                                                 </ui:panelGroup>
@@ -903,7 +905,7 @@
                                             
                                             <h:column>
                                                 <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.relatedMaterialHelp}" linkText="#{editstudybundle.relatedMaterialLabel}" heading="#{editstudybundle.relatedMaterialHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.relatedMaterialHelp}" linkText="#{editstudybundle.relatedMaterialLabel}" heading="#{editstudybundle.relatedMaterialHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].recommended}"/>
                                                 </ui:panelGroup>
@@ -942,7 +944,7 @@
                                             
                                             <h:column>
                                                 <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.relatedStudiesHelp}" linkText="#{editstudybundle.relatedStudiesLabel}" heading="#{editstudybundle.relatedStudiesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.relatedStudiesHelp}" linkText="#{editstudybundle.relatedStudiesLabel}" heading="#{editstudybundle.relatedStudiesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].recommended}"/>
                                                 </ui:panelGroup>
@@ -981,7 +983,7 @@
                                             
                                             <h:column>
                                                 <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.otherReferencesHelp}" linkText="#{editstudybundle.otherReferencesLabel}" heading="#{editstudybundle.otherReferencesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.otherReferencesHelp}" linkText="#{editstudybundle.otherReferencesLabel}" heading="#{editstudybundle.otherReferencesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherReferences].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherReferences].recommended}"/>
                                                 </ui:panelGroup>
@@ -1014,7 +1016,7 @@
                                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2" width="100%">
                                     
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.timePeriodStartHelp}" linkText="#{editstudybundle.timePeriodStartLabel}" heading="#{editstudybundle.timePeriodStartHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.timePeriodStartHelp}" linkText="#{editstudybundle.timePeriodStartLabel}" heading="#{editstudybundle.timePeriodStartHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].recommended}"/>
                                     </ui:panelGroup>
@@ -1027,7 +1029,7 @@
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.timePeriodEndHelp}" linkText="#{editstudybundle.timePeriodEndLabel}" heading="#{editstudybundle.timePeriodEndHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.timePeriodEndHelp}" linkText="#{editstudybundle.timePeriodEndLabel}" heading="#{editstudybundle.timePeriodEndHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].recommended}"/>
                                     </ui:panelGroup>
@@ -1041,7 +1043,7 @@
                                     
                                     
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.collectionDateStartHelp}" linkText="#{editstudybundle.collectionDateStartLabel}" heading="#{editstudybundle.collectionDateStartHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.collectionDateStartHelp}" linkText="#{editstudybundle.collectionDateStartLabel}" heading="#{editstudybundle.collectionDateStartHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].recommended}"/>
                                     </ui:panelGroup>
@@ -1054,7 +1056,7 @@
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.collectionDateEndHelp}" linkText="#{editstudybundle.collectionDateEndLabel}" heading="#{editstudybundle.collectionDateEndHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.collectionDateEndHelp}" linkText="#{editstudybundle.collectionDateEndLabel}" heading="#{editstudybundle.collectionDateEndHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].recommended}"/>
                                     </ui:panelGroup>
@@ -1068,7 +1070,7 @@
                                     
                                     
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.country].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.countryHelp}" linkText="#{editstudybundle.countryLabel}" heading="#{editstudybundle.countryHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.countryHelp}" linkText="#{editstudybundle.countryLabel}" heading="#{editstudybundle.countryHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.country].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.country].recommended}"/>
                                     </ui:panelGroup>
@@ -1078,7 +1080,7 @@
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.geographicCoverageHelp}" linkText="#{editstudybundle.geographicCoverageLabel}" heading="#{editstudybundle.geographicCoverageHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.geographicCoverageHelp}" linkText="#{editstudybundle.geographicCoverageLabel}" heading="#{editstudybundle.geographicCoverageHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].recommended}"/>
                                     </ui:panelGroup>
@@ -1088,7 +1090,7 @@
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.geographicUnitHelp}" linkText="#{editstudybundle.geographicUnitLabel}" heading="#{editstudybundle.geographicUnitHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.geographicUnitHelp}" linkText="#{editstudybundle.geographicUnitLabel}" heading="#{editstudybundle.geographicUnitHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].recommended}"/>
                                     </ui:panelGroup>
@@ -1098,20 +1100,20 @@
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup block="true" styleClass="vdcEditStudyField"> 
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.geographicBoundingBoxHelp}" linkText="#{editstudybundle.geographicBoundingBoxLabel}" heading="#{editstudybundle.geographicBoundingBoxHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.geographicBoundingBoxHelp}" linkText="#{editstudybundle.geographicBoundingBoxLabel}" heading="#{editstudybundle.geographicBoundingBoxHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.westLongitude].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.westLongitude].recommended}"/>
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.westLongitudeHelp}" linkText="#{editstudybundle.westLongitudeLabel}" heading="#{editstudybundle.westLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.westLongitudeHelp}" linkText="#{editstudybundle.westLongitudeLabel}" heading="#{editstudybundle.westLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:inputText id="input_westLongitude"  binding="#{EditStudyPage.inputWestLongitude}" value="#{EditStudyPage.study.studyGeoBoundings[0].westLongitude}"  validator ="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.westLongitude].required}">
                                             
                                         </h:inputText>
                                         <h:message styleClass="errorMessage" for="input_westLongitude"/>        
                                         
                                         <ui:panelGroup styleClass="vdcEditStudyGroupField">                                                   
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.eastLongitudeHelp}" linkText="#{editstudybundle.eastLongitudeLabel}" heading="#{editstudybundle.eastLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                            <dvn:inlinehelp helpMessage="#{editstudybundle.eastLongitudeHelp}" linkText="#{editstudybundle.eastLongitudeLabel}" heading="#{editstudybundle.eastLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.eastLongitude].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.eastLongitude].recommended}"/>
                                             <h:inputText binding="#{EditStudyPage.inputEastLongitude}" id="input_eastLongitude" value="#{EditStudyPage.study.studyGeoBoundings[0].eastLongitude}" validator ="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.eastLongitude].required}">
@@ -1121,7 +1123,7 @@
                                         <h:message styleClass="errorMessage" for="input_eastLongitude"/>        
                                         
                                         <ui:panelGroup styleClass="vdcEditStudyGroupField">                                                   
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.northLatitudeHelp}" linkText="#{editstudybundle.northLatitudeLabel}" heading="#{editstudybundle.northLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                            <dvn:inlinehelp helpMessage="#{editstudybundle.northLatitudeHelp}" linkText="#{editstudybundle.northLatitudeLabel}" heading="#{editstudybundle.northLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.northLatitude].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.northLatitude].recommended}"/>
                                             <h:inputText binding="#{EditStudyPage.inputNorthLatitude}"  id="input_northLatitude" value="#{EditStudyPage.study.studyGeoBoundings[0].northLatitude}" validator ="#{EditStudyPage.validateLatitude}" required="#{EditStudyPage.studyMap[sfc.northLatitude].required}"/>
@@ -1129,7 +1131,7 @@
                                         <h:message styleClass="errorMessage" for="input_northLatitude"/>      
                                         
                                         <ui:panelGroup styleClass="vdcEditStudyGroupField">                                                   
-                                            <ihelp:inlinehelp helpMessage="#{editstudybundle.southLatitudeHelp}" linkText="#{editstudybundle.southLatitudeLabel}" heading="#{editstudybundle.southLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                            <dvn:inlinehelp helpMessage="#{editstudybundle.southLatitudeHelp}" linkText="#{editstudybundle.southLatitudeLabel}" heading="#{editstudybundle.southLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.southLatitude].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.southLatitude].recommended}"/>
                                             <h:inputText binding="#{EditStudyPage.inputSouthLatitude}" id="input_southLatitude" value="#{EditStudyPage.study.studyGeoBoundings[0].southLatitude}" validator ="#{EditStudyPage.validateLatitude}" required="#{EditStudyPage.studyMap[sfc.southLatitude].required}"/>
@@ -1140,7 +1142,7 @@
                                     
                                     
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.unitOfAnalysisHelp}" linkText="#{editstudybundle.unitOfAnalysisLabel}" heading="#{editstudybundle.unitOfAnalysisHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.unitOfAnalysisHelp}" linkText="#{editstudybundle.unitOfAnalysisLabel}" heading="#{editstudybundle.unitOfAnalysisHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].recommended}"/>
                                     </ui:panelGroup>
@@ -1151,7 +1153,7 @@
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.universe].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.universeHelp}" linkText="#{editstudybundle.universeLabel}" heading="#{editstudybundle.universeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.universeHelp}" linkText="#{editstudybundle.universeLabel}" heading="#{editstudybundle.universeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.universe].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.universe].recommended}"/>
                                     </ui:panelGroup>
@@ -1162,7 +1164,7 @@
                                     
                                     
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.kindOfData].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.kindOfDataHelp}" linkText="#{editstudybundle.kindOfDataLabel}" heading="#{editstudybundle.kindOfDataHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.kindOfDataHelp}" linkText="#{editstudybundle.kindOfDataLabel}" heading="#{editstudybundle.kindOfDataHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.kindOfData].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.kindOfData].recommended}"/>
                                     </ui:panelGroup>
@@ -1181,7 +1183,7 @@
                                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2" id="gridPanel4" width="100%" >
                                     
                                     <ui:panelGroup block="true" visible="#{EditStudyPage.studyMap[sfc.timeMethod].rendered}" styleClass="vdcEditStudyField" >
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.timeMethodHelp}" linkText="#{editstudybundle.timeMethodLabel}" heading="#{editstudybundle.timeMethodHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.timeMethodHelp}" linkText="#{editstudybundle.timeMethodLabel}" heading="#{editstudybundle.timeMethodHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.timeMethod].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.timeMethod].recommended}"/>
                                     </ui:panelGroup>
@@ -1196,7 +1198,7 @@
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup block="true" visible="#{EditStudyPage.studyMap[sfc.dataCollector].rendered}" styleClass="vdcEditStudyField">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.dataCollectorHelp}" linkText="#{editstudybundle.dataCollectorLabel}" heading="#{editstudybundle.dataCollectorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.dataCollectorHelp}" linkText="#{editstudybundle.dataCollectorLabel}" heading="#{editstudybundle.dataCollectorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.dataCollector].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.dataCollector].recommended}"/>
                                     </ui:panelGroup>
@@ -1211,7 +1213,7 @@
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.frequencyHelp}" linkText="#{editstudybundle.frequencyLabel}" heading="#{editstudybundle.frequencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.frequencyHelp}" linkText="#{editstudybundle.frequencyLabel}" heading="#{editstudybundle.frequencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].recommended}"/>
                                     </ui:panelGroup>
@@ -1226,7 +1228,7 @@
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.samplingProcedure].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.samplingProcedureHelp}" linkText="#{editstudybundle.samplingProcedureLabel}" heading="#{editstudybundle.samplingProcedureHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.samplingProcedureHelp}" linkText="#{editstudybundle.samplingProcedureLabel}" heading="#{editstudybundle.samplingProcedureHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.samplingProcedure].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.samplingProcedure].recommended}"/>
                                     </ui:panelGroup>
@@ -1242,7 +1244,7 @@
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].rendered}" styleClass="vdcEditStudyField" block="true" >
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.majorDeviationsHelp}" linkText="#{editstudybundle.majorDeviationsLabel}" heading="#{editstudybundle.majorDeviationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.majorDeviationsHelp}" linkText="#{editstudybundle.majorDeviationsLabel}" heading="#{editstudybundle.majorDeviationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].recommended}"/>
                                     </ui:panelGroup>
@@ -1259,7 +1261,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.collectionMode].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.collectionModeHelp}" linkText="#{editstudybundle.collectionModeLabel}" heading="#{editstudybundle.collectionModeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.collectionModeHelp}" linkText="#{editstudybundle.collectionModeLabel}" heading="#{editstudybundle.collectionModeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.collectionMode].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.collectionMode].recommended}"/>
                                     </ui:panelGroup>
@@ -1275,7 +1277,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.researchInstrument].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.researchInstrumentHelp}" linkText="#{editstudybundle.researchInstrumentLabel}" heading="#{editstudybundle.researchInstrumentHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.researchInstrumentHelp}" linkText="#{editstudybundle.researchInstrumentLabel}" heading="#{editstudybundle.researchInstrumentHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.researchInstrument].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.researchInstrument].recommended}"/>
                                     </ui:panelGroup>
@@ -1292,7 +1294,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.dataSources].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.dataSourcesHelp}" linkText="#{editstudybundle.dataSourcesLabel}" heading="#{editstudybundle.dataSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.dataSourcesHelp}" linkText="#{editstudybundle.dataSourcesLabel}" heading="#{editstudybundle.dataSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.dataSources].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.dataSources].recommended}"/>
                                     </ui:panelGroup>
@@ -1308,7 +1310,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.originOfSources].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.originOfSourcesHelp}" linkText="#{editstudybundle.originOfSourcesLabel}" heading="#{editstudybundle.originOfSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.originOfSourcesHelp}" linkText="#{editstudybundle.originOfSourcesLabel}" heading="#{editstudybundle.originOfSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.originOfSources].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.originOfSources].recommended}"/>
                                     </ui:panelGroup>
@@ -1324,7 +1326,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.characteristicOfSources].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.sourceCharacteristicsHelp}" linkText="#{editstudybundle.sourceCharacteristicsLabel}" heading="#{editstudybundle.sourceCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.sourceCharacteristicsHelp}" linkText="#{editstudybundle.sourceCharacteristicsLabel}" heading="#{editstudybundle.sourceCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.characteristicOfSources].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.characteristicOfSources].recommended}"/>
                                     </ui:panelGroup>
@@ -1341,7 +1343,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.accessToSources].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.sourceDocumentationHelp}" linkText="#{editstudybundle.sourceDocumentationLabel}" heading="#{editstudybundle.sourceDocumentationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.sourceDocumentationHelp}" linkText="#{editstudybundle.sourceDocumentationLabel}" heading="#{editstudybundle.sourceDocumentationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.accessToSources].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.accessToSources].recommended}"/>
                                     </ui:panelGroup>
@@ -1358,7 +1360,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.dataCollectionCharacteristicsHelp}" linkText="#{editstudybundle.dataCollectionCharacteristicsLabel}" heading="#{editstudybundle.dataCollectionCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.dataCollectionCharacteristicsHelp}" linkText="#{editstudybundle.dataCollectionCharacteristicsLabel}" heading="#{editstudybundle.dataCollectionCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].recommended}"/>
                                     </ui:panelGroup>
@@ -1375,7 +1377,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].rendered}" styleClass="vdcEditStudyField" block="true" >
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.minimizeActionsHelp}" linkText="#{editstudybundle.minimizeActionsLabel}" heading="#{editstudybundle.minimizeActionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.minimizeActionsHelp}" linkText="#{editstudybundle.minimizeActionsLabel}" heading="#{editstudybundle.minimizeActionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].recommended}"/>
                                     </ui:panelGroup>
@@ -1392,7 +1394,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.controlOperations].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.controlOperationsHelp}" linkText="#{editstudybundle.controlOperationsLabel}" heading="#{editstudybundle.controlOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.controlOperationsHelp}" linkText="#{editstudybundle.controlOperationsLabel}" heading="#{editstudybundle.controlOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.controlOperations].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.controlOperations].recommended}"/>
                                     </ui:panelGroup>
@@ -1409,7 +1411,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.weighting].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.weightingHelp}" linkText="#{editstudybundle.weightingLabel}" heading="#{editstudybundle.weightingHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.weightingHelp}" linkText="#{editstudybundle.weightingLabel}" heading="#{editstudybundle.weightingHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.weighting].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.weighting].recommended}"/>
                                     </ui:panelGroup>
@@ -1425,7 +1427,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.cleaningOperations].rendered}" styleClass="vdcEditStudyField" block="true" >
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.cleaningOperationsHelp}" linkText="#{editstudybundle.cleaningOperationsLabel}" heading="#{editstudybundle.cleaningOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.cleaningOperationsHelp}" linkText="#{editstudybundle.cleaningOperationsLabel}" heading="#{editstudybundle.cleaningOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.cleaningOperations].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.cleaningOperations].recommended}"/>
                                     </ui:panelGroup>
@@ -1441,7 +1443,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.studyLevelErrorNotesHelp}" linkText="#{editstudybundle.studyLevelErrorNotesLabel}" heading="#{editstudybundle.studyLevelErrorNotesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.studyLevelErrorNotesHelp}" linkText="#{editstudybundle.studyLevelErrorNotesLabel}" heading="#{editstudybundle.studyLevelErrorNotesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].recommended}"/>
                                     </ui:panelGroup>
@@ -1457,7 +1459,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.responseRate].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.responseRateHelp}" linkText="#{editstudybundle.responseRateLabel}" heading="#{editstudybundle.responseRateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.responseRateHelp}" linkText="#{editstudybundle.responseRateLabel}" heading="#{editstudybundle.responseRateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.responseRate].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.responseRate].recommended}"/>
                                     </ui:panelGroup>
@@ -1473,7 +1475,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.samplingErrorHelp}" linkText="#{editstudybundle.samplingErrorLabel}" heading="#{editstudybundle.samplingErrorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.samplingErrorHelp}" linkText="#{editstudybundle.samplingErrorLabel}" heading="#{editstudybundle.samplingErrorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].recommended}"/>
                                     </ui:panelGroup>
@@ -1489,7 +1491,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.otherDataAppraisalHelp}" linkText="#{editstudybundle.otherDataAppraisalLabel}" heading="#{editstudybundle.otherDataAppraisalHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.otherDataAppraisalHelp}" linkText="#{editstudybundle.otherDataAppraisalLabel}" heading="#{editstudybundle.otherDataAppraisalHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].recommended}"/>
                                     </ui:panelGroup>
@@ -1514,7 +1516,7 @@
                                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2" id="gridPanel5a" width="100%"> 
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.placeOfAccess].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.dataAccessPlaceHelp}" linkText="#{editstudybundle.dataAccessPlaceLabel}" heading="#{editstudybundle.dataAccessPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.dataAccessPlaceHelp}" linkText="#{editstudybundle.dataAccessPlaceLabel}" heading="#{editstudybundle.dataAccessPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.placeOfAccess].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.placeOfAccess].recommended}"/>
                                     </ui:panelGroup>              
@@ -1531,7 +1533,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.originalArchive].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.originalArchiveHelp}" linkText="#{editstudybundle.originalArchiveLabel}" heading="#{editstudybundle.originalArchiveHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.originalArchiveHelp}" linkText="#{editstudybundle.originalArchiveLabel}" heading="#{editstudybundle.originalArchiveHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.originalArchive].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.originalArchive].recommended}"/>
                                     </ui:panelGroup>
@@ -1548,7 +1550,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.availabilityStatus].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.availabilityHelp}" linkText="#{editstudybundle.availabilityLabel}" heading="#{editstudybundle.availabilityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.availabilityHelp}" linkText="#{editstudybundle.availabilityLabel}" heading="#{editstudybundle.availabilityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.availabilityStatus].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.availabilityStatus].recommended}"/>
                                     </ui:panelGroup>
@@ -1564,7 +1566,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.collectionSize].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.collectionSizeHelp}" linkText="#{editstudybundle.collectionSizeLabel}" heading="#{editstudybundle.collectionSizeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.collectionSizeHelp}" linkText="#{editstudybundle.collectionSizeLabel}" heading="#{editstudybundle.collectionSizeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.collectionSize].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.collectionSize].recommended}"/>
                                     </ui:panelGroup>
@@ -1581,7 +1583,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.studyCompletion].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.studyCompletionHelp}" linkText="#{editstudybundle.studyCompletionLabel}" heading="#{editstudybundle.studyCompletionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.studyCompletionHelp}" linkText="#{editstudybundle.studyCompletionLabel}" heading="#{editstudybundle.studyCompletionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.studyCompletion].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.studyCompletion].recommended}"/>
                                     </ui:panelGroup>
@@ -1605,7 +1607,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.confidentialityHelp}" linkText="#{editstudybundle.confidentialityLabel}" heading="#{editstudybundle.confidentialityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.confidentialityHelp}" linkText="#{editstudybundle.confidentialityLabel}" heading="#{editstudybundle.confidentialityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].recommended}"/>
                                     </ui:panelGroup>
@@ -1622,7 +1624,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.specialPermissions].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.specialPermissionsHelp}" linkText="#{editstudybundle.specialPermissionsLabel}" heading="#{editstudybundle.specialPermissionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.specialPermissionsHelp}" linkText="#{editstudybundle.specialPermissionsLabel}" heading="#{editstudybundle.specialPermissionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.specialPermissions].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.specialPermissions].recommended}"/>
                                     </ui:panelGroup>
@@ -1638,7 +1640,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.restrictions].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.restrictionsHelp}" linkText="#{editstudybundle.restrictionsLabel}" heading="#{editstudybundle.restrictionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.restrictionsHelp}" linkText="#{editstudybundle.restrictionsLabel}" heading="#{editstudybundle.restrictionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.restrictions].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.restrictions].recommended}"/>
                                     </ui:panelGroup>
@@ -1655,7 +1657,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.contact].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.contactHelp}" linkText="#{editstudybundle.contactLabel}" heading="#{editstudybundle.contactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.contactHelp}" linkText="#{editstudybundle.contactLabel}" heading="#{editstudybundle.contactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.contact].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.contact].recommended}"/>
                                     </ui:panelGroup>
@@ -1672,7 +1674,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.citationRequirements].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.citationRequirementsHelp}" linkText="#{editstudybundle.citationRequirementsLabel}" heading="#{editstudybundle.citationRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.citationRequirementsHelp}" linkText="#{editstudybundle.citationRequirementsLabel}" heading="#{editstudybundle.citationRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.citationRequirements].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.citationRequirements].recommended}"/>
                                     </ui:panelGroup>
@@ -1688,7 +1690,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.depositorRequirements].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.depositorRequirementsHelp}" linkText="#{editstudybundle.depositorRequirementsLabel}" heading="#{editstudybundle.depositorRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.depositorRequirementsHelp}" linkText="#{editstudybundle.depositorRequirementsLabel}" heading="#{editstudybundle.depositorRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.depositorRequirements].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.depositorRequirements].recommended}"/>
                                     </ui:panelGroup>
@@ -1705,7 +1707,7 @@
                                     
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.conditions].rendered}" styleClass="vdcEditStudyField" block="true" >
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.conditionsHelp}" linkText="#{editstudybundle.conditionsLabel}" heading="#{editstudybundle.conditionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.conditionsHelp}" linkText="#{editstudybundle.conditionsLabel}" heading="#{editstudybundle.conditionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.conditions].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.conditions].recommended}"/>
                                     </ui:panelGroup>
@@ -1721,7 +1723,7 @@
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.disclaimer].rendered}" styleClass="vdcEditStudyField" block="true">
-                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.disclaimerHelp}" linkText="#{editstudybundle.disclaimerLabel}" heading="#{editstudybundle.disclaimerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                        <dvn:inlinehelp helpMessage="#{editstudybundle.disclaimerHelp}" linkText="#{editstudybundle.disclaimerLabel}" heading="#{editstudybundle.disclaimerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.disclaimer].required}"/>
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.disclaimer].recommended}"/>
                                     </ui:panelGroup>
@@ -1754,7 +1756,7 @@
                                             
                                             <h:column>
                                                 <ui:panelGroup block="true" visible = "#{EditStudyPage.studyMap[sfc.notesInformationType].rendered}" styleClass="vdcEditStudyField"> 
-                                                    <ihelp:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                    <dvn:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                     <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].required}"/>
                                                     <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].recommended}"/>
                                                 </ui:panelGroup>
@@ -1769,7 +1771,7 @@
                                                     </h:inputText>
                                                     <h:message styleClass="errorMessage" for="input_notesInformationType"/>   
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField"  visible="#{EditStudyPage.studyMap[sfc.notesInformationSubject].rendered}">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.notesSubjectHelp}" linkText="#{editstudybundle.notesSubjectLabel}" heading="#{editstudybundle.notesSubjectHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.notesSubjectHelp}" linkText="#{editstudybundle.notesSubjectLabel}" heading="#{editstudybundle.notesSubjectHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationSubject].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationSubject].recommended}"/>
                                                         <h:inputText id="input_notesInformationSubject" 
@@ -1784,7 +1786,7 @@
                                                     </ui:panelGroup>
                                                     <h:message styleClass="errorMessage" for="input_notesInformationSubject"  />
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField" visible="#{EditStudyPage.studyMap[sfc.notesText].rendered}">
-                                                        <ihelp:inlinehelp helpMessage="#{editstudybundle.notesTextHelp}" linkText="#{editstudybundle.notesTextLabel}" heading="#{editstudybundle.notesTextHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                                        <dvn:inlinehelp helpMessage="#{editstudybundle.notesTextHelp}" linkText="#{editstudybundle.notesTextLabel}" heading="#{editstudybundle.notesTextHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesText].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesText].recommended}"/>
                                                         <h:inputText id="input_notesText" 

@@ -4,7 +4,7 @@
                         xmlns:jsp="http://java.sun.com/JSP/Page" 
                         xmlns:ui="http://www.sun.com/web/ui"
                         xmlns:tiles="http://struts.apache.org/tags-tiles"
-                        xmlns:dmap="/WEB-INF/tlds/DataList"
+                        xmlns:dvn="/WEB-INF/tlds/dvn-components"
                         xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
                         >
     
@@ -94,7 +94,7 @@
                     <a4j:region id="ajaxRegionBak" renderRegionOnly="true">
                         <h:messages layout="table"/>
                         <a4j:outputPanel id="dataMapOutput" layout="block" ajaxRendered="true">
-                                <dmap:datalist binding="#{HomePage.dataList}" 
+                                <dvn:datalist binding="#{HomePage.dataList}" 
                                                 rendered="#{VDCRequest.currentVDC == null}"
                                                 idName="#{HomePage.dataMapId}"/>
                         </a4j:outputPanel> 

@@ -41,7 +41,7 @@ import edu.harvard.hmdc.vdcnet.web.collection.CollectionUI;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
 import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import edu.harvard.hmdc.vdcnet.web.component.DataList;
+import edu.harvard.hmdc.vdcnet.web.component.DvnDataList;
 import edu.harvard.hmdc.vdcnet.web.component.DataListing;
 import edu.harvard.hmdc.vdcnet.web.component.VDCCollectionTree;
 import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
@@ -742,7 +742,7 @@ public class HomePage extends VDCBaseBean {
        * page_action
        * 
        * @description This method tags an ajax paging event
-       * for the DataList on the network version of the
+       * for the DvnDataList on the network version of the
        * home page and also sets some of the attributes
        * needed to page the correct group in the correct direction
        * 
@@ -766,21 +766,21 @@ public class HomePage extends VDCBaseBean {
           return clientid.substring(clientid.indexOf("_") + 1, clientid.indexOf("_", clientid.indexOf("_") + 1));
       }
     
-    //DataList initialization
+    //DvnDataList initialization
       HtmlPanelGrid mainDataTable = new HtmlPanelGrid();
-      DataList dataList;
+      DvnDataList dataList;
       
       //Getters
-      public DataList getDataList() {
+      public DvnDataList getDataList() {
           if (dataList == null) {
-              dataList = new DataList();
+              dataList = new DvnDataList();
               populateDataList();
           } 
           return dataList;
       }
       
       //Setters
-      public void setDataList(DataList datalist) {
+      public void setDataList(DvnDataList datalist) {
           this.dataList = datalist;
       }
       

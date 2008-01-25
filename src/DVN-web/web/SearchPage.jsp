@@ -12,14 +12,16 @@
         <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}" />
         <input type="hidden" name="pageName" value="SearchPage" />
         <script language="javascript">
+            // <![CDATA[ 
            // workaround for issue where f:selectItems does not provide setStyle or setStyleClass wbossons
             function setSearchOptionsClass() {
                 var table = document.getElementById('content:searchPageView:form1:radioButtonList1'); //content:searchPageView:form1:radioButtonList1
                 var cells = table.getElementsByTagName('TD');
-                for (var i = 0; i &lt; cells.length; i++) {
+                for (var i = 0; i < cells.length; i++) {
                     cells[i].className="vdcSearchOptions";
                 }
             }
+            // ]]>
         </script>
 
         <h:inputHidden id="studyListingIndex" value="#{SearchPage.studyListingIndex}" />

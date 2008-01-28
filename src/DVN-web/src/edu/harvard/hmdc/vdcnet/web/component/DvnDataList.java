@@ -314,7 +314,6 @@ public class DvnDataList extends UICommand {
         HtmlGraphicImage image        = null;
         HtmlOutputText textTag        = null;
         
-        //defaultDisplayNumber = (Integer)getAttributes().get("defaultDisplayNumber");
         //pageNext
         if (pagingDirection == null) pagingDirection = "next";
         if (pagingDirection.equals("next")) {

@@ -1155,7 +1155,21 @@ a.vdcRequestPanelLink:active{
 }
 
 .dvnDisabled {
-    color:#dddddd;
+    color:#cccccc;
+}
+
+.dvnLinkWrapper {
+    margin-right:15px;
+    margin-bottom:25px;
+    margin-left:15px;
+    
+}
+.dvnPrevious {
+    float:left; text-align:left;
+}
+
+.dvnNext {
+    float:right; text-align:right;
 }
 
 li.activeBullet a {

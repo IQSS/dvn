@@ -133,7 +133,7 @@ public class HomePage extends VDCBaseBean {
             }
         }
         if ( getVDCRequestBean().getCurrentVDC() != null && getVDCRequestBean().getCurrentVDC().isAllowContributorRequests()) {
-            if (loginBean==null || (loginBean!=null && (loginBean.isBasicUser() || loginBean.isPrivilegedViewer()) && roleRequestService.findContributorRequest(loginBean.getUser().getId(), getVDCRequestBean().getCurrentVDCId())==null)) {
+            if (loginBean==null || (loginBean!=null && loginBean.isBasicUser() )) {
                 showRequestContributor=true;
             }
         }

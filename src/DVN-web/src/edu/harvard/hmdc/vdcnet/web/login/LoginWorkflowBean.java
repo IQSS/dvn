@@ -36,17 +36,32 @@ public class LoginWorkflowBean extends VDCBaseBean {
     }
 
     public String beginCreatorWorkflow() {
+        workflowType = "creator";
         String nextPage = null;
         LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
         if (loginBean != null) {
-            userService.makeCreator(loginBean.getUser().getId());
+            grantWorkflowPermission();
             nextPage = "addSite";
         } else {
-            workflowType = "creator";
+         
             nextPage = "addAccount";
         }
         return nextPage;
     }
+    
+    public String beginContributorWorkflow() {
+        workflowType = "contributor";
+        String nextPage = null;
+        LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
+        if (loginBean != null) {
+            grantWorkflowPermission();
+            nextPage = "myOptions";
+        } else {   
+            nextPage = "addAccount";
+        }
+        return nextPage;
+    }
+      
 
     public String beginLoginCreatorWorkflow() {
         workflowType = "creator";
@@ -54,14 +69,21 @@ public class LoginWorkflowBean extends VDCBaseBean {
         return nextPage;
 
     }
+    
+       public String beginLoginContributorWorkflow() {
+        workflowType = "contributor";
+        String nextPage = "login";
+        return nextPage;
+
+    }
+
 
     public String processLogin(VDCUser user, Long studyId) {
         this.user = user;
         this.studyId = studyId;
         String nextPage = null;
         if (user.isAgreedTermsOfUse() || !vdcNetworkService.find().isTermsOfUseEnabled()) {
-            updateSessionForLogin();
-            setLoginRedirect();
+            updateSessionAndRedirect();
             nextPage = "home";
         } else {
             
@@ -73,44 +95,40 @@ public class LoginWorkflowBean extends VDCBaseBean {
     public String processAddAccount(VDCUser newUser) {
         user = newUser;
         String nextPage = null;
+        
+        
         if (workflowType == null) {
+            getRequestMap().put("fromPage", "AddAccountPage");
+            getRequestMap().put("userId", user.getId());
             nextPage = "viewAccount";
         } else if (vdcNetworkService.find().isTermsOfUseEnabled()) {
             nextPage = "accountTermsOfUse";
         } else {
-            updateSessionForLogin();
+      
             if (workflowType.equals("contributor")) {
                 nextPage = "myOptions";
             } else if (workflowType.equals("creator")) {
                 nextPage = "addSite";
             } else if (workflowType.equals("fileAccess")) {
-                nextPage = "fileRequest";
+               getRequestMap().put("studyId", studyId);
+               nextPage = "fileRequest";
             }
+            updateSessionForLogin();
+            clearWorkflowState();
         }
 
         getVDCSessionBean().setUserService(null);
 
-        if (workflowType != null) {
-            getRequestMap().put("fromPage", "AddAccountPage");
-            getRequestMap().put("userId", user.getId());
-            if (workflowType.equals("fileAccess")) {
-                getRequestMap().put("studyId", studyId);
-            }
-        }
-        return nextPage;
+         return nextPage;
     }
 
     public String processTermsOfUse(boolean termsAccepted) {
         String forward = null;
         if (user != null) {
             if (termsAccepted) {
-                if (workflowType != null && workflowType.equals("creator")) {
-                    userService.makeCreator(user.getId());
-                }
                 userService.setAgreedTermsOfUse(user.getId(), termsAccepted);
                 user.setAgreedTermsOfUse(termsAccepted);  // update detached object because it will be added to the loginBean
-                updateSessionForLogin();
-                setLoginRedirect( );
+                updateSessionAndRedirect();
             }
 
         }
@@ -119,6 +137,13 @@ public class LoginWorkflowBean extends VDCBaseBean {
 
     }
 
+    private void updateSessionAndRedirect() {
+        updateSessionForLogin();
+        setLoginRedirect();
+        clearWorkflowState();
+    }
+    
+   
     /**
      *  Create loginBean and add it to the Session, do other session-related updates.
      * @param session
@@ -126,6 +151,7 @@ public class LoginWorkflowBean extends VDCBaseBean {
      * @param vdcSessionBean
      * @param user
      */
+    
     private void updateSessionForLogin() {
         //first remove any existing ipUserGroup info from the session
         ExternalContext externalContext = getExternalContext();
@@ -136,10 +162,8 @@ public class LoginWorkflowBean extends VDCBaseBean {
             session.removeAttribute("ipUserGroup");
             session.removeAttribute("isIpGroupChecked");
         }
+        grantWorkflowPermission();
         LoginBean loginBean = new LoginBean();
-        if (workflowType != null && workflowType.equals("creator")) {
-            userService.makeCreator(user.getId());
-        }
         loginBean.setUser(user);
         vdcSessionBean.setLoginBean(loginBean);
 
@@ -150,9 +174,30 @@ public class LoginWorkflowBean extends VDCBaseBean {
 
         // celar the studylistings from prelogin
         StudyListing.clearStudyListingMap(sessionMap);
-
+   
 
      }
+    
+     private void clearWorkflowState() {
+         workflowType=null;
+         user=null;
+         studyId=null;
+     }
+    
+     private void grantWorkflowPermission() {
+        if (workflowType!=null) {
+            if (workflowType.equals("creator")) {
+                  userService.makeCreator(user.getId());
+            } 
+            else if (workflowType.equals("contributor")) {
+                  userService.makeContributor(user.getId(),getVDCRequestBean().getCurrentVDCId());
+                  // Update detached user object with updated user from cache
+                  user = userService.find(user.getId());
+            } else if  (workflowType.equals("fileAccess")) {
+                // give study file permission
+            }
+        }
+    }
 
     private void setLoginRedirect() {
         Map sessionMap = getSessionMap();
@@ -181,5 +226,6 @@ public class LoginWorkflowBean extends VDCBaseBean {
                 }
             }
         }
+        workflowType=null;
     }
 }

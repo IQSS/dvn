@@ -121,42 +121,16 @@
        <put name="pageTitle"   type="string"        value="DVN - Request Access to File" />
        <put name="content" type="template"     value="/login/FileRequestSuccessPage.jsp"/>
    </definition>
-   <definition name="/login/CreatorRequestPage" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
-       <put name="content" type="template"     value="/login/CreatorRequestPage.jsp"/>
-   </definition>
-   <definition name="/login/CreatorRequestAccountPage" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
-       <put name="content" type="template"     value="/login/CreatorRequestAccountPage.jsp"/>
-   </definition>
-      <definition name="/login/CreatorRequestAccountPage_new" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
-       <put name="content" type="template"     value="/login/CreatorRequestAccountPage_new.jsp"/>
-   </definition>
-   <definition name="/login/CreatorRequestQuestionsPage" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
-       <put name="content" type="template"     value="/login/CreatorRequestQuestionsPage.jsp"/>
-   </definition>
-   <definition name="/login/CreatorRequestTermsPage" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
-       <put name="content" type="template"     value="/login/CreatorRequestTermsPage.jsp"/>
-   </definition>
+ 
    <definition name="/login/CreatorRequestInfoPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
        <put name="content" type="template"     value="/login/CreatorRequestInfoPage.jsp"/>
    </definition>
-     <definition name="/login/CreatorRequestSuccessPage" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
-       <put name="content" type="template"     value="/login/CreatorRequestSuccessPage.jsp"/>
+ <definition name="/login/ContributorRequestInfoPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Become a Contributor" />
+       <put name="content" type="template"     value="/login/ContributorRequestInfoPage.jsp"/>
    </definition>
-   <definition name="/login/CreatorRequestInfoPage" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
-       <put name="content" type="template"     value="/login/CreatorRequestInfoPage.jsp"/>
-   </definition>
-      <definition name="/login/CreatorRequestTermsPage" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Request to Create a Dataverse" />
-       <put name="content" type="template"     value="/login/CreatorRequestTermsPage.jsp"/>
-   </definition>
+    
    <definition name="/login/AccountTermsOfUsePage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Account Terms of Use" />
        <put name="content" type="template"     value="/login/AccountTermsOfUsePage.jsp"/>

@@ -39,12 +39,10 @@
               </ui:panelGroup>
               
                <ui:panelGroup id="beContributor" block="true" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestContributor}">
-                    <h:outputLink styleClass="requestHmpgSideLink" rendered="#{VDCSession.loginBean==null}" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/ContributorRequestAccountPage.jsp">
+                    <h:outputLink styleClass="requestHmpgSideLink"  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/ContributorRequestInfoPage.jsp">
                         <h:outputText value="Become a Contributor" escape="false"/>
                     </h:outputLink>
-                    <h:outputLink styleClass="requestHmpgSideLink" rendered="#{VDCSession.loginBean!=null}" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/ContributorRequestPage.jsp">
-                        <h:outputText value="Become a Contributor" escape="false"/>
-                    </h:outputLink>
+                
               </ui:panelGroup>
 
               <!-- Search Section starts here -->                                       

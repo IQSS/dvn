@@ -68,6 +68,8 @@ public interface UserServiceLocal {
     
     public void makeCreator(Long userId);
     
+    public void makeContributor(Long userId, Long vdcId);
+    
     public boolean hasUserCreatedDataverse(Long userId);
     
 }

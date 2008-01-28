@@ -163,6 +163,10 @@ public class UserServiceBean implements UserServiceLocal {
 
     }
 
+    public void makeContributor(Long userId, Long vdcId) {
+        addVdcRole(userId, vdcId, RoleServiceLocal.CONTRIBUTOR);
+    }
+    
     public void makeCreator(Long userId) {
         VDCUser user = em.find(VDCUser.class, userId);
         user.setNetworkRole(networkRoleService.getCreatorRole());

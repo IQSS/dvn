@@ -450,17 +450,20 @@ public class DvnDataList extends UICommand {
             Long timestamp = date.getTime();
             String appendToId = timestamp.toString();
             //END TODO
-            String previousText = new String("\u003c" + "\u003c") + " Previous  |  ";
+            
+            HtmlPanelGroup linkPanel = new HtmlPanelGroup();
+            linkPanel.setLayout("block");
+            linkPanel.setStyleClass("dvnLinkWrapper");
+            
+            HtmlPanelGroup previousPanel = new HtmlPanelGroup();
+            previousPanel.setStyleClass("dvnPrevious");
+            String previousText = new String("\u003c" + "\u003c") + " Previous";
+         
             if (this.getFirstRecordCount(heading) == 0) {
-                HtmlOutputText prevOut = new HtmlOutputText();
-                prevOut.setValue(previousText);
-                prevOut.setStyleClass("dvnDisabled");
-                this.getChildren().add(prevOut);
-                prevOut.encodeBegin(context);
-                if (prevOut.getRendersChildren()) {
-                    prevOut.encodeChildren(context);
-                }
-                prevOut.encodeEnd(context);
+                HtmlOutputText previousOut = new HtmlOutputText();
+                previousOut.setValue(previousText);
+                previousOut.setStyleClass("dvnDisabled");
+                previousPanel.getChildren().add(previousOut);
             } else {
                 HtmlAjaxCommandLink previousLink = new HtmlAjaxCommandLink();
                 previousLink.setId("previous_" + heading + "_" + appendToId); // Custom ID is required in dynamic UIInput and UICommand.
@@ -470,25 +473,18 @@ public class DvnDataList extends UICommand {
                 previousLink.setImmediate(true);
                 MethodExpression previousActionListener = expressionFactory.createMethodExpression(elContext, "#{HomePage.page_action}", null, new Class[] {ActionEvent.class});
                 previousLink.addActionListener(new MethodExpressionActionListener(previousActionListener));
-                this.getChildren().add(previousLink);
-                previousLink.encodeBegin(context);
-                if (previousLink.getRendersChildren()) {
-                    previousLink.encodeChildren(context);
-                }
-                previousLink.encodeEnd(context);
+               previousPanel.getChildren().add(previousLink);
             }
 
+            HtmlPanelGroup nextPanel = new HtmlPanelGroup();
+            nextPanel.setStyleClass("dvnNext");
             String nextText = "Next " + new String("\u003e" + "\u003e");
             if (this.getLastRecordCount(heading) == (getNdvSize(heading)-1)) {
                 HtmlOutputText nextOut = new HtmlOutputText();
                 nextOut.setValue(nextText);
                 nextOut.setStyleClass("dvnDisabled");
-                this.getChildren().add(nextOut);
-                nextOut.encodeBegin(context);
-                if (nextOut.getRendersChildren()) {
-                    nextOut.encodeChildren(context);
-                }
-                nextOut.encodeEnd(context);
+                nextPanel.getChildren().add(nextOut);
+                
             } else {
                 HtmlAjaxCommandLink nextLink = new HtmlAjaxCommandLink();
                 nextLink.setId("next_" + heading + "_" + appendToId); // Custom ID is required in dynamic UIInput and UICommand.
@@ -498,13 +494,17 @@ public class DvnDataList extends UICommand {
                 nextLink.setImmediate(true);
                 MethodExpression nextActionListener = expressionFactory.createMethodExpression(elContext, "#{HomePage.page_action}", null, new Class[] {ActionEvent.class});
                 nextLink.addActionListener(new MethodExpressionActionListener(nextActionListener));
-                this.getChildren().add(nextLink);
-                nextLink.encodeBegin(context);
-                if (nextLink.getRendersChildren()) {
-                    nextLink.encodeChildren(context);
-                }
-                nextLink.encodeEnd(context);
+                nextPanel.getChildren().add(nextLink);
             }
+            
+            linkPanel.getChildren().add(previousPanel);
+            linkPanel.getChildren().add(nextPanel);
+            this.getChildren().add(linkPanel);
+            linkPanel.encodeBegin(context);
+                if (linkPanel.getRendersChildren()) {
+                    linkPanel.encodeChildren(context);
+                }
+            linkPanel.encodeEnd(context);
         } catch (Exception e) {
             System.out.println("there was an issue in the create links area " + e.toString());
             e.printStackTrace();

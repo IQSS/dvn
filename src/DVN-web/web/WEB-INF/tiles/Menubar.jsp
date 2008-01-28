@@ -85,10 +85,6 @@
                                 <h:outputText  value="Network Options"/>
                             </h:outputLink>
                             
-                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/site/AddSitePage.jsp" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and VDCRequest.currentVDC == null and (VDCSession.loginBean.networkCreator) }" title="Create a new dataverse in the Network">
-                                <h:outputText  value="Create a Dataverse"/>
-                            </h:outputLink>
-                            
                             <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp"  rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}" title="My Options in #{VDCRequest.currentVDC.name} dataverse">
                                 <h:outputText  value="#{bundle.myOptionsLabel}"/>
                             </h:outputLink>

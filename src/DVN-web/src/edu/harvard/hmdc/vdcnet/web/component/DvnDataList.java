@@ -524,12 +524,12 @@ public class DvnDataList extends UICommand {
         String localRecord = lastRecord;
         if (localRecord.contains(key)) {
             int indexOfKey   = localRecord.indexOf(key);
-            int indexOfComma = (localRecord.indexOf(",", indexOfKey) != -1) ? localRecord.indexOf(",", indexOfKey) : localRecord.length();
+            int indexOfComma = (localRecord.indexOf("|", indexOfKey) != -1) ? localRecord.indexOf("|", indexOfKey) : localRecord.length();
             String toReplace = localRecord.substring(indexOfKey, indexOfComma);
             String replaceWith = key + "=" + count;
             localRecord = localRecord.replaceAll(toReplace, replaceWith);
         } else {
-            localRecord+=(!lastRecord.equals("")) ? "," + key + "=" + count : key + "=" + count;
+            localRecord+=(!lastRecord.equals("")) ? "|" + key + "=" + count : key + "=" + count;
         }
         lastRecord = localRecord;
         this.getAttributes().put("lastRecord", lastRecord);
@@ -539,12 +539,12 @@ public class DvnDataList extends UICommand {
         String localRecord = firstRecord;
         if (localRecord.contains(key)) {
             int indexOfKey   = localRecord.indexOf(key);
-            int indexOfComma = (localRecord.indexOf(",", indexOfKey) != -1) ? localRecord.indexOf(",", indexOfKey) : localRecord.length();
+            int indexOfComma = (localRecord.indexOf("|", indexOfKey) != -1) ? localRecord.indexOf("|", indexOfKey) : localRecord.length();
             String toReplace = localRecord.substring(indexOfKey, indexOfComma);
             String replaceWith = key + "=" + count;
             localRecord = localRecord.replaceAll(toReplace, replaceWith);
         } else {
-            localRecord+=(!firstRecord.equals("")) ? "," + key + "=" + count : key + "=" + count;
+            localRecord+=(!firstRecord.equals("")) ? "|" + key + "=" + count : key + "=" + count;
         }
         firstRecord = localRecord;
         this.getAttributes().put("firstRecord", firstRecord);
@@ -556,7 +556,7 @@ public class DvnDataList extends UICommand {
             return lastrecord;
         if (!lastRecord.equals("") && lastRecord.contains(key)) {
             int indexOfKey   = lastRecord.indexOf(key) + key.length() + 1;
-            int indexOfComma = (lastRecord.indexOf(",", lastRecord.indexOf(key)) != -1) ? lastRecord.indexOf(",", lastRecord.indexOf(key)) : lastRecord.length();//index is -1 for the last record
+            int indexOfComma = (lastRecord.indexOf("|", lastRecord.indexOf(key)) != -1) ? lastRecord.indexOf("|", lastRecord.indexOf(key)) : lastRecord.length();//index is -1 for the last record
             lastrecord       = Integer.parseInt(lastRecord.substring(indexOfKey, indexOfComma));
         }
          return lastrecord;
@@ -568,7 +568,7 @@ public class DvnDataList extends UICommand {
             return firstrecord;
         if (!firstRecord.equals("") && firstRecord.contains(key)) {
             int indexOfKey   = firstRecord.indexOf(key) + key.length() + 1;
-            int indexOfComma = (firstRecord.indexOf(",", firstRecord.indexOf(key)) != -1) ? firstRecord.indexOf(",", firstRecord.indexOf(key)) : firstRecord.length();//index is -1 for the last record
+            int indexOfComma = (firstRecord.indexOf("|", firstRecord.indexOf(key)) != -1) ? firstRecord.indexOf("|", firstRecord.indexOf(key)) : firstRecord.length();//index is -1 for the last record
             firstrecord       = Integer.parseInt(firstRecord.substring(indexOfKey, indexOfComma));
         }
          return firstrecord;

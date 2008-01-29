@@ -10,14 +10,23 @@
 package edu.harvard.hmdc.vdcnet.ddi;
 
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.FileDscrType;
+import edu.harvard.hmdc.vdcnet.jaxb.ddi20.ProducerType;
 import edu.harvard.hmdc.vdcnet.study.DataTable;
 import edu.harvard.hmdc.vdcnet.study.DataVariable;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
 import edu.harvard.hmdc.vdcnet.study.Study;
+import edu.harvard.hmdc.vdcnet.study.StudyAbstract;
 import edu.harvard.hmdc.vdcnet.study.StudyAuthor;
+import edu.harvard.hmdc.vdcnet.study.StudyDistributor;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyFileEditBean;
+import edu.harvard.hmdc.vdcnet.study.StudyGrant;
+import edu.harvard.hmdc.vdcnet.study.StudyKeyword;
+import edu.harvard.hmdc.vdcnet.study.StudyNote;
 import edu.harvard.hmdc.vdcnet.study.StudyOtherId;
+import edu.harvard.hmdc.vdcnet.study.StudyProducer;
+import edu.harvard.hmdc.vdcnet.study.StudySoftware;
+import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
 import edu.harvard.hmdc.vdcnet.study.SummaryStatistic;
 import edu.harvard.hmdc.vdcnet.study.SummaryStatisticType;
 import edu.harvard.hmdc.vdcnet.study.VariableCategory;
@@ -25,6 +34,7 @@ import edu.harvard.hmdc.vdcnet.study.VariableFormatType;
 import edu.harvard.hmdc.vdcnet.study.VariableIntervalType;
 import edu.harvard.hmdc.vdcnet.study.VariableRangeType;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -33,6 +43,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -627,18 +638,19 @@ public class DDIServiceBean implements DDIServiceLocal {
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
+            throw new EJBException("ERROR occurred in mapping: File Not Found!");
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
+            throw new EJBException("ERROR occurred in mapping!!!!");
         }
     }
 
     private void processDocDscr(XMLStreamReader xmlr, Study study) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("x")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-                else if (xmlr.getLocalName().equals("y")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-                else if (xmlr.getLocalName().equals("z")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+                if (xmlr.getLocalName().equals("IDNo")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
+                else if (xmlr.getLocalName().equals("holdings")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("docDscr")) return;
             }   
         }
@@ -648,12 +660,12 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("citation")) processCitation(xmlr, study);
-                else if (xmlr.getLocalName().equals("stdyInfo")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
+                else if (xmlr.getLocalName().equals("stdyInfo")) processStdyInfo(xmlr, study);
                 else if (xmlr.getLocalName().equals("method")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
                 else if (xmlr.getLocalName().equals("dataAccs")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
                 else if (xmlr.getLocalName().equals("othrStdyMat")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
                 else if (xmlr.getLocalName().equals("notes")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("stdyDscr")) return;
             }   
         }
@@ -664,13 +676,19 @@ public class DDIServiceBean implements DDIServiceLocal {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("titlStmt")) processTitlStmt(xmlr, study);
                 else if (xmlr.getLocalName().equals("rspStmt")) processRspStmt(xmlr,study);
-                else if (xmlr.getLocalName().equals("prodStmt")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-                else if (xmlr.getLocalName().equals("distStmt")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-                else if (xmlr.getLocalName().equals("serStmt")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-                else if (xmlr.getLocalName().equals("verStmt")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");  
-                else if (xmlr.getLocalName().equals("holdings")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED"); 
-                else if (xmlr.getLocalName().equals("notes")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+                else if (xmlr.getLocalName().equals("prodStmt")) processProdStmt(xmlr,study);
+                else if (xmlr.getLocalName().equals("distStmt")) processDistStmt(xmlr,study);
+                else if (xmlr.getLocalName().equals("serStmt")) processSerStmt(xmlr,study);
+                else if (xmlr.getLocalName().equals("verStmt")) processVerStmt(xmlr,study);  
+                else if (xmlr.getLocalName().equals("notes")) {
+                    String _note = parseNoteByType( xmlr, NOTE_TYPE_UNF );
+                    if (_note != null && !_note.equals("") ) {
+                        study.setUNF( parseUNF( _note ) );
+                    } else {                   
+                        processNotes(xmlr, study);;
+                    }   
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("citation")) return;
             }   
         }
@@ -694,44 +712,194 @@ public class DDIServiceBean implements DDIServiceLocal {
                         study.getStudyOtherIds().add(sid);
                     }
                 }
-            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("titlStmt")) return;
             }   
         }
     } 
-
- 
-
     
     private void processRspStmt(XMLStreamReader xmlr, Study study) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("AuthEnty")) {
                     StudyAuthor author = new StudyAuthor();
-                    author.setAffiliation( xmlr.getAttributeValue(null, "affiliation")) ;
+                    author.setAffiliation( xmlr.getAttributeValue(null, "affiliation") );
                     author.setName( xmlr.getElementText() );
                     author.setStudy(study);
                     study.getStudyAuthors().add(author);                    
                 }
-            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("rspStmt")) return;
             }   
         }
     }
-    
+
+    private void processProdStmt(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("producer")) {
+                    StudyProducer prod = new StudyProducer();
+                    study.getStudyProducers().add(prod);
+                    prod.setStudy(study);
+                    prod.setAbbreviation(xmlr.getAttributeValue(null, "abbr") );
+                    prod.setAffiliation( xmlr.getAttributeValue(null, "affiliation") );
+                    Map<String,String> prodDetails = parseCompoundText(xmlr, "producer");
+                    prod.setName( prodDetails.get("name") );
+                    prod.setUrl(  prodDetails.get("url") );
+                    prod.setLogo(  prodDetails.get("logo") );
+                } else if (xmlr.getLocalName().equals("prodDate")) {
+                    study.setProductionDate(parseDate(xmlr,"prodDate"));
+                } else if (xmlr.getLocalName().equals("prodPlac")) {
+                    study.setProductionPlace( xmlr.getElementText() );
+                } else if (xmlr.getLocalName().equals("software")) {
+                    StudySoftware ss = new StudySoftware();
+                    study.getStudySoftware().add(ss);
+                    ss.setStudy(study);
+                    ss.setSoftwareVersion( xmlr.getAttributeValue(null, "version") );
+                    ss.setName( xmlr.getElementText() );
+                } else if (xmlr.getLocalName().equals("fundAg")) {
+                    study.setFundingAgency( xmlr.getElementText() );
+                } else if (xmlr.getLocalName().equals("grantNo")) {
+                    StudyGrant sg = new StudyGrant();
+                    study.getStudyGrants().add(sg);
+                    sg.setStudy(study);
+                    sg.setAgency( xmlr.getAttributeValue(null, "agency") );
+                    sg.setNumber( xmlr.getElementText() );
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (xmlr.getLocalName().equals("prodStmt")) return;
+            }   
+        }
+    }
+
+    private void processDistStmt(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("distrbtr")) {
+                    StudyDistributor dist = new StudyDistributor();
+                    study.getStudyDistributors().add(dist);
+                    dist.setStudy(study);
+                    dist.setAbbreviation(xmlr.getAttributeValue(null, "abbr") );
+                    dist.setAffiliation( xmlr.getAttributeValue(null, "affiliation") );
+                    Map<String,String> distDetails = parseCompoundText(xmlr, "distrbtr");
+                    dist.setName( distDetails.get("name") );
+                    dist.setUrl(  distDetails.get("url") );
+                    dist.setLogo(  distDetails.get("logo") );               
+                } else if (xmlr.getLocalName().equals("contact")) {
+                    study.setDistributorContact( xmlr.getElementText() );
+                    study.setDistributorContactEmail( xmlr.getAttributeValue(null, "email") );
+                    study.setDistributorContactAffiliation( xmlr.getAttributeValue(null, "affiliation") );
+                } else if (xmlr.getLocalName().equals("depositr")) {
+                    Map<String,String> depDetails = parseCompoundText(xmlr, "depositr");
+                    study.setDepositor( depDetails.get("name") );
+                } else if (xmlr.getLocalName().equals("depDate")) {
+                    study.setDateOfDeposit( parseDate(xmlr,"depDate") );
+                } else if (xmlr.getLocalName().equals("distDate")) {
+                    study.setDistributionDate( parseDate(xmlr,"distDate") );
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (xmlr.getLocalName().equals("distStmt")) return;
+            }   
+        }
+    }
+
+
+    private void processSerStmt(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("serName")) {
+                    study.setSeriesName( xmlr.getElementText() );
+                } else if (xmlr.getLocalName().equals("serInfo")) {
+                    study.setSeriesInformation( xmlr.getElementText() );
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (xmlr.getLocalName().equals("serStmt")) return;
+            }   
+        }
+    }
+
+    private void processVerStmt(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("version")) {
+                    study.setStudyVersion( xmlr.getElementText() );
+                    study.setVersionDate( xmlr.getAttributeValue(null, "date") );
+                } else if (xmlr.getLocalName().equals("notes")) { processNotes(xmlr, study); }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (xmlr.getLocalName().equals("verStmt")) return;
+            }   
+        }
+    } 
+ 
+     private void processStdyInfo(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("subject")) processSubject(xmlr, study);
+                else if (xmlr.getLocalName().equals("abstract")) {
+                    StudyAbstract abs = new StudyAbstract();
+                    study.getStudyAbstracts().add(abs);
+                    abs.setStudy(study);
+                    abs.setDate( xmlr.getAttributeValue(null, "date") );
+                    abs.setText( parseText(xmlr, "abstract") );
+                } else if (xmlr.getLocalName().equals("sumDscr")) processSumDscr(xmlr, study);
+                else if (xmlr.getLocalName().equals("notes")) processNotes(xmlr, study);
+            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+                if (xmlr.getLocalName().equals("stdyInfo")) return;
+            }   
+        }
+    }
+
+     private void processSubject(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("keyword")) {
+                    StudyKeyword kw = new StudyKeyword();
+                    study.getStudyKeywords().add(kw);
+                    kw.setStudy(study);
+                    kw.setVocab( xmlr.getAttributeValue(null, "vocab") );
+                    kw.setVocabURI( xmlr.getAttributeValue(null, "vocabURI") );
+                    kw.setValue( xmlr.getElementText());
+                } else if (xmlr.getLocalName().equals("topcClass")) {
+                    StudyTopicClass tc = new StudyTopicClass();
+                    study.getStudyTopicClasses().add(tc);
+                    tc.setStudy(study);
+                    tc.setVocab( xmlr.getAttributeValue(null, "vocab") );
+                    tc.setVocabURI( xmlr.getAttributeValue(null, "vocabURI") );
+                    tc.setValue( xmlr.getElementText());
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+                if (xmlr.getLocalName().equals("subject")) return;
+            }   
+        }
+    }
+
+     private void processSumDscr(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("subject")) processSubject(xmlr, study);
+                else if (xmlr.getLocalName().equals("abstract")) processRspStmt(xmlr,study);
+                else if (xmlr.getLocalName().equals("sumDscr")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
+                else if (xmlr.getLocalName().equals("notes")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
+            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+                if (xmlr.getLocalName().equals("sumDscr")) return;
+            }   
+        }
+    }    
     private void processFileDscr(XMLStreamReader xmlr, Study study, Map filesMap) throws XMLStreamException {
-        String catName = "";
         StudyFile sf = new StudyFile();
         DataTable dt = new DataTable();
         dt.setDataVariables( new ArrayList() );
         dt.setStudyFile(sf);
         sf.setDataTable(dt);
         sf.setSubsettable(true);
-        
         sf.setFileSystemLocation( xmlr.getAttributeValue(null, "URI"));
-        
         filesMap.put( xmlr.getAttributeValue(null, "ID"), sf);
-        
+
+        /// the following Strings are used to determine the category
+        String catName = null;
+        String icpsrDesc = null;
+        String icpsrId = null;
+
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("fileTxt")) processFileTxt(xmlr, sf);
@@ -739,8 +907,15 @@ public class DDIServiceBean implements DDIServiceLocal {
                     String noteType = xmlr.getAttributeValue(null, "type");
                     if (NOTE_TYPE_UNF.equalsIgnoreCase(noteType) ) {
                         dt.setUnf( parseUNF( xmlr.getElementText() ) );    
-                    } else if ("VDC:CATEGORY".equalsIgnoreCase(noteType) ) {
+                    } else if ("vdc:category".equalsIgnoreCase(noteType) ) {
                         catName = xmlr.getElementText();
+                    } else if ("icpsr:category".equalsIgnoreCase(noteType) ) {
+                        String subjectType = xmlr.getAttributeValue(null, "subject");
+                        if ("description".equalsIgnoreCase(subjectType)) {
+                            icpsrDesc = xmlr.getElementText();
+                        } else if ("id".equalsIgnoreCase(subjectType)) {
+                            icpsrId = xmlr.getElementText();
+                        }
                     }
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
@@ -749,7 +924,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                     if (sf.getFileName() == null || sf.getFileName().trim().equals("") ) {
                         sf.setFileName("file");
                     } 
-                    addFileToCategory(sf, catName, study);
+                    addFileToCategory(sf, determineFileCategory(catName, icpsrDesc, icpsrId), study);
                     return;
                 }
             }   
@@ -817,7 +992,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 else if (xmlr.getLocalName().equals("sumStat")) processSumStat( xmlr, dv );
                 else if (xmlr.getLocalName().equals("catgry")) processCatgry( xmlr, dv );
                 else if (xmlr.getLocalName().equals("notes")) {
-                    String _note = processNotes( xmlr, NOTE_TYPE_UNF );
+                    String _note = parseNoteByType( xmlr, NOTE_TYPE_UNF );
                     if (_note != null && !_note.equals("") ) {
                         dv.setUnf( parseUNF( _note ) );
                     }
@@ -905,22 +1080,54 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }    
     
-    private String processNotes (XMLStreamReader xmlr, String type) throws XMLStreamException {
-        if (type.equalsIgnoreCase( xmlr.getAttributeValue(null, "type") ) ) {
-            return xmlr.getElementText();
-        } else {
-            return null;
-        }
+
+    private void processNotes (XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        StudyNote note = new StudyNote();
+        study.getStudyNotes().add(note);
+        note.setStudy(study);
+        note.setSubject( xmlr.getAttributeValue(null, "subject") );
+        note.setType( xmlr.getAttributeValue(null, "type") );
+        note.setText( xmlr.getElementText() );
     }
 
     private void processOtherMat(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        StudyFile sf = new StudyFile();
+        sf.setFileSystemLocation( xmlr.getAttributeValue(null, "URI"));
+
+
+        /// the following Strings are used to determine the category
+        String catName = null;
+        String icpsrDesc = null;
+        String icpsrId = null;
+
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("x")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-                else if (xmlr.getLocalName().equals("y")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-                else if (xmlr.getLocalName().equals("z")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
+                if (xmlr.getLocalName().equals("labl")) {
+                    sf.setFileName( xmlr.getElementText() );
+                } else if (xmlr.getLocalName().equals("txt")) {
+                    sf.setDescription( xmlr.getElementText() );
+                } else if (xmlr.getLocalName().equals("notes")) {
+                    String noteType = xmlr.getAttributeValue(null, "type");
+                    if ("vdc:category".equalsIgnoreCase(noteType) ) {
+                        catName = xmlr.getElementText();
+                    } else if ("icpsr:category".equalsIgnoreCase(noteType) ) {
+                        String subjectType = xmlr.getAttributeValue(null, "subject");
+                        if ("description".equalsIgnoreCase(subjectType)) {
+                            icpsrDesc = xmlr.getElementText();
+                        } else if ("id".equalsIgnoreCase(subjectType)) {
+                            icpsrId = xmlr.getElementText();
+                        }
+                    }
+                }
             } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
-                if (xmlr.getLocalName().equals("otherMat")) return;
+                if (xmlr.getLocalName().equals("otherMat")) {
+                    // post process
+                    if (sf.getFileName() == null || sf.getFileName().trim().equals("") ) {
+                        sf.setFileName("file");
+                    } 
+                    addFileToCategory(sf, determineFileCategory(catName, icpsrDesc, icpsrId), study);
+                    return;
+                }
             }   
         }
     }    
@@ -942,6 +1149,14 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
         s.setStudyId(_id.substring(index2+1));
     }    
+
+    private String parseNoteByType (XMLStreamReader xmlr, String type) throws XMLStreamException {
+        if (type.equalsIgnoreCase( xmlr.getAttributeValue(null, "type") ) ) {
+            return xmlr.getElementText();
+        } else {
+            return null;
+        }
+    }
     
     private String parseUNF(String unfString) {
         if (unfString.indexOf("UNF:") != -1) {
@@ -950,10 +1165,85 @@ public class DDIServiceBean implements DDIServiceLocal {
             return null;
         }
     }
+
+     private String parseText(XMLStreamReader xmlr, String endTag) throws XMLStreamException {
+        String returnString = "";
+
+        while (true) {
+            int event = xmlr.next();
+            if (event == XMLStreamConstants.CHARACTERS) {
+                returnString += xmlr.getText().trim().replace('\n',' ');
+            } else if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("p")) {
+                    returnString += "<p>" + parseText(xmlr, "p") + "</p>";
+                }
+                else if (xmlr.getLocalName().equals("ExtLink")) {
+                    String uri = xmlr.getAttributeValue(null, "URI");
+                    String text = parseText(xmlr, "ExtLink").trim();
+                    returnString += "<a href=\"" + uri + "\">" + ( StringUtil.isEmpty(text) ? uri : text) + "</a>";
+                } else {
+                    System.out.println("DDI Mapper: parseText: tag not yet supported");
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+                if (xmlr.getLocalName().equals(endTag)) break;
+            }   
+        }
+
+        // lists
+        // citation
+
+        return returnString;
+
+    }
+
+    private Map<String,String> parseCompoundText (XMLStreamReader xmlr, String endTag) throws XMLStreamException {
+        Map<String,String> returnMap = new HashMap<String,String>();
+        String text = "";
+
+        while (true) {
+            int event = xmlr.next();
+            if (event == XMLStreamConstants.CHARACTERS) {
+                text += xmlr.getText();
+            } else if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("ExtLink")) {
+                    String mapKey  = "image".equals( xmlr.getAttributeValue(null, "role") ) ? "logo" : "url";
+                    returnMap.put( mapKey, xmlr.getAttributeValue(null, "URI") );
+                    parseText(xmlr, "ExtLink"); // this line effectively just skips though until the end of the tag
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (xmlr.getLocalName().equals(endTag)) break;
+            }   
+        }
+
+        returnMap.put( "name", text );
+        return returnMap;
+    }
+
+    private String parseDate (XMLStreamReader xmlr, String endTag) throws XMLStreamException {
+        String date = xmlr.getAttributeValue(null, "date");
+        if (date == null) {
+            date = xmlr.getElementText();
+        }
+        return date;
+    }
     
     private void addFileToCategory(StudyFile sf, String catName, Study study) {
         StudyFileEditBean fileBean = new StudyFileEditBean(sf);
         fileBean.setFileCategoryName(catName);
         fileBean.addFileToCategory(study);
-    }    
+    } 
+
+    private String determineFileCategory(String catName, String icpsrDesc, String icpsrId) {
+        if (catName == null) {
+            catName = icpsrDesc;
+            
+            if (catName != null) {
+                if (icpsrId != null && !icpsrId.trim().equals("") ) {
+                    catName = icpsrId + ". " + catName;
+                }
+            }
+        }  
+        
+        return (catName != null ? catName : "");
+    }   
 }

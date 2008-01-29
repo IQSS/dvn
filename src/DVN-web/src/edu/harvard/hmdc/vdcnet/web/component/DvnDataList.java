@@ -157,7 +157,7 @@ public class DvnDataList extends UICommand {
           if (datalistings.isEmpty()) { //TODO: remove and test this.
               continue;
           } else {
-            String idString = key.replaceAll(" ", "").toLowerCase();
+              String idString = formatSafeKey(key);
             boolean isTarget = false;
             if (idString.equals(targetGroup))
                 isTarget = true;
@@ -465,7 +465,7 @@ public class DvnDataList extends UICommand {
                 previousPanel.getChildren().add(previousOut);
             } else {
                 HtmlAjaxCommandLink previousLink = new HtmlAjaxCommandLink();
-                previousLink.setId("previous_" + heading + "_" + appendToId); // Custom ID is required in dynamic UIInput and UICommand.
+                previousLink.setId("previous_" + formatSafeKey(heading) + "_" + appendToId); // Custom ID is required in dynamic UIInput and UICommand.
                 previousLink.getClientId(context);
                 previousLink.setValue(previousText);
                 previousLink.setReRender("content:homePageView:form1:dataMapOutput");
@@ -486,7 +486,7 @@ public class DvnDataList extends UICommand {
                 
             } else {
                 HtmlAjaxCommandLink nextLink = new HtmlAjaxCommandLink();
-                nextLink.setId("next_" + heading + "_" + appendToId); // Custom ID is required in dynamic UIInput and UICommand.
+                nextLink.setId("next_" + formatSafeKey(heading) + "_" + appendToId); // Custom ID is required in dynamic UIInput and UICommand.
                 nextLink.getClientId(context);
                 nextLink.setValue(nextText);
                 nextLink.setReRender("content:homePageView:form1:dataMapOutput");
@@ -646,6 +646,28 @@ public class DvnDataList extends UICommand {
         if (isInvalidChars)
             safeId = heading.replaceAll(regexp, "");
         safeId = "dvn" + safeId;
+        return safeId.toLowerCase();
+    }
+    
+        /**  formatId
+     * @description
+     * 
+     * headings are used to build ids
+     * Keys are used for comparisons in
+     * determining record position.
+     * 
+     * 
+     * @author wbossons
+     * 
+     */
+    private String formatSafeKey(String heading) {
+        String safeId = heading;
+        String regexp = "[^A-Za-z0-9]";
+        Pattern pattern = Pattern.compile(regexp);
+        Matcher matcher = pattern.matcher(heading);
+        Boolean isInvalidChars  = matcher.find();
+        if (isInvalidChars)
+            safeId = heading.replaceAll(regexp, "");
         return safeId.toLowerCase();
     }
     

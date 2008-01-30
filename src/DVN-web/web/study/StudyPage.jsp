@@ -412,12 +412,10 @@
                             <ui:panelLayout  id="layoutPanel3" panelLayout="flow" style="margin: 0px; padding: 0px 0px 10px 0px; " rendered="#{!empty studyPage.studyUI.study.fileCategories}">
                                 <ui:panelGroup  block="true" styleClass="vdcRequestPanelFiles" rendered="#{studyPage.studyUI.anyFileRestricted and studyPage.studyUI.study.requestAccess}">
                                     <h:outputText value="Would you like to access the restricted files in this study?" />
-                                    <h:outputLink rendered="#{VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.jsp?studyId=#{studyPage.studyId}" styleClass="vdcRequestPanelLink">
+                                    <h:commandLink action="#{studyPage.requestFileAccess}" styleClass="vdcRequestPanelLink">
                                         <h:outputText  value="Send a Request"/>
-                                    </h:outputLink>            
-                                    <h:outputLink rendered="#{VDCSession.loginBean==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestAccountPage.jsp?studyId=#{studyPage.studyId}" styleClass="vdcRequestPanelLink">
-                                        <h:outputText  value="Send a Request"/>
-                                    </h:outputLink>            
+                                    </h:commandLink>            
+                                             
                                 </ui:panelGroup>
                                 
                                 <ui:panelGroup  block="true" id="groupPanel7a" style="text-align: left; padding-bottom: 2px; padding-top: 5px;">

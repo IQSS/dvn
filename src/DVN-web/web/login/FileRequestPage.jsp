@@ -7,9 +7,9 @@
     <f:subview id="UnauthorizedPageView">
         <ui:form  id="fileRequestForm">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-            <h:inputHidden binding="#{FileRequestPage.hiddenUserId}" value="#{FileRequestPage.userId}"/>
-            <h:inputHidden binding="#{FileRequestPage.hiddenStudyId}" value="#{FileRequestPage.studyId}"/>
-
+            <h:inputHidden  value="test"/>
+            <h:inputHidden  value="test"/>
+         
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                     

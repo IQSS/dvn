@@ -63,10 +63,12 @@
                         </h:outputLink>
                     </li>
                     <li>
-                      <h:outputLink  rendered="#{VDCRequest.logoutPage or VDCSession.loginBean.user==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp" title="Login">
+                      
+                      <h:outputLink  rendered="#{VDCRequest.logoutPage or VDCSession.loginBean.user==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp?clearWorkflow=true" title="Login">
                         <h:outputText value="#{bundle.loginLabel}"/>
                       </h:outputLink>
-           
+                      
+                     
                     <h:outputLink rendered="#{VDCSession.loginBean.user!=null and !VDCRequest.logoutPage }"  value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LogoutPage.jsp"  title="Logout">
                         <h:outputText value="#{bundle.logoutLabel}"/>
                     </h:outputLink>  

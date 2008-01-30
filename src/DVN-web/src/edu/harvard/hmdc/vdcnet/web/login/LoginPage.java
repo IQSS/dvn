@@ -60,12 +60,21 @@ public class LoginPage extends VDCBaseBean {
 
     @EJB
     UserServiceLocal userService;
+
+ 
     @EJB
     GroupServiceLocal groupService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
+    
+    
+    private Boolean clearWorkflow=true;
  
     public void init() {
         super.init();
+        if (clearWorkflow!=null) {
+            LoginWorkflowBean lwf = (LoginWorkflowBean)getBean("LoginWorkflowBean");
+            lwf.clearWorkflowState();
+        }
         setAffiliateNames();
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String refererUrl = new String("");
@@ -351,6 +360,14 @@ public class LoginPage extends VDCBaseBean {
      */
     public void setHiddenStudyId(HtmlInputHidden hiddenStudyId) {
         this.hiddenStudyId = hiddenStudyId;
+    }
+    
+    public Boolean isClearWorkflow() {
+        return clearWorkflow;
+    }
+
+    public void setClearWorkflow(Boolean clearWorkflow) {
+        this.clearWorkflow = clearWorkflow;
     }
 }
 

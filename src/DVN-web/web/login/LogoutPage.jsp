@@ -26,7 +26,7 @@
                             </h:outputLink>
                         </ui:panelGroup>
                         <ui:panelGroup  block="true"  style="padding-top: 10px; padding-bottom: 40px; padding-left:70px" >
-                            <h:outputLink    value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp"  >
+                            <h:outputLink    value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp?clearWorkflow=true"  >
                                 <h:outputText value="Log in"/>
                             </h:outputLink>
                         </ui:panelGroup>

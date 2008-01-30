@@ -35,7 +35,29 @@ public class LoginWorkflowBean extends VDCBaseBean {
     public LoginWorkflowBean() {
     }
 
+    public String beginLoginWorkflow() {
+        clearWorkflowState();
+        return "login";
+    }
+    
+    public String beginFileAccessWorkflow(Long studyId) {
+        clearWorkflowState();
+        workflowType="fileAccess"; 
+        this.studyId=studyId;
+          String nextPage =  null;
+          LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
+        if (loginBean == null) {
+            nextPage = "fileRequestAccount";
+        } else {
+              nextPage = "fileRequest"; 
+        }
+  
+        return nextPage;
+    }
+    
+    
     public String beginCreatorWorkflow() {
+        clearWorkflowState();
         workflowType = "creator";
         String nextPage = null;
         LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
@@ -50,6 +72,7 @@ public class LoginWorkflowBean extends VDCBaseBean {
     }
     
     public String beginContributorWorkflow() {
+        clearWorkflowState();
         workflowType = "contributor";
         String nextPage = null;
         LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
@@ -64,6 +87,7 @@ public class LoginWorkflowBean extends VDCBaseBean {
       
 
     public String beginLoginCreatorWorkflow() {
+        clearWorkflowState();
         workflowType = "creator";
         String nextPage = "login";
         return nextPage;
@@ -71,6 +95,7 @@ public class LoginWorkflowBean extends VDCBaseBean {
     }
     
        public String beginLoginContributorWorkflow() {
+        clearWorkflowState();
         workflowType = "contributor";
         String nextPage = "login";
         return nextPage;
@@ -80,7 +105,9 @@ public class LoginWorkflowBean extends VDCBaseBean {
 
     public String processLogin(VDCUser user, Long studyId) {
         this.user = user;
-        this.studyId = studyId;
+        if (studyId!=null) {
+            this.studyId = studyId;
+        }
         String nextPage = null;
         if (user.isAgreedTermsOfUse() || !vdcNetworkService.find().isTermsOfUseEnabled()) {
             updateSessionAndRedirect();
@@ -114,7 +141,7 @@ public class LoginWorkflowBean extends VDCBaseBean {
                nextPage = "fileRequest";
             }
             updateSessionForLogin();
-            clearWorkflowState();
+      
         }
 
         getVDCSessionBean().setUserService(null);
@@ -140,7 +167,7 @@ public class LoginWorkflowBean extends VDCBaseBean {
     private void updateSessionAndRedirect() {
         updateSessionForLogin();
         setLoginRedirect();
-        clearWorkflowState();
+     
     }
     
    
@@ -178,7 +205,7 @@ public class LoginWorkflowBean extends VDCBaseBean {
 
      }
     
-     private void clearWorkflowState() {
+     public void clearWorkflowState() {
          workflowType=null;
          user=null;
          studyId=null;
@@ -227,5 +254,25 @@ public class LoginWorkflowBean extends VDCBaseBean {
             }
         }
         workflowType=null;
+    }
+
+    public Long getStudyId() {
+        return studyId;
+    }
+
+    public void setStudyId(Long studyId) {
+        this.studyId = studyId;
+    }
+
+    public VDCUser getUser() {
+        return user;
+    }
+
+    public void setUser(VDCUser user) {
+        this.user = user;
+    }
+    
+    public String getWorkflowType() {
+        return workflowType;
     }
 }

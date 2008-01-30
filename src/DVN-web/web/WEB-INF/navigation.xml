@@ -18,8 +18,6 @@
             <to-view-id>/study/EditStudyPage.jsp</to-view-id>
         </navigation-case>   
    </navigation-rule> 
-
-     
     <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
@@ -128,23 +126,23 @@
             <to-view-id>/login/LoginPage.jsp</to-view-id>
         </navigation-case>
      </navigation-rule>       
-    <navigation-rule>
-        <from-view-id>/login/ContributorRequestPage.jsp</from-view-id>
+
+   <navigation-rule>
+         <from-view-id>/*</from-view-id>
         <navigation-case>
-            <from-outcome>success</from-outcome>
-            <to-view-id>/login/ContributorRequestSuccessPage.jsp</to-view-id>        
-        </navigation-case>         
-    </navigation-rule>
-    
-     <navigation-rule>
-        <from-view-id>/login/CreatorRequestPage.jsp</from-view-id>
+            <from-outcome>fileRequestAccount</from-outcome>
+            <to-view-id>/login/FileRequestAccountPage.jsp</to-view-id>
+        </navigation-case>
+     </navigation-rule>       
+   <navigation-rule>
+         <from-view-id>/*</from-view-id>
         <navigation-case>
-            <from-outcome>success</from-outcome>
-            <to-view-id>/login/CreatorRequestSuccessPage.jsp</to-view-id>        
-        </navigation-case>         
-    </navigation-rule>
-    
-   
+            <from-outcome>fileRequest</from-outcome>
+            <to-view-id>/login/FileRequestPage.jsp</to-view-id>
+        </navigation-case>
+     </navigation-rule>       
+
+  
     
     <navigation-rule>
         <from-view-id>/login/FileRequestPage.jsp</from-view-id>
@@ -156,18 +154,8 @@
        
     <navigation-rule>
         <from-view-id>/login/AddAccountPage.jsp</from-view-id>
-        <navigation-case>
-            <from-outcome>creatorRequest</from-outcome>
-            <to-view-id>/login/CreatorRequestPage.jsp</to-view-id>        
-        </navigation-case>  
-        <navigation-case>
-            <from-outcome>contributorRequest</from-outcome>
-            <to-view-id>/login/ContributorRequestPage.jsp</to-view-id>        
-        </navigation-case> 
-        <navigation-case>
-            <from-outcome>fileRequest</from-outcome>
-            <to-view-id>/login/FileRequestPage.jsp</to-view-id>         
-        </navigation-case>
+       
+       
         <navigation-case>
             <from-outcome>viewAccount</from-outcome>
             <to-view-id>/login/AccountPage.jsp</to-view-id>       

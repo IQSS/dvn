@@ -46,22 +46,26 @@ import javax.faces.component.html.HtmlInputHidden;
  * to respond to incoming events.</p>
  */
 public class FileRequestPage extends VDCBaseBean {
-    @EJB StudyAccessRequestServiceLocal studyRequestService;
-    @EJB EditUserService editService;
-    @EJB RoleServiceLocal roleService;
-    @EJB StudyServiceLocal studyService;
-    @EJB MailServiceLocal mailService;     
-    @EJB UserServiceLocal userService;
-        
-    
+
+    @EJB
+    StudyAccessRequestServiceLocal studyRequestService;
+    @EJB
+    EditUserService editService;
+    @EJB
+    RoleServiceLocal roleService;
+    @EJB
+    StudyServiceLocal studyService;
+    @EJB
+    MailServiceLocal mailService;
+    @EJB
+    UserServiceLocal userService;
+
     /**
      * <p>Construct a new Page bean instance.</p>
      */
     public FileRequestPage() {
     }
-    
-    
-    
+
     /**
      * <p>Callback method that is called whenever a page is navigated to,
      * either directly via a URL, or indirectly via page navigation.
@@ -76,34 +80,10 @@ public class FileRequestPage extends VDCBaseBean {
      */
     public void init() {
         super.init();
-        
-        if (getVDCSessionBean().getLoginBean()!=null) {
-            userId = getVDCSessionBean().getLoginBean().getUser().getId();
-        } else {
-            userId =(Long)getRequestMap().get("userId");
-        }
-        if (userId==null && hiddenUserId!=null ) {
-            userId = (Long)hiddenUserId.getValue();
-        }
-        // If studyId was not sent as a request parameter, check the request attributes
-        if (studyId==null) {
-            studyId =  (Long)getRequestMap().get("studyId");
-        }
-        // If not in the request at all, check for it in hidden field
-        if (studyId==null && hiddenStudyId!=null) {
-            studyId = (Long)hiddenStudyId.getValue();
-        }
-        
-        
-        if ( "AddAccountPage".equals(getRequestMap().get("fromPage")) ) {
-            success=true;
-            
-        }
-        if (userId!=null && studyId!=null && studyRequestService.findByUserStudy(userId,studyId)!=null) {
-            alreadyRequested=true;
-        }
+   
+   
     }
-    
+
     /**
      * <p>Callback method that is called after the component tree has been
      * restored, but before any event processing takes place.  This method
@@ -113,7 +93,7 @@ public class FileRequestPage extends VDCBaseBean {
      */
     public void preprocess() {
     }
-    
+
     /**
      * <p>Callback method that is called just before rendering takes place.
      * This method will <strong>only</strong> be called for the page that
@@ -124,98 +104,41 @@ public class FileRequestPage extends VDCBaseBean {
      */
     public void prerender() {
     }
-    
-    /**
-     * Holds value of property userId.
-     */
-    private Long userId;
-    
-    /**
-     * Getter for property user.
-     * @return Value of property user.
-     */
-    public Long getUserId() {
-        return this.userId;
-    }
-    
-    /**
-     * Setter for property user.
-     * @param user New value of property user.
-     */
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-    
-    
-   
-    
   
-   
-
-    /**
-     * Holds value of property alreadyRequested.
-     */
-    private boolean alreadyRequested;
-
     /**
      * Getter for property alreadyRequested.
      * @return Value of property alreadyRequested.
      */
     public boolean isAlreadyRequested() {
-        return this.alreadyRequested;
+        boolean alreadyRequested=false;
+        LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
+        VDCUser user = this.getVDCSessionBean().getLoginBean().getUser();
+        if (studyRequestService.findByUserStudy(user.getId(), lwf.getStudyId()) != null) {
+            alreadyRequested = true;
+        }
+        return alreadyRequested;
     }
 
-    /**
-     * Setter for property alreadyRequested.
-     * @param alreadyRequested New value of property alreadyRequested.
-     */
-    public void setAlreadyRequested(boolean alreadyRequested) {
-        this.alreadyRequested = alreadyRequested;
-    }
-
-    /**
-     * Holds value of property success.
-     */
-    private boolean success;
-
-    /**
-     * Getter for property success.
-     * @return Value of property success.
-     */
-    public boolean isSuccess() {
-        return this.success;
-    }
-
-    /**
-     * Setter for property success.
-     * @param success New value of property success.
-     */
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-    
+  
     public String generateRequest() {
-        
-            
-       
-           Study study = studyService.getStudy(studyId);
-           VDCUser user = userService.find(userId);
-            studyRequestService.create(userId,studyId);
-            // Notify Admin of request       
-            mailService.sendFileAccessRequestNotification(getVDCRequestBean().getCurrentVDC().getContactEmail(),
-                    user.getUserName(), 
-                    study.getTitle(),study.getGlobalId());
-            
-             // Send confirmation to user
-             mailService.sendFileAccessRequestConfirmation(user.getEmail(),
-                     study.getTitle(),study.getGlobalId());
-          
-            success=true;
-       
-       return "success";     
-       
-    }
 
+        LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
+        VDCUser user = this.getVDCSessionBean().getLoginBean().getUser();
+        Study study = studyService.getStudy(lwf.getStudyId());
+       
+        studyRequestService.create(user.getId(), study.getId());
+        // Notify Admin of request       
+        mailService.sendFileAccessRequestNotification(getVDCRequestBean().getCurrentVDC().getContactEmail(),
+                user.getUserName(),
+                study.getTitle(), study.getGlobalId());
+
+        // Send confirmation to user
+        mailService.sendFileAccessRequestConfirmation(user.getEmail(),
+                study.getTitle(), study.getGlobalId());
+     
+        return "success";
+
+    }
     /**
      * Holds value of property fileRequest.
      */
@@ -235,69 +158,6 @@ public class FileRequestPage extends VDCBaseBean {
      */
     public void setFileRequest(boolean fileRequest) {
         this.fileRequest = fileRequest;
-    }
-
-    /**
-     * Holds value of property studyId.
-     */
-    private Long studyId;
-
-    /**
-     * Getter for property studyId.
-     * @return Value of property studyId.
-     */
-    public Long getStudyId() {
-        return this.studyId;
-    }
-
-    /**
-     * Setter for property studyId.
-     * @param studyId New value of property studyId.
-     */
-    public void setStudyId(Long studyId) {
-        this.studyId = studyId;
-    }
-
-  /**
-     * Holds value of property hiddenUserId.
-     */
-    private HtmlInputHidden hiddenUserId;
-
-    /**
-     * Getter for property hiddenUserId.
-     * @return Value of property hiddenUserId.
-     */
-    public HtmlInputHidden getHiddenUserId() {
-        return this.hiddenUserId;
-    }
-
-    /**
-     * Setter for property hiddenUserId.
-     * @param hiddenUserId New value of property hiddenUserId.
-     */
-    public void setHiddenUserId(HtmlInputHidden hiddenUserId) {
-        this.hiddenUserId = hiddenUserId;
-    }
-
-    /**
-     * Holds value of property hiddenStudyId.
-     */
-    private HtmlInputHidden hiddenStudyId;
-
-    /**
-     * Getter for property hiddenStudyId.
-     * @return Value of property hiddenStudyId.
-     */
-    public HtmlInputHidden getHiddenStudyId() {
-        return this.hiddenStudyId;
-    }
-
-    /**
-     * Setter for property hiddenStudyId.
-     * @param hiddenStudyId New value of property hiddenStudyId.
-     */
-    public void setHiddenStudyId(HtmlInputHidden hiddenStudyId) {
-        this.hiddenStudyId = hiddenStudyId;
     }
 }
 

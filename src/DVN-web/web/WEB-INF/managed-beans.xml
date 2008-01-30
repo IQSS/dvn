@@ -122,17 +122,18 @@
             <property-class>java.lang.Long</property-class>
             <value>#{param.studyId}</value>
         </managed-property>
+        <managed-property>
+            <property-name>clearWorkflow</property-name>
+            <property-class>boolean</property-class>
+            <value>#{param.clearWorkflow}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>LogoutPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.LogoutPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
-    <managed-bean>
-        <managed-bean-name>ContributorRequestPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.ContributorRequestPage</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-    </managed-bean>
+   
    <managed-bean>
         <managed-bean-name>AccountTermsOfUsePage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.AccountTermsOfUsePage</managed-bean-class>
@@ -142,17 +143,9 @@
         <managed-bean-name>FileRequestPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.FileRequestPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
-        <managed-property>
-            <property-name>studyId</property-name>
-            <property-class>java.lang.Long</property-class>
-            <value>#{param.studyId}</value>
-        </managed-property>
+        
     </managed-bean>
-    <managed-bean>
-        <managed-bean-name>CreatorRequestPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.CreatorRequestPage</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-    </managed-bean>
+
     <!-- Privileged Users Pages -->
     <!-- *******************  Study Management *********************** -->
     <managed-bean>

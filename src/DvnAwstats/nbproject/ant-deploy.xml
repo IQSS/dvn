@@ -41,16 +41,16 @@
     <target name="-deploy-ant" depends="-parse-sun-web,-add-resources" if="deploy.ant.enabled">
         <echo message="Deploying ${deploy.ant.archive}"/>
         <taskdef name="sun-appserv-deploy" classname="org.apache.tools.ant.taskdefs.optional.sun.appserv.DeployTask"
-                 classpath="${sjsas.root}/lib/sun-appserv-ant.jar" />
+                 classpath="/usr/local/glassfish/lib/sun-appserv-ant.jar" />
         <sun-appserv-deploy user="${sjsas.username}"
                 passwordfile="${sjsas.password.file}"
                 host="${sjsas.host}" port="${sjsas.port}"
-                file="${deploy.ant.archive}" asinstalldir="${sjsas.root}"/>
+                file="${deploy.ant.archive}" asinstalldir="/usr/local/glassfish"/>
         <delete file="${sjsas.password.file}"/>
     </target>
     <target name="-undeploy-ant" depends="-init-cl-deployment-env" if="deploy.ant.enabled">
         <taskdef name="sun-appserv-undeploy" classname="org.apache.tools.ant.taskdefs.optional.sun.appserv.UndeployTask"
-                 classpath="${sjsas.root}/lib/sun-appserv-ant.jar" />
+                 classpath="/usr/local/glassfish/lib/sun-appserv-ant.jar" />
         <sun-appserv-undeploy user="${sjsas.username}"
                 passwordfile="${sjsas.password.file}"
                 host="${sjsas.host}" port="${sjsas.port}"

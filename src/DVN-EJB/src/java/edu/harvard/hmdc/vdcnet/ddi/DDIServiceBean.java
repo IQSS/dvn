@@ -25,7 +25,11 @@ import edu.harvard.hmdc.vdcnet.study.StudyGrant;
 import edu.harvard.hmdc.vdcnet.study.StudyKeyword;
 import edu.harvard.hmdc.vdcnet.study.StudyNote;
 import edu.harvard.hmdc.vdcnet.study.StudyOtherId;
+import edu.harvard.hmdc.vdcnet.study.StudyOtherRef;
 import edu.harvard.hmdc.vdcnet.study.StudyProducer;
+import edu.harvard.hmdc.vdcnet.study.StudyRelMaterial;
+import edu.harvard.hmdc.vdcnet.study.StudyRelPublication;
+import edu.harvard.hmdc.vdcnet.study.StudyRelStudy;
 import edu.harvard.hmdc.vdcnet.study.StudySoftware;
 import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
 import edu.harvard.hmdc.vdcnet.study.SummaryStatistic;
@@ -1108,12 +1112,35 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     private void processOthrStdyMat(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        boolean replicationForFound = false;
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("relMat")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-                else if (xmlr.getLocalName().equals("relStdy")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-                else if (xmlr.getLocalName().equals("relPubl")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-                else if (xmlr.getLocalName().equals("otherRefs")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
+                if (xmlr.getLocalName().equals("relMat")) {
+                    if (!replicationForFound && REPLICATION_FOR_TYPE.equals( xmlr.getAttributeValue(null, "type") ) ) {
+                        study.setReplicationFor( parseText( xmlr, "relMat" ) );
+                        replicationForFound = true;
+                    } else { 
+                        StudyRelMaterial rm = new StudyRelMaterial();
+                        study.getStudyRelMaterials().add(rm);
+                        rm.setStudy(study);
+                        rm.setText( parseText( xmlr, "relMat" ) );
+                    }
+                } else if (xmlr.getLocalName().equals("relStdy")) {
+                    StudyRelStudy rs = new StudyRelStudy();
+                    study.getStudyRelStudies().add(rs);
+                    rs.setStudy(study);
+                    rs.setText( parseText( xmlr, "relStdy" ) );
+                } else if (xmlr.getLocalName().equals("relPubl")) {
+                    StudyRelPublication rp = new StudyRelPublication();
+                    study.getStudyRelPublications().add(rp);
+                    rp.setStudy(study);
+                    rp.setText( parseText( xmlr, "relPubl" ) );
+                } else if (xmlr.getLocalName().equals("otherRefs")) {
+                    StudyOtherRef or = new StudyOtherRef();
+                    study.getStudyOtherRefs().add(or);
+                    or.setStudy(study);
+                    or.setText( parseText( xmlr, "otherRefs" ) );
+                }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("othrStdyMat")) return;
             }   
@@ -1316,15 +1343,6 @@ public class DDIServiceBean implements DDIServiceLocal {
     }    
     
 
-    private void processNotes (XMLStreamReader xmlr, Study study) throws XMLStreamException {
-        StudyNote note = new StudyNote();
-        study.getStudyNotes().add(note);
-        note.setStudy(study);
-        note.setSubject( xmlr.getAttributeValue(null, "subject") );
-        note.setType( xmlr.getAttributeValue(null, "type") );
-        note.setText( xmlr.getElementText() );
-    }
-
     private void processOtherMat(XMLStreamReader xmlr, Study study) throws XMLStreamException {
         StudyFile sf = new StudyFile();
         sf.setFileSystemLocation( xmlr.getAttributeValue(null, "URI"));
@@ -1365,6 +1383,15 @@ public class DDIServiceBean implements DDIServiceLocal {
                 }
             }   
         }
+    }
+
+    private void processNotes (XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        StudyNote note = new StudyNote();
+        study.getStudyNotes().add(note);
+        note.setStudy(study);
+        note.setSubject( xmlr.getAttributeValue(null, "subject") );
+        note.setType( xmlr.getAttributeValue(null, "type") );
+        note.setText( xmlr.getElementText() );
     }    
     
     private void parseStudyId(String _id, Study s) {
@@ -1419,7 +1446,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 } else {
                     System.out.println("DDI Mapper: parseText: tag not yet supported");
                 }
-            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals(endTag)) break;
             }   
         }

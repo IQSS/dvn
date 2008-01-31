@@ -45,7 +45,7 @@
                              <br />
                              <!--TBD (wjb) What type of group is this -->
                              <f:verbatim rendered="#{param.userGroupId == null}">
-                                 <script language="Javascript">
+                                 <script type="text/javascript">
 
                                             function showAll(){
                                                 if (location.href.indexOf("userGroupType") != -1) {
@@ -157,21 +157,10 @@
                              </ui:panelGroup>
                              
                              <!-- end ip groups -->
-                             <!--<ui:panelGroup block="true">
-                                    <h:dataTable binding="#{EditUserGroupPage.affiliatesTable}" rendered="true" value="#{EditUserGroupPage.affiliates}" var="affiliate">
-                                        <h:column>
-                                            <h:outputText value="#{affiliate.affiliateName}"/>
-                                            <h:inputText id="affiliateName
-                                        </h:column>
-                                        <h:column><h:outputText value="#{affiliate.affiliateUrl}"/></h:column>
-                                    </h:dataTable>
-                                </ui:panelGroup>-->
-                             <!-- Commented for now - Add Later
-                                 <h:outputText value="PIN Service Name"/>
-                                <h:inputText size="40" value="#{EditUserGroupPage.group.pinService}"/>
+                             <!-- Part of the code related to affiliates has been removed - can be recovered from earlier versions of this file (from revision 1672) -  1/29/08 by MC
                                 -->
                              <f:verbatim rendered="#{param.userGroupId == null}">
-                                 <script language="JavaScript">
+                                 <script type="text/javascript">
                                         // this is done to ensure that the collections are properly inited. wjb
                                         showAll();
                                  </script>

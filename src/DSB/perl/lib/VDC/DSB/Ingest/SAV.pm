@@ -695,8 +695,8 @@ sub read_RT3and4 {
 			$template = "C";
 			$lenvallbl= unpack($template, $buff);
 			print $FH "The length of a value label:",$lenvallbl,"\n" if $DEBUG;
-			if ($lenvallbl > 60) {
-				die "The length of a value label($lenvallbl) must be less than 61: $!";
+			if ($lenvallbl > 255) {
+				die "The length of a value label($lenvallbl) must be less than 256: $!";
 			}
 
 			print $FH "pre-adj length and remainder:",$lenvallbl,"\t", (($lenvallbl+1) % $OBS), "\n" if $DEBUG;

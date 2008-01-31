@@ -1323,16 +1323,20 @@ public class DDIServiceBean implements DDIServiceLocal {
     }    
 
     private void processInvalrng(XMLStreamReader xmlr, DataVariable dv) throws XMLStreamException {
-        VariableRange range = new VariableRange();
-        dv.getInvalidRanges().add(range);
-        range.setDataVariable(dv);
-
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("item")) {
+                    VariableRange range = new VariableRange();
+                    dv.getInvalidRanges().add(range);
+                    range.setDataVariable(dv);
+                    
                     range.setBeginValue( xmlr.getAttributeValue(null, "VALUE") );
                     range.setBeginValueType(varService.findVariableRangeTypeByName( variableRangeTypeList, DB_VAR_RANGE_TYPE_POINT )  );
                 } else if (xmlr.getLocalName().equals("range")) {
+                    VariableRange range = new VariableRange();
+                    dv.getInvalidRanges().add(range);
+                    range.setDataVariable(dv);
+
                     String min = xmlr.getAttributeValue(null, "min");
                     String minExclsuive = xmlr.getAttributeValue(null, "minExclusive");
                     String max = xmlr.getAttributeValue(null, "max");
@@ -1354,7 +1358,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                         range.setEndValueType(varService.findVariableRangeTypeByName(variableRangeTypeList, DB_VAR_RANGE_TYPE_MAX_EX )  );
                     }
                 }
-            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("invalrng")) return;
             }   
         }
@@ -1396,7 +1400,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                         cat.setFrequency( new Long( _freq ) );
                     }
                 }
-            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("catgry")) return;
             }   
         }

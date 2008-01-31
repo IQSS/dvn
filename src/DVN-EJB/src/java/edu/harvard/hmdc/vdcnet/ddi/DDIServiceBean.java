@@ -37,6 +37,7 @@ import edu.harvard.hmdc.vdcnet.study.SummaryStatisticType;
 import edu.harvard.hmdc.vdcnet.study.VariableCategory;
 import edu.harvard.hmdc.vdcnet.study.VariableFormatType;
 import edu.harvard.hmdc.vdcnet.study.VariableIntervalType;
+import edu.harvard.hmdc.vdcnet.study.VariableRange;
 import edu.harvard.hmdc.vdcnet.study.VariableRangeType;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
@@ -653,11 +654,31 @@ public class DDIServiceBean implements DDIServiceLocal {
     private void processDocDscr(XMLStreamReader xmlr, Study study) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("IDNo")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
-                else if (xmlr.getLocalName().equals("holdings")) System.out.println("DDI Mapper: NOT YET IMPLEMENTED");
+                if (xmlr.getLocalName().equals("IDNo") && StringUtil.isEmpty(study.getStudyId()) ) {
+                    // this will set a StudyId if it has not yet been set; it will get overridden by a study
+                    // id in the StudyDscr section, if one exists
+                    if ( AGENCY_HANDLE.equals( xmlr.getAttributeValue(null, "agency") ) ) {
+                        parseStudyId( xmlr.getElementText(), study );
+                    }
+                } else if ( xmlr.getLocalName().equals("holdings") && StringUtil.isEmpty(study.getHarvestHoldings()) ) {
+                    processCitationInDocDscr(xmlr, study);
+                }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("docDscr")) return;
             }   
+        }
+    }
+
+    private void processCitationInDocDscr (XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        while (true) {
+            int event = xmlr.next();
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if ( xmlr.getLocalName().equals("holdings") && StringUtil.isEmpty(study.getHarvestHoldings()) ) {
+                    study.setHarvestHoldings( xmlr.getAttributeValue(null, "URI") );
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (xmlr.getLocalName().equals("citation")) break;
+            }
         }
     }
     
@@ -1224,9 +1245,10 @@ public class DDIServiceBean implements DDIServiceLocal {
     } 
     
     private void processDataDscr(XMLStreamReader xmlr, Study study, Map filesMap) throws XMLStreamException {
+        int fileOrder = 0;
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("var")) processVar(xmlr, study, filesMap);
+                if (xmlr.getLocalName().equals("var")) processVar(xmlr, study, filesMap, fileOrder++);
             } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
                 if (xmlr.getLocalName().equals("dataDscr")) return;
             }   
@@ -1235,13 +1257,20 @@ public class DDIServiceBean implements DDIServiceLocal {
 
 
  
-    private void processVar(XMLStreamReader xmlr, Study study, Map filesMap) throws XMLStreamException {
+    private void processVar(XMLStreamReader xmlr, Study study, Map filesMap, int fileOrder) throws XMLStreamException {
         DataVariable dv = new DataVariable();
         dv.setSummaryStatistics( new ArrayList() );
         dv.setCategories( new ArrayList() );
         dv.setName( xmlr.getAttributeValue(null, "name") );
+        dv.setFileOrder(fileOrder);
        
-        
+        // interval type (DB value may be different than DDI value)
+        String _interval = xmlr.getAttributeValue(null, "intrvl");
+        _interval = VAR_INTERVAL_CONTIN.equals(_interval) ? DB_VAR_INTERVAL_TYPE_CONTINUOUS : _interval;
+        dv.setVariableIntervalType( varService.findVariableIntervalTypeByName(variableIntervalTypeList, _interval ));
+
+        dv.setWeighted( VAR_WEIGHTED.equals( xmlr.getAttributeValue(null, "wgt") ) );
+       
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("location")) processLocation(xmlr, dv, filesMap);
@@ -1250,7 +1279,12 @@ public class DDIServiceBean implements DDIServiceLocal {
                     if (_labl != null && !_labl.equals("") ) {
                         dv.setLabel( _labl );
                     }
-                } else if (xmlr.getLocalName().equals("varFormat")) processVarFormat( xmlr, dv );
+                } else if (xmlr.getLocalName().equals("universe")) {
+                    dv.setUniverse( xmlr.getElementText() );
+                } else if (xmlr.getLocalName().equals("concept")) {
+                    dv.setConcept( xmlr.getElementText() );
+                } else if (xmlr.getLocalName().equals("invalrng")) processInvalrng( xmlr, dv );
+                else if (xmlr.getLocalName().equals("varFormat")) processVarFormat( xmlr, dv );
                 else if (xmlr.getLocalName().equals("sumStat")) processSumStat( xmlr, dv );
                 else if (xmlr.getLocalName().equals("catgry")) processCatgry( xmlr, dv );
                 else if (xmlr.getLocalName().equals("notes")) {
@@ -1259,6 +1293,10 @@ public class DDIServiceBean implements DDIServiceLocal {
                         dv.setUnf( parseUNF( _note ) );
                     }
                 }
+
+                // todo: qstnTxt: wait to handle until we know more of how we will use it
+                // todo: wgt-var : waitng to see example
+
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("var")) return;
             }   
@@ -1283,6 +1321,44 @@ public class DDIServiceBean implements DDIServiceLocal {
             dv.setRecordSegmentNumber( new Long( xmlr.getAttributeValue(null, "RecSegNo") ) );  
         } catch (NumberFormatException ex) {}
     }    
+
+    private void processInvalrng(XMLStreamReader xmlr, DataVariable dv) throws XMLStreamException {
+        VariableRange range = new VariableRange();
+        dv.getInvalidRanges().add(range);
+        range.setDataVariable(dv);
+
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("item")) {
+                    range.setBeginValue( xmlr.getAttributeValue(null, "VALUE") );
+                    range.setBeginValueType(varService.findVariableRangeTypeByName( variableRangeTypeList, DB_VAR_RANGE_TYPE_POINT )  );
+                } else if (xmlr.getLocalName().equals("range")) {
+                    String min = xmlr.getAttributeValue(null, "min");
+                    String minExclsuive = xmlr.getAttributeValue(null, "minExclusive");
+                    String max = xmlr.getAttributeValue(null, "max");
+                    String maxExclusive = xmlr.getAttributeValue(null, "maxExclusive");
+
+                    if ( !StringUtil.isEmpty(min) ) {
+                        range.setBeginValue( min );
+                        range.setBeginValueType(varService.findVariableRangeTypeByName( variableRangeTypeList,DB_VAR_RANGE_TYPE_MIN )  );
+                    } else if ( !StringUtil.isEmpty(minExclsuive) ) {
+                        range.setBeginValue( minExclsuive );
+                        range.setBeginValueType(varService.findVariableRangeTypeByName( variableRangeTypeList,DB_VAR_RANGE_TYPE_MIN_EX )  );
+                    }
+
+                    if ( !StringUtil.isEmpty(max) ) {
+                        range.setEndValue( max );
+                        range.setEndValueType(varService.findVariableRangeTypeByName( variableRangeTypeList,DB_VAR_RANGE_TYPE_MAX )  );
+                    } else if ( !StringUtil.isEmpty(maxExclusive) ) {
+                        range.setEndValue( maxExclusive );
+                        range.setEndValueType(varService.findVariableRangeTypeByName(variableRangeTypeList, DB_VAR_RANGE_TYPE_MAX_EX )  );
+                    }
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+                if (xmlr.getLocalName().equals("invalrng")) return;
+            }   
+        }
+    }
     
     private void processVarFormat(XMLStreamReader xmlr, DataVariable dv) throws XMLStreamException {
         dv.setVariableFormatType( varService.findVariableFormatTypeByName(variableFormatTypeList, xmlr.getAttributeValue(null, "type") ) );
@@ -1443,6 +1519,10 @@ public class DDIServiceBean implements DDIServiceLocal {
                     String uri = xmlr.getAttributeValue(null, "URI");
                     String text = parseText(xmlr, "ExtLink").trim();
                     returnString += "<a href=\"" + uri + "\">" + ( StringUtil.isEmpty(text) ? uri : text) + "</a>";
+                } else if (xmlr.getLocalName().equals("list")) {
+                    returnString += parseText_list(xmlr);
+                } else if (xmlr.getLocalName().equals("citation")) {
+                    returnString += parseText_citation(xmlr);
                 } else {
                     System.out.println("DDI Mapper: parseText: tag not yet supported");
                 }
@@ -1451,11 +1531,81 @@ public class DDIServiceBean implements DDIServiceLocal {
             }   
         }
 
-        // lists
-        // citation
-
         return returnString;
+    }
 
+    private String parseText_list (XMLStreamReader xmlr) throws XMLStreamException {
+        String listString = null;
+        String listCloseTag = null;
+
+        // check type
+        String listType = xmlr.getAttributeValue(null, "type");
+        if ("bulleted".equals(listType) ){
+            listString = "<ul>\n";
+            listCloseTag = "</ul>";
+        } else if ("ordered".equals(listType) ) {
+            listString = "<ol>\n";
+            listCloseTag = "</ol>";
+        } else {
+            throw new EJBException("mapContent: ListType of types other than {bulleted, ordered} not currently supported.");    
+        }
+
+        while (true) {
+            int event = xmlr.next();
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("itm")) {
+                    listString += "<li>" + xmlr.getElementText() + "</li>\n";
+                } else {
+                    throw new EJBException("mapContent: ListType does not currently supported contained LabelType.");
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (xmlr.getLocalName().equals("list")) break;
+            }
+        }
+
+        return (listString + listCloseTag);
+    }
+
+    private String parseText_citation (XMLStreamReader xmlr) throws XMLStreamException {
+        String citation = "<!--  parsed from DDI citation title and holdings -->";
+        boolean addHoldings = false;
+        String holdings = "";
+
+        while (true) {
+            int event = xmlr.next();
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("titlStmt")) {
+                    while (true) {
+                        event = xmlr.next();
+                        if (event == XMLStreamConstants.START_ELEMENT) {
+                            if (xmlr.getLocalName().equals("titl")) {
+                                citation += xmlr.getElementText();
+                            }
+                        } else if (event == XMLStreamConstants.END_ELEMENT) {
+                            if (xmlr.getLocalName().equals("titlStmt")) break;
+                        }
+                    }
+                } else if (xmlr.getLocalName().equals("holdings")) {
+                    citation += addHoldings ? ", " : "";
+                    addHoldings = true;
+                    
+                    String uri = xmlr.getAttributeValue(null, "URI");
+                    if ( StringUtil.isEmpty(uri) ) {
+                        citation += xmlr.getElementText();
+                    } else {
+                        citation += "<a href=\"" + uri + "\">" + xmlr.getElementText() + "</a>";
+                    }
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (xmlr.getLocalName().equals("citation")) break;
+            }
+        }
+
+        if (addHoldings) {
+            citation += " (" + holdings + ")";
+        }
+
+        return citation;
     }
 
     private Map<String,String> parseCompoundText (XMLStreamReader xmlr, String endTag) throws XMLStreamException {

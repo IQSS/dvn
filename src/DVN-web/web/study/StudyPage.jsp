@@ -14,6 +14,7 @@
                 
     <f:verbatim>   
     <script type="text/javascript">
+      //<![CDATA[
         var fileCitationPopup;
 
         function createFileCitationPopup(divId, anchorId) {
@@ -34,6 +35,7 @@
             popup.showPopup(anchorId);
             return popup;
         }
+       // ]]>         
      </script> 
      </f:verbatim>
      <dvn:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" writePopupDiv="true" rendered="true"/>
@@ -461,6 +463,7 @@
                                             </h:column>
                                             <h:column  id="column10">
                                                 <h:outputText  id="outputText17" value="#{studyFileUI.studyFile.description}"/>
+                                                
                                             </h:column>
                                               <h:column  id="column12a">
                                                 <h:outputText value="#{studyFileUI.studyFile.dataTable.caseQuantity}"/>                         
@@ -483,8 +486,13 @@
                                                     
                                                     <h:graphicImage  styleClass="vdcNoBorders" style="margin-left: 2px; margin-right: 0px;" value="/resources/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" 
                                                                      alt="You do not have permissions to access this file." title="You do not have permissions to access this file."/>
-                                                    <h:commandButton  id="fileLink" style="padding-right: 15px" action="#{studyFileUI.fileDownload_action}" rendered="#{!studyFileUI.restrictedForUser}" title="View or download this File."
+                                                    <h:commandButton  id="fileLink1" style="padding-right: 15px" action="#{studyFileUI.fileDownload_action}" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.image}" title="View or download this File."
                                                                       image="/resources/icon_download.gif" />
+                                                    
+                                                    <h:commandButton  id="fileLink2" style="padding-right: 15px" action="#{studyFileUI.fileDownload_action}" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.image}" title="View or download this File."
+                                                                      image="/FileDownload/?fileId=#{studyFileUI.studyFile.id}&amp;imageThumb" />
+                                                    
+                                                    
                                                     
                                                     <h:outputLink rendered="#{studyFileUI.studyFile.subsettable}"  id="fileSubset" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.jsp?dtId=#{studyFileUI.studyFile.dataTable.id}" title="Go to Subset and Analysis page for this file." >
                                                         <h:graphicImage  id="imagefs" styleClass="vdcNoBorders" style="margin-left: 0px; margin-right: 2px;" value="/resources/icon_analyze.gif" />

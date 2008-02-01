@@ -120,6 +120,15 @@ public class StudyFileUI {
         this.format = format;
     }
     
+     public boolean isImage() {
+        
+         if ( studyFile.getFileType() != null && studyFile.getFileType().substring(0, 6).equalsIgnoreCase("image/") ){
+            return true; 
+         }  else {
+             return false;
+         }
+    }
+    
      public String fileDownload_action () {
         try {
             //get the xff arg used for web stats text report

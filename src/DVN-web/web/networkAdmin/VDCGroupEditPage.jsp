@@ -8,7 +8,7 @@
           >
 <f:subview id="vDCGroupEditView">
     <f:verbatim>
-        <script language="JavaScript">
+        <script type="text/javascript">
             //<![CDATA[
                 function getAddRemoveLength() {
                     if (document.getElementById('content:vDCGroupEditView:vdcGroupEditForm:addRemoveList_selected').length > 1) {

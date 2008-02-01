@@ -10,10 +10,8 @@
                  <input type="hidden" name="pageName" value="EditUserGroupPage"/>
                  
                  <div class="dvn_section">
-                     <div class="dvn_sectionTitle">
-                        
-                             <h:outputText value="User Group"/>
-                          
+                     <div class="dvn_sectionTitle">                       
+                             <h:outputText value="User Group"/>  
                      </div>            
                      <div class="dvn_sectionBox"> 
                          <div class="dvn_margin12">
@@ -46,7 +44,7 @@
                              <!--TBD (wjb) What type of group is this -->
                              <f:verbatim rendered="#{param.userGroupId == null}">
                                  <script type="text/javascript">
-
+                                         //<![CDATA[
                                             function showAll(){
                                                 if (location.href.indexOf("userGroupType") != -1) {
                                                     if (document.getElementById('content:EditUserGroupPageView:form1:usergroups') != null)
@@ -64,7 +62,7 @@
                                                         document.getElementById('content:EditUserGroupPageView:form1:userGroupType').value = "ipgroup";
                                                  }
                                             }
-
+                                        //]]>
                                  </script>
                              </f:verbatim>
                              <ui:panelGroup>

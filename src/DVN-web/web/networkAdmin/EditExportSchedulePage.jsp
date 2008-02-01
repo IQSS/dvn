@@ -6,15 +6,14 @@
                         xmlns:tiles="http://struts.apache.org/tags-tiles">
                             
       <f:verbatim>
-        <script language="Javascript">                        
+          
+        <script type="text/javascript">  
+         //<![CDATA[               
          function updateExportInput(  ) {
                 exportPeriod = getSelect("exportPeriod");
                 exportHourOfDay = getInput("exportHourOfDay");
                 exportDayOfWeek = getInput("exportDayOfWeek");
-                
-      
-                 
-                 
+                            
                    if (exportPeriod.value=="daily") {
                         exportHourOfDay.disabled = false;
                         exportDayOfWeek.disabled = true;
@@ -27,33 +26,30 @@
                         exportHourOfDay.disabled = true;
                         exportHourOfDay.value='';
                         exportDayOfWeek.value='';
-                  
                     }                
-                 
-                              
+                                  
              }
             
             function getInput( id ) {
          
                 elements=document.getElementsByTagName("input");
-                for(i=0; i &lt; elements.length; i++) {
+                for(i=0; i < elements.length; i++) {
                 
                     if (elements[i].id.indexOf(id) != -1 ) { 
                 
                         return elements[i];
                     }
-                }
-                               
+                }                               
             }
             function getSelect( id ) {
                 elements=document.getElementsByTagName("select");
-                for(i=0; i &lt; elements.length; i++) {
+                for(i=0; i < elements.length; i++) {
                     if (elements[i].id.indexOf(id) != -1) {    
                         return elements[i];
                     }
                 }
             }
-            
+           // ]]> 
          </script>
     </f:verbatim>
       
@@ -138,7 +134,7 @@
                                 
        </ui:form>
    </f:subview>
-   <script language="Javascript">
+   <script type="text/javascript">
         // initial call to disable subsetting Restricted (if needed)
         updateExportInput();
   </script> 

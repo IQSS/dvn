@@ -91,7 +91,7 @@
                                 
        </ui:form>
    </f:subview>
-   <script language="Javascript">
+   <script type="text/javascript">
         // initial call to disable subsetting Restricted (if needed)
         updateScheduleInput();
   </script> 

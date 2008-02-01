@@ -8,12 +8,14 @@
    <f:subview id="siteStatistics">
     <ui:form  id="siteStatisticsForm"> 
         <f:verbatim>
-            <script language="JavaScript">
+            <script type="text/javascript">
+               //<![CDATA[                  
                 function changeValue(obj) {
                     if (window.event)
                         obj.value = window.event.srcElement.value;
                         document.forms['content:siteStatistics:siteStatisticsForm'].submit();
                 }
+               //]]>                
             </script>
         </f:verbatim>
         <div class="dvn_section">

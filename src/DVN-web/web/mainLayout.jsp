@@ -30,6 +30,7 @@
          <ui:script url="/resources/jquery.ifixpng.js"/>
          
          <ui:script type="text/javascript">
+          <![CDATA[    
              $(document).ready(function(){
 		$("div.dvn_navblock").corner("10px bottom");
 		$("div.dvn_searchblock").corner("10px");
@@ -38,6 +39,7 @@
                 $.ifixpng('/dvn/resources/pixel.gif');
                 $('img[@src$=.png], a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active').ifixpng();
               });
+          ]]>
          </ui:script>
          
          <ui:script url='/faces/a4j.res/org.ajax4jsf.framework.ajax.AjaxScript'/>
@@ -47,7 +49,7 @@
                   <tiles:insert name="banner" flush="false"/>
               </f:subview>
              <div class="dvn_wrapper">
-             <div class="dvn_content">               
+                S<div class="dvn_content">               
                   <f:subview id="menubar">
                       <tiles:insert name="menubar" flush="false"/>
                   </f:subview>
@@ -60,7 +62,7 @@
               <f:subview id="footer">
                   <tiles:insert name="footer" flush="false"/>
               </f:subview>
-              <!-- <script language="javascript" src="http://localhost:8080/DvnAwstats/cgi/awstats/js/awstats_misc_tracker.js"></script>
+              <!-- <script type="text/javascript" src="http://localhost:8080/DvnAwstats/cgi/awstats/js/awstats_misc_tracker.js"></script>
               <noscript>
                   <img src="http://localhost:8080/DvnAwstats/cgi/awstats/js/awstats_misc_tracker.js?nojs=y" height="0" width="0" border="0" style="display:block"/>
               </noscript> -->

@@ -5,19 +5,20 @@
                         xmlns:ui="http://www.sun.com/web/ui"
                         xmlns:tiles="http://struts.apache.org/tags-tiles">
        <f:subview id="StudyPermissionsPageView">
-          <f:verbatim>           
-            <script language="Javascript">
+          
+            <script type="text/javascript">
+              // <![CDATA[                  
                     function updateAllCheckboxes( selectAllCheckbox ) {
                         checkboxes=document.getElementsByTagName("input");
-                         for(i=0; i &lt; checkboxes.length; i++) {
+                         for(i=0; i < checkboxes.length; i++) {
                             if (checkboxes[i].id.indexOf("filePermissionCheckbox") != -1) {
                                 checkboxes[i].checked = selectAllCheckbox.checked;               
                             }
                          }
                     }  
-                  
+               // ]]> 
             </script> 
-        </f:verbatim>
+
     <ui:form  id="form1">
         <input type="hidden" name="pageName" value="StudyPermissionsPage"/>
 
@@ -173,14 +174,7 @@
                                         </h:column>
                                     </h:dataTable>
                                 </h:column>
-                                <!--h:column  >
-                                <f:facet name="header">
-                                    <h:outputText   value="Edit List/ See Details"/>
-                                </f:facet>
-                                <h:outputLink   value="http://www.sun.com/jscreator">
-                                    <h:outputText   value="Edit List / See Details"/>
-                                </h:outputLink>
-                            </h:column-->
+                                <!-- Commented h:column - see version prior to 2/1/08 to find changes, MC-->
                             </h:dataTable>
                         </ui:panelGroup>
                         <ui:panelGroup block="true" id="groupPanel6"

@@ -34,9 +34,8 @@ xmlns:ui="http://www.sun.com/web/ui"
   }
   String shlurl = cntxpth + "/sumStat?" + "dtId="+dataFileId+"&varId=";
 ]]></jsp:scriptlet>
-
+<![CDATA[
     <script type="text/javascript">
-        <![CDATA[
             // share-remoting related code
             var req=null;
             var cellId;
@@ -158,7 +157,7 @@ xmlns:ui="http://www.sun.com/web/ui"
                       "Please make sure of your internet connection and try again later");
             }
             
-        ]]></script>
+        </script>]]>
 <!-- to be renamed to subview -->
 
 

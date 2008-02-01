@@ -12,7 +12,7 @@
     
     <f:subview id="editStudyPageView">
         <f:verbatim>           
-            <script language="Javascript">
+            <script type="text/javascript">
                 // <![CDATA[ 
                     // functions to work with category selection
                     // note a few assumptions that these functions have:

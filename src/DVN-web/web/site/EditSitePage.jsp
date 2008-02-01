@@ -9,7 +9,7 @@
     <f:subview id="editSitePageView">
                           
         <ui:form binding="#{EditSitePage.form1}" id="form1">
-           <!-- <script language="JavaScript">
+           <!-- <script type="text/javascript">
                 function setCheckedValue(frmElement) {
                     var theForm = document.forms['content:editSitePageView:form1'];
                     for (var i = 0; i &lt; theForm.elements.length; i++) {
@@ -173,7 +173,7 @@
                      </div>
                  </div>
              </div>
-             <!-- <script language="JavaScript">
+             <!-- <script type="text/javascript">
                     // this is done to ensure that the scholar fields are properly inited. wjb
                     showAll();
              </script> -->

@@ -20,12 +20,15 @@
          <ui:script url="/resources/EventCapture.js"/>
          <ui:script url="/resources/dvn_ui.js"/>
          <f:verbatim>
-             <script language="JavaScript">
+             <script type="text/javascript">
+             // <![CDATA[                          
                  var isChild = true;
                  function printMe() {
                     window.print();
                  }
+             //]]>                     
              </script>
+           
          </f:verbatim>
       </ui:head>
       <body style="background-color:#eeeeee;">        

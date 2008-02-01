@@ -8,7 +8,8 @@
 
     <f:subview id="addFilesPageView">
         <f:verbatim>
-            <script language="Javascript">
+            <script type="text/javascript">
+             // <![CDATA[                  
                 // functions to work with category selection
                 // note a few assumptions that these functions have:
                 // the id of the dropdown (including parent nodes); the partial id of the checkboxes;
@@ -27,8 +28,8 @@
                 }
                 function updateAllCheckedCategories( dropdown ) {
                 checkboxes=document.getElementsByTagName("input");
-                for(i=0; i &lt; checkboxes.length; i++) {
-                if (checkboxes[i].id.indexOf("catCheckbox") != -1 &amp;&amp; checkboxes[i].checked == true) {
+                for(i=0; i < checkboxes.length; i++) {
+                if (checkboxes[i].id.indexOf("catCheckbox") != -1 && checkboxes[i].checked == true) {
                 textField = checkboxes[i].nextSibling.nextSibling;
                 textField.value = dropdown.value;                            
                 }
@@ -38,6 +39,7 @@
                 function disableSave() {
                 document.getElementById("content:addFilesPageView:form1:saveButton").disabled = true;
                 }
+              // ]]>
             </script>
         </f:verbatim>
         <ui:form  id="form1">

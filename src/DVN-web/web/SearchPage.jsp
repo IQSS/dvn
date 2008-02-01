@@ -11,7 +11,7 @@
     <ui:form id="form1">
         <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}" />
         <input type="hidden" name="pageName" value="SearchPage" />
-        <script language="javascript">
+        <script type="text/javascript">
             // <![CDATA[ 
            // workaround for issue where f:selectItems does not provide setStyle or setStyleClass wbossons
             function setSearchOptionsClass() {
@@ -74,7 +74,7 @@
         </div>
       </div>
   
-    <script language="javascript">
+    <script type="text/javascript">
         onLoad=setSearchOptionsClass();
     </script>
     <!-- Search Section ends here -->

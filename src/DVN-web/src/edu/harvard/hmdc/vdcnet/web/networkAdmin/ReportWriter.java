@@ -227,11 +227,11 @@ public class ReportWriter extends ReportConstants {
                 outputStream.write("<div style=\"max-width:780; margin-top:25px; margin-right:auto; margin-left:auto;\">" +
                     "<span style=\"font-weight:800; font-size: medium;\">Monthly Usage Report of MIT Affiliates of the Dataverse Network</span>" + separator +
                     "<div style=\"margin-right:25px;text-align:right;\">" +
-                        "<script language=\"JavaScript\">" +
+                        "<script type=\"text/javascript\">" +
                             "if (typeof(isChild) == 'undefined') { " +
                                 "document.write(\"<input type=\\\"button\\\" value=\\\"Print\\\" " +
                                     "onclick=\\\"window.open('" + reportUrl  + "', 'newWindow','menubar=0,resizable=1,width=640,height=480')\\\"/>\") } else {" +
-                                    "var scriptBegin = \"<scr\" + \"ipt language=\\\"JavaScript\\\">\"" +
+                                    "var scriptBegin = \"<scr\" + \"ipt type=\\\"text/javascript\\\">\"" +
                                     ";document.write(scriptBegin + \"onLoad=window.print();setTimeout('self.close()', 5000);<\\/scr\" + \"ipt>\") }" +
                         "</script>" +
                     "</div>" +

@@ -156,6 +156,9 @@ public class CensusRepositoryServlet extends HttpServlet{
 	    //OutputStream out = res.getOutputStream();
 	    out = res.getWriter();
 
+	    out.println ("available unrestricted subsettable datafiles:\n"); 
+
+
 	    try {
 		while (dbIds.next()) {
 
@@ -241,7 +244,7 @@ public class CensusRepositoryServlet extends HttpServlet{
 
 	int i = 0; 
 
-	String sqlCmd= "SELECT id,study_id from filecategory"; 
+	String sqlCmd= "SELECT id,study_id from filecategory ORDER BY id"; 
 
 	Connection sqlConn = dvnDatasource.getConnection();	 
 	PreparedStatement sth = sqlConn.prepareStatement(sqlCmd);
@@ -261,6 +264,8 @@ public class CensusRepositoryServlet extends HttpServlet{
 	    } else { 
 		categoryMap[catId] = false; 
 	    }
+
+	    i++; 	    
 	}
 	 
 	return categoryMap; 
@@ -275,7 +280,7 @@ public class CensusRepositoryServlet extends HttpServlet{
 
 	int i = 0; 
 
-	String sqlCmd= "SELECT id,owner_id from study WHERE restricted = false"; 
+	String sqlCmd= "SELECT id,owner_id from study WHERE restricted = false ORDER BY id"; 
   
 	Connection sqlConn = dvnDatasource.getConnection();	 
 	PreparedStatement sth = sqlConn.prepareStatement(sqlCmd);
@@ -295,6 +300,8 @@ public class CensusRepositoryServlet extends HttpServlet{
 	    } else { 
 		studyMap[studyId] = false; 
 	    }
+
+	    i++;
 	}
 	 
 	return studyMap; 
@@ -319,12 +326,11 @@ public class CensusRepositoryServlet extends HttpServlet{
 		dvMap[i++] = false; 
 	    }
 	    dvMap[dvId] = true;
+	    i++; 
 	}
 	 
 	return dvMap; 
     }
-
-
 
    
 }

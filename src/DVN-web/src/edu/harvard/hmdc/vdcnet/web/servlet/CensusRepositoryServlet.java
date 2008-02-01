@@ -79,6 +79,7 @@ public class CensusRepositoryServlet extends HttpServlet{
 	
 
 	ResultSet dbIds = null; 
+	boolean[] categoryMap = null; 
 
 	// attempt to get a list of all local, publicly-available, 
 	// subsettable datafiles from the database.
@@ -87,7 +88,42 @@ public class CensusRepositoryServlet extends HttpServlet{
 	// standard "Service Temporarily Unavailable" status code. 
 
 	try {
+	    // Here's what I'm doing with the SQL searches: 
+	    //
+	    // A datafile can be restricted in more ways than one; 
+	    // it can have its own "restricted" flag set, OR it can 
+	    // be part of a restricted study, which in turn can be part 
+	    // of a restricted Dataverse. 
+	    // So, if we need to do this on a single datafile, we first 
+	    // retreive the file's studyfile entry and check the restricted 
+	    // flag; then we retreive the filecategory to which the file 
+	    // then the study to which the filecategory belongs -- and now
+	    // we can check the study's own restriction flag. Then we find 
+	    // the owner Dataverse for the study, and check if that is 
+	    // restricted. However, now that we need to retreive ALL the
+	    // unrestricted datafiles, we cannot possibly do it this way 
+	    // -- it would take forever to run 4 SQL queries for every 
+	    // matching datafile we find in the studyfile table!
+	    // So this is how I'm doing it: I first find all unrestricted 
+	    // dataverses; then I find all unrestricted studies, with the
+	    // corresponding dataverse ids and filter the list against the list
+	    // of unrestricted dataversese from step 1; now I have a list (map)
+	    // of studies that are unrestricted AND are not part of a 
+	    // restricted dataverse; then I generate a list of all 
+	    // filecategories in these studies (file categories cannot be 
+	    // restricted!). And now I can run the final search for all 
+	    // unrestricted subsettable datafiles and filter the list against
+	    // the unrestricted filecategoris from the previous step. 
+	    // There's only 4 SQL queries total; the drawback of this approach
+	    // is that I have to carry around these bit maps of higher-level
+	    // objects that are not restricted. However, these are only 
+	    // arrays of boolean values, so they should be manageable even if 
+	    // our archive grows significantly.
+	    
+
 	    dbIds = generateListOfDatafiles (); 
+	    categoryMap = generateCategoryMap(); 
+
 	} catch(SQLException e) {
 	    createErrorResponseGeneric(res, res.SC_SERVICE_UNAVAILABLE, 
 				       "Database services temporarily unavailable: " + 
@@ -113,6 +149,8 @@ public class CensusRepositoryServlet extends HttpServlet{
 	    hostHttpPrefix = req.getScheme() +"://" + req.getServerName() + req.getContextPath();
 	}
 
+	int categoryId = 0; 
+
 	try {
 	    res.setHeader ( "Content-Type", "text/plain;charset=ISO-8859-1" ); 
 	    //OutputStream out = res.getOutputStream();
@@ -120,10 +158,15 @@ public class CensusRepositoryServlet extends HttpServlet{
 
 	    try {
 		while (dbIds.next()) {
-		    fileId = dbIds.getString(1);  
 
-		    lineOut = hostHttpPrefix + "/FileDownload/?fileId=" + fileId; 
-		    out.println (lineOut); 
+		    categoryId = dbIds.getInt(2); 
+
+		    if ( categoryMap[categoryId] ) {
+			fileId = dbIds.getString(1);  
+
+			lineOut = hostHttpPrefix + "/FileDownload/?fileId=" + fileId; 
+			out.println (lineOut); 
+		    }
 		}
 	    } catch (SQLException e) {
 		createErrorResponseGeneric(res, res.SC_SERVICE_UNAVAILABLE, 
@@ -175,7 +218,7 @@ public class CensusRepositoryServlet extends HttpServlet{
 	// a. subsettable
 	// b. public (non-restricted)
 	// c. locally-produced
-	String sqlCmd= "SELECT id from studyfile WHERE restricted = false AND subsettable = true AND NOT (filesystemlocation LIKE 'http%')"; 
+	String sqlCmd= "SELECT id,filecategory_id from studyfile WHERE restricted = false AND subsettable = true AND NOT (filesystemlocation LIKE 'http%')"; 
 	// we only run the search, then return the SQL
 	// handle; the actual retrieval of individual records
 	// will be done by the code in the body of the service 
@@ -188,6 +231,101 @@ public class CensusRepositoryServlet extends HttpServlet{
         
 	return rs; 
     }
-    
+
+    private boolean[] generateCategoryMap () throws SQLException {
+	boolean[] categoryMap = new boolean[128*1024]; 
+	boolean[] studyMap = generateStudyMap(); 
+
+	int catId = 0; 
+	int studyId = 0; 
+
+	int i = 0; 
+
+	String sqlCmd= "SELECT id,study_id from filecategory"; 
+
+	Connection sqlConn = dvnDatasource.getConnection();	 
+	PreparedStatement sth = sqlConn.prepareStatement(sqlCmd);
+	
+	ResultSet rs = sth.executeQuery();
+
+	while (rs.next()) {
+	    catId = rs.getInt(1);  
+	    studyId = rs.getInt(2);  
+
+	    while ( i < catId ) {
+		categoryMap[i++] = false; 
+	    }
+
+	    if ( studyMap[studyId] ) {
+		categoryMap[catId] = true;
+	    } else { 
+		categoryMap[catId] = false; 
+	    }
+	}
+	 
+	return categoryMap; 
+    }
+
+    private boolean[] generateStudyMap () throws SQLException {
+	boolean[] studyMap = new boolean[32*1024]; 
+	boolean[] dvMap = generateDataverseMap(); 
+
+	int studyId = 0; 
+	int dvId = 0; 
+
+	int i = 0; 
+
+	String sqlCmd= "SELECT id,owner_id from study WHERE restricted = false"; 
+  
+	Connection sqlConn = dvnDatasource.getConnection();	 
+	PreparedStatement sth = sqlConn.prepareStatement(sqlCmd);
+	
+	ResultSet rs = sth.executeQuery();
+
+	while (rs.next()) {
+	    studyId = rs.getInt(1);  
+	    dvId = rs.getInt(2);  
+
+	    while ( i < studyId ) {
+		studyMap[i++] = false; 
+	    }
+
+	    if ( dvMap[dvId] ) {
+		studyMap[studyId] = true;
+	    } else { 
+		studyMap[studyId] = false; 
+	    }
+	}
+	 
+	return studyMap; 
+    }
+
+
+    private boolean[] generateDataverseMap () throws SQLException {
+	boolean[] dvMap = new boolean[256]; 
+	int dvId = 0; 
+	int i = 0; 
+
+	String sqlCmd= "SELECT id from vdc WHERE restricted = false ORDER BY id"; 
+  
+	Connection sqlConn = dvnDatasource.getConnection();	 
+	PreparedStatement sth = sqlConn.prepareStatement(sqlCmd);
+	
+	ResultSet rs = sth.executeQuery();
+
+	while (rs.next()) {
+	    dvId = rs.getInt(1);  
+	    while ( i < dvId ) {
+		dvMap[i++] = false; 
+	    }
+	    dvMap[dvId] = true;
+	}
+	 
+	return dvMap; 
+    }
+
+
+
+   
 }
 

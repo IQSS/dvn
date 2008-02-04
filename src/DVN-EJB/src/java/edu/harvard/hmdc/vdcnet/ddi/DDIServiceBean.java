@@ -40,7 +40,9 @@ import edu.harvard.hmdc.vdcnet.study.VariableIntervalType;
 import edu.harvard.hmdc.vdcnet.study.VariableRange;
 import edu.harvard.hmdc.vdcnet.study.VariableRangeType;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -48,6 +50,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -83,6 +86,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class DDIServiceBean implements DDIServiceLocal {
 
     @EJB VariableServiceLocal varService;
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
     
     // ddi constants
     public static final String AGENCY_HANDLE = "handle";
@@ -130,6 +134,11 @@ public class DDIServiceBean implements DDIServiceLocal {
         return true;
     }
 
+    // <editor-fold defaultstate="collapsed" desc="export Methods">
+    //**********************
+    // EXPORT METHODS
+    //**********************
+
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void exportStudy(Study s, OutputStream os) throws IOException {
         int exportMode = 0;
@@ -155,29 +164,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             javax.xml.stream.XMLStreamWriter xmlw = xmlof.createXMLStreamWriter(os);
             xmlw.writeStartDocument();
             //xmlw.writeProcessingInstruction("xml-stylesheet href=\'catalog.xsl\' type=\'text/xsl\'");
-            
-            xmlw.writeStartElement("codeBook");
-            xmlw.writeDefaultNamespace("http://www.icpsr.umich.edu/DDI");
-            
-            xmlw.writeStartElement("dataDscr");
-
-            Iterator iter = s.getStudyFiles().iterator();
-            while (iter.hasNext()) {
-                StudyFile sf = (StudyFile) iter.next();
-
-                if ( sf.isSubsettable() ) {
-                    if ( sf.getDataTable().getDataVariables().size() > 0 ) {
-                        Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
-                        while (varIter.hasNext()) {
-                            DataVariable dv = (DataVariable) varIter.next();
-                            exportDataVariable(dv, xmlw);
-                        }
-                    }
-                }
-            }           
-            
-            xmlw.writeEndElement(); //dataDscr
-            xmlw.writeEndElement(); // codeBook
+            createCodeBook(xmlw,s);
             xmlw.writeEndDocument();
             xmlw.close();
             
@@ -187,9 +174,308 @@ public class DDIServiceBean implements DDIServiceLocal {
         
     }
 
-    private void exportDataVariable(DataVariable dv, XMLStreamWriter xmlw) throws XMLStreamException {
+    private void createCodeBook(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        xmlw.writeStartElement("codeBook");
+        xmlw.writeDefaultNamespace("http://www.icpsr.umich.edu/DDI");
+        xmlw.writeAttribute( "version", "2.0" );
+
+        createDocDscr(xmlw, study);
+        createStdyDscr(xmlw, study);
+
+        // iterate through files, saving other material files for the end
+        List<StudyFile> otherMatFiles = new ArrayList();
+        for (StudyFile sf : study.getStudyFiles()) {
+            if ( sf.isSubsettable() ) {
+                createFileDscr(xmlw, sf);
+            } else {
+                otherMatFiles.add(sf);
+            }
+        }
+
+        createDataDscr(xmlw, study);
+
+        // now go through otherMat files
+        for (StudyFile sf : otherMatFiles) {
+            createOtherMat(xmlw, sf);
+        }
+
+        xmlw.writeEndElement(); // codeBook
+    }
+
+    private void createDocDscr(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        xmlw.writeStartElement("docDscr");
+        xmlw.writeStartElement("citation");
+        
+        // titlStmt
+        xmlw.writeStartElement("titlStmt");
+
+        xmlw.writeStartElement("titl"); 
+        xmlw.writeCharacters( study.getTitle() );
+        xmlw.writeEndElement(); // titl  
+
+        xmlw.writeStartElement("IDNo");
+        xmlw.writeAttribute( "agency", "handle" );
+        xmlw.writeCharacters( study.getGlobalId() );
+        xmlw.writeEndElement(); // IDNo
+
+        xmlw.writeEndElement(); // titlStmt
+        
+        // distStmt
+        xmlw.writeStartElement("distStmt");
+
+        xmlw.writeStartElement("distrbtr");
+        xmlw.writeCharacters( vdcNetworkService.find().getName() + " Dataverse Network" );
+        xmlw.writeEndElement(); // distrbtr
+
+        xmlw.writeStartElement("distDate");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String lastUpdateString = sdf.format(study.getLastUpdateTime());
+        xmlw.writeAttribute( "date", lastUpdateString );
+        xmlw.writeCharacters( lastUpdateString );
+        xmlw.writeEndElement(); // distDate
+
+        xmlw.writeEndElement(); // distStmt
+
+        // holdings
+        xmlw.writeEmptyElement("holdings");
+        xmlw.writeAttribute( "uri", "http://" + PropertyUtil.getHostUrl() + "/dvn/study?globalId=" + study.getGlobalId() );
+
+        xmlw.writeEndElement(); // citation
+        xmlw.writeEndElement(); // docDscr
+    }
+
+    private void createStdyDscr(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        xmlw.writeStartElement("stdyDesc");
+        createCitation(xmlw, study);
+        createStdyInfo(xmlw, study);
+        createMethod(xmlw, study);
+        createDataAccs(xmlw, study);
+        // notes
+        xmlw.writeEndElement(); // stdyDesc
+    }
+
+    private void createCitation(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        xmlw.writeStartElement("citation");
+        
+        // titlStmt
+        xmlw.writeStartElement("titlStmt");
+
+        xmlw.writeStartElement("titl"); 
+        xmlw.writeCharacters( study.getTitle() );
+        xmlw.writeEndElement(); // titl  
+
+        if ( !StringUtil.isEmpty( study.getSubTitle() ) ) {
+            xmlw.writeStartElement("subtitl"); 
+            xmlw.writeCharacters( study.getSubTitle() );
+            xmlw.writeEndElement(); // subtitl  
+        }
+
+        xmlw.writeStartElement("IDNo");
+        xmlw.writeAttribute( "agency", "handle" );
+        xmlw.writeCharacters( study.getGlobalId() );
+        xmlw.writeEndElement(); // IDNo
+
+        for (StudyOtherId otherId : study.getStudyOtherIds()) {
+            xmlw.writeStartElement("IDNo");
+            xmlw.writeAttribute( "agency", otherId.getAgency() );
+            xmlw.writeCharacters( otherId.getOtherId() );
+            xmlw.writeEndElement(); // IDNo
+        }
+
+        xmlw.writeEndElement(); // titlStmt
+
+        // rspStmt
+        if (study.getStudyAuthors() != null && study.getStudyAuthors().size() > 0) {
+            xmlw.writeStartElement("rspStmt");
+            for (StudyAuthor author : study.getStudyAuthors()) {
+                xmlw.writeStartElement("AuthEnty");
+                if ( !StringUtil.isEmpty(author.getAffiliation()) ) {
+                    xmlw.writeAttribute( "affiliation", author.getAffiliation() );
+                }
+                xmlw.writeCharacters( author.getName() );
+                xmlw.writeEndElement(); // AuthEnty
+            }
+            xmlw.writeEndElement(); // rspStmt
+        }
+
+        // prodStmt
+        
+        /* distStmt
+        xmlw.writeStartElement("distStmt");
+
+        xmlw.writeStartElement("distrbtr");
+        xmlw.writeCharacters( vdcNetworkService.find().getName() + " Dataverse Network" );
+        xmlw.writeEndElement(); // distrbtr
+
+        xmlw.writeStartElement("distDate");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String lastUpdateString = sdf.format(study.getLastUpdateTime());
+        xmlw.writeAttribute( "date", lastUpdateString );
+        xmlw.writeCharacters( lastUpdateString );
+        xmlw.writeEndElement(); // distDate
+
+        xmlw.writeEndElement(); // distStmt
+        */
+
+        // serStmt
+        // verStmt
+        // notes ??
+
+
+        xmlw.writeEndElement(); // citation
+    }
+
+    private void createStdyInfo(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        xmlw.writeStartElement("stdyInfo");
+
+        xmlw.writeEndElement(); // stdyInfo
+    }
+
+    private void createMethod(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        xmlw.writeStartElement("method");
+
+        xmlw.writeEndElement(); // method
+    }
+
+    private void createDataAccs(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        xmlw.writeStartElement("dataAccs");
+
+        xmlw.writeEndElement(); // dataAccs
+    }
+
+
+    private void createFileDscr(XMLStreamWriter xmlw, StudyFile sf) throws XMLStreamException {
+        DataTable dt = sf.getDataTable();
+        
+        xmlw.writeStartElement("fileDscr");
+        xmlw.writeAttribute( "ID", "f" + sf.getId().toString() );
+        xmlw.writeAttribute( "URI", createFileURI(sf) );
+        
+        // fileTxt
+        xmlw.writeStartElement("fileTxt");
+
+        xmlw.writeStartElement("fileName");
+        xmlw.writeCharacters( sf.getFileName() );
+        xmlw.writeEndElement(); // fileName
+
+        xmlw.writeStartElement("fileCont");
+        xmlw.writeCharacters( sf.getDescription() );
+        xmlw.writeEndElement(); // fileCont
+
+        // dimensions
+        if (dt.getCaseQuantity() != null || dt.getVarQuantity() != null || dt.getRecordsPerCase() != null) {
+            xmlw.writeStartElement("dimensns");
+
+            if (dt.getCaseQuantity() != null) {
+                xmlw.writeStartElement("caseQnty");
+                xmlw.writeCharacters( dt.getCaseQuantity().toString() );
+                xmlw.writeEndElement(); // caseQnty
+            }
+            if (dt.getVarQuantity() != null) {
+                xmlw.writeStartElement("varQnty");
+                xmlw.writeCharacters( dt.getVarQuantity().toString() );
+                xmlw.writeEndElement(); // varQnty
+            }
+            if (dt.getRecordsPerCase() != null) {
+                xmlw.writeStartElement("recPrCas");
+                xmlw.writeCharacters( dt.getRecordsPerCase().toString() );
+                xmlw.writeEndElement(); // recPrCas
+            }        
+
+            xmlw.writeEndElement(); // dimensns
+        }
+
+        xmlw.writeStartElement("fileType");
+        xmlw.writeCharacters( sf.getFileType() );
+        xmlw.writeEndElement(); // fileType        
+
+        xmlw.writeEndElement(); // fileTxt
+
+        // notes
+        xmlw.writeStartElement("notes");
+        xmlw.writeAttribute( "level", LEVEL_FILE );
+        xmlw.writeAttribute( "type", NOTE_TYPE_UNF );
+        xmlw.writeAttribute( "subject", NOTE_SUBJECT_UNF );
+        xmlw.writeCharacters( dt.getUnf() );
+        xmlw.writeEndElement(); // notes
+
+        xmlw.writeStartElement("notes");
+        xmlw.writeAttribute( "type", "vdc:category" );
+        xmlw.writeCharacters( sf.getFileCategory().getName() );
+        xmlw.writeEndElement(); // notes
+
+        // THIS IS OLD CODE FROM JAXB, but a reminder that we may want to add original fileType
+        // we don't yet store original file type!!!'
+        // do we want this in the DDI export????
+        //NotesType _origFileType = objFactory.createNotesType();
+        //_origFileType.setLevel(LEVEL_FILE);
+        //_origFileType.setType("VDC:MIME");
+        //_origFileType.setSubject("original file format");
+        //_origFileType.getContent().add( ORIGINAL_FILE_TYPE );
+
+        xmlw.writeEndElement(); // fileDscr
+    }
+
+    private String createFileURI(StudyFile sf) {
+        String fileURI = "";
+        Study s = sf.getFileCategory().getStudy();
+        
+        // determine whether file is local or harvested
+        if (sf.isRemote() ) {
+            return sf.getFileSystemLocation();
+        } else {
+            fileURI = "http://" + PropertyUtil.getHostUrl() + "/dvn/dv/" + s.getOwner().getAlias() + "/FileDownload/";
+            fileURI += sf.getFileName()+ "?fileId=" + sf.getId();
+            return fileURI;
+        }
+    }
+
+    private void createOtherMat(XMLStreamWriter xmlw, StudyFile sf) throws XMLStreamException {
+        xmlw.writeStartElement("otherMat");
+        //xmlw.writeAttribute( "ID", "" );
+        xmlw.writeAttribute( "level", LEVEL_STUDY );
+        xmlw.writeAttribute( "URI", createFileURI(sf) );
+
+        xmlw.writeStartElement("labl");
+        xmlw.writeCharacters( sf.getFileName() );
+        xmlw.writeEndElement(); // labl
+
+        xmlw.writeStartElement("txt");
+        xmlw.writeCharacters( sf.getDescription() );
+        xmlw.writeEndElement(); // txt
+
+        xmlw.writeStartElement("notes");
+        xmlw.writeAttribute( "type", "vdc:category" );
+        xmlw.writeCharacters( sf.getFileCategory().getName() );
+        xmlw.writeEndElement(); // notes
+
+        xmlw.writeEndElement(); // otherMat
+    }
+
+    private void createDataDscr(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        xmlw.writeStartElement("dataDscr");
+
+        Iterator iter = study.getStudyFiles().iterator();
+        while (iter.hasNext()) {
+            StudyFile sf = (StudyFile) iter.next();
+
+            if ( sf.isSubsettable() ) {
+                if ( sf.getDataTable().getDataVariables().size() > 0 ) {
+                    Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
+                    while (varIter.hasNext()) {
+                        DataVariable dv = (DataVariable) varIter.next();
+                        createVar(xmlw, dv);
+                    }
+                }
+            }
+        }           
+
+        xmlw.writeEndElement(); //dataDscr
+    }
+
+    private void createVar(XMLStreamWriter xmlw, DataVariable dv) throws XMLStreamException {
         xmlw.writeStartElement("var");
-        xmlw.writeAttribute( "ID", dv.getId().toString() );
+        xmlw.writeAttribute( "ID", "v" + dv.getId().toString() );
         xmlw.writeAttribute( "name", dv.getName() );
         
         xmlw.writeEmptyElement("location");
@@ -248,7 +534,9 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         xmlw.writeEndElement(); //var      
     }
-
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="export Methods (test)">
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     private void exportStudySax(Study s, OutputStream os) throws IOException {
         try {
@@ -334,16 +622,6 @@ public class DDIServiceBean implements DDIServiceLocal {
         hd.endElement("","","var");
 
    }
-
-
-
-
-
-
-
-
-
-
 
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -599,33 +877,16 @@ public class DDIServiceBean implements DDIServiceLocal {
         
         return s;
     }
+    // </editor-fold>
     
-    
+    // <editor-fold defaultstate="collapsed" desc="import methods">    
     //**********************
     // IMPORT METHODS
     //**********************
-    
+  
     public void mapDDI( File ddiFile, Study study) {
-        // initialize the collections
-        study.setFileCategories( new ArrayList() );
-        study.setStudyAbstracts( new ArrayList() );
-        study.setStudyAuthors( new ArrayList() );
-        study.setStudyDistributors( new ArrayList() );
-        study.setStudyGeoBoundings(new ArrayList());
-        study.setStudyGrants(new ArrayList());
-        study.setStudyKeywords(new ArrayList());
-        study.setStudyNotes(new ArrayList());
-        study.setStudyOtherIds(new ArrayList());
-        study.setStudyOtherRefs(new ArrayList());
-        study.setStudyProducers(new ArrayList());
-        study.setStudyRelMaterials(new ArrayList());
-        study.setStudyRelPublications(new ArrayList());
-        study.setStudyRelStudies(new ArrayList());
-        study.setStudySoftware(new ArrayList());
-        study.setStudyTopicClasses(new ArrayList());
-        
         Map filesMap = new HashMap();
-        
+        initializeCollections(study);        
         
         try {
             javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
@@ -647,9 +908,29 @@ public class DDIServiceBean implements DDIServiceLocal {
             throw new EJBException("ERROR occurred in mapping: File Not Found!");
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new EJBException("ERROR occurred in mapping!!!!");
+            throw new EJBException("ERROR occurred while processing DDI!!!!");
         }
     }
+
+    private void initializeCollections(Study study) {
+        // initialize the collections
+        study.setFileCategories( new ArrayList() );
+        study.setStudyAbstracts( new ArrayList() );
+        study.setStudyAuthors( new ArrayList() );
+        study.setStudyDistributors( new ArrayList() );
+        study.setStudyGeoBoundings(new ArrayList());
+        study.setStudyGrants(new ArrayList());
+        study.setStudyKeywords(new ArrayList());
+        study.setStudyNotes(new ArrayList());
+        study.setStudyOtherIds(new ArrayList());
+        study.setStudyOtherRefs(new ArrayList());
+        study.setStudyProducers(new ArrayList());
+        study.setStudyRelMaterials(new ArrayList());
+        study.setStudyRelPublications(new ArrayList());
+        study.setStudyRelStudies(new ArrayList());
+        study.setStudySoftware(new ArrayList());
+        study.setStudyTopicClasses(new ArrayList());
+}
 
     private void processDocDscr(XMLStreamReader xmlr, Study study) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
@@ -661,7 +942,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                         parseStudyId( xmlr.getElementText(), study );
                     }
                 } else if ( xmlr.getLocalName().equals("holdings") && StringUtil.isEmpty(study.getHarvestHoldings()) ) {
-                    processCitationInDocDscr(xmlr, study);
+                    study.setHarvestHoldings( xmlr.getAttributeValue(null, "URI") );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("docDscr")) return;
@@ -669,19 +950,6 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processCitationInDocDscr (XMLStreamReader xmlr, Study study) throws XMLStreamException {
-        while (true) {
-            int event = xmlr.next();
-            if (event == XMLStreamConstants.START_ELEMENT) {
-                if ( xmlr.getLocalName().equals("holdings") && StringUtil.isEmpty(study.getHarvestHoldings()) ) {
-                    study.setHarvestHoldings( xmlr.getAttributeValue(null, "URI") );
-                }
-            } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (xmlr.getLocalName().equals("citation")) break;
-            }
-        }
-    }
-    
     private void processStdyDscr(XMLStreamReader xmlr, Study study) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1170,13 +1438,15 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     private void processFileDscr(XMLStreamReader xmlr, Study study, Map filesMap) throws XMLStreamException {
         StudyFile sf = new StudyFile();
+        sf.setFileSystemLocation( xmlr.getAttributeValue(null, "URI"));
+
         DataTable dt = new DataTable();
         dt.setDataVariables( new ArrayList() );
-        dt.setStudyFile(sf);
-        sf.setDataTable(dt);
-        sf.setSubsettable(true);
-        sf.setFileSystemLocation( xmlr.getAttributeValue(null, "URI"));
-        filesMap.put( xmlr.getAttributeValue(null, "ID"), sf);
+       
+        List filesMapEntry = new ArrayList();
+        filesMapEntry.add(sf);
+        filesMapEntry.add(dt);
+        filesMap.put( xmlr.getAttributeValue(null, "ID"), filesMapEntry);
 
         /// the following Strings are used to determine the category
         String catName = null;
@@ -1185,7 +1455,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("fileTxt")) processFileTxt(xmlr, sf);
+                if (xmlr.getLocalName().equals("fileTxt")) processFileTxt(xmlr, sf, dt);
                 else if (xmlr.getLocalName().equals("notes")) {
                     String noteType = xmlr.getAttributeValue(null, "type");
                     if (NOTE_TYPE_UNF.equalsIgnoreCase(noteType) ) {
@@ -1214,14 +1484,14 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }   
 
-    private void processFileTxt(XMLStreamReader xmlr, StudyFile sf) throws XMLStreamException {
+    private void processFileTxt(XMLStreamReader xmlr, StudyFile sf, DataTable dt) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("fileName")) {
                     sf.setFileName( xmlr.getElementText() );
                 } else if (xmlr.getLocalName().equals("fileCont")) {
                     sf.setDescription( xmlr.getElementText() );
-                }  else if (xmlr.getLocalName().equals("dimensns")) processDimensns(xmlr, sf.getDataTable());
+                }  else if (xmlr.getLocalName().equals("dimensns")) processDimensns(xmlr, dt);
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("fileTxt")) return;
             } 
@@ -1249,7 +1519,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("var")) processVar(xmlr, study, filesMap, fileOrder++);
-            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("dataDscr")) return;
             }   
         }
@@ -1305,9 +1575,20 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     private void processLocation(XMLStreamReader xmlr, DataVariable dv, Map filesMap) throws XMLStreamException {
         // associate dv with the correct file
-        StudyFile sf = (StudyFile) filesMap.get( xmlr.getAttributeValue(null, "fileid" ) );
-        dv.setDataTable(sf.getDataTable());
-        sf.getDataTable().getDataVariables().add(dv);
+        List filesMapEntry = (List) filesMap.get( xmlr.getAttributeValue(null, "fileid" ) );
+        if (filesMapEntry != null) {
+            StudyFile sf = (StudyFile) filesMapEntry.get(0);
+            DataTable dt = (DataTable) filesMapEntry.get(1);
+            if (!sf.isSubsettable()) {
+                // first time with this file, so attach the dt to the file and set as subsettable)
+                dt.setStudyFile(sf);
+                sf.setDataTable(dt);
+                sf.setSubsettable(true); 
+            }
+
+            dv.setDataTable(dt);
+            dt.getDataVariables().add(dv);
+        }
         
         // fileStartPos, FileEndPos, and RecSegNo
         // if these fields don't convert to Long, just leave blank
@@ -1661,5 +1942,37 @@ public class DDIServiceBean implements DDIServiceLocal {
         }  
         
         return (catName != null ? catName : "");
-    }   
+    } 
+
+    public Map determineId(File ddiFile) {
+        Study dummyStudy = new Study();
+        initializeCollections(dummyStudy);
+
+        try {
+            javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
+            javax.xml.stream.XMLStreamReader xmlr = xmlif.createXMLStreamReader(new java.io.FileReader(ddiFile));
+        
+            for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    if (xmlr.getLocalName().equals("codeBook")) ; // skip the codeBook tag
+                    else if (xmlr.getLocalName().equals("docDscr")) processDocDscr(xmlr, dummyStudy);
+                    else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, dummyStudy);
+                    else break;
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+            throw new EJBException("ERROR occurred in mapping: File Not Found!");
+        } catch (XMLStreamException ex) {
+            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+            throw new EJBException("ERROR occurred while processing DDI!!!!");
+        }
+        
+        Map idMap = new HashMap();
+        if ( !StringUtil.isEmpty( dummyStudy.getStudyId() ) ) idMap.put( "globalId", dummyStudy.getGlobalId() );
+        if ( dummyStudy.getStudyOtherIds().size() > 0 ) idMap.put( "otherId", dummyStudy.getStudyOtherIds().get(0) );
+        return idMap;
+    }
+
+    // </editor-fold>  
 }

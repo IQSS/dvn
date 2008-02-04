@@ -1722,50 +1722,41 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             fileTransformed = true;
         }
 
-        //CodeBook _cb = generateCodeBook(ddiFile);
-        String id = null;
-        String globalId = null;
+        // determine IDs
+        Map idMap = ddiTestService.determineId(ddiFile);
+        String globalId = (String) idMap.get("globalId");
+        String otherId = (String) idMap.get("otherId");
 
-        /*
         if (generateHandle) {
-            globalId = ddiService.determineId(_cb, DDI20ServiceBean.AGENCY_HANDLE);
             if (globalId != null) {
                 throw new EJBException("DDI should not specify a handle, but does.");
             }
-
-            id = ddiService.determineId(_cb, null);
-            if (id != null) {
+            if (otherId != null) {
                 // first replace any slashes and/or spaces
-                id = id.replace('/', '-').replace(' ', '_');
+                otherId = otherId.replace('/', '-').replace(' ', '_');
                 if (vdc.getHarvestingDataverse() != null) {
                     if (vdc.getHarvestingDataverse().getHandlePrefix() != null) {
-                        globalId = "hdl:" + vdc.getHarvestingDataverse().getHandlePrefix().getPrefix() + "/" + id;
+                        globalId = "hdl:" + vdc.getHarvestingDataverse().getHandlePrefix().getPrefix() + "/" + otherId;
                     } else {
                         throw new EJBException("generateHandle cannot be true for a nonregistering harvesting dataverse.");
                     }
 
                 } else {
-                    globalId = vdcNetwork.getProtocol() + ":" + vdcNetwork.getAuthority() + "/" + id;
+                    globalId = vdcNetwork.getProtocol() + ":" + vdcNetwork.getAuthority() + "/" + otherId;
                 }
             } else {
                 throw new EJBException("No Other ID was found in DDI for generating a handle.");
             }
 
         } else {
-            globalId = ddiService.determineId(_cb, DDI20ServiceBean.AGENCY_HANDLE);
+            globalId = (String) idMap.get("globalId");
             if (globalId == null) {
                 throw new EJBException("DDI should specify a handle, but does not.");
             }
         }
-         * */
-        
-        if (!generateHandle) {
-            throw new EJBException("NOT CURRENTLY SUPPORTED IN IMPORT TEST.");
-        }
 
-        Study study = null;
-        id = generateStudyIdSequence(vdcNetwork.getProtocol(), vdcNetwork.getAuthority());
-        //Study study = getStudyByGlobalId(globalId);
+        
+        Study study = getStudyByGlobalId(globalId);
 
         if (study == null) {
             VDCUser creator = em.find(VDCUser.class, userId);
@@ -1805,11 +1796,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             if (vdc.getHarvestingDataverse() != null) {
                 study.setProtocol("hdl");
                 study.setAuthority(vdc.getHarvestingDataverse().getHandlePrefix().getPrefix());
-                study.setStudyId(id);
+                study.setStudyId(otherId);
             } else {
                 study.setProtocol(vdcNetwork.getProtocol());
                 study.setAuthority(vdcNetwork.getAuthority());
-                study.setStudyId(id);
+                study.setStudyId(otherId);
             }
         } else if (!study.getGlobalId().equals(globalId)) {
             // this should never happen

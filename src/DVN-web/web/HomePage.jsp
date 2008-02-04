@@ -12,9 +12,9 @@
        <h:form id="form1">
            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
            <!-- Success Message -->
-         <ui:panelGroup styleClass="#{HomePage.msg.styleClass}" rendered="#{!empty HomePage.msg.messageText}">
+         <ui:panelLayout styleClass="#{HomePage.msg.styleClass}" rendered="#{!empty HomePage.msg.messageText}">
            <h:outputText id="statusMessage" escape="false" value="#{HomePage.msg.messageText}" />
-         </ui:panelGroup>
+         </ui:panelLayout>
        
            <ui:panelGroup styleClass="dvn_hmpgMainMessage" block="true" rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
                 <h:outputText id="networkAnnouncementsMessages" escape="false" value="#{HomePage.parsedNetworkAnnouncements}"/>
@@ -72,7 +72,7 @@
                         </h:outputLink>
                         &#160; | &#160;
                         <h:outputLink value="http://thedata.org/guides/users/search/tips" target="_blank" style="margin: 0;">
-                            <h:outputText value="Search Tips"/>
+                            <h:outputText value="Tips"/>
                         </h:outputLink>
                     </div>
                 </div>

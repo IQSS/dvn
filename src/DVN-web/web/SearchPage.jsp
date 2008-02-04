@@ -68,7 +68,7 @@
                 </h:outputLink>
                 &#160; | &#160;
                 <h:outputLink value="http://thedata.org/guides/users/search/tips" target="_blank" style="margin: 0;">
-                    <h:outputText value="Search Tips"/>
+                    <h:outputText value="Tips"/>
                 </h:outputLink>
             </div>
         </div>

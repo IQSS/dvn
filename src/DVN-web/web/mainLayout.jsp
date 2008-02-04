@@ -34,6 +34,7 @@
              $(document).ready(function(){
 		$("div.dvn_navblock").corner("10px bottom");
 		$("div.dvn_searchblock").corner("10px");
+		$("div.successMessage").corner("10px");
 		$("div.dvn_block").corner("10px");
 		$("div.dvn_blockTitleBar").corner("10px");
                 $.ifixpng('/dvn/resources/pixel.gif');
@@ -49,7 +50,7 @@
                   <tiles:insert name="banner" flush="false"/>
               </f:subview>
              <div class="dvn_wrapper">
-                S<div class="dvn_content">               
+                <div class="dvn_content">               
                   <f:subview id="menubar">
                       <tiles:insert name="menubar" flush="false"/>
                   </f:subview>

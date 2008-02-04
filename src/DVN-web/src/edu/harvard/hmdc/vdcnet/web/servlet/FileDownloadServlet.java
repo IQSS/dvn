@@ -631,13 +631,13 @@ public class FileDownloadServlet extends HttpServlet{
 			    if ( generateImageThumb(file.getFileSystemLocation()) ) {
 				inFile = new File (file.getFileSystemLocation() + ".thumb"); 
 			    }
-			} else if ( downloadOriginalFormat != null ) {
-			    inFile = new File ( inFile.getParent(), "_" + file.getFileSystemName()); 
-			} 
-
-			if ( inFile == null ) {
+			} else { 
 			    inFile = new File(file.getFileSystemLocation());  
-			}
+
+			    if ( downloadOriginalFormat != null ) {
+				inFile = new File ( inFile.getParent(), "_" + file.getFileSystemName()); 
+			    }
+			} 
 
 
 			// send the file as the response

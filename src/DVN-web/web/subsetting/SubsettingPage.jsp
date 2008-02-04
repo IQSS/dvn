@@ -32,7 +32,7 @@ xmlns:ui="http://www.sun.com/web/ui"
   if (dataFileId == null) {
     dataFileId = (String) request.getAttribute("dtId");
   }
-  String shlurl = cntxpth + "/sumStat?" + "dtId="+dataFileId+"&varId=";
+  String shlurl = cntxpth + "/sumStat?" + "dtId="+dataFileId;
 ]]></jsp:scriptlet>
 <![CDATA[
     <script type="text/javascript">
@@ -87,7 +87,8 @@ xmlns:ui="http://www.sun.com/web/ui"
                     if (!isQStableAttached(rowId)){
                         //alert("make an ajax call");
                         var qsString = "]]><jsp:expression>shlurl</jsp:expression><![CDATA[";
-                        qsString = qsString + rowId;
+                        var ampVId = "\x26" + "varId=";
+                        qsString = qsString + ampVId + rowId;
                         sendRequest(qsString, processQSrequest);
                     }                    
                 } else if (displayRootNode.style.display == "inline"){
@@ -142,12 +143,8 @@ xmlns:ui="http://www.sun.com/web/ui"
                     }
                 } else if (req.status == 304){
                     alert("Summary statistics cannot be displayed: 304 error");
-                } else if (req.status >= 400 && req.status < 500){
-                    alert("Summary statistics cannot be displayed: 4xxx error");
-                } else if (req.status >= 500 && req.status < 600){
-                    alert("Summary statistics cannot be displayed: 5xxx error");
                 } else {
-                    alert("Summary statistics cannot be displayed: unknown error");
+                    alert("Summary statistics cannot be displayed: status code="+req.status);
                 }
             }
             
@@ -1407,41 +1404,6 @@ function shwNshwTxt(id) {
   
 <input type="button" id="monitorBttn" style="display:none" value="show monitor block" onclick="shwNshwLnk('monitorBlock', 'monitorBttn', 'monitor block');"/>
 <div id="monitorBlock" style="display:none">
-
-<h4>requested parameters</h4> 
-<table border="1">
-  <jsp:scriptlet>
-<![CDATA[  
-    for(Iterator itr = es.iterator();itr.hasNext();){
-    Map.Entry entry = (Map.Entry)itr.next();
-    StringBuffer sb = new StringBuffer();
-    sb.append("<tr><td>"+ entry.getKey() + "</td><td>");
-    String[] arr = (String[]) entry.getValue();
-    for(int i=0;i<arr.length;i++){
-      sb.append(arr[i]);
-    }
-    sb.append("</td></tr>");
-    out.println(sb.toString());
-    } 
-]]>
-</jsp:scriptlet>
-
-</table>
-
-<h4>Request Header</h4>
-<table border="1">
-<jsp:scriptlet>
-<![CDATA[  
-  
-    for( int i = 0; i < vec.size(); i++ ) {
-]]>
-</jsp:scriptlet>
-<jsp:expression>vec.get(i)</jsp:expression>
-<jsp:scriptlet>
-    }
-</jsp:scriptlet>
-</table>
-<hr />
 </div>
 
 

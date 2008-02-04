@@ -12,42 +12,31 @@
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/> 
             <input type="hidden" value="TermsOfUsePage" name="pageName"/>
        
-              <div class="dvn_section">
-               
-                <div class="dvn_sectionTitle">
-                    Terms of Use
-                </div>   
-                
-                <div class="dvn_sectionBox">  
-                    
-                    <div class="dvn_margin12">
-                        
-                        <ui:panelGroup  block="true" style="padding-bottom: 20px;"  styleClass="warnMessage" >
-                            <h:outputText value="Please agree to the terms of use below before accessing the Dataverse Network "/>
-                         
-                        </ui:panelGroup>
-                        
-                        <ui:panelGroup  block="true">
-                              
-                            <h:panelGrid columnClasses="vdcColPadded" width="98%">
-                                <h:outputText  value="General Terms of Use:" styleClass="vdcTermsUseField" />
-                                <h:outputText value="#{AccountTermsOfUsePage.termsOfUse}" escape="false"/>    
-                            </h:panelGrid>
-                         
-                        </ui:panelGroup>  
+              <div id="dvn_createDvRequest" class="dvn_section dvn_overflow">
+    	<div id="requestHeader">Terms of Use <span>&gt; Create a Dataverse</span></div>
+        <div id="requestContent"><div class="dvn_margin12">
+        <div id="requestContentDescLeft">Please read and agree to the terms of use outlined below.  Check the "I agree and accept" box below and continue.</div>
+        <div id="requestContentFormRight">
+        <h:outputText value="Terms of Use" styleClass="reqContentActionTitle" />
+        <br />
+<div id="requestDataverseTerms">
+<h:outputText value="#{AccountTermsOfUsePage.termsOfUse}" escape="false"/>
+</div>
+        <br />
                         
                          <ui:panelGroup  style="padding-top: 20px;" block="true">
-                            <h:outputText styleClass="vdcFieldTitle" value="I accept the Terms of Use above:" />
                             <h:selectBooleanCheckbox id="termsAccepted" required="true" value="#{AccountTermsOfUsePage.termsAccepted}" />
+                            <h:outputText styleClass="agreeCheckbox" value="I agree and accept the IQSS DVN terms of use." />
                         </ui:panelGroup>
                         
                         <ui:panelGroup block="true" style="padding-top: 20px; text-align: center">
                             <h:commandButton  id="termsButton" value="Continue" action="#{AccountTermsOfUsePage.acceptTerms_action}"/>
                         </ui:panelGroup>
                         
-                    </div>
-                </div>
-            </div>
+        </div>
+        </div></div>
+    </div>
+
         </ui:form>
     </f:subview>
 </jsp:root>

@@ -11,46 +11,56 @@
 
             <div id="dvn_createDvRequest" class="dvn_section dvn_overflow">
     	<div id="requestHeader" class="dvn_overflow">
-        	<div id="requestContentTitle">Create a Dataverse</div>
-        	<div id="requestContentDescRight">Request to create a dataverse in order to upload your own data sets and create collections of data. Archiving with the dataverse extends the useful life of data, preserving it in perpetuity against the failure of computers systems and the obsolescence of data formats.</div>
+        	<div id="requestContentTitle">Create Your Own Dataverse</div>
+        	<div id="requestContentDescRight">Create a dataverse to upload your own data sets and create collections of data. Archiving with a dataverse extends the useful life of data, preserving it in perpetuity against the failure of computers systems and the obsolescence of data formats.</div>
+        </div>
+        
+        <div style="margin-bottom: 12px; background-image: none; background-color: #ccc;" id="requestTimeline">
+            <div style="left: 87px;" class="requestTimelinePoint"><img alt="" border="0" src="/dvn/resources/lrg-grey-bullet.gif" /></div>
+            <div style="left: 301px;" class="requestTimelinePoint"><img alt="" border="0" src="/dvn/resources/lrg-grey-bullet.gif" /></div>
+            <div style="left: 513px;" class="requestTimelinePoint"><img alt="" border="0" src="/dvn/resources/lrg-grey-bullet.gif" /></div>
+            <div style="left: 727px;" class="requestTimelinePoint"><img alt="" border="0" src="/dvn/resources/lrg-grey-bullet.gif" /></div>
         </div>
 
         <div><div class="dvn_margin12 dvn_overflow" id="requestIntroSteps">
-        	<div class="requestIntroStepCard" style="margin-right: 24px; background: #f4ebc7 url(/resources/request-intro-rndtop1.png) no-repeat;">
-            	<h3>Send a<br />Request</h3>
-                <p>Start by sending a request to be approved for a dataverse.</p>
-                <p>Registering with our network, agree to the terms of use and then tell us why you would like a dataverse.</p>
-            	<div class="stepCardBtm">
-                 <h:outputText   value="&#160;" escape="false"/>
-                </div>
-			</div>
-        	<div class="requestIntroStepCard" style="margin-right: 24px; background: #f4ebc7 url(/resources/request-intro-rndtop2.png) no-repeat;">
-            	<h3>Approval<br />Process</h3>
-                <p>Our group will review your request and will notify you within 10 days of our decision.</p>
-                <p>You will receive an email invitation to start creating your dataverse.</p>
-            	<div class="stepCardBtm"> 
-                  <h:outputText   value="&#160;" escape="false"/>                
-             </div>
-			</div>
-        	<div class="requestIntroStepCard" style="background: #f4ebc7 url(/resources/request-intro-rndtop3.png) no-repeat;">
-            	<h3>Start<br />Building</h3>
-                <p>Simply log into your dataverse, create a title and then begin adding data studies or create collections of data from other dataverses.</p>
-                <p>Customize the layout and you are ready to release your dataverse live!</p>
-            	<div class="stepCardBtm">
-                     <h:outputText   value="&#160;" escape="false"/>             
-             </div>
-			</div>
+        	<div class="requestIntroStepCard" style="margin-right: 24px; background: #f4ebc7 url(/dvn/resources/request-intro-rndtop1.png) no-repeat;">
+                    <h3>Create<br/>Account</h3>
+                    <p>Register with our network, by creating an account...</p>
+                    <div class="stepCardBtm">
+                     <h:outputText value="&#160;" escape="false"/>
+                    </div>
+		</div>
+        	<div class="requestIntroStepCard" style="margin-right: 24px; background: #f4ebc7 url(/dvn/resources/request-intro-rndtop2.png) no-repeat;">
+                    <h3>Terms<br/>of Use</h3>
+                    <p>Read and agree to the terms of use...</p>
+                    <div class="stepCardBtm">
+                     <h:outputText value="&#160;" escape="false"/>
+                    </div>
+		</div>
+                <div class="requestIntroStepCard" style="margin-right: 24px; background: #f4ebc7 url(/dvn/resources/request-intro-rndtop3.png) no-repeat;">
+                    <h3>Name<br/>Dataverse</h3>
+                    <p>Enter the title, type and affiliation...</p>
+                    <p>click save...</p>
+                    <div class="stepCardBtm">
+                     <h:outputText value="&#160;" escape="false"/>
+                    </div>
+		</div>
+                <div class="requestIntroStepCard" style="background: #f4ebc7 url(/dvn/resources/request-intro-rndtop4.png) no-repeat;">
+                    <h3 style="line-height:1.85;">Success!</h3>
+                    <p>You have created your own dataverse and are now ready to start adding data.</p>
+                    <div class="stepCardBtm">
+                     <h:outputText value="&#160;" escape="false"/>
+                    </div>
+		</div>
         </div>
         <div id="requestIntroCont">
-                  <h:commandLink  action="#{LoginWorkflowBean.beginCreatorWorkflow}">
+                  <h:commandLink styleClass="requestIntroContLink" action="#{LoginWorkflowBean.beginCreatorWorkflow}">
                                 <h:outputText value="Continue" escape="false"/>
                   </h:commandLink>
-                  <br></br>
-                   <h:commandLink rendered="#{VDCSession.loginBean==null }" action="#{LoginWorkflowBean.beginLoginCreatorWorkflow}">
-                                <h:outputText value="If you already have an account, login and continue" escape="false"/>
+                  <br/>
+                  <h:commandLink styleClass="requestIntroContLinkNote" rendered="#{VDCSession.loginBean==null }" action="#{LoginWorkflowBean.beginLoginCreatorWorkflow}">
+                                <h:outputText value="Already have an account? Log In" escape="false"/>
                   </h:commandLink>
-
-            <!--a href="#" id="requestIntroContLink">Start. Create Your Own Dataverse /a-->
             </div>
         </div>
     </div>

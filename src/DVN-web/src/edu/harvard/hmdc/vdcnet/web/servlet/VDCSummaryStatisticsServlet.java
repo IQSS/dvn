@@ -150,7 +150,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
                         w = maxBarLen * Long.parseLong(((String) en.getValue())) / maxFreq;
                         out.println("bar chart width=" + w);
                     }
-                    img.append(imgPrefix + w + "'>");
+                    img.append(imgPrefix + w + "'/>");
                     sb.append("<tr><th>" + en.getKey() + "</th><td>" 
                         + img.toString() + en.getValue() + "</td></tr>");
                 } else {

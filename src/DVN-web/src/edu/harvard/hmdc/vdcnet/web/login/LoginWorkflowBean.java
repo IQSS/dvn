@@ -30,6 +30,9 @@ public class LoginWorkflowBean extends VDCBaseBean {
     private String workflowType;
     private VDCUser user;
     private Long studyId;
+    public static String WORKFLOW_TYPE_CONTRIBUTOR = "contributor";
+    public static String WORKFLOW_TYPE_CREATOR = "creator";
+    public static String WORKFLOW_TYPE_FILE_ACCESS = "fileAccess";
 
     /** Creates a new instance of LoginWorkflowBean */
     public LoginWorkflowBean() {
@@ -73,7 +76,7 @@ public class LoginWorkflowBean extends VDCBaseBean {
     
     public String beginContributorWorkflow() {
         clearWorkflowState();
-        workflowType = "contributor";
+        workflowType = this.WORKFLOW_TYPE_CONTRIBUTOR;
         String nextPage = null;
         LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
         if (loginBean != null) {
@@ -96,7 +99,8 @@ public class LoginWorkflowBean extends VDCBaseBean {
     
        public String beginLoginContributorWorkflow() {
         clearWorkflowState();
-        workflowType = "contributor";
+        workflowType =   WORKFLOW_TYPE_CONTRIBUTOR;
+ 
         String nextPage = "login";
         return nextPage;
 
@@ -132,11 +136,11 @@ public class LoginWorkflowBean extends VDCBaseBean {
             nextPage = "accountTermsOfUse";
         } else {
       
-            if (workflowType.equals("contributor")) {
+            if (workflowType.equals(WORKFLOW_TYPE_CONTRIBUTOR)) {
                 nextPage = "myOptions";
-            } else if (workflowType.equals("creator")) {
+            } else if (workflowType.equals(WORKFLOW_TYPE_CREATOR)) {
                 nextPage = "addSite";
-            } else if (workflowType.equals("fileAccess")) {
+            } else if (workflowType.equals(WORKFLOW_TYPE_FILE_ACCESS)) {
                getRequestMap().put("studyId", studyId);
                nextPage = "fileRequest";
             }
@@ -213,14 +217,14 @@ public class LoginWorkflowBean extends VDCBaseBean {
     
      private void grantWorkflowPermission() {
         if (workflowType!=null) {
-            if (workflowType.equals("creator")) {
+            if (workflowType.equals(WORKFLOW_TYPE_CREATOR)) {
                   userService.makeCreator(user.getId());
             } 
-            else if (workflowType.equals("contributor")) {
+            else if (workflowType.equals(WORKFLOW_TYPE_CONTRIBUTOR)) {
                   userService.makeContributor(user.getId(),getVDCRequestBean().getCurrentVDCId());
                   // Update detached user object with updated user from cache
                   user = userService.find(user.getId());
-            } else if  (workflowType.equals("fileAccess")) {
+            } else if  (workflowType.equals(WORKFLOW_TYPE_FILE_ACCESS)) {
                 // give study file permission
             }
         }
@@ -230,11 +234,11 @@ public class LoginWorkflowBean extends VDCBaseBean {
         Map sessionMap = getSessionMap();
         String requestContextPath = this.getExternalContext().getRequestContextPath();
         VDC currentVDC = getVDCRequestBean().getCurrentVDC();
-        if ("contributor".equals(workflowType)) {
+        if (WORKFLOW_TYPE_CONTRIBUTOR.equals(workflowType)) {
             sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/admin/OptionsPage.jsp");
-        } else if ("creator".equals(workflowType)) {
+        } else if (WORKFLOW_TYPE_CREATOR.equals(workflowType)) {
             sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/site/AddSitePage.jsp");
-        } else if ("fileAccess".equals(workflowType)) {
+        } else if (WORKFLOW_TYPE_FILE_ACCESS.equals(workflowType)) {
             if (currentVDC != null) {
                 sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/login/FileRequestPage.jsp?studyId=" + studyId);
             } else {
@@ -275,4 +279,17 @@ public class LoginWorkflowBean extends VDCBaseBean {
     public String getWorkflowType() {
         return workflowType;
     }
+    public boolean isContributorWorkflow() {
+        return workflowType!=null && workflowType.equals(WORKFLOW_TYPE_CONTRIBUTOR);
+    }
+    public boolean isCreatorWorkflow() {
+        return workflowType!=null && workflowType.equals(WORKFLOW_TYPE_CREATOR);
+    }
+    public boolean isFileAccessWorkflow() {
+        return workflowType!=null && workflowType.equals(WORKFLOW_TYPE_FILE_ACCESS);
+    }
+    public boolean isPlainWorkflow() {
+        return workflowType==null;
+    }
+   
 }

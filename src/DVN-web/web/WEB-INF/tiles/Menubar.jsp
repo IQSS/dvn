@@ -73,8 +73,8 @@
                         <h:outputText value="#{bundle.logoutLabel}"/>
                     </h:outputLink>  
                     </li>
-                </ul>
-                <ui:panelGroup rendered="#{!VDCRequest.logoutPage}">
+                </ul>      
+                <ui:panelLayout rendered="#{!VDCRequest.logoutPage}">
                     <ul class="dvn_floatR">
                         <li class="dvn_networkOptions dvn_navNetworkName">
                             <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.jsp?userId=#{VDCSession.loginBean.user.id}" title="Edit Account Information" rendered="#{!VDCRequest.logoutPage and VDCSession.loginBean.user.firstName != null}">
@@ -90,9 +90,9 @@
                             <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp"  rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}" title="My Options in #{VDCRequest.currentVDC.name} dataverse">
                                 <h:outputText  value="#{bundle.myOptionsLabel}"/>
                             </h:outputLink>
-                        </li>
+                        </li>   
                     </ul>
-                </ui:panelGroup>
+                </ui:panelLayout>
             </div>
         </div>
     

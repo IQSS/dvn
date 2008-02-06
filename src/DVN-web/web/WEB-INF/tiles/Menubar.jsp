@@ -76,18 +76,17 @@
                 </ul>      
                 <ui:panelLayout rendered="#{(!VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)) or  (!VDCRequest.logoutPage and VDCSession.ipUserGroup.friendlyName != null)}">
                     <ul class="dvn_floatR">
-                        <li class="dvn_networkOptions dvn_navNetworkName">
-                            <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.jsp?userId=#{VDCSession.loginBean.user.id}" title="Edit Account Information" rendered="#{!VDCRequest.logoutPage and VDCSession.loginBean.user.firstName != null}">
+                        <li >
+                            <h:outputLink  style="dvn_networkOptions dvn_navNetworkName" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.jsp?userId=#{VDCSession.loginBean.user.id}" title="Edit Account Information" rendered="#{!VDCRequest.logoutPage and VDCSession.loginBean.user.firstName != null}">
                                 <h:outputText value="#{VDCSession.loginBean.user.firstName} #{VDCSession.loginBean.user.lastName}"/>
                             </h:outputLink>
                             <h:outputText rendered="#{!VDCRequest.logoutPage and VDCSession.ipUserGroup.friendlyName != null }" value="#{ VDCSession.ipUserGroup.friendlyName }"/>
-                        </li>
-                        <li class="dvn_networkOptions dvn_navNetworkOptEdit">
-                            <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.jsp" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and VDCRequest.currentVDC == null and VDCSession.loginBean.networkAdmin }" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Admin Options">
+                        
+                            <h:outputLink  style="dvn_networkOptions dvn_navNetworkOptEdit" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.jsp" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and VDCRequest.currentVDC == null and VDCSession.loginBean.networkAdmin }" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Admin Options">
                                 <h:outputText  value="Network Options"/>
                             </h:outputLink>
                             
-                            <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp"  rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}" title="My Options in #{VDCRequest.currentVDC.name} dataverse">
+                            <h:outputLink style="dvn_networkOptions dvn_navNetworkOptEdit" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp"  rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}" title="My Options in #{VDCRequest.currentVDC.name} dataverse">
                                 <h:outputText  value="#{bundle.myOptionsLabel}"/>
                             </h:outputLink>
                         </li>   

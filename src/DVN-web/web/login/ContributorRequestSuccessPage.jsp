@@ -4,27 +4,17 @@
                         xmlns:jsp="http://java.sun.com/JSP/Page" 
                         xmlns:ui="http://www.sun.com/web/ui"
                         xmlns:tiles="http://struts.apache.org/tags-tiles">
-    <f:subview id="UnauthorizedPageView">
+    <f:subview id="ContributorRequestSuccessPageView">
         <ui:form  id="contributorRequestForm">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-
 
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                     
-                        <h:outputText value="Request to Become a Dataverse Contributor"/>
+                        <h:outputText value="Contributor workflow Success Page"/>
                     
                 </div>            
-                <div class="dvn_sectionBox">
-                    <div class="dvn_margin12">
-                        
-                        <h:outputText value="Your request has been received.  Please wait for approval from the administrator."/>
-                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.jsp" title="Go to Dataverse Home Page">
-                            <h:outputText  value="Go to Dataverse Home Page"/>
-                        </h:outputLink> 
-                        
-                    </div>
-                </div>
+               
             </div>
         </ui:form>
     </f:subview>

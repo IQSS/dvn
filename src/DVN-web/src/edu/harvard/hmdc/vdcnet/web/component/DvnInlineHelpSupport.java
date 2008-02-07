@@ -59,11 +59,11 @@ public class DvnInlineHelpSupport extends UIComponentBase {
         ResponseWriter writer = facescontext.getResponseWriter();
         //the source javascript
             writer.startElement("script", this);
-            writer.writeAttribute("language", "JavaScript", null);
+            writer.writeAttribute("type", "text/javascript", null);
             writer.writeAttribute("src", "/dvn/resources/PopupWindow.js", null);
             writer.endElement("script");
             writer.startElement("script", this);
-            writer.writeAttribute("language", "JavaScript", null);
+            writer.writeAttribute("type", "text/javascript", null);
             writer.writeAttribute("src", "/dvn/resources/popupSupport.js", null);
             writer.endElement("script");
     }

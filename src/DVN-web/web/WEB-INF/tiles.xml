@@ -106,7 +106,7 @@
        <put name="content" type="template"     value="/login/ContributorRequestAccountPage.jsp"/>
    </definition>
     <definition name="/login/ContributorRequestSuccessPage" extends="/main-layout">
-       <put name="pageTitle"   type="string"        value="DVN - Request to Contribute" />
+       <put name="pageTitle"   type="string"        value="DVN - Contributor Success" />
        <put name="content" type="template"     value="/login/ContributorRequestSuccessPage.jsp"/>
    </definition>
   <definition name="/login/FileRequestPage" extends="/main-layout">
@@ -135,6 +135,11 @@
        <put name="pageTitle"   type="string"        value="DVN - Account Terms of Use" />
        <put name="content" type="template"     value="/login/AccountTermsOfUsePage.jsp"/>
    </definition>
+   <definition name="/login/CreatorRequestSuccessPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Dataverse Creation Success" />
+       <put name="content" type="template"     value="/login/CreatorRequestSuccessPage.jsp"/>
+   </definition>
+   
    
    <!-- Privileged User Pages -->
   <!-- *******************  Study Management *********************** -->

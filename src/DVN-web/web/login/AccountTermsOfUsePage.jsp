@@ -12,30 +12,39 @@
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/> 
             <input type="hidden" value="TermsOfUsePage" name="pageName"/>
        
-              <div id="dvn_createDvRequest" class="dvn_section dvn_overflow">
-    	<div id="requestHeader">Terms of Use <span>&gt; Create a Dataverse</span></div>
-        <div id="requestContent"><div class="dvn_margin12">
-        <div id="requestContentDescLeft">Please read and agree to the terms of use outlined below.  Check the "I agree and accept" box below and continue.</div>
-        <div id="requestContentFormRight">
-        <h:outputText value="Terms of Use" styleClass="reqContentActionTitle" />
-        <br />
-<div id="requestDataverseTerms">
-<h:outputText value="#{AccountTermsOfUsePage.termsOfUse}" escape="false"/>
-</div>
-        <br />
-                        
-                         <ui:panelGroup  style="padding-top: 20px;" block="true">
+              <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
+              <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestHeader dvn_overflow' : 'dvn_sectionTitle'}">
+                      <h:outputText value="Create a New Account" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
+                      <h:outputText value="Create a New Account" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
+                      <h:outputText value="Create Account &gt; Create Your Own Dataverse" rendered="#{LoginWorkflowBean.creatorWorkflow}"/>
+                      <h:outputText value="Create Account &gt; Become a Contributor" rendered="#{LoginWorkflowBean.contributorWorkflow}"/>
+              </ui:panelLayout>            
+              <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
+                  
+                  <ui:panelLayout rendered="#{LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow}" styleClass="requestContentDescLeft">
+                  		<p>Please read and agree to the terms of use for this dataverse network. Check the "I agree and accept" box and continue.</p>
+                  </ui:panelLayout>
+                  
+                  <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContentFormRight' : 'empty'}">
+                  <ui:panelLayout styleClass="dvn_margin12">
+                        <h:outputText value="Terms of Use" styleClass="reqContentActionTitle" />
+                        <br/>
+                        <div id="requestDataverseTerms">
+                            <h:outputText value="#{AccountTermsOfUsePage.termsOfUse}" escape="false"/>
+                        </div>
+                        <br/>
+                        <ui:panelGroup  style="padding-top: 20px;" block="true">
                             <h:selectBooleanCheckbox id="termsAccepted" required="true" value="#{AccountTermsOfUsePage.termsAccepted}" />
                             <h:outputText styleClass="agreeCheckbox" value="I agree and accept the IQSS DVN terms of use." />
                         </ui:panelGroup>
-                        
                         <ui:panelGroup block="true" style="padding-top: 20px; text-align: center">
                             <h:commandButton  id="termsButton" value="Continue" action="#{AccountTermsOfUsePage.acceptTerms_action}"/>
                         </ui:panelGroup>
-                        
-        </div>
-        </div></div>
-    </div>
+                  </ui:panelLayout>
+                  </ui:panelLayout>
+                  
+              </ui:panelLayout>
+          </ui:panelLayout> 
 
         </ui:form>
     </f:subview>

@@ -87,19 +87,19 @@
                         <div class="dvn_Totals">
                             <h:outputText escape="false" value="#{HomePage.networkData}"/>
                         </div>
+                   
+                        <a4j:region id="ajaxRegionBak" renderRegionOnly="true">
+                            <h:messages layout="table"/>
+                            <a4j:outputPanel id="dataMapOutput" layout="block" ajaxRendered="true">
+                                    <dvn:datalist binding="#{HomePage.dataList}" 
+                                                    rendered="#{VDCRequest.currentVDC == null}"
+                                                    idName="#{HomePage.dataMapId}"/>
+                            </a4j:outputPanel> 
+                       </a4j:region>
                     </ui:panelLayout>
                     
-                    <a4j:region id="ajaxRegionBak" renderRegionOnly="true">
-                        <h:messages layout="table"/>
-                        <a4j:outputPanel id="dataMapOutput" layout="block" ajaxRendered="true">
-                                <dvn:datalist binding="#{HomePage.dataList}" 
-                                                rendered="#{VDCRequest.currentVDC == null}"
-                                                idName="#{HomePage.dataMapId}"/>
-                        </a4j:outputPanel> 
-                   </a4j:region>
-                   
                   
-                  <!-- Dataverse Hoempage -->
+                  <!-- Dataverse Homepage -->
                     <!-- Display Tree at dataverse level -->
                     <ui:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
             </div>

@@ -49,32 +49,34 @@
                     <div class="dvn_sectionTitle">
                              <h:outputText   value="#{studyPage.studyUI.study.title}"/>
                     </div>
-                    <span class="dvn_sectionTitleLinksL">
-                      <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?studyListingIndex=#{studyPage.studyListingIndex}" rendered="#{!empty studyPage.studyListingIndex}">
+
+                    <ui:panelGroup styleClass="dvn_sectionTitleLinksL" rendered="#{!empty studyPage.studyListingIndex}"> 
+                      <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?studyListingIndex=#{studyPage.studyListingIndex}">
                           <h:outputText  value="&lt; View Previous Study Listing"/>
                       </h:outputLink>
-                    </span>
-                    <span class="dvn_sectionTitleLinksR">
-                    <h:outputText styleClass="vdcStudyStatus" value=" (In Review) " rendered="#{studyPage.studyUI.study.inReview}"/>
-                    <h:outputText styleClass="vdcStudyStatus" value=" (New) " rendered="#{studyPage.studyUI.study.new}"/>
-                    <h:outputText styleClass="vdcStudyStatus" value=" Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
-                    
-                    <ui:panelGroup  rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
-                        <dvn:tooltip tooltipMessage="#{studybundle.editTip}" linkText="#{studybundle.editText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tabSet1.selected}" cssClass="vdcTooltipLink"/>
-                        
-                        <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
-                        
-                        <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
-                        
-                        <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
-                        
-                        <h:commandButton rendered="#{studyPage.studyUI.study.new}" value="Ready for Review" actionListener="#{studyPage.setReadyForReview}"/>
                     </ui:panelGroup>
-                    <ui:panelGroup rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}">                              
-                        <h:commandButton  value="Release" actionListener="#{studyPage.setReleased}"/>
-                    </ui:panelGroup>
+
+                    <ui:panelGroup styleClass="dvn_sectionTitleLinksR" rendered="#{studyPage.userAuthorizedToEdit or studyPage.studyUI.study.inReview or studyPage.studyUI.study.new}">
+                        <h:outputText styleClass="vdcStudyStatus" value=" (In Review) " rendered="#{studyPage.studyUI.study.inReview}"/>
+                        <h:outputText styleClass="vdcStudyStatus" value=" (New) " rendered="#{studyPage.studyUI.study.new}"/>
+                        <h:outputText styleClass="vdcStudyStatus" value=" Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
+
+                        <ui:panelGroup  rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
+                            <dvn:tooltip tooltipMessage="#{studybundle.editTip}" linkText="#{studybundle.editText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tabSet1.selected}" cssClass="vdcTooltipLink"/>
+
+                            <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
+
+                            <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
+
+                            <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
+
+                            <h:commandButton rendered="#{studyPage.studyUI.study.new}" value="Ready for Review" actionListener="#{studyPage.setReadyForReview}"/>
+                        </ui:panelGroup>
+                        <ui:panelGroup rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}">                              
+                            <h:commandButton  value="Release" actionListener="#{studyPage.setReleased}"/>
+                        </ui:panelGroup>
                     
-                    </span>           
+                    </ui:panelGroup>           
              
                 <div class="dvn_sectionBoxNoBorders"> 
                     <ui:tabSet binding="#{studyPage.tabSet1}" id="tabSet1" lite="true" mini="true"  >

@@ -40,20 +40,28 @@
                 }
                  // ]]>
             </ui:script>
-            <div class="dvn_section">
-                <div class="dvn_sectionTitle">
-                    <a name="addSite" title="">
-                        <h:outputText binding="#{AddSitePage.outputText1}" value="Add a New Dataverse"/>
-                    </a>
-                </div>            
-                <div class="dvn_sectionBox">
-                    <div class="dvn_margin12"> 
-                        <ui:panelGroup block="true" style="padding-left: 20px; padding-right: 30px">
+            <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
+                <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow) ? 'requestHeader dvn_overflow' : 'dvn_sectionTitle'}">
+                      <h:outputText value="Add a New Dataverse" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
+                      <h:outputText value="Add a New Dataverse" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
+                      <h:outputText value="Name Dataverse &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" rendered="#{LoginWorkflowBean.creatorWorkflow}" escape="false"/>
+                </ui:panelLayout>
+                <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
+                    
+                    <ui:panelLayout rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestContentDescLeft">
+                        <p>Choose Scholar if this dataverse will have your own name and will contain your own research, and Basic for any other dataverse.</p>
+                        <p>Select the group that will most likely fit your dataverse, be it a university department, a journal, a research center, etc. If you create a Scholar dataverse, it will be automatically entered under the Scholar group.</p>
+                    </ui:panelLayout>
+                  
+                    <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow) ? 'requestContentDescRight' : 'empty'}">
+                    <ui:panelLayout styleClass="dvn_margin12"> 
+                    
+                        <ui:panelGroup rendered="#{LoginWorkflowBean.plainWorkflow or LoginWorkflowBean.fileAccessWorkflow}" block="true" style="padding-left: 20px; padding-right: 30px">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                             <br />
                             <h:outputText id="outputText2a" styleClass="vdcHelpText" value="1) Choose 'Scholar' if this dataverse will 
                             have your own name and will contain your own research, and 'Basic' for any other dataverse."/>
-                             <br />
+                            <br />
                             <h:outputText id="outputText2b" styleClass="vdcHelpText" value="2) Select the group that will most likely 
                             fit your dataverse, be it a university department, a journal, a research center, etc. If you create
                             a Scholar dataverse, it will be automatically entered under the Scholar group."/>
@@ -193,9 +201,12 @@
                                     showAll();
                             // ]]>
                         </ui:script>
-                    </div>
-                </div>
-            </div>
+                        
+                    </ui:panelLayout>
+                    </ui:panelLayout>
+                    
+                </ui:panelLayout>
+            </ui:panelLayout>
         </ui:form>
     </f:subview>
 </jsp:root>

@@ -30,13 +30,13 @@
 package edu.harvard.hmdc.vdcnet.web.study;
 
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import java.io.IOException;
+import edu.harvard.hmdc.vdcnet.web.servlet.TermsOfUseFilter;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.servlet.http.HttpServletResponse;
+import javax.faces.component.html.HtmlInputHidden;
 
 /**
  *
@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class TermsOfUsePage extends VDCBaseBean {
     @EJB  private StudyServiceLocal studyService;
+    @EJB private VDCNetworkServiceLocal vdcNetworkService;
     
     public TermsOfUsePage() {}
     
@@ -51,12 +52,49 @@ public class TermsOfUsePage extends VDCBaseBean {
     private Long studyId;
     private edu.harvard.hmdc.vdcnet.study.Study study;
     private String redirectPage;
+    private String touParam;  // Describes type of terms of use to be displayed (download or deposit)
+    private HtmlInputHidden hiddenTou;
 
+    public HtmlInputHidden getHiddenTou() {
+        return hiddenTou;
+    }
+
+    public void setHiddenTou(HtmlInputHidden hiddenTou) {
+        this.hiddenTou = hiddenTou;
+    }
+    
+    
+    public String getTouParam() {
+        return touParam;
+    }
+   public void setTouParam(String tou) {
+         this.touParam=tou;
+    }
+
+    public boolean isTouTypeDownload() {
+        return getTouType()!=null && getTouType().equals(TermsOfUseFilter.TOU_DOWNLOAD);
+    }
+    
+    public boolean isTouTypeDeposit() {
+        return getTouType()!=null && getTouType().equals(TermsOfUseFilter.TOU_DEPOSIT);
+    }
+    
+    private String getTouType() {
+        String type=null;
+        if (touParam!=null) {
+            type = touParam;
+        } else if (hiddenTou!=null && hiddenTou.getValue()!=null) {
+            type = hiddenTou.getValue().toString();
+        }
+        return type;
+    }
+    
     public edu.harvard.hmdc.vdcnet.study.Study getStudy() {
         return study;
     }
 
     public void setStudy(edu.harvard.hmdc.vdcnet.study.Study study) {
+        
         this.study = study;
     }
 
@@ -76,14 +114,18 @@ public class TermsOfUsePage extends VDCBaseBean {
         this.redirectPage = redirectPage;
     }
 
+    public VDCNetwork getVdcNetwork() {
+        return vdcNetworkService.find();
+    }
+    
     public void init() {
         super.init();
-        // first check if the parameter ha sbeen set as query String parameters
+        // Set study - note that this is only necessary for touParam type DOWNLOAD
         try {
             studyId = new Long(getRequestParam("studyId"));
         } catch (NumberFormatException ex) {}
         
-        if (studyId == null) {
+        if (studyId == null && isTouTypeDownload()) {
             // now check specific JSF post parameters
             try {
                 if ( isFromPage("TermsOfUsePage") ) {
@@ -97,59 +139,40 @@ public class TermsOfUsePage extends VDCBaseBean {
         }
         if (studyId != null) {
             setStudy(studyService.getStudyDetail(studyId));
-        } else {
-            // WE SHOULD HAVE A STUDY ID, throw an error
-            System.out.println("ERROR: in editStudyPage, without a serviceBean or a studyId");
-        }               
+        }          
     }       
     
     
-    // only one checkbox for all terms
-    //private boolean vdcTermsAccepted;
-    //private boolean studyTermsAccepted;
+   
     private boolean termsAccepted;
     
     public boolean isTermsAcceptanceRequired() {
-        return isVdcTermsRequired() || isStudyTermsRequired();
+        return isDownloadDataverseTermsRequired() || isDownloadStudyTermsRequired();
     }
     
     public void setTermsAcceptanceRequired(boolean termsAcceptanceRequired) {} // dummy method since the get is just a wrapper
     
-    public boolean isVdcTermsRequired() {
-        boolean vdcTermsRequired = study.getOwner().isDownloadTermsOfUseEnabled();
-        if (vdcTermsRequired) {
-            return getTermsOfUseMap().get("vdc_" + study.getOwner().getId() ) == null;
-        }
-        
-        return false;
+    public boolean isDownloadDataverseTermsRequired() {
+        return  TermsOfUseFilter.isDownloadDataverseTermsRequired(study, getTermsOfUseMap());
     }
 
-    public boolean isStudyTermsRequired() {
-        boolean studyTermsRequired = study.isTermsOfUseEnabled();
-        if (studyTermsRequired) {
-            return getTermsOfUseMap().get("study_" + study.getId() ) == null;
-        }
-        
-        return false;
+    public boolean isDownloadStudyTermsRequired() {
+        return  TermsOfUseFilter.isDownloadStudyTermsRequired(study, getTermsOfUseMap());
     }     
     
-    /*
-    public boolean isVdcTermsAccepted() {
-        return vdcTermsAccepted;
+    public boolean isDownloadDvnTermsRequired() {
+        return   TermsOfUseFilter.isDownloadDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap()); 
     }
-
-    public void setVdcTermsAccepted(boolean vdcTermsAccepted) {
-        this.vdcTermsAccepted = vdcTermsAccepted;
+    
+    public boolean isDepositDataverseTermsRequired() {
+        return  TermsOfUseFilter.isDepositDataverseTermsRequired(getVDCRequestBean().getCurrentVDC(), getTermsOfUseMap());
     }
-
-    public boolean isStudyTermsAccepted() {
-        return studyTermsAccepted;
+    
+    public boolean isDepositDvnTermsRequired() {
+        return   TermsOfUseFilter.isDepositDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap()); 
     }
-
-    public void setStudyTermsAccepted(boolean studyTermsAccepted) {
-        this.studyTermsAccepted = studyTermsAccepted;
-    }
-    */
+ 
+ 
 
     public boolean isTermsAccepted() {
         return termsAccepted;
@@ -171,13 +194,21 @@ public class TermsOfUsePage extends VDCBaseBean {
         }
         */
 
-        if ( termsAccepted && isStudyTermsRequired() )  {         
-            termsOfUseMap.put( "study_" + study.getId(), "accepted" );
+        if ( termsAccepted && isTouTypeDownload() && isDownloadStudyTermsRequired() )  {         
+            termsOfUseMap.put( "study_download_" + study.getId(), "accepted" );
         }
-        if ( termsAccepted && isVdcTermsRequired() ) { 
-            termsOfUseMap.put( "vdc_" + study.getOwner().getId(), "accepted" );
+        if ( termsAccepted &&  isTouTypeDownload() && isDownloadDataverseTermsRequired() ) { 
+            termsOfUseMap.put( "vdc_download_" + study.getOwner().getId(), "accepted" );
         }        
-        
+        if ( termsAccepted &&  isTouTypeDownload() && this.isDownloadDvnTermsRequired() ) { 
+            termsOfUseMap.put( "dvn_download", "accepted" );
+        }           
+        if ( termsAccepted &&  isTouTypeDeposit() && this.isDepositDvnTermsRequired() ) { 
+            termsOfUseMap.put( "vdc_deposit_"+getVDCRequestBean().getCurrentVDC().getId(), "accepted" );
+        }      
+        if ( termsAccepted &&  isTouTypeDeposit() && this.isDepositDvnTermsRequired() ) { 
+            termsOfUseMap.put( "dvn_deposit", "accepted" );
+        }      
         if (redirectPage != null) {
             // piggy back on the login redirect logic for now
             String loginRedirect = this.getExternalContext().getRequestContextPath() + getVDCRequestBean().getCurrentVDCURL() + redirectPage;

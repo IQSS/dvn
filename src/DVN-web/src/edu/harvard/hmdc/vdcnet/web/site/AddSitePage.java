@@ -59,6 +59,7 @@ import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
 import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
+import edu.harvard.hmdc.vdcnet.web.login.LoginWorkflowBean;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -395,7 +396,7 @@ public class AddSitePage extends VDCBaseBean {
             int i = 0;
             String[] stringArray = new String[(list.size() + 1)];
             while (iterator.hasNext()) {
-                VDC vdc        = (VDC)iterator.next();
+                VDC vdc = (VDC) iterator.next();
                 stringArray[i] = vdc.getId().toString();
                 i++;
             }
@@ -433,8 +434,8 @@ public class AddSitePage extends VDCBaseBean {
         mailService.sendAddSiteNotification(toMailAddress, name, siteAddress);
 
         getVDCSessionBean().getLoginBean().setUser(creator);
-
-        return "home";
+        LoginWorkflowBean lwf = (LoginWorkflowBean) this.getBean("LoginWorkflowBean");
+        return getNextPage();
     }
 
     public String createScholarDataverse() {
@@ -478,6 +479,14 @@ public class AddSitePage extends VDCBaseBean {
 
         getVDCSessionBean().getLoginBean().setUser(creator);
 
+        return getNextPage();
+    }
+    
+    private String getNextPage() {
+       LoginWorkflowBean lwf = (LoginWorkflowBean) this.getBean("LoginWorkflowBean");
+        if (lwf.isCreatorWorkflow()) {
+            return "creatorSuccess";   
+        }
         return "home";
     }
 

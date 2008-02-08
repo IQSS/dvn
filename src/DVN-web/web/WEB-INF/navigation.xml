@@ -111,15 +111,33 @@
             <from-outcome>accountTermsOfUse</from-outcome>
             <to-view-id>/login/AccountTermsOfUsePage.jsp</to-view-id>
         </navigation-case>
-     </navigation-rule>  
+  </navigation-rule>  
+ 
   <navigation-rule>
+         <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>contributorSuccess</from-outcome>
+            <to-view-id>/login/ContributorRequestSuccessPage.jsp</to-view-id>
+        </navigation-case>
+     </navigation-rule>  
+     
+  
+     <navigation-rule>
+         <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>creatorSuccess</from-outcome>
+            <to-view-id>/login/CreatorRequestSuccessPage.jsp</to-view-id>
+        </navigation-case>
+     </navigation-rule>  
+ 
+     <navigation-rule> 
          <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>addAccount</from-outcome>
             <to-view-id>/login/AddAccountPage.jsp</to-view-id>
         </navigation-case>
      </navigation-rule>       
-  <navigation-rule>
+     <navigation-rule>
          <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>login</from-outcome>

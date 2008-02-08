@@ -1,3 +1,4 @@
+
 /*
  * Dataverse Network - A web application to distribute, share and analyze quantitative data.
  * Copyright (C) 2007
@@ -23,7 +24,6 @@
  *
  * Created on December 13, 2006, 2:07 PM
  */
-
 package edu.harvard.hmdc.vdcnet.web.servlet;
 
 import edu.harvard.hmdc.vdcnet.study.DataTable;
@@ -33,6 +33,8 @@ import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCSessionBean;
 import java.io.*;
@@ -44,7 +46,6 @@ import java.net.URLEncoder;
 import java.net.UnknownHostException;
 
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 
 import javax.servlet.*;
 
@@ -58,66 +59,90 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
-
 /** 
-
  *
  * @author  gdurand
  * @version
  */
-
 public class TermsOfUseFilter implements Filter {
-    
+
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
     // configured.
     private FilterConfig filterConfig = null;
-    
+    public static String TOU_DOWNLOAD="download";
+    public static String TOU_DEPOSIT="deposit";
+
     public TermsOfUseFilter() {
     }
+    @EJB
+    VDCServiceLocal vdcService;
+    @EJB
+    StudyServiceLocal studyService;
+    @EJB
+    VariableServiceLocal variableService;
+    @EJB
+    VDCNetworkServiceLocal vdcNetworkService;
 
-    @EJB VDCServiceLocal vdcService;   
-    @EJB StudyServiceLocal studyService;
-    @EJB VariableServiceLocal variableService;
-    
-    
-    public static boolean isVdcTermsRequired(Study study, Map termsOfUseMap) {
+    public static boolean isDownloadDataverseTermsRequired(Study study, Map termsOfUseMap) {
         boolean vdcTermsRequired = study.getOwner().isDownloadTermsOfUseEnabled();
         if (vdcTermsRequired) {
-            return termsOfUseMap.get("vdc_" + study.getOwner().getId() ) == null;
+            return termsOfUseMap.get("vdc_download_" + study.getOwner().getId()) == null;
         }
-        
+
         return false;
     }
 
-    public static boolean isStudyTermsRequired(Study study, Map termsOfUseMap) {
+    public static boolean isDepositDataverseTermsRequired(VDC currentVDC,
+            Map termsOfUseMap) {
+        boolean vdcTermsRequired = currentVDC.isDepositTermsOfUseEnabled();
+        if (vdcTermsRequired) {
+            return termsOfUseMap.get("vdc_deposit_" + currentVDC.getId()) == null;
+        }
+
+        return false;
+    }
+
+    public static boolean isDownloadStudyTermsRequired(Study study, Map termsOfUseMap) {
         boolean studyTermsRequired = study.isTermsOfUseEnabled();
         if (studyTermsRequired) {
-            return termsOfUseMap.get("study_" + study.getId() ) == null;
+            return termsOfUseMap.get("study_download_" + study.getId()) == null;
         }
-        
+
         return false;
-    }  
-    
+    }
+
+    public static boolean isDownloadDvnTermsRequired(VDCNetwork vdcNetwork, Map termsOfUseMap) {
+        boolean dvnTermsRequired = vdcNetwork.isDownloadTermsOfUseEnabled();
+        if (dvnTermsRequired) {
+            return termsOfUseMap.get("dvn_download") == null;
+        }
+        return false;
+    }
+   public static boolean isDepositDvnTermsRequired(VDCNetwork vdcNetwork, Map termsOfUseMap) {
+        boolean dvnTermsRequired = vdcNetwork.isDepositTermsOfUseEnabled();
+        if (dvnTermsRequired) {
+            return termsOfUseMap.get("dvn_deposit") == null;
+        }
+        return false;
+    }
+
     private Map getTermsOfUseMap(HttpServletRequest req) {
         HttpSession session = req.getSession(false);
         if (session != null) {
-            VDCSessionBean vdcSession = (VDCSessionBean)session.getAttribute("VDCSession");
-            if (vdcSession!=null) {
+            VDCSessionBean vdcSession = (VDCSessionBean) session.getAttribute("VDCSession");
+            if (vdcSession != null) {
                 if (vdcSession.getLoginBean() != null) {
                     return vdcSession.getLoginBean().getTermsfUseMap();
                 } else {
                     return vdcSession.getTermsfUseMap();
-                } 
-            }       
-       }
-        
-        return new HashMap();
-    }    
+                }
+            }
+        }
 
-    
-    
+        return new HashMap();
+    }
+
     /**
      *
      * @param request The servlet request we are processing
@@ -130,127 +155,23 @@ public class TermsOfUseFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-        
+
         log("TermsOfUseFilter:doFilter()");
-        
-        HttpServletRequest req = (HttpServletRequest)request;
-        HttpServletResponse res = (HttpServletResponse)response;
 
-        String requestPath = req.getPathInfo();
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
 
-        Study study = null;        
-        
-        if ( req.getServletPath().equals("/FileDownload") ) {
-            String fileId = req.getParameter("fileId");
-            String catId = req.getParameter("catId");
-            String studyId = req.getParameter("studyId");
-            
-            if (fileId != null) {
-		try {
-		    StudyFile file = studyService.getStudyFile( new Long(fileId));  
-                    study = file.getFileCategory().getStudy();     
-		} catch (Exception ex) {
-                    if (ex.getCause() instanceof IllegalArgumentException) {
-			// do nothing.
-			// if the file does not exist, there sure 
-			// isn't a license/terms of use for it!
-		    } else {
-			ex.printStackTrace();
-			return; 
-		    }
-		}
-            } else if (catId != null) {
-		try {
-		    FileCategory cat = studyService.getFileCategory( new Long(catId));
-                    study = cat.getStudy();      
-		} catch (Exception ex) {
-                    if (ex.getCause() instanceof IllegalArgumentException) {
-			// do nothing.
-			// if the category does not exist, there sure 
-			// isn't a license/terms of use for it!
-		    } else {
-			ex.printStackTrace();
-			return; 
-		    }
-		}
-            } else if (studyId != null) {
-		try {
-                    study = studyService.getStudy( new Long(studyId));   
-		} catch (Exception ex) {
-                    if (ex.getCause() instanceof IllegalArgumentException) {
-			// do nothing.
-			// if the study does not exist, there sure 
-			// isn't a license/terms of use for it!
-		    } else {
-			ex.printStackTrace();
-			return; 
-		    }
-                }
-            } 
-        } else if ( req.getServletPath().equals("/faces") ) {
-            if (requestPath.startsWith("/subsetting/SubsettingPage")) {
-                String dtId = req.getParameter("dtId");
-                if (dtId != null) {
-                    DataTable dt = variableService.getDataTable( new Long(dtId));
-                    study = dt.getStudyFile().getFileCategory().getStudy();
-                }
 
-            }
+        if (req.getServletPath().equals("/FileDownload") || (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/subsetting/SubsettingPage"))) {
+            checkDownloadTermsOfUse(req, res);
+        } else if (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/study/EditStudyPage")) {
+            checkDepositTermsOfUse(req, res);
         }
-        
-        // if we've populate the study, then check the TermsOfUse'
-        if (study != null) {
-
-	    // the code below is for determining if the request is from 
-	    // our registered DSB host; (then no agreement form should be 
-	    // displayed!)
-	    // this logic is essentially cut-and-pasted from 
-	    // FileDownloadServlet.java, where I added it earlie this year. 
-
-	    String dsbHost = System.getProperty("vdc.dsb.host");
-
-	    if ( dsbHost == null ) {
-		dsbHost = System.getProperty("vdc.dsb.url");
-	    }		    
-
-	    boolean NOTaDSBrequest = true;
-
-	    if ( dsbHost.equals(req.getRemoteHost()) ) {
-		NOTaDSBrequest = false; 
-	    } else { 
-		try {
-		    String dsbHostIPAddress = InetAddress.getByName(dsbHost).getHostAddress(); 
-		    if ( dsbHostIPAddress.equals(req.getRemoteHost()) ) {
-			NOTaDSBrequest = false;
-		    }
-		} catch ( UnknownHostException ex ) {
-		    // do nothing; 
-		    // the "vdc.dsb.host" setting is clearly misconfigured,
-		    // so we just keep assuming this is NOT a DSB call
-		}
-	    }
-
-	    if ( NOTaDSBrequest ) {
-		Map termsOfUseMap = getTermsOfUseMap(req);
-		if ( isVdcTermsRequired(study, termsOfUseMap) || isStudyTermsRequired(study, termsOfUseMap) ) {
-		    VDC currentVDC = vdcService.getVDCFromRequest(req);   
-		    String params = "?studyId=" + study.getId();
-		    params += "&redirectPage=" + URLEncoder.encode(req.getServletPath() + req.getPathInfo() +"?" + req.getQueryString(),"UTF-8");
-		    if (currentVDC!=null) {
-			params+="&vdcId="+currentVDC.getId();
-		    }   
-		    res.sendRedirect(req.getContextPath()+"/faces/study/TermsOfUsePage.jsp" + params);
-		    return; // don't continue with chain since we are redirecting'
-		}     
-	    }
-        }
-        
         Throwable problem = null;
-        
+
         try {
             chain.doFilter(request, response);
-        }
-        catch(Throwable t) {
+        } catch (Throwable t) {
             //
             // If an exception is thrown somewhere down the filter chain,
             // we still want to execute our after processing, and then
@@ -260,56 +181,52 @@ public class TermsOfUseFilter implements Filter {
             t.printStackTrace();
         }
 
-        
+
         //
         // If there was a problem, we want to rethrow it if it is
         // a known type, otherwise log it.
         //
         if (problem != null) {
-            if (problem instanceof ServletException) throw (ServletException)problem;
-            if (problem instanceof IOException) throw (IOException)problem;
+            if (problem instanceof ServletException) {
+                throw (ServletException) problem;
+            }
+            if (problem instanceof IOException) {
+                throw (IOException) problem;
+            }
             sendProcessingError(problem, response);
         }
     }
-    
 
-    
-    
-    
-    
-    
     /**
      * Return the filter configuration object for this filter.
      */
     public FilterConfig getFilterConfig() {
         return (this.filterConfig);
     }
-    
-    
+
     /**
      * Set the filter configuration object for this filter.
      *
      * @param filterConfig The filter configuration object
      */
     public void setFilterConfig(FilterConfig filterConfig) {
-        
+
         this.filterConfig = filterConfig;
     }
-    
+
     /**
      * Destroy method for this filter
      *
      */
     public void destroy() {
     }
-    
-    
+
     /**
      * Init method for this filter
      *
      */
     public void init(FilterConfig filterConfig) {
-        
+
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {
@@ -317,61 +234,187 @@ public class TermsOfUseFilter implements Filter {
             }
         }
     }
-    
+
     /**
      * Return a String representation of this object.
      */
     public String toString() {
-        
-        if (filterConfig == null) return ("TermsOfUseFilter()");
+
+        if (filterConfig == null) {
+            return ("TermsOfUseFilter()");
+        }
         StringBuffer sb = new StringBuffer("TermsOfUseFilter(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());
-        
+
     }
-    
-    
-    
+
+    private void checkDepositTermsOfUse(HttpServletRequest req, HttpServletResponse res) throws java.io.IOException {
+        VDC currentVDC = vdcService.getVDCFromRequest(req);
+        Map termsOfUseMap = getTermsOfUseMap(req);
+        if (isDepositDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) || isDepositDataverseTermsRequired(currentVDC,termsOfUseMap)) {        
+            String params = "?tou="+TOU_DEPOSIT;
+            params += "&redirectPage=" + URLEncoder.encode(req.getServletPath() + req.getPathInfo() + "?" + req.getQueryString(), "UTF-8");
+            if (currentVDC != null) {
+                params += "&vdcId=" + currentVDC.getId();
+            }
+            res.sendRedirect(req.getContextPath() + "/faces/study/TermsOfUsePage.jsp" + params);
+            return; // don't continue with chain since we are redirecting'
+        }
+
+    }
+
+    private void checkDownloadTermsOfUse(HttpServletRequest req, HttpServletResponse res) throws java.io.IOException {
+        String fileId = req.getParameter("fileId");
+        String catId = req.getParameter("catId");
+        String studyId = req.getParameter("studyId");
+        String requestPath = req.getPathInfo();
+
+        Study study = null;
+        if (req.getServletPath().equals("/FileDownload")) {
+            if (fileId != null) {
+                try {
+                    StudyFile file = studyService.getStudyFile(new Long(fileId));
+                    study = file.getFileCategory().getStudy();
+                } catch (Exception ex) {
+                    if (ex.getCause() instanceof IllegalArgumentException) {
+                    // do nothing.
+                    // if the file does not exist, there sure 
+                    // isn't a license/terms of use for it!
+                    } else {
+                        ex.printStackTrace();
+                        return;
+                    }
+                }
+            } else if (catId != null) {
+                try {
+                    FileCategory cat = studyService.getFileCategory(new Long(catId));
+                    study = cat.getStudy();
+                } catch (Exception ex) {
+                    if (ex.getCause() instanceof IllegalArgumentException) {
+                    // do nothing.
+                    // if the category does not exist, there sure 
+                    // isn't a license/terms of use for it!
+                    } else {
+                        ex.printStackTrace();
+                        return;
+                    }
+                }
+            } else if (studyId != null) {
+                try {
+                    study = studyService.getStudy(new Long(studyId));
+                } catch (Exception ex) {
+                    if (ex.getCause() instanceof IllegalArgumentException) {
+                    // do nothing.
+                    // if the study does not exist, there sure 
+                    // isn't a license/terms of use for it!
+                    } else {
+                        ex.printStackTrace();
+                        return;
+                    }
+                }
+            }
+        } else if (req.getServletPath().equals("/faces")) {
+            if (requestPath.startsWith("/subsetting/SubsettingPage")) {
+                String dtId = req.getParameter("dtId");
+                if (dtId != null) {
+                    DataTable dt = variableService.getDataTable(new Long(dtId));
+                    study = dt.getStudyFile().getFileCategory().getStudy();
+                }
+
+            }
+        }
+
+        // if we've populate the study, then check the TermsOfUse'
+        if (study != null) {
+
+            // the code below is for determining if the request is from 
+            // our registered DSB host; (then no agreement form should be 
+            // displayed!)
+            // this logic is essentially cut-and-pasted from 
+            // FileDownloadServlet.java, where I added it earlie this year. 
+
+            String dsbHost = System.getProperty("vdc.dsb.host");
+
+            if (dsbHost == null) {
+                dsbHost = System.getProperty("vdc.dsb.url");
+            }
+
+            boolean NOTaDSBrequest = true;
+
+            if (dsbHost.equals(req.getRemoteHost())) {
+                NOTaDSBrequest = false;
+            } else {
+                try {
+                    String dsbHostIPAddress = InetAddress.getByName(dsbHost).getHostAddress();
+                    if (dsbHostIPAddress.equals(req.getRemoteHost())) {
+                        NOTaDSBrequest = false;
+                    }
+                } catch (UnknownHostException ex) {
+                // do nothing; 
+                // the "vdc.dsb.host" setting is clearly misconfigured,
+                // so we just keep assuming this is NOT a DSB call
+                }
+            }
+
+            if (NOTaDSBrequest) {
+                Map termsOfUseMap = getTermsOfUseMap(req);
+                if (isDownloadDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) || isDownloadDataverseTermsRequired(study, termsOfUseMap) || isDownloadStudyTermsRequired(study, termsOfUseMap)) {
+                    VDC currentVDC = vdcService.getVDCFromRequest(req);
+                    String params = "?studyId=" + study.getId();
+                    params += "&redirectPage=" + URLEncoder.encode(req.getServletPath() + req.getPathInfo() + "?" + req.getQueryString(), "UTF-8");
+                    params += "&tou="+TOU_DOWNLOAD;
+                    if (currentVDC != null) {
+                        params += "&vdcId=" + currentVDC.getId();
+                    }
+                    res.sendRedirect(req.getContextPath() + "/faces/study/TermsOfUsePage.jsp" + params);
+                    return; // don't continue with chain since we are redirecting'
+                }
+            }
+        }
+
+    }
+
     private void sendProcessingError(Throwable t, ServletResponse response) {
-        
+
         String stackTrace = getStackTrace(t);
-        
-        if(stackTrace != null && !stackTrace.equals("")) {
-            
+
+        if (stackTrace != null && !stackTrace.equals("")) {
+
             try {
-                
+
                 response.setContentType("text/html");
                 PrintStream ps = new PrintStream(response.getOutputStream());
                 PrintWriter pw = new PrintWriter(ps);
                 pw.print("<html>\n<head>\n<title>Error</title>\n</head>\n<body>\n"); //NOI18N
-                
+
                 // PENDING! Localize this for next official release
                 pw.print("<h1>The resource did not process correctly</h1>\n<pre>\n");
                 pw.print(stackTrace);
                 pw.print("</pre></body>\n</html>"); //NOI18N
                 pw.close();
                 ps.close();
-                response.getOutputStream().close();;
+                response.getOutputStream().close();
+                ;
+            } catch (Exception ex) {
             }
-            
-            catch(Exception ex){ }
-        }
-else {
+        } else {
             try {
                 PrintStream ps = new PrintStream(response.getOutputStream());
                 t.printStackTrace(ps);
                 ps.close();
-                response.getOutputStream().close();;
+                response.getOutputStream().close();
+                ;
+            } catch (Exception ex) {
             }
-catch(Exception ex){ }
-}
+        }
     }
-    
+
     public static String getStackTrace(Throwable t) {
-        
+
         String stackTrace = null;
-        
+
         try {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
@@ -379,14 +422,13 @@ catch(Exception ex){ }
             pw.close();
             sw.close();
             stackTrace = sw.getBuffer().toString();
+        } catch (Exception ex) {
         }
-catch(Exception ex) {}
         return stackTrace;
     }
-    
+
     public void log(String msg) {
         filterConfig.getServletContext().log(msg);
     }
-    
     private static final boolean debug = true;
 }

@@ -61,7 +61,7 @@ public class LoginWorkflowBean extends VDCBaseBean {
     
     public String beginCreatorWorkflow() {
         clearWorkflowState();
-        workflowType = "creator";
+        workflowType = WORKFLOW_TYPE_CREATOR;
         String nextPage = null;
         LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
         if (loginBean != null) {
@@ -81,7 +81,7 @@ public class LoginWorkflowBean extends VDCBaseBean {
         LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
         if (loginBean != null) {
             grantWorkflowPermission();
-            nextPage = "myOptions";
+            nextPage = "contributorSuccess";
         } else {   
             nextPage = "addAccount";
         }
@@ -91,7 +91,7 @@ public class LoginWorkflowBean extends VDCBaseBean {
 
     public String beginLoginCreatorWorkflow() {
         clearWorkflowState();
-        workflowType = "creator";
+        workflowType =WORKFLOW_TYPE_CREATOR;
         String nextPage = "login";
         return nextPage;
 
@@ -137,7 +137,7 @@ public class LoginWorkflowBean extends VDCBaseBean {
         } else {
       
             if (workflowType.equals(WORKFLOW_TYPE_CONTRIBUTOR)) {
-                nextPage = "myOptions";
+                nextPage = "contributorSuccess";
             } else if (workflowType.equals(WORKFLOW_TYPE_CREATOR)) {
                 nextPage = "addSite";
             } else if (workflowType.equals(WORKFLOW_TYPE_FILE_ACCESS)) {
@@ -235,7 +235,7 @@ public class LoginWorkflowBean extends VDCBaseBean {
         String requestContextPath = this.getExternalContext().getRequestContextPath();
         VDC currentVDC = getVDCRequestBean().getCurrentVDC();
         if (WORKFLOW_TYPE_CONTRIBUTOR.equals(workflowType)) {
-            sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/admin/OptionsPage.jsp");
+            sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/login/ContributorRequestSuccessPage.jsp");
         } else if (WORKFLOW_TYPE_CREATOR.equals(workflowType)) {
             sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/site/AddSitePage.jsp");
         } else if (WORKFLOW_TYPE_FILE_ACCESS.equals(workflowType)) {
@@ -257,7 +257,6 @@ public class LoginWorkflowBean extends VDCBaseBean {
                 }
             }
         }
-        workflowType=null;
     }
 
     public Long getStudyId() {

@@ -177,6 +177,11 @@
             <property-class>java.lang.String</property-class>
             <value>#{param.redirectPage}</value>
         </managed-property>
+          <managed-property>
+            <property-name>touParam</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.tou}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditStudyPage</managed-bean-name>

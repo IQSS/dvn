@@ -248,7 +248,8 @@ public class DDIServiceBean implements DDIServiceLocal {
         createStdyInfo(xmlw, study);
         createMethod(xmlw, study);
         createDataAccs(xmlw, study);
-        // notes
+        createOtherStdyMat(xmlw,study);
+        createNotes(xmlw,study);
         xmlw.writeEndElement(); // stdyDesc
     }
 
@@ -305,8 +306,8 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeAttribute( "abbreviation", prod.getAbbreviation() );
             xmlw.writeAttribute( "affiliation", prod.getAffiliation() );
             xmlw.writeCharacters( prod.getName() );
-            createExtLink(xmlw, prod.getUrl(), false);
-            createExtLink(xmlw, prod.getLogo(), true);
+            createExtLink(xmlw, prod.getUrl(), null);
+            createExtLink(xmlw, prod.getLogo(), "image");
             xmlw.writeEndElement(); // producer
         }
         if (!StringUtil.isEmpty( study.getProductionDate() )) {
@@ -350,8 +351,8 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeAttribute( "abbreviation", dist.getAbbreviation() );
             xmlw.writeAttribute( "affiliation", dist.getAffiliation() );
             xmlw.writeCharacters( dist.getName() );
-            createExtLink(xmlw, dist.getUrl(), false);
-            createExtLink(xmlw, dist.getLogo(), true);
+            createExtLink(xmlw, dist.getUrl(), null);
+            createExtLink(xmlw, dist.getLogo(), "image");
             xmlw.writeEndElement(); // distrbtr
         }
         if (!StringUtil.isEmpty( study.getDistributorContact()) ||
@@ -920,6 +921,16 @@ public class DDIServiceBean implements DDIServiceLocal {
         if (otherStdyMatAdded) xmlw.writeEndElement(); // otherStdyMat
     }
 
+    private void createNotes(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        for (StudyNote note : study.getStudyNotes()) {
+            xmlw.writeStartElement("othenotesrRefs");
+            xmlw.writeAttribute( "type", note.getType() );
+            xmlw.writeAttribute( "subject", note.getSubject() );
+            xmlw.writeCharacters( note.getText() );
+            xmlw.writeEndElement(); // notes
+        }    
+    }
+
     private void createFileDscr(XMLStreamWriter xmlw, StudyFile sf) throws XMLStreamException {
         DataTable dt = sf.getDataTable();
         
@@ -1029,14 +1040,12 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     private void createDataDscr(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
-        xmlw.writeStartElement("dataDscr");
+        boolean dataDscrAdded = false;
 
-        Iterator iter = study.getStudyFiles().iterator();
-        while (iter.hasNext()) {
-            StudyFile sf = (StudyFile) iter.next();
-
+        for (StudyFile sf : study.getStudyFiles()) {
             if ( sf.isSubsettable() ) {
                 if ( sf.getDataTable().getDataVariables().size() > 0 ) {
+                    dataDscrAdded = checkParentElement(xmlw, "dataDscr", dataDscrAdded);
                     Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
                     while (varIter.hasNext()) {
                         DataVariable dv = (DataVariable) varIter.next();
@@ -1046,21 +1055,71 @@ public class DDIServiceBean implements DDIServiceLocal {
             }
         }           
 
-        xmlw.writeEndElement(); //dataDscr
+        if (dataDscrAdded) xmlw.writeEndElement(); //dataDscr
     }
 
     private void createVar(XMLStreamWriter xmlw, DataVariable dv) throws XMLStreamException {
         xmlw.writeStartElement("var");
         xmlw.writeAttribute( "ID", "v" + dv.getId().toString() );
         xmlw.writeAttribute( "name", dv.getName() );
+        if (dv.getVariableIntervalType() != null) {
+            String interval = dv.getVariableIntervalType().getName();
+            interval = DB_VAR_INTERVAL_TYPE_CONTINUOUS.equals(interval) ? VAR_INTERVAL_CONTIN : interval;
+            xmlw.writeAttribute( "intrvl", interval );
+        }        
         
+        // location
         xmlw.writeEmptyElement("location");
+        if (dv.getFileStartPosition() != null) xmlw.writeAttribute( "StartPos", dv.getFileStartPosition().toString() );
+        if (dv.getFileEndPosition() != null) xmlw.writeAttribute( "EndPos", dv.getFileEndPosition().toString() );
+        if (dv.getRecordSegmentNumber() != null) xmlw.writeAttribute( "width", dv.getRecordSegmentNumber().toString());
+        xmlw.writeAttribute( "fileId", "f" + dv.getDataTable().getStudyFile().getId().toString() );
 
-        xmlw.writeStartElement("labl");
-        xmlw.writeAttribute( "level", "variable" );
-        xmlw.writeCharacters( dv.getLabel() );
-        xmlw.writeEndElement(); //labl
-        
+        // labl
+        if (!StringUtil.isEmpty( dv.getLabel() )) {
+            xmlw.writeStartElement("labl");
+            xmlw.writeAttribute( "level", "variable" );
+            xmlw.writeCharacters( dv.getLabel() );
+            xmlw.writeEndElement(); //labl
+        }
+
+        // invalrng
+        boolean invalrngAdded = false;
+        for (VariableRange range : dv.getInvalidRanges()) {
+            if (range.getBeginValueType() != null && range.getBeginValueType().getName().equals(DB_VAR_RANGE_TYPE_POINT)) {
+                if (range.getBeginValue() != null ) {
+                    invalrngAdded = checkParentElement(xmlw, "invalrng", invalrngAdded);
+                    xmlw.writeEmptyElement("item");
+                    xmlw.writeAttribute( "VALUE", range.getBeginValue() );
+                }
+            } else {
+                invalrngAdded = checkParentElement(xmlw, "invalrng", invalrngAdded);
+                xmlw.writeEmptyElement("range");
+                if ( range.getBeginValueType() != null && range.getBeginValue() != null ) {
+                    if ( range.getBeginValueType().getName().equals(DB_VAR_RANGE_TYPE_MIN) ) {
+                        xmlw.writeAttribute( "min", range.getBeginValue() );
+                    } else if ( range.getBeginValueType().getName().equals(DB_VAR_RANGE_TYPE_MIN_EX) ) {
+                        xmlw.writeAttribute( "minExclusive", range.getBeginValue() );
+                    }
+                }
+                if ( range.getEndValueType() != null && range.getEndValue() != null) {
+                    if ( range.getEndValueType().getName().equals(DB_VAR_RANGE_TYPE_MAX) ) {
+                        xmlw.writeAttribute( "max", range.getEndValue() );
+                    } else if ( range.getEndValueType().getName().equals(DB_VAR_RANGE_TYPE_MAX_EX) ) {
+                        xmlw.writeAttribute( "maxExclusive", range.getEndValue() );
+                    }
+                }
+            }
+        }
+        if (invalrngAdded) xmlw.writeEndElement(); // invalrng
+
+        //universe
+        if (!StringUtil.isEmpty( dv.getUniverse() )) {
+            xmlw.writeStartElement("universe");
+            xmlw.writeCharacters( dv.getUniverse() );
+            xmlw.writeEndElement(); //universe
+        }
+
         //sum stats
         for (SummaryStatistic sumStat : dv.getSummaryStatistics()) {
             xmlw.writeStartElement("sumStat");
@@ -1080,11 +1139,13 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeEndElement(); //catValu
             
             // label
-            xmlw.writeStartElement("labl");
-            xmlw.writeAttribute( "level", "category" );
-            xmlw.writeCharacters( cat.getLabel() );
-            xmlw.writeEndElement(); //labl
-            
+            if (!StringUtil.isEmpty( cat.getLabel() )) {
+                xmlw.writeStartElement("labl");
+                xmlw.writeAttribute( "level", "category" );
+                xmlw.writeCharacters( cat.getLabel() );
+                xmlw.writeEndElement(); //labl
+            }
+
             // catStat
             if (cat.getFrequency() != null) {
                 xmlw.writeStartElement("catStat");
@@ -1095,10 +1156,19 @@ public class DDIServiceBean implements DDIServiceLocal {
         
             xmlw.writeEndElement(); //catgry   
         }
+        
+        //concept
+        if (!StringUtil.isEmpty( dv.getConcept() )) {
+            xmlw.writeStartElement("concept");
+            xmlw.writeCharacters( dv.getConcept() );
+            xmlw.writeEndElement(); //concept
+        }
 
         // varFormat
-        xmlw.writeStartElement("varFormat");
-        xmlw.writeEndElement(); //varFormat        
+        xmlw.writeEmptyElement("varFormat");
+        xmlw.writeAttribute( "type", dv.getVariableFormatType().getName() );
+        xmlw.writeAttribute( "formatname", dv.getFormatSchemaName() );
+        xmlw.writeAttribute( "schema", dv.getFormatSchema() );
 
         // notes
         xmlw.writeStartElement("notes");
@@ -1111,22 +1181,18 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeEndElement(); //var      
     }
 
-
-    private void createExtLink(XMLStreamWriter xmlw, String uri, boolean isLogo) throws XMLStreamException {
+    private void createExtLink(XMLStreamWriter xmlw, String uri, String role) throws XMLStreamException {
         xmlw.writeStartElement("ExtLink");
         xmlw.writeAttribute( "uri", uri );
-        if (isLogo) {
-            xmlw.writeAttribute( "role", "image" );
+        if (role != null) {
+            xmlw.writeAttribute( "role", role );
         }
         xmlw.writeEndElement(); //ExtLink     
     }
 
     private void createDateElement(XMLStreamWriter xmlw, String name, String value) throws XMLStreamException {
         xmlw.writeStartElement(name);
-        // only write attribute if value is a valid date
-        if ( DateUtil.validateDate(value) ) {
-            xmlw.writeAttribute("date", value);
-        } 
+        writeDateAttribute(xmlw, value);
         xmlw.writeCharacters( value );
         xmlw.writeEndElement();
 }

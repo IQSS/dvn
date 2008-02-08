@@ -427,7 +427,143 @@ public class DDIServiceBean implements DDIServiceLocal {
     private void createStdyInfo(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
         boolean stdyInfoAdded = false;
 
-        stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+        // subject
+        boolean subjectAdded = false;
+        for (StudyKeyword kw : study.getStudyKeywords()) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            subjectAdded = checkParentElement(xmlw, "subject", subjectAdded);
+            xmlw.writeStartElement("keyword");
+            xmlw.writeAttribute( "vocab", kw.getVocab() );
+            xmlw.writeAttribute( "vocabURI", kw.getVocabURI() );
+            xmlw.writeCharacters( kw.getValue() );
+            xmlw.writeEndElement(); // keyword
+        }
+        for (StudyTopicClass tc : study.getStudyTopicClasses()) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            subjectAdded = checkParentElement(xmlw, "subject", subjectAdded);
+            xmlw.writeStartElement("topcClas");
+            xmlw.writeAttribute( "vocab", tc.getVocab() );
+            xmlw.writeAttribute( "vocabURI", tc.getVocabURI() );
+            xmlw.writeCharacters( tc.getValue() );
+            xmlw.writeEndElement(); // topcClas
+        }
+        if (subjectAdded) xmlw.writeEndElement(); // subject
+
+
+        // abstract
+        for (StudyAbstract abst : study.getStudyAbstracts()) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            xmlw.writeStartElement("abstract");
+            xmlw.writeAttribute( "date", abst.getDate() );
+            xmlw.writeCharacters( abst.getText() );
+            xmlw.writeEndElement(); // abstract
+        }
+
+
+        // sumDscr
+        boolean sumDscrAdded = false;
+        if (!StringUtil.isEmpty( study.getTimePeriodCoveredStart() )) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            xmlw.writeStartElement("timePrd");
+            xmlw.writeAttribute( "event", EVENT_START );
+            writeDateAttribute( xmlw, study.getTimePeriodCoveredStart() );
+            xmlw.writeCharacters( study.getTimePeriodCoveredStart() );
+            xmlw.writeEndElement(); // timePrd
+        }
+        if (!StringUtil.isEmpty( study.getTimePeriodCoveredEnd() )) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            xmlw.writeStartElement("timePrd");
+            xmlw.writeAttribute( "event", EVENT_END );
+            writeDateAttribute( xmlw, study.getTimePeriodCoveredEnd() );
+            xmlw.writeCharacters( study.getTimePeriodCoveredEnd() );
+            xmlw.writeEndElement(); // timePrd
+        }
+        if (!StringUtil.isEmpty( study.getDateOfCollectionStart() )) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            xmlw.writeStartElement("collDate");
+            xmlw.writeAttribute( "event", EVENT_START );
+            writeDateAttribute( xmlw, study.getDateOfCollectionEnd() );
+            xmlw.writeCharacters( study.getDateOfCollectionEnd() );
+            xmlw.writeEndElement(); // collDate
+        }
+        if (!StringUtil.isEmpty( study.getDateOfCollectionEnd() )) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            xmlw.writeStartElement("collDate");
+            xmlw.writeAttribute( "event", EVENT_END );
+            writeDateAttribute( xmlw, study.getDateOfCollectionEnd() );
+            xmlw.writeCharacters( study.getDateOfCollectionEnd() );
+            xmlw.writeEndElement(); // collDate
+        }
+        if (!StringUtil.isEmpty( study.getCountry() )) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            xmlw.writeStartElement("nation");
+            xmlw.writeCharacters( study.getCountry() );
+            xmlw.writeEndElement(); // nation
+        }
+        if (!StringUtil.isEmpty( study.getGeographicCoverage() )) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            xmlw.writeStartElement("geogCover");
+            xmlw.writeCharacters( study.getGeographicCoverage() );
+            xmlw.writeEndElement(); // geogCover
+        }
+        if (!StringUtil.isEmpty( study.getGeographicUnit() )) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            xmlw.writeStartElement("geogUnit");
+            xmlw.writeCharacters( study.getGeographicCoverage() );
+            xmlw.writeEndElement(); // geogUnit
+        }
+        // we store geoboundings as list but there is only one
+        if (study.getStudyGeoBoundings() != null && study.getStudyGeoBoundings().size() != 0) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            StudyGeoBounding gbb = study.getStudyGeoBoundings().get(0);
+            xmlw.writeStartElement("geoBndBox");
+            xmlw.writeStartElement("westBL");
+            xmlw.writeCharacters( gbb.getWestLongitude() );
+            xmlw.writeEndElement(); // westBL
+            xmlw.writeStartElement("eastBL");
+            xmlw.writeCharacters( gbb.getEastLongitude() );
+            xmlw.writeEndElement(); // eastBL
+            xmlw.writeStartElement("southBL");
+            xmlw.writeCharacters( gbb.getSouthLatitude() );
+            xmlw.writeEndElement(); // southBL
+            xmlw.writeStartElement("northBL");
+            xmlw.writeCharacters( gbb.getNorthLatitude() );
+            xmlw.writeEndElement(); // northBL
+            xmlw.writeEndElement(); // geoBndBox
+        }
+        
+        if (!StringUtil.isEmpty( study.getUnitOfAnalysis() )) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            xmlw.writeStartElement("anlyUnit");
+            xmlw.writeCharacters( study.getUnitOfAnalysis() );
+            xmlw.writeEndElement(); // anlyUnit
+        }
+        
+        if (!StringUtil.isEmpty( study.getUniverse() )) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            xmlw.writeStartElement("universe");
+            xmlw.writeCharacters( study.getUniverse() );
+            xmlw.writeEndElement(); // universe
+        }
+        
+        if (!StringUtil.isEmpty( study.getKindOfData() )) {
+            stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            xmlw.writeStartElement("dataKind");
+            xmlw.writeCharacters( study.getKindOfData() );
+            xmlw.writeEndElement(); // dataKind
+        }
+        if (sumDscrAdded) xmlw.writeEndElement(); // sumDscr
 
 
         if (stdyInfoAdded) xmlw.writeEndElement(); // stdyInfo
@@ -436,7 +572,174 @@ public class DDIServiceBean implements DDIServiceLocal {
     private void createMethod(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
         boolean methodAdded = false;
 
-        methodAdded = checkParentElement(xmlw, "method", methodAdded);
+        // dataColl
+        boolean dataCollAdded = false;
+        if (!StringUtil.isEmpty( study.getTimeMethod() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            xmlw.writeStartElement("timeMeth");
+            xmlw.writeCharacters( study.getTimeMethod() );
+            xmlw.writeEndElement(); // timeMeth
+        }
+        if (!StringUtil.isEmpty( study.getDataCollector() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            xmlw.writeStartElement("dataCollector");
+            xmlw.writeCharacters( study.getDataCollector() );
+            xmlw.writeEndElement(); // dataCollector
+        }
+        if (!StringUtil.isEmpty( study.getFrequencyOfDataCollection() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            xmlw.writeStartElement("frequenc");
+            xmlw.writeCharacters( study.getDataCollector() );
+            xmlw.writeEndElement(); // frequenc
+        }
+        if (!StringUtil.isEmpty( study.getSamplingProcedure() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            xmlw.writeStartElement("sampProc");
+            xmlw.writeCharacters( study.getSamplingProcedure() );
+            xmlw.writeEndElement(); // sampProc
+        }
+        if (!StringUtil.isEmpty( study.getDeviationsFromSampleDesign() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            xmlw.writeStartElement("deviat");
+            xmlw.writeCharacters( study.getDeviationsFromSampleDesign() );
+            xmlw.writeEndElement(); // deviat
+        }
+        if (!StringUtil.isEmpty( study.getCollectionMode() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            xmlw.writeStartElement("collMode");
+            xmlw.writeCharacters( study.getCollectionMode() );
+            xmlw.writeEndElement(); // collMode
+        }
+        
+        if (!StringUtil.isEmpty( study.getResearchInstrument() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            xmlw.writeStartElement("resInstru");
+            xmlw.writeCharacters( study.getResearchInstrument() );
+            xmlw.writeEndElement(); // resInstru
+        }
+        //source
+        boolean sourcesAdded = false;
+        if (!StringUtil.isEmpty( study.getDataSources() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            sourcesAdded = checkParentElement(xmlw, "sources", sourcesAdded);
+            xmlw.writeStartElement("dataSrc");
+            xmlw.writeCharacters( study.getDataSources() );
+            xmlw.writeEndElement(); // dataSrc
+        }
+        
+        if (!StringUtil.isEmpty( study.getOriginOfSources() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            sourcesAdded = checkParentElement(xmlw, "sources", sourcesAdded);
+            xmlw.writeStartElement("srcOrig");
+            xmlw.writeCharacters( study.getOriginOfSources() );
+            xmlw.writeEndElement(); // srcOrig
+        }
+        
+        if (!StringUtil.isEmpty( study.getCharacteristicOfSources() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            sourcesAdded = checkParentElement(xmlw, "sources", sourcesAdded);
+            xmlw.writeStartElement("srcChar");
+            xmlw.writeCharacters( study.getCharacteristicOfSources() );
+            xmlw.writeEndElement(); // srcChar
+        }
+        
+        if (!StringUtil.isEmpty( study.getAccessToSources() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            sourcesAdded = checkParentElement(xmlw, "sources", sourcesAdded);
+            xmlw.writeStartElement("srcDocu");
+            xmlw.writeCharacters( study.getAccessToSources() );
+            xmlw.writeEndElement(); // srcDocu
+        }
+        if (sourcesAdded) xmlw.writeEndElement(); // sources
+        
+        if (!StringUtil.isEmpty( study.getDataCollectionSituation() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            xmlw.writeStartElement("collSitu");
+            xmlw.writeCharacters( study.getDataCollectionSituation() );
+            xmlw.writeEndElement(); // collSitu
+        }
+        
+        if (!StringUtil.isEmpty( study.getActionsToMinimizeLoss() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            xmlw.writeStartElement("actMin");
+            xmlw.writeCharacters( study.getActionsToMinimizeLoss() );
+            xmlw.writeEndElement(); // actMin
+        }
+        
+        if (!StringUtil.isEmpty( study.getControlOperations() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            xmlw.writeStartElement("ConOps");
+            xmlw.writeCharacters( study.getActionsToMinimizeLoss() );
+            xmlw.writeEndElement(); // ConOps
+        }
+        
+        if (!StringUtil.isEmpty( study.getWeighting() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            xmlw.writeStartElement("weight");
+            xmlw.writeCharacters( study.getWeighting() );
+            xmlw.writeEndElement(); // weight
+        }
+        
+        if (!StringUtil.isEmpty( study.getCleaningOperations() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
+            xmlw.writeStartElement("cleanOps");
+            xmlw.writeCharacters( study.getCleaningOperations() );
+            xmlw.writeEndElement(); // cleanOps
+        }
+        if (dataCollAdded) xmlw.writeEndElement(); // dataColl
+
+
+        // notes
+        if (!StringUtil.isEmpty( study.getStudyLevelErrorNotes() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            xmlw.writeStartElement("notes");
+            xmlw.writeCharacters( study.getStudyLevelErrorNotes() );
+            xmlw.writeEndElement(); // notes
+        }
+
+
+        // anlyInfo
+        boolean anlyInfoAdded = false;
+        if (!StringUtil.isEmpty( study.getResponseRate() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            anlyInfoAdded = checkParentElement(xmlw, "anlyInfo", anlyInfoAdded);
+            xmlw.writeStartElement("respRate");
+            xmlw.writeCharacters( study.getResponseRate() );
+            xmlw.writeEndElement(); // getResponseRate
+        }
+        
+        if (!StringUtil.isEmpty( study.getSamplingErrorEstimate() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            anlyInfoAdded = checkParentElement(xmlw, "anlyInfo", anlyInfoAdded);
+            xmlw.writeStartElement("EstSmpErr");
+            xmlw.writeCharacters( study.getSamplingErrorEstimate() );
+            xmlw.writeEndElement(); // EstSmpErr
+        }
+        
+        if (!StringUtil.isEmpty( study.getOtherDataAppraisal() )) {
+            methodAdded = checkParentElement(xmlw, "method", methodAdded);
+            anlyInfoAdded = checkParentElement(xmlw, "anlyInfo", anlyInfoAdded);
+            xmlw.writeStartElement("dataAppr");
+            xmlw.writeCharacters( study.getOtherDataAppraisal() );
+            xmlw.writeEndElement(); // dataAppr
+        }
+        if (anlyInfoAdded) xmlw.writeEndElement(); // anlyInfo
 
 
         if (methodAdded) xmlw.writeEndElement(); // method
@@ -445,13 +748,177 @@ public class DDIServiceBean implements DDIServiceLocal {
     private void createDataAccs(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
         boolean dataAccsAdded = false;
 
-        dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+        // setAvail
+        boolean setAvailAdded = false;
+        if (!StringUtil.isEmpty( study.getPlaceOfAccess() )) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            setAvailAdded = checkParentElement(xmlw, "setAvail", setAvailAdded);
+            xmlw.writeStartElement("accsPlac");
+            xmlw.writeCharacters( study.getPlaceOfAccess() );
+            xmlw.writeEndElement(); // getStudyCompletion
+        }
+        if (!StringUtil.isEmpty( study.getOriginalArchive() )) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            setAvailAdded = checkParentElement(xmlw, "setAvail", setAvailAdded);
+            xmlw.writeStartElement("origArch");
+            xmlw.writeCharacters( study.getOriginalArchive() );
+            xmlw.writeEndElement(); // origArch
+        }
+        if (!StringUtil.isEmpty( study.getAvailabilityStatus() )) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            setAvailAdded = checkParentElement(xmlw, "setAvail", setAvailAdded);
+            xmlw.writeStartElement("avlStatus");
+            xmlw.writeCharacters( study.getAvailabilityStatus() );
+            xmlw.writeEndElement(); // avlStatus
+        }
+        if (!StringUtil.isEmpty( study.getCollectionSize() )) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            setAvailAdded = checkParentElement(xmlw, "setAvail", setAvailAdded);
+            xmlw.writeStartElement("collSize");
+            xmlw.writeCharacters( study.getCollectionSize() );
+            xmlw.writeEndElement(); // collSize
+        }
+        if (!StringUtil.isEmpty( study.getStudyCompletion() )) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            setAvailAdded = checkParentElement(xmlw, "setAvail", setAvailAdded);
+            xmlw.writeStartElement("complete");
+            xmlw.writeCharacters( study.getStudyCompletion() );
+            xmlw.writeEndElement(); // complete
+        }
+        if (setAvailAdded) xmlw.writeEndElement(); // setAvail
+
+        // useStmt
+        boolean useStmtAdded = false;
+        if (!StringUtil.isEmpty( study.getConfidentialityDeclaration() )) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
+            xmlw.writeStartElement("confDec");
+            xmlw.writeCharacters( study.getConfidentialityDeclaration() );
+            xmlw.writeEndElement(); // confDec
+        }
+        
+        if (!StringUtil.isEmpty( study.getSpecialPermissions() )) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
+            xmlw.writeStartElement("specPerm");
+            xmlw.writeCharacters( study.getSpecialPermissions() );
+            xmlw.writeEndElement(); // specPerm
+        }
+        
+        if (!StringUtil.isEmpty( study.getRestrictions() )) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
+            xmlw.writeStartElement("restrctn");
+            xmlw.writeCharacters( study.getRestrictions() );
+            xmlw.writeEndElement(); // restrctn
+        }
+        
+        
+        if (!StringUtil.isEmpty( study.getContact() )) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
+            xmlw.writeStartElement("contact");
+            xmlw.writeCharacters( study.getContact() );
+            xmlw.writeEndElement(); // contact
+        }
+        
+        if (!StringUtil.isEmpty( study.getCitationRequirements() )) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
+            xmlw.writeStartElement("citReq");
+            xmlw.writeCharacters( study.getCitationRequirements() );
+            xmlw.writeEndElement(); // citReq
+        }
+        
+        if (!StringUtil.isEmpty( study.getDepositorRequirements() )) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
+            xmlw.writeStartElement("deposReq");
+            xmlw.writeCharacters( study.getDepositorRequirements() );
+            xmlw.writeEndElement(); // deposReq
+        }
+        
+        if (!StringUtil.isEmpty( study.getConditions() )) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
+            xmlw.writeStartElement("conditions");
+            xmlw.writeCharacters( study.getConditions() );
+            xmlw.writeEndElement(); // conditions
+        }
+        
+        if (!StringUtil.isEmpty( study.getDisclaimer() )) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
+            xmlw.writeStartElement("disclaimer");
+            xmlw.writeCharacters( study.getDisclaimer() );
+            xmlw.writeEndElement(); // disclaimer
+        }
+        if (useStmtAdded) xmlw.writeEndElement(); // useStmt
+
+
+        // terms of use notes
+        if (!StringUtil.isEmpty(vdcNetworkService.find().getDownloadTermsOfUse()) && vdcNetworkService.find().isDownloadTermsOfUseEnabled()) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
+            xmlw.writeStartElement("notes");
+            xmlw.writeAttribute( "type", NOTE_TYPE_TERMS_OF_USE );
+            xmlw.writeAttribute( "subject", NOTE_SUBJECT_TERMS_OF_USE );
+            xmlw.writeCharacters( vdcNetworkService.find().getDownloadTermsOfUse() );
+            xmlw.writeEndElement(); // notes
+        }
+        if (!StringUtil.isEmpty(study.getOwner().getDownloadTermsOfUse()) && study.getOwner().isDownloadTermsOfUseEnabled()) {
+            dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+            useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
+            xmlw.writeStartElement("notes");
+            xmlw.writeAttribute( "type", NOTE_TYPE_TERMS_OF_USE );
+            xmlw.writeAttribute( "subject", NOTE_SUBJECT_TERMS_OF_USE );
+            xmlw.writeCharacters( study.getOwner().getDownloadTermsOfUse() );
+            xmlw.writeEndElement(); // notes
+        }
 
 
         if (dataAccsAdded) xmlw.writeEndElement(); // dataAccs
-
     }
 
+    private void createOtherStdyMat(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        boolean otherStdyMatAdded = false;
+
+        // add replication for as a related material
+        if (!StringUtil.isEmpty( study.getReplicationFor() )) {
+            otherStdyMatAdded = checkParentElement(xmlw, "otherStdyMat", otherStdyMatAdded);
+            xmlw.writeStartElement("relMat");
+            xmlw.writeAttribute( "type", "replicationFor" );
+            xmlw.writeCharacters( study.getReplicationFor() );
+            xmlw.writeEndElement(); // relMat
+        }
+        for (StudyRelMaterial rm : study.getStudyRelMaterials()) {
+            otherStdyMatAdded = checkParentElement(xmlw, "otherStdyMat", otherStdyMatAdded);
+            xmlw.writeStartElement("relMat");
+            xmlw.writeCharacters( rm.getText() );
+            xmlw.writeEndElement(); // relMat
+        }
+        for (StudyRelStudy rs : study.getStudyRelStudies()) {
+            otherStdyMatAdded = checkParentElement(xmlw, "otherStdyMat", otherStdyMatAdded);
+            xmlw.writeStartElement("relStdy");
+            xmlw.writeCharacters( rs.getText() );
+            xmlw.writeEndElement(); // relStdy
+        }
+        for (StudyRelPublication rp : study.getStudyRelPublications()) {
+            otherStdyMatAdded = checkParentElement(xmlw, "otherStdyMat", otherStdyMatAdded);
+            xmlw.writeStartElement("relPub");
+            xmlw.writeCharacters( rp.getText() );
+            xmlw.writeEndElement(); // relPub
+        }
+        for (StudyOtherRef or : study.getStudyOtherRefs()) {
+            otherStdyMatAdded = checkParentElement(xmlw, "otherStdyMat", otherStdyMatAdded);
+            xmlw.writeStartElement("otherRefs");
+            xmlw.writeCharacters( or.getText() );
+            xmlw.writeEndElement(); // otherRefs
+        }
+
+
+        if (otherStdyMatAdded) xmlw.writeEndElement(); // otherStdyMat
+    }
 
     private void createFileDscr(XMLStreamWriter xmlw, StudyFile sf) throws XMLStreamException {
         DataTable dt = sf.getDataTable();
@@ -662,6 +1129,13 @@ public class DDIServiceBean implements DDIServiceLocal {
         } 
         xmlw.writeCharacters( value );
         xmlw.writeEndElement();
+}
+
+    private void writeDateAttribute(XMLStreamWriter xmlw, String value) throws XMLStreamException {
+        // only write attribute if value is a valid date
+        if ( DateUtil.validateDate(value) ) {
+            xmlw.writeAttribute("date", value);
+        } 
 }
 
     private boolean checkParentElement(XMLStreamWriter xmlw, String elementName, boolean elementAdded) throws XMLStreamException {

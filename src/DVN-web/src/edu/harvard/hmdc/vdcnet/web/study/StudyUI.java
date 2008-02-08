@@ -567,14 +567,14 @@ public class StudyUI {
      * @return
      */
     public String getDataverseTermsOfUse() {
-        String tou = null;
+        String tou = "";
         for (StudyNote note : study.getStudyNotes()) {
             if (note.getType() != null && note.getType().equals(DDI20ServiceBean.NOTE_TYPE_TERMS_OF_USE)) {
-                tou = note.getText();
-                break;
+                tou += note.getText();
+               
             }
         }
-        if (tou==null && study.getOwner().isDownloadTermsOfUseEnabled()) {
+        if (tou=="" && study.getOwner().isDownloadTermsOfUseEnabled()) {
             tou= study.getOwner().getDownloadTermsOfUse();
         }
         return tou;

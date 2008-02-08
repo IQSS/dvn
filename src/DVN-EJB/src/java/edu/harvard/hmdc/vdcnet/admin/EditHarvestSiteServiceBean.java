@@ -59,14 +59,23 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
     @EJB UserServiceLocal userService;
     @EJB VDCServiceLocal vdcService;
     @EJB HarvesterServiceLocal harvesterService;
-
+ 
     @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
     //  @EJB RoleServiceLocal roleService;
     EntityManager em;
     private HarvestingDataverse harvestingDataverse;
     private Long selectedHandlePrefixId;
     private Long selectedMetadataPrefixId;
+    private String editMode;
+   
+    public String getEditMode() {
+        return editMode;
+    }
 
+    public void setEditMode(String editMode) {
+        this.editMode = editMode;
+    }
+    
     public Long getSelectedHandlePrefixId() {
         return selectedHandlePrefixId;
     }
@@ -89,6 +98,7 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
      *  Initialize the bean with a Study for editing
      */
     public void setHarvestingDataverse(Long id ) {
+        editMode = EDIT_MODE_UPDATE;
         harvestingDataverse = em.find(HarvestingDataverse.class,id);
         em.refresh(harvestingDataverse);
         if (harvestingDataverse==null) {
@@ -100,6 +110,7 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
     }
     
     public void newHarvestingDataverse( ) {
+        editMode = EDIT_MODE_CREATE;
         harvestingDataverse = new HarvestingDataverse();
      
         em.persist(harvestingDataverse);
@@ -142,6 +153,9 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
         
         harvesterService.updateHarvestTimer(harvestingDataverse);
         em.flush();
+        
+        // Now the dataverse has been created, so any future changes will be an update.
+        editMode= EDIT_MODE_UPDATE;
     }
     
   

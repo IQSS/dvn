@@ -41,6 +41,9 @@ import javax.ejb.TransactionAttributeType;
  * @author Ellen Kraffmiller
  */
 public interface EditHarvestSiteService {
+    public static final String EDIT_MODE_CREATE = "create";
+    public static final String EDIT_MODE_UPDATE = "update";
+
     /**
      * Remove this Stateful Session bean from the EJB Container without 
      * saving updates to the database.
@@ -81,5 +84,7 @@ public interface EditHarvestSiteService {
     public List<String> getMetadataFormats();
   
     public void setMetadataFormats(List<String> metadataFormats);
+    
+    public String getEditMode();
     
 }

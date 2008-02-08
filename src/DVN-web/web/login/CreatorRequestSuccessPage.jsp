@@ -11,7 +11,7 @@
 
             <ui:panelLayout styleClass="dvn_createDvRequest dvn_section dvn_overflow">
               <ui:panelLayout styleClass="requestHeader dvn_overflow">
-                      <h:outputText value="Create Account &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" escape="false"/>
+                      <h:outputText value="Success! &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" escape="false"/>
               </ui:panelLayout>
               <ui:panelLayout rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestTimeline" style="background-position: 0 12px;">
                         <div class="requestTimelinePoint" style="left: 53px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Create Account</strong></div>

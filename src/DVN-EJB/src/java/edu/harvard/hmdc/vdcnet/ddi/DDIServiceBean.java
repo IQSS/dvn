@@ -40,6 +40,7 @@ import edu.harvard.hmdc.vdcnet.study.VariableIntervalType;
 import edu.harvard.hmdc.vdcnet.study.VariableRange;
 import edu.harvard.hmdc.vdcnet.study.VariableRangeType;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.DateUtil;
 import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
@@ -228,11 +229,8 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeEndElement(); // distrbtr
 
         xmlw.writeStartElement("distDate");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String lastUpdateString = sdf.format(study.getLastUpdateTime());
-        xmlw.writeAttribute( "date", lastUpdateString );
-        xmlw.writeCharacters( lastUpdateString );
-        xmlw.writeEndElement(); // distDate
+        String lastUpdateString = new SimpleDateFormat("yyyy-MM-dd").format(study.getLastUpdateTime());
+        createDateElement( xmlw, "distDate", lastUpdateString );
 
         xmlw.writeEndElement(); // distStmt
 
@@ -298,49 +296,160 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeEndElement(); // rspStmt
         }
 
+
         // prodStmt
+        boolean prodStmtAdded = false;
+        for (StudyProducer prod : study.getStudyProducers()) {
+            prodStmtAdded = checkParentElement(xmlw, "prodStmt", prodStmtAdded);
+            xmlw.writeStartElement("producer");
+            xmlw.writeAttribute( "abbreviation", prod.getAbbreviation() );
+            xmlw.writeAttribute( "affiliation", prod.getAffiliation() );
+            xmlw.writeCharacters( prod.getName() );
+            createExtLink(xmlw, prod.getUrl(), false);
+            createExtLink(xmlw, prod.getLogo(), true);
+            xmlw.writeEndElement(); // producer
+        }
+        if (!StringUtil.isEmpty( study.getProductionDate() )) {
+            prodStmtAdded = checkParentElement(xmlw, "prodStmt", prodStmtAdded);
+            createDateElement( xmlw, "prodDate", study.getProductionDate() );
+        }
+        if (!StringUtil.isEmpty( study.getProductionPlace() )) {
+            prodStmtAdded = checkParentElement(xmlw, "prodStmt", prodStmtAdded);
+            xmlw.writeStartElement("prodPlac");
+            xmlw.writeCharacters( study.getProductionPlace() );
+            xmlw.writeEndElement(); // prodPlac
+        }
+        for (StudySoftware soft : study.getStudySoftware()) {
+            prodStmtAdded = checkParentElement(xmlw, "prodStmt", prodStmtAdded);
+            xmlw.writeStartElement("software");
+            xmlw.writeAttribute( "version", soft.getSoftwareVersion() );
+            xmlw.writeCharacters( soft.getName() );
+            xmlw.writeEndElement(); // software
+        }
+        if (!StringUtil.isEmpty( study.getFundingAgency() )) {
+            prodStmtAdded = checkParentElement(xmlw, "prodStmt", prodStmtAdded);
+            xmlw.writeStartElement("fundAg");
+            xmlw.writeCharacters( study.getFundingAgency() );
+            xmlw.writeEndElement(); // fundAg
+        }
+        for (StudyGrant grant : study.getStudyGrants()) {
+            prodStmtAdded = checkParentElement(xmlw, "prodStmt", prodStmtAdded);
+            xmlw.writeStartElement("grantNo");
+            xmlw.writeAttribute( "agency", grant.getAgency() );
+            xmlw.writeCharacters( grant.getNumber() );
+            xmlw.writeEndElement(); // grantNo
+        }
+        if (prodStmtAdded) xmlw.writeEndElement(); // prodStmt
+
         
-        /* distStmt
-        xmlw.writeStartElement("distStmt");
+        // distStmt
+        boolean distStmtAdded = false;
+        for (StudyDistributor dist : study.getStudyDistributors()) {
+            distStmtAdded = checkParentElement(xmlw, "distStmt", distStmtAdded);
+            xmlw.writeStartElement("distrbtr");
+            xmlw.writeAttribute( "abbreviation", dist.getAbbreviation() );
+            xmlw.writeAttribute( "affiliation", dist.getAffiliation() );
+            xmlw.writeCharacters( dist.getName() );
+            createExtLink(xmlw, dist.getUrl(), false);
+            createExtLink(xmlw, dist.getLogo(), true);
+            xmlw.writeEndElement(); // distrbtr
+        }
+        if (!StringUtil.isEmpty( study.getDistributorContact()) ||
+                !StringUtil.isEmpty( study.getDistributorContactEmail()) ||
+                !StringUtil.isEmpty( study.getDistributorContactAffiliation()) ) {
 
-        xmlw.writeStartElement("distrbtr");
-        xmlw.writeCharacters( vdcNetworkService.find().getName() + " Dataverse Network" );
-        xmlw.writeEndElement(); // distrbtr
+            distStmtAdded = checkParentElement(xmlw, "distStmt", distStmtAdded);          
+            xmlw.writeStartElement("contact");
+            xmlw.writeAttribute( "email", study.getDistributorContactEmail() );
+            xmlw.writeAttribute( "affiliation", study.getDistributorContactAffiliation() );
+            xmlw.writeCharacters( study.getDistributorContact() );
+            xmlw.writeEndElement(); // contact
+        }
+        if (!StringUtil.isEmpty( study.getDepositor() )) {
+            distStmtAdded = checkParentElement(xmlw, "distStmt", distStmtAdded);
+            xmlw.writeStartElement("depositr");
+            xmlw.writeCharacters( study.getDepositor() );
+            xmlw.writeEndElement(); // depositr
+        }
+        if (!StringUtil.isEmpty( study.getDateOfDeposit() )) {
+            distStmtAdded = checkParentElement(xmlw, "distStmt", distStmtAdded);
+            createDateElement( xmlw, "depDate", study.getDateOfDeposit() );
+        } 
+        if (!StringUtil.isEmpty( study.getDistributionDate() )) {
+            distStmtAdded = checkParentElement(xmlw, "distStmt", distStmtAdded);
+            createDateElement( xmlw, "distDate", study.getDistributionDate() );
+        }        
+        if (distStmtAdded) xmlw.writeEndElement(); // distStmt
 
-        xmlw.writeStartElement("distDate");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String lastUpdateString = sdf.format(study.getLastUpdateTime());
-        xmlw.writeAttribute( "date", lastUpdateString );
-        xmlw.writeCharacters( lastUpdateString );
-        xmlw.writeEndElement(); // distDate
-
-        xmlw.writeEndElement(); // distStmt
-        */
 
         // serStmt
-        // verStmt
-        // notes ??
+        boolean serStmtAdded = false;
+        if (!StringUtil.isEmpty( study.getSeriesName() )) {
+            serStmtAdded = checkParentElement(xmlw, "serStmt", serStmtAdded);
+            xmlw.writeStartElement("serName");
+            xmlw.writeCharacters( study.getSeriesName() );
+            xmlw.writeEndElement(); // serName
+        }
+        
+        if (!StringUtil.isEmpty( study.getSeriesInformation() )) {
+            serStmtAdded = checkParentElement(xmlw, "serStmt", serStmtAdded);
+            xmlw.writeStartElement("serInfo");
+            xmlw.writeCharacters( study.getSeriesInformation() );
+            xmlw.writeEndElement(); // serInfo
+        }
+        if (serStmtAdded) xmlw.writeEndElement(); // serStmt
 
+
+        // verStmt
+        boolean verStmtAdded = false;
+        if (!StringUtil.isEmpty( study.getStudyVersion()) || !StringUtil.isEmpty( study.getVersionDate()) ) {
+            verStmtAdded = checkParentElement(xmlw, "verStmt", verStmtAdded);
+            xmlw.writeStartElement("version");
+            xmlw.writeAttribute( "date", study.getVersionDate() );
+            xmlw.writeCharacters( study.getStudyVersion() );
+            xmlw.writeEndElement(); // version
+        }
+       if (verStmtAdded) xmlw.writeEndElement(); // verStmt
+
+        // UNF note
+        if (! StringUtil.isEmpty( study.getUNF()) ) {
+            xmlw.writeStartElement("notes");
+            xmlw.writeAttribute( "level", LEVEL_STUDY );
+            xmlw.writeAttribute( "type", NOTE_TYPE_UNF );
+            xmlw.writeAttribute( "subject", NOTE_SUBJECT_UNF );
+            xmlw.writeCharacters( study.getUNF() );
+            xmlw.writeEndElement(); // notes
+        }
 
         xmlw.writeEndElement(); // citation
     }
 
     private void createStdyInfo(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
-        xmlw.writeStartElement("stdyInfo");
+        boolean stdyInfoAdded = false;
 
-        xmlw.writeEndElement(); // stdyInfo
+        stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
+
+
+        if (stdyInfoAdded) xmlw.writeEndElement(); // stdyInfo
     }
 
     private void createMethod(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
-        xmlw.writeStartElement("method");
+        boolean methodAdded = false;
 
-        xmlw.writeEndElement(); // method
+        methodAdded = checkParentElement(xmlw, "method", methodAdded);
+
+
+        if (methodAdded) xmlw.writeEndElement(); // method
     }
 
     private void createDataAccs(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
-        xmlw.writeStartElement("dataAccs");
+        boolean dataAccsAdded = false;
 
-        xmlw.writeEndElement(); // dataAccs
+        dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
+
+
+        if (dataAccsAdded) xmlw.writeEndElement(); // dataAccs
+
     }
 
 
@@ -533,6 +642,34 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeEndElement(); //notes        
 
         xmlw.writeEndElement(); //var      
+    }
+
+
+    private void createExtLink(XMLStreamWriter xmlw, String uri, boolean isLogo) throws XMLStreamException {
+        xmlw.writeStartElement("ExtLink");
+        xmlw.writeAttribute( "uri", uri );
+        if (isLogo) {
+            xmlw.writeAttribute( "role", "image" );
+        }
+        xmlw.writeEndElement(); //ExtLink     
+    }
+
+    private void createDateElement(XMLStreamWriter xmlw, String name, String value) throws XMLStreamException {
+        xmlw.writeStartElement(name);
+        // only write attribute if value is a valid date
+        if ( DateUtil.validateDate(value) ) {
+            xmlw.writeAttribute("date", value);
+        } 
+        xmlw.writeCharacters( value );
+        xmlw.writeEndElement();
+}
+
+    private boolean checkParentElement(XMLStreamWriter xmlw, String elementName, boolean elementAdded) throws XMLStreamException {
+        if (!elementAdded) {
+            xmlw.writeStartElement(elementName);
+        }
+
+        return true;
     }
     // </editor-fold>
     

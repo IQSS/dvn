@@ -600,8 +600,10 @@ public class EditHarvestSitePage extends VDCBaseBean {
         
         boolean aliasFound = false;
         VDC vdc = vdcService.findByAlias(alias);
-        if (vdc != null && (harvestingDataverse.getVdc()== null || vdc.getId()!=harvestingDataverse.getVdc().getId())) {
-            aliasFound=true;
+        if (vdc != null){
+            if ( isCreateMode() || ( isUpdateMode() && !this.harvestingDataverse.getVdc().getId().equals(vdc.getId()))) {
+                aliasFound=true;
+            }
         }
         
         if (aliasFound) {
@@ -611,6 +613,7 @@ public class EditHarvestSitePage extends VDCBaseBean {
             context.addMessage(toValidate.getClientId(context), message);
         }
     }
+    
   public void validateName(FacesContext context,
             UIComponent toValidate,
             Object value) {
@@ -619,8 +622,10 @@ public class EditHarvestSitePage extends VDCBaseBean {
         boolean nameFound = false;
         VDC vdc = vdcService.findByName(name);
         
-        if (vdc != null && (harvestingDataverse.getVdc()==null || !harvestingDataverse.getVdc().equals(vdc))) {
-            nameFound=true;
+         if (vdc != null){
+            if ( isCreateMode() || ( isUpdateMode() && !this.harvestingDataverse.getVdc().getId().equals(vdc.getId()))) {
+                nameFound=true;
+            }
         }
         
         if (nameFound) {
@@ -715,6 +720,14 @@ public void validateSchedulePeriod(FacesContext context,
 
     public void setScheduledCheckbox(HtmlSelectBooleanCheckbox scheduledCheckbox) {
         this.scheduledCheckbox = scheduledCheckbox;
-    }   
+    }
     
+    private boolean isUpdateMode() {
+       return editHarvestSiteService.getEditMode().equals(EditHarvestSiteService.EDIT_MODE_UPDATE);
+    }
+    
+    private boolean isCreateMode() {
+       return editHarvestSiteService.getEditMode().equals(EditHarvestSiteService.EDIT_MODE_CREATE);
+    }
+
 }

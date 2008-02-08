@@ -29,9 +29,9 @@ ALTER TABLE vdcuser ADD COLUMN agreedtermsofuse bool;
 ALTER TABLE vdcuser ALTER COLUMN agreedtermsofuse SET STORAGE PLAIN;
 
 update vdc set deposittermsofuseenabled=false;
-update vdcgroup set defaultDisplayNumber=15;
+update vdcgroup set defaultDisplayNumber=16;
 update vdcnetwork set deposittermsofuseenabled=false;
 update vdcnetwork set downloadtermsofuseenabled=false;
-update vdcnetwork set defaultdisplaynumber=15;
+update vdcnetwork set defaultdisplaynumber=16;
 update vdcuser set agreedtermsofuse=false;
 

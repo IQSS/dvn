@@ -122,7 +122,18 @@ div.dvn_navblock {margin-bottom: 12px; padding: 0 10px 0 10px; background: #dade
 .dvn_navblockLinks ul li:hover {position:relative;} /*Sylvain IE hack*/
 .dvn_navblockLinks ul li:hover a:link, .dvn_navblockLinks ul li:hover a:visited, .dvn_navblockLinks ul li:hover a:hover, .dvn_navblockLinks ul li:hover a:active {background-color: #c55b28; text-decoration:underline;} /*Color main cells hovering mode*/
 .dvn_navblockLinks ul li a:hover {position:relative /*Sylvain IE hack*/; z-index:1000 /*Sylvain IE hack*/; background-color: #c55b28; color: #fff; text-decoration:underline;} /*Color main cells hovering mode*/
-.dvn_networkOptions a:link, .dvn_networkOptions a:visited, .dvn_networkOptions a:hover, .dvn_networkOptions a:active {color: #c55b28; font-weight: bold;}
+
+.dvn_navUserName {float: right;}
+.dvn_navUserName div {float:left; z-index:auto !important /*Non-IE6*/; z-index:1000 /*IE6*/;}
+.dvn_navUserName div a:link, .dvn_navUserName div a:visited, .dvn_navUserName div a:hover, .dvn_navUserName div a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; height:1.75em; line-height:1.75em; padding:.1em .5em 0 .5em; color:#c55b28; text-decoration:none;}
+.dvn_navUserName div:hover {position:relative;} /*Sylvain IE hack*/
+.dvn_navUserName div:hover a:link, .dvn_navUserName div:hover a:visited, .dvn_navUserName div:hover a:hover, .dvn_navUserName div:hover a:active {background-color: #c55b28; text-decoration:underline;} /*Color main cells hovering mode*/
+.dvn_navUserName div a:hover {position:relative /*Sylvain IE hack*/; z-index:1000 /*Sylvain IE hack*/; background-color: #c55b28; color: #fff; text-decoration:underline;} /*Color main cells hovering mode*/
+
+.dvn_navUserOptions {font-weight:bold;}
+
+.dvn_navUserName a:hover {position:relative /*Sylvain IE hack*/; z-index:1000 /*Sylvain IE hack*/; background-color: #c55b28; color: #fff; text-decoration:underline;} /*Color main cells hovering mode*/
+
 .dvn_navNetworkName a:link, .dvn_navNetworkName a:visited, .dvn_navNetworkName a:hover, .dvn_navNetworkName a:active {font-weight: normal;}
 
 /* SEARCH */

@@ -9,14 +9,38 @@
           <input type="hidden" name="pageName" value="CreatorRequestPage"/>
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
-            <div class="dvn_section">
-                <div class="dvn_sectionTitle">
-                    
-                        <h:outputText value="Dataverse Creator workdlow Success Page"/>
-                    
-                </div>            
-               
-            </div>
+            <ui:panelLayout styleClass="dvn_createDvRequest dvn_section dvn_overflow">
+              <ui:panelLayout styleClass="requestHeader dvn_overflow">
+                      <h:outputText value="Create Account &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" escape="false"/>
+              </ui:panelLayout>
+              <ui:panelLayout rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestTimeline" style="background-position: 0 12px;">
+                        <div class="requestTimelinePoint" style="left: 53px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Create Account</strong></div>
+                        <div class="requestTimelinePoint" style="left: 271px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Terms of Use</strong></div>
+                        <div class="requestTimelinePoint" style="left: 474px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Name Dataverse</strong></div>
+                        <div class="requestTimelinePoint" style="left: 709px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Success!</strong></div>
+              </ui:panelLayout>
+              <ui:panelLayout styleClass="requestContent">
+                  
+                  <ui:panelLayout styleClass="requestContentDescLeft requestContentSucessH4">
+                      <h4>Your new dataverse has been created!</h4>
+                  </ui:panelLayout>
+                  
+                  <ui:panelLayout styleClass="requestContentDescRight requestContentSucess">
+                  <ui:panelLayout styleClass="dvn_margin12"> 
+                      
+                        <p>Your new dataverse is restricted, it will be set to 'Coming Soon' (Not Released) by default. Go to <a href="/dvn/faces/admin/OptionsPage.jsp">My Options</a> to make it public.
+                        <ul>
+                            <li>Begin <a href="/dvn/faces/study/EditStudyPage.jsp">adding data studies</a> or <a href="/dvn/faces/collection/ManageCollectionsPage.jsp">creating collections</a> of data from other dataverses.</li>
+                            <li><a href="/dvn/faces/admin/EditBannerFooterPage.jsp">Customize the layout</a>, and then you are ready to release your dataverse live!</li>
+                        </ul>
+                        You can access your dataverse directly by entering this URL:</p>
+                        <p><a href="#">http://dvn.iq.harvard.edu/dvn/dv/dummyURL</a></p>
+                      
+                  </ui:panelLayout>
+                  </ui:panelLayout>
+                  
+              </ui:panelLayout>
+          </ui:panelLayout>
 
         </ui:form>
     </f:subview>

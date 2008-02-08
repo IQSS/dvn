@@ -18,7 +18,13 @@
                       <h:outputText value="Create a New Account" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
                       <h:outputText value="Create Account &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" rendered="#{LoginWorkflowBean.creatorWorkflow}" escape="false"/>
                       <h:outputText value="Create Account &gt; Become a Contributor" rendered="#{LoginWorkflowBean.contributorWorkflow}"/>
-              </ui:panelLayout>            
+              </ui:panelLayout>
+              <ui:panelLayout rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestTimeline" style="background-position: 0 0;">
+                        <div class="requestTimelinePoint" style="left: 53px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Create Account</strong></div>
+                        <div class="requestTimelinePoint" style="left: 271px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Terms of Use</strong></div>
+                        <div class="requestTimelinePoint" style="left: 474px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Name Dataverse</strong></div>
+                        <div class="requestTimelinePoint" style="left: 709px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
+              </ui:panelLayout>
               <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
                   
                   <ui:panelLayout rendered="#{LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow}" styleClass="requestContentDescLeft">

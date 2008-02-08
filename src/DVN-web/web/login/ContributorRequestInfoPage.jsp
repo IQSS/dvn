@@ -9,13 +9,13 @@
           <input type="hidden" name="pageName" value="ContributorRequestPage"/>
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
-            <div id="dvn_createDvRequest" class="dvn_section dvn_overflow">
-    	<div id="requestHeader" class="dvn_overflow">
-        	<div id="requestContentTitle">Become a Contributor</div>
-        	<div id="requestContentDescRight">Become a contributor to upload your data sets to a dataverse. Archiving with the dataverse extends the useful life of data, preserving it in perpetuity against the failure of computers systems and the obsolescence of data formats.</div>
+            <div class="dvn_createDvRequest dvn_section dvn_overflow">
+    	<div class="requestHeader dvn_overflow">
+        	<div class="requestContentTitle">Become a Contributor</div>
+        	<div class="requestContentDescRight">Become a contributor to upload your data sets to a dataverse. Archiving with the dataverse extends the useful life of data, preserving it in perpetuity against the failure of computers systems and the obsolescence of data formats.</div>
         </div>
 
-        <div><div class="dvn_margin12 dvn_overflow" id="requestIntroSteps">
+        <div><div class="requestIntroSteps dvn_margin12 dvn_overflow">
         	<div class="requestIntroStepCard" style="margin-right: 24px; background: #f4ebc7 url(/dvn/resources/request-intro-rndtop1.png) no-repeat;">
                     <h3>Create<br/>Account</h3>
                     <p>Register with our network, by creating an account...</p>

@@ -12,7 +12,7 @@
               <ui:panelLayout styleClass="requestHeader dvn_overflow">
                       <h:outputText value="Sucess! &lt;span&gt;&gt; Become a Contributor&lt;/span&gt;" escape="false"/>
               </ui:panelLayout>
-              <ui:panelLayout rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestTimeline" style="background-position: 0 12px;">
+              <ui:panelLayout rendered="#{LoginWorkflowBean.contributorWorkflow}" styleClass="requestTimeline" style="background-position: 0 12px;">
                         <div class="requestTimelinePoint" style="left: 53px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Create Account</strong></div>
                         <div class="requestTimelinePoint" style="left: 372px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Terms of Use</strong></div>
                         <div class="requestTimelinePoint" style="left: 709px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Success!</strong></div>
@@ -26,7 +26,10 @@
                   <ui:panelLayout styleClass="requestContentDescRight requestContentSucess">
                   <ui:panelLayout styleClass="dvn_margin12"> 
                       
-                        <p>You can add your new study to this dataverse by going to <a href="/dvn/faces/admin/OptionsPage.jsp">My Options</a>.  Then set the study to 'Released', to have it reviewed by the dataverse administrator.</p>
+                        <p>You can add your new study to this dataverse by going to
+                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp">
+                            <h:outputText value="My Options"/>
+                        </h:outputLink>.  Then set the study to 'Released', to have it reviewed by the dataverse administrator.</p>
                       
                   </ui:panelLayout>
                   </ui:panelLayout>

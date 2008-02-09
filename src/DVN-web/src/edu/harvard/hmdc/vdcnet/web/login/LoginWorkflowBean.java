@@ -6,6 +6,7 @@ package edu.harvard.hmdc.vdcnet.web.login;
 
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.StudyListing;
@@ -278,6 +279,15 @@ public class LoginWorkflowBean extends VDCBaseBean {
     public String getWorkflowType() {
         return workflowType;
     }
+    
+    /**
+     * Used in the Creator Workflow Success page - for url of dataverse home page.
+     * @return hostUrl (based on inet Address)
+     */
+    public String getHostUrl() {
+        return PropertyUtil.getHostUrl();
+    }
+    
     public boolean isContributorWorkflow() {
         return workflowType!=null && workflowType.equals(WORKFLOW_TYPE_CONTRIBUTOR);
     }

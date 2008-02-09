@@ -28,13 +28,31 @@
                   <ui:panelLayout styleClass="requestContentDescRight requestContentSucess">
                   <ui:panelLayout styleClass="dvn_margin12"> 
                       
-                        <p>Your new dataverse is restricted, it will be set to 'Coming Soon' (Not Released) by default. Go to <a href="/dvn/faces/admin/OptionsPage.jsp">My Options</a> to make it public.
+                        <p>Your new dataverse is restricted, it will be set to 'Coming Soon' (Not Released) by default. Go to  
+                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp">
+                                <h:outputText value="My Options"/>
+                            </h:outputLink>    to make it public.
                         <ul>
-                            <li>Begin <a href="/dvn/faces/study/EditStudyPage.jsp">adding data studies</a> or <a href="/dvn/faces/collection/ManageCollectionsPage.jsp">creating collections</a> of data from other dataverses.</li>
-                            <li><a href="/dvn/faces/admin/EditBannerFooterPage.jsp">Customize the layout</a>, and then you are ready to release your dataverse live!</li>
+                            <li>Begin    
+                             <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.jsp">
+                                <h:outputText value="adding data studies"/>
+                             </h:outputLink> or 
+                             <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/ManageCollectionsPage.jsp">
+                                 <h:outputText value="creating collections"/> 
+                             </h:outputLink>of data from other dataverses.
+                            </li>
+                            <li>
+                             <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditBannerFooterPage.jsp">
+                                   <h:outputText value="Customize the layout"/>
+                            </h:outputLink>, and then you are ready to release your dataverse live!
+                           </li>
                         </ul>
                         You can access your dataverse directly by entering this URL:</p>
-                        <p><a href="#">http://dvn.iq.harvard.edu/dvn/dv/dummyURL</a></p>
+                        <p>
+                            <h:outputLink  value="http://#{LoginWorkflowBean.hostUrl}/dvn#{VDCRequest.currentVDCURL}">
+                                <h:outputText value="http://#{LoginWorkflowBean.hostUrl}/dvn#{VDCRequest.currentVDCURL}"/>
+                            </h:outputLink> 
+                        </p>
                       
                   </ui:panelLayout>
                   </ui:panelLayout>

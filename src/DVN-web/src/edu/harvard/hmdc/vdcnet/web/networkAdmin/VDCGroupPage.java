@@ -168,7 +168,6 @@ public class VDCGroupPage extends VDCBaseBean {
     public String save() {
         String msg = SUCCESS_MESSAGE;
         success    = true;
-        System.out.println("the value of the network default is " + defaultDisplayNumber);
         getVDCRequestBean().getVdcNetwork().setDefaultDisplayNumber(defaultDisplayNumber);
         vdcNetworkService.updateDefaultDisplayNumber(getVDCRequestBean().getVdcNetwork());
         try {
@@ -455,7 +454,8 @@ public class VDCGroupPage extends VDCBaseBean {
             context.addMessage(toValidate.getClientId(context), message);
             context.renderResponse();
         }
-    }
+    }  
+    
     
     /** commonly used iteration
      * (by change listeners)

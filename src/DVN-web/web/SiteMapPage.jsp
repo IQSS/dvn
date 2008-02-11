@@ -21,10 +21,10 @@
                 <div class="dvn_margin12">
                     <!-- sitemapHomeHeading -->
                     <ui:panelGroup block="true" id="groupPanel0">
-                        <ui:panelGroup  block="true">
+                        <ui:panelGroup  block="true"  style="padding-top: 20px; padding-bottom: 15px;">
                             <h:outputText  id="homeHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapBrowseHeading}"/>
                         </ui:panelGroup>
-                        <ui:panelGroup  block="true" id="groupPanel2" separator="&lt;br /&gt;" style="padding-left: 10px">
+                        <ui:panelGroup  block="true" id="groupPanel2" separator="&lt;br /&gt;" style="padding-left: 20px">
                             <h:outputLink id="basicSearchLink"  styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}#search">
                                 <h:outputText  id="basicSearchText" value="#{bundle.sitemapSearchLink}"/>
                             </h:outputLink>
@@ -40,38 +40,32 @@
 
                     <!-- sitemapAccountHeading -->
                     <ui:panelGroup block="true">
-                        <ui:panelGroup  block="true" id="groupPanel7" style="padding-top: 20px;">
+                        <ui:panelGroup  block="true" id="groupPanel7" style="padding-top: 20px; padding-bottom: 15px;">
                             <h:outputText  id="accountHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapAccountHeading}"/>
                         </ui:panelGroup>
-                        <ui:panelGroup block="true" id="groupPanel8" style="padding-left: 10px">
+                        <ui:panelGroup block="true" id="groupPanel8"  style="padding-left: 20px">
                             <h:outputLink id="sitemaplink8" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp#login">
-                                <h:outputText  id="sitemaplink8Text" value="#{bundle.sitemapLoginLink}"/>
-                            </h:outputLink>
-                            <!-- another work-around using f:verbatim because jsf renders double breaks in separator based on the
-                      pre-rendered code. Therefore, if I don't render a link, there is a big whole in the UI -->
-                            <f:verbatim rendered="#{(VDCRequest.currentVDC != null and VDCSession.loginBean == null and HomePage.showRequestContributor) or (VDCRequest.currentVDC != null and VDCSession.loginBean != null and HomePage.showRequestContributor)}"><br /></f:verbatim>
-                            <h:outputLink id="contributorRequestAccountLink" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean == null and HomePage.showRequestContributor}" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestAccountPage.jsp#request">
-                                <h:outputText id="contributorRequestAccountText" value="#{bundle.sitemapBecomeContributorLink}"/>
-                            </h:outputLink>
-                            <h:outputLink id="contributorRequestLink" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean != null and HomePage.showRequestContributor}" styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestPage.jsp#request">
-                                <h:outputText id="contributorRequestText" value="#{bundle.sitemapBecomeContributorLink}"/>
-                            </h:outputLink>
-                            <f:verbatim rendered="#{(VDCRequest.currentVDC == null and VDCSession.loginBean == null and HomePage.showRequestCreator) or (VDCRequest.currentVDC == null and VDCSession.loginBean != null and HomePage.showRequestCreator)}"><br /></f:verbatim>
-                            <h:outputLink rendered="#{VDCRequest.currentVDC == null and VDCSession.loginBean == null and HomePage.showRequestCreator}"  styleClass="vdcSiteMapLink" value="/dvn/faces/login/CreatorRequestAccountPage.jsp">
-                                <h:outputText   value="Create your own Dataverse"/>
-                            </h:outputLink>
-                            <h:outputLink rendered="#{VDCRequest.currentVDC == null and VDCSession.loginBean != null and HomePage.showRequestCreator}" styleClass="vdcSiteMapLink" value="/dvn/faces/login/CreatorRequestPage.jsp">
-                                <h:outputText value="Create your own Dataverse"/>
-                            </h:outputLink>
+                                <h:outputText id="sitemaplink8Text" value="#{bundle.sitemapLoginLink}"/>
+                            </h:outputLink>  
+                            <ui:panelGroup block="true" rendered="#{HomePage.showRequestContributor}" >
+                                <h:outputLink id="contributorRequestAccountLink"  styleClass="vdcSiteMapLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ContributorRequestInfoPage.jsp">
+                                    <h:outputText id="contributorRequestAccountText" value="#{bundle.sitemapBecomeContributorLink}"/>
+                                </h:outputLink> 
+                            </ui:panelGroup>
+                             <ui:panelGroup block="true" rendered="#{HomePage.showRequestCreator}" >
+                                <h:outputLink  styleClass="vdcSiteMapLink" value="/dvn/faces/login/CreatorRequestInfoPage.jsp">
+                                    <h:outputText   value="Create your own Dataverse"/>
+                                </h:outputLink>
+                            </ui:panelGroup>
                         </ui:panelGroup>
                     </ui:panelGroup>
 
                     <!-- sitemapAboutHeading -->
                     <ui:panelGroup block="true">
-                        <ui:panelGroup  block="true" id="groupPanel9" style="padding-top: 20px;">
+                        <ui:panelGroup  block="true" id="groupPanel9" style="padding-top: 20px; padding-bottom: 15px;">
                             <h:outputText  id="aboutHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapAboutHeading}"/>
                         </ui:panelGroup>
-                        <ui:panelGroup block="true" id="groupPanel10" style="padding-left: 10px">
+                        <ui:panelGroup block="true" id="groupPanel10" style="padding-left: 20px">
 
                             <f:verbatim>
                                 <!-- note this is a workaround to fix an issue that was caused by the 3rd nested panelGroup that
@@ -105,11 +99,11 @@
 
                     <!-- HELP -->
                     <ui:panelGroup block="true">
-                        <ui:panelGroup  block="true" id="groupPanelHelp" style="padding-top: 20px;">
+                        <ui:panelGroup  block="true" id="groupPanelHelp" style="padding-top: 20px; padding-bottom: 15px;">
                             <h:outputText  id="helpHeading" styleClass="vdcSubHeader" value="#{bundle.sitemapHelpHeading}"/>
                         </ui:panelGroup>
-                        <ui:panelGroup  block="true" id="groupPanelHelpLinks" style="padding-left: 10px;">
-                            <h:outputLink id="sitemaplinkUserManual" styleClass="vdcSiteMapLink" target="_blank" value="http://thedata.org/help">
+                        <ui:panelGroup  block="true" id="groupPanelHelpLinks" style="padding-left: 20px;">
+                            <h:outputLink id="sitemaplinkUserManual" styleClass="vdcSiteMapLink" target="_blank" value="http://thedata.org/guides">
                                 <h:outputText  id="sitemaplinkUserManualText" value="#{bundle.sitemapUserManualLink}"/>
                             </h:outputLink>
                         </ui:panelGroup>

@@ -122,11 +122,13 @@ public class VDCGroupPage extends VDCBaseBean {
             VDCGroup vdcgroup = null;
             if (this.getVdcGroup() != null) {
                 vdcgroup = this.getVdcGroup();
+                vdcgroup.setDefaultDisplayNumber(vdcgroup.getDefaultDisplayNumber());
             } else {
                 vdcgroup = new VDCGroup();
                 vdcGroupService.create(vdcgroup);
                 this.setVdcGroup(vdcgroup);
                 vdcgroup.setDisplayOrder(vdcGroupService.getNextInOrder());
+                vdcgroup.setDefaultDisplayNumber(getVDCRequestBean().getVdcNetwork().getDefaultDisplayNumber());
             }
            vdcgroup.setName(this.getName());
            vdcgroup.setDescription(this.getDescription());

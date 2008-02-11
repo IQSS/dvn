@@ -955,4 +955,4 @@ create index variablerange_id_index on  variablerange (id);
 create index study_id_index on study(id);
 create index weightedvarrelationship_id_index on  weightedvarrelationship (weighted_variable_id,variable_id);
 
-insert into dvnversion( id, buildnumber,versionnumber) values (1,15,1);
+insert into dvnversion( id, buildnumber,versionnumber) values (1,1,1);

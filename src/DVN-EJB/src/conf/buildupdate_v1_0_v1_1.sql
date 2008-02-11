@@ -35,3 +35,4 @@ update vdcnetwork set downloadtermsofuseenabled=false;
 update vdcnetwork set defaultdisplaynumber=16;
 update vdcuser set agreedtermsofuse=false;
 
+update dvnversion set versionnumber=1, buildnumber=1;

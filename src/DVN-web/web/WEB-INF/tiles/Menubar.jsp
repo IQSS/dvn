@@ -71,7 +71,7 @@
                       </h:outputLink>  
                     </li>
                 </ul>      
-                <ui:panelLayout styleClass="dvn_navUserName" rendered="#{(!VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)) or  (!VDCRequest.logoutPage and VDCSession.ipUserGroup.friendlyName != null)}">
+                <ui:panelLayout styleClass="dvn_navUserName" rendered="#{(!VDCRequest.logoutPage and VDCSession.loginBean.user.firstName != null) or  (!VDCRequest.logoutPage and VDCSession.ipUserGroup.friendlyName != null)}">
                     <ui:panelLayout rendered="#{!VDCRequest.logoutPage and VDCSession.loginBean.user.firstName != null}">
                         <h:outputLink styleClass="dvn_navNetworkName" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.jsp?userId=#{VDCSession.loginBean.user.id}" title="Edit Account Information">
                             <h:outputText value="#{VDCSession.loginBean.user.firstName} #{VDCSession.loginBean.user.lastName}"/>

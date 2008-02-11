@@ -25,10 +25,10 @@
                         <div class="requestTimelinePoint" style="left: 474px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Name Dataverse</strong></div>
                         <div class="requestTimelinePoint" style="left: 709px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
               </ui:panelLayout>
-              <ui:panelLayout rendered="#{LoginWorkflowBean.contributorWorkflow}" styleClass="requestTimeline" style="background-position: 0 0;">
-                        <div class="requestTimelinePoint" style="left: 53px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Create Account</strong></div>
+              <ui:panelLayout rendered="#{LoginWorkflowBean.contributorWorkflow}" styleClass="requestTimeline" style="background-position: 98px 0;">
+                        <div class="requestTimelinePoint" style="left: 151px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Create Account</strong></div>
                         <div class="requestTimelinePoint" style="left: 372px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Terms of Use</strong></div>
-                        <div class="requestTimelinePoint" style="left: 709px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
+                        <div class="requestTimelinePoint" style="left: 598px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
               </ui:panelLayout>
               <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
                   

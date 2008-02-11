@@ -14,8 +14,14 @@
         	<div class="requestContentTitle">Become a Contributor</div>
         	<div class="requestContentDescRight">Become a contributor to upload your data sets to a dataverse. Archiving with the dataverse extends the useful life of data, preserving it in perpetuity against the failure of computers systems and the obsolescence of data formats.</div>
         </div>
+        
+        <div style="margin-bottom:12px; background-image:none; background-color:#ccc;" class="requestTimeline">
+            <div style="left:187px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
+            <div style="left:401px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
+            <div style="left:615px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
+        </div>
 
-        <div><div class="requestIntroSteps dvn_margin12 dvn_overflow">
+        <div><div class="requestIntroStepsContributor dvn_margin12 dvn_overflow">
         	<div class="requestIntroStepCard" style="margin-right: 24px; background: #f4ebc7 url(/dvn/resources/request-intro-rndtop1.png) no-repeat;">
                     <h3>Create<br/>Account</h3>
                     <p>Register with our network, by creating an account...</p>
@@ -31,10 +37,10 @@
                      <h:outputText value="&#160;" escape="false"/>
                     </div>
 		</div>
-                <div class="requestIntroStepCard contributorSuccess" style="background: #f4ebc7 url(/dvn/resources/request-intro-rndtop4contr.png) no-repeat;">
+                <div class="requestIntroStepCard" style="background: #f4ebc7 url(/dvn/resources/request-intro-rndtop4.png) no-repeat;">
                     <h3 style="line-height:1.85;">Success!</h3>
                     <p>You have access to upload your studies and data sets to the dataverse.</p>
-                    <div class="stepCardBtm" style="width: 402px; background: url(/dvn/resources/request-intro-rndbtm-b.png) no-repeat;">
+                    <div class="stepCardBtm" style="width: 402px; background: url(/dvn/resources/request-intro-rndbtm.png) no-repeat;">
                      <h:outputText value="&#160;" escape="false"/>
                     </div>
 		</div>

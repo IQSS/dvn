@@ -246,7 +246,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         createStdyInfo(xmlw, study);
         createMethod(xmlw, study);
         createDataAccs(xmlw, study);
-        createOtherStdyMat(xmlw,study);
+        createOthrStdyMat(xmlw,study);
         createNotes(xmlw,study);
         xmlw.writeEndElement(); // stdyDscr
     }
@@ -879,44 +879,44 @@ public class DDIServiceBean implements DDIServiceLocal {
         if (dataAccsAdded) xmlw.writeEndElement(); // dataAccs
     }
 
-    private void createOtherStdyMat(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
-        boolean otherStdyMatAdded = false;
+    private void createOthrStdyMat(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        boolean othrStdyMatAdded = false;
 
         // add replication for as a related material
         if (!StringUtil.isEmpty( study.getReplicationFor() )) {
-            otherStdyMatAdded = checkParentElement(xmlw, "otherStdyMat", otherStdyMatAdded);
+            othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
             xmlw.writeStartElement("relMat");
             xmlw.writeAttribute( "type", "replicationFor" );
             xmlw.writeCharacters( study.getReplicationFor() );
             xmlw.writeEndElement(); // relMat
         }
         for (StudyRelMaterial rm : study.getStudyRelMaterials()) {
-            otherStdyMatAdded = checkParentElement(xmlw, "otherStdyMat", otherStdyMatAdded);
+            othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
             xmlw.writeStartElement("relMat");
             xmlw.writeCharacters( rm.getText() );
             xmlw.writeEndElement(); // relMat
         }
         for (StudyRelStudy rs : study.getStudyRelStudies()) {
-            otherStdyMatAdded = checkParentElement(xmlw, "otherStdyMat", otherStdyMatAdded);
+            othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
             xmlw.writeStartElement("relStdy");
             xmlw.writeCharacters( rs.getText() );
             xmlw.writeEndElement(); // relStdy
         }
         for (StudyRelPublication rp : study.getStudyRelPublications()) {
-            otherStdyMatAdded = checkParentElement(xmlw, "otherStdyMat", otherStdyMatAdded);
+            othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
             xmlw.writeStartElement("relPub");
             xmlw.writeCharacters( rp.getText() );
             xmlw.writeEndElement(); // relPub
         }
         for (StudyOtherRef or : study.getStudyOtherRefs()) {
-            otherStdyMatAdded = checkParentElement(xmlw, "otherStdyMat", otherStdyMatAdded);
+            othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
             xmlw.writeStartElement("otherRefs");
             xmlw.writeCharacters( or.getText() );
             xmlw.writeEndElement(); // otherRefs
         }
 
 
-        if (otherStdyMatAdded) xmlw.writeEndElement(); // otherStdyMat
+        if (othrStdyMatAdded) xmlw.writeEndElement(); // othrStdyMat
     }
 
     private void createNotes(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
@@ -1759,9 +1759,9 @@ public class DDIServiceBean implements DDIServiceLocal {
                     dist.setUrl(  distDetails.get("url") );
                     dist.setLogo(  distDetails.get("logo") );               
                 } else if (xmlr.getLocalName().equals("contact")) {
-                    study.setDistributorContact( xmlr.getElementText() );
                     study.setDistributorContactEmail( xmlr.getAttributeValue(null, "email") );
                     study.setDistributorContactAffiliation( xmlr.getAttributeValue(null, "affiliation") );
+                    study.setDistributorContact( xmlr.getElementText() );
                 } else if (xmlr.getLocalName().equals("depositr")) {
                     Map<String,String> depDetails = parseCompoundText(xmlr, "depositr");
                     study.setDepositor( depDetails.get("name") );
@@ -1795,8 +1795,8 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("version")) {
-                    study.setStudyVersion( xmlr.getElementText() );
                     study.setVersionDate( xmlr.getAttributeValue(null, "date") );
+                    study.setStudyVersion( xmlr.getElementText() );
                 } else if (xmlr.getLocalName().equals("notes")) { processNotes(xmlr, study); }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("verStmt")) return;
@@ -2649,7 +2649,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         
         Map idMap = new HashMap();
         if ( !StringUtil.isEmpty( dummyStudy.getStudyId() ) ) idMap.put( "globalId", dummyStudy.getGlobalId() );
-        if ( dummyStudy.getStudyOtherIds().size() > 0 ) idMap.put( "otherId", dummyStudy.getStudyOtherIds().get(0) );
+        if ( dummyStudy.getStudyOtherIds().size() > 0 ) idMap.put( "otherId", dummyStudy.getStudyOtherIds().get(0).getOtherId() );
         return idMap;
     }
 

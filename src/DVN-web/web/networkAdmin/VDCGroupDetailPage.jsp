@@ -33,7 +33,7 @@
                         <h:panelGroup layout="block">
                                 <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                                     <h:outputText  styleClass="vdcHelpText" value="Each dataverse group will display up to this number of its dataverses on the network home page. Move next and previous with links
-                                    at the bottom of each listed dataverse group."/>
+                                    at the bottom of each listed dataverse group. To balance the four- column display on the network home page, this number should be divisible by four (4)."/>
                         </h:panelGroup>
                         <br />
                         <br />

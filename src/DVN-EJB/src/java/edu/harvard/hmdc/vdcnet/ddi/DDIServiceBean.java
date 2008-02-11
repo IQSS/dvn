@@ -682,7 +682,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("ConOps");
-            xmlw.writeCharacters( study.getActionsToMinimizeLoss() );
+            xmlw.writeCharacters( study.getControlOperations() );
             xmlw.writeEndElement(); // ConOps
         }
         

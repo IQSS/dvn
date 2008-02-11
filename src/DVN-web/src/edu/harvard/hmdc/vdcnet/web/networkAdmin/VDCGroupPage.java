@@ -44,6 +44,8 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
@@ -72,6 +74,7 @@ public class VDCGroupPage extends VDCBaseBean {
     private List      editList;
     private VDCGroup  vdcGroup;
     private Long      defaultDisplayNumber;
+    private Long      _DISPLAY_COLUMNS = new Long("4");
     private String    description;
     private String    name;
 
@@ -432,6 +435,27 @@ public class VDCGroupPage extends VDCBaseBean {
             this.setDescription(newValue);
     }
     
+    //VALIDATORS
+    
+    /** validateDivisible
+     * 
+     *  validates whether the number is divisible by the specified column
+     * number. Note column number is a constant in this class.
+     *  
+     * @author Wendy Bossons
+     */
+    
+    public void validateDivisible(FacesContext context, 
+                          UIComponent toValidate,
+                          Object value) {
+        Long longValue = (Long) value;
+        if (longValue % _DISPLAY_COLUMNS != 0) {
+             ((UIInput)toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("The number of dataverses to display must be divisible by 4.");
+            context.addMessage(toValidate.getClientId(context), message);
+            context.renderResponse();
+        }
+    }
     
     /** commonly used iteration
      * (by change listeners)

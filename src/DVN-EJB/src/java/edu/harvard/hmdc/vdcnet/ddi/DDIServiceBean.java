@@ -463,7 +463,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         boolean sumDscrAdded = false;
         if (!StringUtil.isEmpty( study.getTimePeriodCoveredStart() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
-            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("timePrd");
             xmlw.writeAttribute( "event", EVENT_START );
             writeDateAttribute( xmlw, study.getTimePeriodCoveredStart() );
@@ -472,7 +472,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
         if (!StringUtil.isEmpty( study.getTimePeriodCoveredEnd() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
-            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("timePrd");
             xmlw.writeAttribute( "event", EVENT_END );
             writeDateAttribute( xmlw, study.getTimePeriodCoveredEnd() );
@@ -481,7 +481,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
         if (!StringUtil.isEmpty( study.getDateOfCollectionStart() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
-            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("collDate");
             xmlw.writeAttribute( "event", EVENT_START );
             writeDateAttribute( xmlw, study.getDateOfCollectionEnd() );
@@ -490,7 +490,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
         if (!StringUtil.isEmpty( study.getDateOfCollectionEnd() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
-            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("collDate");
             xmlw.writeAttribute( "event", EVENT_END );
             writeDateAttribute( xmlw, study.getDateOfCollectionEnd() );
@@ -499,21 +499,21 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
         if (!StringUtil.isEmpty( study.getCountry() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
-            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("nation");
             xmlw.writeCharacters( study.getCountry() );
             xmlw.writeEndElement(); // nation
         }
         if (!StringUtil.isEmpty( study.getGeographicCoverage() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
-            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("geogCover");
             xmlw.writeCharacters( study.getGeographicCoverage() );
             xmlw.writeEndElement(); // geogCover
         }
         if (!StringUtil.isEmpty( study.getGeographicUnit() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
-            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("geogUnit");
             xmlw.writeCharacters( study.getGeographicCoverage() );
             xmlw.writeEndElement(); // geogUnit
@@ -521,7 +521,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         // we store geoboundings as list but there is only one
         if (study.getStudyGeoBoundings() != null && study.getStudyGeoBoundings().size() != 0) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
-            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             StudyGeoBounding gbb = study.getStudyGeoBoundings().get(0);
             xmlw.writeStartElement("geoBndBox");
             xmlw.writeStartElement("westBL");
@@ -541,7 +541,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         
         if (!StringUtil.isEmpty( study.getUnitOfAnalysis() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
-            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("anlyUnit");
             xmlw.writeCharacters( study.getUnitOfAnalysis() );
             xmlw.writeEndElement(); // anlyUnit
@@ -549,7 +549,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         
         if (!StringUtil.isEmpty( study.getUniverse() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
-            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("universe");
             xmlw.writeCharacters( study.getUniverse() );
             xmlw.writeEndElement(); // universe
@@ -557,7 +557,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         
         if (!StringUtil.isEmpty( study.getKindOfData() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
-            sumDscrAdded = checkParentElement(xmlw, "sunDscr", sumDscrAdded);
+            sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("dataKind");
             xmlw.writeCharacters( study.getKindOfData() );
             xmlw.writeEndElement(); // dataKind
@@ -1832,7 +1832,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                     kw.setVocab( xmlr.getAttributeValue(null, "vocab") );
                     kw.setVocabURI( xmlr.getAttributeValue(null, "vocabURI") );
                     kw.setValue( xmlr.getElementText());
-                } else if (xmlr.getLocalName().equals("topcClass")) {
+                } else if (xmlr.getLocalName().equals("topcClas")) {
                     StudyTopicClass tc = new StudyTopicClass();
                     study.getStudyTopicClasses().add(tc);
                     tc.setStudy(study);

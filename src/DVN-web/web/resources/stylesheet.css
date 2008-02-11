@@ -1268,6 +1268,7 @@ a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink
 .dvn_createDvRequest .requestHeader span {color: #ccc; font-size: 100% !important;}
 .dvn_createDvRequest .requestContentDescRight {float: left; width: 470px; padding: 0 10px 6px 10px; border-left: 1px solid #ccc; color: #555; text-transform: none;}
 .dvn_createDvRequest .requestIntroSteps {margin-top: 30px; margin-left: auto; margin-right: auto; width: 828px;}
+.dvn_createDvRequest .requestIntroStepsContributor {margin-top: 30px; margin-left: auto; margin-right: auto; width: 615px;}
 .dvn_createDvRequest .requestIntroStepCard {position: relative; width: 189px; height: 170px; float: left; text-align: left;}
 .dvn_createDvRequest .requestIntroStepCard h3 {margin: 1em 0 1.25em 3.25em; font-size: 160%; font-weight: normal; color: #c55b28; text-transform: uppercase;}
 .dvn_createDvRequest .requestIntroStepCard p {margin: 1em; font-size: 124% !important; font-weight: bold;}
@@ -1276,7 +1277,7 @@ a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink
 #requestIntroCont {width: 828px; margin: 0 auto; text-align: right;}
 #requestIntroCont .requestIntroContLink {padding-right: 28px; background: url(start-arrows.gif) 100% 52% no-repeat; color: #c55b28; font-size: 160% !important; text-transform: uppercase;}
 #requestIntroCont .requestIntroContLinkNote {font-size: 90% !important; line-height: 224% !important;}
-.dvn_createDvRequest .requestTimeline {position: relative; margin: 20px auto 60px auto; width: 828px; height: 4px; background: #ccc url(fourpoint-timeline.gif);}
+.dvn_createDvRequest .requestTimeline {position: relative; margin: 20px auto 60px auto; width: 828px; height: 4px; background: #035899 url(fourpoint-timeline.gif) no-repeat;}
 .dvn_createDvRequest .requestTimelinePoint {position: absolute; top: -6px; text-align: center;}
 .dvn_createDvRequest .requestTimelinePoint strong {color: #ccc; font-weight: normal; line-height: 3.5;}
 .dvn_createDvRequest .requestContent {margin: 30px auto; width: 828px; border-top: 1px solid #ccc;}
@@ -1285,7 +1286,7 @@ a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink
 .dvn_createDvRequest .requestContentFormRight span.reqContentActionTitle {color: #555; font-weight: bold;}
 .dvn_createDvRequest .requestContentFormRight span.agreeCheckbox {padding: 0;}
 .dvn_createDvRequest .requestContinueLink {padding: 2em 0 0 0; text-align: center;}
-.dvn_createDvRequest #requestDataverseTerms {padding: 4px; width: 450px; height: 300px; border: 1px solid #035899; overflow: scroll;}
+#requestDataverseTerms {padding: 4px; width: 450px; height: 300px; border: 1px solid #035899; overflow: scroll;}
 .dvn_createDvRequest .requestContentSucess a {color: #c55b28; font-weight: bold;}
 .dvn_createDvRequest .requestContentSucess ul {margin-left: 1.5em; list-style: disc;}
 .dvn_createDvRequest .requestContentSucessH4 h4 {margin: 0; padding: 0; color: #c55b28;}

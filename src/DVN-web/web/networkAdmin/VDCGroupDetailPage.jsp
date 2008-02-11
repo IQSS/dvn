@@ -43,7 +43,15 @@
                         <h:panelGroup layout="block">
                             <h:outputLabel value="2)  Add/Edit a Dataverse group."/>
                         </h:panelGroup>
-                        <h:dataTable rendered="#{VDCGroupPage.VDCGroups != null}" id="VDCGroups" value="#{VDCGroupPage.VDCGroups}" var="item" cellspacing="0" styleClass="dvGroupAdminTable" headerClass="groupAdminHeader" columnClasses="groupAdminOrderColumn, groupAdminNameColumn, groupAdminDescriptionColumn, groupAdminDeleteColumn" rowClasses="whiteRow, shadedRow">
+                        <h:dataTable rendered="#{VDCGroupPage.VDCGroups != null}" 
+                            id="VDCGroups" 
+                            value="#{VDCGroupPage.VDCGroups}" 
+                            var="item" 
+                            cellspacing="0" 
+                            styleClass="dvGroupAdminTable" 
+                            headerClass="groupAdminHeader" 
+                            columnClasses="groupAdminOrderColumn, groupAdminNameColumn, groupAdminDescriptionColumn, groupAdminDeleteColumn" 
+                            rowClasses="whiteRow, shadedRow">
                             
                             <h:column headerClass="groupAdminHeader">
                                 <f:facet name="header">
@@ -68,7 +76,15 @@
                                 <f:facet name="header">
                                     <h:outputText value="Display Number"/>
                                 </f:facet>
-                                <h:inputText size="4" maxlength="2" value="#{item.defaultDisplayNumber}"/>
+                                <h:inputText 
+                                id="groupDisplayNumber"
+                                required="true" 
+                                requiredMessage="This field is required." 
+                                size="4" 
+                                maxlength="2" 
+                                value="#{item.defaultDisplayNumber}"
+                                validator="#{VDCGroupPage.validateDivisible}"/>
+                                <h:message for="groupDisplayNumber" styleClass="errorMessage"/>
                             </h:column>
                             <h:column>
                                 <f:facet name="header">

@@ -228,29 +228,27 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeCharacters( vdcNetworkService.find().getName() + " Dataverse Network" );
         xmlw.writeEndElement(); // distrbtr
 
-        xmlw.writeStartElement("distDate");
         String lastUpdateString = new SimpleDateFormat("yyyy-MM-dd").format(study.getLastUpdateTime());
         createDateElement( xmlw, "distDate", lastUpdateString );
-
-        xmlw.writeEndElement(); // distStmt
 
         // holdings
         xmlw.writeEmptyElement("holdings");
         xmlw.writeAttribute( "uri", "http://" + PropertyUtil.getHostUrl() + "/dvn/study?globalId=" + study.getGlobalId() );
+        xmlw.writeEndElement(); // holdinga
 
         xmlw.writeEndElement(); // citation
         xmlw.writeEndElement(); // docDscr
     }
 
     private void createStdyDscr(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
-        xmlw.writeStartElement("stdyDesc");
+        xmlw.writeStartElement("stdyDscr");
         createCitation(xmlw, study);
         createStdyInfo(xmlw, study);
         createMethod(xmlw, study);
         createDataAccs(xmlw, study);
         createOtherStdyMat(xmlw,study);
         createNotes(xmlw,study);
-        xmlw.writeEndElement(); // stdyDesc
+        xmlw.writeEndElement(); // stdyDscr
     }
 
     private void createCitation(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
@@ -923,7 +921,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     private void createNotes(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
         for (StudyNote note : study.getStudyNotes()) {
-            xmlw.writeStartElement("othenotesrRefs");
+            xmlw.writeStartElement("notes");
             xmlw.writeAttribute( "type", note.getType() );
             xmlw.writeAttribute( "subject", note.getSubject() );
             xmlw.writeCharacters( note.getText() );
@@ -1074,6 +1072,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         if (dv.getFileEndPosition() != null) xmlw.writeAttribute( "EndPos", dv.getFileEndPosition().toString() );
         if (dv.getRecordSegmentNumber() != null) xmlw.writeAttribute( "width", dv.getRecordSegmentNumber().toString());
         xmlw.writeAttribute( "fileId", "f" + dv.getDataTable().getStudyFile().getId().toString() );
+        xmlw.writeEndElement(); // location
 
         // labl
         if (!StringUtil.isEmpty( dv.getLabel() )) {
@@ -1091,6 +1090,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                     invalrngAdded = checkParentElement(xmlw, "invalrng", invalrngAdded);
                     xmlw.writeEmptyElement("item");
                     xmlw.writeAttribute( "VALUE", range.getBeginValue() );
+                    xmlw.writeEndElement(); // item
                 }
             } else {
                 invalrngAdded = checkParentElement(xmlw, "invalrng", invalrngAdded);
@@ -1109,6 +1109,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                         xmlw.writeAttribute( "maxExclusive", range.getEndValue() );
                     }
                 }
+                xmlw.writeEndElement(); // range
             }
         }
         if (invalrngAdded) xmlw.writeEndElement(); // invalrng
@@ -1169,6 +1170,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeAttribute( "type", dv.getVariableFormatType().getName() );
         xmlw.writeAttribute( "formatname", dv.getFormatSchemaName() );
         xmlw.writeAttribute( "schema", dv.getFormatSchema() );
+        xmlw.writeEndElement(); // varFormat
 
         // notes
         xmlw.writeStartElement("notes");

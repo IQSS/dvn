@@ -662,6 +662,9 @@ public class AnalysisPage extends VDCBaseBean {
         String newVarName = (String)rwi.get(0);
         String newVarLabel= (String)rwi.get(1);
         String newVarId   = (String)rwi.get(2);
+        // add newVarId to newVarName 
+        mpl.put("v"+newVarId, Arrays.asList(newVarName));
+        out.println("Id-Name: "+newVarId+"=>"+newVarName);
         // add new varName
         vns.add(newVarName);
         mpl.put("ud_" + newVarName + "_q_lebaLrav", Arrays.asList(newVarLabel));

@@ -40,7 +40,7 @@ import javax.persistence.*;
  */
 
 @Entity
-public class PageDef {
+public class PageDef implements java.io.Serializable  {
     
     /** Creates a new instance of LoginDomain */
     public PageDef() {

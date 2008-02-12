@@ -17,7 +17,7 @@ import javax.ejb.Local;
  * @author Ellen Kraffmiller
  */
 @Local
-public interface OAISetServiceLocal {
+public interface OAISetServiceLocal extends java.io.Serializable  {
    public OAISet findBySpec(String spec);   
    public void remove(Long id);
    public List findAll();

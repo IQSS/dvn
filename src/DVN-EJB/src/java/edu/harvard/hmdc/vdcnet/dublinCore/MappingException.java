@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.dublinCore;
  *
  * @author Ellen Kraffmiller
  */
-public class MappingException extends RuntimeException {
+public class MappingException extends RuntimeException implements java.io.Serializable {
     
     /** Creates a new instance of MappingException */
     public MappingException(String msg) {

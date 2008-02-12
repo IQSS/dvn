@@ -35,7 +35,7 @@ import javax.xml.bind.JAXBException;
  * This is the business interface for DDI20Service enterprise bean.
  */
 @Local
-public interface MarcServiceLocal extends StudyExporter  {
+public interface MarcServiceLocal extends StudyExporter, java.io.Serializable  {
   
   
     void exportStudy(Study study, OutputStream out) throws IOException, JAXBException;

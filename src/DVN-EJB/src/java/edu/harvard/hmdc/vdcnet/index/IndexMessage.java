@@ -53,7 +53,7 @@ import javax.jms.ObjectMessage;
     @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),
     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
 })
-public class IndexMessage implements MessageListener {
+public class IndexMessage implements MessageListener, java.io.Serializable {
     @EJB StudyServiceLocal studyService;
 //    @EJB VDCServiceLocal vdcService;
     @EJB MailServiceLocal mailService;

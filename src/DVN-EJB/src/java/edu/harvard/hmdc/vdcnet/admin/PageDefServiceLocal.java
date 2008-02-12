@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.admin;
  *
  * @author Ellen Kraffmiller
  */
-public interface PageDefServiceLocal {
+public interface PageDefServiceLocal extends java.io.Serializable  {
     public static final String EDIT_STUDY_PAGE = "EditStudyPage";
     public static final String ADD_SITE_PAGE = "AddSitePage";
     public static final String VIEW_STUDY_PAGE = "StudyPage";

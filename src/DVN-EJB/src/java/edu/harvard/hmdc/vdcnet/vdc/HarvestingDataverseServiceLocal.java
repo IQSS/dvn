@@ -29,7 +29,7 @@ import javax.ejb.Local;
  * This is the business interface for HarvestDataverseService enterprise bean.
  */
 @Local
-public interface HarvestingDataverseServiceLocal {
+public interface HarvestingDataverseServiceLocal extends java.io.Serializable  {
      
     public List findAll();
     public HarvestingDataverse find(Long id);

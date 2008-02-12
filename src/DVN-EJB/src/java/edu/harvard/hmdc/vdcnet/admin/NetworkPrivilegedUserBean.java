@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.admin;
  *
  * @author Ellen Kraffmiller
  */
-public class NetworkPrivilegedUserBean {
+public class NetworkPrivilegedUserBean implements java.io.Serializable  {
     
     /** Creates a new instance of NetworkPrivilegedUserBean */
     public NetworkPrivilegedUserBean(VDCUser user, Long networkRoleId) {

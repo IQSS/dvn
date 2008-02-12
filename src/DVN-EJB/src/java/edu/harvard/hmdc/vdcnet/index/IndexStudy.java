@@ -13,7 +13,7 @@ package edu.harvard.hmdc.vdcnet.index;
  *
  * @author roberttreacy
  */
-public class IndexStudy {
+public class IndexStudy  implements java.io.Serializable  {
     private long studyId;
 
     public long getStudyId() {

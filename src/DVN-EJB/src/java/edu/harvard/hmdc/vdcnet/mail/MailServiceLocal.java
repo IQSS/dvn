@@ -30,7 +30,7 @@ import javax.ejb.Local;
  * This is the business interface for Mailer enterprise bean.
  */
 @Local
-public interface MailServiceLocal {
+public interface MailServiceLocal  extends java.io.Serializable  {
     public void sendMail(String host, String from, String to, String subject, String messageTest);
 
     public void sendMail( String from, String to, String subject, String messageTest);

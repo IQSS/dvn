@@ -40,7 +40,7 @@ import javax.persistence.*;
  */
 
 @Entity
-public class LoginAffiliate {
+public class LoginAffiliate  implements java.io.Serializable  {
     
     /** Creates a new instance of LoginDomain */
     public LoginAffiliate() {

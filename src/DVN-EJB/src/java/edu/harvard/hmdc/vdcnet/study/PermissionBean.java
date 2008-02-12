@@ -36,7 +36,7 @@ import edu.harvard.hmdc.vdcnet.admin.VDCUser;
  *
  * @author Ellen Kraffmiller
  */
-public class PermissionBean {
+public class PermissionBean  implements java.io.Serializable {
     
     /** Creates a new instance of PermissionBean */
     public PermissionBean() {

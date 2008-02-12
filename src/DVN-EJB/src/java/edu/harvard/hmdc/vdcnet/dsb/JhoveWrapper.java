@@ -12,7 +12,7 @@ import static java.lang.System.*;
  * @author Akio Sone
  *
  */
-public class JhoveWrapper {
+public class JhoveWrapper implements java.io.Serializable  {
 
 
     /** 

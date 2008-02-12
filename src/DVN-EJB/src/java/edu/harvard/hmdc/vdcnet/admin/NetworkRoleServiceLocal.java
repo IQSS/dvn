@@ -37,7 +37,7 @@ import javax.ejb.Local;
  * @author roberttreacy
  */
 @Local
-public interface NetworkRoleServiceLocal {
+public interface NetworkRoleServiceLocal extends java.io.Serializable  {
     public static final String CREATOR = "Creator";
     public static final String ADMIN = "Admin";
    

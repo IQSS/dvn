@@ -30,7 +30,7 @@ import javax.ejb.Local;
  * This is the business interface for IndexServer enterprise bean.
  */
 @Local
-public interface IndexServiceLocal {
+public interface IndexServiceLocal extends java.io.Serializable {
     public void indexStudy(long studyId);
 
     public List search(String query);

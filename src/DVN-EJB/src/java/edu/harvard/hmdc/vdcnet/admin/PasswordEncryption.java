@@ -39,7 +39,7 @@ import org.apache.commons.codec.binary.Base64;
  *
  * @author Ellen Kraffmiller
  */
-public final class PasswordEncryption
+public final class PasswordEncryption  implements java.io.Serializable 
 {
   private static PasswordEncryption instance;
 

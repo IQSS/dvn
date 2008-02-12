@@ -91,7 +91,7 @@ import org.apache.lucene.document.Field;
  *
  * @author roberttreacy
  */
-public class Indexer {
+public class Indexer implements java.io.Serializable  {
     
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.index.Indexer");
     private static IndexWriter writer;

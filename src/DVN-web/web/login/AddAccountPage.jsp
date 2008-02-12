@@ -33,7 +33,9 @@
               <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
                   
                   <ui:panelLayout rendered="#{LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow}" styleClass="requestContentDescLeft">
-                      <p>Please create an account to join our network.</p>
+                      <p>Please create an account to join the
+                          <h:outputText value="#{VDCRequest.vdcNetwork.name}" />
+                      Dataverse Network.</p>
                   </ui:panelLayout>
                   
                   <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContentDescRight' : 'empty'}">

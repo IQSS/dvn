@@ -44,7 +44,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class VDCUser {
+public class VDCUser implements java.io.Serializable  {
 
     @OneToMany(mappedBy = "user", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private List<StudyLock> studyLocks;

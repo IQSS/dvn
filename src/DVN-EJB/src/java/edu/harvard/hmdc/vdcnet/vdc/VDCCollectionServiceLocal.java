@@ -38,7 +38,7 @@ import javax.ejb.Local;
  * @author roberttreacy
  */
 @Local
-public interface VDCCollectionServiceLocal {
+public interface VDCCollectionServiceLocal extends java.io.Serializable  {
     void create(VDCCollection vDCCollection);
 
     void edit(VDCCollection vDCCollection);

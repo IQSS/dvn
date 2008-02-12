@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author roberttreacy
  */
 @Local
-public interface VDCServiceLocal {
+public interface VDCServiceLocal extends java.io.Serializable  {
     public void create(VDC vDC);
     
     public void create(Long userId, String name, String alias);

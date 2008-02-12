@@ -37,7 +37,7 @@ import javax.ejb.Local;
  * @author roberttreacy
  */
 @Local
-public interface VDCNetworkServiceLocal {
+public interface VDCNetworkServiceLocal extends java.io.Serializable  {
     void create(VDCNetwork vDCNetwork);
 
     void edit(VDCNetwork vDCNetwork);

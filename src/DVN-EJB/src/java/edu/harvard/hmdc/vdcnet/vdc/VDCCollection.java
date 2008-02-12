@@ -47,7 +47,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class VDCCollection {
+public class VDCCollection implements java.io.Serializable  {
     private String name;
     private String shortDesc;
     private String longDesc;

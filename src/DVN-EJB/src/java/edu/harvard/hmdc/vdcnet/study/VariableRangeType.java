@@ -40,7 +40,7 @@ import javax.persistence.SequenceGenerator;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class VariableRangeType {
+public class VariableRangeType implements java.io.Serializable {
     
     /**
      * Creates a new instance of VariableIntervalType

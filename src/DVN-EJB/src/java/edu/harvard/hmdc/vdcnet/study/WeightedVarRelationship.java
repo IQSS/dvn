@@ -42,7 +42,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @IdClass(WeightedVarRelationshipId.class)
-public class WeightedVarRelationship {
+public class WeightedVarRelationship  implements java.io.Serializable {
     @Column(name="variable_id", insertable=false, updatable=false)
     @Id private Long variableId;
     

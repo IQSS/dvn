@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author wbossons
  */
-public class WebStatisticsSupport {
+public class WebStatisticsSupport implements java.io.Serializable  {
     
     /** Creates a new instance of WebStatisticsSupport */
     public WebStatisticsSupport() {

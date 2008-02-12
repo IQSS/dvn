@@ -36,7 +36,7 @@ import javax.ejb.Local;
  * @author wbossons
  */
 @Local
-public interface VDCGroupServiceLocal {
+public interface VDCGroupServiceLocal extends java.io.Serializable  {
     
     public VDCGroup findById(Long id);
     

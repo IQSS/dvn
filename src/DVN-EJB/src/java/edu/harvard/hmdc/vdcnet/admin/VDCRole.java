@@ -40,7 +40,7 @@ import javax.persistence.SequenceGenerator;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class VDCRole {
+public class VDCRole implements java.io.Serializable  {
       /**
      * Holds value of property id.
      */

@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.vdc;
  *
  * @author Ellen Kraffmiller
  */
-public class VDCGroupRelationshipId {
+public class VDCGroupRelationshipId implements java.io.Serializable  {
     
     /** Creates a new instance of VDCCollRelationshipId */
     public VDCGroupRelationshipId() {

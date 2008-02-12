@@ -41,7 +41,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class VDCNetwork {
+public class VDCNetwork implements java.io.Serializable  {
     public static final String EXPORT_PERIOD_DAILY="daily";
     public static final String EXPORT_PERIOD_WEEKLY="weekly";
 

@@ -29,7 +29,7 @@ import javax.ejb.Local;
  * This is the business interface for VariableService enterprise bean.
  */
 @Local
-public interface VariableServiceLocal {
+public interface VariableServiceLocal extends java.io.Serializable {
     edu.harvard.hmdc.vdcnet.study.SummaryStatisticType findSummaryStatisticTypeByName(String ssName);
 
     edu.harvard.hmdc.vdcnet.study.VariableFormatType findVariableFormatTypeByName(String name);

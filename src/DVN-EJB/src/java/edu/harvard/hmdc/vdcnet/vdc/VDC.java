@@ -54,7 +54,7 @@ import javax.persistence.*;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("Basic")
-public class VDC {
+public class VDC implements java.io.Serializable  {
     private String name;
     private String description;
     private String visibility;

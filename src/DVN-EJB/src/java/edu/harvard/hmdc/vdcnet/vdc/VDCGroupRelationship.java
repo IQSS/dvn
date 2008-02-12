@@ -42,7 +42,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @IdClass(VDCGroupRelationshipId.class)
-public class VDCGroupRelationship {
+public class VDCGroupRelationship implements java.io.Serializable  {
     @Column(name="group_id", insertable=false, updatable=false)
     @Id private Long groupId;
     

@@ -41,7 +41,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class StudySoftware {
+public class StudySoftware  implements java.io.Serializable {
     
     /** Creates a new instance of StudySoftware */
     public StudySoftware() {

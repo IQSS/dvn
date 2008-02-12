@@ -43,7 +43,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class TemplateField {
+public class TemplateField implements java.io.Serializable {
 
 
     /**

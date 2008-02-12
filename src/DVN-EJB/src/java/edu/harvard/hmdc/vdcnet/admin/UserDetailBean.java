@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.admin;
  *
  * @author Ellen Kraffmiller
  */
-public class UserDetailBean {
+public class UserDetailBean  implements java.io.Serializable {
     
     /**
      * Creates a new instance of UserDetailBean

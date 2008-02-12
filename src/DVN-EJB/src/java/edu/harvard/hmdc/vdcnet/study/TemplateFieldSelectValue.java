@@ -41,7 +41,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class TemplateFieldSelectValue {
+public class TemplateFieldSelectValue implements java.io.Serializable {
 
     /** Creates a new instance of TemplateFieldSelectValue */
     public TemplateFieldSelectValue() {

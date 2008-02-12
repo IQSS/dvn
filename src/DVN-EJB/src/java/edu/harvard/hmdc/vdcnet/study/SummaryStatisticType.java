@@ -39,7 +39,7 @@ import javax.persistence.SequenceGenerator;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class SummaryStatisticType {
+public class SummaryStatisticType implements java.io.Serializable {
     
     /** Creates a new instance of IntervalType */
     public SummaryStatisticType() {

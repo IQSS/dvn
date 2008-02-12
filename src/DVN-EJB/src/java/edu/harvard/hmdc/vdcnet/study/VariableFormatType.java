@@ -40,7 +40,7 @@ import javax.persistence.SequenceGenerator;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class VariableFormatType {
+public class VariableFormatType implements java.io.Serializable {
     
     /** Creates a new instance of IntervalType */
     public VariableFormatType() {

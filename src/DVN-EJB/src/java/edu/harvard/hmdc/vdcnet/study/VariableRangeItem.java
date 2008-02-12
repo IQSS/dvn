@@ -42,7 +42,7 @@ import javax.persistence.SequenceGenerator;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class VariableRangeItem {
+public class VariableRangeItem implements java.io.Serializable {
     
     /** Creates a new instance of VariableRange */
     public VariableRangeItem() {

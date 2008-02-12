@@ -40,7 +40,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class TermsOfUse {
+public class TermsOfUse implements java.io.Serializable  {
  
    @Temporal(value = TemporalType.TIMESTAMP)
     private Date createTime;

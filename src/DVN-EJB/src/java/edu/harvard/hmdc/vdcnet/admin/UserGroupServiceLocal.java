@@ -27,7 +27,7 @@ import javax.ejb.Local;
  * This is the business interface for NewSession enterprise bean.
  */
 @Local
-public interface UserGroupServiceLocal {
+public interface UserGroupServiceLocal extends java.io.Serializable  {
     public UserGroup findById(Long id);
     
 }

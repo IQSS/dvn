@@ -43,7 +43,7 @@ import edu.harvard.hmdc.vdcnet.vdc.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class Template {
+public class Template implements java.io.Serializable {
     @OneToMany (mappedBy="template",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<TemplateField> templateFields;
     

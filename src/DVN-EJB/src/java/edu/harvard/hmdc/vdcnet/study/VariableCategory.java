@@ -43,7 +43,7 @@ import javax.persistence.SequenceGenerator;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class VariableCategory implements Comparable {
+public class VariableCategory implements Comparable, java.io.Serializable {
     private static AlphaNumericComparator alphaNumericComparator = new AlphaNumericComparator();
     
     /** Creates a new instance of VariableRange */

@@ -42,7 +42,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class UserGroup {
+public class UserGroup implements java.io.Serializable  {
     private String name;
     private String description;
     @OneToMany(mappedBy="userGroup", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})

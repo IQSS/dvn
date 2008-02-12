@@ -19,7 +19,7 @@ import java.util.zip.*;
  *
  */
  
-public class SubsettableFileChecker {
+public class SubsettableFileChecker implements java.io.Serializable  {
     /**
      * 
      */

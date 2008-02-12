@@ -37,7 +37,7 @@ import javax.ejb.Local;
  * @author roberttreacy
  */
 @Local
-public interface UserServiceLocal {
+public interface UserServiceLocal extends java.io.Serializable  {
    
 
     public VDCUser find(Long id);

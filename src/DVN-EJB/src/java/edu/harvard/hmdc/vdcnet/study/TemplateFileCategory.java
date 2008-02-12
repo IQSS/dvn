@@ -40,7 +40,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class TemplateFileCategory {
+public class TemplateFileCategory implements java.io.Serializable {
     
     /** Creates a new instance of TemplateFileCategory */
     public TemplateFileCategory() {

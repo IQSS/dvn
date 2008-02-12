@@ -42,7 +42,7 @@ import javax.persistence.SequenceGenerator;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class SummaryStatistic {
+public class SummaryStatistic implements java.io.Serializable {
     
     /** Creates a new instance of VariableRange */
     public SummaryStatistic() {

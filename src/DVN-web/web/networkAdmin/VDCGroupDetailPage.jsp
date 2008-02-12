@@ -31,7 +31,14 @@
                          </ui:panelGroup>
                         <h:panelGroup layout="block">
                             <h:outputLabel value="1)  Number of dataverses to display per group, per page."/>
-                            <h:inputText id="defaultDisplayNumber" immediate="true"  size="4" maxlength="2" value="#{VDCGroupPage.defaultDisplayNumber}" validator="#{VDCGroupPage.validateDivisible}"/>
+                            <h:inputText id="defaultDisplayNumber" 
+                                                        immediate="true"  
+                                                        size="4" 
+                                                        maxlength="2"
+                                                        required="true"
+                                                        requiredMessage="This field is required. Please enter the number of dataverses to display."
+                                                        value="#{VDCGroupPage.defaultDisplayNumber}" 
+                                                        validator="#{VDCGroupPage.validateDivisible}"/>
                         </h:panelGroup>
                         <h:panelGroup layout="block">
                                 <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />

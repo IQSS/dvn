@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.study;
  *
  * @author Ellen Kraffmiller
  */
-public class WeightedVarRelationshipId {
+public class WeightedVarRelationshipId implements java.io.Serializable {
     
     /**
      * Creates a new instance of WeightedVarRelationshipId

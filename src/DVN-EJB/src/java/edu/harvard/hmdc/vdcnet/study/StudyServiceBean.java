@@ -90,7 +90,7 @@ import org.xml.sax.SAXException;
  * @author Ellen Kraffmiller
  */
 @Stateless
-public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServiceLocal {
+public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServiceLocal, java.io.Serializable {
 
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     EntityManager em;

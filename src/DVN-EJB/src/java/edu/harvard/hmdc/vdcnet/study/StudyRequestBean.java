@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.study;
  *
  * @author Ellen Kraffmiller
  */
-public class StudyRequestBean {
+public class StudyRequestBean implements java.io.Serializable {
     
     /** Creates a new instance of StudyRequestBean */
     public StudyRequestBean() {

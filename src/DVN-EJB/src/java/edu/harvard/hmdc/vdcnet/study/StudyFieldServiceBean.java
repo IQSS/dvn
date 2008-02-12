@@ -39,7 +39,7 @@ import javax.persistence.PersistenceContext;
  * @author roberttreacy
  */
 @Stateless
-public class StudyFieldServiceBean implements StudyFieldServiceLocal {
+public class StudyFieldServiceBean implements StudyFieldServiceLocal, java.io.Serializable {
     
     @PersistenceContext(unitName="VDCNet-ejbPU")
     private EntityManager em;

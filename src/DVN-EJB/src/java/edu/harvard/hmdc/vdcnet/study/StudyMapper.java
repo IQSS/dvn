@@ -35,7 +35,7 @@ import org.w3c.dom.Document;
  *
  * @author Ellen Kraffmiller
  */
-public interface StudyMapper {
+public interface StudyMapper extends java.io.Serializable {
 
     public  Study importStudy(Document doc);
 

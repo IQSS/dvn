@@ -28,7 +28,7 @@ import javax.ejb.Local;
  * This is the business interface for StudyFieldService enterprise bean.
  */
 @Local
-public interface StudyFieldServiceLocal {
+public interface StudyFieldServiceLocal extends java.io.Serializable {
     public List findAll();
     public StudyField findByName(String name);
     public StudyField findById(Long id);    

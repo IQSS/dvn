@@ -17,7 +17,7 @@ import javax.ejb.Local;
  * @author Ellen Kraffmiller
  */
 @Local
-public interface StudyExporterFactoryLocal {
+public interface StudyExporterFactoryLocal  extends java.io.Serializable {
     public static final String EXPORT_FORMAT_DDI="ddi";
     public static final String EXPORT_FORMAT_DC="oai_dc";
     public static final String EXPORT_FORMAT_MARC="marc";

@@ -33,7 +33,7 @@ import javax.xml.bind.JAXBException;
  * This is the business interface for NewSession enterprise bean.
  */
 @Local
-public interface StudyServiceLocal {
+public interface StudyServiceLocal extends java.io.Serializable {
    
     /**
      * Add given Study to persistent storage.

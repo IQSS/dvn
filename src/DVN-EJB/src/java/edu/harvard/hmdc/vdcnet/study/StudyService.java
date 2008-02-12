@@ -35,7 +35,7 @@ import org.w3c.dom.Document;
  *
  * @author Ellen Kraffmiller
  */
-public class StudyService {
+public class StudyService implements java.io.Serializable {
     
     /** Creates a new instance of StudyService */
     public StudyService() {

@@ -24,7 +24,7 @@ import javax.ejb.Stateless;
  * @author Ellen Kraffmiller
  */
 @Stateless
-public class StudyExporterFactoryBean implements StudyExporterFactoryLocal {
+public class StudyExporterFactoryBean implements StudyExporterFactoryLocal, java.io.Serializable {
     @EJB DDIServiceLocal testDDIService;
     @EJB DDI20ServiceLocal ddiService;
     @EJB DCServiceLocal dcService;

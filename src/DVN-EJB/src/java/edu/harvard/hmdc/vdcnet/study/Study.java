@@ -65,7 +65,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"authority,protocol,studyId"}))
-public class Study {
+public class Study implements java.io.Serializable {
 
     @OneToOne(mappedBy = "study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private StudyDownload studyDownload;    

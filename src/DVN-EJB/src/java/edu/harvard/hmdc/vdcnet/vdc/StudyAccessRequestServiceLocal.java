@@ -38,7 +38,7 @@ import javax.ejb.Local;
  */
 @Local
 
-public interface StudyAccessRequestServiceLocal {
+public interface StudyAccessRequestServiceLocal extends java.io.Serializable  {
   
     public StudyAccessRequest findByUserStudy(Long userId, Long studyId);
 

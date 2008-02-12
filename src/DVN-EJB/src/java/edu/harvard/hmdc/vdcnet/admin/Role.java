@@ -35,7 +35,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class Role {
+public class Role implements java.io.Serializable  {
     private String name;
     private String description;
     

@@ -26,7 +26,7 @@ import java.net.UnknownHostException;
  *
  * @author Ellen Kraffmiller
  */
-public class PropertyUtil {
+public class PropertyUtil implements java.io.Serializable  {
     public static String getHostUrl() {
             String hostUrl = System.getProperty("dvn.inetAddress");
             if (hostUrl==null) {

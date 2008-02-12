@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.index;
  *
  * @author roberttreacy
  */
-public class SearchTerm {
+public class SearchTerm implements java.io.Serializable  {
     
     /** Creates a new instance of SearchTerm */
     public SearchTerm() {

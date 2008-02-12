@@ -35,7 +35,7 @@ import edu.harvard.hmdc.vdcnet.admin.*;
  *
  * @author Ellen Kraffmiller
  */
-public class PrivilegedUserBean {
+public class PrivilegedUserBean implements java.io.Serializable  {
     
     /**
      * Creates a new instance of PrivilegedUserBean

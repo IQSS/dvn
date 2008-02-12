@@ -49,7 +49,7 @@ import org.xml.sax.SAXException;
  *
  * @author gdurand
  */
-public class RepositoryWrapper {
+public class RepositoryWrapper  implements java.io.Serializable{
     
     private HttpClient client = null;
     

@@ -37,7 +37,7 @@ import javax.ejb.Local;
  * @author roberttreacy
  */
 @Local
-public interface RoleServiceLocal {
+public interface RoleServiceLocal extends java.io.Serializable  {
    
     // Define constants here to use in FindBy Name
     public static final String CONTRIBUTOR = "contributor";

@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  *
  * @author Ellen Kraffmiller
  */
-public final class StringUtil {
+public final class StringUtil implements java.io.Serializable  {
     
    
     public static final boolean isEmpty(String str) {

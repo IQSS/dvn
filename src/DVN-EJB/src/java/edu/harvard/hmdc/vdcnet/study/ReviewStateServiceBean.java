@@ -39,7 +39,7 @@ import javax.persistence.PersistenceContext;
  * @author Ellen Kraffmiller
  */
 @Stateless
-public class ReviewStateServiceBean implements ReviewStateServiceLocal{
+public class ReviewStateServiceBean implements ReviewStateServiceLocal, java.io.Serializable{
       @PersistenceContext(unitName="VDCNet-ejbPU") EntityManager em;
   
     public ReviewState findByName(String name) {

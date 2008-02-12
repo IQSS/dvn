@@ -27,7 +27,7 @@ import javax.xml.bind.JAXBException;
  *
  * @author Ellen Kraffmiller
  */
-public interface StudyExporter {
+public interface StudyExporter  extends java.io.Serializable{
   
     
   // Will the study be exported to XML output? 

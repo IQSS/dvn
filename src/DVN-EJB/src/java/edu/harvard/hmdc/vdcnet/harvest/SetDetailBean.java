@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.harvest;
  *
  * @author Ellen Kraffmiller
  */
-public class SetDetailBean {
+public class SetDetailBean implements java.io.Serializable  {
     
     /** Creates a new instance of SetDetailBean */
     public SetDetailBean() {

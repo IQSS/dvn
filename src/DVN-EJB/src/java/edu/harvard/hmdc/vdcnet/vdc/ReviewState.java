@@ -39,7 +39,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class ReviewState {
+public class ReviewState implements java.io.Serializable  {
     private String name;
     private String description;
     

@@ -37,7 +37,7 @@ import javax.ejb.Local;
  * @author Ellen Kraffmiller
  */
 @Local
-public interface ReviewStateServiceLocal {
+public interface ReviewStateServiceLocal extends java.io.Serializable {
     public static final String REVIEW_STATE_NEW = "New";
     public static final String REVIEW_STATE_IN_REVIEW = "In Review";
     public static final String REVIEW_STATE_RELEASED = "Released";

@@ -37,7 +37,7 @@ import javax.ejb.Local;
  * 
  */
 @Local
-public interface RoleRequestServiceLocal {
+public interface RoleRequestServiceLocal extends java.io.Serializable  {
     public RoleRequest find(Long roleRequestId);
     public RoleRequest findByUserVDCRole(Long vdcUserId, Long vdcId, String roleName);
     public RoleRequest findContributorRequest(Long vdcUserId, Long vdcId);

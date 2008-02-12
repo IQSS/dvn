@@ -236,6 +236,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         writeAttribute( xmlw, "uri", "http://" + PropertyUtil.getHostUrl() + "/dvn/study?globalId=" + study.getGlobalId() );
 
         xmlw.writeEndElement(); // distStmt
+
         xmlw.writeEndElement(); // citation
         xmlw.writeEndElement(); // docDscr
     }
@@ -262,9 +263,9 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeEndElement(); // titl  
 
         if ( !StringUtil.isEmpty( study.getSubTitle() ) ) {
-            xmlw.writeStartElement("subtitl"); 
+            xmlw.writeStartElement("subTitl"); 
             xmlw.writeCharacters( study.getSubTitle() );
-            xmlw.writeEndElement(); // subtitl  
+            xmlw.writeEndElement(); // subTitl  
         }
 
         xmlw.writeStartElement("IDNo");

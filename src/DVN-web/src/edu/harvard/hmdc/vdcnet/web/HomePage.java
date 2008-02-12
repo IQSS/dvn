@@ -593,7 +593,7 @@ public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
    }
     
     
-    public class Tab implements Comparable {
+    public class Tab implements Comparable, java.io.Serializable {
         
         private String key;
         private String name;

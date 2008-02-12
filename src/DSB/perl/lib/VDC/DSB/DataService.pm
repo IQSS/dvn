@@ -318,6 +318,11 @@ sub paramfilter {
 					}
 				}
 			}
+			if (($ky =~ m/^v\d+_\d+/) && 
+				(scalar(@{$newset->{_newVarNameSetA}})) && 
+				(exists($newset->{_newVarNameSetH}->{ $cgiparam->{$ky}})) ) {
+				$newset->{newVarId2VarName}->{$ky} = $cgiparam->{$ky} ;
+			}
 		}
 	}
 	
@@ -880,6 +885,15 @@ sub getVarNameSetAll{
 	}
 	return $rv;
 
+}
+
+sub hasNewVarNames{
+	my $self = shift;
+	my $size = 0;
+	if (exists($self->{'_newVarNameSetA'})){
+		$size = scalar(@{$self->{'_newVarNameSetA'}});
+	}
+	return $size;
 }
 
 # methods for the divie-and-conquire-R-code 
@@ -1523,14 +1537,18 @@ sub printVarNo{
 	}
 	my $i = $optn->{iteration};
 	my @tmp = @$varNo[$varRangeSet->[$i][0]..$varRangeSet->[$i][1]];
-	my $size=0;
-	if (exists($self->{'_newVarNameSetA'})){
-		$size = scalar(@{$self->{'_newVarNameSetA'}});
-	}
-	if ($size){
-		for (my $j=0;$j<$size;$j++){
-			my $vn = "udv" . $j;
-			push @tmp, $vn;
+	if ($self->hasNewVarNames()){
+		#for (my $j=0;$j<$size;$j++){
+		#	my $vn = "udv" . $j;
+		#	push @tmp, $vn;
+		#}
+		for (my $j=0;$j<$self->hasNewVarNames();$j++){
+			my $var = $self->{'_newVarNameSetA'}->[$j];
+			while (my ($k,$y) = each ( %{$self->{newVarId2VarName}})){
+				if ($var eq $y){
+					push @tmp, $k;
+				}
+			}
 		}
 	}
 	print $wh "attr(x, \"var.nmbr\")<-c(\n" . '"' . join("\",\n\"", @tmp ) . '"' . ")\n\n";
@@ -1932,13 +1950,17 @@ sub printVDCxtabs{
 	my $htmlfl = $optn->{HTMLFL};
 	my @varName;
 	
-	if ($self->{unsafeVarName}){
-		foreach my $el (@{$self->{xtab}->{classVars}}){
+
+	foreach my $el (@{$self->{xtab}->{classVars}}){
+		# here $el is id
+		if ( exists($self->{_varNameHsafe}->{$el}) ){
 			push @varName, $self->{_varNameHsafe}->{$el};
-		}
-	} else {
-		foreach my $el (@{$self->{xtab}->{classVars}}){
+		} elsif ( exists($self->{_newVarNameHsafe}->{ $self->{newVarId2VarName}->{$el} } ) ) {
+			push @varName, $self->{_newVarNameHsafe}->{ $self->{newVarId2VarName}->{$el} } ;
+		} elsif (exists($self->{_varNameH}->{$el})) {
 			push @varName, $self->{_varNameH}->{$el};
+		} elsif ( exists($self->{newVarId2VarName}->{$el}) ) {
+			push @varName, $self->{newVarId2VarName}->{$el};
 		}
 	}
 	
@@ -2647,10 +2669,6 @@ sub printZeligCode{
 	my @wants = qw(Summary Plots Sensitivity Sim BinOutput);
 	print join(',', @wants), "\n" if $DEBUG;
 	
-	my $size = 0;
-	if (exists($self->{'_newVarNameSetA'})){
-		$size = scalar(@{$self->{'_newVarNameSetA'}});
-	}	
 	# print T "size = ", $size, "\n";
 	# notational short-cut
 	# sanitize characters in a variable name
@@ -2674,15 +2692,15 @@ sub printZeligCode{
 		my $rhsVars="";
 		my $formula="";
 		
-		if ($size){
+		if ($self->hasNewVarNames()){
 			foreach my $nvi (@{ $self->{zlgParam}->{$model}->{varIds} }){
-				#print T "nvi=",$nvi,"\n";
-				my @tmp = split(/_/, $nvi);
-				if (scalar(@tmp) == 2){
-					$tmp[1] =0+$tmp[1];
-					#print T "id=",$tmp[1],"\n";
-					#print T "name=",$self->{_newVarNameAsafe}->[$tmp[1]],"\n";
-					$Id2Name->{$nvi} = $self->{_newVarNameAsafe}->[$tmp[1]];
+				if ( exists($self->{newVarId2VarName}->{$nvi}) ){
+					if ( exists($self->{_newVarNameHsafe}->{ $self->{newVarId2VarName}->{$nvi} } ) ) {
+						$Id2Name->{$nvi} = $self->{_newVarNameHsafe}->{ $self->{newVarId2VarName}->{$nvi} };
+					} else {
+						$Id2Name->{$nvi} = $self->{newVarId2VarName}->{$nvi};
+					}
+				
 				}
 			}
 		}

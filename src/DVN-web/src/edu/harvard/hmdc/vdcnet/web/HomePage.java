@@ -81,7 +81,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author gdurand
  */
-public class HomePage extends VDCBaseBean {
+public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
     
     @EJB VDCServiceLocal vdcService;
     @EJB StudyServiceLocal studyService;

@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @author Ellen Kraffmiller
  */
-public class LoginBean extends VDCBaseBean {
+public class LoginBean extends VDCBaseBean implements java.io.Serializable {
    
     /**
      * Creates a new instance of LoginBean

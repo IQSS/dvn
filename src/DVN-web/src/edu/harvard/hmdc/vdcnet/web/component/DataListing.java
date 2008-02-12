@@ -36,7 +36,7 @@ package edu.harvard.hmdc.vdcnet.web.component;
  *
  * @author wbossons
  */
-public class DataListing implements Comparable {
+public class DataListing implements Comparable, java.io.Serializable {
     private String name, affiliation, alias, restricted, tooltip;
 
     /**

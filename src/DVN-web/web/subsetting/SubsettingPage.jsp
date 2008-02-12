@@ -1217,7 +1217,7 @@ type="submit" />
                 </h:dataTable>    
                 
                 <f:facet name="footer">
-                    <h:panelGroup id="pgFooterDataTable1">
+                    <ui:panelGroup block="true" id="pgFooterDataTable1">
                         <t:scroller navFacetOrientation="NORTH" for="dataTable1" actionListener="#{AnalysisPage.processScrollEvent}">
                             <f:facet name="next">
                                 <h:panelGroup>
@@ -1240,7 +1240,7 @@ type="submit" />
                             </f:facet>
                             
                         </t:scroller>
-                    </h:panelGroup>
+                    </ui:panelGroup>
                 </f:facet>
                 
             </h:panelGrid>
@@ -1347,7 +1347,7 @@ type="submit" />
 <!-- hr / -->
 
   <script type="text/javascript">
-  <![CDATA[
+  // <![CDATA[
   function testJs(){
     alert("js test");
   }

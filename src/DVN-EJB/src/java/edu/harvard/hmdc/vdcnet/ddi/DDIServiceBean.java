@@ -301,7 +301,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (StudyProducer prod : study.getStudyProducers()) {
             prodStmtAdded = checkParentElement(xmlw, "prodStmt", prodStmtAdded);
             xmlw.writeStartElement("producer");
-            xmlw.writeAttribute( "abbreviation", prod.getAbbreviation() );
+            xmlw.writeAttribute( "abbr", prod.getAbbreviation() );
             xmlw.writeAttribute( "affiliation", prod.getAffiliation() );
             xmlw.writeCharacters( prod.getName() );
             createExtLink(xmlw, prod.getUrl(), null);
@@ -346,7 +346,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (StudyDistributor dist : study.getStudyDistributors()) {
             distStmtAdded = checkParentElement(xmlw, "distStmt", distStmtAdded);
             xmlw.writeStartElement("distrbtr");
-            xmlw.writeAttribute( "abbreviation", dist.getAbbreviation() );
+            xmlw.writeAttribute( "abbr", dist.getAbbreviation() );
             xmlw.writeAttribute( "affiliation", dist.getAffiliation() );
             xmlw.writeCharacters( dist.getName() );
             createExtLink(xmlw, dist.getUrl(), null);

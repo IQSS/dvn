@@ -31,7 +31,7 @@ import java.util.Comparator;
  *  @throws ClassCastException if either parameter is not a String
  * @author Ellen Kraffmiller
  */
-public class AlphaNumericComparator implements Comparator {
+public class AlphaNumericComparator implements Comparator, java.io.Serializable {
     public int compare(Object o1,Object o2) {
         String str1 = (String)o1;
         String str2 = (String)o2;

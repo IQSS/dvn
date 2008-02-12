@@ -67,7 +67,7 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
  *
  * @author gdurand
  */
-public class DSBWrapper {
+public class DSBWrapper implements java.io.Serializable  {
     
     private HttpClient client = null;
     

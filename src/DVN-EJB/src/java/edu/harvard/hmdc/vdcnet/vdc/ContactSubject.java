@@ -39,7 +39,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class ContactSubject {
+public class ContactSubject implements java.io.Serializable  {
     private String subjectText;
     
     /** Creates a new instance of ReviewState */

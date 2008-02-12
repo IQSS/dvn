@@ -38,7 +38,7 @@ import java.util.Date;
  *
  * @author gdurand
  */
-public class DateUtil {
+public class DateUtil implements java.io.Serializable  {
     
     /** Creates a new instance of DateUtil */
     public DateUtil() {

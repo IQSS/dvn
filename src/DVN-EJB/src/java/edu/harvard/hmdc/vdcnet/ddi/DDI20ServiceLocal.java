@@ -35,7 +35,7 @@ import javax.xml.bind.JAXBException;
  * This is the business interface for DDI20Service enterprise bean.
  */
 @Local
-public interface DDI20ServiceLocal extends StudyExporter  {
+public interface DDI20ServiceLocal extends StudyExporter, java.io.Serializable  {
     edu.harvard.hmdc.vdcnet.study.Study mapDDI(CodeBook _cb);
 
     edu.harvard.hmdc.vdcnet.study.Study mapDDI(CodeBook _cb, Study study);

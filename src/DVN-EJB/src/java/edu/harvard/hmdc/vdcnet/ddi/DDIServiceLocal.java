@@ -20,7 +20,7 @@ import javax.ejb.Local;
  * @author Gustavo
  */
 @Local
-public interface DDIServiceLocal extends StudyExporter {
+public interface DDIServiceLocal extends StudyExporter, java.io.Serializable {
     void mapDDI(File ddiFile, Study study);
 
     Map determineId(File ddiFile);

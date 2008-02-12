@@ -37,7 +37,7 @@ import java.util.List;
  *
  * @author gdurand
  */
-public class DSBIngestMessage implements Serializable {
+public class DSBIngestMessage implements Serializable{
     
     /** Creates a new instance of DSBIngestMessage */
     public DSBIngestMessage()  {

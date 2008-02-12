@@ -43,7 +43,7 @@ import org.apache.lucene.search.IndexSearcher;
  *
  * @author roberttreacy
  */
-public class DocumentCollector extends HitCollector {
+public class DocumentCollector extends HitCollector implements java.io.Serializable {
 
     private IndexSearcher searcher;
     private ArrayList  documents = new ArrayList();

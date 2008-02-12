@@ -28,7 +28,7 @@ import javax.ejb.Local;
  * This is the business interface for CatalogService enterprise bean.
  */
 @Local
-public interface CatalogServiceLocal {
+public interface CatalogServiceLocal extends java.io.Serializable  {
     public String [] listRecords(String from, String until, String set, String metadataPrefix);
 
     public String getRecord(Study study, String metadataPrefix);

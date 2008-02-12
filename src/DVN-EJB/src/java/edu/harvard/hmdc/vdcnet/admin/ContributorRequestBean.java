@@ -35,7 +35,7 @@ import edu.harvard.hmdc.vdcnet.admin.RoleRequest;
  *
  * @author Ellen Kraffmiller
  */
-public class ContributorRequestBean {
+public class ContributorRequestBean implements java.io.Serializable {
     
     /**
      * Creates a new instance of ContributorRequestBean

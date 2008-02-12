@@ -46,7 +46,7 @@ import javax.persistence.Version;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class DataVariable {
+public class DataVariable implements java.io.Serializable{
     
     /** Creates a new instance of DataVariable */
     public DataVariable() {

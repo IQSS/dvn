@@ -42,7 +42,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class DataTable {
+public class DataTable implements java.io.Serializable {
     
     /** Creates a new instance of DataTable */
     public DataTable() {

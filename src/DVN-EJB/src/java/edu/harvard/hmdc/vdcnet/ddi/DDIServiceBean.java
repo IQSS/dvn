@@ -1189,7 +1189,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         if (role != null) {
             xmlw.writeAttribute( "role", role );
         }
-        xmlw.writeEndElement(); //ExtLink     
+        // no writeEndElement needed
     }
 
     private void createDateElement(XMLStreamWriter xmlw, String name, String value) throws XMLStreamException {
@@ -1618,7 +1618,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                     // this will set a StudyId if it has not yet been set; it will get overridden by a study
                     // id in the StudyDscr section, if one exists
                     if ( AGENCY_HANDLE.equals( xmlr.getAttributeValue(null, "agency") ) ) {
-                        parseStudyId( xmlr.getElementText(), study );
+                        parseStudyId( parseText(xmlr), study );
                     }
                 } else if ( xmlr.getLocalName().equals("holdings") && StringUtil.isEmpty(study.getHarvestHoldings()) ) {
                     study.setHarvestHoldings( xmlr.getAttributeValue(null, "URI") );
@@ -1671,16 +1671,16 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("titl")) {
-                    study.setTitle( xmlr.getElementText() );
+                    study.setTitle( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("subTitl")) {
-                    study.setSubTitle( xmlr.getElementText() );
+                    study.setSubTitle( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("IDNo")) {
                     if ( AGENCY_HANDLE.equals( xmlr.getAttributeValue(null, "agency") ) ) {
-                        parseStudyId( xmlr.getElementText(), study );
+                        parseStudyId( parseText(xmlr), study );
                     } else {
                         StudyOtherId sid = new StudyOtherId();
                         sid.setAgency( xmlr.getAttributeValue(null, "agency")) ;
-                        sid.setOtherId( xmlr.getElementText() );
+                        sid.setOtherId( parseText(xmlr) );
                         sid.setStudy(study);
                         study.getStudyOtherIds().add(sid);
                     }
@@ -1697,7 +1697,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 if (xmlr.getLocalName().equals("AuthEnty")) {
                     StudyAuthor author = new StudyAuthor();
                     author.setAffiliation( xmlr.getAttributeValue(null, "affiliation") );
-                    author.setName( xmlr.getElementText() );
+                    author.setName( parseText(xmlr) );
                     author.setStudy(study);
                     study.getStudyAuthors().add(author);                    
                 }
@@ -1723,21 +1723,21 @@ public class DDIServiceBean implements DDIServiceLocal {
                 } else if (xmlr.getLocalName().equals("prodDate")) {
                     study.setProductionDate(parseDate(xmlr,"prodDate"));
                 } else if (xmlr.getLocalName().equals("prodPlac")) {
-                    study.setProductionPlace( xmlr.getElementText() );
+                    study.setProductionPlace( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("software")) {
                     StudySoftware ss = new StudySoftware();
                     study.getStudySoftware().add(ss);
                     ss.setStudy(study);
                     ss.setSoftwareVersion( xmlr.getAttributeValue(null, "version") );
-                    ss.setName( xmlr.getElementText() );
+                    ss.setName( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("fundAg")) {
-                    study.setFundingAgency( xmlr.getElementText() );
+                    study.setFundingAgency( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("grantNo")) {
                     StudyGrant sg = new StudyGrant();
                     study.getStudyGrants().add(sg);
                     sg.setStudy(study);
                     sg.setAgency( xmlr.getAttributeValue(null, "agency") );
-                    sg.setNumber( xmlr.getElementText() );
+                    sg.setNumber( parseText(xmlr) );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("prodStmt")) return;
@@ -1761,7 +1761,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 } else if (xmlr.getLocalName().equals("contact")) {
                     study.setDistributorContactEmail( xmlr.getAttributeValue(null, "email") );
                     study.setDistributorContactAffiliation( xmlr.getAttributeValue(null, "affiliation") );
-                    study.setDistributorContact( xmlr.getElementText() );
+                    study.setDistributorContact( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("depositr")) {
                     Map<String,String> depDetails = parseCompoundText(xmlr, "depositr");
                     study.setDepositor( depDetails.get("name") );
@@ -1781,9 +1781,9 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("serName")) {
-                    study.setSeriesName( xmlr.getElementText() );
+                    study.setSeriesName( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("serInfo")) {
-                    study.setSeriesInformation( xmlr.getElementText() );
+                    study.setSeriesInformation( parseText(xmlr) );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("serStmt")) return;
@@ -1796,7 +1796,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("version")) {
                     study.setVersionDate( xmlr.getAttributeValue(null, "date") );
-                    study.setStudyVersion( xmlr.getElementText() );
+                    study.setStudyVersion( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("notes")) { processNotes(xmlr, study); }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("verStmt")) return;
@@ -1831,14 +1831,14 @@ public class DDIServiceBean implements DDIServiceLocal {
                     kw.setStudy(study);
                     kw.setVocab( xmlr.getAttributeValue(null, "vocab") );
                     kw.setVocabURI( xmlr.getAttributeValue(null, "vocabURI") );
-                    kw.setValue( xmlr.getElementText());
+                    kw.setValue( parseText(xmlr));
                 } else if (xmlr.getLocalName().equals("topcClas")) {
                     StudyTopicClass tc = new StudyTopicClass();
                     study.getStudyTopicClasses().add(tc);
                     tc.setStudy(study);
                     tc.setVocab( xmlr.getAttributeValue(null, "vocab") );
                     tc.setVocabURI( xmlr.getAttributeValue(null, "vocabURI") );
-                    tc.setValue( xmlr.getElementText());
+                    tc.setValue( parseText(xmlr));
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("subject")) return;
@@ -1865,41 +1865,41 @@ public class DDIServiceBean implements DDIServiceLocal {
                     }
                 } else if (xmlr.getLocalName().equals("nation")) {
                     if (StringUtil.isEmpty( study.getCountry() ) ) {
-                        study.setCountry( xmlr.getElementText() );
+                        study.setCountry( parseText(xmlr) );
                     } else {
-                        study.setCountry( study.getCountry() + "; " + xmlr.getElementText() );
+                        study.setCountry( study.getCountry() + "; " + parseText(xmlr) );
                     }
                 } else if (xmlr.getLocalName().equals("geogCover")) {
                     if (StringUtil.isEmpty( study.getGeographicCoverage() ) ) {
-                        study.setGeographicCoverage( xmlr.getElementText() );
+                        study.setGeographicCoverage( parseText(xmlr) );
                     } else {
-                        study.setGeographicCoverage( study.getGeographicCoverage() + "; " + xmlr.getElementText() );
+                        study.setGeographicCoverage( study.getGeographicCoverage() + "; " + parseText(xmlr) );
                     }
                 } else if (xmlr.getLocalName().equals("geogUnit")) {
                     if (StringUtil.isEmpty( study.getGeographicUnit() ) ) {
-                        study.setGeographicUnit( xmlr.getElementText() );
+                        study.setGeographicUnit( parseText(xmlr) );
                     } else {
-                        study.setGeographicUnit( study.getGeographicUnit() + "; " + xmlr.getElementText() );
+                        study.setGeographicUnit( study.getGeographicUnit() + "; " + parseText(xmlr) );
                     }
                 } else if (xmlr.getLocalName().equals("geoBndBox")) { 
                     processGeoBndBox(xmlr,study);
                 } else if (xmlr.getLocalName().equals("anlyUnit*")) {
                     if (StringUtil.isEmpty( study.getUnitOfAnalysis() ) ) {
-                        study.setUnitOfAnalysis( xmlr.getElementText() );
+                        study.setUnitOfAnalysis( parseText(xmlr) );
                     } else {
-                        study.setUnitOfAnalysis( study.getUnitOfAnalysis() + "; " + xmlr.getElementText() );
+                        study.setUnitOfAnalysis( study.getUnitOfAnalysis() + "; " + parseText(xmlr) );
                     }
                 } else if (xmlr.getLocalName().equals("universe")) {
                     if (StringUtil.isEmpty( study.getUniverse() ) ) {
-                        study.setUniverse( xmlr.getElementText() );
+                        study.setUniverse( parseText(xmlr) );
                     } else {
-                        study.setUniverse( study.getUniverse() + "; " + xmlr.getElementText() );
+                        study.setUniverse( study.getUniverse() + "; " + parseText(xmlr) );
                     }
                 } else if (xmlr.getLocalName().equals("dataKind")) {
                     if (StringUtil.isEmpty( study.getKindOfData() ) ) {
-                        study.setKindOfData( xmlr.getElementText() );
+                        study.setKindOfData( parseText(xmlr) );
                     } else {
-                        study.setKindOfData( study.getKindOfData() + "; " + xmlr.getElementText() );
+                        study.setKindOfData( study.getKindOfData() + "; " + parseText(xmlr) );
                     }
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -1916,13 +1916,13 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("westBL")) {
-                    geoBound.setWestLongitude( xmlr.getElementText() );
+                    geoBound.setWestLongitude( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("eastBL")) {
-                    geoBound.setEastLongitude( xmlr.getElementText() );
+                    geoBound.setEastLongitude( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("southBL")) {
-                    geoBound.setSouthLatitude( xmlr.getElementText() );
+                    geoBound.setSouthLatitude( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("northBL")) {
-                    geoBound.setNorthLatitude( xmlr.getElementText() );
+                    geoBound.setNorthLatitude( parseText(xmlr) );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("geoBndBox")) return;
@@ -1936,9 +1936,9 @@ public class DDIServiceBean implements DDIServiceLocal {
                 if (xmlr.getLocalName().equals("dataColl")) processDataColl(xmlr, study);
                 else if (xmlr.getLocalName().equals("notes")) {
                     if (StringUtil.isEmpty( study.getStudyLevelErrorNotes() ) ) {
-                        study.setStudyLevelErrorNotes( xmlr.getElementText() );
+                        study.setStudyLevelErrorNotes( parseText(xmlr) );
                     } else {
-                        study.setStudyLevelErrorNotes( study.getStudyLevelErrorNotes() + "; " + xmlr.getElementText() );
+                        study.setStudyLevelErrorNotes( study.getStudyLevelErrorNotes() + "; " + parseText(xmlr) );
                     }
                 } else if (xmlr.getLocalName().equals("anlyInfo")) processAnlyInfo(xmlr, study);
             } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -2138,15 +2138,15 @@ public class DDIServiceBean implements DDIServiceLocal {
                 else if (xmlr.getLocalName().equals("notes")) {
                     String noteType = xmlr.getAttributeValue(null, "type");
                     if (NOTE_TYPE_UNF.equalsIgnoreCase(noteType) ) {
-                        dt.setUnf( parseUNF( xmlr.getElementText() ) );    
+                        dt.setUnf( parseUNF( parseText(xmlr) ) );    
                     } else if ("vdc:category".equalsIgnoreCase(noteType) ) {
-                        catName = xmlr.getElementText();
+                        catName = parseText(xmlr);
                     } else if ("icpsr:category".equalsIgnoreCase(noteType) ) {
                         String subjectType = xmlr.getAttributeValue(null, "subject");
                         if ("description".equalsIgnoreCase(subjectType)) {
-                            icpsrDesc = xmlr.getElementText();
+                            icpsrDesc = parseText(xmlr);
                         } else if ("id".equalsIgnoreCase(subjectType)) {
-                            icpsrId = xmlr.getElementText();
+                            icpsrId = parseText(xmlr);
                         }
                     }
                 }
@@ -2167,9 +2167,9 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("fileName")) {
-                    sf.setFileName( xmlr.getElementText() );
+                    sf.setFileName( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("fileCont")) {
-                    sf.setDescription( xmlr.getElementText() );
+                    sf.setDescription( parseText(xmlr) );
                 }  else if (xmlr.getLocalName().equals("dimensns")) processDimensns(xmlr, dt);
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("fileTxt")) return;
@@ -2181,11 +2181,11 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("caseQnty")) {
-                    dt.setCaseQuantity( new Long( xmlr.getElementText() ) );
+                    dt.setCaseQuantity( new Long( parseText(xmlr) ) );
                 } else if (xmlr.getLocalName().equals("varQnty")) {
-                    dt.setVarQuantity( new Long( xmlr.getElementText() ) );
+                    dt.setVarQuantity( new Long( parseText(xmlr) ) );
                 } else if (xmlr.getLocalName().equals("recPrCas")) {
-                    dt.setRecordsPerCase( new Long( xmlr.getElementText() ) );
+                    dt.setRecordsPerCase( new Long( parseText(xmlr) ) );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
                 if (xmlr.getLocalName().equals("dimensns")) return;
@@ -2229,9 +2229,9 @@ public class DDIServiceBean implements DDIServiceLocal {
                         dv.setLabel( _labl );
                     }
                 } else if (xmlr.getLocalName().equals("universe")) {
-                    dv.setUniverse( xmlr.getElementText() );
+                    dv.setUniverse( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("concept")) {
-                    dv.setConcept( xmlr.getElementText() );
+                    dv.setConcept( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("invalrng")) processInvalrng( xmlr, dv );
                 else if (xmlr.getLocalName().equals("varFormat")) processVarFormat( xmlr, dv );
                 else if (xmlr.getLocalName().equals("sumStat")) processSumStat( xmlr, dv );
@@ -2333,7 +2333,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     private void processSumStat(XMLStreamReader xmlr, DataVariable dv) throws XMLStreamException {
         SummaryStatistic ss = new SummaryStatistic();
         ss.setType( varService.findSummaryStatisticTypeByName( summaryStatisticTypeList, xmlr.getAttributeValue(null, "type") ) );
-        ss.setValue( xmlr.getElementText()) ;
+        ss.setValue( parseText(xmlr)) ;
         ss.setDataVariable(dv);
         dv.getSummaryStatistics().add(ss);
     }
@@ -2352,7 +2352,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                         cat.setLabel( _labl );
                     }                    
                 } else if (xmlr.getLocalName().equals("catValu")) {
-                    cat.setValue( xmlr.getElementText() );
+                    cat.setValue( parseText(xmlr) );
                 }
                 else if (xmlr.getLocalName().equals("catStat")) {
                     String _freq = processCatStat( xmlr, "freq" );
@@ -2368,7 +2368,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     private String processLabl(XMLStreamReader xmlr, String level) throws XMLStreamException {
         if (level.equalsIgnoreCase( xmlr.getAttributeValue(null, "level") ) ) {
-            return xmlr.getElementText();
+            return parseText(xmlr);
         } else {
             return null;
         }
@@ -2376,7 +2376,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     
     private String processCatStat(XMLStreamReader xmlr, String type) throws XMLStreamException {
         if (type.equalsIgnoreCase( xmlr.getAttributeValue(null, "type") ) ) {
-            return xmlr.getElementText();
+            return parseText(xmlr);
         } else {
             return null;
         }
@@ -2396,19 +2396,19 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("labl")) {
-                    sf.setFileName( xmlr.getElementText() );
+                    sf.setFileName( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("txt")) {
-                    sf.setDescription( xmlr.getElementText() );
+                    sf.setDescription( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("notes")) {
                     String noteType = xmlr.getAttributeValue(null, "type");
                     if ("vdc:category".equalsIgnoreCase(noteType) ) {
-                        catName = xmlr.getElementText();
+                        catName = parseText(xmlr);
                     } else if ("icpsr:category".equalsIgnoreCase(noteType) ) {
                         String subjectType = xmlr.getAttributeValue(null, "subject");
                         if ("description".equalsIgnoreCase(subjectType)) {
-                            icpsrDesc = xmlr.getElementText();
+                            icpsrDesc = parseText(xmlr);
                         } else if ("id".equalsIgnoreCase(subjectType)) {
-                            icpsrId = xmlr.getElementText();
+                            icpsrId = parseText(xmlr);
                         }
                     }
                 }
@@ -2431,7 +2431,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         note.setStudy(study);
         note.setSubject( xmlr.getAttributeValue(null, "subject") );
         note.setType( xmlr.getAttributeValue(null, "type") );
-        note.setText( xmlr.getElementText() );
+        note.setText( parseText(xmlr) );
     }    
     
     private void parseStudyId(String _id, Study s) {
@@ -2454,7 +2454,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     private String parseNoteByType (XMLStreamReader xmlr, String type) throws XMLStreamException {
         if (type.equalsIgnoreCase( xmlr.getAttributeValue(null, "type") ) ) {
-            return xmlr.getElementText();
+            return parseText(xmlr);
         } else {
             return null;
         }
@@ -2467,6 +2467,10 @@ public class DDIServiceBean implements DDIServiceLocal {
             return null;
         }
     }
+
+     private String parseText(XMLStreamReader xmlr) throws XMLStreamException {
+        return xmlr.getElementText().trim().replace('\n',' ');
+     }
 
      private String parseText(XMLStreamReader xmlr, String endTag) throws XMLStreamException {
         String returnString = "";
@@ -2518,7 +2522,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             int event = xmlr.next();
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("itm")) {
-                    listString += "<li>" + xmlr.getElementText() + "</li>\n";
+                    listString += "<li>" + parseText(xmlr) + "</li>\n";
                 } else {
                     throw new EJBException("mapContent: ListType does not currently supported contained LabelType.");
                 }
@@ -2543,7 +2547,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                         event = xmlr.next();
                         if (event == XMLStreamConstants.START_ELEMENT) {
                             if (xmlr.getLocalName().equals("titl")) {
-                                citation += xmlr.getElementText();
+                                citation += parseText(xmlr);
                             }
                         } else if (event == XMLStreamConstants.END_ELEMENT) {
                             if (xmlr.getLocalName().equals("titlStmt")) break;
@@ -2555,9 +2559,9 @@ public class DDIServiceBean implements DDIServiceLocal {
                     
                     String uri = xmlr.getAttributeValue(null, "URI");
                     if ( StringUtil.isEmpty(uri) ) {
-                        citation += xmlr.getElementText();
+                        citation += parseText(xmlr);
                     } else {
-                        citation += "<a href=\"" + uri + "\">" + xmlr.getElementText() + "</a>";
+                        citation += "<a href=\"" + uri + "\">" + parseText(xmlr) + "</a>";
                     }
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -2598,7 +2602,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     private String parseDate (XMLStreamReader xmlr, String endTag) throws XMLStreamException {
         String date = xmlr.getAttributeValue(null, "date");
         if (date == null) {
-            date = xmlr.getElementText();
+            date = parseText(xmlr);
         }
         return date;
     }

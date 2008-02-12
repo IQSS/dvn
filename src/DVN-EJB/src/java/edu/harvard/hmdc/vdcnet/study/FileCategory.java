@@ -42,7 +42,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class FileCategory {
+public class FileCategory implements java.io.Serializable {
     
     @Column(columnDefinition="TEXT")
     private String name;

@@ -30,7 +30,7 @@ import javax.ejb.Local;
  * This is the business interface for EditUserService enterprise bean.
  */
 @Local
-public interface EditUserService {
+public interface EditUserService extends java.io.Serializable  {
     public Long getRequestStudyId();
     public void setRequestStudyId(Long studyId);
     public String getNewPassword1();

@@ -28,7 +28,7 @@ import javax.ejb.Local;
  * This is the business interface for HandlePrefixService enterprise bean.
  */
 @Local
-public interface HandlePrefixServiceLocal {
+public interface HandlePrefixServiceLocal extends java.io.Serializable  {
     
     public List<HandlePrefix> findAll();
     

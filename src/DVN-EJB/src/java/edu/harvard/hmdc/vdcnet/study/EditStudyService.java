@@ -32,7 +32,7 @@ import javax.ejb.Local;
  * This is the business interface for EditStudyService enterprise bean.
  */
 @Local
-public interface EditStudyService { 
+public interface EditStudyService extends java.io.Serializable { 
     public void setStudy( Long studyId);
     public void newStudy(Long vdcId, Long userId);
     public void cancel();

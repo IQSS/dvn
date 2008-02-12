@@ -52,7 +52,7 @@ import javax.persistence.PersistenceContextType;
  */
 @Stateful
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class EditStudyPermissionsServiceBean implements EditStudyPermissionsService  {
+public class EditStudyPermissionsServiceBean implements EditStudyPermissionsService, java.io.Serializable  {
     @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
     EntityManager em;
     @EJB StudyServiceLocal studyService;

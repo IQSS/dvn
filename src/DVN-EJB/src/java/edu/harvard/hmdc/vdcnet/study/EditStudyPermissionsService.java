@@ -42,7 +42,7 @@ import javax.ejb.TransactionAttributeType;
  * @author Ellen Kraffmiller
  */
 @Local
-public interface EditStudyPermissionsService {
+public interface EditStudyPermissionsService extends java.io.Serializable {
     /**
      * Remove this Stateful Session bean from the EJB Container without
      * saving updates to the database.

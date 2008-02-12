@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.util;
  *
  * @author Ellen Kraffmiller
  */
-public final class FieldInputLevelConstant {
+public final class FieldInputLevelConstant implements java.io.Serializable  {
     private final static String required = "required";
     private final static String recommended = "recommended";
     private final static String optional = "optional";

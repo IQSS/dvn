@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.vdc;
  *
  * @author Ellen Kraffmiller
  */
-public class GNRS {
+public class GNRS implements java.io.Serializable  {
     
     /** Creates a new instance of GNRS */
     public GNRS() {

@@ -41,7 +41,7 @@ import javax.persistence.GenerationType;
  * @author Ellen Kraffmiller
  */
 @Entity        
-public class FieldInputLevel {
+public class FieldInputLevel  implements java.io.Serializable{
     @SequenceGenerator(name="fieldinputlevel_gen", sequenceName="fieldinputlevel_id_seq")
     @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="fieldinputlevel_gen") 
     private Long id;

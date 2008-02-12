@@ -39,7 +39,7 @@ import javax.ejb.TransactionAttributeType;
  *
  * @author Ellen Kraffmiller
  */
-public interface EditNetworkPrivilegesService {
+public interface EditNetworkPrivilegesService  extends java.io.Serializable  {
     /**
      * Remove this Stateful Session bean from the EJB Container without
      * saving updates to the database.

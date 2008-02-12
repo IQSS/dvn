@@ -27,7 +27,7 @@ import javax.ejb.Local;
  * This is the business interface for GNRSService enterprise bean.
  */
 @Local
-public interface GNRSServiceLocal {
+public interface GNRSServiceLocal  extends java.io.Serializable {
     public String getNewObjectId(String protocol, String authority);
 
     public void delete(String authority, String studyId);

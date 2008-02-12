@@ -40,7 +40,7 @@ import javax.ejb.TransactionAttributeType;
  *
  * @author Ellen Kraffmiller
  */
-public interface EditHarvestSiteService {
+public interface EditHarvestSiteService extends java.io.Serializable  {
     public static final String EDIT_MODE_CREATE = "create";
     public static final String EDIT_MODE_UPDATE = "update";
 

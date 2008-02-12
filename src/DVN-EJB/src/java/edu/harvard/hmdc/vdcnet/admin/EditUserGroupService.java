@@ -41,7 +41,7 @@ import javax.ejb.TransactionAttributeType;
  * @author Ellen Kraffmiller
  */
 @Local
-public interface EditUserGroupService {
+public interface EditUserGroupService extends java.io.Serializable  {
     /**
      * Remove this Stateful Session bean from the EJB Container without 
      * saving updates to the database.

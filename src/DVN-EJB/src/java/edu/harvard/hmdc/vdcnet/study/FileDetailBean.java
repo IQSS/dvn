@@ -35,7 +35,7 @@ import java.util.Collection;
  *
  * @author Ellen Kraffmiller
  */
-public class FileDetailBean {
+public class FileDetailBean implements java.io.Serializable {
     
     /**
      * Creates a new instance of FileDetailBean

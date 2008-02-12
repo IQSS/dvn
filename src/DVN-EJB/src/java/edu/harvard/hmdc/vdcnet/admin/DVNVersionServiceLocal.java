@@ -16,7 +16,7 @@ import javax.ejb.Local;
  * @author roberttreacy
  */
 @Local
-public interface DVNVersionServiceLocal {
+public interface DVNVersionServiceLocal extends java.io.Serializable{
 
     public edu.harvard.hmdc.vdcnet.admin.DVNVersion getLatestVersion();
     

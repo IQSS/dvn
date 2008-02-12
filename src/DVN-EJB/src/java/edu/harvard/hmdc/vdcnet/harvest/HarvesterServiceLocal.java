@@ -39,7 +39,7 @@ import org.apache.commons.lang.mutable.MutableBoolean;
  *
  * @author Ellen Kraffmiller
  */
-public interface HarvesterServiceLocal {
+public interface HarvesterServiceLocal extends java.io.Serializable  {
     public void createScheduledHarvestTimers();
     public void updateHarvestTimer(HarvestingDataverse dataverse);
     public void removeHarvestTimer(HarvestingDataverse dataverse);

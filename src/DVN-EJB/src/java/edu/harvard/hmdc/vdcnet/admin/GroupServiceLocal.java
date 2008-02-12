@@ -38,7 +38,7 @@ import javax.ejb.Local;
  * @author Ellen Kraffmiller
  */
 @Local
-public interface GroupServiceLocal {
+public interface GroupServiceLocal  extends java.io.Serializable {
     public UserGroup findById(Long id);
 
     public UserGroup findByName(String name);

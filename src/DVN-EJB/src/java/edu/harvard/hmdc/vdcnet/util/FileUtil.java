@@ -44,7 +44,7 @@ import javax.ejb.EJBException;
  *
  * @author Ellen Kraffmiller
  */
-public class FileUtil {
+public class FileUtil implements java.io.Serializable  {
     
     private static final String[] SUBSETTABLE_FORMAT_SET = {"POR", "SAV", "DTA"};
 

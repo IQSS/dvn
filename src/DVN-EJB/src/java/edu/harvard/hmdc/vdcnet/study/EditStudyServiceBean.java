@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  */
 @Stateful
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditStudyService {
+public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditStudyService, java.io.Serializable {
     @EJB IndexServiceLocal indexService;
     @EJB ReviewStateServiceLocal reviewStateService;
     @EJB MailServiceLocal mailService;

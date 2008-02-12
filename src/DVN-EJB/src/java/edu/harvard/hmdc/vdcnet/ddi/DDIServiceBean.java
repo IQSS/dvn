@@ -1184,8 +1184,8 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     private void createExtLink(XMLStreamWriter xmlw, String uri, String role) throws XMLStreamException {
-        xmlw.writeStartElement("ExtLink");
-        xmlw.writeAttribute( "uri", uri );
+        xmlw.writeEmptyElement("ExtLink");
+        xmlw.writeAttribute( "URI", uri );
         if (role != null) {
             xmlw.writeAttribute( "role", role );
         }

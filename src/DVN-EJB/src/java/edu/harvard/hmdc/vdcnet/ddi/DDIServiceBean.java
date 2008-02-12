@@ -484,8 +484,8 @@ public class DDIServiceBean implements DDIServiceLocal {
             sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("collDate");
             xmlw.writeAttribute( "event", EVENT_START );
-            writeDateAttribute( xmlw, study.getDateOfCollectionEnd() );
-            xmlw.writeCharacters( study.getDateOfCollectionEnd() );
+            writeDateAttribute( xmlw, study.getDateOfCollectionStart() );
+            xmlw.writeCharacters( study.getDateOfCollectionStart() );
             xmlw.writeEndElement(); // collDate
         }
         if (!StringUtil.isEmpty( study.getDateOfCollectionEnd() )) {
@@ -1925,7 +1925,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                     geoBound.setNorthLatitude( xmlr.getElementText() );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (xmlr.getLocalName().equals("method")) return;
+                if (xmlr.getLocalName().equals("geoBndBox")) return;
             }   
         }
     }

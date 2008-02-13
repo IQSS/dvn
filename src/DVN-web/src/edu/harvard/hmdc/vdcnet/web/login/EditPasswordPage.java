@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @EJB(name="editUser", beanInterface=edu.harvard.hmdc.vdcnet.admin.EditUserService.class)
 
-public class EditPasswordPage extends VDCBaseBean {
+public class EditPasswordPage extends VDCBaseBean implements java.io.Serializable  {
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
     

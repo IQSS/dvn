@@ -39,7 +39,7 @@ import javax.faces.context.FacesContext;
  *
  * @author Ellen Kraffmiller
  */
-public class ErrorPage {
+public class ErrorPage implements java.io.Serializable  {
     
     /** Creates a new instance of ErrorPage */
     public ErrorPage() {

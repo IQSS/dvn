@@ -41,7 +41,7 @@ import javax.servlet.ServletResponse;
  *
  * @author wbossons
  */
-public class EncodingFilter implements Filter {
+public class EncodingFilter implements Filter, java.io.Serializable  {
     private String encoding;
     private FilterConfig filterConfig = null;
     private static final boolean debug = true;

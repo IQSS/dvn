@@ -55,7 +55,7 @@ import javax.faces.context.FacesContext;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class EditHomePanelsPage extends VDCBaseBean {
+public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializable  {
      @EJB VDCServiceLocal vdcService;
      
      private String SUCCESS_MESSAGE = new String("Update Successful! Go to Home to see your changes.");

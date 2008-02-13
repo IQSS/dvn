@@ -86,7 +86,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 @EJB(name="editStudy", beanInterface=edu.harvard.hmdc.vdcnet.study.EditStudyService.class)
-public class EditStudyPage extends VDCBaseBean {
+public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  {
     EditStudyService editStudyService;
     @EJB StudyServiceLocal studyService;
     

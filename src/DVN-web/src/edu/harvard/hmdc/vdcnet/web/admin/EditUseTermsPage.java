@@ -41,7 +41,7 @@ import javax.faces.context.FacesContext;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class EditUseTermsPage extends VDCBaseBean {
+public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializable  {
     
     @EJB VDCServiceLocal vdcService;
 

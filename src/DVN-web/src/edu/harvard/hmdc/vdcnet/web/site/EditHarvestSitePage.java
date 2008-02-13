@@ -71,7 +71,7 @@ import javax.naming.NamingException;
  * @author Ellen Kraffmiller
  */
 @EJB(name="editHarvestSite", beanInterface=edu.harvard.hmdc.vdcnet.admin.EditHarvestSiteService.class)
-public class EditHarvestSitePage extends VDCBaseBean {
+public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB UserServiceLocal userService;
     @EJB GroupServiceLocal groupService;
     @EJB VDCServiceLocal vdcService;

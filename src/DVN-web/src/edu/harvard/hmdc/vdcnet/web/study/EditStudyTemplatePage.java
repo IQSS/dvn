@@ -59,7 +59,7 @@ import com.sun.rave.web.ui.component.HelpInline;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class EditStudyTemplatePage extends VDCBaseBean {
+public class EditStudyTemplatePage extends VDCBaseBean implements java.io.Serializable  {
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
     

@@ -43,7 +43,7 @@ import javax.faces.validator.ValidatorException;
  *
  * @author wbossons
  */
-public class EmailValidator implements Validator {
+public class EmailValidator implements Validator, java.io.Serializable  {
     
     private String msg = new String("Email Address Validation Error(s):  Please enter a valid email.");
     

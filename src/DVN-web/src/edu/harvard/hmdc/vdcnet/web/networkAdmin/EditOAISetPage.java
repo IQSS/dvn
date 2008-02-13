@@ -29,7 +29,7 @@ import javax.ejb.EJB;
  *
  * @author Ellen Kraffmiller
  */
-public class EditOAISetPage extends VDCBaseBean {
+public class EditOAISetPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB OAISetServiceLocal oaiSetService;
     public EditOAISetPage() {
     }

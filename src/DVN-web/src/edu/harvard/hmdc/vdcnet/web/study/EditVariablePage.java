@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Gustavo
  */
-public class EditVariablePage extends VDCBaseBean {
+public class EditVariablePage extends VDCBaseBean implements java.io.Serializable  {
     
     @EJB VariableServiceLocal varService;
     

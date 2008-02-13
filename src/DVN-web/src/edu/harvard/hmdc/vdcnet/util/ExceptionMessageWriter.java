@@ -37,7 +37,7 @@ import javax.faces.context.FacesContext;
  *
  * @author wbossons
  */
-public class ExceptionMessageWriter {
+public class ExceptionMessageWriter implements java.io.Serializable  {
     
     /** Creates a new instance of ExceptionMessageWriter */
     public ExceptionMessageWriter() {

@@ -41,7 +41,7 @@ import javax.faces.component.html.HtmlCommandButton;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class EditBannerFooterPage extends VDCBaseBean {
+public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">

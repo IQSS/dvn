@@ -41,7 +41,7 @@ import javax.faces.FacesException;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class EditNetworkDownloadUseTermsPage extends VDCBaseBean {
+public class EditNetworkDownloadUseTermsPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB
     VDCNetworkServiceLocal vdcNetworkService;

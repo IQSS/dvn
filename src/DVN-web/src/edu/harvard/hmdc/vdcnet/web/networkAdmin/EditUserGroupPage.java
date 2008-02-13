@@ -59,7 +59,7 @@ import javax.faces.model.SelectItem;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class EditUserGroupPage extends VDCBaseBean {
+public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB private EditUserGroupService editUserGroupService;
     @EJB private UserServiceLocal userService;
     @EJB GroupServiceLocal groupService;

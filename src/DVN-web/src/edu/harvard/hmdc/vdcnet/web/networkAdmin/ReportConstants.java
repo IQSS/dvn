@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.web.networkAdmin;
  *
  * @author wbossons
  */
-public class ReportConstants {
+public class ReportConstants implements java.io.Serializable  {
 
  public ReportConstants() {
 

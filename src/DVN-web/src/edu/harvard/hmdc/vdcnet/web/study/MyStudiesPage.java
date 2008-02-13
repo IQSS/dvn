@@ -59,7 +59,7 @@ import javax.faces.model.ListDataModel;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class MyStudiesPage extends VDCBaseBean {
+public class MyStudiesPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB StudyServiceLocal studyService;
     DataModel contributorStudies;
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">

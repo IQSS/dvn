@@ -39,7 +39,7 @@ import java.util.Comparator;
  *
  * @author wbossons
  */
-public class NetworkDataverseListingComparator implements Comparator {
+public class NetworkDataverseListingComparator implements Comparator, java.io.Serializable  {
     
     /** Creates a new instance of NetworkDataverseListingComparator */
     public NetworkDataverseListingComparator() {

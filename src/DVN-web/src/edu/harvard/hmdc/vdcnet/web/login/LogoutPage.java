@@ -37,7 +37,7 @@ import java.util.Map;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class LogoutPage extends VDCBaseBean {
+public class LogoutPage extends VDCBaseBean implements java.io.Serializable  {
  
     /** 
      * <p>Construct a new Page bean instance.</p>

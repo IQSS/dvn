@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Ellen Kraffmiller
  */
-public class LoginWorkflowBean extends VDCBaseBean {
+public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB
     UserServiceLocal userService;

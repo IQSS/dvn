@@ -46,7 +46,7 @@ import javax.naming.InitialContext;
  *
  * @author gdurand
  */
-public class FileCategoryUI  {
+public class FileCategoryUI implements java.io.Serializable   {
     
     private FileCategory fileCategory;
     

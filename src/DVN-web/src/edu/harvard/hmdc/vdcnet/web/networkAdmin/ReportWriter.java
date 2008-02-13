@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author wbossons
  */
 
-public class ReportWriter extends ReportConstants {
+public class ReportWriter extends ReportConstants implements java.io.Serializable  {
 
 	private static String awstatsDirectory = System.getProperty("dvn.awstats.dir");
         private static String dvnDataDirectory = System.getProperty("dvn.awstatsData.dir");

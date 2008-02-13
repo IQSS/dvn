@@ -36,7 +36,7 @@ package edu.harvard.hmdc.vdcnet.util;
  *
  * @author wbossons
  */
-public class NetworkDataverseListing implements Comparable {
+public class NetworkDataverseListing implements Comparable, java.io.Serializable  {
     private String name, affiliation, alias, restricted, tooltip;
        
     /** Creates a new instance of NetworkDataverseListing */

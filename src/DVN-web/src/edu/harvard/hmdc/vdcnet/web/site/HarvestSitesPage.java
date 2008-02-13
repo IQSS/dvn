@@ -44,7 +44,7 @@ import javax.faces.event.ActionEvent;
  *
  * @author Ellen Kraffmiller
  */
-public class HarvestSitesPage extends VDCBaseBean {
+public class HarvestSitesPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB HarvestingDataverseServiceLocal harvestingDataverseService;
     @EJB HarvesterServiceLocal harvesterService;
     @EJB VDCServiceLocal vdcService;

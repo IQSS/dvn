@@ -40,7 +40,7 @@ import javax.faces.event.PhaseListener;
  *
  * @author Ellen Kraffmiller
  */
-public class RestoreViewPhaseListener implements PhaseListener {
+public class RestoreViewPhaseListener implements PhaseListener, java.io.Serializable  {
   
     
      public PhaseId getPhaseId() {

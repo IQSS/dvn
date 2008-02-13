@@ -56,7 +56,7 @@ import javax.servlet.http.HttpSession;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class LoginPage extends VDCBaseBean {
+public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB
     UserServiceLocal userService;

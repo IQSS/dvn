@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class PrivilegedUsersPage extends VDCBaseBean {
+public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB EditVDCPrivilegesService editVDCPrivileges;
     @EJB RoleServiceLocal roleService;

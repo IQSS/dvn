@@ -85,9 +85,9 @@
                                 <h:dataTable  cellpadding="0" cellspacing="0" binding="#{AddFilesPage.filesDataTable}"
                                               columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColC"
                                               headerClass="vdcEditFilesHeader" id="fileDataTable" rowClasses="list-row-even,list-row-odd"
-                                              value="#{AddFilesPage.files}" var="file" width="100%">
+                                              value="#{AddFilesPage.files}" var="file" width="98%">
                                     <h:column id="catCol">
-                                        <ui:panelGroup  block="true" style="white-space: nowrap;">   
+                                        <ui:panelGroup block="true" style="white-space: nowrap;">   
                                             <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box; 
                                             changing them may require corresponding changes in the Javascript  -->
                                             <h:selectBooleanCheckbox id="catCheckbox"  onclick="updateCategory(this);"/>
@@ -96,24 +96,24 @@
                                         <f:facet name="header">
                                             <ui:panelGroup id="catColPanelGroup">
                                                 <h:outputText id="catLabel" value="Category"/>
-                                                <h:selectOneMenu  id="catDropdown" onchange="updateAllCheckedCategories(this);">
+                                                <h:selectOneMenu id="catDropdown" onchange="updateAllCheckedCategories(this);">
                                                     <f:selectItems value="#{AddFilesPage.templateFileCategories}" />
                                                 </h:selectOneMenu>  
                                             </ui:panelGroup>
                                         </f:facet>   
                                     </h:column>
-                                    <h:column  id="column3">
-                                        <h:inputText  id="input_fileName" size="30" value="#{file.studyFile.fileName}" required="true" requiredMessage="This field is required." validator ="#{AddFilesPage.validateFileName}"/>
+                                    <h:column id="column3">
+                                        <h:inputText id="input_fileName" size="30" value="#{file.studyFile.fileName}" required="true" requiredMessage="This field is required." validator ="#{AddFilesPage.validateFileName}"/>
                                         <h:message styleClass="errorMessage" for="input_fileName"/>
                                         <h:message styleClass="errorMessage" for="fileBrowser" rendered="#{AddFilesPage.newFileAdded and AddFilesPage.filesDataTable.rowCount == AddFilesPage.filesDataTable.rowIndex +1}" />
                                         <f:facet name="header">
-                                            <h:outputText  id="input_fileNameHeader2" value="File Name"/>
+                                            <h:outputText id="input_fileNameHeader2" value="File Name"/>
                                         </f:facet>
                                     </h:column>
-                                    <h:column  id="column4">
-                                        <h:inputTextarea  id="textField3" cols="30" rows="2"  value="#{file.studyFile.description}"/>
+                                    <h:column id="column4">
+                                        <h:inputTextarea id="textField3" style="width:90%;" rows="2" value="#{file.studyFile.description}"/>
                                         <f:facet name="header">
-                                            <h:outputText  id="outputText9" value="Description"/>
+                                            <h:outputText id="outputText9" value="Description"/>
                                         </f:facet>
                                     </h:column>
                                     <h:column id="deleteColumn">

@@ -935,7 +935,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         
         xmlw.writeStartElement("fileDscr");
         writeAttribute( xmlw, "ID", "f" + sf.getId().toString() );
-        writeAttribute( xmlw, "URI", createFileURI(sf) );
+        writeAttribute( xmlw, "URI", determineFileURI(sf) );
         
         // fileTxt
         xmlw.writeStartElement("fileTxt");
@@ -1002,7 +1002,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeEndElement(); // fileDscr
     }
 
-    private String createFileURI(StudyFile sf) {
+    private String determineFileURI(StudyFile sf) {
         String fileURI = "";
         Study s = sf.getFileCategory().getStudy();
         
@@ -1018,9 +1018,8 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     private void createOtherMat(XMLStreamWriter xmlw, StudyFile sf) throws XMLStreamException {
         xmlw.writeStartElement("otherMat");
-        //writeAttribute( xmlw, "ID", "" );
         writeAttribute( xmlw, "level", LEVEL_STUDY );
-        writeAttribute( xmlw, "URI", createFileURI(sf) );
+        writeAttribute( xmlw, "URI", determineFileURI(sf) );
 
         xmlw.writeStartElement("labl");
         xmlw.writeCharacters( sf.getFileName() );
@@ -2480,6 +2479,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         String returnString = "";
 
         while (true) {
+            if (returnString != "") { returnString += "\n";}
             int event = xmlr.next();
             if (event == XMLStreamConstants.CHARACTERS) {
                 returnString += xmlr.getText().trim().replace('\n',' ');
@@ -2558,14 +2558,14 @@ public class DDIServiceBean implements DDIServiceLocal {
                         }
                     }
                 } else if (xmlr.getLocalName().equals("holdings")) {
-                    citation += addHoldings ? ", " : "";
+                    holdings += addHoldings ? ", " : "";
                     addHoldings = true;
                     
                     String uri = xmlr.getAttributeValue(null, "URI");
                     if ( StringUtil.isEmpty(uri) ) {
-                        citation += parseText(xmlr);
+                        holdings += parseText(xmlr);
                     } else {
-                        citation += "<a href=\"" + uri + "\">" + parseText(xmlr) + "</a>";
+                        holdings += "<a href=\"" + uri + "\">" + parseText(xmlr) + "</a>";
                     }
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -2587,7 +2587,8 @@ public class DDIServiceBean implements DDIServiceLocal {
         while (true) {
             int event = xmlr.next();
             if (event == XMLStreamConstants.CHARACTERS) {
-                text += xmlr.getText();
+                if (text != "") { text += "\n";}
+                text += xmlr.getText().trim().replace('\n',' ');
             } else if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("ExtLink")) {
                     String mapKey  = "image".equals( xmlr.getAttributeValue(null, "role") ) ? "logo" : "url";

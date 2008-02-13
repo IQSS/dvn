@@ -22,13 +22,12 @@
                 </library>
                 <library files="4">
                     <file>${libs.jsf12-support.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
                     <file>${reference.DVN-ejb.dist}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="3">
+                <library files="4">
                     <file>${libs.dvn-WEB.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -40,7 +39,7 @@
                     <file>${libs.dvn-DDImapping.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="3">
+                <library files="4">
                     <file>${libs.dvn-harvester.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -54,7 +53,7 @@
                     <file>${libs.exceptionhandler-runtime.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="3">
+                <library files="4">
                     <file>${libs.dvn-WEB.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>

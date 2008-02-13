@@ -39,7 +39,7 @@ import javax.faces.webapp.UIComponentTag;
  *
  * @author wbossons
  */
-public class DvnInlineHelpTag extends UIComponentTag {
+public class DvnInlineHelpTag extends UIComponentTag implements java.io.Serializable  {
     
     String helpMessage = null;
     String linkText    = null;

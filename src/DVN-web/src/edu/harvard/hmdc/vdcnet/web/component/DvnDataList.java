@@ -163,7 +163,9 @@ public class DvnDataList extends UICommand {
                 isTarget = true;
             formatHeading(key);
             Map showMap = (Map)this.getAttributes().get("defaultDisplayNumber");
-            defaultDisplayNumber = Integer.parseInt(((Long)showMap.get(key)).toString());//showMap has the same keys as contents
+            defaultDisplayNumber = 0;
+           // defaultDisplayNumber = Integer.parseInt(((Long)showMap.get(key)).toString());//showMap has the same keys as contents
+
             formatChildTable(datalistings, idString, isTarget, pagingDirection, defaultDisplayNumber);
             formatNavigationLinks(idString);
           }

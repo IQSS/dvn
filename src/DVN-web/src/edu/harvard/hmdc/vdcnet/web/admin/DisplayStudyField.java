@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.web.admin;
  *
  * @author roberttreacy
  */
-public class DisplayStudyField {
+public class DisplayStudyField implements java.io.Serializable  {
     
     /** Creates a new instance of DisplayStudyField */
     public DisplayStudyField() {

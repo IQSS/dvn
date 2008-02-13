@@ -90,7 +90,7 @@ import javax.naming.InitialContext;
 
  * @author Jeffrey A. Young, OCLC Online Computer Library Center
  */
-public class DVNOAICatalog extends AbstractCatalog {
+public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializable  {
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.web.oai.catalog.DVNOAICatalog");
     /**
      * maximum number of entries to return for ListRecords and ListIdentifiers

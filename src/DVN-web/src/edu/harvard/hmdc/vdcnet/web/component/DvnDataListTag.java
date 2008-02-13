@@ -40,7 +40,7 @@ import javax.faces.webapp.UIComponentTag;
  *
  * @author wbossons
  */
-public class DvnDataListTag  extends UIComponentTag {
+public class DvnDataListTag  extends UIComponentTag  implements java.io.Serializable  {
     
     private ValueExpression contents;
     private ValueExpression tabs;

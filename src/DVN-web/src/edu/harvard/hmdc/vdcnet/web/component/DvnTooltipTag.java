@@ -39,7 +39,7 @@ import javax.faces.webapp.UIComponentTag;
  *
  * @author wbossons
  */
-public class DvnTooltipTag extends UIComponentTag {
+public class DvnTooltipTag extends UIComponentTag implements java.io.Serializable  {
     
     String tooltipMessage = null;
     String linkText     = null;

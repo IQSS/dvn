@@ -39,7 +39,7 @@ import javax.faces.webapp.UIComponentTag;
  *
  * @author wbossons
  */
-public class DvnInlineHelpSupportTag extends UIComponentTag {
+public class DvnInlineHelpSupportTag extends UIComponentTag implements java.io.Serializable  {
     
     String writeHelpDiv = null;
     String writeTipDiv  = null;

@@ -37,7 +37,7 @@ import javax.faces.context.ResponseWriter;
  *
  * @author wbossons
  */
-public class DvnTooltip extends UIComponentBase {
+public class DvnTooltip extends UIComponentBase implements java.io.Serializable  {
     
     /** Creates a new instance of DvnTooltip */
     public DvnTooltip() {

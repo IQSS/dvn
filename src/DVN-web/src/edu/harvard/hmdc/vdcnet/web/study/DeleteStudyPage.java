@@ -46,7 +46,7 @@ import javax.naming.NamingException;
  * to respond to incoming events.</p>
  */
 @EJB(name="editStudy", beanInterface=edu.harvard.hmdc.vdcnet.study.EditStudyService.class)
-public class DeleteStudyPage extends VDCBaseBean {
+public class DeleteStudyPage extends VDCBaseBean implements java.io.Serializable  {
     EditStudyService editStudyService;
     @EJB StudyServiceLocal studyService;
     

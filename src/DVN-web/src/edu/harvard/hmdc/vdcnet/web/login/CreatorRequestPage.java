@@ -43,7 +43,7 @@ import javax.faces.event.ActionEvent;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class CreatorRequestPage extends VDCBaseBean {
+public class CreatorRequestPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB NetworkRoleServiceLocal networkRoleService;
     @EJB EditUserService editService;
     @EJB RoleServiceLocal roleService;

@@ -50,7 +50,7 @@ import javax.naming.NamingException;
  * to respond to incoming events.</p>
  */
 
-public class DeleteDataversePage extends VDCBaseBean {
+public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;
     
     HtmlInputHidden hiddenVdcId;

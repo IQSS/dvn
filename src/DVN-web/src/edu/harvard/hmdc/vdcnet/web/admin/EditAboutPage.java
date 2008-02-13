@@ -46,10 +46,9 @@ import javax.faces.context.FacesContext;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class EditAboutPage extends VDCBaseBean {
-    @EJB VDCServiceLocal vdcService;
+public class EditAboutPage extends VDCBaseBean implements java.io.Serializable {
     @EJB VDCNetworkServiceLocal vdcNetworkService;
-    
+    @EJB VDCServiceLocal vdcService;
     private String ERROR_MESSAGE   = new String("An Error Occurred.");
     private String SUCCESS_MESSAGE = new String("Update Successful! Go to About to see your changes.");
     

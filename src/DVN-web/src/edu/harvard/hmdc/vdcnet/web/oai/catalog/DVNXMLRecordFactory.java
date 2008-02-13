@@ -51,7 +51,7 @@ import java.util.Properties;
  * element of an OAI GetRecord response, with the possible exception that the
  * <metadata> element contains multiple metadataFormats from which to choose.
  */
-public class DVNXMLRecordFactory extends RecordFactory {
+public class DVNXMLRecordFactory extends RecordFactory implements java.io.Serializable  {
     private static final String identifierStart = "<identifier>";
     private static final String identifierEnd = "</identifier>";
     private static final String datestampStart = "<datestamp>";

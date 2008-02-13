@@ -39,7 +39,7 @@ import java.util.Comparator;
  *
  * @author wbossons
  */
-public class DataListingComparator implements Comparator {
+public class DataListingComparator implements Comparator , java.io.Serializable  {
     
     /** Creates a new instance of DataListingComparator */
     public DataListingComparator() {

@@ -44,7 +44,7 @@ import javax.faces.component.html.HtmlInputHidden;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class ContributorRequestPage extends VDCBaseBean {
+public class ContributorRequestPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB RoleRequestServiceLocal roleRequestService;
     @EJB UserServiceLocal userService;
     @EJB RoleServiceLocal roleService;

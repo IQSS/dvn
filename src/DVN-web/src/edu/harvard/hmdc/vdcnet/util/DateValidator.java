@@ -44,7 +44,7 @@ import javax.faces.validator.Validator;
  *
  * @author gdurand
  */
-public class DateValidator implements Validator {
+public class DateValidator implements Validator, java.io.Serializable  {
     
     /** Creates a new instance of DateValidator */
     public DateValidator() {

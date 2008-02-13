@@ -37,7 +37,7 @@ import javax.faces.context.ResponseWriter;
  * @version
  */
 
-public class DvnInlineHelpSupport extends UIComponentBase {
+public class DvnInlineHelpSupport extends UIComponentBase implements java.io.Serializable  {
     
     /** Creates new instance of tag handler */
     public DvnInlineHelpSupport() {

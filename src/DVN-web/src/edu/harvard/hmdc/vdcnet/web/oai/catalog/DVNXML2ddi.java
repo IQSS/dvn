@@ -52,7 +52,7 @@ import ORG.oclc.oai.server.verb.CannotDisseminateFormatException;
  * be present in the <metadata> element. The "crosswalk", merely
  * involves pulling out the one that is requested.
  */
-public class DVNXML2ddi extends Crosswalk {
+public class DVNXML2ddi extends Crosswalk implements java.io.Serializable  {
     private static final String elementName = "codeBook";
     private static final String elementStart = "<" + elementName;
     private static final String elementEnd = elementName + ">";

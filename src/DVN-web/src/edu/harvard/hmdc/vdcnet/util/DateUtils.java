@@ -37,7 +37,7 @@ import java.text.DateFormat;
  *
  * @author wbossons
  */
-public class DateUtils {
+public class DateUtils implements java.io.Serializable {
 
     public DateUtils() {
     }

@@ -37,7 +37,7 @@ import java.util.Iterator;
  *
  * @author Ellen Kraffmiller
  */
-public class UserGroupsInfoBean {
+public class UserGroupsInfoBean  implements java.io.Serializable {
     
     /** Creates a new instance of UserGroupsInfoBean */
     public UserGroupsInfoBean() {

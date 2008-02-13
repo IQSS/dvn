@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  * or method binding expression that references a managed bean using
  * this class.</p>
  */
-public class VDCRequestBean extends AbstractRequestBean {
+public class VDCRequestBean extends AbstractRequestBean implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;   
     @EJB PageDefServiceLocal pageDefService;

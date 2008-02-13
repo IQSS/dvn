@@ -49,7 +49,7 @@ import javax.faces.el.MethodBinding;
  *
  * @author gdurand
  */
-public class VDCCollectionTree {
+public class VDCCollectionTree implements java.io.Serializable  {
     
     /** Creates a new instance of VDCCollectionTree */
     public VDCCollectionTree() {

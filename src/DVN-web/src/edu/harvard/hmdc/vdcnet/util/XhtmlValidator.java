@@ -47,7 +47,7 @@ import org.w3c.dom.NodeList;
  *
  * @author wbossons
  */
-public class XhtmlValidator implements Validator {
+public class XhtmlValidator implements Validator, java.io.Serializable  {
     private static String msg = new String();
 
     public String partOneClientId = new String("content:editBannerFooterView:editBannerFooterForm:banner");

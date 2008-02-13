@@ -48,7 +48,7 @@ import javax.servlet.ServletContextListener;
  @EJB(name="harvestingDataverseService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal.class),
  @EJB(name="vdcNetworkService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal.class)
 })
-public class VDCContextListener implements ServletContextListener {
+public class VDCContextListener implements ServletContextListener, java.io.Serializable  {
   
 
     public void contextDestroyed(ServletContextEvent event) {

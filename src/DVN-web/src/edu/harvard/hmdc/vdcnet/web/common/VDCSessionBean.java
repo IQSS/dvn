@@ -47,7 +47,7 @@ import javax.servlet.http.HttpSession;
  * or method binding expression that references a managed bean using
  * this class.</p>
  */
-public class VDCSessionBean extends AbstractSessionBean {
+public class VDCSessionBean extends AbstractSessionBean implements java.io.Serializable  {
     @EJB GroupServiceLocal groupServiceLocal; 
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;

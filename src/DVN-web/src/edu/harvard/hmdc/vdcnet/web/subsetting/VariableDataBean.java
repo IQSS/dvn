@@ -34,7 +34,7 @@ package edu.harvard.hmdc.vdcnet.web.subsetting;
  *
  * @author Administrator
  */
-public class VariableDataBean {
+public class VariableDataBean  implements java.io.Serializable {
     
       private String variableId;
       private String variableName;

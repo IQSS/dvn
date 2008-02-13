@@ -35,7 +35,7 @@ import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
  *
  * @author wbossons
  */
-public class WebStatisticsPage extends VDCBaseBean {
+public class WebStatisticsPage extends VDCBaseBean implements java.io.Serializable  {
     
     /** Creates a new instance of WebStatisticsPage */
     public WebStatisticsPage() {

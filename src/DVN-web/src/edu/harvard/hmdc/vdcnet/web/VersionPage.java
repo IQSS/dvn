@@ -18,7 +18,7 @@ import javax.ejb.EJB;
  *
  * @author roberttreacy
  */
-public class VersionPage extends VDCBaseBean {
+public class VersionPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB DVNVersionServiceLocal dvnVersionService;
     
     public void init() {

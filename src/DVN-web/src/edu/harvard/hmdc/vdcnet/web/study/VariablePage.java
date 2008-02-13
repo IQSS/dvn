@@ -38,7 +38,7 @@ import javax.ejb.EJB;
  *
  * @author gdurand
  */
-public class VariablePage extends VDCBaseBean {
+public class VariablePage extends VDCBaseBean implements java.io.Serializable  {
     
     @EJB VariableServiceLocal varService;
     

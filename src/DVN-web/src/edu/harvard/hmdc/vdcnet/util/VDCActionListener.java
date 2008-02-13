@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author wbossons
  */
-public class VDCActionListener extends ActionListenerImpl implements ActionListener{  
+public class VDCActionListener extends ActionListenerImpl implements ActionListener, java.io.Serializable {  
     
     public void processAction(ActionEvent action){
         try {

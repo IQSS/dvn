@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Ellen Kraffmiller
  */
-public class VDCBaseBean extends  com.sun.rave.web.ui.appbase.AbstractPageBean {
+public class VDCBaseBean extends  com.sun.rave.web.ui.appbase.AbstractPageBean implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;   
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     /**

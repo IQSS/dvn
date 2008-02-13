@@ -72,7 +72,7 @@ import javax.faces.FacesException;
  * or method binding expression that references a managed bean using
  * this class.</p>
  */
-public class VDCApplicationBean extends AbstractApplicationBean {
+public class VDCApplicationBean extends AbstractApplicationBean implements java.io.Serializable  {
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
 

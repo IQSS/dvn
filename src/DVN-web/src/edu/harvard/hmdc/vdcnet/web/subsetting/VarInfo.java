@@ -34,7 +34,7 @@ package edu.harvard.hmdc.vdcnet.web.subsetting;
  *
  * @author Administrator
  */
-public class VarInfo {
+public class VarInfo implements java.io.Serializable  {
 	private Boolean checked;
 	private String varType;
 	private Long varId;

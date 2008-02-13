@@ -39,7 +39,7 @@ import java.util.List;
  *
  * @author gdurand
  */
-public class VDCUI {
+public class VDCUI  implements java.io.Serializable {
     
     VDC vdc;
     

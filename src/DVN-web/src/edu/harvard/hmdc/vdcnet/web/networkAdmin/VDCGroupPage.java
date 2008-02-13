@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author wbossons
  */
-public class VDCGroupPage extends VDCBaseBean {
+public class VDCGroupPage extends VDCBaseBean implements java.io.Serializable  {
      @EJB VDCGroupServiceLocal vdcGroupService;
      @EJB VDCServiceLocal vdcService;
      @EJB VDCNetworkServiceLocal vdcNetworkService;

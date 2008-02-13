@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.web.common;
  *
  * @author Ellen Kraffmiller
  */
-public final class StudyFieldConstant {
+public final class StudyFieldConstant implements java.io.Serializable  {
     
     private final String title = "title";
     private final String subTitle="subTitle";

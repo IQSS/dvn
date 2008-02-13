@@ -54,7 +54,7 @@ import java.util.Map;
  * demonstrates how a component can do decoding and encoding
  * without delegating it to a renderer.
  */
-public class ScrollerComponent extends UICommand {
+public class ScrollerComponent extends UICommand implements java.io.Serializable  {
 
     private static final String NORTH = "NORTH";
     private static final String SOUTH = "SOUTH";

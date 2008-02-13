@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author wbossons
  */
-public class StatisticsReportRunner extends Thread {
+public class StatisticsReportRunner extends Thread implements java.io.Serializable  {
 
     InputStream inputStream;
     String type;

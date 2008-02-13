@@ -35,7 +35,7 @@ import edu.harvard.hmdc.vdcnet.study.Study;
  *
  * @author Ellen Kraffmiller
  */
-public class StudyFormBean {
+public class StudyFormBean implements java.io.Serializable  {
     
     /** Creates a new instance of StudyFormBean */
     public StudyFormBean() {

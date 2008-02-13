@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Ellen Kraffmiller
  */
-public class StudyFileUI {
+public class StudyFileUI implements java.io.Serializable  {
     
     /** Creates a new instance of StudyFileUI */
     public StudyFileUI() {

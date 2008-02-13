@@ -54,6 +54,11 @@ public class TermsOfUsePage extends VDCBaseBean {
     private String redirectPage;
     private String touParam;  // Describes type of terms of use to be displayed (download or deposit)
     private HtmlInputHidden hiddenTou;
+    private boolean downloadDataverseTermsRequired;
+    private boolean downloadDvnTermsRequired;
+    private boolean downloadStudyTermsRequired;
+    private boolean depositDataverseTermsRequired;
+    private boolean depositDvnTermsRequired;
 
     public HtmlInputHidden getHiddenTou() {
         return hiddenTou;
@@ -139,12 +144,13 @@ public class TermsOfUsePage extends VDCBaseBean {
         }
         if (studyId != null) {
             setStudy(studyService.getStudyDetail(studyId));
-        }          
+        }  
+        setRequiredFlags();
+      
     }       
     
     
    
-    private boolean termsAccepted;
     
     public boolean isTermsAcceptanceRequired() {
         return isDownloadDataverseTermsRequired() || isDownloadStudyTermsRequired();
@@ -153,26 +159,36 @@ public class TermsOfUsePage extends VDCBaseBean {
     public void setTermsAcceptanceRequired(boolean termsAcceptanceRequired) {} // dummy method since the get is just a wrapper
     
     public boolean isDownloadDataverseTermsRequired() {
-        return  TermsOfUseFilter.isDownloadDataverseTermsRequired(study, getTermsOfUseMap());
+        return downloadDataverseTermsRequired;
     }
 
     public boolean isDownloadStudyTermsRequired() {
-        return  TermsOfUseFilter.isDownloadStudyTermsRequired(study, getTermsOfUseMap());
+        return  downloadStudyTermsRequired;
     }     
     
     public boolean isDownloadDvnTermsRequired() {
-        return   TermsOfUseFilter.isDownloadDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap()); 
+        return   downloadDvnTermsRequired; 
     }
     
     public boolean isDepositDataverseTermsRequired() {
-        return  TermsOfUseFilter.isDepositDataverseTermsRequired(getVDCRequestBean().getCurrentVDC(), getTermsOfUseMap());
+        return  depositDataverseTermsRequired;
     }
     
     public boolean isDepositDvnTermsRequired() {
-        return   TermsOfUseFilter.isDepositDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap()); 
+        return   depositDvnTermsRequired; 
     }
  
+    private boolean termsAccepted;
  
+    private String test;
+
+    public String getTest() {
+        return test;
+    }
+
+    public void setTest(String test) {
+        this.test = test;
+    }
 
     public boolean isTermsAccepted() {
         return termsAccepted;
@@ -228,6 +244,14 @@ public class TermsOfUsePage extends VDCBaseBean {
         } else {
             return getVDCSessionBean().getTermsfUseMap();
         }        
+    }
+    
+    private void setRequiredFlags() {
+          downloadDataverseTermsRequired = TermsOfUseFilter.isDownloadDataverseTermsRequired(study, getTermsOfUseMap());
+          downloadStudyTermsRequired = TermsOfUseFilter.isDownloadStudyTermsRequired(study, getTermsOfUseMap());
+          downloadDvnTermsRequired =  TermsOfUseFilter.isDownloadDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap()); 
+          depositDataverseTermsRequired = TermsOfUseFilter.isDepositDataverseTermsRequired(getVDCRequestBean().getCurrentVDC(), getTermsOfUseMap());
+          depositDvnTermsRequired = TermsOfUseFilter.isDepositDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap()); 
     }
 
 }

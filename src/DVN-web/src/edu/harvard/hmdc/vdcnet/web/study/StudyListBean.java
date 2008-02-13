@@ -42,7 +42,7 @@ import javax.faces.context.FacesContext;
  *
  * @author Ellen Kraffmiller
  */
-public class StudyListBean extends VDCBaseBean{
+public class StudyListBean extends VDCBaseBean  implements java.io.Serializable {
     @EJB StudyServiceLocal studyService;
     @EJB EditStudyService editStudyService;
     @EJB VDCServiceLocal vdcService;

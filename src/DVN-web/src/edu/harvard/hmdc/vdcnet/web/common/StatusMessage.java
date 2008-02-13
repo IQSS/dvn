@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.web.common;
  *
  * @author roberttreacy
  */
-public class StatusMessage {
+public class StatusMessage implements java.io.Serializable  {
     
     /** Creates a new instance of StatusMessage */
     public StatusMessage() {

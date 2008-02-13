@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author wbossons
  */
-public class UrlValidator implements Validator {
+public class UrlValidator implements Validator, java.io.Serializable  {
     
     private static String msg = new String();
     

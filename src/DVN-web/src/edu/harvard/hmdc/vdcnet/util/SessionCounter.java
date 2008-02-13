@@ -36,7 +36,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Ellen Kraffmiller
  */
-public class SessionCounter {
+public class SessionCounter implements java.io.Serializable  {
     
     /** Creates a new instance of SessionCounter */
     public SessionCounter() {

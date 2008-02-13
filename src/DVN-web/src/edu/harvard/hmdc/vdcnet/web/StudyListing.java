@@ -42,7 +42,7 @@ import org.apache.commons.collections.map.LinkedMap;
  *
  * @author gdurand
  */
-public class StudyListing {
+public class StudyListing  implements java.io.Serializable {
     public static final int INCORRECT_VDC           = -2;
     public static final int EXPIRED_LIST            = -1;
     public static final int GENERIC_ERROR           =  0;

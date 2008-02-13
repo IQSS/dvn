@@ -45,7 +45,7 @@ import java.util.Iterator;
  *
  * @author Ellen Kraffmiller
  */
-public class StudyDisplayBean {
+public class StudyDisplayBean implements java.io.Serializable  {
     
     /** Creates a new instance of StudyDisplayBean */
     public StudyDisplayBean() {

@@ -62,7 +62,7 @@ import javax.naming.InitialContext;
  *
  * @author gdurand
  */
-public class StudyUI {
+public class StudyUI  implements java.io.Serializable {
 
     private Study study;
     private Long studyId;

@@ -72,7 +72,7 @@ import org.apache.commons.collections.map.LinkedMap;
  *
  * @author gdurand
  */
-public class SearchPage extends VDCBaseBean{
+public class SearchPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCCollectionServiceLocal vdcCollectionService;
     @EJB StudyServiceLocal studyService;

@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 
 
 
-public class SiteStatistics extends VDCBaseBean {
+public class SiteStatistics extends VDCBaseBean implements java.io.Serializable  {
 
     private int startMonth = 7; // the default start month is July
     private int endMonth = 6; // the default end month is June.

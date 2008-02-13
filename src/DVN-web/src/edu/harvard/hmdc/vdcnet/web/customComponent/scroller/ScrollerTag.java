@@ -50,7 +50,7 @@ import edu.harvard.hmdc.vdcnet.web.customComponent.scroller.ScrollerComponent;
 /**
  * <p> ScrollerTag is the tag handler class for <code>ScrollerComponent.
  */
-public class ScrollerTag extends UIComponentELTag {
+public class ScrollerTag extends UIComponentELTag implements java.io.Serializable  {
 
     protected MethodExpression actionListener = null;
     protected ValueExpression navFacetOrientation = null;

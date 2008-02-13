@@ -35,7 +35,7 @@ import edu.harvard.hmdc.vdcnet.study.TemplateField;
  *
  * @author Ellen Kraffmiller
  */
-public class StudyMapValue {
+public class StudyMapValue implements java.io.Serializable  {
     
     /**
      * Creates a new instance of StudyMapValue

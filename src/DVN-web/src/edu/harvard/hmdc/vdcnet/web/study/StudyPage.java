@@ -58,7 +58,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Ellen Kraffmiller
  */
-public class StudyPage extends VDCBaseBean {
+public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB
     private StudyServiceLocal studyService;

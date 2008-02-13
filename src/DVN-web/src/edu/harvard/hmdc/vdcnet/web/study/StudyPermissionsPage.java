@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class StudyPermissionsPage extends VDCBaseBean {
+public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB
     private EditStudyPermissionsService editStudyPermissions;
     @EJB

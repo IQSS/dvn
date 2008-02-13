@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.web.collection;
  *
  * @author roberttreacy
  */
-public class CollectionModel {
+public class CollectionModel implements java.io.Serializable  {
     
     /** Creates a new instance of CollectionModel */
     public CollectionModel() {

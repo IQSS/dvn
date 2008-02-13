@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
  *
  * @author wbossons
  */
-public class BundleReader {
+public class BundleReader implements java.io.Serializable  {
     private String messageKey;
     private String bundleName;
     private String messageValue;

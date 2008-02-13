@@ -38,7 +38,7 @@ import javax.ejb.EJB;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class AccountPage extends VDCBaseBean {
+public class AccountPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB UserServiceLocal userService;
     
 

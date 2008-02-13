@@ -86,7 +86,7 @@ import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 import java.io.*;
 
 
-public class AnalysisPage extends VDCBaseBean {
+public class AnalysisPage extends VDCBaseBean implements java.io.Serializable  {
 
 // <editor-fold desc="inital settings">
   

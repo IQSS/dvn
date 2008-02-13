@@ -45,7 +45,7 @@ import org.ajax4jsf.framework.ajax.AjaxContext;
  *
  * @author Wendy Bossons
  */
-public class AjaxPhaseListener implements PhaseListener {
+public class AjaxPhaseListener implements PhaseListener, java.io.Serializable {
   
     
      public PhaseId getPhaseId() {

@@ -37,7 +37,7 @@ import java.util.regex.*;
 *  AdvancedStatGUIdata
 *
 */
-public class AdvancedStatGUIdata {
+public class AdvancedStatGUIdata  implements java.io.Serializable {
     // static fields
     
     private static String regex = "/zelig/doc/";

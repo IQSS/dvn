@@ -44,7 +44,7 @@ import javax.ejb.EJB;
  *
  * @author wbossons
  */
-public class CollectionTreeBuilder extends VDCBaseBean {
+public class CollectionTreeBuilder extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;
     @EJB StudyServiceLocal studyService;
     @EJB IndexServiceLocal indexService;

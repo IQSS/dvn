@@ -58,7 +58,7 @@ import java.util.*;
  *
  * @author gdurand
  */
-public class AddFilesPage extends VDCBaseBean {
+public class AddFilesPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB EditStudyService studyService;
     @EJB StudyServiceLocal fileSystemNameService;
     private static Map<String, String> STATISTICAL_SYNTAX_FILE_EXTENSION = new HashMap<String, String>();

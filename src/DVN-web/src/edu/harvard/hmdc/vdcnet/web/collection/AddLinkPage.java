@@ -50,7 +50,7 @@ import javax.faces.component.html.HtmlSelectOneMenu;
  *
  * @author roberttreacy
  */
-public class AddLinkPage extends VDCBaseBean {
+public class AddLinkPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCCollectionServiceLocal vdcCollectionService;
     private Map collectionsMap = new HashMap();

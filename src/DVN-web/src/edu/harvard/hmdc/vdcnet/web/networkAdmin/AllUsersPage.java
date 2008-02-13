@@ -44,7 +44,7 @@ import javax.faces.event.ActionEvent;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class AllUsersPage extends VDCBaseBean {
+public class AllUsersPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB UserServiceLocal userService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     private HtmlDataTable dataTable;

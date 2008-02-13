@@ -39,7 +39,7 @@ import javax.ejb.EJB;
  *
  * @author Gustavo Durand
  */
-public class AccountTermsOfUsePage extends VDCBaseBean {
+public class AccountTermsOfUsePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB UserServiceLocal userService;
     private String termsOfUse; 
     @EJB VDCNetworkServiceLocal vdcNetworkService;

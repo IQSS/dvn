@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author wbossons
  */
-public class AllPhaseListener implements PhaseListener {
+public class AllPhaseListener implements PhaseListener, java.io.Serializable  {
   
     
      public PhaseId getPhaseId() {

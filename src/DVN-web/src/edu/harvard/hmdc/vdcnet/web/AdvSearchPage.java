@@ -87,7 +87,7 @@ import java.util.Map;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class AdvSearchPage extends VDCBaseBean {
+public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCCollectionServiceLocal vdcCollectionService;
     @EJB IndexServiceLocal indexServiceBean;

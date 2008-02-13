@@ -69,7 +69,7 @@ import com.sun.rave.web.ui.model.Separator;
  * or method binding expression that references a managed bean using
  * this class.</p>
  */
-public class AnalysisApplicationBean extends AbstractApplicationBean {
+public class AnalysisApplicationBean extends AbstractApplicationBean implements java.io.Serializable  {
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
     protected static Zelig zlg;

@@ -42,7 +42,7 @@ import javax.faces.validator.Validator;
  *
  * @author wbossons
  */
-public class CharacterValidator implements Validator {
+public class CharacterValidator implements Validator, java.io.Serializable  {
     private static String msg = new String();
     
     /** Creates a new instance of CharacterValidator */

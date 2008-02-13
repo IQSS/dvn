@@ -38,7 +38,7 @@ import java.util.Iterator;
  *
  * @author Ellen Kraffmiller
  */
-public class AllUsersDataBean {
+public class AllUsersDataBean implements java.io.Serializable  {
     
     /**
      * Creates a new instance of AllUsersDataBean

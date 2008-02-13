@@ -46,7 +46,7 @@ import javax.naming.NamingException;
  *
  * @author gdurand
  */
-public class CollectionUI {
+public class CollectionUI implements java.io.Serializable  {
     
     VDCCollection coll;
     

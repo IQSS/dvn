@@ -60,7 +60,6 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.MethodExpressionActionListener;
-import javax.servlet.http.HttpServletResponse;
 import org.ajax4jsf.ajax.html.HtmlAjaxCommandLink;
 
 
@@ -154,7 +153,7 @@ public class DvnDataList extends UICommand {
           String key = iterator.next().toString();
           Object object = map.get(key);
           List<DataListing> datalistings = (List<DataListing>)map.get(key);
-          if (datalistings.isEmpty()) { //TODO: remove and test this.
+          if (datalistings.isEmpty()) { 
               continue;
           } else {
               String idString = formatSafeKey(key);
@@ -167,7 +166,8 @@ public class DvnDataList extends UICommand {
            // defaultDisplayNumber = Integer.parseInt(((Long)showMap.get(key)).toString());//showMap has the same keys as contents
 
             formatChildTable(datalistings, idString, isTarget, pagingDirection, defaultDisplayNumber);
-            formatNavigationLinks(idString);
+            if (datalistings.size() > defaultDisplayNumber)
+                 formatNavigationLinks(idString);
           }
         }
         writer.endElement("div");
@@ -192,7 +192,6 @@ public class DvnDataList extends UICommand {
     
     @Override
     public void decode(FacesContext context) {
-        System.out.println("in the decode . . .");
         String clientId = getClientId(context);
 
         if (this.getAttributes().get("lastRecord") == null) {
@@ -297,10 +296,10 @@ public class DvnDataList extends UICommand {
         int startPos     = 0;
         int startCount   = 0;//count is used to track lastRecords for ajaxed transactions.
         int endCount   = 0;//count is used to track lastRecords for ajaxed transactions.
-        if (totalColumns <= ndvs.size())
+        if (defaultDisplayNumber < ndvs.size())
             startNew = setColumnLength(defaultDisplayNumber, totalColumns);
-        else
-            startNew = setColumnLength(totalColumns);
+        else 
+            startNew = setColumnLength(ndvs.size(), totalColumns);
         
         HtmlPanelGrid childTable = new HtmlPanelGrid();
         childTable = new HtmlPanelGrid(); // start the child table which eventually must be added to the view

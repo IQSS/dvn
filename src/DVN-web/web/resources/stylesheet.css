@@ -655,6 +655,7 @@ span.vdcSResultsField {
 /* Edit Study/Files style rules
 */
 .vdcEditFilesColA{
+   width: 25%;
    padding-bottom: 2px;
    padding-left: 1px;
    padding-right: 1px;
@@ -662,6 +663,7 @@ span.vdcSResultsField {
 }
 
 .vdcEditFilesColB{
+   width: 35%;
    padding-bottom: 2px;
    padding-left: 1px;
    padding-right: 1px;
@@ -670,6 +672,7 @@ span.vdcSResultsField {
 }
 
 .vdcEditFilesColC{
+   width: 10%;
    padding-bottom: 2px;
    padding-left: 1px;
    padding-right: 1px;

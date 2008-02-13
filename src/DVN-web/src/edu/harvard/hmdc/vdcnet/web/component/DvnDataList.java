@@ -31,6 +31,7 @@ package edu.harvard.hmdc.vdcnet.web.component;
 
 import com.sun.rave.web.ui.component.Hyperlink;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.String;
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -162,8 +163,7 @@ public class DvnDataList extends UICommand {
                 isTarget = true;
             formatHeading(key);
             Map showMap = (Map)this.getAttributes().get("defaultDisplayNumber");
-            defaultDisplayNumber = 0;
-           // defaultDisplayNumber = Integer.parseInt(((Long)showMap.get(key)).toString());//showMap has the same keys as contents
+           defaultDisplayNumber = Integer.parseInt(((Long)showMap.get(key)).toString());//showMap has the same keys as contents
 
             formatChildTable(datalistings, idString, isTarget, pagingDirection, defaultDisplayNumber);
             if (datalistings.size() > defaultDisplayNumber)

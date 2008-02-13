@@ -8,7 +8,7 @@
             <minimum-ant-version>1.6</minimum-ant-version>
             <included-library files="3">libs.dvn-DDImapping.classpath</included-library>
             <included-library files="5">libs.dvn-EJB.classpath</included-library>
-            <included-library files="3">libs.dvn-harvester.classpath</included-library>
+            <included-library files="4">libs.dvn-harvester.classpath</included-library>
             <included-library files="3">libs.dvn-jhove.classpath</included-library>
             <source-roots>
                 <root id="src.dir"/>
@@ -18,4 +18,5 @@
             </test-roots>
         </data>
     </configuration>
+
 </project>

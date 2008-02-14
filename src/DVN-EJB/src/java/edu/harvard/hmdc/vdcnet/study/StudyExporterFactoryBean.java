@@ -25,8 +25,7 @@ import javax.ejb.Stateless;
  */
 @Stateless
 public class StudyExporterFactoryBean implements StudyExporterFactoryLocal, java.io.Serializable {
-    @EJB DDIServiceLocal testDDIService;
-    @EJB DDI20ServiceLocal ddiService;
+    @EJB DDIServiceLocal ddiService;
     @EJB DCServiceLocal dcService;
     @EJB MarcServiceLocal marcService;
   
@@ -46,17 +45,7 @@ public class StudyExporterFactoryBean implements StudyExporterFactoryLocal, java
     
     public StudyExporter getStudyExporter(String exportFormat) {
         if (exportFormat.equals(EXPORT_FORMAT_DDI)) { 
-
-            int exportMode = 0;
-            try {
-                exportMode = Integer.parseInt( System.getProperty("dvn.test.export.mode") );
-            } catch (Exception e) {}
-
-            if (exportMode >= 2) {
-                return testDDIService;
-            } else {
-                return ddiService;
-            }
+            return ddiService;
         } else if (exportFormat.equals(EXPORT_FORMAT_DC)) {
             return dcService;
         } else if (exportFormat.equals(EXPORT_FORMAT_MARC)) {

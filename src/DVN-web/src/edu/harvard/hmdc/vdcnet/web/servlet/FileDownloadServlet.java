@@ -72,9 +72,15 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod; 
 import org.apache.commons.httpclient.methods.PostMethod; 
 
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+
 /**
  *
  * @author gdurand
+ * @author landreev
  */
 public class FileDownloadServlet extends HttpServlet{
 
@@ -941,24 +947,65 @@ public class FileDownloadServlet extends HttpServlet{
 	// TODO: (?) make the default thumb size configurable
 	// through a JVM option??
 	
-	String ImageMagick = "/usr/bin/convert -size 64x64 " + fileLocation + " -resize 64 " +  thumbFileLocation; 
-	int exitValue = 1; 
 	
+	if (new File ("/usr/bin/convert").exists()) {
+
+	    String ImageMagick = "/usr/bin/convert -size 64x64 " + fileLocation + " -resize 64 " +  thumbFileLocation; 
+	    int exitValue = 1; 
+	
+	    try {
+		Runtime runtime = Runtime.getRuntime();
+		Process process = runtime.exec(ImageMagick);
+		exitValue = process.waitFor(); 
+	    } catch (Exception e) {
+		exitValue = 1; 
+	    }
+
+	    if ( exitValue == 0 ) {
+		return true; 
+	    }
+	}
+
+	// For whatever reason, creating the thumbnail with ImageMagick
+	// has failed. 
+	// Let's try again, this time with Java's standard Image 
+	// library:
+
 	try {
-	    Runtime runtime = Runtime.getRuntime();
-	    Process process = runtime.exec(ImageMagick);
-	    exitValue = process.waitFor(); 
+	    BufferedImage fullSizeImage = ImageIO.read (new File(fileLocation)); 
+
+	    double scaleFactor = ((double)64)/(double) fullSizeImage.getWidth(null); 
+	    int thumbHeight = (int) (fullSizeImage.getHeight(null) * scaleFactor); 
+
+	    java.awt.Image thumbImage = fullSizeImage.getScaledInstance(64, thumbHeight, java.awt.Image.SCALE_FAST); 
+
+	    ImageWriter writer = null;
+	    Iterator iter = ImageIO.getImageWritersByFormatName("png");
+	    if (iter.hasNext()) {
+		writer = (ImageWriter) iter.next();
+	    } else {
+		return false; 
+	    }
+
+	    BufferedImage lowRes = new BufferedImage(64, thumbHeight, BufferedImage.TYPE_INT_RGB);
+	    lowRes.getGraphics().drawImage(thumbImage, 0, 0, null);
+	    
+	    ImageOutputStream ios = ImageIO.createImageOutputStream(new File (thumbFileLocation));
+	    writer.setOutput(ios);
+
+	    // finally, save thumbnail image: 
+	    writer.write(lowRes);
+	    writer.dispose();
+
+	    ios.close();
+	    thumbImage.flush();
+	    fullSizeImage.flush();
+	    lowRes.flush();
+	    return true;
 	} catch (Exception e) {
+	    // something went wrong, returning "false":
 	    return false; 
 	}
-
-	if ( exitValue == 0 ) {
-	    return true; 
-	}
-
-	// something failed, returning "false":
-
-	return false;
     }
 
     private String generateAltFileName(String formatRequested, String xfileId) {

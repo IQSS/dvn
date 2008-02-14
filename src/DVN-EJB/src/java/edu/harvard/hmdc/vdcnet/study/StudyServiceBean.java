@@ -1010,17 +1010,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     private Study doImportStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
-            int importMode = 0;
-            try {
-                importMode = Integer.parseInt( System.getProperty("dvn.test.import.mode") );
-            } catch (Exception e) {}
-
-            if (importMode == 1) {
-                return doImportStudyStax(xmlFile, harvestFormatTypeId, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
-            } else {
-                return doImportStudyJAXB(xmlFile, harvestFormatTypeId, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
-            }
-        
+        return doImportStudyStax(xmlFile, harvestFormatTypeId, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
     }
 
     private Study doImportStudyJAXB(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {

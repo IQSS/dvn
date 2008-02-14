@@ -576,6 +576,27 @@ public class FileDownloadServlet extends HttpServlet{
 			    }
 			}
 
+			// open the appropriate physical file
+
+			File inFile = null; 
+
+			// but first, see if they have requested a 
+			// thumbnail for an image, or if it's a request
+			// for the datafile in the "original format":
+			
+			if ( imageThumb != null && dbContentType.substring(0, 6).equalsIgnoreCase ("image/") ) {
+			    if ( generateImageThumb(file.getFileSystemLocation()) ) {
+				inFile = new File (file.getFileSystemLocation() + ".thumb"); 
+				dbContentType = "image/png";
+			    }
+			} else { 
+			    inFile = new File(file.getFileSystemLocation());  
+
+			    if ( downloadOriginalFormat != null ) {
+				inFile = new File ( inFile.getParent(), "_" + file.getFileSystemName()); 
+			    }
+			} 
+
 			if ( dbFileName != null ) {
 			    if ( dbContentType != null ) {
 
@@ -625,27 +646,6 @@ public class FileDownloadServlet extends HttpServlet{
 			    }
 			}
 			
-			// open the appropriate physical file
-
-			File inFile = null; 
-
-			// but first, see if they have requested a 
-			// thumbnail for an image, or if it's a request
-			// for the datafile in the "original format":
-			
-			if ( imageThumb != null && dbContentType.substring(0, 6).equalsIgnoreCase ("image/") ) {
-			    if ( generateImageThumb(file.getFileSystemLocation()) ) {
-				inFile = new File (file.getFileSystemLocation() + ".thumb"); 
-			    }
-			} else { 
-			    inFile = new File(file.getFileSystemLocation());  
-
-			    if ( downloadOriginalFormat != null ) {
-				inFile = new File ( inFile.getParent(), "_" + file.getFileSystemName()); 
-			    }
-			} 
-
-
 			// send the file as the response
 
 			// InputStream in = new FileInputStream(inFile);
@@ -950,7 +950,7 @@ public class FileDownloadServlet extends HttpServlet{
 	
 	if (new File ("/usr/bin/convert").exists()) {
 
-	    String ImageMagick = "/usr/bin/convert -size 64x64 " + fileLocation + " -resize 64 " +  thumbFileLocation; 
+	    String ImageMagick = "/usr/bin/convert -size 64x64 " + fileLocation + " -resize 64 png:" +  thumbFileLocation; 
 	    int exitValue = 1; 
 	
 	    try {

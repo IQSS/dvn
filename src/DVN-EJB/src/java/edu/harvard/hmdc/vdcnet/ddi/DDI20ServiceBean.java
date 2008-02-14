@@ -1562,41 +1562,30 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
         }
         
 
-        int exportMode = 0;
-        try {
-            exportMode = Integer.parseInt( System.getProperty("dvn.test.export.mode") );
-        } catch (Exception e) {}
-
-
-
         // files and data
-        if (exportMode != 1) {
-            DataDscrType _dd = objFactory.createDataDscrType();
-            boolean addDataDscr = false;
+        DataDscrType _dd = objFactory.createDataDscrType();
+        boolean addDataDscr = false;
 
-            // iterate through files
-            iter = s.getStudyFiles().iterator();
-            while (iter.hasNext()) {
-                StudyFile sf = (StudyFile) iter.next();
+        // iterate through files
+        iter = s.getStudyFiles().iterator();
+        while (iter.hasNext()) {
+            StudyFile sf = (StudyFile) iter.next();
 
-                if ( sf.isSubsettable() ) {
-                    FileDscrType _fd = mapSubsettableFile( sf, exportToLegacyVDC );
-                    _cb.getFileDscr().add(_fd);
+            if ( sf.isSubsettable() ) {
+                FileDscrType _fd = mapSubsettableFile( sf, exportToLegacyVDC );
+                _cb.getFileDscr().add(_fd);
 
-                    if ( sf.getDataTable().getDataVariables().size() > 0 ) {
-                        Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
-                        while (varIter.hasNext()) {
-                            DataVariable dv = (DataVariable) varIter.next();
-                            _dd.getVar().add( mapDataVariable(dv, _fd) );
-                        }
-                        addDataDscr = true;
+                if ( sf.getDataTable().getDataVariables().size() > 0 ) {
+                    Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
+                    while (varIter.hasNext()) {
+                        DataVariable dv = (DataVariable) varIter.next();
+                        _dd.getVar().add( mapDataVariable(dv, _fd) );
                     }
-                } else {
-                    OtherMatType _om = mapOtherMaterialsFile(sf, exportToLegacyVDC);
-                    _cb.getOtherMat().add(_om);
+                    addDataDscr = true;
                 }
-
-
+            } else {
+                OtherMatType _om = mapOtherMaterialsFile(sf, exportToLegacyVDC);
+                _cb.getOtherMat().add(_om);
             }
 
             if (addDataDscr) { _cb.getDataDscr().add(_dd); }

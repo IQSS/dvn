@@ -950,7 +950,7 @@ public class FileDownloadServlet extends HttpServlet{
 	
 	if (new File ("/usr/bin/convert").exists()) {
 
-	    String ImageMagick = "/usr/bin/convert -size 64x64 " + fileLocation + " -resize 64 png:" +  thumbFileLocation; 
+	    String ImageMagick = "/usr/bin/convert -size 64x64 " + fileLocation + " -resize 64 -flatten png:" +  thumbFileLocation; 
 	    int exitValue = 1; 
 	
 	    try {

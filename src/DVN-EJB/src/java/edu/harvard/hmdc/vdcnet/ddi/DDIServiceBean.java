@@ -1269,7 +1269,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                         createDocDscrSnippet(s, out);
                         out.write(System.getProperty("line.separator"));
 
-                        out.write( line.substring(line.indexOf("<stdyDscr>") + 10 ) );
+                        out.write( line.substring(line.indexOf("<stdyDscr>") ) );
                         out.write(System.getProperty("line.separator"));
                         out.flush();                        
                     } else {
@@ -1302,7 +1302,8 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
     // </editor-fold>
 
-   
+
+    
     //**********************
     // IMPORT METHODS
     //**********************
@@ -1331,7 +1332,37 @@ public class DDIServiceBean implements DDIServiceLocal {
             throw new EJBException("ERROR occurred while processing DDI!!!!");
         }
     }
-  
+
+    public Map determineId(File ddiFile) {
+        Study dummyStudy = new Study();
+        initializeCollections(dummyStudy);
+
+        try {
+            javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
+            javax.xml.stream.XMLStreamReader xmlr = xmlif.createXMLStreamReader(new java.io.FileReader(ddiFile));
+        
+            for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    if (xmlr.getLocalName().equals("codeBook")) ; // skip the codeBook tag
+                    else if (xmlr.getLocalName().equals("docDscr")) processDocDscr(xmlr, dummyStudy);
+                    else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, dummyStudy);
+                    else break;
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+            throw new EJBException("ERROR occurred in mapping: File Not Found!");
+        } catch (XMLStreamException ex) {
+            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+            throw new EJBException("ERROR occurred while processing DDI!!!!");
+        }
+        
+        Map idMap = new HashMap();
+        if ( !StringUtil.isEmpty( dummyStudy.getStudyId() ) ) idMap.put( "globalId", dummyStudy.getGlobalId() );
+        if ( dummyStudy.getStudyOtherIds().size() > 0 ) idMap.put( "otherId", dummyStudy.getStudyOtherIds().get(0).getOtherId() );
+        return idMap;
+    }    
+    
     // <editor-fold defaultstate="collapsed" desc="import methods"> 
     private void processDDI( XMLStreamReader xmlr, Study study) throws XMLStreamException {
         Map filesMap = new HashMap();
@@ -2398,36 +2429,6 @@ public class DDIServiceBean implements DDIServiceLocal {
         
         return (catName != null ? catName : "");
     } 
-
-    public Map determineId(File ddiFile) {
-        Study dummyStudy = new Study();
-        initializeCollections(dummyStudy);
-
-        try {
-            javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
-            javax.xml.stream.XMLStreamReader xmlr = xmlif.createXMLStreamReader(new java.io.FileReader(ddiFile));
-        
-            for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    if (xmlr.getLocalName().equals("codeBook")) ; // skip the codeBook tag
-                    else if (xmlr.getLocalName().equals("docDscr")) processDocDscr(xmlr, dummyStudy);
-                    else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, dummyStudy);
-                    else break;
-                }
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new EJBException("ERROR occurred in mapping: File Not Found!");
-        } catch (XMLStreamException ex) {
-            Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new EJBException("ERROR occurred while processing DDI!!!!");
-        }
-        
-        Map idMap = new HashMap();
-        if ( !StringUtil.isEmpty( dummyStudy.getStudyId() ) ) idMap.put( "globalId", dummyStudy.getGlobalId() );
-        if ( dummyStudy.getStudyOtherIds().size() > 0 ) idMap.put( "otherId", dummyStudy.getStudyOtherIds().get(0).getOtherId() );
-        return idMap;
-    }
 
     // </editor-fold>  
 }

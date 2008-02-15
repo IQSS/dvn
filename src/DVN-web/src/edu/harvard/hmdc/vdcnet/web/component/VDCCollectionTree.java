@@ -22,8 +22,10 @@ package edu.harvard.hmdc.vdcnet.web.component;
 
 import com.sun.rave.web.ui.component.Hyperlink;
 import com.sun.rave.web.ui.component.ImageComponent;
-import com.sun.rave.web.ui.component.Tree;
-import com.sun.rave.web.ui.component.TreeNode;
+import com.sun.webui.jsf.component.Tree;
+//import com.sun.rave.web.ui.component.Tree;
+import com.sun.webui.jsf.component.TreeNode;
+//import com.sun.rave.web.ui.component.TreeNode;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
@@ -34,6 +36,7 @@ import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import javax.el.MethodExpression;
 import javax.faces.el.MethodBinding;
 
 /*
@@ -81,6 +84,7 @@ public class VDCCollectionTree implements java.io.Serializable  {
     
     // this is deprecated and should be replaced by new way
     private MethodBinding actionMethodBinding;
+    private MethodExpression actionExpression;
     
     //
     // Getters and Setters
@@ -157,7 +161,7 @@ public class VDCCollectionTree implements java.io.Serializable  {
     public void setIncludeLinkedCollections(boolean includeLinkedCollections) {
         this.includeLinkedCollections = includeLinkedCollections;
     }
-    
+/*    
     public MethodBinding getActionMethodBinding() {
         return actionMethodBinding;
     }
@@ -165,7 +169,7 @@ public class VDCCollectionTree implements java.io.Serializable  {
     public void setActionMethodBinding(MethodBinding actionMethodBinding) {
         this.actionMethodBinding = actionMethodBinding;
     }
-    
+    */
     //
     // Populate methods
     //
@@ -378,7 +382,8 @@ public class VDCCollectionTree implements java.io.Serializable  {
         nodelink.setUrl(url);
         
         // this is deprecated and should be replaced by new way
-        node.setAction(actionMethodBinding); 
+//        node.setAction(actionMethodBinding); 
+        node.setActionExpression(getActionExpression());
         
         // set up some global image stuff
         image.setAlign("top");
@@ -423,6 +428,14 @@ public class VDCCollectionTree implements java.io.Serializable  {
         }
         
         return false;
+    }
+
+    public MethodExpression getActionExpression() {
+        return actionExpression;
+    }
+
+    public void setActionExpression(MethodExpression actionExpression) {
+        this.actionExpression = actionExpression;
     }
     
     

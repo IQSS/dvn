@@ -29,7 +29,8 @@
 
 package edu.harvard.hmdc.vdcnet.util;
 
-import com.sun.rave.web.ui.component.Tree;
+//import com.sun.rave.web.ui.component.Tree;
+import com.sun.webui.jsf.component.Tree;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;

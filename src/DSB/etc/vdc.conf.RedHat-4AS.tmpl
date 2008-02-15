@@ -24,7 +24,7 @@
 
 Timeout 10980
 
-<VirtualHost *:80>
+<VirtualHost *:%DSB_SERVER_PORT%>
   ServerName %DSB_SERVER%
 
   CustomLog logs/VDC_access combined

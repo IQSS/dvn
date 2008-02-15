@@ -1,5 +1,5 @@
 
-package VDC::DSB::Temp; 
+package DSB::Temp; 
 
 # This library is for monitoring the DSB temp space.
 

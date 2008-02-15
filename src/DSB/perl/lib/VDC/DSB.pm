@@ -10,6 +10,7 @@ use Compress::Zlib;
 use DSB::Ingest;
 use DSB::RAP;
 use DSB::XML;
+use DSB::Temp;
 use URI;
 use VDCdiag;
 
@@ -31,7 +32,7 @@ sub init {
 
     # check the temp directories: 
 
-    my $temp_monitor = new VDC::DSB::Temp ( $TMPDIR ); 
+    my $temp_monitor = new DSB::Temp ( $TMPDIR ); 
 
     return 0 unless $temp_monitor->check_TempDirectory; 
 

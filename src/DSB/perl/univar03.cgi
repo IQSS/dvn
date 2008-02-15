@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I/usr/local/VDC/perl -I/usr/local/VDC/perl/lib 
+#!/usr/bin/perl -I/usr/local/VDC/perl -I/usr/local/VDC/perl/lib -I/usr/local/VDC/perl/lib/VDC
 # Copyright (C) 2001-4 President and Fellows of Harvard University
 #	  (Written by Akio Sone)
 #	  (<URL:http://thedata.org/>)
@@ -56,7 +56,7 @@ use VDC::DSB::CaseWiseSubset;
 use VDC::DSB::DDISAXparser;
 use VDC::DSB::varMetaDataDirect;
 use VDC::DSB::StatCodeWriter;
-use VDC::DSB::Temp; 
+use DSB::Temp; 
 our $DEBUG;  # debugging?
 
 # performance
@@ -88,7 +88,7 @@ $script_name .="($dataURL)";
 
 # temp dir check
 
-my $temp_monitor = new VDC::DSB::Temp $TMPDIR; 
+my $temp_monitor = new DSB::Temp $TMPDIR; 
 unless ( $temp_monitor->check_TempDirectory )
 {
 		print $q->start_html ( -title=> "error -- failed to create temp directories");

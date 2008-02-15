@@ -14,7 +14,7 @@
 # $SERVER = "www.university.edu" and 
 # $CGIDIR = "cgi-bin"
 
-# Sample: $SERVER = "www.university.edu"
+# Sample: $SERVER = "www.university.edu"; 
 
  our($SERVER) = "%DSB_SERVER%";
 
@@ -62,6 +62,29 @@ our ($RCUTDIR) = '%VDCROOT%/bin';
 
 # location of xml catalog file
 our($XMLCTLGDIR)="%VDCROOT%/catalog";
+
+# configuration for the direct-from-SQL optimized
+# variable metadata access.
+
+# set this to 1 to enable the optimization:
+
+our($USE_SQL_DIRECT) = 0;
+
+# access configuration: 
+
+our($SQLHOST) = "dvn.example.edu"; 
+our($SQLPORT) = 5432;
+our($SQLDB)   = "dvnDb";
+our($SQLUSER) = "dvnApp";
+our($SQLPW)   = "xxxxxx";
+
+# NOTE: if you are running your DSB server on the 
+# same host as the main DVN application, you can
+# set the sqlHost variable above to localhost; 
+# however, if you just leave it blank 
+# the module will try to talk to Postgres via unix 
+# sockets, and you'll probably be better off 
+# that way. 
 
 1
 

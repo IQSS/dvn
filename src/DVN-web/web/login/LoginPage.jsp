@@ -20,11 +20,11 @@
                                         <h:outputText styleClass="warnMessage" value="We are sorry, this page is restricted and you need to have special permissions to access it. Please log in if you have the appropriate permissions."/>
                                     </ui:panelGroup>
                                    
-                                    <ui:panelGroup style="padding-bottom: 10px;" block="true" id="groupPanel5">
-                                            <h:outputText id="outputText4" styleClass="vdcSubHeader" value="Log in with a Dataverse account:" />
-                                        </ui:panelGroup>
+                                    <ui:panelGroup style="padding-top: 10px; margin-left:auto; margin-right:auto; width:70%; text-align: left;" block="true" id="groupPanel5">
+                                        <h:outputText id="outputText4" styleClass="loginPageSubHeader" value="Dataverse Account" />
+                                    </ui:panelGroup>
                                     <!-- ************ Username login section ******************* -->
-                                    <h:panelGrid style="margin-left:auto; margin-right:auto; background-color: #e6ebed !important; border: 1px solid #ddd;" cellpadding="0" cellspacing="0" columnClasses="vdcLoginCol1, vdcLoginCol2" columns="2" id="gridPanel2" width="70%">
+                                    <h:panelGrid style="margin-left:auto; margin-right:auto; background-color: #f4ebc7 !important; border: 1px solid #ddd;" cellpadding="0" cellspacing="0" columnClasses="vdcLoginCol1, vdcLoginCol2" columns="2" id="gridPanel2" width="70%">
                                         <ui:panelGroup block="true" style="padding-top: 20px; padding-right:10px; text-align:right;">
                                             <h:outputLabel  for="componentLabel1" id="componentLabel1" >
                                                 <h:outputText id="componentLabel1Text1" value="Username" />
@@ -57,10 +57,10 @@
                                      
                                     <!-- ************ Affiliate login section ******************* -->
                                     
-                                    <ui:panelGroup style="padding-bottom: 10px; padding-top: 20px;"  block="true" id="groupPanelAffiliate1" rendered="#{LoginPage.isAffiliates != null}" >
-                                            <h:outputText  id="outputTextAffiliate" style="font-weight: bold" value="Log in through an affiliate:"/>
+                                    <ui:panelGroup style="padding-top: 20px; margin-left:auto; margin-right:auto; width:70%; text-align: left;"  block="true" id="groupPanelAffiliate1" rendered="#{LoginPage.isAffiliates != null}" >
+                                            <h:outputText id="outputTextAffiliate" styleClass="loginPageSubHeader" value="Affiliate"/>
                                         </ui:panelGroup>
-                                    <h:panelGrid rendered="#{LoginPage.isAffiliates != null}" style="margin-left:auto; margin-right:auto; background-color: #f4ebc7; border: 1px solid #ddd;" cellpadding="0" cellspacing="0" columnClasses="vdcLoginCol1, vdcLoginCol2" columns="2" id="gridPanelAffiliate" width="70%">
+                                    <h:panelGrid rendered="#{LoginPage.isAffiliates != null}" style="margin-left:auto; margin-right:auto; background-color: #e6ebed; border: 1px solid #ddd;" cellpadding="0" cellspacing="0" columnClasses="vdcLoginCol1, vdcLoginCol2" columns="2" id="gridPanelAffiliate" width="70%">
                                         <ui:panelGroup block="true" style="padding-top: 20px; padding-right:10px; text-align:right;">
                                             <h:outputLabel  for="affiliateName" id="componentLabelAffiliateName" >
                                                 <h:outputText id="componentLabelAffiliateText" value="Affiliate Name" />

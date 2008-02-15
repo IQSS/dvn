@@ -1253,7 +1253,8 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 
 /**** Login ****/
 #loginPageWrap {margin-top: 10%; width: 98%; text-align: center;}
-p#loginPageHeader span.headingText {font-size: 120%; color: #c55b28 !important; background: #dadee0 !important;}
+p#loginPageHeader span.headingText {font-size: 160% !important; color: #c55b28 !important; background: #dadee0 !important; font-weight: normal; text-transform: uppercase;}
+.loginPageSubHeader {color: #526f76; font-size: 160% !important; text-transform: uppercase;}
 div.ContentAreaFooter img {margin: 0.25em 0;}
 div.ContentArea {margin: 0 auto; padding: 0;}
 

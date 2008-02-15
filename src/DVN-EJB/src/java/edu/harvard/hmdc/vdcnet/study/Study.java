@@ -2531,4 +2531,27 @@ End of deprecated methods section
         this.lastExportTime = lastExportTime;
     }
 
+    @Column(columnDefinition="TEXT")
+    private String harvestDVTermsOfUse;
+
+    @Column(columnDefinition="TEXT")
+    private String harvestDVNTermsOfUse;
+
+    public String getHarvestDVTermsOfUse() {
+        return harvestDVTermsOfUse;
+    }
+
+    public void setHarvestDVTermsOfUse(String harvestDVTermsOfUse) {
+        this.harvestDVTermsOfUse = harvestDVTermsOfUse;
+    }
+
+    public String getHarvestDVNTermsOfUse() {
+        return harvestDVNTermsOfUse;
+    }
+
+    public void setHarvestDVNTermsOfUse(String harvestDVNTermsOfUse) {
+        this.harvestDVNTermsOfUse = harvestDVNTermsOfUse;
+    }
+
+
 }

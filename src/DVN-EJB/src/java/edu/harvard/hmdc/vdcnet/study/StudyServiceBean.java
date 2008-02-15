@@ -99,9 +99,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     @EJB
     VDCNetworkServiceLocal vdcNetworkService;
     @EJB
-    DDI20ServiceLocal ddiService;
-    @EJB
-    DDIServiceLocal ddiTestService;    
+    DDIServiceLocal ddiService;    
     @EJB
     UserServiceLocal userService;
     @EJB
@@ -820,6 +818,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     private void exportStudyToLegacySystem(Study study, String authority) throws IOException, JAXBException {
+
+        throw new EJBException("This feature is no longer supported!!");
+        /*
         // For each study
         // update study file locations for legacy system
         // Write ddi to an output stream
@@ -854,7 +855,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             StudyFile studyFile = (StudyFile) it.next();
             FileUtil.copyFile(new File(studyDir, studyFile.getFileSystemName()), new File(legacyStudyDir, studyFile.getFileSystemName()));
         }
-
+        */
 
     }
 
@@ -1013,6 +1014,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return doImportStudyStax(xmlFile, harvestFormatTypeId, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
     }
 
+    /*
     private Study doImportStudyJAXB(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
         logger.info("Begin doImportStudy");
         VDCNetwork vdcNetwork = vdcNetworkService.find();
@@ -1129,7 +1131,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             copyXMLFile(study, xmlFile, "original_imported_study_pretransform.xml");
         }
 
-        copyFileForExport(study, _cb);
+        // new create exports files for these studies
+        for (String exportFormat : studyExporterFactory.getExportFormats()) {
+            studyService.exportStudyToFormat(study, exportFormat);
+        }
 
         saveStudy(study, userId);
 
@@ -1141,33 +1146,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         logger.info("completed doImportStudy() returning study" + study.getGlobalId());
         return study;
     }
-
-    private void copyFileForExport(Study study, CodeBook _cb) {
-        // Do only if generateHandle? 
-        _cb.getDocDscr().add(ddiService.createDocDscr(study));
-        FileWriter out = null;
-        try {
-            File ddiExportFile = new File(FileUtil.getStudyFileDir(study), "export_ddi.xml");
-            out = new FileWriter(ddiExportFile);
-            ddiService.exportCodeBook(_cb, out);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new EJBException("Error occurred while attempting to export file");
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (Exception e) {
-            }
-        }
-        // Now, export to all other formats except DDI (because we just did that above)
-        for (String exportFormat : studyExporterFactory.getExportFormats()) {
-            if (!exportFormat.equals(studyExporterFactory.EXPORT_FORMAT_DDI)) {
-                studyService.exportStudyToFormat(study, exportFormat);
-            }
-        }
-    }
+    */
 
     private File transformToDDI(File xmlFile, String xslFileName) {
         File ddiFile = null;
@@ -1211,7 +1190,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return ddiFile;
 
     }
-
+    
+    /*
     private CodeBook generateCodeBook(Object obj) {
         CodeBook _cb = null;
 
@@ -1241,6 +1221,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         return _cb;
     }
+    */
 
     private void setImportedStudyRestrictions(Study study) {
         RepositoryWrapper repositoryWrapper = new RepositoryWrapper();
@@ -1348,9 +1329,13 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     private void clearStudy(Study study) {
         // should this be done with bulk deletes??
         // Yes!!!
-        // (the following line is currently commnted out as it caused problems with updates
-        // related to the separate transaction)
-        //studyService.deleteDataVariables(study.getId());
+        deleteDataVariables(study.getId());
+
+        for ( StudyFile elem : study.getStudyFiles() ) {
+            if (elem.getDataTable() != null && elem.getDataTable().getDataVariables() != null) {
+                elem.getDataTable().getDataVariables().clear();
+            }
+        }
 
         for (Iterator iter = study.getFileCategories().iterator(); iter.hasNext();) {
             FileCategory elem = (FileCategory) iter.next();
@@ -1416,7 +1401,92 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             StudyTopicClass elem = (StudyTopicClass) iter.next();
             removeCollectionElement(iter, elem);
         }
-    }
+
+        study.setAccessToSources(null);
+        study.setActionsToMinimizeLoss(null);
+        study.setAuthority(null);
+        study.setAvailabilityStatus(null);
+        study.setCharacteristicOfSources(null);
+        study.setCitationRequirements(null);
+        study.setCleaningOperations(null);
+        study.setCollectionMode(null);
+        study.setCollectionSize(null);
+        study.setConditions(null);
+        study.setConfidentialityDeclaration(null);
+        study.setContact(null);
+        study.setControlOperations(null);
+        study.setCountry(null);
+        //study.setCreateTime(null);
+        //study.setCreator(null);
+        study.setDataCollectionSituation(null);
+        study.setDataCollector(null);
+        study.setDataSources(null);
+        study.setDateOfCollectionEnd(null);
+        study.setDateOfCollectionStart(null);
+        study.setDateOfDeposit(null);
+        //study.setDefaultFileCategory(null);
+        study.setDepositor(null);
+        study.setDepositorRequirements(null);
+        study.setDeviationsFromSampleDesign(null);
+        study.setDisclaimer(null);
+        study.setDistributionDate(null);
+        study.setDistributorContact(null);
+        study.setDistributorContactAffiliation(null);
+        study.setDistributorContactEmail(null);
+        study.setFrequencyOfDataCollection(null);
+        study.setFundingAgency(null);
+        study.setGeographicCoverage(null);
+        study.setGeographicUnit(null);
+        study.setHarvestDVNTermsOfUse(null);
+        study.setHarvestDVTermsOfUse(null);
+        study.setHarvestHoldings(null);
+        study.setHarvestIdentifier(null);
+        //study.setId(null);
+        //study.setIsHarvested(null);
+        study.setKindOfData(null);
+        //study.setLastExportTime(null);
+        //study.setLastUpdateTime(null);
+        //study.setLastUpdater(null);
+        //study.setNumberOfDownloads(null);
+        //study.setNumberOfFiles(null);
+        study.setOriginOfSources(null);
+        study.setOriginalArchive(null);
+        study.setOtherDataAppraisal(null);
+        //study.setOwner(null);
+        study.setPlaceOfAccess(null);
+        study.setProductionDate(null);
+        study.setProductionPlace(null);
+        study.setProtocol(null);
+        study.setReplicationFor(null);
+        //study.setRequestAccess(null);
+        study.setResearchInstrument(null);
+        study.setResponseRate(null);
+        //study.setRestricted(restricted)s(null);
+        study.setRestrictions(null);
+        //study.setReviewState(null);
+        //study.setReviewer(null);
+        study.setSamplingErrorEstimate(null);
+        study.setSamplingProcedure(null);
+        study.setSeriesInformation(null);
+        study.setSeriesName(null);
+        study.setSpecialPermissions(null);
+        study.setStudyCompletion(null);
+        study.setStudyId(null);
+        study.setStudyLevelErrorNotes(null);
+        study.setStudyVersion(null);
+        study.setSubTitle(null);
+        //study.setTemplate(null);
+        study.setTimeMethod(null);
+        study.setTimePeriodCoveredEnd(null);
+        study.setTimePeriodCoveredStart(null);
+        study.setTitle(null);
+        study.setUNF(null);
+        study.setUnitOfAnalysis(null);
+        study.setUniverse(null);
+        //study.setVersion(null);
+        study.setVersionDate(null);
+        study.setWeighting(null);
+   }
 
     private void removeCollectionElement(Iterator iter, Object elem) {
         iter.remove();
@@ -1699,9 +1769,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     
     private Study doImportStudyStax(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
         logger.info("Begin doImportStudyStax");
-        
-        ddiTestService.isXmlFormat();
-        
+       
         VDCNetwork vdcNetwork = vdcNetworkService.find();
         VDC vdc = em.find(VDC.class, vdcId);
 
@@ -1715,7 +1783,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
 
         // determine IDs
-        Map idMap = ddiTestService.determineId(ddiFile);
+        Map idMap = ddiService.determineId(ddiFile);
         String globalId = (String) idMap.get("globalId");
         String otherId = (String) idMap.get("otherId");
 
@@ -1771,7 +1839,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         // now we map
         logger.info("calling mapDDI()");
-        ddiTestService.mapDDI(ddiFile, study);
+        ddiService.mapDDI(ddiFile, study);
         logger.info("completed mapDDI, studyId = " + study.getStudyId());
 
 
@@ -1780,7 +1848,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             study.setIsHarvested(true);
             study.setHarvestIdentifier(harvestIdentifier);
         } else {
-            study.setHarvestHoldings(null); // clear the holdings field
+            // clear fields related to harvesting
+            study.setHarvestHoldings(null);
+            study.setHarvestDVTermsOfUse(null);
+            study.setHarvestDVNTermsOfUse(null);
         }
 
         
@@ -1815,7 +1886,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             copyXMLFile(study, xmlFile, "original_imported_study_pretransform.xml");
         }
 
-        //copyFileForExport(study, _cb);
+        // new create exports files for these studies
+        for (String exportFormat : studyExporterFactory.getExportFormats()) {
+            studyService.exportStudyToFormat(study, exportFormat);
+        }
 
         saveStudy(study, userId);
 

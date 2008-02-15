@@ -20,7 +20,7 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
-import com.sun.rave.web.ui.component.Tree;
+import com.sun.webui.jsf.component.Tree;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleRequestServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;

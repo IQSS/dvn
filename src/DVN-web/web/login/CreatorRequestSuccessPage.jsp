@@ -28,14 +28,15 @@
                   <ui:panelLayout styleClass="requestContentDescRight requestContentSucess">
                   <ui:panelLayout styleClass="dvn_margin12"> 
                       
-                        <p>Your dataverse is set to 'Not Released' by default (it will be displayed in the Coming Soon tab of the Network Homepage). 
-                            Go to 
+                        <p>Your new dataverse is set to <em>Not Released</em> by default, and appears on the Coming Soon tab of the Network homepage.
+                            </p>
+                           <ul>
+                            <li> Click                              
                             <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp">
                                 <h:outputText value="My Options"/>
                             </h:outputLink> to administrate your dataverse.
-                            </p>
-                        <ul>
-                            <li>Begin    
+                            </li>
+                            <li> Begin    
                              <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.jsp">
                                 <h:outputText value="adding studies and uploading files"/>
                              </h:outputLink> or 

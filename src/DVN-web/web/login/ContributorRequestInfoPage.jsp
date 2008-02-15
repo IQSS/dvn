@@ -30,9 +30,9 @@
                     </div>
 		</div>
         	<div class="requestIntroStepCard" style="margin-right: 24px; background: #f4ebc7 url(/dvn/resources/request-intro-rndtop2.png) no-repeat;">
-                    <h3>Terms<br/>of Use</h3>
+                    <h3>Agree<br/>to Terms</h3>
                     <p>Read and agree to the terms of use...</p>
-                    <p>click continue...</p>
+                    <p>Click continue...</p>
                     <div class="stepCardBtm">
                      <h:outputText value="&#160;" escape="false"/>
                     </div>

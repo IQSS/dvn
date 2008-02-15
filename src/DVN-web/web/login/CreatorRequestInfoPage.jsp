@@ -31,7 +31,7 @@
                     </div>
 		</div>
         	<div class="requestIntroStepCard" style="margin-right:24px; background:#f4ebc7 url(/dvn/resources/request-intro-rndtop2.png) no-repeat;">
-                    <h3>Terms<br/>of Use</h3>
+                    <h3>Agree<br/>to Tems</h3>
                     <p>Read and agree to the terms of use...</p>
                     <div class="stepCardBtm">
                      <h:outputText value="&#160;" escape="false"/>
@@ -40,14 +40,14 @@
                 <div class="requestIntroStepCard" style="margin-right:24px; background:#f4ebc7 url(/dvn/resources/request-intro-rndtop3.png) no-repeat;">
                     <h3>Name<br/>Dataverse</h3>
                     <p>Enter the title, type and affiliation...</p>
-                    <p>click save...</p>
+                    <p>Click save...</p>
                     <div class="stepCardBtm">
                      <h:outputText value="&#160;" escape="false"/>
                     </div>
 		</div>
                 <div class="requestIntroStepCard" style="background:#f4ebc7 url(/dvn/resources/request-intro-rndtop4.png) no-repeat;">
                     <h3 style="line-height:1.85;">Success!</h3>
-                    <p>You have created your own dataverse and are now ready to start adding data.</p>
+                    <p>You have created your own dataverse and now you are ready to start adding data.</p>
                     <div class="stepCardBtm">
                      <h:outputText value="&#160;" escape="false"/>
                     </div>

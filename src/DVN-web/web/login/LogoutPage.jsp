@@ -17,20 +17,25 @@
                     <div class="dvn_margin12">
                         
                         <ui:panelGroup  block="true"  style="padding-top: 40px; padding-left:20px" rendered="#{LogoutPage.success}" >
-                            <h:outputText value="You are now logged out.  Thanks for visiting." styleClass="vdcTextStandOut"/>
-                        </ui:panelGroup>
-                        <ui:panelGroup  block="true"  style="padding-top: 20px; padding-left:70px" >
-                            
-                            <h:outputLink    value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.jsp"  >
-                                <h:outputText value="Go to the Home Page"/>
+                            <h:outputText value="You are now logged out. " styleClass="vdcTextStandOut"/>
+                       
+                       <ul>
+                       <li> 
+                           <h:outputLink    value="/dvn"  >
+                                <h:outputText value="Go to the  #{VDCRequest.vdcNetwork.name} Dataverse Network homepage"/>
                             </h:outputLink>
-                        </ui:panelGroup>
-                        <ui:panelGroup  block="true"  style="padding-top: 10px; padding-bottom: 40px; padding-left:70px" >
+                            <h:outputLink  rendered="#{VDCRequest.currentVDC != null}"  value="/dvn#{VDCRequest.currentVDCURL}"  >
+                                <h:outputText value="Go to the #{VDCRequest.currentVDC.name} Dataverse homepage"/>
+                            </h:outputLink>
+                        </li>
+                        <li>
+                        
                             <h:outputLink    value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp?clearWorkflow=true"  >
                                 <h:outputText value="Log in"/>
                             </h:outputLink>
-                        </ui:panelGroup>
-                        
+                       </li>
+                       </ul>
+                         </ui:panelGroup>
                     </div>
                 </div>
             </div>

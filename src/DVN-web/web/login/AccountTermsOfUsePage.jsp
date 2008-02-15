@@ -33,7 +33,9 @@
               <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
                   
                   <ui:panelLayout rendered="#{LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow}" styleClass="requestContentDescLeft">
-                  		<p>Please read and agree to the terms of use for this dataverse network. Check the "I agree and accept" box and continue.</p>
+                  	<p>Please read and agree to the terms of use for the 
+                        <h:outputText value="#{VDCRequest.vdcNetwork.name}" />
+                    Dataverse Network. Check the "I agree and accept" box and continue.</p>
                   </ui:panelLayout>
                   
                   <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContentFormRight' : 'empty'}">

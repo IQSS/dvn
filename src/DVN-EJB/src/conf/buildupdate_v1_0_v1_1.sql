@@ -36,3 +36,9 @@ update vdcnetwork set defaultdisplaynumber=16;
 update vdcuser set agreedtermsofuse=false;
 
 update dvnversion set versionnumber=1, buildnumber=1;
+
+ALTER TABLE study ADD COLUMN harvestdvtermsofuse text;
+ALTER TABLE study ALTER COLUMN harvestdvtermsofuse SET STORAGE EXTENDED;
+
+ALTER TABLE study ADD COLUMN harvestdvntermsofuse text;
+ALTER TABLE study ALTER COLUMN harvestdvntermsofuse SET STORAGE EXTENDED;

@@ -29,7 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
-import com.sun.rave.web.ui.component.Tree;
+import com.sun.webui.jsf.component.Tree;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

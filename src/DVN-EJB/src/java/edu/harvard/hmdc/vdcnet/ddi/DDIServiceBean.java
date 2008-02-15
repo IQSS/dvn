@@ -41,9 +41,11 @@ import edu.harvard.hmdc.vdcnet.study.VariableRange;
 import edu.harvard.hmdc.vdcnet.study.VariableRangeType;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtil;
+import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -135,7 +137,6 @@ public class DDIServiceBean implements DDIServiceLocal {
         return true;
     }
 
-    // <editor-fold defaultstate="collapsed" desc="export Methods">
     //**********************
     // EXPORT METHODS
     //**********************
@@ -143,21 +144,53 @@ public class DDIServiceBean implements DDIServiceLocal {
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void exportStudy(Study s, OutputStream os) throws IOException {
         try {
-            javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
-            //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
-            javax.xml.stream.XMLStreamWriter xmlw = xmlof.createXMLStreamWriter(os);
-            xmlw.writeStartDocument();
-            //xmlw.writeProcessingInstruction("xml-stylesheet href=\'catalog.xsl\' type=\'text/xsl\'");
-            createCodeBook(xmlw,s);
-            xmlw.writeEndDocument();
-            xmlw.close();
-            
-        } catch (XMLStreamException ex) {
-            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+            if (s.isIsHarvested() ) {
+                exportOriginalDDIPlus( s, new OutputStreamWriter(os) );
+            } else {
+                javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
+                //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
+                javax.xml.stream.XMLStreamWriter xmlw = xmlof.createXMLStreamWriter(os);
+                xmlw.writeStartDocument();
+                //xmlw.writeProcessingInstruction("xml-stylesheet href=\'catalog.xsl\' type=\'text/xsl\'");
+                createCodeBook(xmlw,s);
+                xmlw.writeEndDocument();
+                xmlw.close();
+
+            }
+         } catch (XMLStreamException ex) {
+                Logger.getLogger("global").log(Level.SEVERE, null, ex);
         }
-        
     }
 
+    public void exportDataFile(StudyFile sf, OutputStream out)  {
+    try {
+        javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
+        //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
+        javax.xml.stream.XMLStreamWriter xmlw = xmlof.createXMLStreamWriter(out);
+        xmlw.writeStartDocument();
+        
+        // fileDscr
+        createFileDscr(xmlw,sf);
+
+        // dataDscr
+        if ( sf.getDataTable().getDataVariables().size() > 0 ) {
+            xmlw.writeStartElement("dataDscr");
+            Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
+            while (varIter.hasNext()) {
+                DataVariable dv = (DataVariable) varIter.next();
+                createVar(xmlw, dv);
+            }
+            xmlw.writeEndElement(); // dataDscr
+        }
+        
+        xmlw.writeEndDocument();
+        xmlw.close();
+    } catch (XMLStreamException ex) {
+        Logger.getLogger("global").log(Level.SEVERE, null, ex);
+    }        
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="export - generated DDI">
     private void createCodeBook(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
         xmlw.writeStartElement("codeBook");
         xmlw.writeDefaultNamespace("http://www.icpsr.umich.edu/DDI");
@@ -840,22 +873,33 @@ public class DDIServiceBean implements DDIServiceLocal {
 
 
         // terms of use notes
-        if (!StringUtil.isEmpty(vdcNetworkService.find().getDownloadTermsOfUse()) && vdcNetworkService.find().isDownloadTermsOfUseEnabled()) {
+        String dvTermsOfUse = null;
+        String dvnTermsOfUse = null;
+
+        if (study.isIsHarvested() ) {
+            dvTermsOfUse = study.getHarvestDVTermsOfUse();
+            dvnTermsOfUse = study.getHarvestDVNTermsOfUse();
+        } else {
+            dvTermsOfUse = study.getOwner().isDownloadTermsOfUseEnabled() ? study.getOwner().getDownloadTermsOfUse() : null;
+            dvnTermsOfUse = vdcNetworkService.find().isDownloadTermsOfUseEnabled() ? vdcNetworkService.find().getDownloadTermsOfUse() : null;
+        }
+
+        if (!StringUtil.isEmpty(dvTermsOfUse)) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
-            useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
             xmlw.writeStartElement("notes");
+            writeAttribute( xmlw, "level", "dv" );
             writeAttribute( xmlw, "type", NOTE_TYPE_TERMS_OF_USE );
             writeAttribute( xmlw, "subject", NOTE_SUBJECT_TERMS_OF_USE );
-            xmlw.writeCharacters( vdcNetworkService.find().getDownloadTermsOfUse() );
+            xmlw.writeCharacters( dvTermsOfUse );
             xmlw.writeEndElement(); // notes
         }
-        if (!StringUtil.isEmpty(study.getOwner().getDownloadTermsOfUse()) && study.getOwner().isDownloadTermsOfUseEnabled()) {
+        if (!StringUtil.isEmpty(dvnTermsOfUse)) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
-            useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
             xmlw.writeStartElement("notes");
+            writeAttribute( xmlw, "level", "dvn" );
             writeAttribute( xmlw, "type", NOTE_TYPE_TERMS_OF_USE );
             writeAttribute( xmlw, "subject", NOTE_SUBJECT_TERMS_OF_USE );
-            xmlw.writeCharacters( study.getOwner().getDownloadTermsOfUse() );
+            xmlw.writeCharacters( dvnTermsOfUse );
             xmlw.writeEndElement(); // notes
         }
 
@@ -1200,37 +1244,109 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="export - Original DDI Plus">
+    private void exportOriginalDDIPlus (Study s, Writer out) throws XMLStreamException{
+        File studyDir = new File(FileUtil.getStudyFileDir(), s.getAuthority() + File.separator + s.getStudyId());
+        File originalImport = new File(studyDir, "original_imported_study.xml");
+        BufferedReader in = null;      
+        
+        if (originalImport.exists()) {
+            try {
+                in = new BufferedReader( new FileReader(originalImport) );
+                String line = null; //not declared within while loop
+                /*
+                * readLine is a bit quirky :
+                * it returns the content of a line MINUS the newline.
+                * it returns null only for the END of the stream.
+                * it returns an empty String if two newlines appear in a row.
+                */
+                while (( line = in.readLine()) != null){
+                    // check to see if this is the StudyDscr in order to add the extra docDscr
+                    if (line.indexOf("<stdyDscr>") != -1) {
+                        out.write( line.substring(0, line.indexOf("<stdyDscr>") ) );
+                        out.write(System.getProperty("line.separator"));
 
-    // <editor-fold defaultstate="collapsed" desc="import methods">    
+                        createDocDscrSnippet(s, out);
+                        out.write(System.getProperty("line.separator"));
+
+                        out.write( line.substring(line.indexOf("<stdyDscr>") + 10 ) );
+                        out.write(System.getProperty("line.separator"));
+                        out.flush();                        
+                    } else {
+                        out.write(line);
+                        out.write(System.getProperty("line.separator"));
+                        out.flush();
+                    }
+                }     
+                               
+            } catch (IOException ex) {
+                throw new EJBException ("A problem occurred trying to export this study (original DDI Plus).");                
+            } finally {
+                try {
+                    if (out!=null) { out.close(); }
+                    if (in!=null) { in.close(); }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            } 
+        } else {
+            throw new EJBException ("There is no original import DDI for this study.");
+        }     
+    }
+
+    private void createDocDscrSnippet(Study s, Writer out) throws XMLStreamException {
+        javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
+        //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
+        javax.xml.stream.XMLStreamWriter xmlw = xmlof.createXMLStreamWriter(out);
+        createDocDscr(xmlw, s);
+    }
+    // </editor-fold>
+
+   
     //**********************
     // IMPORT METHODS
     //**********************
-  
-    public void mapDDI( File ddiFile, Study study) {
-        Map filesMap = new HashMap();
-        initializeCollections(study);        
-        
+
+    public void mapDDI(String xmlToParse, Study study) {
+        try {
+            javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
+            javax.xml.stream.XMLStreamReader xmlr = xmlif.createXMLStreamReader(new java.io.StringReader(xmlToParse));
+            processDDI( xmlr, study );
+        } catch (XMLStreamException ex) {
+            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+            throw new EJBException("ERROR occurred while processing DDI!!!!");
+        }
+    }
+
+    public void mapDDI(File ddiFile, Study study) {
         try {
             javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
             javax.xml.stream.XMLStreamReader xmlr = xmlif.createXMLStreamReader(new java.io.FileReader(ddiFile));
-        
-            for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    if (xmlr.getLocalName().equals("docDscr")) processDocDscr(xmlr, study);
-                    else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, study);
-                    else if (xmlr.getLocalName().equals("fileDscr")) processFileDscr(xmlr, study, filesMap);
-                    else if (xmlr.getLocalName().equals("dataDscr")) processDataDscr(xmlr, study, filesMap);
-                    else if (xmlr.getLocalName().equals("otherMat")) processOtherMat(xmlr, study);
-                } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
-                    return;
-                }
-            }
+            processDDI( xmlr, study );
         } catch (FileNotFoundException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
             throw new EJBException("ERROR occurred in mapping: File Not Found!");
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
             throw new EJBException("ERROR occurred while processing DDI!!!!");
+        }
+    }
+  
+    // <editor-fold defaultstate="collapsed" desc="import methods"> 
+    private void processDDI( XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        Map filesMap = new HashMap();
+        initializeCollections(study);        
+        
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("docDscr")) processDocDscr(xmlr, study);
+                else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, study);
+                else if (xmlr.getLocalName().equals("fileDscr")) processFileDscr(xmlr, study, filesMap);
+                else if (xmlr.getLocalName().equals("dataDscr")) processDataDscr(xmlr, study, filesMap);
+                else if (xmlr.getLocalName().equals("otherMat")) processOtherMat(xmlr, study);
+            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
+                return;
+            }
         }
     }
 
@@ -1579,9 +1695,9 @@ public class DDIServiceBean implements DDIServiceLocal {
                 if (xmlr.getLocalName().equals("dataColl")) processDataColl(xmlr, study);
                 else if (xmlr.getLocalName().equals("notes")) {
                     if (StringUtil.isEmpty( study.getStudyLevelErrorNotes() ) ) {
-                        study.setStudyLevelErrorNotes( parseText(xmlr) );
+                        study.setStudyLevelErrorNotes( parseText( xmlr,"notes" ) );
                     } else {
-                        study.setStudyLevelErrorNotes( study.getStudyLevelErrorNotes() + "; " + parseText(xmlr) );
+                        study.setStudyLevelErrorNotes( study.getStudyLevelErrorNotes() + "; " + parseText( xmlr, "notes" ) );
                     }
                 } else if (xmlr.getLocalName().equals("anlyInfo")) processAnlyInfo(xmlr, study);
             } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -1666,7 +1782,17 @@ public class DDIServiceBean implements DDIServiceLocal {
                 if (xmlr.getLocalName().equals("setAvail")) processSetAvail(xmlr,study);
                 else if (xmlr.getLocalName().equals("useStmt")) processUseStmt(xmlr,study);
                 else if (xmlr.getLocalName().equals("notes")) {
-                    processNotes( xmlr, study );
+                    String noteType = xmlr.getAttributeValue(null, "type");
+                    if (NOTE_TYPE_TERMS_OF_USE.equalsIgnoreCase(noteType) ) {
+                        String noteLevel = xmlr.getAttributeValue(null, "level");
+                        if ("dv".equalsIgnoreCase(noteLevel) ) {
+                            study.setHarvestDVTermsOfUse( parseText(xmlr) );
+                        } else if ("dvn".equalsIgnoreCase(noteLevel) )  {
+                            study.setHarvestDVNTermsOfUse( parseText(xmlr) );
+                        }    
+                    } else {
+                        processNotes( xmlr, study );
+                    }
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("dataAccs")) return;

@@ -29,6 +29,7 @@ package edu.harvard.hmdc.vdcnet.web.servlet;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
+import edu.harvard.hmdc.vdcnet.ddi.DDIServiceLocal;
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
@@ -48,7 +49,7 @@ import javax.servlet.http.*;
  */
 public class DDIExportServlet extends HttpServlet {
     
-    @EJB DDI20ServiceLocal ddiService;
+    @EJB DDIServiceLocal ddiService;
     @EJB StudyServiceLocal studyService;
  
     private boolean isNetworkAdmin(HttpServletRequest req) {
@@ -78,8 +79,7 @@ public class DDIExportServlet extends HttpServlet {
             String exportToLegacyVDC = req.getParameter("legacy");
 
             InputStream in = null; // used if getting originalImport
-            PrintWriter out= null;
-            OutputStream out2 = null;
+            OutputStream out = res.getOutputStream();
 
             try {
                 if (fileId != null) {
@@ -90,7 +90,6 @@ public class DDIExportServlet extends HttpServlet {
                             createErrorResponse(res, "The file you requested is NOT a datafile.");
                         } else {
                             res.setContentType("text/xml");
-                            out = res.getWriter();
                             ddiService.exportDataFile(sf, out );
                         }
                     } catch (Exception ex) {
@@ -112,15 +111,14 @@ public class DDIExportServlet extends HttpServlet {
 
                             if (originalImport.exists()) {
                                 res.setContentType("text/xml");
-                                out2 = res.getOutputStream();
                                 in = new FileInputStream(originalImport);
 
                                 byte[] dataBuffer = new byte[8192]; 
 
                                 int i = 0;
                                 while ( ( i = in.read (dataBuffer) ) > 0 ) {
-                                    out2.write(dataBuffer,0,i);
-                                    out2.flush(); 
+                                    out.write(dataBuffer,0,i);
+                                    out.flush(); 
                                 }
                             } else {
                                 createErrorResponse(res, "There is no original import DDI for this study.");
@@ -129,8 +127,7 @@ public class DDIExportServlet extends HttpServlet {
                         } else {
                             // otherwise create ddi from data
                             res.setContentType("text/xml");
-                            out = res.getWriter();
-                            ddiService.exportStudy(s, out, true, (exportToLegacyVDC != null) );
+                            ddiService.exportStudy(s, out);
                         }
                     } catch (Exception ex) {
                         if (ex.getCause() instanceof IllegalArgumentException) {
@@ -145,7 +142,6 @@ public class DDIExportServlet extends HttpServlet {
                 }
             } finally {
                 if (out!=null) { out.close(); }
-                if (out2!=null) { out2.close(); }
                 if (in!=null) { in.close(); }
             }
         } else {

@@ -30,6 +30,7 @@
 package edu.harvard.hmdc.vdcnet.dsb;
 
 import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
+import edu.harvard.hmdc.vdcnet.ddi.DDIServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.jaxb.ddi20.CodeBook;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
@@ -65,22 +66,11 @@ import javax.xml.transform.stream.StreamSource;
  */
 @MessageDriven(mappedName = "jms/DSBIngest", activationConfig =  {@ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"), @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")})
 public class DSBIngestMessageBean implements MessageListener {
-    @EJB DDI20ServiceLocal ddiService;
+    @EJB DDIServiceLocal ddiService;
     @EJB StudyServiceLocal studyService;
     @EJB MailServiceLocal mailService;
     @EJB IndexServiceLocal indexService;
 
-    private JAXBContext jaxbContext = null;
-    private Unmarshaller ddiUnmarshaller;
-    
-    public void ejbCreate() {
-        try {
-            jaxbContext = javax.xml.bind.JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
-            ddiUnmarshaller = jaxbContext.createUnmarshaller();
-        } catch (JAXBException ex) {
-            Logger.getLogger("global").log(Level.SEVERE, null, ex);
-        }
-    }    
     
     /**
      * Creates a new instance of DSBIngestMessageBean
@@ -142,21 +132,14 @@ public class DSBIngestMessageBean implements MessageListener {
     }
     
     private void parseXML(String xmlToParse, StudyFile file) {
-        try {
-            // first transform xml to our jaxb objects
-            CodeBook cb = (CodeBook) ddiUnmarshaller.unmarshal( new StreamSource( new StringReader( xmlToParse ) ) );
-            
-            // now map and get dummy dataTable
-            Study dummyStudy = ddiService.mapDDI(cb);
-            DataTable dt = dummyStudy.getFileCategories().iterator().next().getStudyFiles().iterator().next().getDataTable();
-            
-            // set to actual file
-            file.setDataTable( dt );
-            dt.setStudyFile(file);
-            
-        } catch (JAXBException ex) {
-            ex.printStackTrace();
-        }
+        // now map and get dummy dataTable
+        Study dummyStudy = new Study();
+        ddiService.mapDDI(xmlToParse, dummyStudy);
+        DataTable dt = dummyStudy.getFileCategories().iterator().next().getStudyFiles().iterator().next().getDataTable();
+
+        // set to actual file
+        file.setDataTable( dt );
+        dt.setStudyFile(file);
     }
     
 }

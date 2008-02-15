@@ -35,19 +35,8 @@ import javax.xml.bind.JAXBException;
  * This is the business interface for DDI20Service enterprise bean.
  */
 @Local
-public interface DDI20ServiceLocal extends StudyExporter, java.io.Serializable  {
-    edu.harvard.hmdc.vdcnet.study.Study mapDDI(CodeBook _cb);
-
-    edu.harvard.hmdc.vdcnet.study.Study mapDDI(CodeBook _cb, Study study);
-  
-    void exportStudy(Study study, Writer out, boolean generateCodeBookForHarvestedStudy, boolean exportToLegacyVDC) throws IOException, JAXBException;
-    
-    java.lang.String determineId(CodeBook _cb, String agency);  
-    
-    void exportDataFile(StudyFile sf, Writer out) throws IOException, JAXBException;
-    
-    public DocDscrType createDocDscr(Study s);
-    
-    public void exportCodeBook(CodeBook _cb, Writer out) throws JAXBException;
+public interface DDI20ServiceLocal extends  java.io.Serializable  {
+    // removed all methods (and interface) to verify that this bean is no longer used anywhere in code;
+    // should be able to remove it shortly
     
 }

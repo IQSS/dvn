@@ -1886,12 +1886,14 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             copyXMLFile(study, xmlFile, "original_imported_study_pretransform.xml");
         }
 
+        // sets fields before save (e.g. last updatetime)
+        saveStudy(study, userId);        
+        
         // new create exports files for these studies
         for (String exportFormat : studyExporterFactory.getExportFormats()) {
             studyService.exportStudyToFormat(study, exportFormat);
         }
 
-        saveStudy(study, userId);
 
         if (registerHandle && vdcNetworkService.find().isHandleRegistration()) {
             String handle = study.getAuthority() + "/" + study.getStudyId();

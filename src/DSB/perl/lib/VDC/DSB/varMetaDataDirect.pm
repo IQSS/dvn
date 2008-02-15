@@ -27,9 +27,12 @@ use DBI;
 
 sub new {
 	my $class = shift;
+
 	my $self = { @_ };
+
 	$self->{_varNameA}=[];
 	$self->{_varNameAsafe}=[];
+	$self->{_varRecSegN}={};
 	$self->{_varNameH}={};
 	$self->{_varNameHsafe}={};
 	$self->{_varType}=[];
@@ -43,6 +46,7 @@ sub new {
 	$self->{_formatName}={};
 	$self->{_formatCatgry}={};
 	$self->{unsafeVarName}=0;
+	$self->{logicalRecords}=0;
 
 	# and 2 more hashes for the fixed-style
 	# starts and ends:
@@ -54,23 +58,6 @@ sub new {
 	$self->{censusURL} = "";
 
 	$self->{wholeFile} = 1; 
-
-	# configuration -- here temporarily; 
-	# should be moved someplace else
-
-        $self->{sqlHost} = "dvn.example.edu"; 
-
-	# NOTE: if you are running your DSB server on the 
-	# same host as the main DVN application, you can
-	# set the sqlHost variable above to localhost; 
-	# however, if you leave it completely blank 
-	# the module will connect to Postgres via unix 
-	# sockets, and you'll probably be better off 
-	# that way. 
-
-        $self->{sqlDB}   = "dvnDb";
-        $self->{sqlUser} = "dvnApp";
-        $self->{sqlPw}   = "secret";
 
 	$novars = scalar(keys(%{$self->{VarID}}));
 	
@@ -87,20 +74,27 @@ sub obtainMeta {
 
 	
 	my $sqlHost = $self->{sqlHost}; 
+	my $sqlPort = $self->{sqlPort}; 
 	my $sqlUser = $self->{sqlUser};
 	my $sqlDB   = $self->{sqlDB};
 	my $sqlPw   = $self->{sqlPw};
 	
 	my $dbh; 
 
+	my $database = "DBI:Pg:dbname=$sqlDB"; 
+
 	if ( $sqlHost ne "" )
 	{
-	    $dbh = DBI->connect("DBI:Pg:dbname=$sqlDB;host=$sqlHost",$sqlUser,$sqlPw);
+	    $database .= ";host=$sqlHost"; 
+	    if ( $sqlPort )
+	    {
+		$database .= ";port=$sqlPort" if $sqlPort != 5432; 
+	    }
 	}
-	else
-	{
-	    $dbh = DBI->connect("DBI:Pg:dbname=$sqlDB",$sqlUser,$sqlPw);
-	}
+
+	$dbh = DBI->connect( $database, $sqlUser, $sqlPw);
+
+	return undef unless $dbh; 
 
 	my %disc_Var = (); 
 	my $min_disc_varid = 2**31; 
@@ -110,19 +104,22 @@ sub obtainMeta {
 	# 1st lookup: find out the datatable id by the studyfile id 
 	# supplied: 
 
-	my $sth = $dbh->prepare(qq {SELECT id FROM datatable WHERE studyfile_id=$fileID});
+	my $sth = $dbh->prepare(qq {SELECT id,recordspercase FROM datatable WHERE studyfile_id=$fileID});
 	$sth->execute();
 
-	my ($datatable_id) = $sth->fetchrow(); 
+	my ($datatable_id, $logical_records) = $sth->fetchrow(); 
+
+	$self->{logicalRecords} = $logical_records; 
 
 	$sth-finish; 
 
 	# 2nd lookup: we can now look up the variables: 
 
-	$sth = $dbh->prepare(qq {SELECT id,name,fileorder,label,variableformattype_id,variableintervaltype_id,filestartposition,fileendposition FROM datavariable WHERE datatable_id=$datatable_id ORDER BY fileorder});
+	$sth = $dbh->prepare(qq {SELECT id,recordsegmentnumber,name,fileorder,label,variableformattype_id,variableintervaltype_id,filestartposition,fileendposition FROM datavariable WHERE datatable_id=$datatable_id ORDER BY fileorder});
 	$sth->execute();
 
 	my $var_id; 
+	my $var_recsegnum; 
 	my $var_name; 
 	my $var_order; 
 	my $var_label; 
@@ -131,7 +128,7 @@ sub obtainMeta {
 	my $var_start; 
 	my $var_end; 
 
-	while ( ($var_id,$var_name,$var_order,$var_label,$var_format,$var_interval,$var_start,$var_end)
+	while ( ($var_id,$var_recsegnum, $var_name,$var_order,$var_label,$var_format,$var_interval,$var_start,$var_end)
 		= $sth->fetchrow() )
 	{
 
@@ -143,6 +140,7 @@ sub obtainMeta {
 
 	    if ( $varID->{$dv_var_id} )
 	    {
+		$self->{_varRecSegN}->{$dv_var_id} = $var_recsegnum; 
 		$self->{_varNameH}->{$dv_var_id} = $var_name; 
 
 		$self->{_varStartPos}->{$dv_var_id} = $var_start;

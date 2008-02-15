@@ -1771,16 +1771,19 @@ sub make_SubsetFilter {
     {
 	# fixed-field:
 
-	my $logical_records = 1; 
+	my $logical_records = $metadata->{logicalRecords}; 
+
+	$logical_records = 1 unless $logical_records; 
 
 	$pat = "/usr/local/VDC/bin/rcut -r " . $logical_records . " -c"; 
 
 	for my $v (@varseq)
 	{
+	    my $v_recsegno = $metadata->{_varRecSegN}->{$v};
 	    my $v_start = $metadata->{_varStartPos}->{$v};
 	    my $v_end = $metadata->{_varEndPos}->{$v};
 
-	    $pat .= ( "1:" . $v_start . "-" . $v_end . ",");
+	    $pat .= ( $v_recsegno . ":" . $v_start . "-" . $v_end . ",");
 	}
 
 	chop $pat; 

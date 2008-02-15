@@ -68,7 +68,7 @@ import org.ajax4jsf.ajax.html.HtmlAjaxCommandLink;
  *
  * @author wbossons
  */
-public class DvnDataList extends UICommand {
+public class DvnDataList extends UICommand implements java.io.Serializable {
 
     private String lastRecord  = new String("");
     private String firstRecord  = new String("");

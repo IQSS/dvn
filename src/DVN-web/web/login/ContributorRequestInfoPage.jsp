@@ -40,7 +40,7 @@
                 <div class="requestIntroStepCard" style="background: #f4ebc7 url(/dvn/resources/request-intro-rndtop4.png) no-repeat;">
                     <h3 style="line-height:1.85;">Success!</h3>
                     <p>You have access to upload your studies and data sets to the dataverse.</p>
-                    <div class="stepCardBtm" style="width: 402px; background: url(/dvn/resources/request-intro-rndbtm.png) no-repeat;">
+                    <div class="stepCardBtm">
                      <h:outputText value="&#160;" escape="false"/>
                     </div>
 		</div>

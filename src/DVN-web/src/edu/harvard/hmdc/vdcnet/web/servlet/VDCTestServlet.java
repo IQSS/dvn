@@ -27,6 +27,7 @@
 package edu.harvard.hmdc.vdcnet.web.servlet;
 
 import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
+import edu.harvard.hmdc.vdcnet.ddi.DDIServiceLocal;
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.DataVariable;
@@ -57,7 +58,7 @@ import javax.xml.bind.JAXBException;
 @EJB(name="editStudy", beanInterface=edu.harvard.hmdc.vdcnet.study.EditStudyService.class)
 public class VDCTestServlet extends HttpServlet {
     
-    @EJB DDI20ServiceLocal ddiService;
+    @EJB DDIServiceLocal ddiService;
     @EJB StudyServiceLocal studyService;
     @EJB IndexServiceLocal indexService;
     @EJB VariableServiceLocal varService;

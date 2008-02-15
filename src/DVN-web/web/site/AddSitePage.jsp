@@ -62,7 +62,7 @@
                     <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow) ? 'requestContentDescRight' : 'empty'}">
                     <ui:panelLayout styleClass="dvn_margin12"> 
                     
-                        <ui:panelGroup rendered="#{LoginWorkflowBean.plainWorkflow or LoginWorkflowBean.fileAccessWorkflow}" block="true" style="padding-left: 20px; padding-right: 30px">
+                        <ui:panelGroup rendered="#{LoginWorkflowBean.plainWorkflow or LoginWorkflowBean.fileAccessWorkflow}" block="true" style="margin-bottom:20px;">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                             <br />
                             <h:outputText id="outputText2a" styleClass="vdcHelpText" value="1) Choose 'Scholar' if this dataverse will 
@@ -76,14 +76,14 @@
                             default. As soon as you are ready to make it available (Released), you can do so by going to 'My Options' in your new dataverse."/>
                         </ui:panelGroup>
                         <h:panelGrid binding="#{AddSitePage.gridPanel1}" cellpadding="0" cellspacing="0"
-                                     columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" id="gridPanel1" style="margin-top: 30px; margin-bottom: 30px">
+                                     columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" id="gridPanel1">
                             <!-- dataverse type -->
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            <ui:panelGroup block="true">
                                 <h:outputLabel for="dataverseType" id="dataverseLabel">
-                                    <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Type of Dataverse"/>                                              
+                                    <h:outputText value="Type of Dataverse"/>                                              
                                 </h:outputLabel>
                             </ui:panelGroup>
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            <ui:panelGroup block="true">
                                 <h:selectOneRadio id="dataverseType" 
                                                     layout="lineDirection" 
                                                     onclick="changeValue(this);"
@@ -95,13 +95,13 @@
                                 </h:selectOneRadio>
                             </ui:panelGroup>
                             <!-- first name -->
-                            <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Scholar'}" block="true" style="vertical-align: top;">
+                            <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Scholar'}" block="true">
                                 <h:outputLabel for="firstName" id="firstnameLabel">
-                                    <h:outputText style="white-space: nowrap; padding-right: 10px; " value="First Name"/>                                              
+                                    <h:outputText value="First Name"/>                                              
                                     <h:graphicImage value="#{bundle.iconRequired}"/>
                                 </h:outputLabel>
                             </ui:panelGroup>
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Scholar'}" block="true">
                                 <h:inputText id="firstName" 
                                                 onblur="createDvName();"
                                                 required="#{(AddSitePage.dataverseType == 'Scholar') ? true : false}"
@@ -113,13 +113,13 @@
                                  <h:message for="firstName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                             </ui:panelGroup>
                             <!-- last name -->
-                            <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Scholar'}" block="true" style="vertical-align: top;">
+                            <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Scholar'}" block="true">
                                 <h:outputLabel for="lastName" id="lastnameLabel">
-                                    <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Last Name"/> 
+                                    <h:outputText value="Last Name"/> 
                                     <h:graphicImage value="#{bundle.iconRequired}"/>
                                 </h:outputLabel>
                             </ui:panelGroup>
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Scholar'}" block="true">
                                 <h:inputText id="lastName" 
                                              onblur="createDvName();"
                                              required="#{(AddSitePage.dataverseType == 'Scholar') ? true : false}"
@@ -131,20 +131,20 @@
                                 <h:message for="lastName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                             </ui:panelGroup>
                             <!-- affiliation -->
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            <ui:panelGroup block="true">
                                 <h:outputLabel for="affiliation" id="affiliationLabel">
-                                    <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Affiliation"/>                                              
+                                    <h:outputText value="Affiliation"/>                                              
                                 </h:outputLabel>
                             </ui:panelGroup>
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            <ui:panelGroup block="true">
                                 <h:inputText id="affiliation" immediate="true" value="#{AddSitePage.affiliation}" valueChangeListener="#{AddSitePage.changeAffiliation}" />
                                 <br />
                                 <h:outputText styleClass="vdcHelpText" value="University, center, or research project."/>
                             </ui:panelGroup>
                             <!-- Dataverse Name -->
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            <ui:panelGroup block="true">
                                 <h:outputLabel binding="#{AddSitePage.componentLabel1}" for="componentLabel1" id="componentLabel1">
-                                    <h:outputText binding="#{AddSitePage.componentLabel1Text}" id="componentLabel1Text" style="white-space: nowrap; padding-right: 10px; " value="Dataverse Name"/>                                              
+                                    <h:outputText binding="#{AddSitePage.componentLabel1Text}" id="componentLabel1Text" value="Dataverse Name"/>                                              
                                     <h:graphicImage value="#{bundle.iconRequired}"/>
                                 </h:outputLabel>
                             </ui:panelGroup>
@@ -153,15 +153,15 @@
                                                 id="dataverseName" 
                                                 required="true" 
                                                 requiredMessage="This field is required." 
-                                                validator="#{AddSitePage.validateName}" size="60"/>
+                                                validator="#{AddSitePage.validateName}" size="45" />
                                 <br />
                                 <h:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
                                 <h:message for="dataverseName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                             </ui:panelGroup>
                             <!-- Dataverse Alias -->
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            <ui:panelGroup block="true">
                                 <h:outputLabel binding="#{AddSitePage.componentLabel2}" for="componentLabel2" id="componentLabel2">
-                                    <h:outputText binding="#{AddSitePage.componentLabel2Text}" id="componentLabel2Text" style="white-space: nowrap; padding-right: 10px; " value="Dataverse Alias"/> 
+                                    <h:outputText binding="#{AddSitePage.componentLabel2Text}" id="componentLabel2Text" value="Dataverse Alias"/> 
                                     <h:graphicImage value="#{bundle.iconRequired}"/>
                                 </h:outputLabel>
                             </ui:panelGroup>
@@ -176,9 +176,9 @@
                                 <h:message for="dataverseAlias" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                             </ui:panelGroup>
                             <!-- Group Assignment -->
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            <ui:panelGroup block="true">
                                 <h:outputLabel for="selectedGroup" id="selectedGroupLabel">
-                                    <h:outputText id="selectedGroupText" style="white-space: nowrap; padding-right: 10px; " value="Group Assignment"/> 
+                                    <h:outputText id="selectedGroupText" value="Group Assignment"/> 
                                 </h:outputLabel>
                             </ui:panelGroup>
                             <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Basic'}">

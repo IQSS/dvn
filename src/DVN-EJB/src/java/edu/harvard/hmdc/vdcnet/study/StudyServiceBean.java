@@ -110,17 +110,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     StudyExporterFactoryLocal studyExporterFactory;
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.study.StudyServiceBean");
     private static final SimpleDateFormat exportLogFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
-    private JAXBContext jaxbContext = null;
-    private Unmarshaller DDIUnmarshaller;
 
-    public void ejbCreate() {
-        try {
-            jaxbContext = javax.xml.bind.JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.ddi20");
-            DDIUnmarshaller = jaxbContext.createUnmarshaller();
-        } catch (JAXBException ex) {
-            Logger.getLogger("global").log(Level.SEVERE, null, ex);
-        }
-    }
     @EJB
     StudyServiceLocal studyService; // used to force new transaction during import
 

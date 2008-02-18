@@ -3,6 +3,7 @@
                         xmlns:h="http://java.sun.com/jsf/html" 
                         xmlns:jsp="http://java.sun.com/JSP/Page" 
                         xmlns:ui="http://www.sun.com/web/ui"
+                        xmlns:webuijsf="http://www.sun.com/webui/webuijsf"
                         xmlns:tiles="http://struts.apache.org/tags-tiles"
                         xmlns:dvn="/WEB-INF/tlds/dvn-components"
                         xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
@@ -101,7 +102,7 @@
                   
                   <!-- Dataverse Homepage -->
                     <!-- Display Tree at dataverse level -->
-                    <ui:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
+                    <webuijsf:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
             </div>
 
       </div>

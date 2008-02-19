@@ -547,6 +547,10 @@ public class ReviewStudiesPage extends VDCBaseBean implements java.io.Serializab
     public boolean isDisplayReviewStudies() {
         return reviewStudies!=null && reviewStudies.getRowCount()>0;
     }
+    
+    public boolean isDisplayNoStudiesText() {
+        return (reviewStudies==null || reviewStudies.getRowCount()==0) &&  (newStudies==null || newStudies.getRowCount()==0); 
+    }
        
     public void updateStudy(ActionEvent ae) {
         List <String[]> displayFields = (List) reviewStudies.getWrappedData();

@@ -103,9 +103,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return variableService;
     }
 
-    // ---------------------------------------------------------------------//
+    // -----------------------------------------------------------------------
     // Initializes JSF components
-    // ---------------------------------------------------------------------//
+    // -----------------------------------------------------------------------
     // <editor-fold desc="Initialization of JSF components">
     
     /*
@@ -378,7 +378,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         studyId = sId;
     }
     
-    /** The name of the requested data file */
+    /** 
+     * The name of the requested data file
+     * Exposed to SubsettingPage.jsp
+     */
     private String fileName;
     
     /**
@@ -458,7 +461,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     /**
      * h:panelGrid 
-     * component binding
+     * binding
      * 
      * This component is not found in Subsetting.jsp; Deleted?
      *
@@ -485,7 +488,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     /**
      * ui:tabSet used in the subsetting page
-     * component binding
+     * binding
      * 
      */
     private TabSet tabSet1 = new TabSet();
@@ -511,7 +514,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     /**
      * ui:tab used for the downloading option
-     * component binding
+     * binding
      * 
      */
     private Tab tabDwnld = new Tab();
@@ -557,7 +560,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     /**
      * ui:tab used for the recoding option
-     * component binding
+     * binding
      * 
      */
     private Tab tabRecode = new Tab();
@@ -582,7 +585,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     /**
      * ui:tab used for the EDA option
-     * component binding
+     * binding
      * 
      */
     private Tab tabEda = new Tab();
@@ -607,7 +610,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     /**
      * ui:tab used for the advanced statistics option
-     * component binding
+     * binding
      * 
      */
     private Tab tabAdvStat = new Tab();
@@ -655,7 +658,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // -----------------------------------------------------------------------
     // download section   
     // -----------------------------------------------------------------------
-    // <editor-fold desc="components">
+    // <editor-fold desc="download">
 
     // download radio button selection
     private HtmlSelectOneRadio dwnldFileTypeSet = new HtmlSelectOneRadio();
@@ -813,113 +816,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         out.println("***** resetMsgDwnldButton: end *****");
     }
 
-    // end of download section
-    // <---------------------------------------------------------------------------
 
-    public List<DataVariable> getDataVariableForRequest() {
-        List<DataVariable> dvs = new ArrayList<DataVariable>();
-        for (Iterator el = dataVariables.iterator(); el.hasNext();) {
-            DataVariable dv = (DataVariable) el.next();
-            String keyS = dv.getId().toString();
-            if (varCart.containsKey(keyS)) {
-                dvs.add(dv);
-            }
-        }
-        return dvs;
-    }
+    // end of download section -----------------------------------------------
+    // </editor-fold>
 
-    public Map<String, List<String>> getRecodedVarParameters() {
-        Map<String, List<String>> mpl = new HashMap<String, List<String>>();
-        // new var name list
-        List<String> vns = new ArrayList<String>();
-        // Set<String> vids = recodeSchema.keySet();
-        for (Object rw : recodedVarSet) {
-            // add variable label
-            List<Object> rwi = (List<Object>) rw;
-            // [0] varName
-            // [1] varLabel
-            // [2] varId
-            String newVarName = (String) rwi.get(0);
-            String newVarLabel = (String) rwi.get(1);
-            String newVarId = (String) rwi.get(2);
-            // add newVarId to newVarName
-            mpl.put("v" + newVarId, Arrays.asList(newVarName));
-            out.println("Id-Name: " + newVarId + "=>" + newVarName);
-            // add new varName
-            vns.add(newVarName);
-            mpl.put("ud_" + newVarName + "_q_lebaLrav", Arrays
-                .asList(newVarLabel));
-            // add variable type
-            mpl.put("ud_" + newVarName + "_q_epyTrav", Arrays.asList("1")); // or 0
-                                                                            // for
-                                                                            // character
-                                                                            // var
-            // add value-label-condition
-
-            List<Object> rdtbl = (List<Object>) recodeSchema.get(newVarId);
-            out.println("rdtbl=" + rdtbl);
-            List<String> delList = new ArrayList<String>();
-            for (Object rdtblrw : rdtbl) {
-                List<Object> rdtbli = (List<Object>) rdtblrw;
-                String baseVarName = getVariableNamefromId(derivedVarToBaseVar
-                    .get(newVarId));
-                out.println("rdtbli=" + rdtbli);
-
-                if ((Boolean) rdtbli.get(0)) {
-                    // delete flag: boolean true
-                    // delete value
-                    // "ud_"+ {newVarName} + "_q_eteleD"
-                    // "eteleD|"+{VarName}+"|"+{condition}
-                    out.println("delete this value=" + rdtbli.get(3));
-                    delList.add("eteleD|" + baseVarName + "|" + rdtbli.get(3));
-
-                } else {
-                    // delete flag: boolean false, i.e.,
-                    // value - label - condition
-                    // "ud_"+ {newVarName} + "_q_" +{value}
-                    // {label}+"|"+{VarName}+"|"+{condition}
-                    out.println("keep this value=" + rdtbli.get(3));
-                    String pmky = "ud_" + newVarName + "_q_" + rdtbli.get(1);
-                    out.println("pmky=" + pmky);
-                    if (mpl.containsKey(pmky)) {
-                        // key exits
-                        List<String> tmpvl = (List<String>) mpl.get(pmky);
-                        out.println("tmpvl:b=" + tmpvl);
-                        String pmvl = rdtbli.get(2) + "|" + baseVarName + "|"
-                            + rdtbli.get(3);
-                        out.println("pmvl=" + pmvl);
-                        tmpvl.add(pmvl);
-                        out.println("tmpvl:a=" + tmpvl);
-                        // mpl.put(pmky, new ArrayList(tmpvl) );
-                        mpl.put(pmky, tmpvl);
-
-                    } else {
-                        List<String> pvlst = new ArrayList();
-                        pvlst.add(rdtbli.get(2) + "|" + baseVarName + "|"
-                            + rdtbli.get(3));
-                        mpl.put(pmky, pvlst);
-                    }
-                    // mpl.put("ud_"+newVarName+"_q_"+rdtbli.get(1),
-                    // Arrays.asList(rdtbli.get(2)+"|"+baseVarName+"|"+rdtbli.get(3))
-                    // );
-                }
-
-            } // for:inner
-
-            if (delList.size() > 0) {
-                mpl.put("ud_" + newVarName + "_q_eteleD", delList);
-            }
-
-        } // for:outer
-        // add newVarNameSet
-        mpl.put("newVarNameSet", vns);
-
-        return mpl;
-    }
-
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
     // recode section
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
+    // <editor-fold desc="recode">
 
     // ui-listbox-based solution
 
@@ -1933,9 +1837,100 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         out.println("***** replaceRecodedVariable(): ends here *****");
     }
 
-    // --------------------------------------------------------------------------->
+
+    public Map<String, List<String>> getRecodedVarParameters() {
+        Map<String, List<String>> mpl = new HashMap<String, List<String>>();
+        // new var name list
+        List<String> vns = new ArrayList<String>();
+        // Set<String> vids = recodeSchema.keySet();
+        for (Object rw : recodedVarSet) {
+            // add variable label
+            List<Object> rwi = (List<Object>) rw;
+            // [0] varName
+            // [1] varLabel
+            // [2] varId
+            String newVarName = (String) rwi.get(0);
+            String newVarLabel = (String) rwi.get(1);
+            String newVarId = (String) rwi.get(2);
+            // add newVarId to newVarName
+            mpl.put("v" + newVarId, Arrays.asList(newVarName));
+            out.println("Id-Name: " + newVarId + "=>" + newVarName);
+            // add new varName
+            vns.add(newVarName);
+            mpl.put("ud_" + newVarName + "_q_lebaLrav", Arrays
+                .asList(newVarLabel));
+            // add variable type
+            mpl.put("ud_" + newVarName + "_q_epyTrav", Arrays.asList("1")); // or 0
+                                                                            // for
+                                                                            // character
+                                                                            // var
+            // add value-label-condition
+
+            List<Object> rdtbl = (List<Object>) recodeSchema.get(newVarId);
+            out.println("rdtbl=" + rdtbl);
+            List<String> delList = new ArrayList<String>();
+            for (Object rdtblrw : rdtbl) {
+                List<Object> rdtbli = (List<Object>) rdtblrw;
+                String baseVarName = getVariableNamefromId(derivedVarToBaseVar
+                    .get(newVarId));
+                out.println("rdtbli=" + rdtbli);
+
+                if ((Boolean) rdtbli.get(0)) {
+                    // delete flag: boolean true
+                    // delete value
+                    // "ud_"+ {newVarName} + "_q_eteleD"
+                    // "eteleD|"+{VarName}+"|"+{condition}
+                    out.println("delete this value=" + rdtbli.get(3));
+                    delList.add("eteleD|" + baseVarName + "|" + rdtbli.get(3));
+
+                } else {
+                    // delete flag: boolean false, i.e.,
+                    // value - label - condition
+                    // "ud_"+ {newVarName} + "_q_" +{value}
+                    // {label}+"|"+{VarName}+"|"+{condition}
+                    out.println("keep this value=" + rdtbli.get(3));
+                    String pmky = "ud_" + newVarName + "_q_" + rdtbli.get(1);
+                    out.println("pmky=" + pmky);
+                    if (mpl.containsKey(pmky)) {
+                        // key exits
+                        List<String> tmpvl = (List<String>) mpl.get(pmky);
+                        out.println("tmpvl:b=" + tmpvl);
+                        String pmvl = rdtbli.get(2) + "|" + baseVarName + "|"
+                            + rdtbli.get(3);
+                        out.println("pmvl=" + pmvl);
+                        tmpvl.add(pmvl);
+                        out.println("tmpvl:a=" + tmpvl);
+                        // mpl.put(pmky, new ArrayList(tmpvl) );
+                        mpl.put(pmky, tmpvl);
+
+                    } else {
+                        List<String> pvlst = new ArrayList();
+                        pvlst.add(rdtbli.get(2) + "|" + baseVarName + "|"
+                            + rdtbli.get(3));
+                        mpl.put(pmky, pvlst);
+                    }
+                    // mpl.put("ud_"+newVarName+"_q_"+rdtbli.get(1),
+                    // Arrays.asList(rdtbli.get(2)+"|"+baseVarName+"|"+rdtbli.get(3))
+                    // );
+                }
+
+            } // for:inner
+
+            if (delList.size() > 0) {
+                mpl.put("ud_" + newVarName + "_q_eteleD", delList);
+            }
+
+        } // for:outer
+        // add newVarNameSet
+        mpl.put("newVarNameSet", vns);
+
+        return mpl;
+    }
+
+
+    // -----------------------------------------------------------------------
     // recoded-variable Table section
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
     // / title and message line
 
     // h:HtmlOutputText: recodedVarTableTitle@binding
@@ -1991,11 +1986,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // recode section ends here
-    // <---------------------------------------------------------------------------
+    // </editor-fold>
 
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
     // eda section
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
+    // <editor-fold desc="EDA">
 
     // LHS: list box related fields
 
@@ -2192,14 +2188,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         out.println("***** resetMsgEdaButton: end  *****");
     }
 
-    // end of eda
-    // <---------------------------------------------------------------------------
+    // end of eda section ----------------------------------------------------
+    // </editor-fold>
 
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
     // AdvStat section
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
+    // <editor-fold desc="Advanced Statistics">
+    
     // Selected variable box
-
 
     // @value: options for dropDown menu
     private List<Option> modelMenuOptions = new ArrayList<Option>();
@@ -2281,7 +2278,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // 
 
         // for the first time only
-        if (!groupPanel8below.isRendered()) {
+        //if (!groupPanel8below.isRendered()) {
+        if (!groupPanel8belowRendered) {
             out.println("this is the first time to render the model-option panel");
             groupPanel8below.setRendered(true);
         } else {
@@ -2391,6 +2389,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // panel below the dropDown Menu
+    // ui:panelGroup
+    // binding
     private PanelGroup groupPanel8below = new PanelGroup();
 
     public PanelGroup getGroupPanel8below() {
@@ -2399,6 +2399,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     public void setGroupPanel8below(PanelGroup pg) {
         this.groupPanel8below = pg;
+    }
+
+    private Boolean groupPanel8belowRendered;
+    
+    public Boolean getGroupPanel8belowRendered(){
+        return groupPanel8belowRendered;
+    }
+
+    public void setGroupPanel8belowRendered(Boolean rndrd){
+        groupPanel8belowRendered = rndrd;
     }
 
     // label@binding for variable Left box1
@@ -3881,11 +3891,37 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // end of advStat
-    // <---------------------------------------------------------------------------
+    // <----------------------------------------------------------------------
+    // </editor-fold>
 
-    // --------------------------------------------------------------------------->
+
+    // -----------------------------------------------------------------------
+    // utility methods 
+    // -----------------------------------------------------------------------
+    // <editor-fold desc="utiltiy methods">
+
+
+    public List<DataVariable> getDataVariableForRequest() {
+        List<DataVariable> dvs = new ArrayList<DataVariable>();
+        for (Iterator el = dataVariables.iterator(); el.hasNext();) {
+            DataVariable dv = (DataVariable) el.next();
+            String keyS = dv.getId().toString();
+            if (varCart.containsKey(keyS)) {
+                dvs.add(dv);
+            }
+        }
+        return dvs;
+    }
+
+
+
+    // </editor-fold>
+
+
+    // -----------------------------------------------------------------------
     // subsetting-instruction section
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
+    // <editor-fold desc="subsetting instruction">
 
     // message block: subsetting allowed
     private HtmlOutputText txtSubsettingInstruction = new HtmlOutputText();
@@ -3910,11 +3946,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // end of subsetting-instruction
-    // <---------------------------------------------------------------------------
+    // <----------------------------------------------------------------------
+    // </editor-fold>
 
-    // --------------------------------------------------------------------------->
-    // search box section
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
+    // How-many-variable-DropDown menu
+    // -----------------------------------------------------------------------
+    // <editor-fold desc="How Many Variable Menu">
 
     private HtmlInputText textField4 = new HtmlInputText();
 
@@ -3986,9 +4024,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     private String selectedNoRows;
 
-    // --------------------------------------------------------------------------->
+    // </editor-fold>
+    
+    // -----------------------------------------------------------------------
     // variable Table section
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
+    // <editor-fold desc="variable table">
 
     // Variable Table: h:dataTable@binding
 
@@ -4002,9 +4043,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.data = data;
     }
 
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
     // scroller-related settings
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
 
     public String first() {
         scroll(0);
@@ -4064,9 +4105,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         howManyVarsChecked();
     }
 
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
     // select-all checkbox
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
 
     // ui:checkbox: checkboxSelectUnselectAll
     // @binding:
@@ -4296,9 +4337,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         out.println("***** selectUnselectAllCheckbox: end *****");
     }
 
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
     // variable-table: 1st column checkbox
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
 
     // variable table: checkbox column
     // varCheckbox@binding
@@ -4459,8 +4500,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
 
-    // ///////////////////////////////////////
-    // <---------------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     // request(submit) button:
     public void setSubmitButtonEnabled(boolean bttn) {
@@ -4483,7 +4523,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.linkAction1 = hcl;
     }
 
-    // <---------------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     // private Collection<DataVariable> dataVariables;
     private List<DataVariable> dataVariables = new ArrayList<DataVariable>();
@@ -4534,11 +4574,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.categories = categories;
     }
 
-    // <---------------------------------------------------------------------------
-
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
     // data for the Variable Table
-    // --------------------------------------------------------------------------->
+    // -----------------------------------------------------------------------
 
     private List<Object> dt4Display = new ArrayList<Object>();
 
@@ -4613,7 +4651,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     }
 
-    // <---------------------------------------------------------------------------
+    // <----------------------------------------------------------------------
 
     public String getVariableLabelfromId(String varId) {
 
@@ -4679,11 +4717,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return rtvl;
     }
 
-    // <---------------------------------------------------------------------------
-
+    // <----------------------------------------------------------------------
     // </editor-fold>
-    // ////////////////////////////////
-    // <editor-fold desc="JSC page bean settings">
+
+    // -----------------------------------------------------------------------
+    // Constructor and Init method
+    // -----------------------------------------------------------------------
+    // <editor-fold desc="Constructor and Init method">
     // defaultstate="collapsed"
 
     public AnalysisPage() {
@@ -4691,37 +4731,55 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     /**
-     * <p>
-     * Return a reference to the application-scoped bean.
-     * </p>
+     * Returns a reference to the application-scoped bean
+     * 
+     * @return a bean that stores zelig-model-related information
      */
     protected AnalysisApplicationBean getAnalysisApplicationBean() {
         return (AnalysisApplicationBean) getBean("AnalysisApplicationBean");
     }
-
+    /**
+     * Prepares the state-keeping html components 
+     * and their backing java objects for rendering SubsettingPage.jsp
+     * 
+     */
     public void init() {
+        boolean debug_init = true; 
         super.init();
         try {
+            // sets default values to html components
             _init();
-            out.println("pass _init() in doInit()");
+            
 
+            if (debug_init) {
+                out.println("pass _init() in doInit()");
+            }
+            // gets the FacesContext instance
             FacesContext cntxt = FacesContext.getCurrentInstance();
-
+            
+            // gets the ExternalContext
             ExternalContext exCntxt = FacesContext.getCurrentInstance()
                 .getExternalContext();
-
+            
+            // gets session data from the ExternalContext
             Map<String, Object> sessionMap = exCntxt.getSessionMap();
-
-            out.println("\ncontents of RequestParameterMap:\n"
-                + exCntxt.getRequestParameterMap());
-
-            // out.println("\ncontents of SessionMap:\n"+sessionMap);
-            // Map<String,String[]> rqustHdrMp =
-            // exCntxt.getRequestHeaderValuesMap();
+            
+            if (debug_init){
+                out.println("\ncontents of RequestParameterMap:\n"
+                    + exCntxt.getRequestParameterMap());
+                // out.println("\ncontents of SessionMap:\n"+sessionMap);
+            }
+            
+            // gets the request header data
             Map<String, String> rqustHdrMp = exCntxt.getRequestHeaderMap();
-            out.println("\nRequest Header Values Map:\n" + rqustHdrMp);
-            out.println("\nRequest Header Values Map(user-agent):"
-                + rqustHdrMp.get("user-agent"));
+            
+            if (debug_init){
+                out.println("\nRequest Header Values Map:\n" + rqustHdrMp);
+                out.println("\nRequest Header Values Map(user-agent):"
+                    + rqustHdrMp.get("user-agent"));
+            }
+            
+            // gets the end-user's browser type
             if (isBrowserFirefox(rqustHdrMp.get("user-agent"))) {
                 out.println("user's browser is firefox");
                 browserType = "Firefox";
@@ -4729,26 +4787,34 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 browserType = "notFirefox";
             }
 
+            // gets the current view state value (for post-back-checking)
             String currentViewStateValue = exCntxt.getRequestParameterMap()
                 .get(ResponseStateManager.VIEW_STATE_PARAM);
-
-            out.println("ViewState value=" + currentViewStateValue);
-
-            out.println("VDCRequestBean: current VDC URL ="
+            
+            if (debug_init){
+                out.println("ViewState value=" + currentViewStateValue);
+                out.println("VDCRequestBean: current VDC URL ="
                 + getVDCRequestBean().getCurrentVDCURL());
+            }
+            
+            // Stores the URL of the requested study 
             setStudyURL(getVDCRequestBean().getCurrentVDCURL());
-            out.println("VDCRequestBean: studyId ="
-                + getVDCRequestBean().getStudyId());
-            out.println("VDCRequestBean =" + getVDCRequestBean());
-
-            // clear session-scoped objects if this page is rendered for the
-            // first time
-            if (currentViewStateValue == null
-                || getVDCRequestBean().getDtId() != null) {
-                // first time visit to the SubsettingPage.jsp
+            
+            if (debug_init){
+                out.println("VDCRequestBean: studyId ="
+                    + getVDCRequestBean().getStudyId());
+                out.println("VDCRequestBean =" + getVDCRequestBean());
+            }
+            /*
+            // Deletes session-scoped objects if this page is rendered 
+            // for the first time, i.e. not post-back
+            */
+            if (currentViewStateValue == null || 
+                getVDCRequestBean().getDtId() != null) {
+                // The first time visit to the SubsettingPage.jsp
 
                 List<String> sessionObjects = new ArrayList<String>();
-
+                
                 Collections.addAll(sessionObjects, "dt4Display", "varCart",
                     "varSetAdvStat", "groupPanel8below", "advStatVarRBox1",
                     "advStatVarRBox2", "advStatVarRBox3", "setxDiffVarBox1",
@@ -4760,87 +4826,130 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     "selectedNoRows", "msgEdaButtonTxt", "msgDwnldButtonTxt",
                     "gridPanelModelInfoBox");
 
-                // clear the data for the dataTable
                 for (String obj : sessionObjects) {
                     if (sessionMap.containsKey(obj)) {
                         cntxt.getExternalContext().getSessionMap().remove(obj);
                     }
                 }
-                out.println("left-over objects of the previous session have been removed");
+                
+                if (debug_init){
+                    out.println("left-over objects of the previous session"
+                        +" have been removed");
+                }
             }
-            // get the dtId
-            // Long dtId = getDtId();
 
-            // If we're coming from editVariabePage
+            // Gets the datatable Id if we're coming from editVariabePage
             if (dtId == null) {
                 dtId = getVDCRequestBean().getDtId();
+                if (debug_init){
+                    out.println("dtId(null case: came from editVariablePage)="
+                        +dtId);
+                }
             }
 
             // we need to create the VariableServiceBean
             if (dtId != null) {
-                out.println("The process enters non-null-dtId case: dtId="
+                if (debug_init){
+                    out.println("Init() enters non-null-dtId case: dtId="
                     + dtId);
-
-                // retrieve the datatable by dtId and
-                // set it into dataTable
+                }
+                // Gets the requested data table by its Id
                 dataTable = variableService.getDataTable(dtId);
-
-                // setDataTable(getVariableService().getDataTable(dtId));
+                
+                // Exposes the data file name to SubsettingPage.jsp
                 setFileName(dataTable.getStudyFile().getFileName());
-                out.println("file Name=" + fileName);
+                
+                if (debug_init){
+                    out.println("file Name=" + fileName);
+                }
+                
 
-                // retrieve each var's data as DataVariable Class data
-                // and set them into Collection<DataVariable> dataVariables
-                // setDataVariables(dataTable.getDataVariables());
+                // Retrieves each var's data from the data table
+                // and saves them in Collection<DataVariable> dataVariables
                 dataVariables.addAll(dataTable.getDataVariables());
-                out.println("pass the addAll line");
-
+                
+                if (debug_init){
+                    out.println("pass the addAll line");
+                }
+                
+                // Gets VDCUser-related data
                 VDCUser user = null;
                 if (getVDCSessionBean().getLoginBean() != null) {
                     user = getVDCSessionBean().getLoginBean().getUser();
                 }
+                
                 VDC vdc = getVDCRequestBean().getCurrentVDC();
-                out.println("VDCUser instnce=" + user);
-                out.println("VDC instnce=" + vdc);
-
+                if (debug_init){
+                    out.println("VDCUser instnce=" + user);
+                    out.println("VDC instnce=" + vdc);
+                }
+                
+                //  Gets the StudyFile object via the dataTable object.
+                //  This StudyFile is used to determine whether
+                //  Subsetting functionalities are rendered or not
+                //  in SubsettingPage.jsp
                 StudyFile sf = dataTable.getStudyFile();
-                // this info is later used to render the page differently
-                HttpServletRequest request = (HttpServletRequest) this
-                    .getExternalContext().getRequest();
+                HttpServletRequest request = 
+                    (HttpServletRequest)this.getExternalContext().getRequest();
 
-                if (sf.isSubsetRestrictedForUser(user, vdc, getVDCSessionBean()
-                    .getIpUserGroup())) {
-                    out.println("restricted=yes: this user does not have the subsetting permission");
+                if (sf.isSubsetRestrictedForUser(user, vdc, 
+                    getVDCSessionBean().getIpUserGroup())) {
+                    if (debug_init){
+                        out.println("restricted=yes: this user "+
+                            "does not have the subsetting permission");
+                    }
                     subsettingPageAccess = Boolean.FALSE;
                     txtNonSubsettingInstruction.setRendered(false);
                     hideSubsettingFunctions();
                 } else {
-                    out.println("restricted=no: this user has the subsetting permission");
+                    if (debug_init){
+                        out.println("restricted=no: " +
+                            "this user has the subsetting permission");
+                    }
                 }
-
-                out.println("Number of vars in this data table(" + dtId + ")="
-                    + dataTable.getVarQuantity());
-
-                // set up the data for the dataTable
+                
+                if (debug_init){
+                    out.println("Number of vars in this data table(" +
+                    dtId + ")=" + dataTable.getVarQuantity());
+                }
+                
+                // Sets data for the variable table in the subsetting page.
+                // Variable data are stored in List<Object> dt4Display
                 if (!sessionMap.containsKey("dt4Display")) {
-                    //
-                    // dt4Display does not exist => the page was rendered for
-                    // the first time
-                    //
-                    out.println("dt4Display does not exist in the session map=>1st-time visit to this page");
-
+                    // dt4Display does not exist => 
+                    // the page was rendered for the first time
+                    // not a post-back case
+                    if (debug_init){
+                        out.println("dt4Display does not exist in the session"+
+                            "=>1st-time visit to this page");
+                    }
+                    // Fills List<Object> dt4Display with data
+                    // and newly creaded data 
                     initDt4Display();
-
-                    out.println("how many variables in dt4Display="
-                        + getDt4Display().size());
-
+                    
+                    if (debug_init){
+                        out.println("how many variables in dt4Display="
+                            + getDt4Display().size());
+                    }
+                    
+                    // Adds state-keeping objects to the session Map
+                    // 
+                    // List<Object>: The data for the variable table
                     sessionMap.put("dt4Display", dt4Display);
 
+                    // Map<String, String>: The currently selected variables
                     sessionMap.put("varCart", varCart);
 
+                    // Collection<Option> varSetAdvStat: user-selected
+                    // variables behind the LHS variable list box
                     sessionMap.put("varSetAdvStat", varSetAdvStat);
 
-                    sessionMap.put("groupPanel8below", groupPanel8below);
+                    // ui_PanelGroup that shows/hides the pane for
+                    // the advanced statistics
+                    // 
+                    //sessionMap.put("groupPanel8below", groupPanel8below);
+                    groupPanel8belowRendered=Boolean.FALSE;
+                    sessionMap.put("groupPanel8belowRendered", groupPanel8belowRendered);
                     sessionMap.put("gridPanelModelInfoBox",
                         gridPanelModelInfoBox);
 
@@ -4918,6 +5027,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // out.println("model name(post-back
                     // block)="+getCurrentModelName());
 
+                    groupPanel8belowRendered =(Boolean) sessionMap.get("groupPanel8belowRendered");
                     // groupPanel8below= ((PanelGroup)
                     // cntxt.getExternalContext().getSessionMap().get("groupPanel8below"));
 
@@ -5047,8 +5157,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // out.println("ciation="+citation);
 
             } else {
-                out
-                    .println("StudyUIclassName was not found in the session Map");
+                out.println("StudyUIclassName was not in the session Map");
             }
 
             // out.println("\nSpec Map:\n"+getAnalysisApplicationBean().getSpecMap());
@@ -5060,11 +5169,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             throw e instanceof FacesException ? (FacesException) e
                 : new FacesException(e);
         } // end of try-catch block
+        
+        if (debug_init){
+            out.println("doInit(): current tab id=" + tabSet1.getSelected());
+            out.println("***** end of doInit() *****");
+        }
+    }
+    
+    // end of doInit() -------------------------------------------------------
 
-        out.println("doInit(): current tab id=" + tabSet1.getSelected());
-        out.println("***** end of doInit() *****");
-
-    } // end of doInit()
 
     public void preprocess() {
     }
@@ -5076,6 +5189,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // </editor-fold>
+
+    // -----------------------------------------------------------------------
+    // Access control methods
+    // -----------------------------------------------------------------------
 
     public String gotoEditVariableAction() {
         String dvFilter = "";

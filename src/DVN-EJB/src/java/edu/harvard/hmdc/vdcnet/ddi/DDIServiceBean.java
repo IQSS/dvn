@@ -152,7 +152,9 @@ public class DDIServiceBean implements DDIServiceLocal {
                 javax.xml.stream.XMLStreamWriter xmlw = xmlof.createXMLStreamWriter(os);
                 xmlw.writeStartDocument();
                 //xmlw.writeProcessingInstruction("xml-stylesheet href=\'catalog.xsl\' type=\'text/xsl\'");
+                
                 createCodeBook(xmlw,s);
+                
                 xmlw.writeEndDocument();
                 xmlw.close();
 
@@ -171,17 +173,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
             // fileDscr
             createFileDscr(xmlw,sf);
-
-            // dataDscr
-            if ( sf.getDataTable().getDataVariables().size() > 0 ) {
-                xmlw.writeStartElement("dataDscr");
-                Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
-                while (varIter.hasNext()) {
-                    DataVariable dv = (DataVariable) varIter.next();
-                    createVar(xmlw, dv);
-                }
-                xmlw.writeEndElement(); // dataDscr
-            }
+            createDataDscr(xmlw,sf);
 
             xmlw.writeEndDocument();
             xmlw.close();
@@ -1084,6 +1076,20 @@ public class DDIServiceBean implements DDIServiceLocal {
         if (dataDscrAdded) xmlw.writeEndElement(); //dataDscr
     }
 
+    
+    private void createDataDscr(XMLStreamWriter xmlw, StudyFile sf) throws XMLStreamException {
+        // this version is to produce the dataDscr for just one file
+        if ( sf.isSubsettable() && sf.getDataTable().getDataVariables().size() > 0 ) {
+            xmlw.writeStartElement("dataDscr");
+            Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
+            while (varIter.hasNext()) {
+                DataVariable dv = (DataVariable) varIter.next();
+                createVar(xmlw, dv);
+            }
+            xmlw.writeEndElement(); // dataDscr
+        }     
+    }    
+    
     private void createVar(XMLStreamWriter xmlw, DataVariable dv) throws XMLStreamException {
         xmlw.writeStartElement("var");
         writeAttribute( xmlw, "ID", "v" + dv.getId().toString() );

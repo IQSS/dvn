@@ -30,7 +30,7 @@
              
         </div>
         
-        <div class="dvn_navblock">
+        <ui:panelLayout styleClass="#{ (VDCRequest.currentVDC == null) ? 'dvn_navblock dvn_navblockNetwork' : 'dvn_navblock'}">
             <div class="dvn_navblockLinks">
                 <ul class="dvn_floatL">
                     <li>
@@ -92,7 +92,7 @@
                     </ui:panelLayout>
                 </ui:panelLayout>
             </div>
-        </div>
+        </ui:panelLayout>
     
     </div>
 

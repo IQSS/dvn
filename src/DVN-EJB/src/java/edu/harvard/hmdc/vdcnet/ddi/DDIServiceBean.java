@@ -171,9 +171,10 @@ public class DDIServiceBean implements DDIServiceLocal {
             javax.xml.stream.XMLStreamWriter xmlw = xmlof.createXMLStreamWriter(out);
             xmlw.writeStartDocument();
 
-            // fileDscr
+            xmlw.writeStartElement("codeBook");
             createFileDscr(xmlw,sf);
             createDataDscr(xmlw,sf);
+            xmlw.writeEndElement(); // codeBook
 
             xmlw.writeEndDocument();
             xmlw.close();
@@ -2297,8 +2298,9 @@ public class DDIServiceBean implements DDIServiceLocal {
             } else if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("p")) {
                     returnString += "<p>" + parseText(xmlr, "p") + "</p>";
-                }
-                else if (xmlr.getLocalName().equals("ExtLink")) {
+                } else if (xmlr.getLocalName().equals("hi")) {
+                    returnString += "<em>" + parseText(xmlr, "hi") + "</em>";
+                } else if (xmlr.getLocalName().equals("ExtLink")) {
                     String uri = xmlr.getAttributeValue(null, "URI");
                     String text = parseText(xmlr, "ExtLink").trim();
                     returnString += "<a href=\"" + uri + "\">" + ( StringUtil.isEmpty(text) ? uri : text) + "</a>";

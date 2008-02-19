@@ -214,7 +214,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * The number of variables to be shown in the variable table.
      * The default value is set 20. 0 is used to show all variables
      */
-    private static final int INITIALROWNO = 20;
+    private static final int INITIAL_ROW_NO = 20;
 
     /** Sets the id number of the download GUI pane */
     private static final int PANE_DWNLD = 3;
@@ -1052,8 +1052,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setRecodeTargetVarLabel(HtmlInputText vl) {
         this.recodeTargetVarLabel = vl;
     }
-
-    // @value
+/*  deprecated (now using component-binding (recodeTargetVarLabel object)
+    // value-binding 
     private String recodeVariableLabel;
 
     public void setRecodeVariableLabel(String vl) {
@@ -1063,7 +1063,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public String getRecodeVariableLabel() {
         return recodeVariableLabel;
     }
-
+*/
     // h:dataTable:recodeTable
     // @binding
     private UIData recodeTable = null;
@@ -4989,135 +4989,203 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         checkboxSelectUnselectAll);
                         
                     // String selectedNoRows
-                    selectedNoRows = Integer.toString(INITIALROWNO);
+                    selectedNoRows = Integer.toString(INITIAL_ROW_NO);
                     howManyRowsOptions.setSelectedValue(selectedNoRows);
                     sessionMap.put("selectedNoRows", selectedNoRows);
-                    
-                    out.println("selectedNoRows=" + selectedNoRows);
-                    out.println("1st time visit: selected value for howManyRows="
+                    if (debug_init){
+                        out.println("selectedNoRows=" + selectedNoRows);
+                        out.println("1st time visit: "+
+                            "selected value for howManyRows="
                             + howManyRowsOptions.getSelectedValue());
+                    }
                 } else {
-                    // set the stored data to the key page-scoped objects
-                    // postback cases
-                    out.println("dt4Display found in the session map=>postback");
+                    // Postback cases (not 1st-time visit to this page)
+                    // Applies the stored data to the key page-scoped objects
+                    
+                    
+                    if (debug_init){
+                        out.println("Postback(non-1st-time) case: "+
+                            "dt4Display was found in the session map=>");
+                    }
+                    
+                    // Gets the stored object backing the value attribute 
+                    // of h:dataTable for the variable table 
                     setDt4Display((List<Object>) cntxt.getExternalContext()
                         .getSessionMap().get("dt4Display"));
 
-                    // varCart=(Map<Long, String>) sessionMap.get("varCart");
+                    // Gets the stored object that records 
+                    // the currently selected variables 
                     varCart = (Map<String, String>) sessionMap.get("varCart");
 
+                    // Gets the stored object backing the items attribute of 
+                    // ui:listbox for the LHS list-box component, which is
+                    // located in each tab
                     varSetAdvStat = (List<Option>) sessionMap
                         .get("varSetAdvStat");
 
+                    // Gets the stored object backing the items attribute of
+                    // ui:listbox for the 1st RHS variable box
+                    // located in the advanced statistics tab
                     advStatVarRBox1 = (Collection<Option>) sessionMap
                         .get("advStatVarRBox1");
-
+                    
+                    // ditto (2nd)
                     advStatVarRBox2 = (Collection<Option>) sessionMap
                         .get("advStatVarRBox2");
-
+                    
+                    // ditto (3rd)
                     advStatVarRBox3 = (Collection<Option>) sessionMap
                         .get("advStatVarRBox3");
 
+                    // Gets  the stored object backing the items attribute
+                    // of ui:dropDown for the 1st setx variable selector
                     setxDiffVarBox1 = (Collection<Option>) sessionMap
                         .get("setxDiffVarBox1");
+                        
+                    // ditto (2nd)
                     setxDiffVarBox2 = (Collection<Option>) sessionMap
                         .get("setxDiffVarBox2");
+                        
+                    // String object backing the currently selected model name
                     currentModelName = (String) sessionMap
                         .get("currentModelName");
+                    
+                    if (debug_init){
+                        out.println("Selected model name(after post-back)="
+                            + currentModelName);
+                    }
+                    // deprecated: 
+                    // checkbox component
+                    // Gets the stored object backing the binding attribute
+                    // of ui:checkbox for the select-unselect check box
                     checkboxSelectUnselectAll = (Checkbox) sessionMap
                         .get("checkboxSelectUnselectAll");
+                    // TO DO: new approach
+                    // Updates the following two attributes at least
+                    // class method  tag attr
+                    // setSelected   selectedValue
+                    // setRendered   rendered
 
-                    selectedNoRows = (String) sessionMap.get("selectedNoRows");
-                    out.println("post-back case: returned the selected value for howManyRows="
+                    // Gets the stored object backing the selected attribute
+                    // of ui:dropDown for the menu of choosing
+                    // an option of how many row per table
+                    selectedNoRows = (String)sessionMap.get("selectedNoRows");
+                    if (debug_init){
+                        out.println("post-back case: "+
+                            "returned the selected value for howManyRows="
                             + selectedNoRows);
-                    howManyRowsOptions.setSelectedValue(selectedNoRows);
-                    out.println("post-back case: selected value for howManyRows="
-                            + howManyRowsOptions.getSelectedValue());
-
-                    if (currentRecodeVariableId == null) {
-                        out.println("currentRecodeVariableId is null");
-                    } else {
-                        out.println("currentRecodeVariableId="
-                            + currentRecodeVariableId);
                     }
-                    out.println("currentRecodeVariableId: received value from sessionMap="
-                            + (String) sessionMap
-                                .get("currentRecodeVariableId"));
+                    
+                    howManyRowsOptions.setSelectedValue(selectedNoRows);
+                    
+                    if (debug_init){
+                        out.println("post-back case:"+
+                            " selected value for howManyRows="
+                            + howManyRowsOptions.getSelectedValue());
+                    }
+                    if (debug_init){
+                        if (currentRecodeVariableId == null) {
+                            out.println("currentRecodeVariableId is null");
+                        } else {
+                            out.println("currentRecodeVariableId="
+                                + currentRecodeVariableId);
+                        }
+                    }
+                    if (debug_init){
+                        out.println("currentRecodeVariableId: "+
+                            "received value from sessionMap="
+                             + (String) sessionMap
+                             .get("currentRecodeVariableId"));
+                    }
+                    
                     currentRecodeVariableId = (String) sessionMap
                         .get("currentRecodeVariableId");
-                    out.println("new currentRecodeVariableId="
-                        + currentRecodeVariableId);
+                        
+                    if (debug_init){
+                        out.println("new currentRecodeVariableId="
+                            + currentRecodeVariableId);
+                    }
+                    
+                    // Gets the stored object backing the rendered attribute
+                    // of ui:PaneGroup for groupPanel8below
+                    groupPanel8belowRendered =(Boolean) 
+                        sessionMap.get("groupPanel8belowRendered");
+                     
+                    // deprecated approach
+                    // Gets the stored object backing the binding attribute of
+                    // ui: PanelGroup for groupPanel8below
+                    // cntxt.getExternalContext().getSessionMap()
+                    // .get("groupPanel8below"));
 
-                    // dropDown2 =
-                    // (DropDown)cntxt.getExternalContext().getSessionMap().get("dropDown2");
-                    // dropDown3 =
-                    // (DropDown)cntxt.getExternalContext().getSessionMap().get("dropDown3");
-
-                    out.println("model name(post-back block)="
-                        + currentModelName);
-                    // out.println("model name(post-back
-                    // block)="+getCurrentModelName());
-
-                    groupPanel8belowRendered =(Boolean) sessionMap.get("groupPanel8belowRendered");
-                    // groupPanel8below= ((PanelGroup)
-                    // cntxt.getExternalContext().getSessionMap().get("groupPanel8below"));
-
-                    // if (groupPanel22.isRendered()){}
-
-                    // checkboxGroupXtbOptions=
-                    // (MultipleSelectOptionsList)sessionMap.get("checkboxGroupXtbOptions");
-
-                    // recode source variable name: header
+                    
+                    // Gets the stored object backing the value attribute of
+                    // h:outputText (id=recodeHdrVariable) for the currently 
+                    // selected recode variable name that is used in the 
+                    // column header of the recode variable editing table
                     if (!sessionMap.containsKey("currentRecodeVariableName")) {
-                        FacesContext.getCurrentInstance().getExternalContext()
-                            .getSessionMap().put("currentRecodeVariableName",
-                                currentRecodeVariableName);
+                        sessionMap.put("currentRecodeVariableName",
+                            currentRecodeVariableName);
                     } else {
                         currentRecodeVariableName = (String) sessionMap
                             .get("currentRecodeVariableName");
                     }
-
-                    out.println("new currentRecodeVariableName="
-                        + currentRecodeVariableName);
-
-                    // @value of recode target variable label
+                    
+                    if (debug_init){
+                        out.println("new currentRecodeVariableName="
+                            + currentRecodeVariableName);
+                    }
+                    // deprecated (component-binding is used now)
+                    // Gets the stored object backing the value attribute
+                    // of h:inputText for the label of the recode variable
+                    // (id= recodeTargetVarLabel)
+                    /*
                     if (!sessionMap.containsKey("recodeVariableLabel")) {
-                        FacesContext.getCurrentInstance().getExternalContext()
-                            .getSessionMap().put("recodeVariableLabel",
-                                recodeVariableLabel);
+                        sessionMap.put("recodeVariableLabel",
+                            recodeVariableLabel);
                     } else {
                         recodeVariableLabel = (String) sessionMap
                             .get("recodeVariableLabel");
                     }
-
+                    
+                    */
                     // @value of recodeTable in recode tab
+                    
+                    // Gets the stored object backing the value attribute of
+                    // h:dataTable for the recoding table 
+                    // whose id is "recodeTable"
+                    
                     if (!sessionMap.containsKey("recodeDataList")) {
-                        FacesContext.getCurrentInstance().getExternalContext()
-                            .getSessionMap().put("recodeDataList",
-                                recodeDataList);
+                        sessionMap.put("recodeDataList", recodeDataList);
                     } else {
                         recodeDataList = (List<Object>) sessionMap
                             .get("recodeDataList");
                     }
-
-                    // storage of recodeDataList
+                    
+                    // Gets the stored object for recodeSchema that 
+                    // stores each recode variable's recodeDataList
+                    // as a hash table. Not exposed to SubsettingPage.jsp
                     if (!sessionMap.containsKey("recodeSchema")) {
-                        // FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("recodeSchema",
-                        // recodeSchema);
+                        sessionMap.put("recodeSchema", recodeSchema);
                     } else {
                         recodeSchema = (Map<String, List<Object>>) sessionMap
                             .get("recodeSchema");
                     }
 
                     // @value of recodedVarTable
+                    //
+                    // Gets the stored object for the value attribute
+                    // of h:dataTable for the table of recode variables
+                    // whose id is "recodedVarTable"
                     if (!sessionMap.containsKey("recodedVarSet")) {
-                        // FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("recodedVarSet",
-                        // recodedVarSet);
+                        sessionMap.put("recodedVarSet",recodedVarSet);
                     } else {
                         recodedVarSet = (List<Object>) sessionMap
                             .get("recodedVarSet");
                     }
-
+                    
+                    // Gets the stored object for derivedVarToBaseVar
+                    // that maps a new variable to its base one.
+                    // No exposed to SubsettingPage.jsp
                     if (!sessionMap.containsKey("derivedVarToBaseVar")) {
                         sessionMap.put("derivedVarToBaseVar",
                             derivedVarToBaseVar);
@@ -5126,6 +5194,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             .get("derivedVarToBaseVar");
                     }
 
+                    // Gets the stored object for baseVarToDerivedVar
+                    // that maps a base variable to its derived variables.
+                    // Not exposed to SubsettingPage.jsp
                     if (!sessionMap.containsKey("baseVarToDerivedVar")) {
                         sessionMap.put("baseVarToDerivedVar",
                             baseVarToDerivedVar);
@@ -5134,30 +5205,54 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             .get("baseVarToDerivedVar");
                     }
 
+                    // Gets the stored object for recodeVarNameSet that
+                    // checks the uniqueness of a name 
+                    // for a new recode-variable.
+                    // Not exposed to SubsettingPage.jsp
                     if (!sessionMap.containsKey("recodeVarNameSet")) {
                         sessionMap.put("recodeVarNameSet", recodeVarNameSet);
                     } else {
                         recodeVarNameSet = (Set<String>) sessionMap
                             .get("recodeVarNameSet");
                     }
-
+                    
+                    // Resets the properties (rendered and text) of
+                    // msgSaveRecodeBttn (ui:staticText) that shows
+                    // error messages concerning the action of 
+                    // SaveRecodeBttn 
                     resetMsgSaveRecodeBttn();
+                    
+                    // Rests the properties (rendered and text) of
+                    // msgVariableSelection (ui:staticText) that shows
+                    // error message concerning when the base varaible for
+                    // a recoded variable is un-selected in the variable
+                    // table
                     resetMsgVariableSelection();
 
+                    // Gets the stored object backing msgDwnldButtonTxt that
+                    // shows error messages concerning the action of 
+                    // dwnldButton
                     if (!sessionMap.containsKey("msgDwnldButtonTxt")) {
                         sessionMap.put("msgEdaButtonTxt", msgDwnldButtonTxt);
                     } else {
                         msgDwnldButtonTxt = (String) sessionMap
                             .get("msgDwnldButtonTxt");
                     }
+                    // Hides the error message text concerning 
+                    // dwnldButton
                     msgDwnldButton.setVisible(false);
-
+                    
+                    // Gets the stored object backing msgEdaButtonTxt that
+                    // shows error messages concerning the action of 
+                    // edaBttn
                     if (!sessionMap.containsKey("msgEdaButtonTxt")) {
                         sessionMap.put("msgEdaButtonTxt", msgEdaButtonTxt);
                     } else {
                         msgEdaButtonTxt = (String) sessionMap
                             .get("msgEdaButtonTxt");
                     }
+                    // Hides the error message text concerning
+                    // edaButton
                     msgEdaButton.setVisible(false);
 
                     // end of post-back cases

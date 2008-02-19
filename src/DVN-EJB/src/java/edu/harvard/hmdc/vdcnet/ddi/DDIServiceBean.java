@@ -2375,14 +2375,21 @@ public class DDIServiceBean implements DDIServiceLocal {
                         }
                     }
                 } else if (xmlr.getLocalName().equals("holdings")) {
-                    holdings += addHoldings ? ", " : "";
-                    addHoldings = true;
-                    
                     String uri = xmlr.getAttributeValue(null, "URI");
-                    if ( StringUtil.isEmpty(uri) ) {
-                        holdings += parseText(xmlr);
-                    } else {
-                        holdings += "<a href=\"" + uri + "\">" + parseText(xmlr) + "</a>";
+                    String holdingsText = parseText(xmlr);
+
+                    if ( !StringUtil.isEmpty(uri) || !StringUtil.isEmpty(holdingsText)) {
+                        holdings += addHoldings ? ", " : "";
+                        addHoldings = true;
+
+                        if ( StringUtil.isEmpty(uri) ) {
+                            holdings += holdingsText;
+                        } else if ( StringUtil.isEmpty(holdingsText) ) {
+                            holdings += "<a href=\"" + uri + "\">" + uri + "</a>";
+                        } else {
+                            // both uri and text have values
+                            holdings += "<a href=\"" + uri + "\">" + holdingsText + "</a>";
+                        }
                     }
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {

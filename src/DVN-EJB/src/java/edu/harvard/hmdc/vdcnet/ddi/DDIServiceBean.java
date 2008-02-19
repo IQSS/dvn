@@ -172,8 +172,12 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeStartDocument();
 
             xmlw.writeStartElement("codeBook");
+            xmlw.writeDefaultNamespace("http://www.icpsr.umich.edu/DDI");
+            writeAttribute( xmlw, "version", "2.0" );
+
             createFileDscr(xmlw,sf);
             createDataDscr(xmlw,sf);
+
             xmlw.writeEndElement(); // codeBook
 
             xmlw.writeEndDocument();
@@ -2291,7 +2295,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         String returnString = "";
 
         while (true) {
-            if (returnString != "") { returnString += "\n";}
+            //if (returnString != "") { returnString += "\n";}
             int event = xmlr.next();
             if (event == XMLStreamConstants.CHARACTERS) {
                 returnString += xmlr.getText().trim().replace('\n',' ');

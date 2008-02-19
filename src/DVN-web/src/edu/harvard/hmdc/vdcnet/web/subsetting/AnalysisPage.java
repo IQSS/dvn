@@ -39,7 +39,11 @@ import java.util.Map.*;
 import java.util.regex.*;
 import java.util.Collection.*;
 
-// jsf classes
+import java.io.*;
+
+import javax.servlet.http.*;
+
+// jsf-api classes
 import javax.faces.component.*;
 import javax.faces.component.UIComponent.*;
 import javax.faces.component.html.*;
@@ -64,122 +68,122 @@ import edu.harvard.hmdc.vdcnet.study.StudyFile;
 
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
+
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
-import edu.harvard.hmdc.vdcnet.vdc.VDC; // java studio creator's classes
+import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
+
+import edu.harvard.hmdc.vdcnet.vdc.VDC;
+
+import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
+
+// java studio creator's classes
 import com.sun.rave.web.ui.component.*;
 import com.sun.rave.web.ui.model.*;
 
 // the following package is deprecaged
-// the new name is
-// com.sun.rave.faces.data
+// the new name is com.sun.rave.faces.data
 
 import com.sun.jsfcl.data.*;
-import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 
-import javax.servlet.http.*;
-import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
-import java.io.*;
 
 public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
-
-    // <editor-fold desc="inital settings">
-
+    
+    /**
+     * Injects VariableServiceLocal to this class
+     */
     @EJB
     private VariableServiceLocal variableService;
 
     /**
-     * Holds value of property dataTable.
-     */
-    private edu.harvard.hmdc.vdcnet.study.DataTable dataTable;
-
-    /**
-     * Getter for property dataTable.
+     * getter for the injected VariableServiceLocal
      * 
-     * @return Value of property dataTable.
+     * @return VariableService
      */
-    /*
-     * public edu.harvard.hmdc.vdcnet.study.DataTable getDataTable() { return
-     * dataTable; }
-     */
-    /**
-     * Setter for property dataTable.
-     * 
-     * @param study
-     *            New value of property dataTable.
-     */
-    /*
-     * public void setDataTable(edu.harvard.hmdc.vdcnet.study.DataTable
-     * dataTable) { this.dataTable = dataTable; }
-     */
-    /**
-     * Holds value of property dtId. specified as a managed-property in
-     * managed-beans.xml <property-class>java.lang.Long</property-class>
-     * <value>#{param.dtId}</value>
-     */
-    private Long dtId;
-
-    /**
-     * Getter for property dtId.
-     * 
-     * @return Value of property dtId.
-     */
-    public Long getDtId() {
-        return this.dtId;
-    }
-
-    /**
-     * Setter for property dtId.
-     * 
-     * @param dtId
-     *            New value of property dtId.
-     */
-    public void setDtId(Long dtId) {
-        this.dtId = dtId;
-    }
-
     public VariableServiceLocal getVariableService() {
         return variableService;
     }
 
+    // ---------------------------------------------------------------------//
+    // Initializes JSF components
+    // ---------------------------------------------------------------------//
+    // <editor-fold desc="Initialization of JSF components">
+    
+    /*
+     * sets various initial values of html components
+     *
+     */
     private void _init() throws Exception {
+        
+        // Advanced Statistics: radio button group for the setx option
+        radioButtonGroup1DefaultOptions.setOptions(
+            new Option[] {
+                new Option("0", "Use average values (setx default)"),
+                new Option("1", "Select values")
+            });
 
-        radioButtonGroup1DefaultOptions.setOptions(new Option[] {
-            new Option("0", "Use average values (setx default)"),
-            new Option("1", "Select values") });
-
+        // Sets the default value of the above setx option
         radioButtonGroup1DefaultOptions.setSelectedValue("0");
 
-        // zelig output option set
-        checkboxGroup2DefaultOptions.setOptions(new Option[] {
-            new Option("Summary", "Include Summary Statistics"),
-            new Option("Plots", "Include Plot"),
-            new Option("BinOutput", "Include Replication Data") });
+        // Advanced Statistics: checkbox group for the output option pane
+        checkboxGroup2DefaultOptions.setOptions(
+            new Option[] {
+                new Option("Summary", "Include Summary Statistics"),
+                new Option("Plots", "Include Plot"),
+                new Option("BinOutput", "Include Replication Data")
+            });
 
+        // Sets the default state of each checkbox of the above group
         checkboxGroup2DefaultOptions.setSelectedValue(new Object[] { "Summary",
             "Plots", "false" });
 
-        // advStat: xtab output options
-        checkboxGroupXtbOptions.setOptions(new Option[] {
-            new Option("xtb_ExtraTables", "Include Totals"),
-            new Option("xtb_Statistics", "Include Statistics"),
-            new Option("xtb_Totals", "Include Percentages"),
-            new Option("xtb_Percentages", "Include Extra Tables") });
+        // Advanced Statistics: checkbox group for the output option pane(xtab)
+        checkboxGroupXtbOptions.setOptions(
+            new Option[] {
+                new Option("xtb_ExtraTables", "Include Totals"),
+                new Option("xtb_Statistics", "Include Statistics"),
+                new Option("xtb_Totals", "Include Percentages"),
+                new Option("xtb_Percentages", "Include Extra Tables")
+            });
+        
+        // Sets the default state of each checkbox of the above group
+        checkboxGroupXtbOptions.setSelectedValue(
+            new Object[] {
+                "xtb_ExtraTables", 
+                "xtb_Statistics", 
+                "xtb_Totals", 
+                "false"
+            });
 
-        checkboxGroupXtbOptions.setSelectedValue(new Object[] {
-            "xtb_ExtraTables", "xtb_Statistics", "xtb_Totals", "false" });
-
-        // set the number of rows to be displayed
-        howManyRowsOptions.setOptions(new Option[] {
-            new Option("20", "20 Variables"), new Option("10", "10 Variables"),
-            new Option("50", "50 Variables"), new Option("0", "All") });
-
+        // Dropdown menu of how many rows to be displayed in the variable table
+        howManyRowsOptions.setOptions(
+            new Option[] {
+                new Option("20", "20 Variables"), 
+                new Option("10", "10 Variables"),
+                new Option("50", "50 Variables"), 
+                new Option("0", "All") 
+            });
+        
+        // Sets the default state of the above Dropdown menu to 20 (variables)
+        /*
         // howManyRowsOptions.setSelectedValue("20");
-
+        */
+        
+        /*
+         * Setter for property StudyUIclassName.  The instance of StudyUI class
+         * contains citation-related information
+         */
         setStudyUIclassName("edu.harvard.hmdc.vdcnet.web.study.StudyUI");
-
+        
+        /*
+         * Fills dropdown menu for selecting a model (advanced Statistics tab)
+         * with options obtained through AnalysisApplicationBean
+         */
         setModelMenuOptions(getAnalysisApplicationBean().getModelMenuOptions());
-
-        // setup the Map for switch in checkVarType()
+        
+        /*
+         * Initializes the dataType-to-integer table used for
+         * the switch statement in the checkVarType method
+         */
         dataType2Int.put("binary", Integer.valueOf("1"));
         dataType2Int.put("nominal", Integer.valueOf("2"));
         dataType2Int.put("nominal|ordinal", Integer.valueOf("23"));
@@ -189,157 +193,358 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dataType2Int.put("continuous", Integer.valueOf("5"));
         dataType2Int.put("any", Integer.valueOf("0"));
 
+        // Sets the default state of the Subsetting Page to subsettable(TRUE)
         subsettingPageAccess = Boolean.TRUE;
 
+        // Initializes the variable-type-to-String conversion table 
         vtInt2String.put("2", "continuous");
         vtInt2String.put("1", "discrete");
         vtInt2String.put("0", "character");
-/*
-        sumStatHeaderCntn.put("mean", "mean");
-        sumStatHeaderCntn.put("medn", "median");
-        sumStatHeaderCntn.put("mode", "mode");
-        sumStatHeaderCntn.put("vald", "valid cases");
-        sumStatHeaderCntn.put("invd", "invalid cases");
-        sumStatHeaderCntn.put("min", "minimum");
-        sumStatHeaderCntn.put("max", "maximum");
-        sumStatHeaderCntn.put("stdev", "standard deviation");
-*/
+        
     } // end of _init()
 
+    // </editor-fold>
+
+    // -----------------------------------------------------------------------
+    // Static Variables
+    // -----------------------------------------------------------------------
+    // <editor-fold desc="Static Variables">
+
+    /** 
+     * The number of variables to be shown in the variable table.
+     * The default value is set 20. 0 is used to show all variables
+     */
     private static final int INITIALROWNO = 20;
 
+    /** Sets the id number of the download GUI pane */
     private static final int PANE_DWNLD = 3;
+    
+    /** Sets the id number of the recode GUI pane */
     private static final int PANE_RECODE = 2;
+    
+    /** Sets the id number of the EDA GUI pane */
     private static final int PANE_EDA = 4;
+    
+    /** Sets the id number of the advanced statistics GUI pane */
     private static final int PANE_ADVSTAT = 5;
 
-    private Boolean subsettingPageAccess;
-    private int clickedTab = 3;
-
     // </editor-fold>
-    // <editor-fold desc="components">
+    
+    // -----------------------------------------------------------------------
+    // Non-JSF-component Instance variables
+    // -----------------------------------------------------------------------
+    // <editor-fold desc="Instance Variables">
 
-    // @value: options for dropDown menu
-    private List<Option> modelMenuOptions = new ArrayList<Option>();
 
-    public List<Option> getModelMenuOptions() {
-        return this.modelMenuOptions;
+    /**
+     * Instance of the DataTabble requested by the end-user
+     */
+    private edu.harvard.hmdc.vdcnet.study.DataTable dataTable;
+
+
+    /**
+     * The ID of the requested DataTable instance. Specified as a managed-property in
+     * managed-beans.xml <property-class>java.lang.Long</property-class>
+     * <value>#{param.dtId}</value>
+     */
+    private Long dtId;
+
+    /**
+     * Getter for property dtId
+     * 
+     * @return    value of property dtId
+     */
+    public Long getDtId() {
+        return this.dtId;
     }
 
-    private void setModelMenuOptions(List<Option> sig) {
-        this.modelMenuOptions = sig;
+    /**
+     * Setter for property dtId.
+     * 
+     * @param dtId  new value of property dtId
+     *           
+     */
+    public void setDtId(Long dtId) {
+        this.dtId = dtId;
     }
 
+    /**
+     * The Id of the data table that stores the requested data file
+     */
     private String dataTableId;
 
-    // Map as a variable-shopping cart
-    // public Map<Long, String> varCart= new HashMap<Long, String>();
+    /**
+     * The hash table (variable Id to variable name)
+     * that stores the current selected variables
+     */
     public Map<String, String> varCart = new HashMap<String, String>();
 
     // Map for switch statement in checkVarType()
-
+    /**
+     *  The dataType-to-integer table used for
+     *  the switch statement in the checkVarType method
+     */
     public Map<String, Integer> dataType2Int = new HashMap<String, Integer>();
 
+    /**
+     * The variable-type-to-String conversion table 
+     */
     public Map<String, String> vtInt2String = new HashMap<String, String>();
+    
+    
     // study-related data
-
+    /**
+     * The name of StudyUI class that contains the citation-related 
+     * information about the requested Study
+     */
     private String studyUIclassName;
-
+    
+    /**
+     * Setter for property studyUI class name
+     * @param suiClass    studyUI classbname
+     */
     public void setStudyUIclassName(String suiClass) {
         studyUIclassName = suiClass;
     }
 
+    /**
+     * getter for property studyUI class-name
+     *
+     * @return the studyUI class name
+     */
     public String getStudyUIclassName() {
         return studyUIclassName;
     }
-
+    
+    /** The citation information as a String */
     private String citation;
 
+    /**
+     * getter for property citation
+     * 
+     * @return    the citation information of the requested data file
+     */
     public String getCitation() {
         return citation;
     }
-
+    /**
+     * Setter for property citation
+     *
+     * @param c    citation information as a String
+     */
     public void setCitation(String c) {
         citation = c;
     }
-
+    
+    /** The title of the requested study */
     private String studyTitle;
 
+    /**
+     * getter for property studyTilte
+     *
+     * @return    the title of the requested study
+     */
     public String getStudyTitle() {
         return studyTitle;
     }
-
+    
+    /**
+     * setter for property studyTilte
+     *
+     * @param sTl   the tilte of the requested study
+     */
     public void setStudyTitle(String sTl) {
         studyTitle = sTl;
     }
-
+    
+    /** The ID of the requested study */
     private Long studyId;
 
-    public Long getStudyId() {
+    /**
+     * Getter for property studyId
+     *
+     * @return the ID of the requested study
+     */
+   public Long getStudyId() {
         return studyId;
     }
-
+    
+    /**
+     * Setter for property studyId
+     *
+     * @param sId    the ID of the requested study
+     */
     public void setStudyId(Long sId) {
         studyId = sId;
     }
-
+    
+    /** The name of the requested data file */
     private String fileName;
-
+    
+    /**
+     * Getter for property fileName
+     *
+     * @return    the name of the requested data file
+     */
     public String getFileName() {
         return fileName;
     }
-
+    
+    /**
+     * Setter for property fileName
+     *
+     * @param fNm    the name of the requested data file
+     */
     public void setFileName(String fNm) {
         fileName = fNm;
     }
-
+    
+    /** The URL of the requested study */
     private String studyURL;
-
+    
+    /**
+     * Getter for property studyURL
+     *
+     * @return    the URL of the requested study
+     */
     public String getAtudyURL() {
         return studyURL;
     }
-
+    
+    /**
+     * Setter for property studyURL
+     *
+     * @param url    the URL of the requested study
+     */
     public void setStudyURL(String url) {
         studyURL = url;
     }
 
-    // ends here
+    /** The type of the end-user's browser */
+    private String browserType;
 
-    // page structure components
+    /**
+     * Getter for property browserType
+     *
+     * @return    the type of the end-user's browser
+     */
+    public String getBrowserType() {
+        return browserType;
+    }
+    /**
+     * Setter for property borwserType
+     *
+     * @param bt    the type of the end-user's browser
+     */
+    public void setBrowserType(String bt) {
+        this.browserType = bt;
+    }
 
+    /** The subsettability of the Subsetting Page */
+    private Boolean subsettingPageAccess;
+    
+    /** Sets the state number of the initially selected tab.
+     *  The default is 3 
+     */
+    private int clickedTab = 3;
+
+    // </editor-fold>
+
+    // -----------------------------------------------------------------------
+    // Page-level JSF components
+    // -----------------------------------------------------------------------
+
+    // <editor-fold desc="Page-level-components">
+
+    /**
+     * h:panelGrid 
+     * component binding
+     * 
+     * This component is not found in Subsetting.jsp; Deleted?
+     *
+     */
     private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
 
+    /**
+     * Getter for property gridPanel1
+     *
+     * @return    h:panelGrid object
+     */
     public HtmlPanelGrid getGridPanel1() {
         return gridPanel1;
     }
 
+    /**
+     * Setter for property gridPanel1
+     *
+     * @param hpg    h:panelGrid object
+     */
     public void setGridPanel1(HtmlPanelGrid hpg) {
         this.gridPanel1 = hpg;
     }
 
-    // tab
+    /**
+     * ui:tabSet used in the subsetting page
+     * component binding
+     * 
+     */
     private TabSet tabSet1 = new TabSet();
+
+    /**
+     * Getter for property tabSet1
+     *
+     * @return    the main tab-set component
+     */
 
     public TabSet getTabSet1() {
         return tabSet1;
     }
 
+    /**
+     * Setter for property tabSet1
+     *
+     * @param ts    the main tab-set component
+     */
     public void setTabSet1(TabSet ts) {
-        this.tabSet1 = ts;
+        tabSet1 = ts;
     }
 
+    /**
+     * ui:tab used for the downloading option
+     * component binding
+     * 
+     */
     private Tab tabDwnld = new Tab();
-
+    
+    /**
+     * Getter for property tabDwnld
+     *
+     * @return    ui:tab of the downloading option
+     */
     public Tab getTabDwnld() {
         return tabDwnld;
     }
 
-    // tabDwnld: ui:tab@actionListener
-
+    /**
+     * Setter for property tabDwnld
+     *
+     * @param tab3    ui:tab of the downloading option
+     */
+    public void setTabDwnld(Tab tab3) {
+        this.tabDwnld = tab3;
+    }
+    
+    /**
+     * Moves all variables back to the box of the end-user selected variables
+     * and resets the backing storage object varCart
+     * ui:tab_attr_actionListener
+     *
+     * @param  acev    tab-clicking-action event
+     */
     public void resetVariableInLBox(ActionEvent acev) {
-
         out.println("Within resetVariableInLBox: tab Id ="
             + acev.getComponent().getId());
+        
         // remove vars from RHS boxes
         advStatVarRBox1.clear();
         advStatVarRBox2.clear();
@@ -350,63 +555,107 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         resetVarSetAdvStat(varCart);
     }
 
-    public void setTabDwnld(Tab tab3) {
-        this.tabDwnld = tab3;
-    }
-
+    /**
+     * ui:tab used for the recoding option
+     * component binding
+     * 
+     */
     private Tab tabRecode = new Tab();
 
+    /**
+     * Getter for property tabRecode
+     *
+     * @return    ui:tab of the recoding option
+     */
     public Tab getTabRecode() {
         return tabRecode;
     }
 
+    /**
+     * Setter for property tabRecode
+     *
+     * @param tab2    ui:tab of the recoding option
+     */
     public void setTabRecode(Tab tab2) {
         this.tabRecode = tab2;
     }
 
+    /**
+     * ui:tab used for the EDA option
+     * component binding
+     * 
+     */
     private Tab tabEda = new Tab();
 
+    /**
+     * Getter for property tabEda
+     *
+     * @return    ui:tab of the EDA option
+     */
     public Tab getTabEda() {
         return tabEda;
     }
 
+    /**
+     * Setter for property tabDwnld
+     *
+     * @param tab4    ui:tab of the EDA option
+     */
     public void setTabEda(Tab tab4) {
         this.tabEda = tab4;
     }
 
+    /**
+     * ui:tab used for the advanced statistics option
+     * component binding
+     * 
+     */
     private Tab tabAdvStat = new Tab();
 
+    /**
+     * Getter for property tabAdvStat
+     *
+     * @return    ui:tab of the advanced statistics option
+     */
     public Tab getTabAdvStat() {
         return tabAdvStat;
     }
 
+    /**
+     * Setter for property tabAdvStat
+     *
+     * @param tab5    ui:tab of the advanced statistics option
+     */
     public void setTabAdvStat(Tab tab5) {
         this.tabAdvStat = tab5;
     }
 
+    /** The Id of the currently selected tab */
     private String currentTabId;
 
+    /**
+     * Getter for property currentTabId
+     *
+     * @return    the Id of the currently selected tab
+     */
     public String getCurrentTabId() {
         return currentTabId;
     }
-
+    /**
+     * Setter for property currentTabId
+     *
+     * @param tb    the Id of the currently selected tab
+     */
     public void setCurrentTabId(String tb) {
-        this.currentTabId = tb;
+        currentTabId = tb;
     }
 
-    private String browserType;
+    // </editor-fold>
 
-    public String getBrowserType() {
-        return browserType;
-    }
-
-    public void setBrowserType(String bt) {
-        this.browserType = bt;
-    }
-
-    // ---------------------------------------------------------------------//
-    // download section
-    // ---------------------------------------------------------------------//
+    // -----------------------------------------------------------------------
+    // download section   
+    // -----------------------------------------------------------------------
+    // <editor-fold desc="components">
 
     // download radio button selection
     private HtmlSelectOneRadio dwnldFileTypeSet = new HtmlSelectOneRadio();
@@ -1950,6 +2199,18 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // AdvStat section
     // --------------------------------------------------------------------------->
     // Selected variable box
+
+
+    // @value: options for dropDown menu
+    private List<Option> modelMenuOptions = new ArrayList<Option>();
+
+    public List<Option> getModelMenuOptions() {
+        return this.modelMenuOptions;
+    }
+
+    private void setModelMenuOptions(List<Option> sig) {
+        this.modelMenuOptions = sig;
+    }
 
     // ui: dropDown solution
     // @binding

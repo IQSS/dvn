@@ -4944,24 +4944,55 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // variables behind the LHS variable list box
                     sessionMap.put("varSetAdvStat", varSetAdvStat);
 
-                    // ui_PanelGroup that shows/hides the pane for
-                    // the advanced statistics
-                    // 
-                    //sessionMap.put("groupPanel8below", groupPanel8below);
+                    // ui:PanelGroup component that shows/hides the pane for
+                    // the advanced statistics. 
+                    // The rendered attribute of this PanelGroup object
+                    // must be state-kept
+                    // deprecated: serialization-unsafe approach
+                    // sessionMap.put("groupPanel8below", groupPanel8below);
+                    // Hides the pane
                     groupPanel8belowRendered=Boolean.FALSE;
-                    sessionMap.put("groupPanel8belowRendered", groupPanel8belowRendered);
-                    sessionMap.put("gridPanelModelInfoBox",
-                        gridPanelModelInfoBox);
-
+                    sessionMap.put("groupPanel8belowRendered", 
+                        groupPanel8belowRendered);
+                    
+                    // h:panelGrid component that contains the model help
+                    // information box in the advanced statistics pane.
+                    // The rendered attribute of this HtmlPanelGrid object
+                    // must be state-kept
+                    // deprecated: 
+                    // sessionMap.put("gridPanelModelInfoBox",
+                    //    gridPanelModelInfoBox);
+                    
+                    /*
+                    // Hides the pane
+                    gridPanelModelInfoBoxRendered = false; 
+                    sessionMap.put("gridPanelModelInfoBoxRendered",
+                        gridPanelModelInfoBoxRendered);
+                        
+                        // to do
+                        // accessors: get/set
+                        // JSP rendered="#{AnalysisPage.gridPanelModelInfoBoxRendered}"
+                    */
+                    // Collection<Option> advStatVarRBox1
                     sessionMap.put("advStatVarRBox1", advStatVarRBox1);
                     sessionMap.put("advStatVarRBox2", advStatVarRBox2);
                     sessionMap.put("advStatVarRBox3", advStatVarRBox3);
 
+                    // ui:checkbox
+                    // Checkbox object
+                    // class method  tag attr
+                    // setSelected   selectedValue
+                    // setRendered   rendered
+                    //
+                    //
                     sessionMap.put("checkboxSelectUnselectAll",
                         checkboxSelectUnselectAll);
+                        
+                    // String selectedNoRows
                     selectedNoRows = Integer.toString(INITIALROWNO);
                     howManyRowsOptions.setSelectedValue(selectedNoRows);
                     sessionMap.put("selectedNoRows", selectedNoRows);
+                    
                     out.println("selectedNoRows=" + selectedNoRows);
                     out.println("1st time visit: selected value for howManyRows="
                             + howManyRowsOptions.getSelectedValue());

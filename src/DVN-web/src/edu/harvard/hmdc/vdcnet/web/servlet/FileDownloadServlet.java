@@ -217,7 +217,7 @@ public class FileDownloadServlet extends HttpServlet{
 
 		    String serverPrefix = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
 
-		    parameters.put("uri", generateUrlForDDI(serverPrefix, file.getFileCategory().getStudy().getId()));
+		    parameters.put("uri", generateUrlForDDI(serverPrefix, file.getId()));
 		    parameters.put("URLdata", generateUrlForFile(serverPrefix, file.getId()));
 		    parameters.put("fileid", "f" + file.getId().toString());
 			
@@ -447,7 +447,8 @@ public class FileDownloadServlet extends HttpServlet{
 
 			String serverPrefix = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
 
-			parameters.put("uri", generateUrlForDDI(serverPrefix, file.getFileCategory().getStudy().getId()));
+			parameters.put("uri", generateUrlForDDI(serverPrefix, file.getId()));
+
 			parameters.put("URLdata", generateUrlForFile(serverPrefix, file.getId()));
 			parameters.put("fileid", "f" + file.getId().toString());
 
@@ -885,12 +886,11 @@ public class FileDownloadServlet extends HttpServlet{
             }
         }
         return variableList;
-    }
+     }
 
-    
-
-    private String generateUrlForDDI(String serverPrefix, Long studyId) {
-        String studyDDI = serverPrefix + "/ddi/?studyId=" + studyId;
+    private String generateUrlForDDI(String serverPrefix, Long fileId) {
+        String studyDDI = serverPrefix + "/ddi/?fileId=" + fileId;
+        System.out.println(studyDDI);
         return studyDDI;
     }
     

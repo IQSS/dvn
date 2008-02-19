@@ -107,6 +107,9 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
         if (harvestingDataverse.getHandlePrefix()!=null) {
             selectedHandlePrefixId = harvestingDataverse.getHandlePrefix().getId();
         }
+        if (harvestingDataverse.getHarvestFormatType()!=null) {
+            selectedMetadataPrefixId = harvestingDataverse.getHarvestFormatType().getId();
+        }
     }
     
     public void newHarvestingDataverse( ) {

@@ -14,7 +14,7 @@
        
               <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
               <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestHeader dvn_overflow' : 'dvn_sectionTitle'}">
-                      <h:outputText value="Create a New Account" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
+                     
                       <h:outputText value="Create a New Account" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
                       <h:outputText value="Create Account &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" rendered="#{LoginWorkflowBean.creatorWorkflow}" escape="false"/>
                       <h:outputText value="Create Account &lt;span&gt;&gt; Become a Contributor&lt;/span&gt;" rendered="#{LoginWorkflowBean.contributorWorkflow}" escape="false"/>

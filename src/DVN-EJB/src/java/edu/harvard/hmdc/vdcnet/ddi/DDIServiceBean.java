@@ -110,7 +110,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     public static final String NOTE_SUBJECT_UNF = "Universal Numeric Fingerprint";
     
     public static final String NOTE_TYPE_TERMS_OF_USE = "DVN:TOU";
-    public static final String NOTE_SUBJECT_TERMS_OF_USE = "Dataverse Terms Of Use";
+    public static final String NOTE_SUBJECT_TERMS_OF_USE = "Terms Of Use";
     
     // db constants
     public static final String DB_VAR_INTERVAL_TYPE_CONTINUOUS = "continuous";
@@ -163,31 +163,31 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     public void exportDataFile(StudyFile sf, OutputStream out)  {
-    try {
-        javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
-        //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
-        javax.xml.stream.XMLStreamWriter xmlw = xmlof.createXMLStreamWriter(out);
-        xmlw.writeStartDocument();
-        
-        // fileDscr
-        createFileDscr(xmlw,sf);
+        try {
+            javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
+            //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
+            javax.xml.stream.XMLStreamWriter xmlw = xmlof.createXMLStreamWriter(out);
+            xmlw.writeStartDocument();
 
-        // dataDscr
-        if ( sf.getDataTable().getDataVariables().size() > 0 ) {
-            xmlw.writeStartElement("dataDscr");
-            Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
-            while (varIter.hasNext()) {
-                DataVariable dv = (DataVariable) varIter.next();
-                createVar(xmlw, dv);
+            // fileDscr
+            createFileDscr(xmlw,sf);
+
+            // dataDscr
+            if ( sf.getDataTable().getDataVariables().size() > 0 ) {
+                xmlw.writeStartElement("dataDscr");
+                Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
+                while (varIter.hasNext()) {
+                    DataVariable dv = (DataVariable) varIter.next();
+                    createVar(xmlw, dv);
+                }
+                xmlw.writeEndElement(); // dataDscr
             }
-            xmlw.writeEndElement(); // dataDscr
-        }
-        
-        xmlw.writeEndDocument();
-        xmlw.close();
-    } catch (XMLStreamException ex) {
-        Logger.getLogger("global").log(Level.SEVERE, null, ex);
-    }        
+
+            xmlw.writeEndDocument();
+            xmlw.close();
+        } catch (XMLStreamException ex) {
+            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+        }        
     }
 
     // <editor-fold defaultstate="collapsed" desc="export - generated DDI">
@@ -247,11 +247,12 @@ public class DDIServiceBean implements DDIServiceLocal {
         String lastUpdateString = new SimpleDateFormat("yyyy-MM-dd").format(study.getLastUpdateTime());
         createDateElement( xmlw, "distDate", lastUpdateString );
 
+        xmlw.writeEndElement(); // distStmt        
+        
         // holdings
         xmlw.writeEmptyElement("holdings");
         writeAttribute( xmlw, "uri", "http://" + PropertyUtil.getHostUrl() + "/dvn/study?globalId=" + study.getGlobalId() );
 
-        xmlw.writeEndElement(); // distStmt
 
         xmlw.writeEndElement(); // citation
         xmlw.writeEndElement(); // docDscr

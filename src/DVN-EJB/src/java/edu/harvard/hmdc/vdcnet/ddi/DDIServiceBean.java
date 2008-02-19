@@ -1322,7 +1322,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             processDDI( xmlr, study );
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new EJBException("ERROR occurred while processing DDI!!!!");
+            throw new EJBException("ERROR occurred in mapDDI.", ex);
         }
     }
 
@@ -1333,10 +1333,10 @@ public class DDIServiceBean implements DDIServiceLocal {
             processDDI( xmlr, study );
         } catch (FileNotFoundException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new EJBException("ERROR occurred in mapping: File Not Found!");
+            throw new EJBException("ERROR occurred in mapDDI: File Not Found!");
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new EJBException("ERROR occurred while processing DDI!!!!");
+            throw new EJBException("ERROR occurred in mapDDI.", ex);
         }
     }
 
@@ -1358,10 +1358,10 @@ public class DDIServiceBean implements DDIServiceLocal {
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new EJBException("ERROR occurred in mapping: File Not Found!");
+            throw new EJBException("ERROR occurred in determineId: File Not Found!");
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new EJBException("ERROR occurred while processing DDI!!!!");
+            throw new EJBException("ERROR occurred in determineId.", ex);
         }
         
         Map idMap = new HashMap();
@@ -1988,11 +1988,17 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("caseQnty")) {
-                    dt.setCaseQuantity( new Long( parseText(xmlr) ) );
+                    try {    
+                        dt.setCaseQuantity( new Long( parseText(xmlr) ) );
+                    } catch (NumberFormatException ex) {}                        
                 } else if (xmlr.getLocalName().equals("varQnty")) {
-                    dt.setVarQuantity( new Long( parseText(xmlr) ) );
+                    try{
+                        dt.setVarQuantity( new Long( parseText(xmlr) ) );
+                    } catch (NumberFormatException ex) {}
                 } else if (xmlr.getLocalName().equals("recPrCas")) {
-                    dt.setRecordsPerCase( new Long( parseText(xmlr) ) );
+                    try {
+                        dt.setRecordsPerCase( new Long( parseText(xmlr) ) );
+                    } catch (NumberFormatException ex) {}
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
                 if (xmlr.getLocalName().equals("dimensns")) return;

@@ -3,7 +3,6 @@
     xmlns:h="http://java.sun.com/jsf/html" 
     xmlns:jsp="http://java.sun.com/JSP/Page" 
     xmlns:ui="http://www.sun.com/web/ui"
-    xmlns:webuijsf="http://www.sun.com/webui/webuijsf"
     xmlns:t="/WEB-INF/tlds/scroller"
     xmlns:tiles="http://struts.apache.org/tags-tiles"
     xmlns:c="http://java.sun.com/jsp/jstl/core">
@@ -211,7 +210,7 @@
           
           <ui:panelGroup block="true" rendered="#{SearchPage.renderTree}" styleClass="dvn_sectionPanels">
               <div class="dvn_block"><span><h:outputText value="#{SearchPage.treeHeader}"/></span>
-                <webuijsf:tree binding="#{SearchPage.collectionTree}" id="collectionTree" text="" />
+                <ui:tree binding="#{SearchPage.collectionTree}" id="collectionTree" text="" />
               </div>    
           </ui:panelGroup>
           

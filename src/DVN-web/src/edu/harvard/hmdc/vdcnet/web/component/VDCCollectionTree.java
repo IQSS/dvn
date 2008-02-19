@@ -22,10 +22,8 @@ package edu.harvard.hmdc.vdcnet.web.component;
 
 import com.sun.rave.web.ui.component.Hyperlink;
 import com.sun.rave.web.ui.component.ImageComponent;
-import com.sun.webui.jsf.component.Tree;
-//import com.sun.rave.web.ui.component.Tree;
-import com.sun.webui.jsf.component.TreeNode;
-//import com.sun.rave.web.ui.component.TreeNode;
+import com.sun.rave.web.ui.component.Tree;
+import com.sun.rave.web.ui.component.TreeNode;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
@@ -382,8 +380,7 @@ public class VDCCollectionTree implements java.io.Serializable  {
         nodelink.setUrl(url);
         
         // this is deprecated and should be replaced by new way
-//        node.setAction(actionMethodBinding); 
-        node.setActionExpression(getActionExpression());
+        node.setAction(actionMethodBinding); 
         
         // set up some global image stuff
         image.setAlign("top");

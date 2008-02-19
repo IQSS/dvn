@@ -118,7 +118,7 @@
                             </h:column>
                         </h:dataTable>
                         
-                        <ui:panelGroup block="true" style="padding-top: 10px" rendered="#{ReviewStudiesPage.reviewStudies.rowCount == 0 and ReviewStudiesPage.newStudies.rowCount == 0 }">
+                        <ui:panelGroup block="true" style="padding-top: 10px" rendered="#{ReviewStudiesPage.displayNoStudiesText}">
                             <h:outputText id="noStudiesText" value="There are currently no New studies or studies In Review." styleClass="warnMessage"  />
                         </ui:panelGroup>
                         <ui:panelGroup binding="#{ReviewStudiesPage.groupPanel1}" block="true" id="groupPanel1" style="padding-top: 10px" styleClass="vdcTextRight">

@@ -795,24 +795,48 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setMsgDwnldButton(StaticText txt) {
         this.msgDwnldButton = txt;
     }
-
+    /**
+     * The object backing the value attribute of
+     * ui:StaticText for msgDwnldButton that shows 
+     * error messages for the action of the download
+     * button
+     */
     private String msgDwnldButtonTxt;
 
+    /**
+     * Getter for property msgDwnldButtonTxt
+     *
+     * @return the error message text
+     */
     public String getMsgDwnldButtonTxt() {
         return msgDwnldButtonTxt;
     }
-
+    /**
+     * Setter for property msgDwnldButtonTxt
+     *
+     * @param txt   the new error message text
+     */
     public void setMsgDwnldButtonTxt(String txt) {
         this.msgDwnldButtonTxt = txt;
     }
-
+    
+    /**
+     * Clears the contents of the error message text (msgDwnldButtonTxt)
+     * for the download button (dwnldButton)
+     */
     public void resetMsgDwnldButton() {
         out.println("***** within resetMsgDwnldButton *****");
+        // Replaces the error message text with spaces
+        // so that the previous error message is not shown
+        // even if the following setVisible(false) line fails
         setMsgDwnldButtonTxt("     ");
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
-            "msgDwnldButtonTxt", msgEdaButtonTxt);
+        
+        // Stores the new state of msgDwnldButtonTxt in the session map
+        FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().put("msgDwnldButtonTxt", msgEdaButtonTxt);
+        
+        // Hides the error message text next to the download button
         msgDwnldButton.setVisible(false);
-        // FacesContext.getCurrentInstance().renderResponse();
         out.println("***** resetMsgDwnldButton: end *****");
     }
 
@@ -1401,8 +1425,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         out.println("***** removeRecodedVariable(): begins here *****");
 
         // get data stored in the event row
-        List<Object> tmpRecodeVarLine = (List<Object>) getRecodedVarTable()
-            .getRowData();
+        List<Object> tmpRecodeVarLine = 
+            (List<Object>) getRecodedVarTable().getRowData();
         // get varId as a key of recodeSchema
         String newVarId = (String) tmpRecodeVarLine.get(2);
         String newVarName = (String) tmpRecodeVarLine.get(0);
@@ -1573,8 +1597,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         if (recodeSchema.containsKey(newVarId)) {
             setRecodeDataList((List<Object>) recodeSchema.get(newVarId));
 
-            recodeTable.setValue((List<Object>) recodeSchema.get(newVarId));// FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("recodeDataList",
-                                                                            // recodeDataList);
+            recodeTable.setValue((List<Object>) recodeSchema.get(newVarId));
+            // FacesContext.getCurrentInstance().getExternalContext()
+            //      .getSessionMap().put("recodeDataList", recodeDataList);
+                                                                           
             out.println("contents of new value-label set="
                 + (List<Object>) recodeSchema.get(newVarId));
             out.println("contents of new value-label set=" + recodeDataList);
@@ -1601,10 +1627,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             recodeTargetVarName.setValue((String) tmpRecodeVarLine.get(0));
             recodeTargetVarLabel.setValue((String) tmpRecodeVarLine.get(1));
 
-            // FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("recodeVariableName",
-            // recodeVariableName);
-            // FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("recodeVariableLabel",
-            // recodeVariableLabel);
+            // FacesContext.getCurrentInstance().getExternalContext()
+            // .getSessionMap().put("recodeVariableName",recodeVariableName);
+            // 
+            // FacesContext.getCurrentInstance().getExternalContext()
+            // .getSessionMap().put("recodeVariableLabel",recodeVariableLabel);
+            //
 
             FacesContext.getCurrentInstance().renderResponse();
 
@@ -1761,8 +1789,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
         // update the value-label-mapping-data storage
         // new and replace: both cases
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-            .put("recodeSchema", recodeSchema);
+        FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().put("recodeSchema", recodeSchema);
         out.println("recodeSchema=" + recodeSchema);
 
         // replace case
@@ -1859,13 +1887,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             vns.add(newVarName);
             mpl.put("ud_" + newVarName + "_q_lebaLrav", Arrays
                 .asList(newVarLabel));
-            // add variable type
-            mpl.put("ud_" + newVarName + "_q_epyTrav", Arrays.asList("1")); // or 0
-                                                                            // for
-                                                                            // character
-                                                                            // var
+            // add variable type:  0 for character var
+            mpl.put("ud_" + newVarName + "_q_epyTrav", Arrays.asList("1")); 
             // add value-label-condition
-
             List<Object> rdtbl = (List<Object>) recodeSchema.get(newVarId);
             out.println("rdtbl=" + rdtbl);
             List<String> delList = new ArrayList<String>();
@@ -2181,10 +2205,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void resetMsgEdaButton() {
         out.println("***** within resetMsgEdaButton *****");
         setMsgEdaButtonTxt(" ");
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-            .put("msgEdaButtonTxt", msgEdaButtonTxt);
+        FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().put("msgEdaButtonTxt", msgEdaButtonTxt);
         msgEdaButton.setVisible(false);
-        // FacesContext.getCurrentInstance().renderResponse();
+
         out.println("***** resetMsgEdaButton: end  *****");
     }
 
@@ -2274,8 +2298,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             .getSpecMap().get(getCurrentModelName());
         out.println("model info:\n" + selectedModelSpec);
         // cntxt.getExternalContext().getSessionMap().put("selectedModelSpec",selectedModelSpec);
-
-        // 
 
         // for the first time only
         //if (!groupPanel8below.isRendered()) {
@@ -2384,8 +2406,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     private String dropDown1ClientId;
 
     public String getDropDown1ClientId() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        return dropDown1.getClientId(context);
+        FacesContext cntxt = FacesContext.getCurrentInstance();
+        return dropDown1.getClientId(cntxt);
     }
 
     // panel below the dropDown Menu
@@ -3254,7 +3276,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         for (int i = 0; i < outOption.length; i++) {
             out.println("output option[" + i + "]=" + outOption[i].getValue());
         }
-        // cntxt.getExternalContext().getSessionMap().put("checkboxGroupXtbOptions",checkboxGroupXtbOptions);
+        cntxt.renderResponse();
     }
 
     // ////////////////////
@@ -3308,8 +3330,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     public void showHideSimulationsOptPanel(ValueChangeEvent vce) {
-        FacesContext context = FacesContext.getCurrentInstance();
-
+    
         Boolean currentState = (Boolean) vce.getNewValue();
         if ((currentState.toString()).equals("true")) {
             groupPanel20.setRendered(true);
@@ -3359,8 +3380,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             + radioButtonGroup1.getSelected());
         if (getCurrentModelName() != null) {
 
-            AdvancedStatGUIdata.Model selectedModelSpec = getAnalysisApplicationBean()
-                .getSpecMap().get(getCurrentModelName());
+            AdvancedStatGUIdata.Model selectedModelSpec = 
+                getAnalysisApplicationBean().getSpecMap()
+                    .get(getCurrentModelName());
             out.println("spec within setx:\n" + selectedModelSpec);
             if ((currentState.toString()).equals("1")) {
                 groupPanel22.setRendered(true);
@@ -4009,8 +4031,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         out.println("current Row Index(2)=" + data.getRowIndex());
         FacesContext.getCurrentInstance().renderResponse();
         howManyVarsChecked();
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-            .put("selectedNoRows", selectedNoRows);
+        FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().put("selectedNoRows", selectedNoRows);
 
         out.println("***** howManyRows_processValueChange: end *****");
     }
@@ -4018,8 +4040,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     private String howManyRowsClientId;
 
     public String getHowManyRowsClientId() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        return howManyRows.getClientId(context);
+        FacesContext cntxt = FacesContext.getCurrentInstance();
+        return howManyRows.getClientId(cntxt);
     }
 
     private String selectedNoRows;
@@ -4171,7 +4193,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         out.println("***** selectUnselectAllCheckbox: start *****");
 
         // toggle false to true or vice versa
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext cntxt = FacesContext.getCurrentInstance();
         Boolean oldState = (Boolean) vce.getOldValue();
         out.println("oldState=" + oldState);
         Boolean currentState = (Boolean) vce.getNewValue();
@@ -4331,9 +4353,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             }
         }
 
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+        cntxt.getExternalContext().getSessionMap()
             .put("checkboxSelectUnselectAll", checkboxSelectUnselectAll);
-        FacesContext.getCurrentInstance().renderResponse();
+        cntxt.renderResponse();
         out.println("***** selectUnselectAllCheckbox: end *****");
     }
 
@@ -4357,8 +4379,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // varCheckbox@valueChangeListener
     public void updateCheckBoxState(ValueChangeEvent vce) {
         int cr = 0;
-
-        FacesContext context = FacesContext.getCurrentInstance();
 
         List<Object> tmpDataLine = (List<Object>) data.getRowData();
         out.println("current varName=" + tmpDataLine.get(3));
@@ -4446,7 +4466,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // disable buttons
             deactivateButtons();
             // reset recode field
-
         }
 
     }
@@ -5146,9 +5165,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         recodeVariableLabel = (String) sessionMap
                             .get("recodeVariableLabel");
                     }
-                    
                     */
-                    // @value of recodeTable in recode tab
                     
                     // Gets the stored object backing the value attribute of
                     // h:dataTable for the recoding table 
@@ -5171,8 +5188,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             .get("recodeSchema");
                     }
 
-                    // @value of recodedVarTable
-                    //
                     // Gets the stored object for the value attribute
                     // of h:dataTable for the table of recode variables
                     // whose id is "recodedVarTable"
@@ -5201,8 +5216,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         sessionMap.put("baseVarToDerivedVar",
                             baseVarToDerivedVar);
                     } else {
-                        baseVarToDerivedVar = (Map<String, Set<String>>) sessionMap
-                            .get("baseVarToDerivedVar");
+                        baseVarToDerivedVar = (Map<String, Set<String>>) 
+                            sessionMap.get("baseVarToDerivedVar");
                     }
 
                     // Gets the stored object for recodeVarNameSet that
@@ -5218,78 +5233,80 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                     // Resets the properties (rendered and text) of
                     // msgSaveRecodeBttn (ui:staticText) that shows
-                    // error messages concerning the action of 
-                    // SaveRecodeBttn 
+                    // error messages for the action of SaveRecodeBttn
                     resetMsgSaveRecodeBttn();
                     
                     // Rests the properties (rendered and text) of
                     // msgVariableSelection (ui:staticText) that shows
-                    // error message concerning when the base varaible for
-                    // a recoded variable is un-selected in the variable
-                    // table
+                    // error message when the base varaible for
+                    // a recoded variable is un-selected in the variable table
                     resetMsgVariableSelection();
 
                     // Gets the stored object backing msgDwnldButtonTxt that
-                    // shows error messages concerning the action of 
-                    // dwnldButton
+                    // shows error messages for the action of dwnldButton
                     if (!sessionMap.containsKey("msgDwnldButtonTxt")) {
                         sessionMap.put("msgEdaButtonTxt", msgDwnldButtonTxt);
                     } else {
                         msgDwnldButtonTxt = (String) sessionMap
                             .get("msgDwnldButtonTxt");
                     }
-                    // Hides the error message text concerning 
-                    // dwnldButton
+                    // Hides the error message text for dwnldButton
                     msgDwnldButton.setVisible(false);
                     
                     // Gets the stored object backing msgEdaButtonTxt that
-                    // shows error messages concerning the action of 
-                    // edaBttn
+                    // shows error messages for the action of edaButton
                     if (!sessionMap.containsKey("msgEdaButtonTxt")) {
                         sessionMap.put("msgEdaButtonTxt", msgEdaButtonTxt);
                     } else {
                         msgEdaButtonTxt = (String) sessionMap
                             .get("msgEdaButtonTxt");
                     }
-                    // Hides the error message text concerning
-                    // edaButton
+                    // Hides the error message text for edaButton
                     msgEdaButton.setVisible(false);
 
                     // end of post-back cases
-                } // setup for the key data
+                }
 
             } else {
                 // dtId is not available case
-                // WE SHOULD HAVE A dataTable ID, throw an error
-                out.println("ERROR: in AnalysisPage, without a serviceBean or a dtId");
-                log("ERROR: in AnalysisPage, without a serviceBean or a dtId");
+                if (debug_init){
+                    out.println("ERROR: in AnalysisPage, "+
+                        "without a serviceBean or a dtId");
+                }
+                log("ERROR: AanalysisPage.java: "+
+                    "without a serviceBean or a dtId");
             }
 
-            // prepare study Title and Id
+            // Stores the title, ID, and citation data of the requested study
             if (sessionMap.containsKey(getStudyUIclassName())) {
-                out.println("StudyUIclassName was found in the session Map");
 
                 StudyUI sui = (StudyUI) sessionMap.get(getStudyUIclassName());
 
+                // Stores the title, Id, and Citation of the requested study
                 setStudyTitle(sui.getStudy().getTitle());
-
-                // out.println("Study Title="+studyTitle);
-
                 setStudyId(sui.getStudy().getId());
-
-                // out.println("Study Id="+studyId);
-
                 setCitation(sui.getStudy().getCitation());
-                // out.println("ciation="+citation);
-
+                
+                if (debug_init){
+                    out.println("StudyUIclassName was found"+
+                        " in the session Map");
+                    out.println("Study Title="+studyTitle);
+                    out.println("Study Id="+studyId);
+                    out.println("Ciation="+citation);
+                }
             } else {
-                out.println("StudyUIclassName was not in the session Map");
+                if (debug_init){
+                    out.println("StudyUIclassName was not in the session Map");
+                }
             }
-
-            // out.println("\nSpec Map:\n"+getAnalysisApplicationBean().getSpecMap());
-            // out.println("\nMenu Option List:\n"+getAnalysisApplicationBean().getModelMenuOptions());
-            out.println("\ncontents of the cart:\n" + varCart);
-
+            
+            if (debug_init){
+                out.println("\nSpec Map:\n"+
+                    getAnalysisApplicationBean().getSpecMap());
+                out.println("\nMenu Option List:\n"+
+                    getAnalysisApplicationBean().getModelMenuOptions());
+                out.println("\ncontents of the cart:\n" + varCart);
+            }
         } catch (Exception e) {
             log("AnalysisPage Initialization Failure", e);
             throw e instanceof FacesException ? (FacesException) e
@@ -5297,7 +5314,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         } // end of try-catch block
         
         if (debug_init){
-            out.println("doInit(): current tab id=" + tabSet1.getSelected());
+            out.println("doInit(): current tab id=" +
+                tabSet1.getSelected());
             out.println("***** end of doInit() *****");
         }
     }

@@ -88,8 +88,8 @@ public class TermsOfUsePage extends VDCBaseBean {
         String type=null;
         if (touParam!=null) {
             type = touParam;
-        } else if (hiddenTou!=null && hiddenTou.getValue()!=null) {
-            type = hiddenTou.getValue().toString();
+        } else  {
+            type = getRequestParam("content:termsOfUsePageView:form1:tou");
         }
         return type;
     }
@@ -134,7 +134,7 @@ public class TermsOfUsePage extends VDCBaseBean {
             // now check specific JSF post parameters
             try {
                 if ( isFromPage("TermsOfUsePage") ) {
-                    studyId = new Long(getRequestParam("content:termsOfUsePageView:form1:studyId"));    
+                    studyId = new Long(getRequestParam("content:termsOfUsePageView:form1:studyId"));   
                 } else if ( isFromPage("StudyPage") ) {
                     studyId = new Long(getRequestParam("content:studyPageView:form1:studyId"));
                 } else { //check the requestBean; if coming from some other page
@@ -247,11 +247,13 @@ public class TermsOfUsePage extends VDCBaseBean {
     }
     
     private void setRequiredFlags() {
-          downloadDataverseTermsRequired = TermsOfUseFilter.isDownloadDataverseTermsRequired(study, getTermsOfUseMap());
-          downloadStudyTermsRequired = TermsOfUseFilter.isDownloadStudyTermsRequired(study, getTermsOfUseMap());
-          downloadDvnTermsRequired =  TermsOfUseFilter.isDownloadDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap()); 
-          depositDataverseTermsRequired = TermsOfUseFilter.isDepositDataverseTermsRequired(getVDCRequestBean().getCurrentVDC(), getTermsOfUseMap());
-          depositDvnTermsRequired = TermsOfUseFilter.isDepositDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap()); 
+        if (study != null) {
+            downloadDataverseTermsRequired = TermsOfUseFilter.isDownloadDataverseTermsRequired(study, getTermsOfUseMap());
+            downloadStudyTermsRequired = TermsOfUseFilter.isDownloadStudyTermsRequired(study, getTermsOfUseMap());
+        }
+        downloadDvnTermsRequired = TermsOfUseFilter.isDownloadDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap());
+        depositDataverseTermsRequired = TermsOfUseFilter.isDepositDataverseTermsRequired(getVDCRequestBean().getCurrentVDC(), getTermsOfUseMap());
+        depositDvnTermsRequired = TermsOfUseFilter.isDepositDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap());
     }
 
 }

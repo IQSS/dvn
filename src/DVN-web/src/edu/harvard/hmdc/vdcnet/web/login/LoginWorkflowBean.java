@@ -66,6 +66,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         String nextPage = null;
         LoginBean loginBean = this.getVDCSessionBean().getLoginBean();
         if (loginBean != null) {
+            user = loginBean.getUser();
             grantWorkflowPermission();
             nextPage = "addSite";
         } else {

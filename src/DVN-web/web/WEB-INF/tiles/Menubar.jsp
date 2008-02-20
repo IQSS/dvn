@@ -77,7 +77,7 @@
                             <h:outputText value="#{VDCSession.loginBean.user.firstName} #{VDCSession.loginBean.user.lastName}"/>
                         </h:outputLink>
                     </ui:panelLayout>
-                    <ui:panelLayout rendered="#{!VDCRequest.logoutPage and VDCSession.ipUserGroup.friendlyName != null }">
+                    <ui:panelLayout styleClass="textUserName" rendered="#{!VDCRequest.logoutPage and VDCSession.ipUserGroup.friendlyName != null }">
                         <h:outputText value="#{ VDCSession.ipUserGroup.friendlyName }"/>
                     </ui:panelLayout>
                     <ui:panelLayout rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and VDCRequest.currentVDC == null and VDCSession.loginBean.networkAdmin }">

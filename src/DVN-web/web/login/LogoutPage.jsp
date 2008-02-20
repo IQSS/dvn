@@ -7,34 +7,31 @@
     <f:subview id="LogoutPageView">
         <ui:form  id="logoutForm">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+            <ui:panelLayout styleClass="successMessage">
+                <h:outputText value="You are now logged out."/>
+            </ui:panelLayout>
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                  
-                        <h:outputText  value="Logout"/>
-                   
+                        <h:outputText value="Options"/>
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
-                        
-                        <ui:panelGroup  block="true"  style="padding-top: 40px; padding-left:20px" rendered="#{LogoutPage.success}" >
-                            <h:outputText value="You are now logged out. " styleClass="vdcTextStandOut"/>
-                       
-                       <ul>
-                       <li> 
-                           <h:outputLink    value="/dvn"  >
-                                <h:outputText value="Go to the  #{VDCRequest.vdcNetwork.name} Dataverse Network homepage"/>
-                            </h:outputLink>
-                            <h:outputLink  rendered="#{VDCRequest.currentVDC != null}"  value="/dvn#{VDCRequest.currentVDCURL}"  >
-                                <h:outputText value="Go to the #{VDCRequest.currentVDC.name} Dataverse homepage"/>
-                            </h:outputLink>
-                        </li>
-                        <li>
-                        
-                            <h:outputLink    value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp?clearWorkflow=true"  >
-                                <h:outputText value="Log in"/>
-                            </h:outputLink>
-                       </li>
-                       </ul>
+                        <ui:panelGroup block="true" style=" " rendered="#{LogoutPage.success}">
+                           <p> 
+                               <h:outputLink value="/dvn">
+                                    <h:outputText value="Go to the #{VDCRequest.vdcNetwork.name} Dataverse Network homepage"/>
+                               </h:outputLink>
+                            </p>
+                            <p>
+                               <h:outputLink rendered="#{VDCRequest.currentVDC != null}" value="/dvn#{VDCRequest.currentVDCURL}">
+                                    <h:outputText value="Go to the #{VDCRequest.currentVDC.name} Dataverse homepage"/>
+                               </h:outputLink>
+                            </p>
+                            <p>
+                               <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.jsp?clearWorkflow=true">
+                                    <h:outputText value="Log in"/>
+                               </h:outputLink>
+                            </p>
                          </ui:panelGroup>
                     </div>
                 </div>

@@ -1457,7 +1457,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 else if (xmlr.getLocalName().equals("verStmt")) processVerStmt(xmlr,study);  
                 else if (xmlr.getLocalName().equals("notes")) {
                     String _note = parseNoteByType( xmlr, NOTE_TYPE_UNF );
-                    if (_note != null && !_note.equals("") ) {
+                    if (_note != null) {
                         study.setUNF( parseUNF( _note ) );
                     } else {                   
                         processNotes(xmlr, study);
@@ -2250,7 +2250,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         note.setStudy(study);
         note.setSubject( xmlr.getAttributeValue(null, "subject") );
         note.setType( xmlr.getAttributeValue(null, "type") );
-        note.setText( parseText(xmlr) );
+        note.setText( parseText(xmlr, "notes") );
     }    
     
     private void parseStudyId(String _id, Study s) {
@@ -2313,7 +2313,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 } else if (xmlr.getLocalName().equals("citation")) {
                     returnString += parseText_citation(xmlr);
                 } else {
-                    System.out.println("DDI Mapper: parseText: tag not yet supported");
+                    throw new EJBException("ERROR occurred in mapDDI (parseText): tag not yet supported: <" + xmlr.getLocalName() + ">" );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals(endTag)) break;

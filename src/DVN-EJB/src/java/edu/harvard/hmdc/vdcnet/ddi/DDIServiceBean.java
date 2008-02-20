@@ -96,11 +96,18 @@ public class DDIServiceBean implements DDIServiceLocal {
     public static final String REPLICATION_FOR_TYPE = "replicationFor";
     public static final String VAR_WEIGHTED = "wgtd";
     public static final String VAR_INTERVAL_CONTIN = "contin";
-    
+    public static final String VAR_INTERVAL_DISCRETE = "discrete";
+    public static final String CAT_STAT_TYPE_FREQUENCY = "freq";
+    public static final String VAR_FORMAT_TYPE_NUMERIC = "numeric";
+    public static final String VAR_FORMAT_SCHEMA_ISO = "ISO";
+
+
     public static final String EVENT_START = "start";
     public static final String EVENT_END = "end";
     public static final String EVENT_SINGLE = "single";
-    
+
+    public static final String LEVEL_DVN = "dvn";
+    public static final String LEVEL_DV = "dv";    
     public static final String LEVEL_STUDY = "study";
     public static final String LEVEL_FILE = "file";
     public static final String LEVEL_VARIABLE = "variable";
@@ -885,7 +892,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         if (!StringUtil.isEmpty(dvTermsOfUse)) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             xmlw.writeStartElement("notes");
-            writeAttribute( xmlw, "level", "dv" );
+            writeAttribute( xmlw, "level", LEVEL_DV );
             writeAttribute( xmlw, "type", NOTE_TYPE_TERMS_OF_USE );
             writeAttribute( xmlw, "subject", NOTE_SUBJECT_TERMS_OF_USE );
             xmlw.writeCharacters( dvTermsOfUse );
@@ -894,7 +901,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         if (!StringUtil.isEmpty(dvnTermsOfUse)) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             xmlw.writeStartElement("notes");
-            writeAttribute( xmlw, "level", "dvn" );
+            writeAttribute( xmlw, "level", LEVEL_DVN );
             writeAttribute( xmlw, "type", NOTE_TYPE_TERMS_OF_USE );
             writeAttribute( xmlw, "subject", NOTE_SUBJECT_TERMS_OF_USE );
             xmlw.writeCharacters( dvnTermsOfUse );
@@ -1653,14 +1660,14 @@ public class DDIServiceBean implements DDIServiceLocal {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("timePrd")) {
                     String eventAttr = xmlr.getAttributeValue(null, "event");
-                    if ( EVENT_START.equals(eventAttr) || EVENT_SINGLE.equals(eventAttr) ) {
+                    if ( eventAttr == null || EVENT_SINGLE.equalsIgnoreCase(eventAttr) || EVENT_START.equalsIgnoreCase(eventAttr) ) {
                         study.setTimePeriodCoveredStart( parseDate(xmlr, "timePrd") );
                     } else if ( EVENT_END.equals(eventAttr) ) {
                         study.setTimePeriodCoveredEnd( parseDate(xmlr, "timePrd") );
                     }
                 } else if (xmlr.getLocalName().equals("collDate")) {
                     String eventAttr = xmlr.getAttributeValue(null, "event");
-                    if ( EVENT_START.equals(eventAttr) || EVENT_SINGLE.equals(eventAttr) ) {
+                    if ( eventAttr == null || EVENT_SINGLE.equalsIgnoreCase(eventAttr) || EVENT_START.equalsIgnoreCase(eventAttr) ) {
                         study.setDateOfCollectionStart( parseDate(xmlr, "collDate") );
                     } else if ( EVENT_END.equals(eventAttr) ) {
                         study.setDateOfCollectionEnd( parseDate(xmlr, "collDate") );
@@ -1828,9 +1835,9 @@ public class DDIServiceBean implements DDIServiceLocal {
                     String noteType = xmlr.getAttributeValue(null, "type");
                     if (NOTE_TYPE_TERMS_OF_USE.equalsIgnoreCase(noteType) ) {
                         String noteLevel = xmlr.getAttributeValue(null, "level");
-                        if ("dv".equalsIgnoreCase(noteLevel) ) {
+                        if (LEVEL_DV.equalsIgnoreCase(noteLevel) ) {
                             study.setHarvestDVTermsOfUse( parseText(xmlr) );
-                        } else if ("dvn".equalsIgnoreCase(noteLevel) )  {
+                        } else if (LEVEL_DVN.equalsIgnoreCase(noteLevel) )  {
                             study.setHarvestDVNTermsOfUse( parseText(xmlr) );
                         }    
                     } else {
@@ -2034,10 +2041,13 @@ public class DDIServiceBean implements DDIServiceLocal {
        
         // interval type (DB value may be different than DDI value)
         String _interval = xmlr.getAttributeValue(null, "intrvl");
-        _interval = VAR_INTERVAL_CONTIN.equals(_interval) ? DB_VAR_INTERVAL_TYPE_CONTINUOUS : _interval;
+
+        _interval = (_interval == null ? VAR_INTERVAL_DISCRETE : _interval); // default is discrete
+        _interval = VAR_INTERVAL_CONTIN.equals(_interval) ? DB_VAR_INTERVAL_TYPE_CONTINUOUS : _interval; // translate contin to DB value
         dv.setVariableIntervalType( varService.findVariableIntervalTypeByName(variableIntervalTypeList, _interval ));
 
         dv.setWeighted( VAR_WEIGHTED.equals( xmlr.getAttributeValue(null, "wgt") ) );
+        // default is not-wgtd, so null sets weighted to false
        
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -2144,8 +2154,14 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
     
     private void processVarFormat(XMLStreamReader xmlr, DataVariable dv) throws XMLStreamException {
-        dv.setVariableFormatType( varService.findVariableFormatTypeByName(variableFormatTypeList, xmlr.getAttributeValue(null, "type") ) );
-        dv.setFormatSchema( xmlr.getAttributeValue(null, "schema") );
+        String type = xmlr.getAttributeValue(null, "type");
+        type = (type == null ? VAR_FORMAT_TYPE_NUMERIC : type); // default is numeric
+
+        String schema = xmlr.getAttributeValue(null, "schema");
+        schema = (schema == null ? VAR_FORMAT_SCHEMA_ISO : schema); // default is ISO
+
+        dv.setVariableFormatType( varService.findVariableFormatTypeByName( variableFormatTypeList, type ) );
+        dv.setFormatSchema(schema);
         dv.setFormatSchemaName( xmlr.getAttributeValue(null, "formatName") );        
     }
     
@@ -2159,7 +2175,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     private void processCatgry(XMLStreamReader xmlr, DataVariable dv) throws XMLStreamException {
         VariableCategory cat = new VariableCategory();
-        cat.setMissing( "Y".equals( xmlr.getAttributeValue(null, "missing") ) );
+        cat.setMissing( "Y".equals( xmlr.getAttributeValue(null, "missing") ) ); // default is N, so null sets missing to false
         cat.setDataVariable(dv);
         dv.getCategories().add(cat);
         
@@ -2174,9 +2190,12 @@ public class DDIServiceBean implements DDIServiceLocal {
                     cat.setValue( parseText(xmlr) );
                 }
                 else if (xmlr.getLocalName().equals("catStat")) {
-                    String _freq = processCatStat( xmlr, "freq" );
-                    if (_freq != null && !_freq.equals("") ) {
-                        cat.setFrequency( new Long( _freq ) );
+                    String type = xmlr.getAttributeValue(null, "type");
+                    if (type == null || CAT_STAT_TYPE_FREQUENCY.equalsIgnoreCase( type ) ) {
+                        String _freq = parseText(xmlr);
+                        if (_freq != null && !_freq.equals("") ) {
+                            cat.setFrequency( new Long( _freq ) );
+                        }
                     }
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -2192,15 +2211,6 @@ public class DDIServiceBean implements DDIServiceLocal {
             return null;
         }
     }
-    
-    private String processCatStat(XMLStreamReader xmlr, String type) throws XMLStreamException {
-        if (type.equalsIgnoreCase( xmlr.getAttributeValue(null, "type") ) ) {
-            return parseText(xmlr);
-        } else {
-            return null;
-        }
-    }    
-    
 
     private void processOtherMat(XMLStreamReader xmlr, Study study) throws XMLStreamException {
         StudyFile sf = new StudyFile();
@@ -2336,7 +2346,8 @@ public class DDIServiceBean implements DDIServiceLocal {
             listString = "<ol>\n";
             listCloseTag = "</ol>";
         } else {
-            throw new EJBException("mapContent: ListType of types other than {bulleted, ordered} not currently supported.");    
+            // this includes the default list type of "simple"
+            throw new EJBException("ERROR occurred in mapDDI (parseText): ListType of types other than {bulleted, ordered} not currently supported.");    
         }
 
         while (true) {
@@ -2345,7 +2356,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 if (xmlr.getLocalName().equals("itm")) {
                     listString += "<li>" + parseText(xmlr) + "</li>\n";
                 } else {
-                    throw new EJBException("mapContent: ListType does not currently supported contained LabelType.");
+                    throw new EJBException("ERROR occurred in mapDDI (parseText): ListType does not currently supported contained LabelType.");
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("list")) break;

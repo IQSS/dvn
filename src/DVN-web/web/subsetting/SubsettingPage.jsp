@@ -632,7 +632,7 @@ xmlns:ui="http://www.sun.com/web/ui"
                                                  cellpadding="0" 
                                                  cellspacing="0" 
                                                  columns="2" 
-                                                 rendered="false" >
+                                                 rendered="#{AnalysisPage.gridPanelModelInfoBoxRendered}" >
 
                                         <h:graphicImage 
                                             alt="Information" 
@@ -650,7 +650,7 @@ xmlns:ui="http://www.sun.com/web/ui"
                                     
                                     <ui:panelGroup id="groupPanel8below" 
                                                    binding="#{AnalysisPage.groupPanel8below}" 
-                                                   rendered="false">
+                                                   rendered="#{AnalysisPage.groupPanel8belowRendered}">
                                         <h:panelGrid id="gridPanel8"
                                                      cellpadding="0" 
                                                      cellspacing="0" 

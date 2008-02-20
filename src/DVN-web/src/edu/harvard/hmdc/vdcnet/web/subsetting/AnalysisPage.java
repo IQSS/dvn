@@ -2264,15 +2264,56 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setModelHelpLinkURL(String url) {
         this.modelHelpLinkURL = url;
     }
-
+    /**
+     * h:panelGrid component that contains the model help
+     * information box in the advanced statistics pane.
+     * The rendered attribute of this component must be state-kept.
+     * Initially hidden.
+     */
     private HtmlPanelGrid gridPanelModelInfoBox = new HtmlPanelGrid();
-
+    
+    /**
+     * Getter for component gridPanelModelInfoBox
+     *
+     * @return    h:panelGrid of the model help info box
+     */
     public HtmlPanelGrid getGridPanelModelInfoBox() {
         return gridPanelModelInfoBox;
     }
-
+    
+    /**
+     * Setter for component gridPanelModelInfoBox
+     *
+     * @param hpg    h:panelGrid of the model help info box
+     */
     public void setGridPanelModelInfoBox(HtmlPanelGrid hpg) {
         this.gridPanelModelInfoBox = hpg;
+    }
+    
+    /**
+     * The Boolean object backing the rendered attribute of 
+     * gridPanelModelInfoBox (h:panelGrid) component.
+     * Exposed to the SubsettingPage.jsp.
+     * Must be state-kept.
+     */
+    private Boolean gridPanelModelInfoBoxRendered;
+
+    /**
+     * Getter for attribute gridPanelModelInfoBoxRendered
+     *
+     * @return    the rendered attribute of h:panelGrid
+     */    
+    public Boolean getGridPanelModelInfoBoxRendered(){
+        return groupPanel8belowRendered;
+    }
+    
+    /**
+     * Setter for attribute gridPanelModelInfoBoxRendered
+     *
+     * @param rndrd    the rendered attribute of h:panelGrid
+     */
+    public void setGridPanelModelInfoBoxRendered(Boolean rndrd){
+        gridPanelModelInfoBoxRendered = rndrd;
     }
 
     // dropDown1: ui: dropDown@valueChangeListener
@@ -2303,7 +2344,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         //if (!groupPanel8below.isRendered()) {
         if (!groupPanel8belowRendered) {
             out.println("this is the first time to render the model-option panel");
-            groupPanel8below.setRendered(true);
+            // groupPanel8below.setRendered(true);
+            groupPanel8belowRendered=Boolean.TRUE;
         } else {
             out.println("this is NOT the first time to render the model-option panel");
             if (!newModelName.equals(lastModelName)) {
@@ -2411,24 +2453,55 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // panel below the dropDown Menu
-    // ui:panelGroup
-    // binding
+    
+    /**
+     * The PanelGroup object backing the binding attribute of 
+     * ui:panelGroup component that covers the pane below the dropDown 
+     * model-selection menu in the advanced statistics pane.
+     * The rendered attribute of this component must be state-kept.
+     * Initially hidden.
+     */
     private PanelGroup groupPanel8below = new PanelGroup();
-
+    /**
+     * Getter for component groupPanel8below
+     *
+     * @return    ui:panelGroup of the pane below the model-selection menu
+     */
     public PanelGroup getGroupPanel8below() {
         return groupPanel8below;
     }
-
+    /**
+     * Setter for component groupPanel8below
+     *
+     * @param pg    ui:panelGroup of the pane below the model-selection menu
+     */
     public void setGroupPanel8below(PanelGroup pg) {
         this.groupPanel8below = pg;
     }
 
+    /**
+     * The Boolean object backing the rendered attribute of 
+     * groupPanel8below (ui:panelGroup) component.
+     * Exposed to the SubsettingPage.jsp.
+     * Must be state-kept. 
+     * Added after serialization problems of the component-binding
+     */
     private Boolean groupPanel8belowRendered;
-    
+
+    /**
+     * Getter for attribute groupPanel8belowRendered
+     *
+     * @return    the rendered attribute of ui:panelGroup
+     */    
     public Boolean getGroupPanel8belowRendered(){
         return groupPanel8belowRendered;
     }
 
+    /**
+     * Setter for attribute groupPanel8belowRendered
+     *
+     * @param rndrd    the rendered attribute of ui:panelGroup
+     */
     public void setGroupPanel8belowRendered(Boolean rndrd){
         groupPanel8belowRendered = rndrd;
     }
@@ -4835,7 +4908,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 List<String> sessionObjects = new ArrayList<String>();
                 
                 Collections.addAll(sessionObjects, "dt4Display", "varCart",
-                    "varSetAdvStat", "groupPanel8below", "advStatVarRBox1",
+                    "varSetAdvStat", "groupPanel8belowRendered", "advStatVarRBox1",
                     "advStatVarRBox2", "advStatVarRBox3", "setxDiffVarBox1",
                     "setxDiffVarBox2", "checkboxSelectUnselectAll",
                     "currentModelName", "currentRecodeVariableId",
@@ -4982,16 +5055,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // sessionMap.put("gridPanelModelInfoBox",
                     //    gridPanelModelInfoBox);
                     
-                    /*
+                    /**/
                     // Hides the pane
-                    gridPanelModelInfoBoxRendered = false; 
+                    gridPanelModelInfoBoxRendered = Boolean.FALSE; 
                     sessionMap.put("gridPanelModelInfoBoxRendered",
                         gridPanelModelInfoBoxRendered);
                         
                         // to do
                         // accessors: get/set
                         // JSP rendered="#{AnalysisPage.gridPanelModelInfoBoxRendered}"
-                    */
+                    
                     // Collection<Option> advStatVarRBox1
                     sessionMap.put("advStatVarRBox1", advStatVarRBox1);
                     sessionMap.put("advStatVarRBox2", advStatVarRBox2);

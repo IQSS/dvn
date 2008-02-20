@@ -126,6 +126,7 @@ div.dvn_navblockNetwork {background: #b9d0e1; border-top: 2px solid #113356;}
 
 .dvn_navUserName {float: right;}
 .dvn_navUserName div {float:left; z-index:auto !important /*Non-IE6*/; z-index:1000 /*IE6*/;}
+.dvn_navUserName div.textUserName  {height:1.75em; line-height:1.75em; padding:.1em .5em 0 .5em;}
 .dvn_navUserName div a:link, .dvn_navUserName div a:visited, .dvn_navUserName div a:hover, .dvn_navUserName div a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; height:1.75em; line-height:1.75em; padding:.1em .5em 0 .5em; color:#c55b28; text-decoration:none;}
 .dvn_navUserName div:hover {position:relative;} /*Sylvain IE hack*/
 .dvn_navUserName div:hover a:link, .dvn_navUserName div:hover a:visited, .dvn_navUserName div:hover a:hover, .dvn_navUserName div:hover a:active {background-color: #c55b28; text-decoration:underline;} /*Color main cells hovering mode*/

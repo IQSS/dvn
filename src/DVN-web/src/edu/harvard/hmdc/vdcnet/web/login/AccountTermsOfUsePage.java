@@ -31,9 +31,14 @@ package edu.harvard.hmdc.vdcnet.web.login;
 
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -86,6 +91,19 @@ public class AccountTermsOfUsePage extends VDCBaseBean implements java.io.Serial
         
     }    
 
-  
+     public void validateTermsAccepted(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+      
+        Boolean acceptedValue = (Boolean) value;
+        if (acceptedValue.booleanValue()==false) {
+            ((UIInput)toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("You must accept the terms of use to continue.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+        
+    }
+    
+ 
 
 }

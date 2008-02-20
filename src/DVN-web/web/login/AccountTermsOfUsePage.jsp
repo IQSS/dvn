@@ -47,8 +47,9 @@
                         </div>
                         <br/>
                         <ui:panelGroup  style="padding-top: 20px;" block="true">
-                            <h:selectBooleanCheckbox id="termsAccepted" required="true" value="#{AccountTermsOfUsePage.termsAccepted}" />
+                            <h:selectBooleanCheckbox id="termsAccepted" required="true" validator="#{AccountTermsOfUsePage.validateTermsAccepted}"  value="#{AccountTermsOfUsePage.termsAccepted}" />
                             <h:outputText styleClass="agreeCheckbox" value="I agree and accept these terms of use." />
+                            <h:message for="termsAccepted" styleClass="errorMessage"/>
                         </ui:panelGroup>
                         <ui:panelGroup block="true" style="padding-top: 20px; text-align: center">
                             <h:commandButton  id="termsButton" value="Continue" action="#{AccountTermsOfUsePage.acceptTerms_action}"/>

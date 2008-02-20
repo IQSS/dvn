@@ -78,14 +78,19 @@ public class CensusRepositoryServlet extends HttpServlet{
 	// for now
 	
 
-	ResultSet dbIds = null; 
+	Connection sqlConn = null;	 
+	PreparedStatement sth = null; 
 	boolean[] categoryMap = null; 
+	ResultSet dbIds = null; 
+
 
 	// attempt to get a list of all local, publicly-available, 
 	// subsettable datafiles from the database.
 	//
 	// on SQL failures, print a clear error page and send a
 	// standard "Service Temporarily Unavailable" status code. 
+
+
 
 	try {
 	    // Here's what I'm doing with the SQL searches: 
@@ -121,7 +126,11 @@ public class CensusRepositoryServlet extends HttpServlet{
 	    // our archive grows significantly.
 	    
 
-	    dbIds = generateListOfDatafiles (); 
+	    String sqlCmd= "SELECT id,filecategory_id from studyfile WHERE restricted = false AND subsettable = true AND NOT (filesystemlocation LIKE 'http%')"; 
+	    sqlConn = dvnDatasource.getConnection();	 
+	    sth = sqlConn.prepareStatement(sqlCmd);
+	    dbIds = sth.executeQuery();
+
 	    categoryMap = generateCategoryMap(); 
 
 	} catch(SQLException e) {
@@ -171,6 +180,7 @@ public class CensusRepositoryServlet extends HttpServlet{
 			out.println (lineOut); 
 		    }
 		}
+		sqlConn.close(); 
 	    } catch (SQLException e) {
 		createErrorResponseGeneric(res, res.SC_SERVICE_UNAVAILABLE, 
 					   "Database services temporarily unavailable: " + 
@@ -216,25 +226,6 @@ public class CensusRepositoryServlet extends HttpServlet{
     }
     
 
-    private ResultSet generateListOfDatafiles () throws SQLException {
-	// We are looking for the files that are
-	// a. subsettable
-	// b. public (non-restricted)
-	// c. locally-produced
-	String sqlCmd= "SELECT id,filecategory_id from studyfile WHERE restricted = false AND subsettable = true AND NOT (filesystemlocation LIKE 'http%')"; 
-	// we only run the search, then return the SQL
-	// handle; the actual retrieval of individual records
-	// will be done by the code in the body of the service 
-	// routine.
-  
-	Connection sqlConn = dvnDatasource.getConnection();	 
-	PreparedStatement sth = sqlConn.prepareStatement(sqlCmd);
-	
-	ResultSet rs = sth.executeQuery();
-        
-	return rs; 
-    }
-
     private boolean[] generateCategoryMap () throws SQLException {
 	boolean[] categoryMap = new boolean[128*1024]; 
 	boolean[] studyMap = generateStudyMap(); 
@@ -267,7 +258,8 @@ public class CensusRepositoryServlet extends HttpServlet{
 
 	    i++; 	    
 	}
-	 
+
+	sqlConn.close(); 	 
 	return categoryMap; 
     }
 
@@ -303,7 +295,8 @@ public class CensusRepositoryServlet extends HttpServlet{
 
 	    i++;
 	}
-	 
+
+	sqlConn.close(); 	 
 	return studyMap; 
     }
 
@@ -329,6 +322,7 @@ public class CensusRepositoryServlet extends HttpServlet{
 	    i++; 
 	}
 	 
+	sqlConn.close(); 
 	return dvMap; 
     }
 

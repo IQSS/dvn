@@ -193,9 +193,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dataType2Int.put("continuous", Integer.valueOf("5"));
         dataType2Int.put("any", Integer.valueOf("0"));
 
-        // Sets the default state of the Subsetting Page to subsettable(TRUE)
-        subsettingPageAccess = Boolean.TRUE;
-
         // Initializes the variable-type-to-String conversion table 
         vtInt2String.put("2", "continuous");
         vtInt2String.put("1", "discrete");
@@ -4207,16 +4204,94 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // ui:checkbox: checkboxSelectUnselectAll
     // @binding:
     // select/unselect all checkbox in the table header:
-
+    
+    /**
+     * The Checkbox object backing the binding attribute of ui:checkbox 
+     * component that renders the select/unselect-all variable
+     * checkbox in the first column of the header of the variable table
+     */
     private Checkbox checkboxSelectUnselectAll = new Checkbox();
-
+    
+    /**
+     * Getter for component checkboxSelectUnselectAll
+     *
+     * @return  the Checkbox object backing the
+     *          select/unselect-all variable checkbox
+     */
     public Checkbox getCheckboxSelectUnselectAll() {
         return checkboxSelectUnselectAll;
     }
-
+    
+    /**
+     * Setter for component checkboxSelectUnselectAll
+     *
+     * @param c    the Checkbox object that backs the
+     *             select/unselect-all variable checkbox
+     */
     public void setCheckboxSelectUnselectAll(Checkbox c) {
-        this.checkboxSelectUnselectAll = c;
+        checkboxSelectUnselectAll = c;
     }
+
+    /**
+     * To avoid serialization-related errors, the component-binding of
+     * checkboxSelectUnselectAll should not be used for state-keeping
+     * The two attributes of this checkbox object, 
+     * selected and rendered, must be separately handled by two new 
+     * Boolean properties.
+     * attribute       Boolean property
+     * --.selected     checkboxSelectUnselectAllSelected
+     * --.rendered     checkboxSelectUnselectAllRendered
+     */
+
+    /**
+     * The Boolean object backing the selected attribute of
+     * checkboxSelectUnselectAll 
+     */
+    private Boolean checkboxSelectUnselectAllSelected;
+    
+    /**
+     * Getter for property checkboxSelectUnselectAllSelected
+     *
+     * @return    the selected attribute of checkboxSelectUnselectAll
+     */
+    public Boolean getCheckboxSelectUnselectAllSelected(){
+        return checkboxSelectUnselectAllSelected;
+    }
+    /**
+     * Setter for property checkboxSelectUnselectAllSelected
+     *
+     * @param     The Boolean object that backs the selected 
+     *            attribute of checkboxSelectUnselectAll
+     */
+    public void setCheckboxSelectUnselectAllSelected(Boolean c){
+        checkboxSelectUnselectAllSelected=c;
+    }
+    
+    /**
+     * The Boolean object backing the rendered attribute of
+     * checkboxSelectUnselectAll 
+     */
+    private Boolean checkboxSelectUnselectAllRendered;
+
+    /**
+     * Getter for property checkboxSelectUnselectAllRendered
+     *
+     * @return    the rendered attribute of checkboxSelectUnselectAll
+     */
+    public Boolean getCheckboxSelectUnselectAllRendered(){
+        return checkboxSelectUnselectAllRendered;
+    }
+    
+    /**
+     * Setter for property checkboxSelectUnselectAllRendered
+     *
+     * @param     The Boolean object that backs the rendered 
+     *            attribute of checkboxSelectUnselectAll
+     */
+    public void setCheckboxSelectUnselectAllRendered(Boolean c){
+        checkboxSelectUnselectAllRendered = c;
+    }
+
 
     // check how many displayed variables are checked (all or not all)
     public void howManyVarsChecked() {
@@ -4253,8 +4328,20 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             checkboxSelectUnselectAll.setSelected(Boolean.FALSE);
             out.println("set the select/unselect-all checkbox UNchecked");
         }
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-            .put("checkboxSelectUnselectAll", checkboxSelectUnselectAll);
+        
+        // Stores the objects that represents the properties of the component
+        // instead of the component itsefl in the session map
+        /* deprecated
+            FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().put("checkboxSelectUnselectAll",
+                checkboxSelectUnselectAll);
+        */
+            checkboxSelectUnselectAllSelected = 
+                (Boolean)checkboxSelectUnselectAll.getSelected();
+            FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().put("checkboxSelectUnselectAllSelected",
+                checkboxSelectUnselectAllSelected);
+
         out.println("***** howManyVarsChecked: end *****");
 
     }
@@ -4425,9 +4512,18 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     .setText("At least one variable is used for recoding;<br />Remove its recoded variable(s) first.");
             }
         }
-
+        /* deprecated
         cntxt.getExternalContext().getSessionMap()
             .put("checkboxSelectUnselectAll", checkboxSelectUnselectAll);
+        */
+        
+        checkboxSelectUnselectAllSelected = 
+            (Boolean)checkboxSelectUnselectAll.getSelected();
+        cntxt.getExternalContext().getSessionMap()
+            .put("checkboxSelectUnselectAllSelected",
+            checkboxSelectUnselectAllSelected);
+
+            
         cntxt.renderResponse();
         out.println("***** selectUnselectAllCheckbox: end *****");
     }
@@ -4783,6 +4879,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
         // select-all checkbox in the header(1st column) of dataTable
         checkboxSelectUnselectAll.setRendered(false);
+        checkboxSelectUnselectAllRendered=Boolean.FALSE;
         // variable-checkbox in the 1st column of dataTable
         varCheckbox.setRendered(false);
         // title of the recoded-var table
@@ -4842,7 +4939,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // sets default values to html components
             _init();
             
-
             if (debug_init) {
                 out.println("pass _init() in doInit()");
             }
@@ -4856,7 +4952,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // gets session data from the ExternalContext
             Map<String, Object> sessionMap = exCntxt.getSessionMap();
             
-            if (debug_init){
+            if (false){
                 out.println("\ncontents of RequestParameterMap:\n"
                     + exCntxt.getRequestParameterMap());
                 // out.println("\ncontents of SessionMap:\n"+sessionMap);
@@ -4865,7 +4961,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // gets the request header data
             Map<String, String> rqustHdrMp = exCntxt.getRequestHeaderMap();
             
-            if (debug_init){
+            if (false){
                 out.println("\nRequest Header Values Map:\n" + rqustHdrMp);
                 out.println("\nRequest Header Values Map(user-agent):"
                     + rqustHdrMp.get("user-agent"));
@@ -4883,7 +4979,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             String currentViewStateValue = exCntxt.getRequestParameterMap()
                 .get(ResponseStateManager.VIEW_STATE_PARAM);
             
-            if (debug_init){
+            if (false){
                 out.println("ViewState value=" + currentViewStateValue);
                 out.println("VDCRequestBean: current VDC URL ="
                 + getVDCRequestBean().getCurrentVDCURL());
@@ -4892,7 +4988,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // Stores the URL of the requested study 
             setStudyURL(getVDCRequestBean().getCurrentVDCURL());
             
-            if (debug_init){
+            if (false){
                 out.println("VDCRequestBean: studyId ="
                     + getVDCRequestBean().getStudyId());
                 out.println("VDCRequestBean =" + getVDCRequestBean());
@@ -4908,12 +5004,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 List<String> sessionObjects = new ArrayList<String>();
                 
                 Collections.addAll(sessionObjects, "dt4Display", "varCart",
-                    "varSetAdvStat", "groupPanel8belowRendered", "advStatVarRBox1",
-                    "advStatVarRBox2", "advStatVarRBox3", "setxDiffVarBox1",
-                    "setxDiffVarBox2", "checkboxSelectUnselectAll",
-                    "currentModelName", "currentRecodeVariableId",
-                    "currentRecodeVariableName", "recodedVarSet",
-                    "recodeSchema", "baseVarToDerivedVar",
+                    "varSetAdvStat", "groupPanel8belowRendered", 
+                    "advStatVarRBox1", "advStatVarRBox2", "advStatVarRBox3",
+                    "setxDiffVarBox1", "setxDiffVarBox2",
+                     "checkboxSelectUnselectAllSelected",
+                    "checkboxSelectUnselectAllRendered", "currentModelName", 
+                    "currentRecodeVariableId","currentRecodeVariableName", 
+                    "recodedVarSet","recodeSchema", "baseVarToDerivedVar",
                     "derivedVarToBaseVar", "recodeVarNameSet",
                     "selectedNoRows", "msgEdaButtonTxt", "msgDwnldButtonTxt",
                     "gridPanelModelInfoBox");
@@ -4994,6 +5091,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     txtNonSubsettingInstruction.setRendered(false);
                     hideSubsettingFunctions();
                 } else {
+                    // Sets the state of the Subsetting Page to subsettable
+                    subsettingPageAccess = Boolean.TRUE;
+                    // sets the default rendering state of the checkbox 
+                    // checkboxSelectUnselectAll shown (TRUE)
+                    checkboxSelectUnselectAllRendered=Boolean.TRUE;
+                    checkboxSelectUnselectAllSelected=Boolean.FALSE;
                     if (debug_init){
                         out.println("restricted=no: " +
                             "this user has the subsetting permission");
@@ -5072,18 +5175,30 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     // ui:checkbox
                     // Checkbox object
-                    // class method  tag attr
+                    // method       tag attribute
                     // setSelected   selectedValue
                     // setRendered   rendered
                     //
-                    //
-                    sessionMap.put("checkboxSelectUnselectAll",
-                        checkboxSelectUnselectAll);
+                    // deprecated
+                    //sessionMap.put("checkboxSelectUnselectAll",
+                    //    checkboxSelectUnselectAll);
+                    // 
+                    // Saves the selected attribute
+                    
+                    sessionMap.put("checkboxSelectUnselectAllSelected",
+                        checkboxSelectUnselectAllSelected);
                         
+                    // Saves the rendered attribute
+                    
+                    sessionMap.put("checkboxSelectUnselectAllRendered",
+                        checkboxSelectUnselectAllRendered);
+                    
                     // String selectedNoRows
                     selectedNoRows = Integer.toString(INITIAL_ROW_NO);
                     howManyRowsOptions.setSelectedValue(selectedNoRows);
                     sessionMap.put("selectedNoRows", selectedNoRows);
+                    
+                    
                     if (debug_init){
                         out.println("selectedNoRows=" + selectedNoRows);
                         out.println("1st time visit: "+
@@ -5150,13 +5265,27 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // checkbox component
                     // Gets the stored object backing the binding attribute
                     // of ui:checkbox for the select-unselect check box
-                    checkboxSelectUnselectAll = (Checkbox) sessionMap
-                        .get("checkboxSelectUnselectAll");
-                    // TO DO: new approach
+                    // checkboxSelectUnselectAll = (Checkbox) sessionMap
+                    //    .get("checkboxSelectUnselectAll");
+                    
+                    // new approach
                     // Updates the following two attributes at least
                     // class method  tag attr
                     // setSelected   selectedValue
                     // setRendered   rendered
+
+                    // Gets the selected attribute
+                    checkboxSelectUnselectAllSelected = (Boolean) sessionMap
+                        .get("checkboxSelectUnselectAllSelected");
+                    checkboxSelectUnselectAll.setSelected(
+                        checkboxSelectUnselectAllSelected);
+                    
+                    // Gets the rendered attribute
+
+                    checkboxSelectUnselectAllRendered = (Boolean) sessionMap
+                        .get("checkboxSelectUnselectAllRendered");
+                    checkboxSelectUnselectAll.setRendered(
+                        checkboxSelectUnselectAllRendered);
 
                     // Gets the stored object backing the selected attribute
                     // of ui:dropDown for the menu of choosing
@@ -5373,7 +5502,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 }
             }
             
-            if (debug_init){
+            if (false){
                 out.println("\nSpec Map:\n"+
                     getAnalysisApplicationBean().getSpecMap());
                 out.println("\nMenu Option List:\n"+

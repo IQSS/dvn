@@ -1133,6 +1133,8 @@ xmlns:ui="http://www.sun.com/web/ui"
                             <!-- h:outputText id="outputText4" value="#{bundleAnalysis['varTable.colHdr.checkBox']}"/ -->
                             <ui:checkbox id="checkboxSelectUnselectAll"
                                          binding="#{AnalysisPage.checkboxSelectUnselectAll}"
+                                         selected="#{AnalysisPage.checkboxSelectUnselectAllSelected}"
+                                         rendered="#{AnalysisPage.checkboxSelectUnselectAllRendered}"
                                          immediate="true"   
                                          valueChangeListener="#{AnalysisPage.selectUnselectAllCheckbox}" 
                                          onClick="submit();"

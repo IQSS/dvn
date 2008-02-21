@@ -14,7 +14,7 @@
        
               <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
               <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestHeader dvn_overflow' : 'dvn_sectionTitle'}">
-                     
+                      <h:outputText value="Terms of Use" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
                       <h:outputText value="Create a New Account" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
                       <h:outputText value="Create Account &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" rendered="#{LoginWorkflowBean.creatorWorkflow}" escape="false"/>
                       <h:outputText value="Create Account &lt;span&gt;&gt; Become a Contributor&lt;/span&gt;" rendered="#{LoginWorkflowBean.contributorWorkflow}" escape="false"/>
@@ -40,19 +40,19 @@
                   
                   <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContentFormRight' : 'empty'}">
                   <ui:panelLayout styleClass="dvn_margin12">
-                        <h:outputText value="Terms of Use" styleClass="reqContentActionTitle" />
-                        <br/>
-                        <div id="requestDataverseTerms">
+                        <ui:panelGroup styleClass="termsAgreementMessage" rendered="#{LoginWorkflowBean.plainWorkflow or LoginWorkflowBean.fileAccessWorkflow}">
+                            <h:outputText value="Please read and agree to the terms of use for the #{VDCRequest.vdcNetwork.name} Dataverse Network. Check the &quot;I agree and accept&quot; box and continue." />
+                        </ui:panelGroup>
+                        <div class="termsAgreementBox">
                             <h:outputText value="#{AccountTermsOfUsePage.termsOfUse}" escape="false"/>
                         </div>
-                        <br/>
-                        <ui:panelGroup  style="padding-top: 20px;" block="true">
+                        <ui:panelGroup block="true">
                             <h:selectBooleanCheckbox id="termsAccepted" required="true" validator="#{AccountTermsOfUsePage.validateTermsAccepted}"  value="#{AccountTermsOfUsePage.termsAccepted}" />
                             <h:outputText styleClass="agreeCheckbox" value="I agree and accept these terms of use." />
                             <h:message for="termsAccepted" styleClass="errorMessage"/>
                         </ui:panelGroup>
-                        <ui:panelGroup block="true" style="padding-top: 20px; text-align: center">
-                            <h:commandButton  id="termsButton" value="Continue" action="#{AccountTermsOfUsePage.acceptTerms_action}"/>
+                        <ui:panelGroup block="true" styleClass="termsAgreementButtons">
+                            <h:commandButton id="termsButton" value="Continue" action="#{AccountTermsOfUsePage.acceptTerms_action}"/>
                         </ui:panelGroup>
                   </ui:panelLayout>
                   </ui:panelLayout>

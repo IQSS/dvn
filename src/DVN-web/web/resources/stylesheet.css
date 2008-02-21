@@ -1294,7 +1294,9 @@ a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink
 .dvn_createDvRequest .requestContentFormRight span.reqContentActionTitle {color: #555; font-weight: bold;}
 .dvn_createDvRequest .requestContentFormRight span.agreeCheckbox {padding: 0;}
 .dvn_createDvRequest .requestContinueLink {padding: 2em 0 0 0; text-align: center;}
-#requestDataverseTerms {padding: 4px; width: 450px; height: 300px; border: 1px solid #035899; overflow: scroll;}
+.termsAgreementMessage {padding-bottom: 10px; font-weight: bold;}
+.termsAgreementBox {margin-bottom: 20px; padding: 4px; width: 450px; height: 300px; border: 1px solid #035899; overflow-y: scroll;}
+.termsAgreementButtons {padding-top: 20px; width: 450px; text-align: center;}
 .dvn_createDvRequest .requestContentSucess a {font-weight: bold;}
 .dvn_createDvRequest .requestContentSucess ul {margin-left: 1.5em; list-style: disc;}
 .dvn_createDvRequest .requestContentSucessH4 h4 {margin: 0; padding: 0; color: #c55b28; font-size: 100% !important;}

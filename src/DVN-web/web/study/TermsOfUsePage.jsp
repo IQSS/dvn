@@ -17,7 +17,7 @@
         
             <div class="dvn_section">
                 <span class="dvn_sectionTitleR">
-                    <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{TermsOfUsePage.study.id}&amp;tab=files">
+                    <h:outputLink  rendered="#{TermsOfUsePage.studyId!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{TermsOfUsePage.study.id}&amp;tab=files">
                         <h:outputText value="Back to Study"/>                       
                     </h:outputLink>
                 </span>
@@ -30,8 +30,9 @@
                     <div class="dvn_margin12">
                         
                         <ui:panelGroup  block="true" style="padding-bottom: 20px;"  styleClass="warnMessage" >
-                            <h:outputText value="Please agree to the terms of use below before accessing the files for study: "/>
-                            <h:outputText style="font-weight: bold" value="#{TermsOfUsePage.study.title}"/>
+                            <h:outputText  rendered="#{TermsOfUsePage.touTypeDownload}" value="Please agree to the terms of use below before accessing the files for study: "/>
+                           <h:outputText  rendered="#{TermsOfUsePage.touTypeDeposit}" value="Please agree to the terms of use below before creating or editing a study: "/>
+                             <h:outputText style="font-weight: bold" value="#{TermsOfUsePage.study.title}"/>
                         </ui:panelGroup>
                         
                       
@@ -87,7 +88,7 @@
                                 <h:outputText  value="(These Terms of Use apply to all studies created in this Dataverse Network)" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" />
                                 <h:outputText value="#{TermsOfUsePage.vdcNetwork.depositTermsOfUse}" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" escape="false"/>
                                 
-                                <h:outputText  value="Dataverse Depoist Terms of Use:" styleClass="vdcTermsUseField" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" />
+                                <h:outputText  value="Dataverse Deposit Terms of Use:" styleClass="vdcTermsUseField" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" />
                                 <h:outputText  value="(These Terms of Use apply to all studies created in this dataverse)" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" />
                                 <h:outputText value="#{VDCRequest.currentVDC.depositTermsOfUse}" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" escape="false"/>
                              </h:panelGrid>                

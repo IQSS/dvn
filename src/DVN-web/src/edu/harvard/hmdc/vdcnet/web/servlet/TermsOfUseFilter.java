@@ -253,8 +253,10 @@ public class TermsOfUseFilter implements Filter {
     private void checkDepositTermsOfUse(HttpServletRequest req, HttpServletResponse res) throws java.io.IOException {
         VDC currentVDC = vdcService.getVDCFromRequest(req);
         Map termsOfUseMap = getTermsOfUseMap(req);
+        String studyId = req.getParameter("studyId");
         if (isDepositDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) || isDepositDataverseTermsRequired(currentVDC,termsOfUseMap)) {        
             String params = "?tou="+TOU_DEPOSIT;
+            params += "&studyId=" + studyId;
             params += "&redirectPage=" + URLEncoder.encode(req.getServletPath() + req.getPathInfo() + "?" + req.getQueryString(), "UTF-8");
             if (currentVDC != null) {
                 params += "&vdcId=" + currentVDC.getId();

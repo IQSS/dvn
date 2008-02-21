@@ -89,7 +89,7 @@ public class EditNetworkDownloadUseTermsPage extends VDCBaseBean implements java
     }
 
     public String cancel_action() {
-        return "cancelVDC";
+        return "cancelNetwork";
     }
     //UTILITY METHODS
     /**

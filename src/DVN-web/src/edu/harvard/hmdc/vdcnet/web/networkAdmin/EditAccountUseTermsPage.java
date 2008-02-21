@@ -94,7 +94,7 @@ public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Seri
     }
 
     public String cancel_action() {
-        return "cancelVDC";
+        return "cancelNetwork";
     }
     //UTILITY METHODS
     /**

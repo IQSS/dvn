@@ -2315,6 +2315,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // dropDown1: ui: dropDown@valueChangeListener
     public void dropDown1_processValueChange(ValueChangeEvent vce) {
+        out.println("\n\n***** dropDown1_processValueChange:start *****");        
         String lastModelName = getCurrentModelName();
         out.println("stored model name(get)=" + lastModelName);
         out.println("stored model name=" + currentModelName);
@@ -2437,9 +2438,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 setxOptionPanel.setRendered(true);
             }
         }
-
+        FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().put("groupPanel8belowRendered", 
+            groupPanel8belowRendered);
+        out.println("groupPanel8belowRendered=" + groupPanel8belowRendered);
         cntxt.renderResponse();
-
+        out.println("***** dropDown1_processValueChange:end *****\n");
     }
 
     private String dropDown1ClientId;
@@ -3060,7 +3064,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void addVarBoxR1(ActionEvent acev) {
         String[] OptnSet = getAdvStatSelectedVarLBox();
 
-        out.println("within addVarBoxR1: model name=" + getCurrentModelName());
+        out.println("\n***** within addVarBoxR1(): model name=" + 
+            getCurrentModelName()+" *****");
 
         int BoxR1max = getAnalysisApplicationBean().getSpecMap().get(
             getCurrentModelName()).getVarBox().get(0).getMaxvar();
@@ -3128,7 +3133,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // set left-selected items to a temp list
         String[] OptnSet = getAdvStatSelectedVarLBox();
 
-        out.println("within addVarBoxR2: model name=" + getCurrentModelName());
+        out.println("***** within addVarBoxR2(): model name=" +
+            getCurrentModelName()+" *****");
 
         int BoxR2max = getAnalysisApplicationBean().getSpecMap().get(
             getCurrentModelName()).getVarBox().get(1).getMaxvar();
@@ -3196,7 +3202,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // set left-selected items to a temp list
         String[] OptnSet = getAdvStatSelectedVarLBox();
 
-        out.println("within addVarBoxR3: model name=" + getCurrentModelName());
+        out.println("***** within addVarBoxR3(): model name=" + 
+            getCurrentModelName()+" *****" +
+            "");
 
         int BoxR3max = getAnalysisApplicationBean().getSpecMap().get(
             getCurrentModelName()).getVarBox().get(2).getMaxvar();
@@ -4934,6 +4942,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      */
     public void init() {
         boolean debug_init = true; 
+        if (debug_init) {
+            out.println("\n***** init():start *****");
+        }        
         super.init();
         try {
             // sets default values to html components
@@ -4961,7 +4972,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // gets the request header data
             Map<String, String> rqustHdrMp = exCntxt.getRequestHeaderMap();
             
-            if (false){
+            if (true){
                 out.println("\nRequest Header Values Map:\n" + rqustHdrMp);
                 out.println("\nRequest Header Values Map(user-agent):"
                     + rqustHdrMp.get("user-agent"));
@@ -4979,7 +4990,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             String currentViewStateValue = exCntxt.getRequestParameterMap()
                 .get(ResponseStateManager.VIEW_STATE_PARAM);
             
-            if (false){
+            if (true){
                 out.println("ViewState value=" + currentViewStateValue);
                 out.println("VDCRequestBean: current VDC URL ="
                 + getVDCRequestBean().getCurrentVDCURL());
@@ -4988,7 +4999,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // Stores the URL of the requested study 
             setStudyURL(getVDCRequestBean().getCurrentVDCURL());
             
-            if (false){
+            if (true){
                 out.println("VDCRequestBean: studyId ="
                     + getVDCRequestBean().getStudyId());
                 out.println("VDCRequestBean =" + getVDCRequestBean());
@@ -5074,9 +5085,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 }
                 
                 //  Gets the StudyFile object via the dataTable object.
-                //  This StudyFile is used to determine whether
+                //  This StudyFile determines whether
                 //  Subsetting functionalities are rendered or not
                 //  in SubsettingPage.jsp
+                if (debug_init){
+                    out.println("checking the end-user's permission status");
+                }
                 StudyFile sf = dataTable.getStudyFile();
                 HttpServletRequest request = 
                     (HttpServletRequest)this.getExternalContext().getRequest();
@@ -5115,8 +5129,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // the page was rendered for the first time
                     // not a post-back case
                     if (debug_init){
-                        out.println("dt4Display does not exist in the session"+
-                            "=>1st-time visit to this page");
+                        out.println("This is the 1st-time visit to this page:"+
+                            "(dt4Display does not exist in the session map)");
                     }
                     // Fills List<Object> dt4Display with data
                     // and newly creaded data 
@@ -5138,7 +5152,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // Collection<Option> varSetAdvStat: user-selected
                     // variables behind the LHS variable list box
                     sessionMap.put("varSetAdvStat", varSetAdvStat);
-
+                    if (debug_init){
+                        out.println("varSetAdvStat:\n"+varSetAdvStat);
+                    }
                     // ui:PanelGroup component that shows/hides the pane for
                     // the advanced statistics. 
                     // The rendered attribute of this PanelGroup object
@@ -5244,7 +5260,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     advStatVarRBox3 = (Collection<Option>) sessionMap
                         .get("advStatVarRBox3");
 
-                    // Gets  the stored object backing the items attribute
+                    // Gets the stored object backing the items attribute
                     // of ui:dropDown for the 1st setx variable selector
                     setxDiffVarBox1 = (Collection<Option>) sessionMap
                         .get("setxDiffVarBox1");
@@ -5258,8 +5274,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         .get("currentModelName");
                     
                     if (debug_init){
-                        out.println("Selected model name(after post-back)="
-                            + currentModelName);
+                        out.println("\nSelected model name(after post-back)="
+                            + currentModelName+"\n");
                     }
                     // deprecated: 
                     // checkbox component
@@ -5331,7 +5347,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // of ui:PaneGroup for groupPanel8below
                     groupPanel8belowRendered =(Boolean) 
                         sessionMap.get("groupPanel8belowRendered");
-                     
+                    out.println("groupPanel8belowRendered(map)="+
+                        sessionMap.get("groupPanel8belowRendered"));
+                    out.println("groupPanel8belowRendered(result)="+
+                        groupPanel8belowRendered);
                     // deprecated approach
                     // Gets the stored object backing the binding attribute of
                     // ui: PanelGroup for groupPanel8below
@@ -5516,9 +5535,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         } // end of try-catch block
         
         if (debug_init){
-            out.println("doInit(): current tab id=" +
+            out.println("init(): current tab id=" +
                 tabSet1.getSelected());
-            out.println("***** end of doInit() *****");
+            out.println("***** init():end *****\n\n");
         }
     }
     

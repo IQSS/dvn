@@ -52,6 +52,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1329,8 +1330,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     public void mapDDI(String xmlToParse, Study study) {
         try {
-            javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
-            javax.xml.stream.XMLStreamReader xmlr = xmlif.createXMLStreamReader(new java.io.StringReader(xmlToParse));
+            XMLStreamReader xmlr = createXMLStreamReader(new java.io.StringReader(xmlToParse));
             processDDI( xmlr, study );
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
@@ -1340,8 +1340,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     public void mapDDI(File ddiFile, Study study) {
         try {
-            javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
-            javax.xml.stream.XMLStreamReader xmlr = xmlif.createXMLStreamReader(new java.io.FileReader(ddiFile));
+            javax.xml.stream.XMLStreamReader xmlr = createXMLStreamReader(new java.io.FileReader(ddiFile));
             processDDI( xmlr, study );
         } catch (FileNotFoundException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
@@ -1357,8 +1356,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         initializeCollections(dummyStudy);
 
         try {
-            javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
-            javax.xml.stream.XMLStreamReader xmlr = xmlif.createXMLStreamReader(new java.io.FileReader(ddiFile));
+            XMLStreamReader xmlr = createXMLStreamReader(new java.io.FileReader(ddiFile));
         
             for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
                 if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1383,6 +1381,12 @@ public class DDIServiceBean implements DDIServiceLocal {
     }    
     
     // <editor-fold defaultstate="collapsed" desc="import methods"> 
+    private XMLStreamReader createXMLStreamReader(Reader reader) throws XMLStreamException{
+        javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
+        xmlif.setProperty("javax.xml.stream.isCoalescing", java.lang.Boolean.TRUE);
+        return xmlif.createXMLStreamReader(reader);
+    }
+
     private void processDDI( XMLStreamReader xmlr, Study study) throws XMLStreamException {
         Map filesMap = new HashMap();
         initializeCollections(study);        
@@ -2305,11 +2309,11 @@ public class DDIServiceBean implements DDIServiceLocal {
         String returnString = "";
 
         while (true) {
-            //if (returnString != "") { returnString += "\n";}
+            if (returnString != "") { returnString += "\n";}
             int event = xmlr.next();
             if (event == XMLStreamConstants.CHARACTERS) {
                 returnString += xmlr.getText().trim().replace('\n',' ');
-            } else if (event == XMLStreamConstants.START_ELEMENT) {
+           } else if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("p")) {
                     returnString += "<p>" + parseText(xmlr, "p") + "</p>";
                 } else if (xmlr.getLocalName().equals("hi")) {

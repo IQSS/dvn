@@ -43,12 +43,13 @@
                                 <h:outputLink  id="hyperlink6" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/ReviewStudiesPage.jsp">
                                     <h:outputText id="hyperlink2Text1" value="Review Studies (see and review all New Studies and Studies In Review)"/>
                                 </h:outputLink>
-                                <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4"  id="recentStudy">
-                                    <h:outputText  value="All Studies Uploaded and Released to this Dataverse (starting with most recent)" escape="false"/>
-                                </h:outputLink>
+                                
                             <h:outputText value=""/> <!-- a hack to make the spacing work (sorry Merce) -->
                             </ui:panelGroup>
                             <ui:panelGroup block="true"  separator="&lt;br /&gt;" style="padding-left: 10px">
+                                <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4"  id="recentStudy">
+                                    <h:outputText  value="All Studies Uploaded and Released to this Dataverse (starting with most recent)" escape="false"/>
+                                </h:outputLink>
                                 <h:outputLink id="hyperlink7b" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddCollectionStudiesPage.jsp">
                                     <h:outputText  id="hyperlink3Text2" value="Add Collection by Assigning Studies"/>
                                 </h:outputLink>
@@ -100,11 +101,11 @@
                                     <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.jsp">
                                         <h:outputText styleClass="vdcMenuItem" value="Add New User Account"/>
                                     </h:outputLink>
-                                    <h:outputLink id="hyperlink14" rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.jsp">
-                                        <h:outputText id="hyperlink4Text3" value="Set Dataverse Terms of Use for Study Download"/>
-                                    </h:outputLink>
                                     <h:outputLink  rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditDepositUseTermsPage.jsp">
-                                        <h:outputText id="hyperlink5Text3" value="Set Dataverse Terms of Use for Study Creation and Data Deposit"/>
+                                        <h:outputText id="hyperlink5Text3" value="Edit Dataverse Terms of Use for Study Creation and Data Deposit"/>
+                                    </h:outputLink>
+                                     <h:outputLink id="hyperlink14" rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.jsp">
+                                        <h:outputText id="hyperlink4Text3" value="Edit Dataverse Terms of Use for File Download"/>
                                     </h:outputLink>
                                 </ui:panelGroup>
                             </ui:panelGroup>

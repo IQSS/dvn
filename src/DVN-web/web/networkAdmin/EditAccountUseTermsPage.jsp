@@ -11,25 +11,24 @@
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                              
-                    <h:outputText value="Edit Terms of Use"/>
+                    <h:outputText value="Edit Network Terms of Use for Account Creation"/>
                     
                 </div>            
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">                    
                         
                        <h:messages  layout="list" showDetail="false" showSummary="true" styleClass="successMessage" />                        
-                        
-                        <h:outputText  value="Please enter the Terms of Use or Conditions you would like to define for all studies created in (owned by) this dataverse (does not include studies that you are adding from other Dataverses in the Network)."/>
+
                         <ui:panelGroup block="true" style="padding-bottom: 15px">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                            <h:outputText styleClass="vdcHelpText" value="By enabling these Terms of Use, users will be asked to agree to them before downloading a file or accessing the subsetting/analysis page. These Terms of Use will be also displayed in the Cataloging Information under the Terms of Use section as 'General Term of Use'."/>
+                            <h:outputText styleClass="vdcHelpText" value="By enabling these Terms of Use, users will be asked to agree to them when creating an account in the #{VDCRequest.vdcNetwork.name} Dataverse Network."/>
                         </ui:panelGroup>
                         
                         <h:outputText value="Enable Terms of Use?"/>
                         <h:selectBooleanCheckbox value="#{EditAccountUseTermsPage.termsOfUseEnabled}"/>
                         <h:panelGrid  cellpadding="0" cellspacing="0"
                                       columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
-                            <h:outputText  id="outputText2" value="Terms of Use"/>
+                            <h:outputText  id="outputText2" value="Terms of Use:"/>
                             <h:panelGroup><!-- my add -->
                                 <h:message for="textArea1" styleClass="errorMessage" id="outputText2Msg"/>
                                 <f:verbatim><br /></f:verbatim>

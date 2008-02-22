@@ -19,6 +19,7 @@
                 <div class="dvn_sectionTitle">
                     Terms of Use
                 </div>
+                
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
                         
@@ -96,6 +97,11 @@
                                 <input id="cancelButton" type="button" value="Cancel" style="margin-left: 20px;" onclick="window.location='/dvn${VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=${TermsOfUsePage.study.id}&amp;tab=files'" />
                             </f:verbatim>
                         </ui:panelGroup>
+                       <ui:panelLayout rendered="#{TermsOfUsePage.studyId!=null}" style="padding-top: 20px;">
+                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{TermsOfUsePage.study.id}&amp;tab=files">
+                                <h:outputText value="Back to Study"/>                       
+                            </h:outputLink>
+                       </ui:panelLayout>
                     </div>
                 </div>
             </div>

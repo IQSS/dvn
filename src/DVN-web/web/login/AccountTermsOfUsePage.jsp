@@ -53,6 +53,7 @@
                         </ui:panelGroup>
                         <ui:panelGroup block="true" styleClass="termsAgreementButtons">
                             <h:commandButton id="termsButton" value="Continue" action="#{AccountTermsOfUsePage.acceptTerms_action}"/>
+                            <h:commandButton id="termsCancelButton" value="Cancel" immediate="true" style="margin-left: 20px;" action="home"/>
                         </ui:panelGroup>
                   </ui:panelLayout>
                   </ui:panelLayout>

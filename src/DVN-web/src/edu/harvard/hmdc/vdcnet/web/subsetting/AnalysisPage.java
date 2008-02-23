@@ -2622,13 +2622,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // boxL1: listbox@selected : storage object for selected value
-    private String[] advStatSelectedVarLBox;
+    private Object[] advStatSelectedVarLBox;
 
-    public String[] getAdvStatSelectedVarLBox() {
+    public Object[] getAdvStatSelectedVarLBox() {
         return advStatSelectedVarLBox;
     }
 
-    public void setAdvStatSelectedVarLBox(String[] dol) {
+    public void setAdvStatSelectedVarLBox(Object[] dol) {
         this.advStatSelectedVarLBox = dol;
     }
 
@@ -3062,10 +3062,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // move from L to R1
     public void addVarBoxR1(ActionEvent acev) {
-        String[] OptnSet = getAdvStatSelectedVarLBox();
-
         out.println("\n***** within addVarBoxR1(): model name=" + 
             getCurrentModelName()+" *****");
+            
+        out.println("advStatSelectedVarLBox="+advStatSelectedVarLBox);
+        String[] OptnSet = (String[])getAdvStatSelectedVarLBox();
+        out.println("OptnSet Length="+OptnSet.length);
+        out.println("OptnSet="+OptnSet);
 
         int BoxR1max = getAnalysisApplicationBean().getSpecMap().get(
             getCurrentModelName()).getVarBox().get(0).getMaxvar();
@@ -3084,6 +3087,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
         // for each selected item
         if (advStatVarRBox1.size() < BoxR1max) {
+            out.println("< BoxR1max case");
             for (int i = 0; i < OptnSet.length; i++) {
                 // reset error message field
                 resetMsg4MoveVar();
@@ -3131,7 +3135,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // move from L to R2
     public void addVarBoxR2(ActionEvent acev) {
         // set left-selected items to a temp list
-        String[] OptnSet = getAdvStatSelectedVarLBox();
+        String[] OptnSet = (String[])getAdvStatSelectedVarLBox();
 
         out.println("***** within addVarBoxR2(): model name=" +
             getCurrentModelName()+" *****");
@@ -3200,7 +3204,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // move from L to R3
     public void addVarBoxR3(ActionEvent acev) {
         // set left-selected items to a temp list
-        String[] OptnSet = getAdvStatSelectedVarLBox();
+        String[] OptnSet = (String[])getAdvStatSelectedVarLBox();
 
         out.println("***** within addVarBoxR3(): model name=" + 
             getCurrentModelName()+" *****" +
@@ -3342,19 +3346,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     public void checkboxGroupXtbProcessValueChange(ValueChangeEvent vce) {
-        FacesContext cntxt = FacesContext.getCurrentInstance();
-        // String outOptn = (String)vce.getNewValue();
-        // out.println("outOptn="+outOptn);
-        /*
-         * for (int i=0;i<outOptn.length;i++){ out.println("output
-         * option["+i+"]="+outOptn[i].getValue()); }
-         */
+        out.println("checkboxGroupXtbProcessValueChange");
         out.println("checkbox: new value=" + vce.getNewValue());
         Option[] outOption = (Option[]) checkboxGroupXtbOptions.getOptions();
         for (int i = 0; i < outOption.length; i++) {
             out.println("output option[" + i + "]=" + outOption[i].getValue());
         }
-        cntxt.renderResponse();
     }
 
     // ////////////////////
@@ -4951,7 +4948,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             _init();
             
             if (debug_init) {
-                out.println("pass _init() in doInit()");
+                out.println("pass _init() in init()");
             }
             // gets the FacesContext instance
             FacesContext cntxt = FacesContext.getCurrentInstance();
@@ -5239,12 +5236,18 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // Gets the stored object that records 
                     // the currently selected variables 
                     varCart = (Map<String, String>) sessionMap.get("varCart");
+                    if (debug_init){
+                        out.println("varCart:\n"+varCart);
+                    }
 
                     // Gets the stored object backing the items attribute of 
                     // ui:listbox for the LHS list-box component, which is
                     // located in each tab
-                    varSetAdvStat = (List<Option>) sessionMap
+                    varSetAdvStat = (Collection<Option>) sessionMap
                         .get("varSetAdvStat");
+                    if (debug_init){
+                        out.println("varSetAdvStat:\n"+varSetAdvStat);
+                    }
 
                     // Gets the stored object backing the items attribute of
                     // ui:listbox for the 1st RHS variable box
@@ -5259,6 +5262,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // ditto (3rd)
                     advStatVarRBox3 = (Collection<Option>) sessionMap
                         .get("advStatVarRBox3");
+                    if (debug_init){
+                        out.println("advStatVarRBox1:\n"+advStatVarRBox1);
+                        out.println("advStatVarRBox2:\n"+advStatVarRBox2);
+                        out.println("advStatVarRBox3:\n"+advStatVarRBox3);
+                    }
 
                     // Gets the stored object backing the items attribute
                     // of ui:dropDown for the 1st setx variable selector

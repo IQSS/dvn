@@ -560,6 +560,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     public void addIngestedFiles(Long studyId, List fileBeans, Long userId) {
         // first some initialization
         Study study = getStudy(studyId);
+        em.refresh(study);
         VDCUser user = userService.find(userId);
 
         File newDir = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
@@ -894,6 +895,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     public void removeStudyLock(Long studyId) {
         Study study = em.find(Study.class, studyId);
+        em.refresh(study);
         StudyLock lock = study.getStudyLock();
         VDCUser user = lock.getUser();
 

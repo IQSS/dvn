@@ -683,7 +683,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public boolean isUniqueStudyId(String userStudyId, String protocol, String authority) {
-        String query = "SELECT s FROM Study s WHERE s.studyId = '" + userStudyId + "'";
+        String query = "SELECT s FROM Study s WHERE s.studyId = '" + userStudyId.toUpperCase() + "'";
         query += " and s.protocol ='" + protocol + "'";
         query += " and s.authority = '" + authority + "'";
         return em.createQuery(query).getResultList().size() == 0;
@@ -982,7 +982,14 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         Long hftId = vdc.getHarvestingDataverse().getHarvestFormatType().getId();
 
         //return doImportStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
-        return doImportStudy(xmlFile, hftId, vdcId, userId, createNewHandle, createNewHandle, allowUpdates, false, false, harvestIdentifier);
+        Study study = doImportStudy(xmlFile, hftId, vdcId, userId, createNewHandle, createNewHandle, allowUpdates, false, false, harvestIdentifier);
+
+        // new create exports files for these studies
+        for (String exportFormat : studyExporterFactory.getExportFormats()) {
+            studyService.exportStudyToFormat(study, exportFormat);
+        }   
+
+        return study;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -1881,12 +1888,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         // sets fields before save (e.g. last updatetime)
         saveStudy(study, userId);        
         
-        // new create exports files for these studies
-        for (String exportFormat : studyExporterFactory.getExportFormats()) {
-            studyService.exportStudyToFormat(study, exportFormat);
-        }
-
-
         if (registerHandle && vdcNetworkService.find().isHandleRegistration()) {
             String handle = study.getAuthority() + "/" + study.getStudyId();
             gnrsService.createHandle(handle);

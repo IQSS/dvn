@@ -223,7 +223,7 @@ public class Study implements java.io.Serializable {
     }
     
     public void setStudyId(String studyId) {
-        this.studyId = studyId;
+        this.studyId = (studyId != null ? studyId.toUpperCase() : null);
     }
     
     public Date getCreateTime() {

@@ -63,11 +63,13 @@
               <f:subview id="footer">
                   <tiles:insert name="footer" flush="false"/>
               </f:subview>
-              <!-- <script type="text/javascript" src="http://localhost:8080/DvnAwstats/cgi/awstats/js/awstats_misc_tracker.js"></script>
-              <noscript>
-                  <img src="http://localhost:8080/DvnAwstats/cgi/awstats/js/awstats_misc_tracker.js?nojs=y" height="0" width="0" border="0" style="display:block"/>
-              </noscript> -->
-          
+          <script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script>
+          <script type="text/javascript">
+              // <![CDATA[    
+            _uacct = "UA-1180093-2";
+            urchinTracker();
+            //  ]]>
+          </script>
       </body>
 </ui:html>
 <!-- </a4j:page> -->

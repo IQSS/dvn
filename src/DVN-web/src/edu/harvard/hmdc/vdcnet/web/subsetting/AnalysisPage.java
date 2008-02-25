@@ -234,10 +234,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 
     /**
-     * Instance of the DataTabble requested by the end-user
+     * Instance of the DataTable that contains major metadata of all variables
+     * in the data file requested by an end-user
      */
     private edu.harvard.hmdc.vdcnet.study.DataTable dataTable;
 
+    /**
+     * The List object that holds the metadata of all variables in the
+     * requested data file
+     */
+    private List<DataVariable> dataVariables = new ArrayList<DataVariable>();
 
     /**
      * The ID of the requested DataTable instance. Specified as a managed-property in
@@ -307,7 +313,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * getter for property studyUI class-name
      *
-     * @return the studyUI class name
+     * @return    the studyUI class name
      */
     public String getStudyUIclassName() {
         return studyUIclassName;
@@ -420,13 +426,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         studyURL = url;
     }
 
-    /** The type of the end-user's browser */
+    /** The type of an end-user's browser */
     private String browserType;
 
     /**
      * Getter for property browserType
      *
-     * @return    the type of the end-user's browser
+     * @return    the type of an end-user's browser
      */
     public String getBrowserType() {
         return browserType;
@@ -434,7 +440,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * Setter for property borwserType
      *
-     * @param bt    the type of the end-user's browser
+     * @param bt    the type of an end-user's browser
      */
     public void setBrowserType(String bt) {
         this.browserType = bt;
@@ -457,41 +463,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // <editor-fold desc="Page-level-components">
 
     /**
-     * h:panelGrid 
-     * binding
-     * 
-     * This component is not found in Subsetting.jsp; Deleted?
-     *
-     */
-    private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
-
-    /**
-     * Getter for property gridPanel1
-     *
-     * @return    h:panelGrid object
-     */
-    public HtmlPanelGrid getGridPanel1() {
-        return gridPanel1;
-    }
-
-    /**
-     * Setter for property gridPanel1
-     *
-     * @param hpg    h:panelGrid object
-     */
-    public void setGridPanel1(HtmlPanelGrid hpg) {
-        this.gridPanel1 = hpg;
-    }
-
-    /**
-     * ui:tabSet used in the subsetting page
-     * binding
-     * 
+     * ui:tabSet component backing the binding attribute of the tabset in
+     * the subsetting page and whose id is tabSet1
      */
     private TabSet tabSet1 = new TabSet();
 
     /**
-     * Getter for property tabSet1
+     * Getter for component tabSet1
      *
      * @return    the main tab-set component
      */
@@ -501,7 +479,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     /**
-     * Setter for property tabSet1
+     * Setter for component tabSet1
      *
      * @param ts    the main tab-set component
      */
@@ -510,14 +488,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     /**
-     * ui:tab used for the downloading option
-     * binding
+     * ui:tab component backing the binding attribute of the tab of 
+     * the downloading option and whose id is tabDwnld
      * 
      */
     private Tab tabDwnld = new Tab();
     
     /**
-     * Getter for property tabDwnld
+     * Getter for component tabDwnld
      *
      * @return    ui:tab of the downloading option
      */
@@ -526,44 +504,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     /**
-     * Setter for property tabDwnld
+     * Setter for component tabDwnld
      *
      * @param tab3    ui:tab of the downloading option
      */
     public void setTabDwnld(Tab tab3) {
         this.tabDwnld = tab3;
     }
-    
-    /**
-     * Moves all variables back to the box of the end-user selected variables
-     * and resets the backing storage object varCart
-     * ui:tab_attr_actionListener
-     *
-     * @param  acev    tab-clicking-action event
-     */
-    public void resetVariableInLBox(ActionEvent acev) {
-        out.println("Within resetVariableInLBox: tab Id ="
-            + acev.getComponent().getId());
-        
-        // remove vars from RHS boxes
-        advStatVarRBox1.clear();
-        advStatVarRBox2.clear();
-        advStatVarRBox3.clear();
-
-        // add existing vars to LHS box
-        // add user-defined vars to LHS box if available
-        resetVarSetAdvStat(varCart);
-    }
 
     /**
-     * ui:tab used for the recoding option
-     * binding
-     * 
+     * ui:tab component backing the binding attribute of the tab of 
+     * the recoding option and whose id is tabRecode
      */
     private Tab tabRecode = new Tab();
 
     /**
-     * Getter for property tabRecode
+     * Getter for component tabRecode
      *
      * @return    ui:tab of the recoding option
      */
@@ -572,7 +528,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     /**
-     * Setter for property tabRecode
+     * Setter for component tabRecode
      *
      * @param tab2    ui:tab of the recoding option
      */
@@ -581,14 +537,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     /**
-     * ui:tab used for the EDA option
-     * binding
-     * 
+     * ui:tab component backing the binding attribute of the tab of 
+     * the EDA option and whose id is tabEda
      */
     private Tab tabEda = new Tab();
 
     /**
-     * Getter for property tabEda
+     * Getter for component tabEda
      *
      * @return    ui:tab of the EDA option
      */
@@ -597,7 +552,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     /**
-     * Setter for property tabDwnld
+     * Setter for component tabEda
      *
      * @param tab4    ui:tab of the EDA option
      */
@@ -606,14 +561,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     /**
-     * ui:tab used for the advanced statistics option
-     * binding
-     * 
+     * ui:tab component backing the binding attribute of the tab of 
+     * the advanced statistics optionn and whose id is tabAdvStat
      */
     private Tab tabAdvStat = new Tab();
 
     /**
-     * Getter for property tabAdvStat
+     * Getter for component tabAdvStat
      *
      * @return    ui:tab of the advanced statistics option
      */
@@ -622,7 +576,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     /**
-     * Setter for property tabAdvStat
+     * Setter for component tabAdvStat
      *
      * @param tab5    ui:tab of the advanced statistics option
      */
@@ -648,6 +602,27 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      */
     public void setCurrentTabId(String tb) {
         currentTabId = tb;
+    }
+    
+    /**
+     * Moves all variables back to the box of an end-user selected variables
+     * and resets the backing storage object varCart.  
+     * Backing the actionListener attribute of each ui:tab component.
+     *
+     * @param  acev    tab-clicking-action event
+     */
+    public void resetVariableInLBox(ActionEvent acev) {
+        out.println("Within resetVariableInLBox: tab Id ="
+            + acev.getComponent().getId());
+        
+        // remove vars from RHS boxes
+        advStatVarRBox1.clear();
+        advStatVarRBox2.clear();
+        advStatVarRBox3.clear();
+
+        // add existing vars to LHS box
+        // add user-defined vars to LHS box if available
+        resetVarSetAdvStat(varCart);
     }
 
     // </editor-fold>
@@ -2622,13 +2597,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // boxL1: listbox@selected : storage object for selected value
-    private Object[] advStatSelectedVarLBox;
+    private String[] advStatSelectedVarLBox;
 
-    public Object[] getAdvStatSelectedVarLBox() {
+    public String[] getAdvStatSelectedVarLBox() {
         return advStatSelectedVarLBox;
     }
 
-    public void setAdvStatSelectedVarLBox(Object[] dol) {
+    public void setAdvStatSelectedVarLBox(String[] dol) {
         this.advStatSelectedVarLBox = dol;
     }
 
@@ -3066,7 +3041,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             getCurrentModelName()+" *****");
             
         out.println("advStatSelectedVarLBox="+advStatSelectedVarLBox);
-        String[] OptnSet = (String[])getAdvStatSelectedVarLBox();
+        String[] OptnSet = getAdvStatSelectedVarLBox();
         out.println("OptnSet Length="+OptnSet.length);
         out.println("OptnSet="+OptnSet);
 
@@ -3991,30 +3966,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // <----------------------------------------------------------------------
     // </editor-fold>
 
-
-    // -----------------------------------------------------------------------
-    // utility methods 
-    // -----------------------------------------------------------------------
-    // <editor-fold desc="utiltiy methods">
-
-
-    public List<DataVariable> getDataVariableForRequest() {
-        List<DataVariable> dvs = new ArrayList<DataVariable>();
-        for (Iterator el = dataVariables.iterator(); el.hasNext();) {
-            DataVariable dv = (DataVariable) el.next();
-            String keyS = dv.getId().toString();
-            if (varCart.containsKey(keyS)) {
-                dvs.add(dv);
-            }
-        }
-        return dvs;
-    }
-
-
-
-    // </editor-fold>
-
-
     // -----------------------------------------------------------------------
     // subsetting-instruction section
     // -----------------------------------------------------------------------
@@ -4141,7 +4092,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // -----------------------------------------------------------------------
-    // scroller-related settings
+    // scroller-related methods
     // -----------------------------------------------------------------------
 
     public String first() {
@@ -4534,23 +4485,45 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // -----------------------------------------------------------------------
-    // variable-table: 1st column checkbox
+    // variable-table: Checkboxes in the first column
     // -----------------------------------------------------------------------
 
     // variable table: checkbox column
     // varCheckbox@binding
+    /**
+     * ui:checkbox component backing the binding attribute of a checkbox
+     * in the first column of the variable table in the subsetting page and
+     * whose id is varCheckbox
+     */
     private Checkbox varCheckbox = new Checkbox();
-
+    
+    /**
+     * Getter for component varCheckbox
+     *
+     * @return    Checkbox object
+     */
+    
     public Checkbox getVarCheckbox() {
         return varCheckbox;
     }
-
+    
+    /**
+     * Setter for component varCheckbox 
+     *
+     * @param c    Checkbox object
+     */
     public void setVarCheckbox(Checkbox c) {
         this.varCheckbox = c;
     }
 
-    // ui:checkbox (variable table: checkbox column)
-    // varCheckbox@valueChangeListener
+    /**
+     * Updates backing objects and components after
+     * an end-user checked/unchecked a checkbox.  
+     * Attached to the valueChangeListener attribute of ui:checkbox
+     * component whose id is varCheckbox
+     *
+     * @param vce    ValueChangeEvent event
+     */
     public void updateCheckBoxState(ValueChangeEvent vce) {
         int cr = 0;
 
@@ -4595,10 +4568,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // check this var is used for recoded var
 
             if (baseVarToDerivedVar.containsKey(varId)) {
+                // Case: Used for recoding
                 out.println("this var is already used for recoding and cannot be unchekced");
-                // flip back the checkbox [checked]
+                // flips back the checkbox [checked]
                 tmpDataLine.set(0, Boolean.TRUE);
                 out.println("flip the boolean value");
+                // shows the error message
                 msgVariableSelection.setRendered(true);
                 msgVariableSelection
                     .setText("The variable ("
@@ -4607,10 +4582,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 FacesContext.getCurrentInstance().renderResponse();
             } else {
-
+                // Case: Not used for recoding
+                // Removes this variable
                 varCart.remove(varId);
-
-                // Lbox
+                
+                // Removes this variable from a variable box
                 if (removeOption((String) tmpDataLine.get(2),
                     getVarSetAdvStat()) == null) {
                     // Rbox1
@@ -4632,7 +4608,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             }
 
         }
-
+        // Checkes the number of the currently selected variables and 
+        // if positive, enable command buttons; disable them otherwise
         if (!varCart.isEmpty()) {
             // enable buttons
             activateButtons();
@@ -4641,28 +4618,49 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             deactivateButtons();
             // reset recode field
         }
-
     }
-
-    // error message when a base-variable is unchecked
-    // ui:staticText
+    
+    /**
+     * ui:staticText component that is under the subsetting instruction
+     * to show an error message when a base-variable for a recoded variable
+     * is unchecked.  Exposed to the subsetting page and 
+     * the component id is the same as this property
+     */
     private StaticText msgVariableSelection = new StaticText();
-
+    
+    /**
+     * Getter for property msgVariableSelection
+     *
+     * @return    an unchecked-error message 
+     */
     public StaticText getMsgVariableSelection() {
         return msgVariableSelection;
     }
 
+    /**
+     * Setter for property msgVariableSelection
+     *
+     * @param txt    an uncheck-error message to be displayed
+     */
     public void setMsgVariableSelection(StaticText txt) {
         this.msgVariableSelection = txt;
     }
-
+    
+    /**
+     * Rests message components that display a wrong-variable-selection 
+     * error messages
+     */
     public void resetMsgVariableSelection() {
         out.println("***** resetMsgVariableSelection: start *****");
         msgVariableSelection.setRendered(false);
         msgVariableSelection.setText(" ");
         out.println("***** resetMsgVariableSelection: end *****");
     }
-
+    
+    /**
+     * Enables command buttons in the subsetting page after 
+     * at least one variable selected by an end-user
+     */
     public void activateButtons() {
         dwnldButton.setDisabled(false);
         recodeButton.setDisabled(false);
@@ -4671,6 +4669,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         advStatButton.setDisabled(false);
     }
 
+    /**
+     * Disables command buttons in the subsetting page until 
+     * at least one variable is selected by an end-user
+     */
     public void deactivateButtons() {
         dwnldButton.setDisabled(true);
         recodeButton.setDisabled(true);
@@ -4679,89 +4681,56 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         advStatButton.setDisabled(true);
     }
 
-    public DataVariable getVariableById(String varId) {
-
-        DataVariable dv = null;
-        for (Iterator el = dataVariables.iterator(); el.hasNext();) {
-            dv = (DataVariable) el.next();
-            // Id is Long
-            if (dv.getId().toString().equals(varId)) {
-                return dv;
-            }
-        }
-        return dv;
-    }
 
 
-    // ----------------------------------------------------------------------
-
-    // request(submit) button:
-    public void setSubmitButtonEnabled(boolean bttn) {
-        this.submitButtonEnabled = bttn;
-    }
-
-    boolean submitButtonEnabled = false;
-
-    public boolean isSubmitButtonEnabled() {
-        return this.submitButtonEnabled;
-    }
-
-    private HtmlCommandLink linkAction1 = new HtmlCommandLink();
-
-    public HtmlCommandLink getLinkAction1() {
-        return linkAction1;
-    }
-
-    public void setLinkAction1(HtmlCommandLink hcl) {
-        this.linkAction1 = hcl;
-    }
-
-    // ----------------------------------------------------------------------
-
-    // private Collection<DataVariable> dataVariables;
-    private List<DataVariable> dataVariables = new ArrayList<DataVariable>();
+    // -----------------------------------------------------------------------
+    // Summary Statistics
+    // -----------------------------------------------------------------------
 
     /**
-     * Holds value of property summaryStatistics.
+     * A Collection of summary statistics of each variable in the
+     * requested data file.  Used in the recoding-GUI rendering process
      */
     private Collection<SummaryStatistic> summaryStatistics;
 
     /**
-     * Getter for property summaryStatistics.
+     * Getter for property summaryStatistics
      * 
-     * @return Value of property summaryStatistics.
+     * @return    a Collection of summaryStatistic objects
      */
     public Collection<SummaryStatistic> getSummaryStatistics() {
         return this.summaryStatistics;
     }
 
     /**
-     * Setter for property summaryStatistics.
+     * Setter for property summaryStatistics
      * 
-     * @param summaryStatistics
-     *            New value of property summaryStatistics.
+     * @param summaryStatistics    a Collection of summaryStatistic objects
      */
     public void setSummaryStatistics(
         Collection<SummaryStatistic> summaryStatistics) {
         this.summaryStatistics = summaryStatistics;
     }
 
+    /**
+     * A Collection of category data of each variable in the 
+     * requested data file.   Used in the recoding-GUI rendering proces
+     */
     private Collection<VariableCategory> categories;
 
     /**
-     * Getter for property categories.
+     * Getter for property categories
      * 
-     * @return Value of property categories.
+     * @return    a Collection of VariableCategory objects
      */
     public Collection<VariableCategory> getCategories() {
         return this.categories;
     }
 
     /**
-     * Setter for property categories.
+     * Setter for property categories
      * 
-     * @param categories
-     *            New value of property categories.
+     * @param categories    A Collection of VariableCategory objects
      */
     public void setCategories(Collection<VariableCategory> categories) {
         this.categories = categories;
@@ -4770,30 +4739,48 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // -----------------------------------------------------------------------
     // data for the Variable Table
     // -----------------------------------------------------------------------
-
+    
+    /**
+     * ArrayList object that stores major metadata of all variables in 
+     * the requested data file and backs the value attribute of 
+     * h:dataTable (id = dataTable1) in the variable table of the jsp page.
+     */
     private List<Object> dt4Display = new ArrayList<Object>();
-
-    public void setDt4Display(List<Object> dt) {
-        this.dt4Display = dt;
-    }
-
+    
+    /**
+     * Getter for property dt4Display
+     *
+     * @return    a List object of major metadata of all varibles
+     */
     public List<Object> getDt4Display() {
         return (dt4Display);
     }
 
+    /**
+     * Setter for property dt4Display
+     *
+     * @param dt    a List object of major metadata of all variables
+     */
+    public void setDt4Display(List<Object> dt) {
+        dt4Display = dt;
+    }
+    
+    /**
+     * Adds major metadata of all variables in the requested data file into
+     * dt4Display.  The six cells of each row are as follows:
+     * 
+     * boolean: checkbox state,
+     * String: variable type,
+     * Long:   variable Id,
+     * String: variable name,
+     * String: variable label,
+     * String: blank cell for summary statistics
+     * 
+     * @see       #dt4Display
+     */
     private void initDt4Display() {
-        // prepare the list object (dt4Display) whose members are variable info
-        // each member (row) is like this:
-        // [boolean(checkbox state),
-        // variable type,
-        // variable Id,
-        // variable name,
-        // variable label,
-        // summary statistics]
-        // [false, "C",1L,"CELLS", "Subgroups for sample-see documentation",
-        // html-frag]
         int counter = 0;
-        int dbglns = 50;
+        int dbglns = 25;
         for (Iterator el = dataVariables.iterator(); el.hasNext();) {
             DataVariable dv = (DataVariable) el.next();
             counter++;
@@ -4803,10 +4790,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             }
 
             List<Object> rw = new ArrayList<Object>();
-            // 0
+            // 0-th: boolean (checked/unchecked)
             rw.add(new Boolean(false));
-            // 1
-
+            
+            // 1st: variable type
             if (dv.getVariableFormatType().getName().equals("numeric")) {
                 if (dv.getVariableIntervalType() == null) {
                     rw.add("Continuous");
@@ -4821,44 +4808,63 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 rw.add("Character");
             }
 
-            // 2: ID
+            // 2nd: ID
             rw.add(dv.getId().toString());
-            // 3: Variable Name
+            
+            // 3rd: Variable Name
             rw.add(dv.getName());
-            // existingVarNameSet.add(dv.getName());
-            // 4: Variable Label
+            
+            // 4th: Variable Label
             if (dv.getLabel() != null) {
                 rw.add(dv.getLabel());
             } else {
                 rw.add("[label missing]");
             }
-
-            // 5 summary statistics(removed)
-
-            // rw.add("contents_here_"+counter);
+            
+            // 5th: summary statistics(blank)
+            // the content is generated by an AJAX call upon request
             rw.add("");
-            // 6 panelgroup state
-            rw.add(Boolean.FALSE);
+            
+            // add a row
             dt4Display.add(rw);
-        } // end of for loop (setup of dt4Display)
-
+        }
     }
+
 
     // <----------------------------------------------------------------------
+    // </editor-fold>
 
-    public String getVariableLabelfromId(String varId) {
 
-        for (int i = 0; i < dt4Display.size(); i++) {
-            if (((String) ((ArrayList) dt4Display.get(i)).get(2)).equals(varId)) {
-                return (String) ((ArrayList) dt4Display.get(i)).get(4);
+    // -----------------------------------------------------------------------
+    // utility methods 
+    // -----------------------------------------------------------------------
+    // <editor-fold desc="utiltiy methods">
+
+    /**
+     * Returns a List object that stores major metadata for all variables 
+     * selected by an end-user
+     *
+     * @return    List of DataVariable objects that store metadata
+     */
+    public List<DataVariable> getDataVariableForRequest() {
+        List<DataVariable> dvs = new ArrayList<DataVariable>();
+        for (Iterator el = dataVariables.iterator(); el.hasNext();) {
+            DataVariable dv = (DataVariable) el.next();
+            String keyS = dv.getId().toString();
+            if (varCart.containsKey(keyS)) {
+                dvs.add(dv);
             }
         }
-        return null;
+        return dvs;
     }
 
-    /*
-     * because dt4Display is not a HashMap but a List, loop-through is necessary
-     * to get the variable-name of a given variable-ID
+    /**
+     * Returns the name of a given variable whose id is known.
+     * Because dt4Display is not a HashMap but a List, 
+     * loop-through is necessary
+     *
+     * @param varId    the id of a given variable
+     * @return    the name of a given variable
      */
     public String getVariableNamefromId(String varId) {
 
@@ -4871,32 +4877,55 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return null;
     }
 
-    // hide subsetting functions according to the user's status
 
-    public void hideSubsettingFunctions() {
-        // set @rendered of the following components false
-        // tabSet
-        tabSet1.setRendered(false);
-        // subsetting intruction text
-        txtSubsettingInstruction.setRendered(false);
-        // NonSubsetting intruction text
-        txtNonSubsettingInstruction.setRendered(true);
+    /**
+     * Returns the label of a given variable whose id is known.
+     * Because dt4Display is not a HashMap but a List, 
+     * loop-through is necessary
+     *
+     * @param varId    the id of a given variable
+     * @return    the label of a given variable
+     */
+    public String getVariableLabelfromId(String varId) {
 
-        // select-all checkbox in the header(1st column) of dataTable
-        checkboxSelectUnselectAll.setRendered(false);
-        checkboxSelectUnselectAllRendered=Boolean.FALSE;
-        // variable-checkbox in the 1st column of dataTable
-        varCheckbox.setRendered(false);
-        // title of the recoded-var table
-        recodedVarTableTitle.setRendered(false);
-
-        // message of the recoded-var table
-        // recodedVarTableState.setRendered(false);
-        // recoded-var table
-        // recodedVarTable.setRendered(false);
-        pgRecodedVarTable.setRendered(false);
+        for (int i = 0; i < dt4Display.size(); i++) {
+            if (((String) ((ArrayList) dt4Display.get(i)).get(2)).equals(varId)) {
+                return (String) ((ArrayList) dt4Display.get(i)).get(4);
+            }
+        }
+        return null;
     }
 
+    /**
+     * Gets the row of metadata of a variable whose Id is given by a String
+     * object
+     *
+     * @param varId    a given variable's ID as a String object
+     * @return    a DataVariable instance that contains major metadata of the
+     *            requested variable
+     */
+    public DataVariable getVariableById(String varId) {
+
+        DataVariable dv = null;
+        for (Iterator el = dataVariables.iterator(); el.hasNext();) {
+            dv = (DataVariable) el.next();
+            // Id is Long
+            if (dv.getId().toString().equals(varId)) {
+                return dv;
+            }
+        }
+        return dv;
+    }
+
+    // <----------------------------------------------------------------------
+
+    /**
+     * Returns true if an end-user's brower is Firefox
+     *
+     * @param userAgent    hash value of the user-agent key in the request
+     *                     header's map
+     * @return    true if an end-user's brower is Firefox; false otherwise
+     */
     public boolean isBrowserFirefox(String userAgent) {
         boolean rtvl = false;
         String regex = "Firefox";
@@ -4912,7 +4941,45 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // <----------------------------------------------------------------------
+
+    // hide subsetting functions according to the user's status
+    /**
+     * Hides the subsetting related components when an end-user does not 
+     * have permission to subset a data file
+     *
+     */
+    public void hideSubsettingFunctions() {
+        // Sets the rendered attribute of the following components as follows:
+        
+        // 1. Hides tabSet above the variable table
+        tabSet1.setRendered(false);
+        
+        // 2. Hides the subsetting intruction text
+        txtSubsettingInstruction.setRendered(false);
+        
+        // 3. Shows the non-Subsetting intruction text
+        txtNonSubsettingInstruction.setRendered(true);
+
+        // 4. Hides the select-all checkbox in the header(1st column) of 
+        //    the variable table
+        checkboxSelectUnselectAll.setRendered(false);
+        // Stores this hide state in a Boolean object
+        checkboxSelectUnselectAllRendered=Boolean.FALSE;
+        
+        // 5. Hides the variable-checkboxes in the 1st column of 
+        //    the variable table
+        varCheckbox.setRendered(false);
+        
+        // 6. Hides the title of the recoded-var table
+        recodedVarTableTitle.setRendered(false);
+
+        // 7. Hides the panel grid that contains the recoded-variable table
+        pgRecodedVarTable.setRendered(false);
+    }
+
+
     // </editor-fold>
+
 
     // -----------------------------------------------------------------------
     // Constructor and Init method
@@ -4920,6 +4987,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // <editor-fold desc="Constructor and Init method">
     // defaultstate="collapsed"
 
+
+    /**
+     * The default constructor
+     *
+     */
     public AnalysisPage() {
 
     }
@@ -4975,7 +5047,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     + rqustHdrMp.get("user-agent"));
             }
             
-            // gets the end-user's browser type
+            // gets an end-user's browser type
             if (isBrowserFirefox(rqustHdrMp.get("user-agent"))) {
                 out.println("user's browser is firefox");
                 browserType = "Firefox";
@@ -5086,7 +5158,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 //  Subsetting functionalities are rendered or not
                 //  in SubsettingPage.jsp
                 if (debug_init){
-                    out.println("checking the end-user's permission status");
+                    out.println("checking this end-user's permission status");
                 }
                 StudyFile sf = dataTable.getStudyFile();
                 HttpServletRequest request = 
@@ -5192,7 +5264,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // setSelected   selectedValue
                     // setRendered   rendered
                     //
-                    // deprecated
+                    // deprecated: use of component-binding
                     //sessionMap.put("checkboxSelectUnselectAll",
                     //    checkboxSelectUnselectAll);
                     // 

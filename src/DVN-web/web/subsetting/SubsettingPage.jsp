@@ -1181,39 +1181,15 @@ xmlns:ui="http://www.sun.com/web/ui"
                             <h:outputText id="outputText14" value="#{bundleAnalysis['varTable.colHdr.quickSummary']}"/>
                         </f:facet>
                         
-                        <!--ui:checkbox id="quickSumStatChkbx" 
-                   label="Show Summary"
-                   immediate="true"   
-                   selected="#{currentRow[6]}" 
-                   valueChangeListener="#{AnalysisPage.showNoShowQuickSumStat}" 
-                   onClick="submit();" >
-                    ui:checkbox  -->
-                
-                        <!--ui:imageHyperlink   id="showStatistics" 
-                                             actionListener="#{AnalysisPage.displayQuickSumStat}"
-                                             imageURL="/resources/icon_variables.gif"
-                                             styleClass="vdcNoBorders" 
-                                             alt="Click to show descriptive statistics"
-                                             toolTip="Click to show/hide descriptive statistics"
-                        / -->
-<h:commandButton 
-id="showStatistics" 
-onclick="QSrequested(this.id, '#{currentRow[2]}');return false;" 
-alt="Click to show descriptive statistics"
-title="Click to show/hide descriptive statistics"
-image="/resources/icon_variables.gif"
-type="submit" />                              
-                             <!--rendered="{currentRow[6]}" -->
-                        <h:outputText escape="false" id="varSummaryTable"
-                        value="#{currentRow[5]}"  />                          
-
-                        <!--
-      
-      <ui:panelGroup binding="#{AnalysisPage.gPquickSumStat}" block="true" id="gPquickSumStat" visible="#{currentRow[6]}">  </ui:panelGroup>    
-
-      
-                        <h:outputText escape="false" id="varSummaryTable" value="#{currentRow[5]}"  rendered="#{currentRow[6]}"/>
--->                        
+                        <h:commandButton 
+                          id="showStatistics" 
+                          onclick="QSrequested(this.id, '#{currentRow[2]}');return false;" 
+                          alt="Click to show descriptive statistics"
+                          title="Click to show/hide descriptive statistics"
+                          image="/resources/icon_variables.gif"
+                          type="submit" />
+                        
+                        <h:outputText escape="false" id="varSummaryTable" value="#{currentRow[5]}"  />
                         
                     </h:column>
                 </h:dataTable>    

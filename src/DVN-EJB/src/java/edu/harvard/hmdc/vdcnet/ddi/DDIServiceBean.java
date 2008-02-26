@@ -2358,7 +2358,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             int event = xmlr.next();
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("itm")) {
-                    listString += "<li>" + parseText(xmlr) + "</li>\n";
+                    listString += "<li>" + parseText(xmlr,"itm") + "</li>\n";
                 } else {
                     throw new EJBException("ERROR occurred in mapDDI (parseText): ListType does not currently supported contained LabelType.");
                 }

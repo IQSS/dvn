@@ -256,7 +256,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         
         // holdings
         xmlw.writeEmptyElement("holdings");
-        writeAttribute( xmlw, "uri", "http://" + PropertyUtil.getHostUrl() + "/dvn/study?globalId=" + study.getGlobalId() );
+        writeAttribute( xmlw, "URI", "http://" + PropertyUtil.getHostUrl() + "/dvn/study?globalId=" + study.getGlobalId() );
 
 
         xmlw.writeEndElement(); // citation

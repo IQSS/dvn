@@ -538,7 +538,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("geogUnit");
-            xmlw.writeCharacters( study.getGeographicCoverage() );
+            xmlw.writeCharacters( study.getGeographicUnit() );
             xmlw.writeEndElement(); // geogUnit
         }
         // we store geoboundings as list but there is only one
@@ -614,7 +614,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("frequenc");
-            xmlw.writeCharacters( study.getDataCollector() );
+            xmlw.writeCharacters( study.getFrequencyOfDataCollection() );
             xmlw.writeEndElement(); // frequenc
         }
         if (!StringUtil.isEmpty( study.getSamplingProcedure() )) {
@@ -938,9 +938,9 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
         for (StudyRelPublication rp : study.getStudyRelPublications()) {
             othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
-            xmlw.writeStartElement("relPub");
+            xmlw.writeStartElement("relPubl");
             xmlw.writeCharacters( rp.getText() );
-            xmlw.writeEndElement(); // relPub
+            xmlw.writeEndElement(); // relPubl
         }
         for (StudyOtherRef or : study.getStudyOtherRefs()) {
             othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);

@@ -33,9 +33,7 @@
         text-decoration: underline !important;
 }
 
-.dvn_content img {margin: 0 !important; padding: 0 !important; border: 0 !important;}
-.dvn_content ul {list-style: none; margin: 0; padding: 0;}
-.dvn_content li {margin: 0; padding: 0; vertical-align: middle;}
+.dvn_content img {margin: 0 !important; padding: 0 !important; border: 0 !important; display: inline !important;}
 .dvn_content textarea {width: 40em;}
 
 .dvn_floatL {
@@ -207,6 +205,10 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
 
 .successMessage a:link, .successMessage a:visited, .successMessage a:hover, .successMessage a:active {
     color: blue;
+}
+
+ul.successMessage, .successMessage ul {
+    list-style: none;
 }
 
 .warnMessage {

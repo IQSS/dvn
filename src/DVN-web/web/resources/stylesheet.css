@@ -108,13 +108,14 @@ span.disabled {font-weight: bold;}
 .dvn_headerTitle {position: relative;}
 .dvn_headerTitleLarge {margin: .25em 12px;}
 .dvn_headerTitleLarge a:link, .dvn_headerTitleLarge a:visited, .dvn_headerTitleLarge a:hover, .dvn_headerTitleLarge a:active {color: #526f76; font-size: 148% !important;}
+a.dvn_headerTitleLrgNetwork:link, a.dvn_headerTitleLrgNetwork:visited, a.dvn_headerTitleLrgNetwork:hover, a.dvn_headerTitleLrgNetwork:active {color: #c55b28;}
 .dvn_headerTitleL {margin: 0 12px;}
 .dvn_headerTitleL a:link, .dvn_headerTitleL a:visited, .dvn_headerTitleL a:hover, .dvn_headerTitleL a:active {color: #c55b28; font-size: 90% !important;}
 .dvn_headerTitleR {position: absolute; right: 12px; top: 0;}
 
 /* NAV MENU */
 div.dvn_navblock {margin-bottom: 12px; padding: 0 10px 0 10px; background: #dadee0; border-top: 2px solid #91a5a9;}
-div.dvn_navblockNetwork {background: #b9d0e1; border-top: 2px solid #113356;}
+div.dvn_navblockNetwork {background: #c4d9e9; border-top: 2px solid #113356;}
 .dvn_navblockLinks {white-space:nowrap /*IE hack*/; border:none;} /*Color navigation bar normal mode*/
 .dvn_navblockLinks:after {content:"."; display:block; height:0; clear:both; visibility:hidden;} /*Clear floats*/
 .dvn_navblockLinks ul {margin: 0; padding: 0; list-style-type:none;}
@@ -1071,6 +1072,7 @@ a.vdcRequestPanelLink:active{
     font-weight: bold; 
 }
 .vdcTreeDataverse img{
+   display: inline !important;
    vertical-align: text-top;
    padding-bottom : 0.3em;     
 }
@@ -1081,6 +1083,7 @@ a.vdcRequestPanelLink:active{
    white-space: normal;
 }
 .vdcTreeCollection img{
+   display: inline !important;
    vertical-align: text-top;
    padding-bottom : 0.3em;
 }
@@ -1092,8 +1095,9 @@ a.vdcRequestPanelLink:active{
    white-space: normal;
 }
 .vdcTreeStudy img{
+   display: inline !important;
    vertical-align: text-top;
-  padding-bottom : 0.3em;
+   padding-bottom : 0.3em;
 }
 .TreeContent {
     display: block;

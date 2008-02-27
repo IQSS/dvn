@@ -20,11 +20,11 @@
             </div>
             
             <div class="dvn_headerTitleLarge"> 
-                <h:outputLink value="/dvn"   title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" rendered="#{VDCRequest.currentVDC == null}">
-                    <h:outputText  value="#{VDCRequest.vdcNetwork.name} Dataverse Network"/>
+                <h:outputLink value="/dvn" styleClass="dvn_headerTitleLrgNetwork" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" rendered="#{VDCRequest.currentVDC == null}">
+                    <h:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network"/>
                 </h:outputLink>
-                <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}"  title="#{VDCRequest.currentVDC.name} dataverse Homepage" rendered="#{VDCRequest.currentVDC != null}">
-                    <h:outputText value="#{VDCRequest.currentVDC.name} Dataverse " />
+                <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}" title="#{VDCRequest.currentVDC.name} dataverse Homepage" rendered="#{VDCRequest.currentVDC != null}">
+                    <h:outputText value="#{VDCRequest.currentVDC.name} Dataverse" />
                 </h:outputLink>
             </div>
              

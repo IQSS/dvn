@@ -336,9 +336,21 @@
                                 <h:panelGrid binding="#{studyPage.termsOfUsePanel}" cellpadding="0" cellspacing="0"
                                              columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelTermsOfUse"  rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}"
                                              width="100%">
-                                    <dvn:inlinehelp helpMessage="#{studybundle.generalTermsofUseHelp}"  linkText="#{studybundle.generalTermsofUseLabel}" heading="#{studybundle.generalTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.owner.downloadTermsOfUseEnabled}"/>
-                                    <h:outputText  id="outputText129b" value="#{studyPage.studyUI.dataverseTermsOfUse}" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}" escape="false"/>
-                                   
+                                    <dvn:inlinehelp helpMessage="#{studybundle.networkHarvestedTermsofUseHelp}"  linkText="#{studybundle.networkHarvestedTermsofUseLabel}" heading="#{studybundle.networkHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                    <h:outputText  value=" " rendered="true" escape="false"/>
+                                    
+                                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseHarvestedTermsofUseHelp}"  linkText="#{studybundle.dataverseHarvestedTermsofUseLabel}" heading="#{studybundle.dataverseHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                    <h:outputText  value=" " rendered="true" escape="false"/>
+                                    
+                                    <dvn:inlinehelp helpMessage="#{studybundle.networkTermsofUseHelp}"  linkText="#{studybundle.networkTermsofUseLabel}" heading="#{studybundle.networkTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty VDCRequest.vdcNetwork.downloadTermsOfUse}"/>
+                                    <h:outputText value="#{VDCRequest.vdcNetwork.downloadTermsOfUse}" rendered="#{!empty VDCRequest.vdcNetwork.downloadTermsOfUse}" escape="false"/>
+                                    
+                                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseTermsofUseHelp}"  linkText="#{studybundle.dataverseTermsofUseLabel}" heading="#{studybundle.dataverseTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.owner.downloadTermsOfUseEnabled}"/>
+                                    <h:outputText   value="#{studyPage.studyUI.dataverseTermsOfUse}" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}" escape="false"/>
+                                    
+                                    <h:outputText value="Study Terms of Use: " style="font-weight: bold;" rendered="#{studyPage.studyUI.study.termsOfUseEnabled}" />
+                                    <h:outputText value=" " rendered="#{studyPage.studyUI.study.termsOfUseEnabled}" />
+                                    
                                     <dvn:inlinehelp helpMessage="#{studybundle.confidentialityHelp}"  linkText="#{studybundle.confidentialityLabel}" heading="#{studybundle.confidentialityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.confidentialityDeclaration != '' and studyPage.studyUI.study.confidentialityDeclaration != null }"/>
                                     <h:outputText  id="outputText129" value="#{studyPage.studyUI.study.confidentialityDeclaration}" rendered="#{!empty studyPage.studyUI.study.confidentialityDeclaration}" escape="false"/>
                                     

@@ -567,17 +567,10 @@ public class StudyUI  implements java.io.Serializable {
      * @return
      */
     public String getDataverseTermsOfUse() {
-        String tou = "";
-        for (StudyNote note : study.getStudyNotes()) {
-            if (note.getType() != null && note.getType().equals(DDI20ServiceBean.NOTE_TYPE_TERMS_OF_USE)) {
-                tou += note.getText();
-               
-            }
+        if (study.getOwner().isDownloadTermsOfUseEnabled()) {
+            return study.getOwner().getDownloadTermsOfUse();
         }
-        if (tou=="" && study.getOwner().isDownloadTermsOfUseEnabled()) {
-            tou= study.getOwner().getDownloadTermsOfUse();
-        }
-        return tou;
+        return "";
     }
 
     public String getDistributors() {

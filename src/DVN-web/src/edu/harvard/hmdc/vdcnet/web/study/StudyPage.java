@@ -405,7 +405,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public boolean getTermsOfUseIsEmpty() {
-        if (!studyUI.getStudy().getOwner().isDownloadTermsOfUseEnabled() && isEmpty(studyUI.getStudy().getConfidentialityDeclaration()) && isEmpty(studyUI.getStudy().getSpecialPermissions()) && isEmpty(studyUI.getStudy().getRestrictions()) && isEmpty(studyUI.getStudy().getContact()) && isEmpty(studyUI.getStudy().getCitationRequirements()) && isEmpty(studyUI.getStudy().getDepositorRequirements()) && isEmpty(studyUI.getStudy().getConditions()) && isEmpty(studyUI.getStudy().getDisclaimer())) {
+        if (isEmpty(studyUI.getStudy().getHarvestDVNTermsOfUse()) && isEmpty(studyUI.getStudy().getHarvestDVTermsOfUse()) && !studyUI.getStudy().getOwner().isDownloadTermsOfUseEnabled() && isEmpty(studyUI.getStudy().getConfidentialityDeclaration()) && isEmpty(studyUI.getStudy().getSpecialPermissions()) && isEmpty(studyUI.getStudy().getRestrictions()) && isEmpty(studyUI.getStudy().getContact()) && isEmpty(studyUI.getStudy().getCitationRequirements()) && isEmpty(studyUI.getStudy().getDepositorRequirements()) && isEmpty(studyUI.getStudy().getConditions()) && isEmpty(studyUI.getStudy().getDisclaimer())) {
             return true;
         } else {
             return false;

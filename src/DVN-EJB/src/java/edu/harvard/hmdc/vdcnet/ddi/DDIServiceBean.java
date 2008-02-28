@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -151,32 +152,36 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void exportStudy(Study s, OutputStream os) throws IOException {
-        try {
-            if (s.isIsHarvested() ) {
-                exportOriginalDDIPlus( s, new OutputStreamWriter(os) );
-            } else {
+        if (s.isIsHarvested() ) {
+            exportOriginalDDIPlus( s, os );
+        } else {
+            XMLStreamWriter xmlw = null;
+            try {
                 javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
                 //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
-                javax.xml.stream.XMLStreamWriter xmlw = xmlof.createXMLStreamWriter(os);
+                xmlw = xmlof.createXMLStreamWriter(os);
+                
                 xmlw.writeStartDocument();
-                //xmlw.writeProcessingInstruction("xml-stylesheet href=\'catalog.xsl\' type=\'text/xsl\'");
-                
                 createCodeBook(xmlw,s);
-                
                 xmlw.writeEndDocument();
-                xmlw.close();
-
-            }
-         } catch (XMLStreamException ex) {
+            } catch (XMLStreamException ex) {
                 Logger.getLogger("global").log(Level.SEVERE, null, ex);
+                throw new EJBException("ERROR occurred in exportStudy.", ex);
+            } finally {
+                try {
+                    if (xmlw != null) { xmlw.close(); }
+                } catch (XMLStreamException ex) {}
+            }
         }
     }
 
-    public void exportDataFile(StudyFile sf, OutputStream out)  {
+    public void exportDataFile(StudyFile sf, OutputStream os)  {
+        XMLStreamWriter xmlw = null;
         try {
             javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
             //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
-            javax.xml.stream.XMLStreamWriter xmlw = xmlof.createXMLStreamWriter(out);
+            xmlw = xmlof.createXMLStreamWriter(os);
+
             xmlw.writeStartDocument();
 
             xmlw.writeStartElement("codeBook");
@@ -189,10 +194,15 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeEndElement(); // codeBook
 
             xmlw.writeEndDocument();
-            xmlw.close();
+
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
-        }        
+            throw new EJBException("ERROR occurred in exportStudy.", ex);
+        } finally {
+            try {
+                if (xmlw != null) { xmlw.close(); }
+            } catch (XMLStreamException ex) {}
+        }      
     }
 
     // <editor-fold defaultstate="collapsed" desc="export - generated DDI">
@@ -1265,14 +1275,18 @@ public class DDIServiceBean implements DDIServiceLocal {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="export - Original DDI Plus">
-    private void exportOriginalDDIPlus (Study s, Writer out) throws XMLStreamException{
+
+    private void exportOriginalDDIPlus (Study s, OutputStream os) {
+        BufferedReader in = null; 
+        OutputStreamWriter out = null;
+
         File studyDir = new File(FileUtil.getStudyFileDir(), s.getAuthority() + File.separator + s.getStudyId());
         File originalImport = new File(studyDir, "original_imported_study.xml");
-        BufferedReader in = null;      
         
         if (originalImport.exists()) {
             try {
                 in = new BufferedReader( new FileReader(originalImport) );
+                out = new OutputStreamWriter(os);
                 String line = null; //not declared within while loop
                 /*
                 * readLine is a bit quirky :
@@ -1314,12 +1328,24 @@ public class DDIServiceBean implements DDIServiceLocal {
         }     
     }
 
-    private void createDocDscrSnippet(Study s, Writer out) throws XMLStreamException {
-        javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
-        //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
-        javax.xml.stream.XMLStreamWriter xmlw = xmlof.createXMLStreamWriter(out);
-        createDocDscr(xmlw, s);
+    private void createDocDscrSnippet(Study s, Writer out)  {
+        XMLStreamWriter xmlw = null;
+        try {
+            javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
+            //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
+            xmlw = xmlof.createXMLStreamWriter(out);
+            createDocDscr(xmlw, s);
+
+        } catch (XMLStreamException ex) {
+            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+            throw new EJBException("ERROR occurred in createDocDscrSnippet.", ex);
+        } finally {
+            try {
+                if (xmlw != null) { xmlw.close(); }
+            } catch (XMLStreamException ex) {}
+        }
     }
+
     // </editor-fold>
 
 
@@ -1329,25 +1355,44 @@ public class DDIServiceBean implements DDIServiceLocal {
     //**********************
 
     public void mapDDI(String xmlToParse, Study study) {
+        StringReader reader = null;
         try {
-            XMLStreamReader xmlr = createXMLStreamReader(new java.io.StringReader(xmlToParse));
-            processDDI( xmlr, study );
-        } catch (XMLStreamException ex) {
-            Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new EJBException("ERROR occurred in mapDDI.", ex);
+            reader = new StringReader(xmlToParse);
+            mapDDI(reader, study);
+        } finally {
+            if (reader != null) { reader.close();}
         }
     }
 
     public void mapDDI(File ddiFile, Study study) {
+        FileReader reader = null;
         try {
-            javax.xml.stream.XMLStreamReader xmlr = createXMLStreamReader(new java.io.FileReader(ddiFile));
-            processDDI( xmlr, study );
+            reader = new FileReader(ddiFile);
+            mapDDI(reader, study);
         } catch (FileNotFoundException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
             throw new EJBException("ERROR occurred in mapDDI: File Not Found!");
+        } finally {
+            try {
+                if (reader != null) { reader.close();}
+            } catch (IOException ex) {}
+        }
+    }
+
+    public void mapDDI(Reader reader, Study study) {
+        XMLStreamReader xmlr = null;
+        try {
+            javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
+            xmlif.setProperty("javax.xml.stream.isCoalescing", java.lang.Boolean.TRUE);
+            xmlr =  xmlif.createXMLStreamReader(reader);
+            processDDI( xmlr, study );
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
             throw new EJBException("ERROR occurred in mapDDI.", ex);
+        } finally {
+            try {
+                if (xmlr != null) { xmlr.close(); }
+            } catch (XMLStreamException ex) {}
         }
     }
 
@@ -1355,8 +1400,14 @@ public class DDIServiceBean implements DDIServiceLocal {
         Study dummyStudy = new Study();
         initializeCollections(dummyStudy);
 
+        FileReader reader = null;
+        XMLStreamReader xmlr = null;
+
         try {
-            XMLStreamReader xmlr = createXMLStreamReader(new java.io.FileReader(ddiFile));
+            reader = new java.io.FileReader(ddiFile);
+            javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
+            xmlif.setProperty("javax.xml.stream.isCoalescing", java.lang.Boolean.TRUE);
+            xmlr =  xmlif.createXMLStreamReader(reader);
         
             for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
                 if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1372,6 +1423,13 @@ public class DDIServiceBean implements DDIServiceLocal {
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
             throw new EJBException("ERROR occurred in determineId.", ex);
+        } finally {
+            try {
+                if (reader != null) { reader.close();}
+            } catch (IOException ex) {}
+            try {
+                if (xmlr != null) { xmlr.close(); }
+            } catch (XMLStreamException ex) {}
         }
         
         Map idMap = new HashMap();
@@ -1381,11 +1439,6 @@ public class DDIServiceBean implements DDIServiceLocal {
     }    
     
     // <editor-fold defaultstate="collapsed" desc="import methods"> 
-    private XMLStreamReader createXMLStreamReader(Reader reader) throws XMLStreamException{
-        javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
-        xmlif.setProperty("javax.xml.stream.isCoalescing", java.lang.Boolean.TRUE);
-        return xmlif.createXMLStreamReader(reader);
-    }
 
     private void processDDI( XMLStreamReader xmlr, Study study) throws XMLStreamException {
         Map filesMap = new HashMap();

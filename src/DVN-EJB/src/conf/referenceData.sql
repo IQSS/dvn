@@ -911,7 +911,7 @@ ALTER TABLE studyid_seq OWNER TO "dvnApp";
 
 -- Sequence: filesystemname_seq
 
--- DROP SEQUENCE studyid_seq;
+-- DROP SEQUENCE filesystemname_seq;
 
 CREATE SEQUENCE filesystemname_seq
   INCREMENT 1

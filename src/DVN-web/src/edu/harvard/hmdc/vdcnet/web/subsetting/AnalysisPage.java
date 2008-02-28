@@ -4156,15 +4156,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // -----------------------------------------------------------------------
     // select-all checkbox
     // -----------------------------------------------------------------------
-
-    // ui:checkbox: checkboxSelectUnselectAll
-    // @binding:
-    // select/unselect all checkbox in the table header:
     
     /**
      * The Checkbox object backing the binding attribute of ui:checkbox 
-     * component that renders the select/unselect-all variable
-     * checkbox in the first column of the header of the variable table
+     * component that renders the select/unselect-all variable checkbox
+     *  in the first column of the header of the variable table
      */
     private Checkbox checkboxSelectUnselectAll = new Checkbox();
     
@@ -4248,8 +4244,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         checkboxSelectUnselectAllRendered = c;
     }
 
-
-    // check how many displayed variables are checked (all or not all)
+    /**
+     * Updates the Boolean state of the select/unselect-all checkbox 
+     * via its backing attribute checkboxSelectUnselectAllSelected and
+     * saves this Boolean state in the sessionMap object
+     */
     public void howManyVarsChecked() {
         out.println("***** howManyVarsChecked: start *****");
         // get the 1st and last ones of the displayed rows
@@ -4263,7 +4262,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             out.println("adjusted last row-index value=" + lastRow);
         }
         out.println("how many rows are displayed=" + data.getRows());
-
+        
         int counter = 0;
         for (int i = firstRow; i < lastRow; i++) {
             List<Object> rw = new ArrayList<Object>();
@@ -4282,7 +4281,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         } else {
             // uncheck the checkbox
             checkboxSelectUnselectAll.setSelected(Boolean.FALSE);
-            out.println("set the select/unselect-all checkbox UNchecked");
+            out.println("set the select/unselect-all checkbox UN-checked");
         }
         
         // Stores the objects that represents the properties of the component
@@ -4297,14 +4296,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().put("checkboxSelectUnselectAllSelected",
                 checkboxSelectUnselectAllSelected);
-
         out.println("***** howManyVarsChecked: end *****");
-
     }
-
-    // ui:checkbox: checkboxSelectUnselectAll
-    // @valueChangeListener
-
+    
+    /**
+     * Updates backing objects and components after an end-user 
+     * checked/unchecked the checkbox checkboxSelectUnselectAll.
+     * Attached to the valueChangeListener  attribute of ui:checkbox
+     * component whose id is checkboxSelectUnselectAll
+     *
+     * @param vce ValueChangeEvent event 
+     */
     public void selectUnselectAllCheckbox(ValueChangeEvent vce) {
         out.println("***** selectUnselectAllCheckbox: start *****");
 
@@ -4396,17 +4398,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 // deactivate buttons
                 deactivateButtons();
-                clearRecodeTargetVarInfo();
                 // clear the recodeTable area
-                // to do
-
+                clearRecodeTargetVarInfo();
                 // hide recode Area
                 hideRecodeTableArea();
             } else {
-                // at least one recoded var exists
-                out.println("un-select-all: some variables are used for recoding");
+                // at least one recoded variable exists
+                out.println("un-select-all case: "+
+                "some variables are used for recoding and they are kept");
+                
                 // clear varCart(Map) except for base vars for recoding
-
                 for (String v : rmIdSet) {
                     varCart.remove(v);
                 }
@@ -4419,7 +4420,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     Option el = (Option) i.next();
                     if (bvIdSet.contains((String) el.getValue())) {
                         tmpvs.add(new Option(el.getValue(), el.getLabel()));
-
                     }
                 }
                 out.println("contents:tmpvs=" + tmpvs);
@@ -4464,22 +4464,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 advStatVarRBox3.addAll(tmpRBox3);
 
                 msgVariableSelection.setRendered(true);
-                msgVariableSelection
-                    .setText("At least one variable is used for recoding;<br />Remove its recoded variable(s) first.");
+                msgVariableSelection.setText(
+                    "At least one variable is used for recoding;<br />"+
+                    "Remove its recoded variable(s) first.");
             }
         }
-        /* deprecated
+        /* deprecated: not component but backing object is
+                       saved in the sessionMap
         cntxt.getExternalContext().getSessionMap()
             .put("checkboxSelectUnselectAll", checkboxSelectUnselectAll);
         */
-        
+        // Saves the Boolean backing object in the sessionMap
         checkboxSelectUnselectAllSelected = 
             (Boolean)checkboxSelectUnselectAll.getSelected();
         cntxt.getExternalContext().getSessionMap()
             .put("checkboxSelectUnselectAllSelected",
             checkboxSelectUnselectAllSelected);
-
-            
         cntxt.renderResponse();
         out.println("***** selectUnselectAllCheckbox: end *****");
     }
@@ -4518,7 +4518,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     /**
      * Updates backing objects and components after
-     * an end-user checked/unchecked a checkbox.  
+     * an end-user checked/unchecked a checkbox in each of the variable table.
      * Attached to the valueChangeListener attribute of ui:checkbox
      * component whose id is varCheckbox
      *

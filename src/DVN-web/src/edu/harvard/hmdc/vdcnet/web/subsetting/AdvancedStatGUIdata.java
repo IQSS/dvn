@@ -43,7 +43,12 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
     private static String regex = "/zelig/doc/";
     private static Pattern p;
     private static Logger theLogger = Logger.getLogger(AdvancedStatGUIdata.class.getName());
-    private static String[] modelFilter = {"gam.logit", "gam.normal","gam.poisson","gam.probit","logit.gee"};
+    // private static String[] modelFilter = {"gam.logit", "gam.normal","gam.poisson","gam.probit","logit.gee"};
+    // as of 2008-02-28
+    private static String[] modelFilter = {"coxph", "ei.RxC", "gamma.gee", 
+    "logit.gee", "normal.gee", "poisson.gee", "probit.gee", 
+    "logit.gam", "normal.gam", "poisson.gam", "probit.gam"};
+    
     private static Set<String> excludedModels = new HashSet<String>();
     static {
         for (int i = 0; i < modelFilter.length;i++){

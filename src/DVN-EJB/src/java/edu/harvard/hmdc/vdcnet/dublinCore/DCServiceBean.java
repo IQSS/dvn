@@ -66,7 +66,7 @@ public class DCServiceBean implements DCServiceLocal {
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void exportStudy(Study study, OutputStream out) throws IOException, JAXBException {
+    public void exportStudy(Study study, OutputStream out) throws IOException {
 
         OutputStreamWriter writer = new OutputStreamWriter(out);
         writer.write("<oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd\">");

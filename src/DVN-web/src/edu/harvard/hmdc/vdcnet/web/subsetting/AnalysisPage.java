@@ -2299,14 +2299,37 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         out.println("pass the valueChangeListener dropDown1_processValueChange");
         String newModelName = (String) vce.getNewValue();
         out.println("Newly selected model=" + newModelName);
+        // IE users may select separator "---"
+        if (newModelName.startsWith("---")){
+            if (lastModelName==null){
+                // no model has been chosen but the separator was chosen (1st)
+                return;
+            } else if (lastModelName.startsWith("---")) {
+                // 2nd or later time
+                return;
+            } else {
+                // last option was some meaningful model name
+                newModelName = lastModelName;
+                out.println("revert to the previous choice");
+                out.println("selected model(---)=" + getCurrentModelName());
+                out.println("selected model(---)=" + lastModelName);
+                setCurrentModelName(lastModelName);
+                dropDown1.setSelected(lastModelName);
+                out.println("selected model(---)=" + dropDown1.getSelected());
+                out.println("selected model(---)=" + currentModelName);
 
-        // this model's name
-        // String selectedModelName= (String)dropDown1.getSelected();
-        setCurrentModelName((String) dropDown1.getSelected());
-        out.println("selected model=" + getCurrentModelName());
-        cntxt.getExternalContext().getSessionMap().put("currentModelName",
-            currentModelName);
-
+                cntxt.getExternalContext().getSessionMap().put("currentModelName",
+                currentModelName);
+            }
+        } else {
+            // model option was chosen
+            // this model's name
+            // String selectedModelName= (String)dropDown1.getSelected();
+            setCurrentModelName((String) dropDown1.getSelected());
+            out.println("selected model=" + getCurrentModelName());
+            cntxt.getExternalContext().getSessionMap().put("currentModelName",
+                currentModelName);
+        }
         // this model's spec
         AdvancedStatGUIdata.Model selectedModelSpec = getAnalysisApplicationBean()
             .getSpecMap().get(getCurrentModelName());

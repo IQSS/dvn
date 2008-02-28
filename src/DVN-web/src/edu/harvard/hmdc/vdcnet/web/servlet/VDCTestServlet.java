@@ -132,18 +132,11 @@ public class VDCTestServlet extends HttpServlet {
         String studyIdString = path.substring( path.indexOf("/") + 1);
         Study s = studyService.getStudy( new Long( studyIdString ) );
         
-        try {
             res.setContentType("text/xml");
             OutputStream os = res.getOutputStream();
             PrintWriter out = res.getWriter();
             ddiService.exportStudy(s, os);
             os.close();
-            
-            
-        } catch (JAXBException ex) {
-            ex.printStackTrace();
-        }
-        
     }
     // </editor-fold>
     

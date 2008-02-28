@@ -336,11 +336,11 @@
                                 <h:panelGrid binding="#{studyPage.termsOfUsePanel}" cellpadding="0" cellspacing="0"
                                              columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelTermsOfUse"  rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}"
                                              width="100%">
-                                    <dvn:inlinehelp helpMessage="#{studybundle.networkHarvestedTermsofUseHelp}"  linkText="#{studybundle.networkHarvestedTermsofUseLabel}" heading="#{studybundle.networkHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                    <h:outputText  value=" " rendered="true" escape="false"/>
+                                    <dvn:inlinehelp helpMessage="#{studybundle.networkHarvestedTermsofUseHelp}"  linkText="#{studybundle.networkHarvestedTermsofUseLabel}" heading="#{studybundle.networkHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.study.harvestDVNTermsOfUse}"/>
+                                    <h:outputText  value="#{studyPage.studyUI.study.harvestDVNTermsOfUse}" rendered="#{!empty studyPage.studyUI.study.harvestDVNTermsOfUse}" escape="false"/>
                                     
-                                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseHarvestedTermsofUseHelp}"  linkText="#{studybundle.dataverseHarvestedTermsofUseLabel}" heading="#{studybundle.dataverseHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                                    <h:outputText  value=" " rendered="true" escape="false"/>
+                                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseHarvestedTermsofUseHelp}"  linkText="#{studybundle.dataverseHarvestedTermsofUseLabel}" heading="#{studybundle.dataverseHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.study.harvestDVTermsOfUse}"/>
+                                    <h:outputText  value="#{studyPage.studyUI.study.harvestDVTermsOfUse}" rendered="#{!empty studyPage.studyUI.study.harvestDVTermsOfUse}" escape="false"/>
                                     
                                     <dvn:inlinehelp helpMessage="#{studybundle.networkTermsofUseHelp}"  linkText="#{studybundle.networkTermsofUseLabel}" heading="#{studybundle.networkTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty VDCRequest.vdcNetwork.downloadTermsOfUse}"/>
                                     <h:outputText value="#{VDCRequest.vdcNetwork.downloadTermsOfUse}" rendered="#{!empty VDCRequest.vdcNetwork.downloadTermsOfUse}" escape="false"/>

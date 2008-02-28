@@ -13,14 +13,16 @@
           http://www.icpsr.umich.edu/DDI/Version2-0.xsd">
         <stdyDscr>
             <citation>
-	    	<xsl:for-each select="//dc:title">
                 <titlStmt>
-		   <titl><xsl:value-of select="."/></titl>
+		   <titl>
+		   <xsl:for-each select="//dc:title">
+			<xsl:value-of select="."/>
+		   </xsl:for-each>
+		   </titl>			
 		   <xsl:for-each select="//dc:identifier">
 		      <IDNo agency="producer"><xsl:value-of select="."/></IDNo>
 		   </xsl:for-each>
 	        </titlStmt>
- 	        </xsl:for-each>
 		<rspStmt>
 		   <xsl:for-each select="//dc:creator">
 		   <AuthEnty><xsl:value-of select="."/></AuthEnty>

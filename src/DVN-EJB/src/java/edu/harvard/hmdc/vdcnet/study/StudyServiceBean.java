@@ -1689,15 +1689,18 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             fileName += ".xml";
         }
         File exportFile = new File(studyDir, fileName);
+        OutputStream os = null;
         try {
             exportFile.createNewFile();
-            OutputStream os = new FileOutputStream(exportFile);
+            os = new FileOutputStream(exportFile);
 
             studyExporter.exportStudy(study, os);
         } catch (IOException e) {
             throw new EJBException(e);
-        } catch (JAXBException e) {
-            throw new EJBException(e);
+        } finally {
+            try {
+                if (os != null) { os.close(); }
+            } catch (IOException ex) {}
         }
 
     //  study.setLastExportTime(new Date());
@@ -1808,7 +1811,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             }
 
         } else {
-            globalId = (String) idMap.get("globalId");
             if (globalId == null) {
                 throw new EJBException("DDI should specify a handle, but does not.");
             }

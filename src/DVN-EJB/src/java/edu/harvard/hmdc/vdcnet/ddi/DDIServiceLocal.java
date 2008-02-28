@@ -14,6 +14,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyExporter;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import java.io.File;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.util.Map;
 import javax.ejb.Local;
 
@@ -23,8 +24,13 @@ import javax.ejb.Local;
  */
 @Local
 public interface DDIServiceLocal extends StudyExporter, java.io.Serializable {
+
     void mapDDI(String xmlToParse, Study study);
     void mapDDI(File ddiFile, Study study);
+    void mapDDI(Reader reader, Study study);
+
     Map determineId(File ddiFile);
+
     void exportDataFile(StudyFile sf, OutputStream out);
+
 }

@@ -67,7 +67,7 @@ public class MarcServiceBean implements MarcServiceLocal {
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void exportStudy(Study study, OutputStream out) throws IOException, JAXBException {
+    public void exportStudy(Study study, OutputStream out) throws IOException {
 
         MarcFactory factory = MarcFactory.newInstance();
         Record record = factory.newRecord();

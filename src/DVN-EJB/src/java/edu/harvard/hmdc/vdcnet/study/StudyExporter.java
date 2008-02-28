@@ -34,5 +34,5 @@ public interface StudyExporter  extends java.io.Serializable{
   // (Currently used to determine the filename extension when creating an OutputStream)   
   boolean isXmlFormat(); 
   
-  void exportStudy(Study study, OutputStream out) throws IOException, JAXBException;
+  void exportStudy(Study study, OutputStream out) throws IOException;
 }

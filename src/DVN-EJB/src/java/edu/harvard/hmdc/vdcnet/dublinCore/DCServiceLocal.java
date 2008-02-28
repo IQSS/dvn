@@ -38,7 +38,7 @@ import javax.xml.bind.JAXBException;
 public interface DCServiceLocal extends StudyExporter, java.io.Serializable  {
   
  
-    void exportStudy(Study study, OutputStream out) throws IOException, JAXBException;
+    void exportStudy(Study study, OutputStream out) throws IOException;
     
  
     

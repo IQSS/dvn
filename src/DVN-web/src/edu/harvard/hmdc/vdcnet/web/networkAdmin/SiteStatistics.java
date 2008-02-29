@@ -282,28 +282,30 @@ public class SiteStatistics extends VDCBaseBean implements java.io.Serializable 
     public void setDataDirectory(String systemdir) 
             throws IOException {
         String systemdirectory = "dvn." + systemdir + ".dir";
-        this.dataDirectory = System.getProperty(systemdirectory);
-        //also check for this dir and create if needed
-        boolean exists = (new File(this.dataDirectory)).exists();
-        if (!exists) {
-            File webStatisticsDir = new File(dataDirectory + "/");
-            webStatisticsDir.mkdir(); 
-        }
-        // Make the temporary files if no files exist
-        try {
-            String[] files = {"awstats.iqss.html", "awstats.mit.html", "awstats.mit.txt"};
-            int i = 0;
-            while (i < files.length) {
-                exists = (new File(this.dataDirectory + "/" + files[i]).exists());
-                if (!exists) {
-                    File file = new File (this.dataDirectory + "/" + files[i]);
-                    file.createNewFile();
-                }
-                i++;
+            this.dataDirectory = System.getProperty(systemdirectory);
+       if (this.dataDirectory != null) {
+            //check for this dir and create if needed
+            boolean exists = (new File(this.dataDirectory)).exists();
+            if (!exists) {
+                File webStatisticsDir = new File(dataDirectory + "/");
+                webStatisticsDir.mkdir(); 
             }
-        } catch (IOException ioe) {
-            System.out.println("Unable to create the web statistics files.");
-        }
+            // Make the temporary files if no files exist
+            try {
+                String[] files = {"awstats.iqss.html", "awstats.mit.html", "awstats.mit.txt"};
+                int i = 0;
+                while (i < files.length) {
+                    exists = (new File(this.dataDirectory + "/" + files[i]).exists());
+                    if (!exists) {
+                        File file = new File (this.dataDirectory + "/" + files[i]);
+                        file.createNewFile();
+                    }
+                    i++;
+                }
+            } catch (IOException ioe) {
+                System.out.println("Unable to create the web statistics files.");
+            }
+        } //end else
     }
 
     private String namedConfigFile = null;

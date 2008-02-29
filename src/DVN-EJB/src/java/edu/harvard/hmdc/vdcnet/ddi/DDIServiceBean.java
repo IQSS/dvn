@@ -1749,7 +1749,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                     }
                 } else if (xmlr.getLocalName().equals("geoBndBox")) { 
                     processGeoBndBox(xmlr,study);
-                } else if (xmlr.getLocalName().equals("anlyUnit*")) {
+                } else if (xmlr.getLocalName().equals("anlyUnit")) {
                     if (StringUtil.isEmpty( study.getUnitOfAnalysis() ) ) {
                         study.setUnitOfAnalysis( parseText(xmlr) );
                     } else {

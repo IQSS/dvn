@@ -264,7 +264,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * Setter for property dtId.
      * 
-     * @param dtId  new value of property dtId
+     * @param dtId    new value of property dtId
      *           
      */
     public void setDtId(Long dtId) {
@@ -4102,14 +4102,28 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // -----------------------------------------------------------------------
     // <editor-fold desc="variable table">
 
-    // Variable Table: h:dataTable@binding
+    // Variable Table: @binding
 
+    /**
+     * UIData that backs the binding attribute of 
+     * the variable table (h:dataTable) whose id is dataTable1
+     *
+     */
     private UIData data = null;
 
+    /**
+     * Getter for property data
+     *
+     * @return     property data
+     */
     public UIData getData() {
         return data;
     }
-
+    /**
+     * Setter for property data
+     *
+     * @param data new UIData
+     */
     public void setData(UIData data) {
         this.data = data;
     }
@@ -4117,28 +4131,54 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // -----------------------------------------------------------------------
     // scroller-related methods
     // -----------------------------------------------------------------------
-
+    /**
+     * Shifts the displayed rows of the variable table back to the top
+     *
+     * @return    null String
+     */
     public String first() {
         scroll(0);
         return (null);
     }
 
+    /**
+     * Shifts the displayed rows of the variable table forward to the buttom
+     *
+     * @return    null String
+     */
     public String last() {
         scroll(data.getRowCount() - 1);
         return (null);
     }
 
+    /**
+     * Shifts the displayed rows of the variable table one page forward
+     *
+     * @return    null String
+     */
     public String next() {
         int first = data.getFirst();
         scroll(first + data.getRows());
         return (null);
     }
 
+    /**
+     * Shifts the displayed rows of the variable table one page back
+     *
+     * @return    null String
+     */
     public String previous() {
         int first = data.getFirst();
         scroll(first - data.getRows());
         return (null);
     }
+
+    /**
+     * Shifts the displayed rows of the variable table to
+     * the indexed position on which an end-user clicked
+     *
+     * @param row    the new current row Id number (integer)
+     */
 
     public void scroll(int row) {
         int rows = data.getRows();
@@ -4155,6 +4195,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         }
     }
 
+    /**
+     * Shifts the displayed rows of the variable table upon an end-user's
+     * clicking action on the scroller element
+     *
+     * @param event ActionEvent event
+     */
     public void processScrollEvent(ActionEvent event) {
         int currentRow = 1;
         UIComponent component = event.getComponent();
@@ -4511,8 +4557,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // variable-table: Checkboxes in the first column
     // -----------------------------------------------------------------------
 
-    // variable table: checkbox column
-    // varCheckbox@binding
     /**
      * ui:checkbox component backing the binding attribute of a checkbox
      * in the first column of the variable table in the subsetting page and

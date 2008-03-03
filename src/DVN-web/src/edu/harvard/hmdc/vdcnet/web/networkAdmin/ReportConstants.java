@@ -57,19 +57,19 @@ public class ReportConstants implements java.io.Serializable  {
   public static final String TOTAL_UNIQUE_HEADING  	= "Unique MIT-assigned IP Addresses accessing the IQSS Dataverse Network.";
   //BEGIN_EXTRA_1
   public static final String BEGIN_EXTRA_1 		= "BEGIN_EXTRA_1";
-  public static final String NUM_DOWNLOADS_HEADING 	= "Downloads of data and documentation from the IQSS Dataverse Network by MIT Users";
+  public static final String NUM_DOWNLOADS_HEADING 	= "Downloads of Data and Documentation from the Documentation, Data and Analysis Page";
   public static final String END_EXTRA_1 		= "END_EXTRA_1";
  //BEGIN_EXTRA_2
   public static final String BEGIN_EXTRA_2 		= "BEGIN_EXTRA_2";
-  public static final String NUM_UNIQUEDOWNLOADS_HEADING = "Downloads of data and documentation by MIT-assigned IP Address";
+  public static final String NUM_UNIQUEDOWNLOADS_HEADING = "Downloads of Data and Documentation from the Documentation, Data and Analysis Page by Number of IP Address";
   public static final String END_EXTRA_2 		= "END_EXTRA_2";
   //BEGIN_EXTRA_3
   public static final String BEGIN_EXTRA_3 		= "BEGIN_EXTRA_3";
-  public static final String NUM_SUBSETJOBS_HEADING     = "Subsetting interface views resulting in one or more actions of running an actual subsetting/statistical job by MIT Users";
+  public static final String NUM_SUBSETJOBS_HEADING     = "Subsetting Interface Views Resulting in One or More Actions of Running an Actual Subsetting/Statistical Job by MIT Users";
   public static final String END_EXTRA_3 		= "END_EXTRA_3";
   //BEGIN_EXTRA_4
   public static final String BEGIN_EXTRA_4 		= "BEGIN_EXTRA_4";
-  public static final String NUM_UNIQUESUBSETS_HEADING = "Subsetting interface views by MIT-assigned IP Address.";
+  public static final String NUM_UNIQUESUBSETS_HEADING = "Subsetting Interface Views by Number of MIT-assigned IP Address.";
   public static final String END_EXTRA_4 		= "END_EXTRA_4";
 
   public static final String COMMA = ",";

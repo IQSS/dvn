@@ -356,17 +356,18 @@ public class ReportWriter extends ReportConstants implements java.io.Serializabl
 						throws IOException {
             int pageViews = 0;
             String reportValue = null;
+            int startPos = 0;
+            int endPos = 0;
             try {
-                //DEBUG
                 Integer count    = new Integer(0);
                 while ( (line = inputstream.readLine()) != null) {
                     if (line.contains(lineend))
                         break;
-                    count += Integer.parseInt(Character.toString(line.charAt(line.indexOf(ReportConstants.DELIMITER) + 1)));
+                    startPos = line.indexOf(ReportConstants.DELIMITER) + 1;
+                    endPos = line.indexOf(ReportConstants.DELIMITER, startPos);
+                    count += Integer.parseInt(line.substring(startPos, endPos));
                 }
                 reportValue = count.toString();
-                //downloadsList.put(monthsInReport[1][i], reportValue);
-                //END DEBUG
             } catch (IOException ioe) {
                     System.out.println("An error occurred in getPageViews");
             } finally {

@@ -178,7 +178,7 @@ public class AnalysisApplicationBean extends AbstractApplicationBean implements 
 
           DSBWrapper dsb = new DSBWrapper();
           
-          String zeligConfig = dsb. getZeligConfig();
+          // String zeligConfig = dsb. getZeligConfig();
           // log("zeligconfig:\n"+zeligConfig);
           zlg = (Zelig)u.unmarshal( new StringReader(dsb. getZeligConfig()) );
 

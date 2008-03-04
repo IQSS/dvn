@@ -15,24 +15,37 @@
             <docDscr>
             	<citation>
         	    <xsl:call-template name="titlStmt"/>
-        	    	<xsl:if test="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntperp) != '' or normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate) != ''">
+        	    	<xsl:if test="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntperp/a:cntper) != '' or normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate) != '' or normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntorgp/a:cntorg) != '' or normalize-space(a:idinfo/a:citation/a:citeinfo/a:origin) != ''">
                     	<prodStmt>
-                    		<xsl:if test="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntperp) != ''">
+                    		<xsl:if test="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntorgp/a:cntorg) != ''">
                          		<producer>
-					<xsl:value-of select="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntperp)"/>
+					<xsl:value-of select="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntorgp/a:cntorg)"/>
 					<xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink) != ''">
 						<ExtLink title="URL">
 						<xsl:attribute name="URI"><xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink)"/></xsl:attribute>
 						</ExtLink>
 					</xsl:if>
                           		</producer>
-					<xsl:if test="normalize-space(a:dataqual/a:lineage/a:procstep/a:proccont/a:cntinfo/a:cntorgp/a:cntorg) != ''">
-						<producer>
-						<xsl:value-of select="normalize-space(a:dataqual/a:lineage/a:procstep/a:proccont/a:cntinfo/a:cntorgp/a:cntorg)"/>
-						</producer>
-					</xsl:if>					
                           	</xsl:if>
-                          	<xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate) != ''">
+				<xsl:if test="normalize-space(a:dataqual/a:lineage/a:procstep/a:proccont/a:cntinfo/a:cntperp/a:cntper) != ''">
+					<producer>
+					<xsl:value-of select="normalize-space(a:dataqual/a:lineage/a:procstep/a:proccont/a:cntinfo/a:cntperp/a:cntper)"/>
+					</producer>
+				</xsl:if>					
+
+                    		<xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:origin) != ''">
+                         		<producer>
+					<xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:origin)"/>
+					<xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink) != ''">
+						<ExtLink title="URL">
+						<xsl:attribute name="URI"><xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink)"/></xsl:attribute>
+						</ExtLink>
+					</xsl:if>
+                          		</producer>
+                          	</xsl:if>
+
+
+                         	<xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate) != ''">
                           		<prodDate>
                           			<xsl:attribute name="date"><xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate)"/></xsl:attribute>
                           		</prodDate>
@@ -67,16 +80,26 @@
                         	</AuthEnty>   
                     	</rspStmt>
                     </xsl:if>
+
+                    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate) != ''">
+                    	<prodStmt>
+				<prodDate>
+                          	<xsl:attribute name="date"><xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate)"/></xsl:attribute>
+                          	</prodDate>
+                    	</prodStmt>
+                    </xsl:if>
+		    
+
                     <distStmt>
                        <distrbtr>
 				Harvard Geospatial Library
                        </distrbtr>
                     </distStmt>
 
-                    <xsl:if test="normalize-space(a:idinfo/a:crossref/a:citeinfo/a:serinfo/a:sername) != ''">
+                    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:serinfo/a:sername) != ''">
 		    <serStmt>
 			<serName>
-                        <xsl:value-of select="normalize-space(a:idinfo/a:crossref/a:citeinfo/a:serinfo/a:sername)"/>
+                        <xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:serinfo/a:sername)"/>
 			</serName>
 		    </serStmt>
 		    </xsl:if>
@@ -86,11 +109,13 @@
                <stdyInfo>
 		    <subject>
 			<topcClas source="archive" vocab="HarvardGeospatial">HarvardGeospatial</topcClas>
-			<xsl:if test="normalize-space(a:idinfo/a:keywords/a:theme/a:themekey) != ''">
-			<topcClas source="archive" vocab="HarvardGeospatial">
-			<xsl:value-of select="normalize-space(a:idinfo/a:keywords/a:theme/a:themekey)"/>
-			</topcClas>
-                    </xsl:if>
+			<xsl:for-each select="a:idinfo/a:keywords/a:theme/a:themekey">
+			     <xsl:if test="normalize-space(.) != ''">
+			     <topcClas source="archive" vocab="HarvardGeospatial">
+				   <xsl:value-of select="normalize-space(.)"/>
+			     </topcClas>
+		             </xsl:if>
+			</xsl:for-each>
 		    </subject>                         
 
 		    <xsl:if test="normalize-space(a:idinfo/a:descript/a:abstract) != ''">
@@ -151,9 +176,7 @@
                       <titl>                      
                            <xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:title)"/>
                        </titl>
-                       <IDNo agency="producer">
-                                <xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:origin)"/>
-                        </IDNo>
+
                     </titlStmt>
         </xsl:template>
 

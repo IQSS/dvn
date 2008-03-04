@@ -1277,21 +1277,21 @@ table#loginBlock img {margin: 1em 0 0 0;}
 .requestHmpgSide {position: absolute; top: 0; right: 0; margin-bottom: 18px;}
 a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active {padding-right: 28px; color: #c55b28; background: url(start-arrows.gif) 100% 52% no-repeat; font-size: 95%; text-decoration: none;} 
 .dvn_createDvRequest {text-align: center;}
-.dvn_createDvRequest .requestHeader {margin-left: auto; margin-right: auto; width: 828px; color: #c55b28; font-size: 160% !important; text-transform: uppercase; text-align: left;}
+.dvn_createDvRequest .requestHeader {margin-left: auto; margin-right: auto; width: 770px; color: #c55b28; font-size: 160% !important; text-transform: uppercase; text-align: left;}
 .dvn_createDvRequest .requestHeader .requestContentTitle {float: left; width: 330px; padding: 0 0 6px 0; color: #c55b28; font-size: 100% !important; font-weight: normal; text-transform: uppercase;}
 .dvn_createDvRequest .requestHeader span {color: #ccc; font-size: 100% !important;}
-.dvn_createDvRequest .requestContentDescRight {float: left; width: 470px; padding: 0 10px 6px 10px; border-left: 1px solid #ccc; color: #555; text-transform: none; text-align: left;}
-.dvn_createDvRequest .requestIntroSteps {margin-top: 30px; margin-left: auto; margin-right: auto; width: 828px;}
-.dvn_createDvRequest .requestIntroStepsContributor {margin-top: 30px; margin-left: auto; margin-right: auto; width: 615px;}
-.dvn_createDvRequest .requestIntroStepCard {position: relative; width: 189px; height: 170px; float: left; text-align: left;}
-.dvn_createDvRequest .requestIntroStepCard h3 {margin: 1em 0 1.25em 3.25em; font-size: 160%; font-weight: normal; color: #c55b28; text-transform: uppercase;}
+.dvn_createDvRequest .requestContentDescRight {float: left; width: 400px; padding: 0 10px 6px 10px; border-left: 1px solid #ccc; color: #555; text-transform: none; text-align: left;}
+.dvn_createDvRequest .requestIntroSteps {margin-top: 30px; margin-left: auto; margin-right: auto; width: 770px;}
+.dvn_createDvRequest .requestIntroStepsContributor {margin-top: 30px; margin-left: auto; margin-right: auto; width: 573px;}
+.dvn_createDvRequest .requestIntroStepCard {position: relative; width: 183px; height: 170px; float: left; text-align: left;}
+.dvn_createDvRequest .requestIntroStepCard h3 {margin: 1em 0 1.25em 3em; font-size: 160%; font-weight: normal; color: #c55b28; text-transform: uppercase;}
 .dvn_createDvRequest .requestIntroStepCard p {margin: 1em; font-size: 124% !important; font-weight: bold;}
-.dvn_createDvRequest .requestIntroStepCard div.stepCardBtm {position: absolute; top: 162px; left: 0; width: 189px; height: 8px; background: #fff url(request-intro-rndbtm.png) no-repeat;}
+.dvn_createDvRequest .requestIntroStepCard div.stepCardBtm {position: absolute; top: 162px; left: 0; width: 183px; height: 8px; background: #fff url(request-intro-rndbtm.png) no-repeat;}
 .dvn_createDvRequest .contributorSuccess {position: relative; width: 402px; height: 170px; float: left; text-align: left;}
-#requestIntroCont {width: 828px; margin: 0 auto; text-align: right;}
+#requestIntroCont {margin: 0 auto; width: 770px; text-align: right;}
 #requestIntroCont .requestIntroContLink {padding-right: 28px; background: url(start-arrows.gif) 100% 52% no-repeat; color: #c55b28; font-size: 160% !important; text-transform: uppercase;}
 #requestIntroCont .requestIntroContLinkNote {font-size: 90% !important; line-height: 224% !important;}
-.dvn_createDvRequest .requestTimeline {position: relative; margin: 20px auto 60px auto; width: 828px; height: 4px; background: #035899 url(fourpoint-timeline.gif) no-repeat;}
+.dvn_createDvRequest .requestTimeline {position: relative; margin: 20px auto 60px auto; width: 770px; height: 4px; background: #035899 url(fourpoint-timeline.gif) no-repeat;}
 .dvn_createDvRequest .requestTimelinePoint {position: absolute; top: -6px; text-align: center;}
 .dvn_createDvRequest .requestTimelinePoint strong {color: #ccc; font-weight: normal; line-height: 3.5;}
 .dvn_createDvRequest .requestContent {margin: 30px auto; width: 828px; border-top: 1px solid #ccc;}

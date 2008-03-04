@@ -16,20 +16,20 @@
         </div>
         
         <div style="margin-bottom:12px; background-image:none; background-color:#ccc;" class="requestTimeline">
-            <div style="left:187px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
-            <div style="left:401px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
-            <div style="left:615px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
+            <div style="left:180px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
+            <div style="left:376px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
+            <div style="left:571px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
         </div>
 
         <div><div class="requestIntroStepsContributor dvn_margin12 dvn_overflow">
-        	<div class="requestIntroStepCard" style="margin-right: 24px; background: #f4ebc7 url(/dvn/resources/request-intro-rndtop1.png) no-repeat;">
+        	<div class="requestIntroStepCard" style="margin-right: 12px; background: #f4ebc7 url(/dvn/resources/request-intro-rndtop1.png) no-repeat;">
                     <h3>Create<br/>Account</h3>
                     <p>Register with our network, by creating an account...</p>
                     <div class="stepCardBtm">
                      <h:outputText value="&#160;" escape="false"/>
                     </div>
 		</div>
-        	<div class="requestIntroStepCard" style="margin-right: 24px; background: #f4ebc7 url(/dvn/resources/request-intro-rndtop2.png) no-repeat;">
+        	<div class="requestIntroStepCard" style="margin-right: 12px; background: #f4ebc7 url(/dvn/resources/request-intro-rndtop2.png) no-repeat;">
                     <h3>Agree<br/>to Terms</h3>
                     <p>Read and agree to the terms of use...</p>
                     <p>Click continue...</p>

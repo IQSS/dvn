@@ -17,27 +17,27 @@
         
         <div style="margin-bottom:12px; background-image:none; background-color:#ccc;" class="requestTimeline">
             <div style="left:87px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
-            <div style="left:301px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
-            <div style="left:513px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
-            <div style="left:727px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
+            <div style="left:278px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
+            <div style="left:473px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
+            <div style="left:668px;" class="requestTimelinePoint"><img src="/dvn/resources/lrg-grey-bullet.gif" alt="" /></div>
         </div>
 
         <div><div class="requestIntroSteps dvn_margin12 dvn_overflow">
-        	<div class="requestIntroStepCard" style="margin-right:24px; background:#f4ebc7 url(/dvn/resources/request-intro-rndtop1.png) no-repeat;">
+        	<div class="requestIntroStepCard" style="margin-right:12px; background:#f4ebc7 url(/dvn/resources/request-intro-rndtop1.png) no-repeat;">
                     <h3>Create<br/>Account</h3>
                     <p>Register with our network, by creating an account...</p>
                     <div class="stepCardBtm">
                      <h:outputText value="&#160;" escape="false"/>
                     </div>
 		</div>
-        	<div class="requestIntroStepCard" style="margin-right:24px; background:#f4ebc7 url(/dvn/resources/request-intro-rndtop2.png) no-repeat;">
+        	<div class="requestIntroStepCard" style="margin-right:12px; background:#f4ebc7 url(/dvn/resources/request-intro-rndtop2.png) no-repeat;">
                     <h3>Agree<br/>to Tems</h3>
                     <p>Read and agree to the terms of use...</p>
                     <div class="stepCardBtm">
                      <h:outputText value="&#160;" escape="false"/>
                     </div>
 		</div>
-                <div class="requestIntroStepCard" style="margin-right:24px; background:#f4ebc7 url(/dvn/resources/request-intro-rndtop3.png) no-repeat;">
+                <div class="requestIntroStepCard" style="margin-right:12px; background:#f4ebc7 url(/dvn/resources/request-intro-rndtop3.png) no-repeat;">
                     <h3>Name<br/>Dataverse</h3>
                     <p>Enter the title, type and affiliation...</p>
                     <p>Click save...</p>
@@ -47,7 +47,7 @@
 		</div>
                 <div class="requestIntroStepCard" style="background:#f4ebc7 url(/dvn/resources/request-intro-rndtop4.png) no-repeat;">
                     <h3 style="line-height:1.85;">Success!</h3>
-                    <p>You have created your own dataverse and now you are ready to start adding data.</p>
+                    <p>You have created your own dataverse; now you are ready to start adding data.</p>
                     <div class="stepCardBtm">
                      <h:outputText value="&#160;" escape="false"/>
                     </div>

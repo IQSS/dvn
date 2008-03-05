@@ -124,13 +124,28 @@
                     </abstract>
 		    </xsl:if>
 
-		    <xsl:if test="normalize-space(a:dataSet/a:collectDate/@end) != '' or normalize-space(a:dataSet/a:collectDate/@start) != '' or  normalize-space(a:dataSet/a:category) != '' ">               
+		    <xsl:if
+                    test="normalize-space(a:idinfo/a:timeprd/a:timeinfo/a:rngdates) != '' or normalize-space(a:idinfo/a:spdom/a:bounding) != ''">               
                     <sumDscr>
-			<xsl:if test="normalize-space(a:idinfo/a:keywords/a:temporal/a:tempkey) != ''">
+			<xsl:if test="normalize-space(a:idinfo/a:timeperd/a:timeinfo/a:rngdates/a:begdate) != ''">
+                         <timePrd event="start">
+			 <xsl:value-of select="normalize-space(a:idinfo/a:timeperd/a:timeinfo/a:rngdates/a:begdate)"/> 
+                         </timePrd>
+                        </xsl:if>
 
-                         <collDate>
-			 <xsl:value-of select="normalize-space(a:idinfo/a:keywords/a:temporal/a:tempkey)"/> 
-                         </collDate>
+			<xsl:if test="normalize-space(a:idinfo/a:timeperd/a:timeinfo/a:rngdates/a:enddate) != ''">
+                         <timePrd event="end">
+			 <xsl:value-of select="normalize-space(a:idinfo/a:timeperd/a:timeinfo/a:rngdates/a:enddate)"/> 
+                         </timePrd>
+                        </xsl:if>
+
+			<xsl:if test="normalize-space(a:idinfo/a:spdom/a:bounding) != ''">
+                         <geoBndBox>
+				<westBL><xsl:value-of select="normalize-space(a:idinfo/a:spdom/a:bounding/a:westbc)"/></westBL>
+				<eastBL><xsl:value-of select="normalize-space(a:idinfo/a:spdom/a:bounding/a:eastbc)"/></eastBL>
+				<southBL><xsl:value-of select="normalize-space(a:idinfo/a:spdom/a:bounding/a:southbc)"/></southBL>
+				<northBL><xsl:value-of select="normalize-space(a:idinfo/a:spdom/a:bounding/a:northbc)"/></northBL>
+                         </geoBndBox>
                         </xsl:if>
 
                     </sumDscr>

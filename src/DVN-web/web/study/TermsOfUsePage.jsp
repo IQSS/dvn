@@ -25,11 +25,12 @@
                         
                         <ui:panelGroup block="true" styleClass="termsAgreementMessage">
                            <h:outputText rendered="#{TermsOfUsePage.touTypeDownload}" value="Please agree to the terms of use below before accessing the files for study: "/>
-                           <h:outputText rendered="#{TermsOfUsePage.touTypeDeposit}" value="Please agree to the terms of use below before creating or editing a study: "/>
+                           <h:outputText rendered="#{TermsOfUsePage.touTypeDeposit and TermsOfUsePage.studyId!=null}" value="Please agree to the terms of use below before editing study: "/>
                            <h:outputText styleClass="warnMessage" value="#{TermsOfUsePage.study.title}"/>
-                        </ui:panelGroup>
-                       <ui:panelLayout rendered="#{TermsOfUsePage.studyId!=null}" style="padding: .5em 0;">
-                            <h:outputText value="Once you have been prompted downloaded the file, you may return "/>
+                           <h:outputText rendered="#{TermsOfUsePage.studyId==null}" value="Please agree to the terms of use below before creating a new study."/>
+                       </ui:panelGroup>
+                       <ui:panelLayout rendered="#{TermsOfUsePage.studyId!=null and TermsOfUsePage.touTypeDownload}" style="padding: .5em 0;">
+                            <h:outputText value="Once you have been prompted to download the file, you may return "/>
                             <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{TermsOfUsePage.study.id}&amp;tab=files">
                                 <h:outputText value="back to the Study"/>
                             </h:outputLink>

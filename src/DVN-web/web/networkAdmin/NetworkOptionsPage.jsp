@@ -37,10 +37,7 @@
                               <h:outputLink  value="/dvn/faces/networkAdmin/OAISetsPage.jsp">
                                 <h:outputText  value="OAI Harvesting Sets"/>
                             </h:outputLink>
-                                <h:outputLink rendered="#{SiteStatistics.directory != null}" id="siteStatslink" value="/dvn/faces/networkAdmin/SiteStatistics.jsp">
-                                    <h:outputText  value="View Web Usage Statistics"/>
-                                </h:outputLink>
-                                <h:outputText rendered="#{SiteStatistics.directory == null}" id="siteStatstext" value="Note: Web Usage Statistics are not configured for this Dataverse Network."/>
+                            <!-- add the link for google analytics here  -->
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel3" style="padding-top: 20px; padding-bottom: 15px">
                             <h:outputText  id="outputText3" styleClass="vdcSubHeader" value="Network Customization"/>

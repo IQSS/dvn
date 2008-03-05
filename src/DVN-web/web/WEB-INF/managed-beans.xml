@@ -553,21 +553,6 @@
         </managed-property>
     </managed-bean>
     <managed-bean>
-        <managed-bean-name>SiteStatistics</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.SiteStatistics</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-        <managed-property>
-            <property-name>reportType</property-name>
-            <property-class>java.lang.String</property-class>
-            <value>#{requestScope.reportType}</value>
-        </managed-property>
-        <managed-property>
-            <property-name>reportee</property-name>
-            <property-class>java.lang.String</property-class>
-            <value>#{requestScope.reportee}</value>
-        </managed-property>
-    </managed-bean>
-    <managed-bean>
         <managed-bean-name>VDCGroupPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.VDCGroupPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>

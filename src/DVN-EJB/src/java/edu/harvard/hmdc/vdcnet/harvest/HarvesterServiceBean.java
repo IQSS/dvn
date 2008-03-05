@@ -47,13 +47,13 @@ import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
+import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,10 +73,7 @@ import javax.ejb.Timer;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -95,9 +92,6 @@ import org.xml.sax.SAXException;
 @Stateless(name = "harvesterService")
 @EJB(name = "editStudyService", beanInterface = edu.harvard.hmdc.vdcnet.study.EditStudyService.class)
 public class HarvesterServiceBean implements HarvesterServiceLocal {
-
-    @PersistenceUnit(unitName = "VDCNet-test")
-    EntityManagerFactory emf;
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     EntityManager em;
     @Resource
@@ -409,8 +403,14 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
      
         if (resumptionToken==null) {
             logMsg += " resumptionToken is null";
-        } else {
+        } else if (!StringUtil.isEmpty(resumptionToken.getValue())) {
             logMsg += " resumptionToken is "+resumptionToken.getValue();
+        } else {
+            logMsg += " resumptionToken is empty, setting return value to null.";
+            // Some OAIServers return an empty resumptionToken element when all
+            // the identifiers have been sent, so need to check  for this, and 
+            // treat it as if resumptiontoken is null.
+            resumptionToken=null;
         }
         hdLogger.info(logMsg);
         return resumptionToken;

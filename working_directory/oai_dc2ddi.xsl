@@ -20,7 +20,15 @@
 		   </xsl:for-each>
 		   </titl>			
 		   <xsl:for-each select="//dc:identifier">
-		      <IDNo agency="producer"><xsl:value-of select="."/></IDNo>
+		      <IDNo>
+		        <xsl:attribute name="agency">
+		        <xsl:choose>
+		         <xsl:when test='starts-with(.,"hdl:")'>handle</xsl:when>
+		         <xsl:otherwise>producer</xsl:otherwise>
+		        </xsl:choose>
+		        </xsl:attribute>
+			<xsl:value-of select="."/>
+		      </IDNo>
 		   </xsl:for-each>
 	        </titlStmt>
 		<rspStmt>
@@ -40,11 +48,13 @@
 		   </producer>
 		</xsl:if>		
 		</xsl:for-each>
-		<xsl:if test="normalize-space(//dc:rights)!=''">
+		<xsl:for-each select="//dc:rights">
+		<xsl:if test="normalize-space(.)!=''">
 		   <copyright>
-		   <xsl:value-of select="//dc:rights"/>
+		   <xsl:value-of select="."/>
 		   </copyright>
-		</xsl:if>		
+		</xsl:if>
+		</xsl:for-each>
 		</prodStmt>		
 
 		<xsl:if test="normalize-space(//dc:date)!=''">
@@ -76,6 +86,17 @@
 		</xsl:for-each>	
 		</sumDscr>
 	    </stdyInfo>
+	    <xsl:for-each select="//dc:rights">
+	    <xsl:if test="normalize-space(.)!=''">
+            <dataAccs>
+	       <useStmt>
+	     	  <restrctn>
+		   	<xsl:value-of select="normalize-space(.)"/>
+		  </restrctn>
+               </useStmt>
+            </dataAccs>
+            </xsl:if>
+	    </xsl:for-each>
 	</stdyDscr>
 </codeBook>
 </xsl:template>

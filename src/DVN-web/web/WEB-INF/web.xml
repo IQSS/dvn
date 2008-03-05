@@ -177,12 +177,7 @@
         <servlet-name>OAIHandler</servlet-name>
         <servlet-class>ORG.oclc.oai.server.OAIHandler</servlet-class>
     </servlet>
-    <servlet-mapping>
-       <servlet-name>cgi</servlet-name>
-       <url-pattern>/cgi-bin/*</url-pattern>
-    </servlet-mapping>
-    <!-- end cgi servlet defs -->
-    <servlet-mapping>
+     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
     </servlet-mapping>

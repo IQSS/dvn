@@ -595,6 +595,11 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
+        <managed-bean-name>MainLayoutBean</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.MainLayoutBean</managed-bean-class>
+        <managed-bean-scope>application</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
         <managed-bean-name>VersionPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.VersionPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>

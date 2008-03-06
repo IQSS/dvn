@@ -37,7 +37,17 @@
                               <h:outputLink  value="/dvn/faces/networkAdmin/OAISetsPage.jsp">
                                 <h:outputText  value="OAI Harvesting Sets"/>
                             </h:outputLink>
-                            <!-- add the link for google analytics here  -->
+                            <h:outputLink  rendered="#{ MainLayoutBean.googleAnalyticsKey != null }" 
+                                                id="siteStatslink" 
+                                                value="http://www.google.com/analytics/"
+                                                target="_blank"
+                                                >
+                                                <h:outputText  value="Google Analytics"/>
+                               </h:outputLink>
+                               <h:outputText  rendered="#{ MainLayoutBean.googleAnalyticsKey == null }" 
+                                                id="siteStatsText" 
+                                                value="Note: Google analytics is not configured for this dataverse network."
+                                                />
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel3" style="padding-top: 20px; padding-bottom: 15px">
                             <h:outputText  id="outputText3" styleClass="vdcSubHeader" value="Network Customization"/>

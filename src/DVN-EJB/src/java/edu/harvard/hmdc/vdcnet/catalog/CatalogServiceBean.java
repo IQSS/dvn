@@ -229,11 +229,9 @@ public class CatalogServiceBean implements CatalogServiceLocal {
                 String identifier = "<identifier>" + study.getGlobalId() + "</identifier>";
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
                 if (study.getLastExportTime() != null) {
-                    String dateStamp = "<datestamp>" + sdf.format(study.getLastExportTime()) + "</datestamp>";
-                    String setSpec = "<setSpec>" + study.getAuthority() + "</setSpec>";
                     logger.info("Exporting study " + study.getStudyId());
                     if ((oaiSet == null && !study.isIsHarvested()) || (indexedIds != null && indexedIds.contains(study.getId()))) {
-                        String record = getRecord(study, metadataPrefix);
+                        String record = getRecord(study, metadataPrefix, set);
                         if (record.length() > 0) {
                             records.add(record);
                         }
@@ -275,10 +273,14 @@ public class CatalogServiceBean implements CatalogServiceLocal {
    }
     
     public String getRecord(Study study, String metadataPrefix) {
+        return getRecord(study, metadataPrefix, null);
+    }
+
+    private String getRecord(Study study, String metadataPrefix, String set) {
         String identifier = "<identifier>" + study.getGlobalId() + "</identifier>";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         String dateStamp = "<datestamp>"+sdf.format(study.getLastExportTime())+"</datestamp>";
-        String setSpec = "<setSpec>"+study.getAuthority()+"</setSpec>";
+        String setSpec = set != null ? "<setSpec>"+set+"</setSpec>" : "";
 //        Date lastUpdateTime = study.getLastUpdateTime();
         File studyFileDir = FileUtil.getStudyFileDir(study);
         String exportFileName= studyFileDir.getAbsolutePath() + File.separator + "export_" + metadataPrefix+".xml";

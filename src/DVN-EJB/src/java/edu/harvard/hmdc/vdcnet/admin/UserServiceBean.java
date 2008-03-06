@@ -138,6 +138,7 @@ public class UserServiceBean implements UserServiceLocal {
         vdcRole.setVdcUser(em.find(VDCUser.class, userId));
         vdcRole.setVdc(em.find(VDC.class, vdcId));
         vdcRole.setRole(role);
+        em.persist(vdcRole);  // Added for EclipseLink - wasn't being saved otherwise
         VDCUser user = em.find(VDCUser.class, userId);
         user.getVdcRoles().add(vdcRole);
         VDC vdc = em.find(VDC.class, vdcId);

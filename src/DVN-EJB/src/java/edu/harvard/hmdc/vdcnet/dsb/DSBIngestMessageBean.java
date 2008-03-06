@@ -88,7 +88,10 @@ public class DSBIngestMessageBean implements MessageListener {
         try {
             ObjectMessage om = (ObjectMessage) message;
             ingestMessage = (DSBIngestMessage) om.getObject();
-            
+            String detail = "Ingest processing for " +ingestMessage.getFileBeans().size() + " file(s).";
+         
+            studyService.addStudyLock(ingestMessage.getStudyId(), ingestMessage.getIngestUserId(), detail);
+             
             Iterator iter = ingestMessage.getFileBeans().iterator();
             while (iter.hasNext()) {
                 StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();

@@ -293,9 +293,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
                 Message message = session.createObjectMessage(ingestMessage);
                 sender.send(message);
                 
-                String detail = "Ingest processing for " + subsettableFiles.size() + " file(s).";
-                studyService.addStudyLock(study.getId(), user.getId(), detail);
-                
+                   
                 // send an e-mail
                 mailService.sendIngestRequestedNotification(ingestEmail, subsettableFiles);
                 

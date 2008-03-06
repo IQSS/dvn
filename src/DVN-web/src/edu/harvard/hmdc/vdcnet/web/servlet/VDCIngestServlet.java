@@ -162,8 +162,7 @@ public class VDCIngestServlet extends HttpServlet {
                 Message message = session.createObjectMessage(ingestMessage);
                 sender.send(message);
                 
-                studyService.addStudyLock(studyId, LoginFilter.getLoginBean(req).getUser().getId(), "VDCIngestServlet call to DSBIngestMessageBean.");
-            
+             
             } catch (JMSException ex) {
                 ex.printStackTrace();
             } finally {

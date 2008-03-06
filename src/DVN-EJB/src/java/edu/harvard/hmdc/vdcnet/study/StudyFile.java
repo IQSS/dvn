@@ -216,14 +216,7 @@ public class StudyFile implements Serializable{
     public void setVersion(Long version) {
         this.version = version;
     }
-    public static void main(String args[]) {
-        EntityManagerFactory emf;
-        EntityManager em;
-        emf = Persistence.createEntityManagerFactory("VDCNet-test");
-        em = emf.createEntityManager();
-        
-    }
-    
+   
     /**
      * Holds value of property restricted.
      */

@@ -127,7 +127,7 @@ public class EditUserServiceBean implements edu.harvard.hmdc.vdcnet.admin.EditUs
         // requires a transaction will automatically trigger a flush to the database,
         // but include this just to show what's happening here
 
-        em.flush();    
+  //      em.flush();    
     }
 
     public void setUser(VDCUser user) {
@@ -171,7 +171,7 @@ public class EditUserServiceBean implements edu.harvard.hmdc.vdcnet.admin.EditUs
              study.getStudyRequests().add(studyRequest);
              em.persist(studyRequest);
          }
-         em.flush();  // Save the user and all the new request objects to the database.
+   //      em.flush();  // Save the user and all the new request objects to the database.
          
      }
 

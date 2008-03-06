@@ -192,9 +192,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         study.getAllowedGroups().clear();
         study.getAllowedUsers().clear();
-        study.getOwner().getOwnedStudies().remove(study);
-        study.setOwner(null);
-
+        if (study.getOwner()!=null) {
+            study.getOwner().getOwnedStudies().remove(study);
+             // study.setOwner(null);  This caused the Cascade REMOVE bug in EclipseLink
+      
+        }
         for (Iterator<StudyFile> it = study.getStudyFiles().iterator(); it.hasNext();) {
             StudyFile elem = it.next();
             elem.getAllowedGroups().clear();
@@ -1899,4 +1901,4 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return study;
     }
     
-}
+            }

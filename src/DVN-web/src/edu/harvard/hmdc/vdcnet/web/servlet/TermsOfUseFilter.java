@@ -32,6 +32,7 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
@@ -104,7 +105,8 @@ public class TermsOfUseFilter implements Filter {
     }
 
     public static boolean isDownloadStudyTermsRequired(Study study, Map termsOfUseMap) {
-        boolean studyTermsRequired = study.isTermsOfUseEnabled();
+        boolean studyTermsRequired = study.isTermsOfUseEnabled()
+                    || !StringUtil.isEmpty(study.getHarvestDVNTermsOfUse()) ||!!StringUtil.isEmpty(study.getHarvestDVTermsOfUse());
         if (studyTermsRequired) {
             return termsOfUseMap.get("study_download_" + study.getId()) == null;
         }

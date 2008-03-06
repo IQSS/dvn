@@ -44,6 +44,13 @@
                              
                                 <h:outputText value="Dataverse Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" />
                                 <h:outputText value="#{TermsOfUsePage.study.owner.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" escape="false"/>
+                                
+                                 <h:outputText value="Original Dataverse Network Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.harvestDVNTermsOfUse}"/>
+                                <h:outputText value="#{TermsOfUsePage.study.harvestDVNTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.harvestDVNTermsOfUse}" escape="false"/>
+                             
+                                <h:outputText value="Original Dataverse Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}" />
+                                <h:outputText value="#{TermsOfUsePage.study.harvestDVTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}"  escape="false"/>
+                              
                              
                                 <h:outputText value="Study Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.study.termsOfUseEnabled}" />
                                     
@@ -83,8 +90,10 @@
                         </ui:panelGroup>
                         
                          <ui:panelGroup block="true">
-                            <h:selectBooleanCheckbox id="termsAccepted" value="#{TermsOfUsePage.termsAccepted}" />
+                            <h:selectBooleanCheckbox id="termsAccepted"  required="true" validator="#{TermsOfUsePage.validateTermsAccepted}"  value="#{TermsOfUsePage.termsAccepted}" />
                             <h:outputText styleClass="vdcFieldTitle" value="I agree and accept these terms of use." />
+                            <h:message for="termsAccepted" styleClass="errorMessage"/>
+
                         </ui:panelGroup>
                         
                         <ui:panelGroup block="true" styleClass="termsAgreementButtons">

@@ -167,7 +167,7 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
     
     boolean userNameFound = false;
     VDCUser foundUser = userService.findByUserName(userName);
-    if (foundUser!=null && foundUser.getId()!= user.getId()) {
+    if (foundUser!=null && !foundUser.getId().equals(user.getId())) {
         userNameFound=true;
     }
     

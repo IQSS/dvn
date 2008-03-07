@@ -421,7 +421,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         StatusMessage msg = new StatusMessage();
 
         String hostUrl = PropertyUtil.getHostUrl();
-        msg.setMessageText("A new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is set to 'Not Released' by default (it will appear in the Coming Soon tab of the Network Homepage). Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to make it public.");
+        msg.setMessageText("Your new dataverse <a href='http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "'>http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "</a> has been successfully created!");
         msg.setStyleClass("successMessage");
         Map m = getRequestMap();
         m.put("statusMessage", msg);
@@ -464,7 +464,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
 
         String hostUrl = PropertyUtil.getHostUrl();
 
-        msg.setMessageText("Your new dataverse has been successfully created. <br/>You can access it directly by entering this URL: <br/> http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL() + " <br/>Bear in mind that it is set to 'Not Released' by default (it will appear in the Coming Soon tab of the Network Homepage). Go to <a href='/dvn" + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.jsp'>My Options</a> to release it.");
+        msg.setMessageText("Your new scholar dataverse <a href='http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "'>http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "</a> has been successfully created!");
 
         msg.setStyleClass("successMessage");
         Map m = getRequestMap();

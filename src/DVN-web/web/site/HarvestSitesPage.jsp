@@ -40,17 +40,21 @@
                             <f:facet name="header">
                                 <h:outputText  id="outputText4" value="Status"/>
                             </f:facet>
-                            <h:outputText  id="outputText4b" value="Scheduled" rendered="#{currentRow.scheduled}"/>
-                            <h:outputText  id="outputText4c" value="Not Scheduled" rendered="#{!currentRow.scheduled}"/>
+                            <h:outputText  id="outputText4b" value="Scheduled" rendered="#{currentRow.scheduled and  !empty currentRow.schedulePeriod}"/>
+                            <h:outputText  id="outputText4c" value="Not Scheduled" rendered="#{!currentRow.scheduled and !empty currentRow.schedulePeriod}"/>
+                            <h:outputText   value="Harvesting Schedule Not Defined " rendered="#{empty currentRow.schedulePeriod}"/>
+  
                         </h:column>
                         <h:column  >
                             <f:facet name="header">
                                 <h:outputText value=""/>
                             </f:facet>
-                            <h:commandButton value="Schedule Harvesting" rendered="#{!currentRow.scheduled}" actionListener="#{HarvestSitesPage.doSchedule}"/>
-                            <h:commandButton value="Unschedule Harvesting" rendered="#{currentRow.scheduled}" actionListener="#{HarvestSitesPage.doUnschedule}"/>
-                            
-                        </h:column>
+                            <h:commandButton value="Schedule Harvesting" rendered="#{!currentRow.scheduled and !empty currentRow.schedulePeriod }" actionListener="#{HarvestSitesPage.doSchedule}"/>
+                            <h:commandButton value="Unschedule Harvesting" rendered="#{currentRow.scheduled and !empty currentRow.schedulePeriod }" actionListener="#{HarvestSitesPage.doUnschedule}"/>                      
+                             <h:outputLink rendered="#{!currentRow.harvestingNow and empty currentRow.schedulePeriod}"  value="EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
+                                <h:outputText  value=" Define Harvesting Schedule"/>
+                            </h:outputLink>
+                       </h:column>
                         <h:column  >
                             <f:facet name="header">
                                 <h:outputText  value=""/>

@@ -1789,27 +1789,28 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         // determine IDs
         Map idMap = ddiService.determineId(ddiFile);
         String globalId = (String) idMap.get("globalId");
-        String otherId = (String) idMap.get("otherId");
+        String alternateId = (String) idMap.get("otherId");
+        alternateId = alternateId != null ? alternateId : harvestIdentifier;
 
         if (generateHandle) {
             if (globalId != null) {
                 throw new EJBException("DDI should not specify a handle, but does.");
             }
-            if (otherId != null) {
+            if (alternateId != null) {
                 // first replace any slashes and/or spaces
-                otherId = otherId.replace('/', '-').replace(' ', '_');
+                alternateId = alternateId.replace('/', '-').replace(' ', '_').replace(':', '-');
                 if (vdc.getHarvestingDataverse() != null) {
                     if (vdc.getHarvestingDataverse().getHandlePrefix() != null) {
-                        globalId = "hdl:" + vdc.getHarvestingDataverse().getHandlePrefix().getPrefix() + "/" + otherId;
+                        globalId = "hdl:" + vdc.getHarvestingDataverse().getHandlePrefix().getPrefix() + "/" + alternateId;
                     } else {
                         throw new EJBException("generateHandle cannot be true for a nonregistering harvesting dataverse.");
                     }
 
                 } else {
-                    globalId = vdcNetwork.getProtocol() + ":" + vdcNetwork.getAuthority() + "/" + otherId;
+                    globalId = vdcNetwork.getProtocol() + ":" + vdcNetwork.getAuthority() + "/" + alternateId;
                 }
             } else {
-                throw new EJBException("No Other ID was found in DDI for generating a handle.");
+                throw new EJBException("No Other ID (from DDI) or harveatIdentifier was available for generating a handle.");
             }
 
         } else {
@@ -1862,11 +1863,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             if (vdc.getHarvestingDataverse() != null) {
                 study.setProtocol("hdl");
                 study.setAuthority(vdc.getHarvestingDataverse().getHandlePrefix().getPrefix());
-                study.setStudyId(otherId);
+                study.setStudyId(alternateId);
             } else {
                 study.setProtocol(vdcNetwork.getProtocol());
                 study.setAuthority(vdcNetwork.getAuthority());
-                study.setStudyId(otherId);
+                study.setStudyId(alternateId);
             }
         } else if (!study.getGlobalId().equals(globalId)) {
             // this should never happen

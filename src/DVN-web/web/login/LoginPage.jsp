@@ -17,7 +17,7 @@
                                
                                 <ui:panelLayout panelLayout="flow" styleClass="ContentAreaBody">
                                     <ui:panelGroup styleClass="loginPageMessages"  block="true" style="padding-bottom: 15px; padding-right:50px "  rendered="#{LoginPage.redirect!=null}">
-                                        <h:outputText styleClass="warnMessage" value="We are sorry, this page is restricted and you need to have special permissions to access it. Please log in if you have the appropriate permissions."/>
+                                        <h:outputText styleClass="warnMessage" value="This page is restricted. You need to have special permissions to access it. Please log in if you have the appropriate permissions."/>
                                     </ui:panelGroup>
                                    
                                     <ui:panelGroup style="padding-top: 10px; margin-left:auto; margin-right:auto; width:70%; text-align: left;" block="true" id="groupPanel5">

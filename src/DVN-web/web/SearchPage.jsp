@@ -123,7 +123,7 @@
                           <h:column id="column1">
                               <ui:panelGroup block="true" id="groupPanel1" style="padding-bottom: 5px">
                                   
-                                  <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}&amp;studyListingIndex=#{SearchPage.studyListingIndex}"  id="hyperlink3" styleClass="vdcSResultsStudyTitle">
+                                  <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}&amp;studyListingIndex=#{SearchPage.studyListingIndex}"  id="hyperlink3">
                                       <h:outputText id="hyperlink3Text" value="#{studyUI.study.title}" />
                                   </h:outputLink>
                                   <h:outputText id="outputText13" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}" />

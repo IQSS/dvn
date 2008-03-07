@@ -98,9 +98,7 @@
                         
                         <ui:panelGroup block="true" styleClass="termsAgreementButtons">
                             <h:commandButton id="termsButton" value="Continue" action="#{TermsOfUsePage.acceptTerms_action}"/>
-                            <f:verbatim rendered="#{TermsOfUsePage.studyId!=null}">
-                                <input id="cancelButton" type="button" value="Cancel" style="margin-left: 20px;" onclick="window.location='/dvn${VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=${TermsOfUsePage.study.id}&amp;tab=files'" />
-                            </f:verbatim>
+                            <h:commandButton id="cancelButton" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{TermsOfUsePage.study.id}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.studyId!=null}"/>
                         </ui:panelGroup>
                     </div>
                 </div>

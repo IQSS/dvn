@@ -183,9 +183,11 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         try {
             indexer.addDocument(study);
         } catch (IOException ex) {
+            /*
             IndexStudy s = new IndexStudy();
             s.setStudyId(studyId);
             em.persist(s);
+             */
             ex.printStackTrace();
             try {
                 mailService.sendDoNotReplyMail(indexAdminMail ,"IO problem", "Check index write lock "+InetAddress.getLocalHost().getHostAddress() + " , study id " + studyId);

@@ -305,7 +305,7 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditContac
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditBannerContactUsPage','/admin/EditBannerContactUsPage.jsp',3,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditHomePanelsPage','/admin/EditHomePanelsPage.jsp',3,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditUserTermsPage','/admin/EditUseTermsPage.jsp',3,null );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditDepoistUseTermsPage','/admin/EditDepsoitUseTermsPage.jsp',3,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditDepositUseTermsPage','/admin/EditDepositUseTermsPage.jsp',3,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditBannerContactUsPage','/admin/EditBannerContactUsPage.jsp',3,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'PrivilegedUsersPage','/admin/PrivilegedUsersPage.jsp',3,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'SearchFieldsPage','/admin/SearchFieldsPage.jsp',3,null );
@@ -322,7 +322,6 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AllUsersPa
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditNetworkAnnouncementsPage', '/networkAdmin/EditNetworkAnnouncementsPage.jsp', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditNetworkBannerFooterPage', '/networkAdmin/EditNetworkBannerFooterPage.jsp', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditExportSchedulePage', '/networkAdmin/EditExportSchedulePage.jsp', null,2 );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditOAISetPage', '/networkAdmin/EditOAISetPage.jsp', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditOAISetPage', '/networkAdmin/EditOAISetPage.jsp', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditNetworkDownloadUseTermsPage', '/networkAdmin/EditNetworkDownloadUseTermsPage.jsp', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditNetworkDepositUseTermsPage', '/networkAdmin/EditNetworkDepositUseTermsPage.jsp', null,2 );

@@ -15,7 +15,7 @@
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
                          <ui:panelGroup  block="true" style="padding-top: 20px; padding-bottom: 15px">
-                            <h:outputText   styleClass="vdcSubHeader" value="Dataverses, Harvesting, Exporting and OAI Sets"/>
+                            <h:outputText   styleClass="vdcSubHeader" value="Dataverses, Harvesting, Exporting and OAI Sets:"/>
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel7"
                                         separator="&lt;br /&gt;" style="padding-left: 10px">
@@ -50,7 +50,7 @@
                                                 />
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel3" style="padding-top: 20px; padding-bottom: 15px">
-                            <h:outputText  id="outputText3" styleClass="vdcSubHeader" value="Network Customization"/>
+                            <h:outputText  id="outputText3" styleClass="vdcSubHeader" value="Network Customization:"/>
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel4"
                                         separator="&lt;br /&gt;" style="padding-left: 10px">
@@ -65,7 +65,14 @@
                             </h:outputLink>                                                  
                             <h:outputLink id="hyperlink17" value="/dvn/faces/admin/EditContactUsPage.jsp">
                                 <h:outputText id="hyperlink17Text" value="Set Contact Us E-Mail"/>
-                            </h:outputLink>
+                            </h:outputLink>  
+                          </ui:panelGroup>
+                          
+                        <ui:panelGroup  block="true"  style="padding-top: 20px; padding-bottom: 15px">
+                            <h:outputText  styleClass="vdcSubHeader" value="Terms of Use:"/>
+                        </ui:panelGroup>
+                        <ui:panelGroup  block="true" 
+                                        separator="&lt;br /&gt;" style="padding-left: 10px">  
                              <h:outputLink  value="/dvn/faces/networkAdmin/EditAccountUseTermsPage.jsp">
                                 <h:outputText  value="Edit Network Terms of Use for Account Creation"/>
                             </h:outputLink>                                                  
@@ -74,11 +81,11 @@
                             </h:outputLink>                                                  
                             <h:outputLink  value="/dvn/faces/networkAdmin/EditNetworkDownloadUseTermsPage.jsp">
                                 <h:outputText  value="Edit Network Terms Of Use for File Download"/>
-                            </h:outputLink>   
-                            
+                            </h:outputLink>      
                          </ui:panelGroup>
+                         
                         <ui:panelGroup  block="true" id="groupPanel1" style="padding-top: 20px; padding-bottom: 15px">
-                            <h:outputText  id="outputText2" styleClass="vdcSubHeader" value="Users/Permissions"/>
+                            <h:outputText  id="outputText2" styleClass="vdcSubHeader" value="Users, Groups, Permissions:"/>
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel2"
                                         separator="&lt;br /&gt;" style="padding-left: 10px">

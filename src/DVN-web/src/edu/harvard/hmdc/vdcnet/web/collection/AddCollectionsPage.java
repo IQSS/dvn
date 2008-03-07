@@ -1009,7 +1009,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         List allVDCCollections = new ArrayList();
         for (Iterator it = allVDC.iterator(); it.hasNext();) {
             VDC elem = (VDC) it.next();
-            if (!elem.isRestricted() || elem.getId() ==getVDCRequestBean().getCurrentVDC().getId()){
+            if (!elem.isRestricted() || elem.getId().equals(getVDCRequestBean().getCurrentVDC().getId())){
                 List <VDCCollection> collections = getCollections(elem.getId().longValue());
                 List viewableCollections = new ArrayList();
                 for (int i = 0; i < collections.size(); i++) {

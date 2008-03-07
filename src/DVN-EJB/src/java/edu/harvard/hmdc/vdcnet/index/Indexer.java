@@ -233,7 +233,6 @@ public class Indexer implements java.io.Serializable  {
         addKeyword(doc,"unitOfAnalysis",study.getUnitOfAnalysis());
         addText(doc,"dataCollector",study.getDataCollector());
         addText(doc,"kindOfData", study.getKindOfData());
-        addText(doc,"dataCollector",study.getDataCollector());
         addText(doc,"geographicCoverage",study.getGeographicCoverage());
         addText(doc,"geographicUnit",study.getGeographicUnit());
         addKeyword(doc,"timePeriodCoveredEnd",study.getTimePeriodCoveredEnd());
@@ -920,7 +919,6 @@ public class Indexer implements java.io.Serializable  {
         anyTerms.add(buildAnyTerm("unitOfAnalysis",string));
         anyTerms.add(buildAnyTerm("dataCollector",string));
         anyTerms.add(buildAnyTerm("kindOfData", string));
-        anyTerms.add(buildAnyTerm("dataCollector",string));
         anyTerms.add(buildAnyTerm("timePeriodCoveredEnd",string));
         anyTerms.add(buildAnyTerm("timePeriodCoveredStart",string));
         anyTerms.add(buildAnyTerm("dateOfCollection",string));

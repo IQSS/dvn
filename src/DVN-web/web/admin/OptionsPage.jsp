@@ -92,7 +92,17 @@
                                         <h:outputText id="hyperlink16Text" value="Set Additional Fields to Display in Search Results"/>
                                     </h:outputLink>
                                 </ui:panelGroup>
-                                <h:outputText id="outputText6" styleClass="vdcSubHeaderColor" value="Users/Permissions/Conditions:"/>
+                                <h:outputText styleClass="vdcSubHeaderColor" value="Terms of Use:"/>
+                                <ui:panelGroup block="true" 
+                                               separator="&lt;br /&gt;" style="padding-left: 10px">
+                                    <h:outputLink  rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditDepositUseTermsPage.jsp">
+                                        <h:outputText id="hyperlink5Text3" value="Edit Dataverse Terms of Use for Study Creation and Data Deposit"/>
+                                    </h:outputLink>
+                                     <h:outputLink id="hyperlink14" rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.jsp">
+                                        <h:outputText id="hyperlink4Text3" value="Edit Dataverse Terms of Use for File Download"/>
+                                    </h:outputLink>
+                                </ui:panelGroup>
+                                <h:outputText id="outputText6" styleClass="vdcSubHeaderColor" value="Users, Permissions, Release Dataverse:"/>
                                 <ui:panelGroup block="true" id="groupPanel8"
                                                separator="&lt;br /&gt;" style="padding-left: 10px">
                                     <h:outputLink id="hyperlink11" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.jsp">
@@ -100,12 +110,6 @@
                                     </h:outputLink>
                                     <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.jsp">
                                         <h:outputText styleClass="vdcMenuItem" value="Add New User Account"/>
-                                    </h:outputLink>
-                                    <h:outputLink  rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditDepositUseTermsPage.jsp">
-                                        <h:outputText id="hyperlink5Text3" value="Edit Dataverse Terms of Use for Study Creation and Data Deposit"/>
-                                    </h:outputLink>
-                                     <h:outputLink id="hyperlink14" rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.jsp">
-                                        <h:outputText id="hyperlink4Text3" value="Edit Dataverse Terms of Use for File Download"/>
                                     </h:outputLink>
                                 </ui:panelGroup>
                             </ui:panelGroup>

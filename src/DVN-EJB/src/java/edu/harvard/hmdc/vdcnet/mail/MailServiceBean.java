@@ -218,10 +218,10 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
     }
     public void sendAddSiteNotification(String dataverseCreatorEmail, String siteName, String siteAddress){
         String subject = "Dataverse Network: Your dataverse has been created";
-        String messageText = "Hello, \nYour dataverse, named '"+siteName+ "', was created in the Dataverse Network. You can use the following URL to access your dataverse directly:\n" +
-               "http://"+siteAddress+"\n+" +
-               "Note that your dataverse is set as 'Not Released' until you change that setting. Only you, and any privileged users you add, can access it. To make your dataverse avaliable to everybody, go to the dataverse homepage and click 'My Options.' Then look for the 'Release Dataverse' settings under 'Users, Permissions, Release Dataverse'.\n "+
-               "For information about how to use your dataverse options, click 'User Guides' on the Dataverse Network menu bar. Or go to http://thedata.org and click 'Support.'";
+        String messageText = "Hello, \nYour dataverse named '"+siteName+ "' was created in the Dataverse Network. You can use the following URL to access it directly:\n" +
+               "http://"+siteAddress+"\n"+
+               "Note that your dataverse is set as 'Not Released' until you change that setting. Only you, and any privileged users you add, can access it. To make your dataverse avaliable to everybody, go to the dataverse homepage and click 'My Options.' Then look for the 'Release Dataverse' settings under 'Users, Permissions, Release Dataverse'.\n\n"+
+               "For information about how to use your dataverse options, click 'User Guides' on the Dataverse Network menu bar, or go to http://thedata.org/guides.";
         sendDoNotReplyMail(dataverseCreatorEmail,subject,messageText);
     }
     

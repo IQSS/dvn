@@ -223,7 +223,7 @@ public class TermsOfUsePage extends VDCBaseBean {
         if ( termsAccepted &&  isTouTypeDownload() && this.isDownloadDvnTermsRequired() ) { 
             termsOfUseMap.put( "dvn_download", "accepted" );
         }           
-        if ( termsAccepted &&  isTouTypeDeposit() && this.isDepositDvnTermsRequired() ) { 
+        if ( termsAccepted &&  isTouTypeDeposit() && this.isDepositDataverseTermsRequired() ) { 
             termsOfUseMap.put( "vdc_deposit_"+getVDCRequestBean().getCurrentVDC().getId(), "accepted" );
         }      
         if ( termsAccepted &&  isTouTypeDeposit() && this.isDepositDvnTermsRequired() ) { 

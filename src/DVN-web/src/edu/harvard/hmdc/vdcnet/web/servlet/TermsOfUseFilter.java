@@ -105,8 +105,7 @@ public class TermsOfUseFilter implements Filter {
     }
 
     public static boolean isDownloadStudyTermsRequired(Study study, Map termsOfUseMap) {
-        boolean studyTermsRequired = study.isTermsOfUseEnabled()
-                    || !StringUtil.isEmpty(study.getHarvestDVNTermsOfUse()) ||!!StringUtil.isEmpty(study.getHarvestDVTermsOfUse());
+        boolean studyTermsRequired = study.isTermsOfUseEnabled();
         if (studyTermsRequired) {
             return termsOfUseMap.get("study_download_" + study.getId()) == null;
         }

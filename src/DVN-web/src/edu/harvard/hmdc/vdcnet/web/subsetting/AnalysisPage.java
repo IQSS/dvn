@@ -1145,9 +1145,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     /**
-     * saving the current recoding scheme h:commandButton: recodeBttn attr:
-     * actionListener
-     * 
+     * Saves the current recoding schema in the Map object recodeSchema
+     * after an end-user clicked the apply-recode button.
+     * Attached to the actionListener attribute of h:commandButton component
+     * whose id is recodeBttn
      */
     public void saveRecodedVariable(ActionEvent acev) {
         out.println("***** saveRecodedVariable(): begins here *****");
@@ -1160,20 +1161,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         String newVarName = (String) recodeTargetVarName.getValue();
         out.println("new var name=" + newVarName);
         if (isRecodedVar(oldVarId)) {
-            // replace mode
+            // replace (re-save) case
             out.println("This variable id is found in the new variable set"
                 + " and recoding scheme would be updated");
             out.println("currentVarId=" + oldVarId);
             replaceRecodedVariable(oldVarId);
             return;
         } else {
-            // newly create
+            // newly create case
             if (isDuplicatedVariableName(newVarName)) {
                 // duplicated name
                 out.println("The new variable name is already in use");
                 msgSaveRecodeBttn.setRendered(true);
-                msgSaveRecodeBttn
-                    .setText("The variable Name you entered is found among the existing variables;<br /> enter a new variable name");
+                msgSaveRecodeBttn.setText(
+                    "The variable Name you entered is found "+
+                    "among the existing variables;<br />"+
+                    " enter a new variable name");
                 return;
             } else {
                 // sanity check against the name
@@ -1183,27 +1186,31 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 if (isVariableNameValid(newVarName, whiteSpace)) {
                     // whitespace found
                     msgSaveRecodeBttn.setRendered(true);
-                    msgSaveRecodeBttn
-                        .setText("A whitespace character was found in the variable name;<br />Whitesapce characters are not allowed in a variable name.");
+                    msgSaveRecodeBttn.setText(
+                        "A whitespace character was found in "+
+                        "the variable name;<br />"+
+                        "Whitesapce characters are not allowed "+
+                        "in a variable name.");
                     return;
                 } else if (isVariableNameValid(newVarName, prohibitedChars)) {
-                    // non-permissible character found
+                    // non-permissible character was found
                     msgSaveRecodeBttn.setRendered(true);
-                    msgSaveRecodeBttn
-                        .setText("At least one non-permissible character was found in the variable name;<br />Use a-z, A-Z, _, 0-9 characters.");
+                    msgSaveRecodeBttn.setText(
+                        "At least one non-permissible character was found "+
+                        "in the variable name;<br />"+
+                        "Use a-z, A-Z, _, 0-9 characters.");
                     return;
                 } else if (isVariableNameValid(newVarName, firstChar)) {
                     // non-permissible character found
                     msgSaveRecodeBttn.setRendered(true);
-                    msgSaveRecodeBttn
-                        .setText("The first character of a variable name must be an alphabet character.");
+                    msgSaveRecodeBttn.setText(
+                        "The first character of a variable name must be "+
+                        "an alphabet character.");
                     return;
                 } else {
                     // unique and safe name
                     out.println("The new variable name is unique");
                     msgSaveRecodeBttn.setRendered(false);
-                    // msgSaveRecodeBttn.setText("The variable name is unique");
-
                 }
             }
         }
@@ -2847,16 +2854,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // get the number of valid categories (rows) of a recode Table
     public int getValidCategories(String newVarId) {
         int noCat = 0;
+        Set<String> newValidValueSet = new HashSet<String>(); 
         // get the recode table by varId
         List<Object> rvtbl = (List<Object>) recodeSchema.get(newVarId);
         for (int i = 0; i < rvtbl.size(); i++) {
             List<Object> rvs = (List<Object>) rvtbl.get(i);
             if (!((Boolean) rvs.get(0))) {
                 // false [== not exclude this category]
+                newValidValueSet.add((String)rvs.get(1));
                 noCat++;
             }
         }
-        return noCat;
+        out.println("non-exclude values="+noCat);
+        out.println("unique non-exclude values="+newValidValueSet.size());
+        //return noCat;
+        return newValidValueSet.size();
     }
 
     public int getSumStatSize(String varId) {

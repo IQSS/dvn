@@ -233,6 +233,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         if (deleteFromIndex) {
             indexService.deleteStudy(studyId);
         }
+        logger.log(Level.INFO, "Successfully deleted Study "+studyId+"!");
 
 
     }
@@ -876,6 +877,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return (List<StudyLock>) em.createQuery(query).getResultList();
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void addStudyLock(Long studyId, Long userId, String detail) {
         Study study = em.find(Study.class, studyId);
         VDCUser user = em.find(VDCUser.class, userId);
@@ -895,16 +897,17 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         em.persist(lock);
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void removeStudyLock(Long studyId) {
         Study study = em.find(Study.class, studyId);
         em.refresh(study);
         StudyLock lock = study.getStudyLock();
-        VDCUser user = lock.getUser();
-
-        study.setStudyLock(null);
-        user.getStudyLocks().remove(lock);
-
-        em.remove(lock);
+        if (lock!=null) {
+            VDCUser user = lock.getUser();
+            study.setStudyLock(null);
+            user.getStudyLocks().remove(lock);
+            em.remove(lock);
+        }
     }
 
     public void incrementNumberOfDownloads(Long studyId) {

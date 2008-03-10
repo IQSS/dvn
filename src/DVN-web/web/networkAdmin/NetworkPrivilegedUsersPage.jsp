@@ -30,27 +30,7 @@
                                    <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                                    <h:outputText styleClass="vdcHelpText" value="By checking this option, your Dataverse Network homepage will display an invitation to create a dataverse (only users without Dataverse creator privileges will see the invitation). Once a request is submitted, you can choose to accept the user as a Dataverse cretaor."/>
                                </ui:panelGroup>  
-                               
-                               <ui:panelGroup block="true" style="padding-left:50px;" rendered="#{!empty NetworkPrivilegedUsersPage.privileges.creatorRequests}">
-                                   <h:dataTable cellpadding="0" cellspacing="0" headerClass="list-header-left"
-                                                columnClasses="vdcColPadded, vdcColPadded" style="margin-top: 10px; "
-                                                value="#{NetworkPrivilegedUsersPage.privileges.creatorRequests}" var="currentRow">
-                                       <h:column id="column1">
-                                           <f:facet name="header">
-                                               <h:outputText id="createUsers_tcol1" value="Users Requesting to Create a Dataverse"/>
-                                           </f:facet>
-                                           <h:outputLink id="hyperlink1" value="../login/AccountPage.jsp?userId=#{currentRow.networkRoleRequest.vdcUser.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
-                                               <h:outputText id="hyperlink2Text1" value="#{currentRow.networkRoleRequest.vdcUser.userName}"/>
-                                           </h:outputLink>
-                                       </h:column>
-                                       <h:column id="column2">
-                                           <h:selectOneRadio value="#{currentRow.accept}">
-                                               <f:selectItem itemLabel="Accept" itemValue="true"/>
-                                               <f:selectItem itemLabel="Reject" itemValue="false"/>
-                                           </h:selectOneRadio>
-                                       </h:column>
-                                   </h:dataTable>
-                               </ui:panelGroup> 
+
                            </ui:panelGroup>
                            
                            <ui:panelGroup block="true" style="padding-top: 10px; padding-bottom: 10px">

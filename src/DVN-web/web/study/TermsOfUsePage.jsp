@@ -85,7 +85,7 @@
                                 <h:outputText value="#{TermsOfUsePage.vdcNetwork.depositTermsOfUse}" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" escape="false"/>
                                 
                                 <h:outputText value="Dataverse Deposit Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" />
-                                <h:outputText value="#{VDCRequest.currentVDC.depositTermsOfUse}" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" escape="false"/>
+                                <h:outputText value="#{TermsOfUsePage.depositDataverseTerms}" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" escape="false"/>
                              </ui:panelLayout>
                         </ui:panelGroup>
                         

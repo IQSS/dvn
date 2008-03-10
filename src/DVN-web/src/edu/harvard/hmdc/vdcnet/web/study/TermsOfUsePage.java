@@ -30,6 +30,7 @@
 package edu.harvard.hmdc.vdcnet.web.study;
 
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
@@ -134,7 +135,7 @@ public class TermsOfUsePage extends VDCBaseBean {
             studyId = new Long(getRequestParam("studyId"));
         } catch (NumberFormatException ex) {}
         
-        if (studyId == null && isTouTypeDownload()) {
+        if (studyId == null) {
             // now check specific JSF post parameters
             try {
                 if ( isFromPage("TermsOfUsePage") ) {
@@ -154,7 +155,14 @@ public class TermsOfUsePage extends VDCBaseBean {
     }       
     
     
-   
+    public String getDepositDataverseTerms() {
+        String terms=null;
+        VDC termsVDC = getDepositVDC();
+        if (termsVDC!=null) {
+            terms = termsVDC.getDepositTermsOfUse();
+        }
+        return terms;
+    }
     
     public boolean isTermsAcceptanceRequired() {
         return isDownloadDataverseTermsRequired() || isDownloadStudyTermsRequired();
@@ -224,7 +232,7 @@ public class TermsOfUsePage extends VDCBaseBean {
             termsOfUseMap.put( "dvn_download", "accepted" );
         }           
         if ( termsAccepted &&  isTouTypeDeposit() && this.isDepositDataverseTermsRequired() ) { 
-            termsOfUseMap.put( "vdc_deposit_"+getVDCRequestBean().getCurrentVDC().getId(), "accepted" );
+            termsOfUseMap.put( "vdc_deposit_"+getDepositVDC().getId(), "accepted" );
         }      
         if ( termsAccepted &&  isTouTypeDeposit() && this.isDepositDvnTermsRequired() ) { 
             termsOfUseMap.put( "dvn_deposit", "accepted" );
@@ -265,18 +273,30 @@ public class TermsOfUsePage extends VDCBaseBean {
     }
     
     private void setRequiredFlags() {
+        
         if (study != null) {
             downloadDataverseTermsRequired = TermsOfUseFilter.isDownloadDataverseTermsRequired(study, getTermsOfUseMap());
             downloadStudyTermsRequired = TermsOfUseFilter.isDownloadStudyTermsRequired(study, getTermsOfUseMap());
         }
-        
-        if (getVDCRequestBean().getCurrentVDC() != null) {
-            depositDataverseTermsRequired = TermsOfUseFilter.isDepositDataverseTermsRequired(getVDCRequestBean().getCurrentVDC(), getTermsOfUseMap());
+         if (getDepositVDC()!= null) {
+            depositDataverseTermsRequired = TermsOfUseFilter.isDepositDataverseTermsRequired(getDepositVDC(), getTermsOfUseMap());
         }
         
         // network level
         downloadDvnTermsRequired = TermsOfUseFilter.isDownloadDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap());
         depositDvnTermsRequired = TermsOfUseFilter.isDepositDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap());    
+    }
+    
+    
+    private VDC getDepositVDC() {
+            
+        VDC depositVDC = null;
+        if (study!=null) {
+            depositVDC = study.getOwner();
+        } else {
+            depositVDC = getVDCRequestBean().getCurrentVDC();
+        }
+        return depositVDC;
     }
 
 }

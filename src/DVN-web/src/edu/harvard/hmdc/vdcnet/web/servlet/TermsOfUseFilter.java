@@ -252,10 +252,16 @@ public class TermsOfUseFilter implements Filter {
     }
 
     private void checkDepositTermsOfUse(HttpServletRequest req, HttpServletResponse res) throws java.io.IOException {
-        VDC currentVDC = vdcService.getVDCFromRequest(req);
         Map termsOfUseMap = getTermsOfUseMap(req);
         String studyId = req.getParameter("studyId");
-        if (isDepositDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) || isDepositDataverseTermsRequired(currentVDC,termsOfUseMap)) {        
+        VDC currentVDC = vdcService.getVDCFromRequest(req);
+        VDC depositVDC = null;
+        if (studyId!=null) {
+            depositVDC = studyService.getStudy(Long.parseLong(studyId)).getOwner();
+        } else {
+            depositVDC = currentVDC;
+        }
+       if (isDepositDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) ||(depositVDC!=null  && isDepositDataverseTermsRequired(depositVDC,termsOfUseMap))) {        
             String params = "?tou="+TOU_DEPOSIT;
             params += "&studyId=" + studyId;
             params += "&redirectPage=" + URLEncoder.encode(req.getServletPath() + req.getPathInfo() + "?" + req.getQueryString(), "UTF-8");
@@ -369,7 +375,7 @@ public class TermsOfUseFilter implements Filter {
             if (NOTaDSBrequest) {
                 Map termsOfUseMap = getTermsOfUseMap(req);
                 if (isDownloadDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) || isDownloadDataverseTermsRequired(study, termsOfUseMap) || isDownloadStudyTermsRequired(study, termsOfUseMap)) {
-                    VDC currentVDC = vdcService.getVDCFromRequest(req);
+                 VDC currentVDC = vdcService.getVDCFromRequest(req);
                     String params = "?studyId=" + study.getId();
                     params += "&redirectPage=" + URLEncoder.encode(req.getServletPath() + req.getPathInfo() + "?" + req.getQueryString(), "UTF-8");
                     params += "&tou="+TOU_DOWNLOAD;

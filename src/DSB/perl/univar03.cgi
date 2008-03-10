@@ -298,8 +298,9 @@ open ( STRIPPED_DDI, ">" . $ddiforR . "_stripped" );
 
 while ( <DDI> )
 {
-    chop; 
+    #chop; 
     s/\r//g;
+    s/\n*$//g;
     s/[\000-\037\200-\377]/\?/g; 
     print STRIPPED_DDI $_ . "\n";
 }
@@ -709,9 +710,9 @@ if ($dataURL) {
 				print TMPX "caseQnty aftrer update=",$CGIparamSet->getCaseQnty(),"\n";
 				
 				if ($CGIparamSet->checkDwnldTab()){
-					print TMPX "go to download section\n";
+					print TMPX "no more fast track [go to download section]\n";
 					copy ($RtmpData, $DwnldPrfx);
-					goto DOWNLOAD;
+					#goto DOWNLOAD;
 				}
 
 				
@@ -729,9 +730,9 @@ if ($dataURL) {
 		move($RtmpDataRaw,$RtmpData);
 
 		if ($CGIparamSet->checkDwnldTab()){
-			print TMPX "go to download section\n";
+			print TMPX "no more fast track [go to download section]\n";
 			copy ($RtmpData, $DwnldPrfx);
-			goto DOWNLOAD;
+			#goto DOWNLOAD;
 		}
 	}
 
@@ -959,13 +960,15 @@ ENDJ
 		print TMPFILE $citationMessage; 
 		close TMPFILE; 
 		if ($dtdwnldf eq 'D01'){
-		        # tab-delimited case
+			# tab-delimited case
 			$varnameline = '"'. join("\"\t\"", @{$CGIparamSet->getVarNameSet()}) . "\"\n";
+			print TMPX "varnameline=",$varnameline,"\n";
 			# generate the node set string for extracting metadata
 			my $paramNodeSet=$CGIparamSet->getRsubsetparam();
 			print TMPX "paramNodeSet(New)=",$paramNodeSet,"\n";
 			my $tmpfl = "$TMPDIR/dwnld_tabwc_$$";	
-			`touch $tmpfl; echo -en  "$varnameline" >> $tmpfl; cat $DwnldPrfx >> $tmpfl;mv $tmpfl $TMPDIR/data_$$.dat;rm $DwnldPrfx`;
+			#`touch $tmpfl; echo -en  "$varnameline" >> $tmpfl; cat $DwnldPrfx >> $tmpfl;mv $tmpfl $TMPDIR/data_$$.dat;rm $DwnldPrfx`;
+			`touch $tmpfl; cat $DwnldPrfx >> $tmpfl;mv $tmpfl $TMPDIR/data_$$.dat;rm $DwnldPrfx`;
 			
 			my $ct = [ qw ( sps sas dta ) ];
 			my $ccMD= $CGIparamSet->getMetaData4CC();

@@ -273,6 +273,7 @@ public class TermsOfUseFilter implements Filter {
         String catId = req.getParameter("catId");
         String studyId = req.getParameter("studyId");
         String requestPath = req.getPathInfo();
+	String imageThumb = req.getParameter("imageThumb");
 
         Study study = null;
         if (req.getServletPath().equals("/FileDownload")) {
@@ -360,6 +361,10 @@ public class TermsOfUseFilter implements Filter {
                 // so we just keep assuming this is NOT a DSB call
                 }
             }
+	    
+	    if ( imageThumb != null ) {
+		NOTaDSBrequest = false; 
+	    }
 
             if (NOTaDSBrequest) {
                 Map termsOfUseMap = getTermsOfUseMap(req);
@@ -375,6 +380,9 @@ public class TermsOfUseFilter implements Filter {
                     return; // don't continue with chain since we are redirecting'
                 }
             }
+
+	    if (imageThumb != null) {
+	    }
         }
 
     }

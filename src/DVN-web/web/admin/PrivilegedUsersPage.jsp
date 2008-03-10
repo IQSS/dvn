@@ -42,26 +42,6 @@
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                             <h:outputText styleClass="vdcHelpText" value="By checking this option, your dataverse homepage will display an invitation to become a contributor. Once the request is submitted, you can choose to accept that user as a contributor. (Note that only end-users without the permission to contribute will see that invitation.)"/>
                         </ui:panelGroup>
-                        <ui:panelGroup block="true" style="padding-left: 50px;" rendered="#{!empty PrivilegedUsersPage.contributorRequests}">   
-                            <h:dataTable cellpadding="0" cellspacing="0" headerClass="list-header-left"
-                                         columnClasses="vdcColPadded, vdcColPadded" id="dataTable2"
-                                         style="margin-top: 10px;" value="#{PrivilegedUsersPage.contributorRequests}" var="currentRow">
-                                <h:column id="column5">
-                                    <f:facet name="header">
-                                        <h:outputText id="contributorRequest_tcol1" value="Users Requesting to be Contributors"/>
-                                    </f:facet>
-                                    <h:outputLink id="hyperlink2" value="../login/AccountPage.jsp?userId=#{currentRow.roleRequest.vdcUser.id}">
-                                        <h:outputText id="hyperlink2Text" value="#{currentRow.roleRequest.vdcUser.userName}"/>
-                                    </h:outputLink>
-                                </h:column>
-                                <h:column id="column6">
-                                    <h:selectOneRadio value="#{currentRow.accept}">
-                                        <f:selectItem itemLabel="Accept" itemValue="true"/>
-                                        <f:selectItem itemLabel="Reject" itemValue="false"/>
-                                    </h:selectOneRadio>
-                                </h:column>
-                            </h:dataTable>               
-                        </ui:panelGroup>
                     </ui:panelGroup>
                     
                     <ui:panelGroup block="true" style="padding-top: 10px; padding-bottom: 10px">

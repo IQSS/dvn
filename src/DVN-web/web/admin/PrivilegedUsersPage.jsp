@@ -40,7 +40,7 @@
                         <h:selectBooleanCheckbox id="checkbox5" value="#{PrivilegedUsersPage.vdc.allowContributorRequests}"/>
                         <ui:panelGroup block="true" >
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                            <h:outputText styleClass="vdcHelpText" value="By checking this option, your dataverse homepage will display an invitation to become a contributor. Once the request is submitted, you can choose to accept that user as a contributor. (Note that only end-users without the permission to contribute will see that invitation.)"/>
+                            <h:outputText styleClass="vdcHelpText" value="By checking this option, your dataverse homepage will display an invitation to become a contributor  (only end-users without the permission to contribute will see that invitation.)"/>
                         </ui:panelGroup>
                     </ui:panelGroup>
                     

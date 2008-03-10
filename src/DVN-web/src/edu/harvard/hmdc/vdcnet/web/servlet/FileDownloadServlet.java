@@ -59,6 +59,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map; 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern; 
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import java.net.InetAddress;
@@ -357,10 +359,33 @@ public class FileDownloadServlet extends HttpServlet{
 			    String jsessionid = null; 
 			    String viewstate  = null; 
 			    String studyid    = null; 
-			    String fileid     = null; 
+
+			    String regexpJsession = "jsessionid=[0-9a-f]*"; 
+			    String regexpViewState = "ViewState\" value=\"[^\"]*"; 
+			    String regexpStudyId = "studyId=[0-9]*"; 
+
+			    Pattern patternJsession = Pattern.compile(regexpJsession); 
+			    Pattern patternViewState= Pattern.compile(regexpViewState); 
+			    Pattern patternStudyId = Pattern.compile(regexpStudyId); 
+
+			    Matcher matcher = null; 
 
 			    while ( ( line = rd.readLine () ) != null ) {
-				
+				matcher = patternJsession.matcher(line);
+				if ( matcher.find() ) {
+				    jsessionid = matcher.group(); 
+				    jsessionid = jsessionid.substring(11); 
+				}
+				matcher = patternViewState.matcher(line);
+				if ( matcher.find() ) {
+				    viewstate = matcher.group(); 
+				    viewstate = viewstate.substring(18); 
+				}
+				matcher = patternStudyId.matcher(line);
+				if ( matcher.find() ) {
+				    studyid = matcher.group(); 
+				    studyid = studyid.substring(8); 
+				}
 			    }
 
 			    in.close();
@@ -372,13 +397,14 @@ public class FileDownloadServlet extends HttpServlet{
 				// let's make an authentication call, 
 				// which has to be a POST method: 
 
+				redirectLocation = redirectLocation.substring(0, (redirectLocation.indexOf( ";" ) + 1)); 
 				PostMethod TOUpostMethod = new PostMethod( redirectLocation + ';' + jsessionid ); 
 				
 				Part[] parts = {
 				    new StringPart( "content:termsOfUsePageView:form1:vdcId", "" ),
 				    new StringPart( "pageName", "TermsOfUsePage" ),
 				    new StringPart( "content:termsOfUsePageView:form1:studyId", studyid ),
-				    new StringPart( "content:termsOfUsePageView:form1:redirectPage", "/FileDownload/?fileId=" + fileid ),
+				    new StringPart( "content:termsOfUsePageView:form1:redirectPage", "/FileDownload/?fileId=" + fileId ),
 				    new StringPart( "content:termsOfUsePageView:form1:tou", "download" ),
 				    new StringPart( "content:termsOfUsePageView:form1:termsAccepted", "on" ),
 				    new StringPart( "content:termsOfUsePageView:form1:termsButton", "Continue" ),

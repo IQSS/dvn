@@ -555,20 +555,111 @@ if ($dataURL) {
 	    my $do_stream;
 	    my $buf="";
 
-	    $response = $ua->request($request,
-				     sub {
-					 my($chunk, $res) = @_;
-					 
-					 unless ($do_stream) {
-					     open(RCUT,"|" . $rcut_filter . " >  $RtmpDataFile") 
-						 ||  $logger->vdcLOG_warning ( 'VDC::DSB',  $script_name, "error opening rcut");
-					     $do_stream = 1; 
-					 }
+	    $response = $ua->request($request,$RtmpDataFile . ".raw");
 
-					 print RCUT  $chunk;
-				     }
-				     );
-	    if ($buf) {print "$buf";} else { close(RCUT); }
+
+	    my $code = $response->code; 
+	    my $data_status = $response->status_line;
+
+
+	    if ( $code == 302 )
+	    {
+		# A redirect. 
+		my $location = $response->header ( 'Location' );
+
+		my $jsession; 
+		my $viewstate; 
+		my $studyid; 
+
+		$request = HTTP::Request->new('GET', $location );
+		$response = $ua->request($request,$RtmpDataFile . ".raw");
+
+		$code = $response->code; 
+
+
+		open (F, $RtmpDataFile . ".raw"); 
+
+		while ( <F> )
+		{
+		    if ( /<form [^>]*jsessionid=([0-9a-f]*)\"/ )
+		    {
+			$jsessionid=$1; 
+		    }
+
+		    if ( /<input [^>]*ViewState\" value=\"([^\"]*)\"/ )
+		    {
+			$viewstate=$1; 
+		    }
+
+		    if ( /studyId=([0-9]*)[^0-9]/ )
+		    {
+			$studyid=$1; 
+		    }
+
+		}
+
+		close F; 
+
+		if ( $jsessionid )
+		{
+		    my $content = 'content:termsOfUsePageView:form1:vdcId='; 
+
+
+		    $content .= '&pageName=TermsOfUsePage';
+		    $content .= '&content:termsOfUsePageView:form1:studyId=' . $studyid;
+		    $content .= '&content:termsOfUsePageView:form1:redirectPage=/FileDownload/?fileId=' . $fileid; 
+		    $content .= '&content:termsOfUsePageView:form1:tou=download';
+		    $content .= '&content:termsOfUsePageView:form1:termsAccepted=on';
+		    $content .= '&content:termsOfUsePageView:form1:termsButton=Continue';
+		    $content .= '&content:termsOfUsePageView:form1_hidden=content:termsOfUsePageView:form1_hidden';
+		    $content .= '&javax.faces.ViewState=' . $viewstate; 
+
+		    my $url_tou = $location;
+		    $url_tou=~s/\?.*$//g; 
+
+		    my $url_tou_ext = $url_tou . ';jsessionid=' . $jsessionid; 
+
+		    $request = HTTP::Request->new(POST => $url_tou_ext);
+		    $request->header('Cookie' => 'JSESSIONID=' . $jsessionid); 
+		    $request->content_type('application/x-www-form-urlencoded');
+		    $request->content( $content );
+
+		    $response = $ua->request($request,$file_final);
+    
+		    $data_status = $response->status_line;
+
+		    if ($response->code==302) 
+		    { 
+			### my $location = $response->header ( 'Location' ); 
+
+			$request = HTTP::Request->new('GET', $url );
+			$request->header('Cookie' => 'JSESSIONID=' . $jsessionid); 
+
+			$response = $ua->request($request,$RtmpDataFile . ".raw");
+		    }
+		}
+	    }
+
+
+	    if ( -f $RtmpDataFile . ".raw" )
+	    {
+		system ( "$rcut_filter < $RtmpDataFile" . ".raw > $RtmpDataFile " ); 
+	    }
+
+#	    $response = $ua->request($request,
+#				     sub {
+#					 my($chunk, $res) = @_;
+#					 
+#					 unless ($do_stream) {
+#					     open(RCUT,"|" . $rcut_filter . " >  $RtmpDataFile") 
+#						 ||  $logger->vdcLOG_warning ( 'VDC::DSB',  $script_name, "error opening rcut");
+#					     $do_stream = 1; 
+#					 }
+#
+#					 print RCUT  $chunk;
+#				     }
+#				     );
+#	    if ($buf) {print "$buf";} else { close(RCUT); }
 	} else {
 	    # Census.gov url:
 

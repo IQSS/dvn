@@ -164,6 +164,7 @@ public class Indexer implements java.io.Serializable  {
     
     protected void addDocument(Study study) throws IOException{
         Document doc = new Document();
+        logger.info("Start indexing study "+study.getStudyId());
         addText(doc,"title",study.getTitle());
         addKeyword(doc,"title",study.getTitle());
         addKeyword(doc,"id",study.getId().toString());
@@ -354,6 +355,7 @@ public class Indexer implements java.io.Serializable  {
         writerStem.setUseCompoundFile(true);
         writerStem.addDocument(doc);
         writerStem.close();
+        logger.info("End indexing study "+study.getStudyId());
     }
     
     

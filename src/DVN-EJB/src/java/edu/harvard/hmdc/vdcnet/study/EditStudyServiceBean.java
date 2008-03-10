@@ -236,7 +236,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
     }
     
     
-    private void addFiles(VDCUser user) {
+    private void addFiles(VDCUser user)  {
         // step 0: start with some initialization
         File newDir = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
         if (!newDir.exists()) {
@@ -291,9 +291,18 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
                 ingestMessage.setIngestUserId(user.getId());
                 ingestMessage.setStudyId(study.getId());
                 Message message = session.createObjectMessage(ingestMessage);
-                sender.send(message);
                 
-                   
+                String detail = "Ingest processing for " + subsettableFiles.size() + " file(s).";
+                studyService.addStudyLock(study.getId(), user.getId(), detail);
+                try {
+                    sender.send(message);
+                } catch(Exception ex) {
+                    // If anything goes wrong, remove the study lock.
+                    studyService.removeStudyLock(study.getId());
+                    ex.printStackTrace();
+                }
+                 
+                  
                 // send an e-mail
                 mailService.sendIngestRequestedNotification(ingestEmail, subsettableFiles);
                 
@@ -302,6 +311,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
                 ex.printStackTrace();
             } finally {
                 try {
+              
                     if (sender != null) {sender.close();}
                     if (session != null) {session.close();}
                     if (conn != null) {conn.close();}

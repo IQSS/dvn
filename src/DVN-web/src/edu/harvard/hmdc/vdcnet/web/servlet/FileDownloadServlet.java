@@ -44,9 +44,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
+import java.io.BufferedReader;
 import java.nio.ByteBuffer; 
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -71,6 +73,10 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod; 
 import org.apache.commons.httpclient.methods.PostMethod; 
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
+
 
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -308,12 +314,95 @@ public class FileDownloadServlet extends HttpServlet{
 		    
 		    method.releaseConnection();
 		} else {
+
 		    GetMethod method = null; 
 		    int status = 200;
 
 		    try { 
 			method = new GetMethod ( file.getFileSystemLocation() );
 			status = getClient().executeMethod(method);
+
+			// The code below is to enable the click through
+			// authentication.
+			// We are assuming that if they have gotten here, 
+			// they must have already clicked on all the 
+			// licensing agreement forms (the terms-of-use
+			// agreements are preserved in the study DDIs as 
+			// they are exported and harvested between DVNs). 
+
+			if ( status == 302 ) {
+			    // this is a redirect. 
+			    // let's see whether this is a DVN TermsOfUse form:
+
+			    String redirectLocation = null;
+			  
+			    for (int i = 0; i < method.getResponseHeaders().length; i++) {
+				String headerName = method.getResponseHeaders()[i].getName();
+				if (headerName.equals("Location")) {
+				    redirectLocation = method.getResponseHeaders()[i].getValue(); 
+				}
+			    }
+
+			    // try again: 
+			    method = new GetMethod ( redirectLocation );
+			    status = getClient().executeMethod(method);
+
+			    byte[] dataBuffer = new byte[8192]; 
+
+			    InputStream in = method.getResponseBodyAsStream(); 
+			    BufferedReader rd = new BufferedReader(new InputStreamReader(in)); 
+
+			    String line = null;
+
+			    String jsessionid = null; 
+			    String viewstate  = null; 
+			    String studyid    = null; 
+			    String fileid     = null; 
+
+			    while ( ( line = rd.readLine () ) != null ) {
+				
+			    }
+
+			    in.close();
+
+			    if ( jsessionid != null ) {
+
+				// we seem to have found a JSESSIONID; 
+				// looks like an authentication form. 
+				// let's make an authentication call, 
+				// which has to be a POST method: 
+
+				PostMethod TOUpostMethod = new PostMethod( redirectLocation + ';' + jsessionid ); 
+				
+				Part[] parts = {
+				    new StringPart( "content:termsOfUsePageView:form1:vdcId", "" ),
+				    new StringPart( "pageName", "TermsOfUsePage" ),
+				    new StringPart( "content:termsOfUsePageView:form1:studyId", studyid ),
+				    new StringPart( "content:termsOfUsePageView:form1:redirectPage", "/FileDownload/?fileId=" + fileid ),
+				    new StringPart( "content:termsOfUsePageView:form1:tou", "download" ),
+				    new StringPart( "content:termsOfUsePageView:form1:termsAccepted", "on" ),
+				    new StringPart( "content:termsOfUsePageView:form1:termsButton", "Continue" ),
+				    new StringPart( "content:termsOfUsePageView:form1_hidden", "content:termsOfUsePageView:form1_hidden'" ),
+				    new StringPart( "javax.faces.ViewState", viewstate )
+				};
+
+
+				TOUpostMethod.setRequestEntity(new MultipartRequestEntity(parts, TOUpostMethod.getParams()));
+				TOUpostMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+				status = getClient().executeMethod(method);
+
+				// TODO -- more diagnostics needed here! 
+				
+				// And now, let's try and download the file
+				// again: 
+
+
+				method = new GetMethod (file.getFileSystemLocation()); 
+				method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+				status = getClient().executeMethod(method);
+			    }
+			}
+
 		    } catch (IOException ex) {
 			// return 404 
 			// and generate a FILE NOT FOUND message

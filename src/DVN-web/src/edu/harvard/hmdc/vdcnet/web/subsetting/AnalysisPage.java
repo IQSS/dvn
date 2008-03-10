@@ -2850,17 +2850,28 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         }
         return chr;
     }
-
-    // get the number of valid categories (rows) of a recode Table
+    
+    /**
+     * Returns the number of valid and unique categories (String type) 
+     * in a recode table (List) that is stored in recodeSchema (Map) 
+     * to check whether this variable is binary, etc.
+     * 
+     * @param newVarId    the id of a requested variable
+     * @return    the number of valid and unique categories
+     */
     public int getValidCategories(String newVarId) {
         int noCat = 0;
+        // use a Set object to find a unique set of values (String)
         Set<String> newValidValueSet = new HashSet<String>(); 
         // get the recode table by varId
         List<Object> rvtbl = (List<Object>) recodeSchema.get(newVarId);
         for (int i = 0; i < rvtbl.size(); i++) {
             List<Object> rvs = (List<Object>) rvtbl.get(i);
             if (!((Boolean) rvs.get(0))) {
-                // false [== not exclude this category]
+                // 1st element tells whether this value is to be excuded
+                // false means "not to exclude this value"
+                
+                // add this value to the set
                 newValidValueSet.add((String)rvs.get(1));
                 noCat++;
             }
@@ -2870,13 +2881,27 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         //return noCat;
         return newValidValueSet.size();
     }
-
+    
+    /**
+     * Returns the number of summary statistics of the requested variable
+     * 
+     * @param varId    the id of a requested variable
+     * @return    the number of summary statistics (8 for continuous variables
+     *            and at least 3 for non-continuous ones)
+     */
     public int getSumStatSize(String varId) {
         int sumStatSize = getVariableById(varId).getSummaryStatistics().size();
         out.println("sumStat size=" + sumStatSize);
         return sumStatSize;
     }
-
+    
+    /**
+     * Returns the number of valid (non-missing-value) values of
+     * the requested variable
+     * 
+     * @param varId    the id of a requested variable
+     * @return    the number of valid (non-missing-value) responses
+     */
     public int getCatStatSize(String varId) {
         Collection<VariableCategory> catStatSet = getVariableById(varId)
             .getCategories();

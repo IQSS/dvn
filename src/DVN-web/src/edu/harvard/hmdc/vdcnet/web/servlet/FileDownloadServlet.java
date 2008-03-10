@@ -322,6 +322,8 @@ public class FileDownloadServlet extends HttpServlet{
 
 		    try { 
 			method = new GetMethod ( file.getFileSystemLocation() );
+			method.setFollowRedirects(false); 
+
 			status = getClient().executeMethod(method);
 
 			// The code below is to enable the click through
@@ -361,10 +363,10 @@ public class FileDownloadServlet extends HttpServlet{
 			    String studyid        = null; 
 			    String remotefileid   = null; 
 
-			    String regexpJsession = "jsessionid=[0-9a-f]*"; 
-			    String regexpViewState = "ViewState\" value=\"[^\"]*"; 
-			    String regexpStudyId = "studyId=[0-9]*"; 
-			    String regexpRemoteFileId = "fileId=([0-9]*)";
+			    String regexpJsession = "jsessionid=([0-9a-f]*)\""; 
+			    String regexpViewState = "ViewState\" value=\"([^\"]*)\""; 
+			    String regexpStudyId = "studyId\" value=\"([0-9]*)\""; 
+			    String regexpRemoteFileId = "fileId=([0-9]*)\"";
 
 			    Pattern patternJsession = Pattern.compile(regexpJsession); 
 			    Pattern patternViewState= Pattern.compile(regexpViewState); 
@@ -382,18 +384,15 @@ public class FileDownloadServlet extends HttpServlet{
 			    while ( ( line = rd.readLine () ) != null ) {
 				matcher = patternJsession.matcher(line);
 				if ( matcher.find() ) {
-				    jsessionid = matcher.group(); 
-				    jsessionid = jsessionid.substring(11); 
+				    jsessionid = matcher.group(1); 
 				}
 				matcher = patternViewState.matcher(line);
 				if ( matcher.find() ) {
-				    viewstate = matcher.group(); 
-				    viewstate = viewstate.substring(18); 
+				    viewstate = matcher.group(1); 
 				}
 				matcher = patternStudyId.matcher(line);
 				if ( matcher.find() ) {
-				    studyid = matcher.group(); 
-				    studyid = studyid.substring(8); 
+				    studyid = matcher.group(1); 
 				}
 			    }
 

@@ -356,19 +356,28 @@ public class FileDownloadServlet extends HttpServlet{
 
 			    String line = null;
 
-			    String jsessionid = null; 
-			    String viewstate  = null; 
-			    String studyid    = null; 
+			    String jsessionid     = null; 
+			    String viewstate      = null; 
+			    String studyid        = null; 
+			    String remotefileid   = null; 
 
 			    String regexpJsession = "jsessionid=[0-9a-f]*"; 
 			    String regexpViewState = "ViewState\" value=\"[^\"]*"; 
 			    String regexpStudyId = "studyId=[0-9]*"; 
+			    String regexpRemoteFileId = "fileId=([0-9]*)";
 
 			    Pattern patternJsession = Pattern.compile(regexpJsession); 
 			    Pattern patternViewState= Pattern.compile(regexpViewState); 
 			    Pattern patternStudyId = Pattern.compile(regexpStudyId); 
+			    Pattern patternRemoteFileId = Pattern.compile(regexpRemoteFileId); 
+			    
 
 			    Matcher matcher = null; 
+
+			    matcher = patternRemoteFileId.matcher(file.getFileSystemLocation());
+			    if ( matcher.find() ) {
+				remotefileid = matcher.group(1); 
+			    }
 
 			    while ( ( line = rd.readLine () ) != null ) {
 				matcher = patternJsession.matcher(line);
@@ -404,7 +413,7 @@ public class FileDownloadServlet extends HttpServlet{
 				    new StringPart( "content:termsOfUsePageView:form1:vdcId", "" ),
 				    new StringPart( "pageName", "TermsOfUsePage" ),
 				    new StringPart( "content:termsOfUsePageView:form1:studyId", studyid ),
-				    new StringPart( "content:termsOfUsePageView:form1:redirectPage", "/FileDownload/?fileId=" + fileId ),
+				    new StringPart( "content:termsOfUsePageView:form1:redirectPage", "/FileDownload/?fileId=" + remotefileid ),
 				    new StringPart( "content:termsOfUsePageView:form1:tou", "download" ),
 				    new StringPart( "content:termsOfUsePageView:form1:termsAccepted", "on" ),
 				    new StringPart( "content:termsOfUsePageView:form1:termsButton", "Continue" ),

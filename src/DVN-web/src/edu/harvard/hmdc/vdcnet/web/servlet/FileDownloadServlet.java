@@ -396,7 +396,7 @@ public class FileDownloadServlet extends HttpServlet{
 				}
 			    }
 
-			    in.close();
+			    rd.close();
 
 			    if ( jsessionid != null ) {
 

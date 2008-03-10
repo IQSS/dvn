@@ -380,9 +380,6 @@ public class TermsOfUseFilter implements Filter {
                     return; // don't continue with chain since we are redirecting'
                 }
             }
-
-	    if (imageThumb != null) {
-	    }
         }
 
     }

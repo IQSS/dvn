@@ -269,9 +269,14 @@ public class TermsOfUsePage extends VDCBaseBean {
             downloadDataverseTermsRequired = TermsOfUseFilter.isDownloadDataverseTermsRequired(study, getTermsOfUseMap());
             downloadStudyTermsRequired = TermsOfUseFilter.isDownloadStudyTermsRequired(study, getTermsOfUseMap());
         }
+        
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            depositDataverseTermsRequired = TermsOfUseFilter.isDepositDataverseTermsRequired(getVDCRequestBean().getCurrentVDC(), getTermsOfUseMap());
+        }
+        
+        // network level
         downloadDvnTermsRequired = TermsOfUseFilter.isDownloadDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap());
-        depositDataverseTermsRequired = TermsOfUseFilter.isDepositDataverseTermsRequired(getVDCRequestBean().getCurrentVDC(), getTermsOfUseMap());
-        depositDvnTermsRequired = TermsOfUseFilter.isDepositDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap());
+        depositDvnTermsRequired = TermsOfUseFilter.isDepositDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap());    
     }
 
 }

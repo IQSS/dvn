@@ -28,7 +28,7 @@
                                <h:selectBooleanCheckbox id="checkbox1" value="#{NetworkPrivilegedUsersPage.privileges.network.allowCreateRequest}"/>
                                <ui:panelGroup block="true" >
                                    <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                   <h:outputText styleClass="vdcHelpText" value="By checking this option, your Dataverse Network homepage will display an invitation to create a dataverse (only users without Dataverse creator privileges will see the invitation). Once a request is submitted, you can choose to accept the user as a Dataverse cretaor."/>
+                                   <h:outputText styleClass="vdcHelpText" value="By checking this option, your Dataverse Network homepage will display an invitation to create a dataverse (only users without Dataverse creator privileges will see the invitation)."/>
                                </ui:panelGroup>  
 
                            </ui:panelGroup>

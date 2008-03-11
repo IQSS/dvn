@@ -955,5 +955,7 @@ create index study_id_index on study(id);
 create index weightedvarrelationship_id_index on  weightedvarrelationship (weighted_variable_id,variable_id);
 create index filecategory_study_id_index on filecategory(study_id);
 create index studyfile_filecategory_id_index on studyfile(filecategory_id);
+create index datavariable_datatable_id_index on datavariable(datatable_id);
+create index variablerange_datavariable_id_index on  variablerange (datavariable_id);
 
 insert into dvnversion( id, buildnumber,versionnumber) values (1,1,1);

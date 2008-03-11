@@ -1,7 +1,7 @@
 Summary: This RPM provides the DSB modules
 Group: Applications
 Name: DVN-DSB
-Version: 1.1.8
+Version: 1.1.9
 Release: 1
 Source: DVN-DSB-%{version}.tar.gz
 Copyright: Artistic or GPL

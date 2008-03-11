@@ -322,6 +322,11 @@ public class FileDownloadServlet extends HttpServlet{
 
 		    try { 
 			method = new GetMethod ( file.getFileSystemLocation() );
+
+			// normally, the HTTP client follows redirects 
+			// automatically, so we need to explicitely tell it
+			// not to: 
+
 			method.setFollowRedirects(false); 
 
 			status = getClient().executeMethod(method);
@@ -334,9 +339,27 @@ public class FileDownloadServlet extends HttpServlet{
 			// agreements are preserved in the study DDIs as 
 			// they are exported and harvested between DVNs). 
 
+			// There are obvious dangers in this approach. 
+			// We have to trust the DVN harvesting from us to display 
+			// the agreements in question to their users. But since
+			// terms/restrictions cannot be disabled on harvested
+			// content through the normal DVN interface, so they 
+			// would have to go directly to the database to do so, 
+			// which would constitute an obvious "hacking" of the
+			// mechanism, (hopefully) making them and not us liable 
+			// for it. 
+
 			if ( status == 302 ) {
 			    // this is a redirect. 
-			    // let's see whether this is a DVN TermsOfUse form:
+
+			    // let's see where it is redirecting us; if it looks like 
+			    // DVN TermsOfUse page, we'll "click" and submit the form,
+			    // then we'll hopefully be able to download the file.
+			    // If it's no the TOU page, we are just going to try to 
+			    // follow the redirect and hope for the best. 
+			    // (A good real life example is the Census archive: the 
+			    // URLs for their objects that they give us are actually
+			    // aliases that are 302-redirected to the actual locations)
 
 			    String redirectLocation = null;
 			  
@@ -346,96 +369,102 @@ public class FileDownloadServlet extends HttpServlet{
 				    redirectLocation = method.getResponseHeaders()[i].getValue(); 
 				}
 			    }
+			    
+			    if (redirectLocation.matches ( ".*TermsOfUsePage.*" )) {
 
-			    // try again: 
-			    method = new GetMethod ( redirectLocation + "&foo=bar" );
-			    status = getClient().executeMethod(method);
+				// try again: 
+				method = new GetMethod ( redirectLocation + "&clicker=downloadServlet" );
+				status = getClient().executeMethod(method);
 
-			    byte[] dataBuffer = new byte[8192]; 
+				InputStream in = method.getResponseBodyAsStream(); 
+				BufferedReader rd = new BufferedReader(new InputStreamReader(in)); 
 
-			    InputStream in = method.getResponseBodyAsStream(); 
-			    BufferedReader rd = new BufferedReader(new InputStreamReader(in)); 
+				String line = null;
 
-			    String line = null;
+				String jsessionid     = null; 
+				String viewstate      = null; 
+				String studyid        = null; 
+				String remotefileid   = null; 
 
-			    String jsessionid     = null; 
-			    String viewstate      = null; 
-			    String studyid        = null; 
-			    String remotefileid   = null; 
+				String regexpJsession = "jsessionid=([0-9a-f]*)\""; 
+				String regexpViewState = "ViewState\" value=\"([^\"]*)\""; 
+				String regexpStudyId = "studyId\" value=\"([0-9]*)\""; 
+				String regexpRemoteFileId = "fileId=([0-9]*)\"";
 
-			    String regexpJsession = "jsessionid=([0-9a-f]*)\""; 
-			    String regexpViewState = "ViewState\" value=\"([^\"]*)\""; 
-			    String regexpStudyId = "studyId\" value=\"([0-9]*)\""; 
-			    String regexpRemoteFileId = "fileId=([0-9]*)\"";
-
-			    Pattern patternJsession = Pattern.compile(regexpJsession); 
-			    Pattern patternViewState= Pattern.compile(regexpViewState); 
-			    Pattern patternStudyId = Pattern.compile(regexpStudyId); 
-			    Pattern patternRemoteFileId = Pattern.compile(regexpRemoteFileId); 
+				Pattern patternJsession = Pattern.compile(regexpJsession); 
+				Pattern patternViewState= Pattern.compile(regexpViewState); 
+				Pattern patternStudyId = Pattern.compile(regexpStudyId); 
+				Pattern patternRemoteFileId = Pattern.compile(regexpRemoteFileId); 
 			    
 
-			    Matcher matcher = null; 
+				Matcher matcher = null; 
 
-			    matcher = patternRemoteFileId.matcher(file.getFileSystemLocation());
-			    if ( matcher.find() ) {
-				remotefileid = matcher.group(1); 
-			    }
-
-			    while ( ( line = rd.readLine () ) != null ) {
-				matcher = patternJsession.matcher(line);
+				matcher = patternRemoteFileId.matcher(file.getFileSystemLocation());
 				if ( matcher.find() ) {
-				    jsessionid = matcher.group(1); 
+				    remotefileid = matcher.group(1); 
 				}
-				matcher = patternViewState.matcher(line);
-				if ( matcher.find() ) {
-				    viewstate = matcher.group(1); 
+
+				while ( ( line = rd.readLine () ) != null ) {
+				    matcher = patternJsession.matcher(line);
+				    if ( matcher.find() ) {
+					jsessionid = matcher.group(1); 
+				    }
+				    matcher = patternViewState.matcher(line);
+				    if ( matcher.find() ) {
+					viewstate = matcher.group(1); 
+				    }
+				    matcher = patternStudyId.matcher(line);
+				    if ( matcher.find() ) {
+					studyid = matcher.group(1); 
+				    }
 				}
-				matcher = patternStudyId.matcher(line);
-				if ( matcher.find() ) {
-				    studyid = matcher.group(1); 
-				}
-			    }
 
-			    rd.close();
-			    method.releaseConnection(); 
+				rd.close();
+				method.releaseConnection(); 
 
-			    if ( jsessionid != null ) {
+				if ( jsessionid != null ) {
+				    
+				    // we seem to have found a JSESSIONID; 
+				    // looks like an authentication form. 
+				    // let's make an authentication call, 
+				    // which has to be a POST method: 
 
-				// we seem to have found a JSESSIONID; 
-				// looks like an authentication form. 
-				// let's make an authentication call, 
-				// which has to be a POST method: 
-
-				redirectLocation = redirectLocation.substring(0, redirectLocation.indexOf( "?" )); 
-				PostMethod TOUpostMethod = new PostMethod( redirectLocation + ';' + jsessionid ); 
+				    redirectLocation = redirectLocation.substring(0, redirectLocation.indexOf( "?" )); 
+				    PostMethod TOUpostMethod = new PostMethod( redirectLocation + ";jsessionid=" + jsessionid ); 
 				
-				Part[] parts = {
-				    new StringPart( "content:termsOfUsePageView:form1:vdcId", "" ),
-				    new StringPart( "pageName", "TermsOfUsePage" ),
-				    new StringPart( "content:termsOfUsePageView:form1:studyId", studyid ),
-				    new StringPart( "content:termsOfUsePageView:form1:redirectPage", "/FileDownload/?fileId=" + remotefileid ),
-				    new StringPart( "content:termsOfUsePageView:form1:tou", "download" ),
-				    new StringPart( "content:termsOfUsePageView:form1:termsAccepted", "on" ),
-				    new StringPart( "content:termsOfUsePageView:form1:termsButton", "Continue" ),
-				    new StringPart( "content:termsOfUsePageView:form1_hidden", "content:termsOfUsePageView:form1_hidden'" ),
-				    new StringPart( "javax.faces.ViewState", viewstate )
-				};
+				    Part[] parts = {
+					new StringPart( "content:termsOfUsePageView:form1:vdcId", "" ),
+					new StringPart( "pageName", "TermsOfUsePage" ),
+					new StringPart( "content:termsOfUsePageView:form1:studyId", studyid ),
+					new StringPart( "content:termsOfUsePageView:form1:redirectPage", "/FileDownload/?fileId=" + remotefileid ),
+					new StringPart( "content:termsOfUsePageView:form1:tou", "download" ),
+					new StringPart( "content:termsOfUsePageView:form1:termsAccepted", "on" ),
+					new StringPart( "content:termsOfUsePageView:form1:termsButton", "Continue" ),
+					new StringPart( "content:termsOfUsePageView:form1_hidden", "content:termsOfUsePageView:form1_hidden'" ),
+					new StringPart( "javax.faces.ViewState", viewstate )
+				    };
 
 
-				TOUpostMethod.setRequestEntity(new MultipartRequestEntity(parts, TOUpostMethod.getParams()));
-				TOUpostMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
-				status = getClient().executeMethod(TOUpostMethod);
+				    TOUpostMethod.setRequestEntity(new MultipartRequestEntity(parts, TOUpostMethod.getParams()));
+				    TOUpostMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+				    status = getClient().executeMethod(TOUpostMethod);
 
-				// TODO -- more diagnostics needed here! 
+				    // TODO -- more diagnostics needed here! 
 				
-				TOUpostMethod.releaseConnection();
+				    TOUpostMethod.releaseConnection();
 
-				// And now, let's try and download the file
-				// again: 
+				    // And now, let's try and download the file
+				    // again: 
 
 
-				method = new GetMethod (file.getFileSystemLocation()); 
-				method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+				    method = new GetMethod (file.getFileSystemLocation()); 
+				    method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+				    status = getClient().executeMethod(method);
+				}
+			    } else {
+				// just try again (and hope for the best!)
+
+				method = new GetMethod ( redirectLocation );
 				status = getClient().executeMethod(method);
 			    }
 			}

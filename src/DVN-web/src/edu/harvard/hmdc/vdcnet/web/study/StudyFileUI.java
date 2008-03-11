@@ -122,7 +122,8 @@ public class StudyFileUI implements java.io.Serializable  {
     
      public boolean isImage() {
         
-         if ( studyFile.getFileType() != null && studyFile.getFileType().substring(0, 6).equalsIgnoreCase("image/") ){
+         if ( studyFile.getFileType() != null && studyFile.getFileType().length() >= 6 &&
+              studyFile.getFileType().substring(0, 6).equalsIgnoreCase("image/") ){
             return true; 
          }  else {
              return false;

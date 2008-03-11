@@ -348,7 +348,7 @@ public class FileDownloadServlet extends HttpServlet{
 			    }
 
 			    // try again: 
-			    method = new GetMethod ( redirectLocation );
+			    method = new GetMethod ( redirectLocation + "&foo=bar" );
 			    status = getClient().executeMethod(method);
 
 			    byte[] dataBuffer = new byte[8192]; 

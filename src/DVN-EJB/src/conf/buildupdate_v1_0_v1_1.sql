@@ -42,3 +42,8 @@ ALTER TABLE study ALTER COLUMN harvestdvtermsofuse SET STORAGE EXTENDED;
 
 ALTER TABLE study ADD COLUMN harvestdvntermsofuse text;
 ALTER TABLE study ALTER COLUMN harvestdvntermsofuse SET STORAGE EXTENDED;
+
+create index filecategory_study_id_index on filecategory(study_id);
+create index studyfile_filecategory_id_index on studyfile(filecategory_id);
+create index datavariable_datatable_id_index on datavariable(datatable_id);
+create index variablerange_datavariable_id_index on  variablerange (datavariable_id);

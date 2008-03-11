@@ -2219,7 +2219,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         dv.setVariableFormatType( varService.findVariableFormatTypeByName( variableFormatTypeList, type ) );
         dv.setFormatSchema(schema);
-        dv.setFormatSchemaName( xmlr.getAttributeValue(null, "formatName") );        
+        dv.setFormatSchemaName( xmlr.getAttributeValue(null, "formatname") );        
     }
     
     private void processSumStat(XMLStreamReader xmlr, DataVariable dv) throws XMLStreamException {

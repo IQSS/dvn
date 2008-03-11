@@ -115,7 +115,7 @@ sub obtainMeta {
 
 	# 2nd lookup: we can now look up the variables: 
 
-	$sth = $dbh->prepare(qq {SELECT id,recordsegmentnumber,name,fileorder,label,variableformattype_id,variableintervaltype_id,filestartposition,fileendposition FROM datavariable WHERE datatable_id=$datatable_id ORDER BY fileorder});
+	$sth = $dbh->prepare(qq {SELECT id,recordsegmentnumber,name,fileorder,label,variableformattype_id,variableintervaltype_id,filestartposition,fileendposition,formatschemaname FROM datavariable WHERE datatable_id=$datatable_id ORDER BY fileorder});
 	$sth->execute();
 
 	my $var_id; 
@@ -124,11 +124,12 @@ sub obtainMeta {
 	my $var_order; 
 	my $var_label; 
 	my $var_format; 
-	my $var_interval; 
+	my $var_interval;  
 	my $var_start; 
 	my $var_end; 
+	my $var_fmtschema;
 
-	while ( ($var_id,$var_recsegnum, $var_name,$var_order,$var_label,$var_format,$var_interval,$var_start,$var_end)
+	while ( ($var_id,$var_recsegnum, $var_name,$var_order,$var_label,$var_format,$var_interval,$var_start,$var_end,$var_fmtschema)
 		= $sth->fetchrow() )
 	{
 
@@ -145,6 +146,7 @@ sub obtainMeta {
 
 		$self->{_varStartPos}->{$dv_var_id} = $var_start;
 		$self->{_varEndPos}->{$dv_var_id} = $var_end;
+		$self->{_varFormat}->{$dv_var_id} = $var_fmtschema;
 		
 
 		push @{$self->{_varNameA}}, $var_name; 

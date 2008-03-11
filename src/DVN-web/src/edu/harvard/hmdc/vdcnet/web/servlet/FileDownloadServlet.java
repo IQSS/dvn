@@ -397,6 +397,7 @@ public class FileDownloadServlet extends HttpServlet{
 			    }
 
 			    rd.close();
+			    method.releaseConnection(); 
 
 			    if ( jsessionid != null ) {
 
@@ -405,7 +406,7 @@ public class FileDownloadServlet extends HttpServlet{
 				// let's make an authentication call, 
 				// which has to be a POST method: 
 
-				redirectLocation = redirectLocation.substring(0, (redirectLocation.indexOf( ";" ) + 1)); 
+				redirectLocation = redirectLocation.substring(0, redirectLocation.indexOf( "?" )); 
 				PostMethod TOUpostMethod = new PostMethod( redirectLocation + ';' + jsessionid ); 
 				
 				Part[] parts = {
@@ -423,10 +424,12 @@ public class FileDownloadServlet extends HttpServlet{
 
 				TOUpostMethod.setRequestEntity(new MultipartRequestEntity(parts, TOUpostMethod.getParams()));
 				TOUpostMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
-				status = getClient().executeMethod(method);
+				status = getClient().executeMethod(TOUpostMethod);
 
 				// TODO -- more diagnostics needed here! 
 				
+				TOUpostMethod.releaseConnection();
+
 				// And now, let's try and download the file
 				// again: 
 

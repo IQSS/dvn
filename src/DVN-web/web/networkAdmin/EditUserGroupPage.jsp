@@ -6,6 +6,30 @@
                         xmlns:tiles="http://struts.apache.org/tags-tiles">
    <f:subview id="EditUserGroupPageView">
         <ui:form id="form1">
+                  <f:verbatim rendered="#{param.userGroupId == null}">
+                                 <script type="text/javascript">
+                                         //<![CDATA[
+                                            function showAll(){
+                                                if (location.href.indexOf("userGroupType") != -1) {
+                                                    if (document.getElementById('content:EditUserGroupPageView:form1:usergroups') != null)
+                                                        document.getElementById('content:EditUserGroupPageView:form1:usergroups').style.display='none';
+                                                    if (document.getElementById('content:EditUserGroupPageView:form1:ipgroups') != null)
+                                                        document.getElementById('content:EditUserGroupPageView:form1:ipgroups').style.display='none';
+                                                }
+                                                //alert(document.getElementById('content:EditUserGroupPageView:form1:ipgroups').style.display);
+                                            }
+
+                                            function setUserGroupType(obj) {
+                                                 if (obj.checked) { 
+                                                    if (obj.value == "usergroup")
+                                                        document.getElementById('content:EditUserGroupPageView:form1:userGroupType').value = "usergroup";
+                                                    else
+                                                        document.getElementById('content:EditUserGroupPageView:form1:userGroupType').value = "ipgroup";
+                                                 }
+                                            }
+                                        //]]>
+                                 </script>
+                             </f:verbatim>
                  <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
                  <input type="hidden" name="pageName" value="EditUserGroupPage"/>
                  
@@ -42,29 +66,6 @@
                              </h:panelGrid>
                              <br />
                              <!--TBD (wjb) What type of group is this -->
-                             <f:verbatim rendered="#{param.userGroupId == null}">
-                                 <script type="text/javascript">
-                                         //<![CDATA[
-                                            function showAll(){
-                                                if (location.href.indexOf("userGroupType") != -1) {
-                                                    if (document.getElementById('content:EditUserGroupPageView:form1:usergroups') != null)
-                                                        document.getElementById('content:EditUserGroupPageView:form1:usergroups').style.display='none';
-                                                    if (document.getElementById('content:EditUserGroupPageView:form1:ipgroups') != null)
-                                                        document.getElementById('content:EditUserGroupPageView:form1:ipgroups').style.display='none';
-                                                }
-                                            }
-
-                                            function setUserGroupType(obj) {
-                                                 if (obj.checked) { 
-                                                    if (obj.value == "usergroup")
-                                                        document.getElementById('content:EditUserGroupPageView:form1:userGroupType').value = "usergroup";
-                                                    else
-                                                        document.getElementById('content:EditUserGroupPageView:form1:userGroupType').value = "ipgroup";
-                                                 }
-                                            }
-                                        //]]>
-                                 </script>
-                             </f:verbatim>
                              <ui:panelGroup>
                                  <h:selectOneRadio rendered="#{EditUserGroupPage.userGroupType == 'none' and param.userGroupId == null}" onclick="setUserGroupType(this);document.forms[0].submit();" value="#{EditUserGroupPage.userGroupType}">
                                      <f:selectItems value="#{EditUserGroupPage.userGroupTypes}"/>

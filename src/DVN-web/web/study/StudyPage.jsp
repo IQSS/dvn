@@ -502,7 +502,7 @@
                                                     
                                                     <h:graphicImage  styleClass="vdcNoBorders" style="margin-left: 2px; margin-right: 0px;" value="/resources/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" 
                                                                      alt="You do not have permissions to access this file." title="You do not have permissions to access this file."/>
-                                                    <h:commandButton  id="fileLink1" style="padding-right: 15px" action="#{studyFileUI.fileDownload_action}" title="View or download this File."
+                                                    <h:commandButton  id="fileLink1" style="padding-right: 15px" action="#{studyFileUI.fileDownload_action}" title="View or download this File." rendered="#{!studyFileUI.restrictedForUser}"
                                                                       image="/resources/icon_download.gif" />
 
                                                     <h:outputLink rendered="#{studyFileUI.studyFile.subsettable}"  id="fileSubset" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.jsp?dtId=#{studyFileUI.studyFile.dataTable.id}" title="Go to Subset and Analysis page for this file." >

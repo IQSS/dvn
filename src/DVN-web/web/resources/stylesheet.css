@@ -212,6 +212,10 @@ ul.successMessage, .successMessage ul {
     list-style: none;
 }
 
+ul.successMessage li, .successMessage ul li {
+    margin: 0; padding: 0;
+}
+
 .warnMessage {
    color: #8B0404;
 }

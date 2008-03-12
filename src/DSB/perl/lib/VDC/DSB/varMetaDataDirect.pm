@@ -66,6 +66,23 @@ sub new {
 }
 
 
+sub getFormatToken{
+	my $rawToken =shift;
+	my $DEBUG;
+	my @tmp  = split(//,$rawToken);
+
+	my $tmps="";
+	foreach my $e (@tmp){
+		if (ord($e) < 65) {
+			last;
+		} else {
+			$tmps .= $e;
+		}
+	}
+	print "raw Token=",$rawToken,"\tformat=",$tmps,"\n" if $DEBUG;
+	return $tmps;
+}
+
 sub obtainMeta {
 	my $self = shift @_;
 
@@ -146,8 +163,8 @@ sub obtainMeta {
 
 		$self->{_varStartPos}->{$dv_var_id} = $var_start;
 		$self->{_varEndPos}->{$dv_var_id} = $var_end;
-		$self->{_varFormat}->{$dv_var_id} = $var_fmtschema;
-		
+		$self->{_varFormat}->{$var_name} = &getFormatToken($var_fmtschema);
+		$self->{_formatName}->{$var_name} = $var_fmtschema;
 
 		push @{$self->{_varNameA}}, $var_name; 
 		$self->{_varNoMpTbl}->{$dv_var_id} = $var_order + 1; 

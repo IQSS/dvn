@@ -194,7 +194,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         study.getAllowedUsers().clear();
         if (study.getOwner()!=null) {
             study.getOwner().getOwnedStudies().remove(study);
-             // study.setOwner(null);  This caused the Cascade REMOVE bug in EclipseLink
       
         }
         for (Iterator<StudyFile> it = study.getStudyFiles().iterator(); it.hasNext();) {
@@ -233,6 +232,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         if (deleteFromIndex) {
             indexService.deleteStudy(studyId);
         }
+        em.flush();  // Force study deletion to the database, for cases when we are calling this before deleting the owning Dataverse
         logger.log(Level.INFO, "Successfully deleted Study "+studyId+"!");
 
 

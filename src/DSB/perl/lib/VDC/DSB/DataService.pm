@@ -56,6 +56,17 @@ my $errMsgtbl = {
 
 my $ccfltrlst = [qw (_varNameA _varNameH _varType _varLabel _varNo _varNoMpTbl _valLblTbl _mssvlTbl _charVarTbl VarID _varFormat _formatName _formatCatgry _newVarNameSetA _newVarNameSetH _newVarSpec unsafeVarName unsafeNewVarName _varNameAsafe _newVarNameAsafe _varNameHsafe _newVarNameHsafe RsafeVarName2raw) ];
 
+my $SPSS_FRMT_CATGRY_TABLE={
+'CONTINUE'=>'other','A'=>'other','AHEX'=>'other','COMMA'=>'other',
+'DOLLAR'=>'currency','F'=>'other','IB'=>'other','PIBHEX'=>'other',
+'P'=>'other','PIB'=>'other','PK'=>'other','RB'=>'other','RBHEX'=>'other',
+'Z'=>'other','N'=>'other','E'=>'other','DATE'=>'date','TIME'=>'time',
+'DATETIME'=>'time','ADATE'=>'date','JDATE'=>'date','DTIME'=>'time',
+'WKDAY'=>'other','MONTH'=>'other','MOYR'=>'date','QYR'=>'date',
+'WKYR'=>'date','PCT'=>'other','DOT'=>'other','CCA'=>'currency',
+'CCB'=>'currency','CCC'=>'currency','CCD'=>'currency','CCE'=>'currency',
+'EDATE'=>'date','SDATE'=>'date',};
+
 my $CNVRSNTBL = {
 	'#'=>'hex23',
 	'$'=>'hex24',
@@ -1144,6 +1155,13 @@ sub printVarType{
 	my $optn ={ @_ };
 	my $wh = $self->{WH};
 	my $varType = $self->{_varType};
+	for (my $j=0; $j< scalar(@$varType); $j++){
+		my $vn = $self->{_varNameA}->[$j];
+		if ( (lc($self->{_varFormat}->{$vn}) eq 'date') || (lc($self->{_varFormat}->{$vn}) eq 'time')){
+			$varType->[$j] = 0;
+		}
+	}
+	
 	my $varRangeSet = $self->{VarRangeSet};
 	my $i = $optn->{iteration};
 	print $wh "vartyp <-c(\n", join(",\n", @$varType[$varRangeSet->[$i][0]..$varRangeSet->[$i][1]]),")\n\n";
@@ -1167,19 +1185,18 @@ sub printVarFormat{
 	my @rawvarNameSet=@$rawvarname[$varRangeSet->[$i][0]..$varRangeSet->[$i][1]];
 
 	print $wh "varFmt<-list(","\n";
-	
+		my $contents="";
 		for (my $v=0;$v<@varNameSet; $v++){
-
 			
 			my $vnr= $rawvarNameSet[$v];
 			my $vf=$self->{_varFormat}->{$vnr};
 			#print $v,"\t",$vf,"\n"; 
 
 			my $fmtChar="";
-			if ($self->{_formatCatgry}->{$vnr} eq 'date') {
+			if (($self->{_formatCatgry}->{$vnr} eq 'date') || (lc($vf) eq 'date') ) {
 				# date conversion
 				$fmtChar='D';
-			} elsif ($self->{_formatCatgry}->{$vnr} eq 'time'){
+			} elsif (($self->{_formatCatgry}->{$vnr} eq 'time') || (lc($vf) eq 'time') ){
 			
 				# time conversion
 				if (uc($vf) eq 'DTIME'){
@@ -1195,16 +1212,18 @@ sub printVarFormat{
 			}
 			
 			if ($fmtChar){
-				my $terminator="";
-				if ($v != (scalar(@varNameSet)-1)){
-					$terminator=",\n";
-
-				}
-				print $wh "'",$varNameSet[$v],"'", "='", $fmtChar, "'", $terminator;
+				#my $terminator="";
+				#if ($v != (scalar(@varNameSet)-1)){
+				#	$terminator=",\n";
+				#}
+				$contents .= "'" . $varNameSet[$v] . "'='" . $fmtChar . "'" . ",\n"; 
+				#print $wh "'",$varNameSet[$v],"'", "='", $fmtChar, "'", $terminator;
 			}
 		}
-	
-	print $wh ');',"\n\n";
+	#chomp($contents);
+	#chop($contents);
+	$contents =~ s/,\n$//;
+	print $wh $contents , ');',"\n\n";
 	
 }
 

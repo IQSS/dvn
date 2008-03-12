@@ -111,7 +111,7 @@ sub obtainMeta {
 
 	$self->{logicalRecords} = $logical_records; 
 
-	$sth-finish; 
+	$sth->finish; 
 
 	# 2nd lookup: we can now look up the variables: 
 

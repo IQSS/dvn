@@ -16,7 +16,7 @@
                                                     if (document.getElementById('content:EditUserGroupPageView:form1:ipgroups') != null)
                                                         document.getElementById('content:EditUserGroupPageView:form1:ipgroups').style.display='none';
                                                 }
-                                                //alert(document.getElementById('content:EditUserGroupPageView:form1:ipgroups').style.display);
+
                                             }
 
                                             function setUserGroupType(obj) {

@@ -35,6 +35,7 @@
 
 .dvn_content img {margin: 0 !important; padding: 0 !important; border: 0 !important; display: inline !important;}
 .dvn_content textarea {width: 40em;}
+.dvn_content ul {list-style-image: none;}
 
 .dvn_floatL {
 	float: left;
@@ -116,8 +117,8 @@ div.dvn_navblock {margin-bottom: 12px; padding: 0 10px 0 10px; background: #dade
 div.dvn_navblockNetwork {background: #dadee0; border-top: 2px solid #c55b28;}
 .dvn_navblockLinks {white-space:nowrap /*IE hack*/; border:none;} /*Color navigation bar normal mode*/
 .dvn_navblockLinks:after {content:"."; display:block; height:0; clear:both; visibility:hidden;} /*Clear floats*/
-.dvn_navblockLinks ul {margin: 0; padding: 0; list-style-type:none;}
-.dvn_navblockLinks ul li {float:left; z-index:auto !important /*Non-IE6*/; z-index:1000 /*IE6*/;}
+.dvn_navblockLinks ul {margin: 0; padding: 0; list-style-type: none !important;}
+.dvn_navblockLinks ul li {float:left; z-index:auto !important /*Non-IE6*/; z-index:1000 /*IE6*/; margin: 0; padding: 0;}
 .dvn_navblockLinks ul li a:link, .dvn_navblockLinks ul li a:visited, .dvn_navblockLinks ul li a:hover, .dvn_navblockLinks ul li a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; height:1.75em; line-height:1.75em; padding:.1em .5em 0 .5em; text-decoration:none;}
 .dvn_navblockLinks ul li:hover {position:relative;} /*Sylvain IE hack*/
 .dvn_navblockLinks ul li:hover a:link, .dvn_navblockLinks ul li:hover a:visited, .dvn_navblockLinks ul li:hover a:hover, .dvn_navblockLinks ul li:hover a:active {background-color: #c55b28; text-decoration:underline;} /*Color main cells hovering mode*/

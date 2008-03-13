@@ -2355,7 +2355,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
      private String parseText(XMLStreamReader xmlr) throws XMLStreamException {
-        return xmlr.getElementText().trim().replace('\n',' ');
+        return getElementText(xmlr).trim().replace('\n',' ');
      }
 
      private String parseText(XMLStreamReader xmlr, String endTag) throws XMLStreamException {
@@ -2524,5 +2524,37 @@ public class DDIServiceBean implements DDIServiceLocal {
         return (catName != null ? catName : "");
     } 
 
+    /* We had to add this method because the ref getElementText has a bug where it 
+     * would append a null before the text, if there was an escaped apostrophe; it appears
+     * that the code finds an null ENTITY_REFERENCE in this case which seems like a bug;
+     * the workaround for the moment is to comment or handling ENTITY_REFERENCE in this case
+     */
+    private String getElementText(XMLStreamReader xmlr) throws XMLStreamException {
+        if(xmlr.getEventType() != XMLStreamConstants.START_ELEMENT) {
+            throw new XMLStreamException("parser must be on START_ELEMENT to read next text", xmlr.getLocation());
+        }
+        int eventType = xmlr.next();
+        StringBuffer content = new StringBuffer();
+        while(eventType != XMLStreamConstants.END_ELEMENT ) {
+            if(eventType == XMLStreamConstants.CHARACTERS
+            || eventType == XMLStreamConstants.CDATA
+            || eventType == XMLStreamConstants.SPACE
+            /* || eventType == XMLStreamConstants.ENTITY_REFERENCE*/) {
+                content.append(xmlr.getText());
+            } else if(eventType == XMLStreamConstants.PROCESSING_INSTRUCTION
+                || eventType == XMLStreamConstants.COMMENT
+                || eventType == XMLStreamConstants.ENTITY_REFERENCE) {
+                // skipping
+            } else if(eventType == XMLStreamConstants.END_DOCUMENT) {
+                throw new XMLStreamException("unexpected end of document when reading element text content");
+            } else if(eventType == XMLStreamConstants.START_ELEMENT) {
+                throw new XMLStreamException("element text content may not contain START_ELEMENT", xmlr.getLocation());
+            } else {
+                throw new XMLStreamException("Unexpected event type "+eventType, xmlr.getLocation());
+            }
+            eventType = xmlr.next();
+        }
+        return content.toString();
+    }
     // </editor-fold>  
 }

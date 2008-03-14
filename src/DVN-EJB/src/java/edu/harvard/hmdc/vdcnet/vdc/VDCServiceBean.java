@@ -33,6 +33,7 @@ import edu.harvard.hmdc.vdcnet.admin.Role;
 import edu.harvard.hmdc.vdcnet.admin.RoleRequest;
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
+import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.ReviewStateServiceLocal;
@@ -42,7 +43,6 @@ import edu.harvard.hmdc.vdcnet.study.StudyFieldServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -425,6 +425,15 @@ public class VDCServiceBean implements VDCServiceLocal {
             VDCGroup vdcGroup = (VDCGroup)it.next();
             vdcGroup.getVdcs().remove(vdc);
        }
+        
+         for (Iterator it = vdc.getVdcRoles().iterator(); it.hasNext();) {
+            VDCRole vdcRole=(VDCRole)it.next();
+            VDCUser vdcUser = vdcRole.getVdcUser();
+            vdcUser.getVdcRoles().remove(vdcRole);
+       }
+        
+      
+        
         if (vdc.isHarvestingDataverse()) {
             harvesterService.removeHarvestTimer(vdc.getHarvestingDataverse());
         }

@@ -407,9 +407,6 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
         private String userGroupType;
         
         public String getUserGroupType(){
-             if (userGroupType == null) {
-                setUserGroupType("usergroup");
-        }
             return this.userGroupType;
         }
         

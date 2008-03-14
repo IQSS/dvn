@@ -164,6 +164,7 @@ public class StudyGrant implements java.io.Serializable {
     /**
      * Holds value of property number.
      */
+    @Column(columnDefinition="TEXT")
     private String number;
 
     /**

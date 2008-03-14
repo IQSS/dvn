@@ -121,6 +121,9 @@ public class DDIServiceBean implements DDIServiceLocal {
     public static final String NOTE_TYPE_TERMS_OF_USE = "DVN:TOU";
     public static final String NOTE_SUBJECT_TERMS_OF_USE = "Terms Of Use";
     
+    public static final String NOTE_TYPE_CITATION = "DVN:CITATION";
+    public static final String NOTE_SUBJECT_CITATION = "Citation";    
+    
     // db constants
     public static final String DB_VAR_INTERVAL_TYPE_CONTINUOUS = "continuous";
     public static final String DB_VAR_RANGE_TYPE_POINT = "point";
@@ -151,7 +154,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     //**********************
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void exportStudy(Study s, OutputStream os) throws IOException {
+    public void exportStudy(Study s, OutputStream os) {
         if (s.isIsHarvested() ) {
             exportOriginalDDIPlus( s, os );
         } else {
@@ -160,10 +163,10 @@ public class DDIServiceBean implements DDIServiceLocal {
                 javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
                 //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
                 xmlw = xmlof.createXMLStreamWriter(os);
-                
-                xmlw.writeStartDocument();
-                createCodeBook(xmlw,s);
-                xmlw.writeEndDocument();
+
+                    xmlw.writeStartDocument();
+                    createCodeBook(xmlw,s);
+                    xmlw.writeEndDocument();
             } catch (XMLStreamException ex) {
                 Logger.getLogger("global").log(Level.SEVERE, null, ex);
                 throw new EJBException("ERROR occurred in exportStudy.", ex);
@@ -174,7 +177,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             }
         }
     }
-
+    
     public void exportDataFile(StudyFile sf, OutputStream os)  {
         XMLStreamWriter xmlw = null;
         try {
@@ -197,15 +200,81 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new EJBException("ERROR occurred in exportStudy.", ex);
+            throw new EJBException("ERROR occurred in exportDataFile.", ex);
         } finally {
             try {
                 if (xmlw != null) { xmlw.close(); }
             } catch (XMLStreamException ex) {}
         }      
     }
+    
+    private void exportOriginalDDIPlus (Study s, OutputStream os) {
+        BufferedReader in = null; 
+        OutputStreamWriter out = null;
+        XMLStreamWriter xmlw = null;
 
-    // <editor-fold defaultstate="collapsed" desc="export - generated DDI">
+        File studyDir = new File(FileUtil.getStudyFileDir(), s.getAuthority() + File.separator + s.getStudyId());
+        File originalImport = new File(studyDir, "original_imported_study.xml");
+        
+        if (originalImport.exists()) {
+            try {
+                in = new BufferedReader( new FileReader(originalImport) );
+                out = new OutputStreamWriter(os);
+                String line = null; //not declared within while loop
+                /*
+                * readLine is a bit quirky :
+                * it returns the content of a line MINUS the newline.
+                * it returns null only for the END of the stream.
+                * it returns an empty String if two newlines appear in a row.
+                */
+                while (( line = in.readLine()) != null){
+                    // check to see if this is the StudyDscr in order to add the extra docDscr
+                    if (line.indexOf("<stdyDscr>") != -1) {
+                        out.write( line.substring(0, line.indexOf("<stdyDscr>") ) );
+                        out.write(System.getProperty("line.separator"));
+
+                        // now create DocDscr element (using StAX)
+                        javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
+                        //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
+                        xmlw = xmlof.createXMLStreamWriter(os);                        
+                        createDocDscr(xmlw, s);
+                        out.write(System.getProperty("line.separator"));
+                        xmlw.close();
+                        
+                        out.write( line.substring(line.indexOf("<stdyDscr>") ) );
+                        out.write(System.getProperty("line.separator"));
+                        out.flush();                        
+                    } else {
+                        out.write(line);
+                        out.write(System.getProperty("line.separator"));
+                        out.flush();
+                    }
+                }     
+                               
+            } catch (IOException ex) {
+                throw new EJBException ("A problem occurred trying to export this study (original DDI Plus).");
+            } catch (XMLStreamException ex) {
+                throw new EJBException ("A problem occurred trying to create the DocDscr for this study (original DDI Plus).");                 
+            } finally {
+                try {
+                    if (xmlw != null) { xmlw.close(); }
+                } catch (XMLStreamException ex) { ex.printStackTrace(); }   
+                
+                try {
+                    if (in!=null) { in.close(); }
+                } catch (IOException ex) { ex.printStackTrace(); }
+
+                try {
+                    if (out!=null) { out.close(); }
+                } catch (IOException ex) { ex.printStackTrace(); }
+              
+            } 
+        } else {
+            throw new EJBException ("There is no original import DDI for this study.");
+        }     
+    }    
+
+    // <editor-fold defaultstate="collapsed" desc="export methods">
     private void createCodeBook(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
         xmlw.writeStartElement("codeBook");
         xmlw.writeDefaultNamespace("http://www.icpsr.umich.edu/DDI");
@@ -263,12 +332,18 @@ public class DDIServiceBean implements DDIServiceLocal {
         createDateElement( xmlw, "distDate", lastUpdateString );
 
         xmlw.writeEndElement(); // distStmt        
+
+        // biblCit
+        xmlw.writeStartElement("biblCit");
+        writeAttribute( xmlw, "format", "DVN" );
+        xmlw.writeCharacters( study.getCitation() );
+        xmlw.writeEndElement(); // biblCit        
         
         // holdings
         xmlw.writeEmptyElement("holdings");
         writeAttribute( xmlw, "URI", "http://" + PropertyUtil.getHostUrl() + "/dvn/study?globalId=" + study.getGlobalId() );
 
-
+        
         xmlw.writeEndElement(); // citation
         xmlw.writeEndElement(); // docDscr
     }
@@ -1274,79 +1349,6 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="export - Original DDI Plus">
-
-    private void exportOriginalDDIPlus (Study s, OutputStream os) {
-        BufferedReader in = null; 
-        OutputStreamWriter out = null;
-
-        File studyDir = new File(FileUtil.getStudyFileDir(), s.getAuthority() + File.separator + s.getStudyId());
-        File originalImport = new File(studyDir, "original_imported_study.xml");
-        
-        if (originalImport.exists()) {
-            try {
-                in = new BufferedReader( new FileReader(originalImport) );
-                out = new OutputStreamWriter(os);
-                String line = null; //not declared within while loop
-                /*
-                * readLine is a bit quirky :
-                * it returns the content of a line MINUS the newline.
-                * it returns null only for the END of the stream.
-                * it returns an empty String if two newlines appear in a row.
-                */
-                while (( line = in.readLine()) != null){
-                    // check to see if this is the StudyDscr in order to add the extra docDscr
-                    if (line.indexOf("<stdyDscr>") != -1) {
-                        out.write( line.substring(0, line.indexOf("<stdyDscr>") ) );
-                        out.write(System.getProperty("line.separator"));
-
-                        createDocDscrSnippet(s, out);
-                        out.write(System.getProperty("line.separator"));
-
-                        out.write( line.substring(line.indexOf("<stdyDscr>") ) );
-                        out.write(System.getProperty("line.separator"));
-                        out.flush();                        
-                    } else {
-                        out.write(line);
-                        out.write(System.getProperty("line.separator"));
-                        out.flush();
-                    }
-                }     
-                               
-            } catch (IOException ex) {
-                throw new EJBException ("A problem occurred trying to export this study (original DDI Plus).");                
-            } finally {
-                try {
-                    if (out!=null) { out.close(); }
-                    if (in!=null) { in.close(); }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            } 
-        } else {
-            throw new EJBException ("There is no original import DDI for this study.");
-        }     
-    }
-
-    private void createDocDscrSnippet(Study s, Writer out)  {
-        XMLStreamWriter xmlw = null;
-        try {
-            javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
-            //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
-            xmlw = xmlof.createXMLStreamWriter(out);
-            createDocDscr(xmlw, s);
-
-        } catch (XMLStreamException ex) {
-            Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new EJBException("ERROR occurred in createDocDscrSnippet.", ex);
-        } finally {
-            try {
-                if (xmlw != null) { xmlw.close(); }
-            } catch (XMLStreamException ex) {}
-        }
-    }
-
-    // </editor-fold>
 
 
     
@@ -1439,7 +1441,6 @@ public class DDIServiceBean implements DDIServiceLocal {
     }    
     
     // <editor-fold defaultstate="collapsed" desc="import methods"> 
-
     private void processDDI( XMLStreamReader xmlr, Study study) throws XMLStreamException {
         Map filesMap = new HashMap();
         initializeCollections(study);        
@@ -1751,15 +1752,15 @@ public class DDIServiceBean implements DDIServiceLocal {
                     processGeoBndBox(xmlr,study);
                 } else if (xmlr.getLocalName().equals("anlyUnit")) {
                     if (StringUtil.isEmpty( study.getUnitOfAnalysis() ) ) {
-                        study.setUnitOfAnalysis( parseText(xmlr) );
+                        study.setUnitOfAnalysis( parseText(xmlr,"anlyUnit") );
                     } else {
-                        study.setUnitOfAnalysis( study.getUnitOfAnalysis() + "; " + parseText(xmlr) );
+                        study.setUnitOfAnalysis( study.getUnitOfAnalysis() + "; " + parseText(xmlr,"anlyUnit") );
                     }
                 } else if (xmlr.getLocalName().equals("universe")) {
                     if (StringUtil.isEmpty( study.getUniverse() ) ) {
-                        study.setUniverse( parseText(xmlr) );
+                        study.setUniverse( parseText(xmlr,"universe") );
                     } else {
-                        study.setUniverse( study.getUniverse() + "; " + parseText(xmlr) );
+                        study.setUniverse( study.getUniverse() + "; " + parseText(xmlr,"universe") );
                     }
                 } else if (xmlr.getLocalName().equals("dataKind")) {
                     if (StringUtil.isEmpty( study.getKindOfData() ) ) {
@@ -2369,8 +2370,10 @@ public class DDIServiceBean implements DDIServiceLocal {
            } else if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("p")) {
                     returnString += "<p>" + parseText(xmlr, "p") + "</p>";
+                } else if (xmlr.getLocalName().equals("emph")) {
+                    returnString += "<em>" + parseText(xmlr, "emph") + "</em>";
                 } else if (xmlr.getLocalName().equals("hi")) {
-                    returnString += "<em>" + parseText(xmlr, "hi") + "</em>";
+                    returnString += "<strong>" + parseText(xmlr, "hi") + "</strong>";                    
                 } else if (xmlr.getLocalName().equals("ExtLink")) {
                     String uri = xmlr.getAttributeValue(null, "URI");
                     String text = parseText(xmlr, "ExtLink").trim();

@@ -145,7 +145,7 @@ sub obtainMeta {
 	my $var_start; 
 	my $var_end; 
 	my $var_fmtschema;
-
+	my $varcntr=0;
 	while ( ($var_id,$var_recsegnum, $var_name,$var_order,$var_label,$var_format,$var_interval,$var_start,$var_end,$var_fmtschema)
 		= $sth->fetchrow() )
 	{
@@ -167,7 +167,9 @@ sub obtainMeta {
 		$self->{_formatName}->{$var_name} = $var_fmtschema;
 
 		push @{$self->{_varNameA}}, $var_name; 
-		$self->{_varNoMpTbl}->{$dv_var_id} = $var_order + 1; 
+		$varcntr++ ;
+		$self->{_varNoMpTbl}->{$dv_var_id} = $varcntr; 
+		#$self->{_varNoMpTbl}->{$dv_var_id} = $var_order + 1; 
 		push @{$self->{_varNo}}, $dv_var_id; 
 		
 

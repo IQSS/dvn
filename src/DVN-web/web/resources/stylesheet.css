@@ -11,11 +11,17 @@
     text-align: left;
 }
 
-.dvn_content div, .dvn_content span, .dvn_content p, .dvn_content li, 
-.dvn_content table, .dvn_content caption, .dvn_content tbody, .dvn_content tfoot, .dvn_content thead, .dvn_content tr, .dvn_content th, .dvn_content td {
+.dvn_content div, .dvn_content span, .dvn_content p, .dvn_content li, .dvn_content caption, 
+.dvn_content table, .dvn_content tbody, .dvn_content tfoot, .dvn_content thead, .dvn_content tr, .dvn_content th, .dvn_content td {
     font-family: "HelveticaNeue", Helvetica, Arial, sans-serif !important;
     font-size: 12px !important;
     line-height: 18px !important;
+}
+
+.dvn_content h1, .dvn_content h2, .dvn_content h3, .dvn_content h4, .dvn_content h5, .dvn_content h6 {
+    font-family: "HelveticaNeue", Helvetica, Arial, sans-serif !important;
+    font-weight: bold !important;
+    font-style: normal !important;
 }
 
 .dvn_content a, .dvn_content a:link, .dvn_content a:visited, .dvn_content a:hover, .dvn_content a:active {
@@ -1273,7 +1279,7 @@ a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink
 .dvn_createDvRequest .requestIntroSteps {margin-top: 30px; margin-left: auto; margin-right: auto; width: 770px;}
 .dvn_createDvRequest .requestIntroStepsContributor {margin-top: 30px; margin-left: auto; margin-right: auto; width: 573px;}
 .dvn_createDvRequest .requestIntroStepCard {position: relative; width: 183px; height: 170px; float: left; text-align: left;}
-.dvn_createDvRequest .requestIntroStepCard h3 {margin: 1em 0 1.25em 3em; font-size: 160%; font-weight: normal; color: #c55b28; text-transform: uppercase;}
+.dvn_createDvRequest .requestIntroStepCard h3 {margin: 1em 0 1.25em 3em !important; font-size: 160% !important; font-weight: normal !important; color: #c55b28 !important; text-transform: uppercase !important;}
 .dvn_createDvRequest .requestIntroStepCard p {margin: 1em; font-size: 124% !important; font-weight: bold;}
 .dvn_createDvRequest .requestIntroStepCard div.stepCardBtm {position: absolute; top: 162px; left: 0; width: 183px; height: 8px; background: #fff url(request-intro-rndbtm.png) no-repeat;}
 .dvn_createDvRequest .contributorSuccess {position: relative; width: 402px; height: 170px; float: left; text-align: left;}

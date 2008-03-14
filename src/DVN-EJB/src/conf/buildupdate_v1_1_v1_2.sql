@@ -1,0 +1,2 @@
+ALTER TABLE studygrant ALTER COLUMN number type text;
+ALTER TABLE studygrant ALTER COLUMN number SET STORAGE EXTENDED;

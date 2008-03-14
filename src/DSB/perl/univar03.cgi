@@ -1855,7 +1855,7 @@ sub make_SubsetFilter {
 
 	for my $v (@varseq)
 	{
-	    $pat .= ( $metadata->{_varNoMpTbl}->{$v} . "," );
+	    $pat .= ( $metadata->{_varNoRcut}->{$v} . "," );
 	}
 	
 	chop $pat; 

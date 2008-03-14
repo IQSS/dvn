@@ -39,6 +39,7 @@ sub new {
 	$self->{_varLabel}=[];
 	$self->{_varNo}=[];
 	$self->{_varNoMpTbl}={};
+	$self->{_varNoRcut}={}; 
 	$self->{_valLblTbl}={};
 	$self->{_mssvlTbl}={};
 	$self->{_charVarTbl}={};
@@ -169,7 +170,7 @@ sub obtainMeta {
 		push @{$self->{_varNameA}}, $var_name; 
 		$varcntr++ ;
 		$self->{_varNoMpTbl}->{$dv_var_id} = $varcntr; 
-		#$self->{_varNoMpTbl}->{$dv_var_id} = $var_order + 1; 
+		$self->{_varNoRcut}->{$dv_var_id} = $var_order + 1; 
 		push @{$self->{_varNo}}, $dv_var_id; 
 		
 

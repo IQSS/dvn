@@ -945,7 +945,7 @@ if ($dataURL) {
 				my $dirStringId = &getRandomString(4);
 				print TMPX "browserType=", $browserType, "\n";
 				open(M, "> $zlgMnfstFile ");
-				 print M &printZeligManifestPage(\*M, $stdyno, $stdyttl,$datasetname,$zlgOutFileSet, $RunOrder, $zRoutHtml, $RtxtOutput, $citationMessage, $nonZeligJob, $dirStringId, $q->param('analysis'));
+				print M &printZeligManifestPage(\*M, $stdyno, $stdyttl,$datasetname,$zlgOutFileSet, $RunOrder, $zRoutHtml, $RtxtOutput, $citationMessage, $nonZeligJob, $dirStringId, $q->param('analysis'));
 				close(M);
 				
 				# output dir: $ZELIGOUTPUTDIR="${TMPDIR}/${TMPDSBDIR}/zlg_$$";
@@ -955,6 +955,10 @@ if ($dataURL) {
 				print TMPX 'dir string=' . $dirString . "\n";
 				print TMPX 'current server=' . $SERVER . "\n";
 				my $ZHTMLDIR = $WEBTEMPDIR . '/' . $dirString;
+
+				`cp $Rcode  $ZELIGOUTPUTDIR`;
+				`cp $RtmpData  $ZELIGOUTPUTDIR`;
+
 				
 				`cd $DSBDIR; mv $ZELIGOUTPUTDIR $ZHTMLDIR`;
 				
@@ -1746,6 +1750,17 @@ ENDX
 	
 	
 	$pt_e .= $q->hr ("");
+	my @rdta = split(?/?,$RtmpData);
+	my @rprg    = split(?/?,$Rcode);
+
+	$pt_e .= $q->ul(
+	$q->li( $q->a({href=>"$rdta[$#rdta]"}, "Download the tab-delimited data file for this R program") ), 
+	$q->li( $q->a({href=>"$rprg[$#rprg]"}, "Download the R code file") )
+	);
+
+
+	$pt_e .= $q->hr ("");
+
 	my $tm = localtime;
 	$pt_e .= $q->blockquote ("Thank you for using the Dataverse.", "(This file was created at: $tm (US EST) and to be erased one hour later)");
 	my $mailSubject=uri_escape("(About ${SERVER} DSB_Request_$$ ${dirStringId} ${tm} )");

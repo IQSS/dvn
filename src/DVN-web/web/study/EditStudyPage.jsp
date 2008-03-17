@@ -1147,9 +1147,10 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].rendered}">
-                                        <h:inputText id="input_unitOfAnalysis" size="45"  value="#{EditStudyPage.study.unitOfAnalysis}" required="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}"/>
+                                        <h:inputTextarea id="input_unitOfAnalysis" cols="90" rows="2" value="#{EditStudyPage.study.unitOfAnalysis}" required="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}" styleClass="formHtmlEnabled">
+                                                        <f:validator validatorId="XhtmlValidator"/>
+                                            </h:inputTextarea>
                                         <h:message styleClass="errorMessage" for="input_unitOfAnalysis"/>          
-                                        <h:inputHidden validator="#{EditStudyPage.validateGeographicBounding}" value="test" required="true"/>   
                                     </ui:panelGroup>
                                     
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.universe].rendered}" styleClass="vdcEditStudyField" block="true">
@@ -1158,7 +1159,9 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.universe].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup rendered="#{EditStudyPage.studyMap[sfc.universe].rendered}">
-                                        <h:inputText id="input_universe" size="45"  value="#{EditStudyPage.study.universe}" required="#{EditStudyPage.studyMap[sfc.universe].required}"/>
+                                        <h:inputTextarea id="input_universe" cols="90" rows="2"  value="#{EditStudyPage.study.universe}" required="#{EditStudyPage.studyMap[sfc.universe].required}" styleClass="formHtmlEnabled">
+                                                        <f:validator validatorId="XhtmlValidator"/>
+                                            </h:inputTextarea>
                                         <h:message styleClass="errorMessage" for="input_universe"/>                                
                                     </ui:panelGroup>
                                     
@@ -1233,13 +1236,13 @@
                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.samplingProcedure].recommended}"/>
                                     </ui:panelGroup>
                                     <ui:panelGroup visible="#{EditStudyPage.studyMap[sfc.samplingProcedure].rendered}" >
-                                        <h:inputText id="input_samplingProcedure" 
-                                                     size="90" 
+                                        <h:inputTextarea id="input_samplingProcedure" 
+                                                     cols="90" rows="4"
                                                      value="#{EditStudyPage.study.samplingProcedure}" 
                                                      required="#{EditStudyPage.studyMap[sfc.samplingProcedure].required}"
                                                      styleClass="formHtmlEnabled">
                                             <f:validator validatorId="XhtmlValidator"/>
-                                        </h:inputText>
+                                        </h:inputTextarea>
                                         <h:message styleClass="errorMessage" for="input_samplingProcedure"/>
                                     </ui:panelGroup>
                                     

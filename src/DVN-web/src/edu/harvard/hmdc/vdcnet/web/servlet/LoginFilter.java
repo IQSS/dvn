@@ -635,7 +635,7 @@ public class LoginFilter implements Filter {
                 studyLock = study.getStudyLock();
             }
             if (studyLock!=null) {
-                studyLockMessage = "Study upload details: "+study.getGlobalId()+", "+studyLock.getDetail();
+                studyLockMessage = "Study upload details: "+study.getGlobalId()+" - "+studyLock.getDetail();
             }
         }
         System.out.println("Study locked = "+studyLock!=null);

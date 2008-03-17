@@ -502,7 +502,7 @@ public class ReviewStudiesPage extends VDCBaseBean implements java.io.Serializab
         List displayFields = new ArrayList();
         SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
         for (Iterator it = studies.iterator(); it.hasNext();) {
-           String[] row = new String[10];
+           String[] row = new String[11];
             Study elem = (Study) it.next();
             row[0] = elem.getId().toString();
             row[1] = elem.getGlobalId();
@@ -514,6 +514,7 @@ public class ReviewStudiesPage extends VDCBaseBean implements java.io.Serializab
             row[7] = elem.getReviewer() != null ? Long.toString(elem.getReviewer().getId()):"-1";
             row[8] = yyyyMMdd.format(elem.getCreateTime());
             row[9] = elem.getLastUpdateTime() != null ? yyyyMMdd.format(elem.getLastUpdateTime()):"";
+            row[10] = elem.getStudyLock() != null ? "LOCKED" : null;
             displayFields.add(row);
         }
         reviewStudies = new ListDataModel(displayFields);
@@ -557,21 +558,25 @@ public class ReviewStudiesPage extends VDCBaseBean implements java.io.Serializab
         for (Iterator it = displayFields.iterator(); it.hasNext();) {
             String[] elem = (String[]) it.next();
             Study study = studyService.getStudy(Long.parseLong(elem[0]));
-            if(elem[3].equalsIgnoreCase("In Review")){
-                if (!study.getReviewState().getId().equals(inReview.getId())){
-                    study.setReviewState(inReview);
-                    study.setReviewer(getVDCSessionBean().getLoginBean().getUser());
-                    mailService.sendStudyInReviewNotification(study.getCreator().getEmail(),study.getTitle());
+            
+            // if study is locked, skip it.
+            if (study.getStudyLock() == null) {
+                if(elem[3].equalsIgnoreCase("In Review")){
+                    if (!study.getReviewState().getId().equals(inReview.getId())){
+                        study.setReviewState(inReview);
+                        study.setReviewer(getVDCSessionBean().getLoginBean().getUser());
+                        mailService.sendStudyInReviewNotification(study.getCreator().getEmail(),study.getTitle());
+                    }
                 }
-            }
-            if (elem[3].equalsIgnoreCase("Released")){  // Bundle this
-                if (!study.getReviewState().getId().equals(released.getId())){
-                    ReviewState accepted = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
-                    study.setReviewState(accepted);
-                    mailService.sendStudyReleasedNotification(study.getCreator().getEmail(),study.getTitle(),getVDCRequestBean().getCurrentVDC().getName());
+                if (elem[3].equalsIgnoreCase("Released")){  // Bundle this
+                    if (!study.getReviewState().getId().equals(released.getId())){
+                        ReviewState accepted = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
+                        study.setReviewState(accepted);
+                        mailService.sendStudyReleasedNotification(study.getCreator().getEmail(),study.getTitle(),getVDCRequestBean().getCurrentVDC().getName());
+                    }
                 }
+                studyService.updateStudy(study);
             }
-            studyService.updateStudy(study);
         }
       
     }

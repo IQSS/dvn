@@ -223,10 +223,10 @@
                                     <h:outputText id="text29"  value="#{studyPage.studyUI.geographicBoundings}" rendered="#{!empty studyPage.studyUI.geographicBoundings}"/>
                                     
                                     <dvn:inlinehelp helpMessage="#{studybundle.unitOfAnalysisHelp}"  linkText="#{studybundle.unitOfAnalysisLabel}" heading="#{studybundle.unitOfAnalysisHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.unitOfAnalysis != '' and studyPage.studyUI.study.unitOfAnalysis != null }" />
-                                    <h:outputText id="text30"  value="#{studyPage.studyUI.study.unitOfAnalysis}" rendered="#{!empty studyPage.studyUI.study.unitOfAnalysis }"/>
+                                    <h:outputText id="text30"  value="#{studyPage.studyUI.study.unitOfAnalysis}" rendered="#{!empty studyPage.studyUI.study.unitOfAnalysis }" escape="false"/>
                                     
                                     <dvn:inlinehelp helpMessage="#{studybundle.universeHelp}"  linkText="#{studybundle.universeLabel}" heading="#{studybundle.universeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.universe != '' and studyPage.studyUI.study.universe != null }"/>
-                                    <h:outputText id="text31"  value="#{studyPage.studyUI.study.universe}" rendered="#{!empty studyPage.studyUI.study.universe}"/>
+                                    <h:outputText id="text31"  value="#{studyPage.studyUI.study.universe}" rendered="#{!empty studyPage.studyUI.study.universe}" escape="false"/>
                                     
                                     <dvn:inlinehelp helpMessage="#{studybundle.kindOfDataHelp}"  linkText="#{studybundle.kindOfDataLabel}" heading="#{studybundle.kindOfDataHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.kindOfData != '' and studyPage.studyUI.study.kindOfData != null }"/>
                                     <h:outputText id="text32"  value="#{studyPage.studyUI.study.kindOfData}" rendered="#{!empty studyPage.studyUI.study.kindOfData}"/>

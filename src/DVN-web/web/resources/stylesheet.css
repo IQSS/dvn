@@ -107,11 +107,11 @@ span.disabled {font-weight: bold;}
 .dvn_sectionPanels ul {margin-left: 2em; list-style-image: url(icon_bullet.gif);}
 .dvn_sectionPanels li {margin: 0.5em 0;}
 
-.dvn_sectionPanels .TreeContent a {font-size: 90% !important;}
+.dvn_sectionPanels .TreeContent a:link, .dvn_sectionPanels .TreeContent a:visited, .dvn_sectionPanels .TreeContent a:hover, .dvn_sectionPanels .TreeContent a:active {font-size: 90% !important;}
 
 /* HEADER */
 .dvn_headerTitle {position: relative;}
-.dvn_headerTitleLarge {margin: .25em 12px;}
+.dvn_headerTitleLarge {margin: .25em 228px .25em 12px;}
 .dvn_headerTitleLarge a:link, .dvn_headerTitleLarge a:visited, .dvn_headerTitleLarge a:hover, .dvn_headerTitleLarge a:active {color: #526f76; font-size: 148% !important;}
 a.dvn_headerTitleLrgNetwork:link, a.dvn_headerTitleLrgNetwork:visited, a.dvn_headerTitleLrgNetwork:hover, a.dvn_headerTitleLrgNetwork:active {color: #c55b28;}
 .dvn_headerTitleL {margin: 0 12px;}

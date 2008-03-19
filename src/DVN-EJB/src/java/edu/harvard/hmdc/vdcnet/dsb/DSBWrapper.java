@@ -81,7 +81,7 @@ public class DSBWrapper implements java.io.Serializable  {
     private static final String FORMAT_TYPE_TAB = "D01";
     private static final String FORMAT_TYPE_SPLUS = "D02";
     private static final String FORMAT_TYPE_STATA = "D03";
-    private static final String FORMAT_TYPE_R = "D03";
+    private static final String FORMAT_TYPE_R = "D04";
     
     
     /** Creates a new instance of DSBWrapper */

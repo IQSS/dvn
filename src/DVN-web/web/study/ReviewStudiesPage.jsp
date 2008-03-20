@@ -35,7 +35,7 @@
                                 </h:outputLink>
                             </h:column>
                             <h:column binding="#{ReviewStudiesPage.column2}" id="column2">
-                                <h:outputText styleClass="vdcStudyStatus" value=" (Locked)" rendered="#{currentRow[10]!=null}"/>
+                                <h:outputText styleClass="vdcStudyStatus" value="Upload in Progress" rendered="#{currentRow[10]!=null}"/>
                                 <h:selectOneMenu binding="#{ReviewStudiesPage.dropdown1}" value="#{currentRow[3]}" id="dropdown1" disabled="#{currentRow[10] != null }">
                                     <!--
                                     <f:selectItems binding="#{ReviewStudiesPage.dropdown1SelectItems}" id="dropdown1SelectItems" value="#{ReviewStudiesPage.dropdown1DefaultItems}"/>

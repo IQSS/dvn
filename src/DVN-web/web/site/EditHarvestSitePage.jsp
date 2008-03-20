@@ -21,38 +21,28 @@
                 }
             }
             function updateScheduleInput(  ) {
-                scheduled = getInput("scheduledCheckBox");
+        
                 schedulePeriod = getSelect( "selectSchedulePeriod");
-                scheduleHourOfDay = getInput("inputScheduleHourOfDay");
-                scheduleDayOfWeek = getInput("inputScheduleDayOfWeek");
+                scheduleHourOfDay = getSelect("inputScheduleHourOfDay");
+                scheduleDayOfWeek = getSelect("inputScheduleDayOfWeek");
                 scheduleDayOfWeekMsg = getSpan("inputScheduleDayOfWeekMsg");
                         
-                  if (scheduled.checked == false) {
-                    
-                    schedulePeriod.value='notSelected';
-                    scheduleHourOfDay.value='';
-                    scheduleDayOfWeek.value='';
-                    schedulePeriod.disabled = true;
-                    scheduleHourOfDay.disabled = true;
-                    scheduleDayOfWeek.disabled = true;
-              
-                } else {
-                    schedulePeriod.disabled = false;
+         
                     if (schedulePeriod.value=="daily") {
                         scheduleHourOfDay.disabled = false;
                         scheduleDayOfWeek.disabled = true;
-                        scheduleDayOfWeek.value='';     
+                        scheduleDayOfWeek.value='-1';     
                     } else if (schedulePeriod.value=="weekly") {
                         scheduleDayOfWeek.disabled = false;
                         scheduleHourOfDay.disabled = false;
                     } else {
                         scheduleDayOfWeek.disabled = true;
                         scheduleHourOfDay.disabled = true;
-                        scheduleHourOfDay.value='';
-                        scheduleDayOfWeek.value='';
+                        scheduleHourOfDay.value='-1';
+                        scheduleDayOfWeek.value='-1';
                   
                     }              
-                }   
+          
                
              }
             
@@ -215,7 +205,7 @@
                       </ui:panelGroup>                          
                       <ui:panelGroup>
                           <div id="periodDiv2">
-                            <h:selectOneMenu validator="#{EditHarvestSitePage.validateSchedulePeriod}" id="selectSchedulePeriod" value="#{EditHarvestSitePage.harvestingDataverse.schedulePeriod}"  onchange='updateScheduleInput();' >
+                            <h:selectOneMenu  binding="#{EditHarvestSitePage.schedulePeriod}" validator="#{EditHarvestSitePage.validateSchedulePeriod}" id="selectSchedulePeriod" value="#{EditHarvestSitePage.harvestingDataverse.schedulePeriod}"  onchange='updateScheduleInput();' >
                                 <f:selectItem itemValue="notSelected" itemLabel="Not Selected"/>
                                 <f:selectItem itemValue="daily" itemLabel="Harvest daily"/>
                                 <f:selectItem itemValue="weekly" itemLabel="Harvest weekly"/>
@@ -228,30 +218,68 @@
                         </ui:panelGroup>  
                         <ui:panelGroup  >
                             <div id="hourOfDayDiv1">
-                            <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Hour of Day (0-23)"/> 
+                            <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Hour of Day "/> 
                             </div>
                         </ui:panelGroup >
                       <ui:panelGroup  >
-                        
+                        <!--
                            <h:inputText required="true" requiredMessage="This field is required." id="inputScheduleHourOfDay" value="#{EditHarvestSitePage.harvestingDataverse.scheduleHourOfDay}">
                                <f:validateLongRange minimum="0" maximum="23" />
                            </h:inputText>
-                        
+                          -->
+                           <h:selectOneMenu  validator="#{EditHarvestSitePage.validateHourOfDay}"  id="inputScheduleHourOfDay" value="#{EditHarvestSitePage.harvestingDataverse.scheduleHourOfDay}"  >
+                                <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
+                                <f:selectItem itemValue="0" itemLabel="12:00 AM"/>
+                                <f:selectItem itemValue="1" itemLabel="1:00 AM"/>                              
+                                <f:selectItem itemValue="2" itemLabel="2:00 AM"/>                              
+                                <f:selectItem itemValue="3" itemLabel="3:00 AM"/>                              
+                                <f:selectItem itemValue="4" itemLabel="4:00 AM"/>                              
+                                <f:selectItem itemValue="5" itemLabel="5:00 AM"/>                              
+                                <f:selectItem itemValue="6" itemLabel="6:00 AM"/>                              
+                                <f:selectItem itemValue="7" itemLabel="7:00 AM"/>                              
+                                <f:selectItem itemValue="8" itemLabel="8:00 AM"/>                              
+                                <f:selectItem itemValue="9" itemLabel="9:00 AM"/>                              
+                                <f:selectItem itemValue="10" itemLabel="10:00 AM"/>                              
+                                <f:selectItem itemValue="11" itemLabel="11:00 AM"/>                              
+                                <f:selectItem itemValue="12" itemLabel="12:00 PM"/>                              
+                                <f:selectItem itemValue="13" itemLabel="1:00 PM"/>                              
+                                <f:selectItem itemValue="14" itemLabel="2:00 PM"/>                              
+                                <f:selectItem itemValue="15" itemLabel="3:00 PM"/>                              
+                                <f:selectItem itemValue="16" itemLabel="4:00 PM"/>                              
+                                <f:selectItem itemValue="17" itemLabel="5:00 PM"/>                              
+                                <f:selectItem itemValue="18" itemLabel="6:00 PM"/>                              
+                                <f:selectItem itemValue="19" itemLabel="7:00 PM"/>                              
+                                <f:selectItem itemValue="20" itemLabel="8:00 PM"/>                              
+                                <f:selectItem itemValue="21" itemLabel="9:00 PM"/>                              
+                                <f:selectItem itemValue="22" itemLabel="10:00 PM"/>                              
+                                <f:selectItem itemValue="23" itemLabel="11:00 PM"/>                              
+                            </h:selectOneMenu>
+                      
                             <h:message id="inputScheduleHourOfDayMsg" styleClass="errorMessage" for="inputScheduleHourOfDay"/> 
                              
                           </ui:panelGroup >
 
                        <ui:panelGroup  >
                           <div id="dayOfWeekDiv1">
-                            <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Day Of Week (1-7)"/> 
+                            <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Day Of Week"/> 
                             </div>
                         </ui:panelGroup >
                       <ui:panelGroup  >
-                          
+                      <!--    
                           <h:inputText required="true" requiredMessage="This field is required." id="inputScheduleDayOfWeek" value="#{EditHarvestSitePage.harvestingDataverse.scheduleDayOfWeek}">
                                <f:validateLongRange minimum="1" maximum="7" />
                           </h:inputText>
-                          
+                          -->
+                          <h:selectOneMenu validator="#{EditHarvestSitePage.validateDayOfWeek }" id="inputScheduleDayOfWeek" value="#{EditHarvestSitePage.harvestingDataverse.scheduleDayOfWeek}"  >
+                                <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
+                                <f:selectItem itemValue="1" itemLabel="Sunday"/>
+                                <f:selectItem itemValue="2" itemLabel="Monday"/>
+                                <f:selectItem itemValue="3" itemLabel="Tuesday"/>
+                                <f:selectItem itemValue="4" itemLabel="Wednesday"/>
+                                <f:selectItem itemValue="5" itemLabel="Thursday"/>
+                                <f:selectItem itemValue="6" itemLabel="Friday"/>
+                                <f:selectItem itemValue="7" itemLabel="Saturday"/>
+                          </h:selectOneMenu>     
                              <h:message id="inputScheduleDayOfWeekMsg" styleClass="errorMessage" for="inputScheduleDayOfWeek"/> 
                        
                        </ui:panelGroup >

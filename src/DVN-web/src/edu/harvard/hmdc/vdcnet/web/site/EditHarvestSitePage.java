@@ -40,7 +40,6 @@ import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.harvest.SetDetailBean;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
 import edu.harvard.hmdc.vdcnet.util.SessionCounter;
-import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.HandlePrefix;
 import edu.harvard.hmdc.vdcnet.vdc.HandlePrefixServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
@@ -78,6 +77,15 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     @EJB HarvesterServiceLocal harvesterService;
     @EJB HandlePrefixServiceLocal handlePrefixService;
     HtmlSelectBooleanCheckbox scheduledCheckbox;
+    HtmlSelectOneMenu schedulePeriod;
+
+    public HtmlSelectOneMenu getSchedulePeriod() {
+        return schedulePeriod;
+    }
+
+    public void setSchedulePeriod(HtmlSelectOneMenu schedulePeriod) {
+        this.schedulePeriod = schedulePeriod;
+    }
     private HarvestingDataverse harvestingDataverse;
     private EditHarvestSiteService editHarvestSiteService;
     
@@ -215,9 +223,17 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     public String save() {
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
         String schedulePeriod=editHarvestSiteService.getHarvestingDataverse().getSchedulePeriod();
+        Integer dayOfWeek = editHarvestSiteService.getHarvestingDataverse().getScheduleDayOfWeek();
+        Integer hourOfDay = editHarvestSiteService.getHarvestingDataverse().getScheduleHourOfDay();
         if (schedulePeriod!=null && schedulePeriod.equals("notSelected")) {
             editHarvestSiteService.getHarvestingDataverse().setSchedulePeriod(null);
         }
+        if  (hourOfDay!=null && hourOfDay.intValue()==-1) {
+             editHarvestSiteService.getHarvestingDataverse().setScheduleHourOfDay(null);
+        }
+        if  (dayOfWeek!=null && dayOfWeek.intValue()==-1) {
+             editHarvestSiteService.getHarvestingDataverse().setScheduleDayOfWeek(null);
+        }        
         editHarvestSiteService.save(dataverseName,dataverseAlias,userId);
         success=true;
         return "success";
@@ -705,6 +721,46 @@ public void validateSchedulePeriod(FacesContext context,
         if (scheduledCheckbox.getLocalValue().equals(Boolean.TRUE))
             if ( ((String)value).equals("notSelected")  ) {
             valid=false;
+        }
+        if (!valid) {
+            ((UIInput)toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("This field is required.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+        
+    }
+
+public void validateHourOfDay(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        
+        boolean valid=true;
+       
+         
+        if (schedulePeriod!=null  &&(schedulePeriod.getLocalValue().equals("daily") || schedulePeriod.getLocalValue().equals("weekly"))) {
+            if ( value==null || ((Integer)value).equals(new Integer(-1))) {
+                valid=false;
+            }
+        }
+        if (!valid) {
+            ((UIInput)toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("This field is required.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+        
+    }
+
+public void validateDayOfWeek(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        
+        boolean valid=true;
+       
+         
+        if (schedulePeriod.getLocalValue()!=null && schedulePeriod.getLocalValue().equals("weekly") ) {
+               if ( value==null || ((Integer)value).equals(new Integer(-1))) {
+                valid=false;
+            }
         }
         if (!valid) {
             ((UIInput)toValidate).setValid(false);

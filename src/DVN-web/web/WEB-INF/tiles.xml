@@ -139,7 +139,15 @@
        <put name="pageTitle"   type="string"        value="DVN - Dataverse Creation Success" />
        <put name="content" type="template"     value="/login/CreatorRequestSuccessPage.jsp"/>
    </definition>
-   
+    <definition name="/login/ForgotPasswordPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Forgot Password" />
+       <put name="content" type="template"     value="/login/ForgotPasswordPage.jsp"/>
+   </definition>
+  <definition name="/login/PasswordSentPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Password Sent" />
+       <put name="content" type="template"     value="/login/PasswordSentPage.jsp"/>
+   </definition>
+    
    
    <!-- Privileged User Pages -->
   <!-- *******************  Study Management *********************** -->

@@ -1,7 +1,7 @@
 
 package DSB::Ingest; 
 
-use vars qw(%SUPPORTED_FORMATS $VDC_SCRIPT_PATH);
+use vars qw(%SUPPORTED_FORMATS $VDC_SCRIPT_PATH @ENTITY_INVALID_255);
 
 use Exporter;
 ##use CGI;
@@ -13,6 +13,36 @@ use Exporter;
 		       "application/x-spss-sav" => "sav" ); 
 
 $VDC_SCRIPT_PATH   = '/usr/local/VDC/sbin';
+
+$ENTITY_INVALID_255[0] = 1;
+$ENTITY_INVALID_255[1] = 1;
+$ENTITY_INVALID_255[2] = 1;
+$ENTITY_INVALID_255[3] = 1;
+$ENTITY_INVALID_255[4] = 1;
+$ENTITY_INVALID_255[5] = 1;
+$ENTITY_INVALID_255[6] = 1;
+$ENTITY_INVALID_255[7] = 1;
+$ENTITY_INVALID_255[8] = 1;
+$ENTITY_INVALID_255[11] = 1;
+$ENTITY_INVALID_255[12] = 1;
+$ENTITY_INVALID_255[14] = 1;
+$ENTITY_INVALID_255[15] = 1;
+$ENTITY_INVALID_255[16] = 1;
+$ENTITY_INVALID_255[17] = 1;
+$ENTITY_INVALID_255[18] = 1;
+$ENTITY_INVALID_255[19] = 1;
+$ENTITY_INVALID_255[20] = 1;
+$ENTITY_INVALID_255[21] = 1;
+$ENTITY_INVALID_255[22] = 1;
+$ENTITY_INVALID_255[23] = 1;
+$ENTITY_INVALID_255[24] = 1;
+$ENTITY_INVALID_255[25] = 1;
+$ENTITY_INVALID_255[26] = 1;
+$ENTITY_INVALID_255[27] = 1;
+$ENTITY_INVALID_255[28] = 1;
+$ENTITY_INVALID_255[29] = 1;
+$ENTITY_INVALID_255[30] = 1;
+$ENTITY_INVALID_255[31] = 1;
 
 # CONSTRUCTOR: 
 
@@ -221,6 +251,8 @@ sub run_ConverterScripts {
 	$self->{INGEST_DATA_STATUS} = "converter script failed to produce DATA-level DDI.";
 	return undef;
     }
+
+    $self->check_xmlCharEntities ( $dataddi ); 
 
     $self->{INGEST_DATA_STATUS} = "<dataddi>data-level ddi xml produced (" . $size . " bytes)</dataddi>\n";
     $self->{logger}->vdcLOG_info ( "VDC::DSB::Ingest", 
@@ -571,6 +603,68 @@ sub check_FileExtension {
 
     return $ext; 
 }
+
+sub check_xmlCharEntities {
+    my $self = shift @_; 
+    my $ddi = shift @_; 
+
+    open ( F, $ddi ) || return 0; 
+    open ( OUT, '>' . $ddi . ".edited" ) || return 0; 
+
+    my $illegal_entity_removed = 0; 
+    my $line_saved = ""; 
+
+    while (<F>)
+    {
+	if ( /&\#x?[0-9a-zA-Z]*\;/ )
+	{
+	    $line_saved = $_; 
+	    s/(&\#x?[0-9a-zA-Z]*\;)/&entcheck($1)/ge;
+	    $illegal_entity_removed++ if $line_saved ne $_; 
+	}
+	print OUT; 
+    }
+  
+    close F; 
+    close OUT; 
+
+    if ( $illegal_entity_removed )
+    {
+	system ( "mv -f $ddi" . ".edited $ddi" ); 
+    }
+
+    return $illegal_entity_removed; 
+}
+
+sub entcheck {
+    my $entity = shift @_; 
+
+    my $charcode; 
+
+    $entity=~/&\#(.*);/; 
+    my $numeric = $1; 
+
+    if ( $numeric =~/^x([0-9a-fA-F]*)$/ )
+    {
+	$charcode = hex ( $1 ); 
+    }
+    elsif ( $numeric =~/^[0-9]*$/ )
+    {
+	$charcode = $numeric; 
+    }
+    else
+    {
+	return $entity; 
+    }
+
+    if ( $ENTITY_INVALID_255[$numeric] == 1 )
+    {
+	return ""; 
+    }
+
+    return $entity; 
+}
+
 
 
 #sub check_SupportedFormat {

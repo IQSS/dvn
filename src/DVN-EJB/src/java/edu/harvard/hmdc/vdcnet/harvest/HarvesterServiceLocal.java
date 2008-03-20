@@ -54,8 +54,8 @@ public interface HarvesterServiceLocal extends java.io.Serializable  {
     public List<String> getMetadataFormats(String oaiUrl);
     public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, 
             HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, List<String> failedIdentifiers,
-            boolean allowUpdates, MutableBoolean harvestErrorOccurred) throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException;
-    public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, boolean allowUpdates, MutableBoolean harvestErrorOccurred);
+            MutableBoolean harvestErrorOccurred) throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException;
+    public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, MutableBoolean harvestErrorOccurred);
     
     public HarvestFormatType findHarvestFormatTypeByMetadataPrefix(String metadataPrefix);
 }

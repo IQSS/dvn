@@ -33,12 +33,16 @@ import edu.harvard.hmdc.vdcnet.jaxb.oai.ResumptionTokenType;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
 import java.util.List;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import org.apache.commons.lang.mutable.MutableBoolean;
+import org.xml.sax.SAXException;
 
 /**
  *
  * @author Ellen Kraffmiller
- */
+ */ 
 public interface HarvesterServiceLocal extends java.io.Serializable  {
     public void createScheduledHarvestTimers();
     public void updateHarvestTimer(HarvestingDataverse dataverse);
@@ -48,7 +52,9 @@ public interface HarvesterServiceLocal extends java.io.Serializable  {
 
     public List<SetDetailBean> getSets(String oaiUrl); 
     public List<String> getMetadataFormats(String oaiUrl);
-    public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, boolean allowUpdates, MutableBoolean harvestErrorOccurred);
+    public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, 
+            HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, List<String> failedIdentifiers,
+            boolean allowUpdates, MutableBoolean harvestErrorOccurred) throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException;
     public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, boolean allowUpdates, MutableBoolean harvestErrorOccurred);
     
     public HarvestFormatType findHarvestFormatTypeByMetadataPrefix(String metadataPrefix);

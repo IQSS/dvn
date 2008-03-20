@@ -143,7 +143,12 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     public HarvesterServiceBean() {
 
     }
-
+    /**
+     * Called to run an "On Demand" harvest.  
+     * This method creates a timer that will go off immediately,
+     * which will start an immediate asynchronous harvest.
+     * @param dataverse
+     */
     public void doAsyncHarvest(HarvestingDataverse dataverse) {
         Calendar cal = Calendar.getInstance();
 
@@ -156,7 +161,6 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             Timer timer = (Timer) it.next();
             if (timer.getInfo() instanceof HarvestTimerInfo) {
                 timer.cancel();
-
             }
 
         }
@@ -168,18 +172,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 createHarvestTimer(dataverse);
             }
         }
-    /*
-    Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.DAY_OF_YEAR,1);
-    cal.set(Calendar.HOUR_OF_DAY,1);
-    // Test Only - have timer expire in 5 minutes
-    // cal.add(Calendar.MINUTE,5);
-    logger.log(Level.INFO,"Harvester timer set for "+cal.getTime());
-    System.out.println("Harvester timer set for "+cal.getTime());
-    Date initialExpiration = cal.getTime();  // First timeout is 1:00 AM of next day
-    long intervalDuration = 1000*60 *60*24;  // repeat every 24 hours
-    timerService.createTimer(initialExpiration, intervalDuration,HARVEST_TIMER);
-     */
+ 
 
     }
 
@@ -229,7 +222,13 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             timerService.createTimer(initExpirationDate, intervalDuration, new HarvestTimerInfo(dataverse.getId(), dataverse.getVdc().getName(), dataverse.getSchedulePeriod(), dataverse.getScheduleHourOfDay(), dataverse.getScheduleDayOfWeek()));
         }
     }
-
+    
+    /**
+     * This method is called whenever an EJB Timer goes off.
+     * Check to see if this is a Harvest Timer, and if it is
+     * Run the harvest for the given (scheduled) dataverse
+     * @param timer
+     */
     @Timeout
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void handleTimeout(javax.ejb.Timer timer) {
@@ -239,6 +238,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         try {
             if (timer.getInfo() instanceof HarvestTimerInfo) {
                 HarvestTimerInfo info = (HarvestTimerInfo) timer.getInfo();
+                logger.log(Level.INFO, "DO HARVESTING of dataverse " + info.getHarvestingDataverseId());
                 doHarvesting(info.getHarvestingDataverseId());
             }
 
@@ -249,78 +249,55 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         }
     }
 
-    private void doHarvesting(Long dataverseId) {
-        logger.log(Level.INFO, "DO HARVESTING of dataverse " + dataverseId);
+    /**
+     * Harvest an individual Dataverse
+     * @param dataverseId
+     */
+    private void doHarvesting(Long dataverseId) throws IOException {
         HarvestingDataverse dataverse = em.find(HarvestingDataverse.class, dataverseId);
-
         MutableBoolean harvestErrorOccurred = new MutableBoolean(false);
-        harvest(dataverse, harvestErrorOccurred);
-        if (harvestErrorOccurred.booleanValue() == true) {
-            mailService.sendHarvestErrorNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc());
-
-        }
-
-    }
-
-    private void doScheduledHarvesting() {
-
-        // Get list of Harvested dataverses
-        // For each dataverse that is scheduled, call OAIServer to get list of updated records.
-        // Call import to save each study in the database.
-
-        List dataverses = havestingDataverseService.findAll();
-        MutableBoolean harvestErrorOccurred = new MutableBoolean(false);
-        for (Iterator it = dataverses.iterator(); it.hasNext();) {
-            harvestErrorOccurred.setValue(false);
-            HarvestingDataverse dataverse = (HarvestingDataverse) it.next();
-            if (dataverse.isScheduled()) {
-                harvest(dataverse, harvestErrorOccurred);
-                if (harvestErrorOccurred.booleanValue() == true) {
-                    mailService.sendHarvestErrorNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc());
-
-                }
-            }
-        }
-
-
-    }
-
-    private void harvest(HarvestingDataverse dataverse, MutableBoolean harvestErrorOccurred) {
-
-        boolean harvestingNow = havestingDataverseService.getHarvestingNow(dataverse.getId());
-        if (harvestingNow) {
-            harvestErrorOccurred.setValue(true);
-            throw new EJBException("Cannot begin harvesting, Dataverse " + dataverse.getVdc().getName() + " is currently being harvested.");
-        }
-
-        //Date today = new Date();
-        //String until= formatter.format(today);
-        String until = null;  // If we don't set until date, we will get all the changes since the last harvest.
-
-        String from = null;
-        Date lastHarvestTime = havestingDataverseService.getLastHarvestTime(dataverse.getId());
-        boolean initialHarvest = true;
-        if (lastHarvestTime != null) {
-            from = formatter.format(lastHarvestTime);
-            initialHarvest = false;
-        }
-        harvest(dataverse, from, until, initialHarvest, harvestErrorOccurred);
-    }
-
-    private void harvest(HarvestingDataverse dataverse, String from, String until, boolean initialHarvest, MutableBoolean harvestErrorOccurred) {
         String logTimestamp = logFormatter.format(new Date());
         Logger hdLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean." + dataverse.getVdc().getAlias() + logTimestamp);
-        List<Long> harvestedStudyIds = new ArrayList<Long>();
-        try {
-
-            hdLogger.addHandler(new FileHandler(FileUtil.getImportFileDir() + File.separator + "harvest_" + dataverse.getVdc().getAlias() + logTimestamp + ".log"));
-        } catch (IOException e) {
+        String logFileName = FileUtil.getImportFileDir() + File.separator + "harvest_" + dataverse.getVdc().getAlias() + logTimestamp + ".log ";
+      
+        hdLogger.addHandler(new FileHandler(logFileName));
+ 
+        boolean harvestingNow = havestingDataverseService.getHarvestingNow(dataverse.getId());
+        int harvestedStudyCount=0;
+        List<String> failedIdentifiers = new ArrayList<String>();
+       if (harvestingNow) {
             harvestErrorOccurred.setValue(true);
-            logger.severe("Exception adding log file handler " + FileUtil.getImportFileDir() + File.separator + "harvest_" + dataverse.getVdc().getAlias() + logTimestamp + ".log ");
-            return;
-        }
+             hdLogger.log(Level.SEVERE,"Cannot begin harvesting, Dataverse " + dataverse.getVdc().getName() + " is currently being harvested.");
+            
+        } else {
 
+            String until = null;  // If we don't set until date, we will get all the changes since the last harvest.
+            String from = null;
+            Date lastHarvestTime = havestingDataverseService.getLastHarvestTime(dataverse.getId());
+            boolean initialHarvest = true;
+            if (lastHarvestTime != null) {
+                from = formatter.format(lastHarvestTime);
+                initialHarvest = false;
+            }
+            harvestedStudyCount = harvest(dataverse, hdLogger, from, until, initialHarvest, harvestErrorOccurred, failedIdentifiers );
+        }      
+        mailService.sendHarvestNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc().getName(), logFileName, harvestErrorOccurred.booleanValue(), harvestedStudyCount, failedIdentifiers);  
 
+    }
+ 
+    /**
+     * 
+     * @param dataverse  the dataverse to harvest into
+     * @param from       get updated studies from this beginning date
+     * @param until      get updated studies until this end date
+     * @param initialHarvest  are we harvesting this dataverse for the first time?
+     * @param harvestErrorOccurred  have we encountered any errors during harvest?
+     * @param failedIdentifiers     Study Identifiers for failed "GetRecord" requests
+     */
+    private int harvest(HarvestingDataverse dataverse, Logger hdLogger, String from, String until, boolean initialHarvest, MutableBoolean harvestErrorOccurred, List<String> failedIdentifiers) {
+   
+        List<Long> harvestedStudyIds = new ArrayList<Long>();
+   
         try {
 
             havestingDataverseService.setHarvestingNow(dataverse.getId(), true);
@@ -330,87 +307,89 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             ResumptionTokenType resumptionToken = null;
 
             do {
-                resumptionToken = harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken, dataverse, from, until, harvestedStudyIds, initialHarvest, harvestErrorOccurred);
+                resumptionToken = harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken, dataverse, from, until, harvestedStudyIds, failedIdentifiers, initialHarvest, harvestErrorOccurred);
             } while (resumptionToken != null && !resumptionToken.equals(""));
 
             hdLogger.log(Level.INFO, "COMPLETED HARVEST, oaiUrl=" + dataverse.getOaiServer() + ",set=" + dataverse.getHarvestingSet() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix() + ", from=" + from + ", until=" + until);
             havestingDataverseService.setLastHarvestTime(dataverse.getId(), lastHarvestTime);
-
-
+            
+            // now index all studies (need to modify for update)
+            hdLogger.log(Level.INFO, "POST HARVEST, start calls to index.");
+            indexService.updateIndexList(harvestedStudyIds);
+            hdLogger.log(Level.INFO, "POST HARVEST, calls to index finished.");
+        } catch (Throwable e) {
+            harvestErrorOccurred.setValue(true);
+            String message = "Exception processing harvest, oaiServer= " + dataverse.getOaiServer() + ",from=" + from + ",until=" + until + ",encodedSet=" + dataverse.getHarvestingSet() + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix() + " " + e.getClass().getName() + " " + e.getMessage();
+            hdLogger.log(Level.SEVERE, message);
+            logException(e, hdLogger);
+            hdLogger.log(Level.INFO, "HARVEST NOT COMPLETED DUE TO UNEXPECTED ERROR.");
+          
         } finally {
             havestingDataverseService.setHarvestingNow(dataverse.getId(), false);
         }
 
-
-        // now index all studies (need to modify for update)
-        hdLogger.log(Level.INFO, "POST HARVEST, start calls to index.");
-        indexService.updateIndexList(harvestedStudyIds);
-        hdLogger.log(Level.INFO, "POST HARVEST, calls to index finished.");
+        return harvestedStudyIds.size();
+     
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, boolean initialHarvest, MutableBoolean harvestErrorOccurred) {
-        String encodedSet = null;
+    public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, List<String> failedIdentifiers, boolean initialHarvest, MutableBoolean harvestErrorOccurred)
+            throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException {
+        String encodedSet = dataverse.getHarvestingSet() == null ? null : URLEncoder.encode(dataverse.getHarvestingSet(), "UTF-8");
+        ListIdentifiers listIdentifiers = null;
 
-        try {
-            encodedSet = dataverse.getHarvestingSet() == null ? null : URLEncoder.encode(dataverse.getHarvestingSet(), "UTF-8");
-            ListIdentifiers listIdentifiers = null;
-             
-  
-            if (resumptionToken == null) {
-                listIdentifiers = new ListIdentifiers(dataverse.getOaiServer(),
-                        from,
-                        until,
-                        encodedSet,
-                        URLEncoder.encode(dataverse.getHarvestFormatType().getMetadataPrefix(), "UTF-8"));
-            } else {
-                hdLogger.log(Level.INFO, "harvestFromIdentifiers(), resumptionToken="+resumptionToken.getValue());
-                listIdentifiers = new ListIdentifiers(dataverse.getOaiServer(), resumptionToken.getValue());
-            }
-            Document doc = listIdentifiers.getDocument();
+        if (resumptionToken == null) {
+            listIdentifiers = new ListIdentifiers(dataverse.getOaiServer(),
+                    from,
+                    until,
+                    encodedSet,
+                    URLEncoder.encode(dataverse.getHarvestFormatType().getMetadataPrefix(), "UTF-8"));
+        } else {
+            hdLogger.log(Level.INFO, "harvestFromIdentifiers(), resumptionToken=" + resumptionToken.getValue());
+            listIdentifiers = new ListIdentifiers(dataverse.getOaiServer(), resumptionToken.getValue());
+        }
+        Document doc = listIdentifiers.getDocument();
 
-            //       JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.oai");
-            //       Unmarshaller unmarshaller = jc.createUnmarshaller();
-            JAXBElement unmarshalObj = (JAXBElement) unmarshaller.unmarshal(doc);
-            OAIPMHtype oaiObj = (OAIPMHtype) unmarshalObj.getValue();
+        //       JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.oai");
+        //       Unmarshaller unmarshaller = jc.createUnmarshaller();
+        JAXBElement unmarshalObj = (JAXBElement) unmarshaller.unmarshal(doc);
+        OAIPMHtype oaiObj = (OAIPMHtype) unmarshalObj.getValue();
 
-            if (oaiObj.getError() != null && oaiObj.getError().size() > 0) {
-                handleOAIError(hdLogger, oaiObj, "calling listIdentifiers, oaiServer= " + dataverse.getOaiServer() + ",from=" + from + ",until=" + until + ",encodedSet=" + encodedSet + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix());
-                return null; // this will halt the loop to this method
-            } else {
-                ListIdentifiersType listIdentifiersType = oaiObj.getListIdentifiers();
-                if (listIdentifiersType != null) {
-                    resumptionToken = listIdentifiersType.getResumptionToken();
-                    for (Iterator it = listIdentifiersType.getHeader().iterator(); it.hasNext();) {
-                        HeaderType header = (HeaderType) it.next();
-                        Long studyId = harvesterService.getRecord(hdLogger, dataverse, header.getIdentifier(), dataverse.getHarvestFormatType().getMetadataPrefix(), initialHarvest, harvestErrorOccurred);
-                        if (studyId != null) {
-                            harvestedStudyIds.add(studyId);
-                        }
+        if (oaiObj.getError() != null && oaiObj.getError().size() > 0) {
+            handleOAIError(hdLogger, oaiObj, "calling listIdentifiers, oaiServer= " + dataverse.getOaiServer() + ",from=" + from + ",until=" + until + ",encodedSet=" + encodedSet + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix());
+            throw new EJBException("Received OAI Error response calling ListIdentifiers");
+        } else {
+            ListIdentifiersType listIdentifiersType = oaiObj.getListIdentifiers();
+            if (listIdentifiersType != null) {
+                resumptionToken = listIdentifiersType.getResumptionToken();
+                for (Iterator it = listIdentifiersType.getHeader().iterator(); it.hasNext();) {
+                    HeaderType header = (HeaderType) it.next();
+                    MutableBoolean getRecordErrorOccurred = new MutableBoolean(false);
+                    Long studyId = harvesterService.getRecord(hdLogger, dataverse, header.getIdentifier(), dataverse.getHarvestFormatType().getMetadataPrefix(), initialHarvest, getRecordErrorOccurred);
+                    if (studyId != null) {
+                        harvestedStudyIds.add(studyId);
                     }
-
+                    if (getRecordErrorOccurred.booleanValue()==true) {
+                        harvestErrorOccurred.setValue(true);
+                        failedIdentifiers.add(header.getIdentifier());
+                    }
+                    
                 }
-            }
-        } catch (Throwable e) {
-            harvestErrorOccurred.setValue(true);
-            String message = "Exception processing listIdentifiers(), oaiServer= " + dataverse.getOaiServer() + ",from=" + from + ",until=" + until + ",encodedSet=" + encodedSet + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix() + " " + e.getClass().getName() + " " + e.getMessage();
-            hdLogger.log(Level.SEVERE, message);
-            logException(e, hdLogger);
-            return null;
 
+            }
         }
         String logMsg = "Returning from harvestFromIdentifiers";
-     
-        if (resumptionToken==null) {
+
+        if (resumptionToken == null) {
             logMsg += " resumptionToken is null";
         } else if (!StringUtil.isEmpty(resumptionToken.getValue())) {
-            logMsg += " resumptionToken is "+resumptionToken.getValue();
+            logMsg += " resumptionToken is " + resumptionToken.getValue();
         } else {
-            logMsg += " resumptionToken is empty, setting return value to null.";
             // Some OAIServers return an empty resumptionToken element when all
             // the identifiers have been sent, so need to check  for this, and 
             // treat it as if resumptiontoken is null.
-            resumptionToken=null;
+            logMsg += " resumptionToken is empty, setting return value to null.";
+            resumptionToken = null;
         }
         hdLogger.info(logMsg);
         return resumptionToken;
@@ -427,24 +406,25 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, boolean initialHarvest, MutableBoolean harvestErrorOccurred) {
-        if (initialHarvest && dataverse.getHandlePrefix() != null) {
-
-            Study study = studyService.getStudyByHarvestInfo(dataverse.getVdc(), identifier);
-            if (study != null) {
-                hdLogger.log(Level.INFO, "Initial Harvest AND Study with identifer '" + identifier + "' already exists in DB with id = " + study.getId() + "; skipping record.");
-                return null;
-            }
-        }
-
-        String oaiUrl = dataverse.getOaiServer();
+    public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, boolean initialHarvest, MutableBoolean errorOccurred) {
         Study harvestedStudy = null;
-
-        hdLogger.log(Level.INFO, "Calling GetRecord: oaiUrl =" + oaiUrl + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + metadataPrefix);
+        String oaiUrl = dataverse.getOaiServer();
         try {
+            if (initialHarvest && dataverse.getHandlePrefix() != null) {
+
+                Study study = studyService.getStudyByHarvestInfo(dataverse.getVdc(), identifier);
+                if (study != null) {
+                    hdLogger.log(Level.INFO, "Initial Harvest AND Study with identifer '" + identifier + "' already exists in DB with id = " + study.getId() + "; skipping record.");
+                    return null;
+                }
+            }
+
+            hdLogger.log(Level.INFO, "Calling GetRecord: oaiUrl =" + oaiUrl + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + metadataPrefix);
+
             GetRecord record = new GetRecord(oaiUrl, identifier, metadataPrefix);
             String errMessage = record.getErrorMessage();
             if (errMessage != null) {
+                errorOccurred.setValue(true);
                 hdLogger.log(Level.SEVERE, "Error calling GetRecord - " + errMessage);
             } else if (record.isDeleted()) {
                 hdLogger.log(Level.INFO, "Received 'deleted' status from OAI Server.");
@@ -463,7 +443,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             }
 
         } catch (Throwable e) {
-            harvestErrorOccurred.setValue(true);
+            errorOccurred.setValue(true);
             String message = "Exception processing getRecord(), oaiUrl=" + oaiUrl + ",identifier=" + identifier + " " + e.getClass().getName() + " " + e.getMessage();
             hdLogger.log(Level.SEVERE, message);
             logException(e, hdLogger);

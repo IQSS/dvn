@@ -57,12 +57,7 @@ public class ErrorPageServlet extends HttpServlet  {
         String virtualPath = (String) req.getAttribute("virtualPath"); // set in the VDCFacesServlet wjb
         boolean optimisticLock=false;
         if (exception != null) {
-            if (exception.getCause()!=null 
-                    && exception.getCause().getCause()!=null 
-                    && exception.getCause().getCause().getCause()!=null 
-                    && (exception.getCause() instanceof OptimisticLockException
-                        || exception.getCause().getCause() instanceof OptimisticLockException
-                        || exception.getCause().getCause().getCause() instanceof OptimisticLockException)) {
+            if (checkForOptimistLockException(exception) ) {
                  optimisticLock=true;
                  cause = "%20%20The form could not be saved because it contains stale data (due to concurrent editing by another user).  Please reload the form and try again.";
             } else {
@@ -112,6 +107,16 @@ public class ErrorPageServlet extends HttpServlet  {
     private String getTimeStamp() {
         timestamp = DateUtils.getTimeStamp();
         return timestamp;
+    }
+    
+    private boolean checkForOptimistLockException (Throwable t) {
+        if (t == null) {
+            return false;
+        } else if (t instanceof OptimisticLockException) {
+            return true;
+        } else {
+            return checkForOptimistLockException( t.getCause() );
+        }
     }
         
 }

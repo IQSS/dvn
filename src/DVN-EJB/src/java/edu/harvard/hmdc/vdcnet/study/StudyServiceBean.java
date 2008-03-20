@@ -941,7 +941,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         } else {
             authority = identifier.substring(index1 + 1, index2);
         }
-        studyId = identifier.substring(index2 + 1);
+        studyId = identifier.substring(index2 + 1).toUpperCase();
 
         String queryStr = "SELECT s from Study s where s.studyId = :studyId  and s.protocol= :protocol and s.authority= :authority";
 
@@ -975,7 +975,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier, boolean allowUpdates) {
+    public Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier) {
         VDC vdc = em.find(VDC.class, vdcId);
         em.refresh(vdc); // workaround to get correct value for harvesting dataverse (to be investigated)
 
@@ -987,7 +987,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         Long hftId = vdc.getHarvestingDataverse().getHarvestFormatType().getId();
 
         //return doImportStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
-        Study study = doImportStudy(xmlFile, hftId, vdcId, userId, createNewHandle, createNewHandle, allowUpdates, false, false, harvestIdentifier);
+        Study study = doImportStudy(xmlFile, hftId, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
 
         // new create exports files for these studies
         for (String exportFormat : studyExporterFactory.getExportFormats()) {

@@ -274,12 +274,10 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             String until = null;  // If we don't set until date, we will get all the changes since the last harvest.
             String from = null;
             Date lastHarvestTime = havestingDataverseService.getLastHarvestTime(dataverse.getId());
-            boolean initialHarvest = true;
             if (lastHarvestTime != null) {
                 from = formatter.format(lastHarvestTime);
-                initialHarvest = false;
             }
-            harvestedStudyCount = harvest(dataverse, hdLogger, from, until, initialHarvest, harvestErrorOccurred, failedIdentifiers );
+            harvestedStudyCount = harvest(dataverse, hdLogger, from, until, harvestErrorOccurred, failedIdentifiers );
         }      
         mailService.sendHarvestNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc().getName(), logFileName, harvestErrorOccurred.booleanValue(), harvestedStudyCount, failedIdentifiers);  
 
@@ -294,7 +292,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
      * @param harvestErrorOccurred  have we encountered any errors during harvest?
      * @param failedIdentifiers     Study Identifiers for failed "GetRecord" requests
      */
-    private int harvest(HarvestingDataverse dataverse, Logger hdLogger, String from, String until, boolean initialHarvest, MutableBoolean harvestErrorOccurred, List<String> failedIdentifiers) {
+    private int harvest(HarvestingDataverse dataverse, Logger hdLogger, String from, String until, MutableBoolean harvestErrorOccurred, List<String> failedIdentifiers) {
    
         List<Long> harvestedStudyIds = new ArrayList<Long>();
    
@@ -307,7 +305,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             ResumptionTokenType resumptionToken = null;
 
             do {
-                resumptionToken = harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken, dataverse, from, until, harvestedStudyIds, failedIdentifiers, initialHarvest, harvestErrorOccurred);
+                resumptionToken = harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken, dataverse, from, until, harvestedStudyIds, failedIdentifiers, harvestErrorOccurred);
             } while (resumptionToken != null && !resumptionToken.equals(""));
 
             hdLogger.log(Level.INFO, "COMPLETED HARVEST, oaiUrl=" + dataverse.getOaiServer() + ",set=" + dataverse.getHarvestingSet() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix() + ", from=" + from + ", until=" + until);
@@ -333,7 +331,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, List<String> failedIdentifiers, boolean initialHarvest, MutableBoolean harvestErrorOccurred)
+    public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, List<String> failedIdentifiers, MutableBoolean harvestErrorOccurred)
             throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException {
         String encodedSet = dataverse.getHarvestingSet() == null ? null : URLEncoder.encode(dataverse.getHarvestingSet(), "UTF-8");
         ListIdentifiers listIdentifiers = null;
@@ -365,7 +363,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 for (Iterator it = listIdentifiersType.getHeader().iterator(); it.hasNext();) {
                     HeaderType header = (HeaderType) it.next();
                     MutableBoolean getRecordErrorOccurred = new MutableBoolean(false);
-                    Long studyId = harvesterService.getRecord(hdLogger, dataverse, header.getIdentifier(), dataverse.getHarvestFormatType().getMetadataPrefix(), initialHarvest, getRecordErrorOccurred);
+                    Long studyId = harvesterService.getRecord(hdLogger, dataverse, header.getIdentifier(), dataverse.getHarvestFormatType().getMetadataPrefix(), getRecordErrorOccurred);
                     if (studyId != null) {
                         harvestedStudyIds.add(studyId);
                     }
@@ -406,19 +404,10 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, boolean initialHarvest, MutableBoolean errorOccurred) {
+    public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, MutableBoolean errorOccurred) {
         Study harvestedStudy = null;
         String oaiUrl = dataverse.getOaiServer();
         try {
-            if (initialHarvest && dataverse.getHandlePrefix() != null) {
-
-                Study study = studyService.getStudyByHarvestInfo(dataverse.getVdc(), identifier);
-                if (study != null) {
-                    hdLogger.log(Level.INFO, "Initial Harvest AND Study with identifer '" + identifier + "' already exists in DB with id = " + study.getId() + "; skipping record.");
-                    return null;
-                }
-            }
-
             hdLogger.log(Level.INFO, "Calling GetRecord: oaiUrl =" + oaiUrl + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + metadataPrefix);
 
             GetRecord record = new GetRecord(oaiUrl, identifier, metadataPrefix);
@@ -438,7 +427,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
 
             } else {
                 VDCUser networkAdmin = vdcNetworkService.find().getDefaultNetworkAdmin();
-                harvestedStudy = studyService.importHarvestStudy(record.getMetadataFile(), dataverse.getVdc().getId(), networkAdmin.getId(), identifier, !initialHarvest);
+                harvestedStudy = studyService.importHarvestStudy(record.getMetadataFile(), dataverse.getVdc().getId(), networkAdmin.getId(), identifier);
                 hdLogger.log(Level.INFO, "Harvest Successful for identifier " + identifier);
             }
 
@@ -454,7 +443,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             return null;
         }
     }
-
+    
     public List<String> getMetadataFormats(String oaiUrl) {
         JAXBElement unmarshalObj;
         try {

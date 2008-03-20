@@ -1358,14 +1358,20 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
         
         String studyId = (String)value;
-        
+        FacesMessage message=null;
         if (!studyService.isUniqueStudyId(studyId, study.getProtocol(),study.getAuthority())) {
             valid=false;
+            message = new FacesMessage("Study ID is already used in this dataverse.");
+        }
+        if (valid) {           
+            if (studyId.contains(":") || studyId.contains("/") || studyId.contains(" ")) {
+                valid=false;
+                message = new FacesMessage("Study ID cannot contain characters ':', '/' or spaces");
+          }
         }
         
         if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Study ID is already used in this dataverse.");
+            ((UIInput)toValidate).setValid(false);           
             context.addMessage(toValidate.getClientId(context), message);
         }
     }

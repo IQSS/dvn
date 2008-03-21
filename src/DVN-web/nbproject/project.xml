@@ -8,7 +8,7 @@
             <name>DVN-web</name>
             <minimum-ant-version>1.6</minimum-ant-version>
             <web-module-libraries>
-                <library dirs="1">
+                <library files="1">
                     <file>${file.reference.javaee.jar}</file>
                 </library>
                 <library files="1">
@@ -22,6 +22,7 @@
                 </library>
                 <library files="4">
                     <file>${libs.jsf12-support.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
                     <file>${reference.DVN-ejb.dist}</file>
@@ -45,14 +46,6 @@
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries>
-                <library files="1">
-                    <file>${libs.jdbcsupport-runtime.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library files="1">
-                    <file>${libs.exceptionhandler-runtime.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
                 <library files="3">
                     <file>${libs.dvn-WEB.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
@@ -69,7 +62,16 @@
                     <file>${libs.woodstock-theme-default.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
+                <library files="4">
+                    <file>${libs.jsf12-support.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.exceptionhandler-runtime.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
             </web-module-additional-libraries>
+            <explicit-platform explicit-source-supported="true"/>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>

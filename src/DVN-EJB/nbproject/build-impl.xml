@@ -42,6 +42,36 @@ is divided into following sections:
         <property file="nbproject/project.properties"/>
     </target>
     <target depends="-pre-init,-init-private,-init-userdir,-init-user,-init-project,-init-macrodef-property" name="-do-init">
+        <ejbjarproject1:property name="platform.home" value="platforms.${platform.active}.home"/>
+        <ejbjarproject1:property name="platform.bootcp" value="platforms.${platform.active}.bootclasspath"/>
+        <ejbjarproject1:property name="platform.compiler" value="platforms.${platform.active}.compile"/>
+        <ejbjarproject1:property name="platform.javac.tmp" value="platforms.${platform.active}.javac"/>
+        <condition property="platform.javac" value="${platform.home}/bin/javac">
+            <equals arg1="${platform.javac.tmp}" arg2="$${platforms.${platform.active}.javac}"/>
+        </condition>
+        <property name="platform.javac" value="${platform.javac.tmp}"/>
+        <ejbjarproject1:property name="platform.java.tmp" value="platforms.${platform.active}.java"/>
+        <condition property="platform.java" value="${platform.home}/bin/java">
+            <equals arg1="${platform.java.tmp}" arg2="$${platforms.${platform.active}.java}"/>
+        </condition>
+        <property name="platform.java" value="${platform.java.tmp}"/>
+        <ejbjarproject1:property name="platform.javadoc.tmp" value="platforms.${platform.active}.javadoc"/>
+        <condition property="platform.javadoc" value="${platform.home}/bin/javadoc">
+            <equals arg1="${platform.javadoc.tmp}" arg2="$${platforms.${platform.active}.javadoc}"/>
+        </condition>
+        <property name="platform.javadoc" value="${platform.javadoc.tmp}"/>
+        <condition property="platform.invalid" value="true">
+            <or>
+                <contains string="${platform.javac}" substring="$${platforms."/>
+                <contains string="${platform.java}" substring="$${platforms."/>
+                <contains string="${platform.javadoc}" substring="$${platforms."/>
+            </or>
+        </condition>
+        <fail unless="platform.home">Must set platform.home</fail>
+        <fail unless="platform.bootcp">Must set platform.bootcp</fail>
+        <fail unless="platform.java">Must set platform.java</fail>
+        <fail unless="platform.javac">Must set platform.javac</fail>
+        <fail if="platform.invalid">Platform is not correctly set up</fail>
         <!-- Ensure configuration directory exists. -->
         <mkdir dir="${meta.inf}"/>
         <property name="runmain.jvmargs" value=""/>
@@ -124,7 +154,7 @@ is divided into following sections:
             <element name="customize" optional="true"/>
             <sequential>
                 <property name="javac.compilerargs" value=""/>
-                <javac debug="@{debug}" deprecation="${javac.deprecation}" destdir="@{destdir}" encoding="${source.encoding}" includeantruntime="false" source="${javac.source}" srcdir="@{srcdir}" target="${javac.target}">
+                <javac debug="@{debug}" deprecation="${javac.deprecation}" destdir="@{destdir}" encoding="${source.encoding}" executable="${platform.javac}" fork="yes" includeantruntime="false" source="${javac.source}" srcdir="@{srcdir}" target="${javac.target}">
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
@@ -138,7 +168,7 @@ is divided into following sections:
         <macrodef name="junit" uri="http://www.netbeans.org/ns/j2ee-ejbjarproject/2">
             <attribute default="**/*Test.java" name="includes"/>
             <sequential>
-                <junit dir="${basedir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" showoutput="true">
+                <junit dir="${basedir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" jvm="${platform.java}" showoutput="true">
                     <batchtest todir="${build.test.results.dir}">
                         <fileset dir="${test.src.dir}" includes="@{includes}"/>
                     </batchtest>
@@ -161,7 +191,7 @@ is divided into following sections:
             <attribute default="${main.class}" name="classname"/>
             <element name="customize" optional="true"/>
             <sequential>
-                <java classname="@{classname}" fork="true">
+                <java classname="@{classname}" fork="true" jvm="${platform.java}">
                     <jvmarg line="${runmain.jvmargs}"/>
                     <classpath>
                         <path path="${build.classes.dir}:${javac.classpath}:${j2ee.platform.classpath}"/>
@@ -184,6 +214,9 @@ is divided into following sections:
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
+                    <bootclasspath>
+                        <path path="${platform.bootcp}"/>
+                    </bootclasspath>
                 </nbjpdastart>
             </sequential>
         </macrodef>
@@ -202,7 +235,9 @@ is divided into following sections:
         </macrodef>
     </target>
     <target name="-init-debug-args">
-        <property name="version-output" value="java version &quot;${ant.java.version}"/>
+        <exec executable="${platform.java}" outputproperty="version-output">
+            <arg value="-version"/>
+        </exec>
         <condition property="have-jdk-older-than-1.4">
             <or>
                 <contains string="${version-output}" substring="java version &quot;1.0"/>
@@ -222,7 +257,10 @@ is divided into following sections:
             <attribute default="${application.args}" name="args"/>
             <element name="customize" optional="true"/>
             <sequential>
-                <java classname="@{classname}" fork="true">
+                <java classname="@{classname}" fork="true" jvm="${platform.java}">
+                    <bootclasspath>
+                        <path path="${platform.bootcp}"/>
+                    </bootclasspath>
                     <jvmarg line="${debug-args-line}"/>
                     <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
                     <classpath>
@@ -250,6 +288,9 @@ is divided into following sections:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" name="library-inclusion-in-archive">
+        <copy file="${libs.dvn-DDImapping.classpath.libfile.3}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-DDImapping.classpath.libfile.2}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-DDImapping.classpath.libfile.1}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.5}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.4}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.3}" todir="${build.classes.dir}"/>
@@ -262,11 +303,14 @@ is divided into following sections:
         <copy file="${libs.dvn-jhove.classpath.libfile.3}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-jhove.classpath.libfile.2}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-jhove.classpath.libfile.1}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-DDImapping.classpath.libfile.3}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-DDImapping.classpath.libfile.2}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-DDImapping.classpath.libfile.1}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
+        <basename file="${libs.dvn-DDImapping.classpath.libfile.3}" property="included.lib.libs.dvn-DDImapping.classpath.3"/>
+        <basename file="${libs.dvn-DDImapping.classpath.libfile.2}" property="included.lib.libs.dvn-DDImapping.classpath.2"/>
+        <basename file="${libs.dvn-DDImapping.classpath.libfile.1}" property="included.lib.libs.dvn-DDImapping.classpath.1"/>
+        <copy file="${libs.dvn-DDImapping.classpath.libfile.3}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-DDImapping.classpath.libfile.2}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-DDImapping.classpath.libfile.1}" todir="${dist.ear.dir}"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.5}" property="included.lib.libs.dvn-EJB.classpath.5"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.4}" property="included.lib.libs.dvn-EJB.classpath.4"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.3}" property="included.lib.libs.dvn-EJB.classpath.3"/>
@@ -291,14 +335,8 @@ is divided into following sections:
         <copy file="${libs.dvn-jhove.classpath.libfile.3}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-jhove.classpath.libfile.2}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-jhove.classpath.libfile.1}" todir="${dist.ear.dir}"/>
-        <basename file="${libs.dvn-DDImapping.classpath.libfile.3}" property="included.lib.libs.dvn-DDImapping.classpath.3"/>
-        <basename file="${libs.dvn-DDImapping.classpath.libfile.2}" property="included.lib.libs.dvn-DDImapping.classpath.2"/>
-        <basename file="${libs.dvn-DDImapping.classpath.libfile.1}" property="included.lib.libs.dvn-DDImapping.classpath.1"/>
-        <copy file="${libs.dvn-DDImapping.classpath.libfile.3}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-DDImapping.classpath.libfile.2}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-DDImapping.classpath.libfile.1}" todir="${dist.ear.dir}"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.libs.dvn-EJB.classpath.1} ${included.lib.libs.dvn-EJB.classpath.2} ${included.lib.libs.dvn-EJB.classpath.3} ${included.lib.libs.dvn-EJB.classpath.4} ${included.lib.libs.dvn-EJB.classpath.5} ${included.lib.libs.dvn-harvester.classpath.1} ${included.lib.libs.dvn-harvester.classpath.2} ${included.lib.libs.dvn-harvester.classpath.3} ${included.lib.libs.dvn-harvester.classpath.4} ${included.lib.libs.dvn-jhove.classpath.1} ${included.lib.libs.dvn-jhove.classpath.2} ${included.lib.libs.dvn-jhove.classpath.3} ${included.lib.libs.dvn-DDImapping.classpath.1} ${included.lib.libs.dvn-DDImapping.classpath.2} ${included.lib.libs.dvn-DDImapping.classpath.3} "/>
+            <attribute name="Class-Path" value="${included.lib.libs.dvn-DDImapping.classpath.1} ${included.lib.libs.dvn-DDImapping.classpath.2} ${included.lib.libs.dvn-DDImapping.classpath.3} ${included.lib.libs.dvn-EJB.classpath.1} ${included.lib.libs.dvn-EJB.classpath.2} ${included.lib.libs.dvn-EJB.classpath.3} ${included.lib.libs.dvn-EJB.classpath.4} ${included.lib.libs.dvn-EJB.classpath.5} ${included.lib.libs.dvn-harvester.classpath.1} ${included.lib.libs.dvn-harvester.classpath.2} ${included.lib.libs.dvn-harvester.classpath.3} ${included.lib.libs.dvn-harvester.classpath.4} ${included.lib.libs.dvn-jhove.classpath.1} ${included.lib.libs.dvn-jhove.classpath.2} ${included.lib.libs.dvn-jhove.classpath.3} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">
@@ -435,6 +473,9 @@ is divided into following sections:
             <sourcepath>
                 <path path="${web.docbase.dir}"/>
             </sourcepath>
+            <bootclasspath>
+                <path path="${platform.bootcp}"/>
+            </bootclasspath>
         </nbjpdaconnect>
     </target>
     <target depends="init" if="netbeans.home" name="-debug-start-debugger">
@@ -458,7 +499,7 @@ is divided into following sections:
             -->
     <target depends="init" name="javadoc-build">
         <mkdir dir="${dist.javadoc.dir}"/>
-        <javadoc additionalparam="${javadoc.additionalparam}" author="${javadoc.author}" charset="UTF-8" destdir="${dist.javadoc.dir}" docencoding="UTF-8" encoding="${javadoc.encoding.used}" failonerror="true" noindex="${javadoc.noindex}" nonavbar="${javadoc.nonavbar}" notree="${javadoc.notree}" private="${javadoc.private}" source="${javac.source}" splitindex="${javadoc.splitindex}" use="${javadoc.use}" useexternalfile="true" version="${javadoc.version}" windowtitle="${javadoc.windowtitle}">
+        <javadoc additionalparam="${javadoc.additionalparam}" author="${javadoc.author}" charset="UTF-8" destdir="${dist.javadoc.dir}" docencoding="UTF-8" encoding="${javadoc.encoding.used}" executable="${platform.javadoc}" failonerror="true" noindex="${javadoc.noindex}" nonavbar="${javadoc.nonavbar}" notree="${javadoc.notree}" private="${javadoc.private}" source="${javac.source}" splitindex="${javadoc.splitindex}" use="${javadoc.use}" useexternalfile="true" version="${javadoc.version}" windowtitle="${javadoc.windowtitle}">
             <classpath>
                 <path path="${javac.classpath}:${j2ee.platform.classpath}"/>
             </classpath>

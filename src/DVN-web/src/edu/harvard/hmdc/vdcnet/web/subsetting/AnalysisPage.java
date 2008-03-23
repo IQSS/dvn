@@ -3899,8 +3899,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         if (((String) simOptn).equals("1")) {
                             Object v1 = dropDown2.getSelected();
                             Object v2 = dropDown3.getSelected();
-                            Object vl1 = textField8.getValue();
-                            Object vl2 = textField10.getValue();
+                            Object vl1 = textField10.getValue();
+                            Object vl2 = textField8.getValue();
                             List<String> setxVars = new ArrayList<String>();
                             if (v1 != null) {
                                 setxVars.add((String) v1);

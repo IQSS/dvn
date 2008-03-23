@@ -57,18 +57,14 @@ read.table141vdc<-function (file, header = FALSE, sep = "\t", quote = "", dec = 
                     #cat("before-d=",i, "\n")
                     data[[i]]<-as.Date(data[[i]])
                     #cat("after-d=",i, "\n")
-                    colClassesx[i]<-1
                 } else if (varFormat[col.names[i]] == 'T'){
                     #cat("before-t=",i,"\n")
                     data[[i]]<-as.POSIXct(strptime(data[[i]], "%T"))
                     #cat("after-t=", i,"\n")
-                    colClassesx[i]<-1
                 } else if (varFormat[col.names[i]] == 'DT'){
                     data[[i]]<-as.POSIXct(strptime(data[[i]], "%F %T"))
-                    colClassesx[i]<-1
                 } else if (varFormat[col.names[i]] == 'JT'){
                     data[[i]]<-as.POSIXct(strptime(data[[i]], "%j %T"))
-                    colClassesx[i]<-1
                 }
              }
         } else {
@@ -1153,3 +1149,18 @@ sumStatTabAll.DDI<-function(dtfrm, file="", flid=1, jobNo=0, startno=1, novars=0
     } # end of the variable-wise loop 
 
 } #end of the sumStatTabAll.DDIx.R
+
+
+checkBinaryResponse<-function(binx){
+    bnryVarTbl <-attr(table(binx), 'dimnames')[[1]];
+    if (length(bnryVarTbl) == 2){
+        if ((bnryVarTbl[1] == 0) && (bnryVarTbl[2]==1)){
+            #cat('this variable is already 0-1\n');
+        } else {
+            #cat('this variable needs the conversion\n');
+            #cat(paste( bnryVarTbl[1],' is recoded to 1; ', bnryVarTbl[2],' is recoded to 0;\n', sep=''));
+            binx<-as.integer(binx == bnryVarTbl[1]);
+        }
+    }
+    invisible(binx)
+}

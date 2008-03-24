@@ -35,9 +35,6 @@
 		   <xsl:for-each select="//dc:creator">
 		   <AuthEnty><xsl:value-of select="."/></AuthEnty>
 		   </xsl:for-each>
-		   <xsl:for-each select="//dc:contributor">
-		   <othId><xsl:value-of select="."/></othId>
-		   </xsl:for-each>
 		</rspStmt>
 
 		<prodStmt>
@@ -48,22 +45,16 @@
 		   </producer>
 		</xsl:if>		
 		</xsl:for-each>
-		<xsl:for-each select="//dc:rights">
+
+		<xsl:for-each select="normalize-space(//dc:date)!=''">
 		<xsl:if test="normalize-space(.)!=''">
-		   <copyright>
-		   <xsl:value-of select="."/>
-		   </copyright>
-		</xsl:if>
-		</xsl:for-each>
+		   <prodDate>
+		   <xsl:value-of select="normalize-space(.)"/>
+		   </prodDate>
+		</xsl:if>		
+		</xsl:for-each>		
 		</prodStmt>		
 
-		<xsl:if test="normalize-space(//dc:date)!=''">
-		<distStmt>
-		   <distDate>
-		   <xsl:value-of select="//dc:date"/>
-		   </distDate>
-		</distStmt>		
-		</xsl:if>		
 	    </citation>
 	    <stdyInfo>
 		<subject>
@@ -84,8 +75,33 @@
 		   </geogCover>
 		</xsl:if>
 		</xsl:for-each>	
+		<xsl:for-each select="//dc:type">
+		<xsl:if test="normalize-space(.)!=''">
+		   <dataKind>
+		      <xsl:value-of select="."/>
+		   </dataKind>
+		</xsl:if>
+		</xsl:for-each>	
 		</sumDscr>
 	    </stdyInfo>
+
+	    <xsl:if test="normalize-space(//dc:source)!=''">
+	    <method>
+	       <dataColl>
+	          <sources>
+		     <xsl:for-each select="//dc:source">
+		     <xsl:if test="normalize-space(.)!=''">
+	             <dataSrc>
+		        <xsl:value-of select="normalize-space(.)"/>
+	             </dataSrc>
+		     </xsl:if>
+		     </xsl:for-each>
+	          </sources>
+	       </dataColl>
+	     </method>
+	     </xsl:if>
+
+
 	    <xsl:for-each select="//dc:rights">
 	    <xsl:if test="normalize-space(.)!=''">
             <dataAccs>
@@ -97,6 +113,17 @@
             </dataAccs>
             </xsl:if>
 	    </xsl:for-each>
+	    <xsl:if test="normalize-space(//dc:relation)!=''">
+	    <othrStdyMat>
+	    <xsl:for-each select="//dc:relation">
+	    <xsl:if test="normalize-space(.)!=''">
+	       <relMat>
+	          <xsl:value-of select="normalize-space(.)"/>
+	       </relMat>
+	    </xsl:if>
+	    </xsl:for-each>
+	    </othrStdyMat>
+	    </xsl:if>
 	</stdyDscr>
 </codeBook>
 </xsl:template>

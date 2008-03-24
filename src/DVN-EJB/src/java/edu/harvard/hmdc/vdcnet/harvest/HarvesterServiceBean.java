@@ -405,15 +405,16 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, MutableBoolean errorOccurred) {
+
+        String errMessage = null;;
         Study harvestedStudy = null;
         String oaiUrl = dataverse.getOaiServer();
         try {
             hdLogger.log(Level.INFO, "Calling GetRecord: oaiUrl =" + oaiUrl + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + metadataPrefix);
 
             GetRecord record = new GetRecord(oaiUrl, identifier, metadataPrefix);
-            String errMessage = record.getErrorMessage();
+            errMessage = record.getErrorMessage();
             if (errMessage != null) {
-                errorOccurred.setValue(true);
                 hdLogger.log(Level.SEVERE, "Error calling GetRecord - " + errMessage);
             } else if (record.isDeleted()) {
                 hdLogger.log(Level.INFO, "Received 'deleted' status from OAI Server.");
@@ -432,16 +433,21 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             }
 
         } catch (Throwable e) {
-            errorOccurred.setValue(true);
-            String message = "Exception processing getRecord(), oaiUrl=" + oaiUrl + ",identifier=" + identifier + " " + e.getClass().getName() + " " + e.getMessage();
-            hdLogger.log(Level.SEVERE, message);
+            errMessage = "Exception processing getRecord(), oaiUrl=" + oaiUrl + ",identifier=" + identifier + " " + e.getClass().getName() + " " + e.getMessage();
+            hdLogger.log(Level.SEVERE, errMessage);
             logException(e, hdLogger);
         }
-        if (harvestedStudy != null) {
-            return harvestedStudy.getId();
-        } else {
-            return null;
+
+        // determine how to handle the error, if any
+        if (errMessage != null) {
+            if (errorOccurred  != null) {
+                errorOccurred.setValue(true);           
+            } else {
+                throw new EJBException(errMessage);
+            }
         }
+
+        return harvestedStudy != null ? harvestedStudy.getId() : null;
     }
     
     public List<String> getMetadataFormats(String oaiUrl) {

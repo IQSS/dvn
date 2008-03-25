@@ -380,6 +380,10 @@
        <put name="pageTitle"   type="string"        value="DVN - Import Study "/>
        <put name="content" type="template"     value="/networkAdmin/ImportStudyPage.jsp"/>
    </definition>
+   <definition name="/networkAdmin/UtilitiesPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Dataverse Network Utilities"/>
+       <put name="content" type="template"     value="/networkAdmin/UtilitiesPage.jsp"/>
+   </definition>   
    <definition name="/networkAdmin/printPopup" extends="/vanilla-layout">
        <put name="pageTitle"   type="string"        value="Monthly Report"/>
        <put name="content" type="template"     value="/vanillaPopup.jsp"/>

@@ -46,7 +46,7 @@
                                             <h:message for="password" styleClass="errorMessage"/>
                                         </ui:panelGroup>
                                         <ui:panelGroup>
-                                            <f:verbatim><!-- placeholder --></f:verbatim>
+                                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ForgotPasswordPage.jsp" title="Link to Reset Password">Forgot your password?</h:outputLink>
                                         </ui:panelGroup>
                                         <ui:panelGroup  block="true" id="groupPanel1" style="padding-left: 50px; padding-top: 10px; padding-right:5px; text-align:right;">
                                             <h:commandButton  id="button1" value="Log in" action="#{LoginPage.login}" />

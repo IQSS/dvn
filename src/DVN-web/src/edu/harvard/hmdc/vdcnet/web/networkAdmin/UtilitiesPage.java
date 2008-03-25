@@ -1,0 +1,602 @@
+/*
+ * Dataverse Network - A web application to distribute, share and analyze quantitative data.
+ * Copyright (C) 2007
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ *  along with this program; if not, see <http://www.gnu.org/licenses
+ * or write to the Free Software Foundation,Inc., 51 Franklin Street,
+ * Fifth Floor, Boston, MA 02110-1301 USA
+ */
+/*
+
+ * UtilitiesPage.java
+ * 
+ * Created on Mar 18, 2008, 3:30:20 PM
+ * 
+ * To change this template, choose Tools | Template Manager
+ * and open the template in the editor.
+ */
+
+package edu.harvard.hmdc.vdcnet.web.networkAdmin;
+
+import com.sun.rave.web.ui.model.UploadedFile;
+import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
+import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
+import edu.harvard.hmdc.vdcnet.study.DataTable;
+import edu.harvard.hmdc.vdcnet.study.EditStudyService;
+import edu.harvard.hmdc.vdcnet.study.FileCategory;
+import edu.harvard.hmdc.vdcnet.study.Study;
+import edu.harvard.hmdc.vdcnet.study.StudyFile;
+import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.FileUtil;
+import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
+import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
+import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
+import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
+import javax.ejb.EJBException;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ *
+ * @author gdurand
+ */
+public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable   {
+
+    private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.web.networkAdmin.UtilitiesPage");
+            
+    @EJB StudyServiceLocal studyService;
+    @EJB IndexServiceLocal indexService;
+    @EJB HarvestingDataverseServiceLocal harvestingDataverseService;    
+    @EJB HarvesterServiceLocal harvesterService;
+    @EJB VDCServiceLocal vdcService;
+    
+    private String selectedPanel;
+    private Long vdcId;
+
+    
+    /** Creates a new instance of ImportStudyPage */
+    public UtilitiesPage() {
+    }
+    
+    public void init() {
+        super.init();
+        vdcId = getVDCRequestBean().getCurrentVDCId();
+        selectedPanel = getRequestParam("selectedPanel");
+    }
+
+    public String getSelectedPanel() {
+        return selectedPanel;
+    }
+
+    public void setSelectedPanel(String selectedPanel) {
+        this.selectedPanel = selectedPanel;
+    }
+    
+    
+    // <editor-fold defaultstate="collapsed" desc="studyLock utilities">  
+    public boolean isStudyLockPanelRendered() {
+        return "studyLock".equals(selectedPanel);
+    }
+    
+    String studyLockStudyId;
+
+    public String getStudyLockStudyId() {
+        return studyLockStudyId;
+    }
+
+    public void setStudyLockStudyId(String studyLockStudyId) {
+        this.studyLockStudyId = studyLockStudyId;
+    }
+    
+    public List getStudyLockList() {
+        return studyService.getStudyLocks();
+    }
+    
+    public String removeLock_action() {
+        try {
+            studyService.removeStudyLock( new Long( studyLockStudyId) );
+            addMessage( "studyLockMessage", "Study lock removed (for study id = " + studyLockStudyId + ")" );
+        } catch (NumberFormatException nfe) {
+            addMessage( "studyLockMessage", "Action failed: The study id must be of type Long." );
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "studyLockMessage", "Action failed: An unknown error occurred trying to remove lock for study id = " + studyLockStudyId );
+        }
+       
+        return null;
+    }    
+    // </editor-fold>        
+
+    
+    // <editor-fold defaultstate="collapsed" desc="index utilities">    
+    public boolean isIndexPanelRendered() {
+        return "index".equals(selectedPanel);
+    }
+    
+    String indexDVId;
+    String indexStudyIds;
+
+    public String getIndexDVId() {
+        return indexDVId;
+    }
+
+    public void setIndexDVId(String indexDVId) {
+        this.indexDVId = indexDVId;
+    }
+
+    public String getIndexStudyIds() {
+        return indexStudyIds;
+    }
+
+    public void setIndexStudyIds(String indexStudyIds) {
+        this.indexStudyIds = indexStudyIds;
+    }
+    
+    public String indexAll_action() {
+        try {
+            //first delete files
+            boolean deleteFailed = false;
+            File indexDir = new File("index-dir");
+            File[] files = indexDir.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                if ( !files[i].delete() ) {
+                    deleteFailed = true;
+                }
+            }
+
+            if (!deleteFailed) {
+                indexService.indexAll();
+                 addMessage( "indexMessage", "Reindexing completed." );
+            } else {
+                addMessage( "indexMessage", "Reindexing failed: There was a problem deleting the files. Please fix this manually, then try again." );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "indexMessage", "Reindexing failed: An unknown error occurred trying to reindex the DVN." );
+        } 
+       
+        return null;
+    }   
+    
+    public String indexDV_action() {
+        try {
+            VDC vdc =  vdcService.findById( new Long( indexDVId) );
+            if (vdc != null) { 
+                List studyIDList = new ArrayList();
+                for (Study study :  vdc.getOwnedStudies() ) {
+                    studyIDList.add( study.getId() );
+                }
+                indexService.updateIndexList( studyIDList );
+                addMessage( "indexMessage", "Indexing completed (for dataverse id = " + indexDVId + ")" );
+            } else {
+                addMessage( "indexMessage", "Indexing failed: There is no dataverse with dvId = " + indexDVId );                    
+            }
+        } catch (NumberFormatException nfe) {
+            addMessage( "indexMessage", "Indexing failed: The dataverse id must be of type Long." );
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "indexMessage", "Indexing failed: An unknown error occurred trying to index dataverse with id = " + indexDVId );
+        } 
+            
+        return null;
+    }    
+    
+    public String indexStudies_action() {
+        try {
+            Map tokenizedLists = determineStudyIds(indexStudyIds);
+            indexService.updateIndexList( (List) tokenizedLists.get("idList") );
+
+            addMessage( "indexMessage", "Indexing request completed." );
+            addStudyMessages( "indexMessage", tokenizedLists);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "indexMessage", "Indexing failed: An unknown error occurred trying to index the following: \"" + indexStudyIds + "\"" );
+        }            
+ 
+        return null;
+    }   
+    // </editor-fold>
+    
+    
+    // <editor-fold defaultstate="collapsed" desc="export utilities">    
+    public boolean isExportPanelRendered() {
+        return "export".equals(selectedPanel);
+    }
+    
+    String exportFormat;
+    String exportDVId;
+    String exportStudyIds;
+    
+    public String getExportFormat() {
+        return exportFormat;
+    }
+
+    public void setExportFormat(String exportFormat) {
+        this.exportFormat = exportFormat == null || exportFormat.equals("") ? null : exportFormat;
+    }
+
+    public String getExportDVId() {
+        return exportDVId;
+    }
+
+    public void setExportDVId(String exportDVId) {
+        this.exportDVId = exportDVId;
+    }
+
+    public String getExportStudyIds() {
+        return exportStudyIds;
+    }
+
+    public void setExportStudyIds(String exportStudyIds) {
+        this.exportStudyIds = exportStudyIds;
+    }
+    
+     public String exportUpdated_action() {
+        try {
+            studyService.exportUpdatedStudies();
+            addMessage( "exportMessage", "Export succeeded (for updated studies).");
+        } catch (Exception e) {
+            addMessage( "exportMessage", "Export failed: Exception occurred while exporting studies.  See export log for details.");   
+        }
+        return null;
+    }  
+     
+    public String exportAll_action() {
+        try {
+            List<Long> allStudyIds = studyService.getAllStudyIds();
+            studyService.exportStudies(allStudyIds, exportFormat);
+            addMessage( "exportMessage", "Export succeeded for all studies." );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "exportMessage", "Export failed: An unknown error occurred trying to export all studies." );
+        }    
+        
+        return null;
+    }  
+    
+    public String exportDV_action() {
+        try {
+            VDC vdc =  vdcService.findById( new Long(exportDVId) );
+            if (vdc != null) { 
+                List studyIDList = new ArrayList();
+                for (Study study :  vdc.getOwnedStudies() ) {
+                    studyIDList.add( study.getId() );
+                }
+
+                studyService.exportStudies(studyIDList, exportFormat);
+                addMessage( "exportMessage", "Export succeeded (for dataverse id = " + exportDVId + ")" );
+            } else {
+                addMessage( "exportMessage", "Export failed: There is no dataverse with dvId = " + exportDVId );                    
+            }
+        } catch (NumberFormatException nfe) {
+            addMessage( "exportMessage", "Export failed: The dataverse id must be of type Long.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "exportMessage", "Export failed: An unknown error occurred trying to export dataverse with id = " + exportDVId );
+        } 
+        
+        return null;
+    }      
+    
+    public String exportStudies_action() {
+        try {
+            Map tokenizedLists = determineStudyIds(exportStudyIds);
+            studyService.exportStudies( (List) tokenizedLists.get("idList"), exportFormat );
+         
+            addMessage( "exportMessage", "Export request completed." );
+            addStudyMessages( "exportMessage", tokenizedLists);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "exportMessage", "Export failed: An unknown error occurred trying to export the following: \"" + exportStudyIds + "\"" );
+        }        
+        return null;
+    }    
+    // </editor-fold>        
+
+    
+    // <editor-fold defaultstate="collapsed" desc="harvest utilities">  
+    public boolean isHarvestPanelRendered() {
+        return "harvest".equals(selectedPanel);
+    }
+    
+    String harvestDVId;
+    String harvestIdentifier;
+
+    public String getHarvestDVId() {
+        return harvestDVId;
+    }
+
+    public void setHarvestDVId(String harvestDVId) {
+        this.harvestDVId = harvestDVId;
+    }
+
+    public String getHarvestIdentifier() {
+        return harvestIdentifier;
+    }
+
+    public void setHarvestIdentifier(String harvestIdentifier) {
+        this.harvestIdentifier = harvestIdentifier;
+    }
+    
+    public List getHarvestDVs() {
+        List harvestDVSelectItems = new ArrayList();
+        Iterator iter = harvestingDataverseService.findAll().iterator();
+        while (iter.hasNext()) {
+            HarvestingDataverse hd = (HarvestingDataverse) iter.next();
+            harvestDVSelectItems.add( new SelectItem(hd.getId(), hd.getVdc().getName()) );
+            
+        }
+        return harvestDVSelectItems;
+    }
+    
+    public String harvestStudy_action() {
+        String link = null;
+        HarvestingDataverse hd = null;
+        try {
+            hd = harvestingDataverseService.find( new Long(harvestDVId) );
+            Long studyId = harvesterService.getRecord(logger, hd, harvestIdentifier, hd.getHarvestFormatType().getMetadataPrefix(), null);
+            
+            if (studyId != null) {
+                indexService.updateStudy(studyId);
+                
+                // create link String
+                HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
+                link = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
+                        + "/faces/study/StudyPage.jsp?studyId=" + studyId;
+            }
+                       
+            addMessage( "harvestMessage", "Harvest succeeded" + (link == null ? "." : ": " + link ) );
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "harvestMessage", "Harvest failed: An unexpected error occurred trying to get this record." );
+            addMessage( "harvestMessage", "Exception message: " + e.getMessage() );
+            addMessage( "harvestMessage", "Harvest URL: " + hd.getOaiServer() + "?verb=GetRecord&identifier=" + harvestIdentifier + "&metadataPrefix=" + hd.getHarvestFormatType().getMetadataPrefix() );
+        }
+       
+        return null;
+    }    
+    // </editor-fold>        
+
+   
+    // <editor-fold defaultstate="collapsed" desc="import utilities">    
+    public boolean isImportPanelRendered() {
+        return "import".equals(selectedPanel);
+    } 
+ 
+    private UploadedFile browserFile;
+    private int xmlFileFormat;
+    private boolean registerHandle;
+    private boolean generateHandle;
+    private boolean allowUpdates;
+    private boolean checkRestrictions;
+    private boolean copyFiles;
+    
+    public List getVdcRadioItems() {
+        List vdcRadioItems = new ArrayList();
+        Iterator iter = vdcService.findAll().iterator();
+        while (iter.hasNext()) {
+            VDC vdc = (VDC) iter.next();
+            vdcRadioItems.add( new SelectItem(vdc.getId(), vdc.getName()) );
+            
+        }
+        return vdcRadioItems;
+    }
+    
+    public List getXmlFileFormatRadioItems() {
+        List xmlFileFrmatRadioItems = new ArrayList();
+        xmlFileFrmatRadioItems.add( new SelectItem(0, "ddi") );
+        xmlFileFrmatRadioItems.add( new SelectItem(1, "mif") );
+        return xmlFileFrmatRadioItems;
+    }    
+    
+    public UploadedFile getBrowserFile() {
+        return browserFile;
+    }
+    
+    public void setBrowserFile(UploadedFile browserFile) {
+        this.browserFile = browserFile;
+    }
+    
+    public Long getVdcId() {
+        return vdcId;
+    }
+    
+    public void setVdcId(Long vdcId) {
+        this.vdcId = vdcId;
+    }
+    
+    public int getXmlFileFormat() {
+        return xmlFileFormat;
+    }
+
+    public void setXmlFileFormat(int xmlFileFormat) {
+        this.xmlFileFormat = xmlFileFormat;
+    }
+    
+    public String import_action() {
+        String resultMsg = null;
+        
+        LoginBean lb = getVDCSessionBean().getLoginBean();
+        if (lb == null) {
+            resultMsg = "You must be logged in to import a study.";
+        } else {
+            try {
+                File xmlFile = File.createTempFile("ddi", ".xml");
+                browserFile.write(xmlFile);
+                
+                Study study = studyService.importStudy(xmlFile, new Long(xmlFileFormat), vdcId, lb.getUser().getId(), registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles, null);
+                indexService.updateStudy(study.getId());
+                
+                // create result message
+                HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
+                String link = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
+                        + "/faces/study/StudyPage.jsp?studyId=" + study.getId();
+                
+                resultMsg = "Import succeeded: " + link;
+                
+            } catch (Exception ex) {
+                resultMsg = "Import failed: " + ex.getMessage() ;
+                ex.printStackTrace();
+            }
+        }
+        
+        FacesMessage message = new FacesMessage(resultMsg);
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.addMessage(null, message);
+
+        return null;
+    }
+
+
+    public boolean isRegisterHandle() {
+        return registerHandle;
+    }
+
+    public void setRegisterHandle(boolean registerHandle) {
+        this.registerHandle = registerHandle;
+    }
+
+    public boolean isGenerateHandle() {
+        return generateHandle;
+    }
+
+    public void setGenerateHandle(boolean generateHandle) {
+        this.generateHandle = generateHandle;
+    }
+
+    public boolean isAllowUpdates() {
+        return allowUpdates;
+    }
+
+    public void setAllowUpdates(boolean allowUpdates) {
+        this.allowUpdates = allowUpdates;
+    }
+
+    public boolean isCheckRestrictions() {
+        return this.checkRestrictions;
+    }
+
+    public void setCheckRestrictions(boolean checkRestrictions) {
+        this.checkRestrictions = checkRestrictions;
+    }
+    
+    public boolean isCopyFiles() {
+        return copyFiles;
+    }
+    
+    public void setCopyFiles(boolean copyFiles) {
+        this.copyFiles = copyFiles;
+    }    
+// </editor-fold>
+
+    
+    // ****************************
+    // Common methods
+    // ****************************
+    
+    private void addMessage(String component, String message) {
+        FacesMessage facesMsg = new FacesMessage(message);
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.addMessage(component, facesMsg);          
+    }
+    
+    private void addStudyMessages (String component, Map tokenizedLists) {
+
+            if ( ((List) tokenizedLists.get("idList")).size() > 0 ) {            
+                addMessage( component, "The following studies were successfully processed: " + tokenizedLists.get("idList") );
+            }
+            if ( ((List) tokenizedLists.get("invalidStudyIdList")).size() > 0 ) {
+                addMessage( component, "The following study ids were invalid: " + tokenizedLists.get("invalidStudyIdList") ); 
+            }
+            if ( ((List) tokenizedLists.get("failedTokenList")).size() > 0 ) {
+                addMessage( component, "The following tokens could not be interpreted: " + tokenizedLists.get("failedTokenList") );
+            }
+    }
+
+    
+    private Map determineIds(String ids) {
+        List<Long> idList = new ArrayList();
+        List<String> failedTokenList = new ArrayList(); 
+                    
+        StringTokenizer st = new StringTokenizer(ids, ",; \t\n\r\f");
+        while (st.hasMoreTokens()) {
+            String token = st.nextToken();
+            
+            try {
+                idList.add( new Long(token) );
+            } catch (NumberFormatException nfe) {
+                if ( token.indexOf("-") == -1 ) {
+                    failedTokenList.add(token);
+                } else {
+                    try {
+                        Long startId = new Long( token.substring( 0, token.indexOf("-") ) );
+                        Long endId = new Long( token.substring( token.indexOf("-") + 1 ) );  
+                        for (long i = startId.longValue(); i <= endId.longValue(); i++) {
+                            idList.add( new Long(i) );
+                        }
+                    } catch (NumberFormatException nfe2) {
+                        failedTokenList.add( token );
+                    }
+                }
+            }
+        }
+        
+        Map returnMap = new HashMap();
+        returnMap.put("idList", idList);
+        returnMap.put("failedTokenList", failedTokenList);
+        
+        return returnMap;
+    }   
+
+
+    private Map determineStudyIds(String studyIds) {
+        Map tokenizedLists = determineIds(studyIds);
+        List invalidStudyIdList = new ArrayList();
+
+        for (Iterator  iter = ((List<Long>) tokenizedLists.get("idList")).iterator(); iter.hasNext();) {
+            Long id = (Long) iter.next();
+            try {
+                studyService.getStudy(id);
+            } catch (EJBException e) {  
+                if (e.getCause() instanceof IllegalArgumentException) {
+                    invalidStudyIdList.add(id);
+                    iter.remove();
+                } else {
+                    throw e;
+                }
+            }  
+        }
+
+        tokenizedLists.put("invalidStudyIdList", invalidStudyIdList);
+        return tokenizedLists;
+    }
+}

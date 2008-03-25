@@ -72,7 +72,7 @@ public class ErrorPageServlet extends HttpServlet  {
         }
         String time="";
         if (!optimisticLock) {
-            cause += "%20%20If this continues to occur, please <a href=\"/dvn/faces/ContactUsPage.jsp\">Contact</a> the Dataverse Network admin with this message.";
+            cause += "%20%20If this continues to occur%2C please <a href=\"/dvn/faces/ContactUsPage.jsp\">Contact</a> the Dataverse Network admin with this message.";
             time = "&time=" + URLEncoder.encode(this.getTimeStamp().toString(), "UTF-8");
         }
         if (virtualPath!=null) {

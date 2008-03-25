@@ -78,6 +78,12 @@
         <managed-bean-scope>application</managed-bean-scope>
     </managed-bean>
     <!-- **************** Login ***************** -->
+     <managed-bean>
+        <managed-bean-name>ForgotPasswordPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.ForgotPasswordPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+      
+    </managed-bean>
     <managed-bean>
         <managed-bean-name>AddAccountPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.AddAccountPage</managed-bean-class>

@@ -330,6 +330,7 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditAccoun
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditUserGroupPage', '/networkAdmin/EditUserGroupPage.jsp', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'UserGroupsPage', '/networkAdmin/UserGroupsPage.jsp', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ImportStudyPage', '/networkAdmin/ImportStudyPage.jsp', null,2 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'UtilitiesPage', '/networkAdmin/UtilitiesPage.jsp', null, 2 );
 
 ALTER TABLE pagedef ENABLE TRIGGER ALL;
 

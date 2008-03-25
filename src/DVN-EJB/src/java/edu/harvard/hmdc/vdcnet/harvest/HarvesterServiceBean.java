@@ -110,7 +110,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     VDCNetworkServiceLocal vdcNetworkService;
     @EJB
     MailServiceLocal mailService;
-    private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean");
+    private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceBean");
     private static final String HARVEST_TIMER = "HarvestTimer";
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat logFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
@@ -257,7 +257,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         HarvestingDataverse dataverse = em.find(HarvestingDataverse.class, dataverseId);
         MutableBoolean harvestErrorOccurred = new MutableBoolean(false);
         String logTimestamp = logFormatter.format(new Date());
-        Logger hdLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvestServiceBean." + dataverse.getVdc().getAlias() + logTimestamp);
+        Logger hdLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceBean." + dataverse.getVdc().getAlias() + logTimestamp);
         String logFileName = FileUtil.getImportFileDir() + File.separator + "harvest_" + dataverse.getVdc().getAlias() + logTimestamp + ".log ";
       
         hdLogger.addHandler(new FileHandler(logFileName));
@@ -403,6 +403,11 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         }
     }
 
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public Long getRecord(HarvestingDataverse dataverse, String identifier, String metadataPrefix) {
+        return getRecord(logger, dataverse, identifier, metadataPrefix, null);
+    }
+    
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, MutableBoolean errorOccurred) {
 

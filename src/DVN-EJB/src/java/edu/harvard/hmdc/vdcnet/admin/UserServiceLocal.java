@@ -49,6 +49,8 @@ public interface UserServiceLocal extends java.io.Serializable  {
     public VDCUser findByUserName(String userName);
     
     public VDCUser findByUserName(String userName, boolean activeOnly);
+    
+    public VDCUser findByEmail(String email);
 
     public void addVdcRole(Long userId, Long vdcId, String roleName);
     
@@ -59,6 +61,8 @@ public interface UserServiceLocal extends java.io.Serializable  {
     public void setActiveStatus(Long userId, boolean active);
     
     public boolean validatePassword(Long userId, String password);
+    
+    public void updatePassword(Long userId);
     
     public String encryptPassword(String plainText);
     

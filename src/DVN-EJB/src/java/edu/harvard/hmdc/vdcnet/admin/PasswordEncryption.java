@@ -33,6 +33,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.RandomStringUtils;
 
 
 /**
@@ -78,5 +79,15 @@ public final class PasswordEncryption  implements java.io.Serializable
        instance = new PasswordEncryption(); 
     } 
     return instance;
+  }
+  
+  public static String generateRandomPassword() {
+      return RandomStringUtils.randomAlphanumeric(8);
+  }
+  
+  public static void main(String[] args) {
+      for (int i=0;i<10;i++) {
+        System.out.println("Random String-"+generateRandomPassword());
+      }
   }
 }

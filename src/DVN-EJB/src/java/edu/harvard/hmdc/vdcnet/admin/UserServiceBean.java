@@ -28,10 +28,11 @@
  */
 package edu.harvard.hmdc.vdcnet.admin;
 
+import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
-import java.util.ArrayList;
+import java.lang.String;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -54,6 +55,8 @@ public class UserServiceBean implements UserServiceLocal {
     RoleServiceLocal roleService;
     @EJB
     NetworkRoleServiceLocal networkRoleService;
+    @EJB
+    MailServiceLocal mailService;
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     private EntityManager em;
 
@@ -116,6 +119,21 @@ public class UserServiceBean implements UserServiceLocal {
         return user;
     }
 
+    
+    public VDCUser findByEmail(String email) {
+        String query = "SELECT u from VDCUser u where u.email = :email ";
+        query += " and u.active=true ";
+        
+        VDCUser user = null;
+        try {
+            user = (VDCUser) em.createQuery(query).setParameter("email", email).getSingleResult();
+        } catch (javax.persistence.NoResultException e) {
+        // DO nothing, just return null.
+        }
+        return user;
+    }
+
+    
     public List findAll() {
         List userList = em.createQuery("select object(o) from VDCUser as o order by o.userName").getResultList();
         // Loop thru VDCRoles to trigger load from the DB before detaching
@@ -184,6 +202,14 @@ public class UserServiceBean implements UserServiceLocal {
         String encryptedPassword = PasswordEncryption.getInstance().encrypt(password);
         return encryptedPassword.equals(user.getEncryptedPassword());
 
+    }
+    
+    public void updatePassword(Long userId){
+        String plainTextPassword = PasswordEncryption.generateRandomPassword();
+        VDCUser user = em.find(VDCUser.class, userId);
+        user.setEncryptedPassword(encryptPassword(plainTextPassword));
+        mailService.sendPasswordUpdateNotification(user.getEmail(), user.getFirstName(), user.getUserName(), plainTextPassword);
+       
     }
 
     public String encryptPassword(String plainText) {

@@ -59,6 +59,7 @@ public interface PageDefServiceLocal extends java.io.Serializable  {
     public static final String FILE_REQUEST_SUCCESS_PAGE = "FileRequestSuccessPage";
     public static final String FILE_REQUEST_PAGE = "FileRequestPage";
     public static final String EDIT_VARIABLE_PAGE = "EditVariablePage";
+    public static final String FORGOT_PASSWORD_PAGE = "ForgotPasswordPage";
           
     Role findById(Long id);
 

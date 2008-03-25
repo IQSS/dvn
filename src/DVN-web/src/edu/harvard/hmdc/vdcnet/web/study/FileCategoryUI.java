@@ -46,7 +46,7 @@ import javax.naming.InitialContext;
  *
  * @author gdurand
  */
-public class FileCategoryUI implements java.io.Serializable   {
+public class FileCategoryUI implements Comparable, java.io.Serializable   {
     
     private FileCategory fileCategory;
     
@@ -138,5 +138,10 @@ public class FileCategoryUI implements java.io.Serializable   {
     public void setStudyFileUIs(List<StudyFileUI> studyFileUIs) {
         this.studyFileUIs = studyFileUIs;
     }
-    
+ 
+    public int compareTo(Object obj) {
+        FileCategoryUI catUI = (FileCategoryUI)obj;
+        return this.getFileCategory().compareTo( catUI.getFileCategory() );
+        
+    }    
 }

@@ -363,7 +363,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         HarvestingDataverse hd = null;
         try {
             hd = harvestingDataverseService.find( new Long(harvestDVId) );
-            Long studyId = harvesterService.getRecord(logger, hd, harvestIdentifier, hd.getHarvestFormatType().getMetadataPrefix(), null);
+            Long studyId = harvesterService.getRecord(hd, harvestIdentifier, hd.getHarvestFormatType().getMetadataPrefix());
             
             if (studyId != null) {
                 indexService.updateStudy(studyId);

@@ -258,7 +258,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         MutableBoolean harvestErrorOccurred = new MutableBoolean(false);
         String logTimestamp = logFormatter.format(new Date());
         Logger hdLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceBean." + dataverse.getVdc().getAlias() + logTimestamp);
-        String logFileName = FileUtil.getImportFileDir() + File.separator + "harvest_" + dataverse.getVdc().getAlias() + logTimestamp + ".log ";
+        String logFileName = FileUtil.getImportFileDir() + File.separator + "harvest_" + dataverse.getVdc().getAlias() + logTimestamp + ".log";
       
         hdLogger.addHandler(new FileHandler(logFileName));
  

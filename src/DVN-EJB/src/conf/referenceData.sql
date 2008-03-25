@@ -280,6 +280,7 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'LogoutPage
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddAccountPage', '/login/AddAccountPage.jsp', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditAccountPage', '/login/EditAccountPage.jsp', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'LoginPage', '/login/LoginPage.jsp', null,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ForgotPasswordPage', '/login/ForgotPasswordPage.jsp', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ContributorRequestPage', '/login/ContributorRequestPage.jsp', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'CreatorRequestPage','/login/CreatorRequestPage.jsp', null,null );
 

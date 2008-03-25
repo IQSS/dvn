@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.icpsr.umich.edu/DDI" xmlns:a="http://www.fgdc.gov/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exclude-result-prefixes="a">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.icpsr.umich.edu/DDI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
     <xsl:strip-space elements="*"/>
     <xsl:param name="schemaLocation">http://www.icpsr.umich.edu/DDI/Version2-0.xsd</xsl:param>
     <xsl:template match="/">
-         <xsl:apply-templates select="a:metadata"/>
+         <xsl:apply-templates select="metadata"/>
     </xsl:template>
     
-    <xsl:template match="a:metadata">
+    <xsl:template match="metadata">
 	<!-- Nest all in a codebook element -->
         <xsl:element name="codeBook" namespace="http://www.icpsr.umich.edu/DDI">
             <xsl:attribute name="xsi:schemaLocation"><xsl:text>http://www.icpsr.umich.edu/DDI </xsl:text>
@@ -15,20 +15,20 @@
             <docDscr>
             	<citation>
         	    <xsl:call-template name="titlStmt"/>
-        	    	<xsl:if test="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntperp/a:cntper) != '' or normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate) != '' or normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntorgp/a:cntorg) != '' or normalize-space(a:idinfo/a:citation/a:citeinfo/a:origin) != ''">
+        	    	<xsl:if test="normalize-space(idinfo/ptcontac/cntinfo/cntperp/cntper) != '' or normalize-space(idinfo/citation/citeinfo/pubdate) != '' or normalize-space(idinfo/ptcontac/cntinfo/cntorgp/cntorg) != '' or normalize-space(idinfo/citation/citeinfo/origin) != ''">
                     	<prodStmt>
-                    		<xsl:if test="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntorgp/a:cntorg) != ''">
+                    		<xsl:if test="normalize-space(idinfo/ptcontac/cntinfo/cntorgp/cntorg) != ''">
                          		<producer>
-					<xsl:value-of select="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntorgp/a:cntorg)"/>
+					<xsl:value-of select="normalize-space(idinfo/ptcontac/cntinfo/cntorgp/cntorg)"/>
                           		</producer>
                           	</xsl:if>
-				<xsl:if test="normalize-space(a:dataqual/a:lineage/a:procstep/a:proccont/a:cntinfo/a:cntperp/a:cntper) != ''">
+				<xsl:if test="normalize-space(dataqual/lineage/procstep/proccont/cntinfo/cntperp/cntper) != ''">
 					<producer>
-					<xsl:value-of select="normalize-space(a:dataqual/a:lineage/a:procstep/a:proccont/a:cntinfo/a:cntperp/a:cntper)"/>
+					<xsl:value-of select="normalize-space(dataqual/lineage/procstep/proccont/cntinfo/cntperp/cntper)"/>
 					</producer>
 				</xsl:if>					
 
-                    		<xsl:for-each select="a:idinfo/a:citation/a:citeinfo/a:origin">
+                    		<xsl:for-each select="idinfo/citation/citeinfo/origin">
 				<xsl:if test="normalize-space(.) != ''">
                          		<producer>
 					<xsl:value-of select="normalize-space(.)"/>
@@ -37,14 +37,14 @@
                           	</xsl:for-each>
 
 
-                         	<xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate) != ''">
+                         	<xsl:if test="normalize-space(idinfo/citation/citeinfo/pubdate) != ''">
                           		<prodDate>
-                          			<xsl:attribute name="date"><xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate)"/></xsl:attribute>
+                          			<xsl:attribute name="date"><xsl:value-of select="normalize-space(idinfo/citation/citeinfo/pubdate)"/></xsl:attribute>
                           		</prodDate>
                           	</xsl:if>
-                          	<xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubinfo/a:pubplace) != ''">
+                          	<xsl:if test="normalize-space(idinfo/citation/citeinfo/pubinfo/pubplace) != ''">
                           		<prodPlac>
-					<xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubinfo/a:pubplace)"/>
+					<xsl:value-of select="normalize-space(idinfo/citation/citeinfo/pubinfo/pubplace)"/>
                           		</prodPlac>
                           	</xsl:if>
                     	</prodStmt>
@@ -56,9 +56,9 @@
             		</distrbtr>
 		    </distStmt>
 
-		    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink) != ''">
+		    <xsl:if test="normalize-space(idinfo/citation/citeinfo/onlink) != ''">
 		       <holdings>
-			  <xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink)"/>
+			  <xsl:value-of select="normalize-space(idinfo/citation/citeinfo/onlink)"/>
 		       </holdings>
 		    </xsl:if>
 
@@ -71,7 +71,7 @@
 
 
                     <rspStmt>
-                     <xsl:for-each select="a:idinfo/a:citation/a:citeinfo/a:origin">
+                     <xsl:for-each select="idinfo/citation/citeinfo/origin">
                        <xsl:if test="normalize-space(.) != ''">
                          	<AuthEnty>
                             	 <xsl:value-of select="normalize-space(.)"/>
@@ -80,10 +80,10 @@
 		      </xsl:for-each>
                      </rspStmt>
 
-                    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate) != ''">
+                    <xsl:if test="normalize-space(idinfo/citation/citeinfo/pubdate) != ''">
                     	<prodStmt>
 				<prodDate>
-                          	<xsl:attribute name="date"><xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate)"/></xsl:attribute>
+                          	<xsl:attribute name="date"><xsl:value-of select="normalize-space(idinfo/citation/citeinfo/pubdate)"/></xsl:attribute>
                           	</prodDate>
                     	</prodStmt>
                     </xsl:if>
@@ -95,10 +95,10 @@
                        </distrbtr>
                     </distStmt>
 
-                    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:serinfo/a:sername) != ''">
+                    <xsl:if test="normalize-space(idinfo/citation/citeinfo/serinfo/sername) != ''">
 		    <serStmt>
 			<serName>
-                        <xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:serinfo/a:sername)"/>
+                        <xsl:value-of select="normalize-space(idinfo/citation/citeinfo/serinfo/sername)"/>
 			</serName>
 		    </serStmt>
 		    </xsl:if>
@@ -107,9 +107,9 @@
 
                <stdyInfo>
 		    <subject>
-			<xsl:for-each select="a:idinfo/a:keywords/a:theme">
-			    <xsl:param name="vocab"><xsl:value-of select="./a:themekt"/></xsl:param>
-			    <xsl:for-each select="./a:themekey">
+			<xsl:for-each select="idinfo/keywords/theme">
+			    <xsl:param name="vocab"><xsl:value-of select="./themekt"/></xsl:param>
+			    <xsl:for-each select="./themekey">
 			     <topcClas source="archive">
 			     <xsl:attribute name="vocab"><xsl:value-of select="$vocab"/></xsl:attribute>
 				   <xsl:value-of select="normalize-space(.)"/>
@@ -118,21 +118,21 @@
 			</xsl:for-each>
 		    </subject>                         
 
-		    <xsl:if test="normalize-space(a:idinfo/a:descript/a:abstract) != ''">
+		    <xsl:if test="normalize-space(idinfo/descript/abstract) != ''">
                     <abstract>
-						<xsl:value-of select="normalize-space(a:idinfo/a:descript/a:abstract)"/>	
+						<xsl:value-of select="normalize-space(idinfo/descript/abstract)"/>	
                     </abstract>
 		    </xsl:if>
 
-		    <xsl:if test="normalize-space(a:idinfo/a:timeprd/a:timeinfo/a:rngdates) != '' or normalize-space(a:idinfo/a:spdom/a:bounding) != '' or normalize-space(a:idinfo/a:timeprd/a:timeinfo/a:sngdate) != '' or normalize-space(a:idinfo/a:timeprd/a:timeinfo/a:mdattim) != '' or normalize-space(a:idinfo/a:keywords/a:place/a:placekey) != ''">
+		    <xsl:if test="normalize-space(idinfo/timeprd/timeinfo/rngdates) != '' or normalize-space(idinfo/spdom/bounding) != '' or normalize-space(idinfo/timeprd/timeinfo/sngdate) != '' or normalize-space(idinfo/timeprd/timeinfo/mdattim) != '' or normalize-space(idinfo/keywords/place/placekey) != ''">
                     <sumDscr>
-			<xsl:if test="normalize-space(a:idinfo/a:timeperd/a:timeinfo/a:sngdate/a:caldate) != ''">
+			<xsl:if test="normalize-space(idinfo/timeperd/timeinfo/sngdate/caldate) != ''">
                          <timePrd event="single">
-			 <xsl:value-of select="normalize-space(a:idinfo/a:timeperd/a:timeinfo/a:sngdate/a:caldate)"/> 
+			 <xsl:value-of select="normalize-space(idinfo/timeperd/timeinfo/sngdate/caldate)"/> 
                          </timePrd>
                         </xsl:if>
 
-			<xsl:for-each select="a:idinfo/a:timeperd/a:timeinfo/a:mdattim/a:sngdate/a:caldate">
+			<xsl:for-each select="idinfo/timeperd/timeinfo/mdattim/sngdate/caldate">
 			<xsl:if test="normalize-space(.) != ''">
                          <timePrd event="single">
 			 <xsl:value-of select="normalize-space(.)"/> 
@@ -140,60 +140,60 @@
                         </xsl:if>
 			</xsl:for-each>
 
-			<xsl:if test="normalize-space(a:idinfo/a:timeperd/a:timeinfo/a:rngdates/a:begdate) != ''">
+			<xsl:if test="normalize-space(idinfo/timeperd/timeinfo/rngdates/begdate) != ''">
                          <timePrd event="start">
-			 <xsl:value-of select="normalize-space(a:idinfo/a:timeperd/a:timeinfo/a:rngdates/a:begdate)"/> 
+			 <xsl:value-of select="normalize-space(idinfo/timeperd/timeinfo/rngdates/begdate)"/> 
                          </timePrd>
                         </xsl:if>
 
-			<xsl:if test="normalize-space(a:idinfo/a:timeperd/a:timeinfo/a:rngdates/a:enddate) != ''">
+			<xsl:if test="normalize-space(idinfo/timeperd/timeinfo/rngdates/enddate) != ''">
                          <timePrd event="end">
-			 <xsl:value-of select="normalize-space(a:idinfo/a:timeperd/a:timeinfo/a:rngdates/a:enddate)"/> 
+			 <xsl:value-of select="normalize-space(idinfo/timeperd/timeinfo/rngdates/enddate)"/> 
                          </timePrd>
                         </xsl:if>
 
-			<xsl:if test="normalize-space(a:idinfo/a:keywords/a:place/a:placekey) != ''">
+			<xsl:if test="normalize-space(idinfo/keywords/place/placekey) != ''">
                          <geogCover>
-				<xsl:value-of select="normalize-space(a:idinfo/a:keywords/a:place/a:placekey)"/>
+				<xsl:value-of select="normalize-space(idinfo/keywords/place/placekey)"/>
                          </geogCover>
                         </xsl:if>
 
-			<xsl:if test="normalize-space(a:idinfo/a:spdom/a:bounding) != ''">
+			<xsl:if test="normalize-space(idinfo/spdom/bounding) != ''">
                          <geoBndBox>
-				<westBL><xsl:value-of select="normalize-space(a:idinfo/a:spdom/a:bounding/a:westbc)"/></westBL>
-				<eastBL><xsl:value-of select="normalize-space(a:idinfo/a:spdom/a:bounding/a:eastbc)"/></eastBL>
-				<southBL><xsl:value-of select="normalize-space(a:idinfo/a:spdom/a:bounding/a:southbc)"/></southBL>
-				<northBL><xsl:value-of select="normalize-space(a:idinfo/a:spdom/a:bounding/a:northbc)"/></northBL>
+				<westBL><xsl:value-of select="normalize-space(idinfo/spdom/bounding/westbc)"/></westBL>
+				<eastBL><xsl:value-of select="normalize-space(idinfo/spdom/bounding/eastbc)"/></eastBL>
+				<southBL><xsl:value-of select="normalize-space(idinfo/spdom/bounding/southbc)"/></southBL>
+				<northBL><xsl:value-of select="normalize-space(idinfo/spdom/bounding/northbc)"/></northBL>
                          </geoBndBox>
                         </xsl:if>
 
-			<xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:geoform) != ''">	
+			<xsl:if test="normalize-space(idinfo/citation/citeinfo/geoform) != ''">	
 			 <dataKind>
-			   <xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:geoform)"/>
+			   <xsl:value-of select="normalize-space(idinfo/citation/citeinfo/geoform)"/>
 			 </dataKind>
 			</xsl:if>
                     </sumDscr>
                     </xsl:if>
                 </stdyInfo>
 
-		<xsl:if test="normalize-space(a:dataqual/a:lineage/a:procstep/a:procdesc) != ''">
+		<xsl:if test="normalize-space(dataqual/lineage/procstep/procdesc) != ''">
 		   <method>
 		      <dataColl>
 		         <sampProc>
-			    <xsl:value-of select="normalize-space(a:dataqual/a:lineage/a:procstep/a:procdesc)"/>
+			    <xsl:value-of select="normalize-space(dataqual/lineage/procstep/procdesc)"/>
 			 </sampProc>
 		      </dataColl>
 		   </method>
 		</xsl:if>
 
-		<xsl:if test="normalize-space(a:idinfo/a:accconst) != '' or normalize-space(a:idinfo/a:useconst) != ''" >
+		<xsl:if test="normalize-space(idinfo/accconst) != '' or normalize-space(idinfo/useconst) != ''" >
 		<dataAccs>
 		<useStmt>
 		<specPerm>
-			<xsl:value-of select="normalize-space(a:idinfo/a:accconst)"/>
+			<xsl:value-of select="normalize-space(idinfo/accconst)"/>
 		</specPerm>
 		<restrctn>
-			<xsl:value-of select="normalize-space(a:idinfo/a:useconst)"/>
+			<xsl:value-of select="normalize-space(idinfo/useconst)"/>
 		</restrctn>
 		</useStmt>     	
 		</dataAccs>
@@ -202,17 +202,17 @@
 
             </stdyDscr>
 
-	    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink) != ''">
+	    <xsl:if test="normalize-space(idinfo/citation/citeinfo/onlink) != ''">
 	    <otherMat level="study">
-	    <xsl:attribute name="URI"><xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink)"/></xsl:attribute>
-	    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:geoform) != ''">
+	    <xsl:attribute name="URI"><xsl:value-of select="normalize-space(idinfo/citation/citeinfo/onlink)"/></xsl:attribute>
+	    <xsl:if test="normalize-space(idinfo/citation/citeinfo/geoform) != ''">
 	       <labl>
-		<xsl:value-of select="a:idinfo/a:citation/a:citeinfo/a:geoform"/>
+		<xsl:value-of select="idinfo/citation/citeinfo/geoform"/>
 	       </labl>
 	    </xsl:if>
-	    <xsl:if test="normalize-space(a:distinfo/a:stdorder/a:digform/a:digtinfo/a:formname) != ''">
+	    <xsl:if test="normalize-space(distinfo/stdorder/digform/digtinfo/formname) != ''">
 	       <labl>
-		<xsl:value-of select="normalize-space(a:distinfo/a:stdorder/a:digform/a:digtinfo/a:formname)"/>
+		<xsl:value-of select="normalize-space(distinfo/stdorder/digform/digtinfo/formname)"/>
 	       </labl>
 	    </xsl:if>
 	    </otherMat>
@@ -224,7 +224,7 @@
     <xsl:template name="titlStmt">
                	   <titlStmt>
                       <titl>                      
-                           <xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:title)"/>
+                           <xsl:value-of select="normalize-space(idinfo/citation/citeinfo/title)"/>
                        </titl>
 
                     </titlStmt>

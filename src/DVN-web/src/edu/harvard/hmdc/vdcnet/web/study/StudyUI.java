@@ -6,7 +6,7 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -53,6 +53,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -63,12 +64,12 @@ import javax.naming.InitialContext;
  * @author gdurand
  */
 public class StudyUI  implements java.io.Serializable {
-
+    
     private Study study;
     private Long studyId;
     private Map studyFields;
     private UserGroup ipUserGroup;
-
+    
     /** Creates a new instance of StudyUI
      *  this consturctor does not initialize the file category ui list
      *  and is meant to be used in places where you do not need them
@@ -77,16 +78,16 @@ public class StudyUI  implements java.io.Serializable {
     public StudyUI(Study s) {
         this.study = s;
     }
-
+    
     public StudyUI(Long sid) {
         this.studyId = sid;
     }
-
+    
     public StudyUI(Long sid, Map studyFields) {
         this.studyId = sid;
         this.studyFields = studyFields;
     }
-
+    
     /**
      * Creates a new instance of StudyUI
      * this constructor initializes the file category ui list
@@ -97,7 +98,7 @@ public class StudyUI  implements java.io.Serializable {
         this.ipUserGroup = ipUserGroup;
         initFileCategoryUIList(vdc, user, ipUserGroup);
     }
-
+    
     public Study getStudy() {
         // check to see if study is loaded or if we only have the studyId
         if (study == null) {
@@ -107,17 +108,17 @@ public class StudyUI  implements java.io.Serializable {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+            
             study = studyService.getStudyForSearch(studyId, studyFields);
         }
-
+        
         return study;
     }
-
+    
     public void setStudy(Study study) {
         this.study = study;
     }
-
+    
     /**
      * Return for each studyAuthor: Author (Affiliation), only if affiliation is not empty
      */
@@ -130,17 +131,17 @@ public class StudyUI  implements java.io.Serializable {
                     str += "; ";
                 }
                 str += sa.getName();
-
+                
             }
         }
         return str;
-
+        
     }
-
+    
     public String getAuthorAffiliations() {
         String str = "";
         boolean hasAffiliation = false;
-
+        
         for (Iterator<StudyAuthor> it = getStudy().getStudyAuthors().iterator(); it.hasNext();) {
             StudyAuthor sa = it.next();
             if (!StringUtil.isEmpty(sa.getName())) {
@@ -148,7 +149,7 @@ public class StudyUI  implements java.io.Serializable {
                     str += "; ";
                 }
                 str += sa.getName();
-
+                
             }
             if (!StringUtil.isEmpty(sa.getAffiliation())) {
                 hasAffiliation = true;
@@ -161,9 +162,9 @@ public class StudyUI  implements java.io.Serializable {
          * }
          */
         return str;
-
+        
     }
-
+    
     public String getAbstracts() {
         String str = "";
         for (Iterator<StudyAbstract> it = getStudy().getStudyAbstracts().iterator(); it.hasNext();) {
@@ -171,11 +172,11 @@ public class StudyUI  implements java.io.Serializable {
             if (!StringUtil.isEmpty(elem.getText())) {
                 str += "<p>" + elem.getText() + "</p>";
             }
-
+            
         }
         return str;
     }
-
+    
     public String getDistributorContact() {
         String str = "";
         if (!StringUtil.isEmpty(getStudy().getDistributorContact())) {
@@ -193,7 +194,7 @@ public class StudyUI  implements java.io.Serializable {
         /*"Distributor Contact (affiliation), e-mail"*/
         return str;
     }
-
+    
     public String getSeries() {
         String str = "";
         if (!StringUtil.isEmpty(getStudy().getSeriesName())) {
@@ -207,7 +208,7 @@ public class StudyUI  implements java.io.Serializable {
         }
         return str;
     }
-
+    
     public String getStudyVersion() {
         String str = "";
         if (!StringUtil.isEmpty(getStudy().getStudyVersion())) {
@@ -221,7 +222,7 @@ public class StudyUI  implements java.io.Serializable {
         }
         return str;
     }
-
+    
     public String getTimePeriodCovered() {
         String str = "";
         if (!StringUtil.isEmpty(getStudy().getTimePeriodCoveredStart())) {
@@ -234,9 +235,9 @@ public class StudyUI  implements java.io.Serializable {
             str += getStudy().getTimePeriodCoveredEnd();
         }
         return str;
-
+        
     }
-
+    
     public String getDateOfCollection() {
         String str = "";
         if (!StringUtil.isEmpty(getStudy().getDateOfCollectionStart())) {
@@ -250,31 +251,31 @@ public class StudyUI  implements java.io.Serializable {
         }
         return str;
     }
-
+    
     public String getTruncatedAbstracts() {
         String abstracts = getAbstracts();
         String truncatedAbstracts = StringUtil.truncateString(abstracts, 200);
-
+        
         return truncatedAbstracts;
     }
-
+    
     public boolean isRenderAbstractsMoreLink() {
         String abstracts = getAbstracts();
         String truncatedAbstracts = StringUtil.truncateString(abstracts, 200);
-
+        
         return !truncatedAbstracts.equals(abstracts);
     }
-
+    
     public boolean isFiles() {
         for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
             if (it.next().getStudyFiles().size() > 0) {
                 return true;
             }
         }
-
+        
         return false;
     }
-
+    
     public boolean isSubsettable() {
         for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
             for (Iterator<StudyFile> fit = it.next().getStudyFiles().iterator(); fit.hasNext();) {
@@ -283,10 +284,10 @@ public class StudyUI  implements java.io.Serializable {
                 }
             }
         }
-
+        
         return false;
     }
-
+    
     public boolean isNonSubsettable() {
         for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
             for (Iterator<StudyFile> fit = it.next().getStudyFiles().iterator(); fit.hasNext();) {
@@ -295,10 +296,10 @@ public class StudyUI  implements java.io.Serializable {
                 }
             }
         }
-
+        
         return false;
     }
-
+    
     public String getProducers() {
         String str = "";
         for (Iterator<StudyProducer> it = getStudy().getStudyProducers().iterator(); it.hasNext();) {
@@ -312,7 +313,7 @@ public class StudyUI  implements java.io.Serializable {
                 } else {
                     str += elem.getName();
                 }
-
+                
             }
             if (!StringUtil.isEmpty(elem.getAbbreviation())) {
                 str += " (" + elem.getAbbreviation() + ")";
@@ -323,14 +324,14 @@ public class StudyUI  implements java.io.Serializable {
             if (!StringUtil.isEmpty(elem.getLogo())) {
                 str += " <img src='" + elem.getLogo() + "' height='30px' alt='Logo' title='Logo' />";
             }
-
-
-
+            
+            
+            
         }
         return str;
-
+        
     }
-
+    
     public String getAbstractDates() {
         String str = "";
         for (Iterator<StudyAbstract> it = getStudy().getStudyAbstracts().iterator(); it.hasNext();) {
@@ -341,12 +342,12 @@ public class StudyUI  implements java.io.Serializable {
                 }
                 str += elem.getDate();
             }
-
+            
         }
         return str;
-
+        
     }
-
+    
     public String getNotes() {
         String str = "";
         for (Iterator<StudyNote> it = getStudy().getStudyNotes().iterator(); it.hasNext();) {
@@ -365,11 +366,11 @@ public class StudyUI  implements java.io.Serializable {
                     str += " " + elem.getText();
                 }
             }
-
+            
         }
         return str;
     }
-
+    
     public String getRelPublications() {
         String str = "";
         for (Iterator<StudyRelPublication> it = getStudy().getStudyRelPublications().iterator(); it.hasNext();) {
@@ -380,11 +381,11 @@ public class StudyUI  implements java.io.Serializable {
                 }
                 str += elem.getText();
             }
-
+            
         }
         return str;
     }
-
+    
     public String getRelMaterials() {
         String str = "";
         for (Iterator<StudyRelMaterial> it = getStudy().getStudyRelMaterials().iterator(); it.hasNext();) {
@@ -395,11 +396,11 @@ public class StudyUI  implements java.io.Serializable {
                 }
                 str += elem.getText();
             }
-
+            
         }
         return str;
     }
-
+    
     public String getRelStudies() {
         String str = "";
         for (Iterator<StudyRelStudy> it = getStudy().getStudyRelStudies().iterator(); it.hasNext();) {
@@ -410,11 +411,11 @@ public class StudyUI  implements java.io.Serializable {
                 }
                 str += elem.getText();
             }
-
+            
         }
         return str;
     }
-
+    
     public String getOtherRefs() {
         String str = "";
         for (Iterator<StudyOtherRef> it = getStudy().getStudyOtherRefs().iterator(); it.hasNext();) {
@@ -425,11 +426,11 @@ public class StudyUI  implements java.io.Serializable {
                 }
                 str += elem.getText();
             }
-
+            
         }
         return str;
     }
-
+    
     public String getSoftware() {
         String str = "";
         for (Iterator<StudySoftware> it = getStudy().getStudySoftware().iterator(); it.hasNext();) {
@@ -446,7 +447,7 @@ public class StudyUI  implements java.io.Serializable {
         }
         return str;
     }
-
+    
     public String getGrants() {
         String str = "";
         for (Iterator<StudyGrant> it = getStudy().getStudyGrants().iterator(); it.hasNext();) {
@@ -463,11 +464,11 @@ public class StudyUI  implements java.io.Serializable {
             if (!StringUtil.isEmpty(elem.getAgency())) {
                 str += elem.getAgency();
             }
-
+            
         }
         return str;
     }
-
+    
     public String getOtherIds() {
         String str = "";
         for (Iterator<StudyOtherId> it = getStudy().getStudyOtherIds().iterator(); it.hasNext();) {
@@ -484,11 +485,11 @@ public class StudyUI  implements java.io.Serializable {
             if (!StringUtil.isEmpty(elem.getOtherId())) {
                 str += elem.getOtherId();
             }
-
+            
         }
         return str;
     }
-
+    
     public String getGeographicBoundings() {
         String str = "";
         for (Iterator it = getStudy().getStudyGeoBoundings().iterator(); it.hasNext();) {
@@ -506,7 +507,7 @@ public class StudyUI  implements java.io.Serializable {
             if (!StringUtil.isEmpty(elem.getSouthLatitude())) {
                 boundingStr += "South Bounding Latitude: " + elem.getSouthLatitude();
             }
-
+            
             if (boundingStr != "") {
                 if (str != "") {
                     str += "; ";
@@ -514,10 +515,10 @@ public class StudyUI  implements java.io.Serializable {
                 str += boundingStr;
             }
         }
-
+        
         return str;
     }
-
+    
     public String getKeywords() {
         String str = "";
         for (Iterator<StudyKeyword> it = getStudy().getStudyKeywords().iterator(); it.hasNext();) {
@@ -536,10 +537,10 @@ public class StudyUI  implements java.io.Serializable {
                 }
             }
         }
-
+        
         return str;
     }
-
+    
     public String getTopicClasses() {
         String str = "";
         for (Iterator<StudyTopicClass> it = getStudy().getStudyTopicClasses().iterator(); it.hasNext();) {
@@ -558,10 +559,10 @@ public class StudyUI  implements java.io.Serializable {
                 }
             }
         }
-
+        
         return str;
     }
-
+    
     /**
      * If a Terms of Use StudyNote exists, return that, else return the study Owner terms of use (if it exists)
      * @return
@@ -572,7 +573,7 @@ public class StudyUI  implements java.io.Serializable {
         }
         return "";
     }
-
+    
     public String getDistributors() {
         String str = "";
         for (Iterator<StudyDistributor> it = getStudy().getStudyDistributors().iterator(); it.hasNext();) {
@@ -581,13 +582,13 @@ public class StudyUI  implements java.io.Serializable {
                 if (str != "") {
                     str += "; ";
                 }
-
+                
                 if (!StringUtil.isEmpty(elem.getUrl())) {
                     str += "<a href='" + elem.getUrl() + "' target='_blank' title='" + elem.getName() + "'>" + elem.getName() + "</a>";
                 } else {
                     str += elem.getName();
                 }
-
+                
             }
             if (!StringUtil.isEmpty(elem.getAbbreviation())) {
                 str += " (" + elem.getAbbreviation() + ")";
@@ -598,12 +599,12 @@ public class StudyUI  implements java.io.Serializable {
             if (!StringUtil.isEmpty(elem.getLogo())) {
                 str += " <img src='" + elem.getLogo() + "' height='30px' alt='Logo' title='Logo' />";
             }
-
-
-
+            
+            
+            
         }
         return str;
-
+        
     }
     private boolean abstractAndScopePanelIsRendered;
     private boolean citationInformationPanelIsRendered;
@@ -611,55 +612,55 @@ public class StudyUI  implements java.io.Serializable {
     private boolean notesPanelIsRendered;
     private boolean dataAvailPanelIsRendered;
     private boolean termsOfUsePanelIsRendered;
-
+    
     public boolean isAbstractAndScopePanelIsRendered() {
         return abstractAndScopePanelIsRendered;
     }
-
+    
     public void setAbstractAndScopePanelIsRendered(boolean abstractAndScopePanelIsRendered) {
         this.abstractAndScopePanelIsRendered = abstractAndScopePanelIsRendered;
     }
-
+    
     public boolean isCitationInformationPanelIsRendered() {
         return citationInformationPanelIsRendered;
     }
-
+    
     public void setCitationInformationPanelIsRendered(boolean citationInformationPanelIsRendered) {
         this.citationInformationPanelIsRendered = citationInformationPanelIsRendered;
     }
-
+    
     public boolean isDataCollectionPanelIsRendered() {
         return dataCollectionPanelIsRendered;
     }
-
+    
     public void setDataCollectionPanelIsRendered(boolean dataCollectionPanelIsRendered) {
         this.dataCollectionPanelIsRendered = dataCollectionPanelIsRendered;
     }
-
+    
     public boolean isNotesPanelIsRendered() {
         return notesPanelIsRendered;
     }
-
+    
     public void setNotesPanelIsRendered(boolean notesPanelIsRendered) {
         this.notesPanelIsRendered = notesPanelIsRendered;
     }
-
+    
     public boolean isDataAvailPanelIsRendered() {
         return dataAvailPanelIsRendered;
     }
-
+    
     public void setDataAvailPanelIsRendered(boolean dataAvailPanelIsRendered) {
         this.dataAvailPanelIsRendered = dataAvailPanelIsRendered;
     }
-
+    
     public boolean isTermsOfUsePanelIsRendered() {
         return termsOfUsePanelIsRendered;
     }
-
+    
     public void setTermsOfUsePanelIsRendered(boolean termsOfUsePanelIsRendered) {
         this.termsOfUsePanelIsRendered = termsOfUsePanelIsRendered;
     }
-
+    
     public void initFileCategoryUIList(VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         categoryUIList = new ArrayList<FileCategoryUI>();
         StudyServiceLocal studyService = null;
@@ -668,7 +669,7 @@ public class StudyUI  implements java.io.Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        
         List files = studyService.getOrderedFilesByStudy(getStudy().getId());
         Iterator iter = files.iterator();
         FileCategoryUI catUI = null;
@@ -678,10 +679,12 @@ public class StudyUI  implements java.io.Serializable {
                 catUI = new FileCategoryUI(sf.getFileCategory());
                 categoryUIList.add(catUI);
             }
-
+            
             catUI.getStudyFileUIs().add(new StudyFileUI(sf, vdc, user, ipUserGroup));
         }
-
+        
+        Collections.sort(categoryUIList);
+        
     /*
     List categories = studyService.getOrderedFileCategories(getStudy().getId());
     Iterator iter = categories.iterator();
@@ -691,11 +694,11 @@ public class StudyUI  implements java.io.Serializable {
     categoryUIList.add(catUI);
     }
      */
-
+        
     }
-
+    
     public boolean isAnyFileUnrestricted() {
-
+        
         for (Iterator it = categoryUIList.iterator(); it.hasNext();) {
             FileCategoryUI catUI = (FileCategoryUI) it.next();
             if (catUI.isAnyFileUnrestricted()) {
@@ -703,9 +706,9 @@ public class StudyUI  implements java.io.Serializable {
             }
         }
         return false;
-
+        
     }
-
+    
     public boolean isAnyFileRestricted() {
         for (Iterator it = categoryUIList.iterator(); it.hasNext();) {
             FileCategoryUI catUI = (FileCategoryUI) it.next();
@@ -715,19 +718,19 @@ public class StudyUI  implements java.io.Serializable {
                     return true;
                 }
             }
-
+            
         }
         return false;
-
+        
     }
-
+    
     public static List filterVisibleStudies(List originalStudies, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         return filterVisibleStudies(originalStudies, vdc, user, ipUserGroup, -1);
     }
-
+    
     public static List filterVisibleStudies(List originalStudies, VDC vdc, VDCUser user, UserGroup ipUserGroup, int numResults) {
         List filteredStudies = new ArrayList();
-
+        
         if (numResults != 0) {
             int count = 0;
             Iterator iter = originalStudies.iterator();
@@ -741,28 +744,28 @@ public class StudyUI  implements java.io.Serializable {
                 }
             }
         }
-
+        
         return filteredStudies;
     }
-
+    
     public static boolean isStudyVisibleToUser(Study study, VDC vdc, VDCUser user) {
         // if restricted vdc, only visible in that VDC
         if (study.getOwner().isRestricted() &&
                 (vdc == null || !study.getOwner().getId().equals(vdc.getId()))) {
             return false;
         }
-
+        
         // only visible if released
         if (!study.isReleased()) {
             return false;
         }
-
+        
         // lastly check restrictions
         return !study.isStudyRestrictedForUser(vdc, user);
-
-
+        
+        
     }
-
+    
     /**
      * check if this is visible for the ipgroup
      *
@@ -774,57 +777,36 @@ public class StudyUI  implements java.io.Serializable {
                 (vdc == null || !study.getOwner().getId().equals(vdc.getId()))) {
             return false;
         }
-
+        
         // only visible if released
         if (!study.isReleased()) {
             return false;
         }
-
+        
         // lastly check restrictions
         return !study.isStudyRestrictedForGroup(usergroup);
-
+        
     }
     /**
      * Holds value of property categoryUIList.
      */
-    private ArrayList<FileCategoryUI> categoryUIList = new ArrayList<FileCategoryUI>();
-
-    
+    private List<FileCategoryUI> categoryUIList = new ArrayList<FileCategoryUI>();
     
 
-       
-         ;
-
+    
     /**
      * Getter for property categoryUIList.
      * @return Value of property categoryUIList.
      */
-    
-
-    public   ArrayList<FileCategoryUI> getCategoryUIList 
-          
-    
-      
-
-      () {
-        return this
-    
-
-        
-        .categoryUIList  ;
-    
+    public List<FileCategoryUI> getCategoryUIList() {
+        return this.categoryUIList;
     }
-
+    
     /**
      * Setter for property categoryUIList.
      * @param categoryUIList New value of property categoryUIList.
      */
-    public       
-           
-          
-                
-              
-                 void setCategoryUIList(ArrayList<FileCategoryUI> categoryUIList) {
+    public void setCategoryUIList(List<FileCategoryUI> categoryUIList) {
         this.categoryUIList = categoryUIList;
     }
     
@@ -847,10 +829,10 @@ public class StudyUI  implements java.io.Serializable {
                 return true;
             }
         }
-
+        
         return false;
     }
-
+    
     public int getNumberOfDownloads() {
         return (getStudy().getStudyDownload() != null ? getStudy().getStudyDownload().getNumberOfDownloads() : 0);
     }

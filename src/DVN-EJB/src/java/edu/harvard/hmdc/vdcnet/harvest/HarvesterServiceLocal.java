@@ -55,7 +55,10 @@ public interface HarvesterServiceLocal extends java.io.Serializable  {
     public ResumptionTokenType harvestFromIdentifiers(Logger hdLogger, ResumptionTokenType resumptionToken, 
             HarvestingDataverse dataverse, String from, String until, List<Long> harvestedStudyIds, List<String> failedIdentifiers,
             MutableBoolean harvestErrorOccurred) throws java.io.IOException, ParserConfigurationException, SAXException, TransformerException, JAXBException;
+    
+    public Long getRecord(HarvestingDataverse dataverse, String identifier, String metadataPrefix);
     public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, MutableBoolean harvestErrorOccurred);
+
     
     public HarvestFormatType findHarvestFormatTypeByMetadataPrefix(String metadataPrefix);
 }

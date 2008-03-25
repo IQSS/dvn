@@ -37,6 +37,8 @@ public interface MailServiceLocal  extends java.io.Serializable  {
 
     public void sendDoNotReplyMail(String to, String subject, String messageText);
     
+    public void sendPasswordUpdateNotification(String userEmail, String userFirstName, String userName, String newPassword);
+    
     public void sendCreatorRequestNotification(String adminEmail, String userName);
     
     public void sendCreatorRequestConfirmation(String userEmail);

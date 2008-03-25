@@ -114,6 +114,17 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
         }
     }
     
+    public void sendPasswordUpdateNotification(String userEmail, String userFirstName,String userName, String newPassword) {
+        String subject = "Dataverse Network: password has been changed";
+        String msgText ="Dear "+userFirstName+"\n";
+        msgText+="Here is the new password information that you requested:\n";
+        msgText+="Username:  "+userName+"\n";
+        msgText+="Password:  "+newPassword+"\n";
+        msgText+="Please try to log in again using the new password provided above.\n";
+        msgText+="If you continue to have problems logging in, please use the Contact Us  form to send e-mail to the Dataverse Admin.\n";
+        sendDoNotReplyMail(userEmail,subject,msgText);
+    }
+    
     public void sendCreatorRequestNotification(String adminEmail, String userName) {
         sendDoNotReplyMail(adminEmail,"Dataverse Network: New Request to Create a dataverse",
                 "User '"+userName+"' has requested to be a dataverse Creator.");

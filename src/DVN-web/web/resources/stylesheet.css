@@ -1302,3 +1302,13 @@ span.termsAgreementMessageTitle {display: block; padding-top: 1em; color: #526f7
 .dvn_createDvRequest .requestContentSucess a {font-weight: bold;}
 .dvn_createDvRequest .requestContentSucess ul {margin-left: 1.5em; list-style: disc;}
 .dvn_createDvRequest .requestContentSucessH4 h4 {margin: 0; padding: 0; color: #c55b28; font-size: 100% !important;}
+
+/**** Dataverse Analysis Results ****/
+.dvn_analysisResultContainer {padding: 10px; border: 1px solid #6e7f90; clear: both;}
+.dvn_analysisResultContainer .dvAnalysisHeader {display: block; padding: 3px 0; width: 100%; background: #e6ebed; font-size: 140% !important; font-weight: bold; text-align: center;}
+.dvn_analysisResultContainer .dvAnalysisResults {padding: 10px;}
+.dvn_analysisResultContainer .dvAnalysisInfoMessage {margin-bottom: 1em;}
+.dvn_analysisResultContainer .dvAnalysis {margin-left: 2em;}
+.dvn_analysisResultContainer h3.dvAnalysisTypeLabel {display: inline; margin-right: .5em;}
+.dvn_analysisResultContainer h3.dvAnalysisTypeLabel a {font-size: 100% !important;}
+.dvn_analysisResultContainer .dvAnalysisDataContainer {display: none; margin-top: .5em; border: 1px solid #999;}

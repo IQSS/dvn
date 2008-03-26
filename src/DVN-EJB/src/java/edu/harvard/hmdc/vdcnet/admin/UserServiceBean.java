@@ -191,14 +191,14 @@ public class UserServiceBean implements UserServiceLocal {
         addVdcRole(userId, vdcId, RoleServiceLocal.CONTRIBUTOR);
         VDC vdc = em.find(VDC.class, vdcId);
         VDCUser user = em.find(VDCUser.class,userId);
-        mailService.sendContributorAccountNotification(vdc.getCreator().getEmail(), user.getUserName(), vdc.getName());
+        mailService.sendContributorAccountNotification(vdc.getContactEmail(), user.getUserName(), vdc.getName());
     }
     
     public void makeCreator(Long userId) {
         VDCUser user = em.find(VDCUser.class, userId);
         VDCNetwork vdcNetwork = vdcNetworkService.find();
         user.setNetworkRole(networkRoleService.getCreatorRole());
-        mailService.sendCreatorAccountNotification(vdcNetwork.getDefaultNetworkAdmin().getEmail(), user.getUserName());         
+        mailService.sendCreatorAccountNotification(vdcNetwork.getContactEmail(), user.getUserName());         
     }
 
     public void setActiveStatus(Long userId, boolean active) {

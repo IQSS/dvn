@@ -191,9 +191,6 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     public void setVdcId(Long vdcId) {
         this.vdcId = vdcId;
     }
-    public List<ContributorRequestBean> getContributorRequests() {
-        return editVDCPrivileges.getContributorRequests();
-    }
 
     /**
      * Holds value of property siteRestriction.
@@ -441,17 +438,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
                 
             }
         }
-        if (valid) {
-            for (Iterator it = editVDCPrivileges.getContributorRequests().iterator(); it.hasNext();) {
-                ContributorRequestBean elem = (ContributorRequestBean) it.next();
-                if (elem.getRoleRequest().getVdcUser().getId().equals(user.getId())) {
-                    valid=false;
-                    msg = "Cannot add user that is in the contributor request list.  Instead, approve the user to add to the privileged users list.";
-                    break;
-                }
-                
-            }
-        }
+   
         if (valid) {
             if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceBean.ADMIN)) {
                 valid=false;

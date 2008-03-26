@@ -52,7 +52,7 @@ public interface EditVDCPrivilegesService extends java.io.Serializable  {
      * 
      * @return Value of property contributorRequests.
      */
-    List<ContributorRequestBean> getContributorRequests();
+//    List<ContributorRequestBean> getContributorRequests();
 
     VDC getVdc();
 
@@ -65,7 +65,7 @@ public interface EditVDCPrivilegesService extends java.io.Serializable  {
      * 
      * @param contributorRequests New value of property contributorRequests.
      */
-    public void setContributorRequests(List<ContributorRequestBean> contributorRequests);
+ //   public void setContributorRequests(List<ContributorRequestBean> contributorRequests);
     
     public void removeAllowedGroup(Long groupId);
 

@@ -73,7 +73,7 @@ public class EditVDCPrivilegesServiceBean implements EditVDCPrivilegesService  {
         if (vdc==null) {
             throw new IllegalArgumentException("Unknown vdc id: "+id);
         }
-        contributorRequests = new ArrayList();
+    /*    contributorRequests = new ArrayList();
         for (Iterator<RoleRequest> it = vdc.getRoleRequests().iterator(); it.hasNext();) {
             RoleRequest elem = it.next();
             if (elem.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {
@@ -81,6 +81,7 @@ public class EditVDCPrivilegesServiceBean implements EditVDCPrivilegesService  {
             }
             
         }
+     */
         privilegedUsers = new ArrayList();
         for (Iterator it = vdc.getVdcRoles().iterator(); it.hasNext();) {
             VDCRole elem = (VDCRole) it.next();
@@ -122,42 +123,7 @@ public class EditVDCPrivilegesServiceBean implements EditVDCPrivilegesService  {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void save(String contributorUrl) {
         
-        // Update Contributor Role Requests based on Acceptions and Rejections
-        Role contributor = getContributorRole();
-        List removeRequest = new ArrayList();
-        for (Iterator<ContributorRequestBean> it = getContributorRequests().iterator(); it.hasNext();) {
-            ContributorRequestBean elem = it.next();
-            VDCUser user = elem.getRoleRequest().getVdcUser();
-            if (Boolean.TRUE.equals(elem.getAccept()) ){
-                // Add new role to vdc and to user
-                VDCRole vdcRole = new VDCRole();
-                vdcRole.setVdcUser(user);
-                vdcRole.setVdc(vdc);
-                vdcRole.setRole(contributor);
-                user.getVdcRoles().add(vdcRole);
-                vdc.getVdcRoles().add(vdcRole);
-                // Add new row to priviledUsers (so we can redisplay the form)
-                ArrayList privilegedUsersRow = new ArrayList();
-                privilegedUsersRow.add(vdcRole);
-                privilegedUsersRow.add(vdcRole.getRoleId().toString());
-                this.privilegedUsers.add(privilegedUsersRow);
-                // Remove Role request from database
-                vdc.getRoleRequests().remove(elem.getRoleRequest());
-                em.remove(elem.getRoleRequest());
-                mailService.sendContributorApprovalNotification(user.getEmail(),vdc.getName(),contributorUrl);
-                removeRequest.add(elem);
-                
-            } else if (Boolean.FALSE.equals(elem.getAccept()) ){
-                mailService.sendContributorRejectNotification(user.getEmail(), vdc.getName(),vdc.getContactEmail());
-                vdc.getRoleRequests().remove(elem.getRoleRequest());
-                em.remove(elem.getRoleRequest());
-                removeRequest.add(elem);              
-            }
-        }  
-        for (Iterator it = removeRequest.iterator(); it.hasNext();) {
-            Object elem = (Object) it.next();
-            contributorRequests.remove(elem);
-        }
+      
         
         for (Iterator<List> it = privilegedUsers.iterator(); it.hasNext();) {
             List privilegedUsersRow =  it.next();
@@ -229,23 +195,23 @@ public class EditVDCPrivilegesServiceBean implements EditVDCPrivilegesService  {
     /**
      * Holds value of property contributorRequests.
      */
-    private List<ContributorRequestBean> contributorRequests;
+//    private List<ContributorRequestBean> contributorRequests;
     
     /**
      * Getter for property contributorRequests.
      * @return Value of property contributorRequests.
      */
-    public List<ContributorRequestBean> getContributorRequests() {
-        return this.contributorRequests;
-    }
-    
+ //   public List<ContributorRequestBean> getContributorRequests() {
+ //       return this.contributorRequests;
+//    }
+//    
     /**
      * Setter for property contributorRequests.
      * @param contributorRequests New value of property contributorRequests.
      */
-    public void setContributorRequests(List<ContributorRequestBean> contributorRequests) {
-        this.contributorRequests = contributorRequests;
-    }
+ //   public void setContributorRequests(List<ContributorRequestBean> contributorRequests) {
+ //       this.contributorRequests = contributorRequests;
+ //   }
     
     public void removeAllowedGroup(Long groupId) {
         UserGroup group = em.find(UserGroup.class,groupId);

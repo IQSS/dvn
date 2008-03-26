@@ -2798,23 +2798,26 @@ sub printZeligCode{
 		# setx
 		my $SimString="";
 		my $SimString2="";
-		if ($self->{zlgParam}->{$model}->{Sim} eq 'T'){
+		if ($self->{zlgParam}->{$model}->{Sim}->[0] eq 'T'){
 			# conditional simulation
-			if ($self->{zlgParam}->{$model}->{Sim_Cond}==1) {
-			
-				$SimString .= 'cond=T';
-			}
+			#if ($self->{zlgParam}->{$model}->{Sim_Cond}->[0]==1) {
+			#	$SimString .= 'cond=T';
+			#}
 			if ($self->{zlgParam}->{$model}->{setx}){
+				$SimString .= 'cond=T';
 				# non-default setx request
 				#$str->{$model}->{optns}->{setxArgs}=[];
-				if (exists($self->{zlgParam}->{$model}->{setx_val_1}) && ($self->{zlgParam}->{$model}->{setx_val_1})) {
+				if (exists($self->{zlgParam}->{$model}->{setx_val_1}) && ($self->{zlgParam}->{$model}->{setx_val_1}->[0])) {
 					# set 1st option
-					$SimString .= ',' . $Id2Name->{ $self->{zlgParam}->{$model}->{setx_var}->[0] } . '=' . $self->{zlgParam}->{$model}->{setx_val_1}->[0] ;
+					my $stxvid1 = "v" . $self->{zlgParam}->{$model}->{setx_var}->[0];
+					$SimString .= ',' . $Id2Name->{ $stxvid1 } . '=' . $self->{zlgParam}->{$model}->{setx_val_1}->[0] ;
 					#$str->{$model}->{optns}->{setxArgs}->[0] = $SimString . $Id2Name->{ $self->{zlgParam}->{$model}->{setx_var}->[0] } . '=' . $self->{zlgParam}->{$model}->{setx_val_1}->[0] . ',';
 				}
-				if (exists($self->{zlgParam}->{$model}->{setx_val_1}) && ($self->{zlgParam}->{$model}->{setx_val_1})) {
-					# set 1st option
-					$SimString2 = $Id2Name->{ $self->{zlgParam}->{$model}->{setx_var}->[1] } . '=' . $self->{zlgParam}->{$model}->{setx_val_2}->[0] ;
+				if (exists($self->{zlgParam}->{$model}->{setx_val_2}) && ($self->{zlgParam}->{$model}->{setx_val_2}->[0])) {
+					# set 2nd option
+					my $stxvid2 = "v" . $self->{zlgParam}->{$model}->{setx_var}->[1];
+
+					$SimString2 = $Id2Name->{ $stxvid2 } . '=' . $self->{zlgParam}->{$model}->{setx_val_2}->[0] ;
 					#$str->{$model}->{optns}->{setxArgs}->[1] = 'setx2Args=list(' . $Id2Name->{ $self->{zlgParam}->{$model}->{setx_var}->[1] } . '=' . $self->{zlgParam}->{$model}->{setx_val_2}->[0] .')';
 				}
 			}

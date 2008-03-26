@@ -66,7 +66,7 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
         setNetwork(em.find(VDCNetwork.class, new Long(1)));
         
         initPrivilegedUsers();
-        initCreatorRequests();
+    
         
     }
     
@@ -81,38 +81,14 @@ public class EditNetworkPrivilegesServiceBean implements EditNetworkPrivilegesSe
      }
    }
     
-   private void initCreatorRequests() {
-       setCreatorRequests(new ArrayList());
-       String query = "Select n from NetworkRoleRequest n where n.networkRole.name = '"+NetworkRoleServiceLocal.CREATOR+"'";
-       List<NetworkRoleRequest> requests = em.createQuery(query).getResultList();
-       for (Iterator it = requests.iterator(); it.hasNext();) {
-           NetworkRoleRequest elem = (NetworkRoleRequest) it.next();
-           getCreatorRequests().add(new  CreatorRequestBean(elem));
-           
-       }
-     
-   }
+ 
     
 
    // @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void save(String creatorUrl) {
         
-        // Update Creator Role Requests based on Acceptions and Rejections
-        for (Iterator<CreatorRequestBean> it = getCreatorRequests().iterator(); it.hasNext();) {
-            CreatorRequestBean elem = it.next();
-            VDCUser user = elem.getNetworkRoleRequest().getVdcUser();
-            if (Boolean.TRUE.equals(elem.getAccept()) ){  
-                userService.makeCreator(user.getId());    
-                em.remove(elem.getNetworkRoleRequest());
-                mailService.sendCreatorApprovalNotification(user.getEmail(),creatorUrl);
-            } else if (Boolean.FALSE.equals(elem.getAccept()) ){
-                mailService.sendCreatorRejectNotification(user.getEmail(),network.getName(), network.getContactEmail());
-                em.remove(elem.getNetworkRoleRequest());
-                
-            }
-            
-        }
+      
         for (Iterator it = privilegedUsers.iterator(); it.hasNext();) {
             NetworkPrivilegedUserBean elem = (NetworkPrivilegedUserBean) it.next();
             if (elem.getUser().getId()!= network.getDefaultNetworkAdmin().getId()) {

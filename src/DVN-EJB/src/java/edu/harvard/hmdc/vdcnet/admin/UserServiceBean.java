@@ -32,6 +32,9 @@ import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
+import java.lang.String;
 import java.lang.String;
 import java.util.Collection;
 import java.util.Iterator;
@@ -57,6 +60,8 @@ public class UserServiceBean implements UserServiceLocal {
     NetworkRoleServiceLocal networkRoleService;
     @EJB
     MailServiceLocal mailService;
+    @EJB
+    VDCNetworkServiceLocal vdcNetworkService;
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     private EntityManager em;
 
@@ -184,11 +189,16 @@ public class UserServiceBean implements UserServiceLocal {
 
     public void makeContributor(Long userId, Long vdcId) {
         addVdcRole(userId, vdcId, RoleServiceLocal.CONTRIBUTOR);
+        VDC vdc = em.find(VDC.class, vdcId);
+        VDCUser user = em.find(VDCUser.class,userId);
+        mailService.sendContributorAccountNotification(vdc.getCreator().getEmail(), user.getUserName(), vdc.getName());
     }
     
     public void makeCreator(Long userId) {
         VDCUser user = em.find(VDCUser.class, userId);
+        VDCNetwork vdcNetwork = vdcNetworkService.find();
         user.setNetworkRole(networkRoleService.getCreatorRole());
+        mailService.sendCreatorAccountNotification(vdcNetwork.getDefaultNetworkAdmin().getEmail(), user.getUserName());         
     }
 
     public void setActiveStatus(Long userId, boolean active) {

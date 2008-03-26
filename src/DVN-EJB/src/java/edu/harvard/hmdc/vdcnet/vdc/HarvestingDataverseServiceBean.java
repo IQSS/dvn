@@ -29,6 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
+import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -46,6 +47,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class HarvestingDataverseServiceBean implements edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal {
     @EJB VDCServiceLocal vdcService;
+    @EJB HarvesterServiceLocal harvesterService;
     @PersistenceContext(unitName="VDCNet-ejbPU")
     private EntityManager em;
     
@@ -67,6 +69,7 @@ public class HarvestingDataverseServiceBean implements edu.harvard.hmdc.vdcnet.v
     }
     
     public void edit(HarvestingDataverse harvestingDataverse) {
+        harvesterService.updateHarvestTimer(harvestingDataverse);
         em.merge(harvestingDataverse);
     }
     

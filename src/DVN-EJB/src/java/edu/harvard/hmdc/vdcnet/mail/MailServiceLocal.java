@@ -39,23 +39,10 @@ public interface MailServiceLocal  extends java.io.Serializable  {
     
     public void sendPasswordUpdateNotification(String userEmail, String userFirstName, String userName, String newPassword);
     
-    public void sendCreatorRequestNotification(String adminEmail, String userName);
-    
-    public void sendCreatorRequestConfirmation(String userEmail);
-    
-    public void sendCreatorRejectNotification(String userEmail, String vdcNetworkName,String adminEmail);
-    
-    public void sendCreatorApprovalNotification(String userEmail, String createUrl);
+    public void sendCreatorAccountNotification(String adminEmail, String userName);
 
-    public void sendContributorRequestNotification(String adminEmail, String userName,String vdcName);
+    public void sendContributorAccountNotification(String adminEmail, String userName, String dataverseName);
     
-    public void sendContributorRequestConfirmation(String userEmail, String vdcName);
-    
-    public void sendContributorApprovalNotification(String userEmail, String vdcName,String contributorUrl);
-    
-    public void sendContributorRejectNotification(String userEmail, String vdcName,String adminEmail);
-    
-
     public void sendFileAccessRequestNotification(String sendToEmail, String userName,String studyTitle,String globalId);
     
     public void sendFileAccessRequestConfirmation(String userEmail, String studyTitle,String globalId);

@@ -125,30 +125,19 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
         sendDoNotReplyMail(userEmail,subject,msgText);
     }
     
-    public void sendCreatorRequestNotification(String adminEmail, String userName) {
-        sendDoNotReplyMail(adminEmail,"Dataverse Network: New Request to Create a dataverse",
-                "User '"+userName+"' has requested to be a dataverse Creator.");
-        
-        
-    }
+    public void sendCreatorAccountNotification(String adminEmail, String userName) {
+        String msgText="A new account has been created with Dataverse Creator privileges";
+        msgText+=" (user name: "+userName+").";
+        sendDoNotReplyMail(adminEmail,"Dataverse Network: New Creator Account",msgText);
+     }
     
-    public void sendCreatorRequestConfirmation(String userEmail) {
-        sendDoNotReplyMail(userEmail,"Dataverse Network: Your Request to Create a dataverse has been received",
-                "Thanks for your interest in Creating a dataverse in the Dataverse Network. You will be notified as soon as your request is approved.");
-        
-        
+   public void sendContributorAccountNotification(String adminEmail, String userName, String dataverseName) {
+        String msgText="A new account has been created with Contributor privileges in "+dataverseName+" dataverse";
+        msgText+=" (user name: "+userName+").";    
+        sendDoNotReplyMail(adminEmail,"Dataverse Network: New Contributor Account",msgText);
+              
     }
-    
-    public void sendCreatorApprovalNotification(String userEmail,String createUrl) {
-        String msgText = "You can now create your own dataverse in the Dataverse "+
-                "Network. Please follow this link "+createUrl+" to start creating "+
-                "your dataverse (you will need to log in to access this page).";
-        
-        sendDoNotReplyMail(userEmail,"Dataverse Network: Your Request to Create a dataverse has been approved",msgText);
-        
-        
-    }
-    
+   
     public void sendIngestRequestedNotification(String userEmail, List subsettableFiles) {
         String msgText = "You have requested the following subsettable files to be uploaded: \n";
         Iterator iter = subsettableFiles.iterator();
@@ -187,23 +176,14 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
         sendDoNotReplyMail(userEmail, msgSubject, msgText);
     }
     
-    public void sendContributorRequestNotification(String adminEmail, String userName, String vdcName) {
-        sendDoNotReplyMail(adminEmail,"Dataverse Network: New request to become a Contributor",
-                "User '"+userName+"' has requested to be a Contributor in the '"+vdcName+"' dataverse.");      
-    }
-    
+  
     
     public void sendFileAccessRequestNotification(String sendToEmail, String userName, String studyTitle, String globalId) {
                 sendDoNotReplyMail(sendToEmail,"Dataverse Network: New request to access restricted files",
                 "User '"+userName+"' has requested access to restricted files in study '"+studyTitle+"' ("+globalId+"). ");     
     }
     
-    public void sendContributorRequestConfirmation(String userEmail, String vdcName) {
-        sendDoNotReplyMail(userEmail,"Dataverse Network: Your request to become a Contributor has been received",
-                "Thanks for your interest contributing to the '"+vdcName+"' dataverse. You will be notified as soon as your request is approved.");
-        
-        
-    }
+  
     public void sendFileAccessRequestConfirmation(String userEmail, String studyTitle, String globalId) {
         sendDoNotReplyMail(userEmail,"Dataverse Network: Your Request to access restricted files has been received",
                 "Thanks for your interest in the study '"+studyTitle+"' ("+globalId+"). You will be notified as soon as your request is approved.");
@@ -211,14 +191,7 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
         
     }
     
-    public void sendContributorApprovalNotification(String userEmail, String vdcName,String url) {
-        String msgText= "You can now contribute to '"+vdcName+"' dataverse. \n"+
-                " Please follow this link "+
-                "to start uploading your study information and data files (you will need to "+
-                "log in to access this page): "+url;
-        sendDoNotReplyMail(userEmail,"Dataverse Network: Your Request to become a Contributor has been approved",msgText);
-        
-    }
+  
     
     public void sendFileAccessApprovalNotification(String userEmail, String studyTitle, String globalId, String url) {
         String msgText= "You now have access to restricted files in study '"+studyTitle+"' ("+globalId+"). \n"+
@@ -274,28 +247,11 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
         sendDoNotReplyMail(curatorEmail,subject,messageText);
     }
     
-    public void sendContributorRejectNotification(String userEmail, String vdcName,String adminEmail) {
-        String subject = "Dataverse Network: Your Request to become a Contributor was denied";
-        String messageText = "Your request to become a contributor to '"+vdcName+"' dataverse was denied.  "+
-                "Please contact the dataverse Administrator at "+adminEmail+
-                " for more information as to why your request did not go through. ";
-        sendDoNotReplyMail(userEmail,subject,messageText);
-        
-    }
     
     public void sendFileAccessRejectNotification(String userEmail, String studyTitle,String globalId,String adminEmail) {
         String subject = "Dataverse Network: Your Request to access restricted files was denied";
         String messageText = "Your request to access to restricted files in study '"+studyTitle+"' ("+globalId+") was denied.  \n"+
                 "Please contact the dataverse Administrator at "+adminEmail+
-                " for more information as to why your request did not go through. ";
-        sendDoNotReplyMail(userEmail,subject,messageText);
-        
-    }
-    
-    public void sendCreatorRejectNotification(String userEmail, String vdcNetworkName,String adminEmail) {
-        String subject = "Dataverse Network: Your Request to Create a dataverse was denied";
-        String messageText = "Your request to become a dataverse creator in '"+vdcNetworkName+"' Network has been denied.  "+
-                "Please contact the Network Administrator at "+adminEmail+
                 " for more information as to why your request did not go through. ";
         sendDoNotReplyMail(userEmail,subject,messageText);
         

@@ -84,6 +84,7 @@ char DELIM = '\t';	/* default delimiting character   */
 char ODELIM = '\t';
 char LINE[NBUFSIZ];
 char LINE_BUFFERED[NBUFSIZ]; 
+/*int  bytes_read = 0;*/
 int args[MAX_ARGS];
 int rsse[MAX_ARGS];
 int argsn[MAX_ARGS];
@@ -564,11 +565,17 @@ void cut_col(FILE *fd){
 	while (1) {
 		if (RECNUM==0)  {
 			if (!fgets(input, NBUFSIZ, fd)) break;
-		} else if ( LINE_BUFFERED[0] ) {
+		} else  {
+		  if ( LINE_BUFFERED[0] ) 
+		    {
                		strcpy ( input, LINE_BUFFERED ); 
 			LINE_BUFFERED[0] = '\000';
-		} else  {
+			if (!fread(input+RECLEN+1, 1, (RECLEN+1)*(RECNUM-1), fd)) break;
+		    } 
+		  else
+		    {
 			if (!fread(input , 1, (RECLEN+1)*RECNUM, fd)) break;
+		    }
 		}
 		jj++;
 		if (DEBUG){
@@ -1019,7 +1026,6 @@ void fcut_fields(FILE *fp, int PIDNO){
 }
 
 int main(int argc, char **argv){
-	int offset;
 	#if DBG
 		int l;
 	#endif
@@ -1048,6 +1054,7 @@ int main(int argc, char **argv){
 		fseek(stdin, 0,SEEK_SET);
 		*/
 		strcpy ( LINE_BUFFERED, input ); 
+		/*bytes_buffered = RECLEN; */
 		parse_lists(LINE);
 		cut_col(stdin);
 	} else {

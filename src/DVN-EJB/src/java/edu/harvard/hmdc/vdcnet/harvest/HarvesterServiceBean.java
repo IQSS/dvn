@@ -279,7 +279,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             }
             harvestedStudyCount = harvest(dataverse, hdLogger, from, until, harvestErrorOccurred, failedIdentifiers );
         }      
-        mailService.sendHarvestNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc().getName(), logFileName, harvestErrorOccurred.booleanValue(), harvestedStudyCount, failedIdentifiers);  
+        mailService.sendHarvestNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc().getName(), logFileName, logTimestamp, harvestErrorOccurred.booleanValue(), harvestedStudyCount, failedIdentifiers);  
 
     }
  

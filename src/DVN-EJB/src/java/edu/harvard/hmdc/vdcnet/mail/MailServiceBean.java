@@ -268,14 +268,18 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
           
               sendDoNotReplyMail(email,subject,messageText);
       }
-      public void sendHarvestNotification(String email, String vdcName, String logFileName, boolean harvestError, int harvestedStudyCount, List<String> failedIdentifiers) {
-          String subject = "Dataverse Network: Harvest Notification ";
+      public void sendHarvestNotification(String email, String vdcName, String logFileName, String logTimestamp, boolean harvestError, int harvestedStudyCount, List<String> failedIdentifiers) {
+          String subject = null;
+          if (harvestError) {
+              subject="Harvest Error Notification"; 
+          }else {
+              subject="Harvest Success Notification";
+          }
+          subject +=" ("+vdcName+","+logTimestamp+")";
           String messageText=null;
           if (!harvestError) {
-              subject+="(harvest successful)";
               messageText = "A harvest has successfully completed for "+vdcName+" Dataverse. \n";
           } else {
-            subject+=("(contains errors)");
             messageText = "A harvest has run for "+vdcName+" Dataverse, with errors.\n";
           }
                

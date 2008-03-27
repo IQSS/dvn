@@ -72,7 +72,7 @@ public interface MailServiceLocal  extends java.io.Serializable  {
 
     public void sendHarvestErrorNotification(String email,VDC vdc);
     public void sendHarvestErrorNotification(String email, String vdcNetworkName );   
-    public void sendHarvestNotification(String email, String vdcName, String logFileName, boolean harvestError, int harvestedStudyCount, List<String> failedIdentifiers);
+    public void sendHarvestNotification(String email, String vdcName, String logFileName, String logTimestamp, boolean harvestError, int harvestedStudyCount, List<String> failedIdentifiers);
    
     public void sendExportErrorNotification(String email, String vdcNetworkName ); 
 }

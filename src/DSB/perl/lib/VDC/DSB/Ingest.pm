@@ -657,7 +657,7 @@ sub entcheck {
 	return $entity; 
     }
 
-    if ( $ENTITY_INVALID_255[$numeric] == 1 )
+    if ( $ENTITY_INVALID_255[$charcode] == 1 )
     {
 	return ""; 
     }

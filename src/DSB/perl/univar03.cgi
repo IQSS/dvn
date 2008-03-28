@@ -765,7 +765,39 @@ if ($dataURL) {
 	    $logger->vdcLOG_warning('VDC::DSB',$script_name,"Server Error (XXX): empty  data file");
 	    {my($ts)=$@; &exitChores; die $ts;}
 	}
-    }
+
+        if ( $dtdwnldf eq "D05" )
+        {
+	    # this is a special case where the user requested to convert 
+	    # a fixed-field ICPSR file to tab-delimited on the fly;
+	    # no need to generate citations and such, just dumping the file.
+
+	    system ( "sed 's/ " . '*' . "//g' < $RtmpDataFile > $RtmpDataFile.cleaned" ); 
+
+	    my $buf; 
+	    if ( open (TAB, $RtmpDataFile . ".cleaned" ) )
+	    {
+		my $filename = 'data_' . $fileid . '.tab';
+		my $size = (stat(TAB))[7]; 
+
+		print $q->header (
+		      -type=>"text/tab-separated-values; name=\"$filename\"",
+		      -Content_disposition=> "attachment; filename=\"$filename\"",
+		      -Content_length=>$size
+		     );
+
+		while ( read ( TAB, $buf, 8192 ) )
+		{
+		    print $buf; 
+		}
+
+		close TAB; 
+		unlink $RtmpDataFile . ".cleaned";
+		&exitChores;
+		exit 0; 
+	    }
+	}
+}
 
 
 
@@ -1511,6 +1543,7 @@ sub exitChores {
 	 	unlink($RtxtOutput);
 	 	unlink($RtmpData);
 	 	unlink($RtmpDataRaw);
+	 	unlink($RtmpDataRaw . ".raw");
 	 	unlink($ddiforR);
 	 	unlink($ddiforR . "_stripped");
 	 	unlink($RtmpHtml);

@@ -561,7 +561,13 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         } while ((e = e.getCause()) != null);
         logger.severe(fullMessage);
     }
-
+    
+    public List<HarvestFormatType> findAllHarvestFormatTypes() {
+        String queryStr = "SELECT f FROM HarvestFormatType f";
+        Query query = em.createQuery(queryStr);
+        return query.getResultList();
+    }    
+    
     public HarvestFormatType findHarvestFormatTypeByMetadataPrefix(String metadataPrefix) {
         String queryStr = "SELECT f FROM HarvestFormatType f WHERE f.metadataPrefix = '" + metadataPrefix + "'";
         Query query = em.createQuery(queryStr);

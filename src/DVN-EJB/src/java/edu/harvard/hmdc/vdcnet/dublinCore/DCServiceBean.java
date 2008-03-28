@@ -34,19 +34,22 @@ import edu.harvard.hmdc.vdcnet.study.StudyAuthor;
 import edu.harvard.hmdc.vdcnet.study.StudyDistributor;
 import edu.harvard.hmdc.vdcnet.study.StudyGeoBounding;
 import edu.harvard.hmdc.vdcnet.study.StudyKeyword;
-import edu.harvard.hmdc.vdcnet.study.StudyOtherId;
 import edu.harvard.hmdc.vdcnet.study.StudyProducer;
+import edu.harvard.hmdc.vdcnet.study.StudyRelMaterial;
 import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 /**
  *
@@ -64,113 +67,240 @@ public class DCServiceBean implements DCServiceLocal {
     public boolean isXmlFormat() {
         return true;
     }
-
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    
+      @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void exportStudy(Study study, OutputStream out) throws IOException {
+         XMLStreamWriter xmlw = null;
+            try {
+                javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
+                //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
+                xmlw = xmlof.createXMLStreamWriter(out);
 
-        OutputStreamWriter writer = new OutputStreamWriter(out);
-        writer.write("<oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd\">");
-   
-        // Contributor
-        for (StudyDistributor distributor : study.getStudyDistributors()) {
-            writer.write("<dc:contributor>");
-            writer.write(distributor.getName());
-            writer.write("</dc:contributor>");
-        }
-        // Coverage
-        if (!StringUtil.isEmpty(study.getTimePeriodCoveredStart())) {
-            writer.write("<dc:coverage>" + study.getTimePeriodCoveredStart() + "</dc:coverage>");
-        }
-        if (!StringUtil.isEmpty(study.getTimePeriodCoveredEnd())) {
-            writer.write("<dc:coverage>" + study.getTimePeriodCoveredEnd() + "</dc:coverage>");
-        }
-        if (!StringUtil.isEmpty(study.getCountry())) {
-            writer.write("<dc:coverage>" + study.getCountry() + "</dc:coverage>");
-        }
-        if (!StringUtil.isEmpty(study.getGeographicCoverage())) {
-            writer.write("<dc:coverage>" + study.getGeographicCoverage() + "</dc:coverage>");
-        }
-        for (StudyGeoBounding geoBounding : study.getStudyGeoBoundings()) {
-            writer.write("<dc:coverage>" + geoBounding + "</dc:coverage>");
-        }
-       
-        // Creator
+                xmlw.writeStartDocument();
+                createDC(xmlw,study);
+                  //  createCodeBook(xmlw,s);
+                 xmlw.writeEndDocument();
+            } catch (XMLStreamException ex) {
+                logger.log(Level.SEVERE, null, ex);
+                throw new EJBException("ERROR occurred in exportStudy.", ex);
+            } finally {
+                try {
+                    if (xmlw != null) { xmlw.close(); }
+                } catch (XMLStreamException ex) {}
+            } 
+    }
+
+      
+    public void createDC(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+
+        xmlw.writeStartElement("oai_dc:dc");
+        xmlw.writeAttribute("xmlns:oai_dc", "http://www.openarchives.org/OAI/2.0/oai_dc/");
+        xmlw.writeAttribute("xmlns:dc", "http://purl.org/dc/elements/1.1/");
+        xmlw.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        xmlw.writeAttribute("xsi:schemaLocation", "http://www.openarchives.org/OAI/2.0/oai_dc/    http://www.openarchives.org/OAI/2.0/oai_dc.xsd");
+
+        // Title
+        xmlw.writeStartElement("dc:title");
+        xmlw.writeCharacters(study.getTitle());
+        xmlw.writeEndElement();
+
+        // Identifier
+        xmlw.writeStartElement("dc:identifier");
+        xmlw.writeCharacters(study.getHandleURL());
+        xmlw.writeEndElement();
+
+        //Creator
         for (StudyAuthor author : study.getStudyAuthors()) {
-            writer.write("<dc:creator>");
-            writer.write(author.getName());
-            writer.write("</dc:creator>");
+            xmlw.writeStartElement("dc:creator");
+            xmlw.writeCharacters(author.getName());
+            xmlw.writeEndElement();
         }
+
+        //Publisher
+        for (StudyProducer producer : study.getStudyProducers()) {
+            xmlw.writeStartElement("dc:publisher");
+            xmlw.writeCharacters(producer.getName());
+            xmlw.writeEndElement();
+        }
+
         // Date
         if (!StringUtil.isEmpty(study.getProductionDate())) {
-            writer.write("<dc:date>" + study.getProductionDate() + "</dc:date>");
+            xmlw.writeStartElement("dc:date");
+            xmlw.writeCharacters(study.getProductionDate());
+            xmlw.writeEndElement();
+
         }
-        // Description
-        for (StudyAbstract studyAbstract : study.getStudyAbstracts()) {
-            writer.write("<dc:description>");
-            writer.write(studyAbstract.getText());
-            writer.write("</dc:description>");
-        }
-       // Identifier
-        writer.write("<dc:identifier>" + study.getGlobalId() + "</dc:identifier>");
-   
-        
-        // Publisher
-        for (StudyProducer producer : study.getStudyProducers()) {
-            writer.write("<dc:publisher>");
-            writer.write(producer.getName());
-            writer.write("</dc:publisher>");
-        }
-        
-        // Relation
+
+        //Relation              
         if (!StringUtil.isEmpty(study.getReplicationFor())) {
-            writer.write("<dc:relation>" + study.getReplicationFor() + "</dc:relation>");  
+            xmlw.writeStartElement("dc:relation");
+            xmlw.writeCharacters(study.getReplicationFor());
+            xmlw.writeEndElement();
+        } else {
+            for (StudyRelMaterial relMaterial : study.getStudyRelMaterials()) {
+                xmlw.writeStartElement("dc:relation");
+                xmlw.writeCharacters(relMaterial.getText());
+                xmlw.writeEndElement();
+            }
         }
- 
-        // Rights
-        if (study.getOwner().isDownloadTermsOfUseEnabled() && !StringUtil.isEmpty(study.getOwner().getDownloadTermsOfUse())) {
-            writer.write("<dc:rights>" + study.getOwner().getDownloadTermsOfUse()+"</dc:rights>");
-        }
-        if ( !StringUtil.isEmpty(study.getConfidentialityDeclaration())) {
-            writer.write("<dc:rights>" + study.getConfidentialityDeclaration() + "</dc:rights>");
-        }
-        if ( !StringUtil.isEmpty(study.getSpecialPermissions())) {
-            writer.write("<dc:rights>" + study.getSpecialPermissions() + "</dc:rights>");
-        }
-        if ( !StringUtil.isEmpty(study.getRestrictions())) {
-            writer.write("<dc:rights>" + study.getRestrictions() + "</dc:rights>");
-        }
-        if ( !StringUtil.isEmpty(study.getContact())) {
-            writer.write("<dc:rights>" + study.getContact() + "</dc:rights>");
-        }
-        if ( !StringUtil.isEmpty(study.getCitationRequirements())) {
-            writer.write("<dc:rights>" + study.getCitationRequirements() + "</dc:rights>");
-        }
-        if ( !StringUtil.isEmpty(study.getDepositorRequirements())) {
-            writer.write("<dc:rights>" + study.getDepositorRequirements() + "</dc:rights>");
-        }
-        if ( !StringUtil.isEmpty(study.getConditions())) {
-            writer.write("<dc:rights>" + study.getConditions() + "</dc:rights>");
-        }
-        if ( !StringUtil.isEmpty(study.getDisclaimer())) {
-            writer.write("<dc:rights>" + study.getDisclaimer() + "</dc:rights>");
-        }
-   
+
         //Subject
         for (StudyKeyword keyword : study.getStudyKeywords()) {
-            writer.write("<dc:subject>");
-            writer.write(keyword.getValue());
-            writer.write("</dc:subject>");
+            xmlw.writeStartElement("dc:subject");
+            xmlw.writeCharacters(keyword.getValue());
+            xmlw.writeEndElement();
         }
         for (StudyTopicClass topicClass : study.getStudyTopicClasses()) {
-            writer.write("<dc:subject>");
-            writer.write(topicClass.getValue());
-            writer.write("</dc:subject>");
+            xmlw.writeStartElement("dc:subject");
+            xmlw.writeCharacters(topicClass.getValue());
+            xmlw.writeEndElement();
+        }
+
+        // Description
+        for (StudyAbstract studyAbstract : study.getStudyAbstracts()) {
+            xmlw.writeStartElement("dc:description");
+            xmlw.writeCharacters(studyAbstract.getText());
+            xmlw.writeEndElement();
+        }
+        xmlw.writeStartElement("dc:description");
+        xmlw.writeCharacters("Citation: " + study.getCitation());
+        xmlw.writeEndElement();
+
+        // Coverage
+        writeCoverage(xmlw, study);
+
+        // Type
+        if (!StringUtil.isEmpty(study.getKindOfData())) {
+            xmlw.writeStartElement("dc:type");
+            xmlw.writeCharacters(study.getKindOfData());
+            xmlw.writeEndElement();
+        }
+
+        // Source
+        if (!StringUtil.isEmpty(study.getDataSources())) {
+            xmlw.writeStartElement("dc:source");
+            xmlw.writeCharacters(study.getDataSources());
+            xmlw.writeEndElement();
+        }
+
+        // Rights
+        writeRights(xmlw, study);
+
+        //End root element
+        xmlw.writeEndElement();
+
+
+    }
+
+    private void writeRights(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        // Rights
+        if (study.getOwner().isDownloadTermsOfUseEnabled() && !StringUtil.isEmpty(study.getOwner().getDownloadTermsOfUse())) {
+            xmlw.writeStartElement("dc:rights");
+            xmlw.writeCharacters(study.getOwner().getDownloadTermsOfUse());
+            xmlw.writeEndElement();
+
+        }
+        if (!StringUtil.isEmpty(study.getConfidentialityDeclaration())) {
+            xmlw.writeStartElement("dc:rights");
+            xmlw.writeCharacters(study.getConfidentialityDeclaration());
+            xmlw.writeEndElement();
+
+
+        }
+        if (!StringUtil.isEmpty(study.getSpecialPermissions())) {
+            xmlw.writeStartElement("dc:rights");
+            xmlw.writeCharacters(study.getSpecialPermissions());
+            xmlw.writeEndElement();
+
+        }
+        if (!StringUtil.isEmpty(study.getRestrictions())) {
+            xmlw.writeStartElement("dc:rights");
+            xmlw.writeCharacters(study.getRestrictions());
+            xmlw.writeEndElement();
+        }
+        if (!StringUtil.isEmpty(study.getContact())) {
+            xmlw.writeStartElement("dc:rights");
+            xmlw.writeCharacters(study.getContact());
+            xmlw.writeEndElement();
+        }
+        if (!StringUtil.isEmpty(study.getCitationRequirements())) {
+            xmlw.writeStartElement("dc:rights");
+            xmlw.writeCharacters(study.getCitationRequirements());
+            xmlw.writeEndElement();
+        }
+        if (!StringUtil.isEmpty(study.getDepositorRequirements())) {
+            xmlw.writeStartElement("dc:rights");
+            xmlw.writeCharacters(study.getDepositorRequirements());
+            xmlw.writeEndElement();
+        }
+        if (!StringUtil.isEmpty(study.getConditions())) {
+            xmlw.writeStartElement("dc:rights");
+            xmlw.writeCharacters(study.getConditions());
+            xmlw.writeEndElement();
+        }
+        if (!StringUtil.isEmpty(study.getDisclaimer())) {
+            xmlw.writeStartElement("dc:rights");
+            xmlw.writeCharacters(study.getDisclaimer());
+            xmlw.writeEndElement();
+        }
+    }
+    
+    private void writeCoverage(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        // Time Period Covered
+        String elementText=null;
+        if (!StringUtil.isEmpty(study.getTimePeriodCoveredStart()) ||!StringUtil.isEmpty(study.getTimePeriodCoveredEnd()) ) {      
+            xmlw.writeStartElement("dc:coverage");
+            elementText ="Time Period Covered: ";
+             if (!StringUtil.isEmpty(study.getTimePeriodCoveredStart())) {
+                  elementText+=study.getTimePeriodCoveredStart();
+             }
+             if (!StringUtil.isEmpty(study.getTimePeriodCoveredEnd())) {
+                  if (!StringUtil.isEmpty(study.getTimePeriodCoveredStart())) {
+                      elementText+=" - ";
+                  }
+                  elementText+=study.getTimePeriodCoveredEnd();                
+             }
+             xmlw.writeCharacters(elementText);
+             xmlw.writeEndElement();
+        }
+ 
+        // Date Of Collection
+        if (!StringUtil.isEmpty(study.getDateOfCollectionStart()) ||!StringUtil.isEmpty(study.getDateOfCollectionEnd()) ) {      
+            xmlw.writeStartElement("dc:coverage");
+            elementText ="Date of Collection: ";
+             if (!StringUtil.isEmpty(study.getDateOfCollectionStart())) {
+                  elementText+=study.getDateOfCollectionStart();
+             }
+             if (!StringUtil.isEmpty(study.getDateOfCollectionEnd())) {
+                  if (!StringUtil.isEmpty(study.getDateOfCollectionStart())) {
+                      elementText+=" - ";
+                  }
+                  elementText+=study.getDateOfCollectionEnd();                
+             }
+             xmlw.writeCharacters(elementText);
+             xmlw.writeEndElement();
         }
         
-        // Title
-        writer.write("<dc:title>" + study.getTitle() + "</dc:title>");
+        //Country/Nation
+        if (!StringUtil.isEmpty(study.getCountry())) {
+            xmlw.writeStartElement("dc:coverage");
+            xmlw.writeCharacters("Country/Nation: "+study.getCountry());
+            xmlw.writeEndElement();
+        }
         
-        writer.write("</oai_dc:dc>");
-        writer.flush();
+          if (!StringUtil.isEmpty(study.getGeographicCoverage())) {
+            xmlw.writeStartElement("dc:coverage");
+            xmlw.writeCharacters("Geographic Coverage: "+study.getGeographicCoverage());
+            xmlw.writeEndElement();
+       }
+        for (StudyGeoBounding geoBounding : study.getStudyGeoBoundings()) {
+             xmlw.writeStartElement("dc:coverage");
+             xmlw.writeCharacters("Geographic Bounding: " + geoBounding );
+             xmlw.writeEndElement();
+       }
+      
+       
+        
     }
+
     }

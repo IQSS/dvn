@@ -1066,8 +1066,12 @@ public class FileDownloadServlet extends HttpServlet{
 	//     altFormat = "application/x-R-2"; 
 	// }	    
 
-	// altFormat = "application/x-gzip-tar";
-	altFormat = "application/zip";
+	if ( formatRequested.equals("D00") ) {
+	    altFormat = "text/tab-separated-values"; 
+	} else {
+	    altFormat = "application/zip";
+	}
+
         return altFormat;
     }
 
@@ -1079,7 +1083,7 @@ public class FileDownloadServlet extends HttpServlet{
 	    return ".por"; 
 	} else if ( fileType.equalsIgnoreCase("application/x-stata") ) {
 	    return ".dta"; 
-	}	    
+	} 
 
         return "";
     }
@@ -1174,7 +1178,11 @@ public class FileDownloadServlet extends HttpServlet{
 	//     altFileName = "data_" + xfileId + ".RData"; 
 	// }	    
 
-	altFileName = "data_" + xfileId + ".zip"; 
+	if ( formatRequested.equals("D00") ) {
+	    altFileName = "data_" + xfileId + ".tab"; 
+	} else {
+	    altFileName = "data_" + xfileId + ".zip"; 
+	}
 
         return altFileName;
     }

@@ -145,6 +145,7 @@ public class FileDownloadServlet extends HttpServlet{
 	String formatRequested = req.getParameter("format");
 	String downloadOriginalFormat = req.getParameter("downloadOriginalFormat");
 	String imageThumb = req.getParameter("imageThumb"); 
+	String noVarHeader = req.getParameter("noVarHeader"); 
 
 
         if (fileId != null) {
@@ -735,6 +736,7 @@ public class FileDownloadServlet extends HttpServlet{
 			// open the appropriate physical file
 
 			File inFile = null; 
+			String varHeaderLine = null; 
 
 			// but first, see if they have requested a 
 			// thumbnail for an image, or if it's a request
@@ -746,6 +748,11 @@ public class FileDownloadServlet extends HttpServlet{
 				dbContentType = "image/png";
 			    }
 			} else { 
+			    
+			    if ( dbContentType.equals ("text/tab-separated-values") && file.isSubsettable() && noVarHeader == null ) {
+				List datavariables = file.getDataTable().getDataVariables();
+				varHeaderLine = generateVariableHeader ( datavariables );
+			    }
 			    inFile = new File(file.getFileSystemLocation());  
 
 			    if ( downloadOriginalFormat != null ) {
@@ -812,6 +819,11 @@ public class FileDownloadServlet extends HttpServlet{
 
 			WritableByteChannel out = Channels.newChannel ( res.getOutputStream() ); 
 
+			if ( varHeaderLine != null ) {
+			    ByteBuffer varHeaderByteBuffer = ByteBuffer.allocate(varHeaderLine.length() * 2);
+			    varHeaderByteBuffer.put (varHeaderLine.getBytes()); 
+			    out.write ( varHeaderByteBuffer); 
+			}
 
 			long position = 0;
 			long howMany = 32 * 1024; 
@@ -1041,6 +1053,27 @@ public class FileDownloadServlet extends HttpServlet{
             }
         }
         return variableList;
+     }
+
+     public String generateVariableHeader(List dvs) {
+	 String varHeader = null; 
+
+	 if (dvs != null) {
+            Iterator iter = dvs.iterator();
+	    DataVariable dv; 
+
+            if (iter.hasNext()) {
+                dv = (DataVariable) iter.next();
+                varHeader = dv.getName();
+            }
+
+            while (iter.hasNext()) {
+                dv = (DataVariable) iter.next();
+                varHeader = varHeader + "\t" + dv.getName();
+            }
+	 }
+
+	 return varHeader;
      }
 
     private String generateUrlForDDI(String serverPrefix, Long fileId) {

@@ -35,10 +35,10 @@
                 <ul class="dvn_floatL">
                     <li>
                       <h:outputLink value="/dvn" title="Browse and Search #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDC == null}">
-                        <h:outputText value="Search/Browse"/>
+                        <h:outputText value="#{bundle.homeLabel}"/>
                       </h:outputLink>
                       <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}" title="Browse and Search #{VDCRequest.currentVDC.name} dataverse" rendered="#{VDCRequest.currentVDC != null}">
-                        <h:outputText value="Search/Browse"/>
+                        <h:outputText value="#{bundle.homeLabel}"/>
                       </h:outputLink>
                     </li>
                     <li>

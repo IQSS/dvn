@@ -35,8 +35,9 @@
                             <h:outputFormat value="#{bundle.contactUsTo}">
                                 <f:param value="#{(VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.name : VDCRequest.currentVDC.name }" />
                                 <f:param value="#{ (VDCRequest.currentVDCId == null) ? ('Network') : ('')}"/>
+                                <f:param value="(#{ (VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.contactEmail : VDCRequest.currentVDC.contactEmail})"/>
                             </h:outputFormat>
-                            
+                             
                             <ui:panelGroup  id="groupPanel3">
                                 <h:outputText  id="outputText4" style="font-weight: bold" value="#{bundle.contactUsEmailLabel}"/>
                                 <h:graphicImage  id="image2" value="/resources/icon_required.gif"/>

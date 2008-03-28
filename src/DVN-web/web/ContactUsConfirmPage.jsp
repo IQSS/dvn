@@ -30,6 +30,7 @@
                         <h:outputFormat value="#{bundle.contactUsTo}">
                             <f:param value="#{(VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.name : VDCRequest.currentVDC.name }" />
                             <f:param value="#{ (VDCRequest.currentVDCId == null) ? ('Network') : ('')}"/>
+                            <f:param value="#{ (VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.contactEmail : VDCRequest.currentVDC.contactEmail}"/>
                         </h:outputFormat>
                         
                         <ui:panelGroup  id="groupPanel3">

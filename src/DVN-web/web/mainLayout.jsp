@@ -63,7 +63,7 @@
               <f:subview id="footer">
                   <tiles:insert name="footer" flush="false"/>
               </f:subview>
-              <h:outputText escape="false" rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}" value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"/>                
+              
       </body>
 </ui:html>
 <!-- </a4j:page> -->

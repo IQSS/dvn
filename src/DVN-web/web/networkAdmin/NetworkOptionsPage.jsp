@@ -32,22 +32,11 @@
                                 <h:outputText  value="Manage Dataverse Groups"/>
                             </h:outputLink>
                             <h:outputLink  value="/dvn/faces/networkAdmin/EditExportSchedulePage.jsp">
-                                <h:outputText  value="Study Export Schedule"/>
+                                <h:outputText  value="Schedule Study Export"/>
                             </h:outputLink>                           
                               <h:outputLink  value="/dvn/faces/networkAdmin/OAISetsPage.jsp">
-                                <h:outputText  value="OAI Harvesting Sets"/>
+                                <h:outputText  value="Manage OAI Harvesting Sets"/>
                             </h:outputLink>
-                            <h:outputLink  rendered="#{ MainLayoutBean.googleAnalyticsKey != null }" 
-                                                id="siteStatslink" 
-                                                value="http://www.google.com/analytics/"
-                                                target="_blank"
-                                                >
-                                                <h:outputText  value="Google Analytics"/>
-                               </h:outputLink>
-                               <h:outputText  rendered="#{ MainLayoutBean.googleAnalyticsKey == null }" 
-                                                id="siteStatsText" 
-                                                value="Note: Google analytics is not configured for this dataverse network."
-                                                />
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel3" style="padding-top: 20px; padding-bottom: 15px">
                             <h:outputText  id="outputText3" styleClass="vdcSubHeader" value="Network Customization:"/>
@@ -64,7 +53,7 @@
                                 <h:outputText  id="hyperlink3Text1" value="Edit Network Homepage description"/>
                             </h:outputLink>                                                  
                             <h:outputLink id="hyperlink17" value="/dvn/faces/admin/EditContactUsPage.jsp">
-                                <h:outputText id="hyperlink17Text" value="Set Contact Us E-Mail"/>
+                                <h:outputText id="hyperlink17Text" value="Set Contact and Notifications E-Mail"/>
                             </h:outputLink>  
                           </ui:panelGroup>
                           
@@ -85,7 +74,7 @@
                          </ui:panelGroup>
                          
                         <ui:panelGroup  block="true" id="groupPanel1" style="padding-top: 20px; padding-bottom: 15px">
-                            <h:outputText  id="outputText2" styleClass="vdcSubHeader" value="Users, Groups, Permissions:"/>
+                            <h:outputText  id="outputText2" styleClass="vdcSubHeader" value="Users, Groups, Privileges:"/>
                         </ui:panelGroup>
                         <ui:panelGroup  block="true" id="groupPanel2"
                                         separator="&lt;br /&gt;" style="padding-left: 10px">
@@ -96,19 +85,37 @@
                                 <h:outputText styleClass="vdcMenuItem" value="Add New User Account"/>
                             </h:outputLink>
                             <h:outputLink  id="hyperlink6" value="/dvn/faces/networkAdmin/AllUsersPage.jsp">
-                                <h:outputText  id="hyperlink6Text" value="All Users"/>
+                                <h:outputText  id="hyperlink6Text" value="Manage Users"/>
                             </h:outputLink>
                             <h:outputLink  id="hyperlink7" value="/dvn/faces/networkAdmin/UserGroupsPage.jsp">
-                                <h:outputText  id="hyperlink7Text" value="User Groups"/>
+                                <h:outputText  id="hyperlink7Text" value="Manage Users and IP Groups"/>
                             </h:outputLink>
                             
                         </ui:panelGroup>
-                        <ui:panelGroup  block="true" style="padding-top: 20px; padding-bottom: 15px">
-                            <h:outputText  styleClass="vdcSubHeader" value="Version and License"/> 
-                            <h:outputLink   value="/dvn/faces/VersionPage.jsp"> - 
-                                <h:outputText  value="About this Dataverse Network installation"/>
-                            </h:outputLink>
+                        
+                        <ui:panelGroup  block="true"  style="padding-top: 20px; padding-bottom: 15px">
+                            <h:outputText  styleClass="vdcSubHeader" value="Utilities, Web stats, Version:"/>
+                        </ui:panelGroup>
+                        <ui:panelGroup  block="true" separator="&lt;br /&gt;" style="padding-left: 10px">
                             
+                            <h:outputLink  value="/dvn/faces/networkAdmin/UtilitiesPage.jsp">
+                                <h:outputText value="Utilities"/>
+                            </h:outputLink>
+                             <ui:panelGroup>
+                            <h:outputLink  rendered="#{ MainLayoutBean.googleAnalyticsKey != null }" 
+                                                id="siteStatslink" 
+                                                value="http://www.google.com/analytics/"
+                                                target="_blank">
+                                                <h:outputText  value="Access Google Analytics"/>
+                               </h:outputLink>
+                               <h:outputText  rendered="#{ MainLayoutBean.googleAnalyticsKey == null }" 
+                                                id="siteStatsText" 
+                                                value="Note: Google analytics is not configured for this dataverse network."
+                                                />
+                               </ui:panelGroup>
+                               <h:outputLink   value="/dvn/faces/VersionPage.jsp">
+                                <h:outputText  value="About this Dataverse Network installation"/>
+                            </h:outputLink>  
                         </ui:panelGroup>
                         
                     </div>

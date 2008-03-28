@@ -48,7 +48,7 @@
                             </ui:panelGroup>
                             <ui:panelGroup block="true"  separator="&lt;br /&gt;" style="padding-left: 10px">
                                 <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4"  id="recentStudy">
-                                    <h:outputText  value="All Studies Uploaded and Released to this Dataverse (starting with most recent)" escape="false"/>
+                                    <h:outputText  value="Manage All Studies Uploaded and Released to this Dataverse (starting with most recent)" escape="false"/>
                                 </h:outputLink>
                                 <h:outputLink id="hyperlink7b" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddCollectionStudiesPage.jsp">
                                     <h:outputText  id="hyperlink3Text2" value="Add Collection by Assigning Studies"/>
@@ -86,19 +86,21 @@
                                         <h:outputText id="hyperlink2Text2" value="Edit Homepage Description"/>
                                     </h:outputLink>
                                     <h:outputLink id="hyperlink17" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditContactUsPage.jsp">
-                                        <h:outputText id="hyperlink17Text" value="Set Contact Us E-Mail"/>
+                                        <h:outputText id="hyperlink17Text" value="Set Contact and Notifications E-Mail"/>
                                     </h:outputLink>
                                     <h:outputLink id="hyperlink16" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/SearchFieldsPage.jsp">
                                         <h:outputText id="hyperlink16Text" value="Set Additional Fields to Display in Search Results"/>
                                     </h:outputLink>
                                 </ui:panelGroup>
-                                <h:outputText styleClass="vdcSubHeaderColor" value="Terms of Use:"/>
+                                
+                                <h:outputText styleClass="vdcSubHeaderColor" value="Terms of Use:" rendered="#{not VDCRequest.currentVDC.harvestingDataverse}"/>
                                 <ui:panelGroup block="true" 
-                                               separator="&lt;br /&gt;" style="padding-left: 10px">
-                                    <h:outputLink  rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditDepositUseTermsPage.jsp">
+                                               separator="&lt;br /&gt;" style="padding-left: 10px" rendered="#{not VDCRequest.currentVDC.harvestingDataverse}">
+                                    
+                                    <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditDepositUseTermsPage.jsp">
                                         <h:outputText id="hyperlink5Text3" value="Edit Dataverse Terms of Use for Study Creation and Data Deposit"/>
                                     </h:outputLink>
-                                     <h:outputLink id="hyperlink14" rendered="#{not VDCRequest.currentVDC.harvestingDataverse}" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.jsp">
+                                     <h:outputLink id="hyperlink14"  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.jsp">
                                         <h:outputText id="hyperlink4Text3" value="Edit Dataverse Terms of Use for File Download"/>
                                     </h:outputLink>
                                 </ui:panelGroup>

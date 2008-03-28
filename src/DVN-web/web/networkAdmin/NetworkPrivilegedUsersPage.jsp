@@ -11,7 +11,7 @@
                <div class="dvn_section">
                    <div class="dvn_sectionTitle">
                        
-                           <h:outputText value="Dataverse Creation Permissions and Network Users' Privileges"/>
+                           <h:outputText value="Dataverse Creation and Network Users' Privileges"/>
                        
                    </div>            
                    <div class="dvn_sectionBox"> 

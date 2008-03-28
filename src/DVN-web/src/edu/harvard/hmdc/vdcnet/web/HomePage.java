@@ -560,12 +560,7 @@ public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
         return defaultVdcPath;
     }
     
-    public String makeCreatorAction() {
-        userService.makeCreator(getVDCSessionBean().getLoginBean().getUser().getId());
-        System.out.println("In makeCreatorAction");
-        return "addSite";
-    }
-    
+      
     /******************** TABS *******************/
     
     public void initTabsMap() {

@@ -108,7 +108,7 @@
                <stdyInfo>
 		    <subject>
 			<xsl:for-each select="a:idinfo/a:keywords/a:theme">
-			    <xsl:param name="vocab"><xsl:value-of select="./a:themekt"/></xsl:param>
+			    <xsl:variable name="vocab" select="./a:themekt"/>
 			    <xsl:for-each select="./a:themekey">
 			     <topcClas source="archive">
 			     <xsl:attribute name="vocab"><xsl:value-of select="$vocab"/></xsl:attribute>

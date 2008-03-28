@@ -163,7 +163,8 @@ public class Study implements java.io.Serializable {
             if (!StringUtil.isEmpty(str)) {
                 str+=", ";
             }
-            str+="<a href='http://hdl.handle.net/"+authority+"/"+studyId+"'>"+getGlobalId()+"</a>";
+            str+="<a href='"+getHandleURL()+"'>"+getGlobalId()+"</a>";
+                    
 
         }
         
@@ -180,6 +181,10 @@ public class Study implements java.io.Serializable {
         }
         
         return str;
+    }
+    
+    public String getHandleURL() {
+         return "http://hdl.handle.net/"+authority+"/"+studyId;
     }
     
     public String getAuthorsStr() {

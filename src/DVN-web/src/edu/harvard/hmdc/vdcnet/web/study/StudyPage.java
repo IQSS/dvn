@@ -565,21 +565,38 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private List<DataFileFormatType> dataFileFormatTypes;
 
     public List getDataFileFormatTypes() {
-        return getDataFileFormatTypes(false);
+        return getDataFileFormatTypes(false, false);
     }
 
     public List getDataFileFormatTypesWithOriginalFile() {
-        return getDataFileFormatTypes(true);
+        return getDataFileFormatTypes(true, false);
     }
 
-    public List getDataFileFormatTypes(boolean includeOriginalFile) {
+    public List getDataFileFormatTypesWithTab() {
+        return getDataFileFormatTypes(false, true);
+    }
+
+    public List getDataFileFormatTypesWithTabWithOriginalFile() {
+        return getDataFileFormatTypes(true, true);
+    }
+
+    public List getDataFileFormatTypes(boolean includeOriginalFile, boolean FixedFieldFile) {
         // initialize once
         if (dataFileFormatTypes == null) {
             dataFileFormatTypes = studyService.getDataFileFormatTypes();
         }
 
         List selectItems = new ArrayList();
-        selectItems.add(new SelectItem("", "Tab delimited"));
+
+	if ( FixedFieldFile ) {
+	    selectItems.add(new SelectItem("", "Fixed-Field"));
+	    // "D00" is a special reserved format for generating 
+	    // tab-delimited files from data files stored in 
+	    // fixed-field format:
+	    selectItems.add(new SelectItem("D00", "Tab delimited"));
+	} else {
+	    selectItems.add(new SelectItem("", "Tab delimited"));
+	}
 
         if (includeOriginalFile) {
             selectItems.add(new SelectItem(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT, "Original File"));

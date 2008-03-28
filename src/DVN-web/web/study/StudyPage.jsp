@@ -487,11 +487,17 @@
                                             </h:column>
                                             <h:column  id="column11">
                                                 <h:outputText  id="outputText19" value="#{studyFileUI.studyFile.fileType}" rendered="#{!studyFileUI.studyFile.subsettable}" />
-                                                <h:selectOneMenu  id="dataFileFormatType" value="#{studyFileUI.format}" rendered="#{studyFileUI.studyFile.subsettable and (empty studyFileUI.studyFile.originalFileType)}">
+                                                <h:selectOneMenu  id="dataFileFormatType" value="#{studyFileUI.format}" rendered="#{studyFileUI.studyFile.subsettable and (empty studyFileUI.studyFile.originalFileType) and (studyFileUI.studyFile.fileType!='text/x-fixed-field')}">
                                                     <f:selectItems   value="#{studyPage.dataFileFormatTypes}" />
                                                 </h:selectOneMenu>
-                                                <h:selectOneMenu  id="dataFileFormatTypeWithOriginalFile" value="#{studyFileUI.format}" rendered="#{studyFileUI.studyFile.subsettable and (!empty studyFileUI.studyFile.originalFileType)}">
+                                                <h:selectOneMenu  id="dataFileFormatTypeWithOriginalFile" value="#{studyFileUI.format}" rendered="#{studyFileUI.studyFile.subsettable and (!empty studyFileUI.studyFile.originalFileType) and (studyFileUI.studyFile.fileType!='text/x-fixed-field')}">
                                                     <f:selectItems   value="#{studyPage.dataFileFormatTypesWithOriginalFile}" />
+                                                </h:selectOneMenu>
+                                                <h:selectOneMenu  id="dataFileFormatType" value="#{studyFileUI.format}" rendered="#{studyFileUI.studyFile.subsettable and (empty studyFileUI.studyFile.originalFileType) and (studyFileUI.studyFile.fileType=='text/x-fixed-field')}">
+                                                    <f:selectItems   value="#{studyPage.dataFileFormatTypesWithTab}" />
+                                                </h:selectOneMenu>
+                                                <h:selectOneMenu  id="dataFileFormatTypeWithOriginalFile" value="#{studyFileUI.format}" rendered="#{studyFileUI.studyFile.subsettable and (!empty studyFileUI.studyFile.originalFileType) and (studyFileUI.studyFile.fileType=='text/x-fixed-field')}">
+                                                    <f:selectItems   value="#{studyPage.dataFileFormatTypesWithTabWithOriginalFile}" />
                                                 </h:selectOneMenu>
                                                  <h:graphicImage  styleClass="vdcNoBorders" style="margin-left: 2px; margin-right: 0px;" value="/FileDownload/?fileId=#{studyFileUI.studyFile.id}&amp;imageThumb" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.image}" 
                                                                      alt="Thumbnail" title="Thumbnail"/>

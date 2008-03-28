@@ -59,6 +59,6 @@ public interface HarvesterServiceLocal extends java.io.Serializable  {
     public Long getRecord(HarvestingDataverse dataverse, String identifier, String metadataPrefix);
     public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, MutableBoolean harvestErrorOccurred);
 
-    
+    public List<HarvestFormatType> findAllHarvestFormatTypes();    
     public HarvestFormatType findHarvestFormatTypeByMetadataPrefix(String metadataPrefix);
 }

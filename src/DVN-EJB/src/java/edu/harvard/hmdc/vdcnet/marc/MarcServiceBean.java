@@ -100,7 +100,7 @@ public class MarcServiceBean implements MarcServiceLocal {
         }
 
         DataField handle = factory.newDataField("856", ' ', ' ');
-        handle.addSubfield(factory.newSubfield('u', "http://hdl.handle.net/" + study.getAuthority() + "/" + study.getStudyId()));
+        handle.addSubfield(factory.newSubfield('u', study.getHandleURL()));
         record.addVariableField(handle);
 
         DataField dataverseUrl = factory.newDataField("535", ' ', ' ');

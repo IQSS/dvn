@@ -387,6 +387,8 @@ if ($dataURL) {
 	}
 	else
 	{
+	    $dataURLG .= '&noVarHeader'; 
+
 	    # Detect and recycle some parameters sent to us by the 
 	    # application (these are added to URLs for accounting/logging
 	    # purposes)
@@ -766,11 +768,11 @@ if ($dataURL) {
 	    {my($ts)=$@; &exitChores; die $ts;}
 	}
 
-        if ( $dtdwnldf eq "D05" )
+        if ( $dtdwnldf eq "D00" )
         {
-	    # this is a special case where the user requested to convert 
-	    # a fixed-field ICPSR file to tab-delimited on the fly;
-	    # no need to generate citations and such, just dumping the file.
+	    # this format tag indicates that the user requested to convert 
+	    # a fixed-field data file to tab-delimited on the fly;
+	    # no need to generate citations and such, just dumping out the file.
 
 	    system ( "sed 's/ " . '*' . "//g' < $RtmpDataFile > $RtmpDataFile.cleaned" ); 
 

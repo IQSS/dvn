@@ -820,8 +820,9 @@ public class FileDownloadServlet extends HttpServlet{
 			WritableByteChannel out = Channels.newChannel ( res.getOutputStream() ); 
 
 			if ( varHeaderLine != null ) {
-			    ByteBuffer varHeaderByteBuffer = ByteBuffer.allocate(varHeaderLine.length() * 2);
-			    varHeaderByteBuffer.put (varHeaderLine.getBytes()); 
+			    //ByteBuffer varHeaderByteBuffer = ByteBuffer.allocate(varHeaderLine.length() * 2);
+			    ByteBuffer varHeaderByteBuffer = ByteBuffer.wrap(varHeaderLine.getBytes());
+			    //varHeaderByteBuffer.put (varHeaderLine.getBytes()); 
 			    out.write ( varHeaderByteBuffer); 
 			}
 
@@ -1071,6 +1072,8 @@ public class FileDownloadServlet extends HttpServlet{
                 dv = (DataVariable) iter.next();
                 varHeader = varHeader + "\t" + dv.getName();
             }
+
+	    varHeader = varHeader + "\n";
 	 }
 
 	 return varHeader;

@@ -37,6 +37,7 @@ public interface PageDefServiceLocal extends java.io.Serializable  {
     public static final String EDIT_STUDY_PAGE = "EditStudyPage";
     public static final String ADD_SITE_PAGE = "AddSitePage";
     public static final String VIEW_STUDY_PAGE = "StudyPage";
+    public static final String SUBSETTING_PAGE = "SubsettingPage";
     public static final String UNAUTHORIZED_PAGE = "UnauthorizedPage";
     public static final String STUDYLOCKED_PAGE = "StudyLockedPage";
     public static final String CONTRIBUTOR_REQUEST = "ContributorRequestPage";

@@ -188,17 +188,26 @@ public class UserServiceBean implements UserServiceLocal {
     }
 
     public void makeContributor(Long userId, Long vdcId) {
-        addVdcRole(userId, vdcId, RoleServiceLocal.CONTRIBUTOR);
+        VDCUser user = em.find(VDCUser.class, userId);
         VDC vdc = em.find(VDC.class, vdcId);
-        VDCUser user = em.find(VDCUser.class,userId);
-        mailService.sendContributorAccountNotification(vdc.getContactEmail(), user.getUserName(), vdc.getName());
+        // If the user already has a role for this VDC, then he is already at least a contributor,
+        // so don't need to change the role.
+        if (user.getVDCRole(vdc)==null) {
+            addVdcRole(userId, vdcId, RoleServiceLocal.CONTRIBUTOR);
+            mailService.sendContributorAccountNotification(vdc.getContactEmail(), user.getUserName(), vdc.getName());
+        }
     }
     
     public void makeCreator(Long userId) {
         VDCUser user = em.find(VDCUser.class, userId);
         VDCNetwork vdcNetwork = vdcNetworkService.find();
-        user.setNetworkRole(networkRoleService.getCreatorRole());
-        mailService.sendCreatorAccountNotification(vdcNetwork.getContactEmail(), user.getUserName());         
+        // If the user already has a networkRole, then he is already a creator or networkAdmin,
+        // so don't need to change the role.
+        if (user.getNetworkRole()==null) {
+            user.setNetworkRole(networkRoleService.getCreatorRole());
+            mailService.sendCreatorAccountNotification(vdcNetwork.getContactEmail(), user.getUserName());         
+
+        }
     }
 
     public void setActiveStatus(Long userId, boolean active) {

@@ -30,6 +30,7 @@
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
 import com.sun.rave.web.ui.model.UploadedFile;
+import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.DataTable;
@@ -386,6 +387,71 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     }    
     // </editor-fold>        
 
+    
+    // <editor-fold defaultstate="collapsed" desc="file utilities">    
+    public boolean isFilePanelRendered() {
+        return "file".equals(selectedPanel);
+    }
+    
+    String fileStudyIds;
+
+    public String getFileStudyIds() {
+        return fileStudyIds;
+    }
+
+    public void setFileStudyIds(String fileStudyIds) {
+        this.fileStudyIds = fileStudyIds;
+    }
+  
+    
+    public String determineFileTypeStudies_action() {
+        try {
+            Map tokenizedLists = determineStudyIds(fileStudyIds);
+            List harvestedStudies = new ArrayList();
+            //List lockedStudies = new ArrayList();
+
+            for (Iterator<Long>  iter = ((List<Long>) tokenizedLists.get("idList")).iterator(); iter.hasNext();) {
+                Long studyId = iter.next();
+                Study study = studyService.getStudy(studyId);
+                
+                if ( study.isIsHarvested() ) {
+                    harvestedStudies.add(study.getId());
+                    iter.remove();
+                /*
+                 } else if ( study.getStudyLock() != null ) {
+                    lockedStudies.add(study.getId());
+                */
+                 } else {
+                    for ( StudyFile sf : study.getStudyFiles() ) {
+                        if (sf.isSubsettable()) {
+                            // skip subsettable files
+                        } else {
+                            sf.setFileType( FileUtil.determineFileType( new File( sf.getFileSystemLocation() ), sf.getFileName() ) );
+                        }
+                    } 
+                    studyService.updateStudy(study);
+                }          
+            }
+            tokenizedLists.put("ignoredList", harvestedStudies);
+            tokenizedLists.put("ignoredReason", "because they are harvested studies");
+            addMessage( "fileMessage", "Determine File Type request completed." );
+            addStudyMessages("fileMessage", tokenizedLists);
+
+            /*
+             if (lockedStudies.size() > 0) { 
+                addMessage( "fileMessage", "The following studies were ignored because they are locked: " + lockedStudies );
+            }
+            */ 
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "fileMessage", "Action failed: An unknown error occurred trying to process the following: \"" + fileStudyIds + "\"" );
+        }            
+ 
+        return null;
+    }   
+    // </editor-fold>
+    
    
     // <editor-fold defaultstate="collapsed" desc="import utilities">    
     public boolean isImportPanelRendered() {
@@ -411,11 +477,14 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         return vdcRadioItems;
     }
     
-    public List getXmlFileFormatRadioItems() {
-        List xmlFileFrmatRadioItems = new ArrayList();
-        xmlFileFrmatRadioItems.add( new SelectItem(0, "ddi") );
-        xmlFileFrmatRadioItems.add( new SelectItem(1, "mif") );
-        return xmlFileFrmatRadioItems;
+    public List<SelectItem> getXmlFileFormatRadioItems() {
+        List<SelectItem> metadataFormatsSelect = new ArrayList<SelectItem>();
+                
+        for (HarvestFormatType hft : harvesterService.findAllHarvestFormatTypes() ) {
+            metadataFormatsSelect.add(new SelectItem(hft.getId(),hft.getName()));
+        }
+
+        return metadataFormatsSelect;
     }    
     
     public UploadedFile getBrowserFile() {
@@ -534,6 +603,10 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
             if ( ((List) tokenizedLists.get("idList")).size() > 0 ) {            
                 addMessage( component, "The following studies were successfully processed: " + tokenizedLists.get("idList") );
             }
+            if ( ((List) tokenizedLists.get("ignoredList")).size() > 0 ) {            
+                addMessage( component, "The following studies were ignored (" 
+                        + ((String) tokenizedLists.get("ignoredReason")) + "): " + tokenizedLists.get("ignoredList") );
+            }            
             if ( ((List) tokenizedLists.get("invalidStudyIdList")).size() > 0 ) {
                 addMessage( component, "The following study ids were invalid: " + tokenizedLists.get("invalidStudyIdList") ); 
             }
@@ -582,8 +655,8 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         Map tokenizedLists = determineIds(studyIds);
         List invalidStudyIdList = new ArrayList();
 
-        for (Iterator  iter = ((List<Long>) tokenizedLists.get("idList")).iterator(); iter.hasNext();) {
-            Long id = (Long) iter.next();
+        for (Iterator<Long>  iter = ((List<Long>) tokenizedLists.get("idList")).iterator(); iter.hasNext();) {
+            Long id = iter.next();
             try {
                 studyService.getStudy(id);
             } catch (EJBException e) {  

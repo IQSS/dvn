@@ -38,6 +38,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
+import java.util.HashMap;
+import java.util.Map;
+import javax.activation.MimetypesFileTypeMap;
 import javax.ejb.EJBException;
 
 /**
@@ -47,6 +50,19 @@ import javax.ejb.EJBException;
 public class FileUtil implements java.io.Serializable  {
     
     private static final String[] SUBSETTABLE_FORMAT_SET = {"POR", "SAV", "DTA"};
+
+    private static Map<String, String> STATISTICAL_SYNTAX_FILE_EXTENSION = new HashMap<String, String>();
+    static {
+        STATISTICAL_SYNTAX_FILE_EXTENSION.put("do",  "x-stata-syntax");
+        STATISTICAL_SYNTAX_FILE_EXTENSION.put("sas", "x-sas-syntax");
+        STATISTICAL_SYNTAX_FILE_EXTENSION.put("sps", "x-spss-syntax");
+    }
+    
+    private static MimetypesFileTypeMap MIME_TYPE_MAP = new MimetypesFileTypeMap();
+    static {
+        MIME_TYPE_MAP.addMimeTypes("application/msword doc DOC");
+        MIME_TYPE_MAP.addMimeTypes("application/vnd.ms-excel xls XLS");
+    }
 
     /** Creates a new instance of FileUtil */
     public FileUtil() {
@@ -72,25 +88,49 @@ public class FileUtil implements java.io.Serializable  {
         }
     }
 
-    public static String analyzeFile(File f) throws IOException{
+    public static String determineFileType(File f) throws IOException{
+        return  determineFileType( f, f.getName()) ;
+    
+    }    
+    
+    public static String determineFileType(File f, String fileName) throws IOException{
         String fileType = null;
 
         // step 1: check whether the file is subsettable
         SubsettableFileChecker sfchk = new SubsettableFileChecker(SUBSETTABLE_FORMAT_SET);
-
         fileType = sfchk.detectSubsettableFormat(f);
-        if (fileType != null){
-            System.out.println("FileUtil:Analyze:mimeType="+fileType);
-        }
-        // setp 2: check the mime type of this file
-        /* to be implemented*/
+
+        // step 2: check the mime type of this file with Jhove
         if (fileType == null){
             JhoveWrapper jw = new JhoveWrapper();
             fileType = jw.getFileMimeType(f);
-            System.out.println("FileUtil:Analyze:mimeType by Jhove="+fileType);
         }
+    
+        // step 3: handle Jhove fileType (if we have an extension)
+        // if text/plain and syntax file, replace the "plain" part
+        // if application/octet-stream, check for mime type by extension
+        String fileExtension = getFileExtension(fileName);
+        if ( fileExtension != null) {
+            if (fileType.startsWith("text/plain")){
+                if (( fileExtension != null) && (STATISTICAL_SYNTAX_FILE_EXTENSION.containsKey(fileExtension))) {
+                    // replace the mime type with the value of the HashMap
+                    fileType = fileType.replace("plain",STATISTICAL_SYNTAX_FILE_EXTENSION.get(fileExtension));
+                }
+            } else if (fileType.equals("application/octet-stream")) {
+                fileType = MIME_TYPE_MAP.getContentType(fileName);
+            }
+        }
+        
         return fileType;
     }
+        
+   private static String getFileExtension(String fileName){
+    	String ext = null;
+    	if ( fileName.lastIndexOf(".") != -1){
+    		ext = (fileName.substring( fileName.lastIndexOf(".") + 1 )).toLowerCase();
+    	}
+    	return ext;
+    }        
       
     public static String getStudyFileDir() {
         String studyFileDir = System.getProperty("vdc.study.file.dir");

@@ -408,7 +408,6 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         try {
             Map tokenizedLists = determineStudyIds(fileStudyIds);
             List harvestedStudies = new ArrayList();
-            //List lockedStudies = new ArrayList();
 
             for (Iterator<Long>  iter = ((List<Long>) tokenizedLists.get("idList")).iterator(); iter.hasNext();) {
                 Long studyId = iter.next();
@@ -417,10 +416,6 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                 if ( study.isIsHarvested() ) {
                     harvestedStudies.add(study.getId());
                     iter.remove();
-                /*
-                 } else if ( study.getStudyLock() != null ) {
-                    lockedStudies.add(study.getId());
-                */
                  } else {
                     for ( StudyFile sf : study.getStudyFiles() ) {
                         if (sf.isSubsettable()) {
@@ -436,12 +431,6 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
             tokenizedLists.put("ignoredReason", "because they are harvested studies");
             addMessage( "fileMessage", "Determine File Type request completed." );
             addStudyMessages("fileMessage", tokenizedLists);
-
-            /*
-             if (lockedStudies.size() > 0) { 
-                addMessage( "fileMessage", "The following studies were ignored because they are locked: " + lockedStudies );
-            }
-            */ 
             
         } catch (Exception e) {
             e.printStackTrace();

@@ -61,12 +61,7 @@ import java.util.*;
 public class AddFilesPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB EditStudyService studyService;
     @EJB StudyServiceLocal fileSystemNameService;
-    private static Map<String, String> STATISTICAL_SYNTAX_FILE_EXTENSION = new HashMap<String, String>();
-    static {
-        STATISTICAL_SYNTAX_FILE_EXTENSION.put("do",  "x-stata-syntax");
-        STATISTICAL_SYNTAX_FILE_EXTENSION.put("sas", "x-sas-syntax");
-        STATISTICAL_SYNTAX_FILE_EXTENSION.put("sps", "x-spss-syntax");
-    }
+
     /** Creates a new instance of AddFilesPage */
     public AddFilesPage() {
     }
@@ -154,7 +149,6 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable  {
             String originalName = uploadedFile.getOriginalName();
             originalName = originalName.substring( originalName.lastIndexOf("/") + 1 );
             originalName = originalName.substring( originalName.lastIndexOf("\\") + 1 );
-            String originalFileType = uploadedFile.getContentType();
 
             // upload the file to a temp directory
             try {            
@@ -189,48 +183,19 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable  {
                 
                 uploadedFile.write( file );
                 
-                // DSBWrapper dsb = new DSBWrapper();
-                String analyzeFileType = FileUtil.analyzeFile( file );
 
-                
                 // now add the studyfile
                 StudyFileEditBean f = new StudyFileEditBean( new StudyFile() );
                 f.setOriginalFileName(originalName);
-                f.getStudyFile().setSubsettable(analyzeFileType.equals("application/x-stata") || 
-                                                analyzeFileType.equals("application/x-spss-por") || 
-                                                analyzeFileType.equals("application/x-spss-sav") ||
-                                                analyzeFileType.equals("application/x-rlang-transport") );
+                f.getStudyFile().setFileType( FileUtil.determineFileType(file) );
+                f.getStudyFile().setSubsettable(f.getStudyFile().getFileType().equals("application/x-stata") || 
+                                                f.getStudyFile().getFileType().equals("application/x-spss-por") || 
+                                                f.getStudyFile().getFileType().equals("application/x-spss-sav") ||
+                                                f.getStudyFile().getFileType().equals("application/x-rlang-transport") );
                 
-                // append ".tab" to name if subsettable
+                // replace extension with ".tab" if subsettable
                 f.getStudyFile().setFileName(f.getStudyFile().isSubsettable() ? replaceExtension(originalName): originalName);                
-                
-                // for unknown file types, use the originalFileType determined by the upload
-                // f.getStudyFile().setFileType( analyzeFileType.equals("application/octet-stream") ? originalFileType : analyzeFileType);
-                
-                // update the MIME-type if necessary
-                if (analyzeFileType.equals("application/octet-stream")) {
-                    System.out.println("use MIME-type identified by the browser="+originalFileType);
-                    f.getStudyFile().setFileType( originalFileType );
-                } else {
-                    if (analyzeFileType.startsWith("text/plain")){
-                        String finalMIMEtype = null;
-                        String ext = getFileExtension(originalName);
-                        if (( ext != null) && (STATISTICAL_SYNTAX_FILE_EXTENSION.containsKey(ext))) {
-                            // replace the mime type with the value of the HashMap
-                            System.out.println("file extension="+ext);
-                            System.out.println("new mime type="+STATISTICAL_SYNTAX_FILE_EXTENSION.get(ext));
-                            finalMIMEtype = analyzeFileType.replace("plain",STATISTICAL_SYNTAX_FILE_EXTENSION.get(ext));
-                            System.out.println("updated MIME-Type="+finalMIMEtype);
-                        } else {
-                            finalMIMEtype = analyzeFileType;
-                        }
-                        f.getStudyFile().setFileType(finalMIMEtype);
-                    } else {
-                        f.getStudyFile().setFileType(analyzeFileType);
-                        System.out.println("non-octet-stream case="+analyzeFileType);
-                    }
-                }
-                
+          
                 f.setTempSystemFileLocation( file.getAbsolutePath() );
                 f.getStudyFile().setFileSystemName(fileSystemNameService.generateFileSystemNameSequence());
                 files.add(f);          

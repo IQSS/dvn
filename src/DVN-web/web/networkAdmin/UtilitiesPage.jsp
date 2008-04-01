@@ -159,7 +159,26 @@
                         </h:panelGrid>                        
 
                         
-                        <!-- IMPORT STUDY PANEL -->
+                        <!-- FILE PANEL -->
+                        <ui:panelGroup  block="true" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
+                            <h:outputText value="File Utilities"/>
+                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.filePanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.jsp?selectedPanel=file">  
+                                <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
+                            </h:outputLink>
+                            <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.filePanelRendered}" />
+                        </ui:panelGroup>   
+                        
+                        <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.filePanelRendered}" > 
+                            <h:messages id="fileMessage"  styleClass="errorMessage"/> 
+                            <h:outputText value="To determine the file types for files in arbitrary studies (subsettable files will be ignored), input the study ids and click on the button below:"/>
+                            <ui:panelGroup>
+                                <h:inputTextarea value="#{UtilitiesPage.fileStudyIds}" rows="8" cols="80"/>
+                                <h:commandButton  value="Determine File Types" action="#{UtilitiesPage.determineFileTypeStudies_action}"/>
+                            </ui:panelGroup>                              
+                        </h:panelGrid>  
+                        
+                        
+                        <!-- IMPORT PANEL -->
                         <ui:panelGroup  block="true" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                             <h:outputText value="Import Utilities"/>
                             <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.importPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.jsp?selectedPanel=import">  

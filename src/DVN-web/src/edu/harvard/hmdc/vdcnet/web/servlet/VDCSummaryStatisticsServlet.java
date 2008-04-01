@@ -359,7 +359,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
         out.println("Number of vars in this data table(" + dtId + ")=" + dataTable.getVarQuantity());
 
         String qsblock = quickSummaryContentsCreator(varId);
-        out.println("quick summary-statistics table:" + qsblock);
+        //out.println("quick summary-statistics table:" + qsblock);
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter outPW = response.getWriter();
         try {

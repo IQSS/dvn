@@ -88,7 +88,7 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
             msg.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(to, false));
             msg.setSubject(subject);
-            msg.setText(messageText+"\n\nPlease do not reply to this email.\nThank you,\nDataverse Network Project");
+            msg.setText(messageText+"\n\nPlease do not reply to this email.\nThank you,\nThe Dataverse Network Project");
             Transport.send(msg);
         } catch (AddressException ae) {
             ae.printStackTrace(System.out);
@@ -115,13 +115,13 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
     }
     
     public void sendPasswordUpdateNotification(String userEmail, String userFirstName,String userName, String newPassword) {
-        String subject = "Dataverse Network: password has been changed";
-        String msgText ="Dear "+userFirstName+"\n";
-        msgText+="Here is the new password information that you requested:\n";
+        String subject = "Dataverse Network: New Password Request";
+        String msgText ="Hello "+userFirstName+",\n";
+        msgText+="Here is the new password information that you requested for the Dataverse Network:\n";
         msgText+="Username:  "+userName+"\n";
         msgText+="Password:  "+newPassword+"\n";
-        msgText+="Please try to log in again using the new password provided above.\n";
-        msgText+="If you continue to have problems logging in, please use the Contact Us  form to send e-mail to the Dataverse Admin.\n";
+        msgText+="After logging in, change your password by clicking the username displayed on the top right of the menubar.\n";
+        msgText+="If you continue to have problems logging in, send us an e-mail through the Dataverse Network Contact form.\n";
         sendDoNotReplyMail(userEmail,subject,msgText);
     }
     

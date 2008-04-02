@@ -287,13 +287,20 @@ public class DCServiceBean implements DCServiceLocal {
             xmlw.writeCharacters("Country/Nation: "+study.getCountry());
             xmlw.writeEndElement();
         }
-        
-          if (!StringUtil.isEmpty(study.getGeographicCoverage())) {
+       
+       // Geographic Data 
+       if (!StringUtil.isEmpty(study.getGeographicCoverage())) {
             xmlw.writeStartElement("dc:coverage");
             xmlw.writeCharacters("Geographic Coverage: "+study.getGeographicCoverage());
             xmlw.writeEndElement();
        }
-        for (StudyGeoBounding geoBounding : study.getStudyGeoBoundings()) {
+        if (!StringUtil.isEmpty(study.getGeographicUnit())) {
+            xmlw.writeStartElement("dc:coverage");
+            xmlw.writeCharacters("Geographic Unit: "+study.getGeographicUnit());
+            xmlw.writeEndElement();
+       }
+       
+       for (StudyGeoBounding geoBounding : study.getStudyGeoBoundings()) {
              xmlw.writeStartElement("dc:coverage");
              xmlw.writeCharacters("Geographic Bounding: " + geoBounding );
              xmlw.writeEndElement();

@@ -102,7 +102,7 @@
                         </ui:panelGroup>  
                         
                         <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.exportPanelRendered}" > 
-                        <h:messages id="exportMessage"  styleClass="errorMessage"/> 
+                            <h:messages id="exportMessage"  styleClass="errorMessage"/> 
                             <h:outputText value="To run export now (all updated studies in all formats), click on the button below:"/>
                             <ui:panelGroup>
                                 <h:commandButton  value="Run Export" action="#{UtilitiesPage.exportUpdated_action}"/>
@@ -136,7 +136,7 @@
                             </ui:panelGroup>  
                         </h:panelGrid>   
                         
-
+                        
                         <!-- HARVEST PANEL -->
                         <ui:panelGroup  block="true" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                             <h:outputText value="Harvest Utilities"/>
@@ -157,7 +157,7 @@
                                 <h:commandButton  value="Harvest Study" action="#{UtilitiesPage.harvestStudy_action}"/>
                             </ui:panelGroup>                            
                         </h:panelGrid>                        
-
+                        
                         
                         <!-- FILE PANEL -->
                         <ui:panelGroup  block="true" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
@@ -171,10 +171,8 @@
                         <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.filePanelRendered}" > 
                             <h:messages id="fileMessage"  styleClass="errorMessage"/> 
                             <h:outputText value="To determine the file types for files in arbitrary studies (subsettable files will be ignored), input the study ids and click on the button below:"/>
-                            <ui:panelGroup>
-                                <h:inputTextarea value="#{UtilitiesPage.fileStudyIds}" rows="8" cols="80"/>
-                                <h:commandButton  value="Determine File Types" action="#{UtilitiesPage.determineFileTypeStudies_action}"/>
-                            </ui:panelGroup>                              
+                            <h:inputTextarea value="#{UtilitiesPage.fileStudyIds}" rows="8" cols="80"/>
+                            <h:commandButton  value="Determine File Types" action="#{UtilitiesPage.determineFileTypeStudies_action}"/>
                         </h:panelGrid>  
                         
                         
@@ -188,17 +186,34 @@
                         </ui:panelGroup>  
                         
                         <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.importPanelRendered}" > 
-                           <h:messages id="importMessage"  styleClass="errorMessage"/> 
+                            <h:messages id="importMessage"  styleClass="errorMessage"/> 
+                            <h:outputText value="Select the file format and the dataverse for the import, then either:"/>
+                            <ui:panelGroup>
+                                <h:selectOneMenu  value="#{UtilitiesPage.importFileFormat}">
+                                    <f:selectItems value="#{UtilitiesPage.importFileFormatTypes}" />
+                                </h:selectOneMenu>                                   
+                                <h:selectOneMenu  value="#{UtilitiesPage.importDVId}">
+                                    <f:selectItems value="#{UtilitiesPage.importDVs}" />
+                                </h:selectOneMenu> 
+                            </ui:panelGroup>    
+                            <hr/>
                             
+                            <h:outputText value="a) Batch import - input directory and click on the button:"/>
+                            <ui:panelGroup>
+                                <h:inputText value="#{UtilitiesPage.importBatchDir}" size="80" />
+                                <h:commandButton  value="Batch Import" action="#{UtilitiesPage.importBatch_action}"/>
+                            </ui:panelGroup>
+                            <hr/>
+
+                            <h:outputText value="or b) Single import - browse for the file and click on the button:"/>
+                            <ui:panelGroup>                         
+                                <ui:upload  id="fileBrowser"  uploadedFile ="#{UtilitiesPage.importFile}"/>
+                                <h:commandButton  value="Single Import" action="#{UtilitiesPage.importSingleFile_action}"/>
+                            </ui:panelGroup>  
+                            <hr/>
+                            
+                            <h:outputText value="Flags:"/>
                             <h:panelGrid columns="2"    style="padding: 30px 40px 40px 40px; ">                           
-                                <h:outputText value="XML file (study):" />
-                                <ui:upload  id="fileBrowser"  uploadedFile ="#{UtilitiesPage.browserFile}"/>
-                                
-                                <h:outputText value="XML file format:" />
-                                <h:selectOneMenu  id="xmlFileFormatList" value="#{UtilitiesPage.xmlFileFormat}">
-                                    <f:selectItems  id="xmlFileFormatItems" value="#{UtilitiesPage.xmlFileFormatRadioItems}" />
-                                </h:selectOneMenu>
-                                
                                 <h:outputText value="Register Handle?" />
                                 <h:selectBooleanCheckbox  id="registerHandleCheckBox" value="#{UtilitiesPage.registerHandle}"/> 
                                 
@@ -213,14 +228,7 @@
                                 
                                 <h:outputText value="Copy Files?" />
                                 <h:selectBooleanCheckbox  id="copyFilesCheckBox" value="#{UtilitiesPage.copyFiles}"/> 
-                                
-                                <h:outputText value="Import into:" />
-                                <h:selectOneMenu  id="radioButtonList1" value="#{UtilitiesPage.vdcId}">
-                                    <f:selectItems  id="radio1SelectItem" value="#{UtilitiesPage.vdcRadioItems}" />
-                                </h:selectOneMenu>                    
-                                
                             </h:panelGrid>
-                            <h:commandButton  value="Import" action="#{UtilitiesPage.import_action}"/>
                         </h:panelGrid>
                         
                         

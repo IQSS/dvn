@@ -122,4 +122,7 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public void exportUpdatedStudies();
     public void exportStudies(List<Long> studyIds);
     public void exportStudies(List<Long> studyIds, String exportFormat);
+    
+    public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user);
+    public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail);
 }

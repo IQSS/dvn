@@ -31,14 +31,13 @@ package edu.harvard.hmdc.vdcnet.study;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
-import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceBean;
-import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.ddi.DDIServiceLocal;
+import edu.harvard.hmdc.vdcnet.dsb.DSBIngestMessage;
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 import edu.harvard.hmdc.vdcnet.gnrs.GNRSServiceLocal;
 import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
-import edu.harvard.hmdc.vdcnet.jaxb.ddi20.CodeBook;
+import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.vdc.ReviewState;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
@@ -66,17 +65,23 @@ import java.util.Vector;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Queue;
+import javax.jms.QueueConnection;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.QueueSender;
+import javax.jms.QueueSession;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -94,20 +99,18 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     EntityManager em;
-    @EJB
-    GNRSServiceLocal gnrsService;
-    @EJB
-    VDCNetworkServiceLocal vdcNetworkService;
-    @EJB
-    DDIServiceLocal ddiService;    
-    @EJB
-    UserServiceLocal userService;
-    @EJB
-    IndexServiceLocal indexService;
-    @EJB
-    ReviewStateServiceLocal reviewStateService;
-    @EJB
-    StudyExporterFactoryLocal studyExporterFactory;
+    @Resource(mappedName="jms/DSBIngest") Queue queue;
+    @Resource(mappedName="jms/DSBQueueConnectionFactory") QueueConnectionFactory factory;
+    
+    @EJB GNRSServiceLocal gnrsService;
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
+    @EJB DDIServiceLocal ddiService;    
+    @EJB UserServiceLocal userService;
+    @EJB IndexServiceLocal indexService;
+    @EJB ReviewStateServiceLocal reviewStateService;
+    @EJB StudyExporterFactoryLocal studyExporterFactory;
+    @EJB MailServiceLocal mailService;
+        
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.study.StudyServiceBean");
     private static final SimpleDateFormat exportLogFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
 
@@ -558,6 +561,120 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     public List<DataFileFormatType> getDataFileFormatTypes() {
         return em.createQuery("select object(t) from DataFileFormatType as t").getResultList();
     }
+
+    public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user)  {
+        addFiles( study, newFiles, user, user.getEmail(), DSBIngestMessage.INGEST_MESAGE_LEVEL_ERROR );
+    }    
+
+    public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail)  {
+        addFiles( study, newFiles, user, ingestEmail, DSBIngestMessage.INGEST_MESAGE_LEVEL_INFO );
+    }
+    
+    private void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail, int messageLevel)  {
+        // step 1: divide the files, based on subsettable or not
+        List subsettableFiles = new ArrayList();
+        List otherFiles = new ArrayList();
+        
+        Iterator iter = newFiles.iterator();
+        while (iter.hasNext()) {
+            StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
+            if ( fileBean.getStudyFile().isSubsettable() ) {
+                subsettableFiles.add(fileBean);
+            } else {
+                otherFiles.add(fileBean);
+                // also add to category, so that it will be flushed for the ids
+                addFileToCategory(fileBean.getStudyFile(), fileBean.getFileCategoryName(), study);
+            }
+        }
+        
+        // step 2: iterate through nonsubsettable files, moving from temp to new location
+        File newDir = FileUtil.getStudyFileDir(study);
+        iter = otherFiles.iterator();
+        while (iter.hasNext()) {
+            StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
+            StudyFile f = fileBean.getStudyFile();
+            File tempFile = new File(fileBean.getTempSystemFileLocation());
+            File newLocationFile = new File(newDir, f.getFileSystemName());
+            try {
+                FileUtil.copyFile( tempFile, newLocationFile );
+                tempFile.delete();
+                f.setFileSystemLocation(newLocationFile.getAbsolutePath());
+            } catch (IOException ex) {
+                throw new EJBException(ex);
+            }
+        }
+        
+        // step 3: iterate through subsettable files, sending a message via JMS
+        if (subsettableFiles.size() > 0) {
+            QueueConnection conn = null;
+            QueueSession session = null;
+            QueueSender sender = null;
+            try {
+                conn = factory.createQueueConnection();
+                session = conn.createQueueSession(false,0);
+                sender = session.createSender(queue);
+                
+                DSBIngestMessage ingestMessage = new DSBIngestMessage(messageLevel);
+                ingestMessage.setFileBeans(subsettableFiles);
+                ingestMessage.setIngestEmail(ingestEmail);
+                ingestMessage.setIngestUserId(user.getId());
+                ingestMessage.setStudyId(study.getId());
+                Message message = session.createObjectMessage(ingestMessage);
+                
+                String detail = "Ingest processing for " + subsettableFiles.size() + " file(s).";
+                studyService.addStudyLock(study.getId(), user.getId(), detail);
+                try {
+                    sender.send(message);
+                } catch(Exception ex) {
+                    // If anything goes wrong, remove the study lock.
+                    studyService.removeStudyLock(study.getId());
+                    ex.printStackTrace();
+                }
+                               
+                // send an e-mail
+                if (ingestMessage.sendInfoMessage()) {
+                    mailService.sendIngestRequestedNotification(ingestEmail, subsettableFiles);
+                }
+               
+            } catch (JMSException ex) {
+                ex.printStackTrace();
+            } finally {
+                try {
+              
+                    if (sender != null) {sender.close();}
+                    if (session != null) {session.close();}
+                    if (conn != null) {conn.close();}
+                } catch (JMSException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    private void addFileToCategory(StudyFile file, String catName, Study s) {
+        if (catName == null) { catName = ""; }
+        
+        Iterator iter = s.getFileCategories().iterator();
+        while (iter.hasNext()) {
+            FileCategory cat = (FileCategory) iter.next();
+            if ( cat.getName().equals( catName ) ) {
+                file.setFileCategory(cat);
+                cat.getStudyFiles().add(file);
+                return;
+            }
+        }
+        
+        // category was not found, so we create a new file category
+        FileCategory cat = new FileCategory();
+        cat.setStudy(s);
+        s.getFileCategories().add(cat);
+        cat.setName( catName );
+        cat.setStudyFiles(new ArrayList());
+        
+        // link cat to file
+        file.setFileCategory(cat);
+        cat.getStudyFiles().add(file);
+    }    
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void addIngestedFiles(Long studyId, List fileBeans, Long userId) {
@@ -1174,7 +1291,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new EJBException("Error occurred while attempting to transform file.");
+            throw new EJBException("Error occurred while attempting to transform file: " + ex.getMessage());
         } finally {
             try {
                 if (in != null) {

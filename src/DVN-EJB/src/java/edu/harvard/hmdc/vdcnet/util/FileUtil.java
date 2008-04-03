@@ -124,13 +124,22 @@ public class FileUtil implements java.io.Serializable  {
         return fileType;
     }
         
-   private static String getFileExtension(String fileName){
+   public static String getFileExtension(String fileName){
     	String ext = null;
     	if ( fileName.lastIndexOf(".") != -1){
     		ext = (fileName.substring( fileName.lastIndexOf(".") + 1 )).toLowerCase();
     	}
     	return ext;
-    }        
+    } 
+
+    public static String replaceExtension(String originalName) {
+        int extensionIndex = originalName.lastIndexOf(".");
+        if (extensionIndex != -1 ) {
+            return originalName.substring(0, extensionIndex) + ".tab" ;
+        } else {
+            return originalName + ".tab";    
+        }
+    }   
       
     public static String getStudyFileDir() {
         String studyFileDir = System.getProperty("vdc.study.file.dir");
@@ -161,8 +170,9 @@ public class FileUtil implements java.io.Serializable  {
         } else {
             throw new EJBException("System property \"vdc.import.log.dir\" has not been set.");
         }
-    }    
- public static String getExportFileDir() {
+    }
+       
+    public static String getExportFileDir() {
         String exportFileDir = System.getProperty("vdc.export.log.dir");
         if (exportFileDir != null) {
             File exportLogDir = new File(exportFileDir);
@@ -182,4 +192,36 @@ public class FileUtil implements java.io.Serializable  {
         }
         return file;
     }
+    
+     public static File createTempFile(String sessionId, String originalFileName) throws Exception{ 
+        String filePathDir = System.getProperty("vdc.temp.file.dir");
+        if (filePathDir != null) {
+            File tempDir = new File(filePathDir, sessionId);
+            if (!tempDir.exists()) {
+                tempDir.mkdirs();
+            }
+            
+            // now create the file
+            String tempFileName = originalFileName;
+            File file = new File(tempDir, tempFileName);
+            int fileSuffix = 1;
+
+            while (!file.createNewFile()) {
+                int extensionIndex = originalFileName.lastIndexOf(".");
+                if (extensionIndex != -1 ) {
+                    tempFileName = originalFileName.substring(0, extensionIndex) + "_" + fileSuffix++ + originalFileName.substring(extensionIndex);
+                }  else {
+                    tempFileName = originalFileName + "_" + fileSuffix++;
+                }
+                file = new File(tempDir, tempFileName);
+            } 
+            
+            return file;
+            
+        } else {
+            throw new Exception("System property \"vdc.temp.file.dir\" has not been set.");
+        }
+
+     }
+    
 }

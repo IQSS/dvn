@@ -194,7 +194,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
             
             // check newFiles list; if > 0, we are coming from addPage
             if (newFiles.size() > 0) {
-                addFiles(user);
+                studyService.addFiles(study, newFiles, user, ingestEmail);
                 
             } else {
                 // otherwise we are coming from edit; check current files for changes
@@ -235,7 +235,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
         
     }
     
-    
+    /*
     private void addFiles(VDCUser user)  {
         // step 0: start with some initialization
         File newDir = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
@@ -321,6 +321,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
             }
         }
     }
+    */
     
     private void editFiles() {
         boolean recalculateStudyUNF = false;

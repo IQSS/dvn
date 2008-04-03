@@ -152,54 +152,13 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable  {
 
             // upload the file to a temp directory
             try {            
-                String filePathDir = System.getProperty("vdc.temp.file.dir");
-                if (filePathDir == null) {
-                        throw new Exception("System property \"vdc.temp.file.dir\" has not been set.");
-                }           
                 String sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
-                String tempFileName = originalName;
-
-                // first, check dir
-                File tempDir = new File(filePathDir, sessionId);
-                if (!tempDir.exists()) {
-                    tempDir.mkdirs();
-                }
-                
-                // now create the file
-                File file = new File(tempDir, tempFileName);
-                boolean fileCreated = file.createNewFile(); 
-                int fileSuffix = 1;
-
-                while (!fileCreated) {
-                    int extensionIndex = originalName.lastIndexOf(".");
-                    if (extensionIndex != -1 ) {
-                        tempFileName = originalName.substring(0, extensionIndex) + "_" + fileSuffix++ + originalName.substring(extensionIndex);
-                    }  else {
-                        tempFileName = originalName + "_" + fileSuffix++;
-                    }
-                    file = new File(tempDir, tempFileName);
-                    fileCreated = file.createNewFile();
-                }
-                
+                File file = FileUtil.createTempFile(sessionId, originalName);
                 uploadedFile.write( file );
-                
 
                 // now add the studyfile
-                StudyFileEditBean f = new StudyFileEditBean( new StudyFile() );
-                f.setOriginalFileName(originalName);
-                f.getStudyFile().setFileType( FileUtil.determineFileType(file) );
-                f.getStudyFile().setSubsettable(f.getStudyFile().getFileType().equals("application/x-stata") || 
-                                                f.getStudyFile().getFileType().equals("application/x-spss-por") || 
-                                                f.getStudyFile().getFileType().equals("application/x-spss-sav") ||
-                                                f.getStudyFile().getFileType().equals("application/x-rlang-transport") );
-                
-                // replace extension with ".tab" if subsettable
-                f.getStudyFile().setFileName(f.getStudyFile().isSubsettable() ? replaceExtension(originalName): originalName);                
-          
-                f.setTempSystemFileLocation( file.getAbsolutePath() );
-                f.getStudyFile().setFileSystemName(fileSystemNameService.generateFileSystemNameSequence());
+                StudyFileEditBean f = new StudyFileEditBean( file, fileSystemNameService.generateFileSystemNameSequence() );
                 files.add(f);          
-                
                 newFileAdded = true;
                 validateFileName( FacesContext.getCurrentInstance(), event.getComponent(), f.getStudyFile().getFileName() );
                         

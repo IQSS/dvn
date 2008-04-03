@@ -38,13 +38,21 @@ import java.util.List;
  * @author gdurand
  */
 public class DSBIngestMessage implements Serializable{
-    
+
+    public static final int INGEST_MESAGE_LEVEL_ERROR = 1; 
+    public static final int INGEST_MESAGE_LEVEL_INFO = 2;
+
     /** Creates a new instance of DSBIngestMessage */
     public DSBIngestMessage()  {
+    }
+
+    public DSBIngestMessage(int messageLevel)  {
+        this.messageLevel = messageLevel;
     }
     
     private String ingestEmail;
     private Long ingestUserId;
+    private int messageLevel = INGEST_MESAGE_LEVEL_INFO;
     
     private Long studyId;
     private List fileBeans;
@@ -65,6 +73,14 @@ public class DSBIngestMessage implements Serializable{
         this.ingestUserId = ingestUserId;
     }
 
+    public int getMessageLevel() {
+        return messageLevel;
+    }
+
+    public void setMessageLevel(int messageLevel) {
+        this.messageLevel = messageLevel;
+    }
+
     public Long getStudyId() {
         return studyId;
     }
@@ -79,5 +95,13 @@ public class DSBIngestMessage implements Serializable{
 
     public void setFileBeans(List fileBeans) {
         this.fileBeans = fileBeans;
+    }
+
+    public boolean sendInfoMessage() {
+        return messageLevel >= INGEST_MESAGE_LEVEL_INFO;
+    }
+
+    public boolean sendErrorMessage() {
+        return messageLevel >= INGEST_MESAGE_LEVEL_ERROR;
     }
 }

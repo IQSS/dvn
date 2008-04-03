@@ -85,7 +85,7 @@ public class DSBIngestMessageBean implements MessageListener {
         List successfuleFiles = new ArrayList();
         List problemFiles = new ArrayList();
         
-        try {
+        try {           
             ObjectMessage om = (ObjectMessage) message;
             ingestMessage = (DSBIngestMessage) om.getObject();
             String detail = "Ingest processing for " +ingestMessage.getFileBeans().size() + " file(s).";
@@ -112,7 +112,9 @@ public class DSBIngestMessageBean implements MessageListener {
             // adding files succeeded; call indexer
             indexService.updateStudy(ingestMessage.getStudyId());
             
-            mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), successfuleFiles, problemFiles);
+            if ( ingestMessage.sendInfoMessage() || ( problemFiles.size() >= 0 && ingestMessage.sendErrorMessage() ) ) {
+                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), successfuleFiles, problemFiles);
+            }
             
         } catch (JMSException ex) {
             ex.printStackTrace(); // error in getting object from message; can't send e-mail
@@ -120,7 +122,9 @@ public class DSBIngestMessageBean implements MessageListener {
         } catch (Exception ex) { 
             ex.printStackTrace();
             // if a general exception is caught that means the entire upload failed
-            mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), null, ingestMessage.getFileBeans());
+            if (ingestMessage.sendErrorMessage()) { 
+                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), null, ingestMessage.getFileBeans());
+            }
             
         } finally {
             // when we're done, go ahead and remove the lock

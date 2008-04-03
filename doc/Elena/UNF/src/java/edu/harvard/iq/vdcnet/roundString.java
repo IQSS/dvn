@@ -50,6 +50,18 @@ public class roundString {
 	    	return tmp; 
 			
 	    }
+	    public String Genround(byte[] str, int digits){
+	    	String nl = System.getProperty("line.separator");
+	    	String fmtu= ""+ percntg + dot + digits + s + nl;
+	    	String fmt = "%."+digits + "s" + nl;
+	    	if(!fmtu.equalsIgnoreCase(fmt)&& loc==new Locale("en", "US"))
+				mLog.severe("RoundString: Unicode & format strings do not agree"); 
+	    	String tmp = String.format(loc, fmtu, str).trim();
+	    	
+	        
+	    	return tmp; 
+			
+	    }
 		public static void main(String args[]){
 			
 			roundString rout = new roundString();

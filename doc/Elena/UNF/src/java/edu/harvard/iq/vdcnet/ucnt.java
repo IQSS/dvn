@@ -14,7 +14,9 @@ public enum ucnt {
 	percntg('\u0025'),//"%"
 	pndsgn('\u0023'), //"#"
 	zero('\u0030'), //'0'
-	s('\u0073');//"s"
+	s('\u0073'),//"s"
+	nil('\u0000'); //'\0' for null terminator
+	
 	private final char ucode;
 	ucnt(char c){
 		this.ucode = c;

@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry exported="true" kind="var" path="JavaLibrary/commons-math-1.2/commons-math-1.2.jar"/>
+	<classpathentry exported="true" kind="var" path="JavaLibrary/commons-codec-1.3/commons-codec-1.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

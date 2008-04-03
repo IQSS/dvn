@@ -19,7 +19,17 @@
 		 * Number -2.123498e+22, +1.56e+1, -1.3456e-, +3.4222e+
          * mantissa= digits after the decimal point & decimal point
          * exponent= digits after 'e' and the sign that follows
-         * 		 
+         *
+ * Usage: For Number, e.g  Double number and int digits
+         *  	roundRoutines<Double> rout = new roundRoutines<Double>();
+	     *      rout.Genround(number,digits);
+	     * 	    For BigDecimal number,
+	     * 	    roundRoutines<BigDecimal> routb = new roundRoutines<BigDecimal>();
+		 *      routb.Genround(new BigDecimal(number),digits);
+		 *      
+		 * For String of chars, e.g. String ss = "news from ado";
+		 *      roundRoutines.Genround(ss,digits);
+		 *  
  * @Author: Elena Villalon
  * <a heref= email: evillalon@iq.harvard.edu/>
  *       
@@ -32,23 +42,28 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.logging.Logger;
 
+import edu.harvard.iq.vdcnet.utils.formatNumbSymbols;
+import edu.harvard.iq.vdcnet.utils.roundRoutinesUtils;
+
 public class roundRoutines<T extends Number>
 implements generalizedRound<T> {
 public static final long serialVersionUID=1111L;
-    //default number of digits with and after decimal point
+    /**default number of digits with and after decimal point*/
     private static final int DMAX=7;
-    //for INACCURATE_SPRINTF digits with and after decimal point 
+    /**for INACCURATE_SPRINTF digits with and after decimal point*/ 
     private static final int INACCURATE_SPRINTF_DIGITS=14;
     private boolean INACCURATE_SPRINTF=false; 
-    //number of digits with decimal point
+    /**number of digits with decimal point*/
     private int digits; 
-    //the Locale language and country 
+    /**the Locale language and country*/ 
     private Locale loc; 
-    //some formatting for special numbers
+    /**some formatting for special numbers*/
     private formatNumbSymbols symb = new formatNumbSymbols();
-    //not show 0 digit of exponent and mantissa if they are =0
+    /**not show 0 digit of exponent and mantissa if they are =0*/
     private boolean nozero=true; //default is true
-    //unicode characters 
+    /** radix for numbers*/
+    private int radix=10; 
+    /**unicode characters*/ 
     private static final char dot=ucnt.dot.getUcode();//decimal separator "."
     private static final char plus=ucnt.plus.getUcode(); //"+" sign 
     private static final char min=ucnt.min.getUcode(); //"-" 
@@ -106,7 +121,7 @@ public static final long serialVersionUID=1111L;
 	 * @param digits:int.  
 	 * Number of decimal digits including the decimal point
 	 * @param loc: Locale. For country and language
-	 *  * @param nozero: boolean show the 0 for mantissa & exponent if they are 0 
+	 * @param nozero: boolean show the 0 for mantissa & exponent if they are 0 
 	 */
 	public roundRoutines(int digits, boolean nozero, Locale loc){
 	    this(digits, nozero);
@@ -129,6 +144,20 @@ public static final long serialVersionUID=1111L;
 		    bigNumber = true;
 			objbint = new BigDecimal((BigInteger) obj);
 		}
+		
+		if(obj instanceof Byte){
+			Double objd=null;
+			CharSequence objcs = null;
+			boolean b= roundRoutinesUtils.checkNumeric((Byte) obj,radix);
+			
+			if(b) {
+			  objd = obj.doubleValue();
+			  return Genround((T) objd, digits);
+			}else{ 
+				objcs = obj.toString();
+				return Genround(objcs,digits);
+		    }
+		}
 		StringBuilder build = new StringBuilder(); 
 		String fmt, fmtu, tmp; 
 		//the decimal separator symbol locally 
@@ -145,7 +174,7 @@ public static final long serialVersionUID=1111L;
 		//check infinity or NaN for Double inputs 
 	    
 	    if(!(obj instanceof BigDecimal) && (objbint==null) &&
-	         (tmp = specialNumb(n)) != null)
+	         (tmp = roundRoutinesUtils.specialNumb(n)) != null)
 	    	return tmp;
 			 
 		char[] str= {percntg, plus,pndsgn,sep}; //{'%','+', '#', '.'}	
@@ -261,66 +290,30 @@ public static final long serialVersionUID=1111L;
 	return build.append(tmp);
 	
 }
+	
+	
+	
 	/**
-	 * 
-	 * @param n: double to check for infinity and NaN
-	 * @return String with special symbols or null if n is finite
-	 */
-	public String specialNumb(Double n){
-		boolean bnan=Double.isNaN(n);
-		boolean binfty=Double.isInfinite(n); 
-		String tmp=null;
-		if((n-n +0) == 0 && n==n && !bnan && !binfty)
-			return tmp;
-		 
-		//check for infinity or NaN
-		if(bnan){	
-			mLog.severe("RoundRoutines: nan encounter");
-			return tmp = symb.getNaN();
-			
-		}else if(binfty){ 
-			
-			mLog.severe("RoundRoutines: infinite encounter");
-			if( n > 0.0d)
-			return tmp=symb.getPlusInfinity();
-			else
-			return tmp=symb.getMinusInfinity();
-		}else{
-		mLog.severe("RoundRoutines: Genround: Strange input"+ n);
-		return n.toString();
-		} 
-	}
-	/**
-	 * @param obj: String to format
+	 * @param cobj: CharSequence to format
 	 * @param digits:int number of characters  to keep
 	 * @return String formatted
 	 */
 	
-	public static String Genround(String obj, int digits){
-		obj = obj.trim();
-		int ln = obj.length();
-		char [] objarro = new char[ln];
-		obj.getChars(0, obj.length(), objarro, 0);
-		boolean b = true;
-		try{
-		for(int n = 0; n<ln; ++n){
-			if(!Character.isDigit(objarro[n]))
-				b = false;
-			    break;
-		}
-		BigInteger bg = new BigInteger(obj);
-		roundRoutines<BigInteger> rout = new roundRoutines<BigInteger>();
-//only digits in obj use a BigInteger representation
-		
-		return rout.Genround(bg, digits);
+	public static String Genround(CharSequence cobj, int digits){
+		boolean numeric =roundRoutinesUtils.checkNumeric(cobj);
 	
-		}catch(NumberFormatException err){
+		if(numeric){
+			//only digits in obj use a BigInteger representation
+			BigInteger bg = new BigInteger(cobj.toString());
+			roundRoutines<BigInteger> rout = new roundRoutines<BigInteger>();
+		    return rout.Genround(bg, digits);
+		}
+		
 		//if is not digits
-		mLog.info("roundRoutines: Enter string of chars:"+ err.getMessage());
-		return (new roundString().Genround(obj, digits));
+		mLog.info("roundRoutines: Enter string of chars:");
+		return (new roundString().Genround(cobj.toString(), digits));
 		}
 		 
-	}
 	//checking some inputs.  Need some JUnit Tests 
 	public static void main(String args[]){
 		
@@ -354,6 +347,7 @@ public static final long serialVersionUID=1111L;
 		mLog.info(rout.Genround(1.0,-1));
 		mLog.info("**************************");
 		ss = "1122334455 6677";
+		mLog.info(ss);
 		mLog.info(roundRoutines.Genround(ss,7));
 		
 		byte[] issb ={'\u0073', 101, 119, 115, 32};
@@ -370,7 +364,14 @@ public static final long serialVersionUID=1111L;
 		MathContext mth = new MathContext(7);
 		mLog.info("Mth Context: "+ mth.getRoundingMode());
 		mLog.info("*********************");
-		
+		String strt ="000012345678";
+		mLog.info(roundRoutinesUtils.trimZeros(strt,true));
+		mLog.info(roundRoutinesUtils.trimZeros(strt,false));
+		mLog.info("*********************");
+		String strr ="123456780000";
+		mLog.info(roundRoutinesUtils.trimZeros(strr,true));
+		mLog.info(roundRoutinesUtils.trimZeros(strr,false));
+	
 	}
 	}
 

@@ -30,6 +30,9 @@
 package edu.harvard.hmdc.vdcnet.study;
 
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.util.FileUtil;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,6 +47,22 @@ public class StudyFileEditBean implements Serializable{
     public StudyFileEditBean(StudyFile sf) {
         this.studyFile = sf;
     }
+
+    public StudyFileEditBean(File file, String fileSystemName) throws IOException {
+        this.studyFile = new StudyFile();
+        this.setOriginalFileName(file.getName() );
+        this.getStudyFile().setFileType( FileUtil.determineFileType(file) );
+        this.getStudyFile().setSubsettable(this.getStudyFile().getFileType().equals("application/x-stata") || 
+                                        this.getStudyFile().getFileType().equals("application/x-spss-por") || 
+                                        this.getStudyFile().getFileType().equals("application/x-spss-sav") ||
+                                        this.getStudyFile().getFileType().equals("application/x-rlang-transport") );
+
+        // replace extension with ".tab" if subsettable
+        this.getStudyFile().setFileName(this.getStudyFile().isSubsettable() ? FileUtil.replaceExtension(this.getOriginalFileName()): this.getOriginalFileName());                
+
+        this.setTempSystemFileLocation( file.getAbsolutePath() );
+        this.getStudyFile().setFileSystemName(fileSystemName);    
+    }    
     
     private StudyFile studyFile;
     
@@ -113,7 +132,7 @@ public class StudyFileEditBean implements Serializable{
 
     public void addFileToCategory(Study s) {
         StudyFile file = this.getStudyFile();
-        String catName = this.getFileCategoryName();
+        String catName = this.getFileCategoryName() != null ? this.getFileCategoryName() : "";
         
         Iterator iter = s.getFileCategories().iterator();
         while (iter.hasNext()) {

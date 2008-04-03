@@ -38,6 +38,7 @@ import edu.harvard.hmdc.vdcnet.study.EditStudyService;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
+import edu.harvard.hmdc.vdcnet.study.StudyFileEditBean;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
@@ -62,6 +63,7 @@ import javax.faces.model.SelectItem;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -329,14 +331,14 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         return "harvest".equals(selectedPanel);
     }
     
-    String harvestDVId;
+    Long harvestDVId;
     String harvestIdentifier;
 
-    public String getHarvestDVId() {
+    public Long getHarvestDVId() {
         return harvestDVId;
     }
 
-    public void setHarvestDVId(String harvestDVId) {
+    public void setHarvestDVId(Long harvestDVId) {
         this.harvestDVId = harvestDVId;
     }
 
@@ -348,8 +350,8 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         this.harvestIdentifier = harvestIdentifier;
     }
     
-    public List getHarvestDVs() {
-        List harvestDVSelectItems = new ArrayList();
+    public List<SelectItem> getHarvestDVs() {
+        List harvestDVSelectItems = new ArrayList<SelectItem>();
         Iterator iter = harvestingDataverseService.findAll().iterator();
         while (iter.hasNext()) {
             HarvestingDataverse hd = (HarvestingDataverse) iter.next();
@@ -363,7 +365,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         String link = null;
         HarvestingDataverse hd = null;
         try {
-            hd = harvestingDataverseService.find( new Long(harvestDVId) );
+            hd = harvestingDataverseService.find( harvestDVId );
             Long studyId = harvesterService.getRecord(hd, harvestIdentifier, hd.getHarvestFormatType().getMetadataPrefix());
             
             if (studyId != null) {
@@ -372,7 +374,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                 // create link String
                 HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
                 link = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
-                        + "/faces/study/StudyPage.jsp?studyId=" + studyId;
+                        + "/dv/" + hd.getVdc().getAlias() + "/faces/study/StudyPage.jsp?studyId=" + studyId;
             }
                        
             addMessage( "harvestMessage", "Harvest succeeded" + (link == null ? "." : ": " + link ) );
@@ -446,27 +448,56 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     public boolean isImportPanelRendered() {
         return "import".equals(selectedPanel);
     } 
- 
-    private UploadedFile browserFile;
-    private int xmlFileFormat;
-    private boolean registerHandle;
-    private boolean generateHandle;
-    private boolean allowUpdates;
-    private boolean checkRestrictions;
-    private boolean copyFiles;
     
-    public List getVdcRadioItems() {
-        List vdcRadioItems = new ArrayList();
+    private Long importDVId;
+    private Long importFileFormat;
+    private String importBatchDir;
+    private UploadedFile importFile;
+
+    public Long getImportDVId() {
+        return importDVId;
+    }
+
+    public void setImportDVId(Long importDVId) {
+        this.importDVId = importDVId;
+    }
+
+    public Long getImportFileFormat() {
+        return importFileFormat;
+    }
+
+    public void setImportFileFormat(Long importFileFormat) {
+        this.importFileFormat = importFileFormat;
+    }
+
+    public String getImportBatchDir() {
+        return importBatchDir;
+    }
+
+    public void setImportBatchDir(String importBatchDir) {
+        this.importBatchDir = importBatchDir;
+    }
+    
+    public UploadedFile getImportFile() {
+        return importFile;
+    }
+
+    public void setImportFile(UploadedFile importFile) {
+        this.importFile = importFile;
+    }    
+    
+     public List<SelectItem> getImportDVs() {
+        List importDVsSelectItems = new ArrayList<SelectItem>();
         Iterator iter = vdcService.findAll().iterator();
         while (iter.hasNext()) {
             VDC vdc = (VDC) iter.next();
-            vdcRadioItems.add( new SelectItem(vdc.getId(), vdc.getName()) );
+            importDVsSelectItems.add( new SelectItem(vdc.getId(), vdc.getName()) );
             
         }
-        return vdcRadioItems;
-    }
-    
-    public List<SelectItem> getXmlFileFormatRadioItems() {
+        return importDVsSelectItems;        
+    } 
+     
+    public List<SelectItem> getImportFileFormatTypes() {
         List<SelectItem> metadataFormatsSelect = new ArrayList<SelectItem>();
                 
         for (HarvestFormatType hft : harvesterService.findAllHarvestFormatTypes() ) {
@@ -474,66 +505,100 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         }
 
         return metadataFormatsSelect;
-    }    
-    
-    public UploadedFile getBrowserFile() {
-        return browserFile;
-    }
-    
-    public void setBrowserFile(UploadedFile browserFile) {
-        this.browserFile = browserFile;
-    }
-    
-    public Long getVdcId() {
-        return vdcId;
-    }
-    
-    public void setVdcId(Long vdcId) {
-        this.vdcId = vdcId;
-    }
-    
-    public int getXmlFileFormat() {
-        return xmlFileFormat;
-    }
+    }      
+     
+    public String importBatch_action() {       
+        try {
+            int studyCount = 0;
+            String sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
+            
+            File batchDir = new File(importBatchDir);
+            if (batchDir.exists() && batchDir.isDirectory()) {
+                for (int i=0; i < batchDir.listFiles().length; i++ ) {
+                    File studyDir = batchDir.listFiles()[i];
+                    if (studyDir.isDirectory()) { // one directory per study
+                        
+                        File xmlFile = null;
+                        List<StudyFileEditBean> filesToUpload = new ArrayList<StudyFileEditBean>();
+                        
+                        for (int j=0; j < studyDir.listFiles().length; j++ ) {
+                            File file = studyDir.listFiles()[j];
+                            if ( "study.xml".equals(file.getName()) ) {
+                                xmlFile = file;
+                            } else {
+                                File tempFile = FileUtil.createTempFile( sessionId, file.getName() );                               
+                                FileUtil.copyFile(file, tempFile);
+                                StudyFileEditBean fileBean = new StudyFileEditBean( tempFile, studyService.generateFileSystemNameSequence() );                                
+                                filesToUpload.add(fileBean);
+                            }
+                        }
+                        
+                        if (xmlFile != null) {
+                            try {
+                                Study study = studyService.importStudy( xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId(), 
+                                    registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles, null);
+                                studyService.addFiles(study, filesToUpload, getVDCSessionBean().getLoginBean().getUser() );
+                                studyService.updateStudy(study);
+                                indexService.updateStudy(study.getId());
+                                studyCount++;
+                            } catch (Exception e) {
+                                // handle error
+                            }
+                            
+                            
+                        } else { // no ddi.xml found in studyDir
+                            
+                        }
+                    }
+                }
+                
+                addMessage( "importMessage", "Batch Import request completed." );
+                addMessage( "importMessage", studyCount + (studyCount == 1 ? " study" : " studies") + " successfully imported." );
 
-    public void setXmlFileFormat(int xmlFileFormat) {
-        this.xmlFileFormat = xmlFileFormat;
-    }
-    
-    public String import_action() {
-        String resultMsg = null;
-        
-        LoginBean lb = getVDCSessionBean().getLoginBean();
-        if (lb == null) {
-            resultMsg = "You must be logged in to import a study.";
-        } else {
-            try {
-                File xmlFile = File.createTempFile("ddi", ".xml");
-                browserFile.write(xmlFile);
-                
-                Study study = studyService.importStudy(xmlFile, new Long(xmlFileFormat), vdcId, lb.getUser().getId(), registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles, null);
-                indexService.updateStudy(study.getId());
-                
-                // create result message
-                HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
-                String link = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
-                        + "/faces/study/StudyPage.jsp?studyId=" + study.getId();
-                
-                resultMsg = "Import succeeded: " + link;
-                
-            } catch (Exception ex) {
-                resultMsg = "Import failed: " + ex.getMessage() ;
-                ex.printStackTrace();
+            } else {
+                addMessage( "importMessage", "Batch Import failed: " + importBatchDir + " does not exist or is not a directory." );    
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "importMessage", "Batch Import failed: An unexpected error occurred during processing." );
+            addMessage( "importMessage", "Exception message: " + e.getMessage() );
         }
-        
-        FacesMessage message = new FacesMessage(resultMsg);
-        FacesContext context = FacesContext.getCurrentInstance();
-        context.addMessage(null, message);
+
+        return null;       
+    }    
+
+    public String importSingleFile_action() {
+        try {
+            File xmlFile = File.createTempFile("study", ".xml");
+            importFile.write(xmlFile);
+
+            Study study = studyService.importStudy(xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId(), 
+                    registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles, null);
+            indexService.updateStudy(study.getId());
+
+            // create result message
+            HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
+            String studyURL = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
+                    + "/dv/" + study.getOwner().getAlias() + "/faces/study/StudyPage.jsp?studyId=" + study.getId();
+
+            addMessage( "importMessage", "Import succeeded." );
+            addMessage( "importMessage", "Study URL: " + studyURL );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "harvestMessage", "Import failed: An unexpected error occurred trying to import this study." );
+            addMessage( "harvestMessage", "Exception message: " + e.getMessage() );            
+        }
 
         return null;
-    }
-
+    }    
+    
+    // TBD on the following flags...
+    private boolean registerHandle;
+    private boolean generateHandle;
+    private boolean allowUpdates;
+    private boolean checkRestrictions;
+    private boolean copyFiles;   
 
     public boolean isRegisterHandle() {
         return registerHandle;

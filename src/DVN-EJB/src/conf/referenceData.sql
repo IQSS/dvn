@@ -961,4 +961,4 @@ create index studyfile_filecategory_id_index on studyfile(filecategory_id);
 create index datavariable_datatable_id_index on datavariable(datatable_id);
 create index variablerange_datavariable_id_index on  variablerange (datavariable_id);
 
-insert into dvnversion( id, buildnumber,versionnumber) values (1,1,1);
+insert into dvnversion( id, buildnumber,versionnumber) values (1,2,1);

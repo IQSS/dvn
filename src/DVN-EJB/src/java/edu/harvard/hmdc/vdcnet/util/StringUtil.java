@@ -47,6 +47,18 @@ public final class StringUtil implements java.io.Serializable  {
         }        
     }
 
+    public static final boolean isAlphaNumeric(String str) {
+      final char[] chars = str.toCharArray();
+      for (int x = 0; x < chars.length; x++) {      
+        final char c = chars[x];
+        if ((c >= 'a') && (c <= 'z')) continue; // lowercase
+        if ((c >= 'A') && (c <= 'Z')) continue; // uppercase
+        if ((c >= '0') && (c <= '9')) continue; // numeric
+        return false;
+      }  
+      return true;
+}
+
     public static String truncateString(String originalString, int maxLength) {
         maxLength = Math.max( 0, maxLength);
         String finalString = originalString;
@@ -62,6 +74,7 @@ public final class StringUtil implements java.io.Serializable  {
                 finalString              = "<div>" + startParsedString + endParsedString + "<span class='dvn_threedots'>...</span></div>";
 
              } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println("An issue occurred truncating the following String: " + originalString);
             }
         } 

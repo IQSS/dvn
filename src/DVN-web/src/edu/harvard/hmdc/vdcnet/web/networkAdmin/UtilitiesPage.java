@@ -33,9 +33,6 @@ import com.sun.rave.web.ui.model.UploadedFile;
 import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
-import edu.harvard.hmdc.vdcnet.study.DataTable;
-import edu.harvard.hmdc.vdcnet.study.EditStudyService;
-import edu.harvard.hmdc.vdcnet.study.FileCategory;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyFileEditBean;
@@ -45,7 +42,6 @@ import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
-import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.io.File;
 import java.util.ArrayList;
@@ -60,8 +56,6 @@ import javax.ejb.EJBException;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -654,17 +648,17 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     
     private void addStudyMessages (String component, Map tokenizedLists) {
 
-            if ( ((List) tokenizedLists.get("idList")).size() > 0 ) {            
+            if ( tokenizedLists.get("idList") != null && !((List) tokenizedLists.get("idList")).isEmpty() ) {            
                 addMessage( component, "The following studies were successfully processed: " + tokenizedLists.get("idList") );
             }
-            if ( ((List) tokenizedLists.get("ignoredList")).size() > 0 ) {            
+            if ( tokenizedLists.get("ignoredList") != null && !((List) tokenizedLists.get("ignoredList")).isEmpty() ) {            
                 addMessage( component, "The following studies were ignored (" 
                         + ((String) tokenizedLists.get("ignoredReason")) + "): " + tokenizedLists.get("ignoredList") );
             }            
-            if ( ((List) tokenizedLists.get("invalidStudyIdList")).size() > 0 ) {
+            if ( tokenizedLists.get("invalidStudyIdList") != null && !((List) tokenizedLists.get("invalidStudyIdList")).isEmpty() ) {
                 addMessage( component, "The following study ids were invalid: " + tokenizedLists.get("invalidStudyIdList") ); 
             }
-            if ( ((List) tokenizedLists.get("failedTokenList")).size() > 0 ) {
+            if ( tokenizedLists.get("failedTokenList") != null && !((List) tokenizedLists.get("failedTokenList")).isEmpty() ) {
                 addMessage( component, "The following tokens could not be interpreted: " + tokenizedLists.get("failedTokenList") );
             }
     }

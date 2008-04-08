@@ -212,23 +212,6 @@
                             </ui:panelGroup>  
                             <hr/>
                             
-                            <h:outputText value="Flags:"/>
-                            <h:panelGrid columns="2"    style="padding: 30px 40px 40px 40px; ">                           
-                                <h:outputText value="Register Handle?" />
-                                <h:selectBooleanCheckbox  id="registerHandleCheckBox" value="#{UtilitiesPage.registerHandle}"/> 
-                                
-                                <h:outputText value="Generate Handle?" />
-                                <h:selectBooleanCheckbox  id="generateHandleCheckBox" value="#{UtilitiesPage.generateHandle}"/> 
-                                
-                                <h:outputText value="Allow Updates?" />
-                                <h:selectBooleanCheckbox  id="allowUpdatesCheckBox" value="#{UtilitiesPage.allowUpdates}"/> 
-                                
-                                <h:outputText value="Check Restrictions?" />
-                                <h:selectBooleanCheckbox  id="checkRestrictionsCheckBox" value="#{UtilitiesPage.checkRestrictions}"/> 
-                                
-                                <h:outputText value="Copy Files?" />
-                                <h:selectBooleanCheckbox  id="copyFilesCheckBox" value="#{UtilitiesPage.copyFiles}"/> 
-                            </h:panelGrid>
                         </h:panelGrid>
                         
                         

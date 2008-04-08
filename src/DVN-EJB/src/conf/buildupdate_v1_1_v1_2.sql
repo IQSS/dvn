@@ -6,3 +6,9 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'UtilitiesP
 INSERT INTO pagedef (name, path, role_id, networkrole_id ) VALUES  ( 'SubsettingPage', '/subsetting/SubsettingPage.jsp', null,null );
 
 update dvnversion set versionnumber=1, buildnumber=2;
+
+ALTER TABLE pagedef
+  ADD CONSTRAINT unq_pagedef_0 UNIQUE(path);
+
+ALTER TABLE pagedef
+  ADD CONSTRAINT unq_pagedef_1 UNIQUE(name);

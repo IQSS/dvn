@@ -39,6 +39,7 @@ import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
+import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.ReviewState;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
@@ -87,6 +88,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import org.apache.commons.lang.RandomStringUtils;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
@@ -1100,11 +1102,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             throw new EJBException("importHarvestStudy(...) should only be called for a harvesting dataverse.");
         }
 
-        boolean createNewHandle = (vdc.getHarvestingDataverse().getHandlePrefix() != null);
-        Long hftId = vdc.getHarvestingDataverse().getHarvestFormatType().getId();
-
-        //return doImportStudy(xmlFile, format, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
-        Study study = doImportStudy(xmlFile, hftId, vdcId, userId, createNewHandle, createNewHandle, true, false, false, harvestIdentifier);
+        Study study = doImportStudy(xmlFile, vdc.getHarvestingDataverse().getHarvestFormatType().getId(), vdcId, userId, harvestIdentifier, null);
 
         // new create exports files for these studies
         for (String exportFormat : studyExporterFactory.getExportFormats()) {
@@ -1114,160 +1112,24 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return study;
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Study importLegacyStudy(File xmlFile, Long vdcId, Long userId) {
-        VDC vdc = em.find(VDC.class, vdcId);
-        em.refresh(vdc); // workaround to get correct value for harvesting dataverse (to be investigated)
-
-        if (vdc.getHarvestingDataverse() != null) {
-            throw new EJBException("importLegacyStudy(...) should never be called for a harvesting dataverse.");
-        }
-
-        return doImportStudy(xmlFile, new Long(0), vdcId, userId, true, false, false, true, true, null);
-    }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Study importStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
-        return doImportStudy(xmlFile, harvestFormatTypeId, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
+    public Study importStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId) {
+        return doImportStudy(xmlFile, harvestFormatTypeId, vdcId, userId, null, null);
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public Study importStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, List<StudyFileEditBean> filesToUpload) {
+        return doImportStudy(xmlFile, harvestFormatTypeId, vdcId, userId, null, filesToUpload);
     }
 
-    private Study doImportStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
-        return doImportStudyStax(xmlFile, harvestFormatTypeId, vdcId, userId, registerHandle, generateHandle, allowUpdates, checkRestrictions, retrieveFiles, harvestIdentifier);
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public Study importStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, String harvestIdentifier, List<StudyFileEditBean> filesToUpload) {
+        return doImportStudy(xmlFile, harvestFormatTypeId, vdcId, userId, harvestIdentifier, filesToUpload);
     }
 
-    /*
-    private Study doImportStudyJAXB(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
-        logger.info("Begin doImportStudy");
-        VDCNetwork vdcNetwork = vdcNetworkService.find();
-        VDC vdc = em.find(VDC.class, vdcId);
 
-        File ddiFile = xmlFile;
-        boolean fileTransformed = false;
-
-        HarvestFormatType hft = em.find(HarvestFormatType.class, harvestFormatTypeId);
-        if (hft.getStylesheetFileName() != null) {
-            ddiFile = transformToDDI(xmlFile, hft.getStylesheetFileName());
-            fileTransformed = true;
-        }
-
-        CodeBook _cb = generateCodeBook(ddiFile);
-        String id = null;
-        String globalId = null;
-
-        if (generateHandle) {
-            globalId = ddiService.determineId(_cb, DDI20ServiceBean.AGENCY_HANDLE);
-            if (globalId != null) {
-                throw new EJBException("DDI should not specify a handle, but does.");
-            }
-
-            id = ddiService.determineId(_cb, null);
-            if (id != null) {
-                // first replace any slashes and/or spaces
-                id = id.replace('/', '-').replace(' ', '_');
-                if (vdc.getHarvestingDataverse() != null) {
-                    if (vdc.getHarvestingDataverse().getHandlePrefix() != null) {
-                        globalId = "hdl:" + vdc.getHarvestingDataverse().getHandlePrefix().getPrefix() + "/" + id;
-                    } else {
-                        throw new EJBException("generateHandle cannot be true for a nonregistering harvesting dataverse.");
-                    }
-
-                } else {
-                    globalId = vdcNetwork.getProtocol() + ":" + vdcNetwork.getAuthority() + "/" + id;
-                }
-            } else {
-                throw new EJBException("No Other ID was found in DDI for generating a handle.");
-            }
-
-        } else {
-            globalId = ddiService.determineId(_cb, DDI20ServiceBean.AGENCY_HANDLE);
-            if (globalId == null) {
-                throw new EJBException("DDI should specify a handle, but does not.");
-            }
-        }
-
-
-        Study study = getStudyByGlobalId(globalId);
-
-        if (study == null) {
-            VDCUser creator = em.find(VDCUser.class, userId);
-            ReviewState reviewState = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
-            study = new Study(vdc, creator, reviewState);
-            em.persist(study);
-        } else {
-            if (harvestIdentifier != null && !study.isIsHarvested()) {
-                // This study actually belongs to the local DVN, so don't continue with harvest
-                throw new EJBException("This study originated in the local DVN - we don't need to harvest it.");
-            }
-            if (allowUpdates) {
-                registerHandle = false; // this is an update, study should already be registered
-                clearStudy(study);
-            } else {
-                throw new EJBException("Study already exists and this import was called with allowUpdates = false.");
-            }
-        }
-
-
-        // now we map
-        logger.info("calling mapDDI()");
-        ddiService.mapDDI(_cb, study);
-        logger.info("completed mapDDI, studyId = " + study.getStudyId());
-
-
-        //post mapping processing
-        if (harvestIdentifier != null) {
-            study.setIsHarvested(true);
-            study.setHarvestIdentifier(harvestIdentifier);
-        } else {
-            study.setHarvestHoldings(null); // clear the holdings field
-        }
-
-        if (generateHandle) {
-            if (vdc.getHarvestingDataverse() != null) {
-                study.setProtocol("hdl");
-                study.setAuthority(vdc.getHarvestingDataverse().getHandlePrefix().getPrefix());
-                study.setStudyId(id);
-            } else {
-                study.setProtocol(vdcNetwork.getProtocol());
-                study.setAuthority(vdcNetwork.getAuthority());
-                study.setStudyId(id);
-            }
-        } else if (!study.getGlobalId().equals(globalId)) {
-            // this should never happen
-            throw new EJBException("Mismatch between predetermined gloablId and study globalId.");
-        }
-
-
-        // If study comes from old VDC, set restrictions based on  restrictions in VDC repository
-        if (checkRestrictions) {
-            setImportedStudyRestrictions(study);
-        }
-
-        if (retrieveFiles) {
-            retrieveFiles(study);
-        }
-
-        copyXMLFile(study, ddiFile, "original_imported_study.xml");
-
-        if (fileTransformed) {
-            copyXMLFile(study, xmlFile, "original_imported_study_pretransform.xml");
-        }
-
-        // new create exports files for these studies
-        for (String exportFormat : studyExporterFactory.getExportFormats()) {
-            studyService.exportStudyToFormat(study, exportFormat);
-        }
-
-        saveStudy(study, userId);
-
-        if (registerHandle && vdcNetworkService.find().isHandleRegistration()) {
-            String handle = study.getAuthority() + "/" + study.getStudyId();
-            gnrsService.createHandle(handle);
-        }
-
-        logger.info("completed doImportStudy() returning study" + study.getGlobalId());
-        return study;
-    }
-    */
 
     private File transformToDDI(File xmlFile, String xslFileName) {
         File ddiFile = null;
@@ -1312,86 +1174,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     }
     
-    /*
-    private CodeBook generateCodeBook(Object obj) {
-        CodeBook _cb = null;
-
-        if (obj instanceof CodeBook) {
-            _cb = (CodeBook) obj;
-        } else if (obj instanceof Node || obj instanceof File) {
-            // first unmarshall the XML
-
-            try {
-                if (obj instanceof Node) {
-                    _cb = (CodeBook) DDIUnmarshaller.unmarshal((Node) obj);
-                } else {
-                    logger.info("begin unmarshal of file " + ((File) obj).getName());
-                    Object unmarshalObj = DDIUnmarshaller.unmarshal((File) obj);
-                    _cb = (CodeBook) unmarshalObj;
-
-                }
-                logger.info("Completed unmarshal");
-            } catch (JAXBException ex) {
-                EJBException e = new EJBException("Import Study failed: " + ex.getMessage());
-                e.initCause(ex);
-                throw e;
-            }
-        } else {
-            throw new EJBException("Invalid type for parameter obj: " + obj.getClass().getName() + ". obj must instance CodeBook, Node, or File.");
-        }
-
-        return _cb;
-    }
-    */
-
-    private void setImportedStudyRestrictions(Study study) {
-        RepositoryWrapper repositoryWrapper = new RepositoryWrapper();
-        try {
-            String studyObjectHandle = study.getProtocol() + ":" + study.getAuthority() + "/" + study.getStudyId();
-            if (repositoryWrapper.isObjectRestricted(studyObjectHandle)) {
-                study.setRestricted(true);
-            }
-            for (Iterator it = study.getFileCategories().iterator(); it.hasNext();) {
-                FileCategory cat = (FileCategory) it.next();
-                for (Iterator it2 = cat.getStudyFiles().iterator(); it2.hasNext();) {
-                    StudyFile studyFile = (StudyFile) it2.next();
-                    String fileSystemName = determineLegacyFile(studyFile).getName();
-                    if (repositoryWrapper.isObjectRestricted(studyObjectHandle + "/" + fileSystemName)) {
-                        studyFile.setRestricted(true);
-                    }
-                }
-
-            }
-        } catch (IOException e) {
-            EJBException ex = new EJBException("Exception setting restrictions for study " + study.getGlobalId());
-            ex.initCause(e);
-            throw ex;
-
-
-        } catch (SAXException e) {
-            EJBException ex = new EJBException("Exception setting restrictions for study " + study.getGlobalId());
-            ex.initCause(e);
-            throw ex;
-
-        }
-
-
-    }
-
-    private File determineLegacyFile(StudyFile file) {
-
-        String legacyFileDir = FileUtil.getLegacyFileDir();
-
-        int startIndex = file.getFileSystemLocation().indexOf("/hdl:") + 5;
-        String parsedFileLocation = file.getFileSystemLocation().substring(startIndex);
-
-        // this line is just for when testing on a windows machine!
-        parsedFileLocation = parsedFileLocation.replace('/', File.separatorChar);
-
-        File legacyFile = new File(legacyFileDir, parsedFileLocation);
-
-        return legacyFile;
-    }
 
     private void copyXMLFile(Study study, File xmlFile, String xmlFileName) {
         try {
@@ -1414,39 +1196,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
     }
 
-    private void retrieveFiles(Study study) {
-        try {
-
-            // create, if needed, the directory
-            File newDir = FileUtil.getStudyFileDir(study);
-            if (!newDir.exists()) {
-                newDir.mkdirs();
-            }
-
-            Iterator iter = study.getStudyFiles().iterator();
-            while (iter.hasNext()) {
-                StudyFile file = (StudyFile) iter.next();
-                File inputFile = determineLegacyFile(file);
-                file.setFileSystemName(inputFile.getName());
-                File outputFile = new File(newDir, file.getFileSystemName());
-                FileUtil.copyFile(inputFile, outputFile);
-                file.setFileSystemLocation(outputFile.getAbsolutePath());
-                if (file.isSubsettable()) {
-                    file.setFileType("text/tab-separated-values");
-                } else {
-                // we need to incorprate something like JHOVE to determine otherMat filetypes
-                }
-            }
-
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            EJBException e = new EJBException("RetrieveFiles failed: " + ex.getMessage());
-            e.initCause(ex);
-            throw e;
-        }
-    }
-
+   
     private void clearStudy(Study study) {
         // should this be done with bulk deletes??
         // Yes!!!
@@ -1890,13 +1640,19 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         logger.severe(fullMessage);
     }
     
-    
-    private Study doImportStudyStax(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier) {
-        logger.info("Begin doImportStudyStax");
-       
-        VDCNetwork vdcNetwork = vdcNetworkService.find();
+   
+    private Study doImportStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, String harvestIdentifier, List<StudyFileEditBean> filesToUpload) {
+        logger.info("Begin doImportStudy");
+        
+        Study study = null;
         VDC vdc = em.find(VDC.class, vdcId);
+        VDCUser creator = em.find(VDCUser.class, userId);        
+        
+        boolean isHarvest = (harvestIdentifier != null);
+        boolean registerHandle = true;
+        
 
+        // Step 1: determine format and transform if necessary
         File ddiFile = xmlFile;
         boolean fileTransformed = false;
 
@@ -1905,70 +1661,36 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             ddiFile = transformToDDI(xmlFile, hft.getStylesheetFileName());
             fileTransformed = true;
         }
-
-        // determine IDs
-        Map idMap = ddiService.determineId(ddiFile);
-        String globalId = (String) idMap.get("globalId");
-        String alternateId = (String) idMap.get("otherId");
-        alternateId = alternateId != null ? alternateId : harvestIdentifier;
-
-        if (generateHandle) {
-            if (globalId != null) {
-                throw new EJBException("DDI should not specify a handle, but does.");
-            }
-            if (alternateId != null) {
-                // first replace any slashes and/or spaces
-                alternateId = alternateId.replace('/', '-').replace(' ', '_').replace(':', '-');
-                if (vdc.getHarvestingDataverse() != null) {
-                    if (vdc.getHarvestingDataverse().getHandlePrefix() != null) {
-                        globalId = "hdl:" + vdc.getHarvestingDataverse().getHandlePrefix().getPrefix() + "/" + alternateId;
-                    } else {
-                        throw new EJBException("generateHandle cannot be true for a nonregistering harvesting dataverse.");
-                    }
-
-                } else {
-                    globalId = vdcNetwork.getProtocol() + ":" + vdcNetwork.getAuthority() + "/" + alternateId;
-                }
-            } else {
-                throw new EJBException("No Other ID (from DDI) or harveatIdentifier was available for generating a handle.");
-            }
-
-        } else {
-            if (globalId == null) {
-                throw new EJBException("DDI should specify a handle, but does not.");
-            }
-        }
-
         
-        Study study = getStudyByGlobalId(globalId);
 
+        // Step 2a: if harvested, check if exists
+        if (isHarvest) {
+            study = studyService.getStudyByHarvestInfo(vdc, harvestIdentifier);
+            if (study != null) {
+                if (!study.isIsHarvested()) {
+                    // This study actually belongs to the local DVN, so don't continue with harvest
+                    throw new EJBException("This study originated in the local DVN - we don't need to harvest it.");
+                }
+                
+                registerHandle = false; // this is an update, study should already be registered
+                clearStudy(study);           
+            }
+        } 
+        
+        // Step 2b: initialize new Study
         if (study == null) {
-            VDCUser creator = em.find(VDCUser.class, userId);
             ReviewState reviewState = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
             study = new Study(vdc, creator, reviewState);
             em.persist(study);
-        } else {
-            if (harvestIdentifier != null && !study.isIsHarvested()) {
-                // This study actually belongs to the local DVN, so don't continue with harvest
-                throw new EJBException("This study originated in the local DVN - we don't need to harvest it.");
-            }
-            if (allowUpdates) {
-                registerHandle = false; // this is an update, study should already be registered
-                clearStudy(study);
-            } else {
-                throw new EJBException("Study already exists and this import was called with allowUpdates = false.");
-            }
         }
 
 
-        // now we map
-        logger.info("calling mapDDI()");
+        // Step 3: map the ddi
         ddiService.mapDDI(ddiFile, study);
-        logger.info("completed mapDDI, studyId = " + study.getStudyId());
+     
 
-
-        //post mapping processing
-        if (harvestIdentifier != null) {
+        //Step 4: post mapping processing
+        if (isHarvest) {
             study.setIsHarvested(true);
             study.setHarvestIdentifier(harvestIdentifier);
         } else {
@@ -1977,42 +1699,25 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             study.setHarvestDVTermsOfUse(null);
             study.setHarvestDVNTermsOfUse(null);
         }
+        setDisplayOrders(study);
+        registerHandle = determineId(study, vdc) && registerHandle;
 
         
-        if (generateHandle) {
-            if (vdc.getHarvestingDataverse() != null) {
-                study.setProtocol("hdl");
-                study.setAuthority(vdc.getHarvestingDataverse().getHandlePrefix().getPrefix());
-                study.setStudyId(alternateId);
-            } else {
-                study.setProtocol(vdcNetwork.getProtocol());
-                study.setAuthority(vdcNetwork.getAuthority());
-                study.setStudyId(alternateId);
-            }
-        } else if (!study.getGlobalId().equals(globalId)) {
-            // this should never happen
-            throw new EJBException("Mismatch between predetermined gloablId and study globalId.");
-        }
-        
-
-        // If study comes from old VDC, set restrictions based on  restrictions in VDC repository
-        if (checkRestrictions) {
-            setImportedStudyRestrictions(study);
+        // step 5: upload files
+        if (filesToUpload != null) {
+            addFiles(study, filesToUpload, creator );    
         }
 
-        if (retrieveFiles) {
-            retrieveFiles(study);
-        }
 
+        // step 6: store the original study files
         copyXMLFile(study, ddiFile, "original_imported_study.xml");
 
         if (fileTransformed) {
             copyXMLFile(study, xmlFile, "original_imported_study_pretransform.xml");
         }
-
-        // sets fields before save (e.g. last updatetime)
-        saveStudy(study, userId);        
         
+        
+        // step 7: register if necessary
         if (registerHandle && vdcNetworkService.find().isHandleRegistration()) {
             String handle = study.getAuthority() + "/" + study.getStudyId();
             gnrsService.createHandle(handle);
@@ -2021,5 +1726,70 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         logger.info("completed doImportStudyStax() returning study" + study.getGlobalId());
         return study;
     }
-    
+
+    private boolean determineId(Study study, VDC vdc) {
+        VDCNetwork vdcNetwork = vdcNetworkService.find();
+        String protocol = vdcNetwork.getProtocol();
+        String authority = vdcNetwork.getAuthority();
+        String globalId = null;
+
+        if ( !StringUtil.isEmpty( study.getStudyId() ) ) {
+            globalId = study.getGlobalId(); 
+        }        
+        
+        
+        if (vdc.getHarvestingDataverse() != null) { 
+            if (vdc.getHarvestingDataverse().getHandlePrefix() != null) {
+                if (globalId != null) {
+                    throw new EJBException("DDI should not specify a handle, but does.");
+                }      
+                
+                authority = vdc.getHarvestingDataverse().getHandlePrefix().getPrefix();
+                boolean generateRandom = vdc.getHarvestingDataverse().isGenerateRandomIds();
+                generateHandle(study, protocol, authority, generateRandom);
+                return true;
+                
+            } else {
+                if (globalId == null) {
+                    throw new EJBException("DDI should specify a handle, but does not.");                
+                }
             }
+            
+        } else { // imported study
+            if (globalId == null) {
+                generateHandle(study, protocol, authority, true);
+                return true;
+            }            
+        }
+
+        return false;
+    }
+    
+    
+    private void generateHandle(Study study, String protocol, String authority, boolean generateRandom) {
+        String studyId = null;
+        
+        if (generateRandom) {
+            do {
+                studyId = RandomStringUtils.randomAlphanumeric(8);
+            } while (!isUniqueStudyId(studyId, protocol, authority));            
+
+            
+        } else {
+            if ( study.getStudyOtherIds().size() > 0 ) {
+                studyId = study.getStudyOtherIds().get(0).getOtherId(); 
+                if ( !StringUtil.isAlphaNumeric(studyId) ) {
+                    throw new EJBException("The Other ID (from DDI) was invalid (not alphanumeric).");
+                }                
+            } else {
+                throw new EJBException("No Other ID (from DDI) was available for generating a handle.");    
+            }         
+        }
+
+        study.setProtocol( protocol );
+        study.setAuthority( authority );        
+        study.setStudyId( studyId );
+        
+    }
+    
+}

@@ -191,7 +191,10 @@ public class VDCImportServlet extends HttpServlet {
         logger.info("Importing study "+ddiFilePath+"\n");
         Long studyId = null;
         try {
-            studyId = studyService.importLegacyStudy(studyFile,vdcId,userId).getId();
+            // PLEASE NOTE: this servlet no longer coies files from legacy system; that logic no longer
+            // exists (more than likely we should just removwe this servlet)
+            //studyId = studyService.importLegacyStudy(studyFile,vdcId,userId).getId();
+            studyId = studyService.importStudy(studyFile, new Long(0), vdcId, userId).getId();
             logger.info("Successfully imported study "+ddiFilePath+"\n");
             
         } catch(Exception e) {

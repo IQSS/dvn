@@ -57,14 +57,18 @@ read.table141vdc<-function (file, header = FALSE, sep = "\t", quote = "", dec = 
                     #cat("before-d=",i, "\n")
                     data[[i]]<-as.Date(data[[i]])
                     #cat("after-d=",i, "\n")
+                    colClassesx[i]<-1
                 } else if (varFormat[col.names[i]] == 'T'){
                     #cat("before-t=",i,"\n")
                     data[[i]]<-as.POSIXct(strptime(data[[i]], "%T"))
                     #cat("after-t=", i,"\n")
+                    colClassesx[i]<-1
                 } else if (varFormat[col.names[i]] == 'DT'){
                     data[[i]]<-as.POSIXct(strptime(data[[i]], "%F %T"))
+                    colClassesx[i]<-1
                 } else if (varFormat[col.names[i]] == 'JT'){
                     data[[i]]<-as.POSIXct(strptime(data[[i]], "%j %T"))
+                    colClassesx[i]<-1
                 }
              }
         } else {

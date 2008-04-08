@@ -114,8 +114,15 @@ public class Study implements java.io.Serializable {
             this.setTemplate( vdc.getDefaultTemplate() );
             vdc.getOwnedStudies().add(this);
         }
+
+        Date createDate = new Date();
+
         this.setCreator(creator);
-        this.setCreateTime( new Date() );
+        this.setCreateTime(createDate);
+
+        this.setLastUpdater(creator);
+        this.setLastUpdateTime(createDate);
+
         this.setReviewState( reviewState );
         
         // Add Study to root collection of it's VDC owner. 

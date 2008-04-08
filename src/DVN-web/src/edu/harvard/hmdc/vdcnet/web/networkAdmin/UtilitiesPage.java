@@ -482,7 +482,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     
      public List<SelectItem> getImportDVs() {
         List importDVsSelectItems = new ArrayList<SelectItem>();
-        Iterator iter = vdcService.findAll().iterator();
+        Iterator iter = vdcService.findAllNonHarvesting().iterator();
         while (iter.hasNext()) {
             VDC vdc = (VDC) iter.next();
             importDVsSelectItems.add( new SelectItem(vdc.getId(), vdc.getName()) );
@@ -529,10 +529,9 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                         
                         if (xmlFile != null) {
                             try {
-                                Study study = studyService.importStudy( xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId(), 
-                                    registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles, null);
-                                studyService.addFiles(study, filesToUpload, getVDCSessionBean().getLoginBean().getUser() );
-                                studyService.updateStudy(study);
+                                Study study = studyService.importStudy( 
+                                        xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId(), filesToUpload);
+
                                 indexService.updateStudy(study.getId());
                                 studyCount++;
                             } catch (Exception e) {
@@ -566,8 +565,8 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
             File xmlFile = File.createTempFile("study", ".xml");
             importFile.write(xmlFile);
 
-            Study study = studyService.importStudy(xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId(), 
-                    registerHandle, generateHandle, allowUpdates, checkRestrictions, copyFiles, null);
+            Study study = studyService.importStudy(
+                    xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId());
             indexService.updateStudy(study.getId());
 
             // create result message
@@ -585,54 +584,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         }
 
         return null;
-    }    
-    
-    // TBD on the following flags...
-    private boolean registerHandle;
-    private boolean generateHandle;
-    private boolean allowUpdates;
-    private boolean checkRestrictions;
-    private boolean copyFiles;   
-
-    public boolean isRegisterHandle() {
-        return registerHandle;
-    }
-
-    public void setRegisterHandle(boolean registerHandle) {
-        this.registerHandle = registerHandle;
-    }
-
-    public boolean isGenerateHandle() {
-        return generateHandle;
-    }
-
-    public void setGenerateHandle(boolean generateHandle) {
-        this.generateHandle = generateHandle;
-    }
-
-    public boolean isAllowUpdates() {
-        return allowUpdates;
-    }
-
-    public void setAllowUpdates(boolean allowUpdates) {
-        this.allowUpdates = allowUpdates;
-    }
-
-    public boolean isCheckRestrictions() {
-        return this.checkRestrictions;
-    }
-
-    public void setCheckRestrictions(boolean checkRestrictions) {
-        this.checkRestrictions = checkRestrictions;
-    }
-    
-    public boolean isCopyFiles() {
-        return copyFiles;
-    }
-    
-    public void setCopyFiles(boolean copyFiles) {
-        this.copyFiles = copyFiles;
-    }    
+    }          
 // </editor-fold>
 
     

@@ -106,9 +106,10 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     edu.harvard.hmdc.vdcnet.study.Study saveStudy(Study study, Long userId);
 
-    edu.harvard.hmdc.vdcnet.study.Study importLegacyStudy(File xmlFile, Long vdcId, Long userId);
     edu.harvard.hmdc.vdcnet.study.Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier);
-    edu.harvard.hmdc.vdcnet.study.Study importStudy(File xmlFile,  Long harvestFormatTypeId, Long vdcId, Long userId, boolean registerHandle, boolean generateHandle, boolean allowUpdates, boolean checkRestrictions, boolean retrieveFiles, String harvestIdentifier);
+    edu.harvard.hmdc.vdcnet.study.Study importStudy(File xmlFile,  Long harvestFormatTypeId, Long vdcId, Long userId);
+    edu.harvard.hmdc.vdcnet.study.Study importStudy(File xmlFile,  Long harvestFormatTypeId, Long vdcId, Long userId, List<StudyFileEditBean> filesToUpload);
+    edu.harvard.hmdc.vdcnet.study.Study importStudy(File xmlFile,  Long harvestFormatTypeId, Long vdcId, Long userId, String harvestIdentifier, List<StudyFileEditBean> filesToUpload);
 
     List getVisibleStudies(List studyIds, Long vdcId);
     List getViewableStudies(List<Long> studyIds, Long userId, Long ipUserGroupId);

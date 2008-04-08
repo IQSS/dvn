@@ -1665,7 +1665,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         // Step 2a: if harvested, check if exists
         if (isHarvest) {
-            study = studyService.getStudyByHarvestInfo(vdc, harvestIdentifier);
+            study = getStudyByHarvestInfo(vdc, harvestIdentifier);
             if (study != null) {
                 if (!study.isIsHarvested()) {
                     // This study actually belongs to the local DVN, so don't continue with harvest
@@ -1771,7 +1771,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         
         if (generateRandom) {
             do {
-                studyId = RandomStringUtils.randomAlphanumeric(8);
+                studyId = RandomStringUtils.randomAlphanumeric(5);
             } while (!isUniqueStudyId(studyId, protocol, authority));            
 
             

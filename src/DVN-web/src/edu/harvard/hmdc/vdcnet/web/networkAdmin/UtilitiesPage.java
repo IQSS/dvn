@@ -44,12 +44,16 @@ import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -503,14 +507,25 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
      
     public String importBatch_action() {       
         try {
-            int studyCount = 0;
+            int failedStudyCount = 0;
+            List<Long> successfuleStudyIds = new ArrayList<Long>();
             String sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
-            
+
             File batchDir = new File(importBatchDir);
             if (batchDir.exists() && batchDir.isDirectory()) {
+ 
+                // create Logger
+                String logTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
+                String dvAlias = vdcService.find(importDVId).getAlias();
+                Logger importLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.web.networkAdmin.UtilitiesPage." + dvAlias + "_" + logTimestamp);
+                importLogger.addHandler(new FileHandler( FileUtil.getImportFileDir() + File.separator + "batch_" + dvAlias + "_" + logTimestamp + ".log" ) );                
+                
+                importLogger.log(Level.INFO, "BEGIN BATCH IMPORT (dvId = " + importDVId + ") from directory: " + importBatchDir);
+                
                 for (int i=0; i < batchDir.listFiles().length; i++ ) {
                     File studyDir = batchDir.listFiles()[i];
                     if (studyDir.isDirectory()) { // one directory per study
+                        importLogger.log(Level.INFO, "Found study directory: " + studyDir.getName());
                         
                         File xmlFile = null;
                         List<StudyFileEditBean> filesToUpload = new ArrayList<StudyFileEditBean>();
@@ -519,6 +534,8 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                             File file = studyDir.listFiles()[j];
                             if ( "study.xml".equals(file.getName()) ) {
                                 xmlFile = file;
+                            } else if ( file.getName()!= null && file.getName().startsWith(".")) {
+                                // ignore hidden files (ie files that start with "."
                             } else {
                                 File tempFile = FileUtil.createTempFile( sessionId, file.getName() );                               
                                 FileUtil.copyFile(file, tempFile);
@@ -527,26 +544,44 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                             }
                         }
                         
-                        if (xmlFile != null) {
+                        if (xmlFile != null) {    
+                            importLogger.log(Level.INFO, "Importing Study and uploading " + filesToUpload.size() + (filesToUpload.size() == 1 ? " file." : " files."));
+                            
                             try {
                                 Study study = studyService.importStudy( 
                                         xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId(), filesToUpload);
+                                successfuleStudyIds.add(study.getId());
+                                importLogger.log(Level.INFO, "Success (dir = " + studyDir.getName() + "): study id = " + study.getId());
 
-                                indexService.updateStudy(study.getId());
-                                studyCount++;
                             } catch (Exception e) {
-                                // handle error
+                                failedStudyCount++;
+                                importLogger.log(Level.SEVERE, "Failure (dir = " + studyDir.getName() + "): exception message = " + e.getMessage());
+                                logException (e, importLogger);
                             }
                             
                             
                         } else { // no ddi.xml found in studyDir
-                            
+                            importLogger.log(Level.SEVERE, "No study.xml file was found in study directory. Skipping... ");    
                         }
+                    } else {
+                        importLogger.log(Level.SEVERE, "Found non directory at top level. Skipping... (filename = " + studyDir.getName() +")");
                     }
                 }
                 
+                // generate status message
+                String statusMessage = successfuleStudyIds.size() + (successfuleStudyIds.size() == 1 ? " study" : " studies") + " successfully imported";
+                statusMessage += (failedStudyCount == 0 ? "." : "; " + failedStudyCount + (failedStudyCount == 1 ? " study" : " studies") + " failed.");                 
+                
+                importLogger.log(Level.INFO, "COMPLETED BATCH IMPORT: " + statusMessage );
+                
+                // now index all studies
+                importLogger.log(Level.INFO, "POST BATCH IMPORT, start calls to index.");
+                indexService.updateIndexList(successfuleStudyIds);
+                importLogger.log(Level.INFO, "POST BATCH IMPORT, calls to index finished.");
+
+                
                 addMessage( "importMessage", "Batch Import request completed." );
-                addMessage( "importMessage", studyCount + (studyCount == 1 ? " study" : " studies") + " successfully imported." );
+                addMessage( "importMessage", statusMessage );
 
             } else {
                 addMessage( "importMessage", "Batch Import failed: " + importBatchDir + " does not exist or is not a directory." );    
@@ -671,5 +706,26 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
 
         tokenizedLists.put("invalidStudyIdList", invalidStudyIdList);
         return tokenizedLists;
+    }
+    
+    // duplicate from harvester
+    private void logException(Throwable e, Logger logger) {
+
+        boolean cause = false;
+        String fullMessage = "";
+        do {
+            String message = e.getClass().getName() + " " + e.getMessage();
+            if (cause) {
+                message = "\nCaused By Exception.................... " + e.getClass().getName() + " " + e.getMessage();
+            }
+            StackTraceElement[] ste = e.getStackTrace();
+            message += "\nStackTrace: \n";
+            for (int m = 0; m < ste.length; m++) {
+                message += ste[m].toString() + "\n";
+            }
+            fullMessage += message;
+            cause = true;
+        } while ((e = e.getCause()) != null);
+        logger.severe(fullMessage);
     }
 }

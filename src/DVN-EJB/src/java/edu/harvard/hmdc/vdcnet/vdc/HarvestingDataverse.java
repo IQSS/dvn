@@ -466,4 +466,14 @@ public class HarvestingDataverse implements Serializable {
     public void setHarvestFormatType(HarvestFormatType harvestFormatType) {
         this.harvestFormatType = harvestFormatType;
     }
+    
+    private boolean generateRandomIds;
+
+    public boolean isGenerateRandomIds() {
+        return generateRandomIds;
+    }
+
+    public void setGenerateRandomIds(boolean generateRandomIds) {
+        this.generateRandomIds = generateRandomIds;
+    }
 }

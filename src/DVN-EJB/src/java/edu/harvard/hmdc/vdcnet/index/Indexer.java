@@ -134,7 +134,7 @@ public class Indexer implements java.io.Serializable  {
             ex.printStackTrace();
         }
     }
-    
+
     protected void setup() throws IOException {
         File indexDirectory = new File(indexDir);
         dir = FSDirectory.getDirectory(indexDir,!indexDirectory.exists());
@@ -992,4 +992,7 @@ public class Indexer implements java.io.Serializable  {
         return term;
     }
 
+    public String getIndexDir() {
+        return indexDir;
+    }
 }

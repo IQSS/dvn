@@ -94,9 +94,9 @@
                           <h:outputText id="listMessagePrefix" value="#{SearchPage.listMessagePrefix}" />
                           <h:outputText id="listMessageContent" styleClass="warnMessage" value="#{SearchPage.listMessageContent}" />
                           <h:outputText id="listMessageSuffix" value="#{SearchPage.listMessageSuffix}" />
-                      </div>
+                       </div>
                       
-                      <h:panelGrid cellpadding="0" cellspacing="0" columns="2" id="gridPanel2" width="98%"
+                      <h:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2" width="98%"
                                     styleClass="vdcSResultsTop" rendered="#{SearchPage.renderSort or SearchPage.renderScroller}">
                           <ui:panelGroup id="groupPanel5" rendered="#{SearchPage.renderSort}">
                               <h:selectOneMenu id="dropdown2" valueChangeListener="#{SearchPage.sort_action}" onchange="submit();">
@@ -126,8 +126,8 @@
                                   <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}&amp;studyListingIndex=#{SearchPage.studyListingIndex}"  id="hyperlink3">
                                       <h:outputText id="hyperlink3Text" value="#{studyUI.study.title}" />
                                   </h:outputLink>
+                                  <h:outputText styleClass="dvn_SResultsGlobalId" value=" (#{studyUI.study.globalId})" /><br/>
                                   <h:outputText id="outputText13" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}" />
-                                  <h:outputText styleClass="dvn_SResultsGlobalId" value=" (#{studyUI.study.globalId})" />
                               </ui:panelGroup> 
                               <ui:panelGroup block="true" id="groupPanel1b">
                                   <h:graphicImage alt="This study contains no files." rendered="#{!studyUI.files}"
@@ -203,6 +203,24 @@
                           
                           </h:column>
                       </h:dataTable>
+                      
+                      <h:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22" width="98%"
+                                    styleClass="vdcSResultsTop" rendered="#{SearchPage.renderSort or SearchPage.renderScroller}">
+                          <ui:panelGroup id="groupPanel55" rendered="#{SearchPage.renderSort}">
+                              
+                          </ui:panelGroup>
+                          
+                          <ui:panelGroup block="true" id="groupPanel44" rendered="#{SearchPage.renderScroller}">
+                              <t:scroller binding="#{SearchPage.scroller2}" for="dataTable1" actionListener="#{SearchPage.scroll_action}">
+                                  <f:facet name="previous">
+                                      <h:graphicImage id="scrollBack2" value="/resources/arrow-left.gif" styleClass="vdcNoBorders" />
+                                  </f:facet>
+                                  <f:facet name="next">
+                                      <h:graphicImage id="scrollNext2" value="/resources/arrow-right.gif" styleClass="vdcNoBorders" />
+                                  </f:facet>                                            
+                              </t:scroller>
+                          </ui:panelGroup>
+                      </h:panelGrid>
                       
                   </div>
               </div>   

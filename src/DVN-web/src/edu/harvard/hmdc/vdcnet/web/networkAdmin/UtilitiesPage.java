@@ -507,8 +507,9 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
      
     public String importBatch_action() {       
         try {
-            int failedStudyCount = 0;
-            List<Long> successfuleStudyIds = new ArrayList<Long>();
+            int importFailureCount = 0;
+            int fileFailureCount = 0;
+            List<Long> studiesToIndex = new ArrayList<Long>();
             String sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
 
             File batchDir = new File(importBatchDir);
@@ -546,21 +547,27 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                         
                         if (xmlFile != null) {                                
                             try {
-                                importLogger.log(Level.INFO, "Found study.xml and " + filesToUpload.size() + (filesToUpload.size() == 1 ? " file." : " files."));
+                                importLogger.log(Level.INFO, "Found study.xml and " + filesToUpload.size() + " other " + (filesToUpload.size() == 1 ? "file." : "files."));
                                 
                                 Study study = studyService.importStudy( 
                                         xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId());
-                                importLogger.log(Level.INFO, "Import of study.xml successful: study id = " + study.getId());
+                                importLogger.log(Level.INFO, "Import of study.xml succeeded: study id = " + study.getId());
+                                studiesToIndex.add(study.getId());
                                 
-                                studyService.addFiles( study, filesToUpload, getVDCSessionBean().getLoginBean().getUser() );
-                                importLogger.log(Level.INFO, "Upload request of files successful.");
-                                
-                                successfuleStudyIds.add(study.getId());
-                                importLogger.log(Level.INFO, "Success (dir = " + studyDir.getName() + ")");
-
+                                if ( !filesToUpload.isEmpty() ) {
+                                    try {
+                                        studyService.addFiles( study, filesToUpload, getVDCSessionBean().getLoginBean().getUser() );
+                                        importLogger.log(Level.INFO, "File upload succeeded.");
+                                    } catch (Exception e) {
+                                        fileFailureCount++;
+                                        importLogger.log(Level.SEVERE, "File Upload failed (dir = " + studyDir.getName() + "): exception message = " + e.getMessage());
+                                        logException (e, importLogger);
+                                    }
+                                }
+  
                             } catch (Exception e) {
-                                failedStudyCount++;
-                                importLogger.log(Level.SEVERE, "Failure (dir = " + studyDir.getName() + "): exception message = " + e.getMessage());
+                                importFailureCount++;
+                                importLogger.log(Level.SEVERE, "Import failed (dir = " + studyDir.getName() + "): exception message = " + e.getMessage());
                                 logException (e, importLogger);
                             }
                             
@@ -574,14 +581,15 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                 }
                 
                 // generate status message
-                String statusMessage = successfuleStudyIds.size() + (successfuleStudyIds.size() == 1 ? " study" : " studies") + " successfully imported";
-                statusMessage += (failedStudyCount == 0 ? "." : "; " + failedStudyCount + (failedStudyCount == 1 ? " study" : " studies") + " failed.");                 
+                String statusMessage = studiesToIndex.size() + (studiesToIndex.size() == 1 ? " study" : " studies") + " successfully imported";
+                statusMessage += (fileFailureCount == 0 ? "" : " (" + fileFailureCount + " of which failed file upload)");
+                statusMessage += (importFailureCount == 0 ? "." : "; " + importFailureCount + (importFailureCount == 1 ? " study" : " studies") + " failed import.");                 
                 
                 importLogger.log(Level.INFO, "COMPLETED BATCH IMPORT: " + statusMessage );
                 
                 // now index all studies
                 importLogger.log(Level.INFO, "POST BATCH IMPORT, start calls to index.");
-                indexService.updateIndexList(successfuleStudyIds);
+                indexService.updateIndexList(studiesToIndex);
                 importLogger.log(Level.INFO, "POST BATCH IMPORT, calls to index finished.");
 
                 

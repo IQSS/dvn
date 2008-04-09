@@ -12,3 +12,8 @@ ALTER TABLE pagedef
 
 ALTER TABLE pagedef
   ADD CONSTRAINT unq_pagedef_1 UNIQUE(name);
+
+ALTER TABLE harvestingdataverse ADD COLUMN generaterandomids bool;
+ALTER TABLE harvestingdataverse ALTER COLUMN generaterandomids SET STORAGE PLAIN;
+
+UPDATE harvestingdataverse SET generaterandomids = false;

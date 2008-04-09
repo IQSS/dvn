@@ -88,6 +88,7 @@ public class SearchPage extends VDCBaseBean  implements java.io.Serializable {
     private Tree collectionTree;
     private UIData studyTable;
     private ScrollerComponent scroller;
+    private ScrollerComponent scroller2;
     private String searchField;
     private String searchValue;
     private Integer searchFilter;
@@ -290,15 +291,24 @@ public class SearchPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     public void scroll_action(ActionEvent event) {
-        int currentRow = 1;
+        int row = 1;
         
         UIComponent component=event.getComponent();
-        Integer currRow = (Integer) component.getAttributes().get("currentRow");
-        if (currRow != null) {
-            currentRow = currRow.intValue();
-        }
-        scroll(currentRow);
+        Integer currentRow = (Integer) component.getAttributes().get("currentRow");
+        Integer currentPage = (Integer) component.getAttributes().get("currentPage");
+
+        // set for both scrollers
+        scroller.getAttributes().put("currentRow",currentRow);
+        scroller.getAttributes().put("currentPage",currentPage);
         
+        scroller2.getAttributes().put("currentRow",currentRow);
+        scroller2.getAttributes().put("currentPage",currentPage);
+        
+        if (currentRow != null) {
+            row = currentRow.intValue();
+        }
+
+        scroll(row);        
     }
     
     public void scroll(int row) {
@@ -318,6 +328,10 @@ public class SearchPage extends VDCBaseBean  implements java.io.Serializable {
     private void resetScroller() {
         scroller.getAttributes().put("currentRow",0);
         scroller.getAttributes().put("currentPage",1);
+        
+        scroller2.getAttributes().put("currentRow",0);
+        scroller2.getAttributes().put("currentPage",1);
+        
         scroll(0);
     }
     
@@ -671,6 +685,14 @@ public class SearchPage extends VDCBaseBean  implements java.io.Serializable {
     
     public void setScroller(ScrollerComponent scroller) {
         this.scroller = scroller;
+    }
+
+    public ScrollerComponent getScroller2() {
+        return scroller2;
+    }
+    
+    public void setScroller2(ScrollerComponent scroller2) {
+        this.scroller2 = scroller2;
     }
     
     public Map getStudyFields() {

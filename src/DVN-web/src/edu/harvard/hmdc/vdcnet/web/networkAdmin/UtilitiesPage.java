@@ -544,14 +544,19 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                             }
                         }
                         
-                        if (xmlFile != null) {    
-                            importLogger.log(Level.INFO, "Importing Study and uploading " + filesToUpload.size() + (filesToUpload.size() == 1 ? " file." : " files."));
-                            
+                        if (xmlFile != null) {                                
                             try {
+                                importLogger.log(Level.INFO, "Found study.xml and " + filesToUpload.size() + (filesToUpload.size() == 1 ? " file." : " files."));
+                                
                                 Study study = studyService.importStudy( 
-                                        xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId(), filesToUpload);
+                                        xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId());
+                                importLogger.log(Level.INFO, "Import of study.xml successful: study id = " + study.getId());
+                                
+                                studyService.addFiles( study, filesToUpload, getVDCSessionBean().getLoginBean().getUser() );
+                                importLogger.log(Level.INFO, "Upload request of files successful.");
+                                
                                 successfuleStudyIds.add(study.getId());
-                                importLogger.log(Level.INFO, "Success (dir = " + studyDir.getName() + "): study id = " + study.getId());
+                                importLogger.log(Level.INFO, "Success (dir = " + studyDir.getName() + ")");
 
                             } catch (Exception e) {
                                 failedStudyCount++;

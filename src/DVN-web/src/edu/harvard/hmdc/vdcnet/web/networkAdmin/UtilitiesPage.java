@@ -33,6 +33,7 @@ import com.sun.rave.web.ui.model.UploadedFile;
 import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
+import edu.harvard.hmdc.vdcnet.index.Indexer;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyFileEditBean;
@@ -163,7 +164,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         try {
             //first delete files
             boolean deleteFailed = false;
-            File indexDir = new File("index-dir");
+            File indexDir = new File( Indexer.getInstance().getIndexDir() );
             File[] files = indexDir.listFiles();
             for (int i = 0; i < files.length; i++) {
                 if ( !files[i].delete() ) {
@@ -557,6 +558,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                                 if ( !filesToUpload.isEmpty() ) {
                                     try {
                                         studyService.addFiles( study, filesToUpload, getVDCSessionBean().getLoginBean().getUser() );
+                                        studyService.updateStudy(study); // for now, must call this to persist the new files
                                         importLogger.log(Level.INFO, "File upload succeeded.");
                                     } catch (Exception e) {
                                         fileFailureCount++;

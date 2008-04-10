@@ -24,10 +24,14 @@
 		        <xsl:attribute name="agency">
 		        <xsl:choose>
 		         <xsl:when test='starts-with(.,"hdl:")'>handle</xsl:when>
+			 <xsl:when test='starts-with(.,"http://hdl.handle.net/")'>handle</xsl:when>
 		         <xsl:otherwise>producer</xsl:otherwise>
 		        </xsl:choose>
 		        </xsl:attribute>
-			<xsl:value-of select="."/>
+		        <xsl:choose>
+			 <xsl:when test='starts-with(.,"http://hdl.handle.net/")'>hdl:<xsl:value-of select='substring(.,23)'/></xsl:when>
+		         <xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		        </xsl:choose>
 		      </IDNo>
 		   </xsl:for-each>
 	        </titlStmt>

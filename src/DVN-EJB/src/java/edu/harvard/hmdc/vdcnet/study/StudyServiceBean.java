@@ -805,10 +805,17 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public boolean isUniqueStudyId(String userStudyId, String protocol, String authority) {
-        String query = "SELECT s FROM Study s WHERE s.studyId = '" + userStudyId.toUpperCase() + "'";
-        query += " and s.protocol ='" + protocol + "'";
-        query += " and s.authority = '" + authority + "'";
-        return em.createQuery(query).getResultList().size() == 0;
+        
+        String queryStr = "SELECT s from Study s where s.studyId = :studyId  and s.protocol= :protocol and s.authority= :authority";
+
+        Study study = null;
+       
+            Query query = em.createQuery(queryStr);
+            query.setParameter("studyId", userStudyId);
+            query.setParameter("protocol", protocol);
+            query.setParameter("authority", authority);
+            return query.getResultList().size()==0;
+        
     }
 
     public void exportStudyFilesToLegacySystem(String lastUpdateTime, String authority) {

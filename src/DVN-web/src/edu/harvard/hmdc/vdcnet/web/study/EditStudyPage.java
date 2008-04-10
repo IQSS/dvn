@@ -1014,8 +1014,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             Object value) {
         boolean valid=true;
         
-        Double longitude = new Double(value.toString());
-        BigDecimal decimalLongitude = new BigDecimal(value.toString());
+        Double longitude = new Double(value.toString().trim());
+        BigDecimal decimalLongitude = new BigDecimal(value.toString().trim());
         BigDecimal maxLongitude = new BigDecimal("180");
         BigDecimal minLongitude = new BigDecimal("-180");
         
@@ -1044,8 +1044,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             Object value) {
         boolean valid=true;
         
-        Double latitude = new Double(value.toString());
-        BigDecimal decimalLatitude = new BigDecimal(value.toString());
+        Double latitude = new Double(value.toString().trim());
+        BigDecimal decimalLatitude = new BigDecimal(value.toString().trim());
         BigDecimal maxLatitude = new BigDecimal("90");
         BigDecimal minLatitude = new BigDecimal("-90");
         

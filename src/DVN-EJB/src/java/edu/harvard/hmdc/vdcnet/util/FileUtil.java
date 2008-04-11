@@ -32,6 +32,7 @@ package edu.harvard.hmdc.vdcnet.util;
 import edu.harvard.hmdc.vdcnet.dsb.JhoveWrapper;
 import edu.harvard.hmdc.vdcnet.dsb.SubsettableFileChecker;
 import edu.harvard.hmdc.vdcnet.study.Study;
+import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -88,12 +89,37 @@ public class FileUtil implements java.io.Serializable  {
         }
     }
 
+
     public static String determineFileType(File f) throws IOException{
-        return  determineFileType( f, f.getName()) ;
+        return determineFileType( f, f.getName()) ;    
+    }      
     
-    }    
+    public static String determineFileType(StudyFile sf) throws IOException{
+      if (sf.isSubsettable()) {
+            return determineSubsettableFileType(sf);
+        } else {            
+            if ( sf.isRemote() ) {
+                return FileUtil.determineFileType( sf.getFileName() );  
+            } else {
+                return FileUtil.determineFileType( new File( sf.getFileSystemLocation() ), sf.getFileName() );
+            }              
+        }
+    }
     
-    public static String determineFileType(File f, String fileName) throws IOException{
+    public static String determineSubsettableFileType(StudyFile sf) {
+            if ( sf.getDataTable().getRecordsPerCase() != null )  {
+                return "text/x-fixed-field";
+            } else {
+                return "text/tab-separated-values";
+            }        
+    }  
+    
+    public static String determineFileType(String fileName) {
+        return MIME_TYPE_MAP.getContentType(fileName);
+    }  
+       
+    
+    private static String determineFileType(File f, String fileName) throws IOException{
         String fileType = null;
 
         // step 1: check whether the file is subsettable
@@ -117,7 +143,7 @@ public class FileUtil implements java.io.Serializable  {
                     fileType = fileType.replace("plain",STATISTICAL_SYNTAX_FILE_EXTENSION.get(fileExtension));
                 }
             } else if (fileType.equals("application/octet-stream")) {
-                fileType = MIME_TYPE_MAP.getContentType(fileName);
+                determineFileType(fileName);
             }
         }
         

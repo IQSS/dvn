@@ -425,7 +425,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                 
                 Integer count = fileTypeCounts.get(newFileType);
                 if ( fileTypeCounts.containsKey(newFileType)) {
-                    fileTypeCounts.put( newFileType, fileTypeCounts.get(newFileType) );     
+                    fileTypeCounts.put( newFileType, fileTypeCounts.get(newFileType) + 1 );     
                 } else {
                     fileTypeCounts.put( newFileType, 1 );    
                 }

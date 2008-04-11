@@ -431,7 +431,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                 }
             }
             
-            addMessage( "fileMessage", "Request completed:  " + studyFiles.size() + (studyFiles.size() == 1 ? " file" : " files") + " processed for extension ." + fileExtension );
+            addMessage( "fileMessage", "Determine File Type request completed for extension ." + fileExtension );
             for (String key : fileTypeCounts.keySet()) {
                 addMessage( "fileMessage", fileTypeCounts.get(key) + (fileTypeCounts.get(key) == 1 ? " file" : " files") + " set to type: " + key);                
             }

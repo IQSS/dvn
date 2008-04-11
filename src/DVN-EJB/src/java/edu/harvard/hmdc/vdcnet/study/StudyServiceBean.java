@@ -1799,4 +1799,19 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         
     }
     
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public List<StudyFile> getStudyFilesByExtension(String extension) {
+        
+        String queryStr = "SELECT sf from StudyFile sf where lower(sf.fileName) LIKE :extension";
+
+        Query query = em.createQuery(queryStr);
+        query.setParameter( "extension", "%." + extension.toLowerCase() );
+        return query.getResultList();
+        
+    }
+
+    public void updateStudyFile(StudyFile detachedStudyFile) {
+        em.merge(detachedStudyFile);
+    }
+    
 }

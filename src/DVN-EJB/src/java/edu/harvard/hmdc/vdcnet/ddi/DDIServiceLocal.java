@@ -29,8 +29,6 @@ public interface DDIServiceLocal extends StudyExporter, java.io.Serializable {
     void mapDDI(File ddiFile, Study study);
     void mapDDI(Reader reader, Study study);
 
-    Map determineId(File ddiFile);
-
     void exportDataFile(StudyFile sf, OutputStream out);
 
 }

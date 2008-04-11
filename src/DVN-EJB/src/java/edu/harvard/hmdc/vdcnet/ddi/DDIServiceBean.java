@@ -274,6 +274,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         }     
     }    
 
+    
     // <editor-fold defaultstate="collapsed" desc="export methods">
     private void createCodeBook(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
         xmlw.writeStartElement("codeBook");
@@ -1398,66 +1399,17 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    public Map determineId(File ddiFile) {
-        Study dummyStudy = new Study();
-        initializeCollections(dummyStudy);
-
-        FileReader reader = null;
-        XMLStreamReader xmlr = null;
-
-        try {
-            reader = new java.io.FileReader(ddiFile);
-            javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
-            xmlif.setProperty("javax.xml.stream.isCoalescing", java.lang.Boolean.TRUE);
-            xmlr =  xmlif.createXMLStreamReader(reader);
-        
-            for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    if (xmlr.getLocalName().equals("codeBook")) ; // skip the codeBook tag
-                    else if (xmlr.getLocalName().equals("docDscr")) processDocDscr(xmlr, dummyStudy);
-                    else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, dummyStudy);
-                    else break;
-                }
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new EJBException("ERROR occurred in determineId: File Not Found!");
-        } catch (XMLStreamException ex) {
-            Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new EJBException("ERROR occurred in determineId.", ex);
-        } finally {
-            try {
-                if (reader != null) { reader.close();}
-            } catch (IOException ex) {}
-            try {
-                if (xmlr != null) { xmlr.close(); }
-            } catch (XMLStreamException ex) {}
-        }
-        
-        Map idMap = new HashMap();
-        if ( !StringUtil.isEmpty( dummyStudy.getStudyId() ) ) idMap.put( "globalId", dummyStudy.getGlobalId() );
-        if ( dummyStudy.getStudyOtherIds().size() > 0 ) idMap.put( "otherId", dummyStudy.getStudyOtherIds().get(0).getOtherId() );
-        return idMap;
-    }    
     
-    // <editor-fold defaultstate="collapsed" desc="import methods"> 
+    // <editor-fold defaultstate="collapsed" desc="import methods">
     private void processDDI( XMLStreamReader xmlr, Study study) throws XMLStreamException {
-        Map filesMap = new HashMap();
-        initializeCollections(study);        
+        initializeCollections(study); // not sure we need this call; to be investigated
         
-        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
-            if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("docDscr")) processDocDscr(xmlr, study);
-                else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, study);
-                else if (xmlr.getLocalName().equals("fileDscr")) processFileDscr(xmlr, study, filesMap);
-                else if (xmlr.getLocalName().equals("dataDscr")) processDataDscr(xmlr, study, filesMap);
-                else if (xmlr.getLocalName().equals("otherMat")) processOtherMat(xmlr, study);
-            } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
-                return;
-            }
-        }
+        // make sure we have a codeBook
+        xmlr.next();
+        xmlr.require(XMLStreamConstants.START_ELEMENT, "http://www.icpsr.umich.edu/DDI", "codeBook");
+        processCodeBook(xmlr, study);
     }
-
+    
     private void initializeCollections(Study study) {
         // initialize the collections
         study.setFileCategories( new ArrayList() );
@@ -1478,6 +1430,22 @@ public class DDIServiceBean implements DDIServiceLocal {
         study.setStudyTopicClasses(new ArrayList());
 }
 
+     private void processCodeBook( XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        Map filesMap = new HashMap();
+       
+        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("docDscr")) processDocDscr(xmlr, study);
+                else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, study);
+                else if (xmlr.getLocalName().equals("fileDscr")) processFileDscr(xmlr, study, filesMap);
+                else if (xmlr.getLocalName().equals("dataDscr")) processDataDscr(xmlr, study, filesMap);
+                else if (xmlr.getLocalName().equals("otherMat")) processOtherMat(xmlr, study);
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (xmlr.getLocalName().equals("codeBook")) return;
+            }
+        }
+    }   
+    
     private void processDocDscr(XMLStreamReader xmlr, Study study) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -2045,6 +2013,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("fileName")) {
                     sf.setFileName( parseText(xmlr) );
+                    sf.setFileType( FileUtil.determineFileType( sf.getFileName() ) );
                 } else if (xmlr.getLocalName().equals("fileCont")) {
                     sf.setDescription( parseText(xmlr) );
                 }  else if (xmlr.getLocalName().equals("dimensns")) processDimensns(xmlr, dt);
@@ -2149,7 +2118,8 @@ public class DDIServiceBean implements DDIServiceLocal {
                 // first time with this file, so attach the dt to the file and set as subsettable)
                 dt.setStudyFile(sf);
                 sf.setDataTable(dt);
-                sf.setSubsettable(true); 
+                sf.setSubsettable(true);
+                sf.setFileType( FileUtil.determineSubsettableFileType( sf ) ); // redetermine file type, now that we know it's subsettable
             }
 
             dv.setDataTable(dt);
@@ -2284,6 +2254,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("labl")) {
                     sf.setFileName( parseText(xmlr) );
+                    sf.setFileType( FileUtil.determineFileType( sf.getFileName() ) );
                 } else if (xmlr.getLocalName().equals("txt")) {
                     sf.setDescription( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("notes")) {

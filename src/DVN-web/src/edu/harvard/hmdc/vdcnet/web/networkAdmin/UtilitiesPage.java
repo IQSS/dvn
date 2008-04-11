@@ -394,7 +394,16 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         return "file".equals(selectedPanel);
     }
     
+    String fileExtension;
     String fileStudyIds;
+
+    public String getFileExtension() {
+        return fileExtension;
+    }
+
+    public void setFileExtension(String fileExtension) {
+        this.fileExtension = fileExtension;
+    }
 
     public String getFileStudyIds() {
         return fileStudyIds;
@@ -404,38 +413,59 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         this.fileStudyIds = fileStudyIds;
     }
   
+    public String determineFileTypeForExtension_action() {
+        try {
+            List<StudyFile> studyFiles = studyService.getStudyFilesByExtension(fileExtension);
+            Map<String,Integer> fileTypeCounts = new HashMap<String,Integer>();
+            
+            for ( StudyFile sf : studyFiles ) {
+                String newFileType = FileUtil.determineFileType( sf );     
+                sf.setFileType( newFileType );
+                studyService.updateStudyFile(sf);
+                
+                Integer count = fileTypeCounts.get(newFileType);
+                if ( fileTypeCounts.containsKey(newFileType)) {
+                    fileTypeCounts.put( newFileType, fileTypeCounts.get(newFileType) );     
+                } else {
+                    fileTypeCounts.put( newFileType, 1 );    
+                }
+            }
+            
+            addMessage( "fileMessage", "Request completed:  " + studyFiles.size() + (studyFiles.size() == 1 ? " file" : " files") + " processed for extension ." + fileExtension );
+            for (String key : fileTypeCounts.keySet()) {
+                addMessage( "fileMessage", fileTypeCounts.get(key) + (fileTypeCounts.get(key) == 1 ? " file" : " files") + " set to type: " + key);                
+            }
+
+        
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "fileMessage", "Request failed: An unknown error occurred trying to process the following extension: \"" + fileExtension + "\"" );
+        }       
+
+        return null;
+    }
     
-    public String determineFileTypeStudies_action() {
+    public String determineFileTypeForStudies_action() {
         try {
             Map tokenizedLists = determineStudyIds(fileStudyIds);
-            List harvestedStudies = new ArrayList();
 
             for (Iterator<Long>  iter = ((List<Long>) tokenizedLists.get("idList")).iterator(); iter.hasNext();) {
                 Long studyId = iter.next();
                 Study study = studyService.getStudy(studyId);
+                    
+                for ( StudyFile sf : study.getStudyFiles() ) {
+                    sf.setFileType( FileUtil.determineFileType( sf ) );
+                } 
                 
-                if ( study.isIsHarvested() ) {
-                    harvestedStudies.add(study.getId());
-                    iter.remove();
-                 } else {
-                    for ( StudyFile sf : study.getStudyFiles() ) {
-                        if (sf.isSubsettable()) {
-                            // skip subsettable files
-                        } else {
-                            sf.setFileType( FileUtil.determineFileType( new File( sf.getFileSystemLocation() ), sf.getFileName() ) );
-                        }
-                    } 
-                    studyService.updateStudy(study);
-                }          
-            }
-            tokenizedLists.put("ignoredList", harvestedStudies);
-            tokenizedLists.put("ignoredReason", "because they are harvested studies");
+                studyService.updateStudy(study);
+            }          
+        
             addMessage( "fileMessage", "Determine File Type request completed." );
             addStudyMessages("fileMessage", tokenizedLists);
             
         } catch (Exception e) {
             e.printStackTrace();
-            addMessage( "fileMessage", "Action failed: An unknown error occurred trying to process the following: \"" + fileStudyIds + "\"" );
+            addMessage( "fileMessage", "Request failed: An unknown error occurred trying to process the following: \"" + fileStudyIds + "\"" );
         }            
  
         return null;
@@ -506,7 +536,10 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         return metadataFormatsSelect;
     }      
      
-    public String importBatch_action() {       
+    public String importBatch_action() {  
+        FileHandler logFileHandler = null;
+        Logger importLogger = null;
+        
         try {
             int importFailureCount = 0;
             int fileFailureCount = 0;
@@ -519,9 +552,11 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                 // create Logger
                 String logTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
                 String dvAlias = vdcService.find(importDVId).getAlias();
-                Logger importLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.web.networkAdmin.UtilitiesPage." + dvAlias + "_" + logTimestamp);
-                importLogger.addHandler(new FileHandler( FileUtil.getImportFileDir() + File.separator + "batch_" + dvAlias + "_" + logTimestamp + ".log" ) );                
-                
+                importLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.web.networkAdmin.UtilitiesPage." + dvAlias + "_" + logTimestamp);
+                String logFileName = FileUtil.getImportFileDir() + File.separator + "batch_" + dvAlias + "_" + logTimestamp + ".log";
+                logFileHandler = new FileHandler(logFileName);                
+                importLogger.addHandler(logFileHandler ); 
+               
                 importLogger.log(Level.INFO, "BEGIN BATCH IMPORT (dvId = " + importDVId + ") from directory: " + importBatchDir);
                 
                 for (int i=0; i < batchDir.listFiles().length; i++ ) {
@@ -597,6 +632,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                 
                 addMessage( "importMessage", "Batch Import request completed." );
                 addMessage( "importMessage", statusMessage );
+                addMessage( "importMessage", "For more detail see log file at: " + logFileName );
 
             } else {
                 addMessage( "importMessage", "Batch Import failed: " + importBatchDir + " does not exist or is not a directory." );    
@@ -605,6 +641,11 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
             e.printStackTrace();
             addMessage( "importMessage", "Batch Import failed: An unexpected error occurred during processing." );
             addMessage( "importMessage", "Exception message: " + e.getMessage() );
+        } finally {
+            if ( logFileHandler != null ) {
+                logFileHandler.close();
+                importLogger.removeHandler(logFileHandler);
+            }
         }
 
         return null;       

@@ -557,12 +557,12 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                 logFileHandler = new FileHandler(logFileName);                
                 importLogger.addHandler(logFileHandler ); 
                
-                importLogger.log(Level.INFO, "BEGIN BATCH IMPORT (dvId = " + importDVId + ") from directory: " + importBatchDir);
+                importLogger.info("BEGIN BATCH IMPORT (dvId = " + importDVId + ") from directory: " + importBatchDir);
                 
                 for (int i=0; i < batchDir.listFiles().length; i++ ) {
                     File studyDir = batchDir.listFiles()[i];
                     if (studyDir.isDirectory()) { // one directory per study
-                        importLogger.log(Level.INFO, "Found study directory: " + studyDir.getName());
+                        importLogger.info("Found study directory: " + studyDir.getName());
                         
                         File xmlFile = null;
                         List<StudyFileEditBean> filesToUpload = new ArrayList<StudyFileEditBean>();
@@ -583,37 +583,37 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                         
                         if (xmlFile != null) {                                
                             try {
-                                importLogger.log(Level.INFO, "Found study.xml and " + filesToUpload.size() + " other " + (filesToUpload.size() == 1 ? "file." : "files."));
+                                importLogger.info("Found study.xml and " + filesToUpload.size() + " other " + (filesToUpload.size() == 1 ? "file." : "files."));
                                 
                                 Study study = studyService.importStudy( 
                                         xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId());
-                                importLogger.log(Level.INFO, "Import of study.xml succeeded: study id = " + study.getId());
+                                importLogger.info("Import of study.xml succeeded: study id = " + study.getId());
                                 studiesToIndex.add(study.getId());
                                 
                                 if ( !filesToUpload.isEmpty() ) {
                                     try {
                                         studyService.addFiles( study, filesToUpload, getVDCSessionBean().getLoginBean().getUser() );
                                         studyService.updateStudy(study); // for now, must call this to persist the new files
-                                        importLogger.log(Level.INFO, "File upload succeeded.");
+                                        importLogger.info("File upload succeeded.");
                                     } catch (Exception e) {
                                         fileFailureCount++;
-                                        importLogger.log(Level.SEVERE, "File Upload failed (dir = " + studyDir.getName() + "): exception message = " + e.getMessage());
+                                        importLogger.severe("File Upload failed (dir = " + studyDir.getName() + "): exception message = " + e.getMessage());
                                         logException (e, importLogger);
                                     }
                                 }
   
                             } catch (Exception e) {
                                 importFailureCount++;
-                                importLogger.log(Level.SEVERE, "Import failed (dir = " + studyDir.getName() + "): exception message = " + e.getMessage());
+                                importLogger.severe("Import failed (dir = " + studyDir.getName() + "): exception message = " + e.getMessage());
                                 logException (e, importLogger);
                             }
                             
                             
                         } else { // no ddi.xml found in studyDir
-                            importLogger.log(Level.SEVERE, "No study.xml file was found in study directory. Skipping... ");    
+                            importLogger.warning("No study.xml file was found in study directory. Skipping... ");    
                         }
                     } else {
-                        importLogger.log(Level.SEVERE, "Found non directory at top level. Skipping... (filename = " + studyDir.getName() +")");
+                        importLogger.warning("Found non directory at top level. Skipping... (filename = " + studyDir.getName() +")");
                     }
                 }
                 
@@ -622,12 +622,12 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                 statusMessage += (fileFailureCount == 0 ? "" : " (" + fileFailureCount + " of which failed file upload)");
                 statusMessage += (importFailureCount == 0 ? "." : "; " + importFailureCount + (importFailureCount == 1 ? " study" : " studies") + " failed import.");                 
                 
-                importLogger.log(Level.INFO, "COMPLETED BATCH IMPORT: " + statusMessage );
+                importLogger.info("COMPLETED BATCH IMPORT: " + statusMessage );
                 
                 // now index all studies
-                importLogger.log(Level.INFO, "POST BATCH IMPORT, start calls to index.");
+                importLogger.info("POST BATCH IMPORT, start calls to index.");
                 indexService.updateIndexList(studiesToIndex);
-                importLogger.log(Level.INFO, "POST BATCH IMPORT, calls to index finished.");
+                importLogger.info("POST BATCH IMPORT, calls to index finished.");
 
                 
                 addMessage( "importMessage", "Batch Import request completed." );

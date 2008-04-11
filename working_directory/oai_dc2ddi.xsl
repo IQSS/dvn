@@ -50,7 +50,7 @@
 		</xsl:if>		
 		</xsl:for-each>
 
-		<xsl:for-each select="normalize-space(//dc:date)!=''">
+		<xsl:for-each select="//dc:date">
 		<xsl:if test="normalize-space(.)!=''">
 		   <prodDate>
 		   <xsl:value-of select="normalize-space(.)"/>

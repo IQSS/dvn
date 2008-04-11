@@ -126,4 +126,8 @@ public interface StudyServiceLocal extends java.io.Serializable {
     
     public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user);
     public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail);
+    
+    public List<StudyFile> getStudyFilesByExtension(String extension);
+
+    public void updateStudyFile(StudyFile detachedStudyFile);
 }

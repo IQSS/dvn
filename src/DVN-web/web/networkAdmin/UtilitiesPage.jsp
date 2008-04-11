@@ -169,10 +169,16 @@
                         </ui:panelGroup>   
                         
                         <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.filePanelRendered}" > 
-                            <h:messages id="fileMessage"  styleClass="errorMessage"/> 
-                            <h:outputText value="To determine the file types for files in arbitrary studies (subsettable files will be ignored), input the study ids and click on the button below:"/>
+                            <h:messages id="fileMessage"  styleClass="errorMessage"/>
+                            <h:outputText value="To determine the file types for files with a particular extension:"/>
+                            <ui:panelGroup>
+                                <h:inputText value="#{UtilitiesPage.fileExtension}" size="6" />
+                                <h:commandButton  value="Determine File Types for Extension" action="#{UtilitiesPage.determineFileTypeForExtension_action}"/>
+                            </ui:panelGroup>
+                            <hr/>
+                            <h:outputText value="To determine the file types for files in arbitrary studies, input the study ids and click on the button below:"/>
                             <h:inputTextarea value="#{UtilitiesPage.fileStudyIds}" rows="8" cols="80"/>
-                            <h:commandButton  value="Determine File Types" action="#{UtilitiesPage.determineFileTypeStudies_action}"/>
+                            <h:commandButton  value="Determine File Types for Studies" action="#{UtilitiesPage.determineFileTypeForStudies_action}"/>
                         </h:panelGrid>  
                         
                         

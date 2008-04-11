@@ -60,10 +60,6 @@ public class FileUtil implements java.io.Serializable  {
     }
     
     private static MimetypesFileTypeMap MIME_TYPE_MAP = new MimetypesFileTypeMap();
-    static {
-        MIME_TYPE_MAP.addMimeTypes("application/msword doc DOC");
-        MIME_TYPE_MAP.addMimeTypes("application/vnd.ms-excel xls XLS");
-    }
 
     /** Creates a new instance of FileUtil */
     public FileUtil() {

@@ -42,7 +42,7 @@ import javax.faces.validator.Validator;
 
 /**
  *
- * @author gdurand
+ * @author ekraffmiller
  */
 public class DateValidator implements Validator, java.io.Serializable  {
     
@@ -53,49 +53,64 @@ public class DateValidator implements Validator, java.io.Serializable  {
     public void validate(FacesContext context,
             UIComponent toValidate,
             Object value) {
-        String dateString = (String) value;
-        boolean valid=false;
-        
-        String monthDayYear = "yyyy-MM-dd";
-        String monthYear = "yyyy-MM";
-        String year = "yyyy";
-        
-        if (dateString.length()==4) {
-            valid = isValid(dateString,"yyyy");
-        } else if (dateString.length()>4 && dateString.length()<=7) {
-            valid = isValid(dateString, "yyyy-MM");
-        } else if (dateString.length()>7) {
-            valid = isValid(dateString,"yyyy-MM-dd");
-        }
-        
+        String dateString = ((String) value).trim();
+        boolean valid = validate(dateString);
         if (!valid) {
             ((UIInput)toValidate).setValid(false);
             
-            FacesMessage message = new FacesMessage("Invalid Date Format.  Valid formats are YYYY-MM-DD, YYYY-MM, or YYYY.");
+            FacesMessage message = new FacesMessage("Invalid Date Format.  Valid formats are YYYY-MM-DD, YYYY-MM, or YYYY. Optionally, 'BC' can be appended to the year. (By default, AD is assumed.)");
             context.addMessage(toValidate.getClientId(context), message);
         }
         
     }
     
-    
-
-    private boolean isValid(String dateString, String pattern) {
+    private boolean validate(String dateString) {
         boolean valid=false;
+        
+        valid = isValid(dateString,"yyyy-MM-dd");
+        if (!valid ) {
+            valid = isValid(dateString, "yyyy-MM");
+        }
+         if (!valid) {
+            valid = isValid(dateString,"yyyy GG");
+        }
+        if (!valid) {
+            valid = isValid(dateString,"yyyyGG");
+        }
+        if (!valid) {
+            valid = isValid(dateString,"yyyy");
+        }
+
+        return valid;
+    }
+    
+    private boolean isValid(String dateString, String pattern) {
+        boolean valid=true;
         Date date;
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         sdf.setLenient(false);
         try {
+            dateString = dateString.trim();
             date = sdf.parse(dateString);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             int year = calendar.get(Calendar.YEAR);
-            if (year>999) {
-                valid=true;
-            }
+         //   System.out.println("pattern is "+ pattern);
+         //   System.out.println("Year is "+year);
+         //   System.out.println("Calendar date is "+date.toString());
+         //   System.out.println("Era is "+calendar.get(Calendar.ERA));
         }catch (ParseException e) {
             valid=false;
         }
+        if (dateString.length()>pattern.length()) {
+            valid=false;
+        }
         return valid;
+    }
+    public static void main(String args[]) {
+        DateValidator validator = new DateValidator();     
+        System.out.println(validator.validate("2008-02 "));
+        
     }
 }
 

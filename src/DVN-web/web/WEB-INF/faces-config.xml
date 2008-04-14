@@ -26,6 +26,7 @@
     <message-bundle>Bundle</message-bundle>
     <message-bundle>EditStudyBundle</message-bundle>
     <message-bundle>StudyBundle</message-bundle>
+    <message-bundle>FileTypeBundle</message-bundle>
     <message-bundle>customMessages</message-bundle>
     <message-bundle>DataListBundle</message-bundle>
     <action-listener>

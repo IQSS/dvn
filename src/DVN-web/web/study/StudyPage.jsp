@@ -486,7 +486,7 @@
                                                 <h:outputText value="#{studyFileUI.studyFile.dataTable.varQuantity}"/>
                                             </h:column>
                                             <h:column  id="column11">
-                                                <h:outputText  id="outputText19" value="#{studyFileUI.studyFile.fileType}" rendered="#{!studyFileUI.studyFile.subsettable}" />
+                                                <h:outputText  id="outputText19" value="#{studyFileUI.userFriendlyFileType}" rendered="#{!studyFileUI.studyFile.subsettable}" />
                                                 <h:selectOneMenu  id="dataFileFormatType" value="#{studyFileUI.format}" rendered="#{studyFileUI.studyFile.subsettable and (empty studyFileUI.studyFile.originalFileType) and (studyFileUI.studyFile.fileType!='text/x-fixed-field')}">
                                                     <f:selectItems   value="#{studyPage.dataFileFormatTypes}" />
                                                 </h:selectOneMenu>

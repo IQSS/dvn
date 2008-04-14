@@ -1357,9 +1357,9 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             message = new FacesMessage("Study ID is already used in this dataverse.");
         }
         if (valid) {
-            if (!StringUtil.isAlphaNumeric(studyId)) {
+            if (!studyService.isValidStudyIdString(studyId)) {
                 valid = false;
-                message = new FacesMessage("Study ID can only contain characters a-z, A-Z or 0-9 (no spaces allowed)");
+                message = new FacesMessage("Study ID can only contain characters a-z, A-Z, 0-9, dash or underscore (no spaces allowed)");
             }
         }
         

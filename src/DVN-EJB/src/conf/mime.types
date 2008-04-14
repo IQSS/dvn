@@ -1,3 +1,8 @@
 application/pdf pdf PDF
 application/msword doc DOC
 application/vnd.ms-excel xls XLS
+# subsettable types
+application/x-stata dta DTA
+application/x-spss-por por POR
+application/x-spss-sav sav SAV
+application/x-rlang-transport RData Rdata rdata RDATA

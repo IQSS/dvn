@@ -37,6 +37,8 @@ import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.util.WebStatisticsSupport;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.io.IOException;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
@@ -120,7 +122,7 @@ public class StudyFileUI implements java.io.Serializable  {
         this.format = format;
     }
     
-     public boolean isImage() {
+    public boolean isImage() {
         
          if ( studyFile.getFileType() != null && studyFile.getFileType().length() >= 6 &&
               studyFile.getFileType().substring(0, 6).equalsIgnoreCase("image/") ){
@@ -129,6 +131,15 @@ public class StudyFileUI implements java.io.Serializable  {
              return false;
          }
     }
+     
+     public String getUserFriendlyFileType() {
+        ResourceBundle fileTypeResources = ResourceBundle.getBundle("FileTypeBundle");
+        try {
+            return fileTypeResources.getString( studyFile.getFileType() );
+        } catch (MissingResourceException e) {
+            return studyFile.getFileType();
+        }            
+     }
     
      public String fileDownload_action () {
         try {

@@ -17,3 +17,6 @@ ALTER TABLE harvestingdataverse ADD COLUMN generaterandomids bool;
 ALTER TABLE harvestingdataverse ALTER COLUMN generaterandomids SET STORAGE PLAIN;
 
 UPDATE harvestingdataverse SET generaterandomids = false;
+
+DELETE FROM pagedef where name= 'EditBannerContactUsPage';
+

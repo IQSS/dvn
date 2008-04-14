@@ -7,6 +7,8 @@ INSERT INTO pagedef (name, path, role_id, networkrole_id ) VALUES  ( 'Subsetting
 
 update dvnversion set versionnumber=1, buildnumber=2;
 
+DELETE FROM pagedef where name= 'EditBannerContactUsPage';
+
 ALTER TABLE pagedef
   ADD CONSTRAINT unq_pagedef_0 UNIQUE(path);
 
@@ -18,5 +20,5 @@ ALTER TABLE harvestingdataverse ALTER COLUMN generaterandomids SET STORAGE PLAIN
 
 UPDATE harvestingdataverse SET generaterandomids = false;
 
-DELETE FROM pagedef where name= 'EditBannerContactUsPage';
+
 

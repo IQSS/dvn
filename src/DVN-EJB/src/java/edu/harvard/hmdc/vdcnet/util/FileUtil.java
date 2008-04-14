@@ -139,7 +139,7 @@ public class FileUtil implements java.io.Serializable  {
                     fileType = fileType.replace("plain",STATISTICAL_SYNTAX_FILE_EXTENSION.get(fileExtension));
                 }
             } else if (fileType.equals("application/octet-stream")) {
-                determineFileType(fileName);
+                fileType = determineFileType(fileName);
             }
         }
         

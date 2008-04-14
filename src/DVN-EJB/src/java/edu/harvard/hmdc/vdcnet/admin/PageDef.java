@@ -40,6 +40,8 @@ import javax.persistence.*;
  */
 
 @Entity
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"path"}),@UniqueConstraint(columnNames={"name"})})
+
 public class PageDef implements java.io.Serializable  {
     
     /** Creates a new instance of LoginDomain */

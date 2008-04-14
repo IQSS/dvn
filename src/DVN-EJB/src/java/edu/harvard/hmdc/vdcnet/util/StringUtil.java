@@ -51,12 +51,20 @@ public final class StringUtil implements java.io.Serializable  {
       final char[] chars = str.toCharArray();
       for (int x = 0; x < chars.length; x++) {      
         final char c = chars[x];
-        if ((c >= 'a') && (c <= 'z')) continue; // lowercase
-        if ((c >= 'A') && (c <= 'Z')) continue; // uppercase
-        if ((c >= '0') && (c <= '9')) continue; // numeric
+        if(isAlphaNumericChar(c)) {
+            continue;
+        }
         return false;
       }  
       return true;
+}
+    public static final boolean isAlphaNumericChar(char c) {
+        if ((c >= 'a') && (c <= 'z')) return true; // lowercase
+        if ((c >= 'A') && (c <= 'Z')) return true; // uppercase
+        if ((c >= '0') && (c <= '9')) return true; // numeric
+        return false;
+        
+      
 }
 
     public static String truncateString(String originalString, int maxLength) {

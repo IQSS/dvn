@@ -130,4 +130,5 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public List<StudyFile> getStudyFilesByExtension(String extension);
 
     public void updateStudyFile(StudyFile detachedStudyFile);
+    public boolean isValidStudyIdString(String studyId); 
 }

@@ -1785,8 +1785,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         } else {
             if ( study.getStudyOtherIds().size() > 0 ) {
                 studyId = study.getStudyOtherIds().get(0).getOtherId(); 
-                if ( !StringUtil.isAlphaNumeric(studyId) ) {
-                    throw new EJBException("The Other ID (from DDI) was invalid (not alphanumeric).");
+                if ( !isValidStudyIdString(studyId) ) {
+                    throw new EJBException("The Other ID (from DDI) was invalid.");
                 }                
             } else {
                 throw new EJBException("No Other ID (from DDI) was available for generating a handle.");    
@@ -1797,6 +1797,18 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         study.setAuthority( authority );        
         study.setStudyId( studyId );
         
+    }
+    
+    public  boolean isValidStudyIdString(String str) {
+        final char[] chars = str.toCharArray();
+      for (int x = 0; x < chars.length; x++) {      
+        final char c = chars[x];
+        if(StringUtil.isAlphaNumericChar(c) || c == '-' || c=='_') {
+            continue;
+        }
+        return false;
+      }  
+      return true;
     }
     
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)

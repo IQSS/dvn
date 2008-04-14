@@ -1024,10 +1024,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             valid=false;
         }
         
-        // decimalLongitude must have at most 3 digits to the right of the decimal place
-        if (decimalLongitude.scale()>3) {
-            valid=false;
-        }
+     
         
         if (!valid) {
             ((UIInput)toValidate).setValid(false);
@@ -1054,11 +1051,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             valid=false;
         }
         
-        // Latitude must have at most 3 digits to the right of the decimal place
-        if (decimalLatitude.scale()>3) {
-            valid=false;
-        }
-        
+    
         if (!valid) {
             ((UIInput)toValidate).setValid(false);
             FacesMessage message = new FacesMessage("Invalid Latitude.  Value must be between -90 and 90. (Unit is decimal degrees.)");

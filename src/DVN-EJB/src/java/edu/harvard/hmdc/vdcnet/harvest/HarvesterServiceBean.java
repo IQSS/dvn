@@ -40,6 +40,7 @@ import edu.harvard.hmdc.vdcnet.jaxb.oai.ListMetadataFormatsType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.ListSetsType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.MetadataFormatType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.OAIPMHerrorType;
+import edu.harvard.hmdc.vdcnet.jaxb.oai.OAIPMHerrorcodeType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.OAIPMHtype;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.ResumptionTokenType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.SetType;
@@ -115,15 +116,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat logFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
 
-    static {
-        try {
-            logger.addHandler(new FileHandler(FileUtil.getImportFileDir() + File.separator + "harvest.log"));
-        } catch (IOException e) {
-
-
-            throw new EJBException(e);
-        }
-    }
+   
     private JAXBContext jaxbContext;
     private Unmarshaller unmarshaller;
 
@@ -259,30 +252,33 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         String logTimestamp = logFormatter.format(new Date());
         Logger hdLogger = Logger.getLogger("edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceBean." + dataverse.getVdc().getAlias() + logTimestamp);
         String logFileName = FileUtil.getImportFileDir() + File.separator + "harvest_" + dataverse.getVdc().getAlias() + logTimestamp + ".log";
-      
-        hdLogger.addHandler(new FileHandler(logFileName));
- 
-        boolean harvestingNow = havestingDataverseService.getHarvestingNow(dataverse.getId());
-        int harvestedStudyCount=0;
-        List<String> failedIdentifiers = new ArrayList<String>();
-       if (harvestingNow) {
-            harvestErrorOccurred.setValue(true);
-             hdLogger.log(Level.SEVERE,"Cannot begin harvesting, Dataverse " + dataverse.getVdc().getName() + " is currently being harvested.");
-            
-        } else {
+        FileHandler fileHandler = new FileHandler(logFileName);
+        hdLogger.addHandler(fileHandler);
+        try {
+            boolean harvestingNow = havestingDataverseService.getHarvestingNow(dataverse.getId());
+            int harvestedStudyCount = 0;
+            List<String> failedIdentifiers = new ArrayList<String>();
+            if (harvestingNow) {
+                harvestErrorOccurred.setValue(true);
+                hdLogger.log(Level.SEVERE, "Cannot begin harvesting, Dataverse " + dataverse.getVdc().getName() + " is currently being harvested.");
 
-            String until = null;  // If we don't set until date, we will get all the changes since the last harvest.
-            String from = null;
-            Date lastHarvestTime = havestingDataverseService.getLastHarvestTime(dataverse.getId());
-            if (lastHarvestTime != null) {
-                from = formatter.format(lastHarvestTime);
+            } else {
+
+                String until = null;  // If we don't set until date, we will get all the changes since the last harvest.
+                String from = null;
+                Date lastHarvestTime = havestingDataverseService.getLastHarvestTime(dataverse.getId());
+                if (lastHarvestTime != null) {
+                    from = formatter.format(lastHarvestTime);
+                }
+                harvestedStudyCount = harvest(dataverse, hdLogger, from, until, harvestErrorOccurred, failedIdentifiers);
             }
-            harvestedStudyCount = harvest(dataverse, hdLogger, from, until, harvestErrorOccurred, failedIdentifiers );
-        }      
-        mailService.sendHarvestNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc().getName(), logFileName, logTimestamp, harvestErrorOccurred.booleanValue(), harvestedStudyCount, failedIdentifiers);  
-
+            mailService.sendHarvestNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc().getName(), logFileName, logTimestamp, harvestErrorOccurred.booleanValue(), harvestedStudyCount, failedIdentifiers);
+        } finally {
+            fileHandler.close();
+            hdLogger.removeHandler(fileHandler);
+        }
     }
- 
+
     /**
      * 
      * @param dataverse  the dataverse to harvest into
@@ -346,6 +342,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             hdLogger.log(Level.INFO, "harvestFromIdentifiers(), resumptionToken=" + resumptionToken.getValue());
             listIdentifiers = new ListIdentifiers(dataverse.getOaiServer(), resumptionToken.getValue());
         }
+        
         Document doc = listIdentifiers.getDocument();
 
         //       JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.jaxb.oai");
@@ -476,6 +473,14 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         }
 
         OAIPMHtype OAIObj = (OAIPMHtype) unmarshalObj.getValue();
+       if (OAIObj.getError()!=null && OAIObj.getError().size()>0) {
+            List<OAIPMHerrorType> errList = OAIObj.getError();
+            String errMessage="";
+            for (OAIPMHerrorType error : OAIObj.getError()){
+                 errMessage += error.getCode()+ " " +error.getValue(); 
+            }
+            throw new EJBException(errMessage);
+        }
         ListMetadataFormatsType listMetadataFormats = OAIObj.getListMetadataFormats();
         List<String> formats = null;
         if (listMetadataFormats != null) {
@@ -526,7 +531,22 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         Package valPackage = value.getClass().getPackage();
         if (value instanceof edu.harvard.hmdc.vdcnet.jaxb.oai.OAIPMHtype) {
             OAIPMHtype OAIObj = (OAIPMHtype) value;
-            //      OAIObj.getError()
+            if (OAIObj.getError()!=null && OAIObj.getError().size()>0 ) {
+                List<OAIPMHerrorType> errList = OAIObj.getError();
+                String errMessage="";
+                for (OAIPMHerrorType error : OAIObj.getError()){
+                     // NO_SET_HIERARCHY is not an error from the perspective of the DVN,
+                     // it just means that the OAI server doesn't support sets.
+                     if (!error.getCode().equals(OAIPMHerrorcodeType.NO_SET_HIERARCHY)) {
+                        errMessage += error.getCode()+ " " +error.getValue(); 
+                     }
+                }
+                if (errMessage!="")  {
+                     throw new EJBException(errMessage);
+                }
+               
+            }
+         
             ListSetsType listSetsType = OAIObj.getListSets();
             if (listSetsType != null) {
                 sets = new ArrayList<SetDetailBean>();

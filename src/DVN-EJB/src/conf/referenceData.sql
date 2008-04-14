@@ -307,7 +307,6 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditContac
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditHomePanelsPage','/admin/EditHomePanelsPage.jsp',3,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditUserTermsPage','/admin/EditUseTermsPage.jsp',3,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditDepositUseTermsPage','/admin/EditDepositUseTermsPage.jsp',3,null );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditBannerContactUsPage','/admin/EditBannerContactUsPage.jsp',3,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'PrivilegedUsersPage','/admin/PrivilegedUsersPage.jsp',3,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'SearchFieldsPage','/admin/SearchFieldsPage.jsp',3,null );
 

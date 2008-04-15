@@ -11,6 +11,7 @@ type/x-r-syntax r R
 application/x-stata dta DTA
 text/x-stata-syntax do DO
 application/x-spss-sav por POR sav SAV
+application/x-spss-por por POR
 text/x-spss-syntax sps SPS
 application/x-sas-transport xpt XPT cport CPORT v5x V5X v6x V6X v7x V7X
 application/x-sas-system sas7bdat SAS7BDAT sd1 SD1 sd2 SD2 sd7 SD7 ssd01 SSD01 ssd SSD ssd04 SSD04

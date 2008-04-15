@@ -1,8 +1,17 @@
 application/pdf pdf PDF
 application/msword doc DOC
 application/vnd.ms-excel xls XLS
-# subsettable types
+# Common statistical data formats
+text/tab-separated-values tab TAB
+text/xml xml XML
+text/csv csv CSV
+text/x-fixed-field dat DAT asc ASC
+application/x-rlang-transport Rdata RData rdata RDATA
+type/x-r-syntax r R
 application/x-stata dta DTA
-application/x-spss-por por POR
-application/x-spss-sav sav SAV
-application/x-rlang-transport RData Rdata rdata RDATA
+text/x-stata-syntax do DO
+application/x-spss-sav por POR sav SAV
+text/x-spss-syntax sps SPS
+application/x-sas-transport xpt XPT cport CPORT v5x V5X v6x V6X v7x V7X
+application/x-sas-system sas7bdat SAS7BDAT sd1 SD1 sd2 SD2 sd7 SD7 ssd01 SSD01 ssd SSD ssd04 SSD04
+text/x-sas-syntax sas SAS

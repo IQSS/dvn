@@ -33,6 +33,7 @@ import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.DataFileFormatType;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
+import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.util.WebStatisticsSupport;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
@@ -133,12 +134,7 @@ public class StudyFileUI implements java.io.Serializable  {
     }
      
      public String getUserFriendlyFileType() {
-        ResourceBundle fileTypeResources = ResourceBundle.getBundle("FileTypeBundle");
-        try {
-            return fileTypeResources.getString( studyFile.getFileType() );
-        } catch (MissingResourceException e) {
-            return studyFile.getFileType();
-        }            
+         return FileUtil.getUserFriendlyFileType(studyFile);          
      }
     
      public String fileDownload_action () {

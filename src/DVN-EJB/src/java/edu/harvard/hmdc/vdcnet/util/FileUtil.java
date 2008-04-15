@@ -41,6 +41,8 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import javax.activation.MimetypesFileTypeMap;
 import javax.ejb.EJBException;
 
@@ -162,6 +164,17 @@ public class FileUtil implements java.io.Serializable  {
             return originalName + ".tab";    
         }
     }   
+    
+    
+     public static String getUserFriendlyFileType(StudyFile sf) {
+        ResourceBundle fileTypeResources = ResourceBundle.getBundle("FileTypeBundle");
+        try {
+            return fileTypeResources.getString( sf.getFileType() );
+        } catch (MissingResourceException e) {
+            return sf.getFileType();
+        }            
+     }     
+    
       
     public static String getStudyFileDir() {
         String studyFileDir = System.getProperty("vdc.study.file.dir");

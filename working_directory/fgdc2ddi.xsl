@@ -15,46 +15,6 @@
             <docDscr>
             	<citation>
         	    <xsl:call-template name="titlStmt"/>
-        	    	<xsl:if test="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntperp/a:cntper) != '' or normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate) != '' or normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntorgp/a:cntorg) != '' or normalize-space(a:idinfo/a:citation/a:citeinfo/a:origin) != ''">
-                    	<prodStmt>
-                    		<xsl:if test="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntorgp/a:cntorg) != ''">
-                         		<producer>
-					<xsl:value-of select="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntorgp/a:cntorg)"/>
-                          		</producer>
-                          	</xsl:if>
-				<xsl:if test="normalize-space(a:dataqual/a:lineage/a:procstep/a:proccont/a:cntinfo/a:cntperp/a:cntper) != ''">
-					<producer>
-					<xsl:value-of select="normalize-space(a:dataqual/a:lineage/a:procstep/a:proccont/a:cntinfo/a:cntperp/a:cntper)"/>
-					</producer>
-				</xsl:if>					
-
-                    		<xsl:for-each select="a:idinfo/a:citation/a:citeinfo/a:origin">
-				<xsl:if test="normalize-space(.) != ''">
-                         		<producer>
-					<xsl:value-of select="normalize-space(.)"/>
-                          		</producer>
-                          	</xsl:if>
-                          	</xsl:for-each>
-
-
-                         	<xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate) != ''">
-                          		<prodDate>
-                          			<xsl:attribute name="date"><xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate)"/></xsl:attribute>
-                          		</prodDate>
-                          	</xsl:if>
-                          	<xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubinfo/a:pubplace) != ''">
-                          		<prodPlac>
-					<xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubinfo/a:pubplace)"/>
-                          		</prodPlac>
-                          	</xsl:if>
-                    	</prodStmt>
-                    </xsl:if>
-
-                    <distStmt>
-			<distrbtr>
-			Harvard Geospatial Library
-            		</distrbtr>
-		    </distStmt>
 
 		    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink) != ''">
 		       <holdings>
@@ -69,7 +29,6 @@
             	<citation>
         	    <xsl:call-template name="titlStmt"/>
 
-
                     <rspStmt>
                      <xsl:for-each select="a:idinfo/a:citation/a:citeinfo/a:origin">
                        <xsl:if test="normalize-space(.) != ''">
@@ -80,14 +39,41 @@
 		      </xsl:for-each>
                      </rspStmt>
 
-                    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate) != ''">
-                    	<prodStmt>
-				<prodDate>
-                          	<xsl:attribute name="date"><xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate)"/></xsl:attribute>
-                          	</prodDate>
-                    	</prodStmt>
-                    </xsl:if>
-		    
+        	     <xsl:if test="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntperp/a:cntper) != '' or normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate) != '' or normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntorgp/a:cntorg) != '' or normalize-space(a:idinfo/a:citation/a:citeinfo/a:origin) != ''">
+                     <prodStmt>
+                    	<xsl:if test="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntorgp/a:cntorg) != ''">
+			   <producer>
+			      <xsl:value-of select="normalize-space(a:idinfo/a:ptcontac/a:cntinfo/a:cntorgp/a:cntorg)"/>
+                           </producer>
+                        </xsl:if>
+			<xsl:if test="normalize-space(a:dataqual/a:lineage/a:procstep/a:proccont/a:cntinfo/a:cntperp/a:cntper) != ''">
+			    <producer>
+			       <xsl:value-of select="normalize-space(a:dataqual/a:lineage/a:procstep/a:proccont/a:cntinfo/a:cntperp/a:cntper)"/>
+			    </producer>
+			</xsl:if>					
+
+                    	<xsl:for-each select="a:idinfo/a:citation/a:citeinfo/a:origin">
+			<xsl:if test="normalize-space(.) != ''">
+			    <producer>
+			       <xsl:value-of select="normalize-space(.)"/>
+			    </producer>
+                        </xsl:if>
+                        </xsl:for-each>
+
+
+			<xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate) != ''">
+                            <prodDate>
+			       <xsl:attribute name="date"><xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubdate)"/></xsl:attribute>
+			    </prodDate>
+                        </xsl:if>
+			<xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubinfo/a:pubplace) != ''">
+			    <prodPlac>
+			       <xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:pubinfo/a:pubplace)"/>
+			    </prodPlac>
+			</xsl:if>
+		     </prodStmt>
+                     </xsl:if>
+
 
                     <distStmt>
                        <distrbtr>
@@ -101,6 +87,12 @@
                         <xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:serinfo/a:sername)"/>
 			</serName>
 		    </serStmt>
+		    </xsl:if>
+
+		    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink) != ''">
+		       <holdings>
+			  <xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink)"/>
+		       </holdings>
 		    </xsl:if>
 
                </citation>
@@ -176,15 +168,17 @@
                     </xsl:if>
                 </stdyInfo>
 
-		<xsl:if test="normalize-space(a:dataqual/a:lineage/a:procstep/a:procdesc) != ''">
+		<xsl:for-each select="a:dataqual/a:lineage/a:procstep/a:procdesc">
+		<xsl:if test="normalize-space(.) != ''">
 		   <method>
 		      <dataColl>
 		         <sampProc>
-			    <xsl:value-of select="normalize-space(a:dataqual/a:lineage/a:procstep/a:procdesc)"/>
+			    <xsl:value-of select="normalize-space(.)"/>
 			 </sampProc>
 		      </dataColl>
 		   </method>
 		</xsl:if>
+		</xsl:for-each>
 
 		<xsl:if test="normalize-space(a:idinfo/a:accconst) != '' or normalize-space(a:idinfo/a:useconst) != ''" >
 		<dataAccs>
@@ -205,15 +199,14 @@
 	    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink) != ''">
 	    <otherMat level="study">
 	    <xsl:attribute name="URI"><xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink)"/></xsl:attribute>
-	    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:geoform) != ''">
-	       <labl>
-		<xsl:value-of select="a:idinfo/a:citation/a:citeinfo/a:geoform"/>
-	       </labl>
-	    </xsl:if>
 	    <xsl:if test="normalize-space(a:distinfo/a:stdorder/a:digform/a:digtinfo/a:formname) != ''">
 	       <labl>
 		<xsl:value-of select="normalize-space(a:distinfo/a:stdorder/a:digform/a:digtinfo/a:formname)"/>
 	       </labl>
+	    </xsl:if>
+	    <xsl:if test="normalize-space(a:distinfo/a:stdorder/a:digform/a:digtinfo/a:filedec) != ''">
+	       <notes>File Decompression Technique: <xsl:value-of select="normalize-space(a:distinfo/a:stdorder/a:digform/a:digtinfo/a:filedec)"/>
+	       </notes>
 	    </xsl:if>
 	    </otherMat>
 	    </xsl:if>

@@ -36,6 +36,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -155,5 +157,9 @@ public class StudyFileEditBean implements Serializable{
         file.setFileCategory(cat);
         cat.getStudyFiles().add(file);
     }    
+    
+     public String getUserFriendlyFileType() {
+         return FileUtil.getUserFriendlyFileType(studyFile);
+     }    
 
 }

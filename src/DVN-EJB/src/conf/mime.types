@@ -21,6 +21,7 @@ text/x-sas-syntax sas SAS
 # Common image formats
 image/gif gif GIF
 image/jpeg jpeg JPEG jpg JPG jpe JPE
+image/bmp bmp BMP
 image/x-portable-bitmap pbm PBM
 image/x-portable-graymap pgm PGM
 image/png png PNG

@@ -284,7 +284,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             " and sf.id=dt.studyfile_id " +
             " and dt.id= dv.datatable_id ";
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void deleteDataVariables(Long studyId) {
 
         em.createNativeQuery(DELETE_VARIABLE_CATEGORIES).setParameter(1, studyId).executeUpdate();

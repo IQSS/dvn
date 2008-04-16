@@ -167,11 +167,15 @@ public class FileUtil implements java.io.Serializable  {
     
     
      public static String getUserFriendlyFileType(StudyFile sf) {
-        ResourceBundle fileTypeResources = ResourceBundle.getBundle("FileTypeBundle");
+        String tempFileType = sf.getFileType();
+        if (tempFileType != null && tempFileType.indexOf(";") != -1 ) {
+            tempFileType = tempFileType.substring( 0, tempFileType.indexOf(";") );
+        }
+        
         try {
-            return fileTypeResources.getString( sf.getFileType() );
+            return ResourceBundle.getBundle("FileTypeBundle").getString( tempFileType );
         } catch (MissingResourceException e) {
-            return sf.getFileType();
+            return tempFileType;
         }            
      }     
     

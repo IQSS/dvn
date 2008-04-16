@@ -317,12 +317,14 @@ public class Indexer implements java.io.Serializable  {
         addText(doc,"protocol",study.getProtocol());
         addText(doc,"authority",study.getAuthority());
         addText(doc,"globalId",study.getGlobalId());
-        List <FileCategory> fileCategories = study.getFileCategories();
-        writer = new IndexWriter(dir,getAnalyzer(),!(new File(indexDir+"/segments").exists()));    
+        List<FileCategory> fileCategories = study.getFileCategories();
+        checkLock();
+        writer = new IndexWriter(dir, getAnalyzer(), !(new File(indexDir + "/segments").exists()));
 //        writer.setMergeFactor(2);
         writer.setUseCompoundFile(true);
         writer.addDocument(doc);
         writer.close();
+        checkLock();
         writerVar = new IndexWriter(dir, getAnalyzer(), !(new File(indexDir + "/segments").exists()));
         for (int i = 0; i < fileCategories.size(); i++) {
             FileCategory fileCategory = fileCategories.get(i);
@@ -347,10 +349,12 @@ public class Indexer implements java.io.Serializable  {
             }
         }
         writerVar.close();
+        checkLock();
         writer2 = new IndexWriter(dir,new StandardAnalyzer(),!(new File(indexDir+"/segments").exists()));    
         writer2.setUseCompoundFile(true);
         writer2.addDocument(doc);
         writer2.close();
+        checkLock();
         writerStem = new IndexWriter(dir,new PositionalPorterStopAnalyzer(),!(new File(indexDir+"/segments").exists()));    
         writerStem.setUseCompoundFile(true);
         writerStem.addDocument(doc);
@@ -452,6 +456,24 @@ public class Indexer implements java.io.Serializable  {
 
         return results;
         
+    }
+
+    private void checkLock() throws IOException {
+
+        // use r to check the lock
+        if (r != null) {
+            // r is being used somewhere else
+            while (r.isLocked(dir)) {
+                ;
+            }
+        } else {
+            // open reader, check lock, close
+            r = IndexReader.open(dir);
+            while (r.isLocked(dir)) {
+                ;
+            }
+            r.close();
+        }
     }
 
 //    private List <Long> intersectionResults(final Hits results1, final List<Long> results2) throws IOException {

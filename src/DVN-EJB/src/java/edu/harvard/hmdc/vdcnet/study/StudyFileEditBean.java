@@ -56,8 +56,9 @@ public class StudyFileEditBean implements Serializable{
         this.getStudyFile().setFileType( FileUtil.determineFileType(file) );
         this.getStudyFile().setSubsettable(this.getStudyFile().getFileType().equals("application/x-stata") || 
                                         this.getStudyFile().getFileType().equals("application/x-spss-por") || 
-                                        this.getStudyFile().getFileType().equals("application/x-spss-sav") ||
-                                        this.getStudyFile().getFileType().equals("application/x-rlang-transport") );
+                                        this.getStudyFile().getFileType().equals("application/x-spss-sav") );
+                                        // not yet supported as subsettable
+                                        //this.getStudyFile().getFileType().equals("application/x-rlang-transport") );
 
         // replace extension with ".tab" if subsettable
         this.getStudyFile().setFileName(this.getStudyFile().isSubsettable() ? FileUtil.replaceExtension(this.getOriginalFileName()): this.getOriginalFileName());                

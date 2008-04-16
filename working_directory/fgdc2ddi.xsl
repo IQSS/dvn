@@ -17,8 +17,7 @@
         	    <xsl:call-template name="titlStmt"/>
 
 		    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink) != ''">
-		       <holdings>
-			  <xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink)"/>
+		       <holdings><xsl:attribute name="URI"><xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink)"/></xsl:attribute>
 		       </holdings>
 		    </xsl:if>
 
@@ -90,8 +89,7 @@
 		    </xsl:if>
 
 		    <xsl:if test="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink) != ''">
-		       <holdings>
-			  <xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink)"/>
+		       <holdings><xsl:attribute name="URI"><xsl:value-of select="normalize-space(a:idinfo/a:citation/a:citeinfo/a:onlink)"/></xsl:attribute>
 		       </holdings>
 		    </xsl:if>
 

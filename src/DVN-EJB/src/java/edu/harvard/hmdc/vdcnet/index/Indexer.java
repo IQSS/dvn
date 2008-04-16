@@ -460,18 +460,15 @@ public class Indexer implements java.io.Serializable  {
 
     private void checkLock() throws IOException {
 
+        boolean isLongLock = false;
         // use r to check the lock
         if (r != null) {
-            // r is being used somewhere else
-            while (r.isLocked(dir)) {
-                ;
-            }
+        // r is being used somewhere else
+            isLongLock = spin();
         } else {
             // open reader, check lock, close
             r = IndexReader.open(dir);
-            while (r.isLocked(dir)) {
-                ;
-            }
+            isLongLock = spin();
             r.close();
         }
     }
@@ -1016,5 +1013,29 @@ public class Indexer implements java.io.Serializable  {
 
     public String getIndexDir() {
         return indexDir;
+    }
+
+    private boolean spin() throws IOException {
+        long count = 0;
+        long startTime = (new Date()).getTime();
+        boolean isLongLock = false;
+        while (r.isLocked(dir)) {
+            long elapsed = 0;
+            if ((count++ % 10000) == 0) {
+                long now = (new Date()).getTime();
+                elapsed = now - startTime;
+                if (elapsed > 5000) {
+                    if (!isLongLock) {
+                        logger.info("index has been locked for over " + elapsed / 1000 + " seconds");
+                        isLongLock = true;
+                    }
+                }
+            }
+            // if the lock is longer than two minutes quit and allow lock exception to be thrown
+            if (elapsed > 120000) {
+                break;
+            }
+        }
+        return isLongLock;
     }
 }

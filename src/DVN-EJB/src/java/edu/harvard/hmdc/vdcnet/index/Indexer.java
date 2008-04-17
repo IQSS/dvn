@@ -105,16 +105,11 @@ public class Indexer implements java.io.Serializable  {
     Directory dir;
     String indexDir = "index-dir";
     int dvnMaxClauseCount = 4096;
-    long lockCheckTimeout = 120000;
     
     
     /** Creates a new instance of Indexer */
     public Indexer() {
         String dvnIndexLocation = System.getProperty("dvn.index.location");
-        String lockCheckTimeoutStr = System.getProperty("dvn.index.lockCheckTimeout");
-        if ( lockCheckTimeoutStr != null){
-            lockCheckTimeout = Long.parseLong(lockCheckTimeoutStr);
-        }
         File locationDirectory = null;
         if (dvnIndexLocation != null){
             locationDirectory = new File(dvnIndexLocation);
@@ -139,7 +134,7 @@ public class Indexer implements java.io.Serializable  {
             ex.printStackTrace();
         }
     }
-
+    
     protected void setup() throws IOException {
         File indexDirectory = new File(indexDir);
         dir = FSDirectory.getDirectory(indexDir,!indexDirectory.exists());
@@ -159,24 +154,9 @@ public class Indexer implements java.io.Serializable  {
     
     public void deleteDocument(long studyId){
         try {
-            /*
             IndexReader reader = IndexReader.open(dir);
             reader.deleteDocuments(new Term("id",Long.toString(studyId)));
             reader.close();
-             */
-            if (r != null) {
-                if (!r.isCurrent()) {
-                    while (r.isLocked(dir)) {
-                        ;
-                    }
-                    r = IndexReader.open(dir);
-                    r.deleteDocuments(new Term("id", Long.toString(studyId)));
-                }
-            } else {
-                r = IndexReader.open(dir);
-                r.deleteDocuments(new Term("id", Long.toString(studyId)));
-            }
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -337,14 +317,12 @@ public class Indexer implements java.io.Serializable  {
         addText(doc,"protocol",study.getProtocol());
         addText(doc,"authority",study.getAuthority());
         addText(doc,"globalId",study.getGlobalId());
-        List<FileCategory> fileCategories = study.getFileCategories();
-        checkLock();
-        writer = new IndexWriter(dir, getAnalyzer(), !(new File(indexDir + "/segments").exists()));
+        List <FileCategory> fileCategories = study.getFileCategories();
+        writer = new IndexWriter(dir,getAnalyzer(),!(new File(indexDir+"/segments").exists()));    
 //        writer.setMergeFactor(2);
         writer.setUseCompoundFile(true);
         writer.addDocument(doc);
         writer.close();
-        checkLock();
         writerVar = new IndexWriter(dir, getAnalyzer(), !(new File(indexDir + "/segments").exists()));
         for (int i = 0; i < fileCategories.size(); i++) {
             FileCategory fileCategory = fileCategories.get(i);
@@ -369,12 +347,10 @@ public class Indexer implements java.io.Serializable  {
             }
         }
         writerVar.close();
-        checkLock();
         writer2 = new IndexWriter(dir,new StandardAnalyzer(),!(new File(indexDir+"/segments").exists()));    
         writer2.setUseCompoundFile(true);
         writer2.addDocument(doc);
         writer2.close();
-        checkLock();
         writerStem = new IndexWriter(dir,new PositionalPorterStopAnalyzer(),!(new File(indexDir+"/segments").exists()));    
         writerStem.setUseCompoundFile(true);
         writerStem.addDocument(doc);
@@ -476,21 +452,6 @@ public class Indexer implements java.io.Serializable  {
 
         return results;
         
-    }
-
-    private void checkLock() throws IOException {
-
-        boolean isLongLock = false;
-        // use r to check the lock
-        if (r != null) {
-        // r is being used somewhere else
-            isLongLock = spin();
-        } else {
-            // open reader, check lock, close
-            r = IndexReader.open(dir);
-            isLongLock = spin();
-            r.close();
-        }
     }
 
 //    private List <Long> intersectionResults(final Hits results1, final List<Long> results2) throws IOException {
@@ -1033,29 +994,5 @@ public class Indexer implements java.io.Serializable  {
 
     public String getIndexDir() {
         return indexDir;
-    }
-
-    private boolean spin() throws IOException {
-        long count = 0;
-        long startTime = (new Date()).getTime();
-        boolean isLongLock = false;
-        while (r.isLocked(dir)) {
-            long elapsed = 0;
-            if ((count++ % 10000) == 0) {
-                long now = (new Date()).getTime();
-                elapsed = now - startTime;
-                if (elapsed > 5000) {
-                    if (!isLongLock) {
-                        logger.info("index has been locked for over " + elapsed / 1000 + " seconds");
-                        isLongLock = true;
-                    }
-                }
-            }
-            // if the lock is longer than two minutes quit and allow lock exception to be thrown
-            if (elapsed > lockCheckTimeout) {
-                break;
-            }
-        }
-        return isLongLock;
     }
 }

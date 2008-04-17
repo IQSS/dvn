@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1651,14 +1652,14 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         logger.info("Begin doImportStudy");
         
         Study study = null;
+        Map<String,String> globalIdComponents = null; // used if this is an update of a harvested study
+        boolean isHarvest = (harvestIdentifier != null);
+        
         VDC vdc = em.find(VDC.class, vdcId);
         VDCUser creator = em.find(VDCUser.class, userId);        
         
-        boolean isHarvest = (harvestIdentifier != null);
-        boolean registerHandle = true;
         
-
-        // Step 1: determine format and transform if necessary
+       // Step 1: determine format and transform if necessary
         File ddiFile = xmlFile;
         boolean fileTransformed = false;
 
@@ -1675,10 +1676,17 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             if (study != null) {
                 if (!study.isIsHarvested()) {
                     // This study actually belongs to the local DVN, so don't continue with harvest
+                    // TODO: this check is probably no longer needed, now that we get study by harvestIdentifier
                     throw new EJBException("This study originated in the local DVN - we don't need to harvest it.");
                 }
                 
-                registerHandle = false; // this is an update, study should already be registered
+                // store old global ID components
+                globalIdComponents = new HashMap<String,String>();
+                globalIdComponents.put( "globalId", study.getGlobalId() );
+                globalIdComponents.put( "protocol", study.getProtocol() );
+                globalIdComponents.put( "authority", study.getAuthority() );
+                globalIdComponents.put( "studyId", study.getStudyId() );
+                
                 clearStudy(study);           
             }
         } 
@@ -1706,7 +1714,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             study.setHarvestDVNTermsOfUse(null);
         }
         setDisplayOrders(study);
-        registerHandle = determineId(study, vdc) && registerHandle;
+        boolean registerHandle = determineId(study, vdc, globalIdComponents);
 
         
         // step 5: upload files
@@ -1733,7 +1741,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return study;
     }
 
-    private boolean determineId(Study study, VDC vdc) {
+    private boolean determineId(Study study, VDC vdc, Map<String,String> globalIdComponents) {
         VDCNetwork vdcNetwork = vdcNetworkService.find();
         String protocol = vdcNetwork.getProtocol();
         String authority = vdcNetwork.getAuthority();
@@ -1745,19 +1753,27 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         
         
         if (vdc.getHarvestingDataverse() != null) { 
-            if (vdc.getHarvestingDataverse().getHandlePrefix() != null) {
+            if (vdc.getHarvestingDataverse().getHandlePrefix() != null) { // FOR THIS HARVESTED DATAVERSE, WE TAKE CARE OF HANDLE GENERATION
                 if (globalId != null) {
                     throw new EJBException("DDI should not specify a handle, but does.");
                 }      
+
+                if (globalIdComponents != null) {
+                    study.setProtocol( globalIdComponents.get("protocol") );
+                    study.setAuthority( globalIdComponents.get("authority") );        
+                    study.setStudyId( globalIdComponents.get("studyId") );
+                } else {
+                    boolean generateRandom = vdc.getHarvestingDataverse().isGenerateRandomIds();
+                    authority = vdc.getHarvestingDataverse().getHandlePrefix().getPrefix();
+                    generateHandle(study, protocol, authority, generateRandom);
+                    return true;
+                }
                 
-                authority = vdc.getHarvestingDataverse().getHandlePrefix().getPrefix();
-                boolean generateRandom = vdc.getHarvestingDataverse().isGenerateRandomIds();
-                generateHandle(study, protocol, authority, generateRandom);
-                return true;
-                
-            } else {
-                if (globalId == null) {
+            } else { 
+                if (globalId == null) { // FOR THIS HARVESTED DATAVERSE, THE DDI SHOULD SPECIFY THE HANDLE
                     throw new EJBException("DDI should specify a handle, but does not.");                
+                } else if ( globalIdComponents != null && !globalId.equals( globalIdComponents.get("globalId") ) ) {
+                    throw new EJBException("DDI specifies a handle that is different from current handle for this study.");
                 }
             }
             

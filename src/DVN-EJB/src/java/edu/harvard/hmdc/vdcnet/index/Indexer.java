@@ -105,11 +105,16 @@ public class Indexer implements java.io.Serializable  {
     Directory dir;
     String indexDir = "index-dir";
     int dvnMaxClauseCount = 4096;
+    long lockCheckTimeout = 120000;
     
     
     /** Creates a new instance of Indexer */
     public Indexer() {
         String dvnIndexLocation = System.getProperty("dvn.index.location");
+        String lockCheckTimeoutStr = System.getProperty("dvn.index.lockCheckTimeout");
+        if ( lockCheckTimeoutStr != null){
+            lockCheckTimeout = Long.parseLong(lockCheckTimeoutStr);
+        }
         File locationDirectory = null;
         if (dvnIndexLocation != null){
             locationDirectory = new File(dvnIndexLocation);
@@ -1032,7 +1037,7 @@ public class Indexer implements java.io.Serializable  {
                 }
             }
             // if the lock is longer than two minutes quit and allow lock exception to be thrown
-            if (elapsed > 120000) {
+            if (elapsed > lockCheckTimeout) {
                 break;
             }
         }

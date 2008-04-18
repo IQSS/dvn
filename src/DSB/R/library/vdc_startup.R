@@ -2,6 +2,7 @@ library(foreign)
 library(stats)
 library(methods)
 library(UNF)
+library(R2HTML)
 
 ############ parameters ########################
 
@@ -1168,3 +1169,336 @@ checkBinaryResponse<-function(binx){
     }
     invisible(binx)
 }
+
+
+#######################################################################
+univarStatHtmlBody<-function(dtfrm, whtml, analysisoptn, standalone=F){
+    # Description
+    # 
+    # arguments
+    # dtfrm          variable furnished with attributes
+    # tmpimgfile    temporary image file prefix: =$SRVRCGI=$SERVER$CGIDIR
+    # analysisoptn  analysis option
+    # nrows         local variable
+    # tmphtmlfile   temporary html file
+    # file          tmphtmlfile 
+    
+    DBG<-TRUE
+    DBG<-FALSE
+
+    # open the connection
+    #whtml<-file(tmphtmlfile, "w")
+    #on.exit(close(whtml))
+    
+    # color parameters
+    # legend: c(1:background, 2:table header, 3: table body(o), 4: table body(e))
+    # clschm <-c("#FFFFFF", "#CCFFCC","#e0ffff","#f0fff0") # green-based palette
+    # blue-based palette
+    #clschm <-c("#FFFFFF", "#e6e6fa","#ffffff","#f5f5f5")
+    clschm <-c("dvnUnvStatTbl", "dvnUnvStatTblHdr","dvnUnvStatTblRowO","dvnUnvStatTblRowE")
+    
+    # table parameters
+    # legend: c(border, cellspacing)
+     tblprm <-c(0, 2)
+    
+    #cat("\nEntered the function univarStatHtml\n")
+    
+    # values for local tests
+    # set localtest 0 after local tests
+    localtest<-TRUE
+    localtest<-FALSE
+    if (localtest){
+        tmpimgfile<-c("")
+        imgprfx1<-c("<img src=\"")
+        imgprfx2<-c("")
+        univarstathdr<-c("Valid Cases", "Invalid Cases(NAs)", "Total", "Mean", "Standard deviation", "Skewness", "Kurtosis", "Coefficient of variation", "Mode", "Minimum","1st Quartile","Median","3rd Quartile","Maximum","Range","Interquartile Range","Normality Test:Shapiro-Wilk Statistic", "(Shapiro-Wilk Statistic: p value)")
+    }
+    if (standalone) {
+        imgflprfx<-paste(imgprfx1,tmpimgfile,imgprfx2,sep="")
+    } else {
+        imgflprfx<-"<img src=\""
+    }
+    # constant for rendering a table for univariate statistics(continuous vars only)
+    uslstlen<-length(univarstathdr)
+    nrows <-ceiling(uslstlen/2)
+    blnkcell<-uslstlen%%2==TRUE
+    
+    
+    nameset<-names(dtfrm)
+    varlabelset<-attr(dtfrm,"var.labels")
+    CHRTLST<-attr(dtfrm, "univarChart.lst")
+    STATLST<-attr(dtfrm, "univarStat.lst")
+    VARTYPE<-attr(dtfrm, "var.type")
+    VALINDEX<-attr(dtfrm, "val.index")
+    VALTABLE<-attr(dtfrm, "val.table")
+    
+    
+    pt.varheader<-function(namesi, varlabelsi=NA) {h3<-paste("<h3>", namesi, if (!is.na(varlabelsi)) {paste(": ", varlabelsi, sep="")}, "</h3>\n",sep="");h3}
+
+    ###################
+    # continuous case
+    univarStatHtml.cntn<-function(statlst, imgfllst, cmbntn, namesi, varlabelsi){
+
+        # statlst   STATLST[[as.character(i)]]
+        # imgfllst  imgfllst=CHRTLST[[as.character(i)]]
+        # cmbntn    analysisoptn
+        # function definition sections
+
+        # create the first tr tag: chart part
+        pt.tr1<-function(imgfllst, cmbntn){
+            tr1<-""
+            if (cmbntn[2]) {
+
+                if (cmbntn[1]) { colspan<-" colspan=\"2\"" } else { colspan<-""}
+
+                # both
+
+                if(!is.null(imgfllst[["hstbx"]])){
+                    tr1.l<-paste("<td",colspan,">\n",imgflprfx,imgfllst[["hstbx"]],imgsffx1,"</td>\n",sep="")
+                } else {
+                    tr1.l<-paste("<td",colspan,">\n<p><B><font color=red>Histogram/Boxplot Not Available</font></B></p>\n</td>\n")
+                }
+
+                if(!is.null(imgfllst[["qqplt"]])) {
+                    tr1.r<-paste("<td",colspan,">\n",imgflprfx,imgfllst[["qqplt"]],imgsffx1,"</td>\n",sep="")
+                } else {
+                    tr1.r<-paste("<td",colspan,">\n<p><B><font color=red>Normal Q-Q plot Not Available</font></B></p>\n</td>\n",sep="")
+                }
+
+                tr1<-paste("<tr>\n",tr1.l,tr1.r,"</tr>\n",sep="")
+            }
+            tr1
+        }
+
+        # create the 2nd and thereafter tr tags: statistics part
+        pt.tr2<-function(statlst, cmbntn){
+            tr2<-""
+            if (cmbntn[1]) {
+                # statistics on
+                # table header
+                tr2<-paste("<tr class=\"",clschm[2],"\">\n<td align=\"left\"><b>Statistic</b></td><td align=\"right\"><b>Value</b></td>\n<td align=\"left\"><b>Statistic</b></td><td align=\"right\"><b>Value</b></td>\n</tr>\n",sep="")
+
+                # statistical data
+                # when # of statistics is not even
+                if (blnkcell){ univarstathdr[length(statlst)+1]<-"&nbsp;"}
+
+                # table body
+                for (j in 1:nrows) {
+                    if (j%%2==FALSE) colorprm <- clschm[3] else colorprm <-clschm[4]
+
+                    tr2<-paste(tr2, 
+                    "<tr class=\"",colorprm,"\">\n",
+                    "<td align=\"left\">",univarstathdr[j],"</td>\n", 
+                    "<td align=\"right\">", prettyNum(statlst[[j]]),"</td>\n", 
+                    "<td align=\"left\">",univarstathdr[j+nrows],"</td>\n", 
+                    "<td align=\"right\">", if ( (j==nrows) & (blnkcell) ) {"&nbsp;"} else {prettyNum(statlst[[j+nrows]])},"</td>\n</tr>\n", sep="")
+                }
+            }
+            tr2
+        }
+
+        # create the chart/statistics table segment
+        pt.tbl<-function(statlst=statlst,cmbntn=cmbntn,imgfllst=imgfllst){
+            tr1<-pt.tr1(imgfllst=imgfllst, cmbntn=cmbntn)
+            tr2<-pt.tr2(statlst=statlst, cmbntn=cmbntn)
+            tbl<-paste("<center>\n<table border=\"",tblprm[1],"\" class=\"",clschm[1],"\" cellspacing=\"",tblprm[1],"\" >\n",tr1,tr2,"</table>\n</center>\n",sep="")
+            tbl
+        }
+
+        # create per variable html segment
+        pt.varunit.cntn<-function(vhdr,vcntnts){varunit<-paste(vhdr,vcntnts,"<hr/>", sep="");varunit}
+        ## end of function definitions ##
+
+        # implementation
+
+        pttbl<-pt.tbl(statlst=statlst, imgfllst=imgfllst, cmbntn=cmbntn)
+        ptvarheader<-pt.varheader(namesi=namesi, varlabelsi=varlabelsi)
+        ptvarunitc<-pt.varunit.cntn(vhdr=ptvarheader, vcntnts=pttbl)
+
+        ptvarunitc
+    } # end of continuous case
+    
+    
+    ######################
+    # discrete case
+
+    univarStatHtml.dscrt<-function(statlst, imgfllst, cmbntn, namesi, varlabelsi, vltbl) {
+        # statlst   STATLST[[as.character(i)]]
+        # imgfllst  imgfllst=CHRTLST[[as.character(i)]]
+        # cmbntn    analysisoptn
+        # function definition sections
+
+        #statlst[["freqtbl"]]
+        # mode and median even if a freq table is not available 
+        nrw<-3
+        # add one for "total" row
+        #if (!is.na(statlst$freqtbl)) {nrw<-length(statlst$freqtbl)+1+nrw}
+
+        if (class(statlst$freqtbl)=="table") {nrw<-length(statlst$freqtbl)+nrw}
+        # nrws: rowspan parameter value if the chart option is chosen
+        nrws<-nrw+1
+
+        pt.tr1<-function(imgfllst, cmbntn){
+            try({
+            # tr1.l: chart part
+            tr1.l<-""
+            sprsstr1r<-FALSE
+            if (cmbntn[2]) {
+                rowspan<-""
+                if (cmbntn[1]) { rowspan<-paste(" rowspan=\"",nrws,"\"",sep="") }
+
+                if(!is.na(imgfllst[["brchrt"]])){
+                    tr1.l<-paste("<td",rowspan," valign=\"top\">\n",imgflprfx,imgfllst[["brchrt"]], imgsffx1, "</td>\n", sep="")
+                } else {
+                    if (class(statlst$freqtbl)=="table"){
+                        rowspan<-paste(" rowspan=\"",nrws,"\"",sep="")
+                        tr1.l<-paste("<td",rowspan," valign=\"top\">\n<p><B><small>The number of categories is more than 10 or equal to 1.<br>Table substitutes for Bar plot</small></B></p>\n</td>\n",sep="")
+                        cmbntn[1]<-1
+                    } else {
+                        tr1.l<-paste("<td colspan=\"3\" valign=\"top\">\n<p><B><small>(The number of categories is more than 50 or equal to 1.<br>A bar plot or frequency table is not shown here</small></B></p>\n</td>\n",sep="")
+                        sprsstr1r<-TRUE
+                    }
+                }
+            }
+            # tr1.r: freq/pcnt table header part
+            tr1.r<-""
+            if (cmbntn[1]) {
+                if (class(statlst$freqtbl)=="table"){
+                    tr1.r<-paste("<td align=\"left\" class=\"",clschm[2],"\" ><b>Value: Value Label</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Freq</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Percent</b></td>\n",sep="")
+                } else if (!sprsstr1r){
+                    tr1.r<-paste("<td align=\"left\" colspan=\"3\" valign=\"top\">\n<p><B><small>The number of categories is more than 50. Frequency/Percentage tables are not shown here</small></B></p>\n</td>\n",sep="")
+                }
+            }
+            tr1<-paste("<tr>\n",tr1.l,tr1.r,"</tr>\n",sep="")
+            }) # end of try
+        }
+
+        # create the 2nd and thereafter tr tags: statistics part
+        pt.tr2<-function(statlst, cmbntn, vltbl, imgfllst){
+            try({
+            tr2<-""
+            tableon<-FALSE
+            if ( cmbntn[2]){
+                if (is.na(imgfllst[["brchrt"]])){
+                    tableon<-TRUE
+                }
+            }
+            if (cmbntn[1] | tableon) {
+
+                if (class(statlst$freqtbl)=="table") {tblkey<-names(statlst$freqtbl)}
+                # if freqtbl is NA, tblkey becomes NULL
+                for (j in 1:nrw) {
+                    if (j%%2==FALSE) { colorprm <- clschm[3]} else {colorprm <-clschm[4]}
+                    if (j < (nrw -2)) {
+
+                        catgrylbl<-""
+                        if (!is.null(vltbl)){
+                            if(!is.null(vltbl[[tblkey[j]]])) {
+                                catgrylbl<-paste("(",vltbl[[tblkey[j]]],")",sep="")
+                            }
+                        }
+                        tr2<-paste(tr2, "<tr class=\"",colorprm,"\">\n<td align=\"left\">",tblkey[j],catgrylbl,"</td>\n<td align=\"right\">",statlst$freqtbl[[j]],"</td>\n<td align=\"right\">", signif(statlst$pcnttbl[[j]],3),"</td>\n</tr>\n", sep="")
+
+                    } else if (j == (nrw -2)) {
+                        #cat("entering the total row\n")
+                        tr2<-paste(tr2, "<tr class=\"",colorprm,"\">\n<td align=\"left\">Total</td>\n<td align=\"right\">",statlst$Vald+statlst$Invald,"</td>\n<td align=\"right\">100</td>\n</tr>\n", sep="")
+
+                    } else if (j == (nrw -1)) {
+                        # median
+                        #cat("entering the median\n")
+                        median.vl<- "Not Available"
+                        median.lbl<-""
+                        if (!is.null(statlst$Median)) {
+                            median.vl<- as.character(statlst$Median)
+                            if (!is.null(vltbl) && (nrw>3)){
+                                if (!is.null(vltbl[[median.vl]])) {
+                                    median.lbl<-paste("(",vltbl[[median.vl]],")",sep="")
+                                }
+                            }
+                        }
+
+                        tr2<-paste(tr2,"<tr class=\"",colorprm,"\">\n<td align=\"left\">Median</td>\n<td align=\"right\">",median.vl,"</td>\n<td align=\"right\">",median.lbl,"</td>\n</tr>\n", sep="")
+
+                    } else if (j == nrw) {
+                        # mode
+                        #cat("entering the Mode\n")
+                        mode.vl<-"Not Available"
+                        mode.lbl<-""
+                        if (!is.null(statlst$Mode)) {
+                            mode.vl<-statlst$Mode
+                            if (!is.null(vltbl) && (nrw>3) ) {
+                                if (!is.null(vltbl[[mode.vl]])) {
+                                    mode.lbl<-paste("(",vltbl[[mode.vl]], ")", sep="")
+                                }
+                            }
+                        }
+
+                        tr2<-paste(tr2,"<tr class=\"",colorprm,"\">\n<td align=\"left\">Mode</td>\n<td align=\"right\">",mode.vl,"</td>\n<td align=\"right\">",mode.lbl,"</td>\n</tr>\n", sep="")
+                    }
+                }
+            }
+            tr2
+            }) # end of try
+        }
+
+        # create the chart/statistics table segment
+        pt.tbl<-function(statlst=statlst,cmbntn=cmbntn,imgfllst=imgfllst,vltbl=vltbl){
+            try({
+            tr1<-pt.tr1(imgfllst=imgfllst, cmbntn=cmbntn)
+            tr2<-pt.tr2(statlst=statlst, cmbntn=cmbntn, vltbl=vltbl,imgfllst=imgfllst)
+            tbl<-paste("<center>\n<table border=\"",tblprm[1],"\" class=\"",clschm[1],"\" cellspacing=\"",tblprm[1],"\" >\n",tr1,tr2,"</table>\n</center>\n",sep="")
+            tbl
+            })
+        }
+
+        # create per variable html segment
+        pt.varunit.dscrt<-function(vhdr,vcntnts){varunit<-paste(vhdr,vcntnts,"<hr/>", sep="");varunit}
+        
+        ## end of function definitions ##
+
+
+        # implementation
+        try({
+        #cat("enters the discrete html body function\n", sep="")
+        pttbl<-pt.tbl(statlst=statlst, imgfllst=imgfllst, cmbntn=cmbntn, vltbl=vltbl)
+
+        ptvarheader<-pt.varheader(namesi=namesi, varlabelsi=varlabelsi)
+        ptvarunitd<-pt.varunit.dscrt(vhdr=ptvarheader, vcntnts=pttbl)
+
+        ptvarunitd
+        })
+    } # end of discrete case
+    
+    
+    
+    # main 
+    # implementation
+        rawVarName <- nameset
+        if (length(attr(dtfrm, "Rsafe2raw"))>0){
+            Rsafe2raw <- attr(dtfrm, "Rsafe2raw")
+            for (i in 1:length(nameset)){
+                if (!is.null(Rsafe2raw[[nameset[i]]])){
+                    rawVarName[i] <-  Rsafe2raw[[nameset[i]]];
+                }
+            }
+        }
+    
+    for (i in 1:dim(dtfrm)[2]){
+        try({
+        if (VARTYPE[i]==2) {
+            varsgmnt.c<-univarStatHtml.cntn(statlst=STATLST[[as.character(i)]], imgfllst=CHRTLST[[as.character(i)]], cmbntn=analysisoptn, namesi=rawVarName[i], varlabelsi=varlabelset[i])
+            #cat(file=whtml, varsgmnt.c, sep="")
+            HTML(file=whtml, varsgmnt.c)
+        } else {
+            if (DBG) {cat(i,"-th var before entering the discrete html function\n", sep="")}
+            #cat("check the value table=",VALTABLE[[VALINDEX[[i]]]],"\n", sep="")
+            if (is.null(VALINDEX[[as.character(i)]])){valtable<-NULL} else {valtable<-VALTABLE[[VALINDEX[[as.character(i)]]]]}
+            varsgmnt.d<-univarStatHtml.dscrt(statlst=STATLST[[as.character(i)]], imgfllst=CHRTLST[[as.character(i)]], cmbntn=analysisoptn, namesi=rawVarName[i], varlabelsi=varlabelset[i], vltbl=valtable)
+            #cat(file=whtml, varsgmnt.d, sep="")
+            HTML(file=whtml, varsgmnt.d)
+        }
+        }) # end of try
+    } # end of var-wise for-loop
+    
+
+} #end of the function univarStatHtml

@@ -387,7 +387,7 @@ if ($dataURL) {
 	}
 	else
 	{
-	    $dataURLG .= '&noVarHeader'; 
+	    $cgi_ParamHash->{'noVarHeader'} = 1; 
 
 	    # Detect and recycle some parameters sent to us by the 
 	    # application (these are added to URLs for accounting/logging
@@ -416,11 +416,19 @@ if ($dataURL) {
 	if ( $cgiParams ) 
 	{
 	    chop $cgiParams; 
-	    $cgiParams = "?" . $cgiParams; 
+	    ###$cgiParams = "?" . $cgiParams; 
 	}
 	
 	if (length($dataURLG) + length($cgiParams) < $MAX_URL) { 
-	    $dataURLG .= $cgiParams; 
+	    if ( $dataURLG =~/\?/ )
+	    {
+		$dataURLG .= ( '&' . $cgiParams ); 
+	    }
+	    else
+	    {
+		$dataURLG .= ( '?' . $cgiParams ); 
+	    }
+
 	    $request = HTTP::Request->new('GET', $dataURLG );
 	    $logger->vdcLOG_info( 'VDC::DSB', 'Disseminate',  $dataURLG . "(GET)" );
 	} else {

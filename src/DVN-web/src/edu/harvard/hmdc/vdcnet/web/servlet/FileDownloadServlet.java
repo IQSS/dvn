@@ -387,7 +387,7 @@ public class FileDownloadServlet extends HttpServlet{
 				String studyid        = null; 
 				String remotefileid   = null; 
 
-				String regexpJsession = "jsessionid=([0-9a-f]*)\""; 
+				String regexpJsession = "jsessionid=([^\"?&]*)"; 
 				String regexpViewState = "ViewState\" value=\"([^\"]*)\""; 
 				String regexpStudyId = "studyId\" value=\"([0-9]*)\""; 
 				String regexpRemoteFileId = "fileId=([0-9]*)\"";

@@ -379,8 +379,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
 		    originalPhysicalFile.delete();
 		}
 
-               // Delete DataVariables and related data thru nativeSQL:
-                studyService.deleteDataVariables(f.getDataTable().getId());
+               // TODO: Delete DataVariables and related data thru nativeSQL:
              
            
                  

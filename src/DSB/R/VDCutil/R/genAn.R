@@ -49,7 +49,7 @@ VDCgenAnalysis<-function(
       }
 
       # add vdc values labels and MV, recode to factors
-      data<-recodeVDCdf(data)
+      #data<-recodeVDCdf(data)
 
       # add special to formula if necessary 
       formula = formulaAddSpecial(formula,model)
@@ -205,9 +205,11 @@ formulaAddSpecial<-function(formula,model) {
         formula[[2]][[1]]=="list"
         )  {
         formula[[2]][[1]]=as.name(modelSpecial)
+        attr(formula,".Environment") <-  globalenv()
     } else  if ((!is.null(modelSpecial))  && 
         length(formula[[2]]==1)) {
         formula[[2]]=call(modelSpecial,formula[[2]])
+        attr(formula,".Environment") <-  globalenv()
     } 
     return(formula)
 }

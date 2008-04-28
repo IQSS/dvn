@@ -1112,9 +1112,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         Study study = doImportStudy(xmlFile, vdc.getHarvestingDataverse().getHarvestFormatType().getId(), vdcId, userId, harvestIdentifier, null);
 
         // new create exports files for these studies
-        for (String exportFormat : studyExporterFactory.getExportFormats()) {
-            studyService.exportStudyToFormat(study, exportFormat);
-        }   
+       
+        studyService.exportStudy(study);
+         
 
         return study;
     }

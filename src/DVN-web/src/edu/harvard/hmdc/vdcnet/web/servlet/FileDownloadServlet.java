@@ -65,6 +65,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.net.URLEncoder;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 
@@ -267,7 +268,7 @@ public class FileDownloadServlet extends HttpServlet{
 			
 		    } catch (IOException ex) {
 			// return 404 and
-			// generate generic error messag:
+			// generate generic error message:
 			
 			status = 404; 
 			createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
@@ -322,7 +323,11 @@ public class FileDownloadServlet extends HttpServlet{
 		    int status = 200;
 
 		    try { 
-			method = new GetMethod ( file.getFileSystemLocation() );
+			String remoteFileUrl = file.getFileSystemLocation(); 
+			if ( remoteFileUrl != null ) {
+			    remoteFileUrl = remoteFileUrl.replaceAll (" ", "+"); 
+			}
+			method = new GetMethod ( remoteFileUrl);
 
 			// normally, the HTTP client follows redirects 
 			// automatically, so we need to explicitely tell it
@@ -457,8 +462,8 @@ public class FileDownloadServlet extends HttpServlet{
 				    // And now, let's try and download the file
 				    // again: 
 
+				    method = new GetMethod ( remoteFileUrl);
 
-				    method = new GetMethod (file.getFileSystemLocation()); 
 				    method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
 				    status = getClient().executeMethod(method);
 				}
@@ -484,7 +489,7 @@ public class FileDownloadServlet extends HttpServlet{
 			// generate an HTML-ized response with a correct 
 			// 403/FORBIDDEN code   
 
-			createErrorResponse403(res);
+			createErrorResponse200(res);
 			if (method != null) { method.releaseConnection(); }
 			return;
 		    } 
@@ -646,7 +651,7 @@ public class FileDownloadServlet extends HttpServlet{
 			
 			} catch (IOException ex) {
 			    // return 404 and
-			    // generate generic error messag:
+			    // generate generic error message:
 
 			    status = 404; 
 			    createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
@@ -1033,6 +1038,10 @@ public class FileDownloadServlet extends HttpServlet{
 
     private void createErrorResponse403(HttpServletResponse res) {
         createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this file.");
+    }
+
+    private void createErrorResponse200(HttpServletResponse res) {
+        createErrorResponseGeneric(res, 200, "You do not have permission to download this file.");
     }
 
     private void createErrorResponse404(HttpServletResponse res) {

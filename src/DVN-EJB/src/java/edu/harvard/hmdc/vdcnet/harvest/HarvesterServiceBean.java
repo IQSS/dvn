@@ -186,6 +186,19 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         removeHarvestTimer(dataverse);
         createHarvestTimer(dataverse);
     }
+    
+    public List<HarvestTimerInfo> getHarvestTimers() {
+        ArrayList timers = new ArrayList<HarvestTimerInfo>();
+        // Clear dataverse timer, if one exists 
+        for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
+            Timer timer = (Timer) it.next();
+            if (timer.getInfo() instanceof HarvestTimerInfo) {
+                HarvestTimerInfo info = (HarvestTimerInfo) timer.getInfo();
+                timers.add(info);
+            }
+        }    
+        return timers;
+    }
 
     private void createHarvestTimer(HarvestingDataverse dataverse) {
         if (dataverse.isScheduled()) {
@@ -351,8 +364,12 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         OAIPMHtype oaiObj = (OAIPMHtype) unmarshalObj.getValue();
 
         if (oaiObj.getError() != null && oaiObj.getError().size() > 0) {
-            handleOAIError(hdLogger, oaiObj, "calling listIdentifiers, oaiServer= " + dataverse.getOaiServer() + ",from=" + from + ",until=" + until + ",encodedSet=" + encodedSet + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix());
-            throw new EJBException("Received OAI Error response calling ListIdentifiers");
+            if (oaiObj.getError().get(0).getCode().equals(OAIPMHerrorcodeType.NO_RECORDS_MATCH)) {
+                 hdLogger.info("ListIdentifiers returned NO_RECORDS_MATCH - no studies found to be harvested.");
+            } else {
+                handleOAIError(hdLogger, oaiObj, "calling listIdentifiers, oaiServer= " + dataverse.getOaiServer() + ",from=" + from + ",until=" + until + ",encodedSet=" + encodedSet + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix());
+                throw new EJBException("Received OAI Error response calling ListIdentifiers");
+            }
         } else {
             ListIdentifiersType listIdentifiersType = oaiObj.getListIdentifiers();
             if (listIdentifiersType != null) {

@@ -1405,8 +1405,8 @@ public class DDIServiceBean implements DDIServiceLocal {
         initializeCollections(study); // not sure we need this call; to be investigated
         
         // make sure we have a codeBook
-        xmlr.next();
-        xmlr.require(XMLStreamConstants.START_ELEMENT, "http://www.icpsr.umich.edu/DDI", "codeBook");
+        while ( xmlr.next() == XMLStreamConstants.COMMENT ); // skip pre root comments
+        xmlr.require(XMLStreamConstants.START_ELEMENT, "http://www.icpsr.umich.edu/DDI", "codeBook");        
         processCodeBook(xmlr, study);
     }
     

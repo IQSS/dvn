@@ -47,7 +47,7 @@ public interface HarvesterServiceLocal extends java.io.Serializable  {
     public void createScheduledHarvestTimers();
     public void updateHarvestTimer(HarvestingDataverse dataverse);
     public void removeHarvestTimer(HarvestingDataverse dataverse);
-    
+    public List<HarvestTimerInfo> getHarvestTimers();
     public void doAsyncHarvest(HarvestingDataverse dataverse);
 
     public List<SetDetailBean> getSets(String oaiUrl); 

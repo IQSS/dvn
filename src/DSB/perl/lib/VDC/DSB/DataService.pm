@@ -2727,10 +2727,16 @@ sub printZeligCode{
 		#print T "updated:\n", Dumper($Id2Name);
 		
 		# build the formula
+		my @explatoryVars;
+		if (exists($self->{zlgParam}->{$model}->{nmBxR3})) {
+			@explatoryVars = @{ $self->{zlgParam}->{$model}->{nmBxR3} }; 
+		} else {
+			@explatoryVars = @{ $self->{zlgParam}->{$model}->{nmBxR2} };
+		}
 		
-		if (exists($self->{zlgParam}->{$model}->{nmBxR2})) {
+		if (scalar(@explatoryVars)) {
 			# rhs: x[[j]] + x[[k]] + x[[l]] 
-			foreach my $vi (@{ $self->{zlgParam}->{$model}->{nmBxR2} }){
+			foreach my $vi (@explatoryVars){
 				$rhsVars .=  $Id2Name->{$vi} . "+";
 			}
 			chop($rhsVars);
@@ -2740,11 +2746,20 @@ sub printZeligCode{
 			$self->{zlgParam}->{$model}->{simArgs}->[0] = "";
 		}
 		
-		foreach my $vi (@{$self->{zlgParam}->{$model}->{nmBxR1}}){
+		my @dependentVars;
+		if (exists($self->{zlgParam}->{$model}->{nmBxR3})) {
+			@dependentVars = (@{$self->{zlgParam}->{$model}->{nmBxR1}}, 
+			@{$self->{zlgParam}->{$model}->{nmBxR2}});
+		} else {
+			@dependentVars = @{$self->{zlgParam}->{$model}->{nmBxR1}};
+		}
+		
+		foreach my $vi (@dependentVars){
 			$lhsVars .= $Id2Name->{$vi} . ",";
 		}
+		
 		chop($lhsVars);
-		if (scalar(@{$self->{zlgParam}->{$model}->{nmBxR1}}) > 1) {
+		if (scalar(@dependentVars) > 1) {
 			$lhsVars="list(" . $lhsVars .")";
 		}
 		
@@ -2798,26 +2813,23 @@ sub printZeligCode{
 		# setx
 		my $SimString="";
 		my $SimString2="";
-		if ($self->{zlgParam}->{$model}->{Sim}->[0] eq 'T'){
+		if ($self->{zlgParam}->{$model}->{Sim} eq 'T'){
 			# conditional simulation
-			#if ($self->{zlgParam}->{$model}->{Sim_Cond}->[0]==1) {
-			#	$SimString .= 'cond=T';
-			#}
-			if ($self->{zlgParam}->{$model}->{setx}){
+			if ($self->{zlgParam}->{$model}->{Sim_Cond}==1) {
+			
 				$SimString .= 'cond=T';
+			}
+			if ($self->{zlgParam}->{$model}->{setx}){
 				# non-default setx request
 				#$str->{$model}->{optns}->{setxArgs}=[];
-				if (exists($self->{zlgParam}->{$model}->{setx_val_1}) && ($self->{zlgParam}->{$model}->{setx_val_1}->[0])) {
+				if (exists($self->{zlgParam}->{$model}->{setx_val_1}) && ($self->{zlgParam}->{$model}->{setx_val_1})) {
 					# set 1st option
-					my $stxvid1 = "v" . $self->{zlgParam}->{$model}->{setx_var}->[0];
-					$SimString .= ',' . $Id2Name->{ $stxvid1 } . '=' . $self->{zlgParam}->{$model}->{setx_val_1}->[0] ;
+					$SimString .= ',' . $Id2Name->{ $self->{zlgParam}->{$model}->{setx_var}->[0] } . '=' . $self->{zlgParam}->{$model}->{setx_val_1}->[0] ;
 					#$str->{$model}->{optns}->{setxArgs}->[0] = $SimString . $Id2Name->{ $self->{zlgParam}->{$model}->{setx_var}->[0] } . '=' . $self->{zlgParam}->{$model}->{setx_val_1}->[0] . ',';
 				}
-				if (exists($self->{zlgParam}->{$model}->{setx_val_2}) && ($self->{zlgParam}->{$model}->{setx_val_2}->[0])) {
-					# set 2nd option
-					my $stxvid2 = "v" . $self->{zlgParam}->{$model}->{setx_var}->[1];
-
-					$SimString2 = $Id2Name->{ $stxvid2 } . '=' . $self->{zlgParam}->{$model}->{setx_val_2}->[0] ;
+				if (exists($self->{zlgParam}->{$model}->{setx_val_1}) && ($self->{zlgParam}->{$model}->{setx_val_1})) {
+					# set 1st option
+					$SimString2 = $Id2Name->{ $self->{zlgParam}->{$model}->{setx_var}->[1] } . '=' . $self->{zlgParam}->{$model}->{setx_val_2}->[0] ;
 					#$str->{$model}->{optns}->{setxArgs}->[1] = 'setx2Args=list(' . $Id2Name->{ $self->{zlgParam}->{$model}->{setx_var}->[1] } . '=' . $self->{zlgParam}->{$model}->{setx_val_2}->[0] .')';
 				}
 			}

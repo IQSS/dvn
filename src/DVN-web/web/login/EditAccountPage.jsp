@@ -83,7 +83,7 @@
                           
                        
                        <ui:panelGroup block="true"  style="padding-left: 100px; padding-top: 20px">
-                           <h:commandButton  value="Save" action="#{EditAccountPage.save}"/>
+                           <h:commandButton  value="Save" action="#{EditAccountPage.saveAction}"/>
                        </ui:panelGroup>
                        
                    </div>

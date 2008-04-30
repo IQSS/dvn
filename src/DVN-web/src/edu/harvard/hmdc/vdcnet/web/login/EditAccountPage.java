@@ -61,9 +61,11 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
     // </editor-fold>
     @EJB EditUserService editUserService;
     @EJB UserServiceLocal userService;
-    
     private HtmlSelectOneRadio resetPasswordRadio;
-    
+    private Long userId;
+    private VDCUser user;
+    private String resetPassword;
+   
     /**
      * <p>Construct a new Page bean instance.</p>
      */
@@ -91,9 +93,7 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
             user = editUserService.getUser();
              
         } else {
-        //    editUserService.setUser();
             sessionPut( editUserService.getClass().getName(), editUserService);
-            //sessionPut( (studyService.getClass().getName() + "."  + studyId.toString()), studyService);
             editUserService.setUser(userId); 
             user = editUserService.getUser();
          
@@ -133,31 +133,10 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
     public void destroy() {
     }
     
-    /**
-     * Holds value of property user.
-     */
-    private VDCUser user;
+     
+ 
     
-    /**
-     * Getter for property user.
-     * @return Value of property user.
-     */
-    public VDCUser getUser() {
-        return this.user;
-    }
-    
-    /**
-     * Setter for property user.
-     * @param user New value of property user.
-     */
-    public void setUser(VDCUser user) {
-        this.user = user;
-    }
-    
-    public EditUserService getEditUserService() {
-        return editUserService;
-    }
-    
+  
     public void validateUserName(FacesContext context, 
                           UIComponent toValidate,
                           Object value) {
@@ -180,10 +159,7 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
 
 }
     
-    public String save() {
-        
-       
-        
+    public String saveAction() {        
         editUserService.save();
         // If the currently logged-in user is updating is account, reset the User object in the session
         if (getVDCSessionBean().getLoginBean().getUser().getId().equals(user.getId())) {
@@ -200,17 +176,32 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
         return "result";
     }
     
-    public String cancel() {
+    public String cancelAction() {
         editUserService.cancel();
         getVDCSessionBean().setUserService(null);
         return "myNetworkOptions";
     }
+    
+    public EditUserService getEditUserService() {
+        return editUserService;
+    }
+    
 
-    /**
-     * Holds value of property userId.
+   /**
+     * Getter for property user.
+     * @return Value of property user.
      */
-    private Long userId;
-
+    public VDCUser getUser() {
+        return this.user;
+    }
+    
+    /**
+     * Setter for property user.
+     * @param user New value of property user.
+     */
+    public void setUser(VDCUser user) {
+        this.user = user;
+    }
     /**
      * Getter for property userId.
      * @return Value of property userId.
@@ -235,10 +226,6 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
         this.resetPasswordRadio = resetPasswordRadio;
     }
 
-    /**
-     * Holds value of property resetPassword.
-     */
-    private String resetPassword;
 
     /**
      * Getter for property resetPassword.
@@ -255,6 +242,7 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
     public void setResetPassword(String resetPassword) {
         this.resetPassword = resetPassword;
     }
+
 
 
 

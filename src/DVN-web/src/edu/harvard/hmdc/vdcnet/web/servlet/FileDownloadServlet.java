@@ -1016,8 +1016,9 @@ public class FileDownloadServlet extends HttpServlet{
     private void createErrorResponseGeneric(HttpServletResponse res, int status, String statusLine) {
         res.setContentType("text/html");
 	res.setStatus ( status ); 
+	PrintWriter out = null;
         try {
-            PrintWriter out = res.getWriter();
+            out = res.getWriter();
             out.println("<HTML>");
             out.println("<HEAD><TITLE>File Download</TITLE></HEAD>");
             out.println("<BODY>");

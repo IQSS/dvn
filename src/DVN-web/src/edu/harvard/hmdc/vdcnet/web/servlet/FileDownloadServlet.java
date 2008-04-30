@@ -325,7 +325,7 @@ public class FileDownloadServlet extends HttpServlet{
 		    try { 
 			String remoteFileUrl = file.getFileSystemLocation(); 
 			if ( remoteFileUrl != null ) {
-			    remoteFileUrl = remoteFileUrl.replaceAll (" ", "+"); 
+			    remoteFileUrl = remoteFileUrl.replaceAll (" ", "+");
 			}
 			method = new GetMethod ( remoteFileUrl);
 
@@ -1030,8 +1030,12 @@ public class FileDownloadServlet extends HttpServlet{
             }
             
             out.println("</BODY></HTML>");
+	    out.close(); 
         } catch (IOException ex) {
             ex.printStackTrace();
+	    if ( out != null ) {
+		out.close(); 
+	    }
         }
     }
 

@@ -210,7 +210,9 @@ formulaAddSpecial<-function(formula,model) {
         length(formula[[2]]==1)) {
         formula[[2]]=call(modelSpecial,formula[[2]])
         attr(formula,".Environment") <-  globalenv()
-    } 
+    } else if (model == "tobit"){
+        attr(formula,".Environment") <-  globalenv()
+    }
     return(formula)
 }
 

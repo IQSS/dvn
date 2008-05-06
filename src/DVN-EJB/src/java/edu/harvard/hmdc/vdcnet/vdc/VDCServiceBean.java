@@ -86,8 +86,8 @@ public class VDCServiceBean implements VDCServiceLocal {
     }
     
     /** scholar dataverse */
-    public void createScholarDataverse(Long userId, String firstName, String lastName, String name, String affiliation, String alias) {
-        ScholarDataverse sDV = new ScholarDataverse();
+    public void createScholarDataverse(Long userId, String firstName, String lastName, String name, String affiliation, String alias, String dataverseType) {
+        VDC sDV = new VDC();
         em.persist(sDV);
         sDV.setName(name);
         sDV.setFirstName(firstName);
@@ -95,6 +95,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         sDV.setAffiliation(affiliation);
         sDV.setName(name);
         sDV.setAlias(alias);
+        sDV.setDtype(dataverseType);
         VDCCollection addedRootCollection = new VDCCollection();
         addedRootCollection.setName(name);
         addedRootCollection.setReviewState(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED));
@@ -130,24 +131,20 @@ public class VDCServiceBean implements VDCServiceLocal {
         
     }
     
-    public ScholarDataverse findScholarDataverseByAlias(String alias){
-       String query="SELECT sd from ScholarDataverse sd where sd.alias = :fieldName";
-       ScholarDataverse sDV = null;
+    public VDC findScholarDataverseByAlias(String alias){
+       String query="SELECT sd from VDC sd where sd.alias = :fieldName and sd.dtype = 'Scholar'";
+       VDC sDV = null;
        try {
-           sDV = (ScholarDataverse) em.createQuery(query).setParameter("fieldName",alias).getSingleResult();
+           sDV = (VDC) em.createQuery(query).setParameter("fieldName", alias).getSingleResult();
        } catch (javax.persistence.NoResultException e) {
            // Do nothing, just return null. 
        }
        return sDV;
     }
     
-    public ScholarDataverse findScholarDataverseById(Long id) {
-        ScholarDataverse o = (ScholarDataverse) em.find(ScholarDataverse.class, id);
+    public VDC findScholarDataverseById(Long id) {
+        VDC o = (VDC) em.find(VDC.class, id);
         return o;
-    }
-    
-    public void edit(ScholarDataverse sDV){
-        em.merge(sDV);
     }
     
     /* updateScholarDVs
@@ -161,7 +158,7 @@ public class VDCServiceBean implements VDCServiceLocal {
      *
      * @author wbossons
      */
-    public ScholarDataverse updateScholarDVs(ScholarDataverse scholarDV) {
+    public VDC updateScholarDVs(VDC scholarDV) {
         //
         String updateString = "update vdc set firstname = '" 
                 + scholarDV.getFirstName() + "', lastname='" 
@@ -179,7 +176,7 @@ public class VDCServiceBean implements VDCServiceLocal {
            // Do nothing, just return null. 
         }
         em.flush();
-        ScholarDataverse scholardataverse = em.find(ScholarDataverse.class, scholarDV.getId());
+        VDC scholardataverse = em.find(VDC.class, scholarDV.getId());
         return scholardataverse;
         //
     }
@@ -244,7 +241,9 @@ public class VDCServiceBean implements VDCServiceLocal {
        return vdc;
     }
     public List findAll() {
-        return em.createQuery("select object(o) from VDC as o order by o.name").getResultList();
+        List myList = (List<VDC>) em.createQuery("select object(o) from VDC as o where o.dtype = 'Basic' order by o.name").getResultList();
+        Iterator iterator = myList.iterator();
+        return em.createQuery("select object(o) from VDC as o where o.dtype = 'Basic' order by o.name").getResultList();
     }
 
     public void create(Long userId,String name, String alias) {
@@ -396,8 +395,9 @@ public class VDCServiceBean implements VDCServiceLocal {
             studyIds.add(elem.getId());
         }       
         
-       
-        studyService.deleteStudyList(studyIds);    
+        if (!studyIds.isEmpty()) {
+            studyService.deleteStudyList(studyIds);
+        }
         
         vdc.getOwnedStudies().clear();
         
@@ -457,8 +457,20 @@ public class VDCServiceBean implements VDCServiceLocal {
        */
       
        public List<VDC> findVdcsNotInGroups() {
-           String query = "select object(o) FROM VDC as o WHERE o.id NOT IN (SELECT gvdcs.id FROM VDCGroup as groups JOIN groups.vdcs as gvdcs) order by o.name";
+           String query = "select object(o) FROM VDC as o WHERE o.dtype = 'Scholar' AND o.id NOT IN (SELECT gvdcs.id FROM VDCGroup as groups JOIN groups.vdcs as gvdcs)";
            return (List)em.createQuery(query).getResultList();
            
-       }    
+       }   
+       
+       /** An overloaded method to make the transition to 
+        * the scholar dataverses no longer being their own type
+        * 
+        * @param dtype  the dataverse type
+        * @ author wbossons
+        */
+       public List<VDC> findVdcsNotInGroups(String dtype) {
+           String query = "select object(o) FROM VDC as o WHERE o.dtype = :fieldName AND o.id NOT IN (SELECT gvdcs.id FROM VDCGroup as groups JOIN groups.vdcs as gvdcs)";
+           return (List)em.createQuery(query).setParameter("fieldName",dtype).getResultList();
+       }  
+       
 }

@@ -31,7 +31,9 @@ import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.BundleReader;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
-import edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse;
+import edu.harvard.hmdc.vdcnet.util.Tab;
+import edu.harvard.hmdc.vdcnet.util.TabSort;
+import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
@@ -97,7 +99,7 @@ public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
     
     private static int vdcGroupCount;
     private static int scholarDvCount;
-    private List<ScholarDataverse> scholarDvGroup;
+    private List<VDC> scholarDvGroup;
     private List<VDC> vdcGroups;
     private List<VDC> vdcsSansGroups;
     private Tree collectionTree;
@@ -431,15 +433,14 @@ public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
     
     public void initVdcsSansGroups() {
         // Get all the vdc groups
-        List list = (List)vdcService.findVdcsNotInGroups();
+        List list = (List)vdcService.findVdcsNotInGroups("Basic");
         List newlist = new ArrayList();
         Iterator iterator = list.iterator();
         while (iterator.hasNext()) {
-            Object object = (Object)iterator.next();
-            if (object instanceof ScholarDataverse) {
-                continue;
+            VDC vdc = (VDC)iterator.next();
+            if (vdc.getDtype().equals("Scholar")) { 
+                continue; //scholar dvs are in the scholar dv group
             } else {
-                VDC vdc = (VDC)object;
                 if (this.selectedTab.equals(datalistbundle.getMessageValue("tab2key")) && vdc.isRestricted()) {
                     newlist.add(vdc);
                 } else if (this.selectedTab.equals(datalistbundle.getMessageValue("tab1key")) && !vdc.isRestricted()) {
@@ -459,14 +460,14 @@ public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
    public void initScholarDVGroup() {
         // Get all the vdc groups
         scholarDvCount = 0;
-        List list = (List)vdcService.findVdcsNotInGroups();
+        List list = (List)vdcService.findVdcsNotInGroups("Scholar");
         List newlist = new ArrayList();
         Iterator iterator = list.iterator();
         while (iterator.hasNext()) {
             Object object = (Object)iterator.next();
-            ScholarDataverse sdv = null;
-            if (object instanceof ScholarDataverse) {
-                sdv = (ScholarDataverse)object;
+            VDC sdv = null;
+            if (object instanceof VDC) {
+                sdv = (VDC)object;
                 if (this.selectedTab.equals(datalistbundle.getMessageValue("tab2key")) && sdv.isRestricted()) {
                     newlist.add(sdv);
                 } else if (this.selectedTab.equals(datalistbundle.getMessageValue("tab1key")) && !sdv.isRestricted()) {
@@ -529,8 +530,8 @@ public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
                 affiliation = new String(vdc.getAffiliation());
             else
                 affiliation = new String("");
-            if (vdc instanceof ScholarDataverse) {
-                ScholarDataverse scholarDV = (ScholarDataverse)vdc;
+            if (vdc.getDtype().equals("Scholar")) {
+                VDC scholarDV = (VDC)vdc;
                 String name = new String(scholarDV.getLastName() + ", " + scholarDV.getFirstName());
                 String tooltip = new String(scholarDV.getName());
                 ndvList = new DataListing(name, scholarDV.getAlias(), affiliation, restricted, tooltip);
@@ -588,75 +589,9 @@ public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
    }
     
     
-    public class Tab implements Comparable, java.io.Serializable {
+//rem tab
         
-        private String key;
-        private String name;
-        private String noDisplayMsg;
-        private Integer order;
-        
-        /**
-         * Creates a new instance of DataListing
-         */
-        public Tab() {
-
-        }
-
-        public Tab(String key, String name, String noDisplayMsg, int order) {
-            this.key        = key;
-            this.name       = name;
-            this.noDisplayMsg = noDisplayMsg;
-            this.order      = order;
-        }
-
-        public String getKey() {
-                return this.key;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public String getNoDisplayMsg() {
-                return this.noDisplayMsg;
-        }
-        
-        public Integer getOrder() {
-                return this.order;
-        }
-        
-        public String toString() {
-        return "[key=" + key + " | name=" + name + " | noDisplayMsg=" + noDisplayMsg + " | order=" + order + "\n\r";
-      }
-        
-        public int compareTo(Object obj) {
-            Tab tab = (Tab) obj;
-            int keyComparison = key.toUpperCase().compareTo(tab.getKey().toUpperCase());
-            return ((keyComparison == 0) ? name.compareTo(tab.getName()) : keyComparison);
-          }
-
-          public boolean equals(Object obj) {
-            if (!(obj instanceof Tab)) {
-              return false;
-            }
-            Tab tab = (Tab) obj;
-            return key.equals(tab.getKey())
-                && name.equals(tab.getName());
-          }
-
-          public int hashCode() {
-            return 31 * key.hashCode() + name.hashCode();
-          }
-      }
-    
-    public class TabSort {
-        final Comparator<Tab> TAB_ORDER =
-                                     new Comparator<Tab>() {
-            public int compare(Tab e1, Tab e2) {
-                return e1.getOrder().compareTo(e2.getOrder());
-            }
-        };
-    } 
+//rem TabSort
     
     private String selectedTab;
     

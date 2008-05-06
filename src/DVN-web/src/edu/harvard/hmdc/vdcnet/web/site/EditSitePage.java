@@ -53,8 +53,9 @@ import javax.faces.component.html.HtmlInputText;
 import com.sun.rave.web.ui.component.PanelGroup;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
+import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.faces.component.html.HtmlCommandButton;
@@ -71,12 +72,13 @@ import javax.servlet.http.HttpServletRequest;
  * to respond to incoming events.</p>
  */
 public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
-    @EJB VDCServiceLocal vdcService;
+    @EJB VDCServiceLocal           vdcService;
     @EJB VDCCollectionServiceLocal vdcCollectionService;
-    @EJB VDCNetworkServiceLocal vdcNetworkService;
-    @EJB StudyFieldServiceLocal studyFieldService;
-    @EJB UserServiceLocal userService;
-    @EJB RoleServiceLocal roleService;
+    @EJB VDCGroupServiceLocal      vdcGroupService;
+    @EJB VDCNetworkServiceLocal    vdcNetworkService;
+    @EJB StudyFieldServiceLocal    studyFieldService;
+    @EJB UserServiceLocal          userService;
+    @EJB RoleServiceLocal          roleService;
     StatusMessage msg;
     
     public StatusMessage getMsg(){
@@ -418,10 +420,21 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         if (dataverseType.equals("Scholar")) {
             thisVDC.setFirstName(this.firstName);
             thisVDC.setLastName(this.lastName);
+            if (thisVDC.getVdcGroups().size() != 0) {
+                //remove the group relationships.
+                Iterator iterator = thisVDC.getVdcGroups().iterator();
+                while (iterator.hasNext()) {
+                    VDCGroup vdcgroup = (VDCGroup)iterator.next();
+                    iterator.remove();
+                    vdcGroupService.updateVdcGroup(vdcgroup);
+                }
+                
+            }
         } else {
             thisVDC.setFirstName(null);
             thisVDC.setLastName(null);
         }
+
         vdcService.edit(thisVDC);
         getVDCRequestBean().setCurrentVDC(thisVDC);
         msg = new StatusMessage();

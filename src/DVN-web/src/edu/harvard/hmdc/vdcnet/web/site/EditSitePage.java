@@ -52,7 +52,7 @@ import javax.faces.component.html.HtmlOutputLabel;
 import javax.faces.component.html.HtmlInputText;
 import com.sun.rave.web.ui.component.PanelGroup;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
-import edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse;
+import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -114,10 +114,9 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         } 
         //what kind of vdc is this, basic or scholar
         try {
-            if (Class.forName("edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse").isInstance(thisVDC) && 
-                    (this.dataverseType == null || this.dataverseType.equals("Scholar"))) {
+            if ( (this.dataverseType == null || this.dataverseType.equals("Scholar")) ) {
                 //set the default values for the fields
-                ScholarDataverse scholardataverse = (ScholarDataverse)vdcService.findScholarDataverseByAlias(thisVDC.getAlias());
+                VDC scholardataverse = (VDC)vdcService.findScholarDataverseByAlias(thisVDC.getAlias());
                 setDataverseType("Scholar");
                 setFirstName(scholardataverse.getFirstName());
                 setLastName(scholardataverse.getLastName());
@@ -139,8 +138,8 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
                 HtmlInputText aliasText = new HtmlInputText();
                 aliasText.setValue(thisVDC.getAlias());
             }
-        } catch (ClassNotFoundException nfe) {
-            System.out.println("the class was not found");
+        } catch (Exception nfe) {
+            System.out.println("An error occurred " + nfe.toString());
         }
         
         
@@ -411,22 +410,18 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     
     public String edit(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        /*try {
-            if (Class.forName("edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse").isInstance(thisVDC)) {
-                ScholarDataverse scholardataverse = (ScholarDataverse)vdcService.findById(thisVDC.getId());
-                //delete the first and last name
-                scholardataverse.setFirstName(null);
-                scholardataverse.setLastName(null);
-                getVDCRequestBean().setCurrentVDC(scholardataverse);
-                vdcService.edit(scholardataverse);
-            }
-        } catch (ClassNotFoundException nfe) {
-            System.err.println("The class was not found");
-        }
-        */
+        String dataversetype = dataverseType;
+        thisVDC.setDtype(dataversetype);
         thisVDC.setName((String)dataverseName.getValue());
         thisVDC.setAlias((String)dataverseAlias.getValue());
         thisVDC.setAffiliation(this.getAffiliation());
+        if (dataverseType.equals("Scholar")) {
+            thisVDC.setFirstName(this.firstName);
+            thisVDC.setLastName(this.lastName);
+        } else {
+            thisVDC.setFirstName(null);
+            thisVDC.setLastName(null);
+        }
         vdcService.edit(thisVDC);
         getVDCRequestBean().setCurrentVDC(thisVDC);
         msg = new StatusMessage();
@@ -437,7 +432,9 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     
     public String editScholarDataverse(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        ScholarDataverse scholardataverse = (ScholarDataverse)thisVDC;
+        VDC scholardataverse = (VDC)thisVDC;
+        String dataversetype = dataverseType;
+        scholardataverse.setDtype(dataversetype);
         scholardataverse.setName((String)dataverseName.getValue());
         scholardataverse.setAlias((String)dataverseAlias.getValue());
         scholardataverse.setFirstName(this.firstName);
@@ -462,7 +459,6 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         if (name != null && name.trim().length() == 0) {
             FacesMessage message = new FacesMessage("The dataverse name field must have a value.");
             context.addMessage(toValidate.getClientId(context), message);
-            context.renderResponse();
         }
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         if (!name.equals(thisVDC.getName())){
@@ -628,6 +624,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         this.setDataverseType(newValue);  
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         request.setAttribute("dataverseType", newValue);
+        //FacesContext.getCurrentInstance().renderResponse();
     }
     
     public void changeFirstName(ValueChangeEvent event) {
@@ -647,7 +644,6 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
          if (newValue == null || newValue.trim().length() == 0)  {
             FacesMessage message = new FacesMessage("The field must have a value.");
             context.addMessage(toValidate.getClientId(context), message);
-            context.renderResponse();
         }
     }
 }

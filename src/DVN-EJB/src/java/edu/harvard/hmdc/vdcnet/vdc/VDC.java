@@ -52,14 +52,14 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorValue("Basic")
 public class VDC implements java.io.Serializable  {
     private String name;
     private String description;
     private String visibility;
     private String affiliation;
     private String dtype;
+    
+    
     /**
      * Make the text the default db type for header.
      */
@@ -882,6 +882,44 @@ public class VDC implements java.io.Serializable  {
         return false;
     }
     
-    
+    /**
+     * Scholar Dataverse type merge to VDC April 2008 by wjb
+     * 
+     */
 
+    private String firstName;
+    private String lastName;
+    
+    /**
+     * Getter for property firstName.
+     * @return Value of property firstName.
+     */
+    public String getFirstName() {
+        return this.firstName;
+    }
+
+    /**
+     * Setter for property firstName.
+     * @param firstName New value of property firstName.
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * Getter for property lastName.
+     * @return Value of property lastName.
+     */
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    /**
+     * Setter for property lastName.
+     * @param lastName New value of property lastName.
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    
 }

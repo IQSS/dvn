@@ -149,9 +149,8 @@
                                 </h:outputLabel>
                             </ui:panelGroup>
                             <ui:panelGroup>
-                                <h:inputText binding="#{AddSitePage.dataverseName}" 
-                                                id="dataverseName" 
-                                                required="true" 
+                                <h:inputText binding="#{AddSitePage.dataverseName}" id="dataverseName" 
+                                                required="#{(AddSitePage.dataverseType == 'Scholar') ? false : true}"
                                                 requiredMessage="This field is required." 
                                                 validator="#{AddSitePage.validateName}" size="45" />
                                 <br />

@@ -57,7 +57,6 @@ import com.sun.rave.web.ui.component.PanelGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
 import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
-import edu.harvard.hmdc.vdcnet.vdc.ScholarDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.web.login.LoginWorkflowBean;
 import java.util.ArrayList;
@@ -379,6 +378,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             System.out.println("the group is" + this.getSelectedGroup());
         }
         Long selectedgroup = this.getSelectedGroup();
+        String dataversetype = dataverseType;
         String name = (String) dataverseName.getValue();
         String alias = (String) dataverseAlias.getValue();
         String affiliation = this.getAffiliation();
@@ -409,6 +409,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
         getVDCRequestBean().setCurrentVDC(createdVDC);
         //  add default values to the VDC table and commit/set the vdc bean props
+        getVDCRequestBean().getCurrentVDC().setDtype(dataverseType);
         getVDCRequestBean().getCurrentVDC().setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
         getVDCRequestBean().getCurrentVDC().setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
         getVDCRequestBean().getCurrentVDC().setAnnouncements(getVDCRequestBean().getVdcNetwork().getDefaultVDCAnnouncements());
@@ -446,8 +447,9 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         String name = (String) dataverseName.getValue();
         String alias = (String) dataverseAlias.getValue();
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
-        vdcService.createScholarDataverse(userId, firstName, lastName, name, affiliation, alias);
-        ScholarDataverse createdScholarDataverse = vdcService.findScholarDataverseByAlias(alias);
+        vdcService.createScholarDataverse(userId, firstName, lastName, name, affiliation, alias, dataversetype);
+        
+        VDC createdScholarDataverse = vdcService.findScholarDataverseByAlias(alias);
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
         getVDCRequestBean().setCurrentVDC(createdScholarDataverse);
         //  add default values to the VDC table and commit/set the vdc bean props
@@ -724,6 +726,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         this.setDataverseType(newValue);
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         request.setAttribute("dataverseType", newValue);
+        FacesContext.getCurrentInstance().renderResponse();
     }
 
     public void changeFirstName(ValueChangeEvent event) {

@@ -45,17 +45,15 @@ public interface VDCServiceLocal extends java.io.Serializable  {
     
     public void create(Long userId, String name, String alias, String affiliation);
     
-    public void createScholarDataverse(Long userId, String firstName, String lastName, String name, String affiliation, String alias);
+    public void createScholarDataverse(Long userId, String firstName, String lastName, String name, String affiliation, String alias, String dataverseType);
 
-    public ScholarDataverse findScholarDataverseByAlias(String alias);
+    public VDC findScholarDataverseByAlias(String alias);
     
-    public ScholarDataverse findScholarDataverseById(Long id);
+    public VDC findScholarDataverseById(Long id);
 
-    public ScholarDataverse updateScholarDVs(ScholarDataverse scholarDV);
+    public VDC updateScholarDVs(VDC scholarDV);
     
     public void edit(VDC vDC);
-    
-    public void edit(ScholarDataverse scholardataverse);
 
     public void destroy(VDC vDC);
 
@@ -82,5 +80,7 @@ public interface VDCServiceLocal extends java.io.Serializable  {
     public List findAllNonHarvesting();
 
     public List findVdcsNotInGroups();
+    
+    public List<VDC> findVdcsNotInGroups(String dtype);
     
 }

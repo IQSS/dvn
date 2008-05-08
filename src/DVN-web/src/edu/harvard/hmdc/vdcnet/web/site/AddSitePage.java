@@ -59,9 +59,11 @@ import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
 import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.web.login.LoginWorkflowBean;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -95,6 +97,10 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB
     MailServiceLocal mailService;
     StatusMessage msg;
+    
+    //private BundleReader messagebundle = new BundleReader("Bundle");
+    
+    private ResourceBundle messagebundle = ResourceBundle.getBundle("Bundle");
 
     public StatusMessage getMsg() {
         return msg;
@@ -377,11 +383,11 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         if (this.selectedGroup != null) {
             System.out.println("the group is" + this.getSelectedGroup());
         }
-        Long selectedgroup = this.getSelectedGroup();
-        String dataversetype = dataverseType;
-        String name = (String) dataverseName.getValue();
-        String alias = (String) dataverseAlias.getValue();
-        String affiliation = this.getAffiliation();
+        Long selectedgroup      = this.getSelectedGroup();
+        String dataversetype    = dataverseType;
+        String name             = (String) dataverseName.getValue();
+        String alias            = (String) dataverseAlias.getValue();
+        String affiliation      = this.getAffiliation();
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
         if (affiliation != null && affiliation != "") {
             vdcService.create(userId, name, alias, affiliation);
@@ -390,10 +396,10 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         }
         if (selectedGroup != null && selectedGroup > 0) {
             //the following method requires a string array
-            VDCGroup vdcgroup = vdcGroupService.findById(selectedGroup);
-            List list = vdcgroup.getVdcs();
-            Iterator iterator = list.iterator();
-            int i = 0;
+            VDCGroup vdcgroup   = vdcGroupService.findById(selectedGroup);
+            List list           = vdcgroup.getVdcs();
+            Iterator iterator   = list.iterator();
+            int i               = 0;
             String[] stringArray = new String[(list.size() + 1)];
             while (iterator.hasNext()) {
                 VDC vdc = (VDC) iterator.next();
@@ -590,13 +596,34 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      *
      *
      */
+
     private List<SelectItem> dataverseOptions = null;
 
     public List getDataverseOptions() {
         if (this.dataverseOptions == null) {
             dataverseOptions = new ArrayList();
-            dataverseOptions.add(new SelectItem(new String("Scholar")));
-            dataverseOptions.add(new SelectItem(new String("Basic")));
+            /**
+             * Choose Scholar if this dataverse will have your 
+             * own name and will contain your own research, 
+             * and Basic for any other dataverse.
+             * 
+             * 
+               Select the group that will most likely fit your 
+             * dataverse, be it a university department, a journal, 
+             * a research center, etc. If you create a Scholar dataverse, 
+             * it will be automatically entered under the Scholar group.        
+             * 
+             */
+            try {
+                String scholarOption       = messagebundle.getString("scholarOption");
+                String basicOption          = messagebundle.getString("basicOption");
+                String scholarLabel        = messagebundle.getString("scholarOptionDetail");
+                String basicLabel          = messagebundle.getString("basicOptionDetail");
+                dataverseOptions.add(new SelectItem(basicOption, basicLabel));
+                dataverseOptions.add(new SelectItem(scholarOption, scholarLabel));
+            } catch (Exception uee) {
+                System.out.println("Exception:  " + uee.toString());
+            }
         }
         return dataverseOptions;
     }

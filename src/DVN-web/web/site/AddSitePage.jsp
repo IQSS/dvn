@@ -75,6 +75,7 @@
                             <ui:panelGroup block="true">
                                 <h:selectOneRadio id="dataverseType"
                                                     layout="pageDirection" 
+                                                    immediate="true"
                                                     onclick="changeValue(this);"
                                                     value="#{AddSitePage.dataverseType}"
                                                     valueChangeListener="#{AddSitePage.changeDataverseOption}"
@@ -155,7 +156,7 @@
                             </ui:panelGroup>
                             <ui:panelGroup>
                                 <h:inputText binding="#{AddSitePage.dataverseAlias}" 
-                                                id="dataverseAlias" 
+                                                id="dataverseAlias"
                                                 required="true" 
                                                 requiredMessage="This field is required."
                                                 validator="#{AddSitePage.validateAlias}" />
@@ -186,7 +187,7 @@
                             </ui:panelGroup>
                         </h:panelGrid>
                         <ui:panelGroup binding="#{AddSitePage.groupPanel1}" block="true" id="groupPanel1" style="padding-left: 160px">
-                            <h:commandButton rendered="#{AddSitePage.dataverseType != 'Scholar'}" binding="#{AddSitePage.button1}" id="button1" value="Save" action="#{AddSitePage.create}"/>
+                            <h:commandButton rendered="#{AddSitePage.dataverseType != 'Scholar'}" id="button1" value="Save" action="#{AddSitePage.create}"/>
                             <h:commandButton rendered="#{AddSitePage.dataverseType == 'Scholar'}" id="btnCreateSdv" value="Save" action="#{AddSitePage.createScholarDataverse}"/>
                             <h:commandButton binding="#{AddSitePage.button2}" id="button2" style="margin-left: 20px" immediate="true" value="Cancel" action="#{AddSitePage.cancel}"/>
                         </ui:panelGroup>

@@ -76,7 +76,7 @@
                             <!-- Developed for 16a, but not used pending a solution for cast up from scholar dv to VDC -->
                             <ui:panelGroup block="true" style="vertical-align: top;">
                                 <h:selectOneRadio id="dataverseOption" 
-                                                    layout="lineDirection" 
+                                                    layout="pageDirection" 
                                                     immediate="true"
                                                     onclick="changeValue(this);"
                                                     valueChangeListener="#{AddSitePage.changeDataverseOption}"

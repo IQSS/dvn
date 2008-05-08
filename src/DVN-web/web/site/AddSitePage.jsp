@@ -40,6 +40,7 @@
                 }
                  // ]]>
             </ui:script>
+            
             <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
                 <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow) ? 'requestHeader dvn_overflow' : 'dvn_sectionTitle'}">
                       <h:outputText value="Add a New Dataverse" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
@@ -54,25 +55,13 @@
               </ui:panelLayout>
                 <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
                     
-                    <ui:panelLayout rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestContentDescLeft">
-                        <p>Choose Scholar if this dataverse will have your own name and will contain your own research, and Basic for any other dataverse.</p>
-                        <p>Select the group that will most likely fit your dataverse, be it a university department, a journal, a research center, etc. If you create a Scholar dataverse, it will be automatically entered under the Scholar group.</p>
-                    </ui:panelLayout>
-                  
+            
                     <ui:panelLayout styleClass="#{ (LoginWorkflowBean.creatorWorkflow) ? 'requestContentDescRight' : 'empty'}">
                     <ui:panelLayout styleClass="dvn_margin12"> 
                     
                         <ui:panelGroup rendered="#{LoginWorkflowBean.plainWorkflow or LoginWorkflowBean.fileAccessWorkflow}" block="true" style="margin-bottom:20px;">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                            <br />
-                            <h:outputText id="outputText2a" styleClass="vdcHelpText" value="1) Choose 'Scholar' if this dataverse will 
-                            have your own name and will contain your own research, and 'Basic' for any other dataverse."/>
-                            <br />
-                            <h:outputText id="outputText2b" styleClass="vdcHelpText" value="2) Select the group that will most likely 
-                            fit your dataverse, be it a university department, a journal, a research center, etc. If you create
-                            a Scholar dataverse, it will be automatically entered under the Scholar group."/>
-                            <br />
-                            <h:outputText id="outputText2c" styleClass="vdcHelpText" value="3) Once your dataverse is created, it will be set to 'Coming Soon' (Not Released) by
+                            <h:outputText id="outputText2c" styleClass="vdcHelpText" value="When your dataverse is created, it will be set to 'Coming Soon' (Not Released) by
                             default. As soon as you are ready to make it available (Released), you can do so by going to 'My Options' in your new dataverse."/>
                         </ui:panelGroup>
                         <h:panelGrid binding="#{AddSitePage.gridPanel1}" cellpadding="0" cellspacing="0"
@@ -84,14 +73,14 @@
                                 </h:outputLabel>
                             </ui:panelGroup>
                             <ui:panelGroup block="true">
-                                <h:selectOneRadio id="dataverseType" 
-                                                    layout="lineDirection" 
+                                <h:selectOneRadio id="dataverseType"
+                                                    layout="pageDirection" 
                                                     onclick="changeValue(this);"
                                                     value="#{AddSitePage.dataverseType}"
                                                     valueChangeListener="#{AddSitePage.changeDataverseOption}"
                                                     required="true"
                                                     requiredMessage="This field is required.">
-                                    <f:selectItems value="#{AddSitePage.dataverseOptions}"/>
+                                       <f:selectItems value="#{AddSitePage.dataverseOptions}"/>
                                 </h:selectOneRadio>
                             </ui:panelGroup>
                             <!-- first name -->
@@ -188,10 +177,12 @@
                                     valueChangeListener="#{AddSitePage.changeSelectedGroup}">
                                     <f:selectItems value="#{AddSitePage.groupItems}" />
                                 </h:selectOneMenu>
+                                <f:verbatim><br /></f:verbatim>
+                                <h:outputLabel styleClass="vdcHelpText" for="selectedGroup" value="#{bundle.groupSelect}"/>
                             </ui:panelGroup>
                             <ui:panelGroup rendered="#{AddSitePage.dataverseType == 'Scholar'}">
-                                <h:outputText id="scholarDataverseGroup" 
-                                    value="Scholar Dataverse Group" />
+                                <h:outputText styleClass="vdcHelpText" id="scholarDataverseGroup" 
+                                    value="#{bundle.scholarGroupSelect}" />
                             </ui:panelGroup>
                         </h:panelGrid>
                         <ui:panelGroup binding="#{AddSitePage.groupPanel1}" block="true" id="groupPanel1" style="padding-left: 160px">

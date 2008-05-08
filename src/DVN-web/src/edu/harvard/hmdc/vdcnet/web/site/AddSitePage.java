@@ -533,13 +533,13 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         charactervalidator.validate(context, toValidate, value);
         String alias = (String) value;
 
-        boolean aliasFound = false;
+        boolean isValid = false;
         VDC vdc = vdcService.findByAlias(alias);
-        if (vdc != null) {
-            aliasFound = true;
+        if (alias.equals("") || vdc != null) {
+            isValid = true;
         }
 
-        if (aliasFound) {
+        if (isValid) {
             ((UIInput) toValidate).setValid(false);
 
             FacesMessage message = new FacesMessage("This alias is already taken.");

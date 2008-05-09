@@ -31,7 +31,7 @@
                                             </h:outputLabel>
                                         </ui:panelGroup>
                                         <ui:panelGroup block="true" style="padding-top: 20px;">
-                                            <h:inputText id="username" value="#{LoginPage.userName}" required="true" requiredMessage="This field is required."  />
+                                            <h:inputText tabindex="1" id="username" value="#{LoginPage.userName}" required="true" requiredMessage="This field is required."  />
                                             <br />
                                             <h:message for="username" styleClass="errorMessage" />
                                         </ui:panelGroup>
@@ -41,15 +41,15 @@
                                             </h:outputLabel>
                                         </ui:panelGroup>
                                         <ui:panelGroup>
-                                            <h:inputSecret onkeypress="if (window.event) return processEvent('', 'content:LoginPageView:loginForm:button1'); else return processEvent(event, 'content:LoginPageView:loginForm:button1');" id="password" value="#{LoginPage.password}" required="true" requiredMessage="This field is required."/>
+                                            <h:inputSecret tabindex="2" onkeypress="if (window.event) return processEvent('', 'content:LoginPageView:loginForm:button1'); else return processEvent(event, 'content:LoginPageView:loginForm:button1');" id="password" value="#{LoginPage.password}" required="true" requiredMessage="This field is required."/>
                                             <br />
                                             <h:message for="password" styleClass="errorMessage"/>
                                         </ui:panelGroup>
                                         <ui:panelGroup>
-                                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ForgotPasswordPage.jsp" title="Link to Reset Password">Forgot your password?</h:outputLink>
+                                            <h:outputLink tabindex="4" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ForgotPasswordPage.jsp" title="Link to Reset Password">Forgot your password?</h:outputLink>
                                         </ui:panelGroup>
                                         <ui:panelGroup  block="true" id="groupPanel1" style="padding-left: 50px; padding-top: 10px; padding-right:5px; text-align:right;">
-                                            <h:commandButton  id="button1" value="Log in" action="#{LoginPage.login}" />
+                                            <h:commandButton tabindex="3"  id="button1" value="Log in" action="#{LoginPage.login}" />
                                         </ui:panelGroup>
                                     </h:panelGrid>
                                     <h:outputText value="Login Failed. Please check your username and password and try again." styleClass="errorMessage" rendered="#{LoginPage.loginFailed}"/>

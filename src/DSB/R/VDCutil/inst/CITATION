@@ -10,7 +10,7 @@ citEntry(entry="article",
                              as.person("L. Kolster"),
                              as.person("M. Krot"),
                              as.person("A. Sone"),
-                             as.person("S. Verba"),
+                             as.person("S. Verba")
 				),
 	 publisher = "ACM Press",
 	 booktitle= " Proceedings of JCDL '01: First Joint Conference on Digital Libraries ",
@@ -22,7 +22,7 @@ citEntry(entry="article",
          paste("Altman, M., et al. (2001)", 
                "An Overview of the Virtual Data Center Project and Software.",
                " Proceedings of JCDL '01: First Joint Conference on Digital Libraries , ACM Press.",
-              "(Software version: R Package, VDCutil, version 1.04)",
+              "(Software version: R Package, VDCutil, version 1.04)"
 	)
 	       
 )

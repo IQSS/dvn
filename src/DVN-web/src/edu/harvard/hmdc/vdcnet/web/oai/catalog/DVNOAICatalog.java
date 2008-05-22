@@ -76,6 +76,7 @@ import ORG.oclc.oai.server.verb.NoMetadataFormatsException;
 import ORG.oclc.oai.server.verb.NoSetHierarchyException;
 import edu.harvard.hmdc.vdcnet.catalog.CatalogServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.DeletedStudy;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 
@@ -603,12 +604,14 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
             oldCount = Integer.parseInt(tokenizer.nextToken());
             metadataPrefix = tokenizer.nextToken();
         } catch (NoSuchElementException e) {
+            logger.info("No such element");
             throw new BadResumptionTokenException();
         }
         
         /* Get some more records from your database */
         Object[] nativeItem = (Object[])resumptionResults.remove(resumptionId);
         if (nativeItem == null) {
+            logger.info("nativeItem null");
             throw new BadResumptionTokenException();
         }
         int count;
@@ -620,6 +623,7 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
                 records.add(record);
             } catch (CannotDisseminateFormatException e) {
                 /* the client hacked the resumptionToken beyond repair */
+                logger.info("Cannot Disseminate Format " + nativeItem.toString() + count);
                 throw new BadResumptionTokenException();
             }
         }

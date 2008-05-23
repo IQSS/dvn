@@ -2251,6 +2251,8 @@ End of deprecated methods section
         if ( !StringUtil.isEmpty(getDepositorRequirements()) ) { return true; }
         if ( !StringUtil.isEmpty(getConditions()) ) { return true; }
         if ( !StringUtil.isEmpty(getDisclaimer()) ) { return true; }
+        if ( !StringUtil.isEmpty(getHarvestDVNTermsOfUse()) ) { return true; }
+        if ( !StringUtil.isEmpty(getHarvestDVTermsOfUse()) ) { return true; }
         
         return false;
     }

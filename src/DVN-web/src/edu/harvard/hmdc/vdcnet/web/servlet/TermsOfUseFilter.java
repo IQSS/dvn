@@ -162,39 +162,44 @@ public class TermsOfUseFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
-
+        boolean redirected = false;
+        
         if (req.getServletPath().equals("/FileDownload") || (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/subsetting/SubsettingPage"))) {
-            checkDownloadTermsOfUse(req, res);
+            redirected = checkDownloadTermsOfUse(req, res);
         } else if (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/study/EditStudyPage")) {
-            checkDepositTermsOfUse(req, res);
+            redirected = checkDepositTermsOfUse(req, res);
         }
-        Throwable problem = null;
-
-        try {
-            chain.doFilter(request, response);
-        } catch (Throwable t) {
-            //
-            // If an exception is thrown somewhere down the filter chain,
-            // we still want to execute our after processing, and then
-            // rethrow the problem after that.
-            //
-            problem = t;
-            t.printStackTrace();
-        }
-
-
-        //
-        // If there was a problem, we want to rethrow it if it is
-        // a known type, otherwise log it.
-        //
-        if (problem != null) {
-            if (problem instanceof ServletException) {
-                throw (ServletException) problem;
+        
+        if (!redirected) {
+            
+            Throwable problem = null;
+            
+            try {
+                chain.doFilter(request, response);
+            } catch (Throwable t) {
+                //
+                // If an exception is thrown somewhere down the filter chain,
+                // we still want to execute our after processing, and then
+                // rethrow the problem after that.
+                //
+                problem = t;
+                t.printStackTrace();
             }
-            if (problem instanceof IOException) {
-                throw (IOException) problem;
+
+
+            //
+            // If there was a problem, we want to rethrow it if it is
+            // a known type, otherwise log it.
+            //
+            if (problem != null) {
+                if (problem instanceof ServletException) {
+                    throw (ServletException) problem;
+                }
+                if (problem instanceof IOException) {
+                    throw (IOException) problem;
+                }
+                sendProcessingError(problem, response);
             }
-            sendProcessingError(problem, response);
         }
     }
 
@@ -251,7 +256,7 @@ public class TermsOfUseFilter implements Filter {
 
     }
 
-    private void checkDepositTermsOfUse(HttpServletRequest req, HttpServletResponse res) throws java.io.IOException {
+    private boolean checkDepositTermsOfUse(HttpServletRequest req, HttpServletResponse res) throws java.io.IOException {
         Map termsOfUseMap = getTermsOfUseMap(req);
         String studyId = req.getParameter("studyId");
         VDC currentVDC = vdcService.getVDCFromRequest(req);
@@ -269,12 +274,13 @@ public class TermsOfUseFilter implements Filter {
                 params += "&vdcId=" + currentVDC.getId();
             }
             res.sendRedirect(req.getContextPath() + "/faces/study/TermsOfUsePage.jsp" + params);
-            return; // don't continue with chain since we are redirecting'
+            return true; // don't continue with chain since we are redirecting'
         }
 
+        return false;
     }
 
-    private void checkDownloadTermsOfUse(HttpServletRequest req, HttpServletResponse res) throws java.io.IOException {
+    private boolean checkDownloadTermsOfUse(HttpServletRequest req, HttpServletResponse res) throws java.io.IOException {
         String fileId = req.getParameter("fileId");
         String catId = req.getParameter("catId");
         String studyId = req.getParameter("studyId");
@@ -294,7 +300,7 @@ public class TermsOfUseFilter implements Filter {
                     // isn't a license/terms of use for it!
                     } else {
                         ex.printStackTrace();
-                        return;
+                        return false;
                     }
                 }
             } else if (catId != null) {
@@ -308,7 +314,7 @@ public class TermsOfUseFilter implements Filter {
                     // isn't a license/terms of use for it!
                     } else {
                         ex.printStackTrace();
-                        return;
+                        return false;
                     }
                 }
             } else if (studyId != null) {
@@ -321,7 +327,7 @@ public class TermsOfUseFilter implements Filter {
                     // isn't a license/terms of use for it!
                     } else {
                         ex.printStackTrace();
-                        return;
+                        return false;
                     }
                 }
             }
@@ -383,11 +389,11 @@ public class TermsOfUseFilter implements Filter {
                         params += "&vdcId=" + currentVDC.getId();
                     }
                     res.sendRedirect(req.getContextPath() + "/faces/study/TermsOfUsePage.jsp" + params);
-                    return; // don't continue with chain since we are redirecting'
+                    return true; // don't continue with chain since we are redirecting'
                 }
             }
         }
-
+        return false;
     }
 
     private void sendProcessingError(Throwable t, ServletResponse response) {

@@ -161,7 +161,8 @@ public class DVNXMLRecordFactory extends RecordFactory implements java.io.Serial
 	throws IllegalArgumentException {
 	String xmlRec = (String)nativeItem;
 //	String xmlRec = (String)nativeItem;
-	return xmlRec.indexOf("<header status=\"deleted\"") != -1;
+//	return xmlRec.indexOf("<header status=\"deleted\"") != -1;
+	return xmlRec.indexOf("<status>deleted</status>") != -1;
     }
 
     /**

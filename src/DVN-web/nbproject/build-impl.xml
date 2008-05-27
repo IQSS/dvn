@@ -482,60 +482,59 @@
     </target>
     <target depends="init,compile,compile-jsps,-pre-dist,-do-dist-with-manifest,-do-dist-without-manifest" name="do-dist"/>
     <target depends="init" if="dist.ear.dir" name="library-inclusion-in-manifest">
-        <basename file="${libs.jsf12-support.classpath.libfile.4}" property="included.lib.libs.jsf12-support.classpath.4"/>
-        <basename file="${libs.jsf12-support.classpath.libfile.3}" property="included.lib.libs.jsf12-support.classpath.3"/>
-        <basename file="${libs.jsf12-support.classpath.libfile.2}" property="included.lib.libs.jsf12-support.classpath.2"/>
-        <basename file="${libs.jsf12-support.classpath.libfile.1}" property="included.lib.libs.jsf12-support.classpath.1"/>
-        <copy-ear-war file="${libs.jsf12-support.classpath.libfile.4}" propname="included.lib.libs.jsf12-support.classpath.4.X"/>
-        <copy-ear-war file="${libs.jsf12-support.classpath.libfile.3}" propname="included.lib.libs.jsf12-support.classpath.3.X"/>
-        <copy-ear-war file="${libs.jsf12-support.classpath.libfile.2}" propname="included.lib.libs.jsf12-support.classpath.2.X"/>
-        <copy-ear-war file="${libs.jsf12-support.classpath.libfile.1}" propname="included.lib.libs.jsf12-support.classpath.1.X"/>
         <basename file="${reference.DVN-ejb.dist}" property="included.lib.reference.DVN-ejb.dist"/>
         <copy-ear-war file="${reference.DVN-ejb.dist}" propname="included.lib.reference.DVN-ejb.dist.X"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.17}" property="included.lib.libs.dvn-WEB.classpath.17"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.16}" property="included.lib.libs.dvn-WEB.classpath.16"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.15}" property="included.lib.libs.dvn-WEB.classpath.15"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.14}" property="included.lib.libs.dvn-WEB.classpath.14"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.13}" property="included.lib.libs.dvn-WEB.classpath.13"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.12}" property="included.lib.libs.dvn-WEB.classpath.12"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.11}" property="included.lib.libs.dvn-WEB.classpath.11"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.10}" property="included.lib.libs.dvn-WEB.classpath.10"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.9}" property="included.lib.libs.dvn-WEB.classpath.9"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.8}" property="included.lib.libs.dvn-WEB.classpath.8"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.7}" property="included.lib.libs.dvn-WEB.classpath.7"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.6}" property="included.lib.libs.dvn-WEB.classpath.6"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.5}" property="included.lib.libs.dvn-WEB.classpath.5"/>
+        <basename file="${libs.dvn-WEB.classpath.libfile.4}" property="included.lib.libs.dvn-WEB.classpath.4"/>
         <basename file="${libs.dvn-WEB.classpath.libfile.3}" property="included.lib.libs.dvn-WEB.classpath.3"/>
         <basename file="${libs.dvn-WEB.classpath.libfile.2}" property="included.lib.libs.dvn-WEB.classpath.2"/>
         <basename file="${libs.dvn-WEB.classpath.libfile.1}" property="included.lib.libs.dvn-WEB.classpath.1"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.17}" propname="included.lib.libs.dvn-WEB.classpath.17.X"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.16}" propname="included.lib.libs.dvn-WEB.classpath.16.X"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.15}" propname="included.lib.libs.dvn-WEB.classpath.15.X"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.14}" propname="included.lib.libs.dvn-WEB.classpath.14.X"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.13}" propname="included.lib.libs.dvn-WEB.classpath.13.X"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.12}" propname="included.lib.libs.dvn-WEB.classpath.12.X"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.11}" propname="included.lib.libs.dvn-WEB.classpath.11.X"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.10}" propname="included.lib.libs.dvn-WEB.classpath.10.X"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.9}" propname="included.lib.libs.dvn-WEB.classpath.9.X"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.8}" propname="included.lib.libs.dvn-WEB.classpath.8.X"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.7}" propname="included.lib.libs.dvn-WEB.classpath.7.X"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.6}" propname="included.lib.libs.dvn-WEB.classpath.6.X"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.5}" propname="included.lib.libs.dvn-WEB.classpath.5.X"/>
+        <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.4}" propname="included.lib.libs.dvn-WEB.classpath.4.X"/>
         <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.3}" propname="included.lib.libs.dvn-WEB.classpath.3.X"/>
         <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.2}" propname="included.lib.libs.dvn-WEB.classpath.2.X"/>
         <copy-ear-war file="${libs.dvn-WEB.classpath.libfile.1}" propname="included.lib.libs.dvn-WEB.classpath.1.X"/>
-        <basename file="${libs.dvn-tiles.classpath.libfile.7}" property="included.lib.libs.dvn-tiles.classpath.7"/>
-        <basename file="${libs.dvn-tiles.classpath.libfile.6}" property="included.lib.libs.dvn-tiles.classpath.6"/>
-        <basename file="${libs.dvn-tiles.classpath.libfile.5}" property="included.lib.libs.dvn-tiles.classpath.5"/>
-        <basename file="${libs.dvn-tiles.classpath.libfile.4}" property="included.lib.libs.dvn-tiles.classpath.4"/>
-        <basename file="${libs.dvn-tiles.classpath.libfile.3}" property="included.lib.libs.dvn-tiles.classpath.3"/>
-        <basename file="${libs.dvn-tiles.classpath.libfile.2}" property="included.lib.libs.dvn-tiles.classpath.2"/>
-        <basename file="${libs.dvn-tiles.classpath.libfile.1}" property="included.lib.libs.dvn-tiles.classpath.1"/>
-        <copy-ear-war file="${libs.dvn-tiles.classpath.libfile.7}" propname="included.lib.libs.dvn-tiles.classpath.7.X"/>
-        <copy-ear-war file="${libs.dvn-tiles.classpath.libfile.6}" propname="included.lib.libs.dvn-tiles.classpath.6.X"/>
-        <copy-ear-war file="${libs.dvn-tiles.classpath.libfile.5}" propname="included.lib.libs.dvn-tiles.classpath.5.X"/>
-        <copy-ear-war file="${libs.dvn-tiles.classpath.libfile.4}" propname="included.lib.libs.dvn-tiles.classpath.4.X"/>
-        <copy-ear-war file="${libs.dvn-tiles.classpath.libfile.3}" propname="included.lib.libs.dvn-tiles.classpath.3.X"/>
-        <copy-ear-war file="${libs.dvn-tiles.classpath.libfile.2}" propname="included.lib.libs.dvn-tiles.classpath.2.X"/>
-        <copy-ear-war file="${libs.dvn-tiles.classpath.libfile.1}" propname="included.lib.libs.dvn-tiles.classpath.1.X"/>
-        <basename file="${libs.dvn-DDImapping.classpath.libfile.3}" property="included.lib.libs.dvn-DDImapping.classpath.3"/>
-        <basename file="${libs.dvn-DDImapping.classpath.libfile.2}" property="included.lib.libs.dvn-DDImapping.classpath.2"/>
-        <basename file="${libs.dvn-DDImapping.classpath.libfile.1}" property="included.lib.libs.dvn-DDImapping.classpath.1"/>
-        <copy-ear-war file="${libs.dvn-DDImapping.classpath.libfile.3}" propname="included.lib.libs.dvn-DDImapping.classpath.3.X"/>
-        <copy-ear-war file="${libs.dvn-DDImapping.classpath.libfile.2}" propname="included.lib.libs.dvn-DDImapping.classpath.2.X"/>
-        <copy-ear-war file="${libs.dvn-DDImapping.classpath.libfile.1}" propname="included.lib.libs.dvn-DDImapping.classpath.1.X"/>
-        <basename file="${libs.dvn-harvester.classpath.libfile.4}" property="included.lib.libs.dvn-harvester.classpath.4"/>
-        <basename file="${libs.dvn-harvester.classpath.libfile.3}" property="included.lib.libs.dvn-harvester.classpath.3"/>
-        <basename file="${libs.dvn-harvester.classpath.libfile.2}" property="included.lib.libs.dvn-harvester.classpath.2"/>
-        <basename file="${libs.dvn-harvester.classpath.libfile.1}" property="included.lib.libs.dvn-harvester.classpath.1"/>
-        <copy-ear-war file="${libs.dvn-harvester.classpath.libfile.4}" propname="included.lib.libs.dvn-harvester.classpath.4.X"/>
-        <copy-ear-war file="${libs.dvn-harvester.classpath.libfile.3}" propname="included.lib.libs.dvn-harvester.classpath.3.X"/>
-        <copy-ear-war file="${libs.dvn-harvester.classpath.libfile.2}" propname="included.lib.libs.dvn-harvester.classpath.2.X"/>
-        <copy-ear-war file="${libs.dvn-harvester.classpath.libfile.1}" propname="included.lib.libs.dvn-harvester.classpath.1.X"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.17}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.16}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.15}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.14}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.13}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.12}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.11}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.10}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.9}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.8}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.7}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.6}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.5}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.4}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.3}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.7}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.6}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.5}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.4}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.3}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.woodstock-components.classpath.libfile.7}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.woodstock-components.classpath.libfile.6}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.woodstock-components.classpath.libfile.5}" todir="${build.web.dir}/WEB-INF/lib"/>
@@ -551,43 +550,46 @@
         <copy file="${libs.exceptionhandler-runtime.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.libs.jsf12-support.classpath.1.X} ${included.lib.libs.jsf12-support.classpath.2.X} ${included.lib.libs.jsf12-support.classpath.3.X} ${included.lib.libs.jsf12-support.classpath.4.X} ${included.lib.reference.DVN-ejb.dist} ${included.lib.libs.dvn-WEB.classpath.1.X} ${included.lib.libs.dvn-WEB.classpath.2.X} ${included.lib.libs.dvn-WEB.classpath.3.X} ${included.lib.libs.dvn-tiles.classpath.1.X} ${included.lib.libs.dvn-tiles.classpath.2.X} ${included.lib.libs.dvn-tiles.classpath.3.X} ${included.lib.libs.dvn-tiles.classpath.4.X} ${included.lib.libs.dvn-tiles.classpath.5.X} ${included.lib.libs.dvn-tiles.classpath.6.X} ${included.lib.libs.dvn-tiles.classpath.7.X} ${included.lib.libs.dvn-DDImapping.classpath.1.X} ${included.lib.libs.dvn-DDImapping.classpath.2.X} ${included.lib.libs.dvn-DDImapping.classpath.3.X} ${included.lib.libs.dvn-harvester.classpath.1.X} ${included.lib.libs.dvn-harvester.classpath.2.X} ${included.lib.libs.dvn-harvester.classpath.3.X} ${included.lib.libs.dvn-harvester.classpath.4.X} "/>
+            <attribute name="Class-Path" value="${included.lib.reference.DVN-ejb.dist} ${included.lib.libs.dvn-WEB.classpath.1.X} ${included.lib.libs.dvn-WEB.classpath.2.X} ${included.lib.libs.dvn-WEB.classpath.3.X} ${included.lib.libs.dvn-WEB.classpath.4.X} ${included.lib.libs.dvn-WEB.classpath.5.X} ${included.lib.libs.dvn-WEB.classpath.6.X} ${included.lib.libs.dvn-WEB.classpath.7.X} ${included.lib.libs.dvn-WEB.classpath.8.X} ${included.lib.libs.dvn-WEB.classpath.9.X} ${included.lib.libs.dvn-WEB.classpath.10.X} ${included.lib.libs.dvn-WEB.classpath.11.X} ${included.lib.libs.dvn-WEB.classpath.12.X} ${included.lib.libs.dvn-WEB.classpath.13.X} ${included.lib.libs.dvn-WEB.classpath.14.X} ${included.lib.libs.dvn-WEB.classpath.15.X} ${included.lib.libs.dvn-WEB.classpath.16.X} ${included.lib.libs.dvn-WEB.classpath.17.X} "/>
         </manifest>
         <delete dir="${dist.ear.dir}/temp"/>
     </target>
     <target depends="init" name="library-inclusion-in-archive" unless="dist.ear.dir">
-        <copy file="${libs.jsf12-support.classpath.libfile.4}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.jsf12-support.classpath.libfile.3}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.jsf12-support.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.jsf12-support.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${reference.DVN-ejb.dist}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.17}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.16}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.15}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.14}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.13}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.12}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.11}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.10}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.9}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.8}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.7}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.6}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.5}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.4}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.3}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.7}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.6}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.5}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.4}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.3}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-DDImapping.classpath.libfile.3}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-DDImapping.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-DDImapping.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-harvester.classpath.libfile.4}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-harvester.classpath.libfile.3}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-harvester.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-harvester.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.17}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.16}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.15}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.14}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.13}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.12}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.11}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.10}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.9}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.8}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.7}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.6}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.5}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.dvn-WEB.classpath.libfile.4}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.3}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.7}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.6}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.5}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.4}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.3}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.dvn-tiles.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.woodstock-components.classpath.libfile.7}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.woodstock-components.classpath.libfile.6}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.woodstock-components.classpath.libfile.5}" todir="${build.web.dir}/WEB-INF/lib"/>

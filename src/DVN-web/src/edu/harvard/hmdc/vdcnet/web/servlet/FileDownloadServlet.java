@@ -93,17 +93,13 @@ import javax.imageio.stream.ImageOutputStream;
  */
 public class FileDownloadServlet extends HttpServlet{
 
-    private HttpClient client = null;
     
     /** Creates a new instance of FileDownloadServlet */
     public FileDownloadServlet() {
     }
 
     private HttpClient getClient() {
-        if (client == null) {
-            client = new HttpClient( new MultiThreadedHttpConnectionManager() );
-        }
-        return client;
+        return new HttpClient();
     }
 
     private String generateDisseminateUrl() throws IOException{

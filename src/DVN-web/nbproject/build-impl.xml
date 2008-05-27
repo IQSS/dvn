@@ -482,6 +482,14 @@
     </target>
     <target depends="init,compile,compile-jsps,-pre-dist,-do-dist-with-manifest,-do-dist-without-manifest" name="do-dist"/>
     <target depends="init" if="dist.ear.dir" name="library-inclusion-in-manifest">
+        <basename file="${libs.jsf12-support.classpath.libfile.4}" property="included.lib.libs.jsf12-support.classpath.4"/>
+        <basename file="${libs.jsf12-support.classpath.libfile.3}" property="included.lib.libs.jsf12-support.classpath.3"/>
+        <basename file="${libs.jsf12-support.classpath.libfile.2}" property="included.lib.libs.jsf12-support.classpath.2"/>
+        <basename file="${libs.jsf12-support.classpath.libfile.1}" property="included.lib.libs.jsf12-support.classpath.1"/>
+        <copy-ear-war file="${libs.jsf12-support.classpath.libfile.4}" propname="included.lib.libs.jsf12-support.classpath.4.X"/>
+        <copy-ear-war file="${libs.jsf12-support.classpath.libfile.3}" propname="included.lib.libs.jsf12-support.classpath.3.X"/>
+        <copy-ear-war file="${libs.jsf12-support.classpath.libfile.2}" propname="included.lib.libs.jsf12-support.classpath.2.X"/>
+        <copy-ear-war file="${libs.jsf12-support.classpath.libfile.1}" propname="included.lib.libs.jsf12-support.classpath.1.X"/>
         <basename file="${reference.DVN-ejb.dist}" property="included.lib.reference.DVN-ejb.dist"/>
         <copy-ear-war file="${reference.DVN-ejb.dist}" propname="included.lib.reference.DVN-ejb.dist.X"/>
         <basename file="${libs.dvn-WEB.classpath.libfile.17}" property="included.lib.libs.dvn-WEB.classpath.17"/>
@@ -550,11 +558,15 @@
         <copy file="${libs.exceptionhandler-runtime.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.reference.DVN-ejb.dist} ${included.lib.libs.dvn-WEB.classpath.1.X} ${included.lib.libs.dvn-WEB.classpath.2.X} ${included.lib.libs.dvn-WEB.classpath.3.X} ${included.lib.libs.dvn-WEB.classpath.4.X} ${included.lib.libs.dvn-WEB.classpath.5.X} ${included.lib.libs.dvn-WEB.classpath.6.X} ${included.lib.libs.dvn-WEB.classpath.7.X} ${included.lib.libs.dvn-WEB.classpath.8.X} ${included.lib.libs.dvn-WEB.classpath.9.X} ${included.lib.libs.dvn-WEB.classpath.10.X} ${included.lib.libs.dvn-WEB.classpath.11.X} ${included.lib.libs.dvn-WEB.classpath.12.X} ${included.lib.libs.dvn-WEB.classpath.13.X} ${included.lib.libs.dvn-WEB.classpath.14.X} ${included.lib.libs.dvn-WEB.classpath.15.X} ${included.lib.libs.dvn-WEB.classpath.16.X} ${included.lib.libs.dvn-WEB.classpath.17.X} "/>
+            <attribute name="Class-Path" value="${included.lib.libs.jsf12-support.classpath.1.X} ${included.lib.libs.jsf12-support.classpath.2.X} ${included.lib.libs.jsf12-support.classpath.3.X} ${included.lib.libs.jsf12-support.classpath.4.X} ${included.lib.reference.DVN-ejb.dist} ${included.lib.libs.dvn-WEB.classpath.1.X} ${included.lib.libs.dvn-WEB.classpath.2.X} ${included.lib.libs.dvn-WEB.classpath.3.X} ${included.lib.libs.dvn-WEB.classpath.4.X} ${included.lib.libs.dvn-WEB.classpath.5.X} ${included.lib.libs.dvn-WEB.classpath.6.X} ${included.lib.libs.dvn-WEB.classpath.7.X} ${included.lib.libs.dvn-WEB.classpath.8.X} ${included.lib.libs.dvn-WEB.classpath.9.X} ${included.lib.libs.dvn-WEB.classpath.10.X} ${included.lib.libs.dvn-WEB.classpath.11.X} ${included.lib.libs.dvn-WEB.classpath.12.X} ${included.lib.libs.dvn-WEB.classpath.13.X} ${included.lib.libs.dvn-WEB.classpath.14.X} ${included.lib.libs.dvn-WEB.classpath.15.X} ${included.lib.libs.dvn-WEB.classpath.16.X} ${included.lib.libs.dvn-WEB.classpath.17.X} "/>
         </manifest>
         <delete dir="${dist.ear.dir}/temp"/>
     </target>
     <target depends="init" name="library-inclusion-in-archive" unless="dist.ear.dir">
+        <copy file="${libs.jsf12-support.classpath.libfile.4}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.jsf12-support.classpath.libfile.3}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.jsf12-support.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.jsf12-support.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${reference.DVN-ejb.dist}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.17}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.16}" todir="${build.web.dir}/WEB-INF/lib"/>

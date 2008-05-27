@@ -291,6 +291,15 @@ is divided into following sections:
         <copy file="${libs.dvn-DDImapping.classpath.libfile.3}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-DDImapping.classpath.libfile.2}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-DDImapping.classpath.libfile.1}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.14}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.13}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.12}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.11}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.10}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.9}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.8}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.7}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.6}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.5}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.4}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.3}" todir="${build.classes.dir}"/>
@@ -311,11 +320,29 @@ is divided into following sections:
         <copy file="${libs.dvn-DDImapping.classpath.libfile.3}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-DDImapping.classpath.libfile.2}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-DDImapping.classpath.libfile.1}" todir="${dist.ear.dir}"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.14}" property="included.lib.libs.dvn-EJB.classpath.14"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.13}" property="included.lib.libs.dvn-EJB.classpath.13"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.12}" property="included.lib.libs.dvn-EJB.classpath.12"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.11}" property="included.lib.libs.dvn-EJB.classpath.11"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.10}" property="included.lib.libs.dvn-EJB.classpath.10"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.9}" property="included.lib.libs.dvn-EJB.classpath.9"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.8}" property="included.lib.libs.dvn-EJB.classpath.8"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.7}" property="included.lib.libs.dvn-EJB.classpath.7"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.6}" property="included.lib.libs.dvn-EJB.classpath.6"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.5}" property="included.lib.libs.dvn-EJB.classpath.5"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.4}" property="included.lib.libs.dvn-EJB.classpath.4"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.3}" property="included.lib.libs.dvn-EJB.classpath.3"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.2}" property="included.lib.libs.dvn-EJB.classpath.2"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.1}" property="included.lib.libs.dvn-EJB.classpath.1"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.14}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.13}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.12}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.11}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.10}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.9}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.8}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.7}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.6}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.5}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.4}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.3}" todir="${dist.ear.dir}"/>
@@ -336,7 +363,7 @@ is divided into following sections:
         <copy file="${libs.dvn-jhove.classpath.libfile.2}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-jhove.classpath.libfile.1}" todir="${dist.ear.dir}"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.libs.dvn-DDImapping.classpath.1} ${included.lib.libs.dvn-DDImapping.classpath.2} ${included.lib.libs.dvn-DDImapping.classpath.3} ${included.lib.libs.dvn-EJB.classpath.1} ${included.lib.libs.dvn-EJB.classpath.2} ${included.lib.libs.dvn-EJB.classpath.3} ${included.lib.libs.dvn-EJB.classpath.4} ${included.lib.libs.dvn-EJB.classpath.5} ${included.lib.libs.dvn-harvester.classpath.1} ${included.lib.libs.dvn-harvester.classpath.2} ${included.lib.libs.dvn-harvester.classpath.3} ${included.lib.libs.dvn-harvester.classpath.4} ${included.lib.libs.dvn-jhove.classpath.1} ${included.lib.libs.dvn-jhove.classpath.2} ${included.lib.libs.dvn-jhove.classpath.3} "/>
+            <attribute name="Class-Path" value="${included.lib.libs.dvn-DDImapping.classpath.1} ${included.lib.libs.dvn-DDImapping.classpath.2} ${included.lib.libs.dvn-DDImapping.classpath.3} ${included.lib.libs.dvn-EJB.classpath.1} ${included.lib.libs.dvn-EJB.classpath.2} ${included.lib.libs.dvn-EJB.classpath.3} ${included.lib.libs.dvn-EJB.classpath.4} ${included.lib.libs.dvn-EJB.classpath.5} ${included.lib.libs.dvn-EJB.classpath.6} ${included.lib.libs.dvn-EJB.classpath.7} ${included.lib.libs.dvn-EJB.classpath.8} ${included.lib.libs.dvn-EJB.classpath.9} ${included.lib.libs.dvn-EJB.classpath.10} ${included.lib.libs.dvn-EJB.classpath.11} ${included.lib.libs.dvn-EJB.classpath.12} ${included.lib.libs.dvn-EJB.classpath.13} ${included.lib.libs.dvn-EJB.classpath.14} ${included.lib.libs.dvn-harvester.classpath.1} ${included.lib.libs.dvn-harvester.classpath.2} ${included.lib.libs.dvn-harvester.classpath.3} ${included.lib.libs.dvn-harvester.classpath.4} ${included.lib.libs.dvn-jhove.classpath.1} ${included.lib.libs.dvn-jhove.classpath.2} ${included.lib.libs.dvn-jhove.classpath.3} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">

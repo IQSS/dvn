@@ -136,10 +136,8 @@ public class StudyFile implements Serializable{
         this.description = description;
     }
     
-    // in order to allow the relationship to datatable to be lazy loaded, 
-    // this relationship also had to be made lazy loading because of a bug
-    // in glassfish 
-    @ManyToOne (fetch=FetchType.LAZY, cascade={CascadeType.MERGE, CascadeType.PERSIST})
+  
+    @ManyToOne (cascade={CascadeType.MERGE, CascadeType.PERSIST})
     private FileCategory fileCategory;
     
     public FileCategory getFileCategory() {
@@ -329,7 +327,7 @@ public class StudyFile implements Serializable{
     /**
      * Holds value of property dataTable.
      */
-    @OneToOne(fetch=FetchType.LAZY, mappedBy="studyFile", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToOne(mappedBy="studyFile", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private DataTable dataTable;
     
     /**

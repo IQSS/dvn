@@ -33,13 +33,10 @@ import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
-import edu.harvard.hmdc.vdcnet.dsb.DSBIngestMessage;
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 import edu.harvard.hmdc.vdcnet.gnrs.GNRSServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
-import edu.harvard.hmdc.vdcnet.jaxb.ddi20.CodeBook;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
-import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.vdc.ReviewState;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
@@ -47,7 +44,6 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.DataFileFormatType;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -61,21 +57,11 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.Queue;
-import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueSender;
-import javax.jms.QueueSession;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -165,7 +151,6 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void deleteStudy() {
         studyService.deleteStudy(study.getId());
-        
         
     }
     

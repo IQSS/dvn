@@ -30,7 +30,7 @@ import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.ddi.MappingException;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.EditStudyService;
-import edu.harvard.hmdc.vdcnet.study.RepositoryWrapper;
+//import edu.harvard.hmdc.vdcnet.study.RepositoryWrapper;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
@@ -171,6 +171,7 @@ public class VDCImportServlet extends HttpServlet {
     
     private List<File> getDDIFilesFromRepository(Logger logger, File legacyFileDir,String authority)throws IOException,SAXException {
         List files= new ArrayList<File>();
+        /*
         RepositoryWrapper repositoryWrapper = new RepositoryWrapper();
         
         List<String> filePaths = repositoryWrapper.getStudyDDIPaths(authority);
@@ -183,6 +184,7 @@ public class VDCImportServlet extends HttpServlet {
                 logger.severe("File "+filePath+" does not exist!");
             }
         }
+        */
         return files;
     }
     

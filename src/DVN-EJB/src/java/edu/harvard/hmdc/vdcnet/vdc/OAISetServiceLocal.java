@@ -9,6 +9,7 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
+import ORG.oclc.oai.server.verb.NoItemsMatchException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -18,7 +19,7 @@ import javax.ejb.Local;
  */
 @Local
 public interface OAISetServiceLocal extends java.io.Serializable  {
-   public OAISet findBySpec(String spec);   
+   public OAISet findBySpec(String spec) throws NoItemsMatchException;   
    public void remove(Long id);
    public List findAll();
    public OAISet findById(Long id);

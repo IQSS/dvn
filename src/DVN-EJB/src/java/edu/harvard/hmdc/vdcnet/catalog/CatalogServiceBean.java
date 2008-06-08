@@ -28,6 +28,7 @@
 
 package edu.harvard.hmdc.vdcnet.catalog;
 
+import ORG.oclc.oai.server.verb.NoItemsMatchException;
 import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.DeletedStudy;
@@ -180,7 +181,7 @@ public class CatalogServiceBean implements CatalogServiceLocal {
         return studies.toArray(s);
     }
         
-    public String []  listRecords(String from, String until, String set, String metadataPrefix) {
+    public String []  listRecords(String from, String until, String set, String metadataPrefix) throws NoItemsMatchException{
         OAISet oaiSet = null;
         List <Long> indexedIds = null;
         if (set != null){

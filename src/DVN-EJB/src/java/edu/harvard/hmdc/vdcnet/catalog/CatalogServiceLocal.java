@@ -20,6 +20,7 @@
 
 package edu.harvard.hmdc.vdcnet.catalog;
 
+import ORG.oclc.oai.server.verb.NoItemsMatchException;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import javax.ejb.Local;
 
@@ -29,7 +30,7 @@ import javax.ejb.Local;
  */
 @Local
 public interface CatalogServiceLocal extends java.io.Serializable  {
-    public String [] listRecords(String from, String until, String set, String metadataPrefix);
+    public String [] listRecords(String from, String until, String set, String metadataPrefix) throws NoItemsMatchException;
 
     public String getRecord(Study study, String metadataPrefix);
 

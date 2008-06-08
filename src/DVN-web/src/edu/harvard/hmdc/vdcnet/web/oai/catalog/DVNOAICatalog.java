@@ -222,7 +222,7 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
      * its response. It's much more efficient to construct the entire response in one fell
      * swoop by overriding listRecords() as I've done here.
      */
-    public Map listIdentifiers(String from, String until, String set, String metadataPrefix) {
+    public Map listIdentifiers(String from, String until, String set, String metadataPrefix) throws NoItemsMatchException  {
         purge(); // clean out old resumptionTokens
         Map listIdentifiersMap = new HashMap();
         ArrayList headers = new ArrayList();

@@ -9,6 +9,7 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
+import ORG.oclc.oai.server.verb.NoItemsMatchException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -24,12 +25,13 @@ public class OAISetServiceBean implements OAISetServiceLocal {
     private EntityManager em; 
     
     
-    public OAISet findBySpec(String spec) {
+    public OAISet findBySpec(String spec) throws NoItemsMatchException {
      String query="SELECT o from OAISet o where o.spec = :fieldName";
        OAISet oaiSet=null;
        try {
            oaiSet=(OAISet)em.createQuery(query).setParameter("fieldName",spec).getSingleResult();
        } catch (javax.persistence.NoResultException e) {
+           throw new NoItemsMatchException();
            // Do nothing, just return null. 
        }
        return oaiSet;

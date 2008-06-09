@@ -3,9 +3,16 @@
    The OAI contents haven't changed since Aug 2006
    [CONFIRMED June 05]
 
-2. Downloads: 
+2. Census studies metadata are distributed in MIF XML
+   format; it's a proprietory format that we convert to DDI
+   to ingest the data using our own MIF-to-DDI crosswalk. 
+
+3. Downloads: 
    
-   Sample download URL:
+   Actual census data can be downloaded using the download 
+   servlet they created for us. Only select columns
+   (variables) can be downloaded; i.e., you cannot download 
+   the whole file. Sample download URL:
 
   http://leopard.dsd.census.gov/TheDataWeb_Tabulation/VDCRepositoryServlet/AHS//Metropolitan Sample/1998/4505?vars= 
 
@@ -18,7 +25,7 @@
    leopard.dsd.census.gov
 
 
-2. Testing: 
+4. Testing: 
 
    There are few tests I used to run automatically on these
    Census studies: 

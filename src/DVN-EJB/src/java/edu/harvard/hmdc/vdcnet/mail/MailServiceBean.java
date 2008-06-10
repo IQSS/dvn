@@ -283,8 +283,11 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
             messageText = "A harvest has run for "+vdcName+" Dataverse, with errors.\n";
           }
                
-          
-          messageText += ""+harvestedStudyCount+" studies were successfully harvested.\n";
+          if (!harvestError && harvestedStudyCount==0) {
+            messageText += " No studies have been harvested (no updates found since last harvest). ";
+          } else {
+            messageText += ""+harvestedStudyCount+" studies were successfully harvested.\n";
+          }
           if (failedIdentifiers.size()>0) {
                 messageText+= "Harvest failed for the following identifiers - \n";
                 Iterator iter = failedIdentifiers.iterator();
@@ -296,7 +299,7 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
           if (harvestError ) {
               messageText+="Please see "+logFileName+" and server.log for details of harvest errors.";
           } else {
-              messageText+="Please see "+logFileName+"for more details.";
+              messageText+="Please see "+logFileName+" for more details.";
           }
           sendDoNotReplyMail(email,subject,messageText);
       }   

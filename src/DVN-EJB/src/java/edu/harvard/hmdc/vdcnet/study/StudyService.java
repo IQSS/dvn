@@ -60,9 +60,7 @@ public class StudyService implements java.io.Serializable {
     /**
      * Add given Study to persistent storage.
      */
-    public void addStudy(Study study) {
-        
-    }
+ // commented out - not used   public void addStudy(Study study) {   }
     
     public void updateStudy(Study study) {
         

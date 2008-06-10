@@ -111,9 +111,6 @@ public class StudyProducer implements java.io.Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    
-    @ManyToOne
-    private Study study;
   /**
      * Holds value of property version.
      */
@@ -220,13 +217,21 @@ public class StudyProducer implements java.io.Serializable {
         this.affiliation = affiliation;
     }
 
-    public Study getStudy() {
-        return study;
+     /**
+     * Holds value of property metadata.
+     */
+    @ManyToOne
+    @JoinColumn(nullable=false)
+    private Metadata metadata;
+
+    public Metadata getMetadata() {
+        return metadata;
     }
 
-    public void setStudy(Study study) {
-        this.study = study;
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
+    
     
     public boolean isEmpty() {
         return ((abbreviation==null || abbreviation.trim().equals(""))

@@ -118,28 +118,21 @@ public class StudyRelStudy implements java.io.Serializable {
         this.displayOrder = displayOrder;
     }
 
-    /**
-     * Holds value of property study.
+     /**
+     * Holds value of property metadata.
      */
-    @ManyToOne 
+    @ManyToOne
     @JoinColumn(nullable=false)
-    private Study study;
+    private Metadata metadata;
 
-    /**
-     * Getter for property study.
-     * @return Value of property study.
-     */
-    public Study getStudy() {
-        return this.study;
+    public Metadata getMetadata() {
+        return metadata;
     }
 
-    /**
-     * Setter for property study.
-     * @param study New value of property study.
-     */
-    public void setStudy(Study study) {
-        this.study = study;
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
+    
       /**
      * Holds value of property version.
      */

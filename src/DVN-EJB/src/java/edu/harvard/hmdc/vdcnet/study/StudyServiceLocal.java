@@ -40,7 +40,7 @@ public interface StudyServiceLocal extends java.io.Serializable {
      */
     
     public void exportStudyFilesToLegacySystem(String lastUpdateTime, String authority) throws IOException, JAXBException;
-    public void addStudy(Study study); 
+// comment out - not used    public void addStudy(Study study); 
         
     public Study getStudy(Long studyId);
     

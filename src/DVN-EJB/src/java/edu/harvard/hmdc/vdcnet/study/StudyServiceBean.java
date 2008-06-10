@@ -102,21 +102,28 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     EntityManager em;
-    @Resource(mappedName="jms/DSBIngest") Queue queue;
-    @Resource(mappedName="jms/DSBQueueConnectionFactory") QueueConnectionFactory factory;
-    
-    @EJB GNRSServiceLocal gnrsService;
-    @EJB VDCNetworkServiceLocal vdcNetworkService;
-    @EJB DDIServiceLocal ddiService;    
-    @EJB UserServiceLocal userService;
-    @EJB IndexServiceLocal indexService;
-    @EJB ReviewStateServiceLocal reviewStateService;
-    @EJB StudyExporterFactoryLocal studyExporterFactory;
-    @EJB MailServiceLocal mailService;
-        
+    @Resource(mappedName = "jms/DSBIngest")
+    Queue queue;
+    @Resource(mappedName = "jms/DSBQueueConnectionFactory")
+    QueueConnectionFactory factory;
+    @EJB
+    GNRSServiceLocal gnrsService;
+    @EJB
+    VDCNetworkServiceLocal vdcNetworkService;
+    @EJB
+    DDIServiceLocal ddiService;
+    @EJB
+    UserServiceLocal userService;
+    @EJB
+    IndexServiceLocal indexService;
+    @EJB
+    ReviewStateServiceLocal reviewStateService;
+    @EJB
+    StudyExporterFactoryLocal studyExporterFactory;
+    @EJB
+    MailServiceLocal mailService;
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.study.StudyServiceBean");
     private static final SimpleDateFormat exportLogFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
-
     @EJB
     StudyServiceLocal studyService; // used to force new transaction during import
 
@@ -129,7 +136,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     /**
      * Add given Study to persistent storage.
      */
-    public void addStudy(Study study) {
+ /*  Commented out - not used  
+  public void addStudy(Study study) {
         // For each collection of dependent objects, set the relationship to this study.
         if (study.getStudyAbstracts() != null) {
             for (Iterator<StudyAbstract> it = study.getStudyAbstracts().iterator(); it.hasNext();) {
@@ -152,7 +160,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
 
     }
-
+*/  
     public void updateStudy(Study detachedStudy) {
         em.merge(detachedStudy);
     }
@@ -198,9 +206,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         study.getAllowedGroups().clear();
         study.getAllowedUsers().clear();
-        if (study.getOwner()!=null) {
+        if (study.getOwner() != null) {
             study.getOwner().getOwnedStudies().remove(study);
-      
+
         }
         for (Iterator<StudyFile> it = study.getStudyFiles().iterator(); it.hasNext();) {
             StudyFile elem = it.next();
@@ -239,7 +247,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             indexService.deleteStudy(studyId);
         }
         em.flush();  // Force study deletion to the database, for cases when we are calling this before deleting the owning Dataverse
-        logger.log(Level.INFO, "Successfully deleted Study "+studyId+"!");
+        logger.log(Level.INFO, "Successfully deleted Study " + studyId + "!");
 
 
     }
@@ -479,9 +487,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         return returnList;
     }
-    
+
     public List<Long> getAllStudyIds() {
-      String queryStr = "select id from study";
+        String queryStr = "select id from study";
         Query query = em.createNativeQuery(queryStr);
         List<Long> returnList = new ArrayList<Long>();
         // since query is native, must parse through Vector results
@@ -492,7 +500,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         return returnList;
     }
-    
 
     public List getOrderedStudies(List studyIdList, String orderBy) {
         String studyIds = "";
@@ -564,23 +571,23 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return em.createQuery("select object(t) from DataFileFormatType as t").getResultList();
     }
 
-    public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user)  {
-        addFiles( study, newFiles, user, user.getEmail(), DSBIngestMessage.INGEST_MESAGE_LEVEL_ERROR );
-    }    
-
-    public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail)  {
-        addFiles( study, newFiles, user, ingestEmail, DSBIngestMessage.INGEST_MESAGE_LEVEL_INFO );
+    public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user) {
+        addFiles(study, newFiles, user, user.getEmail(), DSBIngestMessage.INGEST_MESAGE_LEVEL_ERROR);
     }
-    
-    private void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail, int messageLevel)  {
+
+    public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail) {
+        addFiles(study, newFiles, user, ingestEmail, DSBIngestMessage.INGEST_MESAGE_LEVEL_INFO);
+    }
+
+    private void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail, int messageLevel) {
         // step 1: divide the files, based on subsettable or not
         List subsettableFiles = new ArrayList();
         List otherFiles = new ArrayList();
-        
+
         Iterator iter = newFiles.iterator();
         while (iter.hasNext()) {
             StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
-            if ( fileBean.getStudyFile().isSubsettable() ) {
+            if (fileBean.getStudyFile().isSubsettable()) {
                 subsettableFiles.add(fileBean);
             } else {
                 otherFiles.add(fileBean);
@@ -588,7 +595,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 addFileToCategory(fileBean.getStudyFile(), fileBean.getFileCategoryName(), study);
             }
         }
-        
+
         // step 2: iterate through nonsubsettable files, moving from temp to new location
         File newDir = FileUtil.getStudyFileDir(study);
         iter = otherFiles.iterator();
@@ -598,14 +605,14 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             File tempFile = new File(fileBean.getTempSystemFileLocation());
             File newLocationFile = new File(newDir, f.getFileSystemName());
             try {
-                FileUtil.copyFile( tempFile, newLocationFile );
+                FileUtil.copyFile(tempFile, newLocationFile);
                 tempFile.delete();
                 f.setFileSystemLocation(newLocationFile.getAbsolutePath());
             } catch (IOException ex) {
                 throw new EJBException(ex);
             }
         }
-        
+
         // step 3: iterate through subsettable files, sending a message via JMS
         if (subsettableFiles.size() > 0) {
             QueueConnection conn = null;
@@ -613,70 +620,78 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             QueueSender sender = null;
             try {
                 conn = factory.createQueueConnection();
-                session = conn.createQueueSession(false,0);
+                session = conn.createQueueSession(false, 0);
                 sender = session.createSender(queue);
-                
+
                 DSBIngestMessage ingestMessage = new DSBIngestMessage(messageLevel);
                 ingestMessage.setFileBeans(subsettableFiles);
                 ingestMessage.setIngestEmail(ingestEmail);
                 ingestMessage.setIngestUserId(user.getId());
                 ingestMessage.setStudyId(study.getId());
                 Message message = session.createObjectMessage(ingestMessage);
-                
+
                 String detail = "Ingest processing for " + subsettableFiles.size() + " file(s).";
                 studyService.addStudyLock(study.getId(), user.getId(), detail);
                 try {
                     sender.send(message);
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     // If anything goes wrong, remove the study lock.
                     studyService.removeStudyLock(study.getId());
                     ex.printStackTrace();
                 }
-                               
+
                 // send an e-mail
                 if (ingestMessage.sendInfoMessage()) {
                     mailService.sendIngestRequestedNotification(ingestEmail, subsettableFiles);
                 }
-               
+
             } catch (JMSException ex) {
                 ex.printStackTrace();
             } finally {
                 try {
-              
-                    if (sender != null) {sender.close();}
-                    if (session != null) {session.close();}
-                    if (conn != null) {conn.close();}
+
+                    if (sender != null) {
+                        sender.close();
+                    }
+                    if (session != null) {
+                        session.close();
+                    }
+                    if (conn != null) {
+                        conn.close();
+                    }
                 } catch (JMSException ex) {
                     ex.printStackTrace();
                 }
             }
         }
     }
-    
+
     private void addFileToCategory(StudyFile file, String catName, Study s) {
-        if (catName == null) { catName = ""; }
-        
+        if (catName == null) {
+            catName = "";
+        }
+
         Iterator iter = s.getFileCategories().iterator();
         while (iter.hasNext()) {
             FileCategory cat = (FileCategory) iter.next();
-            if ( cat.getName().equals( catName ) ) {
+            if (cat.getName().equals(catName)) {
                 file.setFileCategory(cat);
                 cat.getStudyFiles().add(file);
                 return;
             }
         }
-        
+
         // category was not found, so we create a new file category
         FileCategory cat = new FileCategory();
         cat.setStudy(s);
         s.getFileCategories().add(cat);
-        cat.setName( catName );
+        cat.setName(catName);
         cat.setStudyFiles(new ArrayList());
-        
+
         // link cat to file
         file.setFileCategory(cat);
         cat.getStudyFiles().add(file);
-    }    
+    }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void addIngestedFiles(Long studyId, List fileBeans, Long userId) {
@@ -805,17 +820,17 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public boolean isUniqueStudyId(String userStudyId, String protocol, String authority) {
-        
+
         String queryStr = "SELECT s from Study s where s.studyId = :studyId  and s.protocol= :protocol and s.authority= :authority";
 
         Study study = null;
-       
-            Query query = em.createQuery(queryStr);
-            query.setParameter("studyId", userStudyId);
-            query.setParameter("protocol", protocol);
-            query.setParameter("authority", authority);
-            return query.getResultList().size()==0;
-        
+
+        Query query = em.createQuery(queryStr);
+        query.setParameter("studyId", userStudyId);
+        query.setParameter("protocol", protocol);
+        query.setParameter("authority", authority);
+        return query.getResultList().size() == 0;
+
     }
 
     public void exportStudyFilesToLegacySystem(String lastUpdateTime, String authority) {
@@ -940,42 +955,42 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     private void exportStudyToLegacySystem(Study study, String authority) throws IOException, JAXBException {
 
         throw new EJBException("This feature is no longer supported!!");
-        /*
-        // For each study
-        // update study file locations for legacy system
-        // Write ddi to an output stream
-        // If data file dir exists, delete everything from it
-        // copy ddi to study.xml,
-        // copy study files.
-        File studyDir = new File(FileUtil.getStudyFileDir() + File.separatorChar + authority + File.separatorChar + study.getStudyId());
-        File legacyStudyDir = new File(FileUtil.getLegacyFileDir() + File.separatorChar + authority + File.separatorChar + study.getStudyId());
-
-        // If the directory exists in the legacy system, then clear out all the files contained in it
-        if (legacyStudyDir.exists() && legacyStudyDir.isDirectory()) {
-            File[] files = legacyStudyDir.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                files[i].delete();
-            }
-        } else {
-            legacyStudyDir.mkdirs();
-        }
-
-        // Export the study to study.xml in the legacy directory
-        FileWriter fileWriter = new FileWriter(new File(legacyStudyDir, "study.xml"));
-        try {
-            ddiService.exportStudy(study, fileWriter, true, true);
-            fileWriter.flush();
-        } finally {
-            fileWriter.close();
-        }
-
-        // Copy all the study files to the legacy directory
-
-        for (Iterator it = study.getStudyFiles().iterator(); it.hasNext();) {
-            StudyFile studyFile = (StudyFile) it.next();
-            FileUtil.copyFile(new File(studyDir, studyFile.getFileSystemName()), new File(legacyStudyDir, studyFile.getFileSystemName()));
-        }
-        */
+    /*
+    // For each study
+    // update study file locations for legacy system
+    // Write ddi to an output stream
+    // If data file dir exists, delete everything from it
+    // copy ddi to study.xml,
+    // copy study files.
+    File studyDir = new File(FileUtil.getStudyFileDir() + File.separatorChar + authority + File.separatorChar + study.getStudyId());
+    File legacyStudyDir = new File(FileUtil.getLegacyFileDir() + File.separatorChar + authority + File.separatorChar + study.getStudyId());
+    
+    // If the directory exists in the legacy system, then clear out all the files contained in it
+    if (legacyStudyDir.exists() && legacyStudyDir.isDirectory()) {
+    File[] files = legacyStudyDir.listFiles();
+    for (int i = 0; i < files.length; i++) {
+    files[i].delete();
+    }
+    } else {
+    legacyStudyDir.mkdirs();
+    }
+    
+    // Export the study to study.xml in the legacy directory
+    FileWriter fileWriter = new FileWriter(new File(legacyStudyDir, "study.xml"));
+    try {
+    ddiService.exportStudy(study, fileWriter, true, true);
+    fileWriter.flush();
+    } finally {
+    fileWriter.close();
+    }
+    
+    // Copy all the study files to the legacy directory
+    
+    for (Iterator it = study.getStudyFiles().iterator(); it.hasNext();) {
+    StudyFile studyFile = (StudyFile) it.next();
+    FileUtil.copyFile(new File(studyDir, studyFile.getFileSystemName()), new File(legacyStudyDir, studyFile.getFileSystemName()));
+    }
+     */
 
     }
 
@@ -1028,7 +1043,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         Study study = em.find(Study.class, studyId);
         em.refresh(study);
         StudyLock lock = study.getStudyLock();
-        if (lock!=null) {
+        if (lock != null) {
             VDCUser user = lock.getUser();
             study.setStudyLock(null);
             user.getStudyLocks().remove(lock);
@@ -1079,7 +1094,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             query.setParameter("authority", authority);
             study = (Study) query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
-        // DO nothing, just return null.
+            // DO nothing, just return null.
         }
         return study;
     }
@@ -1095,7 +1110,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             query.setParameter("identifier", identifier);
             study = (DeletedStudy) query.getSingleResult();
         } catch (javax.persistence.NoResultException e) {
-        // DO nothing, just return null.
+            // DO nothing, just return null.
         }
         return study;
     }
@@ -1112,31 +1127,27 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         Study study = doImportStudy(xmlFile, vdc.getHarvestingDataverse().getHarvestFormatType().getId(), vdcId, userId, harvestIdentifier, null);
 
         // new create exports files for these studies
-       
+
         studyService.exportStudy(study);
-         
+
 
         return study;
     }
-
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Study importStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId) {
         return doImportStudy(xmlFile, harvestFormatTypeId, vdcId, userId, null, null);
     }
-    
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Study importStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, List<StudyFileEditBean> filesToUpload) {
         return doImportStudy(xmlFile, harvestFormatTypeId, vdcId, userId, null, filesToUpload);
     }
 
-
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Study importStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, String harvestIdentifier, List<StudyFileEditBean> filesToUpload) {
         return doImportStudy(xmlFile, harvestFormatTypeId, vdcId, userId, harvestIdentifier, filesToUpload);
     }
-
-
 
     private File transformToDDI(File xmlFile, String xslFileName) {
         File ddiFile = null;
@@ -1180,7 +1191,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return ddiFile;
 
     }
-    
 
     private void copyXMLFile(Study study, File xmlFile, String xmlFileName) {
         try {
@@ -1203,13 +1213,12 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
     }
 
-   
     private void clearStudy(Study study) {
         // should this be done with bulk deletes??
         // Yes!!!
         deleteDataVariables(study.getId());
 
-        for ( StudyFile elem : study.getStudyFiles() ) {
+        for (StudyFile elem : study.getStudyFiles()) {
             if (elem.getDataTable() != null && elem.getDataTable().getDataVariables() != null) {
                 elem.getDataTable().getDataVariables().clear();
             }
@@ -1364,7 +1373,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         //study.setVersion(null);
         study.setVersionDate(null);
         study.setWeighting(null);
-   }
+    }
 
     private void removeCollectionElement(Iterator iter, Object elem) {
         iter.remove();
@@ -1552,11 +1561,13 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         Study study = em.find(Study.class, studyId);
         exportStudy(study);
     }
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void exportStudyToFormat(Long studyId, String exportFormat) {
         Study study = em.find(Study.class, studyId);
         exportStudyToFormat(study, exportFormat);
     }
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void exportStudyToFormat(Study study, String exportFormat) {
 
@@ -1578,8 +1589,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             throw new EJBException(e);
         } finally {
             try {
-                if (os != null) { os.close(); }
-            } catch (IOException ex) {}
+                if (os != null) {
+                    os.close();
+                }
+            } catch (IOException ex) {
+            }
         }
 
     //  study.setLastExportTime(new Date());
@@ -1646,20 +1660,19 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         } while ((e = e.getCause()) != null);
         logger.severe(fullMessage);
     }
-    
-   
+
     private Study doImportStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, String harvestIdentifier, List<StudyFileEditBean> filesToUpload) {
         logger.info("Begin doImportStudy");
-        
+
         Study study = null;
-        Map<String,String> globalIdComponents = null; // used if this is an update of a harvested study
+        Map<String, String> globalIdComponents = null; // used if this is an update of a harvested study
         boolean isHarvest = (harvestIdentifier != null);
-        
+
         VDC vdc = em.find(VDC.class, vdcId);
-        VDCUser creator = em.find(VDCUser.class, userId);        
-        
-        
-       // Step 1: determine format and transform if necessary
+        VDCUser creator = em.find(VDCUser.class, userId);
+
+
+        // Step 1: determine format and transform if necessary
         File ddiFile = xmlFile;
         boolean fileTransformed = false;
 
@@ -1668,7 +1681,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             ddiFile = transformToDDI(xmlFile, hft.getStylesheetFileName());
             fileTransformed = true;
         }
-        
+
 
         // Step 2a: if harvested, check if exists
         if (isHarvest) {
@@ -1679,18 +1692,18 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                     // TODO: this check is probably no longer needed, now that we get study by harvestIdentifier
                     throw new EJBException("This study originated in the local DVN - we don't need to harvest it.");
                 }
-                
+
                 // store old global ID components
-                globalIdComponents = new HashMap<String,String>();
-                globalIdComponents.put( "globalId", study.getGlobalId() );
-                globalIdComponents.put( "protocol", study.getProtocol() );
-                globalIdComponents.put( "authority", study.getAuthority() );
-                globalIdComponents.put( "studyId", study.getStudyId() );
-                
-                clearStudy(study);           
+                globalIdComponents = new HashMap<String, String>();
+                globalIdComponents.put("globalId", study.getGlobalId());
+                globalIdComponents.put("protocol", study.getProtocol());
+                globalIdComponents.put("authority", study.getAuthority());
+                globalIdComponents.put("studyId", study.getStudyId());
+
+                clearStudy(study);
             }
-        } 
-        
+        }
+
         // Step 2b: initialize new Study
         if (study == null) {
             ReviewState reviewState = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
@@ -1701,7 +1714,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         // Step 3: map the ddi
         ddiService.mapDDI(ddiFile, study);
-     
+
 
         //Step 4: post mapping processing
         if (isHarvest) {
@@ -1716,10 +1729,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         setDisplayOrders(study);
         boolean registerHandle = determineId(study, vdc, globalIdComponents);
 
-        
+
         // step 5: upload files
         if (filesToUpload != null) {
-            addFiles(study, filesToUpload, creator );    
+            addFiles(study, filesToUpload, creator);
         }
 
 
@@ -1729,8 +1742,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         if (fileTransformed) {
             copyXMLFile(study, xmlFile, "original_imported_study_pretransform.xml");
         }
-        
-        
+
+
         // step 7: register if necessary
         if (registerHandle && vdcNetworkService.find().isHandleRegistration()) {
             String handle = study.getAuthority() + "/" + study.getStudyId();
@@ -1741,104 +1754,102 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return study;
     }
 
-    private boolean determineId(Study study, VDC vdc, Map<String,String> globalIdComponents) {
+    private boolean determineId(Study study, VDC vdc, Map<String, String> globalIdComponents) {
         VDCNetwork vdcNetwork = vdcNetworkService.find();
         String protocol = vdcNetwork.getProtocol();
         String authority = vdcNetwork.getAuthority();
         String globalId = null;
 
-        if ( !StringUtil.isEmpty( study.getStudyId() ) ) {
-            globalId = study.getGlobalId(); 
-        }        
-        
-        
-        if (vdc.getHarvestingDataverse() != null) { 
+        if (!StringUtil.isEmpty(study.getStudyId())) {
+            globalId = study.getGlobalId();
+        }
+
+
+        if (vdc.getHarvestingDataverse() != null) {
             if (vdc.getHarvestingDataverse().getHandlePrefix() != null) { // FOR THIS HARVESTED DATAVERSE, WE TAKE CARE OF HANDLE GENERATION
                 if (globalId != null) {
                     throw new EJBException("DDI should not specify a handle, but does.");
-                }      
+                }
 
                 if (globalIdComponents != null) {
-                    study.setProtocol( globalIdComponents.get("protocol") );
-                    study.setAuthority( globalIdComponents.get("authority") );        
-                    study.setStudyId( globalIdComponents.get("studyId") );
+                    study.setProtocol(globalIdComponents.get("protocol"));
+                    study.setAuthority(globalIdComponents.get("authority"));
+                    study.setStudyId(globalIdComponents.get("studyId"));
                 } else {
                     boolean generateRandom = vdc.getHarvestingDataverse().isGenerateRandomIds();
                     authority = vdc.getHarvestingDataverse().getHandlePrefix().getPrefix();
                     generateHandle(study, protocol, authority, generateRandom);
                     return true;
                 }
-                
-            } else { 
+
+            } else {
                 if (globalId == null) { // FOR THIS HARVESTED DATAVERSE, THE DDI SHOULD SPECIFY THE HANDLE
-                    throw new EJBException("DDI should specify a handle, but does not.");                
-                } else if ( globalIdComponents != null && !globalId.equals( globalIdComponents.get("globalId") ) ) {
+                    throw new EJBException("DDI should specify a handle, but does not.");
+                } else if (globalIdComponents != null && !globalId.equals(globalIdComponents.get("globalId"))) {
                     throw new EJBException("DDI specifies a handle that is different from current handle for this study.");
                 }
             }
-            
+
         } else { // imported study
             if (globalId == null) {
                 generateHandle(study, protocol, authority, true);
                 return true;
-            }            
+            }
         }
 
         return false;
     }
-    
-    
+
     private void generateHandle(Study study, String protocol, String authority, boolean generateRandom) {
         String studyId = null;
-        
+
         if (generateRandom) {
             do {
                 studyId = RandomStringUtils.randomAlphanumeric(5);
-            } while (!isUniqueStudyId(studyId, protocol, authority));            
+            } while (!isUniqueStudyId(studyId, protocol, authority));
 
-            
+
         } else {
-            if ( study.getStudyOtherIds().size() > 0 ) {
-                studyId = study.getStudyOtherIds().get(0).getOtherId(); 
-                if ( !isValidStudyIdString(studyId) ) {
+            if (study.getStudyOtherIds().size() > 0) {
+                studyId = study.getStudyOtherIds().get(0).getOtherId();
+                if (!isValidStudyIdString(studyId)) {
                     throw new EJBException("The Other ID (from DDI) was invalid.");
-                }                
+                }
             } else {
-                throw new EJBException("No Other ID (from DDI) was available for generating a handle.");    
-            }         
+                throw new EJBException("No Other ID (from DDI) was available for generating a handle.");
+            }
         }
 
-        study.setProtocol( protocol );
-        study.setAuthority( authority );        
-        study.setStudyId( studyId );
-        
+        study.setProtocol(protocol);
+        study.setAuthority(authority);
+        study.setStudyId(studyId);
+
     }
-    
-    public  boolean isValidStudyIdString(String str) {
+
+    public boolean isValidStudyIdString(String str) {
         final char[] chars = str.toCharArray();
-      for (int x = 0; x < chars.length; x++) {      
-        final char c = chars[x];
-        if(StringUtil.isAlphaNumericChar(c) || c == '-' || c=='_') {
-            continue;
+        for (int x = 0; x < chars.length; x++) {
+            final char c = chars[x];
+            if (StringUtil.isAlphaNumericChar(c) || c == '-' || c == '_') {
+                continue;
+            }
+            return false;
         }
-        return false;
-      }  
-      return true;
+        return true;
     }
-    
+
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public List<StudyFile> getStudyFilesByExtension(String extension) {
-        
+
         String queryStr = "SELECT sf from StudyFile sf where lower(sf.fileName) LIKE :extension";
 
         Query query = em.createQuery(queryStr);
-        query.setParameter( "extension", "%." + extension.toLowerCase() );
+        query.setParameter("extension", "%." + extension.toLowerCase());
         return query.getResultList();
-        
+
     }
 
     public void updateStudyFile(StudyFile detachedStudyFile) {
         em.merge(detachedStudyFile);
     }
-    
 }

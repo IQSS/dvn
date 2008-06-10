@@ -52,8 +52,10 @@ public class Template implements java.io.Serializable {
      * Creates a new instance of Template
      */
     public Template() {
+        metadata = new Metadata();
     }
 
+     
     public Collection<TemplateField> getTemplateFields() {
         return templateFields;
     }
@@ -162,6 +164,17 @@ public class Template implements java.io.Serializable {
      public VDCNetwork getVdcNetWork() {
         return this.vdcNetWork;
     }
+     
+    @ManyToOne
+    private VDC vdc;
+
+    public VDC getVdc() {
+        return vdc;
+    }
+
+    public void setVdc(VDC vdc) {
+        this.vdc = vdc;
+    }
 
     /**
      * Setter for property vdcNetWork.
@@ -170,6 +183,19 @@ public class Template implements java.io.Serializable {
     public void setVdcNetWork(VDCNetwork vdcNetWork) {
         this.vdcNetWork = vdcNetWork;
     }
+    
+    @OneToOne(cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private Metadata metadata;
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
+    }
+    
+ 
     
    public int hashCode() {
         int hash = 0;

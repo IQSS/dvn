@@ -141,10 +141,7 @@ public class VDC implements java.io.Serializable  {
     
     
     
-    public Collection<Study> search(String query) {
-        //TODO: complete implementation
-        return null;
-    }
+   
     /** Creates a new instance of VDC */
     public VDC() {
         
@@ -330,7 +327,7 @@ public class VDC implements java.io.Serializable  {
     /**
      * Holds value of property templates.
      */
-    @ManyToMany(cascade={CascadeType.REMOVE })
+    @OneToMany(mappedBy="vdc", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<Template> templates;
     
     /**
@@ -663,30 +660,7 @@ public class VDC implements java.io.Serializable  {
         this.aboutThisDataverse = aboutThisDataverse;
     }
     
-    public boolean userInAllowedGroups(VDCUser user) {
-        boolean foundUser=false;
-        for (Iterator it = allowedGroups.iterator(); it.hasNext();) {
-            UserGroup elem = (UserGroup) it.next();
-            if (elem.getUsers().contains(user)) {
-                foundUser=true;
-                break;
-            }
-        }
-        return foundUser;
-    }
-    
-    public boolean isAllowedGroup(UserGroup usergroup) {
-        boolean foundGroup=false;
-        for (Iterator it = allowedGroups.iterator(); it.hasNext();) {
-            UserGroup elem = (UserGroup) it.next();
-            if (elem.getId().equals(usergroup.getId())) {
-                foundGroup=true;
-                break;
-            }
-        }
-        return foundGroup;
-    }
-
+  
     @ManyToMany(mappedBy="linkedVDCs")
     private List<VDCCollection> linkedCollections;
 
@@ -761,21 +735,7 @@ public class VDC implements java.io.Serializable  {
         this.ownedStudies = ownedStudies;
     }
 
-      public int hashCode() {
-        int hash = 0;
-        hash += (this.id != null ? this.id.hashCode() : 0);
-        return hash;
-    }
-
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof VDC)) {
-            return false;
-        }
-        VDC other = (VDC)object;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
-        return true;
-    }       
+   
 
     /**
      * Getter for property affiliation.
@@ -921,5 +881,47 @@ public class VDC implements java.io.Serializable  {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+    
+      public boolean userInAllowedGroups(VDCUser user) {
+        boolean foundUser=false;
+        for (Iterator it = allowedGroups.iterator(); it.hasNext();) {
+            UserGroup elem = (UserGroup) it.next();
+            if (elem.getUsers().contains(user)) {
+                foundUser=true;
+                break;
+            }
+        }
+        return foundUser;
+    }
+    
+    public boolean isAllowedGroup(UserGroup usergroup) {
+        boolean foundGroup=false;
+        for (Iterator it = allowedGroups.iterator(); it.hasNext();) {
+            UserGroup elem = (UserGroup) it.next();
+            if (elem.getId().equals(usergroup.getId())) {
+                foundGroup=true;
+                break;
+            }
+        }
+        return foundGroup;
+    }
+
+    
+       public int hashCode() {
+        int hash = 0;
+        hash += (this.id != null ? this.id.hashCode() : 0);
+        return hash;
+    }
+
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof VDC)) {
+            return false;
+        }
+        VDC other = (VDC)object;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
+        return true;
+    }       
+    
     
 }

@@ -231,7 +231,6 @@ public class VDCCollection implements java.io.Serializable  {
     @JoinTable(name="COLL_STUDIES",
             joinColumns=@JoinColumn(name="vdc_collection_id"),
             inverseJoinColumns=@JoinColumn(name="study_id"))    
-    @OrderBy ("title")
     private List<Study> studies;
 
     /**

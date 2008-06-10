@@ -111,7 +111,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
     }
     
      public java.util.List<Study> getOrderedStudiesByCollection(Long collectionId){
-        String queryStr = "SELECT s FROM VDCCollection c JOIN c.studies s where c.id = " + collectionId +" ORDER BY s.title";
+        String queryStr = "SELECT s FROM VDCCollection c JOIN c.studies s where c.id = " + collectionId +" ORDER BY s.metadata.title";
         Query query =em.createQuery(queryStr);
         List <Study> studies = query.getResultList();
         
@@ -120,7 +120,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
      }
      
      public java.util.List<Long> getOrderedStudyIdsByCollection(Long collectionId){
-        String queryStr = "SELECT s.id FROM VDCCollection c JOIN c.studies s where c.id = " + collectionId +" ORDER BY s.title";
+        String queryStr = "SELECT s.id FROM VDCCollection c JOIN c.studies s where c.id = " + collectionId +" ORDER BY s.metadata.title";
         Query query =em.createQuery(queryStr);
 
         return query.getResultList();

@@ -113,7 +113,17 @@ public class StudyDistributor implements java.io.Serializable {
     }
     
     @ManyToOne
-    private Study study;
+    private Metadata metadata;
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
+    }
+    
+    
   /**
      * Holds value of property version.
      */
@@ -199,13 +209,7 @@ public class StudyDistributor implements java.io.Serializable {
         this.affiliation = affiliation;
     }
 
-    public Study getStudy() {
-        return study;
-    }
 
-    public void setStudy(Study study) {
-        this.study = study;
-    }
 
     /**
      * Holds value of property abbreviation.

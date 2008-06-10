@@ -113,8 +113,21 @@ public class StudyKeyword implements java.io.Serializable {
         this.value = value;
     }
     
+    /**
+     * Holds value of property metadata.
+     */
     @ManyToOne
-    private Study study;
+    @JoinColumn(nullable=false)
+    private Metadata metadata;
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
+    }
+    
   /**
      * Holds value of property version.
      */
@@ -179,13 +192,7 @@ public class StudyKeyword implements java.io.Serializable {
         this.vocabURI = vocabURI;
     }
 
-    public Study getStudy() {
-        return study;
-    }
 
-    public void setStudy(Study study) {
-        this.study = study;
-    }
      public boolean isEmpty() {
         return ((value==null || value.trim().equals(""))
             && (vocab==null || vocab.trim().equals(""))

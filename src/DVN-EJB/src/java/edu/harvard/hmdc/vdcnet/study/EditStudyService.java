@@ -34,7 +34,7 @@ import javax.ejb.Local;
 @Local
 public interface EditStudyService extends java.io.Serializable { 
     public void setStudy( Long studyId);
-    public void newStudy(Long vdcId, Long userId);
+    public void newStudy(Long vdcId, Long userId, Long templateId);
     public void cancel();
     public void save(Long vdcId, Long userId);
     public Study getStudy();

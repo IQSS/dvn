@@ -492,7 +492,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 author.setName( mapFirstContent( _author.getContent() ) );
                 author.setAffiliation( _author.getAffiliation() );
                 author.setDisplayOrder( authorCount++ );
-                author.setStudy(s);
+                author.setMetadata(s.getMetadata());
                 s.getStudyAuthors().add(author);
             }
         }
@@ -510,7 +510,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 prod.setAbbreviation( _prod.getAbbr() );
                 prod.setAffiliation( _prod.getAffiliation() );
                 prod.setDisplayOrder( prodCount++ );
-                prod.setStudy(s);
+                prod.setMetadata(s.getMetadata());
                 s.getStudyProducers().add(prod);
             }
             
@@ -533,7 +533,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 ss.setName( mapFirstContent( _soft.getContent() ) );
                 ss.setSoftwareVersion( _soft.getVersion() );
                 ss.setDisplayOrder( softCount++ );
-                ss.setStudy(s);
+                ss.setMetadata(s.getMetadata());
                 s.getStudySoftware().add(ss);
             }
             
@@ -549,7 +549,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 sg.setNumber( mapFirstContent( _grant.getContent() ) );
                 sg.setAgency( _grant.getAgency() );
                 sg.setDisplayOrder( grantCount++ );
-                sg.setStudy(s);
+                sg.setMetadata(s.getMetadata());
                 s.getStudyGrants().add(sg);
             }
         }
@@ -566,7 +566,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 dist.setAbbreviation( _dist.getAbbr() );
                 dist.setAffiliation( _dist.getAffiliation() );
                 dist.setDisplayOrder( distCount++ );
-                dist.setStudy(s);
+                dist.setMetadata(s.getMetadata());
                 s.getStudyDistributors().add(dist);
                 
             }
@@ -644,7 +644,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 studyAbstract.setDate( _abstract.getDate() );
                 studyAbstract.setText( mapContentList(_abstract.getContent()).trim() );
                 studyAbstract.setDisplayOrder( abstractCount++ );
-                studyAbstract.setStudy(s);
+                studyAbstract.setMetadata(s.getMetadata());
                 s.getStudyAbstracts().add(studyAbstract);
             }
             
@@ -659,7 +659,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                     kw.setVocabURI( _kw.getVocabURI() );
                     kw.setValue( mapFirstContent(_kw.getContent()) );
                     kw.setDisplayOrder( kwCount++ );
-                    kw.setStudy(s);
+                    kw.setMetadata(s.getMetadata());
                     s.getStudyKeywords().add(kw);
                 }
                 
@@ -672,7 +672,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                     tc.setVocabURI( _tc.getVocabURI() );
                     tc.setValue( mapFirstContent(_tc.getContent()) );
                     tc.setDisplayOrder( tcCount++ );
-                    tc.setStudy(s);
+                    tc.setMetadata(s.getMetadata());
                     s.getStudyTopicClasses().add(tc);
                 }
             }
@@ -753,7 +753,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                     geoBound.setSouthLatitude( mapFirstContent( _sum.getGeoBndBox().getSouthBL().getContent() ) );
                     geoBound.setNorthLatitude( mapFirstContent( _sum.getGeoBndBox().getNorthBL().getContent() ) );
                     geoBound.setDisplayOrder(0);
-                    geoBound.setStudy(s);
+                    geoBound.setMetadata(s.getMetadata());
                     s.getStudyGeoBoundings().add(geoBound);
                 }
                 
@@ -937,7 +937,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                     StudyRelMaterial rm = new StudyRelMaterial();
                     rm.setText( mapContentList( _rm.getContent() ) );
                     rm.setDisplayOrder(rmCount++);
-                    rm.setStudy(s);
+                    rm.setMetadata(s.getMetadata());
                     s.getStudyRelMaterials().add(rm);
                 }
             }
@@ -949,7 +949,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 StudyRelStudy rs = new StudyRelStudy();
                 rs.setText( mapContentList( _rs.getContent() ) );
                 rs.setDisplayOrder(rsCount++);
-                rs.setStudy(s);
+                rs.setMetadata(s.getMetadata());
                 s.getStudyRelStudies().add(rs);
             }
             
@@ -960,7 +960,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 StudyRelPublication rp = new StudyRelPublication();
                 rp.setText( mapContentList( _rp.getContent() ) );
                 rp.setDisplayOrder(rpCount++);
-                rp.setStudy(s);
+                rp.setMetadata(s.getMetadata());
                 s.getStudyRelPublications().add(rp);
             }
             
@@ -971,7 +971,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 StudyOtherRef or = new StudyOtherRef();
                 or.setText( mapContentList( _or.getContent() ) );
                 or.setDisplayOrder(orCount++);
-                or.setStudy(s);
+                or.setMetadata(s.getMetadata());
                 s.getStudyOtherRefs().add(or);
             }
             
@@ -994,7 +994,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
             note.setSubject( _note.getSubject() );
             note.setType( _note.getType() );
             note.setDisplayOrder(count);
-            note.setStudy(s);
+            note.setMetadata(s.getMetadata());
             s.getStudyNotes().add(note);
         }
     }
@@ -1023,7 +1023,7 @@ public class DDI20ServiceBean implements edu.harvard.hmdc.vdcnet.ddi.DDI20Servic
                 StudyOtherId studyOtherId = new StudyOtherId();
                 studyOtherId.setOtherId(_idContent);
                 studyOtherId.setAgency(_idNo.getAgency());
-                studyOtherId.setStudy(s);
+                studyOtherId.setMetadata(s.getMetadata());
                 studyOtherId.setDisplayOrder(0);
                 s.getStudyOtherIds().add(studyOtherId);
             }

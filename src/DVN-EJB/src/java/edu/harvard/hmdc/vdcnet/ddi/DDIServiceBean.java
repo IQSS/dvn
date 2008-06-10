@@ -1516,7 +1516,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                         StudyOtherId sid = new StudyOtherId();
                         sid.setAgency( xmlr.getAttributeValue(null, "agency")) ;
                         sid.setOtherId( parseText(xmlr) );
-                        sid.setStudy(study);
+                        sid.setMetadata(study.getMetadata());
                         study.getStudyOtherIds().add(sid);
                     }
                 }
@@ -1533,7 +1533,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                     StudyAuthor author = new StudyAuthor();
                     author.setAffiliation( xmlr.getAttributeValue(null, "affiliation") );
                     author.setName( parseText(xmlr) );
-                    author.setStudy(study);
+                    author.setMetadata(study.getMetadata());
                     study.getStudyAuthors().add(author);                    
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -1548,7 +1548,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 if (xmlr.getLocalName().equals("producer")) {
                     StudyProducer prod = new StudyProducer();
                     study.getStudyProducers().add(prod);
-                    prod.setStudy(study);
+                    prod.setMetadata(study.getMetadata());
                     prod.setAbbreviation(xmlr.getAttributeValue(null, "abbr") );
                     prod.setAffiliation( xmlr.getAttributeValue(null, "affiliation") );
                     Map<String,String> prodDetails = parseCompoundText(xmlr, "producer");
@@ -1562,7 +1562,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 } else if (xmlr.getLocalName().equals("software")) {
                     StudySoftware ss = new StudySoftware();
                     study.getStudySoftware().add(ss);
-                    ss.setStudy(study);
+                    ss.setMetadata(study.getMetadata());
                     ss.setSoftwareVersion( xmlr.getAttributeValue(null, "version") );
                     ss.setName( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("fundAg")) {
@@ -1570,7 +1570,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 } else if (xmlr.getLocalName().equals("grantNo")) {
                     StudyGrant sg = new StudyGrant();
                     study.getStudyGrants().add(sg);
-                    sg.setStudy(study);
+                    sg.setMetadata(study.getMetadata());
                     sg.setAgency( xmlr.getAttributeValue(null, "agency") );
                     sg.setNumber( parseText(xmlr) );
                 }
@@ -1586,7 +1586,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 if (xmlr.getLocalName().equals("distrbtr")) {
                     StudyDistributor dist = new StudyDistributor();
                     study.getStudyDistributors().add(dist);
-                    dist.setStudy(study);
+                    dist.setMetadata(study.getMetadata());
                     dist.setAbbreviation(xmlr.getAttributeValue(null, "abbr") );
                     dist.setAffiliation( xmlr.getAttributeValue(null, "affiliation") );
                     Map<String,String> distDetails = parseCompoundText(xmlr, "distrbtr");
@@ -1646,7 +1646,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 else if (xmlr.getLocalName().equals("abstract")) {
                     StudyAbstract abs = new StudyAbstract();
                     study.getStudyAbstracts().add(abs);
-                    abs.setStudy(study);
+                    abs.setMetadata(study.getMetadata());
                     abs.setDate( xmlr.getAttributeValue(null, "date") );
                     abs.setText( parseText(xmlr, "abstract") );
                 } else if (xmlr.getLocalName().equals("sumDscr")) processSumDscr(xmlr, study);
@@ -1663,14 +1663,14 @@ public class DDIServiceBean implements DDIServiceLocal {
                 if (xmlr.getLocalName().equals("keyword")) {
                     StudyKeyword kw = new StudyKeyword();
                     study.getStudyKeywords().add(kw);
-                    kw.setStudy(study);
+                    kw.setMetadata(study.getMetadata());
                     kw.setVocab( xmlr.getAttributeValue(null, "vocab") );
                     kw.setVocabURI( xmlr.getAttributeValue(null, "vocabURI") );
                     kw.setValue( parseText(xmlr));
                 } else if (xmlr.getLocalName().equals("topcClas")) {
                     StudyTopicClass tc = new StudyTopicClass();
                     study.getStudyTopicClasses().add(tc);
-                    tc.setStudy(study);
+                    tc.setMetadata(study.getMetadata());
                     tc.setVocab( xmlr.getAttributeValue(null, "vocab") );
                     tc.setVocabURI( xmlr.getAttributeValue(null, "vocabURI") );
                     tc.setValue( parseText(xmlr));
@@ -1746,7 +1746,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     private void processGeoBndBox(XMLStreamReader xmlr, Study study) throws XMLStreamException {
         StudyGeoBounding geoBound = new StudyGeoBounding();
         study.getStudyGeoBoundings().add(geoBound);
-        geoBound.setStudy(study);
+        geoBound.setMetadata(study.getMetadata());
 
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1935,23 +1935,23 @@ public class DDIServiceBean implements DDIServiceLocal {
                     } else { 
                         StudyRelMaterial rm = new StudyRelMaterial();
                         study.getStudyRelMaterials().add(rm);
-                        rm.setStudy(study);
+                        rm.setMetadata(study.getMetadata());
                         rm.setText( parseText( xmlr, "relMat" ) );
                     }
                 } else if (xmlr.getLocalName().equals("relStdy")) {
                     StudyRelStudy rs = new StudyRelStudy();
                     study.getStudyRelStudies().add(rs);
-                    rs.setStudy(study);
+                    rs.setMetadata(study.getMetadata());
                     rs.setText( parseText( xmlr, "relStdy" ) );
                 } else if (xmlr.getLocalName().equals("relPubl")) {
                     StudyRelPublication rp = new StudyRelPublication();
                     study.getStudyRelPublications().add(rp);
-                    rp.setStudy(study);
+                    rp.setMetadata(study.getMetadata());
                     rp.setText( parseText( xmlr, "relPubl" ) );
                 } else if (xmlr.getLocalName().equals("otherRefs")) {
                     StudyOtherRef or = new StudyOtherRef();
                     study.getStudyOtherRefs().add(or);
-                    or.setStudy(study);
+                    or.setMetadata(study.getMetadata());
                     or.setText( parseText( xmlr, "otherRefs" ) );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -2286,7 +2286,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     private void processNotes (XMLStreamReader xmlr, Study study) throws XMLStreamException {
         StudyNote note = new StudyNote();
         study.getStudyNotes().add(note);
-        note.setStudy(study);
+        note.setMetadata(study.getMetadata());
         note.setSubject( xmlr.getAttributeValue(null, "subject") );
         note.setType( xmlr.getAttributeValue(null, "type") );
         note.setText( parseText(xmlr, "notes") );

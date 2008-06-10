@@ -36,27 +36,12 @@ import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.ReviewState;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJBException;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.*;
 
 /**
@@ -71,7 +56,6 @@ public class Study implements java.io.Serializable {
     private StudyDownload studyDownload;    
     @OneToOne(mappedBy = "study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private StudyLock studyLock;
-    private String studyId;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date createTime;
     @Temporal(value = TemporalType.TIMESTAMP)
@@ -80,9 +64,6 @@ public class Study implements java.io.Serializable {
     private ReviewState reviewState;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastExportTime;
-    
-    @Column(columnDefinition="TEXT")
-    private String UNF;
     @ManyToMany(cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<UserGroup> allowedGroups;
     @ManyToOne
@@ -92,29 +73,35 @@ public class Study implements java.io.Serializable {
     private boolean isHarvested;
     @ManyToMany( cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<StudyField> summaryFields;
-    @Column(columnDefinition="TEXT")
-    private String title;
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private java.util.List<StudyAuthor> studyAuthors;
-    
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private java.util.List<StudyGeoBounding> studyGeoBoundings;
-    
     @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<StudyAccessRequest> studyRequests;
+    @OneToOne(cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private Metadata metadata;
     
     public Study () {
-    }    
+        metadata = new Metadata();
         
-    public Study(VDC vdc, VDCUser creator, ReviewState reviewState) {
+    }    
+     public Study(VDC vdc, VDCUser creator, ReviewState reviewState) {
+         this(vdc,creator,reviewState,null);
+     }
+        
+    public Study(VDC vdc, VDCUser creator, ReviewState reviewState, Template initTemplate) {
+        if (vdc==null) {
+            throw new EJBException("Cannot create study with null VDC");
+        }
         this.setOwner(vdc);
+        if (initTemplate == null ){
+            setTemplate(vdc.getDefaultTemplate());                    
+        } else {
+            this.setTemplate(initTemplate);
+          
+        }
+        metadata = template.getMetadata().createClone();
         if (vdc != null) {
-            this.setTemplate( vdc.getDefaultTemplate() );
             vdc.getOwnedStudies().add(this);
         }
-
+        
         Date createDate = new Date();
 
         this.setCreator(creator);
@@ -135,7 +122,7 @@ public class Study implements java.io.Serializable {
        
     
     public String getGlobalId() {
-        return protocol+":"+authority+"/"+studyId;
+        return protocol+":"+authority+"/"+getStudyId();
     }
     
     public String getCitation() {
@@ -160,13 +147,13 @@ public class Study implements java.io.Serializable {
                 str+=getProductionDate();
             }
         }
-        if (!StringUtil.isEmpty(title)) {
+        if (!StringUtil.isEmpty(metadata.getTitle())) {
             if (!StringUtil.isEmpty(str)) {
                 str+=", ";
             }
-            str+="\""+title+"\"";
+            str+="\""+metadata.getTitle()+"\"";
         }
-        if (!StringUtil.isEmpty(studyId)) {
+        if (!StringUtil.isEmpty(getStudyId())) {
             if (!StringUtil.isEmpty(str)) {
                 str+=", ";
             }
@@ -175,11 +162,11 @@ public class Study implements java.io.Serializable {
 
         }
         
-        if (!StringUtil.isEmpty(UNF)) {
+        if (!StringUtil.isEmpty(metadata.getUNF())) {
             if (!StringUtil.isEmpty(str)) {
                 str+=" ";
             }
-            str+=UNF;
+            str+=metadata.getUNF();
         }
         String distributorNames = getDistributorNames();
         if (distributorNames.length()>0) {
@@ -191,7 +178,7 @@ public class Study implements java.io.Serializable {
     }
     
     public String getHandleURL() {
-         return "http://hdl.handle.net/"+authority+"/"+studyId;
+         return "http://hdl.handle.net/"+authority+"/"+getStudyId();
     }
     
     public String getAuthorsStr() {
@@ -224,12 +211,14 @@ public class Study implements java.io.Serializable {
                 str+=";";
             }
             str += sd.getName();
-            
+  
             
         }
         return str;
         
     }
+    private String studyId;
+    
     public String getStudyId() {
         return studyId;
     }
@@ -237,6 +226,7 @@ public class Study implements java.io.Serializable {
     public void setStudyId(String studyId) {
         this.studyId = (studyId != null ? studyId.toUpperCase() : null);
     }
+ 
     
     public Date getCreateTime() {
         return createTime;
@@ -277,11 +267,11 @@ public class Study implements java.io.Serializable {
     }
     
     public String getUNF() {
-        return UNF;
+        return metadata.getUNF();
     }
     
     public void setUNF(String UNF) {
-        this.UNF = UNF;
+        metadata.setUNF(UNF);
     }
     
     public Collection<UserGroup> getAllowedGroups() {
@@ -325,19 +315,19 @@ public class Study implements java.io.Serializable {
     }
     
     public String getTitle() {
-        return title;
+        return metadata.getTitle();
     }
     
     public void setTitle(String title) {
-        this.title = title;
+        metadata.setTitle(title);
     }
     
     public java.util.List<StudyAuthor> getStudyAuthors() {
-        return studyAuthors;
+        return metadata.getStudyAuthors();
     }
     
     public void setStudyAuthors(java.util.List<StudyAuthor> studyAuthors) {
-        this.studyAuthors = studyAuthors;
+        metadata.setStudyAuthors(studyAuthors);
     }
     
     /**
@@ -361,16 +351,14 @@ public class Study implements java.io.Serializable {
         this.numberOfDownloads = numberOfDownloads;
     }
     
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private java.util.List<StudyKeyword> studyKeywords;
+   
     
     public java.util.List<StudyKeyword> getStudyKeywords() {
-        return studyKeywords;
+        return metadata.getStudyKeywords();
     }
     
     public void setStudyKeywords(java.util.List<StudyKeyword> studyKeywords) {
-        this.studyKeywords = studyKeywords;
+        metadata.setStudyKeywords(studyKeywords);
     }
     
     /**
@@ -478,19 +466,13 @@ public class Study implements java.io.Serializable {
         this.studyColls = studyColls;
     }
     
-    /**
-     * Holds value of property studyProducers.
-     */
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private List<StudyProducer> studyProducers;
     
     /**
      * Getter for property studyProducers.
      * @return Value of property studyProducers.
      */
     public List<StudyProducer> getStudyProducers() {
-        return this.studyProducers;
+        return metadata.getStudyProducers();
     }
     
     /**
@@ -498,22 +480,16 @@ public class Study implements java.io.Serializable {
      * @param studyProducers New value of property studyProducers.
      */
     public void setStudyProducers(List<StudyProducer> studyProducers) {
-        this.studyProducers = studyProducers;
+        metadata.setStudyProducers(studyProducers);
     }
     
-    /**
-     * Holds value of property studySoftware.
-     */
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private List<StudySoftware> studySoftware;
-    
+   
     /**
      * Getter for property studySoftware.
      * @return Value of property studySoftware.
      */
     public List<StudySoftware> getStudySoftware() {
-        return this.studySoftware;
+        return metadata.getStudySoftware();
     }
     
     /**
@@ -521,22 +497,16 @@ public class Study implements java.io.Serializable {
      * @param studySoftware New value of property studySoftware.
      */
     public void setStudySoftware(List<StudySoftware> studySoftware) {
-        this.studySoftware = studySoftware;
+        metadata.setStudySoftware(studySoftware);
     }
     
-    /**
-     * Holds value of property studyDistributors.
-     */
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private List<StudyDistributor> studyDistributors;
     
     /**
      * Getter for property studyDistributors.
      * @return Value of property studyDistributors.
      */
     public List<StudyDistributor> getStudyDistributors() {
-        return this.studyDistributors;
+        return metadata.getStudyDistributors();
     }
     
     /**
@@ -544,22 +514,15 @@ public class Study implements java.io.Serializable {
      * @param studyDistributors New value of property studyDistributors.
      */
     public void setStudyDistributors(List<StudyDistributor> studyDistributors) {
-        this.studyDistributors = studyDistributors;
+        metadata.setStudyDistributors(studyDistributors);
     }
-    
-    /**
-     * Holds value of property studyTopicClasses.
-     */
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private List<StudyTopicClass> studyTopicClasses;
-    
+        
     /**
      * Getter for property studyTopicClasses.
      * @return Value of property studyTopicClasses.
      */
     public List<StudyTopicClass> getStudyTopicClasses() {
-        return this.studyTopicClasses;
+        return metadata.getStudyTopicClasses();
     }
     
     /**
@@ -567,22 +530,17 @@ public class Study implements java.io.Serializable {
      * @param studyTopicClasses New value of property studyTopicClasses.
      */
     public void setStudyTopicClasses(List<StudyTopicClass> studyTopicClasses) {
-        this.studyTopicClasses = studyTopicClasses;
+      
+        metadata.setStudyTopicClasses(studyTopicClasses);
     }
     
-    /**
-     * Holds value of property studyAbstracts.
-     */
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private List<StudyAbstract> studyAbstracts;
-    
+     
     /**
      * Getter for property studyAbstracts.
      * @return Value of property studyAbstracts.
      */
     public List<StudyAbstract> getStudyAbstracts() {
-        return this.studyAbstracts;
+        return metadata.getStudyAbstracts();
     }
     
     /**
@@ -590,22 +548,15 @@ public class Study implements java.io.Serializable {
      * @param studyAbstracts New value of property studyAbstracts.
      */
     public void setStudyAbstracts(List<StudyAbstract> studyAbstracts) {
-        this.studyAbstracts = studyAbstracts;
+        metadata.setStudyAbstracts(studyAbstracts);
     }
-    
-    /**
-     * Holds value of property studyNotes.
-     */
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private List<StudyNote> studyNotes;
-    
+       
     /**
      * Getter for property studyNotes.
      * @return Value of property studyNotes.
      */
     public List<StudyNote> getStudyNotes() {
-        return this.studyNotes;
+        return metadata.getStudyNotes();
     }
     
     /**
@@ -613,43 +564,32 @@ public class Study implements java.io.Serializable {
      * @param studyNotes New value of property studyNotes.
      */
     public void setStudyNotes(List<StudyNote> studyNotes) {
-        this.studyNotes = studyNotes;
+        metadata.setStudyNotes(studyNotes);
     }
     
-    /**
-     * Holds value of property fundingAgency.
-     */
-    @Column(columnDefinition="TEXT")    
-    private String fundingAgency;
     
     /**
      * Getter for property fundingAgency.
      * @return Value of property fundingAgency.
      */
     public String getFundingAgency() {
-        return this.fundingAgency;
+        return metadata.getFundingAgency();
     }
-    
+      
     /**
      * Setter for property fundingAgency.
      * @param fundingAgency New value of property fundingAgency.
      */
     public void setFundingAgency(String fundingAgency) {
-        this.fundingAgency = fundingAgency;
+        metadata.setFundingAgency(fundingAgency);
     }
-    
-    /**
-     * Holds value of property seriesName.
-     */
-    @Column(columnDefinition="TEXT")   
-    private String seriesName;
-    
+     
     /**
      * Getter for property seriesName.
      * @return Value of property seriesName.
      */
     public String getSeriesName() {
-        return this.seriesName;
+        return metadata.getSeriesName();
     }
     
     /**
@@ -657,21 +597,15 @@ public class Study implements java.io.Serializable {
      * @param seriesName New value of property seriesName.
      */
     public void setSeriesName(String seriesName) {
-        this.seriesName = seriesName;
+        metadata.setSeriesName(seriesName);
     }
-    
-    /**
-     * Holds value of property seriesInformation.
-     */
-    @Column(columnDefinition="TEXT")
-    private String seriesInformation;
-    
+        
     /**
      * Getter for property seriesInformation.
      * @return Value of property seriesInformation.
      */
     public String getSeriesInformation() {
-        return this.seriesInformation;
+        return metadata.getSeriesInformation();
     }
     
     /**
@@ -679,21 +613,15 @@ public class Study implements java.io.Serializable {
      * @param seriesInformation New value of property seriesInformation.
      */
     public void setSeriesInformation(String seriesInformation) {
-        this.seriesInformation = seriesInformation;
+        metadata.setSeriesInformation(seriesInformation);
     }
-    
-    /**
-     * Holds value of property studyVersion.
-     */
-    @Column(columnDefinition="TEXT")
-    private String studyVersion;
     
     /**
      * Getter for property studyVersion.
      * @return Value of property studyVersion.
      */
     public String getStudyVersion() {
-        return this.studyVersion;
+        return metadata.getStudyVersion();
     }
     
     /**
@@ -701,21 +629,15 @@ public class Study implements java.io.Serializable {
      * @param studyVersion New value of property studyVersion.
      */
     public void setStudyVersion(String studyVersion) {
-        this.studyVersion = studyVersion;
+        metadata.setStudyVersion(studyVersion);
     }
-    
-    /**
-     * Holds value of property timePeriodCoveredStart.
-     */
-    @Column(columnDefinition="TEXT")
-    private String timePeriodCoveredStart;
-    
+
     /**
      * Getter for property timePeriodCoveredStart.
      * @return Value of property timePeriodCoveredStart.
      */
     public String getTimePeriodCoveredStart() {
-        return this.timePeriodCoveredStart;
+        return metadata.getTimePeriodCoveredStart();
     }
     
     /**
@@ -723,21 +645,15 @@ public class Study implements java.io.Serializable {
      * @param timePeriodCoveredStart New value of property timePeriodCoveredStart.
      */
     public void setTimePeriodCoveredStart(String timePeriodCoveredStart) {
-        this.timePeriodCoveredStart = timePeriodCoveredStart;
+        metadata.setTimePeriodCoveredStart(timePeriodCoveredStart);
     }
-    
-    /**
-     * Holds value of property timePeriodCoveredEnd.
-     */
-    @Column(columnDefinition="TEXT")
-    private String timePeriodCoveredEnd;
-    
+     
     /**
      * Getter for property timePeriodCoveredEnd.
      * @return Value of property timePeriodCoveredEnd.
      */
     public String getTimePeriodCoveredEnd() {
-        return this.timePeriodCoveredEnd;
+        return metadata.getTimePeriodCoveredEnd();
     }
     
     /**
@@ -745,21 +661,15 @@ public class Study implements java.io.Serializable {
      * @param timePeriodCoveredEnd New value of property timePeriodCoveredEnd.
      */
     public void setTimePeriodCoveredEnd(String timePeriodCoveredEnd) {
-        this.timePeriodCoveredEnd = timePeriodCoveredEnd;
+        metadata.setTimePeriodCoveredEnd(timePeriodCoveredEnd);
     }
-    
-    /**
-     * Holds value of property dateOfCollectionStart.
-     */
-    @Column(columnDefinition="TEXT")
-    private String dateOfCollectionStart;
     
     /**
      * Getter for property dateOfCollectionStart.
      * @return Value of property dateOfCollectionStart.
      */
     public String getDateOfCollectionStart() {
-        return this.dateOfCollectionStart;
+        return metadata.getDateOfCollectionStart();
     }
     
     /**
@@ -767,21 +677,15 @@ public class Study implements java.io.Serializable {
      * @param dateOfCollectionStart New value of property dateOfCollectionStart.
      */
     public void setDateOfCollectionStart(String dateOfCollectionStart) {
-        this.dateOfCollectionStart = dateOfCollectionStart;
+        metadata.setDateOfCollectionStart(dateOfCollectionStart);
     }
-    
-    /**
-     * Holds value of property dateOfCollectionEnd.
-     */
-    @Column(columnDefinition="TEXT")
-    private String dateOfCollectionEnd;
-    
+     
     /**
      * Getter for property dateOfCollectionEnd.
      * @return Value of property dateOfCollectionEnd.
      */
     public String getDateOfCollectionEnd() {
-        return this.dateOfCollectionEnd;
+        return metadata.getDateOfCollectionEnd();
     }
     
     /**
@@ -789,21 +693,15 @@ public class Study implements java.io.Serializable {
      * @param dateOfCollectionEnd New value of property dateOfCollectionEnd.
      */
     public void setDateOfCollectionEnd(String dateOfCollectionEnd) {
-        this.dateOfCollectionEnd = dateOfCollectionEnd;
+        metadata.setDateOfCollectionEnd(dateOfCollectionEnd);
     }
-    
-    /**
-     * Holds value of property country.
-     */
-    @Column(columnDefinition="TEXT")
-    private String country;
     
     /**
      * Getter for property country.
      * @return Value of property country.
      */
     public String getCountry() {
-        return this.country;
+        return metadata.getCountry();
     }
     
     /**
@@ -811,21 +709,15 @@ public class Study implements java.io.Serializable {
      * @param country New value of property country.
      */
     public void setCountry(String country) {
-        this.country = country;
+        metadata.setCountry(country);
     }
-    
-    /**
-     * Holds value of property geographicCoverage.
-     */
-    @Column(columnDefinition="TEXT")
-    private String geographicCoverage;
-    
+
     /**
      * Getter for property geographicCoverage.
      * @return Value of property geographicCoverage.
      */
     public String getGeographicCoverage() {
-        return this.geographicCoverage;
+        return metadata.getGeographicCoverage();
     }
     
     /**
@@ -833,21 +725,16 @@ public class Study implements java.io.Serializable {
      * @param geographicCoverage New value of property geographicCoverage.
      */
     public void setGeographicCoverage(String geographicCoverage) {
-        this.geographicCoverage = geographicCoverage;
+        metadata.setGeographicCoverage(geographicCoverage);
     }
     
-    /**
-     * Holds value of property geographicUnit.
-     */
-    @Column(columnDefinition="TEXT")
-    private String geographicUnit;
     
     /**
      * Getter for property geographicUnit.
      * @return Value of property geographicUnit.
      */
     public String getGeographicUnit() {
-        return this.geographicUnit;
+        return metadata.getGeographicUnit();
     }
     
     /**
@@ -855,21 +742,15 @@ public class Study implements java.io.Serializable {
      * @param geographicUnit New value of property geographicUnit.
      */
     public void setGeographicUnit(String geographicUnit) {
-        this.geographicUnit = geographicUnit;
+        metadata.setGeographicUnit(geographicUnit);
     }
-    
-    /**
-     * Holds value of property unitOfAnalysis.
-     */
-    @Column(columnDefinition="TEXT")
-    private String unitOfAnalysis;
     
     /**
      * Getter for property unitOfAnalysis.
      * @return Value of property unitOfAnalysis.
      */
     public String getUnitOfAnalysis() {
-        return this.unitOfAnalysis;
+        return metadata.getUnitOfAnalysis();
     }
     
     /**
@@ -877,21 +758,14 @@ public class Study implements java.io.Serializable {
      * @param unitOfAnalysis New value of property unitOfAnalysis.
      */
     public void setUnitOfAnalysis(String unitOfAnalysis) {
-        this.unitOfAnalysis = unitOfAnalysis;
+        metadata.setUnitOfAnalysis(unitOfAnalysis);
     }
-    
-    /**
-     * Holds value of property universe.
-     */
-    @Column(columnDefinition="TEXT")
-    private String universe;
-    
     /**
      * Getter for property universe.
      * @return Value of property universe.
      */
     public String getUniverse() {
-        return this.universe;
+        return metadata.getUniverse();
     }
     
     /**
@@ -899,21 +773,15 @@ public class Study implements java.io.Serializable {
      * @param universe New value of property universe.
      */
     public void setUniverse(String universe) {
-        this.universe = universe;
+        metadata.setUniverse(universe);
     }
-    
-    /**
-     * Holds value of property kindOfData.
-     */
-    @Column(columnDefinition="TEXT")
-    private String kindOfData;
-    
+     
     /**
      * Getter for property kindOfData.
      * @return Value of property kindOfData.
      */
     public String getKindOfData() {
-        return this.kindOfData;
+        return metadata.getKindOfData();
     }
     
     /**
@@ -921,21 +789,15 @@ public class Study implements java.io.Serializable {
      * @param kindOfData New value of property kindOfData.
      */
     public void setKindOfData(String kindOfData) {
-        this.kindOfData = kindOfData;
+        metadata.setKindOfData(kindOfData);
     }
-    
-    /**
-     * Holds value of property timeMethod.
-     */
-    @Column(columnDefinition="TEXT")
-    private String timeMethod;
-    
+
     /**
      * Getter for property timeMethod.
      * @return Value of property timeMethod.
      */
     public String getTimeMethod() {
-        return this.timeMethod;
+        return metadata.getTimeMethod();
     }
     
     /**
@@ -943,21 +805,15 @@ public class Study implements java.io.Serializable {
      * @param timeMethod New value of property timeMethod.
      */
     public void setTimeMethod(String timeMethod) {
-        this.timeMethod = timeMethod;
+        metadata.setTimeMethod(timeMethod);
     }
-    
-    /**
-     * Holds value of property dataCollector.
-     */
-    @Column(columnDefinition="TEXT")
-    private String dataCollector;
     
     /**
      * Getter for property dataCollector.
      * @return Value of property dataCollector.
      */
     public String getDataCollector() {
-        return this.dataCollector;
+        return metadata.getDataCollector();
     }
     
     /**
@@ -965,21 +821,15 @@ public class Study implements java.io.Serializable {
      * @param dataCollector New value of property dataCollector.
      */
     public void setDataCollector(String dataCollector) {
-        this.dataCollector = dataCollector;
+        metadata.setDataCollector(dataCollector);
     }
-    
-    /**
-     * Holds value of property frequencyOfDataCollection.
-     */
-    @Column(columnDefinition="TEXT")
-    private String frequencyOfDataCollection;
     
     /**
      * Getter for property frequencyOfDataCollection.
      * @return Value of property frequencyOfDataCollection.
      */
     public String getFrequencyOfDataCollection() {
-        return this.frequencyOfDataCollection;
+        return metadata.getFrequencyOfDataCollection();
     }
     
     /**
@@ -987,21 +837,14 @@ public class Study implements java.io.Serializable {
      * @param frequencyOfDataCollection New value of property frequencyOfDataCollection.
      */
     public void setFrequencyOfDataCollection(String frequencyOfDataCollection) {
-        this.frequencyOfDataCollection = frequencyOfDataCollection;
+        metadata.setFrequencyOfDataCollection( frequencyOfDataCollection);
     }
-    
-    /**
-     * Holds value of property samplingProcedure.
-     */
-    @Column(columnDefinition="TEXT")
-    private String samplingProcedure;
-    
     /**
      * Getter for property samplingProdedure.
      * @return Value of property samplingProdedure.
      */
     public String getSamplingProcedure() {
-        return this.samplingProcedure;
+        return metadata.getSamplingProcedure();
     }
     
     /**
@@ -1009,21 +852,15 @@ public class Study implements java.io.Serializable {
      * @param samplingProdedure New value of property samplingProdedure.
      */
     public void setSamplingProcedure(String samplingProcedure) {
-        this.samplingProcedure = samplingProcedure;
+        metadata.setSamplingProcedure( samplingProcedure);
     }
-    
-    /**
-     * Holds value of property deviationsFromSampleDesign.
-     */
-    @Column(columnDefinition="TEXT")
-    private String deviationsFromSampleDesign;
-    
+
     /**
      * Getter for property deviationsFromSampleDesign.
      * @return Value of property deviationsFromSampleDesign.
      */
     public String getDeviationsFromSampleDesign() {
-        return this.deviationsFromSampleDesign;
+        return metadata.getDeviationsFromSampleDesign();
     }
     
     /**
@@ -1031,21 +868,15 @@ public class Study implements java.io.Serializable {
      * @param deviationsFromSampleDesign New value of property deviationsFromSampleDesign.
      */
     public void setDeviationsFromSampleDesign(String deviationsFromSampleDesign) {
-        this.deviationsFromSampleDesign = deviationsFromSampleDesign;
+        metadata.setDeviationsFromSampleDesign( deviationsFromSampleDesign);
     }
-    
-    /**
-     * Holds value of property collectionMode.
-     */
-    @Column(columnDefinition="TEXT")
-    private String collectionMode;
     
     /**
      * Getter for property collectionMode.
      * @return Value of property collectionMode.
      */
     public String getCollectionMode() {
-        return this.collectionMode;
+        return metadata.getCollectionMode();
     }
     
     /**
@@ -1053,21 +884,15 @@ public class Study implements java.io.Serializable {
      * @param collectionMode New value of property collectionMode.
      */
     public void setCollectionMode(String collectionMode) {
-        this.collectionMode = collectionMode;
+        metadata.setCollectionMode(collectionMode);
     }
-    
-    /**
-     * Holds value of property researchInstrument.
-     */
-    @Column(columnDefinition="TEXT")
-    private String researchInstrument;
-    
+     
     /**
      * Getter for property researchInstrument.
      * @return Value of property researchInstrument.
      */
     public String getResearchInstrument() {
-        return this.researchInstrument;
+        return metadata.getResearchInstrument();
     }
     
     /**
@@ -1075,21 +900,15 @@ public class Study implements java.io.Serializable {
      * @param researchInstrument New value of property researchInstrument.
      */
     public void setResearchInstrument(String researchInstrument) {
-        this.researchInstrument = researchInstrument;
+        metadata.setResearchInstrument( researchInstrument);
     }
-    
-    /**
-     * Holds value of property dataSources.
-     */
-    @Column(columnDefinition="TEXT")
-    private String dataSources;
-    
+     
     /**
      * Getter for property dataSources.
      * @return Value of property dataSources.
      */
     public String getDataSources() {
-        return this.dataSources;
+        return metadata.getDataSources();
     }
     
     /**
@@ -1097,21 +916,15 @@ public class Study implements java.io.Serializable {
      * @param dataSources New value of property dataSources.
      */
     public void setDataSources(String dataSources) {
-        this.dataSources = dataSources;
+        metadata.setDataSources(dataSources);
     }
-    
-    /**
-     * Holds value of property originOfSources.
-     */
-    @Column(columnDefinition="TEXT")
-    private String originOfSources;
     
     /**
      * Getter for property originOfSources.
      * @return Value of property originOfSources.
      */
     public String getOriginOfSources() {
-        return this.originOfSources;
+        return metadata.getOriginOfSources();
     }
     
     /**
@@ -1119,21 +932,15 @@ public class Study implements java.io.Serializable {
      * @param originOfSources New value of property originOfSources.
      */
     public void setOriginOfSources(String originOfSources) {
-        this.originOfSources = originOfSources;
+        metadata.setOriginOfSources( originOfSources);
     }
-    
-    /**
-     * Holds value of property characteristicOfSources.
-     */
-    @Column(columnDefinition="TEXT")
-    private String characteristicOfSources;
     
     /**
      * Getter for property characteristicOfSources.
      * @return Value of property characteristicOfSources.
      */
     public String getCharacteristicOfSources() {
-        return this.characteristicOfSources;
+        return metadata.getCharacteristicOfSources();
     }
     
     /**
@@ -1141,21 +948,15 @@ public class Study implements java.io.Serializable {
      * @param characteristicOfSources New value of property characteristicOfSources.
      */
     public void setCharacteristicOfSources(String characteristicOfSources) {
-        this.characteristicOfSources = characteristicOfSources;
+        metadata.setCharacteristicOfSources( characteristicOfSources);
     }
-    
-    /**
-     * Holds value of property accessToSources.
-     */
-    @Column(columnDefinition="TEXT")
-    private String accessToSources;
-    
+ 
     /**
      * Getter for property accessToSources.
      * @return Value of property accessToSources.
      */
     public String getAccessToSources() {
-        return this.accessToSources;
+        return metadata.getAccessToSources();
     }
     
     /**
@@ -1163,21 +964,15 @@ public class Study implements java.io.Serializable {
      * @param accessToSources New value of property accessToSources.
      */
     public void setAccessToSources(String accessToSources) {
-        this.accessToSources = accessToSources;
+        metadata.setAccessToSources(accessToSources);
     }
-    
-    /**
-     * Holds value of property dataCollectionSituation.
-     */
-    @Column(columnDefinition="TEXT")
-    private String dataCollectionSituation;
     
     /**
      * Getter for property dataCollectionSituation.
      * @return Value of property dataCollectionSituation.
      */
     public String getDataCollectionSituation() {
-        return this.dataCollectionSituation;
+        return metadata.getDataCollectionSituation();
     }
     
     /**
@@ -1185,21 +980,15 @@ public class Study implements java.io.Serializable {
      * @param dataCollectionSituation New value of property dataCollectionSituation.
      */
     public void setDataCollectionSituation(String dataCollectionSituation) {
-        this.dataCollectionSituation = dataCollectionSituation;
+        metadata.setDataCollectionSituation(dataCollectionSituation);
     }
-    
-    /**
-     * Holds value of property actionsToMinimizeLoss.
-     */
-    @Column(columnDefinition="TEXT")
-    private String actionsToMinimizeLoss;
     
     /**
      * Getter for property actionsToMinimizeLoss.
      * @return Value of property actionsToMinimizeLoss.
      */
     public String getActionsToMinimizeLoss() {
-        return this.actionsToMinimizeLoss;
+        return metadata.getActionsToMinimizeLoss();
     }
     
     /**
@@ -1207,22 +996,16 @@ public class Study implements java.io.Serializable {
      * @param actionsToMinimizeLoss New value of property actionsToMinimizeLoss.
      */
     public void setActionsToMinimizeLoss(String actionsToMinimizeLoss) {
-        this.actionsToMinimizeLoss = actionsToMinimizeLoss;
+        metadata.setActionsToMinimizeLoss(actionsToMinimizeLoss);
     }
     
-    /**
-     * Holds value of property controlOperations.
-     */
-    @Column(columnDefinition="TEXT")
-    private String controlOperations;
-    
-    
+   
     /**
      * Getter for property controlOperations.
      * @return Value of property controlOperations.
      */
     public String getControlOperations() {
-        return this.controlOperations;
+        return metadata.getControlOperations();
     }
     
     /**
@@ -1230,21 +1013,15 @@ public class Study implements java.io.Serializable {
      * @param controlOperations New value of property controlOperations.
      */
     public void setControlOperations(String controlOperations) {
-        this.controlOperations = controlOperations;
+        metadata.setControlOperations( controlOperations);
     }
-    
-    /**
-     * Holds value of property weighting.
-     */
-    @Column(columnDefinition="TEXT")
-    private String weighting;
     
     /**
      * Getter for property weighting.
      * @return Value of property weighting.
      */
     public String getWeighting() {
-        return this.weighting;
+        return metadata.getWeighting();
     }
     
     /**
@@ -1252,21 +1029,15 @@ public class Study implements java.io.Serializable {
      * @param weighting New value of property weighting.
      */
     public void setWeighting(String weighting) {
-        this.weighting = weighting;
+        metadata.setWeighting(weighting);
     }
-    
-    /**
-     * Holds value of property cleaningOperations.
-     */
-    @Column(columnDefinition="TEXT")
-    private String cleaningOperations;
     
     /**
      * Getter for property cleaningOperations.
      * @return Value of property cleaningOperations.
      */
     public String getCleaningOperations() {
-        return this.cleaningOperations;
+        return metadata.getCleaningOperations();
     }
     
     /**
@@ -1274,21 +1045,15 @@ public class Study implements java.io.Serializable {
      * @param cleaningOperations New value of property cleaningOperations.
      */
     public void setCleaningOperations(String cleaningOperations) {
-        this.cleaningOperations = cleaningOperations;
+        metadata.setCleaningOperations( cleaningOperations);
     }
-    
-    /**
-     * Holds value of property studyLevelErrorNotes.
-     */
-    @Column(columnDefinition="TEXT")
-    private String studyLevelErrorNotes;
     
     /**
      * Getter for property studyLevelErrorNotes.
      * @return Value of property studyLevelErrorNotes.
      */
     public String getStudyLevelErrorNotes() {
-        return this.studyLevelErrorNotes;
+        return metadata.getStudyLevelErrorNotes();
     }
     
     /**
@@ -1296,21 +1061,15 @@ public class Study implements java.io.Serializable {
      * @param studyLevelErrorNotes New value of property studyLevelErrorNotes.
      */
     public void setStudyLevelErrorNotes(String studyLevelErrorNotes) {
-        this.studyLevelErrorNotes = studyLevelErrorNotes;
+        metadata.setStudyLevelErrorNotes(studyLevelErrorNotes);
     }
-    
-    /**
-     * Holds value of property responseRate.
-     */
-    @Column(columnDefinition="TEXT")
-    private String responseRate;
-    
+      
     /**
      * Getter for property responseRate.
      * @return Value of property responseRate.
      */
     public String getResponseRate() {
-        return this.responseRate;
+        return metadata.getResponseRate();
     }
     
     /**
@@ -1318,21 +1077,16 @@ public class Study implements java.io.Serializable {
      * @param responseRate New value of property responseRate.
      */
     public void setResponseRate(String responseRate) {
-        this.responseRate = responseRate;
+        metadata.setResponseRate(responseRate);
     }
     
-    /**
-     * Holds value of property samplingErrorEstimate.
-     */
-    @Column(columnDefinition="TEXT")
-    private String samplingErrorEstimate;
     
     /**
      * Getter for property samplingErrorEstimate.
      * @return Value of property samplingErrorEstimate.
      */
     public String getSamplingErrorEstimate() {
-        return this.samplingErrorEstimate;
+        return metadata.getSamplingErrorEstimate();
     }
     
     /**
@@ -1340,21 +1094,15 @@ public class Study implements java.io.Serializable {
      * @param samplingErrorEstimate New value of property samplingErrorEstimate.
      */
     public void setSamplingErrorEstimate(String samplingErrorEstimate) {
-        this.samplingErrorEstimate = samplingErrorEstimate;
+        metadata.setSamplingErrorEstimate( samplingErrorEstimate);
     }
-    
-    /**
-     * Holds value of property otherDataAppraisal.
-     */
-    @Column(columnDefinition="TEXT")
-    private String otherDataAppraisal;
     
     /**
      * Getter for property dataAppraisal.
      * @return Value of property dataAppraisal.
      */
     public String getOtherDataAppraisal() {
-        return this.otherDataAppraisal;
+        return metadata.getOtherDataAppraisal();
     }
     
     /**
@@ -1362,21 +1110,15 @@ public class Study implements java.io.Serializable {
      * @param dataAppraisal New value of property dataAppraisal.
      */
     public void setOtherDataAppraisal(String otherDataAppraisal) {
-        this.otherDataAppraisal = otherDataAppraisal;
+        metadata.setOtherDataAppraisal(otherDataAppraisal);
     }
-    
-    /**
-     * Holds value of property placeOfAccess.
-     */
-    @Column(columnDefinition="TEXT")
-    private String placeOfAccess;
-    
+
     /**
      * Getter for property placeOfAccess.
      * @return Value of property placeOfAccess.
      */
     public String getPlaceOfAccess() {
-        return this.placeOfAccess;
+        return metadata.getPlaceOfAccess();
     }
     
     /**
@@ -1384,21 +1126,15 @@ public class Study implements java.io.Serializable {
      * @param placeOfAccess New value of property placeOfAccess.
      */
     public void setPlaceOfAccess(String placeOfAccess) {
-        this.placeOfAccess = placeOfAccess;
+        metadata.setPlaceOfAccess(placeOfAccess);
     }
     
-    /**
-     * Holds value of property originalArchive.
-     */
-    @Column(columnDefinition="TEXT")
-    private String originalArchive;
-    
-    /**
+     /**
      * Getter for property originalArchive.
      * @return Value of property originalArchive.
      */
     public String getOriginalArchive() {
-        return this.originalArchive;
+        return metadata.getOriginalArchive();
     }
     
     /**
@@ -1406,21 +1142,15 @@ public class Study implements java.io.Serializable {
      * @param originalArchive New value of property originalArchive.
      */
     public void setOriginalArchive(String originalArchive) {
-        this.originalArchive = originalArchive;
+        metadata.setOriginalArchive(originalArchive);
     }
-    
-    /**
-     * Holds value of property availabilityStatus.
-     */
-    @Column(columnDefinition="TEXT")
-    private String availabilityStatus;
-    
+        
     /**
      * Getter for property availabilityStatus.
      * @return Value of property availabilityStatus.
      */
     public String getAvailabilityStatus() {
-        return this.availabilityStatus;
+        return metadata.getAvailabilityStatus();
     }
     
     /**
@@ -1428,21 +1158,15 @@ public class Study implements java.io.Serializable {
      * @param availabilityStatus New value of property availabilityStatus.
      */
     public void setAvailabilityStatus(String availabilityStatus) {
-        this.availabilityStatus = availabilityStatus;
+        metadata.setAvailabilityStatus(availabilityStatus);
     }
-    
-    /**
-     * Holds value of property collectionSize.
-     */
-    @Column(columnDefinition="TEXT")
-    private String collectionSize;
     
     /**
      * Getter for property collectionSize.
      * @return Value of property collectionSize.
      */
     public String getCollectionSize() {
-        return this.collectionSize;
+        return metadata.getCollectionSize();
     }
     
     /**
@@ -1450,21 +1174,15 @@ public class Study implements java.io.Serializable {
      * @param collectionSize New value of property collectionSize.
      */
     public void setCollectionSize(String collectionSize) {
-        this.collectionSize = collectionSize;
+        metadata.setCollectionSize( collectionSize);
     }
-    
-    /**
-     * Holds value of property studyCompletion.
-     */
-    @Column(columnDefinition="TEXT")
-    private String studyCompletion;
     
     /**
      * Getter for property studyCompletion.
      * @return Value of property studyCompletion.
      */
     public String getStudyCompletion() {
-        return this.studyCompletion;
+        return metadata.getStudyCompletion();
     }
     
     /**
@@ -1472,7 +1190,7 @@ public class Study implements java.io.Serializable {
      * @param studyCompletion New value of property studyCompletion.
      */
     public void setStudyCompletion(String studyCompletion) {
-        this.studyCompletion = studyCompletion;
+        metadata.setStudyCompletion( studyCompletion);
     }
     
     /**
@@ -1497,18 +1215,14 @@ public class Study implements java.io.Serializable {
         this.numberOfFiles = numberOfFiles;
     }
     
-    /**
-     * Holds value of property specialPermissions.
-     */
-    @Column(columnDefinition="TEXT")
-    private String specialPermissions;
+
     
     /**
      * Getter for property specialPermissions.
      * @return Value of property specialPermissions.
      */
     public String getSpecialPermissions() {
-        return this.specialPermissions;
+        return metadata.getSpecialPermissions();
     }
     
     /**
@@ -1516,21 +1230,16 @@ public class Study implements java.io.Serializable {
      * @param specialPermissions New value of property specialPermissions.
      */
     public void setSpecialPermissions(String specialPermissions) {
-        this.specialPermissions = specialPermissions;
+        metadata.setSpecialPermissions(specialPermissions);
     }
     
-    /**
-     * Holds value of property restrictions.
-     */
-    @Column(columnDefinition="TEXT")
-    private String restrictions;
     
     /**
      * Getter for property restrictions.
      * @return Value of property restrictions.
      */
     public String getRestrictions() {
-        return this.restrictions;
+        return metadata.getRestrictions();
     }
     
     /**
@@ -1538,21 +1247,15 @@ public class Study implements java.io.Serializable {
      * @param restrictions New value of property restrictions.
      */
     public void setRestrictions(String restrictions) {
-        this.restrictions = restrictions;
+        metadata.setRestrictions(restrictions);
     }
-    
-    /**
-     * Holds value of property contact.
-     */
-    @Column(columnDefinition="TEXT")
-    private String contact;
-    
+        
     /**
      * Getter for property contact.
      * @return Value of property contact.
      */
     public String getContact() {
-        return this.contact;
+        return metadata.getContact();
     }
     
     /**
@@ -1560,21 +1263,15 @@ public class Study implements java.io.Serializable {
      * @param contact New value of property contact.
      */
     public void setContact(String contact) {
-        this.contact = contact;
+        metadata.setContact(contact);
     }
-    
-    /**
-     * Holds value of property citationRequirements.
-     */
-    @Column(columnDefinition="TEXT")
-    private String citationRequirements;
     
     /**
      * Getter for property citationRequirements.
      * @return Value of property citationRequirements.
      */
     public String getCitationRequirements() {
-        return this.citationRequirements;
+        return metadata.getCitationRequirements();
     }
     
     /**
@@ -1582,21 +1279,16 @@ public class Study implements java.io.Serializable {
      * @param citationRequirements New value of property citationRequirements.
      */
     public void setCitationRequirements(String citationRequirements) {
-        this.citationRequirements = citationRequirements;
+        metadata.setCitationRequirements(citationRequirements);
     }
     
-    /**
-     * Holds value of property depositorRequirements.
-     */
-    @Column(columnDefinition="TEXT")
-    private String depositorRequirements;
-    
+     
     /**
      * Getter for property dipositorRequirements.
      * @return Value of property dipositorRequirements.
      */
     public String getDepositorRequirements() {
-        return this.depositorRequirements;
+        return metadata.getDepositorRequirements();
     }
     
     /**
@@ -1604,21 +1296,15 @@ public class Study implements java.io.Serializable {
      * @param dipositorRequirements New value of property dipositorRequirements.
      */
     public void setDepositorRequirements(String depositorRequirements) {
-        this.depositorRequirements = depositorRequirements;
+        metadata.setDepositorRequirements( depositorRequirements);
     }
-    
-    /**
-     * Holds value of property conditions.
-     */
-    @Column(columnDefinition="TEXT")
-    private String conditions;
     
     /**
      * Getter for property conditions.
      * @return Value of property conditions.
      */
     public String getConditions() {
-        return this.conditions;
+        return metadata.getConditions();
     }
     
     /**
@@ -1626,21 +1312,15 @@ public class Study implements java.io.Serializable {
      * @param conditions New value of property conditions.
      */
     public void setConditions(String conditions) {
-        this.conditions = conditions;
+        metadata.setConditions(conditions);
     }
     
-    /**
-     * Holds value of property disclaimer.
-     */
-    @Column(columnDefinition="TEXT")
-    private String disclaimer;
-    
-    /**
+     /**
      * Getter for property disclaimer.
      * @return Value of property disclaimer.
      */
     public String getDisclaimer() {
-        return this.disclaimer;
+        return metadata.getDisclaimer();
     }
     
     /**
@@ -1648,21 +1328,15 @@ public class Study implements java.io.Serializable {
      * @param disclaimer New value of property disclaimer.
      */
     public void setDisclaimer(String disclaimer) {
-        this.disclaimer = disclaimer;
+        metadata.setDisclaimer( disclaimer);
     }
-    
-    /**
-     * Holds value of property productionDate.
-     */
-    @Column(columnDefinition="TEXT")
-    private String productionDate;
     
     /**
      * Getter for property productionDate.
      * @return Value of property productionDate.
      */
     public String getProductionDate() {
-        return this.productionDate;
+        return metadata.getProductionDate();
     }
     
     /**
@@ -1670,21 +1344,16 @@ public class Study implements java.io.Serializable {
      * @param productionDate New value of property productionDate.
      */
     public void setProductionDate(String productionDate) {
-        this.productionDate = productionDate;
+        metadata.setProductionDate(productionDate);
     }
     
-    /**
-     * Holds value of property productionPlace.
-     */
-    @Column(columnDefinition="TEXT")
-    private String productionPlace;
     
     /**
      * Getter for property productionPlace.
      * @return Value of property productionPlace.
      */
     public String getProductionPlace() {
-        return this.productionPlace;
+        return metadata.getProductionPlace();
     }
     
     /**
@@ -1692,21 +1361,15 @@ public class Study implements java.io.Serializable {
      * @param productionPlace New value of property productionPlace.
      */
     public void setProductionPlace(String productionPlace) {
-        this.productionPlace = productionPlace;
+        metadata.setProductionPlace(productionPlace);
     }
-    
-    /**
-     * Holds value of property confidentialityDeclaration.
-     */
-    @Column(columnDefinition="TEXT")
-    private String confidentialityDeclaration;
     
     /**
      * Getter for property confidentialityDeclaration.
      * @return Value of property confidentialityDeclaration.
      */
     public String getConfidentialityDeclaration() {
-        return this.confidentialityDeclaration;
+        return metadata.getConfidentialityDeclaration();
     }
     
     /**
@@ -1714,22 +1377,17 @@ public class Study implements java.io.Serializable {
      * @param confidentialityDeclaration New value of property confidentialityDeclaration.
      */
     public void setConfidentialityDeclaration(String confidentialityDeclaration) {
-        this.confidentialityDeclaration = confidentialityDeclaration;
+        metadata.setConfidentialityDeclaration(confidentialityDeclaration);
     }
     
-    /**
-     * Holds value of property studyGrants.
-     */
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private List<StudyGrant> studyGrants;
+    
     
     /**
      * Getter for property studyGrants.
      * @return Value of property studyGrants.
      */
     public List<StudyGrant> getStudyGrants() {
-        return this.studyGrants;
+        return metadata.getStudyGrants();
     }
     
     /**
@@ -1737,42 +1395,17 @@ public class Study implements java.io.Serializable {
      * @param studyGrants New value of property studyGrants.
      */
     public void setStudyGrants(List<StudyGrant> studyGrants) {
-        this.studyGrants = studyGrants;
+        metadata.setStudyGrants(studyGrants);
     }
     
-    //   /**
-    //    * Holds value of property dataAccessPlace.
-    //    */
-    //   private String dataAccessPlace;
-    //
-    /**
-     * Getter for property dataAccessPlace.
-     * @return Value of property dataAccessPlace.
-     */
-//    public String getDataAccessPlace() {
-//        return this.dataAccessPlace;
-//    }
-    
-    /**
-     * Setter for property dataAccessPlace.
-     * @param dataAccessPlace New value of property dataAccessPlace.
-     */
-    //  public void setDataAccessPlace(String dataAccessPlace) {
-    //      this.dataAccessPlace = dataAccessPlace;
-    //  }
-    
-    /**
-     * Holds value of property distributionDate.
-     */
-    @Column(columnDefinition="TEXT")
-    private String distributionDate;
+ 
     
     /**
      * Getter for property distributionDate.
      * @return Value of property distributionDate.
      */
     public String getDistributionDate() {
-        return this.distributionDate;
+        return metadata.getDistributionDate();
     }
     
     /**
@@ -1780,21 +1413,15 @@ public class Study implements java.io.Serializable {
      * @param distributionDate New value of property distributionDate.
      */
     public void setDistributionDate(String distributionDate) {
-        this.distributionDate = distributionDate;
+        metadata.setDistributionDate(distributionDate);
     }
-    
-    /**
-     * Holds value of property distributorContact.
-     */
-    @Column(columnDefinition="TEXT")
-    private String distributorContact;
     
     /**
      * Getter for property distributorContact.
      * @return Value of property distributorContact.
      */
     public String getDistributorContact() {
-        return this.distributorContact;
+        return metadata.getDistributorContact();
     }
     
     /**
@@ -1802,21 +1429,15 @@ public class Study implements java.io.Serializable {
      * @param distributorContact New value of property distributorContact.
      */
     public void setDistributorContact(String distributorContact) {
-        this.distributorContact = distributorContact;
+        metadata.setDistributorContact(distributorContact);
     }
-    
-    /**
-     * Holds value of property distributorContactAffiliation.
-     */
-    @Column(columnDefinition="TEXT")
-    private String distributorContactAffiliation;
     
     /**
      * Getter for property distributorContactAffiliation.
      * @return Value of property distributorContactAffiliation.
      */
     public String getDistributorContactAffiliation() {
-        return this.distributorContactAffiliation;
+        return metadata.getDistributorContactAffiliation();
     }
     
     /**
@@ -1824,21 +1445,16 @@ public class Study implements java.io.Serializable {
      * @param distributorContactAffiliation New value of property distributorContactAffiliation.
      */
     public void setDistributorContactAffiliation(String distributorContactAffiliation) {
-        this.distributorContactAffiliation = distributorContactAffiliation;
+        metadata.setDistributorContactAffiliation(distributorContactAffiliation);
     }
     
-    /**
-     * Holds value of property distributorContactEmail.
-     */
-    @Column(columnDefinition="TEXT")
-    private String distributorContactEmail;
     
     /**
      * Getter for property distributorContactEmail.
      * @return Value of property distributorContactEmail.
      */
     public String getDistributorContactEmail() {
-        return this.distributorContactEmail;
+        return metadata.getDistributorContactEmail();
     }
     
     /**
@@ -1846,21 +1462,15 @@ public class Study implements java.io.Serializable {
      * @param distributorContactEmail New value of property distributorContactEmail.
      */
     public void setDistributorContactEmail(String distributorContactEmail) {
-        this.distributorContactEmail = distributorContactEmail;
+        metadata.setDistributorContactEmail(distributorContactEmail);
     }
-    
-    /**
-     * Holds value of property depositor.
-     */
-    @Column(columnDefinition="TEXT")
-    private String depositor;
     
     /**
      * Getter for property depositor.
      * @return Value of property depositor.
      */
     public String getDepositor() {
-        return this.depositor;
+        return metadata.getDepositor();
     }
     
     /**
@@ -1868,21 +1478,15 @@ public class Study implements java.io.Serializable {
      * @param depositor New value of property depositor.
      */
     public void setDepositor(String depositor) {
-        this.depositor = depositor;
+        metadata.setDepositor(depositor);
     }
-    
-    /**
-     * Holds value of property dateOfDeposit.
-     */
-    @Column(columnDefinition="TEXT")
-    private String dateOfDeposit;
     
     /**
      * Getter for property dateOfDeposit.
      * @return Value of property dateOfDeposit.
      */
     public String getDateOfDeposit() {
-        return this.dateOfDeposit;
+        return metadata.getDateOfDeposit();
     }
     
     /**
@@ -1890,22 +1494,15 @@ public class Study implements java.io.Serializable {
      * @param dateOfDeposit New value of property dateOfDeposit.
      */
     public void setDateOfDeposit(String dateOfDeposit) {
-        this.dateOfDeposit = dateOfDeposit;
+        metadata.setDateOfDeposit( dateOfDeposit);
     }
-    
-    /**
-     * Holds value of property studyOtherIds.
-     */
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private List<StudyOtherId> studyOtherIds;
-    
+        
     /**
      * Getter for property studyOtherIds.
      * @return Value of property studyOtherIds.
      */
     public List<StudyOtherId> getStudyOtherIds() {
-        return this.studyOtherIds;
+        return metadata.getStudyOtherIds();
     }
     
     /**
@@ -1913,7 +1510,7 @@ public class Study implements java.io.Serializable {
      * @param studyOtherIds New value of property studyOtherIds.
      */
     public void setStudyOtherIds(List<StudyOtherId> studyOtherIds) {
-        this.studyOtherIds = studyOtherIds;
+        metadata.setStudyOtherIds(studyOtherIds);
     }
     
     /**
@@ -2004,18 +1601,13 @@ public class Study implements java.io.Serializable {
         this.requestAccess = requestAccess;
     }
     
-    /**
-     * Holds value of property versionDate.
-     */
-    @Column(columnDefinition="TEXT")
-    private String versionDate;
-    
+  
     /**
      * Getter for property versionDate.
      * @return Value of property versionDate.
      */
     public String getVersionDate() {
-        return this.versionDate;
+        return metadata.getVersionDate();
     }
     
     /**
@@ -2023,7 +1615,7 @@ public class Study implements java.io.Serializable {
      * @param versionDate New value of property versionDate.
      */
     public void setVersionDate(String versionDate) {
-        this.versionDate = versionDate;
+        metadata.setVersionDate(versionDate);
     }
     
     /**
@@ -2243,33 +1835,28 @@ End of deprecated methods section
         // for now, just check if any of the "terms of use" fields are not empty
         
         // terms of use fields are those from the "use statement" part of the ddi
-        if ( !StringUtil.isEmpty(getConfidentialityDeclaration()) ) { return true; }
-        if ( !StringUtil.isEmpty(getSpecialPermissions()) ) { return true; }
-        if ( !StringUtil.isEmpty(getRestrictions()) ) { return true; }
-        if ( !StringUtil.isEmpty(getContact()) ) { return true; }
-        if ( !StringUtil.isEmpty(getCitationRequirements()) ) { return true; }
-        if ( !StringUtil.isEmpty(getDepositorRequirements()) ) { return true; }
-        if ( !StringUtil.isEmpty(getConditions()) ) { return true; }
-        if ( !StringUtil.isEmpty(getDisclaimer()) ) { return true; }
+        if ( !StringUtil.isEmpty(metadata.getConfidentialityDeclaration()) ) { return true; }
+        if ( !StringUtil.isEmpty(metadata.getSpecialPermissions()) ) { return true; }
+        if ( !StringUtil.isEmpty(metadata.getRestrictions()) ) { return true; }
+        if ( !StringUtil.isEmpty(metadata.getContact()) ) { return true; }
+        if ( !StringUtil.isEmpty(metadata.getCitationRequirements()) ) { return true; }
+        if ( !StringUtil.isEmpty(metadata.getDepositorRequirements()) ) { return true; }
+        if ( !StringUtil.isEmpty(metadata.getConditions()) ) { return true; }
+        if ( !StringUtil.isEmpty(metadata.getDisclaimer()) ) { return true; }
         if ( !StringUtil.isEmpty(getHarvestDVNTermsOfUse()) ) { return true; }
         if ( !StringUtil.isEmpty(getHarvestDVTermsOfUse()) ) { return true; }
         
         return false;
     }
     
-    /**
-     * Holds value of property replicationFor.
-     */
-    @Column(columnDefinition="TEXT")
-    private String replicationFor;
-    
+
     /**
      * Getter for property replicationFor.
      * @return Value of property replicationFor.
      */
     
     public String getReplicationFor() {
-        return this.replicationFor;
+        return metadata.getReplicationFor();
     }
     
     /**
@@ -2277,21 +1864,15 @@ End of deprecated methods section
      * @param replicationFor New value of property replicationFor.
      */
     public void setReplicationFor(String replicationFor) {
-        this.replicationFor = replicationFor;
+        metadata.setReplicationFor(replicationFor);
     }
-    
-    /**
-     * Holds value of property subTitle.
-     */
-    @Column(columnDefinition="TEXT")
-    private String subTitle;
     
     /**
      * Getter for property subTitle.
      * @return Value of property subTitle.
      */
     public String getSubTitle() {
-        return this.subTitle;
+        return metadata.getSubTitle();
     }
     
     /**
@@ -2299,15 +1880,15 @@ End of deprecated methods section
      * @param subTitle New value of property subTitle.
      */
     public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
+        metadata.setSubTitle(subTitle);
     }
     
     public java.util.List<StudyGeoBounding> getStudyGeoBoundings() {
-        return studyGeoBoundings;
+        return metadata.getStudyGeoBoundings();
     }
     
     public void setStudyGeoBoundings(java.util.List<StudyGeoBounding> studyGeoBoundings) {
-        this.studyGeoBoundings = studyGeoBoundings;
+        metadata.setStudyGeoBoundings( studyGeoBoundings);
     }
     
     /**
@@ -2354,19 +1935,13 @@ End of deprecated methods section
         this.authority = authority;
     }
     
-    /**
-     * Holds value of property studyOtherRefs.
-     */
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private List<StudyOtherRef> studyOtherRefs;
-    
+   
     /**
      * Getter for property studyOtherRefs.
      * @return Value of property studyOtherRefs.
      */
     public List<StudyOtherRef> getStudyOtherRefs() {
-        return this.studyOtherRefs;
+        return metadata.getStudyOtherRefs();
     }
     
     /**
@@ -2374,22 +1949,16 @@ End of deprecated methods section
      * @param studyOtherRefs New value of property studyOtherRefs.
      */
     public void setStudyOtherRefs(List<StudyOtherRef> studyOtherRefs) {
-        this.studyOtherRefs = studyOtherRefs;
+        metadata.setStudyOtherRefs( studyOtherRefs);
     }
     
-    /**
-     * Holds value of property studyRelMaterials.
-     */
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private List<StudyRelMaterial> studyRelMaterials;
-    
+ 
     /**
      * Getter for property studyRelMaterial.
      * @return Value of property studyRelMaterial.
      */
     public List<StudyRelMaterial> getStudyRelMaterials() {
-        return this.studyRelMaterials;
+        return metadata.getStudyRelMaterials();
     }
     
     /**
@@ -2397,22 +1966,16 @@ End of deprecated methods section
      * @param studyRelMaterial New value of property studyRelMaterial.
      */
     public void setStudyRelMaterials(List<StudyRelMaterial> studyRelMaterials) {
-        this.studyRelMaterials = studyRelMaterials;
+        metadata.setStudyRelMaterials( studyRelMaterials);
     }
     
-    /**
-     * Holds value of property studyRelPublications.
-     */
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private List<StudyRelPublication> studyRelPublications;
-    
+     
     /**
      * Getter for property studyRelPublications.
      * @return Value of property studyRelPublications.
      */
     public List<StudyRelPublication> getStudyRelPublications() {
-        return this.studyRelPublications;
+        return metadata.getStudyRelPublications();
     }
     
     /**
@@ -2420,22 +1983,15 @@ End of deprecated methods section
      * @param studyRelPublications New value of property studyRelPublications.
      */
     public void setStudyRelPublications(List<StudyRelPublication> studyRelPublications) {
-        this.studyRelPublications = studyRelPublications;
+        metadata.setStudyRelPublications(studyRelPublications);
     }
-    
-    /**
-     * Holds value of property studyRelStudies.
-     */
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("displayOrder")
-    private List<StudyRelStudy> studyRelStudies;
-    
+     
     /**
      * Getter for property studyRelStudies.
      * @return Value of property studyRelStudies.
      */
     public List<StudyRelStudy> getStudyRelStudies() {
-        return this.studyRelStudies;
+        return metadata.getStudyRelStudies();
     }
     
     /**
@@ -2443,7 +1999,7 @@ End of deprecated methods section
      * @param studyRelStudies New value of property studyRelStudies.
      */
     public void setStudyRelStudies(List<StudyRelStudy> studyRelStudies) {
-        this.studyRelStudies = studyRelStudies;
+        metadata.setStudyRelStudies(studyRelStudies);
     }
     
     public boolean isUserAuthorizedToEdit(VDCUser user) {   
@@ -2517,26 +2073,24 @@ End of deprecated methods section
     public void setStudyDownload(StudyDownload studyDownload) {
         this.studyDownload = studyDownload;
     }
-    
-    private String harvestHoldings;
 
     public String getHarvestHoldings() {
-        return harvestHoldings;
+        return metadata.getHarvestHoldings();
     }
 
     public void setHarvestHoldings(String harvestHoldings) {
-        this.harvestHoldings = harvestHoldings;
+        metadata.setHarvestHoldings(harvestHoldings);
     }
-
-    private String harvestIdentifier;
     
+  
     public String getHarvestIdentifier() {
-        return harvestIdentifier;
+        return metadata.getHarvestIdentifier();
     }
 
     public void setHarvestIdentifier(String harvestIdentifier) {
-        this.harvestIdentifier = harvestIdentifier;
+        metadata.setHarvestIdentifier(harvestIdentifier);
     } 
+    
     public Date getLastExportTime() {
         return lastExportTime;
     }
@@ -2545,27 +2099,28 @@ End of deprecated methods section
         this.lastExportTime = lastExportTime;
     }
 
-    @Column(columnDefinition="TEXT")
-    private String harvestDVTermsOfUse;
-
-    @Column(columnDefinition="TEXT")
-    private String harvestDVNTermsOfUse;
-
     public String getHarvestDVTermsOfUse() {
-        return harvestDVTermsOfUse;
+        return metadata.getHarvestDVTermsOfUse();
     }
 
     public void setHarvestDVTermsOfUse(String harvestDVTermsOfUse) {
-        this.harvestDVTermsOfUse = harvestDVTermsOfUse;
+        metadata.setHarvestDVTermsOfUse( harvestDVTermsOfUse);
     }
 
     public String getHarvestDVNTermsOfUse() {
-        return harvestDVNTermsOfUse;
+        return metadata.getHarvestDVNTermsOfUse();
     }
 
     public void setHarvestDVNTermsOfUse(String harvestDVNTermsOfUse) {
-        this.harvestDVNTermsOfUse = harvestDVNTermsOfUse;
+        metadata.setHarvestDVNTermsOfUse(harvestDVNTermsOfUse);
     }
 
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
+    }
 
 }

@@ -108,7 +108,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
    
     }
     
-    public void newStudy(Long vdcId, Long userId) {
+    public void newStudy(Long vdcId, Long userId, Long templateId) {
         newStudy=true;
         
         VDC vdc = em.find(VDC.class, vdcId);
@@ -122,7 +122,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
             reviewState = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
         }
         
-        study = new Study(vdc, creator, em.find(ReviewState.class, reviewState.getId()));
+        study = new Study(vdc, creator, em.find(ReviewState.class, reviewState.getId()),  em.find(Template.class,templateId));
         em.persist(study);
         
         // set default protocol and authority

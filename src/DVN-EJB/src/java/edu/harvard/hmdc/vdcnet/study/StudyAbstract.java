@@ -119,26 +119,26 @@ public class StudyAbstract implements java.io.Serializable {
     }
 
     /**
-     * Holds value of property study.
+     * Holds value of property metadata.
      */
     @ManyToOne 
     @JoinColumn(nullable=false)
-    private Study study;
+    private Metadata metadata;
 
     /**
-     * Getter for property study.
-     * @return Value of property study.
+     * Getter for property metadata.
+     * @return Value of property metadata.
      */
-    public Study getStudy() {
-        return this.study;
+    public Metadata getMetadata() {
+        return this.metadata;
     }
 
     /**
-     * Setter for property study.
-     * @param study New value of property study.
+     * Setter for property metadata.
+     * @param metadata New value of property metadata.
      */
-    public void setStudy(Study study) {
-        this.study = study;
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
       /**
      * Holds value of property version.

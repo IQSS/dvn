@@ -89,27 +89,21 @@ public class StudyGeoBounding implements java.io.Serializable {
     }
     
     /**
-     * Holds value of property study.
+     * Holds value of property metadata.
      */
     @ManyToOne
     @JoinColumn(nullable=false)
-    private Study study;
-    
-    /**
-     * Getter for property study.
-     * @return Value of property study.
-     */
-    public Study getStudy() {
-        return this.study;
+    private Metadata metadata;
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
     
-    /**
-     * Setter for property study.
-     * @param study New value of property study.
-     */
-    public void setStudy(Study study) {
-        this.study = study;
-    }
+  
     /**
      * Holds value of property version.
      */

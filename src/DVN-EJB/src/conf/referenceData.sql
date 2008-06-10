@@ -10,6 +10,9 @@ SET client_min_messages = warning;
 
 SET search_path = public, pg_catalog;
 
+SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('metadata', 'id'), 10, false);
+
+
 --
 -- TOC entry 1840 (class 0 OID 0)
 -- Dependencies: 1304
@@ -734,9 +737,16 @@ ALTER TABLE vdcuser ENABLE TRIGGER ALL;
 -- Data for Name: template; Type: TABLE DATA; Schema: public; Owner: dvnApp
 --
 
+ALTER TABLE "metadata" DISABLE TRIGGER ALL;
+-- Default metadata - contains no metadata values
+INSERT INTO metadata(id, version ) VALUES (1, 1);
+
+ALTER TABLE "metadata" ENABLE TRIGGER ALL;
+
+
 ALTER TABLE "template" DISABLE TRIGGER ALL;
 
-INSERT INTO template(id, version, name) VALUES (1, 1, 'Default Template');
+INSERT INTO template(id, version, name,metadata_id) VALUES (1, 1, 'Default Template',1);
 
 ALTER TABLE "template" ENABLE TRIGGER ALL;
 
@@ -958,5 +968,24 @@ create index filecategory_study_id_index on filecategory(study_id);
 create index studyfile_filecategory_id_index on studyfile(filecategory_id);
 create index datavariable_datatable_id_index on datavariable(datatable_id);
 create index variablerange_datavariable_id_index on  variablerange (datavariable_id);
+create index metadata_id_index on metadata(id);
+create index study_metadata_id_index on study(metadata_id);
+create index studyabstract_metadata_id_index on studyabstract(metadata_id);
+create index studyauthor_metadata_id_index on studyauthor(metadata_id);
+create index studydistributor_metadata_id_index on studydistributor(metadata_id);
+create index studygeobounding_metadata_id_index on studygeobounding(metadata_id);
+create index studygrant_metadata_id_index on studygrant(metadata_id);
+create index studykeyword_metadata_id_index on studykeyword(metadata_id);
+create index studynote_metadata_id_index on studynote(metadata_id);
+create index studyotherid_metadata_id_index on studyotherid(metadata_id);
+create index studyotherref_metadata_id_index on studyotherref(metadata_id);
+create index studyproducer_metadata_id_index on studyproducer(metadata_id);
+create index studyrelmaterial_metadata_id_index on studyrelmaterial(metadata_id);
+create index studyrelpublication_metadata_id_index on studyrelpublication(metadata_id);
+create index studyrelstudy_metadata_id_index on studyrelstudy(metadata_id);
+create index studysoftware_metadata_id_index on studysoftware(metadata_id);
+create index studytopicclass_metadata_id_index on studytopicclass(metadata_id);
+create index template_metadata_id_index on template(metadata_id);
+
 
 insert into dvnversion( id, buildnumber,versionnumber) values (1,2,1);

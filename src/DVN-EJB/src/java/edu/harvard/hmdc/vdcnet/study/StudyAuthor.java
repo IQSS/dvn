@@ -118,27 +118,20 @@ public class StudyAuthor implements java.io.Serializable {
     }
 
     /**
-     * Holds value of property study.
+     * Holds value of property metadata.
      */
     @ManyToOne 
     @JoinColumn(nullable=false)
-    private Study study;
+    private Metadata metadata;
 
-    /**
-     * Getter for property study.
-     * @return Value of property study.
-     */
-    public Study getStudy() {
-        return this.study;
+     public Metadata getMetadata() {
+        return metadata;
     }
 
-    /**
-     * Setter for property study.
-     * @param study New value of property study.
-     */
-    public void setStudy(Study study) {
-        this.study = study;
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
+  
       /**
      * Holds value of property version.
      */
@@ -202,6 +195,7 @@ public class StudyAuthor implements java.io.Serializable {
         StudyAuthor other = (StudyAuthor)object;
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
         return true;
-    }   
- 
+    }
+
+
 }

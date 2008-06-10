@@ -50,6 +50,7 @@ import edu.harvard.hmdc.vdcnet.study.TemplateField;
 import edu.harvard.hmdc.vdcnet.study.TemplateFileCategory;
 import edu.harvard.hmdc.vdcnet.util.SessionCounter;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -59,13 +60,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlDataTable;
-import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlInputTextarea;
 import javax.faces.context.FacesContext;
@@ -74,7 +73,6 @@ import javax.faces.model.SelectItem;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.OptimisticLockException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -89,7 +87,7 @@ import javax.servlet.http.HttpServletRequest;
 public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  {
     EditStudyService editStudyService;
     @EJB StudyServiceLocal studyService;
-    
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
     /**
      * <p>Construct a new Page bean instance.</p>
      */
@@ -136,7 +134,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 setFiles(editStudyService.getCurrentFiles());
             } else {
                 Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
-                editStudyService.newStudy(vdcId, getVDCSessionBean().getLoginBean().getUser().getId());
+                Long templateId = vdcNetworkService.find().getDefaultTemplate().getId();
+                editStudyService.newStudy(vdcId, getVDCSessionBean().getLoginBean().getUser().getId(), templateId);
                 study = editStudyService.getStudy();
                 studyId = SessionCounter.getNext();
                
@@ -176,7 +175,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     private void initCollections() {
         if ( study.getStudyOtherIds()==null || study.getStudyOtherIds().size()==0) {
             StudyOtherId elem = new StudyOtherId();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             List otherIds = new ArrayList();
             otherIds.add(elem);
             study.setStudyOtherIds(otherIds);
@@ -184,7 +183,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if ( study.getStudyAuthors()==null || study.getStudyAuthors().size()==0) {
             List authors = new ArrayList();
             StudyAuthor anAuthor = new StudyAuthor();
-            anAuthor.setStudy(study);
+            anAuthor.setMetadata(study.getMetadata());
             authors.add(anAuthor);
             study.setStudyAuthors(authors);
         }
@@ -192,7 +191,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if ( study.getStudyAbstracts()==null || study.getStudyAbstracts().size()==0) {
             List abstracts = new ArrayList();
             StudyAbstract elem = new StudyAbstract();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             abstracts.add(elem);
             study.setStudyAbstracts(abstracts);
         }
@@ -200,14 +199,14 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (study.getStudyDistributors()==null || study.getStudyDistributors().size()==0) {
             List distributors = new ArrayList();
             StudyDistributor elem = new StudyDistributor();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             distributors.add(elem);
             study.setStudyDistributors(distributors);
         }
         if (study.getStudyGrants()==null || study.getStudyGrants().size()==0) {
             List grants = new ArrayList();
             StudyGrant elem = new StudyGrant();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             grants.add(elem);
             study.setStudyGrants(grants);
         }
@@ -215,7 +214,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (study.getStudyKeywords()==null || study.getStudyKeywords().size()==0 ) {
             List keywords = new ArrayList();
             StudyKeyword elem = new StudyKeyword();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             keywords.add(elem);
             study.setStudyKeywords(keywords);
         }
@@ -223,7 +222,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (study.getStudyTopicClasses()==null || study.getStudyTopicClasses().size()==0 ) {
             List topicClasses = new ArrayList();
             StudyTopicClass elem = new StudyTopicClass();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             topicClasses.add(elem);
             study.setStudyTopicClasses(topicClasses);
         }
@@ -231,7 +230,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (study.getStudyNotes()==null || study.getStudyNotes().size()==0) {
             List notes = new ArrayList();
             StudyNote elem = new StudyNote();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             notes.add(elem);
             study.setStudyNotes(notes);
         }
@@ -239,7 +238,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (study.getStudyProducers()==null || study.getStudyProducers().size()==0) {
             List producers = new ArrayList();
             StudyProducer elem = new StudyProducer();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             producers.add(elem);
             study.setStudyProducers(producers);
         }
@@ -247,42 +246,42 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (study.getStudySoftware()==null || study.getStudySoftware().size()==0) {
             List software = new ArrayList();
             StudySoftware elem = new StudySoftware();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             software.add(elem);
             study.setStudySoftware(software);
         }
         if (study.getStudyGeoBoundings()==null || study.getStudyGeoBoundings().size()==0) {
             List boundings = new ArrayList();
             StudyGeoBounding elem = new StudyGeoBounding();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             boundings.add(elem);
             study.setStudyGeoBoundings(boundings);
         }
         if (study.getStudyRelMaterials()==null || study.getStudyRelMaterials().size()==0) {
             List mats = new ArrayList();
             StudyRelMaterial elem = new StudyRelMaterial();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             mats.add(elem);
             study.setStudyRelMaterials(mats);
         }
         if (study.getStudyRelPublications()==null || study.getStudyRelPublications().size()==0) {
             List list = new ArrayList();
             StudyRelPublication elem = new StudyRelPublication();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             list.add(elem);
             study.setStudyRelPublications(list);
         }
         if (study.getStudyRelStudies()==null || study.getStudyRelStudies().size()==0) {
             List list = new ArrayList();
             StudyRelStudy elem = new StudyRelStudy();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             list.add(elem);
             study.setStudyRelStudies(list);
         }
         if (study.getStudyOtherRefs()==null || study.getStudyOtherRefs().size()==0) {
             List list = new ArrayList();
             StudyOtherRef elem = new StudyOtherRef();
-            elem.setStudy(study);
+            elem.setMetadata(study.getMetadata());
             list.add(elem);
             study.setStudyOtherRefs(list);
         }
@@ -421,63 +420,63 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
         if (dataTable.equals(dataTableOtherIds)) {
             StudyOtherId newElem = new StudyOtherId();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyOtherIds().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableAuthors)) {
             StudyAuthor newElem = new StudyAuthor();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyAuthors().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableAbstracts)) {
             StudyAbstract newElem = new StudyAbstract();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyAbstracts().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableDistributors)) {
             StudyDistributor newElem = new StudyDistributor();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyDistributors().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableGrants)) {
             StudyGrant newElem = new StudyGrant();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyGrants().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableKeywords)) {
             StudyKeyword newElem = new StudyKeyword();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyKeywords().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableNotes)) {
             StudyNote newElem = new StudyNote();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyNotes().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableProducers)) {
             StudyProducer newElem = new StudyProducer();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyProducers().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableSoftware)) {
             StudySoftware newElem = new StudySoftware();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudySoftware().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableTopicClass)) {
             StudyTopicClass newElem = new StudyTopicClass();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyTopicClasses().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(this.dataTableGeoBoundings)) {
             StudyGeoBounding newElem = new StudyGeoBounding();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyGeoBoundings().add(dataTable.getRowIndex()+1,newElem);
         }  else  if (dataTable.equals(this.dataTableRelPublications)) {
             StudyRelPublication newElem = new StudyRelPublication();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyRelPublications().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(this.dataTableRelMaterials)) {
             StudyRelMaterial newElem = new StudyRelMaterial();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyRelMaterials().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(this.dataTableRelStudies)) {
             StudyRelStudy newElem = new StudyRelStudy();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyRelStudies().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(this.dataTableOtherReferences)) {
             StudyOtherRef newElem = new StudyOtherRef();
-            newElem.setStudy(study);
+            newElem.setMetadata(study.getMetadata());
             study.getStudyOtherRefs().add(dataTable.getRowIndex()+1,newElem);
         }
         

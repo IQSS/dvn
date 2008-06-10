@@ -130,7 +130,13 @@ public class VDCAdminServlet extends HttpServlet {
             out.print("<input name=\"studyId\" size=8>");
             out.print("<input name=removeLock value=\"Remove Lock\" type=submit />");
             out.print("<br/><br/><hr>");
-
+            
+             out.println("<b>Delete a Study</b><br/><br/>");  
+            out.println("To delete a study, input the study id (primary key) and click on the button below.<br/>");
+            out.print("<input name=\"deleteStudyId\" size=8>");
+            out.print("<input name=deleteStudy value=\"Delete Study\" type=submit />");
+            out.print("<br/><br/><hr>");
+            
             out.println("<b>Custom Export:</b><br/><br/>");
             out.println("Select export format(s) for custom export<br/>");
             out.print("<select name=\"exportFormat\" size=\"1\">");
@@ -189,6 +195,18 @@ public class VDCAdminServlet extends HttpServlet {
                 } catch (Exception e) {
                     e.printStackTrace();
                     displayMessage (out, "Action failed.", "An unknown error occurred trying to remove lock for study id = " + studyId);
+                }
+            }    if ( req.getParameter("deleteStudy") != null) {
+                Long studyId = null;
+                try {
+                    studyId = new Long( req.getParameter("deleteStudyId") );
+                    studyService.deleteStudy(studyId);
+                    displayMessage (out,"Study deleted.", "(for study id = " + studyId + ")");
+                } catch (NumberFormatException nfe) {
+                    displayMessage (out, "Action failed.", "The study id must be of type Long.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    displayMessage (out, "Action failed.", "An unknown error occurred trying to delete study id = " + studyId);
                 }
             } else if (req.getParameter("encryptPasswords") != null) {
                 try {

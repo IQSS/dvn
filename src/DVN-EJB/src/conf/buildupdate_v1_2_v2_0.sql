@@ -455,13 +455,7 @@ ALTER TABLE study DROP COLUMN   originalarchive;
 ALTER TABLE study DROP COLUMN    studyversion;
 ALTER TABLE study DROP COLUMN    collectionsize;
 
-ALTER TABLE "metadata" DISABLE TRIGGER ALL;
--- Default metadata - contains no metadata values
-INSERT INTO metadata(id, version ) VALUES (1, 1);
 
-ALTER TABLE "metadata" ENABLE TRIGGER ALL;
-
-SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('metadata', 'id'), 10, false);
 
 create index metadata_id_index on metadata(id);
 create index study_metadata_id_index on study(metadata_id);

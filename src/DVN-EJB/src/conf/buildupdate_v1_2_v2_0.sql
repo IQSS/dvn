@@ -396,7 +396,6 @@ ALTER TABLE study DROP COLUMN   depositorrequirements;
 ALTER TABLE study DROP COLUMN   conditions;
 ALTER TABLE study DROP COLUMN   unf;
 ALTER TABLE study DROP COLUMN   disclaimer;
-ALTER TABLE study DROP COLUMN   title;
 ALTER TABLE study DROP COLUMN   productiondate;
 ALTER TABLE study DROP COLUMN   productionplace;
 ALTER TABLE study DROP COLUMN   fundingagency;

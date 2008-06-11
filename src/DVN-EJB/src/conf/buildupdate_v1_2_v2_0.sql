@@ -221,7 +221,7 @@ select
   studyversion,
   collectionsize
  from study;
-
+alter table metadata add CONSTRAINT metadata_pkey PRIMARY KEY (id);
 -- StudyAbstract
 ALTER TABLE studyabstract ADD COLUMN metadata_id int8;
 ALTER TABLE studyabstract ALTER COLUMN metadata_id SET STORAGE PLAIN;
@@ -491,7 +491,7 @@ alter table template add column metadata_id int8;
 
 
 create index template_metadata_id_index on template(metadata_id);
-alter table metadata add CONSTRAINT metadata_pkey PRIMARY KEY (id);
+
 ALTER TABLE study
   ADD CONSTRAINT fk_study_metadata_id FOREIGN KEY (metadata_id)
       REFERENCES metadata (id) MATCH SIMPLE

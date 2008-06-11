@@ -1,6 +1,6 @@
 
 -- Add metadata_id to study table and copy primary key into it
-begin tran;
+begin;
 
 ALTER TABLE study ADD COLUMN metadata_id int8;
 ALTER TABLE study ALTER COLUMN metadata_id SET STORAGE PLAIN;
@@ -75,10 +75,7 @@ CREATE TABLE metadata
   originalarchive text,
   studyversion text,
   collectionsize text,
-  CONSTRAINT metadata_pkey PRIMARY KEY (id),
-  CONSTRAINT fk_metadata_template_id FOREIGN KEY (template_id)
-      REFERENCES "template" (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+
 )
 WITHOUT OIDS;
 ALTER TABLE metadata OWNER TO "dvnApp";
@@ -515,8 +512,12 @@ alter table template add CONSTRAINT fk_template_metadata_id FOREIGN KEY (metadat
       REFERENCES metadata (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
+ alter table metadata add CONSTRAINT metadata_pkey PRIMARY KEY (id);
+ alter table metadata add  CONSTRAINT fk_metadata_template_id FOREIGN KEY (template_id)
+      REFERENCES "template" (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 INSERT INTO metadata(id, version ) VALUES (nextval('metadata_id_seq'), 1);
 update template set metadata_id=currval('metadata_id_seq');
 
-commit tran;
+commit;

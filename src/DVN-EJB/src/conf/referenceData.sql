@@ -595,17 +595,6 @@ ALTER TABLE vdc_any_search_fields DISABLE TRIGGER ALL;
 
 ALTER TABLE vdc_any_search_fields ENABLE TRIGGER ALL;
 
---
--- TOC entry 1802 (class 0 OID 113760)
--- Dependencies: 1256
--- Data for Name: vdc_template; Type: TABLE DATA; Schema: public; Owner: dvnApp
---
-
-ALTER TABLE vdc_template DISABLE TRIGGER ALL;
-
-
-
-ALTER TABLE vdc_template ENABLE TRIGGER ALL;
 
 --
 -- TOC entry 1808 (class 0 OID 113802)

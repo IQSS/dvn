@@ -80,13 +80,7 @@ CREATE TABLE metadata
 WITHOUT OIDS;
 ALTER TABLE metadata OWNER TO "dvnApp";
 
-CREATE SEQUENCE metadata_id_seq
-  INCREMENT 1
-  MINVALUE 1
-  MAXVALUE 9223372036854775807
-  START 100000
-  CACHE 1;
-ALTER TABLE metadata_id_seq OWNER TO "dvnApp";
+setval('metadata_id_seq',100000);
 
 CREATE INDEX metadata_id_index
   ON metadata

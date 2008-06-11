@@ -491,7 +491,7 @@ alter table template add column metadata_id int8;
 
 
 create index template_metadata_id_index on template(metadata_id);
-
+alter table metadata add CONSTRAINT metadata_pkey PRIMARY KEY (id);
 ALTER TABLE study
   ADD CONSTRAINT fk_study_metadata_id FOREIGN KEY (metadata_id)
       REFERENCES metadata (id) MATCH SIMPLE
@@ -506,7 +506,7 @@ alter table template add CONSTRAINT fk_template_metadata_id FOREIGN KEY (metadat
       REFERENCES metadata (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
- alter table metadata add CONSTRAINT metadata_pkey PRIMARY KEY (id);
+ 
  alter table metadata add  CONSTRAINT fk_metadata_template_id FOREIGN KEY (template_id)
       REFERENCES "template" (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;

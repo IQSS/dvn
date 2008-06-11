@@ -500,9 +500,7 @@ alter table template add CONSTRAINT fk_template_metadata_id FOREIGN KEY (metadat
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
  
- alter table metadata add  CONSTRAINT fk_metadata_template_id FOREIGN KEY (template_id)
-      REFERENCES "template" (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION;
+ 
 
 SELECT setval('metadata_id_seq',100000);
 INSERT INTO metadata(id, version ) VALUES (nextval('metadata_id_seq'), 1);

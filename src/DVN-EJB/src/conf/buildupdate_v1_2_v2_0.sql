@@ -457,7 +457,7 @@ ALTER TABLE study DROP COLUMN    collectionsize;
 
 
 
-create index metadata_id_index on metadata(id);
+
 create index study_metadata_id_index on study(metadata_id);
 create index studyabstract_metadata_id_index on studyabstract(metadata_id);
 create index studyauthor_metadata_id_index on studyauthor(metadata_id);

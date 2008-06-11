@@ -74,7 +74,7 @@ CREATE TABLE metadata
   restrictions text,
   originalarchive text,
   studyversion text,
-  collectionsize text,
+  collectionsize text
 
 )
 WITHOUT OIDS;

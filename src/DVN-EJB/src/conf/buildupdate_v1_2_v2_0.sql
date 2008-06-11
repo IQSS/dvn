@@ -1,14 +1,10 @@
 
 -- Add metadata_id to study table and copy primary key into it
+begin tran;
 
 ALTER TABLE study ADD COLUMN metadata_id int8;
 ALTER TABLE study ALTER COLUMN metadata_id SET STORAGE PLAIN;
 update study set metadata_id = id;
-ALTER TABLE study
-  ADD CONSTRAINT fk_study_metadata_id FOREIGN KEY (metadata_id)
-      REFERENCES metadata (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE study ALTER COLUMN metadata_id SET NOT NULL;
 
 
 CREATE TABLE metadata
@@ -83,21 +79,26 @@ CREATE TABLE metadata
   CONSTRAINT fk_metadata_template_id FOREIGN KEY (template_id)
       REFERENCES "template" (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
-) 
+)
 WITHOUT OIDS;
 ALTER TABLE metadata OWNER TO "dvnApp";
 
+CREATE SEQUENCE metadata_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 100000
+  CACHE 1;
+ALTER TABLE metadata_id_seq OWNER TO "dvnApp";
 
 CREATE INDEX metadata_id_index
   ON metadata
   USING btree
   (id);
 
-INSERT INTO metadata(id, version ) VALUES (1, 1);
 
-
-insert into metadata ( 
-  id
+insert into metadata (
+  id,
   citationrequirements,
   depositorrequirements,
   conditions,
@@ -161,8 +162,8 @@ insert into metadata (
   restrictions,
   originalarchive,
   studyversion,
-  collectionsize) 
-select 
+  collectionsize)
+select
   id,
   citationrequirements,
   depositorrequirements,
@@ -489,20 +490,33 @@ create index studyrelpublication_metadata_id_index on studyrelpublication(metada
 create index studyrelstudy_metadata_id_index on studyrelstudy(metadata_id);
 create index studysoftware_metadata_id_index on studysoftware(metadata_id);
 create index studytopicclass_metadata_id_index on studytopicclass(metadata_id);
-create index template_metadata_id_index on template(metadata_id);
 
 drop table vdc_template;
 alter table template add column vdc_id int8;
+
+
+
+alter table template add column metadata_id int8;
+
+
+create index template_metadata_id_index on template(metadata_id);
+
+ALTER TABLE study
+  ADD CONSTRAINT fk_study_metadata_id FOREIGN KEY (metadata_id)
+      REFERENCES metadata (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE study ALTER COLUMN metadata_id SET NOT NULL;
 
 alter table template add CONSTRAINT fk_template_vdc_id FOREIGN KEY (vdc_id)
       REFERENCES vdc (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
-alter table template add column metadata_id int8;
-
 alter table template add CONSTRAINT fk_template_metadata_id FOREIGN KEY (metadata_id)
       REFERENCES metadata (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
-update template set metadata_id=1;
 
+INSERT INTO metadata(id, version ) VALUES (nextval('metadata_id_seq'), 1);
+update template set metadata_id=currval('metadata_id_seq');
+
+commit tran;

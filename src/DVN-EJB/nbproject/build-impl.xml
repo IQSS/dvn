@@ -288,6 +288,7 @@ is divided into following sections:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" name="library-inclusion-in-archive">
+        <copy file="${libs.dvn-EJB.classpath.libfile.15}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.14}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.13}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.12}" todir="${build.classes.dir}"/>
@@ -304,6 +305,7 @@ is divided into following sections:
         <copy file="${libs.dvn-EJB.classpath.libfile.1}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
+        <basename file="${libs.dvn-EJB.classpath.libfile.15}" property="included.lib.libs.dvn-EJB.classpath.15"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.14}" property="included.lib.libs.dvn-EJB.classpath.14"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.13}" property="included.lib.libs.dvn-EJB.classpath.13"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.12}" property="included.lib.libs.dvn-EJB.classpath.12"/>
@@ -318,6 +320,7 @@ is divided into following sections:
         <basename file="${libs.dvn-EJB.classpath.libfile.3}" property="included.lib.libs.dvn-EJB.classpath.3"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.2}" property="included.lib.libs.dvn-EJB.classpath.2"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.1}" property="included.lib.libs.dvn-EJB.classpath.1"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.15}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.14}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.13}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.12}" todir="${dist.ear.dir}"/>
@@ -333,7 +336,7 @@ is divided into following sections:
         <copy file="${libs.dvn-EJB.classpath.libfile.2}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.1}" todir="${dist.ear.dir}"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.libs.dvn-EJB.classpath.1} ${included.lib.libs.dvn-EJB.classpath.2} ${included.lib.libs.dvn-EJB.classpath.3} ${included.lib.libs.dvn-EJB.classpath.4} ${included.lib.libs.dvn-EJB.classpath.5} ${included.lib.libs.dvn-EJB.classpath.6} ${included.lib.libs.dvn-EJB.classpath.7} ${included.lib.libs.dvn-EJB.classpath.8} ${included.lib.libs.dvn-EJB.classpath.9} ${included.lib.libs.dvn-EJB.classpath.10} ${included.lib.libs.dvn-EJB.classpath.11} ${included.lib.libs.dvn-EJB.classpath.12} ${included.lib.libs.dvn-EJB.classpath.13} ${included.lib.libs.dvn-EJB.classpath.14} "/>
+            <attribute name="Class-Path" value="${included.lib.libs.dvn-EJB.classpath.1} ${included.lib.libs.dvn-EJB.classpath.2} ${included.lib.libs.dvn-EJB.classpath.3} ${included.lib.libs.dvn-EJB.classpath.4} ${included.lib.libs.dvn-EJB.classpath.5} ${included.lib.libs.dvn-EJB.classpath.6} ${included.lib.libs.dvn-EJB.classpath.7} ${included.lib.libs.dvn-EJB.classpath.8} ${included.lib.libs.dvn-EJB.classpath.9} ${included.lib.libs.dvn-EJB.classpath.10} ${included.lib.libs.dvn-EJB.classpath.11} ${included.lib.libs.dvn-EJB.classpath.12} ${included.lib.libs.dvn-EJB.classpath.13} ${included.lib.libs.dvn-EJB.classpath.14} ${included.lib.libs.dvn-EJB.classpath.15} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">

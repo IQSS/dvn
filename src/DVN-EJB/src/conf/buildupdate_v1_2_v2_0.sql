@@ -153,7 +153,8 @@ insert into metadata (
   restrictions,
   originalarchive,
   studyversion,
-  collectionsize)
+  collectionsize,
+  version)
 select
   id,
   citationrequirements,
@@ -219,7 +220,8 @@ select
   restrictions,
   originalarchive,
   studyversion,
-  collectionsize
+  collectionsize,
+  version
  from study;
 alter table metadata add CONSTRAINT metadata_pkey PRIMARY KEY (id);
 -- StudyAbstract

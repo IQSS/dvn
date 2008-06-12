@@ -251,10 +251,14 @@ a.dvn_more:link, a.dvn_more:visited, a.dvn_more:hover, a.dvn_more:active{
 }
 .formHtmlEnabled {
     background-color: #E4F9F9;
+    border: 1px solid #7f9db9;
+    padding: .15em;
 }
 
 .formDateFormat {
     background-color: #F9E0BD;
+    border: 1px solid #7f9db9;
+    padding: .15em;
 }
 
 .vdcTextWrap{
@@ -686,37 +690,35 @@ span.vdcSResultsField {
 }
 .vdcEditStudyCol1 {
    font-weight: normal;
-   padding-bottom: 0px;
-   padding-left: 0px;
-   padding-top: 0px;
+   padding: 4px 0;
    text-align: left;
    vertical-align: top;
    width: 220px;
+   border-bottom: 1px solid #dadee0;
 }
 .vdcEditStudyCol1b {
    font-weight: normal;
-   padding-bottom: 0px;
-   padding-left: 0px;
-   padding-top: 0px;
+   padding: 4px 0;
    text-align: left;
    vertical-align: top;
    width: 220px;
+   border-bottom: 1px solid #dadee0;
 }
 .vdcEditStudyCol2 {
    font-weight: normal;
-   padding-bottom: 0px;
-   padding-top: 0px;
+   padding: 4px 0;
    text-align: left;
    vertical-align: middle;
    white-space: normal;
+   border-bottom: 1px solid #dadee0;
 }
 .vdcEditStudyCol3{
    font-weight: normal;
-   padding-bottom: 0px;
-   padding-top: 0px;
+   padding: 4px 0;
    text-align: right;
    width: 50px;
    vertical-align: top;
+   border-bottom: 1px solid #dadee0;
 }
 .vdcEditStudyField{
    padding-top: 6px;
@@ -724,6 +726,11 @@ span.vdcSResultsField {
 }
 .vdcEditStudyGroupField{
     white-space: nowrap;
+}
+
+.vdcEditStudyIconLegend{
+    float: left;
+    margin-left: 2em;
 }
 
 /* Style Rules for Most Pouplar Table

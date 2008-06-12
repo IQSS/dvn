@@ -28,13 +28,13 @@
                     <file>${reference.DVN-ejb.dist}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="17">
+                <library files="16">
                     <file>${libs.dvn-WEB.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries>
-                <library files="17">
+                <library files="16">
                     <file>${libs.dvn-WEB.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>

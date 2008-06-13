@@ -37,7 +37,7 @@
                             <h:outputText value="."/>
                        </ui:panelLayout>
                         <ui:panelGroup styleClass="termsAgreementBox" block="true">
-                            <ui:panelLayout rendered="#{TermsOfUsePage.touTypeDownload}">
+                            <ui:panelGroup rendered="#{TermsOfUsePage.touTypeDownload}" block="true">
                                    
                                 <h:outputText value="Dataverse Network Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" />
                                 <h:outputText value="#{TermsOfUsePage.vdcNetwork.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" escape="false"/>
@@ -78,15 +78,15 @@
                                 <h:outputText value="Disclaimer" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.disclaimer}"/>
                                 <h:outputText value="#{TermsOfUsePage.study.disclaimer}" rendered="#{!empty TermsOfUsePage.study.disclaimer}" escape="false"/>
                           
-                            </ui:panelLayout>
+                            </ui:panelGroup>
                             
-                            <ui:panelLayout rendered="#{TermsOfUsePage.touTypeDeposit}">
+                            <ui:panelGroup rendered="#{TermsOfUsePage.touTypeDeposit}" block="true">
                                 <h:outputText value="Dataverse Network Deposit Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" />
                                 <h:outputText value="#{TermsOfUsePage.vdcNetwork.depositTermsOfUse}" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" escape="false"/>
                                 
                                 <h:outputText value="Dataverse Deposit Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" />
                                 <h:outputText value="#{TermsOfUsePage.depositDataverseTerms}" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" escape="false"/>
-                             </ui:panelLayout>
+                             </ui:panelGroup>
                         </ui:panelGroup>
                         
                          <ui:panelGroup block="true">

@@ -28,7 +28,6 @@
  */
 
 package edu.harvard.hmdc.vdcnet.index;
-import edu.harvard.hmdc.vdcnet.jaxb.ddi20.SouthBLType;
 import edu.harvard.hmdc.vdcnet.study.DataTable;
 import edu.harvard.hmdc.vdcnet.study.DataVariable;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
@@ -52,21 +51,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import lia.analysis.positional.PositionalPorterStopAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.WhitespaceAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
@@ -127,7 +117,7 @@ public class Indexer implements java.io.Serializable  {
             }
         }
         try {
-            dir = FSDirectory.getDirectory(indexDir, false);
+            dir = FSDirectory.getDirectory(indexDir,isIndexEmpty());
             r = IndexReader.open(dir);
             searcher = new IndexSearcher(r);
         } catch (IOException ex) {
@@ -136,8 +126,7 @@ public class Indexer implements java.io.Serializable  {
     }
     
     protected void setup() throws IOException {
-        File indexDirectory = new File(indexDir);
-        dir = FSDirectory.getDirectory(indexDir,!indexDirectory.exists());
+        dir = FSDirectory.getDirectory(indexDir,isIndexEmpty());
     }
     
     public static Indexer getInstance(){
@@ -318,12 +307,12 @@ public class Indexer implements java.io.Serializable  {
         addText(doc,"authority",study.getAuthority());
         addText(doc,"globalId",study.getGlobalId());
         List <FileCategory> fileCategories = study.getFileCategories();
-        writer = new IndexWriter(dir,getAnalyzer(),!(new File(indexDir+"/segments").exists()));    
-//        writer.setMergeFactor(2);
+        writer = new IndexWriter(dir, true, getAnalyzer(),isIndexEmpty());
+        
         writer.setUseCompoundFile(true);
         writer.addDocument(doc);
         writer.close();
-        writerVar = new IndexWriter(dir, getAnalyzer(), !(new File(indexDir + "/segments").exists()));
+        writerVar = new IndexWriter(dir, getAnalyzer());
         for (int i = 0; i < fileCategories.size(); i++) {
             FileCategory fileCategory = fileCategories.get(i);
             Collection<StudyFile> studyFiles = fileCategory.getStudyFiles();
@@ -347,21 +336,15 @@ public class Indexer implements java.io.Serializable  {
             }
         }
         writerVar.close();
-        writer2 = new IndexWriter(dir,new StandardAnalyzer(),!(new File(indexDir+"/segments").exists()));    
-        writer2.setUseCompoundFile(true);
-        writer2.addDocument(doc);
-        writer2.close();
-        writerStem = new IndexWriter(dir,new PositionalPorterStopAnalyzer(),!(new File(indexDir+"/segments").exists()));    
-        writerStem.setUseCompoundFile(true);
-        writerStem.addDocument(doc);
-        writerStem.close();
         logger.info("End indexing study "+study.getStudyId());
     }
     
     
     protected Analyzer getAnalyzer(){
 //        return new StandardAnalyzer();
-        return new WhitespaceAnalyzer();
+//        return new WhitespaceAnalyzer();
+//        return new DataverseNetworkAnalyzer();
+        return new DVNAnalyzer();
     }
     
     protected void addKeyword(Document doc,String key, String value){
@@ -424,22 +407,16 @@ public class Indexer implements java.io.Serializable  {
             logger.info("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             nvResults = getHitIds(searchQuery);
             logger.info("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-//            filteredResults = studyIds != null ? intersectionResults(nvResults, studyIds) : nvResults;
             logger.info("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             filteredResults = studyIds != null ? intersectionResults(nvResults, studyIdsArray) : nvResults;
             logger.info("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
         }
         if (variableSearch){
-//            List <Long> vResults = null;
             if (nonVariableSearch) {
                 logger.info("Start nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
                 results = searchVariables(filteredResults, variableSearchTerms, true); // get var ids
                 logger.info("Done nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-//                List<Long> mergeResults = intersectionResults(vResults, nvResults);
-//                results = intersectionResults(vResults, nvResults);
-//                results = searchVariables(mergeResults,variableSearchTerms,true);
             } else {
-//                results = searchVariables(vResults,variableSearchTerms,true);
                 logger.info("Start search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
                 results = searchVariables(studyIds, variableSearchTerms, true); // get var ids
                 logger.info("Done search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
@@ -447,20 +424,16 @@ public class Indexer implements java.io.Serializable  {
         } else {
             results = filteredResults;
         }
-//        List <Long> filteredResults = studyIds != null ? intersectionResults(results, studyIds) : results;
         logger.info("Done search: "+DateTools.dateToString(new Date(), Resolution.MILLISECOND));
 
         return results;
         
     }
 
-//    private List <Long> intersectionResults(final Hits results1, final List<Long> results2) throws IOException {
     private List <Long> intersectionDocResults(final List<Document> results1, final List<Long> results2) throws IOException {
         List <Long>  mergeResults = new ArrayList();
         for (Iterator it = results1.iterator(); it.hasNext();){
             Document d = (Document) it.next();
-//        for (int i = 0; i < results1.length(); i++) {
-//            Document d = results1.doc(i);
             Field studyId = d.getField("varStudyId");
             String studyIdStr = studyId.stringValue();
             Long studyIdLong = Long.valueOf(studyIdStr);
@@ -506,11 +479,11 @@ public class Indexer implements java.io.Serializable  {
         String[] phrase = getPhrase(value);
         
         
-//        String indexDir = "index-dir";
-        Directory searchdir = FSDirectory.getDirectory(indexDir,false);
-        IndexSearcher searcher = new IndexSearcher(searchdir);
+        Directory searchdir = FSDirectory.getDirectory(indexDir,isIndexEmpty());
+        if (searcher == null) {
+            searcher = new IndexSearcher(searchdir);
+        }
         Hits hits = exactMatchQuery(searcher, field, value);
-//        Hits hits = partialMatch(searcher, field, value);
         for (int i = 0; i < hits.length(); i++) {
             Document d = hits.doc(i);
             Field studyId = d.getField("id");
@@ -525,10 +498,7 @@ public class Indexer implements java.io.Serializable  {
     }
 
     public List query(String adhocQuery) throws IOException {
-//        QueryParser parser = new QueryParser("abstract",getAnalyzer());
-        QueryParser parser = new QueryParser("abstract",new StandardAnalyzer());
-//        Hits hits = null;
-//        ArrayList matchIds = new ArrayList();
+        QueryParser parser = new QueryParser("abstract",getAnalyzer());
         Query query=null;
         try {
             query = parser.parse(adhocQuery);
@@ -608,31 +578,24 @@ public class Indexer implements java.io.Serializable  {
         return getHitIds(query);
     }
     
-//    private Hits getHits( Query query ) throws IOException {
     private List<Document> getHits( Query query ) throws IOException {
         Hits hits = null;
- //       LinkedHashSet matchIdsSet = new LinkedHashSet();
         List <Document> documents = new ArrayList();
         if (query != null){
-            IndexSearcher searcher = new IndexSearcher(dir);
+            if (searcher == null) {
+                searcher = new IndexSearcher(dir);
+            }
             logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             hits = searcher.search(query);
             logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             for (int i = 0; i < hits.length(); i++) {
-//                Document d = hits.doc(i);
                 documents.add(hits.doc(i));
- //               Field studyId = d.getField("id");
- //               String studyIdStr = studyId.stringValue();
- //               Long studyIdLong = Long.valueOf(studyIdStr);
-//                matchIdsSet.add(studyIdLong);
             }
             logger.info("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             searcher.close();
         }
-//        documents.addAll(matchIdsSet);
         return documents;
-//        return hits;
     }
     
     private List getHitIds( Query query) throws IOException {
@@ -642,7 +605,6 @@ public class Indexer implements java.io.Serializable  {
             if (r != null) {
                 if (!r.isCurrent()) {
                     while(r.isLocked(dir));
-//            IndexSearcher searcher = new IndexSearcher(dir);
                     r = IndexReader.open(dir);
                     searcher = new IndexSearcher(r);
                 }
@@ -654,7 +616,6 @@ public class Indexer implements java.io.Serializable  {
             DocumentCollector s = new DocumentCollector(searcher);
             searcher.search(query, s);
             searcher.close();
-//            Hits hits = searcher.search(query);
             logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             List hits = s.getStudies();
@@ -672,12 +633,10 @@ public class Indexer implements java.io.Serializable  {
         return matchIds;
     }
     
-//    private List<Long> getHitIds(Hits hits) throws IOException {
     private List<Long> getHitIds(List<Document> hits) throws IOException {
         ArrayList matchIds = new ArrayList();
         LinkedHashSet matchIdsSet = new LinkedHashSet();
          for (Iterator it = hits.iterator(); it.hasNext();) {
-//       for (int i = 0; i < hits.length(); i++) {
             Document d = (Document) it.next();
             Field studyId = d.getField("id");
             String studyIdStr = studyId.stringValue();
@@ -689,14 +648,11 @@ public class Indexer implements java.io.Serializable  {
         return matchIds;
     }
     
-//    private List getVarHitIds(Hits hits) throws IOException {
     private List getVarHitIds(List <Document> hits) throws IOException {
         ArrayList matchIds = new ArrayList();
         LinkedHashSet matchIdsSet = new LinkedHashSet();
         for (Iterator it = hits.iterator(); it.hasNext();){
             Document d = (Document) it.next();
-//        for (int i = 0; i < hits.length(); i++) {
-//            Document d = hits.doc(i);
             Field studyId = d.getField("varStudyId");
             String studyIdStr = studyId.stringValue();
             Long studyIdLong = Long.valueOf(studyIdStr);
@@ -842,8 +798,6 @@ public class Indexer implements java.io.Serializable  {
     BooleanQuery andSearchTermClause(List <SearchTerm> andSearchTerms){
         BooleanQuery andTerms = new BooleanQuery();
         andTerms.setMaxClauseCount(dvnMaxClauseCount);
-//        boolean required;
-//        boolean prohibited;
         Query rQuery=null;
         for (Iterator it = andSearchTerms.iterator(); it.hasNext();) {
             SearchTerm elem = (SearchTerm) it.next();
@@ -884,7 +838,7 @@ public class Indexer implements java.io.Serializable  {
     
     BooleanQuery andQueryClause(List <BooleanQuery> andQueries){
         BooleanQuery andTerms = new BooleanQuery();
-        andTerms.setMaxClauseCount(dvnMaxClauseCount);
+        BooleanQuery.setMaxClauseCount(dvnMaxClauseCount);
         for (Iterator it = andQueries.iterator(); it.hasNext();) {
             BooleanQuery elem = (BooleanQuery) it.next();
             BooleanClause clause = new BooleanClause(elem, BooleanClause.Occur.MUST);
@@ -994,5 +948,12 @@ public class Indexer implements java.io.Serializable  {
 
     public String getIndexDir() {
         return indexDir;
+    }
+    
+    private boolean isIndexEmpty(){
+        String [] indexFiles = new File(indexDir).list();
+        int n = indexFiles.length;
+        boolean isEmpty = (n == 0);
+        return isEmpty;
     }
 }

@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
@@ -509,7 +510,9 @@ public class Indexer implements java.io.Serializable  {
     }
         
     private String[] getPhrase(final String value) {
-        StringTokenizer tk = new StringTokenizer(value);
+        String dvnValue = DVNIndexString.parse(value);
+        StringTokenizer tk = new StringTokenizer(dvnValue);            
+//        StringTokenizer tk = new StringTokenizer(value);
         String[] phrase = new String[tk.countTokens()];
         for (int i = 0; i < phrase.length; i++) {
             phrase[i] = tk.nextToken();
@@ -776,21 +779,31 @@ public class Indexer implements java.io.Serializable  {
         orTerms.setMaxClauseCount(dvnMaxClauseCount);
         for (Iterator it = orSearchTerms.iterator(); it.hasNext();) {
             SearchTerm elem = (SearchTerm) it.next();
-            String [] phrase = getPhrase( elem.getValue().toLowerCase().trim());
-            if (phrase.length > 1){
+            String[] phrase = getPhrase(elem.getValue().toLowerCase().trim());
+            if (phrase.length > 1) {
                 BooleanClause partialMatchClause = null;
                 PhraseQuery phraseQuery = new PhraseQuery();
                 phraseQuery.setSlop(3);
-                
-                for (int i=0; i < phrase.length;i++){
-                    phraseQuery.add(new Term(elem.getFieldName(),phrase[i].toLowerCase().trim()));
+
+                for (int i = 0; i < phrase.length; i++) {
+                    phraseQuery.add(new Term(elem.getFieldName(), phrase[i].toLowerCase().trim()));
                 }
-                orTerms.add(phraseQuery,BooleanClause.Occur.SHOULD);
-            } else{
+                orTerms.add(phraseQuery, BooleanClause.Occur.SHOULD);
+            } else {
                 Term t = new Term(elem.getFieldName(), elem.getValue().toLowerCase().trim());
                 TermQuery orQuery = new TermQuery(t);
-                orTerms.add(orQuery,BooleanClause.Occur.SHOULD);
+                orTerms.add(orQuery, BooleanClause.Occur.SHOULD);
             }
+            /* 6-16-08 new not working code
+            QueryParser parser = new QueryParser(elem.getFieldName(), getAnalyzer());
+            Query query = null;
+            try {
+                query = parser.parse(elem.getValue().toLowerCase().trim());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            orTerms.add(query,BooleanClause.Occur.SHOULD);
+             * 6-16-08 new not working code */
         }
         return orTerms;
     }

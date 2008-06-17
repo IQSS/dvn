@@ -77,6 +77,13 @@
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.subsetting.AnalysisApplicationBean</managed-bean-class>
         <managed-bean-scope>application</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>AnalysisResultsPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.subsetting.AnalysisResultsPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>    
+    
+    
     <!-- **************** Login ***************** -->
      <managed-bean>
         <managed-bean-name>ForgotPasswordPage</managed-bean-name>

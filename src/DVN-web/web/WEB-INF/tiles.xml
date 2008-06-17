@@ -60,6 +60,14 @@
        <put name="pageTitle"   type="string"        value="DVN - Analysis and Subsetting"/>
        <put name="content" type="template"     value="/subsetting/SubsettingPage.jsp"/>
    </definition>
+   <definition name="/subsetting/AnalysisResultsPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Analysis Results"/>
+       <put name="content" type="template"     value="/subsetting/AnalysisResultsPage.jsp"/>
+   </definition>   
+   
+   
+   
+   
    <!-- **************** Login ***************** -->
    <definition name="/login/AddAccountPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Add/Edit Account"/>

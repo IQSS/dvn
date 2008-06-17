@@ -275,6 +275,8 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
             resumptionTokenSb.append(":");
             resumptionTokenSb.append(Integer.toString(count));
             resumptionTokenSb.append(":");
+            resumptionTokenSb.append(set);
+            resumptionTokenSb.append(":");
             resumptionTokenSb.append(metadataPrefix);
             
             /*****************************************************************
@@ -323,10 +325,12 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
         StringTokenizer tokenizer = new StringTokenizer(resumptionToken, ":");
         String resumptionId;
         int oldCount;
+        String set;
         String metadataPrefix;
         try {
             resumptionId = tokenizer.nextToken();
             oldCount = Integer.parseInt(tokenizer.nextToken());
+            set = tokenizer.nextToken();
             metadataPrefix = tokenizer.nextToken();
         } catch (NoSuchElementException e) {
             throw new BadResumptionTokenException();
@@ -370,6 +374,8 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
             resumptionTokenSb.append(resumptionId);
             resumptionTokenSb.append(":");
             resumptionTokenSb.append(Integer.toString(oldCount + count));
+            resumptionTokenSb.append(":");
+            resumptionTokenSb.append(set);
             resumptionTokenSb.append(":");
             resumptionTokenSb.append(metadataPrefix);
             
@@ -552,6 +558,8 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
             resumptionTokenSb.append(":");
             resumptionTokenSb.append(Integer.toString(count));
             resumptionTokenSb.append(":");
+            resumptionTokenSb.append(set);
+            resumptionTokenSb.append(":");
             resumptionTokenSb.append(metadataPrefix);
             
             /*****************************************************************
@@ -598,10 +606,12 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
         StringTokenizer tokenizer = new StringTokenizer(resumptionToken, ":");
         String resumptionId;
         int oldCount;
+        String set;
         String metadataPrefix;
         try {
             resumptionId = tokenizer.nextToken();
             oldCount = Integer.parseInt(tokenizer.nextToken());
+            set = tokenizer.nextToken();
             metadataPrefix = tokenizer.nextToken();
         } catch (NoSuchElementException e) {
             logger.info("No such element");
@@ -651,6 +661,8 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
             resumptionTokenSb.append(resumptionId);
             resumptionTokenSb.append(":");
             resumptionTokenSb.append(Integer.toString(oldCount + count));
+            resumptionTokenSb.append(":");
+            resumptionTokenSb.append(set);
             resumptionTokenSb.append(":");
             resumptionTokenSb.append(metadataPrefix);
             

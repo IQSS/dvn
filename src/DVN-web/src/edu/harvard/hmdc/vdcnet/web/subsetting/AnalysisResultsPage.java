@@ -123,6 +123,27 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.variableList = variableList;
     }
     
+    public String rversion ;
+
+    public String getRversion() {
+        return rversion;
+    }
+
+    public void setRversion(String rversion) {
+        this.rversion = rversion;
+    }
+    
+    public String rexecDate;
+
+    public String getRexecDate() {
+        return rexecDate;
+    }
+
+    public void setRexecDate(String rexecDate) {
+        this.rexecDate = rexecDate;
+    }
+    
+    
     
     // PanelGroups
     
@@ -264,6 +285,10 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
             studyTitle      = resultInfo.get("studyTitle");
             fileUNF         = resultInfo.get("fileUNF");
             variableList    = resultInfo.get("variableList");
+            
+            rversion        = resultInfo.get("Rversion");
+            rexecDate       = resultInfo.get("RexecDate");
+            
             
             String dsbUrl = "http://"+resultInfo.get("dsbHost");
             if (resultInfo.containsKey("dsbPort") && (!resultInfo.get("dsbPort").equals("")) ){

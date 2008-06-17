@@ -86,7 +86,8 @@
                 </div>
             </ui:panelLayout>
             <ui:panelLayout>
-                File was created: <!-- * SAMPLE DATA * -->Wed Mar 19 15:16:16 2008 (US EST)<!-- * SAMPLE DATA * --> - to be erased one hour later. <a target="contact" href="/dvn/faces/ContactUsPage.jsp" onclick="window.open(this.href,'contact','width=640,height=480,left=0,top=0,scrollbars=1,resizable=1');return false;">Contact us about this request</a>.
+                These results were calculated by <h:outputText value="#{AnalysisResultsPage.rversion}"/><br />
+                File was created: <!-- * SAMPLE DATA * --><h:outputText value="#{AnalysisResultsPage.rexecDate}"/>(US EST)<!-- * SAMPLE DATA * --> - to be erased one hour later. <a target="contact" href="/dvn/faces/ContactUsPage.jsp" onclick="window.open(this.href,'contact','width=640,height=480,left=0,top=0,scrollbars=1,resizable=1');return false;">Contact us about this request</a>.
             </ui:panelLayout>
             <ui:panelLayout>
                 <em>Thank you for using this Dataverse.</em>

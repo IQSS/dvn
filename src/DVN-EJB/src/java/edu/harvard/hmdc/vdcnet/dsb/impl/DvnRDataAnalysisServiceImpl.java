@@ -395,11 +395,18 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
             if (fileUNF == null){
                 fileUNF = "NA";
             }
+            String RversionLine = "R.Version()$version.string";
+            String Rversion = c.eval(RversionLine).asString();
+            
+            String RexecDate = c.eval("date()").asString();
+            
             result.put("fileUNF",fileUNF);
             result.put("dsbHost", RSERVE_HOST);
             result.put("dsbPort", DSB_HOST_PORT);
             result.put("dsbContextRootDir",  DSB_CTXT_DIR );
             result.put("PID", PID);
+            result.put("Rversion", Rversion);
+            result.put("RexecDate", RexecDate);
             out.println("result:\n"+result);
             
         

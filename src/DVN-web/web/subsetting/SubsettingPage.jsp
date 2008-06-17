@@ -240,7 +240,10 @@ xmlns:ui="http://www.sun.com/web/ui"
                                                  type="submit" 
                                                  disabled="true" 
                                                  value="#{bundleAnalysis['dwnld.button.submit']}" 
-                                                 actionListener="#{AnalysisPage.dwnldActionLstnr}"/>
+                                                 action="#{AnalysisPage.dwnldAction}">
+                                    <!--f:param name="PID" value="{AnalysisPage.requestResultPID}"/ -->
+                                    <!--f:param name="requestOption" value="{AnalysisPage.requestOption}"/ -->
+                                </h:commandButton>
                             </ui:panelGroup>
    
                         </h:panelGrid>
@@ -558,7 +561,7 @@ xmlns:ui="http://www.sun.com/web/ui"
                                                   binding="#{AnalysisPage.edaButton}" 
                                                   disabled="true" 
                                                   value="#{bundleAnalysis['eda.button.submit']}" 
-                                                  actionListener="#{AnalysisPage.edaActionLstnr}"/>
+                                                  action="#{AnalysisPage.edaAction}"/>
                                 
                             </ui:panelGroup>
                             
@@ -1006,7 +1009,7 @@ xmlns:ui="http://www.sun.com/web/ui"
                                                                  disabled="true" 
                                                                  binding="#{AnalysisPage.advStatButton}" 
                                                                  value="#{bundleAnalysis['advStat.button.submit']}"
-                                                                 actionListener="#{AnalysisPage.advStatActionLstnr}"
+                                                                 action="#{AnalysisPage.advStatAction}"
                                                                  
                                                                  />
                                                 

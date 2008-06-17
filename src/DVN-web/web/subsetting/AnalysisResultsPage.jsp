@@ -21,41 +21,62 @@
                         <div class="dvAnalysisInfoMessage"><img src="/dvn/resources/icon_info.gif" alt="Information" style="vertical-align: bottom" title="Information" class="vdcNoBorders" /> Click Citation Info button to see how to cite this data set.</div>
                         <div style="margin-left: 2em;">
                             <h3 class="dvAnalysisTypeLabel">
-                                Study Title: <!-- * SAMPLE DATA * -->new test data 2<!-- * SAMPLE DATA * -->
-                            </h3> <input type="button" value="Citation Info" onclick="shwNshw(&#39;citationInfo&#39;,event,&#39;Citation Info&#39;)" />
+                                Study Title:  <h:outputText value="#{AnalysisResultsPage.studyTitle}"/> 
+                            </h3> <input type="button" value="Citation Info" onclick="" />
                         </div>
-                        <div id="citationInfo" class="dvAnalysisDataContainer">
+                        <div id="citationInfo" class="">
                             <!-- * SAMPLE DATA * -->
                             <pre>_Citation_ for the full data set you chose_:</pre>                
-                            <blockquote>"new test data 2", <a href='http://hdl.handle.net/TEST/10050'>hdl:TEST/10050</a> UNF:3:6Fi00C5b+RsyCJXtDOpz7Q==</blockquote>
+                            <blockquote>
+                            
+                              <h:outputText value="#{AnalysisResultsPage.offlineCitation}"/>
+                            
+                            </blockquote>
                             <pre>_Citation for this subset used in your analysis_:</pre>                
-                            <blockquote>"new test data 2", <a href='http://hdl.handle.net/TEST/10050'>hdl:TEST/10050</a> UNF:3:6Fi00C5b+RsyCJXtDOpz7Q== id,lnch_y03 [VarGrp/@var(DDI)]; UNF:3:EAw7lrcu4ilmU4ClpU0WiA==</blockquote>
+                            <blockquote>
+                            
+                            <h:outputText value="#{AnalysisResultsPage.offlineCitation}"/>
+                            
+                            <h:outputText value="#{AnalysisResultsPage.variableList}"/>
+                             [VarGrp/@var(DDI)]; 
+                            <h:outputText value="#{AnalysisResultsPage.fileUNF}"/>
+                            
+                            </blockquote>
                             <!-- * SAMPLE DATA * -->
                         </div>
                     </div>
                     
-                    <span class="dvAnalysisHeader">Results: Request # 8846 (9729H8272)</span>
+                    <span class="dvAnalysisHeader">Request type: <h:outputText value="#{AnalysisResultsPage.requestedOption}"/> Request ID = <h:outputText value="#{AnalysisResultsPage.requestResultPID}"/></span>
                     <div class="dvAnalysisResults">
                         <div class="dvAnalysisInfoMessage"><img src="/dvn/resources/icon_info.gif" alt="Information" style="vertical-align: bottom" title="Information" class="vdcNoBorders" /> Click the following links to check each model's estimation results and descriptive statistics (if applicable).</div>
+                        
                         <div style="padding: .5em 0 1em 0; text-align: center;"><strong>NOTE: These statistics results, including this index page and other data files, will be automatically erased one hour after they are created.</strong></div>
                         <div class="dvAnalysis">
-                            <h3 class="dvAnalysisTypeLabel"><a href="Rout.552.html">Descriptive Statistics</a></h3> <input type="button" onclick="shwNshw('Rlog',event,'Log')" value="R Log File" />
+                            
+                            <h:panelGroup id="pgDwnld" binding="#{AnalysisResultsPage.pgDwnld}"><h3 class="dvAnalysisTypeLabel"><h:outputLink value="#{AnalysisResultsPage.resultURLdwnld}" id="resultURLdwnld"><f:verbatim>Right-click this link to download the requested subsetfile&#160;</f:verbatim><h:graphicImage url="/resources/icon_download.gif"/></h:outputLink></h3></h:panelGroup><br />
+                            <h:panelGroup id="pgHtml"  binding="#{AnalysisResultsPage.pgHtml}"><h3 class="dvAnalysisTypeLabel"><h:outputLink value="#{AnalysisResultsPage.resultURLhtml}" id="resultURLhtml"><f:verbatim>Click this link to see reults of an eda or xtab or zelig request&#160;</f:verbatim><h:graphicImage url="/resources/icon_analyze.gif"/></h:outputLink></h3></h:panelGroup><br />
+                            <h:panelGroup id="pgRwrksp" binding="#{AnalysisResultsPage.pgRwrksp}"><h3 class="dvAnalysisTypeLabel"><h:outputLink value="#{AnalysisResultsPage.resultURLRworkspace}" id="resultURLRworkspace"><f:verbatim>Right-click this link to download the R workspace data&#160;</f:verbatim><h:graphicImage url="/resources/icon_download.gif"/></h:outputLink></h3></h:panelGroup><br />
+                            <br />
+                            <!-- input type="button" onclick="shwNshw('Rlog',event,'Log')" value="R Log File" / -->
                         </div>
-                        <div id="Rlog" class="dvAnalysisDataContainer">
+                        
+                        <!-- div id="Rlog" class="dvAnalysisDataContainer" -->
                             <!-- * SAMPLE DATA * -->
-                            <h3>R Log File</h3>
-                            <pre>
+                            <!-- h3>R Log File</h3 -->
+                            <!-- pre -->
 
                                 <!-- R LOG FILE CODE HERE -->
 
-                            </pre>
+                            <!-- /pre -->
                             <!-- * SAMPLE DATA * -->
-                        </div>
+                        <!-- /div -->
+                        
                     </div>
                     
                     <span class="dvAnalysisHeader">Download Data File</span>
                     <div class="dvAnalysisResults">
                         <div class="dvAnalysisInfoMessage"><img src="/dvn/resources/icon_info.gif" alt="Information" style="vertical-align: bottom" title="Information" class="vdcNoBorders" /> Click the appropriate button to download the data format that best suits your needs.</div>
+                        <a href="http://dsb-2.hmdc.harvard.edu/temp/Zlg_359303/Data.359303.dta" type="application/x-stata">STATA file (Data.359303.dta)</a>
                             <div class="dvAnalysis">
                             <input type="button" value="Tab-Delimited R-Data" />
                             <input type="button" value="R-Code" style="margin-left: 1em;" />

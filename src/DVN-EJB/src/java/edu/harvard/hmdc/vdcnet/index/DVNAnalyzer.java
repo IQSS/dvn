@@ -10,6 +10,7 @@ public class DVNAnalyzer extends Analyzer {
   public TokenStream tokenStream(String fieldName, Reader reader) {
     Tokenizer tokenStream = new DVNTokenizer(reader);
     TokenStream result = new LowerCaseFilter(tokenStream);
+    result = new PorterStemFilter(tokenStream);
     return result;
   }
 
@@ -27,6 +28,7 @@ public class DVNAnalyzer extends Analyzer {
             setPreviousTokenStream(streams);
             streams.tokenStream = new DVNTokenizer(reader);
             streams.filteredTokenStream = new LowerCaseFilter(streams.tokenStream);
+            streams.filteredTokenStream = new PorterStemFilter(streams.tokenStream);
         } else {
             streams.tokenStream.reset(reader);
         }

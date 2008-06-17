@@ -58,6 +58,9 @@ import com.sun.rave.web.ui.model.OptionGroup;
 import com.sun.rave.web.ui.model.OptionTitle;
 import com.sun.rave.web.ui.model.Separator;
 
+import edu.harvard.hmdc.vdcnet.dsb.*;
+import edu.harvard.hmdc.vdcnet.dsb.impl.*;
+
 
 /**
  * <p>Application scope data bean for your application.  Create properties
@@ -175,21 +178,24 @@ public class AnalysisApplicationBean extends AbstractApplicationBean implements 
 
           // create an Unmarshaller
           Unmarshaller u = jc.createUnmarshaller();
-
-          DSBWrapper dsb = new DSBWrapper();
+          
+          //DSBWrapper dsb = new DSBWrapper();
           
           // String zeligConfig = dsb. getZeligConfig();
           // log("zeligconfig:\n"+zeligConfig);
-          zlg = (Zelig)u.unmarshal( new StringReader(dsb. getZeligConfig()) );
+          //zlg = (Zelig)u.unmarshal( new StringReader(dsb. getZeligConfig()) );
 
           //zlg = (Zelig)u.unmarshal( new FileInputStream( "configZeligGUI.xml" ) );
+          
+          DataAnalysisService das = new DvnRDataAnalysisServiceImpl();
+          zlg = (Zelig)u.unmarshal( new StringReader(das.getGUIconfigData()) );
 
 
 
         } catch( JAXBException je ) {
             je.printStackTrace();
-        } catch( IOException ioe ) {
-             ioe.printStackTrace();
+        //} catch( IOException ioe ) {
+             //ioe.printStackTrace();
         }
         //log("before: model size: " + zlg.getModel().size());
         guiSpec = new AdvancedStatGUIdata(zlg.getModel());

@@ -85,6 +85,18 @@ import com.sun.rave.web.ui.model.*;
 
 import com.sun.jsfcl.data.*;
 
+import edu.harvard.hmdc.vdcnet.dsb.*;
+import edu.harvard.hmdc.vdcnet.dsb.impl.*;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Scanner;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.*;
+
 
 public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
@@ -225,6 +237,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /** Sets the id number of the advanced statistics GUI pane */
     private static final int PANE_ADVSTAT = 5;
 
+    
+    private boolean resultPageTest = false;
     // </editor-fold>
     
     // -----------------------------------------------------------------------
@@ -454,6 +468,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      */
     private int clickedTab = 3;
 
+    
+    public Map<String, String> resultInfo = new HashMap<String, String>();
+    
+    public Map<String, String> getResultInfo() {
+        return resultInfo;
+    }
+
+    public void setResultInfo(Map<String, String> resultInfo) {
+        this.resultInfo = resultInfo;
+    }    
+    
     // </editor-fold>
 
     // -----------------------------------------------------------------------
@@ -816,6 +841,99 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // end of download section -----------------------------------------------
     // </editor-fold>
 
+    
+    // dwnldButton:h:commandButton@action
+    public String dwnldAction() {
+        resetMsgDwnldButton();
+        if (checkDwnldParameters()) {
+            FacesContext cntxt = FacesContext.getCurrentInstance();
+
+            HttpServletResponse res = (HttpServletResponse) cntxt
+                .getExternalContext().getResponse();
+            HttpServletRequest req = (HttpServletRequest) cntxt
+                .getExternalContext().getRequest();
+//            try {
+                out.println("***** within dwnldAction() *****");
+                StudyFile sf = dataTable.getStudyFile();
+                // String formatType = req.getParameter("formatType");
+                String formatType = (String) dwnldFileTypeSet.getValue();
+                out.println("file type from the binding=" + formatType);
+                // String formatType = "D01";
+
+                String dsbUrl = System.getProperty("vdc.dsb.host");
+                String dsbPort = System.getProperty("vdc.dsb.port");
+
+                if (dsbPort != null) {
+                    dsbUrl += ":" + dsbPort;
+                }
+
+                if (dsbUrl == null) {
+                    dsbUrl = System.getProperty("vdc.dsb.url");
+                }
+
+                out.println("dsbUrl=" + dsbUrl);
+
+//                String serverPrefix = req.getScheme() + "://"
+//                    + req.getServerName() + ":" + req.getServerPort()
+//                    + req.getContextPath();
+                
+                String serverPrefix = "http://dvn-alpha.hmdc.harvard.edu"
+                    + req.getContextPath();
+                out.println("serverPrefix"+serverPrefix);
+                Map<String, List<String>> mpl = new HashMap<String, List<String>>();
+
+                // if there is a user-defined (recoded) variables
+                if (recodedVarSet.size() > 0) {
+                    mpl.putAll(getRecodedVarParameters());
+                }
+
+                out.println("citation info to be sent:\n" + citation);
+                mpl.put("OfflineCitation", Arrays.asList(citation));
+
+                mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
+                    + req.getServerPort() + req.getContextPath()));
+                // mpl.put("appSERVER",Arrays.asList(dsbUrl + ":" +
+                // req.getServerPort() + req.getContextPath()));
+                mpl.put("studytitle", Arrays.asList(studyTitle));
+                mpl.put("studyno", Arrays.asList(studyId.toString()));
+
+//                new DSBWrapper().disseminate(res, mpl, sf, serverPrefix,
+//                    getDataVariableForRequest(), formatType);
+//
+//            } catch (IOException ex) {
+//                out.println("disseminate:download failed due to io exception");
+//                ex.printStackTrace();
+//            }
+
+            out.println("***** within dwnldAction(): ends here *****");
+            
+            if (resultPageTest){
+                resultInfo.put("dsbHost", "vdc-build.hmdc.harvard.edu");
+                resultInfo.put("dsbPort","8080");
+                resultInfo.put("requestdir", "Zlg_669973");
+                resultInfo.put("dsbContextRootDir", "/temp");
+                resultInfo.put("format", "dat");
+                resultInfo.put("subsetfile", "/Zlg_669973/Data.669973.dta");
+                resultInfo.put("option", "download");
+                resultInfo.put("PID","669973");
+                resultInfo.put("Rdata", "/Zlg_669973/Rworkspace.669973.RData");
+            }            
+                     
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
+            "resultInfo", resultInfo);
+            
+            return "success";
+        } else {
+            // show error message;
+            msgDwnldButton.setVisible(true);
+            setMsgDwnldButtonTxt("* Select a format");
+            out.println("exiting dwnldAction() due to incomplete data ");
+            return "failure";
+        }
+    }
+
+    
+    
     // -----------------------------------------------------------------------
     // recode section
     // -----------------------------------------------------------------------
@@ -2063,7 +2181,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // edaBttn:h:commandButton@actionListener
     public void edaActionLstnr(ActionEvent acev) {
-        resetMsgEdaButton();
+        resetMsgEdaButton();        
         if (checkEdaParameters()) {
 
             FacesContext cntxt = FacesContext.getCurrentInstance();
@@ -2071,37 +2189,32 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             HttpServletResponse res = (HttpServletResponse) cntxt
                 .getExternalContext().getResponse();
             HttpServletRequest req = (HttpServletRequest) cntxt
-                .getExternalContext().getRequest();
+                .getExternalContext().getRequest();            
             try {
                 out.println("***** within edaActionLstnr() *****");
 
                 StudyFile sf = dataTable.getStudyFile();
 
-                String dsbUrl = System.getProperty("vdc.dsb.host");
-                String dsbPort = System.getProperty("vdc.dsb.port");
-
-                if (dsbPort != null) {
-                    dsbUrl += ":" + dsbPort;
-                }
-
-                if (dsbUrl == null) {
-                    dsbUrl = System.getProperty("vdc.dsb.url");
-                }
-
+                String dsbUrl = getDsbUrl();
                 out.println("dsbUrl=" + dsbUrl);
 
-                // String serverPrefix =
-                // "http://vdc-build.hmdc.harvard.edu:8080/dvn";
-                String serverPrefix = req.getScheme() + "://"
+                /*
+                    String serverPrefix = req.getScheme() + "://"
                     + req.getServerName() + ":" + req.getServerPort()
                     + req.getContextPath();
+                */
+                String serverPrefix = "http://dvn-alpha.hmdc.harvard.edu"
+                    + req.getContextPath();
+                out.println("serverPrefix"+serverPrefix);
+                
                 // String serverPrefix = req.getScheme() +"://" + dsbUrl + ":" +
                 // req.getServerPort() + req.getContextPath();
-
+                //+ "vdc-build.hmdc.harvard.edu"
                 /*
-                 * "optnlst_a" => "A01|A02|A03", "analysis" => "A01 A02",
-                 * "varbl" => "v1.3 v1.10 v1.13 v1.22 v1.40", "charVarNoSet" =>
-                 * "v1.10|v1.719",
+                 * "optnlst_a" => "A01|A02|A03", 
+                 * "analysis" => "A01 A02",
+                 * "varbl" => "v1.3 v1.10 v1.13 v1.22 v1.40", 
+                 * "charVarNoSet" => "v1.10|v1.719",
                  */
 
                 Map<String, List<String>> mpl = new HashMap<String, List<String>>();
@@ -2138,21 +2251,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 mpl.put("studyURL", Arrays.asList(studyURL));
                 mpl.put("browserType", Arrays.asList(browserType));
 
-                // disseminate(HttpServletResponse res, Map parameters,
-                // StudyFile sf, String serverPrefix, List variables)
-                // new DSBWrapper().disseminate(res, mps, sf, serverPrefix,
-                // getDataVariableForRequest());
                 new DSBWrapper().disseminate(res, mpl, sf, serverPrefix,
-                    getDataVariableForRequest());
+                    getDataVariableForRequest());                    
             } catch (IOException ex) {
                 out.println("disseminate:EDA failed due to io exception");
                 ex.printStackTrace();
             }
-
             cntxt.responseComplete();
         } else {
             // show error message;
-            // msgEdaButton.setText("* Select at least one option");
             setMsgEdaButtonTxt("* Select at least one option");
             msgEdaButton.setVisible(true);
             out.println("exiting edaActionLstnr() due to incomplete data ");
@@ -2194,11 +2301,311 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // end of eda section ----------------------------------------------------
     // </editor-fold>
 
+    // edaBttn:h:commandButton@action
+    public String edaAction() {
+        
+        // clear the error message around the EDA button if they exisit
+        resetMsgEdaButton();
+        
+        if (checkEdaParameters()) {
+
+            FacesContext cntxt = FacesContext.getCurrentInstance();
+
+            HttpServletResponse res = (HttpServletResponse) cntxt
+                .getExternalContext().getResponse();
+            HttpServletRequest req = (HttpServletRequest) cntxt
+                .getExternalContext().getRequest();
+//            try {
+                out.println("***** within edaAction() *****");
+
+                StudyFile sf = dataTable.getStudyFile();
+
+                String dsbUrl = getDsbUrl();
+                out.println("dsbUrl=" + dsbUrl);
+                
+                   // req.getServerName()
+                // String serverPrefix =
+                // "http://:8080/dvn";
+                
+                    String serverPrefix = req.getScheme() + "://"
+                    + req.getServerName() + ":" + req.getServerPort()
+                    + req.getContextPath();
+                /*
+                String serverPrefix = "http://dvn-alpha.hmdc.harvard.edu"
+                    + req.getContextPath();
+                */    
+                out.println("serverPrefix"+serverPrefix);
+                // String serverPrefix = req.getScheme() +"://" + dsbUrl + ":" +
+                // req.getServerPort() + req.getContextPath();
+                //+ "vdc-build.hmdc.harvard.edu"
+                /*
+                 * "optnlst_a" => "A01|A02|A03",
+                 * "analysis" => "A01 A02",
+                 * "varbl" => "v1.3 v1.10 v1.13 v1.22 v1.40", 
+                 * "charVarNoSet" =>
+                 * "v1.10|v1.719",
+                 */
+
+                Map<String, List<String>> mpl = new HashMap<String, List<String>>();
+                Map<String, String> mps = new HashMap<String, String>();
+                mps.put("optnlst_a", "A01|A02|A03");
+                Object[] vs = edaOptionSet.getSelectedValues();
+                List<String> alst = new ArrayList<String>();
+
+                for (int i = 0; i < vs.length; i++) {
+                    out.println("eda option[" + i + "]=" + vs[i]);
+                    alst.add((String) vs[i]);
+                }
+                // mps.put("analysis", "A01");
+                mpl.put("analysis", alst);
+                // List<String> aoplst = new ArrayList<String>();
+                // aoplst.add("A01|A02|A03");
+                // mpl.put("optnlst_a", aoplst);
+                mpl.put("optnlst_a", Arrays.asList("A01|A02|A03"));
+
+                // if there is a user-defined (recoded) variables
+                if (recodedVarSet.size() > 0) {
+                    mpl.putAll(getRecodedVarParameters());
+                }
+
+                out.println("citation info to be sent:\n" + citation);
+                
+                mpl.put("OfflineCitation", Arrays.asList(citation));
+
+                mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
+                    + req.getServerPort() + req.getContextPath()));
+                
+                mpl.put("studytitle", Arrays.asList(studyTitle));
+                mpl.put("studyno", Arrays.asList(studyId.toString()));
+                mpl.put("studyURL", Arrays.asList(studyURL));
+                mpl.put("browserType", Arrays.asList(browserType));
+
+            // -----------------------------------------------------
+            // New processing route
+            // 
+            // Step 0. Locate the data file and its attributes
+    
+            String fileId = sf.getId().toString();
+            String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+            //String fileURL = "http://dvn-alpha.hmdc.harvard.edu" + "/dvn/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+            out.println("fileURL="+fileURL);
+            
+            String fileloc = sf.getFileSystemLocation();
+            String tabflnm = sf.getFileName();
+            boolean sbstOK = sf.isSubsettable();
+            String flct = sf.getFileType();
+            out.println("location="+fileloc);
+            out.println("filename="+tabflnm);
+            out.println("subsettable="+sbstOK);
+            out.println("filetype="+flct);
+
+
+            // the data file for downloading/statistical analyses must be subset-ready
+            // local (relative to the application) file case 
+            // note: a typical remote case is: US Census Bureau
+            
+            if (!sf.isRemote() && sbstOK){
+                
+                try {
+
+            // Step 1. temporarily store the whole data set in a temp directory
+
+                    // Create a URL for the data file
+                    URL url = new URL(fileURL);
+
+                    // temp data file that stores incoming data from the above URL
+                    File tmpfl = File.createTempFile("tempTabfile.", ".tab");
+
+                    // temp subset file that stores requested variables 
+                    File tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
+
+                    // Typical file-copy idiom 
+                    // incoming/outgoing streams
+                    InputStream inb = new BufferedInputStream(url.openStream());
+                    OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpfl));
+
+                    int bufsize;
+                    byte [] bffr = new byte[8192];
+                    while ((bufsize = inb.read(bffr))!=-1) {
+                        outb.write(bffr, 0, bufsize);
+                    }
+                    outb.close();
+                    if (tmpfl.exists()){
+                       out.println("file length="+tmpfl.length());
+                       out.println("tmp file name="+tmpfl.getAbsolutePath());
+                       
+                    }
+boolean fieldcut = true;
+if (fieldcut){
+                    // Step 2. Set-up parameters for subsetting: cutting requested columns of data
+                    // from a temp (whole) file
+
+                    // create var ids for subsetting
+                    // data(int) are taken from DB's studyfile table -- FileOrder column
+                    String [] vids = null;
+                    
+                    int vidslen = getDataVariableForRequest().size();
+                    
+                    List<String> variableList = new ArrayList();
+                    
+                    List<String> variableOrder = new ArrayList();
+                    Set<Integer> cols = new LinkedHashSet<Integer>();
+                    
+                    if (getDataVariableForRequest() != null) {
+                        Iterator iter = getDataVariableForRequest().iterator();
+                        while (iter.hasNext()) {
+                            DataVariable dv = (DataVariable) iter.next();
+                            variableList.add(dv.getId().toString());
+
+                            // the susbsetting parameter starts from 1 not 0,
+                            // add 1 to the number
+                            // variableOrder.add( Integer.toString(dv.getFileOrder()) );
+                            cols.add(dv.getFileOrder());
+                        }
+                    }
+                    
+
+                     out.println("cols="+cols);
+                    // source data file: full-path name
+                    String cutOp1 = tmpfl.getAbsolutePath();
+
+                    // result(subset) data file: full-path name
+                    String cutOp2 = tmpsbfl.getAbsolutePath();
+
+                    // Create an instance of RcutDatasetCutter
+                    FieldCutter fc = new DvnJavaFieldCutter();
+
+                    // Executes the subsetting request
+                    fc.subsetFile(cutOp1, cutOp2, cols);
+                    
+                    
+                    // Checks the result file 
+                    if (tmpsbfl.exists()){
+                        out.println("subsettFile:Length="+tmpsbfl.length());
+                        mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                    }
+                        mpl.put("requestType", Arrays.asList("EDA"));
+
+} else {
+                    // Step 2. Set-up parameters for subsetting: cutting requested columns of data
+                    // from a temp (whole) file
+
+                    // create var ids for subsetting
+                    // data(int) are taken from DB's studyfile table -- FileOrder column
+                    String [] vids = null;
+                    
+                    int vidslen = getDataVariableForRequest().size();
+                    
+                    List<String> variableList = new ArrayList();
+                    
+                    List<String> variableOrder = new ArrayList();
+                    
+                    if (getDataVariableForRequest() != null) {
+                        Iterator iter = getDataVariableForRequest().iterator();
+                        while (iter.hasNext()) {
+                            DataVariable dv = (DataVariable) iter.next();
+                            variableList.add(dv.getId().toString());
+
+                            // the susbsetting parameter starts from 1 not 0,
+                            // add 1 to the number
+                            variableOrder.add( Integer.toString(dv.getFileOrder()+1) );
+                        }
+                    }
+
+                    vids = (String[]) variableOrder.toArray(new String[vidslen]);
+                    String varsq = StringUtils.join(vids, ",");
+                    String cutOp0 = "-f"+ varsq ;
+
+                    // source data file: full-path name
+                    String cutOp1 = tmpfl.getAbsolutePath();
+
+                    // result(subset) data file: full-path name
+                    String cutOp2 = tmpsbfl.getAbsolutePath();
+
+                    // Create an instance of RcutDatasetCutter
+                    DatasetCutter dc = new RcutDatasetCutter(cutOp0, cutOp1, cutOp2);
+
+                    // Executes the subsetting request
+                    dc.run();
+                    
+                    
+                    // Checks the result file 
+                    if (tmpsbfl.exists()){
+                        out.println("subsettFile:Length="+tmpsbfl.length());
+                        mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                    }
+                        mpl.put("requestType", Arrays.asList("EDA"));
+}
+
+
+                    // Step 3. Organizes parameters/metadata to be sent to the implemented
+                    // data-analysis-service class
+                    ServiceRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl);
+                    out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+                    // Step 4. Creates an instance of the the implemented 
+                    // data-analysis-service class 
+
+                    DataAnalysisService das = new DvnRDataAnalysisServiceImpl();
+
+                    // Executes a request of downloading or data analysis and 
+                    // capture result info as a Map <String, String>
+
+                    resultInfo = das.execute(sro);
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                    // pass the error message to the resultPage
+                    // resultInfo.put();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // ditto
+                    // resultInt.put();
+                }
+
+            }
+
+            out.println("***** within edaAction(): succcessfully ends here *****");
+            
+                resultInfo.put("offlineCitation", citation);
+                resultInfo.put("studyTitle", studyTitle);
+                resultInfo.put("studyNo", studyId.toString());
+                resultInfo.put("studyURL", studyURL);
+
+            
+            
+            
+            if (resultPageTest){
+                resultInfo.put("dsbHost", "vdc-build.hmdc.harvard.edu");
+                resultInfo.put("dsbPort","8080");
+                resultInfo.put("requestdir", "Zlg_648335");
+                resultInfo.put("dsbContextRootDir", "/temp");
+                resultInfo.put("html", "/Zlg_648335/Rout.648335.html");
+                resultInfo.put("type", "3");
+                resultInfo.put("option", "eda");
+                resultInfo.put("PID","648335");
+                resultInfo.put("Rdata", "/Zlg_648335/Rworkspace.648335.RData");
+            }
+
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
+                "resultInfo", resultInfo);
+            return "success";
+            
+            
+        } else {
+            // show error message;
+            setMsgEdaButtonTxt("* Select at least one option");
+            msgEdaButton.setVisible(true);
+            out.println("exiting edaAction() due to incomplete data ");
+            return "failure";
+        }
+
+    }
+
     // -----------------------------------------------------------------------
     // AdvStat section
     // -----------------------------------------------------------------------
     // <editor-fold desc="Advanced Statistics">
-    
+    // <editor-fold desc="Adv Stat box and panels">
     // Selected variable box
 
     // @value: options for dropDown menu
@@ -2812,7 +3219,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setButton6b(HtmlCommandButton hcb) {
         this.button6b = hcb;
     }
-
+    // </editor-fold>
+    // <editor-fold desc="Adv Stat  movement">    
     // get variable type (int) from a given row of the dataTable
     public int getVariableType(DataVariable dv) {
         Integer varType;
@@ -3323,11 +3731,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 removeOption(OptnSet[i], getAdvStatVarRBox3()));
         }
     }
-
+    // </editor-fold>
     // ////////////////////
     // Output option
     // ////////////////////
-
+    // <editor-fold desc="Adv Stat Output option">
     // output option panel
 
     /*
@@ -3388,11 +3796,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             out.println("output option[" + i + "]=" + outOption[i].getValue());
         }
     }
-
+    // </editor-fold>
     // ////////////////////
     // Analysis option
     // ////////////////////
-
+    // <editor-fold desc="Adv Stat Analysis Option">
     // Analysis option block: casing panel
 
     private PanelGroup analysisOptionPanel = new PanelGroup();
@@ -4021,11 +4429,277 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         ls.add(Integer.toString(typeValue));
         return ls;
     }
-
+    // </editor-fold>
     // end of advStat
     // <----------------------------------------------------------------------
     // </editor-fold>
 
+    // advStatBttn:h:commandButton@action
+    public String advStatAction() {
+
+        // check the current model
+
+        String mdlName = (String) dropDown1.getSelected();
+        out.println("model name=" + mdlName);
+
+        if (checkAdvStatParameters(mdlName)) {
+
+            FacesContext cntxt = FacesContext.getCurrentInstance();
+
+            HttpServletResponse res = (HttpServletResponse) cntxt
+                .getExternalContext().getResponse();
+            HttpServletRequest req = (HttpServletRequest) cntxt
+                .getExternalContext().getRequest();
+  
+            try {
+                out.println("***** within advStatAction() *****");
+                // common parts
+                // data file
+                StudyFile sf = dataTable.getStudyFile();
+                // server prefix
+
+                String dsbUrl = System.getProperty("vdc.dsb.host");
+                String dsbPort = System.getProperty("vdc.dsb.port");
+
+                if (dsbPort != null) {
+                    dsbUrl += ":" + dsbPort;
+                }
+
+                if (dsbUrl == null) {
+                    dsbUrl = System.getProperty("vdc.dsb.url");
+                }
+
+                out.println("dsbUrl=" + dsbUrl);
+
+                // String serverPrefix =
+                // "http://vdc-build.hmdc.harvard.edu:8080/dvn";
+//                String serverPrefix = req.getScheme() + "://"
+//                    + req.getServerName() + ":" + req.getServerPort()
+//                    + req.getContextPath();
+                String serverPrefix = "http://dvn-alpha.hmdc.harvard.edu"
+                    + req.getContextPath();
+                out.println("serverPrefix"+serverPrefix);
+//                /
+//                  "optnlst_a" => "A01|A02|A03", "analysis" => "A01 A02",
+//                  "varbl" => "v1.3 v1.10 v1.13 v1.22 v1.40", "charVarNoSet" =>
+//                  "v1.10|v1.719",
+//                 /
+                // common parameters
+                Map<String, List<String>> mpl = new HashMap<String, List<String>>();
+                Map<String, String> mps = new HashMap<String, String>();
+                mps.put("optnlst_a", "A01|A02|A03");
+                List<String> alst = new ArrayList<String>();
+                List<String> aoplst = new ArrayList<String>();
+                aoplst.add("A01|A02|A03");
+                mpl.put("optnlst_a", aoplst);
+                // outoput options
+
+                List<String> outOptionList = new ArrayList<String>();
+
+                if (mdlName.equals("xtb")) {
+                    alst.add("A03");
+                    // output options
+                    Object[] outOptn = (Object[]) checkboxGroupXtbOptions
+                        .getSelectedValue();
+                    List<String> tv = new ArrayList<String>();
+                    tv.add("T");
+                    for (int j = 0; j < outOptn.length; j++) {
+                        out.println("output option[" + j + "]=" + outOptn[j]);
+
+                        mpl.put((String) outOptn[j], new ArrayList(tv));
+                    }
+                    // variables: 1st RBox
+                    if (advStatVarRBox1.size() >= 1) {
+                        out.println("RB1:" + getDataVariableForRBox1());
+                        mpl.put("xtb_nmBxR1", getDataVariableForRBox1());
+                    }
+                    // variables: 2nd RBox
+                    if (advStatVarRBox2.size() >= 1) {
+                        out.println("RB2:" + getDataVariableForRBox2());
+                        mpl.put("xtb_nmBxR2", getDataVariableForRBox2());
+                    }
+
+                    mpl.put("analysis", alst);
+
+                } else {
+                    out.println("***** zelig param block *****");
+                    // non-xtb, i.e., zelig cases
+                    // check zlg value
+                    // String mdlZname= mdlName+;
+                    out.println("model spec dump="
+                        + getAnalysisApplicationBean().getSpecMap()
+                            .get(mdlName));
+                    out.println("model spec mdlId="
+                        + getAnalysisApplicationBean().getSpecMap()
+                            .get(mdlName).getMdlId());
+                    String zligPrefix = getAnalysisApplicationBean()
+                        .getSpecMap().get(mdlName).getMdlId();
+                    out.println("model no=" + zligPrefix);
+                    // 1-RBox case
+                    if (advStatVarRBox1.size() >= 1) {
+                        out.println("RB1:" + getDataVariableForRBox1());
+                        mpl.put(zligPrefix + "_nmBxR1",
+                            getDataVariableForRBox1());
+                    }
+                    // 2-RBox case
+                    if (advStatVarRBox2.size() >= 1) {
+                        out.println("RB2:" + getDataVariableForRBox2());
+                        mpl.put(zligPrefix + "_nmBxR2",
+                            getDataVariableForRBox2());
+                    }
+                    // 3-RBox case
+                    if (advStatVarRBox3.size() >= 1) {
+                        out.println("RB3:" + getDataVariableForRBox3());
+                        mpl.put(zligPrefix + "_nmBxR3",
+                            getDataVariableForRBox3());
+                    }
+                    // model name
+
+                    mpl.put("zlg", getZlg(zligPrefix, mdlName));
+                    // model type
+                    String sfn = getAnalysisApplicationBean().getSpecMap().get(
+                        mdlName).getSpecialFn();
+                    mpl.put("mdlType_" + mdlName, getMdlType(mdlName, sfn));
+
+                    // model title
+                    String ttl = getAnalysisApplicationBean().getSpecMap().get(
+                        mdlName).getTitle();
+                    out.println("model title=" + ttl);
+                    mpl.put("mdlTitle_" + mdlName, Arrays.asList(ttl));
+
+                    // nrBoxes
+                    int noRboxes = getAnalysisApplicationBean().getSpecMap()
+                        .get(mdlName).getNoRboxes();
+                    out.println("noRboxes=" + noRboxes);
+
+                    mpl.put("noBoxes_" + mdlName, Arrays.asList(Integer
+                        .toString(noRboxes)));
+
+                    // binary
+                    String mdlCategory = getAnalysisApplicationBean()
+                        .getSpecMap().get(mdlName).getCategory();
+                    out.println("model category=" + mdlCategory);
+                    if (mdlCategory
+                        .equals("Models for Dichotomous Dependent Variables")) {
+                        mpl.put("mdlDepVarType_" + mdlName, Arrays
+                            .asList("binary"));
+                    }
+                    // output options
+//                    //
+//                     // zlg_017_Summary zlg_017_Plots zlg_017_BinOutput
+//                     //
+                    Object[] outOptn = (Object[]) checkboxGroup2DefaultOptions
+                        .getSelectedValue();
+                    for (int j = 0; j < outOptn.length; j++) {
+                        String outputOptnkey = zligPrefix + "_"
+                            + (String) outOptn[j];
+                        out.println("zelig: output option[" + j + "]="
+                            + outputOptnkey);
+                        mpl.put(outputOptnkey, Arrays.asList("T"));
+                    }
+
+                    // analysis options
+//                    
+//                      zlg_017_Sim zlg_017_setx zlg_017_setx_var
+//                      zlg_017_setx_val_1 zlg_017_setx_val_2
+//                      
+//                      zlg_017_naMethod
+//                     
+                    //
+                    if (checkbox3.isChecked()) {
+                        mpl.put(zligPrefix + "_Sim", Arrays.asList("T"));
+                        Object simOptn = radioButtonGroup1DefaultOptions
+                            .getSelectedValue();
+                        mpl.put(zligPrefix + "_setx", Arrays
+                            .asList((String) simOptn));
+                        if (((String) simOptn).equals("1")) {
+                            Object v1 = dropDown2.getSelected();
+                            Object v2 = dropDown3.getSelected();
+                            Object vl1 = textField10.getValue();
+                            Object vl2 = textField8.getValue();
+                            List<String> setxVars = new ArrayList<String>();
+                            if (v1 != null) {
+                                setxVars.add((String) v1);
+
+                            }
+                            if (v2 != null) {
+                                setxVars.add((String) v2);
+                            }
+                            mpl.put(zligPrefix + "_setx_var", setxVars);
+                            if (vl1 != null) {
+                                mpl.put(zligPrefix + "_setx_val_1", Arrays
+                                    .asList((String) vl1));
+                            }
+                            if (vl2 != null) {
+                                mpl.put(zligPrefix + "_setx_val_2", Arrays
+                                    .asList((String) vl2));
+                            }
+
+                        }
+                    }
+
+                }
+                out.println("contents(mpl):" + mpl);
+
+                // if there is a user-defined (recoded) variables
+                if (recodedVarSet.size() > 0) {
+                    mpl.putAll(getRecodedVarParameters());
+                }
+
+                out.println("citation info to be sent:\n" + citation);
+                mpl.put("OfflineCitation", Arrays.asList(citation));
+
+                mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
+                    + req.getServerPort() + req.getContextPath()));
+                mpl.put("studytitle", Arrays.asList(studyTitle));
+                mpl.put("studyno", Arrays.asList(studyId.toString()));
+                mpl.put("studyURL", Arrays.asList(studyURL));
+                mpl.put("browserType", Arrays.asList(browserType));
+                // Disseminate Request
+                new DSBWrapper().disseminate(res, mpl, sf, serverPrefix,
+                    getDataVariableForRequest());
+
+            } catch (IOException ex) {
+                out.println("disseminate: advanced Statistics failed due to io exception");
+                ex.printStackTrace();
+            }
+
+//          cntxt.responseComplete();
+            out.println("***** advStatAction(): ends here *****");
+            if (resultPageTest){
+                boolean isXtab = true ;
+                if (isXtab){
+                    resultInfo.put("dsbHost", "vdc-build.hmdc.harvard.edu");
+                    resultInfo.put("dsbPort","8080");
+                    resultInfo.put("requestdir", "Zlg_648335");
+                    resultInfo.put("dsbContextRootDir", "/temp");
+                    resultInfo.put("html", "/Zlg_648335/Rout.648335.html");
+                    resultInfo.put("model", "xtab");
+                    resultInfo.put("option", "zelig");
+                    resultInfo.put("PID","648335");
+                    resultInfo.put("Rdata", "/Zlg_648335/Rworkspace.648335.RData");
+                } else {
+                    resultInfo.put("dsbHost", "vdc-build.hmdc.harvard.edu");
+                    resultInfo.put("dsbPort","8080");
+                    resultInfo.put("requestdir", "Zlg_417584");
+                    resultInfo.put("dsbContextRootDir", "/temp");
+                    resultInfo.put("html", "/Zlg_417584/index1212643274.95944A3251A561370323.html");
+                    resultInfo.put("model", "logit");
+                    resultInfo.put("option", "zelig");
+                    resultInfo.put("PID","417584");
+                    resultInfo.put("Rdata", "/Zlg_417584/binfile1212643274.95944A3251A561370323.Rdata");
+                }
+            }
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
+                "resultInfo", resultInfo);
+            return "success";
+        } else {
+            out.println("exiting advStatAction() due to incomplete data ");
+            return "failure";
+        }
+        
+    }    
+    
     // -----------------------------------------------------------------------
     // subsetting-instruction section
     // -----------------------------------------------------------------------
@@ -4928,7 +5602,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // 5th: summary statistics(blank)
             // the content is generated by an AJAX call upon request
             rw.add("");
-            
+            /*
+            // 6th: fileorder number
+            rw.add(dv.getFileOrder());
+             */ 
             // add a row
             dt4Display.add(rw);
         }
@@ -5000,6 +5677,26 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return null;
     }
 
+    /**
+     * Returns the file-order of a given variable whose id is known.
+     * Because dt4Display is not a HashMap but a List, 
+     * loop-through is necessary
+     *
+     * @param varId    the id of a given variable
+     * @return    the file-order number of a given variable
+     */
+    /*
+    public String getVariableFileOderfromId(String varId) {
+
+        for (int i = 0; i < dt4Display.size(); i++) {
+            if (((String) ((ArrayList) dt4Display.get(i)).get(2)).equals(varId)) {
+                return (String) ((ArrayList) dt4Display.get(i)).get(6);
+
+            }
+        }
+        return null;
+    }
+    */
     /**
      * Gets the row of metadata of a variable whose Id is given by a String
      * object
@@ -5770,4 +6467,83 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
         return render;
     }
+    
+    /**
+     *
+     * @return    The url of the DSB
+     */
+    public String getDsbUrl(){
+
+        String dsbUrl = System.getProperty("vdc.dsb.host");
+        String dsbPort = System.getProperty("vdc.dsb.port");
+
+        if (dsbPort != null) {
+            dsbUrl += ":" + dsbPort;
+        }
+
+        if (dsbUrl == null) {
+            dsbUrl = System.getProperty("vdc.dsb.url");
+        }
+        return dsbUrl;
+    }
+    
+    /**
+     * 
+     *
+     * @param dvs   
+     * @return      
+     */
+    public List<String> generateVariableIdList(List<String> dvs) {
+        List<String> variableIdList = new ArrayList<String>();
+        if (dvs != null) {
+            for (String el : dvs){
+                variableIdList.add("v" + el);
+            }
+        }
+        return variableIdList;
+    }
+
+    /**
+     * 
+     *
+     * @param     
+     * @return    
+     */
+    
+    public List<String> getVariableListForRequest(){
+        List<String> variableList = new ArrayList();
+        if (getDataVariableForRequest() != null) {
+            Iterator iter = getDataVariableForRequest().iterator();
+            while (iter.hasNext()) {
+                DataVariable dv = (DataVariable) iter.next();
+                variableList.add(dv.getId().toString());
+            }
+        }
+        return variableList;
+    }
+    
+
+    /**
+     * 
+     *
+     * @param     
+     * @return    
+     */
+    
+    public List<String> getVariableOrderForRequest (){
+        List<String> variableOrder = new ArrayList();
+        if (getDataVariableForRequest() != null) {
+            Iterator iter = getDataVariableForRequest().iterator();
+            while (iter.hasNext()) {
+                DataVariable dv = (DataVariable) iter.next();
+                // the susbsetting parameter starts from 1 not 0,
+                // add 1 to the number
+                variableOrder.add( Integer.toString(dv.getFileOrder()+1) );
+            }
+        }
+        return variableOrder;
+    }
+
+
+    // end of this class
 }

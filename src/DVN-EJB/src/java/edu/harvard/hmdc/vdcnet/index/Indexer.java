@@ -47,6 +47,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyRelStudy;
 import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -57,6 +58,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.LowerCaseTokenizer;
+import org.apache.lucene.analysis.PorterStemFilter;
+import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
@@ -431,6 +435,22 @@ public class Indexer implements java.io.Serializable  {
         
     }
 
+    private String getDVNTokenString(final String value) {
+        PorterStemFilter p = new PorterStemFilter(new DVNTokenizer(new StringReader(value)));
+        StringBuffer dvnValueSb = new StringBuffer();
+        try {
+            Token n = p.next();
+            while (n != null) {
+                dvnValueSb.append(new String(n.termBuffer()).substring(0, n.termLength()) + " ");
+                n = p.next(n);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String dvnValue = dvnValueSb.toString();
+        return dvnValue;
+    }
+
     private List <Long> intersectionDocResults(final List<Document> results1, final List<Long> results2) throws IOException {
         List <Long>  mergeResults = new ArrayList();
         for (Iterator it = results1.iterator(); it.hasNext();){
@@ -510,9 +530,8 @@ public class Indexer implements java.io.Serializable  {
     }
         
     private String[] getPhrase(final String value) {
-        String dvnValue = DVNIndexString.parse(value);
-        StringTokenizer tk = new StringTokenizer(dvnValue);            
-//        StringTokenizer tk = new StringTokenizer(value);
+        String dvnValue = getDVNTokenString(value);
+        StringTokenizer tk = new StringTokenizer(dvnValue);
         String[] phrase = new String[tk.countTokens()];
         for (int i = 0; i < phrase.length; i++) {
             phrase[i] = tk.nextToken();
@@ -783,27 +802,18 @@ public class Indexer implements java.io.Serializable  {
             if (phrase.length > 1) {
                 BooleanClause partialMatchClause = null;
                 PhraseQuery phraseQuery = new PhraseQuery();
-                phraseQuery.setSlop(3);
+                phraseQuery.setSlop(10);
 
                 for (int i = 0; i < phrase.length; i++) {
                     phraseQuery.add(new Term(elem.getFieldName(), phrase[i].toLowerCase().trim()));
                 }
                 orTerms.add(phraseQuery, BooleanClause.Occur.SHOULD);
             } else {
-                Term t = new Term(elem.getFieldName(), elem.getValue().toLowerCase().trim());
+//                Term t = new Term(elem.getFieldName(), elem.getValue().toLowerCase().trim());
+                Term t = new Term(elem.getFieldName(), phrase[0].toLowerCase().trim());
                 TermQuery orQuery = new TermQuery(t);
                 orTerms.add(orQuery, BooleanClause.Occur.SHOULD);
             }
-            /* 6-16-08 new not working code
-            QueryParser parser = new QueryParser(elem.getFieldName(), getAnalyzer());
-            Query query = null;
-            try {
-                query = parser.parse(elem.getValue().toLowerCase().trim());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            orTerms.add(query,BooleanClause.Occur.SHOULD);
-             * 6-16-08 new not working code */
         }
         return orTerms;
     }
@@ -832,8 +842,8 @@ public class Indexer implements java.io.Serializable  {
                 String [] phrase = getPhrase( elem.getValue().toLowerCase().trim());
                 if (phrase.length > 1){
                     PhraseQuery phraseQuery = new PhraseQuery();
-                    phraseQuery.setSlop(0);
-                    andTerms.add(partialMatch(elem,3));
+                    phraseQuery.setSlop(10);
+                    andTerms.add(partialMatch(elem,10));
                 } else{
                     Term t = new Term(elem.getFieldName(), elem.getValue().toLowerCase().trim());
                     TermQuery andQuery = new TermQuery(t);

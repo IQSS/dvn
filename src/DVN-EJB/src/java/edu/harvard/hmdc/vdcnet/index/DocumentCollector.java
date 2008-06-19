@@ -55,13 +55,15 @@ public class DocumentCollector extends HitCollector implements java.io.Serializa
     public void collect(int id, float score) {
         try {
             Document doc = searcher.doc(id);
-            documents.add (doc);
+            ScoredDocument scoredDocument = new ScoredDocument(score, doc);
+            documents.add (scoredDocument);
         } catch (IOException e) {
-// ignored
+            e.printStackTrace();
         }
     }
 
     public List getStudies() {
+        Collections.sort(documents);
         return documents;
     }
 }

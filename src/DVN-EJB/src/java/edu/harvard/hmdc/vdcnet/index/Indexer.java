@@ -159,158 +159,158 @@ public class Indexer implements java.io.Serializable  {
     protected void addDocument(Study study) throws IOException{
         Document doc = new Document();
         logger.info("Start indexing study "+study.getStudyId());
-        addText(doc,"title",study.getTitle());
+        addText(4.0f,  doc,"title",study.getTitle());
         addKeyword(doc,"title",study.getTitle());
         addKeyword(doc,"id",study.getId().toString());
         addKeyword(doc,"studyId", study.getStudyId());
-        addText(doc,"studyId", study.getStudyId());
-        addText(doc,"owner",study.getOwner().getName());
+        addText(1.0f,  doc,"studyId", study.getStudyId());
+        addText(1.0f,  doc,"owner",study.getOwner().getName());
         addKeyword(doc,"productionDate", study.getProductionDate());
         addKeyword(doc,"distributionDate", study.getDistributionDate());
         Collection <StudyKeyword> keywords = study.getStudyKeywords();
         for (Iterator it = keywords.iterator(); it.hasNext();) {
             StudyKeyword elem = (StudyKeyword) it.next();
-            addText(doc,"keywordValue", elem.getValue());
+            addText(1.0f,  doc,"keywordValue", elem.getValue());
         }
         Collection <StudyTopicClass> topicClassifications = study.getStudyTopicClasses();
         for (Iterator it = topicClassifications.iterator(); it.hasNext();) {
             StudyTopicClass elem = (StudyTopicClass) it.next();
-            addText(doc,"topicClassValue", elem.getValue());
+            addText(1.0f,  doc,"topicClassValue", elem.getValue());
         }
         Collection <StudyAbstract> abstracts = study.getStudyAbstracts();
         for (Iterator it = abstracts.iterator(); it.hasNext();) {
             StudyAbstract elem = (StudyAbstract) it.next();
-            addText(doc,"abstractText",elem.getText());
+            addText(2.0f,  doc,"abstractText",elem.getText());
             addKeyword(doc,"abstractDate",elem.getDate());
             
         }
         Collection <StudyAuthor> studyAuthors = study.getStudyAuthors();
         for (Iterator it = studyAuthors.iterator(); it.hasNext();) {
             StudyAuthor elem = (StudyAuthor) it.next();
-            addText(doc,"authorName",elem.getName());
+            addText(3.0f,  doc,"authorName",elem.getName());
             addKeyword(doc,"authorName",elem.getName());
-            addText(doc,"authorAffiliation", elem.getAffiliation());
+            addText(1.0f,  doc,"authorAffiliation", elem.getAffiliation());
         }
         Collection <StudyProducer> studyProducers = study.getStudyProducers();
         for (Iterator itProducers = studyProducers.iterator(); itProducers.hasNext();) {
             StudyProducer studyProducer = (StudyProducer) itProducers.next();
-            addText(doc,"producerName", studyProducer.getName());
-            addText(doc,"producerName", studyProducer.getAbbreviation());
-            addText(doc,"producerName", studyProducer.getLogo());
-            addText(doc,"producerName", studyProducer.getUrl());
+            addText(1.0f,  doc,"producerName", studyProducer.getName());
+            addText(1.0f,  doc,"producerName", studyProducer.getAbbreviation());
+            addText(1.0f,  doc,"producerName", studyProducer.getLogo());
+            addText(1.0f,  doc,"producerName", studyProducer.getUrl());
         }
         Collection <StudyDistributor> studyDistributors = study.getStudyDistributors();
         for (Iterator it = studyDistributors.iterator(); it.hasNext();) {
             StudyDistributor studyDistributor = (StudyDistributor) it.next();
-            addText(doc,"distributorName", studyDistributor.getName());
-            addText(doc,"distributorName", studyDistributor.getAbbreviation());
-            addText(doc,"distributorName", studyDistributor.getLogo());
-            addText(doc,"distributorName", studyDistributor.getUrl());
+            addText(1.0f,  doc,"distributorName", studyDistributor.getName());
+            addText(1.0f,  doc,"distributorName", studyDistributor.getAbbreviation());
+            addText(1.0f,  doc,"distributorName", studyDistributor.getLogo());
+            addText(1.0f,  doc,"distributorName", studyDistributor.getUrl());
         }
         Collection <StudyOtherId> otherIds = study.getStudyOtherIds();
         for (Iterator it = otherIds.iterator(); it.hasNext();) {
             StudyOtherId elem = (StudyOtherId) it.next();
-            addText(doc,"otherId", elem.getOtherId());
+            addText(1.0f,  doc,"otherId", elem.getOtherId());
         }
-        addText(doc,"fundingAgency",study.getFundingAgency());
-        addText(doc,"distributorContact",study.getDistributorContact());
-        addText(doc,"distributorContactAffiliation",study.getDistributorContactAffiliation());
-        addText(doc,"distributorContactEmail",study.getDistributorContactEmail());
+        addText(1.0f,  doc,"fundingAgency",study.getFundingAgency());
+        addText(1.0f,  doc,"distributorContact",study.getDistributorContact());
+        addText(1.0f,  doc,"distributorContactAffiliation",study.getDistributorContactAffiliation());
+        addText(1.0f,  doc,"distributorContactEmail",study.getDistributorContactEmail());
         addKeyword(doc,"dateOfDeposit",study.getDateOfDeposit());
-        addText(doc,"depositor",study.getDepositor());
-        addText(doc,"seriesName",study.getSeriesName());
-        addText(doc,"seriesInformation",study.getSeriesInformation());
+        addText(1.0f,  doc,"depositor",study.getDepositor());
+        addText(1.0f,  doc,"seriesName",study.getSeriesName());
+        addText(1.0f,  doc,"seriesInformation",study.getSeriesInformation());
         addKeyword(doc,"studyVersion",study.getStudyVersion());
-        addText(doc,"originOfSources",study.getOriginOfSources());
-        addText(doc,"dataSources",study.getDataSources());
+        addText(1.0f,  doc,"originOfSources",study.getOriginOfSources());
+        addText(1.0f,  doc,"dataSources",study.getDataSources());
         addKeyword(doc,"frequencyOfDataCollection",study.getFrequencyOfDataCollection());
-        addText(doc,"universe",study.getUniverse());
+        addText(1.0f,  doc,"universe",study.getUniverse());
         addKeyword(doc,"unitOfAnalysis",study.getUnitOfAnalysis());
-        addText(doc,"dataCollector",study.getDataCollector());
-        addText(doc,"kindOfData", study.getKindOfData());
-        addText(doc,"geographicCoverage",study.getGeographicCoverage());
-        addText(doc,"geographicUnit",study.getGeographicUnit());
+        addText(1.0f,  doc,"dataCollector",study.getDataCollector());
+        addText(1.0f,  doc,"kindOfData", study.getKindOfData());
+        addText(1.0f,  doc,"geographicCoverage",study.getGeographicCoverage());
+        addText(1.0f,  doc,"geographicUnit",study.getGeographicUnit());
         addKeyword(doc,"timePeriodCoveredEnd",study.getTimePeriodCoveredEnd());
         addKeyword(doc,"timePeriodCoveredStart",study.getTimePeriodCoveredStart());
         addKeyword(doc,"dateOfCollection",study.getDateOfCollectionStart());
         addKeyword(doc,"dateOfCollectionEnd",study.getDateOfCollectionEnd());
         addKeyword(doc,"country",study.getCountry());
-        addText(doc,"country",study.getCountry());
+        addText(1.0f,  doc,"country",study.getCountry());
         addKeyword(doc,"timeMethod",study.getTimeMethod());
         addKeyword(doc,"samplingProcedure",study.getSamplingProcedure());
         addKeyword(doc,"deviationsFromSampleDesign",study.getDeviationsFromSampleDesign());
         addKeyword(doc,"collectionMode",study.getCollectionMode());
         addKeyword(doc,"researchInstrument",study.getResearchInstrument());
-        addText(doc,"characteristicOfSources",study.getCharacteristicOfSources());
-        addText(doc,"accessToSources",study.getAccessToSources());
-        addText(doc,"dataCollectionSituation",study.getDataCollectionSituation());
-        addText(doc,"actionsToMinimizeLoss",study.getActionsToMinimizeLoss());
-        addText(doc,"controlOperations",study.getControlOperations());
-        addText(doc,"weighting",study.getWeighting());
-        addText(doc,"cleaningOperations",study.getCleaningOperations());
-        addText(doc,"studyLevelErrorNotes",study.getStudyLevelErrorNotes());
+        addText(1.0f,  doc,"characteristicOfSources",study.getCharacteristicOfSources());
+        addText(1.0f,  doc,"accessToSources",study.getAccessToSources());
+        addText(1.0f,  doc,"dataCollectionSituation",study.getDataCollectionSituation());
+        addText(1.0f,  doc,"actionsToMinimizeLoss",study.getActionsToMinimizeLoss());
+        addText(1.0f,  doc,"controlOperations",study.getControlOperations());
+        addText(1.0f,  doc,"weighting",study.getWeighting());
+        addText(1.0f,  doc,"cleaningOperations",study.getCleaningOperations());
+        addText(1.0f,  doc,"studyLevelErrorNotes",study.getStudyLevelErrorNotes());
         List <StudyNote> studyNotes = study.getStudyNotes();
         for (Iterator it = studyNotes.iterator(); it.hasNext();){
             StudyNote elem = (StudyNote) it.next(); 
-            addText(doc, "studyNoteType", elem.getType());
-            addText(doc, "studyNoteSubject", elem.getSubject());
-            addText(doc, "studyNoteText", elem.getText());
+            addText(1.0f,  doc, "studyNoteType", elem.getType());
+            addText(1.0f,  doc, "studyNoteSubject", elem.getSubject());
+            addText(1.0f,  doc, "studyNoteText", elem.getText());
         }
         addKeyword(doc,"responseRate",study.getResponseRate());
         addKeyword(doc,"samplingErrorEstimate",study.getSamplingErrorEstimate());
-        addText(doc,"otherDataAppraisal",study.getOtherDataAppraisal());
-        addText(doc,"placeOfAccess",study.getPlaceOfAccess());
-        addText(doc,"originalArchive",study.getOriginalArchive());
+        addText(1.0f,  doc,"otherDataAppraisal",study.getOtherDataAppraisal());
+        addText(1.0f,  doc,"placeOfAccess",study.getPlaceOfAccess());
+        addText(1.0f,  doc,"originalArchive",study.getOriginalArchive());
         addKeyword(doc,"availabilityStatus",study.getAvailabilityStatus());
         addKeyword(doc,"collectionSize",study.getCollectionSize());
         addKeyword(doc,"studyCompletion",study.getStudyCompletion());
-        addText(doc,"confidentialityDeclaration",study.getConfidentialityDeclaration());
-        addText(doc,"specialPermissions",study.getSpecialPermissions());
-        addText(doc,"restrictions",study.getRestrictions());
-        addText(doc,"contact",study.getContact());
-        addText(doc,"citationRequirements",study.getCitationRequirements());
-        addText(doc,"depositorRequirements",study.getDepositorRequirements());
-        addText(doc,"conditions",study.getConditions());
-        addText(doc,"disclaimer",study.getDisclaimer());
+        addText(1.0f,  doc,"confidentialityDeclaration",study.getConfidentialityDeclaration());
+        addText(1.0f,  doc,"specialPermissions",study.getSpecialPermissions());
+        addText(1.0f,  doc,"restrictions",study.getRestrictions());
+        addText(1.0f,  doc,"contact",study.getContact());
+        addText(1.0f,  doc,"citationRequirements",study.getCitationRequirements());
+        addText(1.0f,  doc,"depositorRequirements",study.getDepositorRequirements());
+        addText(1.0f,  doc,"conditions",study.getConditions());
+        addText(1.0f,  doc,"disclaimer",study.getDisclaimer());
         List <StudyRelMaterial> relMaterials = study.getStudyRelMaterials();
         for (Iterator it = relMaterials.iterator(); it.hasNext();) {
             StudyRelMaterial elem = (StudyRelMaterial) it.next();
-            addText(doc,"relatedMaterial",elem.getText());
+            addText(1.0f,  doc,"relatedMaterial",elem.getText());
         }
         List <StudyRelPublication> relPublications = study.getStudyRelPublications();
         for (Iterator it = relPublications.iterator(); it.hasNext();) {
             StudyRelPublication elem = (StudyRelPublication) it.next();
-            addText(doc,"relatedPublications",elem.getText());
+            addText(1.0f,  doc,"relatedPublications",elem.getText());
         }
         List <StudyRelStudy> relStudies = study.getStudyRelStudies();
         for (Iterator it = relStudies.iterator(); it.hasNext();) {
             StudyRelStudy elem = (StudyRelStudy) it.next();
-            addText(doc,"relatedStudy",elem.getText());
+            addText(1.0f,  doc,"relatedStudy",elem.getText());
         }
         List <StudyOtherRef> otherRefs = study.getStudyOtherRefs();
         for (Iterator it = otherRefs.iterator(); it.hasNext();) {
             StudyOtherRef elem = (StudyOtherRef) it.next();
-            addText(doc,"otherReferences",elem.getText());
+            addText(1.0f,  doc,"otherReferences",elem.getText());
         }
        
-   /*     addText(doc,"relatedMaterial",study.getRelatedMaterial());
-        addText(doc,"relatedPublications",study.getRelatedPublications());
-        addText(doc,"otherReferences",study.getOtherReferences());
+   /*     addText(1.0f,  doc,"relatedMaterial",study.getRelatedMaterial());
+        addText(1.0f,  doc,"relatedPublications",study.getRelatedPublications());
+        addText(1.0f,  doc,"otherReferences",study.getOtherReferences());
     */
-        addText(doc,"subtitle",study.getSubTitle());
+        addText(1.0f,  doc,"subtitle",study.getSubTitle());
         List <StudyKeyword> studyKeywords = study.getStudyKeywords();
         for (Iterator it = studyKeywords.iterator(); it.hasNext();) {
             StudyKeyword elem = (StudyKeyword) it.next();
-            addText(doc,"keywordVocabulary",elem.getVocab());
+            addText(1.0f,  doc,"keywordVocabulary",elem.getVocab());
         }
         List <StudyTopicClass> studyTopicClasses =study.getStudyTopicClasses();
         for (Iterator it = studyTopicClasses.iterator(); it.hasNext();) {
             StudyTopicClass elem = (StudyTopicClass) it.next();
-            addText(doc,"topicClassVocabulary", elem.getVocab());            
+            addText(1.0f,  doc,"topicClassVocabulary", elem.getVocab());            
         }
-        addText(doc,"protocol",study.getProtocol());
-        addText(doc,"authority",study.getAuthority());
-        addText(doc,"globalId",study.getGlobalId());
+        addText(1.0f,  doc,"protocol",study.getProtocol());
+        addText(1.0f,  doc,"authority",study.getAuthority());
+        addText(1.0f,  doc,"globalId",study.getGlobalId());
         List <FileCategory> fileCategories = study.getFileCategories();
         writer = new IndexWriter(dir, true, getAnalyzer(),isIndexEmpty());
         
@@ -328,13 +328,13 @@ public class Indexer implements java.io.Serializable  {
                     List<DataVariable> dataVariables = dataTable.getDataVariables();
                     for (int j = 0; j < dataVariables.size(); j++) {
                         Document docVariables = new Document();
-                        addText(docVariables, "varStudyId", study.getId().toString());
-                        addText(docVariables, "varStudyFileId", elem.getId().toString());
+                        addText(1.0f,  docVariables, "varStudyId", study.getId().toString());
+                        addText(1.0f,  docVariables, "varStudyFileId", elem.getId().toString());
                         DataVariable dataVariable = dataVariables.get(j);
-                        addText(docVariables, "id", dataVariable.getId().toString());
-                        addText(docVariables, "varName", dataVariable.getName());
-                        addText(docVariables, "varLabel", dataVariable.getLabel());
-                        addText(docVariables, "varId", dataVariable.getId().toString());
+                        addText(1.0f,  docVariables, "id", dataVariable.getId().toString());
+                        addText(1.0f,  docVariables, "varName", dataVariable.getName());
+                        addText(1.0f,  docVariables, "varLabel", dataVariable.getLabel());
+                        addText(1.0f,  docVariables, "varId", dataVariable.getId().toString());
                         writerVar.addDocument(docVariables);
                     }
                 }
@@ -359,10 +359,14 @@ public class Indexer implements java.io.Serializable  {
         }
     }
     
-    protected void addText(Document doc,String key, String value){
+    protected void addText(float boost, Document doc,String key, String value){
         if (value != null && value.length()>0){
-            doc.add(new Field(key,value.toLowerCase().trim(),Field.Store.YES, Field.Index.TOKENIZED));
-            doc.add(new Field(key,value.trim(), Field.Store.YES, Field.Index.UN_TOKENIZED));
+            Field f1 = new Field(key,value.toLowerCase().trim(),Field.Store.YES, Field.Index.TOKENIZED);
+            Field f2 = new Field(key,value.trim(), Field.Store.YES, Field.Index.UN_TOKENIZED);
+            f1.setBoost(boost);
+            f2.setBoost(boost);
+            doc.add(f1);
+            doc.add(f2);
         }      
     }
     
@@ -608,10 +612,11 @@ public class Indexer implements java.io.Serializable  {
                 searcher = new IndexSearcher(dir);
             }
             logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            hits = searcher.search(query);
+            hits = searcher.search(query); 
             logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             for (int i = 0; i < hits.length(); i++) {
+                System.out.println("Score: "+hits.score(i));
                 documents.add(hits.doc(i));
             }
             logger.info("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
@@ -642,7 +647,7 @@ public class Indexer implements java.io.Serializable  {
             logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             List hits = s.getStudies();
             for (int i = 0; i < hits.size(); i++) {
-                Document d = (Document) hits.get(i);
+                Document d = ((ScoredDocument) hits.get(i)).getScoredDocument();
                 Field studyId = d.getField("id");
                 String studyIdStr = studyId.stringValue();
                 Long studyIdLong = Long.valueOf(studyIdStr);

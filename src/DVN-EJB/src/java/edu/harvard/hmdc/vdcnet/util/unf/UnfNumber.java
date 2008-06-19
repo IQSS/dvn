@@ -203,7 +203,7 @@ public class UnfNumber<T extends Number> implements UnfCons{
 	  
 	   //make sure is in big-endian order
 	   mLog.info("Base64 encoding in BIG-ENDIAN");
-	   String tobase64 = Base64Sun.tobase64(inthash,false);
+	   String tobase64 = Base64Encoding.tobase64(inthash,false);
 	   String hexstr = UtilsConverter.getHexStrng(hash);
 	   hex.append(hexstr);
 	   mLog.info("hex "+hex);

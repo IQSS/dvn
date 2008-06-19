@@ -209,7 +209,7 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 		   mLog.info("unfString: hash has more than 16 bytes.."+hash.length); 
 	   for(k=0; k < hash.length; ++k)
 		   result.add(hash[k] & 0xFF);
-	   String  rtobase64 = Base64Sun.tobase64(hash,false);
+	   String  rtobase64 = Base64Encoding.tobase64(hash,false);
 	   String hexstr = UtilsConverter.getHexStrng(hash);
 	   hex.append(hexstr);
 	   for(int n=0; n <rtobase64.length(); ++n)

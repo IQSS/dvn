@@ -63,6 +63,8 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 
+import edu.harvard.hmdc.vdcnet.util.unf.*;
+import java.security.NoSuchAlgorithmException;
 /**
  *
  * @author gdurand
@@ -314,7 +316,16 @@ public class DSBWrapper implements java.io.Serializable  {
             // no subsettable files
             return null;
         } else {
-            return calculateUNF(unfs);
+            String fileUNF=null;
+            try {
+                fileUNF = UNFUtil.calculateUNF(unfs, "3");
+            //return calculateUNF(unfs);
+            } catch (UnfException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e){
+                e.printStackTrace();
+            }
+            return fileUNF;
         }
     }
     

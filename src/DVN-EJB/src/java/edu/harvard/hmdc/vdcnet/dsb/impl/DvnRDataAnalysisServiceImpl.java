@@ -936,7 +936,8 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
             // set-up R command lines
             // temp file
             String R_TMP_DIR = "/tmp/VDC/";
-            String cnfgfl = R_TMP_DIR +"configZeligGUI."+RandomStringUtils.randomNumeric(6)+ ".xml"; 
+            //String cnfgfl = R_TMP_DIR +"configZeligGUI."+RandomStringUtils.randomNumeric(6)+ ".xml"; 
+            String cnfgfl = R_TMP_DIR +"configZeligGUI.xml"; 
             out.println("cnfgfl="+cnfgfl);
             // R code line part 1         
             String cmndline = "library(VDCutil);  printZeligSchemaInstance('"+ cnfgfl + "')";

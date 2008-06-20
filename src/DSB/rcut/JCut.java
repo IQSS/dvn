@@ -28,7 +28,7 @@ class JCut {
 
 
     public static int counter = 0; 
-    private static int RECLEN = 13; 
+    private static int RECLEN = 0; 
     private static int OUTLEN = 0; 
 
     public static Boolean debug = false; 
@@ -36,6 +36,7 @@ class JCut {
     private String delim = "\t"; 
 
     public static int[] bounds = new int[8192];
+    public static int[] outbounds = new int[8192];
 
     private void parse_lists ( String lists ) {
 
@@ -48,7 +49,6 @@ class JCut {
 
 	int begin = 0; 
 	int end = 0; 
-
 
 	// take apart the lists, one by one (they are seperated with commas)
 
@@ -107,8 +107,12 @@ class JCut {
 
 	int offset = 0; 
 	int outoffset = 0; 
+	int pos = 0; 
+
+	Boolean dottednotation = false; 
 
 	int i; 
+	int j; 
 
 	JCut jc = new JCut(); 
 	// parse_args ( args ); 
@@ -146,13 +150,14 @@ class JCut {
 
 	int begin = 0; 
 	int end = 0;
+	int blankoffset = 0; 
 
 	
 	try {
 	    while ( rbc.read ( inbuffer ) != -1 ) {
-		byte[] item = new byte[OUTLEN]; 
+		byte[] line_read = new byte[OUTLEN]; 
 		byte[] junk = new byte[RECLEN]; 
-		byte[] final = new byte[RECLEN]; 
+		byte[] line_final = new byte[OUTLEN]; 
 
 		String field = null; 
 
@@ -178,24 +183,75 @@ class JCut {
 			}
 
 			//item = new byte[end-begin+2]; 
-			inbuffer.get (item, outoffset, (end-begin+1)); 
+			inbuffer.get (line_read, outoffset, (end-begin+1)); 
 
-			if ( i < counter - 1 ) {
-			    item[outoffset+end-begin+1]='\011';
-			} else {
-			    item[outoffset+end-begin+1]='\012';
+			//if ( i < counter - 1 ) {
+			//    line_read[outoffset+end-begin+1]='\011';
+			//} else {
+			//    line_read[outoffset+end-begin+1]='\012';
+			//}		       
+
+			outbounds[2*i] = outoffset; 
+			outbounds[2*i+1] = outoffset + (end-begin); 
+
+			pos = outoffset; 
+			dottednotation = false; 
+			blankoffset = 0; 
+
+			while ( pos <= ( outoffset + (end-begin) ) ) {
+
+			    // dot: 
+
+			    if ( line_read[pos] == '\056' ) {
+				dottednotation = true; 
+			    }
+
+			    // space: 
+
+			    if ( line_read[pos] == '\040' ) {
+				blankoffset = pos+1; 
+			    }
+
+			    pos++;
 			}
 
-			field = new String ( item, outoffset, (end-begin+1) ); 
+			outoffset += (end-begin+1); 
 
-			outoffset += (end-begin+2); 
+
+			if ( !dottednotation ) {
+			    if ( blankoffset > 0 ) {
+				outbounds[2*i] = blankoffset; 
+			    }
+			}
+			    
+
+
+			//field = new String ( line_read, outoffset, (end-begin+1) ); 
 		    } catch ( BufferUnderflowException bufe ) {
 			bufe.printStackTrace();
 		    }
 		    offset = end; 
 		}
 
-		outbuffer = ByteBuffer.wrap ( item ); 
+		outoffset = 0; 
+
+		for ( i = 0; i < counter; i++ ) {
+		    begin = outbounds[2*i]; 
+		    end = outbounds[2*i+1]; 
+
+		    for ( j = begin; j <= end; j++ ) {
+			line_final [outoffset++] = line_read[j]; 
+		    }
+		    
+		    if ( i < counter - 1 ) {
+		        line_final[outoffset++]='\011';
+		    } else {
+		        line_final[outoffset++]='\012';
+		    }
+
+		}		
+
+		outbuffer = ByteBuffer.wrap ( line_final, 0, outoffset ); 
 		out.write ( outbuffer ); 
 
 		inbuffer.clear(); 

@@ -855,32 +855,23 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //            try {
                 out.println("***** within dwnldAction() *****");
                 StudyFile sf = dataTable.getStudyFile();
+
+                String dsbUrl = getDsbUrl();
+                out.println("dsbUrl=" + dsbUrl);
+
+                String serverPrefix = req.getScheme() + "://"
+                    + req.getServerName() + ":" + req.getServerPort()
+                    + req.getContextPath();
+                
+                out.println("serverPrefix"+serverPrefix);
+                Map<String, List<String>> mpl = new HashMap<String, List<String>>();
+
                 // String formatType = req.getParameter("formatType");
                 String formatType = (String) dwnldFileTypeSet.getValue();
                 out.println("file type from the binding=" + formatType);
-                // String formatType = "D01";
+                mpl.put("dtdwnld", Arrays.asList(formatType));
 
-                String dsbUrl = System.getProperty("vdc.dsb.host");
-                String dsbPort = System.getProperty("vdc.dsb.port");
 
-                if (dsbPort != null) {
-                    dsbUrl += ":" + dsbPort;
-                }
-
-                if (dsbUrl == null) {
-                    dsbUrl = System.getProperty("vdc.dsb.url");
-                }
-
-                out.println("dsbUrl=" + dsbUrl);
-
-//                String serverPrefix = req.getScheme() + "://"
-//                    + req.getServerName() + ":" + req.getServerPort()
-//                    + req.getContextPath();
-                
-                String serverPrefix = "http://dvn-alpha.hmdc.harvard.edu"
-                    + req.getContextPath();
-                out.println("serverPrefix"+serverPrefix);
-                Map<String, List<String>> mpl = new HashMap<String, List<String>>();
 
                 // if there is a user-defined (recoded) variables
                 if (recodedVarSet.size() > 0) {
@@ -896,6 +887,208 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // req.getServerPort() + req.getContextPath()));
                 mpl.put("studytitle", Arrays.asList(studyTitle));
                 mpl.put("studyno", Arrays.asList(studyId.toString()));
+                mpl.put("studyURL", Arrays.asList(studyURL));
+                mpl.put("browserType", Arrays.asList(browserType));
+
+
+            // -----------------------------------------------------
+            // New processing route
+            // 
+            // Step 0. Locate the data file and its attributes
+    
+            String fileId = sf.getId().toString();
+            String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+            //String fileURL = "http://dvn-alpha.hmdc.harvard.edu" + "/dvn/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+            out.println("fileURL="+fileURL);
+            
+            String fileloc = sf.getFileSystemLocation();
+            String tabflnm = sf.getFileName();
+            boolean sbstOK = sf.isSubsettable();
+            String flct = sf.getFileType();
+            out.println("location="+fileloc);
+            out.println("filename="+tabflnm);
+            out.println("subsettable="+sbstOK);
+            out.println("filetype="+flct);
+
+
+            // the data file for downloading/statistical analyses must be subset-ready
+            // local (relative to the application) file case 
+            // note: a typical remote case is: US Census Bureau
+            
+            if (!sf.isRemote() && sbstOK){
+                
+                try {
+
+            // Step 1. temporarily store the whole data set in a temp directory
+
+                    // Create a URL for the data file
+                    URL url = new URL(fileURL);
+
+                    // temp data file that stores incoming data from the above URL
+                    File tmpfl = File.createTempFile("tempTabfile.", ".tab");
+
+                    // temp subset file that stores requested variables 
+                    File tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
+
+                    // Typical file-copy idiom 
+                    // incoming/outgoing streams
+                    InputStream inb = new BufferedInputStream(url.openStream());
+                    OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpfl));
+
+                    int bufsize;
+                    byte [] bffr = new byte[8192];
+                    while ((bufsize = inb.read(bffr))!=-1) {
+                        outb.write(bffr, 0, bufsize);
+                    }
+                    outb.close();
+                    if (tmpfl.exists()){
+                       out.println("file length="+tmpfl.length());
+                       out.println("tmp file name="+tmpfl.getAbsolutePath());
+                       
+                    }
+boolean fieldcut = true;
+if (fieldcut){
+                    // Step 2. Set-up parameters for subsetting: cutting requested columns of data
+                    // from a temp (whole) file
+
+                    // create var ids for subsetting
+                    // data(int) are taken from DB's studyfile table -- FileOrder column
+                    String [] vids = null;
+                    
+                    int vidslen = getDataVariableForRequest().size();
+                    
+                    List<String> variableList = new ArrayList();
+                    
+                    List<String> variableOrder = new ArrayList();
+                    Set<Integer> cols = new LinkedHashSet<Integer>();
+                    
+                    if (getDataVariableForRequest() != null) {
+                        Iterator iter = getDataVariableForRequest().iterator();
+                        while (iter.hasNext()) {
+                            DataVariable dv = (DataVariable) iter.next();
+                            variableList.add(dv.getId().toString());
+
+                            // the susbsetting parameter starts from 1 not 0,
+                            // add 1 to the number
+                            // variableOrder.add( Integer.toString(dv.getFileOrder()) );
+                            cols.add(dv.getFileOrder());
+                        }
+                    }
+                    
+
+                     out.println("cols="+cols);
+                    // source data file: full-path name
+                    String cutOp1 = tmpfl.getAbsolutePath();
+
+                    // result(subset) data file: full-path name
+                    String cutOp2 = tmpsbfl.getAbsolutePath();
+
+                    // Create an instance of RcutDatasetCutter
+                    FieldCutter fc = new DvnJavaFieldCutter();
+
+                    // Executes the subsetting request
+                    fc.subsetFile(cutOp1, cutOp2, cols);
+                    
+                    
+                    // Checks the result file 
+                    if (tmpsbfl.exists()){
+                        out.println("subsettFile:Length="+tmpsbfl.length());
+                        mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                    }
+                        mpl.put("requestType", Arrays.asList("Download"));
+
+} else {
+                    // Step 2. Set-up parameters for subsetting: cutting requested columns of data
+                    // from a temp (whole) file
+
+                    // create var ids for subsetting
+                    // data(int) are taken from DB's studyfile table -- FileOrder column
+                    String [] vids = null;
+                    
+                    int vidslen = getDataVariableForRequest().size();
+                    
+                    List<String> variableList = new ArrayList();
+                    
+                    List<String> variableOrder = new ArrayList();
+                    
+                    if (getDataVariableForRequest() != null) {
+                        Iterator iter = getDataVariableForRequest().iterator();
+                        while (iter.hasNext()) {
+                            DataVariable dv = (DataVariable) iter.next();
+                            variableList.add(dv.getId().toString());
+
+                            // the susbsetting parameter starts from 1 not 0,
+                            // add 1 to the number
+                            variableOrder.add( Integer.toString(dv.getFileOrder()+1) );
+                        }
+                    }
+
+                    vids = (String[]) variableOrder.toArray(new String[vidslen]);
+                    String varsq = StringUtils.join(vids, ",");
+                    String cutOp0 = "-f"+ varsq ;
+
+                    // source data file: full-path name
+                    String cutOp1 = tmpfl.getAbsolutePath();
+
+                    // result(subset) data file: full-path name
+                    String cutOp2 = tmpsbfl.getAbsolutePath();
+
+                    // Create an instance of RcutDatasetCutter
+                    DatasetCutter dc = new RcutDatasetCutter(cutOp0, cutOp1, cutOp2);
+
+                    // Executes the subsetting request
+                    dc.run();
+                    
+                    
+                    // Checks the result file 
+                    if (tmpsbfl.exists()){
+                        out.println("subsettFile:Length="+tmpsbfl.length());
+                        mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                    }
+                        mpl.put("requestType", Arrays.asList("Download"));
+}
+
+
+                    // Step 3. Organizes parameters/metadata to be sent to the implemented
+                    // data-analysis-service class
+                    ServiceRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl);
+                    out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+                    // Step 4. Creates an instance of the the implemented 
+                    // data-analysis-service class 
+
+                    DataAnalysisService das = new DvnRDataAnalysisServiceImpl();
+
+                    // Executes a request of downloading or data analysis and 
+                    // capture result info as a Map <String, String>
+
+                    resultInfo = das.execute(sro);
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                    // pass the error message to the resultPage
+                    // resultInfo.put();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // ditto
+                    // resultInt.put();
+                }
+
+            }
+
+            out.println("***** within dwnldAction(): succcessfully ends here *****");
+            
+                resultInfo.put("offlineCitation", citation);
+                resultInfo.put("studyTitle", studyTitle);
+                resultInfo.put("studyNo", studyId.toString());
+                resultInfo.put("studyURL", studyURL);
+
+
+
+
+
+
+
+
 
 //                new DSBWrapper().disseminate(res, mpl, sf, serverPrefix,
 //                    getDataVariableForRequest(), formatType);

@@ -777,11 +777,12 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
                 x[[3]]<- checkBinaryResponse(x[[3]])
              * 3 must be parameterized for binary response models
             */
+            if (false){
             String binaryResponsevar = "x[[" +3 +"]]";
             String checkBinaryVarline=  binaryResponsevar +
                 "<- checkBinaryResponse("+binaryResponsevar+")";
             c.voidEval(checkBinaryVarline);
-            
+            }
             Map<String, String> ZlgModelParam = new HashMap<String, String>();
             
             // create a temp dir

@@ -272,14 +272,16 @@ public class DvnRJobRequest implements ServiceRequest {
     }
 
     /**
-     * Getter for property requestTypeToken
+     * Getter for property download request type
      *
      * @param     
      * @return    
      */
     public String getDownloadRequestParameter() {
         String param=null;
-        
+        List<String> requestTypeToken = listParametersForRequest.get("dtdwnld");
+        out.println("dtdwnld="+requestTypeToken.get(0));
+        param =  requestTypeToken.get(0);
         return param;
     }
 

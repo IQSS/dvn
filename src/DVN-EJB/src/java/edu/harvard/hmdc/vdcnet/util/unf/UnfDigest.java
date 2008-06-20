@@ -1,9 +1,19 @@
 /**
- * Description takes as input two double arrays of <T extends Number> and
- * <E extends CharSequence> and calculates the unf for every column of the 
- * arrays of class T and E, according to the defaults arguments, encoding  
- * and MessageDigest. To combine or add the message digests of all columns 
- * use the method addUNFs(String[]). After Micah specifications 
+ * Description takes as input two dimensional arrays of generic classes 
+ * <T extends Number> and <E extends CharSequence>, 
+ * and calculates the unf along every column of the 
+ * arrays of class T or E, according to some defaults arguments as specified 
+ * in UnfCons interface, the encoding and MessageDigest.
+ * To combine or add the message digests calculated from columns 
+ * of data set use the method addUNFs(String[]).
+ * 
+ * Methods in this class are static. After invoking the overloaded methods
+ * for CharSequence and Number, UnfDigest.unf, along each of the 
+ * columns of the data set, one can obtain the object UnfClass as 
+ * UnfClass signature = UnfDigest.getSignature();
+ * 
+ *  
+ * After Micah Altman specifications 
  * 
  * **For unf version 3 encoding is UTF-32BE and digest is MD5
  * **for version 4 encoding is UTF-32BE and digest is SHA-256
@@ -45,13 +55,15 @@ private static List<List<Integer>> fingerprint = new ArrayList<List<Integer>>();
 /** for debugging */
 private boolean debug = false;
 /** unfClass type after calculating digest 
- * and Base64 encoding of 
- * all columns in data matrix*/
+ * and Base64 encoding of all columns in data matrix.
+ *  Contains fingerprints, hexadecimal strings, digest and the parameters to obtain them*/
 private static UnfClass signature = null;
 /**whether to create object of type unfClass */
 private static boolean buildunfObj = new Boolean(unfObj);
 
-
+/**
+ * Constructor 
+ */
 public UnfDigest(){
 	if(!DEBUG||!debug)
 		mLog.setLevel(Level.WARNING);
@@ -68,7 +80,7 @@ public static float getVersion(){
 }
 /**
  * 
- * @param vv: float for unf version
+ * @param vv float to set the unf version
  */
 public void setVersion(float vv){
 	this.currentVersion = (vv<=4.1f && vv >= 3f)?vv:3f;
@@ -76,15 +88,16 @@ public void setVersion(float vv){
 		mLog.info("Unsupported version using 3");
 }
 /**
- * @return boolean indicating whether transpose array of data
- * unf is applied along each column of the data array
+ * @return boolean indicating whether to transpose array of data
+ * unf is applied along each column of the data array by default
  */
 public static boolean getTrnps(){
 	return trnps;
 }
 /**
  * 
- * @param tt: boolean indicating whether transpose array of data
+ * @param tt boolean indicating whether transpose array of data
+ * If transpose the unf is calculated for each column
  */
 public static void setTrnps(boolean tt){
 	trnps=tt;
@@ -99,29 +112,39 @@ public List<List<Integer>> getFingerprint(){
 
 /**
  * 
- * @return unfClass summarizing the digest encoding of data matrix
+ * @return unfClass summarizing the digest encoding of data set
  */
 public static UnfClass getSignature(){
 	return signature;
 }
 /**
  * 
- * @param c: unfClass setting digest encoding of data matrix
+ * @param c unfClass setting digest encoding of data set
  */
 public void setSignature(UnfClass c){
 	signature=c; 
 }
+/**
+ * 
+ * @return boolean to create object signature of class UnfClass
+ */
+
 public static boolean getUnfObj(){
 	return buildunfObj;
 }
+/**
+ * 
+ * @param obj boolean to create UnfClass signature of data set
+ */
 public static void setUnfObj(boolean obj){
 	buildunfObj = obj;
 }
 /**
+ * Some warnings for consistency with Micah Alatman's code specs
  * 
- * @param ndigits: int of significant digits including decimal point 
- * @param cdigits: int with number of significant characters
- * @param version: float unf version number
+ * @param ndigits integer significant digits including decimal point 
+ * @param cdigits integer number of significant characters
+ * @param version float unf version number
  */
 public static void dowarnings(int ndigits, int cdigits, float version){
 	if(!DEBUG )
@@ -137,10 +160,11 @@ public static void dowarnings(int ndigits, int cdigits, float version){
     
    
     /**
-     * @param <T>: Generic type that extends Number
-     * @param obj:bi-dimensional array of generic class T that extends Number
-     * @param digits: varargs with array of Integer 
-     * @return: array of String with base64 encoding for each column of obj
+     * Overloaded method
+     * @param <T> Generic type that extends Number
+     * @param obj bi-dimensional array of generic class T that extends Number
+     * @param digits optional variable arguments with Integer 
+     * @return array of String with base64 encoding for each column of obj
      * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
      * @throws IOException
@@ -152,11 +176,13 @@ public static void dowarnings(int ndigits, int cdigits, float version){
        
     }
     /**
-     * @param <T>: Generic type that extends Number
-     * @param vers: float with the unf version number
-     * @param obj:bi-dimensional array of generic class T that extends Number
-     * @param digits: varargs with array of Integer 
-     * @return: array of String with base64 encoding for each column of obj
+     * Calculate UNF's for bi-dimensional array of numeric values
+     * 
+     * @param <T> Generic type that extends Number
+     * @param vers float with the unf version number
+     * @param obj bi-dimensional array of generic class T that extends Number
+     * @param digits varargs with array of Integer 
+     * @return array of String with base64 encoding for each column of obj
      * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
      * @throws IOException
@@ -199,10 +225,11 @@ public static void dowarnings(int ndigits, int cdigits, float version){
     return res;	
     }
     /**
-     * @param <T>: Generic array that extends CharSequence
-     * @param obj:bi-dimensional array of generic class T that extends CharSequence
-     * @param digits: varargs with array of Integer 
-     * @return: array of String with base64 encoding for each column of obj
+     * Overloaded method
+     * @param <T> Generic array that extends CharSequence
+     * @param obj bi-dimensional array of generic class T that extends CharSequence
+     * @param digits varargs with array of Integer 
+     * @return array of String with base64 encoding for each column of obj
      * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
      * @throws IOException
@@ -214,11 +241,13 @@ public static void dowarnings(int ndigits, int cdigits, float version){
        
     }
     /**
-     * @param <T>: Generic array that extends CharSequence
-     * @param obj:bi-dimensional array of generic class T that extends CharSequence
-     * @param vers: float unf version number
-     * @param digits: varargs with array of Integer 
-     * @return: array of String with base64 encoding for each column of obj
+     * Calculate UNF's for bi-dimensional array of character values
+     * 
+     * @param <T> Generic array that extends CharSequence
+     * @param obj bi-dimensional array of generic class T that extends CharSequence
+     * @param vers float unf version number
+     * @param digits varargs with array of Integer 
+     * @return array of String with base64 encoding for each column of obj
      * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
      * @throws IOException
@@ -262,10 +291,10 @@ public static void dowarnings(int ndigits, int cdigits, float version){
     	return res;
     }
     /**
-     * 
-     * @param <T>: Generic array that extends Number
-     * @param obj: one-dimensional array of generic class T that extends Number
-     * @param ndg: int significant digits that includes decimal point
+     * Overloaded 
+     * @param <T> Generic array that extends Number
+     * @param obj one-dimensional array of generic class T that extends Number
+     * @param ndg integer with significant digits that includes decimal point
      * @return String with base64 encoding
      * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
@@ -278,11 +307,12 @@ public static void dowarnings(int ndigits, int cdigits, float version){
     	return  unfV(obj, ndg, currentVersion,signature);  
     }
     /**
+     * Calculates unf for one-dimensional array or column of data set
      * 
-     * @param <T>: Generic array that extends Number
-     * @param obj:one-dimensional array of generic class T that extends Number
-     * @param ndg: int significant digits that includes decimal point
-     * @param vers: float with unf version
+     * @param <T> Generic array that extends Number
+     * @param obj one-dimensional array of generic class T that extends Number
+     * @param ndg integer significant digits that includes decimal point
+     * @param vers float with unf version
      * @return String with base64 encoding
      * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
@@ -309,10 +339,11 @@ public static void dowarnings(int ndigits, int cdigits, float version){
  return b64;   	
 }
     /**
+     * Utility method 
      *@param <T> extends Number
-     *@param vers:float with the unf version number
-     *@param unfno: unfNumber<T> class	to be assigned 
-     * mdalgor and encoding according to unf version number 	
+     *@param vers float with the unf version number
+     *@param unfno unfNumber<T> class to assign the 
+     * message digest algor and encoding according to unf version number 	
     */
     		
     private static <T extends Number> void assnMDEnc(float vers, UnfNumber<T>unfno)
@@ -328,10 +359,10 @@ public static void dowarnings(int ndigits, int cdigits, float version){
     		throw new UnfException("unfDigest:Version not supported");
     	}
     /**
-     * 
-     * @param <T>: Generic array that extends CharSequence
-     * @param obj:one-dimensional array of generic class T that extends CharSequence
-     * @param cdg: int with number of chars to keep
+     * Overloaded
+     * @param <T> Generic array that extends CharSequence
+     * @param obj one-dimensional array of generic class T that extends CharSequence
+     * @param cdg integer with number of chars to keep
      * @return String with base64 encoding
      * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
@@ -344,11 +375,12 @@ public static void dowarnings(int ndigits, int cdigits, float version){
     	return  unfV(obj, cdg, currentVersion, signature);  
     }
     /**
+     * Calculates the unf for one-dimensional array or column of data set
      * 
-     * @param <T>: Generic array that extends CharSequence
-     * @param obj:one-dimensional array of generic class T that extends CharSequence
-     * @param cdg: int with number of chars to keep
-     * @param vers: float with unf version
+     * @param <T> Generic array that extends CharSequence
+     * @param obj one-dimensional array of generic class T that extends CharSequence
+     * @param cdg integer with number of chars to keep
+     * @param vers float with unf version
      * @return String with base64 encoding
      * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
@@ -378,11 +410,12 @@ public static void dowarnings(int ndigits, int cdigits, float version){
  return b64;   	
 }
     /**
+     * Utility helper method
      * 
-     * @param <T>: Generic CharSequence
-     * @param vers:float for unf version number
-     * @param unfno: unfString<T> to be assigned encoding 
-     *  and mdalgor according to unf version (vers)
+     * @param <T> Generic CharSequence
+     * @param vers float for unf version number
+     * @param unfno unfString<T> to assign encoding 
+     *  and algorithm according to unf version (vers)
      */
     private static <T extends CharSequence> void assnMDEnc(float vers, UnfString<T>unfno)
     throws UnfException{
@@ -398,11 +431,12 @@ public static void dowarnings(int ndigits, int cdigits, float version){
     	}
     
    /**
+    * Creates the UnfClass from data set
     * 
-    * @param fingerp: List of Integer contains bytes from digest
-    * @param hex: StringBuilder to store the hex-decimal representation 
-    * @param b64: String with base64 encoding
-    * @param signature: unfClass to store results of applying unf
+    * @param fingerp List of Integer contains bytes from digest
+    * @param hex StringBuilder to store the hex-decimal representation 
+    * @param b64 String with base64 encoding
+    * @param signature unfClass to store results of applying unf to a data set
     */ 
     private  static void buildUnfClass(List<Integer>fingerp, 
     		StringBuilder hex, String b64, UnfClass signature){
@@ -422,7 +456,7 @@ public static void dowarnings(int ndigits, int cdigits, float version){
     	}
    /**
     * 
-    * @return String with unf version number
+    * @return String representation of unf version number
     */ 
     private static String versString(){
     	float vrs = getVersion();
@@ -434,8 +468,9 @@ public static void dowarnings(int ndigits, int cdigits, float version){
     	return vch;
     	}
     /**
+     * Add the combine unf's of all columns in data set
      * 
-     * @param b64:String array with unf's
+     * @param b64 String array with unf's
      * @return String with combine unf's
      * @throws UnsupportedEncodingException
      * @throws IOException

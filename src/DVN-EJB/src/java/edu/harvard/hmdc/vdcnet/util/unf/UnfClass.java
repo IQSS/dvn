@@ -1,8 +1,11 @@
 /**
  * Description: Holds relevant parameters and values from calculating digest
- * in a data matrix. The Collection with the fingerprints, the arrays with 
- * base64 encoding, and hexadecimal string representations. Following the 
+ * in a data set with specified number of rows and columns. 
+ * The Collection with the fingerprints, the arrays with 
+ * base64 encoding, and the hexadecimal strings representations each of these  
+ * values have being calculated for every column of data set. Following the 
  * definitation of class unf given by Micah Altman in his C code
+ * 
  * @author evillalon
  * {@link evillalon@iq.harvard.edu} 
  */
@@ -38,12 +41,29 @@ private List<String> b64= new ArrayList<String>();
 private String mdalgor=null;
 /** the encoding to apply message digest*/
 private String encoding =null;
+/**
+ * Constructor
+ */
 public UnfClass(){}
+/**
+ * Constructor
+ * @param cd integer with number of characters
+ * @param nd integer with number decimal digits
+ * @param vers float the unf version 
+ */
 public UnfClass(int cd,int nd, float vers){
 	cdigits=cd;
 	ndigits=nd;
 	version = vers;
 }
+/**
+ * Constructor
+ * @param cd integer with number of characters
+ * @param nd integer with number decimal digits
+ * @param vers float the unf version
+ * @param md String with MessageDigest algor
+ * @param enc String with encoding 
+ */
 public UnfClass(int cd,int nd, float vers, String md, String enc){
 	this(cd,nd,vers);
     mdalgor = md;
@@ -58,7 +78,7 @@ public int getCdigits(){
 }
 /**
  * 
- * @param d: integer for number of chars
+ * @param d integer for number of chars
  */
 public void setCdigits(int d){
 	cdigits=d;
@@ -72,37 +92,37 @@ public int getNdigits(){
 }
 /**
  * 
- * @param d: integer with digits including decimal point
+ * @param d integer with digits including decimal point
  */
 public void setNdigits(int d){
 	ndigits=d;
 }
 /**
  * 
- * @return: float with unf version
+ * @return float with unf version
  */
 public float getVersion(){
 	return version;
 }
 /**
  * 
- * @param v: float for unf version
+ * @param v float for unf version
  */
 public void setVersion(float v){
 	version=v;
 }
 /**
  * 
- * @return String array with hexadecimal representation of every column 
- * in data matrix after applying digest
+ * @return String array with hexadecimal representation 
+ * of every column in data set after applying digest
  */
 public List<String> getHexvalue(){
 	return hexvalue;
 }
 /**
  * 
- * @param s: String array with hexadecimal representation of 
- * each column in data matrix after calculating digest
+ * @param s String array with hexadecimal representation of 
+ * each column in data set after calculating digest
  */
 public void setHexvalue(List<String> s){
 	hexvalue=s; 
@@ -110,15 +130,15 @@ public void setHexvalue(List<String> s){
 /***
  * 
  * @return String array with base64 encoding for every column 
- * in data matrix obtained from bytes arrays of digest
+ * in data set obtained from bytes arrays of digest
  */
 public List<String> getB64(){
 	return b64;
 }
 /**
  * 
- * @param b: String array fwith base64 encoding 
- * of each column in data matrix
+ * @param b String array with base64 encoding 
+ * of each column in data set
  */
 public void setB64(List<String> b){
 	b64=b;
@@ -132,8 +152,8 @@ public List<Integer[]> getFingerprints(){
 }
 /**
  * 
- * @param fg: List of Integer arrays with fingerprints 
- * of data matrix as obtained from digest
+ * @param fg List of Integer arrays with fingerprints 
+ * of data set as obtained from digest
  */
 public void setFingerprints(List<Integer[]>fg){
 	fingerprints =fg;
@@ -147,7 +167,7 @@ public String getMdalgor(){
 }
 /** 
  * 
- * @param algor: String for message digest
+ * @param algor String for message digest
  */
 public void setMdalgor(String algor){
 	mdalgor = algor;
@@ -160,7 +180,7 @@ public String getEncoding(){
 	return encoding;
 }
 /**
- * @param String for encoding
+ * @param enc String for encoding
  */
 public void setEncoding(String enc){
 	encoding = enc;

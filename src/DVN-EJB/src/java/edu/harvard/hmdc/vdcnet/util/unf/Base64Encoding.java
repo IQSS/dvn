@@ -1,10 +1,10 @@
 /**
- * Description: Base64 encoding algorithm. The base65(byte[] input) takes into account
+ * Description: Base64 encoding algorithm. The base64(byte[] input) takes into account
  *              the Endianes of the byte stream and, by default, it turns  
  *              the byte array input to  BIG_ENDIAN order, before applying 
  *              the base64 algorithm. It uses  the classes in org.apache.commons.codec.*
  *              
- * @author evillalon             
+ * @author evillalon@iq.harvard.edu            
  */
 package edu.harvard.hmdc.vdcnet.util.unf;
 
@@ -51,8 +51,9 @@ public class Base64Encoding implements UnfCons{
 	}
 	/**
 	 * 
-	 * @param digest: byte array for encoding in base 64, 
-	 * @return String encoded base64
+	 * @param digest byte array for encoding in base 64,
+	 * @param  chngByteOrd boolean indicating if to change byte order
+	 * @return String the encoded base64 of digest
 	 */
 	public static String tobase64(byte[]digest,boolean chngByteOrd){
 		  
@@ -79,9 +80,9 @@ public class Base64Encoding implements UnfCons{
 		   }
 	/**
 	 * 
-	 * @param digest: byte array
-	 * @param enc: String final encoding 
-	 * @return String 
+	 * @param digest byte array
+	 * @param enc String with final encoding 
+	 * @return String the encoded base64 of digest
 	 * @throws UnsupportedEncodingException
 	 */
 public static String tobase64(byte[]digest,String enc) 
@@ -111,10 +112,11 @@ throws UnsupportedEncodingException{
 
 
 /**
- * It encodes the String(byte[]) instead of the array 
- * @param digest: byte array for encoding in base 64,
- * @param cset: t=String with name of charset
- * @return String base 64
+ * Alternative tobase64 method.Encodes the String(byte[]) instead of the array 
+ * 
+ * @param digest byte array for encoding in base 64,
+ * @param cset String with name of charset
+ * @return String base 64 the encoded base64 of digest
  */
 public static String tobase641(byte[]digest, String cset){
 	   byte [] revdigest = changeByteOrder(digest, ByteOrder.nativeOrder());
@@ -142,8 +144,9 @@ public static String tobase641(byte[]digest, String cset){
 }
 /**
  * Helper function to change the endianess of the byte array
- * @param digest: byte array
- * @param local: ByteOrder
+ * 
+ * @param digest byte array
+ * @param local ByteOrder
  * @return byte array with endianness according to getBorder()
  */
 public static byte[] changeByteOrder(byte[] digest, ByteOrder local)

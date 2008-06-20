@@ -1,24 +1,33 @@
 /**
  * Description: This class is a wrapper for unfDigest and uses its static methods
- * 				It contains only one method calculateUNF, which is overloaded 
- *              and accept one-dimensional primitives array types or array of String;  
- *              it calls the appropriate method unfDigest.unf depending on 
- *              whether the array is of primitives, after converting them to Number,
- *              or if the array is of String, and return the unf.
+ * 				It contains only one static method calculateUNF, which is overloaded 
+ *              and accept one-dimensional primitives array types or array of String.
+ *              It also accepts two-dimensional array of primitive type double and 
+ *              of class String. It calls the appropriate method unfDigest.unf 
+ *              depending on whether the array is of primitives, after converting them 
+ *              to class Number, or if the array is of String, and return the unf.
+ *              It can also accept an array of unf's and add them into a single unf.
+ *              The main difference between this class and UnfDigest is that for this 
+ *              class only primitive types or String, but for UnfDigest arrays are 
+ *              of class Number or CharSequence.   
  *              
  * @author evillalon@iq.harvard.edu               
  */
+
 package edu.harvard.hmdc.vdcnet.util.unf;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.List;
 
 public class UNFUtil {
 /**
+ * Obtains the unf of a one dimensional array of double
+ * by calling the methods in UnfDigest
  * 
- * @param numb: one dimensional array of double 
- * @param version: String unf version
+ * @param numb one dimensional array of double 
+ * @param version String unf version
  * @return String with unf calculation 
  * @throws NumberFormatException
  * @throws UnfException
@@ -40,8 +49,8 @@ throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmExceptio
 }
 /**
  * Overloaded method 
- * @param numb: one dimensional array of float
- * @param version: String unf version
+ * @param numb one dimensional array of float
+ * @param vers String unf version
  * @return String with unf calculation 
  * @throws NumberFormatException
  * @throws UnfException
@@ -59,8 +68,8 @@ throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmExceptio
 }
 /**
  * Overloaded method
- * @param numb: one dimensional array of short 
- * @param version: String unf version
+ * @param numb one dimensional array of short 
+ * @param vers String unf version
  * @return String with unf calculation 
  * @throws NumberFormatException
  * @throws UnfException
@@ -79,8 +88,8 @@ throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmExceptio
 }
 /**
  * Overloaded method
- * @param numb: one dimensional array of byte
- * @param version: String unf version
+ * @param numb one dimensional array of byte
+ * @param vers String unf version
  * @return String with unf calculation 
  * @throws NumberFormatException
  * @throws UnfException
@@ -99,8 +108,8 @@ throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmExceptio
 }
 /**
  * Overloaded method
- * @param numb: one dimensional array of long 
- * @param version: String unf version
+ * @param numb one dimensional array of long 
+ * @param vers String unf version
  * @return String with unf calculation 
  * @throws NumberFormatException
  * @throws UnfException
@@ -119,8 +128,8 @@ throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmExceptio
 }
 /**
  * Overloaded method
- * @param numb: one dimensional array of integer 
- * @param version: String unf version
+ * @param numb one dimensional array of integer 
+ * @param vers String unf version
  * @return String with unf calculation 
  * @throws NumberFormatException
  * @throws UnfException
@@ -138,9 +147,9 @@ throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmExceptio
 	return res;
 }
 /**
- * Overloaded method: Converts boolean to 1 (true) or 0 (false). 
- * @param numb: one dimensional array of boolean 
- * @param version: String unf version
+ * Overloaded method Converts boolean to 1 (true) or 0 (false). 
+ * @param numb one dimensional array of boolean 
+ * @param vers String unf version
  * @return String with unf calculation 
  * @throws NumberFormatException
  * @throws UnfException
@@ -159,8 +168,8 @@ throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmExceptio
 }
 /**
  * Overloaded method
- * @param numb: List with generics types
- * @param version: String unf version
+ * @param numb List with generics types
+ * @param version String unf version
  * @return String with unf calculation 
  * @throws NumberFormatException
  * @throws UnfException
@@ -186,8 +195,8 @@ throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmExceptio
 }
 /**
  * Overloaded method
- * @param numb: one dimensional array of String 
- * @param version: String unf version
+ * @param chr one dimensional array of String 
+ * @param version String unf version
  * @return String with unf calculation 
  * @throws NumberFormatException
  * @throws UnfException
@@ -214,7 +223,63 @@ throws UnfException, NoSuchAlgorithmException, IOException{
 	String [] res = UnfDigest.unf(chseq, vers);
 	return res[0];
 }
-
-
+/**
+ * Calculates unf's of two-dimensional array of double
+ * along second index (columns) and add them
+ * Note that if data set contains number and String this method 
+ * cannot be used. Instead used the one-dimensional arrays of double and 
+ * combine with the String unfs.
+ * 
+ * @param numb double bi-dimensional array 
+ * to obtain unf along columns second index 
+ * @param version unf version
+ * @return String unf for data set
+ * @throws NumberFormatException
+ * @throws UnfException
+ * @throws IOException
+ * @throws NoSuchAlgorithmException
+ */
+public static String calculateUNF(final double[][] numb, String version) 
+throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException{
+	int ncol = numb[0].length;
+	List<double[]> lst = Arrays.asList(numb);
+	int nrw = lst.size();
+	Number[][] pass = new Number[nrw][ncol];
+	for(int r=0; r <nrw; ++r)
+		for(int c=0; c<ncol;++c)
+			pass[r][c]= numb[r][c];
+	float v =(float) Double.parseDouble(version);
+	String [] unfs = UnfDigest.unf(pass,v);
+	return calculateUNF(unfs, version);
+}
+/**
+ * Calculates unf's of two-dimensional array of String
+ * along second index (columns) and add them
+ * Note that if data set contains number and String this method 
+ * cannot be used. Instead used the one-dimensional arrays and 
+ * combine with the numeric unfs.
+ * 
+ * @param str String bi-dimensional array 
+ * to obtain unf along columns second index 
+ * @param version unf version
+ * @return String unf for data set
+ * @throws NumberFormatException
+ * @throws UnfException
+ * @throws IOException
+ * @throws NoSuchAlgorithmException
+ */
+public static String calculateUNF(final String[][] str, String version) 
+throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException{
+	int ncol = str[0].length;
+	List<String[]> lst = Arrays.asList(str);
+	int nrw = lst.size();
+	CharSequence[][] pass = new CharSequence[nrw][ncol];
+	for(int r=0; r <nrw; ++r)
+		for(int c=0; c<ncol;++c)
+			pass[r][c]= str[r][c];
+	float v =(float) Double.parseDouble(version);
+	String [] unfs = UnfDigest.unf(pass,v);
+	return calculateUNF(unfs, version);
+}
 
 }

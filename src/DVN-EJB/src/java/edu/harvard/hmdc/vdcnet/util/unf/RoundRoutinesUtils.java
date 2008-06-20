@@ -1,3 +1,7 @@
+/**
+ * Complements the class RounRoutines.java with some utility methods
+ * @author evillalon@iq.harvard.edu
+ */
 package  edu.harvard.hmdc.vdcnet.util.unf;
 
 import java.util.Locale;
@@ -10,7 +14,7 @@ public class RoundRoutinesUtils {
 	 /**some formatting for special numbers*/
     private static FormatNumbSymbols symb = new FormatNumbSymbols(currentLocale);
 	/**
-	 * @param obj: Byte with either numeric or character values
+	 * @param obj Byte with either numeric or character values
 	 * @return boolean indicating if it's numeric
 	 */
 	public static boolean checkNumeric(Byte obj, int radix){
@@ -24,11 +28,14 @@ public class RoundRoutinesUtils {
 		return numeric; 
 	}
 	/**
-	 * 
-	 * @param cobj:Charsequence to check for numeric values
+	 * Checks if only number are in the strings. It does not 
+	 * check for either decimal points or other numeric symbols
+	 * (use with care) 
+	 * @param cobj CharSequence to check for numeric values
 	 * @return boolean indicating if it is all numeric 
 	 */
 	public static boolean checkNumeric(CharSequence cobj){
+		
 		String obj = cobj.toString();
 		int ln = cobj.length();
 		char [] objarro = new char[ln];
@@ -47,8 +54,8 @@ public class RoundRoutinesUtils {
 	}
 	/**
 	 * 
-	 * @param str: String to be trimmed from 0 
-	 * @param atfront: boolean whether 0 are at fron or back ends of str
+	 * @param str String to be trimmed from 0 
+	 * @param atfront boolean whether 0 are at front or back ends of str
 	 * @return String trimmed from zeros either at front or back
 	 */
 	public static String trimZeros(String str, boolean  atfront){
@@ -75,7 +82,7 @@ public class RoundRoutinesUtils {
 	}
 	/**
 	 * 
-	 * @param n: double to check for infinity and NaN
+	 * @param n double to check for infinity and NaN
 	 * @return String with special symbols or null if n is finite
 	 */
 	public static String specialNumb(Double n){
@@ -104,9 +111,9 @@ public class RoundRoutinesUtils {
 	}
 	/**
 	 * 
-	 * @param obj: Byte to be converted to numeric or chars
-	 * @param radix : int for numeric conversion
-	 * @return Object with the numeric or String value of obj
+	 * @param obj Byte to be converted to numeric or chars
+	 * @param radix integer for the basis of numeric conversion
+	 * @return Object with numeric or String value of obj
 	 */
 	public static Object byteToValue(Byte obj, int radix){
 		

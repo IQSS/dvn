@@ -1,5 +1,6 @@
 /**
  * Description: Generalized Rounding Routines
+ * 
  *              Implements Micah Altman code for rounding Numbers
  *              The implementation is in method Genround
  * Input: int with number of digits including the  decimal point, 
@@ -87,13 +88,18 @@ private static Logger mLog = Logger.getLogger(RoundRoutines.class.getName());
 		this.symb = new FormatNumbSymbols();
 		
 	}
+	/**
+	 * 
+	 * @param no boolean whether to append null bytes at end of Strings
+	 */
 	public RoundRoutines(boolean no){
 		this();
 		nullbyte = no; 
 	}
 	/**
 	 * 
-	 * @param digits:int 
+	 * @param digits integer with number of decimal digits for mantissa calculations
+	 * @param  no boolean whether to append null bytes at end of Strings
 	 * Number of decimal digits including the decimal point
 	 */
 	public RoundRoutines(int digits,boolean no){
@@ -105,8 +111,9 @@ private static Logger mLog = Logger.getLogger(RoundRoutines.class.getName());
 	}
 	/**
 	 * 
-	 * @param digits:int
-	 * @param loc: the default locale
+	 * @param digits integer number of decimal digits for mantissa calculations
+	 * @param loc the default locale
+	 * @param no boolean whether to append null bytes at end of Strings
 	 */
 	public RoundRoutines(int digits, boolean no,Locale loc){
 		this(digits,no);
@@ -121,22 +128,31 @@ private static Logger mLog = Logger.getLogger(RoundRoutines.class.getName());
 	public boolean getNullbyte(){
 		return nullbyte;
 	}
+	/**
+	 * 
+	 * @param b boolean set nullbyte
+	 */
 	public void setNullbyte(boolean b){
 		nullbyte = b;
 	}
 
 	/**
-	 * @param obj: Object of class Number and sub-classes 
-	 * @param digits: int total decimal digits including decimal point
-	 * @return String: with canonical formatting
+	 * 
+	 * @param obj Object of class Number and sub-classes 
+	 * @param digits integer total decimal digits including decimal point
+	 * @return String with canonical formatting
 	 */
 	public String Genround(T obj, int digits){
 		return Genround(obj, digits, nullbyte);
 	}
 	/**
-	 * @param obj: Object of class Number and sub-classes 
-	 * @param digits: int Number of decimal digits with decimal point
-	 * @param no: boolean indicating whether null byte ('\0') is appended
+	 * It obtains the string representation of numeric values according
+	 * to Micah Altman specs (IEEE 754)
+	 * 
+	 * @param obj Object of class Number and sub-classes 
+	 * @param digits integer Number of decimal digits with decimal point
+	 * @param no boolean indicating whether null byte ('\0') is appended
+	 * @return String with the numeric value represented using IEEE 754  
 	 */
 	public String Genround(T obj, int digits, boolean no) {	
 		RoundRoutines.nullbyte=no;
@@ -209,9 +225,9 @@ private static Logger mLog = Logger.getLogger(RoundRoutines.class.getName());
 	}
 	/**
 	 * 
-	 * @param obj: : Object of class Number and sub-classes 
-	 * @param digits: int number of decimal digits to keep
-	 * @param charset:String with optional charset to encode bytes
+	 * @param obj Object of class Number and sub-classes 
+	 * @param digits integer number of decimal digits to keep
+	 * @param charset String with optional encoding of bytes
 	 * @return byte array encoded with charset
 	 */
 	
@@ -230,7 +246,7 @@ private static Logger mLog = Logger.getLogger(RoundRoutines.class.getName());
 			
 	/**
 	 * 
-	 * @param atom: String with the exponent including the sign
+	 * @param atom String with the exponent including the sign
 	 * @return StringBuffer representing exponent with no leading 0
 	 *         and appending the end of line. 
 	 */
@@ -258,9 +274,9 @@ private static Logger mLog = Logger.getLogger(RoundRoutines.class.getName());
 		}
 	/**
 	 * 
-	 * @param atom: String with the mantissa 
-	 * @param sep: char the decimal point 
-	 * @param f: boolean for number between (-1,1)
+	 * @param atom String with the mantissa 
+	 * @param sep char the decimal point 
+	 * @param f boolean for number between (-1,1)
 	 * @return StringBuilder with mantissa after removing trailing 0
 	 */
 	private StringBuilder calcMantissa(String atom, char sep){
@@ -289,13 +305,19 @@ private static Logger mLog = Logger.getLogger(RoundRoutines.class.getName());
 }
 	
 	/**
-	 * @param cobj: CharSequence to format
-	 * @param digits:int number of characters  to keep
+	 * @param cobj CharSequence to format
+	 * @param digits integer with number of characters  to keep
 	 * @return String formatted
 	 */
 	public String Genround(CharSequence cobj, int digits){
 		return Genround(cobj,digits, nullbyte);
 	}
+	/**
+	 * @param cobj CharSequence to format
+	 * @param digits integer with number of characters  to keep
+	 * @param no boolean if to append nullbyte  
+	 * @return String formatted
+	 */
 	public static String Genround(CharSequence cobj, int digits, boolean no){
 		if((((String)cobj).trim()).equals("")){
 			String res=null;

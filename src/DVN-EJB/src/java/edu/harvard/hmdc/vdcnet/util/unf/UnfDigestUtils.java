@@ -1,3 +1,7 @@
+/**
+ * Description complements the methods in class UnfDigest
+ * @author evillalon@iq.harvard.edu
+ */
 package  edu.harvard.hmdc.vdcnet.util.unf;
 
 import java.util.ArrayList;
@@ -11,19 +15,39 @@ public class UnfDigestUtils implements UnfCons{
 	/** the following symbols represent missing values*/
 	private static final String nasymb[] = nastrings; 
 	private static Logger mLog = Logger.getLogger(UnfDigestUtils.class.getName());
+	/**
+	 * Constructor
+	 */
 	public UnfDigestUtils(){
 		if(!DEBUG)
 			mLog.setLevel(Level.WARNING);
 	    }
-	
 	 /**
-     * @param <T>: Object of generic class
-     * @param data: bi-dimensional array of class T
-     * @return int number of rows (first index) of bi-dimensional array
+	  * Finds the length first index (rows) of two-dimensional array
+	  * Second index length may be obtained as data[0].length;
+	  *  
+     * @param <T> Object of generic class
+     * @param data two-dimensional array of class T
+     * @return integer number of rows (first index) of two-dimensional array
      */
-    public static<T extends Object> int countRows(T [][]data){
+	  public static<T extends Object> int countRows(T [][]data){
+	    	
+	    	List<T[]> lst = new ArrayList<T[]>();
+	    	lst = Arrays.asList(data);
+	    	return lst.size();
+	  }
+	 
+	 /**
+	  * Another method to count the rows in two-dimensional array
+	  * 
+     * @param <T> Object of generic class
+     * @param data bi-dimensional array of class T
+     * @return integer number of rows (first index) of two-dimensional array
+     */
+    public static<T extends Object> int countRows1(T [][]data){
     	int rw=0;
     	T dat=null;
+    	
     	for(int n=0; ; ++n){
     	try{
     			dat= data[n][0];
@@ -37,9 +61,10 @@ public class UnfDigestUtils implements UnfCons{
    
     
     /**
+     * Transpose two-dimensional array
      * 
-     * @param <T>: Object of generic class
-     * @param obj: bi-dimensional array of class T
+     * @param <T> Object of generic class
+     * @param obj bi-dimensional array of class T
      * @return transpose array 
      */
     public static<T extends Object> Object[][] transArray(final T[][]obj){
@@ -78,8 +103,7 @@ public class UnfDigestUtils implements UnfCons{
     }
     /**
      * 
-     * @param <T>: CharSequence 
-     * @param obj: array of class T
+     * @param obj array of class Object
      * @return boolean array whether the elements in T are missed
      */
     public static boolean [] isna(final Object[] obj ) {

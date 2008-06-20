@@ -8,14 +8,14 @@
  *              apply any of the MessageDigest algorithms available in java.
  *              The class of the input data is of type String or any related classes.
  *              It can either calculate a different encoding for text
- *              or use class Normalizer of java.text
+ *              from the original encoding in UnfCons.textencoding
  *              It also obtains the Base64 string representation of the 
  *              bytes that are returned with the digest
  *              
  * **For unf version 3 encoding is UTF-32BE and digest is MD5
  * **for version 4 encoding is UTF-32BE and digest is SHA-256
  * **for version 4.1 encoding is UTF-8 and digest is SHA-256
- *
+ * ** default encoding to read the bytes is in UnfCons, UTF-8
  *              
  */
 package edu.harvard.hmdc.vdcnet.util.unf;
@@ -43,7 +43,9 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 	private String mdalgor = "MD5";//mdalgorithm;
 	private MessageDigest md=null;
 	
-	
+	/**
+	 * Constructor
+	 */
 	public UnfString(){
 		if(!DEBUG)
 			mLog.setLevel(Level.WARNING);
@@ -57,10 +59,10 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 		}
 	}
 	/**
-	 * 
-	 * @param algor: String with the name of algorithm to 
+	 * Constructor
+	 * @param algor String with the name of algorithm to 
 	 * use with the MessageDigest
-	 * @exception: NoSuchAlgorithmException 
+	 * @exception NoSuchAlgorithmException 
 	 */
 	public UnfString(String algor){
 		if(!DEBUG)
@@ -75,8 +77,9 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 	}
 	
 	/**
-	 * @param dch: String with name of final encoding
-	 * @param or: String with name of original encoding  
+	 * Constructor
+	 * @param dch String with name of final encoding
+	 * @param or String with name of original encoding  
 	 * 
 	 */
 	public UnfString(String dch, String or){
@@ -86,9 +89,10 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 		
 	}
 	/**
-	 * @param algor: String with the name of messageDigest algor 
-	 * @param dch: String with name of final encoding
-	 * @param or: String with name of original encoding  
+	 * Constructor
+	 * @param digest String with the name of messageDigest algor 
+	 * @param dch String with name of final encoding
+	 * @param or String with name of original encoding  
 	 * 
 	 */
 	public UnfString(String digest,String dch, String or){
@@ -104,20 +108,20 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 		return encoding;
 	}
 	/**
-	 * @param String with final encoding
+	 * @param fenc String with final encoding
 	 */
 	public void setEncoding(String fenc){
 		encoding = fenc;
 	}
 	/**
 	 * 
-	 * @return String with original encoding
+	 * @return String with MessageDigest algorithm
 	 */
 	public String getMdalgor(){
 		return mdalgor;
 	}
 	/**
-	 * @param String with the original encoding
+	 * @param aa String to set the MessageDigest
 	 */
 	public void setMdalgor(String aa){
 	    mdalgor =aa;
@@ -142,14 +146,17 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 	
 	
    /**
+    * Calculates unf for vector of class <T> with some parameters
+    * Feeds the elements of array buf to the MessageDigest
     * 
-    * @param buf: ByteBuffer array of bytes  
-    * @param miss: array of boolean
-    * @param digits: int number of digits for precision
-    * @param result array of bytes for the message digest
-    * @param resultBase64
-    * @param cset: String with original character encoding
-    * @return byte array with message digest
+    * @param buf ByteBuffer array of bytes  
+    * @param miss array of boolean to indicate missing values
+    * @param digits int number of digits for precision
+    * @param result List of Integer for the message digest
+    * @param base64 array Character to store base 64 encoding
+    * @param hex StringBuilder for hexadecimal String
+    * @param cset String varargs with original character encoding
+    * @return String with base 64
     */
 	  public String RUNF3(ByteBuffer []buf, boolean miss [], int digits, List<Integer>result, 
 			  Character[] base64, StringBuilder hex, String ...cset)
@@ -174,12 +181,13 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 	}
    
    /**
+    * Feeds the elements of v to MessageDigest and updates it
     * 
-    * @param v: vector of class CharSequence or its sub-classes:
+    * @param v vector of class CharSequence or its sub-classes:
     *           CharBuffer, StringBuilder, StringBuffer, String, Segment 
-    * @param digits: int with the numbers of digits for precision
-    * @param result : of Class Number 
-    * @param: miss array of booleans
+    * @param digits int with the numbers of digits for precision
+    * @param result  of Class Number 
+    * @param miss array of booleans for missing values
     * @throws UnsupportedEncodingException
     * @throws NoSuchAlgorithmException
     */
@@ -217,12 +225,13 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 	   }
 		   
 	/**
+	 * Updates the MessageDigest previous with the bytes in obj
 	 * 
-	 * @param obj: Class Number or sub-classes
-	 * @param digits: integer for precision arithmetic
-	 * @param previous: MessageDigest 
-	 * @param miss: boolean for missing values
-	 * @return boolean
+	 * @param obj Class Number or sub-classes
+	 * @param digits integer for precision arithmetic
+	 * @param previous MessageDigest 
+	 * @param miss boolean for missing values
+	 * @return updated MessageDigest
 	 * @throws UnsupportedEncodingException
 	 * @throws NoSuchAlgorithmException
 	 */   

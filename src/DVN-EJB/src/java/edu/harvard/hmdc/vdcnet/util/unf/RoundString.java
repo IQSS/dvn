@@ -2,8 +2,8 @@
  * Description: Generalized Rounding Routines for Strings
  *              Implements Micah Altman code for rounding characters Strings
  *              The implementation is in method Genround
- * Input: int with number of characters to keep  
- *        String obj to apply the rounding routine;  
+ * Input: integer with number of characters to keep  
+ *        String to apply the rounding routine;  
  *        
  * Output: String representation of formatted String.
  * 
@@ -13,7 +13,6 @@
  */
 package  edu.harvard.hmdc.vdcnet.util.unf;
 
-import java.text.Normalizer;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,18 +28,26 @@ public class RoundString implements UnfCons{
 	   
 	    /** whether to append null byte ('\0') the end of String */
 	    private boolean nullbyte=true;
-	 
+	    /**
+	     * Default constructor
+	     */
 	    public RoundString(){
 	    	if(!DEBUG)
 	    		mLog.setLevel(Level.WARNING);
 	    }
 	    /**
-	     * @param loc: Locale to set character encodings
+	     * Constructor
+	     * @param b boolean for null byte
 	     */
 	    public RoundString( boolean b){
 	        this();
 	    	nullbyte=b;
 	    	}
+	    /**
+	     * Constructor
+	     * @param loc Locale to set character encodings
+	     * @param b boolean whether to append nullbyte
+	     */
 	    public RoundString(Locale loc, boolean b){
 	    	this(b);
 	    	this.loc = loc;
@@ -48,19 +55,21 @@ public class RoundString implements UnfCons{
 	    	}
 	    
 	    /**
+	     * It truncates any string to number of characters = digits
 	     * 
-	     * @param str: String for formatting
-	     * @param digits: int for number of characters 
+	     * @param str String for formatting
+	     * @param digits integer for number of characters 
 	     * @return String formatted
 	     */
 	    public String Genround(String str, int digits){
 	    	return Genround(str, digits,nullbyte);
 	    }
 	    /**
+	     * Truncates any string to number of characters = digits
 	     * 
-	     * @param str: String for formatting
-	     * @param digits: int for number of characters 
-	     * @param no: boolean whether to append null byte ('\0')
+	     * @param str String for formatting
+	     * @param digits integer for number of characters 
+	     * @param no boolean whether to append null byte ('\0')
 	     * @return String formatted
 	     */
 	    public String Genround(String str, int digits, boolean no){
@@ -78,9 +87,9 @@ public class RoundString implements UnfCons{
 			
 	    }
 	    /**
-	     * 
-	     * @param bb: Byte array from String
-	     * @param digits: int with  significant digits
+	     * Truncates any string to number of characters = digits
+	     * @param bb Byte array from String
+	     * @param digits integer with  significant digits
 	     * @return String
 	     */
 	    public String Genround(byte[] bb, int digits){

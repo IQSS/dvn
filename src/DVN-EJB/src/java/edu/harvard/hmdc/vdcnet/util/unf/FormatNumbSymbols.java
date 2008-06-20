@@ -1,3 +1,8 @@
+/**
+ * Description For special numbers (infinity, -infinity,NaN)
+ * represents them as in Micah's code
+ * @author evillalon
+ */
 package edu.harvard.hmdc.vdcnet.util.unf;
 import java.util.*;
 import java.text.*;

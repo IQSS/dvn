@@ -5,15 +5,17 @@
  * Description: Calculate MessageDigest for a vector with any of the 
  *              sub-classes that extend Number. The algorithm can 
  *              apply any of the MessageDigest algorithms available in java.
- *              The class of the input data is Number and any of the sub-classes.
- *              It can either calculate a different encoding for text
- *              or use class Normalizer of java.text
+ *              The class of the input data set is Number and any of sub-classes.
+ *              It canonicalizes the values of array to possibly  a different encoding.
+ *              Uses the original encoding in UnfCons.textencoding to read 
+ *              the bytes in the original array of Number.
  *              It also obtained the Base64 string representation of the 
  *              bytes that are returned with the digest
  *              
  * **For unf version 3 encoding is UTF-32BE and digest is MD5
  * **for version 4 encoding is UTF-32BE and digest is SHA-256
  * **for version 4.1 encoding is UTF-8 and digest is SHA-256
+ * **Original encoding defaults to UTF-8
  *
  *              
  */
@@ -45,7 +47,9 @@ public class UnfNumber<T extends Number> implements UnfCons{
 	
 	private MessageDigest md=null;
  
-	
+	/**
+	 * Constructor
+	 */
 	public UnfNumber(){
 		if(!DEBUG)
 			mLog.setLevel(Level.WARNING);
@@ -59,10 +63,10 @@ public class UnfNumber<T extends Number> implements UnfCons{
 		}
 	}
 	/**
-	 * 
-	 * @param algor: String with the name of algorithm to 
+	 * Constructor 
+	 * @param algor String with the name of algorithm to 
 	 * use with the MessageDigest
-	 * @exception: NoSuchAlgorithmException 
+	 * @exception NoSuchAlgorithmException 
 	 */
 	public UnfNumber(String algor){
 		if(!DEBUG)
@@ -77,9 +81,10 @@ public class UnfNumber<T extends Number> implements UnfCons{
 	}
 	
 	/**
-	 * @param dch: String with name of final encoding
-	 * @param or: String with name of original encoding  
-	 * @param no: boolean whether to append null byte
+	 * Constructor
+	 * @param dch String with name of final encoding
+	 * @param or String with name of original encoding  
+	 *
 	 */
 	public UnfNumber(String dch, String or){
 		this();
@@ -88,9 +93,10 @@ public class UnfNumber<T extends Number> implements UnfCons{
 	
 	}
 	/**
-	 * @param dch: String with name of final encoding
-	 * @param or: String with name of original encoding  
-	 * @param algor: messageDigest algorithm 
+	 * Constructor
+	 * @param dch String with name of final encoding
+	 * @param or String with name of original encoding  
+	 * @param algor messageDigest algorithm 
 	 */
 	public UnfNumber(String algor,String dch, String or){
 		this(algor);
@@ -106,20 +112,20 @@ public class UnfNumber<T extends Number> implements UnfCons{
 		return encoding;
 	}
 	/**
-	 * @param String with final encoding
+	 * @param fenc String with final encoding
 	 */
 	public void setEncoding(String fenc){
 		encoding = fenc;
 	}
 	/**
 	 * 
-	 * @return String with original encoding
+	 * @return String with MessageDigest
 	 */
 	public String getMdalgor(){
 		return mdalgor;
 	}
 	/**
-	 * @param String with the digest algorithm 
+	 * @param aa String with the digest algorithm 
 	 */
 	public void setMdalgor(String aa){
 	    mdalgor =aa;
@@ -144,8 +150,8 @@ public class UnfNumber<T extends Number> implements UnfCons{
 	
 	/**
 	 * 
-	 * @param x: double
-	 * @return int to indicate if x is a special number
+	 * @param x double
+	 * @return integer to indicate if x is a special number
 	 */
    public static int mysinf(Double x){
 	   if(VCPP){
@@ -160,12 +166,15 @@ public class UnfNumber<T extends Number> implements UnfCons{
    }
    
    /**
+    * Calculates unf for vector of class <T> with some parameters
+    * Feeds the elements of array v to the MessageDigest
+    * <T> generic type
     * 
-    * @param v: vector of class Number or its sub-classes
-    * @param digits: integer with the numbers of digits for precision
-    * @param result : Collection Integer with bytes from messagedigest 
-    * @param base64: Character array with base64 encoding
-    * @param hex: StringBuilder with hexadecimal representation oh digest
+    * @param v vector of class Number or its sub-classes
+    * @param digits integer with the numbers of digits for precision
+    * @param result Collection Integer with bytes from MessageDigest 
+    * @param base64 Character array with base64 encoding
+    * @param hex StringBuilder with hexadecimal representation oh digest
     * @throws UnsupportedEncodingException
     * @throws NoSuchAlgorithmException
     * 
@@ -213,11 +222,12 @@ public class UnfNumber<T extends Number> implements UnfCons{
 	   }
 		   
 	/**
-	 * 
-	 * @param obj: Class Number or sub-classes
-	 * @param digits: integer for precision arithmetic
-	 * @param previous: MessageDigest 
-	 * @param miss: boolean for missing values
+	 *  Feeds the bytes of a String to MessageDigest algorithm
+	 *   
+	 * @param obj Class Number or sub-classes
+	 * @param digits integer for precision arithmetic
+	 * @param previous MessageDigest 
+	 * @param miss boolean for missing values
 	 * @return MessageDigest after updating with data in obj
 	 * @throws UnsupportedEncodingException
 	 * @throws NoSuchAlgorithmException

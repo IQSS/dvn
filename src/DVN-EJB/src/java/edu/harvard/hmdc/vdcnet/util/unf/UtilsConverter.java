@@ -44,8 +44,8 @@ public class UtilsConverter implements UnfCons{
 	/**
 	 * Convert byte[] to String using nio
 	 * 
-	 * @param inbyte: byte array to be coded into String
-	 * @param outset: String with name of the Charset
+	 * @param inbyte byte array to be coded into String
+	 * @param outset String with name of the Charset
 	 * @return String with converted bytes decoded with outset
 	 */  
 	public  static String convertnioByteToStr(final byte[] inbyte, String outset){
@@ -77,8 +77,8 @@ public class UtilsConverter implements UnfCons{
 	/**
 	 * Convert char[] to byte[]
 	 * 
-	 * @param colch: char array 
-	 * @param cset: String with name of Charset
+	 * @param colch char array 
+	 * @param cset String with name of Charset
 	 * @return byte array
 	 */
 	public static byte[] getBytes(final char[] colch, String cset){
@@ -101,8 +101,8 @@ public class UtilsConverter implements UnfCons{
 	 * Convert char[] to byte[]
 	 * A different version of getBytes
 	 * 
-	 * @param colch: char array 
-	 * @param cset: String with name of Charset
+	 * @param ch char array 
+	 * @param cset String with name of Charset
 	 * @return byte array
 	 */
 	public byte[] getBytes1(final char []ch, String cset){
@@ -119,8 +119,8 @@ public class UtilsConverter implements UnfCons{
 	 /**
 	  * Convert byte[] to byte[] different Encodings
 	  * 
-	  * @param bin: byte array to be encoded
-	  * @param cset:cset String array with one or two elements
+	  * @param bin byte array to be encoded
+	  * @param cset String array with one or two elements
 	  *             first is the conversion encoding name and, 
 	  *             possibly, second the original encoding for bin
 	  *             
@@ -172,12 +172,13 @@ public class UtilsConverter implements UnfCons{
 	/**
 	  * Convert byte[] to byte[] different Encodings
 	  * 
-	  * @param bin: byte array to be encoded
-	  * @param cset:cset Charset array with one or two elements
+	  * @param bin byte array to be encoded
+	  * @param cset Charset array with one or two elements
 	  *             first is the conversion encoding charset and, 
 	  *             possibly, second the original encoding for bin
-	  *             
+	  *            
 	  * @return byte array
+	  * @throws UnsupportedEncodingException
 	  */
 	public static byte[] byteConverter(final byte[] bin, Charset... cset) throws
 	UnsupportedEncodingException{
@@ -200,7 +201,7 @@ public class UtilsConverter implements UnfCons{
 	}
 	/**
 	 * Converts a byte array to a Hex String
-	 * @param messageDigest: byte array to be converted in hex 
+	 * @param messageDigest byte array to be converted in hex 
 	 * @return hexadecimal  String representing messageDigest
 	 */
 	public static String getHexStrng(byte[] messageDigest){
@@ -212,7 +213,7 @@ public class UtilsConverter implements UnfCons{
 		}
 	/**
 	 * Get 
-	 * @param str: String hex representation of byte array
+	 * @param str String hex representation of byte array
 	 * @return byte array
 	 */
 	public byte[] hexStrngToBytes(String str){

@@ -32,6 +32,7 @@ package edu.harvard.hmdc.vdcnet.web.subsetting;
  * @author asone
  */
 
+import edu.harvard.hmdc.vdcnet.dsb.AdvancedStatGUIdata;
 import static java.lang.System.*;
 
 import java.util.*;
@@ -132,7 +133,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 new Option("0", "Use average values (setx default)"),
                 new Option("1", "Select values")
             });
-
+            //  new Option("1","Set a value for 1 or 2 variables") 
+            //  new Option("2","First differences between baseline and alterantive")
+            
+            
         // Sets the default value of the above setx option
         radioButtonGroup1DefaultOptions.setSelectedValue("0");
 
@@ -146,23 +150,23 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
         // Sets the default state of each checkbox of the above group
         checkboxGroup2DefaultOptions.setSelectedValue(new Object[] { "Summary",
-            "Plots", "false" });
+            "Plots", "BinOutput" });
 
         // Advanced Statistics: checkbox group for the output option pane(xtab)
         checkboxGroupXtbOptions.setOptions(
             new Option[] {
-                new Option("xtb_ExtraTables", "Include Totals"),
-                new Option("xtb_Statistics", "Include Statistics"),
-                new Option("xtb_Totals", "Include Percentages"),
-                new Option("xtb_Percentages", "Include Extra Tables")
+                new Option("xtb_Totals",      "Include Totals"),
+                new Option("xtb_Statistics",  "Include Statistics"),
+                new Option("xtb_Percentages", "Include Percentages"),
+                new Option("xtb_ExtraTables", "Include Extra Tables")
             });
         
         // Sets the default state of each checkbox of the above group
         checkboxGroupXtbOptions.setSelectedValue(
             new Object[] {
-                "xtb_ExtraTables", 
-                "xtb_Statistics", 
                 "xtb_Totals", 
+                "xtb_Statistics", 
+                "xtb_Percentages",
                 "false"
             });
 
@@ -830,7 +834,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         
         // Stores the new state of msgDwnldButtonTxt in the session map
         FacesContext.getCurrentInstance().getExternalContext()
-            .getSessionMap().put("msgDwnldButtonTxt", msgEdaButtonTxt);
+            .getSessionMap().put("msgDwnldButtonTxt", msgDwnldButtonTxt);
         
         // Hides the error message text next to the download button
         msgDwnldButton.setVisible(false);
@@ -844,17 +848,24 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
     // dwnldButton:h:commandButton@action
     public String dwnldAction() {
+    
         resetMsgDwnldButton();
+        
         if (checkDwnldParameters()) {
+        
             FacesContext cntxt = FacesContext.getCurrentInstance();
 
             HttpServletResponse res = (HttpServletResponse) cntxt
                 .getExternalContext().getResponse();
+                
             HttpServletRequest req = (HttpServletRequest) cntxt
                 .getExternalContext().getRequest();
-//            try {
+
+
                 out.println("***** within dwnldAction() *****");
+                
                 StudyFile sf = dataTable.getStudyFile();
+                Long noRecords = dataTable.getRecordsPerCase();
 
                 String dsbUrl = getDsbUrl();
                 out.println("dsbUrl=" + dsbUrl);
@@ -864,14 +875,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     + req.getContextPath();
                 
                 out.println("serverPrefix"+serverPrefix);
+                
                 Map<String, List<String>> mpl = new HashMap<String, List<String>>();
-
+                
                 // String formatType = req.getParameter("formatType");
                 String formatType = (String) dwnldFileTypeSet.getValue();
                 out.println("file type from the binding=" + formatType);
+
                 mpl.put("dtdwnld", Arrays.asList(formatType));
-
-
 
                 // if there is a user-defined (recoded) variables
                 if (recodedVarSet.size() > 0) {
@@ -879,12 +890,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 }
 
                 out.println("citation info to be sent:\n" + citation);
+                
                 mpl.put("OfflineCitation", Arrays.asList(citation));
 
                 mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
                     + req.getServerPort() + req.getContextPath()));
-                // mpl.put("appSERVER",Arrays.asList(dsbUrl + ":" +
-                // req.getServerPort() + req.getContextPath()));
                 mpl.put("studytitle", Arrays.asList(studyTitle));
                 mpl.put("studyno", Arrays.asList(studyId.toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
@@ -898,13 +908,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
             String fileId = sf.getId().toString();
             String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-            //String fileURL = "http://dvn-alpha.hmdc.harvard.edu" + "/dvn/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+
             out.println("fileURL="+fileURL);
             
             String fileloc = sf.getFileSystemLocation();
             String tabflnm = sf.getFileName();
             boolean sbstOK = sf.isSubsettable();
             String flct = sf.getFileType();
+            
             out.println("location="+fileloc);
             out.println("filename="+tabflnm);
             out.println("subsettable="+sbstOK);
@@ -915,7 +926,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // local (relative to the application) file case 
             // note: a typical remote case is: US Census Bureau
             
-            if (!sf.isRemote() && sbstOK){
+            if (sbstOK){
                 
                 try {
 
@@ -946,7 +957,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                        out.println("tmp file name="+tmpfl.getAbsolutePath());
                        
                     }
+
 boolean fieldcut = true;
+if ((noRecords != null) && (noRecords >=1)){
+    fieldcut = false;
+}
+
 if (fieldcut){
                     // Step 2. Set-up parameters for subsetting: cutting requested columns of data
                     // from a temp (whole) file
@@ -1048,15 +1064,16 @@ if (fieldcut){
                         mpl.put("requestType", Arrays.asList("Download"));
 }
 
-
+                    Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
                     // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
-                    ServiceRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl);
+                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls);
+
                     out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     // Step 4. Creates an instance of the the implemented 
                     // data-analysis-service class 
 
-                    DataAnalysisService das = new DvnRDataAnalysisServiceImpl();
+                    DvnRDataAnalysisServiceImpl das = new DvnRDataAnalysisServiceImpl();
 
                     // Executes a request of downloading or data analysis and 
                     // capture result info as a Map <String, String>
@@ -1075,31 +1092,13 @@ if (fieldcut){
 
             }
 
-            out.println("***** within dwnldAction(): succcessfully ends here *****");
+            out.println("***** within dwnldAction(): ends here *****");
             
                 resultInfo.put("offlineCitation", citation);
                 resultInfo.put("studyTitle", studyTitle);
                 resultInfo.put("studyNo", studyId.toString());
                 resultInfo.put("studyURL", studyURL);
 
-
-
-
-
-
-
-
-
-//                new DSBWrapper().disseminate(res, mpl, sf, serverPrefix,
-//                    getDataVariableForRequest(), formatType);
-//
-//            } catch (IOException ex) {
-//                out.println("disseminate:download failed due to io exception");
-//                ex.printStackTrace();
-//            }
-
-            out.println("***** within dwnldAction(): ends here *****");
-            
             if (resultPageTest){
                 resultInfo.put("dsbHost", "vdc-build.hmdc.harvard.edu");
                 resultInfo.put("dsbPort","8080");
@@ -2283,7 +2282,7 @@ if (fieldcut){
     }
 
     // @value
-    private List<Object> recodedVarSet = new ArrayList<Object>();
+    public List<Object> recodedVarSet = new ArrayList<Object>();
 
     public void setRecodedVarSet(List<Object> dt) {
         this.recodedVarSet = dt;
@@ -2411,8 +2410,6 @@ if (fieldcut){
                  */
 
                 Map<String, List<String>> mpl = new HashMap<String, List<String>>();
-                Map<String, String> mps = new HashMap<String, String>();
-                mps.put("optnlst_a", "A01|A02|A03");
                 Object[] vs = edaOptionSet.getSelectedValues();
                 List<String> alst = new ArrayList<String>();
 
@@ -2420,7 +2417,6 @@ if (fieldcut){
                     out.println("eda option[" + i + "]=" + vs[i]);
                     alst.add((String) vs[i]);
                 }
-                // mps.put("analysis", "A01");
                 mpl.put("analysis", alst);
                 // List<String> aoplst = new ArrayList<String>();
                 // aoplst.add("A01|A02|A03");
@@ -2508,29 +2504,24 @@ if (fieldcut){
                 .getExternalContext().getResponse();
             HttpServletRequest req = (HttpServletRequest) cntxt
                 .getExternalContext().getRequest();
-//            try {
+
                 out.println("***** within edaAction() *****");
 
                 StudyFile sf = dataTable.getStudyFile();
+                Long noRecords = dataTable.getRecordsPerCase();
 
                 String dsbUrl = getDsbUrl();
                 out.println("dsbUrl=" + dsbUrl);
-                
-                   // req.getServerName()
-                // String serverPrefix =
-                // "http://:8080/dvn";
-                
-                    String serverPrefix = req.getScheme() + "://"
-                    + req.getServerName() + ":" + req.getServerPort()
-                    + req.getContextPath();
+
+                String serverPrefix = req.getScheme() + "://"
+                + req.getServerName() + ":" + req.getServerPort()
+                + req.getContextPath();
                 /*
                 String serverPrefix = "http://dvn-alpha.hmdc.harvard.edu"
                     + req.getContextPath();
                 */    
                 out.println("serverPrefix"+serverPrefix);
-                // String serverPrefix = req.getScheme() +"://" + dsbUrl + ":" +
-                // req.getServerPort() + req.getContextPath();
-                //+ "vdc-build.hmdc.harvard.edu"
+
                 /*
                  * "optnlst_a" => "A01|A02|A03",
                  * "analysis" => "A01 A02",
@@ -2540,8 +2531,7 @@ if (fieldcut){
                  */
 
                 Map<String, List<String>> mpl = new HashMap<String, List<String>>();
-                Map<String, String> mps = new HashMap<String, String>();
-                mps.put("optnlst_a", "A01|A02|A03");
+                
                 Object[] vs = edaOptionSet.getSelectedValues();
                 List<String> alst = new ArrayList<String>();
 
@@ -2549,11 +2539,9 @@ if (fieldcut){
                     out.println("eda option[" + i + "]=" + vs[i]);
                     alst.add((String) vs[i]);
                 }
-                // mps.put("analysis", "A01");
+
                 mpl.put("analysis", alst);
-                // List<String> aoplst = new ArrayList<String>();
-                // aoplst.add("A01|A02|A03");
-                // mpl.put("optnlst_a", aoplst);
+
                 mpl.put("optnlst_a", Arrays.asList("A01|A02|A03"));
 
                 // if there is a user-defined (recoded) variables
@@ -2587,6 +2575,7 @@ if (fieldcut){
             String tabflnm = sf.getFileName();
             boolean sbstOK = sf.isSubsettable();
             String flct = sf.getFileType();
+            
             out.println("location="+fileloc);
             out.println("filename="+tabflnm);
             out.println("subsettable="+sbstOK);
@@ -2597,7 +2586,7 @@ if (fieldcut){
             // local (relative to the application) file case 
             // note: a typical remote case is: US Census Bureau
             
-            if (!sf.isRemote() && sbstOK){
+            if (sbstOK){
                 
                 try {
 
@@ -2628,7 +2617,12 @@ if (fieldcut){
                        out.println("tmp file name="+tmpfl.getAbsolutePath());
                        
                     }
+                    
 boolean fieldcut = true;
+if ((noRecords != null) && (noRecords >=1)){
+    fieldcut = false;
+}
+                    
 if (fieldcut){
                     // Step 2. Set-up parameters for subsetting: cutting requested columns of data
                     // from a temp (whole) file
@@ -2680,6 +2674,8 @@ if (fieldcut){
                         mpl.put("requestType", Arrays.asList("EDA"));
 
 } else {
+                    // non-delimited file case
+
                     // Step 2. Set-up parameters for subsetting: cutting requested columns of data
                     // from a temp (whole) file
 
@@ -2730,15 +2726,16 @@ if (fieldcut){
                         mpl.put("requestType", Arrays.asList("EDA"));
 }
 
-
+                    Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
                     // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
-                    ServiceRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl);
+                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls);
+
                     out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     // Step 4. Creates an instance of the the implemented 
                     // data-analysis-service class 
 
-                    DataAnalysisService das = new DvnRDataAnalysisServiceImpl();
+                    DvnRDataAnalysisServiceImpl das = new DvnRDataAnalysisServiceImpl();
 
                     // Executes a request of downloading or data analysis and 
                     // capture result info as a Map <String, String>
@@ -2755,7 +2752,7 @@ if (fieldcut){
                     // resultInt.put();
                 }
 
-            }
+}  // end of the subsettable case
 
             out.println("***** within edaAction(): succcessfully ends here *****");
             
@@ -2783,7 +2780,7 @@ if (fieldcut){
                 "resultInfo", resultInfo);
             return "success";
             
-            
+// end of CheckParameters: OK case
         } else {
             // show error message;
             setMsgEdaButtonTxt("* Select at least one option");
@@ -2793,7 +2790,7 @@ if (fieldcut){
         }
 
     }
-
+    
     // -----------------------------------------------------------------------
     // AdvStat section
     // -----------------------------------------------------------------------
@@ -4077,7 +4074,18 @@ if (fieldcut){
     }
 
     // @selected
-    private Object lastSimCndtnSelected = "0";
+    private String lastSimCndtnSelected;
+
+    public String getLastSimCndtnSelected() {
+        return lastSimCndtnSelected;
+    }
+
+    public void setLastSimCndtnSelected(String lastSimCndtnSelected) {
+        this.lastSimCndtnSelected = lastSimCndtnSelected;
+    }
+
+
+
 
     // @valueChangeListener
     public void showHideSimCndtnOptPanel(ValueChangeEvent vce) {
@@ -4087,7 +4095,7 @@ if (fieldcut){
         out.println("currentState=" + currentState);
         out.println("current model name in setx=" + getCurrentModelName());
 
-        out.print("within simulation-type choice: new selected"
+        out.print("within simulation-type choice: new selected="
             + radioButtonGroup1.getSelected());
         if (getCurrentModelName() != null) {
 
@@ -4114,9 +4122,12 @@ if (fieldcut){
                     "setxDiffVarBox1", setxDiffVarBox1);
                 cntxt.getExternalContext().getSessionMap().put(
                     "setxDiffVarBox2", setxDiffVarBox2);
-
+                cntxt.getExternalContext().getSessionMap().put(
+                "lastSimCndtnSelected", currentState.toString());
             } else if ((currentState.toString()).equals("0")) {
                 groupPanel22.setRendered(false);
+                cntxt.getExternalContext().getSessionMap().put(
+                "lastSimCndtnSelected", currentState.toString());
             }
         } else {
             groupPanel22.setRendered(false);
@@ -4322,6 +4333,46 @@ if (fieldcut){
         return (noe == 0 ? true : false);
     }
 
+
+
+
+
+    // msgAdvStatButton:ui:StaticText@binding
+    private StaticText msgAdvStatButton = new StaticText();
+
+    public StaticText getMsgAdvStatButton() {
+        return msgAdvStatButton;
+    }
+
+    public void setMsgAdvStatButton(StaticText txt) {
+        this.msgAdvStatButton = txt;
+    }
+
+    private String msgAdvStatButtonTxt;
+
+    public String getMsgAdvStatButtonTxt() {
+        return msgAdvStatButtonTxt;
+    }
+
+    public void setMsgAdvStatButtonTxt(String txt) {
+        this.msgAdvStatButtonTxt = txt;
+    }
+
+    public void resetMsgAdvStatButton() {
+        out.println("***** within resetMsgAdvStatButton *****");
+        setMsgAdvStatButtonTxt(" ");
+        FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().put("msgAdvStatButtonTxt", msgAdvStatButtonTxt);
+        msgAdvStatButton.setVisible(false);
+
+        out.println("***** resetMsgAdvStatButton: end  *****");
+    }
+
+
+
+
+
+
     // advStatBttn:h:commandButton@actionListener
     public void advStatActionLstnr(ActionEvent acev) {
 
@@ -4371,8 +4422,6 @@ if (fieldcut){
                  */
                 // common parameters
                 Map<String, List<String>> mpl = new HashMap<String, List<String>>();
-                Map<String, String> mps = new HashMap<String, String>();
-                mps.put("optnlst_a", "A01|A02|A03");
                 List<String> alst = new ArrayList<String>();
                 List<String> aoplst = new ArrayList<String>();
                 aoplst.add("A01|A02|A03");
@@ -4634,7 +4683,10 @@ if (fieldcut){
 
         String mdlName = (String) dropDown1.getSelected();
         out.println("model name=" + mdlName);
-
+        
+        AdvancedStatGUIdata.Model modelSpec = getAnalysisApplicationBean()
+            .getSpecMap().get(mdlName);
+        
         if (checkAdvStatParameters(mdlName)) {
 
             FacesContext cntxt = FacesContext.getCurrentInstance();
@@ -4643,35 +4695,20 @@ if (fieldcut){
                 .getExternalContext().getResponse();
             HttpServletRequest req = (HttpServletRequest) cntxt
                 .getExternalContext().getRequest();
-  
-            try {
+
                 out.println("***** within advStatAction() *****");
                 // common parts
                 // data file
                 StudyFile sf = dataTable.getStudyFile();
-                // server prefix
+                Long noRecords = dataTable.getRecordsPerCase();
 
-                String dsbUrl = System.getProperty("vdc.dsb.host");
-                String dsbPort = System.getProperty("vdc.dsb.port");
-
-                if (dsbPort != null) {
-                    dsbUrl += ":" + dsbPort;
-                }
-
-                if (dsbUrl == null) {
-                    dsbUrl = System.getProperty("vdc.dsb.url");
-                }
-
+                String dsbUrl = getDsbUrl();
                 out.println("dsbUrl=" + dsbUrl);
 
-                // String serverPrefix =
-                // "http://vdc-build.hmdc.harvard.edu:8080/dvn";
-//                String serverPrefix = req.getScheme() + "://"
-//                    + req.getServerName() + ":" + req.getServerPort()
-//                    + req.getContextPath();
-                String serverPrefix = "http://dvn-alpha.hmdc.harvard.edu"
+                String serverPrefix = req.getScheme() + "://"
+                    + req.getServerName() + ":" + req.getServerPort()
                     + req.getContextPath();
-                out.println("serverPrefix"+serverPrefix);
+                out.println("serverPrefix="+serverPrefix);
 //                /
 //                  "optnlst_a" => "A01|A02|A03", "analysis" => "A01 A02",
 //                  "varbl" => "v1.3 v1.10 v1.13 v1.22 v1.40", "charVarNoSet" =>
@@ -4679,33 +4716,49 @@ if (fieldcut){
 //                 /
                 // common parameters
                 Map<String, List<String>> mpl = new HashMap<String, List<String>>();
-                Map<String, String> mps = new HashMap<String, String>();
-                mps.put("optnlst_a", "A01|A02|A03");
+                
                 List<String> alst = new ArrayList<String>();
                 List<String> aoplst = new ArrayList<String>();
+                
                 aoplst.add("A01|A02|A03");
                 mpl.put("optnlst_a", aoplst);
+                
+                Map<String, List<String>> xtbro = new HashMap<String, List<String>>();
+                // xtbro: modelName
+                xtbro.put("modelName", Arrays.asList(mdlName));
+                
                 // outoput options
 
                 List<String> outOptionList = new ArrayList<String>();
+                
+                mpl.put("modelName", Arrays.asList(mdlName));
+                if (mdlName.equals("xtb")) {
+                    mpl.put("requestType", Arrays.asList("Xtab"));
+                } else {
+                    mpl.put("requestType", Arrays.asList("Zelig"));
+                }
 
                 if (mdlName.equals("xtb")) {
                     alst.add("A03");
+                    
                     // output options
-                    Object[] outOptn = (Object[]) checkboxGroupXtbOptions
-                        .getSelectedValue();
+                    Object[] outOptn = (Object[]) checkboxGroupXtbOptions.getSelectedValue();
                     List<String> tv = new ArrayList<String>();
-                    tv.add("T");
+                    //tv.add("T");
+                    
                     for (int j = 0; j < outOptn.length; j++) {
                         out.println("output option[" + j + "]=" + outOptn[j]);
-
-                        mpl.put((String) outOptn[j], new ArrayList(tv));
+                        mpl.put((String) outOptn[j], Arrays.asList("T"));
+                        tv.add((String) outOptn[j]);
                     }
+                        mpl.put("xtb_outputOptions",tv);
+                   
                     // variables: 1st RBox
                     if (advStatVarRBox1.size() >= 1) {
                         out.println("RB1:" + getDataVariableForRBox1());
                         mpl.put("xtb_nmBxR1", getDataVariableForRBox1());
                     }
+                    
                     // variables: 2nd RBox
                     if (advStatVarRBox2.size() >= 1) {
                         out.println("RB2:" + getDataVariableForRBox2());
@@ -4715,82 +4768,90 @@ if (fieldcut){
                     mpl.put("analysis", alst);
 
                 } else {
+                    // Zelig cases
+                    
                     out.println("***** zelig param block *****");
                     // non-xtb, i.e., zelig cases
                     // check zlg value
-                    // String mdlZname= mdlName+;
-                    out.println("model spec dump="
-                        + getAnalysisApplicationBean().getSpecMap()
-                            .get(mdlName));
-                    out.println("model spec mdlId="
-                        + getAnalysisApplicationBean().getSpecMap()
-                            .get(mdlName).getMdlId());
-                    String zligPrefix = getAnalysisApplicationBean()
-                        .getSpecMap().get(mdlName).getMdlId();
+                    
+                    out.println("model spec dump="+ modelSpec);
+                    out.println("model spec mdlId="+ modelSpec.getMdlId());
+                        
+                    String zligPrefix = modelSpec.getMdlId();
                     out.println("model no=" + zligPrefix);
+                    
+                    // get the varId-list of each box
                     // 1-RBox case
                     if (advStatVarRBox1.size() >= 1) {
                         out.println("RB1:" + getDataVariableForRBox1());
-                        mpl.put(zligPrefix + "_nmBxR1",
-                            getDataVariableForRBox1());
+                        //mpl.put(zligPrefix + "_nmBxR1", getDataVariableForRBox1());
+                        mpl.put("nmBxR1", getDataVariableForRBox1());
                     }
+                    
                     // 2-RBox case
                     if (advStatVarRBox2.size() >= 1) {
                         out.println("RB2:" + getDataVariableForRBox2());
-                        mpl.put(zligPrefix + "_nmBxR2",
-                            getDataVariableForRBox2());
+                        //mpl.put(zligPrefix + "_nmBxR2", getDataVariableForRBox2());
+                        mpl.put("nmBxR2", getDataVariableForRBox2());
                     }
+                    
                     // 3-RBox case
                     if (advStatVarRBox3.size() >= 1) {
                         out.println("RB3:" + getDataVariableForRBox3());
-                        mpl.put(zligPrefix + "_nmBxR3",
-                            getDataVariableForRBox3());
+                        //mpl.put(zligPrefix + "_nmBxR3", getDataVariableForRBox3());
+                        mpl.put("nmBxR3", getDataVariableForRBox3());
                     }
+                    
                     // model name
-
-                    mpl.put("zlg", getZlg(zligPrefix, mdlName));
+                    //mpl.put("zlg", getZlg(zligPrefix, mdlName));
+                    
                     // model type
-                    String sfn = getAnalysisApplicationBean().getSpecMap().get(
-                        mdlName).getSpecialFn();
-                    mpl.put("mdlType_" + mdlName, getMdlType(mdlName, sfn));
+                    //String sfn = modelSpec.getSpecialFn();
+                    //mpl.put("mdlType_" + mdlName, getMdlType(mdlName, sfn));
 
                     // model title
-                    String ttl = getAnalysisApplicationBean().getSpecMap().get(
-                        mdlName).getTitle();
-                    out.println("model title=" + ttl);
-                    mpl.put("mdlTitle_" + mdlName, Arrays.asList(ttl));
+                    //String ttl = modelSpec.getTitle();
+                    //out.println("model title=" + ttl);
+                    //mpl.put("mdlTitle_" + mdlName, Arrays.asList(ttl));
+                    //mpl.put("mdlTitle", Arrays.asList(ttl));
 
                     // nrBoxes
-                    int noRboxes = getAnalysisApplicationBean().getSpecMap()
-                        .get(mdlName).getNoRboxes();
+                    int noRboxes = modelSpec.getNoRboxes();
                     out.println("noRboxes=" + noRboxes);
 
-                    mpl.put("noBoxes_" + mdlName, Arrays.asList(Integer
-                        .toString(noRboxes)));
+                    //mpl.put("noBoxes_" + mdlName, Arrays.asList(Integer.toString(noRboxes)));
+                    mpl.put("noBoxes", Arrays.asList(Integer.toString(noRboxes)));
 
                     // binary
-                    String mdlCategory = getAnalysisApplicationBean()
-                        .getSpecMap().get(mdlName).getCategory();
+                    String mdlCategory = modelSpec.getCategory();
+                    String outcomeType = modelSpec.getVarBox().get(0).getVarType();
+
                     out.println("model category=" + mdlCategory);
-                    if (mdlCategory
-                        .equals("Models for Dichotomous Dependent Variables")) {
-                        mpl.put("mdlDepVarType_" + mdlName, Arrays
-                            .asList("binary"));
+                    
+                    if (mdlCategory.equals("Models for Dichotomous Dependent Variables")) {
+                        mpl.put("mdlDepVarType", Arrays.asList("binary"));
+                    }
+                    if (outcomeType.equals("binary")){
+                        mpl.put("isOutcomeBinary", Arrays.asList("T"));
+                    } else {
+                        mpl.put("isOutcomeBinary", Arrays.asList("F"));
                     }
                     // output options
 //                    //
 //                     // zlg_017_Summary zlg_017_Plots zlg_017_BinOutput
 //                     //
-                    Object[] outOptn = (Object[]) checkboxGroup2DefaultOptions
-                        .getSelectedValue();
-                    for (int j = 0; j < outOptn.length; j++) {
-                        String outputOptnkey = zligPrefix + "_"
-                            + (String) outOptn[j];
-                        out.println("zelig: output option[" + j + "]="
-                            + outputOptnkey);
-                        mpl.put(outputOptnkey, Arrays.asList("T"));
-                    }
+                    Object[] outOptn = (Object[]) checkboxGroup2DefaultOptions.getSelectedValue();
+                    List<String> tv = new ArrayList<String>();
 
+                    for (int j = 0; j < outOptn.length; j++) {
+                        //String outputOptnkey = zligPrefix + "_"+ (String) outOptn[j];
+                        String outputOptnkey = (String) outOptn[j];
+                        out.println("zelig: output option[" + j + "]="+ outputOptnkey);
+                        mpl.put(outputOptnkey, Arrays.asList("T"));
+                        tv.add((String) outOptn[j]);
+                    }
+                    mpl.put("zelig_outputOptions",tv);
+                    
                     // analysis options
 //                    
 //                      zlg_017_Sim zlg_017_setx zlg_017_setx_var
@@ -4800,17 +4861,23 @@ if (fieldcut){
 //                     
                     //
                     if (checkbox3.isChecked()) {
-                        mpl.put(zligPrefix + "_Sim", Arrays.asList("T"));
-                        Object simOptn = radioButtonGroup1DefaultOptions
-                            .getSelectedValue();
-                        mpl.put(zligPrefix + "_setx", Arrays
-                            .asList((String) simOptn));
+                        //mpl.put(zligPrefix + "_Sim", Arrays.asList("T"));
+                        mpl.put("Sim", Arrays.asList("T"));
+                        
+                        Object simOptn = radioButtonGroup1DefaultOptions.getSelectedValue();
+                        // simOptn = 0 or 1
+                        //mpl.put(zligPrefix + "_setx", Arrays.asList((String) simOptn));
+                        mpl.put("setx", Arrays.asList((String) simOptn));
+                        mpl.put("setxType", Arrays.asList((String) simOptn));
+                        
                         if (((String) simOptn).equals("1")) {
                             Object v1 = dropDown2.getSelected();
                             Object v2 = dropDown3.getSelected();
                             Object vl1 = textField10.getValue();
                             Object vl2 = textField8.getValue();
+                            
                             List<String> setxVars = new ArrayList<String>();
+                            
                             if (v1 != null) {
                                 setxVars.add((String) v1);
 
@@ -4818,17 +4885,46 @@ if (fieldcut){
                             if (v2 != null) {
                                 setxVars.add((String) v2);
                             }
-                            mpl.put(zligPrefix + "_setx_var", setxVars);
+                            //mpl.put(zligPrefix + "_setx_var", setxVars);
+                            mpl.put("setx_var", setxVars);
+                            
                             if (vl1 != null) {
-                                mpl.put(zligPrefix + "_setx_val_1", Arrays
-                                    .asList((String) vl1));
+                                //mpl.put(zligPrefix + "_setx_val_1", Arrays.asList((String) vl1));
+                                mpl.put("setx_val_1", Arrays.asList((String) vl1));
                             }
                             if (vl2 != null) {
-                                mpl.put(zligPrefix + "_setx_val_2", Arrays
-                                    .asList((String) vl2));
+                                //mpl.put(zligPrefix + "_setx_val_2", Arrays.asList((String) vl2));
+                                mpl.put("setx_val_2", Arrays.asList((String) vl2));
+                            }
+
+
+                            List<String> setxVar1 = new ArrayList<String>();
+                            
+                            if (v1 != null) {
+                                setxVar1.add("v" + v1);
+                                if (vl1 != null) {
+                                    setxVar1.add((String) vl1);
+                                } else {
+                                    setxVar1.add("");
+                                }
+                                    mpl.put("setx_var1", setxVar1);
+                            }
+                            
+                            if (v2 != null) {
+                                 List<String> setxVar2 = new ArrayList<String>();
+                                 
+                                setxVar2.add("v"+ v2);
+                                if (vl2 != null) {
+                                    setxVar2.add((String) vl2);
+                                } else {
+                                    setxVar2.add("");
+                                }
+                                mpl.put("setx_var2", setxVar2);
                             }
 
                         }
+                    } else {
+                        mpl.put("Sim", Arrays.asList("F"));
                     }
 
                 }
@@ -4842,23 +4938,203 @@ if (fieldcut){
                 out.println("citation info to be sent:\n" + citation);
                 mpl.put("OfflineCitation", Arrays.asList(citation));
 
-                mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
-                    + req.getServerPort() + req.getContextPath()));
+                mpl.put("appSERVER", Arrays.asList(req.getServerName() +
+                    ":"+ req.getServerPort() + req.getContextPath()));
                 mpl.put("studytitle", Arrays.asList(studyTitle));
                 mpl.put("studyno", Arrays.asList(studyId.toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
                 mpl.put("browserType", Arrays.asList(browserType));
-                // Disseminate Request
-                new DSBWrapper().disseminate(res, mpl, sf, serverPrefix,
-                    getDataVariableForRequest());
 
-            } catch (IOException ex) {
-                out.println("disseminate: advanced Statistics failed due to io exception");
-                ex.printStackTrace();
+
+            // -----------------------------------------------------
+            // New processing route
+            // 
+            // Step 0. Locate the data file and its attributes
+    
+            String fileId = sf.getId().toString();
+            String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+            out.println("fileURL="+fileURL);
+            
+            String fileloc = sf.getFileSystemLocation();
+            String tabflnm = sf.getFileName();
+            boolean sbstOK = sf.isSubsettable();
+            String flct = sf.getFileType();
+            out.println("location="+fileloc);
+            out.println("filename="+tabflnm);
+            out.println("subsettable="+sbstOK);
+            out.println("filetype="+flct);
+
+
+            // the data file for downloading/statistical analyses must be subset-ready
+            // local (relative to the application) file case 
+            // note: a typical remote case is: US Census Bureau
+            
+            if (sbstOK){
+                
+                try {
+
+            // Step 1. temporarily store the whole data set in a temp directory
+
+                    // Create a URL for the data file
+                    URL url = new URL(fileURL);
+
+                    // temp data file that stores incoming data from the above URL
+                    File tmpfl = File.createTempFile("tempTabfile.", ".tab");
+
+                    // temp subset file that stores requested variables 
+                    File tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
+
+                    // Typical file-copy idiom 
+                    // incoming/outgoing streams
+                    InputStream inb = new BufferedInputStream(url.openStream());
+                    OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpfl));
+
+                    int bufsize;
+                    byte [] bffr = new byte[8192];
+                    while ((bufsize = inb.read(bffr))!=-1) {
+                        outb.write(bffr, 0, bufsize);
+                    }
+                    outb.close();
+                    if (tmpfl.exists()){
+                       out.println("file length="+tmpfl.length());
+                       out.println("tmp file name="+tmpfl.getAbsolutePath());
+                       
+                    }
+boolean fieldcut = true;
+if ((noRecords != null) && (noRecords >=1)){
+    fieldcut = false;
+}
+                    
+if (fieldcut){
+                    // Step 2. Set-up parameters for subsetting: cutting requested columns of data
+                    // from a temp (whole) file
+
+                    // create var ids for subsetting
+                    // data(int) are taken from DB's studyfile table -- FileOrder column
+                    String [] vids = null;
+                    
+                    int vidslen = getDataVariableForRequest().size();
+                    
+                    List<String> variableList = new ArrayList();
+                    
+                    List<String> variableOrder = new ArrayList();
+                    Set<Integer> cols = new LinkedHashSet<Integer>();
+                    
+                    if (getDataVariableForRequest() != null) {
+                        Iterator iter = getDataVariableForRequest().iterator();
+                        while (iter.hasNext()) {
+                            DataVariable dv = (DataVariable) iter.next();
+                            variableList.add(dv.getId().toString());
+
+                            // the susbsetting parameter starts from 1 not 0,
+                            // add 1 to the number
+                            // variableOrder.add( Integer.toString(dv.getFileOrder()) );
+                            cols.add(dv.getFileOrder());
+                        }
+                    }
+                    
+
+                     out.println("cols="+cols);
+                    // source data file: full-path name
+                    String cutOp1 = tmpfl.getAbsolutePath();
+
+                    // result(subset) data file: full-path name
+                    String cutOp2 = tmpsbfl.getAbsolutePath();
+
+                    // Create an instance of RcutDatasetCutter
+                    FieldCutter fc = new DvnJavaFieldCutter();
+
+                    // Executes the subsetting request
+                    fc.subsetFile(cutOp1, cutOp2, cols);
+                    
+                    
+                    // Checks the result file 
+                    if (tmpsbfl.exists()){
+                        out.println("subsettFile:Length="+tmpsbfl.length());
+                        mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                    }
+
+} else {
+                    // Step 2. Set-up parameters for subsetting: cutting requested columns of data
+                    // from a temp (whole) file
+
+                    // create var ids for subsetting
+                    // data(int) are taken from DB's studyfile table -- FileOrder column
+                    String [] vids = null;
+                    
+                    int vidslen = getDataVariableForRequest().size();
+                    
+                    List<String> variableList = new ArrayList();
+                    
+                    List<String> variableOrder = new ArrayList();
+                    
+                    if (getDataVariableForRequest() != null) {
+                        Iterator iter = getDataVariableForRequest().iterator();
+                        while (iter.hasNext()) {
+                            DataVariable dv = (DataVariable) iter.next();
+                            variableList.add(dv.getId().toString());
+
+                            // the susbsetting parameter starts from 1 not 0,
+                            // add 1 to the number
+                            variableOrder.add( Integer.toString(dv.getFileOrder()+1) );
+                        }
+                    }
+
+                    vids = (String[]) variableOrder.toArray(new String[vidslen]);
+                    String varsq = StringUtils.join(vids, ",");
+                    String cutOp0 = "-f"+ varsq ;
+
+                    // source data file: full-path name
+                    String cutOp1 = tmpfl.getAbsolutePath();
+
+                    // result(subset) data file: full-path name
+                    String cutOp2 = tmpsbfl.getAbsolutePath();
+
+                    // Create an instance of RcutDatasetCutter
+                    DatasetCutter dc = new RcutDatasetCutter(cutOp0, cutOp1, cutOp2);
+
+                    // Executes the subsetting request
+                    dc.run();
+                    
+                    
+                    // Checks the result file 
+                    if (tmpsbfl.exists()){
+                        out.println("subsettFile:Length="+tmpsbfl.length());
+                        mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                    }
+}
+
+                    Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
+                    // Step 3. Organizes parameters/metadata to be sent to the implemented
+                    // data-analysis-service class
+                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, modelSpec);
+                    out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+                    // Step 4. Creates an instance of the the implemented 
+                    // data-analysis-service class 
+
+                    DvnRDataAnalysisServiceImpl das = new DvnRDataAnalysisServiceImpl();
+
+                    // Executes a request of downloading or data analysis and 
+                    // capture result info as a Map <String, String>
+
+                    resultInfo = das.execute(sro);
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                    // pass the error message to the resultPage
+                    // resultInfo.put();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // ditto
+                    // resultInt.put();
+                }
+
             }
 
-//          cntxt.responseComplete();
+
             out.println("***** advStatAction(): ends here *****");
+            
+            
             if (resultPageTest){
                 boolean isXtab = true ;
                 if (isXtab){
@@ -4883,11 +5159,20 @@ if (fieldcut){
                     resultInfo.put("Rdata", "/Zlg_417584/binfile1212643274.95944A3251A561370323.Rdata");
                 }
             }
+            
+            if (resultInfo.get("R_run_status").equals("F")){
+                setMsgAdvStatButtonTxt("* The Request failed due to an R-runtime error");
+                msgAdvStatButton.setVisible(true);
+                out.println("exiting advStatAction() due to an R-runtime error");
+                return "failure";
+            }
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
                 "resultInfo", resultInfo);
             return "success";
         } else {
-            out.println("exiting advStatAction() due to incomplete data ");
+            setMsgAdvStatButtonTxt("* Incomplete selection of variables");
+            msgAdvStatButton.setVisible(true);
+            out.println("exiting advStatAction() due to incomplete data");
             return "failure";
         }
         
@@ -5818,7 +6103,7 @@ if (fieldcut){
      * Returns a List object that stores major metadata for all variables 
      * selected by an end-user
      *
-     * @return    List of DataVariable objects that store metadata
+     * @return    List of DataVariable objects that stores metadata
      */
     public List<DataVariable> getDataVariableForRequest() {
         List<DataVariable> dvs = new ArrayList<DataVariable>();
@@ -6087,7 +6372,8 @@ if (fieldcut){
                     "recodedVarSet","recodeSchema", "baseVarToDerivedVar",
                     "derivedVarToBaseVar", "recodeVarNameSet",
                     "selectedNoRows", "msgEdaButtonTxt", "msgDwnldButtonTxt",
-                    "gridPanelModelInfoBox");
+                     "msgAdvStatButtonTxt","gridPanelModelInfoBox",
+                     "lastSimCndtnSelected");
 
                 for (String obj : sessionObjects) {
                     if (sessionMap.containsKey(obj)) {
@@ -6251,6 +6537,8 @@ if (fieldcut){
                     sessionMap.put("advStatVarRBox1", advStatVarRBox1);
                     sessionMap.put("advStatVarRBox2", advStatVarRBox2);
                     sessionMap.put("advStatVarRBox3", advStatVarRBox3);
+                    
+                    sessionMap.put("lastSimCndtnSelected", "0");
 
                     // ui:checkbox
                     // Checkbox object
@@ -6332,6 +6620,11 @@ if (fieldcut){
                         out.println("advStatVarRBox1:\n"+advStatVarRBox1);
                         out.println("advStatVarRBox2:\n"+advStatVarRBox2);
                         out.println("advStatVarRBox3:\n"+advStatVarRBox3);
+                    }
+                    
+                    radioButtonGroup1DefaultOptions.setSelectedValue( (String)sessionMap.get("lastSimCndtnSelected"));
+                    if (debug_init){
+                        out.println("lastSimCndtnSelected= "+ sessionMap.get("lastSimCndtnSelected"));
                     }
 
                     // Gets the stored object backing the items attribute
@@ -6540,7 +6833,7 @@ if (fieldcut){
                     // Gets the stored object backing msgDwnldButtonTxt that
                     // shows error messages for the action of dwnldButton
                     if (!sessionMap.containsKey("msgDwnldButtonTxt")) {
-                        sessionMap.put("msgEdaButtonTxt", msgDwnldButtonTxt);
+                        sessionMap.put("msgDwnldButtonTxt", msgDwnldButtonTxt);
                     } else {
                         msgDwnldButtonTxt = (String) sessionMap
                             .get("msgDwnldButtonTxt");
@@ -6558,6 +6851,17 @@ if (fieldcut){
                     }
                     // Hides the error message text for edaButton
                     msgEdaButton.setVisible(false);
+
+                    // Gets the stored object backing msgAdvStatButtonTxt that
+                    // shows error messages for the action of edaButton
+                    if (!sessionMap.containsKey("msgAdvStatButtonTxt")) {
+                        sessionMap.put("msgAdvStatButtonTxt", msgAdvStatButtonTxt);
+                    } else {
+                        msgAdvStatButtonTxt = (String) sessionMap
+                            .get("msgAdvStatButtonTxt");
+                    }
+                    // Hides the error message text for edaButton
+                    msgAdvStatButton.setVisible(false);
 
                     // end of post-back cases
                 }
@@ -6737,6 +7041,78 @@ if (fieldcut){
         return variableOrder;
     }
 
+    /**
+     * 
+     *
+     * @return    A List of file-order numbers
+     */
+    public List<Integer> getFileOrderForRequest() {
+        List<DataVariable> dvs = new ArrayList<DataVariable>();
+        List<Integer> fileOrderForRequest = new ArrayList<Integer>();
+        for (Iterator el = dataVariables.iterator(); el.hasNext();) {
+            DataVariable dv = (DataVariable) el.next();
+            String keyS = dv.getId().toString();
+            if (varCart.containsKey(keyS)) {
+                fileOrderForRequest.add(dv.getFileOrder());
+            }
+        }
+        Collections.sort(fileOrderForRequest);
+        return fileOrderForRequest;
+    }
 
+    /**
+     * 
+     *
+     * @return    
+     */
+    public String getStartEndColumns (){
+        String carg = null;
+        Map<Long, Map<Integer, List<Long>>> cargSet = new HashMap<Long, Map<Integer, List<Long>>>(); 
+        if (getDataVariableForRequest() != null) {
+            //Iterator iter = getDataVariableForRequest().iterator();
+            //while (iter.hasNext()) {
+            List<DataVariable> dvs = getDataVariableForRequest();
+            
+            for (int i = 0; i < dvs.size();i++  ){
+                DataVariable dv = dvs.get(i);
+                // getFileStartPosition()
+                // getFileEndPosition()
+                List<Long> pos = new ArrayList<Long>();
+                Map<Integer, List<Long>> cargPair = new HashMap<Integer, List<Long>>();
+                pos.add( dv.getFileStartPosition());
+                pos.add( dv.getFileEndPosition());
+                Integer fo = dv.getFileOrder()+1;
+                cargPair.put(fo, pos);
+                cargSet.put(dv.getRecordSegmentNumber(), cargPair);
+            }
+        }
+        return carg;
+    }
+    
+    public Map<String, String> getValueTableForRequestedVariable(DataVariable dv){
+        List<VariableCategory> varCat = new ArrayList<VariableCategory>();
+        varCat.addAll(dv.getCategories());
+        Map<String, String> vl = new HashMap<String, String>();
+        for (VariableCategory vc : varCat){
+            vl.put(vc.getValue(), vc.getLabel());
+        }
+        return vl;
+    }
+    
+    
+    public Map<String, Map<String, String>> getValueTableForRequestedVariables(List<DataVariable> dvs){
+        Map<String, Map<String, String>> vls = new HashMap<String, Map<String, String>>();
+        for (DataVariable dv : dvs){
+            List<VariableCategory> varCat = new ArrayList<VariableCategory>();
+            varCat.addAll(dv.getCategories());
+            Map<String, String> vl = new HashMap<String, String>();
+            for (VariableCategory vc : varCat){
+                vl.put(vc.getValue(), vc.getLabel());
+            }
+            vls.put("v"+dv.getId(), vl);
+        }
+        return vls;
+    }
+    
     // end of this class
 }

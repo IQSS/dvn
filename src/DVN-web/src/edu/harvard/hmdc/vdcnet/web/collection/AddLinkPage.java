@@ -114,7 +114,7 @@ public class AddLinkPage extends VDCBaseBean implements java.io.Serializable  {
             int i=0;
             for (Iterator it = otherVDCCollections.iterator(); it.hasNext();) {
                 VDCCollection elem = (VDCCollection) it.next();
-                otherVDCs[i++] = new String( elem.getName());
+                otherVDCs[i++] = new String( elem.getFullCollectionName());
                 
             }
         } else{
@@ -148,7 +148,7 @@ public class AddLinkPage extends VDCBaseBean implements java.io.Serializable  {
         String [] allVDCs = new String[allVDCCollections.size()];
         for (Iterator it = allVDCCollections.iterator(); it.hasNext();) {
             VDCCollection elem = (VDCCollection) it.next();
-            collectionsMap.put(elem.getName(),elem.getId());
+            collectionsMap.put(elem.getFullCollectionName(),elem.getId());
 
         }
 
@@ -184,7 +184,7 @@ public class AddLinkPage extends VDCBaseBean implements java.io.Serializable  {
         vdcCollectionService.edit(addCollection);
         vdcService.edit(vdc);
         StatusMessage msg = new StatusMessage();
-        msg.setMessageText("Link "+ addCollection.getName()+ " was added to dataverse "+ getVDCRequestBean().getCurrentVDC().getName());
+        msg.setMessageText("Link "+ addCollection.getFullCollectionName()+ " was added to dataverse "+ getVDCRequestBean().getCurrentVDC().getName());
         msg.setStyleClass("successMessage");
         Map m = getRequestMap();
         m.put("statusMessage",msg);

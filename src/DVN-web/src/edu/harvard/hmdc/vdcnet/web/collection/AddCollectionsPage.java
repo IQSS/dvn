@@ -997,7 +997,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         String [] allVDCs = new String[allVDCCollections.size()];
         for (Iterator it = allVDCCollections.iterator(); it.hasNext();) {
             VDCCollection elem = (VDCCollection) it.next();
-            collectionsMap.put(getLevelRepStr(elem.getLevel())+elem.getName(),elem.getId());
+            collectionsMap.put(getLevelRepStr(elem.getLevel())+elem.getFullCollectionName(),elem.getId());
 
         }
 
@@ -1034,9 +1034,9 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
             VDCCollection elem = (VDCCollection) it.next();
             String name=null;
             if (elem.isVisible()){
-                name = getLevelRepStr(elem.getLevel()) + elem.getName()+ " (Visible)";
+                name = getLevelRepStr(elem.getLevel()) + elem.getFullCollectionName() + " (Visible)";
             } else{
-                name = getLevelRepStr(elem.getLevel()) + elem.getName()+ " (Hidden) ";
+                name = getLevelRepStr(elem.getLevel()) + elem.getFullCollectionName()+ " (Hidden) ";
             }
             allVDCs[i++] = name;
 
@@ -1071,7 +1071,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         int i = 0;
         for (Iterator it = thisVDC.iterator(); it.hasNext();) {
             VDCCollection elem = (VDCCollection) it.next();
-            thisVDCCollections[i++] = getLevelRepStr(elem.getLevel()) + elem.getName();
+            thisVDCCollections[i++] = getLevelRepStr(elem.getLevel()) + elem.getFullCollectionName();
         }
        return thisVDCCollections;
     }

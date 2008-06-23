@@ -259,6 +259,10 @@ public class VDCCollection implements java.io.Serializable  {
         this.level = level;
     }
     
+    public String getFullCollectionName(){
+        return getOwner().getName()+" Dataverse/"+getName();
+    }
+    
 
     @ManyToMany //(cascade={CascadeType.REMOVE })
     @JoinTable(name="VDC_LINKED_COLLECTIONS",

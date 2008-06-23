@@ -25,6 +25,7 @@
  */
 package edu.harvard.hmdc.vdcnet.web.subsetting;
 
+import edu.harvard.hmdc.vdcnet.dsb.AdvancedStatGUIdata;
 import com.sun.rave.web.ui.appbase.AbstractApplicationBean;
 import javax.faces.FacesException;
 
@@ -187,7 +188,7 @@ public class AnalysisApplicationBean extends AbstractApplicationBean implements 
 
           //zlg = (Zelig)u.unmarshal( new FileInputStream( "configZeligGUI.xml" ) );
           
-          DataAnalysisService das = new DvnRDataAnalysisServiceImpl();
+          DvnRDataAnalysisServiceImpl das = new DvnRDataAnalysisServiceImpl();
           zlg = (Zelig)u.unmarshal( new StringReader(das.getGUIconfigData()) );
 
 

@@ -13,43 +13,81 @@ import edu.harvard.hmdc.vdcnet.dsb.*;
 import edu.harvard.hmdc.vdcnet.study.*;
 import static java.lang.System.*;
 import java.util.*;
+import org.apache.commons.lang.*;
 
 
-public class DvnRJobRequest implements ServiceRequest {
+public class DvnRJobRequest {
 
+    public static Map<String, Integer> xtabOutputOptions =
+        new HashMap<String, Integer>();
+        
+        
+    public static Map<String, Integer> zeligOutputOptions =
+        new HashMap<String, Integer>();
+    public static Map<String, Integer> zeligAnalysisOptions =
+        new HashMap<String, Integer>();
 
+    static {
+        xtabOutputOptions.put("xtb_Totals",0);
+        xtabOutputOptions.put("xtb_Statistics", 1);
+        xtabOutputOptions.put("xtb_Percentages",2);
+        xtabOutputOptions.put("xtb_ExtraTables",3);
+        
+        zeligOutputOptions.put("Summary",0);
+        zeligOutputOptions.put("Plots", 1);
+        zeligOutputOptions.put("BinOutput",2);
 
+     
+     
+     
+    }
     // ----------------------------------------------------- Constructors
 
     /**
-     * 3-arg Constructor
-     * for later extensions
+     * 4-arg Constructor
+     * for zelig cases
      */
-/*
+
     public DvnRJobRequest(List<DataVariable> dv, 
         Map<String, List<String>> listParams,
-        Map<String, String> stringParams 
+        Map<String, Map<String, String>> vts,
+        AdvancedStatGUIdata.Model zp 
+        ){
+        dataVariablesForRequest = dv;
+        
+        listParametersForRequest = listParams;
+        
+        valueTables = vts;
+        
+        zeligModelSpec = zp;
+        
+        out.println("variables="+dataVariablesForRequest);
+        out.println("map="+listParametersForRequest);
+        out.println("value table="+valueTables);
+        out.println("model spec="+zeligModelSpec);
+        checkVariableNames();
+    }
+
+    
+    /**
+     * 3-arg Constructor
+     *
+     */
+    public DvnRJobRequest(List<DataVariable> dv, 
+        Map<String, List<String>> listParams, 
+        Map<String, Map<String, String>> vts
         ){
         
         dataVariablesForRequest = dv;
         
-        stringParametersForRequest = stringParams;
-        
         listParametersForRequest = listParams;
-    }
-*/
-    
-    /**
-     * 2-arg Constructor
-     *
-     */
-    public DvnRJobRequest(List<DataVariable> dv, Map<String, List<String>> listParams){
         
-        dataVariablesForRequest = dv;
-        
-        listParametersForRequest = listParams;
+        valueTables = vts;
+
         out.println("variables="+dataVariablesForRequest);
         out.println("map="+listParametersForRequest);
+        out.println("value table="+valueTables);
+        checkVariableNames();
     }
 
 
@@ -62,8 +100,12 @@ public class DvnRJobRequest implements ServiceRequest {
     /** list-type (one-to-many) parameter */
     private Map<String, List<String>> listParametersForRequest;
 
-    /** scalar-type(one-to-one) parameter */
-    // private Map<String, String> stringParametersForRequest;
+    /**  */
+    
+    private Map<String, Map<String, String>> valueTables;
+    
+    /**  */
+    private AdvancedStatGUIdata.Model zeligModelSpec;
     
 
     // ----------------------------------------------------- accessors
@@ -88,15 +130,15 @@ public class DvnRJobRequest implements ServiceRequest {
     }
 
     /**
-     * Getter for property stringParametersForRequest
+     * Getter for property zeligModelSpec
      *
      * @return    
      */
-/*
-    public Map<String, String> getStringParametersForRequest(){
-        return this.stringParametersForRequest;
+
+    public AdvancedStatGUIdata.Model getZeligModelSpec(){
+        return this.zeligModelSpec;
     }
-*/
+
 
 
     // ----------------------------------------------------- accessors
@@ -177,15 +219,49 @@ public class DvnRJobRequest implements ServiceRequest {
         return variableNames;
     }
     
+    
+    public String[] safeVarNames = null;
+    public String[] renamedVariableArray=null;
+    public String[] renamedResultArray=null;
+    public Map<String, String> raw2safeTable = null;
+    
+    public Map<String, String> safe2rawTable = null;
+
+    public boolean hasUnsafedVariableNames = false;
     /**
      * Getter for property raw-to-safe-variable-name list
      * @return    A Map that maps an unsafe variable name to 
      *            a safe one
      */
     public Map<String, String> getRaw2SafeVarNameTable(){
-        Map<String, String> raw2SafeVarNameTable=null;
+        return raw2safeTable;
+    }
+
+    public void checkVariableNames(){
         
-        return raw2SafeVarNameTable;
+        VariableNameFilterForR nf = new VariableNameFilterForR(getVariableNames());
+        if (nf.hasRenamedVariables()){
+             safeVarNames  = nf.getFilteredVarNames();
+             hasUnsafedVariableNames = true;
+        }
+        
+        raw2safeTable = nf.getRaw2safeTable();
+        safe2rawTable = nf.getSafe2rawTable();
+        renamedVariableArray = nf.getRenamedVariableArray();
+        renamedResultArray   = nf.getRenamedResultArray();
+    }
+    
+    public List<String> getFileteredVarNameSet(List<String> varIdSet){
+        List<String> varNameSet = new ArrayList<String>();
+        for (String vid : varIdSet){
+            String raw = getVarIdToRawVarNameTable().get(vid);
+            if (raw2safeTable.containsKey(raw)){
+                varNameSet.add(raw2safeTable.get(raw));
+            } else {
+                varNameSet.add(raw);
+            }
+        }
+        return varNameSet;
     }
     
     /**
@@ -203,6 +279,25 @@ public class DvnRJobRequest implements ServiceRequest {
         variableIds = (String[])rw.toArray(new String[rw.size()]);
         return variableIds;
     }
+
+    public Map<String, String> getVarIdToRawVarNameTable(){
+        Map<String, String> vi2rwn = new HashMap<String, String>();
+        
+        for(DataVariable dv :dataVariablesForRequest){
+            vi2rwn.put("v"+dv.getId(), dv.getName());
+        }
+        return vi2rwn;
+    }
+
+    public Map<String, String> getRawVarNameToVarIdTable(){
+        Map<String, String> rwn2Id = new HashMap<String, String>();
+        
+        for(DataVariable dv :dataVariablesForRequest){
+            rwn2Id.put(dv.getName(), "v"+dv.getId());
+        }
+        return rwn2Id;
+    }
+
 
     /**
      * Getter for property variable labels
@@ -227,6 +322,7 @@ public class DvnRJobRequest implements ServiceRequest {
      * @return    A value-label table as a Map object
      */
     public Map<String, Map<String,String>> getValueTable(){
+        /*
         Map<String, Map<String,String>> valueTable = new HashMap<String, Map<String, String>>();
         DataVariable dv = null;
         for (Iterator el = dataVariablesForRequest.iterator(); el.hasNext();) {
@@ -241,7 +337,8 @@ public class DvnRJobRequest implements ServiceRequest {
                 valueTable.put(dv.getId().toString(), vl);
             }
         }
-        return valueTable;
+        */
+        return valueTables;
     }
     
     public Map<String, List<String>> getRecodedVarParameters() {
@@ -258,118 +355,206 @@ public class DvnRJobRequest implements ServiceRequest {
 
 
     /**
-     * Getter for property requestTypeToken
+     * Returns the requeste type: downloading, or descriptive statistics,
+     * cross-tabulation, or zelig models
      *
-     * @param     
-     * @return    
+     * @return    a String (download|EDA|Xtab|Zelig)
      */
     public String getRequestType() {
         String type=null;
         List<String> requestTypeToken = listParametersForRequest.get("requestType");
-        out.println("requestType="+requestTypeToken.get(0));
         type =  requestTypeToken.get(0);
+        out.println("requestType="+type);
         return type;
     }
 
     /**
-     * Getter for property download request type
+     * Returns the requested file format
      *
-     * @param     
-     * @return    
+     * @return    a String (D01|D02|D03|D04)
      */
     public String getDownloadRequestParameter() {
         String param=null;
         List<String> requestTypeToken = listParametersForRequest.get("dtdwnld");
-        out.println("dtdwnld="+requestTypeToken.get(0));
         param =  requestTypeToken.get(0);
+        out.println("dtdwnld="+param);
         return param;
     }
 
+    /**
+     * Returns the requested model name
+     *
+     * @return    a String (xtb|zelig_models)
+     */
     public String getZeligModelName() {
         String modelName = null;
-        
+        List<String> requestTypeToken = listParametersForRequest.get("modelName");
+        modelName =  requestTypeToken.get(0);
+        out.println("modelName="+modelName);
         return modelName;
     }
     
     
-    // -----------------------------------------------------
-    // private methods
-    
+    /**
+     * 
+     *
+     * @return    
+     */
+    public String[] getXtabClassVars(){
+        String[] cv = null;
+        List<String> varIdSet = listParametersForRequest.get("xtb_nmBxR1");
+        out.println("class var Ids="+ varIdSet);
+        if (varIdSet != null){
+
+            List<String> varSet = getFileteredVarNameSet(varIdSet);
+            out.println("class-var non-null case:"+ varSet);
+            cv = (String[])varSet.toArray(new String[varSet.size()]);
+        }
+        return cv;
+    }
 
     /**
      * 
      *
-     * @param     
      * @return    
-     *//*
-    public void setServiceRequest(ServiceRequest sr){
-    
-    
-    }
-*/
-    /**
-     * 
-     *
-     * @param     
-     * @return    
-     *//*
-    public ServiceRequest getServiceRequest(){
-        ServiceRequest sr = null;
+     */
+    public String[] getXtabFreqVars(){
+        String[] fv = null;
         
-        return sr;
+        List<String> varIdSet = listParametersForRequest.get("xtb_nmBxR2");
+        if (varIdSet != null){
+            List<String> varSet = getFileteredVarNameSet(varIdSet);
+            out.println("freq-var non-null case:"+ varSet);
+
+            fv = (String[])varSet.toArray(new String[varSet.size()]);
+        }
+        return fv;
     }
-*/
-/**/
+    
+    /**
+     * 
+     *
+     * @return    
+     */
+    public String[] getXtabOutputOptions(){
+        String[] xoo = {"F", "F", "F", "F"};
+        List<String> varSet = listParametersForRequest.get("xtb_outputOptions");
+        if (varSet != null){
+            for (int i=0;i<varSet.size();i++){
+                if (xtabOutputOptions.containsKey(varSet.get(i))){
+                    xoo[xtabOutputOptions.get(varSet.get(i))]="T";
+                }
+            }
+        }
+        return xoo;
+    }
+    
+    
+    public String getLHSformula(){
+        String lhs = null;
+        List<String> varIdSet2 = null;
+        List<String> varIdSet  = null;
+        int noRboxes = zeligModelSpec.getNoRboxes();
+        
+        if (noRboxes >= 3) {
 
-//    public static void main(String args[]) {
-//        // how to test this class
-//        // create an instance
-//        // List<DataVariable> getDataVariableForRequest()
-//        // Map<String, List<String>> mpl
-//        ServiceRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl);
-//        
-//        
-//        // variable type
-//        int [] jvartyp  = {1,1,1};// = mp.get("vartyp").toArray()
-//        
-//        // variable format
-//        String [] varFmtN = {};
-//        List<String> varFmtV = new ArrayList<String>();
-//        // new RList(varFmtV, varFmtN);
-//        
-//        // variable names
-//        String [] jvnames = {"race","age","vote"};
-//        
-//        // raw-to-safe variable name map
-//        String [] Rsafe2rawN = {};
-//        List<String> Rsafe2rawV = new ArrayList<String>();
-//        Map<String, String> Rsafe2raw = new HashMap<String, String>();
-//        // new RList(Rsafe2rawV, Rsafe2rawN)
-//        
-//        
-//        // variable Ids
-//        String[] jvarnmbr = {"v198057","v198059","v198060"};
-//            
-//        // variable labels
-//        String[] jvarlabels = {"race","age","vote"};
-//        
-//        // value-label table
-//        /*
-//        
-//            VALTABLE[["4"]]<-list(
-//            "7"="REFUSAL",
-//            "9"="MISSING",
-//            "3"="ONCE OR TWICE A WEEK",
-//            "5"="EVERY DAY",
-//            "2"="LESS THN ONCE A WEEK",
-//            "4"="NEARLY EVERY DAY",
-//            "8"="DONT KNOW",
-//            "1"="NEVER")
-//        */
-//    }
+            // box stores Ids = "v" + ID-integer
+            varIdSet = listParametersForRequest.get("nmBxR1");
+            varIdSet2 = listParametersForRequest.get("nmBxR2");
+            
+            List<String> tmp = getFileteredVarNameSet(varIdSet);
+            tmp.addAll(getFileteredVarNameSet(varIdSet2));
 
+           lhs = "list(" + StringUtils.join(tmp,",") + ")";
+             
+        } else {
+            varIdSet = listParametersForRequest.get("nmBxR1");
+            List<String> tmp = getFileteredVarNameSet(varIdSet);
 
-
-
+            if (varIdSet.size() > 1){
+                lhs = "list(" + StringUtils.join(tmp,",") + ")";
+            } else {
+                lhs = tmp.get(0);
+            }
+        }
+        out.println("lhs="+lhs);
+        return lhs;
+    }
+    
+    public String getRHSformula(){
+        String rhs = null;
+        List<String> varIdSet = null;
+        int noRboxes = zeligModelSpec.getNoRboxes();
+        if (noRboxes >= 2) {
+            if (noRboxes == 2) {
+                varIdSet = listParametersForRequest.get("nmBxR2");
+            } else if (noRboxes == 3){
+                varIdSet = listParametersForRequest.get("nmBxR3");
+            }
+            List<String> tmp = getFileteredVarNameSet(varIdSet);
+            rhs = StringUtils.join(tmp,"+");
+        }else if (noRboxes == 1){
+            rhs = "NULL";
+        }
+        return rhs;
+    }
+    
+    
+    public String[] getZeligOutputOptions(){
+        String[] zoo = {"F", "F", "F"};
+        List<String> varSet = listParametersForRequest.get("zelig_outputOptions");
+        if (varSet != null){
+            for (int i=0;i<varSet.size();i++){
+                if (zeligOutputOptions.containsKey(varSet.get(i))){
+                    zoo[zeligOutputOptions.get(varSet.get(i))]="T";
+                }
+            }
+        }
+        return zoo;
+    }
+    
+    public String getZeligSimulationOption(){
+        String simOptn = "F";
+        List<String> valueSet  = listParametersForRequest.get("Sim");
+        if (valueSet != null){
+            simOptn =  valueSet.get(0);
+        }
+        return simOptn;
+    }
+    
+    
+    public String getZeligSetxType(){
+        String type = null;
+        List<String> valueSet  = listParametersForRequest.get("setxType");
+        if (valueSet != null){
+            type =  valueSet.get(0);
+        }
+        return type;
+    }
+    
+    public String getSetx1stSet(){
+        String setxArg = null;
+        List<String> valueSet  = listParametersForRequest.get("setx_var1");
+        List<String> v = new ArrayList();
+        v.add(valueSet.get(0));
+        List<String> tmp = getFileteredVarNameSet(v);
+        if (!valueSet.get(1).equals("")){
+            setxArg = "list(" + tmp.get(0) + " = " + valueSet.get(1) +")";
+        }
+        return setxArg;
+    }
+    
+    
+    public String getSetx2ndSet(){
+        String setxArg = null;
+        List<String> valueSet  = listParametersForRequest.get("setx_var2");
+        List<String> v = new ArrayList();
+        v.add(valueSet.get(0));
+        List<String> tmp = getFileteredVarNameSet(v);
+        if (!valueSet.get(1).equals("")){
+            setxArg = "list(" + tmp.get(0) + " = " + valueSet.get(1) +")";
+        }
+        return setxArg;
+    }
 
 }

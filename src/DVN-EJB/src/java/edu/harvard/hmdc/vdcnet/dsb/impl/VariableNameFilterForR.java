@@ -50,8 +50,10 @@ public class VariableNameFilterForR {
         }
     }
     
-    private static String[] unsafeChar = {"#","$","@","_","?"};
-    private static String[] safeChar = {"hex23","hex24","hex40","hex5F","hex3F"};
+    //private static String[] unsafeChar = {"#","$","@","_","?"};
+    //private static String[] safeChar = {"hex23","hex24","hex40","hex5F","hex3F"};
+    private static String[] unsafeChar = {"#","$","@","?"};
+    private static String[] safeChar = {"hex23","hex24","hex40","hex3F"};
     
     private Map<String, String> raw2safeTable = new HashMap<String, String>();
     
@@ -112,7 +114,15 @@ public class VariableNameFilterForR {
     }
     
     public String[] getRenamedResultArray(){
-        return  (String[])renamedResults.toArray(new String[renamedResults.size()]);
+        return (String[])renamedResults.toArray(new String[renamedResults.size()]);
+    }
+
+    public Map<String, String> getRaw2safeTable(){
+        return raw2safeTable;
+    }
+    
+    public Map<String, String> getSafe2rawTable(){
+        return safe2rawTable;
     }
 
     

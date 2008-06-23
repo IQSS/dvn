@@ -23,7 +23,7 @@ import org.apache.commons.lang.builder.*;
  * @author asone
  */
 
-public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
+public class DvnRDataAnalysisServiceImpl{
 
     // ----------------------------------------------------- static filelds
     
@@ -115,11 +115,11 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
     /**
      * Execute an R-based dvn statistical analysis request 
      *
-     * @param sro    a ServiceRequest object that contains various parameters
+     * @param sro    a DvnRJobRequest object that contains various parameters
      * @return    a Map that contains various information about results
      */    
     
-    public Map<String, String> execute(ServiceRequest sro) {
+    public Map<String, String> execute(DvnRJobRequest sro) {
     
         // set the return object
         Map<String, String> result = new HashMap<String, String>();
@@ -197,10 +197,13 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
             
             String [] jvnamesRaw = sro.getVariableNames();
             String [] jvnames = null;
-            VariableNameFilterForR nf = new VariableNameFilterForR(jvnamesRaw);
-            if (nf.hasRenamedVariables()){
+            
+            //VariableNameFilterForR nf = new VariableNameFilterForR(jvnamesRaw);
+            
+            if (sro.hasUnsafedVariableNames){
                 // create  list
-                jvnames = nf.getFilteredVarNames();
+                jvnames =  sro.safeVarNames;
+                out.println("renamed="+StringUtils.join(jvnames,","));
             } else {
                 jvnames = jvnamesRaw;
             }
@@ -230,11 +233,14 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
             /* 
               attr(x, "Rsafe2raw")<-list();
             */
-            if (nf.hasRenamedVariables()){
+            //if (nf.hasRenamedVariables()){
+            if (sro.hasUnsafedVariableNames){
+                out.println("unsafeVariableNames exist");
                 // create  list
-                jvnames = nf.getFilteredVarNames();
-                String[] rawNameSet  = nf.getRenamedVariableArray();
-                String[] safeNameSet = nf.getRenamedResultArray();
+                //jvnames = nf.getFilteredVarNames();
+                jvnames = sro.safeVarNames;
+                String[] rawNameSet  = sro.renamedVariableArray;
+                String[] safeNameSet = sro.renamedResultArray;
                 
                 c.assign("tmpRN", new REXPString(rawNameSet));
                 c.assign("tmpSN", new REXPString(safeNameSet));
@@ -245,10 +251,7 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
                 c.voidEval(RsafeNameLine);
             }
             
-            Map<String, String> Rsafe2raw = sro.getRaw2SafeVarNameTable();
-            // TO DO 
-            // list hadnlding process comes here
-            //c.assign("attr(x, 'Rsafe2raw')", new REXPList(new RList(Rsafe2rawV, Rsafe2rawN)));
+            //Map<String, String> Rsafe2raw = sro.getRaw2SafeVarNameTable();
             
             // asIs
             /* 
@@ -304,13 +307,15 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
             // create the VALTABLE
             c.voidEval("VALTABLE<-list()");
             Map<String, Map<String, String>> vltbl = sro.getValueTable();
-
-            for (int j=0;j<jvnames.length;j++){
+            Map<String, String> rnm2vi = sro.getRawVarNameToVarIdTable();
+            for (int j=0;j<jvnamesRaw.length;j++){
                 // if this variable has its value-label table,
                 // pass its key and value arrays to the Rserve
                 // and finalize a value-table at the Rserve
-                if (vltbl.containsKey(jvnames[j])){
-                    Map<String, String> tmp = (HashMap<String, String>)vltbl.get(jvnames[j]);
+                String varId = rnm2vi.get(jvnamesRaw[j]);
+                if (vltbl.containsKey(varId)){
+                    
+                    Map<String, String> tmp = (HashMap<String, String>)vltbl.get(varId);
                     Set<String> vlkeys = tmp.keySet();
                     String[] tmpk = (String[]) vlkeys.toArray(new String[vlkeys.size()]);
                     String[] tmpv = getValueSet(tmp, tmpk);
@@ -377,8 +382,8 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
                 // invoke this method
                 result = (Map<String, String>) mthd.invoke(this, sro, c);
             } catch (InvocationTargetException e) {
-                Throwable cause = e.getCause();
-                err.format(cause.getMessage());
+                //Throwable cause = e.getCause();
+                //err.format(cause.getMessage());
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -399,6 +404,13 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
             String Rversion = c.eval(RversionLine).asString();
             
             String RexecDate = c.eval("date()").asString();
+            
+            if (result.containsKey("option")){
+                result.put("R_run_status", "T");
+            } else {
+                result.put("option", requestTypeToken.toLowerCase()); //download  zelig eda xtab
+                result.put("R_run_status", "F");
+            }
             
             result.put("fileUNF",fileUNF);
             result.put("dsbHost", RSERVE_HOST);
@@ -459,7 +471,7 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
      * @param     
      * @return    
      */
-    public Map<String, String> runDownloadRequest(ServiceRequest sro, RConnection c){
+    public Map<String, String> runDownloadRequest(DvnRJobRequest sro, RConnection c){
         out.println("*********** downloading option ***********");
         Map<String, String> sr = new HashMap<String, String>();
         
@@ -509,13 +521,13 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
      * @param     
      * @return    
      */
-    public Map<String, String> runEDARequest(ServiceRequest sro, RConnection c){
+    public Map<String, String> runEDARequest(DvnRJobRequest sro, RConnection c){
         out.println("*********** EDA option ***********");
         Map<String, String> sr = new HashMap<String, String>();
         try {
-            String univarStat = "try(x<-univarStat(dtfrm=x))";
+            String univarStatLine = "try(x<-univarStat(dtfrm=x))";
             String ResultHtmlFile = "Rout."+PID+".html" ;
-            String vdcUtilLib = "library(VDCutil)";
+            String vdcUtilLibLine = "library(VDCutil)";
 
             c.voidEval("dol<-''");
             String aol4EDA = "aol<-c(1,1,0)";
@@ -561,8 +573,8 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
             c.voidEval(createVisualsDir);
             
             // command lines
-            out.println("univarStat="+univarStat);
-            c.voidEval(univarStat);
+            out.println("univarStatLine="+univarStatLine);
+            c.voidEval(univarStatLine);
             
             String univarChart = "try({x<-univarChart(dtfrm=x, " +
                 "analysisoptn=aol, " +
@@ -609,14 +621,14 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
      * @param     
      * @return    
      */
-    public Map<String, String> runXtabRequest(ServiceRequest sro, RConnection c){
+    public Map<String, String> runXtabRequest(DvnRJobRequest sro, RConnection c){
         out.println("*********** xtab option ***********");
         Map<String, String> sr = new HashMap<String, String>();
 
         try {
-            String univarStat = "try(x<-univarStat(dtfrm=x))";
+            String univarStatLine = "try(x<-univarStat(dtfrm=x))";
             String ResultHtmlFile = "Rout."+PID+".html" ;
-            String vdcUtilLib = "library(VDCutil)";
+            String vdcUtilLibLine = "library(VDCutil)";
         
             c.voidEval("dol<-''");
             String aol4xtab = "aol<-c(0,0,1)";
@@ -669,15 +681,23 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
             */
             
             // command lines
-            out.println("univarStat="+univarStat);
+            out.println("univarStatLine="+univarStatLine);
 
-            c.voidEval(univarStat);
-            c.voidEval(vdcUtilLib);
-            String[] classVar = {"vote", "race"};
-            String[] freqVar  = {};
-            String[] xtabOptns= {"F", "T", "T", "T"};
+            c.voidEval(univarStatLine);
+            c.voidEval(vdcUtilLibLine);
+            
+            String[] classVar =  sro.getXtabClassVars();
             c.assign("classVar", new REXPString(classVar));
-            c.assign("freqVar", new REXPString(freqVar));
+            
+            String[] freqVar = sro.getXtabFreqVars();
+            if (freqVar != null){
+                c.assign("freqVar", new REXPString(freqVar));
+            }else {
+                c.voidEval("freqVar<-c()");
+            }
+            
+            String[] xtabOptns= sro.getXtabOutputOptions();// {"F", "T", "T", "T"};
+            
             //"HTMLfile='"+wrkdir+ "/" +ResultHtmlFile+"'"+
 
             String VDCxtab = "try(VDCcrossTabulation("+
@@ -685,9 +705,9 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
                 ", data=x"+ 
                 ", classificationVars=classVar"+
                 ", freqVars=freqVar" +
-                ", wantPercentages="+xtabOptns[0]+
-                ", wantTotals="+xtabOptns[1]+
-                ", wantStats="+xtabOptns[2]+
+                ", wantPercentages="+xtabOptns[2]+
+                ", wantTotals="+xtabOptns[0]+
+                ", wantStats="+xtabOptns[1]+
                 ", wantExtraTables="+xtabOptns[3]+"))";
             out.println("VDCxtab="+VDCxtab);
             c.voidEval(VDCxtab);
@@ -724,19 +744,20 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
      * @param     
      * @return    
      */
-    public Map<String, String> runZeligRequest(ServiceRequest sro, RConnection c){
+    public Map<String, String> runZeligRequest(DvnRJobRequest sro, RConnection c){
         out.println("*********** zelig option ***********");
         Map<String, String> sr = new HashMap<String, String>();
         
         try {
-            String univarStat = "try(x<-univarStat(dtfrm=x))";
-            String ResultHtmlFile = "Rout."+PID+".html" ;
-            String vdcUtilLib = "library(VDCutil)";
+            String univarStatLine = "try(x<-univarStat(dtfrm=x))";
+            String ResultHtmlFile = null; //"Rout."+PID+".html" ;
+            String RdataFileName  = null;
+            String vdcUtilLibLine = "library(VDCutil)";
 
             c.voidEval("dol<-''");
             String aol4Zelig = "aol<-c(0,0,0)";
             c.voidEval(aol4Zelig);
-            c.voidEval(vdcUtilLib);
+            c.voidEval(vdcUtilLibLine);
 
             String modelname = sro.getZeligModelName();
             /* 
@@ -789,30 +810,75 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
             String createTmpDir = "dir.create('"+wrkdir +"')";
             c.voidEval(createTmpDir);
             
+            // output option: sum plot Rdata
+            String[] zeligOptns =  sro.getZeligOutputOptions();
+            
+            String simOptn = sro.getZeligSimulationOption();
+            String setxType=  null;
+            String setxArgs = null;
+            String setx2Args = null;
+            
+            if (simOptn.equals("T")){
+                // simulation was requested
+                setxType= sro.getZeligSetxType();
+                out.println("setxType="+setxType);
+                if (setxType == null){
+                    setxArgs = "NULL";
+                    setx2Args= "NULL";
+                } else {
+                    if (setxType.equals("0")) {
+                        // default case
+                        setxArgs = "NULL";
+                        setx2Args= "NULL";
+                    } else if (setxType.equals("1")){
+                        // non-default cases
+                        if ( (sro.getSetx1stSet() != null) && (sro.getSetx2ndSet() != null)){
+                            // first diff case
+                            setxArgs = sro.getSetx1stSet();
+                            setx2Args= sro.getSetx2ndSet();
+                            
+                        } else if (sro.getSetx2ndSet() == null){
+                            // single condition
+                            setxArgs = sro.getSetx1stSet();
+                            setx2Args= "NULL";
+                        } else {
+                            setxArgs = "NULL";
+                            setx2Args= "NULL";
+                        }
+                        
+                    }
+                }
+            }else {
+                setxArgs = "NULL";
+                setx2Args= "NULL";
+            }
             
 // Additional coding required here
-
-            String lhsTerm = null;
-            String rhsTerm = null;
             
+            String lhsTerm = sro.getLHSformula();
+            String rhsTerm = sro.getRHSformula();
             
             String VDCgenAnalysisline = 
-                "zlg.out<- VDCgenAnalysis(" +
-                "outDir='"+ wrkdir + "',"+ 
-                lhsTerm +
-                "~" +
-                rhsTerm + ","+
-                "model='"+ modelname +"',"+
-                "data=x,"+
-                "wantSummary="    + "T" + ","+
-                "wantPlots="      + "T" + ","+
-                "wantSensitivity="+ "F" + ","+
-                "wantSim="        + "F" + ","+
-                "wantBinOutput="  + "T" + ","+
-                "setxArgs="       +"list()"  + ","+
-                "setx2Args="      +"list()"  + ")";
+                "try( { zlg.out<- VDCgenAnalysis(" +
+                "outDir='"        + wrkdir        +"',"+
+                lhsTerm + "~"     + rhsTerm       + ","+
+                "model='"         + modelname     +"',"+
+                "data=x,"         +
+                "wantSummary="    + zeligOptns[0] + ","+
+                "wantPlots="      + zeligOptns[1] + ","+
+                "wantSensitivity=F"               + ","+
+                "wantSim="        + simOptn       + ","+
+                "wantBinOutput="  + zeligOptns[2] + ","+
+                "setxArgs="       + setxArgs      + ","+
+                "setx2Args="      + setx2Args     + 
+                ")  } )";
                 
             /*
+                o: sum(T), Plot(T), BinOut(F)
+                a: sim (F), sen(always F)
+                
+                
+            
                "TMLInitArgs=list(Title='Dataverse Analysis'),"+
                 "HTMLnote= '<em>The following are the results of your
                 requested analysis.</em><br/>
@@ -831,8 +897,18 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
             out.println("zlg.out:no of keys="+kz.length );// "\t"+kz[0]+"\t"+kz[1]
             
             for (int i=0; i<kz.length; i++){
-                out.println(kz[i]+"="+zlgout.at(kz[i]).asString());
+                String [] tmp = zlgout.at(kz[i]).asString().split("/");
+                out.println(kz[i]+"="+tmp[tmp.length-1]);
+                if (kz[i].equals("html")){
+                   ResultHtmlFile = tmp[tmp.length-1];
+                } else if (kz[i].equals("Rdata")){
+                   RdataFileName = tmp[tmp.length-1];
+                }
             }
+            
+            sr.put("html", "/"+requestdir+ "/" +ResultHtmlFile);
+            sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
+
             
             sr.put("requestdir", requestdir);
             sr.put("option", "zelig");
@@ -940,6 +1016,10 @@ public class DvnRDataAnalysisServiceImpl implements DataAnalysisService {
             //String cnfgfl = R_TMP_DIR +"configZeligGUI."+RandomStringUtils.randomNumeric(6)+ ".xml"; 
             String cnfgfl = R_TMP_DIR +"configZeligGUI.xml"; 
             out.println("cnfgfl="+cnfgfl);
+            
+            // remove the existing config file if exists
+            String removeOLdLine = "if (file.exists('"+cnfgfl+"')){file.remove('"+cnfgfl+"');}";
+            c.voidEval(removeOLdLine);
             // R code line part 1         
             String cmndline = "library(VDCutil);  printZeligSchemaInstance('"+ cnfgfl + "')";
             // cnfgfl  +  "'," + "'" + RSERVE_HOST + "')";

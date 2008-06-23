@@ -22,7 +22,7 @@ import edu.harvard.hmdc.vdcnet.dsb.*;
  
 public class DvnJavaFieldCutter implements FieldCutter{
     
-    public boolean debug=true;
+    public boolean debug=false;
     
     public  void subsetFile(String infile, String outfile, Set<Integer> columns) {
         subsetFile(infile, outfile, columns, "\t");

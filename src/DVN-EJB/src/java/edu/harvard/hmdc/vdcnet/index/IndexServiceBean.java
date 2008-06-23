@@ -133,6 +133,14 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         sendMessage(op);
     }
 
+    private void getCollectionStudies(List studyIds, VDCCollection elem) {
+        Collection studies = elem.getStudies();
+        for (Iterator it2 = studies.iterator(); it2.hasNext();) {
+            Study elem2 = (Study) it2.next();
+            studyIds.add(elem2.getId());
+        }
+    }
+
     private void sendMessage(final IndexEdit op) {
         QueueConnection conn = null;
         QueueSession session = null;
@@ -339,26 +347,26 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
 
     private List listVdcStudyIds(final VDC vdc) {
         List studyIds = new ArrayList();
-        if (vdc != null){
-            List <VDCCollection> vdcCollections = getCollections(vdc);
-            vdcCollections.add(vdc.getRootCollection()); // may want to change getCollections to include root collection
-            for (Iterator it = vdcCollections.iterator(); it.hasNext();) {
-                VDCCollection elem = (VDCCollection) it.next();
-                Collection studies = elem.getStudies();
-                for (Iterator it2 = studies.iterator(); it2.hasNext();) {
-                    Study elem2 = (Study) it2.next();
-                    studyIds.add(elem2.getId());
+        if (vdc != null) {
+            if (!vdc.isHarvestingDataverse()) {
+                List<VDCCollection> vdcCollections = getCollections(vdc);
+                vdcCollections.add(vdc.getRootCollection()); // may want to change getCollections to include root collection
+                for (Iterator it = vdcCollections.iterator(); it.hasNext();) {
+                    VDCCollection elem = (VDCCollection) it.next();
+                    getCollectionStudies(studyIds, elem);
+
                 }
-                
-            }
-            List <VDCCollection> linkedCollections = vdc.getLinkedCollections();
-            for (Iterator it = linkedCollections.iterator(); it.hasNext();){
-                VDCCollection elem = (VDCCollection) it.next();
-                List <Study> studies = elem.getStudies();
-                for (Iterator it2 = studies.iterator(); it2.hasNext();) {
-                    Study elem2 = (Study) it2.next();
-                    studyIds.add(elem2.getId());
+                List<VDCCollection> linkedCollections = vdc.getLinkedCollections();
+                for (Iterator it = linkedCollections.iterator(); it.hasNext();) {
+                    VDCCollection elem = (VDCCollection) it.next();
+                    List<Study> studies = elem.getStudies();
+                    for (Iterator it2 = studies.iterator(); it2.hasNext();) {
+                        Study elem2 = (Study) it2.next();
+                        studyIds.add(elem2.getId());
+                    }
                 }
+            } else {
+                getCollectionStudies(studyIds, vdc.getRootCollection());
             }
         }
         return studyIds;

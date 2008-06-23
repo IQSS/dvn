@@ -1004,6 +1004,13 @@ xmlns:ui="http://www.sun.com/web/ui"
                                                 </ui:panelGroup><!-- analysisOptionPanel-->
 
 
+                                                <ui:staticText  id="msgAdvStatButton" 
+                                                binding="#{AnalysisPage.msgAdvStatButton}" 
+                                                visible="false" escape="false" styleClass="errorMessage" 
+                                                 text="#{AnalysisPage.msgAdvStatButtonTxt}"/>
+                                                <br />
+
+
                                                 <!-- action="#{AnalysisPage.advStatAction}" -->
                                                 <h:commandButton id="advStatBttn" 
                                                                  disabled="true" 

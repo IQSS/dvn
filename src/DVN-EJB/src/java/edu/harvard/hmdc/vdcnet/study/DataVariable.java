@@ -531,7 +531,22 @@ public class DataVariable implements java.io.Serializable{
         DataVariable other = (DataVariable)object;
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
         return true;
-    }    
+    }
+    
+    
+     /**
+     * Holds value of property formatSchema.
+     */
+    private String formatCategory;
+
+    public String getFormatCategory() {
+        return formatCategory;
+    }
+
+    public void setFormatCategory(String formatCategory) {
+        this.formatCategory = formatCategory;
+    }
+
     
     /**
      * Holds value of property version.

@@ -9,11 +9,8 @@
 
 package edu.harvard.hmdc.vdcnet.ddi;
 
-import edu.harvard.hmdc.vdcnet.jaxb.ddi20.FileDscrType;
-import edu.harvard.hmdc.vdcnet.jaxb.ddi20.ProducerType;
 import edu.harvard.hmdc.vdcnet.study.DataTable;
 import edu.harvard.hmdc.vdcnet.study.DataVariable;
-import edu.harvard.hmdc.vdcnet.study.FileCategory;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyAbstract;
 import edu.harvard.hmdc.vdcnet.study.StudyAuthor;
@@ -54,10 +51,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.Writer;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -69,19 +65,10 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
 
 /**
  *
@@ -1124,15 +1111,21 @@ public class DDIServiceBean implements DDIServiceLocal {
     private String determineFileURI(StudyFile sf) {
         String fileURI = "";
         Study s = sf.getFileCategory().getStudy();
-        
+  
+
         // determine whether file is local or harvested
-        if (sf.isRemote() ) {
-            return sf.getFileSystemLocation();
+        if (sf.isRemote()) {
+            fileURI = sf.getFileSystemLocation();
         } else {
             fileURI = "http://" + PropertyUtil.getHostUrl() + "/dvn/dv/" + s.getOwner().getAlias() + "/FileDownload/";
-            fileURI += sf.getFileName()+ "?fileId=" + sf.getId();
-            return fileURI;
+            try {
+                fileURI += URLEncoder.encode(sf.getFileName(), "UTF-8") + "?fileId=" + sf.getId();
+            } catch (IOException e) {
+                throw new EJBException(e);
+            }
         }
+
+        return fileURI;
     }
 
     private void createOtherMat(XMLStreamWriter xmlw, StudyFile sf) throws XMLStreamException {

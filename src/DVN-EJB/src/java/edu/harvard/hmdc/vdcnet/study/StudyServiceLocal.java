@@ -62,6 +62,8 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public void deleteStudyList(List<Long> studyIds);
    
     public List getStudies();
+    
+    public List<Long> getAllNonHarvestedStudyIds();
         
     java.util.List getOrderedStudies(List studyIdList, String orderBy);
 

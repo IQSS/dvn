@@ -36,7 +36,7 @@ public class OAISetServiceBean implements OAISetServiceLocal {
        }
        return oaiSet;
     }
-    public List findAll() {
+    public List<OAISet> findAll() {
         return em.createQuery("select object(o) from OAISet as o order by o.name").getResultList();
     }
 

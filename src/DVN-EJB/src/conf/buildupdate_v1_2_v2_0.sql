@@ -508,11 +508,25 @@ SELECT setval('metadata_id_seq',100000);
 INSERT INTO metadata(id, version ) VALUES (nextval('metadata_id_seq'), 1);
 update template set metadata_id=currval('metadata_id_seq');
 
+
+INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (96, '', 'producerAffiliation', FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (97, '', 'distributorAffiliation', FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (98, '', 'distributorAbbreviation', FALSE, FALSE, FALSE );
+
+INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(96,1,96,3);
+INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(97,1,97,3);
+INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(98,1,98,3);
+
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditTemplatePage','/study/EditTemplatePage.jsp',1,null );
+
 -- Column: lastindextime
 
 -- ALTER TABLE study DROP COLUMN lastindextime;
 
 ALTER TABLE study ADD COLUMN lastindextime timestamp without time zone;
 ALTER TABLE study ALTER COLUMN lastindextime SET STORAGE PLAIN;
+
+
+
 
 commit;

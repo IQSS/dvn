@@ -28,7 +28,6 @@
  */
 package edu.harvard.hmdc.vdcnet.study;
 
-import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.ddi.DDIServiceLocal;
@@ -36,6 +35,7 @@ import edu.harvard.hmdc.vdcnet.dsb.DSBIngestMessage;
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 import edu.harvard.hmdc.vdcnet.gnrs.GNRSServiceLocal;
 import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
+import edu.harvard.hmdc.vdcnet.harvest.HarvestStudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
@@ -48,16 +48,12 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -85,13 +81,10 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.lang.RandomStringUtils;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -126,6 +119,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     private static final SimpleDateFormat exportLogFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
     @EJB
     StudyServiceLocal studyService; // used to force new transaction during import
+    @EJB
+    HarvestStudyServiceLocal harvestStudyService;
 
     /**
      * Creates a new instance of StudyServiceBean
@@ -232,20 +227,15 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
 
 
-
-        // Save Study primary key in DeletedStudy table, so we can export
-        // the study deletion to the old VDC.
-        DeletedStudy ds = new DeletedStudy();
-        ds.setId(study.getId());
-        ds.setGlobalId(study.getGlobalId());
-        ds.setDeletedTime(new Date());
-        em.persist(ds);
-
+        // remove from HarvestStudy table
+        harvestStudyService.markHarvestStudiesAsRemoved( harvestStudyService.findHarvestStudiesByGlobalId( study.getGlobalId() ), new Date() );
+ 
         em.remove(study);
         gnrsService.delete(study.getAuthority(), study.getStudyId());
         if (deleteFromIndex) {
             indexService.deleteStudy(studyId);
         }
+            
         em.flush();  // Force study deletion to the database, for cases when we are calling this before deleting the owning Dataverse
         logger.log(Level.INFO, "Successfully deleted Study " + studyId + "!");
 
@@ -500,6 +490,19 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         return returnList;
     }
+    
+    public List<Long> getAllNonHarvestedStudyIds() {
+        String queryStr = "select id from study where isharvested='false'";
+        Query query = em.createNativeQuery(queryStr);
+        List<Long> returnList = new ArrayList<Long>();
+        // since query is native, must parse through Vector results
+        for (Object currentResult : query.getResultList()) {
+            // convert results into Longs
+            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+        }
+
+        return returnList;
+    }    
 
     public List getOrderedStudies(List studyIdList, String orderBy) {
         String studyIds = "";
@@ -1600,6 +1603,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     public void exportUpdatedStudies() {
         exportStudies(studyService.getStudyIdsForExport());
+        
+        harvestStudyService.updateHarvestStudies();
     }
 
     public void exportStudies(List<Long> studyIds, String exportFormat) {

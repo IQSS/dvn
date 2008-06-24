@@ -33,6 +33,9 @@ import edu.harvard.hmdc.vdcnet.dsb.zelig.*;
 import java.util.logging.Logger;
 import java.util.regex.*;
 
+import org.apache.commons.lang.*;
+ 
+
 /*
 *  AdvancedStatGUIdata
 *
@@ -417,9 +420,11 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
 
           // title
           String title = z.getDescription();
-          // out.println("title="+title);
-
-          mdlii.setTitle(title);
+          out.println("title="+title);
+         
+          String sTitle = shortenTitle(title);
+          out.println("shorten="+sTitle);
+          mdlii.setTitle(sTitle);
 
           // maxSetx
           int maxSetx = z.getSetx().getMaxSetx();
@@ -854,5 +859,12 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
         return str;
     }
 
+    public String shortenTitle(String title){
+        String st = StringUtils.replaceEach(title, 
+            new String [] {"Dichotomous", "Regression","Continuous","Dependent","Variables","Categorical","Social Network"},
+            new String [] {"Binary", "Reg","Cont","Dep","Vars","Cat","SN"});
+        
+        return st;
+    }
 } // top class
 

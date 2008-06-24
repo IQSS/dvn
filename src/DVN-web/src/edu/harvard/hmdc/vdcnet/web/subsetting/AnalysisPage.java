@@ -1067,7 +1067,7 @@ if (fieldcut){
                     Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
                     // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
-                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls);
+                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodedVarSet);
 
                     out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     // Step 4. Creates an instance of the the implemented 
@@ -2729,7 +2729,7 @@ if (fieldcut){
                     Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
                     // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
-                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls);
+                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodedVarSet);
 
                     out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     // Step 4. Creates an instance of the the implemented 
@@ -5107,7 +5107,7 @@ if (fieldcut){
                     Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
                     // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
-                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, modelSpec);
+                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodedVarSet, modelSpec);
                     out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     // Step 4. Creates an instance of the the implemented 
                     // data-analysis-service class 

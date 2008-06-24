@@ -51,19 +51,20 @@ public class DvnRJobRequest {
     public DvnRJobRequest(List<DataVariable> dv, 
         Map<String, List<String>> listParams,
         Map<String, Map<String, String>> vts,
-        AdvancedStatGUIdata.Model zp 
-        ){
+        List<Object> rv,
+        AdvancedStatGUIdata.Model zp){
         dataVariablesForRequest = dv;
         
         listParametersForRequest = listParams;
         
         valueTables = vts;
-        
+        recodedVarSet = rv;
         zeligModelSpec = zp;
         
         out.println("variables="+dataVariablesForRequest);
         out.println("map="+listParametersForRequest);
         out.println("value table="+valueTables);
+        out.println("recodedVars="+recodedVarSet);
         out.println("model spec="+zeligModelSpec);
         checkVariableNames();
     }
@@ -75,21 +76,12 @@ public class DvnRJobRequest {
      */
     public DvnRJobRequest(List<DataVariable> dv, 
         Map<String, List<String>> listParams, 
-        Map<String, Map<String, String>> vts
-        ){
-        
-        dataVariablesForRequest = dv;
-        
-        listParametersForRequest = listParams;
-        
-        valueTables = vts;
+        Map<String, Map<String, String>> vts,
+        List<Object> rv){
 
-        out.println("variables="+dataVariablesForRequest);
-        out.println("map="+listParametersForRequest);
-        out.println("value table="+valueTables);
-        checkVariableNames();
+        this(dv,listParams,vts,rv,null);
+
     }
-
 
     // ----------------------------------------------------- fields
 
@@ -107,7 +99,9 @@ public class DvnRJobRequest {
     /**  */
     private AdvancedStatGUIdata.Model zeligModelSpec;
     
-
+    private String subsetPrefix = "x <- subset(x, (  ";
+    
+    private String subsetSuffix = "  ))";
     // ----------------------------------------------------- accessors
 
     /**
@@ -555,6 +549,56 @@ public class DvnRJobRequest {
             setxArg = "list(" + tmp.get(0) + " = " + valueSet.get(1) +")";
         }
         return setxArg;
+    }
+    
+    
+    /**
+     * 
+     *
+     */
+    public List<Object> recodedVarSet;
+    
+    public boolean hasRecodedVariables(){
+        boolean rv = false;
+        if ((recodedVarSet != null) && (recodedVarSet.size()> 0)){
+            rv = true;
+        }
+        return rv;
+    }
+    
+    /**
+     * 
+     *
+     * @return    
+     */
+    public List<String> getSubsettingConditions(){
+        List<String> sb = new ArrayList<String>();
+        
+        /*
+          delete by checkboxe case
+          x <- subset(x, (  
+          
+                !(x[["NAThex5FDISC"]] == 7) & 
+                !(x[["NAThex5FDISC"]] == 9) & 
+                !(x[["NAThex5FDISC"]] == 8)
+                
+             ))
+             
+             
+            //iteration unit: numeric case
+            "!(x[['" + ${safe_variablename} + "']] == "  + ${value} + ")";
+
+            // iteration unit: char case (quotation marks)
+            "!(x[['" + ${safe_variablename} + "']] == '" + ${value} + "')";
+
+             
+             
+             
+        */
+        
+        
+        
+        return sb;
     }
 
 }

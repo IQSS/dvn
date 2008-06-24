@@ -190,6 +190,8 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         }
         try {
             indexer.addDocument(study);
+            study.setLastIndexTime(new Date());
+            studyService.updateStudy(study);
         } catch (IOException ex) {
             /*
             IndexStudy s = new IndexStudy();

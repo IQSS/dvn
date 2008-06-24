@@ -508,4 +508,11 @@ SELECT setval('metadata_id_seq',100000);
 INSERT INTO metadata(id, version ) VALUES (nextval('metadata_id_seq'), 1);
 update template set metadata_id=currval('metadata_id_seq');
 
+-- Column: lastindextime
+
+-- ALTER TABLE study DROP COLUMN lastindextime;
+
+ALTER TABLE study ADD COLUMN lastindextime timestamp without time zone;
+ALTER TABLE study ALTER COLUMN lastindextime SET STORAGE PLAIN;
+
 commit;

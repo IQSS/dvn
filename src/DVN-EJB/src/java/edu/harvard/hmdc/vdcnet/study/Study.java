@@ -77,6 +77,8 @@ public class Study implements java.io.Serializable {
     private Collection<StudyAccessRequest> studyRequests;
     @OneToOne(cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private Metadata metadata;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date lastIndexTime;
     
     public Study () {
         metadata = new Metadata();
@@ -2121,6 +2123,14 @@ End of deprecated methods section
 
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
+    }
+
+    public Date getLastIndexTime() {
+        return lastIndexTime;
+    }
+
+    public void setLastIndexTime(Date lastIndexTime) {
+        this.lastIndexTime = lastIndexTime;
     }
 
 }

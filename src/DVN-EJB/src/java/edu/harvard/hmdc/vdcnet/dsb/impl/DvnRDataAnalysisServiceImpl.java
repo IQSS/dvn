@@ -40,6 +40,7 @@ public class DvnRDataAnalysisServiceImpl{
     static Map<String, String> dwlndParam = new HashMap<String, String>();
     static Map<String, Method> runMethods = new HashMap<String, Method>();
     static String regexForRunMethods = "^run(\\w+)Request$" ;
+    static String RESULT_DIR_PREFIX = "Zlg_";
     
     static {
     
@@ -98,7 +99,7 @@ public class DvnRDataAnalysisServiceImpl{
     public String wrkdir = null;
     public String webwrkdir = null;
     public String requestdir = null;
-
+    public List<String> historyEntry = new ArrayList<String>();
     
     // ----------------------------------------------------- constructor
     public DvnRDataAnalysisServiceImpl(){
@@ -151,6 +152,7 @@ public class DvnRDataAnalysisServiceImpl{
 
             // Rserve code starts here
             out.println("wrkdir="+wrkdir);
+            historyEntry.add(librarySetup);
             c.voidEval(librarySetup);
             
             // variable type
@@ -160,8 +162,17 @@ public class DvnRDataAnalysisServiceImpl{
             // java side
             // int [] jvartyp  = {1,1,1};// = mp.get("vartyp").toArray()
             int [] jvartyp  = sro.getVariableTypes();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0 ; i< jvartyp.length; i++){
+                if (i == (jvartyp.length -1)){
+                    sb.append(String.valueOf(i));
+                } else {
+                    sb.append(String.valueOf(i)+", ");
+                }
+            }
             
             // R side
+            historyEntry.add("vartyp<-c(" + sb.toString()+")");
             c.assign("vartyp", new REXPInteger(jvartyp));
             String [] tmpt = c.eval("vartyp").asStrings();
             out.println("vartyp length="+ tmpt.length + "\t " +
@@ -178,14 +189,20 @@ public class DvnRDataAnalysisServiceImpl{
                 Set<String> vfkeys = tmpFmt.keySet();
                 String[] tmpfk = (String[]) vfkeys.toArray(new String[vfkeys.size()]);
                 String[] tmpfv = getValueSet(tmpFmt, tmpfk);
-
+                historyEntry.add("tmpfk<-c(" + StringUtils.join(tmpfk,", ")+")");
                 c.assign("tmpfk", new REXPString(tmpfk));
+                historyEntry.add("tmpfv<-c(" + StringUtils.join(tmpfv,", ")+")");
                 c.assign("tmpfv", new REXPString(tmpfv));
-                c.voidEval("names(tmpfv)<- tmpfk");
-                c.voidEval("varFmt<- as.list(tmpfv)");
+                String fmtNamesLine = "names(tmpfv)<- tmpfk";
+                historyEntry.add(fmtNamesLine);
+                c.voidEval(fmtNamesLine);
+                String fmtValuesLine ="varFmt<- as.list(tmpfv)";
+                historyEntry.add(fmtValuesLine);
+                c.voidEval(fmtValuesLine);
             } else {
                 String [] varFmtN ={};
                 List<String> varFmtV = new ArrayList<String>();
+                historyEntry.add("varFmt <- List()");
                 c.assign("varFmt", new REXPList(new RList(varFmtV, varFmtN)));
             }
             /*
@@ -207,7 +224,7 @@ public class DvnRDataAnalysisServiceImpl{
             } else {
                 jvnames = jvnamesRaw;
             }
-            
+            historyEntry.add("vnamnes<-c("+ StringUtils.join(jvnames, ", ")+")");
             c.assign("vnames", new REXPString(jvnames));
             
             // confirmation
@@ -225,7 +242,7 @@ public class DvnRDataAnalysisServiceImpl{
             // tab-delimited file name = tempFileName
             String readtableline = "x<-read.table141vdc(file='"+tempFileName+
                 "', col.names=vnames, colClassesx=vartyp, varFormat=varFmt )";
-            
+            historyEntry.add(readtableline);
             out.println("readtable="+readtableline);
             c.voidEval(readtableline);
         
@@ -242,13 +259,21 @@ public class DvnRDataAnalysisServiceImpl{
                 String[] rawNameSet  = sro.renamedVariableArray;
                 String[] safeNameSet = sro.renamedResultArray;
                 
+                historyEntry.add("tmpRN<-c("+StringUtils.join(rawNameSet,", ")+")");
                 c.assign("tmpRN", new REXPString(rawNameSet));
+                historyEntry.add("tmpSN<-c("+StringUtils.join(safeNameSet,", ")+")");
                 c.assign("tmpSN", new REXPString(safeNameSet));
-                c.voidEval("names(tmpRN)<- tmpSN");
-                c.voidEval("attr(x, 'Rsafe2raw')<- as.list(tmpRN)");
+                
+                String raw2safevarNameTableLine = "names(tmpRN)<- tmpSN";
+                historyEntry.add(raw2safevarNameTableLine);
+                c.voidEval(raw2safevarNameTableLine);
+                String attrRsafe2rawLine = "attr(x, 'Rsafe2raw')<- as.list(tmpRN)";
+                historyEntry.add(attrRsafe2rawLine);
+                c.voidEval(attrRsafe2rawLine);
             } else {
-                String RsafeNameLine = "attr(x, 'Rsafe2raw')<-list();";
-                c.voidEval(RsafeNameLine);
+                String attrRsafe2rawLine = "attr(x, 'Rsafe2raw')<-list();";
+                historyEntry.add(attrRsafe2rawLine);
+                c.voidEval(attrRsafe2rawLine);
             }
             
             //Map<String, String> Rsafe2raw = sro.getRaw2SafeVarNameTable();
@@ -261,6 +286,7 @@ public class DvnRDataAnalysisServiceImpl{
             String asIsline  = "for (i in 1:dim(x)[2]){ "+
                 "if (attr(x,'var.type')[i] == 0) {" +
                 "x[[i]]<-I(x[[i]]);  x[[i]][ x[[i]] == '' ]<-NA  }}";
+            historyEntry.add(asIsline);
             c.voidEval(asIsline);
             
             // variable Id
@@ -270,8 +296,12 @@ public class DvnRDataAnalysisServiceImpl{
             
             // String[] jvarnmbr = {"v198057","v198059","v198060"};
             String[] jvarnmbr = sro.getVariableIDs();
+            historyEntry.add("varnmbr <-c("+StringUtils.join(jvarnmbr,", ")+")");
             c.assign("varnmbr",new REXPString(jvarnmbr));
-            c.voidEval("attr(x, 'var.nmbr')<-varnmbr");
+            
+            String attrVarNmbrLine = "attr(x, 'var.nmbr')<-varnmbr";
+            historyEntry.add(attrVarNmbrLine);
+            c.voidEval(attrVarNmbrLine);
             
             // confrimation
             String [] vno = c.eval("attr(x, 'var.nmbr')").asStrings();
@@ -285,8 +315,11 @@ public class DvnRDataAnalysisServiceImpl{
             
             // String[] jvarlabels = {"race","age","vote"};
             String[] jvarlabels = sro.getVariableLabels();
+            historyEntry.add("varnmbr <-c("+StringUtils.join(jvarlabels,", ")+")");
             c.assign("varlabels", new REXPString(jvarlabels));
-            c.voidEval("attr(x, 'var.labels')<-varlabels");
+            String attrVarLabelsLine = "attr(x, 'var.labels')<-varlabels";
+            historyEntry.add(attrVarLabelsLine);
+            c.voidEval(attrVarLabelsLine);
             
             // confirmation
             String [] vlbl = c.eval("attr(x, 'var.labels')").asStrings();
@@ -305,7 +338,9 @@ public class DvnRDataAnalysisServiceImpl{
             */
 
             // create the VALTABLE
-            c.voidEval("VALTABLE<-list()");
+            String vtFirstLine = "VALTABLE<-list()";
+            historyEntry.add(vtFirstLine);
+            c.voidEval(vtFirstLine);
             Map<String, Map<String, String>> vltbl = sro.getValueTable();
             Map<String, String> rnm2vi = sro.getRawVarNameToVarIdTable();
             for (int j=0;j<jvnamesRaw.length;j++){
@@ -323,18 +358,22 @@ public class DvnRDataAnalysisServiceImpl{
                     // debug
                     out.println("tmp:k="+ StringUtils.join(tmpk,","));
                     out.println("tmp:v="+ StringUtils.join(tmpv,","));
-                    
+                    historyEntry.add("tmpk<-c("+ StringUtils.join(tmpk, ", ")+")");
                     c.assign("tmpk", new REXPString(tmpk));
+                    historyEntry.add("tmpv<-c("+ StringUtils.join(tmpv, ", ")+")");
                     c.assign("tmpv", new REXPString(tmpv));
-                    c.voidEval("names(tmpv)<- tmpk");
+                    String namesValueLine = "names(tmpv)<- tmpk";
+                    historyEntry.add(namesValueLine);
+                    c.voidEval(namesValueLine);
                     
                     // index number starts from 1(not 0)
                     int indx = j +1;
                     out.println("index="+indx);
                     
-                    String sbvl = "VALTABLE[['"+ Integer.toString(indx)+"']]";
+                    String sbvl = "VALTABLE[['"+ Integer.toString(indx)+"']]" + "<- as.list(tmpv)";
                     out.println("frag="+sbvl);
-                    c.voidEval(sbvl + "<- as.list(tmpv)");
+                    historyEntry.add(sbvl);
+                    c.voidEval(sbvl);
                     
                     // confirmation test for j-th variable name
                     REXP jl = c.parseAndEval(sbvl);
@@ -344,8 +383,9 @@ public class DvnRDataAnalysisServiceImpl{
             
             // debug: confirmation test for value-table
             out.println("length of vl="+ c.eval("length(VALTABLE)").asInteger());
-            
-            c.voidEval("attr(x, 'val.table')<-VALTABLE");
+            String attrValTableLine = "attr(x, 'val.table')<-VALTABLE";
+            historyEntry.add(attrValTableLine);
+            c.voidEval(attrValTableLine);
             
 // --------- block to be used for the production code
 
@@ -354,26 +394,32 @@ public class DvnRDataAnalysisServiceImpl{
             /*
                 MSVLTBL<-list(); attr(x, 'missval.table')<-MSVLTBL
             */
-            
-            c.voidEval("MSVLTBL<-list();");
+            String msvStartLine = "MSVLTBL<-list();";
+            historyEntry.add(msvStartLine);
+            c.voidEval(msvStartLine);
             // data structure
-            
-            c.voidEval("attr(x, 'missval.table')<-MSVLTBL");
+            String attrMissvalLine = "attr(x, 'missval.table')<-MSVLTBL";
+            historyEntry.add(attrMissvalLine);
+            c.voidEval(attrMissvalLine);
             
             // attach attributes(tables) to the data.frame
             /*
                 x<-createvalindex(dtfrm=x, attrname='val.index')
                 x<-createvalindex(dtfrm=x, attrname='missval.index')
             */
-            c.voidEval("x<-createvalindex(dtfrm=x, attrname='val.index');");
-            c.voidEval("x<-createvalindex(dtfrm=x, attrname='missval.index');");
+            String createVIndexLine = "x<-createvalindex(dtfrm=x, attrname='val.index');";
+            historyEntry.add(createVIndexLine);
+            c.voidEval(createVIndexLine);
+            String createMVIndexLine = "x<-createvalindex(dtfrm=x, attrname='missval.index');";
+            historyEntry.add(createMVIndexLine);
+            c.voidEval(createMVIndexLine);
 
 // reflection block: start ------------------------------------------>
         
         
             String requestTypeToken = sro.getRequestType();// (Download|EDA|Xtab|Zelig)
             out.println("requestTypeToken="+requestTypeToken);
-            
+            historyEntry.add("#### The Request is "+ requestTypeToken +" ####");
             // get a test method
             Method mthd = runMethods.get(requestTypeToken);
             out.println("method="+mthd);
@@ -419,6 +465,7 @@ public class DvnRDataAnalysisServiceImpl{
             result.put("PID", PID);
             result.put("Rversion", Rversion);
             result.put("RexecDate", RexecDate);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
             out.println("result:\n"+result);
             
         

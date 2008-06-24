@@ -46,15 +46,19 @@ import edu.harvard.hmdc.vdcnet.study.StudyRelStudy;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.StudySoftware;
 import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
+import edu.harvard.hmdc.vdcnet.study.Template;
 import edu.harvard.hmdc.vdcnet.study.TemplateField;
 import edu.harvard.hmdc.vdcnet.study.TemplateFileCategory;
 import edu.harvard.hmdc.vdcnet.util.SessionCounter;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
+import edu.harvard.hmdc.vdcnet.web.common.StudyFieldConstant;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -63,12 +67,13 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
-import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlInputTextarea;
+import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -88,6 +93,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     EditStudyService editStudyService;
     @EJB StudyServiceLocal studyService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
+    @EJB VDCServiceLocal vdcService;
+    
     /**
      * <p>Construct a new Page bean instance.</p>
      */
@@ -107,6 +114,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             if ( sessionGet(token)!=null) {
                 editStudyService = (EditStudyService) sessionGet(token);
                 study = editStudyService.getStudy();
+             
                 setFiles(editStudyService.getCurrentFiles());
             } else {
                 FacesContext context = FacesContext.getCurrentInstance();
@@ -148,6 +156,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             // Add empty first element to subcollections, so the input text fields will be visible
             initStudyMap();
             initCollections();
+          
             
         }
         
@@ -346,6 +355,30 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         return null;
     }
     
+    public boolean getShowTemplateList() {
+          return (!getTemplatesMap().isEmpty() && editStudyService.isNewStudy());
+        
+    }
+    
+     public void changeTemplate(ValueChangeEvent ae) {
+        Object value= this.selectTemplate.getValue();
+        if (value!=null ) {
+            Long templateId = Long.parseLong((String)value);
+            editStudyService.changeTemplate(templateId);
+            study = editStudyService.getStudy();
+        }
+     }
+       public String changeTemplateAction() {
+        Object value= this.selectTemplate.getValue();
+        if (value!=null ) {
+            Long templateId = Long.parseLong((String)value);
+            editStudyService.changeTemplate(templateId);
+            study = editStudyService.getStudy();
+        }
+        initCollections();  // Add empty row for entering data in currently empty collections
+        return "";
+     }
+     
     /**
      * Holds value of property study.
      */
@@ -389,20 +422,14 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             TemplateField tf = it.next();
             StudyMapValue smv = new StudyMapValue();
             smv.setTemplateField(tf);
-            smv.setRendered(allFieldsShowing || !tf.isOptional());
             editStudyService.getStudyMap().put(tf.getStudyField().getName(),smv);
         }
         
     }
-    
-    public void updateStudyMap() {
-        for (Iterator<StudyMapValue> it = editStudyService.getStudyMap().values().iterator(); it.hasNext();) {
-            StudyMapValue smv = it.next();
-            boolean rendered = allFieldsShowing || !smv.getTemplateField().isOptional();
-            smv.setRendered(rendered);
-            
-        }
+      public Map getTemplatesMap() {
+        return vdcService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
     }
+    
     
     public Map getStudyMap() {
         return editStudyService.getStudyMap();
@@ -868,66 +895,204 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         this.dataTableTopicClass = dataTableTopicClass;
     }
     
+ 
     
-    private HtmlCommandButton commandButtonShowFields;
-    
-    private HtmlCommandButton commandButtonHideFields;
-    
-    public HtmlCommandButton getCommandButtonShowFields() {
-        return commandButtonShowFields;
-    }
-    
-    public void setCommandButtonShowFields(HtmlCommandButton commandButtonShowFields) {
-        this.commandButtonShowFields = commandButtonShowFields;
-    }
-    
-    public HtmlCommandButton getCommandButtonHideFields() {
-        return commandButtonHideFields;
-    }
-    
-    public void setCommandButtonHideFields(HtmlCommandButton commandButtonHideFields) {
-        this.commandButtonHideFields = commandButtonHideFields;
-    }
-    
-    public void showFields(ActionEvent ev) {
-        allFieldsShowing=true;
-        updateStudyMap();
-        commandButtonShowFields.setRendered(false);
-        commandButtonHideFields.setRendered(true);
-        FacesContext.getCurrentInstance().renderResponse();
-    }
-    
-    public String showFields() {
-        Iterator<FacesMessage> it = FacesContext.getCurrentInstance().getMessages();
-        while( it.hasNext()) {
-            FacesMessage elem = it.next();
-            System.out.println("Found FacesMessage: "+elem.toString());
-            
+   
+
+    private String getInputLevel(String... fieldNames) {
+        for (String fieldName : fieldNames) {
+            if (((StudyMapValue) getStudyMap().get(fieldName)).isRequired()) {
+                return "required";
+            }
         }
-        allFieldsShowing=true;
-        updateStudyMap();
-        commandButtonShowFields.setRendered(false);
-        commandButtonHideFields.setRendered(true);
-        FacesContext.getCurrentInstance().renderResponse();
-        return null;
-    }
-    public void hideFields(ActionEvent ev) {
-        allFieldsShowing=false;
-        updateStudyMap();
-        commandButtonShowFields.setRendered(true);
-        commandButtonHideFields.setRendered(false);
-        FacesContext.getCurrentInstance().renderResponse();
-        
-    }
-    private boolean allFieldsShowing;
-    
-    public boolean isAllFieldsShowing() {
-        return allFieldsShowing;
+        for (String fieldName : fieldNames) {
+            if (((StudyMapValue) getStudyMap().get(fieldName)).isRecommended()) {
+                return "recommended";
+            }
+        }
+        return "optional";
     }
     
-    public void setAllFieldsShowing(boolean allFieldsShowing) {
-        this.allFieldsShowing = allFieldsShowing;
+     public String getAbstractAndScopeInputLevel() {
+        return getInputLevel(StudyFieldConstant.abstractDate,
+               StudyFieldConstant.abstractText,
+               StudyFieldConstant.keywordValue,
+               StudyFieldConstant.keywordVocab,
+               StudyFieldConstant.keywordVocabURI,
+               StudyFieldConstant.topicClassValue,
+               StudyFieldConstant.topicClassVocab,
+               StudyFieldConstant.topicClassVocabURI,
+               StudyFieldConstant.relatedPublications,
+               StudyFieldConstant.relatedMaterial,
+               StudyFieldConstant.relatedStudies,
+               StudyFieldConstant.otherReferences,
+               StudyFieldConstant.timePeriodCoveredEnd,
+               StudyFieldConstant.timePeriodCoveredStart,
+               StudyFieldConstant.dateOfCollectionEnd,
+               StudyFieldConstant.dateOfCollectionStart,
+               StudyFieldConstant.country,
+               StudyFieldConstant.geographicCoverage,
+               StudyFieldConstant.geographicUnit,
+               StudyFieldConstant.eastLongitude,
+               StudyFieldConstant.westLongitude,
+               StudyFieldConstant.northLatitude,
+               StudyFieldConstant.southLatitude,
+               StudyFieldConstant.unitOfAnalysis,
+               StudyFieldConstant.kindOfData,
+               StudyFieldConstant.universe);
+     }
+
+    public String getDataCollectionMethodologyInputLevel() {
+        return getInputLevel(StudyFieldConstant.timeMethod,
+                StudyFieldConstant.dataCollector,
+                StudyFieldConstant.frequencyOfDataCollection,
+                StudyFieldConstant.samplingProcedure,
+                StudyFieldConstant.deviationsFromSampleDesign,
+                StudyFieldConstant.collectionMode,
+                StudyFieldConstant.researchInstrument,
+                StudyFieldConstant.dataSources,
+                StudyFieldConstant.originOfSources,
+                StudyFieldConstant.characteristicOfSources,
+                StudyFieldConstant.accessToSources,
+                StudyFieldConstant.dataCollectionSituation,
+                StudyFieldConstant.actionsToMinimizeLoss,
+                StudyFieldConstant.controlOperations,
+                StudyFieldConstant.weighting,
+                StudyFieldConstant.studyLevelErrorNotes,
+                StudyFieldConstant.studyLevelErrorNotes,
+                StudyFieldConstant.samplingErrorEstimates,
+                StudyFieldConstant.otherDataAppraisal);
+
+
     }
+
+    public String getTermsOfUseInputLevel() {
+        return getInputLevel(StudyFieldConstant.disclaimer,
+                StudyFieldConstant.conditions,
+                StudyFieldConstant.depositorRequirements,
+                StudyFieldConstant.citationRequirements,
+                StudyFieldConstant.contact,
+                StudyFieldConstant.restrictions,
+                StudyFieldConstant.specialPermissions,
+                StudyFieldConstant.confidentialityDeclaration);
+
+    }
+
+    public String getDataSetAvailabilityInputLevel() {
+        return getInputLevel(StudyFieldConstant.placeOfAccess,
+                StudyFieldConstant.originalArchive,
+                StudyFieldConstant.availabilityStatus,
+                StudyFieldConstant.collectionSize,
+                StudyFieldConstant.studyCompletion);
+
+    }
+   public String getGeoBoundingInputLevel() {
+        return getInputLevel(StudyFieldConstant.eastLongitude,
+                StudyFieldConstant.westLongitude,
+                StudyFieldConstant.northLatitude,
+                StudyFieldConstant.southLatitude);
+
+    }
+    public String getOtherInformationInputLevel() {
+        return getInputLevel(StudyFieldConstant.NotesInformationSubject,
+                StudyFieldConstant.NotesInformationType,
+                StudyFieldConstant.NotesText);
+
+    }
+
+    public String getOtherIdLevel() {
+        return getInputLevel(StudyFieldConstant.otherId,
+                StudyFieldConstant.otherIdAgency);
+
+    }
+
+    public String getAuthorInputLevel() {
+        return getInputLevel(StudyFieldConstant.authorName,
+                StudyFieldConstant.authorAffiliation);
+
+
+    }
+
+    public String getProducerInputLevel() {
+        return getInputLevel(StudyFieldConstant.producerName,
+                StudyFieldConstant.producerAffiliation,
+                StudyFieldConstant.producerAbbreviation,
+                StudyFieldConstant.producerURL,
+                StudyFieldConstant.producerLogo);
+    }
+
+    public String getSeriesInputLevel() {
+        return getInputLevel(StudyFieldConstant.seriesName,
+                StudyFieldConstant.seriesInformation);
+
+    }
+    
+    public String getVersionInputLevel() {
+        return getInputLevel(StudyFieldConstant.versionDate,
+                StudyFieldConstant.studyVersion);
+
+    }
+
+    public String getSoftwareInputLevel() {
+        return getInputLevel(StudyFieldConstant.softwareName,
+                StudyFieldConstant.softwareVersion);
+
+    }
+
+    public String getGrantInputLevel() {
+        return getInputLevel(StudyFieldConstant.grantNumber,
+                StudyFieldConstant.grantNumberAgency);
+    }
+
+    public String getDistributorInputLevel() {
+        return getInputLevel(StudyFieldConstant.distributorName,
+                StudyFieldConstant.distributorAffiliation,
+                StudyFieldConstant.distributorAbbreviation,
+                StudyFieldConstant.distributorURL,
+                StudyFieldConstant.distributorLogo);
+
+    }
+
+    public String getContactInputLevel() {
+        return getInputLevel(StudyFieldConstant.distributorContact,
+                StudyFieldConstant.distributorContactAffiliation,
+                StudyFieldConstant.distributorContactEmail);
+
+    }
+
+    public String getAbstractInputLevel() {
+        return getInputLevel(StudyFieldConstant.abstractText,
+                StudyFieldConstant.abstractDate);
+
+    }
+
+    public String getKeywordInputLevel() {
+        return getInputLevel(StudyFieldConstant.keywordValue,
+                StudyFieldConstant.keywordVocab,
+                StudyFieldConstant.keywordVocabURI);
+
+    }
+
+    public String getTopicInputLevel() {
+        return getInputLevel(StudyFieldConstant.topicClassValue,
+                StudyFieldConstant.topicClassVocab,
+                StudyFieldConstant.topicClassVocabURI);
+    }
+
+    public String getNoteInputLevel() {
+        return getInputLevel(StudyFieldConstant.NotesText,
+                StudyFieldConstant.NotesInformationType,
+                StudyFieldConstant.NotesInformationSubject);
+
+    }
+
+ 
+  
+   
+   
+  
+    
+ 
     
     private Long studyId;
     
@@ -964,13 +1129,20 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (this.getStudy()==null) {
             return "home";
         }
+        if (StringUtil.isEmpty(study.getTitle())) {
+            FacesMessage message = new FacesMessage("This field is required.");
+            FacesContext context= FacesContext.getCurrentInstance();
+            context.addMessage(inputTitle.getClientId(context), message);
+            return "";
+
+        }
         removeEmptyRows();
         if (!StringUtil.isEmpty(study.getReplicationFor())  ) {
             if (!study.getTitle().startsWith("Replication data for:")) {
                 study.setTitle("Replication data for: "+study.getTitle());
             }
         }
-       
+        
         editStudyService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
        
         getVDCRequestBean().setStudyId(study.getId());
@@ -1414,6 +1586,19 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
     }
     
+ 
+    
+    HtmlSelectOneMenu selectTemplate;
+
+    public HtmlSelectOneMenu getSelectTemplate() {
+        return selectTemplate;
+    }
+
+    public void setSelectTemplate(HtmlSelectOneMenu selectTemplate) {
+        this.selectTemplate = selectTemplate;
+    }
+    
+    
     /**
      * Holds value of property dataTableGeoBoundings.
      */
@@ -1546,6 +1731,17 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         this.inputAuthorName = inputAuthorName;
     }
 
+    private HtmlInputText inputTitle;
+
+    public HtmlInputText getInputTitle() {
+        return inputTitle;
+    }
+
+    public void setInputTitle(HtmlInputText inputTitle) {
+        this.inputTitle = inputTitle;
+    }
+    
+    
     /**
      * Holds value of property inputAuthorAffiliation.
      */

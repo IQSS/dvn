@@ -236,6 +236,16 @@ public class FileUtil implements java.io.Serializable  {
         }
         return file;
     }
+
+    public static File getStudyFileDir(String authority, String studyId) {
+
+        File file = new File(FileUtil.getStudyFileDir(), authority + File.separator + studyId.toUpperCase());
+        if (!file.exists()) {
+             file.mkdirs();
+        }
+        return file;
+    }
+    
     
      public static File createTempFile(String sessionId, String originalFileName) throws Exception{ 
         String filePathDir = System.getProperty("vdc.temp.file.dir");

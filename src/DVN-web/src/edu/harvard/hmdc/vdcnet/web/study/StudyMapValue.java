@@ -94,6 +94,8 @@ public class StudyMapValue implements java.io.Serializable  {
     public boolean isRecommended() {
         return templateField.isRecommended();
     }
-    
+      public boolean isOptional() {
+        return templateField.isOptional();
+    }
    
 }

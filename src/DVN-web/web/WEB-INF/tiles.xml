@@ -175,6 +175,10 @@
        <put name="pageTitle"   type="string"        value="DVN - Add/Edit Study"/>
        <put name="content" type="template"     value="/study/EditStudyPage.jsp"/>
    </definition>
+      <definition name="/study/EditTemplatePage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Add/Edit Template"/>
+       <put name="content" type="template"     value="/study/EditTemplatePage.jsp"/>
+   </definition>
    <definition name="/study/StudyPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Study"/>
        <put name="content" type="template"     value="/study/StudyPage.jsp"/>

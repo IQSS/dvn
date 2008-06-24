@@ -69,6 +69,8 @@
                             <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
 
                             <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
+                            
+                            <dvn:tooltip tooltipMessage="#{studybundle.templateTip}" linkText="#{studybundle.templateText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditTemplatePage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
 
                             <h:commandButton rendered="#{studyPage.studyUI.study.new}" value="Ready for Review" actionListener="#{studyPage.setReadyForReview}"/>
                         </ui:panelGroup>

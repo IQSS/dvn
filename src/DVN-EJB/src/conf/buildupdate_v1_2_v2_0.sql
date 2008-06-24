@@ -527,6 +527,8 @@ ALTER TABLE study ADD COLUMN lastindextime timestamp without time zone;
 ALTER TABLE study ALTER COLUMN lastindextime SET STORAGE PLAIN;
 
 
+ALTER TABLE datavariable ADD COLUMN formatcategory character varying(255);
+ALTER TABLE datavariable ALTER COLUMN formatcategory SET STORAGE EXTENDED;
 
 
 commit;

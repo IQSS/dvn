@@ -1293,6 +1293,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         writeAttribute( xmlw, "type", dv.getVariableFormatType().getName() );
         writeAttribute( xmlw, "formatname", dv.getFormatSchemaName() );
         writeAttribute( xmlw, "schema", dv.getFormatSchema() );
+        writeAttribute( xmlw, "category", dv.getFormatCategory() );
 
         // notes
         xmlw.writeStartElement("notes");
@@ -1399,7 +1400,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         
         // make sure we have a codeBook
         while ( xmlr.next() == XMLStreamConstants.COMMENT ); // skip pre root comments
-        xmlr.require(XMLStreamConstants.START_ELEMENT, "http://www.icpsr.umich.edu/DDI", "codeBook");        
+        xmlr.require(XMLStreamConstants.START_ELEMENT, null, "codeBook");        
         processCodeBook(xmlr, study);
     }
     
@@ -1881,7 +1882,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 } else if (xmlr.getLocalName().equals("collSize")) {
                     study.setCollectionSize( parseText( xmlr, "collSize" ) );
                 } else if (xmlr.getLocalName().equals("complete")) {
-                    study.setStudyCompletion( parseText( xmlr, "complete" ) );;
+                    study.setStudyCompletion( parseText( xmlr, "complete" ) );
                 } else if (xmlr.getLocalName().equals("notes")) {
                     processNotes( xmlr, study );
                 }
@@ -1903,7 +1904,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 } else if (xmlr.getLocalName().equals("contact")) {
                     study.setContact( parseText( xmlr, "contact" ) );
                 } else if (xmlr.getLocalName().equals("citReq")) {
-                    study.setCitationRequirements( parseText( xmlr, "citReq" ) );;
+                    study.setCitationRequirements( parseText( xmlr, "citReq" ) );
                 } else if (xmlr.getLocalName().equals("deposReq")) {
                     study.setDepositorRequirements( parseText( xmlr, "deposReq" ) );
                 } else if (xmlr.getLocalName().equals("conditions")) {
@@ -2183,7 +2184,8 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         dv.setVariableFormatType( varService.findVariableFormatTypeByName( variableFormatTypeList, type ) );
         dv.setFormatSchema(schema);
-        dv.setFormatSchemaName( xmlr.getAttributeValue(null, "formatname") );        
+        dv.setFormatSchemaName( xmlr.getAttributeValue(null, "formatname") );  
+        dv.setFormatCategory( xmlr.getAttributeValue(null, "category") ); 
     }
     
     private void processSumStat(XMLStreamReader xmlr, DataVariable dv) throws XMLStreamException {

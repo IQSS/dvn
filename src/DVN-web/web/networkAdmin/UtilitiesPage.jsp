@@ -89,6 +89,10 @@
                                 <h:inputTextarea value="#{UtilitiesPage.indexStudyIds}" rows="8" cols="80"/>
                                 <h:commandButton  value="Index Studies" action="#{UtilitiesPage.indexStudies_action}"/>
                             </ui:panelGroup>                            
+                            <h:outputText value="#{UtilitiesPage.indexLocks}"/>
+                            <ui:panelGroup>
+                                <h:commandButton  value="Delete Lock" action="#{UtilitiesPage.indexLocks_action}" disabled="#{UtilitiesPage.deleteLockDisabled}"/>
+                            </ui:panelGroup>                            
                         </h:panelGrid>
                         
                         

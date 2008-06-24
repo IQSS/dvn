@@ -160,6 +160,45 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         this.indexStudyIds = indexStudyIds;
     }
     
+    private boolean deleteLockDisabled;
+    
+    public String getIndexLocks(){
+        String indexLocks = "There is no index lock at this time";
+        deleteLockDisabled = true;
+        File lockFile = getLockFile();
+        if (lockFile != null) {
+            indexLocks = "There has been a lock on the index since " + (new Date(lockFile.lastModified())).toString();
+            deleteLockDisabled = false;
+        }
+        return indexLocks;
+    }
+
+    private File getLockFileFromDir(File lockFileDir) {
+        File lockFile=null;
+        if (lockFileDir.exists()) {
+            File[] locks = lockFileDir.listFiles(new IndexLockFileNameFilter());
+            if (locks.length > 0) {
+                lockFile = locks[0];
+            }
+        }
+        return lockFile;
+    }
+    
+    private File getLockFile() {
+        File lockFile = null;
+        File lockFileDir = null;
+        String lockDir = System.getProperty("org.apache.lucene.lockDir");
+        if (lockDir != null) {
+            lockFileDir = new File(lockDir);
+            lockFile = getLockFileFromDir(lockFileDir);
+        } else {
+            lockFileDir = new File(Indexer.getInstance().getIndexDir());
+            lockFile = getLockFileFromDir(lockFileDir);
+        }
+        return lockFile;
+
+    }
+    
     public String indexAll_action() {
         try {
             //first delete files
@@ -224,6 +263,18 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
  
         return null;
     }   
+    
+    public String indexLocks_action(){
+        File lockFile = getLockFile();
+        if (lockFile.exists()){
+            if (lockFile.delete()){
+                addMessage("indexMessage", "Index lock deleted");
+            } else {
+                addMessage("indexMessage", "Index lock could not be deleted");
+            }
+        }
+        return null;
+    }
     // </editor-fold>
     
     
@@ -783,5 +834,13 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
             cause = true;
         } while ((e = e.getCause()) != null);
         logger.severe(fullMessage);
+    }
+
+    public boolean isDeleteLockDisabled() {
+        return deleteLockDisabled;
+    }
+
+    public void setDeleteLockDisabled(boolean deleteLockDisabled) {
+        this.deleteLockDisabled = deleteLockDisabled;
     }
 }

@@ -41,12 +41,15 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyField;
 import edu.harvard.hmdc.vdcnet.study.StudyFieldServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.study.Template;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -471,6 +474,21 @@ public class VDCServiceBean implements VDCServiceLocal {
        public List<VDC> findVdcsNotInGroups(String dtype) {
            String query = "select object(o) FROM VDC as o WHERE o.dtype = :fieldName AND o.id NOT IN (SELECT gvdcs.id FROM VDCGroup as groups JOIN groups.vdcs as gvdcs)";
            return (List)em.createQuery(query).setParameter("fieldName",dtype).getResultList();
-       }  
+       } 
+       
+        public Map getVdcTemplatesMap(Long vdcId) {
+            VDC vdc = em.find(VDC.class, vdcId);
+            Map templatesMap = new LinkedHashMap();
+            Template defaultNetworkTemplate = vdcNetworkService.find().getDefaultTemplate();
+            templatesMap.put(defaultNetworkTemplate.getName(), defaultNetworkTemplate.getId());
+            Collection<Template> vdcTemplates = vdc.getTemplates();
+            if (vdcTemplates!=null) {
+                for (Template template: vdcTemplates) {
+                    templatesMap.put(template.getName(), template.getId());
+                }
+            }
+            return templatesMap;
+        
+    }
        
 }

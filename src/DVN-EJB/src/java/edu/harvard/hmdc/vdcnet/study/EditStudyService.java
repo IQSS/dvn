@@ -57,6 +57,8 @@ public interface EditStudyService extends java.io.Serializable {
     void setIngestEmail(String ingestEmail);
     
     public boolean isNewStudy();
+    
+    public void changeTemplate(Long templateId);
 
 
 }

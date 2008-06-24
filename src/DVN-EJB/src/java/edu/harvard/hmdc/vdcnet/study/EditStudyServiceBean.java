@@ -57,6 +57,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.faces.context.FacesContext;
 import javax.jms.Queue;
 import javax.jms.QueueConnectionFactory;
 import javax.persistence.EntityManager;
@@ -444,6 +445,13 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
     
     public boolean isNewStudy() {
         return newStudy;
+    }
+    
+    public void changeTemplate(Long templateId) {
+        Template newTemplate = em.find(Template.class, templateId);
+        // Copy Template Metadata into study Metadata
+        newTemplate.getMetadata().copyMetadata(study.getMetadata());
+        FacesContext.getCurrentInstance( ).renderResponse( );
     }
     
 }

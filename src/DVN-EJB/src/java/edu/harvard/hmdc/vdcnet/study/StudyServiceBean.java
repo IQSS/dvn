@@ -136,37 +136,37 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     /**
      * Add given Study to persistent storage.
      */
- /*  Commented out - not used  
-  public void addStudy(Study study) {
-        // For each collection of dependent objects, set the relationship to this study.
-        if (study.getStudyAbstracts() != null) {
-            for (Iterator<StudyAbstract> it = study.getStudyAbstracts().iterator(); it.hasNext();) {
-                StudyAbstract elem = it.next();
-                elem.setStudy(study);
-            }
-        }
-        if (study.getStudyOtherIds() != null) {
-            for (Iterator<StudyOtherId> it = study.getStudyOtherIds().iterator(); it.hasNext();) {
-
-                StudyOtherId elem = it.next();
-                elem.setStudy(study);
-            }
-        }
-
-        Template template = study.getTemplate();
-        study.setTemplate(null);
-        em.persist(study);
-        study.setTemplate(template);
-
-
+    /*  Commented out - not used  
+    public void addStudy(Study study) {
+    // For each collection of dependent objects, set the relationship to this study.
+    if (study.getStudyAbstracts() != null) {
+    for (Iterator<StudyAbstract> it = study.getStudyAbstracts().iterator(); it.hasNext();) {
+    StudyAbstract elem = it.next();
+    elem.setStudy(study);
     }
-*/  
+    }
+    if (study.getStudyOtherIds() != null) {
+    for (Iterator<StudyOtherId> it = study.getStudyOtherIds().iterator(); it.hasNext();) {
+    
+    StudyOtherId elem = it.next();
+    elem.setStudy(study);
+    }
+    }
+    
+    Template template = study.getTemplate();
+    study.setTemplate(null);
+    em.persist(study);
+    study.setTemplate(template);
+    
+    
+    }
+     */
     public void updateStudy(Study detachedStudy) {
         em.merge(detachedStudy);
     }
 
     public Study getStudyByHarvestInfo(VDC dataverse, String harvestIdentifier) {
-        String queryStr = "SELECT s FROM Study s WHERE s.owner.id = '" + dataverse.getId() + "' and s.harvestIdentifier = '" + harvestIdentifier + "'";
+        String queryStr = "SELECT s FROM Study s WHERE s.owner.id = '" + dataverse.getId() + "' and s.metadata.harvestIdentifier = '" + harvestIdentifier + "'";
         Query query = em.createQuery(queryStr);
         List resultList = query.getResultList();
         Study study = null;
@@ -1214,8 +1214,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     private void clearStudy(Study study) {
-        // should this be done with bulk deletes??
-        // Yes!!!
         deleteDataVariables(study.getId());
 
         for (StudyFile elem : study.getStudyFiles()) {
@@ -1851,5 +1849,15 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     public void updateStudyFile(StudyFile detachedStudyFile) {
         em.merge(detachedStudyFile);
+    }
+
+    public void createStudyTemplate(String templateName, Long studyId, Long vdcId) {
+        Template template = new Template();
+        template.setName(templateName);
+        Study study = em.find(Study.class, studyId);
+        study.getMetadata().copyMetadata(template.getMetadata());
+        template.setVdc(em.find(VDC.class, vdcId));
+        em.persist(template);
+
     }
 }

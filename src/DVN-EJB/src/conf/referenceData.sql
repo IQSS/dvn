@@ -12,6 +12,7 @@ SET search_path = public, pg_catalog;
 
 SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('metadata', 'id'), 10, false);
 
+SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('template', 'id'), 10, false);
 
 --
 -- TOC entry 1840 (class 0 OID 0)
@@ -294,6 +295,7 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditStudyP
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'OptionsPage','/admin/OptionsPage.jsp',1,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddFilesPage','/study/AddFilesPage.jsp',1,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'DeleteStudyPage','/study/DeleteStudyPage.jsp',1,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditTemplatePage','/study/EditTemplatePage.jsp',1,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'MyStudiesPage','/study/MyStudiesPage.jsp',1,null );
 -- Curator Role
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddCollectionsPage','/collection/AddCollectionsPage.jsp',2,null );
@@ -476,6 +478,9 @@ INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchFie
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (93, '', 'eastLongitude', FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (94, '', 'northLatitude', FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (95, '', 'southLatitude', FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (96, '', 'producerAffiliation', FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (97, '', 'distributorAffiliation', FALSE, FALSE, FALSE );
+INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (98, '', 'distributorAbbreviation', FALSE, FALSE, FALSE );
 
 
 
@@ -633,17 +638,6 @@ ALTER TABLE vdcgrouprelationship DISABLE TRIGGER ALL;
 
 ALTER TABLE vdcgrouprelationship ENABLE TRIGGER ALL;
 
---
--- TOC entry 1824 (class 0 OID 113895)
--- Dependencies: 1290
--- Data for Name: vdcnetwork; Type: TABLE DATA; Schema: public; Owner: dvnApp
---
-
-ALTER TABLE vdcnetwork DISABLE TRIGGER ALL;
-
-INSERT INTO vdcnetwork (id, version, name, networkpageheader, networkpagefooter, announcements, displayannouncements, aboutthisdataversenetwork, contactemail, defaultvdcheader, defaultvdcfooter, defaultvdcabouttext, defaultvdcannouncements, displayvdcannouncements, displayvdcrecentstudies, defaulttemplate_id, allowcreaterequest, defaultnetworkadmin_id,protocol,authority,handleregistration,termsofuseenabled, deposittermsofuseenabled, downloadtermsofuseenabled, defaultdisplaynumber) VALUES (1, 1, '[Your]', ' ', ' ', 'A description of your Dataverse Network or announcements may be added here. Use Network Options to edit or remove this text.', TRUE, 'This About page is not used anymore in the DVN application.', 'dataverse@lists.hmdc.harvard.edu', ' ', ' ', 'This About page is not used anymore in the DVN application.', 'A description of your Dataverse or announcements may be added here. Use My Options to edit or remove this text.', TRUE, TRUE, 1, FALSE,1,'hdl','TEST',false,false,false,false,16);
-
-ALTER TABLE vdcnetwork ENABLE TRIGGER ALL;
 
 
 
@@ -728,16 +722,29 @@ ALTER TABLE vdcuser ENABLE TRIGGER ALL;
 
 ALTER TABLE "metadata" DISABLE TRIGGER ALL;
 -- Default metadata - contains no metadata values
-INSERT INTO metadata(id, version ) VALUES (1, 1);
+INSERT INTO metadata( id, version ) VALUES ( 1, 1);
 
 ALTER TABLE "metadata" ENABLE TRIGGER ALL;
 
 
 ALTER TABLE "template" DISABLE TRIGGER ALL;
 
-INSERT INTO template(id, version, name,metadata_id) VALUES (1, 1, 'Default Template',1);
+INSERT INTO template( id, version, name,metadata_id) VALUES (1, 1, 'Default Template',1);
 
 ALTER TABLE "template" ENABLE TRIGGER ALL;
+
+--
+-- TOC entry 1824 (class 0 OID 113895)
+-- Dependencies: 1290
+-- Data for Name: vdcnetwork; Type: TABLE DATA; Schema: public; Owner: dvnApp
+--
+
+ALTER TABLE vdcnetwork DISABLE TRIGGER ALL;
+
+INSERT INTO vdcnetwork (id, version, name, networkpageheader, networkpagefooter, announcements, displayannouncements, aboutthisdataversenetwork, contactemail, defaultvdcheader, defaultvdcfooter, defaultvdcabouttext, defaultvdcannouncements, displayvdcannouncements, displayvdcrecentstudies, defaulttemplate_id, allowcreaterequest, defaultnetworkadmin_id,protocol,authority,handleregistration,termsofuseenabled, deposittermsofuseenabled, downloadtermsofuseenabled, defaultdisplaynumber) VALUES (1, 1, '[Your]', ' ', ' ', 'A description of your Dataverse Network or announcements may be added here. Use Network Options to edit or remove this text.', TRUE, 'This About page is not used anymore in the DVN application.', 'dataverse@lists.hmdc.harvard.edu', ' ', ' ', 'This About page is not used anymore in the DVN application.', 'A description of your Dataverse or announcements may be added here. Use My Options to edit or remove this text.', TRUE, TRUE, 1, FALSE,1,'hdl','TEST',false,false,false,false,16);
+
+ALTER TABLE vdcnetwork ENABLE TRIGGER ALL;
+
 
 --
 -- TOC entry 1807 (class 0 OID 113797)
@@ -849,6 +856,9 @@ INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VA
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(93,1,93,3);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(94,1,94,3);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(95,1,95,3);
+INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(96,1,96,3);
+INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(97,1,97,3);
+INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(98,1,98,3);
 
 
 

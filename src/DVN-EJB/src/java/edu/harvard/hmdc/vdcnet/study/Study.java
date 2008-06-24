@@ -99,7 +99,8 @@ public class Study implements java.io.Serializable {
             this.setTemplate(initTemplate);
           
         }
-        metadata = template.getMetadata().createClone();
+        metadata = new Metadata();
+        template.getMetadata().copyMetadata(metadata);
         if (vdc != null) {
             vdc.getOwnedStudies().add(this);
         }

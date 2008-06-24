@@ -91,7 +91,10 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
   
     
     public VDCNetwork find() {
-        return (VDCNetwork) em.find(VDCNetwork.class, new Long(1));
+        VDCNetwork vdcNetwork= (VDCNetwork) em.find(VDCNetwork.class, new Long(1));
+        logger.log(Level.FINE, "found vdcNetwork" +vdcNetwork );
+        return vdcNetwork;
+        
     }
     
       

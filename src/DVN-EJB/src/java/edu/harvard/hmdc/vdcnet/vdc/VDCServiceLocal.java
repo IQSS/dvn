@@ -30,6 +30,7 @@
 package edu.harvard.hmdc.vdcnet.vdc;
 
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Local;
 import javax.servlet.http.HttpServletRequest;
 
@@ -82,5 +83,7 @@ public interface VDCServiceLocal extends java.io.Serializable  {
     public List findVdcsNotInGroups();
     
     public List<VDC> findVdcsNotInGroups(String dtype);
+    
+    public Map getVdcTemplatesMap(Long vdcId);
     
 }

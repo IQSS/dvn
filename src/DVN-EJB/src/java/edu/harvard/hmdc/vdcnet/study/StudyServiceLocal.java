@@ -131,4 +131,6 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     public void updateStudyFile(StudyFile detachedStudyFile);
     public boolean isValidStudyIdString(String studyId); 
+    
+    public void createStudyTemplate( String templateName, Long studyId, Long vdcId);
 }

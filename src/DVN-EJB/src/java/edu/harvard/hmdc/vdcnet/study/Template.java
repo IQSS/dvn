@@ -155,14 +155,14 @@ public class Template implements java.io.Serializable {
      * Holds value of property vdcNetWork.
      */
    @OneToOne(mappedBy="defaultTemplate")
-   private VDCNetwork vdcNetWork;
+   private VDCNetwork vdcNetwork;
 
     /**
      * Getter for property vdcNetWork.
      * @return Value of property vdcNetWork.
      */
      public VDCNetwork getVdcNetWork() {
-        return this.vdcNetWork;
+        return this.vdcNetwork;
     }
      
     @ManyToOne
@@ -181,7 +181,7 @@ public class Template implements java.io.Serializable {
      * @param vdcNetWork New value of property vdcNetWork.
      */
     public void setVdcNetWork(VDCNetwork vdcNetWork) {
-        this.vdcNetWork = vdcNetWork;
+        this.vdcNetwork = vdcNetWork;
     }
     
     @OneToOne(cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})

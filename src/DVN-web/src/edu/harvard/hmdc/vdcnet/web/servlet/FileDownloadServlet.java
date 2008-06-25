@@ -750,7 +750,7 @@ public class FileDownloadServlet extends HttpServlet{
 			    }
 			} else { 
 			    
-			    if ( dbContentType.equals ("text/tab-separated-values") && file.isSubsettable() && noVarHeader == null ) {
+			    if ( dbContentType != null && dbContentType.equals ("text/tab-separated-values") && file.isSubsettable() && noVarHeader == null ) {
 				List datavariables = file.getDataTable().getDataVariables();
 				varHeaderLine = generateVariableHeader ( datavariables );
 			    }
@@ -1027,10 +1027,12 @@ public class FileDownloadServlet extends HttpServlet{
             }
             
             out.println("</BODY></HTML>");
+	    out.flush(); 
 	    out.close(); 
         } catch (IOException ex) {
             ex.printStackTrace();
 	    if ( out != null ) {
+		out.flush();
 		out.close(); 
 	    }
         }

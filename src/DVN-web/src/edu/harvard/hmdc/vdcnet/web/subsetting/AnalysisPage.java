@@ -298,7 +298,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * The hash table (variable Id to variable name)
      * that stores the current selected variables
      */
-    public Map<String, String> varCart = new HashMap<String, String>();
+    public Map<String, String> varCart = new LinkedHashMap<String, String>();
 
     // Map for switch statement in checkVarType()
     /**

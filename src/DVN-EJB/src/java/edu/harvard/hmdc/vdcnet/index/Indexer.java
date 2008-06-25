@@ -813,7 +813,7 @@ public class Indexer implements java.io.Serializable  {
                     phraseQuery.add(new Term(elem.getFieldName(), phrase[i].toLowerCase().trim()));
                 }
                 orTerms.add(phraseQuery, BooleanClause.Occur.SHOULD);
-            } else {
+            } else if (phrase.length == 1){
 //                Term t = new Term(elem.getFieldName(), elem.getValue().toLowerCase().trim());
                 Term t = new Term(elem.getFieldName(), phrase[0].toLowerCase().trim());
                 TermQuery orQuery = new TermQuery(t);
@@ -849,8 +849,9 @@ public class Indexer implements java.io.Serializable  {
                     PhraseQuery phraseQuery = new PhraseQuery();
                     phraseQuery.setSlop(10);
                     andTerms.add(partialMatch(elem,10));
-                } else{
-                    Term t = new Term(elem.getFieldName(), elem.getValue().toLowerCase().trim());
+                } else if (phrase.length==1){
+//                    Term t = new Term(elem.getFieldName(), elem.getValue().toLowerCase().trim());
+                    Term t = new Term(elem.getFieldName(), phrase[0].toLowerCase().trim());
                     TermQuery andQuery = new TermQuery(t);
                     if (elem.getOperator().equals("=")){
                         andTerms.add(andQuery, BooleanClause.Occur.MUST);

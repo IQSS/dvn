@@ -211,9 +211,8 @@ public class FileDownloadServlet extends HttpServlet{
 		// do the http magic
 
 		if (formatRequested != null) {
-		    // user requested the file in a non-default (i.e.,
-		    // not tab-delimited) format.
-
+		    // user requested a subsettable file in a non-default (i.e.,
+		    // not tab-delimited or fixed-field, whichever it is) format.
 		    // we are going to send a format conversion request to 
 		    // the DSB via HTTP.
 		    
@@ -283,7 +282,7 @@ public class FileDownloadServlet extends HttpServlet{
 		    }
 
 		    try {
-			// recycle all the incoming headers 
+			// recycle the incoming content-defining headers: 
 			for (int i = 0; i < method.getResponseHeaders().length; i++) {
 			    String headerName = method.getResponseHeaders()[i].getName();
 			    if (headerName.startsWith("Content")) {
@@ -297,6 +296,27 @@ public class FileDownloadServlet extends HttpServlet{
 			OutputStream out = res.getOutputStream();
 			    
 			byte[] dataReadBuffer = new byte[8192 * 4]; 
+
+			// One special case: 
+			// With fixed-field files we support requesting the
+			// file in tab-delimited format. And for tab files
+			// we always want to add the variable names header
+			// line: 
+
+			String varHeaderLine = null; 
+
+			if ( formatRequested.equals("D00") && noVarHeader == null ) {
+			    List datavariables = file.getDataTable().getDataVariables();
+			    varHeaderLine = generateVariableHeader ( datavariables );
+
+			    if ( varHeaderLine != null ) {
+				byte[] varHeaderBuffer = null;
+				varHeaderBuffer = varHeaderLine.getBytes();  
+				out.write ( varHeaderBuffer); 
+				out.flush(); 
+			    }
+			}
+
 
 			int i = 0; 
 			while ( ( i = in.read (dataReadBuffer)) > 0 ) {
@@ -749,15 +769,15 @@ public class FileDownloadServlet extends HttpServlet{
 				dbContentType = "image/png";
 			    }
 			} else { 
-			    
-			    if ( dbContentType != null && dbContentType.equals ("text/tab-separated-values") && file.isSubsettable() && noVarHeader == null ) {
-				List datavariables = file.getDataTable().getDataVariables();
-				varHeaderLine = generateVariableHeader ( datavariables );
-			    }
-			    inFile = new File(file.getFileSystemLocation());  
-
 			    if ( downloadOriginalFormat != null ) {
 				inFile = new File ( inFile.getParent(), "_" + file.getFileSystemName()); 
+			    } else { 
+				inFile = new File(file.getFileSystemLocation());  
+			    
+				if ( dbContentType != null && dbContentType.equals ("text/tab-separated-values") && file.isSubsettable() && noVarHeader == null ) {
+				    List datavariables = file.getDataTable().getDataVariables();
+				    varHeaderLine = generateVariableHeader ( datavariables );
+				}
 			    }
 			} 
 

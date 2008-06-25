@@ -30,12 +30,12 @@ package edu.harvard.hmdc.vdcnet.catalog;
 
 import ORG.oclc.oai.server.verb.NoItemsMatchException;
 import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
+import edu.harvard.hmdc.vdcnet.harvest.HarvestStudy;
+import edu.harvard.hmdc.vdcnet.harvest.HarvestStudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
-import edu.harvard.hmdc.vdcnet.study.DeletedStudy;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyExporterFactoryLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
-import edu.harvard.hmdc.vdcnet.vdc.OAISet;
 import edu.harvard.hmdc.vdcnet.vdc.OAISetServiceLocal;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,6 +46,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,7 +58,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 /**
  *
@@ -70,6 +70,8 @@ public class CatalogServiceBean implements CatalogServiceLocal {
     @EJB StudyExporterFactoryLocal studyExporterFactory;
     @EJB OAISetServiceLocal oaiSetService;
     @EJB IndexServiceLocal indexService;
+    @EJB HarvestStudyServiceLocal harvestStudyService;
+    
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.catalog.CatalogServiceBean");
     
     /** Creates a new instance of CatalogServiceBean */
@@ -180,7 +182,58 @@ public class CatalogServiceBean implements CatalogServiceLocal {
         Study [] s = new Study[studies.size()];
         return studies.toArray(s);
     }
+
+     public String []  listRecords(String from, String until, String set, String metadataPrefix) throws NoItemsMatchException{
         
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        List <String> records = new ArrayList();
+        
+        try {
+            List<HarvestStudy> harvestStudies = harvestStudyService.findHarvestStudiesBySetName(set, sdf.parse(from), sdf.parse(until) );
+
+            for (HarvestStudy hs : harvestStudies) {
+                String record = "<identifier>" + ( set != null ? set + "//" : "") +  hs.getGlobalId() + "</identifier>";
+                record += "<datestamp>" + sdf.format(hs.getLastUpdateTime()) + "</datestamp>";            
+
+                if (hs.isRemoved() ) {
+                    record += "<status>deleted</status>";
+                    records.add(record);
+                    
+                } else {
+                    record += set != null ? "<setSpec>"+set+"</setSpec>" : "";
+
+                    int index1 = hs.getGlobalId().indexOf(':');
+                    int index2 = hs.getGlobalId().indexOf('/');
+                    String authority = hs.getGlobalId().substring(index1 + 1, index2);
+                    String studyId = hs.getGlobalId().substring(index2 + 1).toUpperCase();
+
+                    File studyFileDir = FileUtil.getStudyFileDir(authority, studyId);
+                    String exportFileName= studyFileDir.getAbsolutePath() + File.separator + "export_" + metadataPrefix+".xml";
+                    File exportFile = new File(exportFileName);
+
+                    if ( exportFile.exists() ) {
+                        record += readFile(exportFile);
+                        records.add(record);
+                    }
+
+                }
+              }
+         } catch(Exception e) {
+            logger.severe(e.getMessage());
+            
+            String stackTrace = "StackTrace: \n";
+            logger.severe("Exception caused by: "+e+"\n");
+            StackTraceElement[] ste = e.getStackTrace();
+            for(int m=0;m<ste.length;m++) {
+                stackTrace+=ste[m].toString()+"\n";
+            }
+            logger.severe(stackTrace);
+        }
+        String [] s = new String[records.size()];
+        return records.toArray(s);        
+     }
+     
+    /*
     public String []  listRecords(String from, String until, String set, String metadataPrefix) throws NoItemsMatchException{
         OAISet oaiSet = null;
         List <Long> indexedIds = null;
@@ -272,6 +325,7 @@ public class CatalogServiceBean implements CatalogServiceLocal {
         String [] s = new String[records.size()];
         return records.toArray(s);
    }
+   */
     
     public String getRecord(Study study, String metadataPrefix) {
         return getRecord(study, metadataPrefix, null);

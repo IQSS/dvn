@@ -42,7 +42,6 @@
 package edu.harvard.hmdc.vdcnet.web.oai.catalog;
 
 import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.vdc.OAISet;
 import edu.harvard.hmdc.vdcnet.vdc.OAISetServiceLocal;
@@ -75,8 +74,9 @@ import ORG.oclc.oai.server.verb.NoItemsMatchException;
 import ORG.oclc.oai.server.verb.NoMetadataFormatsException;
 import ORG.oclc.oai.server.verb.NoSetHierarchyException;
 import edu.harvard.hmdc.vdcnet.catalog.CatalogServiceLocal;
+import edu.harvard.hmdc.vdcnet.harvest.HarvestStudy;
+import edu.harvard.hmdc.vdcnet.harvest.HarvestStudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.DeletedStudy;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 
@@ -415,12 +415,56 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
          * YOUR CODE GOES HERE
          * Replace this nativeItem assignment with your database API code.
          **********************************************************************/
-        StudyServiceLocal studyService = null;
+        HarvestStudyServiceLocal harvestStudyService = null;
         try {
-            studyService=(StudyServiceLocal)new InitialContext().lookup("java:comp/env/studyService");
+            harvestStudyService=(HarvestStudyServiceLocal)new InitialContext().lookup("java:comp/env/harvestStudyService");
         } catch(Exception e) {
             e.printStackTrace();
         }
+        
+        // check for separator between set and globalId
+        String set = null;
+        String globalId = null;
+        
+        String separator = "//";
+        int separatorIndex = identifier.indexOf(separator);
+        if (separatorIndex == -1) {
+            globalId = identifier;    
+        } else {
+            set = identifier.substring( 0, separatorIndex );
+            globalId = identifier.substring( separatorIndex + separator.length() );
+        }
+        
+        // now get harvestStudy object
+        HarvestStudy hs = harvestStudyService.findHarvestStudyBySetNameandGlobalId(set, globalId);
+        if (hs == null) {
+            throw new IdDoesNotExistException(identifier);
+        }
+        
+        // now create the nativeItem to be returned
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+      
+        String nativeItem = "<identifier>" + identifier + "</identifier>";
+        nativeItem += "<datestamp>" + sdf.format(hs.getLastUpdateTime()) + "</datestamp>";
+ 
+        if (hs.isRemoved()) {
+            nativeItem +=  "<status>deleted</status>";
+            
+        } else {
+            nativeItem += set != null ? "<setSpec>"+set+"</setSpec>" : "";       
+
+            int index1 = globalId.indexOf(':');
+            int index2 = globalId.indexOf('/');
+            String authority = globalId.substring(index1 + 1, index2);
+            String studyId = globalId.substring(index2 + 1).toUpperCase();
+           
+            File studyFileDir = FileUtil.getStudyFileDir(authority, studyId);
+            String exportFileName = studyFileDir.getAbsolutePath() + File.separator + "export_" + metadataPrefix + ".xml";
+            nativeItem += readFile(new File(exportFileName));          
+        } 
+        
+        
+        /*
         Study study = studyService.getStudyByGlobalId(identifier);
         String nativeItem = null;
         if (study != null) {
@@ -451,6 +495,8 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
                 }
             }
         }
+        */
+        
         /***********************************************************************
          * END OF CUSTOM CODE SECTION
          ***********************************************************************/

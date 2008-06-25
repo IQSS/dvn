@@ -277,7 +277,15 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
             out.println("resultInfo:\n"+resultInfo);
             
             requestResultPID = resultInfo.get("PID");
-            requestedOption  = resultInfo.get("option");
+            String shortOptionName = resultInfo.get("option");
+            if (shortOptionName.equals("download")){
+                requestedOption  = "Download Subset";
+            } else if (shortOptionName.equals("eda")){
+                requestedOption  = "Descriptive Statistics";
+            } else if (shortOptionName.equals("zelig")){
+                requestedOption  = "Advanced Statistical Analysis";
+            }
+            
             
             // citation
             
@@ -302,9 +310,11 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
                 // show the panelgroup
                 pgDwnld.setRendered(true);
                 pgHtml.setRendered(false);
+                pgRwrksp.setRendered(false);
             } else {
                 pgDwnld.setRendered(false);
-                pgHtml.setRendered(true);                
+                pgHtml.setRendered(true);
+                pgRwrksp.setRendered(true);
             }
 
                 // urls

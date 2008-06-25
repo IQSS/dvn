@@ -282,9 +282,11 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
                 requestedOption  = "Download Subset";
             } else if (shortOptionName.equals("eda")){
                 requestedOption  = "Descriptive Statistics";
-            } else if (shortOptionName.equals("zelig")){
+            } else if (shortOptionName.equals("xtab") ||
+                    (shortOptionName.equals("zelig")) ){
                 requestedOption  = "Advanced Statistical Analysis";
             }
+
             
             
             // citation

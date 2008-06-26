@@ -29,6 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
+import edu.harvard.hmdc.vdcnet.study.Template;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Local;
@@ -85,5 +86,9 @@ public interface VDCServiceLocal extends java.io.Serializable  {
     public List<VDC> findVdcsNotInGroups(String dtype);
     
     public Map getVdcTemplatesMap(Long vdcId);
+    
+    public List<Template> getOrderedTemplates(Long vdcId);
+    
+    public void updateDefaultTemplate(Long vdcId, Long templateId);
     
 }

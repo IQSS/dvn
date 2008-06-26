@@ -507,7 +507,7 @@ alter table template add CONSTRAINT fk_template_metadata_id FOREIGN KEY (metadat
 SELECT setval('metadata_id_seq',100000);
 INSERT INTO metadata(id, version ) VALUES (nextval('metadata_id_seq'), 1);
 update template set metadata_id=currval('metadata_id_seq');
-
+update template set name = 'Dataverse Network Default Template' where id=1;
 SELECT setval('template_id_seq',10);
 
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (96, '', 'producerAffiliation', FALSE, FALSE, FALSE );

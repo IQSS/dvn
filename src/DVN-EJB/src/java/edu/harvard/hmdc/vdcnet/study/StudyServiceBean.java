@@ -1865,4 +1865,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         em.persist(template);
 
     }
+    public void deleteTemplate(Long templateId) {
+        Template template = em.find(Template.class, templateId);
+        em.remove(template);
+    }
+    public Template getTemplate(Long templateId) {
+        return em.find(Template.class, templateId);
+    }
 }

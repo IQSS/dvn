@@ -296,13 +296,13 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'OptionsPag
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddFilesPage','/study/AddFilesPage.jsp',1,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'DeleteStudyPage','/study/DeleteStudyPage.jsp',1,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditTemplatePage','/study/EditTemplatePage.jsp',1,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'TemplateFormPage','/study/TemplateFormPage.jsp',1,null );
+
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'MyStudiesPage','/study/MyStudiesPage.jsp',1,null );
 -- Curator Role
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddCollectionsPage','/collection/AddCollectionsPage.jsp',2,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditCollectionPage','/collection/EditCollectionPage.jsp',2,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageCollectionPage','/collection/ManageCollectionPage.jsp',2,null );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditStudyTemplatePage','/study/EditStudyTemplatePage.jsp',2,null );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageStudyTemplatesPage','/study/ManageStudyTemplatesPage.jsp',2,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'StudyPermissionsPage','/study/StudyPermissionsPage.jsp',2,null );
 -- Admin Role
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditAboutPage','/admin/EditAboutPage.jsp',3,2 );
@@ -729,7 +729,7 @@ ALTER TABLE "metadata" ENABLE TRIGGER ALL;
 
 ALTER TABLE "template" DISABLE TRIGGER ALL;
 
-INSERT INTO template( id, version, name,metadata_id) VALUES (1, 1, 'Default Template',1);
+INSERT INTO template( id, version, name,metadata_id) VALUES (1, 1, 'Dataverse Network Default Template',1);
 
 ALTER TABLE "template" ENABLE TRIGGER ALL;
 

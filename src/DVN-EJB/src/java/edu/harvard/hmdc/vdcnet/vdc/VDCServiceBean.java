@@ -489,6 +489,21 @@ public class VDCServiceBean implements VDCServiceLocal {
             }
             return templatesMap;
         
-    }
+        }
+        
+        public List<Template> getOrderedTemplates(Long vdcId) {
+             
+            String query = "select object(o) FROM Template as o WHERE o.vdc.id = :fieldName ORDER BY o.name";
+            return (List)em.createQuery(query).setParameter("fieldName",vdcId).getResultList();
+           
+           
+        }
+        
+        public void updateDefaultTemplate(Long vdcId, Long templateId) {
+            VDC vdc = em.find(VDC.class, vdcId);
+            Template template= em.find(Template.class, templateId);
+            vdc.setDefaultTemplate(template);
+        }
+        
        
 }

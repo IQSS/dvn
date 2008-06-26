@@ -895,6 +895,8 @@ public class FileDownloadServlet extends HttpServlet{
             
             String catId = req.getParameter("catId");
             String studyId = req.getParameter("studyId");
+
+	    String fileManifest = null; 
             
             if (catId != null) {
                 try {
@@ -928,8 +930,9 @@ public class FileDownloadServlet extends HttpServlet{
             while (iter.hasNext()) {
                 StudyFile file = (StudyFile) iter.next();
                 if (file.isFileRestrictedForUser(user, vdc,ipUserGroup) ) {
+		    fileManifest = fileManifest + file.getFileName() + " IS RESTRICTED AND CANNOT BE DOWNLOADED\n";
                     iter.remove();
-                }  
+                } 
             }
             if (files.size() == 0) {
                 createErrorResponse403(res); 
@@ -962,6 +965,7 @@ public class FileDownloadServlet extends HttpServlet{
 
 
                 while (iter.hasNext()) {
+		    int fileSize = 0; 
                     StudyFile file = (StudyFile) iter.next();
 
                     InputStream in = null;
@@ -1018,10 +1022,20 @@ public class FileDownloadServlet extends HttpServlet{
 		    int i = 0;
 		    while ( ( i = in.read (dataBuffer) ) > 0 ) {
 			zout.write(dataBuffer,0,i);
+			fileSize += i; 
 			out.flush(); 
 		    }
                     in.close();
                     zout.closeEntry();
+
+		    String ft = file.getFileType(); 
+
+		    if ( ft == null ) {
+			ft = "unknown filetype;"; 
+		    } 
+		    
+		    fileManifest = fileManifest + file.getFileName() + " " + ft + " " + fileSize + " bytes.\n";
+
 
 		    // if this was a remote stream, let's close
 		    // the connection properly:
@@ -1031,8 +1045,16 @@ public class FileDownloadServlet extends HttpServlet{
 			    method.releaseConnection(); 
 			}
 		    }
-		    
 		}
+
+		// finally, let's create the manifest entry: 
+
+		ZipEntry e = new ZipEntry("MANIFEST.TXT");
+                    
+		zout.putNextEntry(e);
+		zout.write(fileManifest.getBytes()); 
+		zout.closeEntry();
+		
                 zout.close();
             } catch (IOException ex) {
 		// if the exception was caught while downloading 

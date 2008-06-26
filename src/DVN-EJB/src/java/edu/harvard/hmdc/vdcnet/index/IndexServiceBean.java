@@ -82,8 +82,7 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     @EJB MailServiceLocal mailService;
     @Resource(mappedName="jms/IndexMessage") Queue queue;
     @Resource(mappedName="jms/IndexMessageFactory") QueueConnectionFactory factory;
-    @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
-    EntityManager em;
+    @PersistenceContext(unitName="VDCNet-ejbPU") EntityManager em;
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.index.IndexServiceBean");
     private static final String INDEX_TIMER = "IndexTimer";
 
@@ -505,17 +504,16 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         return matchingStudyIds == null ? new ArrayList(): matchingStudyIds;
     }
  
-   private HashSet<IndexStudy> getUnindexedStudies() {
-        List<IndexStudy> s = em.createQuery("SELECT i from IndexStudy i").getResultList();
-        return  new HashSet(s);
+   private HashSet<Study> getUnindexedStudies() {
+        List<Study> studies = (List<Study>) em.createQuery("SELECT s from Study s where s.lastIndexTime < s.lastUpdateTime OR s.lastIndexTime is NULL").getResultList();
+        return  new HashSet(studies);
     }
    
    public void indexBatch(){
        HashSet s = getUnindexedStudies();
        for (Iterator it = s.iterator(); it.hasNext();){
-           IndexStudy study = (IndexStudy) it.next();
-           em.createQuery("DELETE FROM IndexStudy i where i.studyId =  "+ study.getStudyId()).executeUpdate();
-           addDocument(study.getStudyId());
+           Study study = (Study) it.next();
+           addDocument(study.getId().longValue());
        }
    }
    

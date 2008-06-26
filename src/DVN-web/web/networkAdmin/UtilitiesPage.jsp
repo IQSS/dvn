@@ -89,6 +89,12 @@
                                 <h:inputTextarea value="#{UtilitiesPage.indexStudyIds}" rows="8" cols="80"/>
                                 <h:commandButton  value="Index Studies" action="#{UtilitiesPage.indexStudies_action}"/>
                             </ui:panelGroup>                            
+                            <hr/>
+                            <h:outputText value="To index unindexed studies, click on the button below:"/>
+                            <ui:panelGroup>
+                                <h:commandButton  value="Index Update" action="#{UtilitiesPage.indexBatch_action}"/>
+                            </ui:panelGroup>
+                            <hr/>
                             <h:outputText value="#{UtilitiesPage.indexLocks}"/>
                             <ui:panelGroup>
                                 <h:commandButton  value="Delete Lock" action="#{UtilitiesPage.indexLocks_action}" disabled="#{UtilitiesPage.deleteLockDisabled}"/>

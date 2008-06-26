@@ -35,6 +35,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.logging.Logger;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
@@ -123,6 +124,8 @@ public class IndexMessage implements MessageListener, java.io.Serializable {
         }
         try {
             indexer.addDocument(study);
+            study.setLastIndexTime(new Date());
+            studyService.updateStudy(study);
         } catch (IOException ex) {
             ex.printStackTrace();
             try {

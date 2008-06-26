@@ -275,6 +275,11 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         }
         return null;
     }
+    
+    public String indexBatch_action(){
+        indexService.indexBatch();
+        return null;
+    }
     // </editor-fold>
     
     

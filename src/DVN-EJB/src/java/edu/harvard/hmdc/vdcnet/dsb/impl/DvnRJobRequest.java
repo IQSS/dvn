@@ -44,42 +44,42 @@ public class DvnRJobRequest {
     // ----------------------------------------------------- Constructors
 
     /**
-     * 4-arg Constructor
-     * for zelig cases
+     * 4-arg Constructor for zelig cases
+     * 
      */
 
     public DvnRJobRequest(List<DataVariable> dv, 
         Map<String, List<String>> listParams,
         Map<String, Map<String, String>> vts,
-        List<Object> rv,
+        Map<String, List<Object>> rs,
         AdvancedStatGUIdata.Model zp){
         dataVariablesForRequest = dv;
         
         listParametersForRequest = listParams;
         
         valueTables = vts;
-        recodedVarSet = rv;
+        recodeSchema  = rs;
         zeligModelSpec = zp;
         
         out.println("variables="+dataVariablesForRequest);
         out.println("map="+listParametersForRequest);
         out.println("value table="+valueTables);
-        out.println("recodedVars="+recodedVarSet);
+        out.println("recodeSchema"+recodeSchema);
         out.println("model spec="+zeligModelSpec);
         checkVariableNames();
     }
 
     
     /**
-     * 3-arg Constructor
+     * 3-arg Constructor for non-zelig cases
      *
      */
     public DvnRJobRequest(List<DataVariable> dv, 
         Map<String, List<String>> listParams, 
         Map<String, Map<String, String>> vts,
-        List<Object> rv){
+        Map<String, List<Object>> rs){
 
-        this(dv,listParams,vts,rv,null);
+        this(dv,listParams,vts,rs, null);
 
     }
 
@@ -96,6 +96,7 @@ public class DvnRJobRequest {
     
     private Map<String, Map<String, String>> valueTables;
     
+    private Map<String, List<Object>> recodeSchema;
     /**  */
     private AdvancedStatGUIdata.Model zeligModelSpec;
     
@@ -138,6 +139,13 @@ public class DvnRJobRequest {
     // ----------------------------------------------------- accessors
     // metadata for RServe
     
+    
+    public String getStudytitle(){
+        List<String> studytitle = listParametersForRequest.get("studytitle");
+        out.println("studytitle="+studytitle.get(0));
+        return studytitle.get(0);
+    }
+
     /**
      * Getter for property datafile path
      *
@@ -157,7 +165,7 @@ public class DvnRJobRequest {
      */
     public int[] getVariableTypes() {
         
-        List rw = new ArrayList();
+        List<Integer> rw = new ArrayList<Integer>();
         for(int i=0;i < dataVariablesForRequest.size(); i++){
             DataVariable dv = (DataVariable) dataVariablesForRequest.get(i);
             if (dv.getVariableFormatType().getId() == 1L) {
@@ -174,8 +182,8 @@ public class DvnRJobRequest {
                 rw.add(0);
             }
         }
-        
         Integer[]tmp = (Integer[])rw.toArray(new Integer[rw.size()]);
+        out.println("vartype="+ StringUtils.join(tmp, ", "));
         int[] variableTypes=new int[tmp.length];
         for (int j=0;j<tmp.length;j++){
             variableTypes[j]= tmp[j];
@@ -262,7 +270,7 @@ public class DvnRJobRequest {
      * Getter for property variable ids
      * @return    A String array of variable Ids
      */
-    public String[] getVariableIDs (){
+    public String[] getVariableIds(){
         String[] variableIds=null;
         List<String> rw = new ArrayList();
         for(int i=0;i < dataVariablesForRequest.size(); i++){
@@ -292,6 +300,23 @@ public class DvnRJobRequest {
         return rwn2Id;
     }
 
+    public String[] getUpdatedVariableNames(){
+        List<String> tmp = new ArrayList<String>();
+        if ((!hasUnsafedVariableNames) && (!hasRecodedVariables())){
+            // neither renemaed nor recoded vars
+            return  getVariableNames();
+        } else if ( hasUnsafedVariableNames && !hasRecodedVariables()){
+            // renamed vars only
+            return safeVarNames;
+        } else if (!hasUnsafedVariableNames && hasRecodedVariables()){
+            // recoded vars only
+            return (String[])ArrayUtils.addAll(getVariableNames(), getRecodedVarNameSet());
+        } else {
+            // both renamed and rcoded vars
+            return (String[])ArrayUtils.addAll(safeVarNames, getRecodedVarNameSet());
+        }
+    
+    }
 
     /**
      * Getter for property variable labels
@@ -310,36 +335,26 @@ public class DvnRJobRequest {
         return variableLabels;
     }
 
+    public String[] getUpdatedVariableLabels(){
+        return (String[])ArrayUtils.addAll(getVariableLabels(), getRecodedVarLabelSet());
+    }
+
+    public String[] getUpdatedVariableIds(){
+        return (String[])ArrayUtils.addAll(getVariableIds(), getRecodedVarIdSet());
+    }
+
+    public int[] getUpdatedVariableTypes(){
+         return ArrayUtils.addAll(getVariableTypes(),getRecodedVarTypeSet());
+    }
     /**
      * Getter for property value-label list
      *
      * @return    A value-label table as a Map object
      */
     public Map<String, Map<String,String>> getValueTable(){
-        /*
-        Map<String, Map<String,String>> valueTable = new HashMap<String, Map<String, String>>();
-        DataVariable dv = null;
-        for (Iterator el = dataVariablesForRequest.iterator(); el.hasNext();) {
-            dv = (DataVariable) el.next();
-            Collection<VariableCategory> vcat = dv.getCategories();
-            if (vcat.size()>0){
-                Map <String, String> vl = new HashMap<String, String>();
-                for (Iterator elc = vcat.iterator(); elc.hasNext();){
-                    VariableCategory vcati = (VariableCategory) elc.next();
-                    vl.put(vcati.getValue(), vcati.getLabel());
-                }
-                valueTable.put(dv.getId().toString(), vl);
-            }
-        }
-        */
         return valueTables;
     }
     
-    public Map<String, List<String>> getRecodedVarParameters() {
-        Map<String, List<String>> mpl = null;
-
-        return mpl;
-    }
 
     /**
      * Getter for property missing value table
@@ -373,6 +388,30 @@ public class DvnRJobRequest {
         param =  requestTypeToken.get(0);
         out.println("dtdwnld="+param);
         return param;
+    }
+
+    public String getEDARequestParameter(){
+        List<String> param = listParametersForRequest.get("analysis");
+        String[] param3 = new String[3];
+        param3[2] = "0";
+        
+        if (param.size() == 2){
+            param3[0] = "1";
+            param3[1] = "1";
+        } else if (param.get(0).equals("A01")) {
+            param3[0] = "1";
+            param3[1] = "0";
+
+        } else if (param.get(0).equals("A02")) {
+            param3[0] = "0";
+            param3[1] = "1";
+        } else {
+            param3[0] = "1";
+            param3[1] = "1";
+        }
+        String tmp = StringUtils.join(param3, ", ");
+        out.println("aol="+tmp);
+        return tmp;
     }
 
     /**
@@ -553,19 +592,48 @@ public class DvnRJobRequest {
     
     
     /**
-     * 
+     * Methods for Recoded variables
      *
      */
-    public List<Object> recodedVarSet;
     
     public boolean hasRecodedVariables(){
         boolean rv = false;
-        if ((recodedVarSet != null) && (recodedVarSet.size()> 0)){
+        if ((recodeSchema != null) && (recodeSchema.size()> 0)){
             rv = true;
         }
         return rv;
     }
+   
+    public String[] getRecodedVarIdSet() {
+        List<String> lvi = listParametersForRequest.get("recodedVarIdSet");
+        String[] vi = (String[])lvi.toArray(new String[lvi.size()]);
+        return vi;
+    }
     
+    public String[] getRecodedVarNameSet() {
+        List<String> lvn = listParametersForRequest.get("recodedVarNameSet");
+        String[] vn = (String[])lvn.toArray(new String[lvn.size()]);
+
+        return vn;
+    }
+   
+    public String[] getRecodedVarLabelSet() {
+        List<String> lvl = listParametersForRequest.get("recodedVarLabelSet");
+        String[] vl = (String[])lvl.toArray(new String[lvl.size()]);
+        return vl;
+    }
+
+    public int[] getRecodedVarTypeSet() {
+        List<String> lvt = listParametersForRequest.get("recodedVarTypeSet");
+        String[] svt = (String[])lvt.toArray(new String[lvt.size()]);
+        int[] vt = new int[lvt.size()];
+        for (int i=0; i< svt.length; i++){
+            vt[i] = Integer.parseInt(svt[i]);
+        }
+        return vt;
+    }
+
+
     /**
      * 
      *

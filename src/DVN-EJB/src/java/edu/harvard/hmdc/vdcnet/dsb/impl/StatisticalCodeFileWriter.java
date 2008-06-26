@@ -12,9 +12,16 @@ import java.util.*;
  */
 public class StatisticalCodeFileWriter {
     
-    public StatisticalCodeFileWriter(List<String> variableNames,
-        List<String> variableTypes, 
-        List<String> variableLabels, 
+    public StatisticalCodeFileWriter(DvnRJobRequest sro){
+        this.variableNames =    sro.getUpdatedVariableNames();
+        this.variableTypes =    sro.getUpdatedVariableTypes();
+        this.variableLabels =   sro.getUpdatedVariableLabels();
+        this.valueLabelTable =  sro.getValueTable();
+    }
+    
+    public StatisticalCodeFileWriter(String[] variableNames,
+        int[] variableTypes, 
+        String[] variableLabels, 
         Map<String, Map<String, String>> valueLabelTable){
         
         this.variableNames = variableNames;
@@ -25,10 +32,11 @@ public class StatisticalCodeFileWriter {
     }
     
     
-    public List<String> variableNames;
+    public String[] variableNames;
     
-    public List<String> variableTypes;
-    public List<String> variableLabels;
+    public int [] variableTypes;
+    
+    public String[] variableLabels;
     
     public Map<String, Map<String, String>> valueLabelTable;
     

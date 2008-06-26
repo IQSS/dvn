@@ -1067,7 +1067,7 @@ if (fieldcut){
                     Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
                     // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
-                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodedVarSet);
+                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
 
                     out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     // Step 4. Creates an instance of the the implemented 
@@ -2533,6 +2533,7 @@ if (fieldcut){
                 Map<String, List<String>> mpl = new HashMap<String, List<String>>();
                 
                 Object[] vs = edaOptionSet.getSelectedValues();
+                // analysis=[A01, A02]
                 List<String> alst = new ArrayList<String>();
 
                 for (int i = 0; i < vs.length; i++) {
@@ -2560,6 +2561,15 @@ if (fieldcut){
                 mpl.put("studyno", Arrays.asList(studyId.toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
                 mpl.put("browserType", Arrays.asList(browserType));
+                
+                
+                mpl.put("recodedVarIdSet", getRecodedVarIdSet());
+                mpl.put("recodedVarNameSet",getRecodedVarNameSet());
+                mpl.put("recodedVarLabelSet", getRecodedVarLabelSet());
+                mpl.put("recodedVarTypeSet", getRecodedVariableType());
+                
+                mpl.put("BaseVarIdSet",getBaseVarIdSetFromRecodedVarIdSet());
+                mpl.put("BaseVarNameSet",getBaseVarNameSetFromRecodedVarIdSet());
 
             // -----------------------------------------------------
             // New processing route
@@ -2726,10 +2736,11 @@ if (fieldcut){
                         mpl.put("requestType", Arrays.asList("EDA"));
 }
 
-                    Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
+                    //Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
+                    Map<String, Map<String, String>> vls = getValueTablesForAllRequestedVariables();
                     // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
-                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodedVarSet);
+                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
 
                     out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     // Step 4. Creates an instance of the the implemented 
@@ -5107,7 +5118,7 @@ if (fieldcut){
                     Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
                     // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
-                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodedVarSet, modelSpec);
+                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema, modelSpec);
                     out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     // Step 4. Creates an instance of the the implemented 
                     // data-analysis-service class 
@@ -5130,6 +5141,11 @@ if (fieldcut){
                 }
 
             }
+
+                resultInfo.put("offlineCitation", citation);
+                resultInfo.put("studyTitle", studyTitle);
+                resultInfo.put("studyNo", studyId.toString());
+                resultInfo.put("studyURL", studyURL);
 
 
             out.println("***** advStatAction(): ends here *****");
@@ -7101,18 +7117,106 @@ if (fieldcut){
     
     
     public Map<String, Map<String, String>> getValueTableForRequestedVariables(List<DataVariable> dvs){
-        Map<String, Map<String, String>> vls = new HashMap<String, Map<String, String>>();
+        Map<String, Map<String, String>> vls = new LinkedHashMap<String, Map<String, String>>();
         for (DataVariable dv : dvs){
             List<VariableCategory> varCat = new ArrayList<VariableCategory>();
             varCat.addAll(dv.getCategories());
             Map<String, String> vl = new HashMap<String, String>();
             for (VariableCategory vc : varCat){
-                vl.put(vc.getValue(), vc.getLabel());
+                if (vc.getLabel() != null){
+                    vl.put(vc.getValue(), vc.getLabel());
+                }
             }
             vls.put("v"+dv.getId(), vl);
         }
         return vls;
     }
+
+    public Map<String, Map<String, String>> getValueTablesOfRecodedVariables(){
+        Map<String, Map<String, String>> vls = new LinkedHashMap<String, Map<String, String>>();
+        List<String> varId = getRecodedVarIdSet();
+        for (int i=0; i< varId.size();i++){
+            Map<String, String> vl = new HashMap<String, String>();
+            // get the outer-list by Id
+            List<Object> rdtbl = (List<Object>) recodeSchema.get(varId.get(i));
+            // loop through inner lists
+            for (int j=0; j< rdtbl.size();j++){
+                List<Object> rw = (List<Object>)rdtbl.get(j);
+                if (rw.get(2) !=null){
+                    vl.put((String)rw.get(1), (String)rw.get(2));
+                }
+            }
+            vls.put(varId.get(i),vl);
+        }
+        return vls;
+    }
+    
+    public Map<String, Map<String, String>> getValueTablesForAllRequestedVariables(){
+        Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
+        Map<String, Map<String, String>> vln = getValueTablesOfRecodedVariables();
+        vls.putAll(vln);
+        return vls;
+    }
+    
+    public List<String> getRecodedVarIdSet() {
+        List<String> vi = new ArrayList<String>();
+        for (int i = 0; i < recodedVarSet.size(); i++) {
+            List<Object> rvs = (List<Object>) recodedVarSet.get(i);
+            vi.add((String) rvs.get(2));
+        }
+        return vi;
+    }    
+    
+    public List<String> getRecodedVarNameSet() {
+        List<String> vn = new ArrayList<String>();
+        for (int i = 0; i < recodedVarSet.size(); i++) {
+            List<Object> rvs = (List<Object>) recodedVarSet.get(i);
+            vn.add((String) rvs.get(0));
+        }
+        return vn;
+    }
+    
+    public List<String> getBaseVarIdSetFromRecodedVarIdSet() {
+        List<String> vi = new ArrayList<String>();
+        for (int i = 0; i < recodedVarSet.size(); i++) {
+            List<Object> rvs = (List<Object>) recodedVarSet.get(i);
+            vi.add( derivedVarToBaseVar.get( (String) rvs.get(2) ) );
+        }
+        return vi;
+    }
+    
+    public List<String> getBaseVarNameSetFromRecodedVarIdSet() {
+        List<String> vn = new ArrayList<String>();
+        for (int i = 0; i < recodedVarSet.size(); i++) {
+            List<Object> rvs = (List<Object>) recodedVarSet.get(i);
+            vn.add( getVariableNamefromId( derivedVarToBaseVar.get( (String) rvs.get(2) ) ) );
+        }
+        return vn;
+    }
+    
+    
+    
+    public List<String> getRecodedVarLabelSet() {
+        List<String> vl = new ArrayList<String>();
+        for (int i = 0; i < recodedVarSet.size(); i++) {
+            List<Object> rvs = (List<Object>) recodedVarSet.get(i);
+            vl.add((String) rvs.get(1));
+        }
+        return vl;
+    }
+    
+    
+    // get variable type (int) from a given row of the dataTable
+    public List<String> getRecodedVariableType() {
+        List<String> vt = new ArrayList<String>();
+        for (int i = 0; i < recodedVarSet.size(); i++) {
+            List<Object> rvs = (List<Object>) recodedVarSet.get(i);
+            vt.add( Integer.toString(getVariableType(  getVariableById((String) rvs.get(2)) ) ) );
+        }
+        return vt;
+    }
+    
+    
     
     // end of this class
 }

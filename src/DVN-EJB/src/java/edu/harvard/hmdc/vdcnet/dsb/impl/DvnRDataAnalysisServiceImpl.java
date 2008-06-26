@@ -165,9 +165,9 @@ public class DvnRDataAnalysisServiceImpl{
             StringBuilder sb = new StringBuilder();
             for (int i = 0 ; i< jvartyp.length; i++){
                 if (i == (jvartyp.length -1)){
-                    sb.append(String.valueOf(i));
+                    sb.append(String.valueOf(jvartyp[i]));
                 } else {
-                    sb.append(String.valueOf(i)+", ");
+                    sb.append(String.valueOf(jvartyp[i])+", ");
                 }
             }
             
@@ -295,7 +295,7 @@ public class DvnRDataAnalysisServiceImpl{
             */
             
             // String[] jvarnmbr = {"v198057","v198059","v198060"};
-            String[] jvarnmbr = sro.getVariableIDs();
+            String[] jvarnmbr = sro.getVariableIds();
             historyEntry.add("varnmbr <-c("+StringUtils.join(jvarnmbr,", ")+")");
             c.assign("varnmbr",new REXPString(jvarnmbr));
             
@@ -577,7 +577,11 @@ public class DvnRDataAnalysisServiceImpl{
             String vdcUtilLibLine = "library(VDCutil)";
 
             c.voidEval("dol<-''");
-            String aol4EDA = "aol<-c(1,1,0)";
+            
+            out.println("aol="+ sro.getEDARequestParameter());
+            String aol4EDA = "aol<-c("+ sro.getEDARequestParameter() +")";
+            
+            out.println("aolLine="+ aol4EDA);
             c.voidEval(aol4EDA);
             
             // create a manifest page for this job request
@@ -603,9 +607,9 @@ public class DvnRDataAnalysisServiceImpl{
             out.println("openHtml="+openHtml);
             c.voidEval(openHtml);
             
-            String StudyTitle ="Title comes here";
+            String StudyTitle = sro.getStudytitle();//"Title comes here";
             String pageHeaderContents = "hdrContents <- \"<h1>Dataverse Analysis</h1><h2>Results</h2><p>Study Title:"+
-            StudyTitle+"</p><blockquote><strong> <a href='javascript:window.history.back();'>Go back to the previous page</a></strong></blockquote><hr />\"";
+            StudyTitle+"</p><hr />\"";
             
             out.println("pageHeaderContents="+pageHeaderContents);
             c.voidEval(pageHeaderContents);
@@ -705,9 +709,9 @@ public class DvnRDataAnalysisServiceImpl{
             out.println("openHtml="+openHtml);
             c.voidEval(openHtml);
             
-            String StudyTitle ="Title comes here";
+            String StudyTitle = sro.getStudytitle();//"Title comes here";
             String pageHeaderContents = "hdrContents <- \"<h1>Dataverse Analysis</h1><h2>Results</h2><p>Study Title:"+
-            StudyTitle+"</p><blockquote><strong> <a href='javascript:window.history.back();'>Go back to the previous page</a></strong></blockquote><hr />\"";
+            StudyTitle+"</p><hr />\"";
             
             out.println("pageHeaderContents="+pageHeaderContents);
             c.voidEval(pageHeaderContents);
@@ -917,7 +921,9 @@ public class DvnRDataAnalysisServiceImpl{
                 "wantSim="        + simOptn       + ","+
                 "wantBinOutput="  + zeligOptns[2] + ","+
                 "setxArgs="       + setxArgs      + ","+
-                "setx2Args="      + setx2Args     + 
+                "setx2Args="      + setx2Args     + ","+
+                "HTMLInitArgs= list(Title='Dataverse Analysis')"+ "," +
+                "HTMLnote= '<em>The following are the results of your requested analysis.</em>'"+
                 ")  } )";
                 
             /*

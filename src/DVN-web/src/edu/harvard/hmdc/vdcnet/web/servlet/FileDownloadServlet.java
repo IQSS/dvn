@@ -529,12 +529,31 @@ public class FileDownloadServlet extends HttpServlet{
 			return;
 		    }
 
+		    Boolean ExternalHTMLpage = false; 
+
 		    try {
 			// recycle the Content-* headers from the incoming HTTP stream:
 
 			for (int i = 0; i < method.getResponseHeaders().length; i++) {
 			    String headerName = method.getResponseHeaders()[i].getName();
 			    if (headerName.startsWith("Content")) {
+
+				// Special treatment case for remote
+				// HTML pages: 
+				// if it looks like HTML, we redirect to 
+				// that page, instead of trying to display it:
+				// (this is for cases like the harvested HGL
+				// documents which contain URLs pointing to 
+				// dynamic content pages, not to static files.
+
+				if ( headerName.equals("Content-Type") && 
+				     method.getResponseHeaders()[i].getValue() != null &&
+				     method.getResponseHeaders()[i].getValue().startsWith("text/html")) {
+				    String remoteFileUrl = file.getFileSystemLocation(); 
+				    createRedirectResponse( res, remoteFileUrl );
+				    method.releaseConnection();
+				    return;
+				}
 				res.setHeader(method.getResponseHeaders()[i].getName(), method.getResponseHeaders()[i].getValue());
 			    }
 			}
@@ -1058,6 +1077,14 @@ public class FileDownloadServlet extends HttpServlet{
         }
     }
 
+    private void createRedirectResponse( HttpServletResponse res, String remoteUrl ) {
+	try {
+	    res.sendRedirect ( remoteUrl ); 
+	} catch (IOException ex) {
+	    ex.printStackTrace();
+	}
+
+    }
 
     private void createErrorResponse403(HttpServletResponse res) {
         createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this file.");

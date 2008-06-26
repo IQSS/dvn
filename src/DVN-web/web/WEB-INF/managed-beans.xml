@@ -267,10 +267,31 @@
         </managed-property>
     </managed-bean>
     <managed-bean>
-        <managed-bean-name>ManageStudyTemplatesPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.ManageStudyTemplatesPage</managed-bean-class>
+        <managed-bean-name>TemplateFormPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.TemplateFormPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>templateId</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.templateId}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>studyId</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.studyId}</value>
+        </managed-property>
     </managed-bean>
+        <managed-bean>
+        <managed-bean-name>DeleteTemplatePage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.DeleteTemplatePage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>templateId</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.templateId}</value>
+        </managed-property>
+    </managed-bean>
+
     <managed-bean>
         <managed-bean-name>MyStudiesPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.MyStudiesPage</managed-bean-class>
@@ -378,6 +399,11 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <!-- **************** Admin  ****************  -->
+    <managed-bean>
+        <managed-bean-name>ManageTemplatesPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.ManageTemplatesPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
     <managed-bean>
         <managed-bean-name>SearchFieldsPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.SearchFieldsPage</managed-bean-class>

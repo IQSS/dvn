@@ -78,6 +78,24 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     @EJB HandlePrefixServiceLocal handlePrefixService;
     HtmlSelectBooleanCheckbox scheduledCheckbox;
     HtmlSelectOneMenu schedulePeriod;
+    HtmlInputText oaiServerInput;
+
+    public HtmlInputText getOaiServerInput() {
+        return oaiServerInput;
+    }
+
+    public void setOaiServerInput(HtmlInputText oaiServerInput) {
+        this.oaiServerInput = oaiServerInput;
+    }
+    boolean missingHarvestFormat;
+
+    public boolean isMissingHarvestFormat() {
+        return missingHarvestFormat;
+    }
+
+    public void setMissingHarvestFormat(boolean missingHarvestFormat) {
+        this.missingHarvestFormat = missingHarvestFormat;
+    }
 
     public HtmlSelectOneMenu getSchedulePeriod() {
         return schedulePeriod;
@@ -154,9 +172,10 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     
     
     
-    public void validateAction(ActionEvent ae) {
+    public String oaiInfoAction() {
         // do nothing, everthing should be done in validateOAIServer
-        System.out.println("in validateAction");
+        validateOAIServer( FacesContext.getCurrentInstance(), oaiServerInput, oaiServerInput.getValue());
+        return "";
     }
     
     public boolean validateOAIServer(FacesContext context,
@@ -221,21 +240,26 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     
     
     public String save() {
-        Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
-        String schedulePeriod=editHarvestSiteService.getHarvestingDataverse().getSchedulePeriod();
-        Integer dayOfWeek = editHarvestSiteService.getHarvestingDataverse().getScheduleDayOfWeek();
-        Integer hourOfDay = editHarvestSiteService.getHarvestingDataverse().getScheduleHourOfDay();
-        if (schedulePeriod!=null && schedulePeriod.equals("notSelected")) {
-            editHarvestSiteService.getHarvestingDataverse().setSchedulePeriod(null);
-        }
-        if  (hourOfDay!=null && hourOfDay.intValue()==-1) {
-             editHarvestSiteService.getHarvestingDataverse().setScheduleHourOfDay(null);
-        }
-        if  (dayOfWeek!=null && dayOfWeek.intValue()==-1) {
-             editHarvestSiteService.getHarvestingDataverse().setScheduleDayOfWeek(null);
-        }        
-        editHarvestSiteService.save(dataverseName,dataverseAlias,userId);
-        success=true;
+     //   if (editHarvestSiteService.getHarvestingDataverse().getHarvestFormatType()==null) {
+     //       this.missingHarvestFormat=true;
+     //       return "";
+     //   } else {
+            Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
+            String schedulePeriod=editHarvestSiteService.getHarvestingDataverse().getSchedulePeriod();
+            Integer dayOfWeek = editHarvestSiteService.getHarvestingDataverse().getScheduleDayOfWeek();
+            Integer hourOfDay = editHarvestSiteService.getHarvestingDataverse().getScheduleHourOfDay();
+            if (schedulePeriod!=null && schedulePeriod.equals("notSelected")) {
+                editHarvestSiteService.getHarvestingDataverse().setSchedulePeriod(null);
+            }
+            if  (hourOfDay!=null && hourOfDay.intValue()==-1) {
+                 editHarvestSiteService.getHarvestingDataverse().setScheduleHourOfDay(null);
+            }
+            if  (dayOfWeek!=null && dayOfWeek.intValue()==-1) {
+                 editHarvestSiteService.getHarvestingDataverse().setScheduleDayOfWeek(null);
+            }        
+            editHarvestSiteService.save(dataverseName,dataverseAlias,userId);
+            success=true;
+    //    }
         return "success";
         
     }

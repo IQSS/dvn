@@ -50,6 +50,9 @@
                                 <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4"  id="recentStudy">
                                     <h:outputText  value="Manage All Studies Uploaded and Released to this Dataverse (starting with most recent)" escape="false"/>
                                 </h:outputLink>
+                                <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/ManageTemplatesPage.jsp?mode=4" >
+                                    <h:outputText  value="Manage Study Templates" escape="false"/>
+                                </h:outputLink>
                                 <h:outputLink id="hyperlink7b" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddCollectionStudiesPage.jsp">
                                     <h:outputText  id="hyperlink3Text2" value="Add Collection by Assigning Studies"/>
                                 </h:outputLink>

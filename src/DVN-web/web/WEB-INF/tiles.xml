@@ -191,11 +191,24 @@
        <put name="pageTitle"   type="string"        value="DVN - Edit Study Template"/>
        <put name="content" type="template"     value="/study/EditStudyTemplatePage.jsp"/>
    </definition>
-   <definition name="/study/ManageStudyTemplatesPage" extends="/main-layout">
+   <definition name="/study/TemplateFormPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - Manage Study Templates"/>
-       <put name="content" type="template"     value="/study/ManageStudyTemplatesPage.jsp"/>
+       <put name="content" type="template"     value="/study/TemplateFormPage.jsp"/>
    </definition>
-   <definition name="/study/MyStudiesPage" extends="/main-layout">
+   <definition name="/admin/ManageTemplatesPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Manage Study Templates"/>
+       <put name="content" type="template"     value="/admin/ManageTemplatesPage.jsp"/>
+   </definition>
+   <definition name="/study/DeleteTemplatePage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Delete Study"/>
+       <put name="content" type="template"     value="/study/DeleteTemplatePage.jsp"/>
+   </definition>
+   <definition name="/study/DeleteTemplateSuccessPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"        value="DVN - Delete Successful"/>
+       <put name="content" type="template"     value="/study/DeleteTemplateSuccessPage.jsp"/>
+   </definition>
+   
+    <definition name="/study/MyStudiesPage" extends="/main-layout">
        <put name="pageTitle"   type="string"        value="DVN - My Studies"/>
        <put name="content" type="template"     value="/study/MyStudiesPage.jsp"/>
    </definition>

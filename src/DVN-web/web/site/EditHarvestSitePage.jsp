@@ -99,7 +99,10 @@
                     <ui:panelLayout styleClass="successMessage" rendered="#{EditHarvestSitePage.success}">
                         <h:outputText value="Update Successful!" />
                     </ui:panelLayout>
-                    <ui:panelGroup block="true" style="padding-left: 20px; padding-right: 30px">
+                     <ui:panelLayout styleClass="successMessage" rendered="#{EditHarvestSitePage.missingHarvestFormat}">
+                        <h:outputText value="Please Select Harvest Format and Set before saving." />
+                    </ui:panelLayout>
+                   <ui:panelGroup block="true" style="padding-left: 20px; padding-right: 30px">
                         <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                         <h:outputText  id="outputText2" styleClass="vdcHelpText" value="A Harvest dataverse gathers studies from an OAI Server (which could be another Dataverse Network). A Harvest dataverse provides most of the same functionality as a regular dataverse with the following differences: 1) You cannot edit a harvested study. 2) You search for the cataloging and variable information (study metadata) locally but you access the files remotely. "/>
                         <h:outputText   styleClass="vdcHelpText" value="Any changes you make to this page will not be saved until you click the Save button. "/>
@@ -136,11 +139,11 @@
                             <h:outputText style="white-space: nowrap; padding-right: 10px; " value="OAI Server"/> 
                         </ui:panelGroup>
                         <ui:panelGroup>
-                            <h:inputText id="dataverseOaiServer" validator="#{EditHarvestSitePage.validateOAIServer}"  value="#{EditHarvestSitePage.harvestingDataverse.oaiServer}"  required="true" requiredMessage="This field is required." size="60">
+                            <h:inputText id="dataverseOaiServer" binding="#{EditHarvestSitePage.oaiServerInput}" validator="#{EditHarvestSitePage.validateOAIServer}"  value="#{EditHarvestSitePage.harvestingDataverse.oaiServer}"  required="true" requiredMessage="This field is required." size="60">
                                 <f:validator validatorId="UrlValidator"/>
                             </h:inputText>  
-                            <h:commandButton  value="Validate" />
-                            <h:message styleClass="errorMessage" for="dataverseOaiServer"/> 
+                            <h:commandButton  value="Get Harvest Sets and Formats" action="#{EditHarvestSitePage.oaiInfoAction}" />
+                            <h:message id="oaiServerMessage" styleClass="errorMessage" for="dataverseOaiServer"/> 
                             
                             <br />
                             <h:outputText styleClass="vdcHelpText" value="Enter OAI server name, e.g., http://dvn.iq.harvard.edu/dvn/OAIHandler."/> 

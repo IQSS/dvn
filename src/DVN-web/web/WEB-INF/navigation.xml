@@ -39,6 +39,13 @@
             <to-view-id>/study/EditStudyPage.jsp</to-view-id>
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>templateForm</from-outcome>
+            <to-view-id>/study/TemplateFormPage.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
      <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
@@ -46,6 +53,13 @@
             <to-view-id>/admin/OptionsPage.jsp</to-view-id>
         </navigation-case>
     </navigation-rule>
+     <navigation-rule>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>manageTemplates</from-outcome>
+            <to-view-id>/admin/ManageTemplatesPage.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>    
      <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
@@ -79,6 +93,20 @@
         <navigation-case>
             <from-outcome>success</from-outcome>
             <to-view-id>/admin/ManageTemplatesPage.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>  
+  <navigation-rule>
+     <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>deleteTemplate</from-outcome>
+            <to-view-id>/study/DeleteTemplatePage.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule> 
+   <navigation-rule>
+        <from-view-id>/study/DeleteTemplatePage.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/study/DeleteTemplateSuccessPage.jsp</to-view-id>
         </navigation-case>
     </navigation-rule>        
     <navigation-rule>

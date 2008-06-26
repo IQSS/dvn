@@ -27,9 +27,7 @@ package edu.harvard.hmdc.vdcnet.web.study;
 
 
 import com.sun.jsfcl.data.DefaultTableDataModel;
-import com.sun.rave.web.ui.component.TabSet;
-import edu.harvard.hmdc.vdcnet.study.EditStudyService;
-import edu.harvard.hmdc.vdcnet.study.Study;
+import edu.harvard.hmdc.vdcnet.study.EditTemplateService;
 import edu.harvard.hmdc.vdcnet.study.StudyAbstract;
 import edu.harvard.hmdc.vdcnet.study.StudyAuthor;
 import edu.harvard.hmdc.vdcnet.study.StudyDistributor;
@@ -58,7 +56,6 @@ import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -73,7 +70,6 @@ import javax.faces.component.html.HtmlInputTextarea;
 import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -88,9 +84,9 @@ import javax.servlet.http.HttpServletRequest;
  * to respond to incoming events.</p>
  */
 
-@EJB(name="editStudy", beanInterface=edu.harvard.hmdc.vdcnet.study.EditStudyService.class)
-public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  {
-    EditStudyService editStudyService;
+@EJB(name="editTemplate", beanInterface=edu.harvard.hmdc.vdcnet.study.EditTemplateService.class)
+public class TemplateFormPage extends VDCBaseBean implements java.io.Serializable  {
+    EditTemplateService editTemplateService;
     @EJB StudyServiceLocal studyService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB VDCServiceLocal vdcService;
@@ -98,37 +94,35 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     /**
      * <p>Construct a new Page bean instance.</p>
      */
-    public EditStudyPage() {
+    public TemplateFormPage() {
         
     }
     
     
-    public void init() {
+   public void init() {
         super.init();
         // set tab if it was it was sent as pamameter
-        if (tab != null) {
-            tabSet1.setSelected(tab);
-        }
-        token = this.getRequestParam("content:editStudyPageView:studyForm:token" );
+       
+        token = this.getRequestParam("content:templateFormPageView:templateForm:token" );
         if ( token!=null) {
             if ( sessionGet(token)!=null) {
-                editStudyService = (EditStudyService) sessionGet(token);
-                study = editStudyService.getStudy();
+                editTemplateService = (EditTemplateService) sessionGet(token);
+                template = editTemplateService.getTemplate();
              
-                setFiles(editStudyService.getCurrentFiles());
+              
             } else {
                 FacesContext context = FacesContext.getCurrentInstance();
-                FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "The Study form you are trying to save contains stale data. Please re-load the study and try again.","");
+                FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "The Template form you are trying to save contains stale data. Please re-load the template and try again.","");
                 context.addMessage(null,errMessage);
            }
         } else {
             
-            // we need to create the token and the editStudyService bean
+            // we need to create the token and the editTemplateService bean
             token=java.util.UUID.randomUUID().toString();
             try {
                 Context ctx = new InitialContext();
-                editStudyService = (EditStudyService) ctx.lookup("java:comp/env/editStudy");
-                sessionPut( token, editStudyService);
+                editTemplateService = (EditTemplateService) ctx.lookup("java:comp/env/editTemplate");
+                sessionPut( token, editTemplateService);
             } catch(NamingException e) {
                 e.printStackTrace();
                 FacesContext context = FacesContext.getCurrentInstance();
@@ -136,34 +130,26 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 context.addMessage(null,errMessage);
                 
             }
-            if (getStudyId() != null) {
-                editStudyService.setStudy(studyId);            
-                study = editStudyService.getStudy();
-                setFiles(editStudyService.getCurrentFiles());
+            if (getTemplateId() != null) {
+                editTemplateService.setTemplate(templateId);            
+                template = editTemplateService.getTemplate();
+              
             } else {
                 Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
-                Long templateId = vdcNetworkService.find().getDefaultTemplate().getId();
-                editStudyService.newStudy(vdcId, getVDCSessionBean().getLoginBean().getUser().getId(), templateId);
-                study = editStudyService.getStudy();
-                studyId = SessionCounter.getNext();
-               
-
-                 study.setStudyId(studyService.generateStudyIdSequence(study.getProtocol(),study.getAuthority()));
-                // prefill date of deposit
-                study.setDateOfDeposit(  new SimpleDateFormat("yyyy-MM-dd").format(study.getCreateTime()) );
-                setFiles(editStudyService.getCurrentFiles());
+                if (studyId!=null) {
+                    editTemplateService.newTemplate(vdcId, studyId);
+                } else {
+                    editTemplateService.newTemplate(vdcId);
+                }
+                template = editTemplateService.getTemplate();
+            //     studyId = SessionCounter.getNext();
             }
-            // Initialize map containing required/recommended settings for all fields
-             initStudyMap();
-             // Add empty first element to subcollections, so the input text fields will be visible
-            initCollections();
-            selectTemplate.setValue(getVDCRequestBean().getCurrentVDC().getDefaultTemplate());
-          
-            
+            // Add empty first element to subcollections, so the input text fields will be visible
+           
         }
-        
-        
-        
+        initStudyMap();
+        initCollections();
+
         
     }
     
@@ -184,117 +170,118 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
     }    
     private void initCollections() {
-        if ( study.getStudyOtherIds()==null || study.getStudyOtherIds().size()==0) {
+        
+        if ( template.getMetadata().getStudyOtherIds()==null || template.getMetadata().getStudyOtherIds().size()==0) {
             StudyOtherId elem = new StudyOtherId();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             List otherIds = new ArrayList();
             otherIds.add(elem);
-            study.setStudyOtherIds(otherIds);
+            template.getMetadata().setStudyOtherIds(otherIds);
         }
-        if ( study.getStudyAuthors()==null || study.getStudyAuthors().size()==0) {
+        if ( template.getMetadata().getStudyAuthors()==null || template.getMetadata().getStudyAuthors().size()==0) {
             List authors = new ArrayList();
             StudyAuthor anAuthor = new StudyAuthor();
-            anAuthor.setMetadata(study.getMetadata());
+            anAuthor.setMetadata(template.getMetadata());
             authors.add(anAuthor);
-            study.setStudyAuthors(authors);
+            template.getMetadata().setStudyAuthors(authors);
         }
         
-        if ( study.getStudyAbstracts()==null || study.getStudyAbstracts().size()==0) {
+        if ( template.getMetadata().getStudyAbstracts()==null || template.getMetadata().getStudyAbstracts().size()==0) {
             List abstracts = new ArrayList();
             StudyAbstract elem = new StudyAbstract();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             abstracts.add(elem);
-            study.setStudyAbstracts(abstracts);
+            template.getMetadata().setStudyAbstracts(abstracts);
         }
         
-        if (study.getStudyDistributors()==null || study.getStudyDistributors().size()==0) {
+        if (template.getMetadata().getStudyDistributors()==null || template.getMetadata().getStudyDistributors().size()==0) {
             List distributors = new ArrayList();
             StudyDistributor elem = new StudyDistributor();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             distributors.add(elem);
-            study.setStudyDistributors(distributors);
+            template.getMetadata().setStudyDistributors(distributors);
         }
-        if (study.getStudyGrants()==null || study.getStudyGrants().size()==0) {
+        if (template.getMetadata().getStudyGrants()==null || template.getMetadata().getStudyGrants().size()==0) {
             List grants = new ArrayList();
             StudyGrant elem = new StudyGrant();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             grants.add(elem);
-            study.setStudyGrants(grants);
+            template.getMetadata().setStudyGrants(grants);
         }
         
-        if (study.getStudyKeywords()==null || study.getStudyKeywords().size()==0 ) {
+        if (template.getMetadata().getStudyKeywords()==null || template.getMetadata().getStudyKeywords().size()==0 ) {
             List keywords = new ArrayList();
             StudyKeyword elem = new StudyKeyword();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             keywords.add(elem);
-            study.setStudyKeywords(keywords);
+            template.getMetadata().setStudyKeywords(keywords);
         }
         
-        if (study.getStudyTopicClasses()==null || study.getStudyTopicClasses().size()==0 ) {
+        if (template.getMetadata().getStudyTopicClasses()==null || template.getMetadata().getStudyTopicClasses().size()==0 ) {
             List topicClasses = new ArrayList();
             StudyTopicClass elem = new StudyTopicClass();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             topicClasses.add(elem);
-            study.setStudyTopicClasses(topicClasses);
+            template.getMetadata().setStudyTopicClasses(topicClasses);
         }
         
-        if (study.getStudyNotes()==null || study.getStudyNotes().size()==0) {
+        if (template.getMetadata().getStudyNotes()==null || template.getMetadata().getStudyNotes().size()==0) {
             List notes = new ArrayList();
             StudyNote elem = new StudyNote();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             notes.add(elem);
-            study.setStudyNotes(notes);
+            template.getMetadata().setStudyNotes(notes);
         }
         
-        if (study.getStudyProducers()==null || study.getStudyProducers().size()==0) {
+        if (template.getMetadata().getStudyProducers()==null || template.getMetadata().getStudyProducers().size()==0) {
             List producers = new ArrayList();
             StudyProducer elem = new StudyProducer();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             producers.add(elem);
-            study.setStudyProducers(producers);
+            template.getMetadata().setStudyProducers(producers);
         }
         
-        if (study.getStudySoftware()==null || study.getStudySoftware().size()==0) {
+        if (template.getMetadata().getStudySoftware()==null || template.getMetadata().getStudySoftware().size()==0) {
             List software = new ArrayList();
             StudySoftware elem = new StudySoftware();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             software.add(elem);
-            study.setStudySoftware(software);
+            template.getMetadata().setStudySoftware(software);
         }
-        if (study.getStudyGeoBoundings()==null || study.getStudyGeoBoundings().size()==0) {
+        if (template.getMetadata().getStudyGeoBoundings()==null || template.getMetadata().getStudyGeoBoundings().size()==0) {
             List boundings = new ArrayList();
             StudyGeoBounding elem = new StudyGeoBounding();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             boundings.add(elem);
-            study.setStudyGeoBoundings(boundings);
+            template.getMetadata().setStudyGeoBoundings(boundings);
         }
-        if (study.getStudyRelMaterials()==null || study.getStudyRelMaterials().size()==0) {
+        if (template.getMetadata().getStudyRelMaterials()==null || template.getMetadata().getStudyRelMaterials().size()==0) {
             List mats = new ArrayList();
             StudyRelMaterial elem = new StudyRelMaterial();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             mats.add(elem);
-            study.setStudyRelMaterials(mats);
+            template.getMetadata().setStudyRelMaterials(mats);
         }
-        if (study.getStudyRelPublications()==null || study.getStudyRelPublications().size()==0) {
+        if (template.getMetadata().getStudyRelPublications()==null || template.getMetadata().getStudyRelPublications().size()==0) {
             List list = new ArrayList();
             StudyRelPublication elem = new StudyRelPublication();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             list.add(elem);
-            study.setStudyRelPublications(list);
+            template.getMetadata().setStudyRelPublications(list);
         }
-        if (study.getStudyRelStudies()==null || study.getStudyRelStudies().size()==0) {
+        if (template.getMetadata().getStudyRelStudies()==null || template.getMetadata().getStudyRelStudies().size()==0) {
             List list = new ArrayList();
             StudyRelStudy elem = new StudyRelStudy();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             list.add(elem);
-            study.setStudyRelStudies(list);
+            template.getMetadata().setStudyRelStudies(list);
         }
-        if (study.getStudyOtherRefs()==null || study.getStudyOtherRefs().size()==0) {
+        if (template.getMetadata().getStudyOtherRefs()==null || template.getMetadata().getStudyOtherRefs().size()==0) {
             List list = new ArrayList();
             StudyOtherRef elem = new StudyOtherRef();
-            elem.setMetadata(study.getMetadata());
+            elem.setMetadata(template.getMetadata());
             list.add(elem);
-            study.setStudyOtherRefs(list);
+            template.getMetadata().setStudyOtherRefs(list);
         }
         
         
@@ -334,75 +321,22 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void destroy() {
     }
     
-    private TabSet tabSet1 = new TabSet();
-    
-    public TabSet getTabSet1() {
-        return tabSet1;
-    }
-    
-    public void setTabSet1(TabSet ts) {
-        this.tabSet1 = ts;
-    }
-    
-    public String tab1_action() {
-        // TODO: Replace with your code
-        
-        return null;
-    }
-    
-    
-    public String tab2_action() {
-        // TODO: Replace with your code
-        
-        return null;
-    }
-    
-    public boolean getShowTemplateList() {
-          return (!getTemplatesMap().isEmpty() && editStudyService.isNewStudy());
-        
-    }
-    
-     public void changeTemplate(ValueChangeEvent ae) {
-        Object value= this.selectTemplate.getValue();
-        if (value!=null ) {
-            Long templateId = Long.parseLong((String)value);
-            editStudyService.changeTemplate(templateId);
-            study = editStudyService.getStudy();
-        }
-     }
-       public String changeTemplateAction() {
-        Object value= this.selectTemplate.getValue();
-        if (value!=null ) {
-            Long templateId = Long.parseLong((String)value);
-            editStudyService.changeTemplate(templateId);
-            study = editStudyService.getStudy();
-        }
-        initCollections();  // Add empty row for entering data in currently empty collections
-        return "";
-     }
-     
+   
+   
     /**
-     * Holds value of property study.
+     * Holds value of property template.getMetadata().
      */
-    private Study study;
-    
-    /**
-     * Getter for property study.
-     * @return Value of property study.
-     */
-    public Study getStudy() {
-        
-        return this.study;
+    private Template template;
+
+    public Template getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(Template template) {
+        this.template = template;
     }
     
-    /**
-     * Setter for property study.
-     * @param study New value of property study.
-     */
-    public void setStudy(Study study) {
-        System.out.println("Set Study is called");
-        this.study = study;
-    }
+   
     
     private DefaultTableDataModel dataTable5Model = new DefaultTableDataModel();
     
@@ -416,15 +350,19 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
     
     
+    private Map studyMap;
     
+    public Map getStudyMap() {
+        return studyMap;
+    }
     
     public void initStudyMap() {
-        editStudyService.setStudyMap(new HashMap());
-        for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
+        studyMap = new HashMap();
+        for (Iterator<TemplateField> it = vdcNetworkService.find().getDefaultTemplate().getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
             StudyMapValue smv = new StudyMapValue();
             smv.setTemplateField(tf);
-            editStudyService.getStudyMap().put(tf.getStudyField().getName(),smv);
+            studyMap.put(tf.getStudyField().getName(),smv);
         }
         
     }
@@ -433,15 +371,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     
-    public Map getStudyMap() {
-        return editStudyService.getStudyMap();
-        
-    }
-    public boolean isTitleRequired() {
-        TemplateField tf = (TemplateField)( editStudyService.getStudyMap().get("title"));
-        return tf.isRequired();
-        
-    }
+
+   
     public void addRow(ActionEvent ae) {
         
         //      UIComponent dataTable = ae.getComponent().getParent().getParent().getParent();
@@ -449,64 +380,64 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
         if (dataTable.equals(dataTableOtherIds)) {
             StudyOtherId newElem = new StudyOtherId();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyOtherIds().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyOtherIds().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableAuthors)) {
             StudyAuthor newElem = new StudyAuthor();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyAuthors().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyAuthors().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableAbstracts)) {
             StudyAbstract newElem = new StudyAbstract();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyAbstracts().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyAbstracts().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableDistributors)) {
             StudyDistributor newElem = new StudyDistributor();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyDistributors().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyDistributors().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableGrants)) {
             StudyGrant newElem = new StudyGrant();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyGrants().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyGrants().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableKeywords)) {
             StudyKeyword newElem = new StudyKeyword();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyKeywords().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyKeywords().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableNotes)) {
             StudyNote newElem = new StudyNote();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyNotes().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyNotes().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableProducers)) {
             StudyProducer newElem = new StudyProducer();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyProducers().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyProducers().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableSoftware)) {
             StudySoftware newElem = new StudySoftware();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudySoftware().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudySoftware().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(dataTableTopicClass)) {
             StudyTopicClass newElem = new StudyTopicClass();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyTopicClasses().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyTopicClasses().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(this.dataTableGeoBoundings)) {
             StudyGeoBounding newElem = new StudyGeoBounding();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyGeoBoundings().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyGeoBoundings().add(dataTable.getRowIndex()+1,newElem);
         }  else  if (dataTable.equals(this.dataTableRelPublications)) {
             StudyRelPublication newElem = new StudyRelPublication();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyRelPublications().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyRelPublications().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(this.dataTableRelMaterials)) {
             StudyRelMaterial newElem = new StudyRelMaterial();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyRelMaterials().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyRelMaterials().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(this.dataTableRelStudies)) {
             StudyRelStudy newElem = new StudyRelStudy();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyRelStudies().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyRelStudies().add(dataTable.getRowIndex()+1,newElem);
         } else  if (dataTable.equals(this.dataTableOtherReferences)) {
             StudyOtherRef newElem = new StudyOtherRef();
-            newElem.setMetadata(study.getMetadata());
-            study.getStudyOtherRefs().add(dataTable.getRowIndex()+1,newElem);
+            newElem.setMetadata(template.getMetadata());
+            template.getMetadata().getStudyOtherRefs().add(dataTable.getRowIndex()+1,newElem);
         }
         
         
@@ -519,7 +450,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         HtmlDataTable dataTable = (HtmlDataTable)ae.getComponent().getParent().getParent();
         if (dataTable.getRowCount()>1) {
             List data = (List)dataTable.getValue();
-            editStudyService.removeCollectionElement(data,dataTable.getRowData());
+            editTemplateService.removeCollectionElement(data,dataTable.getRowData());
         }
     }
     
@@ -555,113 +486,113 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         // Remove empty collection rows
         
         // StudyAuthor
-        for (Iterator<StudyAuthor> it = study.getStudyAuthors().iterator(); it.hasNext();) {
+        for (Iterator<StudyAuthor> it = template.getMetadata().getStudyAuthors().iterator(); it.hasNext();) {
             StudyAuthor elem =  it.next();
             if (elem.isEmpty()) {
-                  editStudyService.removeCollectionElement(it,elem);
+                  editTemplateService.removeCollectionElement(it,elem);
             }
         }
         
         // StudyAbstract
-        for (Iterator<StudyAbstract> it = study.getStudyAbstracts().iterator(); it.hasNext();) {
+        for (Iterator<StudyAbstract> it = template.getMetadata().getStudyAbstracts().iterator(); it.hasNext();) {
             StudyAbstract elem =  it.next();
             if (elem.isEmpty()) {
-                   editStudyService.removeCollectionElement(it,elem);
+                   editTemplateService.removeCollectionElement(it,elem);
             }
         }
         
         // StudyDistributor
-        for (Iterator<StudyDistributor> it = study.getStudyDistributors().iterator(); it.hasNext();) {
+        for (Iterator<StudyDistributor> it = template.getMetadata().getStudyDistributors().iterator(); it.hasNext();) {
             StudyDistributor elem =  it.next();
             if (elem.isEmpty()) {
-                   editStudyService.removeCollectionElement(it,elem);
+                   editTemplateService.removeCollectionElement(it,elem);
            }
         }
         
         // StudyGrant
-        for (Iterator<StudyGrant> it = study.getStudyGrants().iterator(); it.hasNext();) {
+        for (Iterator<StudyGrant> it = template.getMetadata().getStudyGrants().iterator(); it.hasNext();) {
             StudyGrant elem =  it.next();
             if (elem.isEmpty()) {
-                    editStudyService.removeCollectionElement(it,elem);
+                    editTemplateService.removeCollectionElement(it,elem);
            }
         }
         // StudyGeobounding
-        for (Iterator<StudyGeoBounding> it = study.getStudyGeoBoundings().iterator(); it.hasNext();) {
+        for (Iterator<StudyGeoBounding> it = template.getMetadata().getStudyGeoBoundings().iterator(); it.hasNext();) {
             StudyGeoBounding elem =  it.next();
             if (elem.isEmpty()) {
-                  editStudyService.removeCollectionElement(it,elem);
+                  editTemplateService.removeCollectionElement(it,elem);
             }
         }
         // StudyKeyword
-        for (Iterator<StudyKeyword> it = study.getStudyKeywords().iterator(); it.hasNext();) {
+        for (Iterator<StudyKeyword> it = template.getMetadata().getStudyKeywords().iterator(); it.hasNext();) {
             StudyKeyword elem =  it.next();
             if (elem.isEmpty()) {
-                   editStudyService.removeCollectionElement(it,elem);
+                   editTemplateService.removeCollectionElement(it,elem);
             }
         }
         // StudyNote
-        for (Iterator<StudyNote> it = study.getStudyNotes().iterator(); it.hasNext();) {
+        for (Iterator<StudyNote> it = template.getMetadata().getStudyNotes().iterator(); it.hasNext();) {
             StudyNote elem =  it.next();
             if (elem.isEmpty()) {
-                  editStudyService.removeCollectionElement(it,elem);
+                  editTemplateService.removeCollectionElement(it,elem);
             }
         }
         // StudyOtherId
-        for (Iterator<StudyOtherId> it = study.getStudyOtherIds().iterator(); it.hasNext();) {
+        for (Iterator<StudyOtherId> it = template.getMetadata().getStudyOtherIds().iterator(); it.hasNext();) {
             StudyOtherId elem =  it.next();
             if (elem.isEmpty()) {
-                  editStudyService.removeCollectionElement(it,elem);
+                  editTemplateService.removeCollectionElement(it,elem);
             }
         }
         // StudyProducer
-        for (Iterator<StudyProducer> it = study.getStudyProducers().iterator(); it.hasNext();) {
+        for (Iterator<StudyProducer> it = template.getMetadata().getStudyProducers().iterator(); it.hasNext();) {
             StudyProducer elem =  it.next();
             if ( elem.isEmpty()) {
-                  editStudyService.removeCollectionElement(it,elem);
+                  editTemplateService.removeCollectionElement(it,elem);
             }
         }
         
         // StudySoftware
-        for (Iterator<StudySoftware> it = study.getStudySoftware().iterator(); it.hasNext();) {
+        for (Iterator<StudySoftware> it = template.getMetadata().getStudySoftware().iterator(); it.hasNext();) {
             StudySoftware elem =  it.next();
             if (elem.isEmpty()) {
-                   editStudyService.removeCollectionElement(it,elem);
+                   editTemplateService.removeCollectionElement(it,elem);
            }
         }
         
         // StudyTopicClass
-        for (Iterator<StudyTopicClass> it = study.getStudyTopicClasses().iterator(); it.hasNext();) {
+        for (Iterator<StudyTopicClass> it = template.getMetadata().getStudyTopicClasses().iterator(); it.hasNext();) {
             StudyTopicClass elem =  it.next();
             if (elem.isEmpty()) {
-                   editStudyService.removeCollectionElement(it,elem);
+                   editTemplateService.removeCollectionElement(it,elem);
            }
         }
         // StudyRelMaterial
-        for (Iterator<StudyRelMaterial> it = study.getStudyRelMaterials().iterator(); it.hasNext();) {
+        for (Iterator<StudyRelMaterial> it = template.getMetadata().getStudyRelMaterials().iterator(); it.hasNext();) {
             StudyRelMaterial elem =  it.next();
             if (elem.isEmpty()) {
-                   editStudyService.removeCollectionElement(it,elem);
+                   editTemplateService.removeCollectionElement(it,elem);
            }
         }
         // StudyRelPublication
-        for (Iterator<StudyRelPublication> it = study.getStudyRelPublications().iterator(); it.hasNext();) {
+        for (Iterator<StudyRelPublication> it = template.getMetadata().getStudyRelPublications().iterator(); it.hasNext();) {
             StudyRelPublication elem =  it.next();
             if (elem.isEmpty()) {
-                   editStudyService.removeCollectionElement(it,elem);
+                   editTemplateService.removeCollectionElement(it,elem);
            }
         }
         // StudyRelStudy
-        for (Iterator<StudyRelStudy> it = study.getStudyRelStudies().iterator(); it.hasNext();) {
+        for (Iterator<StudyRelStudy> it = template.getMetadata().getStudyRelStudies().iterator(); it.hasNext();) {
             StudyRelStudy elem =  it.next();
             if (elem.isEmpty()) {
-                   editStudyService.removeCollectionElement(it,elem);
+                   editTemplateService.removeCollectionElement(it,elem);
            }
         }
         // StudyOtherRef
-        for (Iterator<StudyOtherRef> it = study.getStudyOtherRefs().iterator(); it.hasNext();) {
+        for (Iterator<StudyOtherRef> it = template.getMetadata().getStudyOtherRefs().iterator(); it.hasNext();) {
             StudyOtherRef elem =  it.next();
             if (elem.isEmpty()) {
-                   editStudyService.removeCollectionElement(it,elem);
+                   editTemplateService.removeCollectionElement(it,elem);
            }
         }
         
@@ -673,13 +604,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
     public String cancel() {
         String forwardPage="viewStudy";
-        if (study.getId()==null) {
+        if (template.getMetadata().getId()==null) {
             forwardPage="myOptions";
         }
-        editStudyService.cancel();
+        editTemplateService.cancel();
         this.sessionRemove(token);
-        getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setSelectedTab(tabSet1.getSelected());
+        getVDCRequestBean().setStudyId(template.getMetadata().getId());
         getVDCSessionBean().setStudyService(null);
         
         return  forwardPage;
@@ -1092,19 +1022,31 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
   
    
    
-  
-    
- 
-    
     private Long studyId;
-    
+
     public Long getStudyId() {
         return studyId;
     }
-    
+
     public void setStudyId(Long studyId) {
         this.studyId = studyId;
     }
+    
+    
+    
+ 
+    
+    private Long templateId;
+
+    public Long getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(Long templateId) {
+        this.templateId = templateId;
+    }
+    
+ 
 
     private String token;
 
@@ -1126,59 +1068,27 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         this.files = files;
     }
     
-    
+    public String addTemplateAction() {
+        return "templateForm";
+    }
     public String save() {
-        if (this.getStudy()==null) {
+        if (this.getTemplate()==null) {
             return "home";
         }
-        if (StringUtil.isEmpty(study.getTitle())) {
-            FacesMessage message = new FacesMessage("This field is required.");
-            FacesContext context= FacesContext.getCurrentInstance();
-            context.addMessage(inputTitle.getClientId(context), message);
-            return "";
-
-        }
+      
         removeEmptyRows();
-        if (!StringUtil.isEmpty(study.getReplicationFor())  ) {
-            if (!study.getTitle().startsWith("Replication data for:")) {
-                study.setTitle("Replication data for: "+study.getTitle());
-            }
-        }
-        
-        editStudyService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
        
-        getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setSelectedTab(tabSet1.getSelected());
+        
+        editTemplateService.save();
+       
+      
         getVDCSessionBean().setStudyService(null);
         this.sessionRemove(token);
-        return "viewStudy";
+        return "manageTemplates";
     }
     
     
     
-    
-    
-    private String tab;
-    
-    public String getTab() {
-        return tab;
-    }
-    
-    public void setTab(String tab) {
-        if ( tab == null || tab.equals("files") || tab.equals("catalog") ) {
-            this.tab = tab;
-        }
-    }
-    
-    
-    public List getTemplateFileCategories() {
-        List tfc = new ArrayList();
-        Iterator iter = study.getTemplate().getTemplateFileCategories().iterator();
-        while (iter.hasNext()) {
-            tfc.add( new SelectItem( ((TemplateFileCategory) iter.next()).getName() ) );
-        }
-        return tfc;
-    }
     
     
     
@@ -1515,90 +1425,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
     }
       
-  
-    public void validateStudyId(FacesContext context,
-            UIComponent toValidate,
-            Object value) {
-        boolean valid=true;
-        
-        
-        
-        String studyId = (String)value;
-        FacesMessage message=null;
-        if (!studyService.isUniqueStudyId(studyId, study.getProtocol(),study.getAuthority())) {
-            valid=false;
-            message = new FacesMessage("Study ID is already used in this dataverse.");
-        }
-        if (valid) {
-            if (!studyService.isValidStudyIdString(studyId)) {
-                valid = false;
-                message = new FacesMessage("Study ID can only contain characters a-z, A-Z, 0-9, dash or underscore (no spaces allowed)");
-            }
-        }
-        
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);           
-            context.addMessage(toValidate.getClientId(context), message);
-        }
-    }
-    
-    public void validateFileName(FacesContext context,
-            UIComponent toValidate,
-            Object value) {
-        String fileName = (String) value;
-        String errorMessage = null;
-        
-        // check invalid characters
-        if (    fileName.contains("\\") ||
-                fileName.contains("/") ||
-                fileName.contains(":") ||
-                fileName.contains("*") ||
-                fileName.contains("?") ||
-                fileName.contains("\"") ||
-                fileName.contains("<") ||
-                fileName.contains(">") ||
-                fileName.contains("|") ||
-                fileName.contains(";") ||
-                fileName.contains("#")) {
-            errorMessage = "cannot contain any of the following characters: \\ / : * ? \" < > | ; #";
-        }
-        
-        
-        // now check unique filename against other file names
-        Iterator iter = getValidationFileNames().iterator();
-        while (iter.hasNext()) {
-            
-            if ( fileName.equals( (String) iter.next() ) ) {
-                errorMessage = "must be unique.";
-                break;
-            }
-            
-        }
-        
-        
-        // now add this name to the validation list
-        getValidationFileNames().add(fileName);
-        
-        if (errorMessage != null) {
-            ((UIInput)toValidate).setValid(false);
-            
-            FacesMessage message = new FacesMessage("Invalid File Name - " + errorMessage);
-            context.addMessage(toValidate.getClientId(context), message);
-        }
-        
-    }
-    
- 
-    
-    HtmlSelectOneMenu selectTemplate;
-
-    public HtmlSelectOneMenu getSelectTemplate() {
-        return selectTemplate;
-    }
-
-    public void setSelectTemplate(HtmlSelectOneMenu selectTemplate) {
-        this.selectTemplate = selectTemplate;
-    }
     
     
     /**
@@ -2102,21 +1928,21 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
 
     /**
-     * Holds value of property inputRelStudy.
+     * Holds value of property inputReltemplate.getMetadata().
      */
     private HtmlInputTextarea inputRelStudy;
 
     /**
-     * Getter for property inputRelStudy.
-     * @return Value of property inputRelStudy.
+     * Getter for property inputReltemplate.getMetadata().
+     * @return Value of property inputReltemplate.getMetadata().
      */
     public HtmlInputTextarea getInputRelStudy() {
         return this.inputRelStudy;
     }
 
     /**
-     * Setter for property inputRelStudy.
-     * @param inputRelStudy New value of property inputRelStudy.
+     * Setter for property inputReltemplate.getMetadata().
+     * @param inputRelStudy New value of property inputReltemplate.getMetadata().
      */
     public void setInputRelStudy(HtmlInputTextarea inputRelStudy) {
         this.inputRelStudy = inputRelStudy;
@@ -2666,6 +2492,14 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
      */
     public void setInputSouthLatitude(HtmlInputText inputSouthLatitude) {
         this.inputSouthLatitude = inputSouthLatitude;
+    }
+
+    /**
+     * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
+     * This method is automatically generated, so any user-specified code inserted
+     * here is subject to being replaced.</p>
+     */
+    private void _init() {
     }
     
     

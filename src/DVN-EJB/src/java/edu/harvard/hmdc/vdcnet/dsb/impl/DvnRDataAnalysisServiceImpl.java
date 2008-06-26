@@ -436,7 +436,8 @@ public class DvnRDataAnalysisServiceImpl{
             }
             
             // add the variable list
-            result.put("variableList",StringUtils.join(jvnamesRaw, ","));
+            result.put("variableList", joinNelementsPerLine(jvnamesRaw, 5));
+            //result.put("variableList",StringUtils.join(jvnamesRaw, ","));
 
             // calculate the file-leve UNF
             
@@ -1117,4 +1118,43 @@ public class DvnRDataAnalysisServiceImpl{
         return zlgcnfg;
     }
 
+    public String joinNelementsPerLine(String[] vn, int divisor){
+        boolean debug = false;
+        String vnl = null;
+        if (vn.length < divisor){
+            vnl = StringUtils.join(vn, ", ");
+        } else {
+            StringBuilder sb = new StringBuilder();
+            
+            int iter =  vn.length / divisor;
+            int lastN = vn.length % divisor;
+            if (lastN != 0){
+                iter++;
+            }
+            for (int i= 0; i<iter; i++){
+                int terminalN = divisor;
+                if ((i == (iter-1))  && (lastN != 0)){
+                    terminalN = lastN;
+                }                
+                for (int j = 0; j< terminalN; j++){
+                    if ( (divisor*(iter-1) +j +1) == vn.length){ 
+                        sb.append(vn[j + i*divisor]);
+                    } else {
+                        
+                        sb.append(vn[j + i*divisor] + ", ");
+                    }
+                }
+                if (i < (iter-1)){
+                    sb.append(",\n");
+                } else {
+                    sb.append("\n");
+                }
+            }
+            vnl = sb.toString();
+            if (debug){
+                out.println(vnl);
+            }
+        }
+        return vnl;
+    }    
 }

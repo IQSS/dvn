@@ -28,7 +28,7 @@ public class DVNAnalyzer extends Analyzer {
             setPreviousTokenStream(streams);
             streams.tokenStream = new DVNTokenizer(reader);
             streams.filteredTokenStream = new LowerCaseFilter(streams.tokenStream);
-            streams.filteredTokenStream = new PorterStemFilter(streams.tokenStream);
+            streams.filteredTokenStream = new PorterStemFilter(streams.filteredTokenStream);
         } else {
             streams.tokenStream.reset(reader);
         }

@@ -157,7 +157,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
              initStudyMap();
              // Add empty first element to subcollections, so the input text fields will be visible
             initCollections();
-            selectTemplate.setValue(getVDCRequestBean().getCurrentVDC().getDefaultTemplate());
+            selectTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
           
             
         }
@@ -372,9 +372,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
      }
        public String changeTemplateAction() {
         Object value= this.selectTemplate.getValue();
-        if (value!=null ) {
-            Long templateId = Long.parseLong((String)value);
-            editStudyService.changeTemplate(templateId);
+        if (value!=null ) {           
+            editStudyService.changeTemplate((Long)value);
             study = editStudyService.getStudy();
         }
         initCollections();  // Add empty row for entering data in currently empty collections
@@ -1588,7 +1587,16 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
     }
     
- 
+    private Long selectTemplateId;
+
+    public Long getSelectTemplateId() {
+        return selectTemplateId;
+    }
+
+    public void setSelectTemplateId(Long selectTemplateId) {
+        this.selectTemplateId = selectTemplateId;
+    }
+    
     
     HtmlSelectOneMenu selectTemplate;
 

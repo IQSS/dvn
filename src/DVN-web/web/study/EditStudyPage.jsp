@@ -200,7 +200,7 @@
                                 <h:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%" style="margin-bottom: 5px"> 
                                     <ui:panelGroup block="true" id="groupPanel9b" >
                                         <h:outputText  value="Select Study Template: " rendered="#{EditStudyPage.showTemplateList}" />
-                                        <h:selectOneMenu  binding="#{EditStudyPage.selectTemplate}" rendered="#{EditStudyPage.showTemplateList}"  >
+                                        <h:selectOneMenu value="#{EditStudyPage.selectTemplateId}"  binding="#{EditStudyPage.selectTemplate}" rendered="#{EditStudyPage.showTemplateList}"  >
                                               <f:selectItems  value="#{EditStudyPage.templatesMap}"/>
                                         </h:selectOneMenu>                                         
                                         <h:commandButton  value="Refresh Form" action="#{EditStudyPage.changeTemplateAction}" rendered="#{EditStudyPage.showTemplateList}"/>
@@ -228,9 +228,9 @@
                                     <h:outputText id="outputText26" value="Citation Information"/>      
                                 </ui:panelGroup>                                    
                                 
-                                <h:panelGrid cellpadding="0" cellspacing="0" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2" width="100%">
+                                <!--h:panelGrid cellpadding="0" cellspacing="0" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2" width="100%">
                                 
-                                    <!-- TITLE -->
+                                     TITLE 
                                     
                                     <ui:panelGroup block="true" id="groupPanel37" styleClass="vdcEditStudyField">                                              
                                         <dvn:inlinehelp helpMessage="#{editstudybundle.titleHelp}" linkText="#{editstudybundle.titleLabel}" heading="#{editstudybundle.titleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>                                            
@@ -255,7 +255,7 @@
                                         <h:inputText id="input_subtitle" size="90" value="#{EditStudyPage.study.subTitle}" required="#{EditStudyPage.studyMap[sfc.subTitle].required}"/>                                                                 
                                         <h:message styleClass="errorMessage" for="input_subtitle"/> 
                                     </ui:panelGroup> 
-                                </h:panelGrid>
+                                </h:panelGrid-->
                                 
                                 <!-- STUDY ID-->
                                 
@@ -278,7 +278,7 @@
                                 
                                 <!-- OTHER IDS -->
                                 
-                                <h:dataTable rowClasses="#{EditStudyPage.otherIdLevel}" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                <!--h:dataTable rowClasses="#{EditStudyPage.otherIdLevel}" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
                                     <h:column>                                  
                                         <h:dataTable  cellpadding="0" cellspacing="0" 
                                                       columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -321,12 +321,12 @@
                                             </h:column>
                                         </h:dataTable>
                                     </h:column>
-                                </h:dataTable>                                
+                                </h:dataTable-->                                
                                 
                                 <!-- Authors -->
                                 
                                 <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                                <h:dataTable rowClasses="#{EditStudyPage.authorInputLevel}" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                <!--h:dataTable rowClasses="#{EditStudyPage.authorInputLevel}" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
                                     <h:column>                                          
                                         <h:dataTable cellpadding="0" cellspacing="0"
                                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -385,11 +385,11 @@
                                             </h:column>               
                                         </h:dataTable>
                                     </h:column>
-                                </h:dataTable>
+                                </h:dataTable-->
                                 
                                 <!--Producers-->   
                                 <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                                <h:dataTable rowClasses="#{EditStudyPage.producerInputLevel}" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                <!--h:dataTable rowClasses="#{EditStudyPage.producerInputLevel}" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
                                     <h:column>                                            
                                         <h:dataTable cellpadding="0" cellspacing="0"
                                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -479,7 +479,7 @@
                                             </h:column>
                                         </h:dataTable>
                                     </h:column>
-                                </h:dataTable>
+                                </h:dataTable-->
                                 
                                 <h:panelGrid cellpadding="0" cellspacing="0"  styleClass="#{EditStudyPage.studyMap[sfc.productionDate].templateField.fieldInputLevel.name}"
                                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2"  width="100%" >
@@ -2096,7 +2096,7 @@
                                             </h:column>
                                             <h:column>
                                                 <ui:panelGroup block="true" >
-                                                    <ui:panelGroup styleClass="#{EditStudyPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevel.name}">
+                                                    <!--ui:panelGroup styleClass="#{EditStudyPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].recommended}"/>
@@ -2109,8 +2109,8 @@
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_notesInformationType"/>   
                                                         <br/>
-                                                    </ui:panelGroup>
-                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.notesInformationSubject].templateField.fieldInputLevel.name}"  >
+                                                    </ui:panelGroup-->
+                                                    <!--ui:panelGroup styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.notesInformationSubject].templateField.fieldInputLevel.name}"  >
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.notesSubjectHelp}" linkText="#{editstudybundle.notesSubjectLabel}" heading="#{editstudybundle.notesSubjectHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationSubject].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationSubject].recommended}"/>
@@ -2126,8 +2126,8 @@
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_notesInformationSubject"  />
                                                         <f:verbatim><br/></f:verbatim>
-                                                    </ui:panelGroup>                                                   
-                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.notesText].templateField.fieldInputLevel.name} " >
+                                                    </ui:panelGroup-->                                                   
+                                                    <!--ui:panelGroup styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.notesText].templateField.fieldInputLevel.name} " >
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.notesTextHelp}" linkText="#{editstudybundle.notesTextLabel}" heading="#{editstudybundle.notesTextHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesText].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesText].recommended}"/>
@@ -2143,7 +2143,7 @@
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_notesText"/>
                                                         <f:verbatim><br/></f:verbatim>
-                                                    </ui:panelGroup>
+                                                    </ui:panelGroup-->
                                                     
                                                 </ui:panelGroup>
                                             </h:column> 

@@ -788,17 +788,17 @@ public class FileDownloadServlet extends HttpServlet{
 				dbContentType = "image/png";
 			    }
 			} else { 
+			    inFile = new File(file.getFileSystemLocation());
+
 			    if ( downloadOriginalFormat != null ) {
 				inFile = new File ( inFile.getParent(), "_" + file.getFileSystemName()); 
 			    } else { 
-				inFile = new File(file.getFileSystemLocation());  
-			    
 				if ( dbContentType != null && dbContentType.equals ("text/tab-separated-values") && file.isSubsettable() && noVarHeader == null ) {
 				    List datavariables = file.getDataTable().getDataVariables();
 				    varHeaderLine = generateVariableHeader ( datavariables );
 				}
 			    }
-			} 
+			}
 
 			if ( dbFileName != null ) {
 			    if ( dbContentType != null ) {

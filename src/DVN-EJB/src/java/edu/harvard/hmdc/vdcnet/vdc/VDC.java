@@ -923,5 +923,125 @@ public class VDC implements java.io.Serializable  {
         return true;
     }       
     
+        /**
+     * Holds value of property allowedFileGroups.
+     */
+    @ManyToMany(cascade={CascadeType.MERGE, CascadeType.PERSIST })
+    @JoinTable(name="vdc_fileusergroup",
+            joinColumns=@JoinColumn(name="vdc_id"),
+            inverseJoinColumns=@JoinColumn(name="allowedfilegroups_id"))
+    private Collection<UserGroup> allowedFileGroups;
+    
+    /**
+     * Getter for property allowedGroups.
+     * @return Value of property allowedGroups.
+     */
+    public Collection<UserGroup> getAllowedFileGroups() {
+        return this.allowedFileGroups;
+    }
+    
+    /**
+     * Setter for property allowedGroups.
+     * @param allowedGroups New value of property allowedGroups.
+     */
+    public void setAllowedFileGroups(Collection<UserGroup> allowedFileGroups) {
+        this.allowedFileGroups = allowedFileGroups;
+    }
+    
+    
+   /**
+     * Holds value of property allowedFileUsers.
+     */
+    @ManyToMany(cascade={ CascadeType.MERGE, CascadeType.PERSIST })
+    private Collection<VDCUser> allowedFileUsers;
+    
+    /**
+     * Getter for property allowedFileUsers.
+     * @return Value of property allowedGroups.
+     */
+    public Collection<VDCUser> getAllowedFileUsers() {
+        return this.allowedFileUsers;
+    }
+    
+    /**
+     * Setter for property allowedFileUsers.
+     * @param allowedGroups New value of property allowedGroups.
+     */
+    public void setAllowedFileUsers(Collection<VDCUser> allowedFileUsers) {
+        this.allowedFileUsers = allowedFileUsers;
+    }
+    
+    public boolean userInAllowedFileGroups(VDCUser user) {
+        boolean foundUser=false;
+        for (Iterator it = allowedFileGroups.iterator(); it.hasNext();) {
+            UserGroup elem = (UserGroup) it.next();
+            if (elem.getUsers().contains(user)) {
+                foundUser=true;
+                break;
+            }
+        }
+        return foundUser;
+    }
+    
+       public boolean areFilesRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
+        if (this.filesRestricted) {
+            if (user!=null && user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
+                return false;
+            }
+            if (!allowedFileUsers.contains(user) ) {
+                boolean foundUserInGroup=false;
+                for (Iterator it = allowedFileGroups.iterator(); it.hasNext();) {
+                    UserGroup elem = (UserGroup) it.next();
+                    if (elem.equals(ipUserGroup)) {
+                        foundUserInGroup=true;
+                        break;
+                    }
+                    if (elem.getUsers().contains(user)) {
+                        foundUserInGroup=true;
+                        break;
+                    }
+                }
+                if (!foundUserInGroup) {
+                    return true;
+                }
+                     
+            }
+        }
+        return false;
+    }
+    /**
+     * Holds value of property restricted.
+     * If restricted = true, then only allowedGroups and allowedUsers can view
+     * the VDC.  If false, then everyone can (it is public).
+     */
+    private boolean filesRestricted;
+    
+    /**
+     * Getter for property restricted.
+     * @return Value of property restricted.
+     */
+    public boolean isFilesRestricted() {
+        return this.filesRestricted;
+    }
+    
+    /**
+     * Setter for property restricted.
+     * @param restricted New value of property restricted.
+     */
+    public void setFilesRestricted(boolean filesRestricted) {
+        this.filesRestricted = filesRestricted;
+    }
+
+    private boolean subsetRestricted;
+
+    public boolean isSubsetRestricted() {
+        return subsetRestricted;
+    }
+
+    public void setSubsetRestricted(boolean subsetRestricted) {
+        this.subsetRestricted = subsetRestricted;
+    }
+    
+    
     
 }

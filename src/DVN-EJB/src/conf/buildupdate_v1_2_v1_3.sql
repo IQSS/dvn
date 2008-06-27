@@ -531,4 +531,40 @@ ALTER TABLE study ALTER COLUMN lastindextime SET STORAGE PLAIN;
 ALTER TABLE datavariable ADD COLUMN formatcategory character varying(255);
 ALTER TABLE datavariable ALTER COLUMN formatcategory SET STORAGE EXTENDED;
 
+CREATE TABLE vdc_fileusergroup
+(
+  vdc_id int8 NOT NULL,
+  allowedfilegroups_id int8 NOT NULL,
+  CONSTRAINT vdc_fileusergroup_pkey PRIMARY KEY (vdc_id, allowedfilegroups_id),
+  CONSTRAINT fk_vdc_fileusergroup_allowedfilegroups_id FOREIGN KEY (allowedfilegroups_id)
+      REFERENCES usergroup (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_vdc_fileusergroup_vdc_id FOREIGN KEY (vdc_id)
+      REFERENCES vdc (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITHOUT OIDS;
+ALTER TABLE vdc_fileusergroup OWNER TO "dvnApp";
+
+CREATE TABLE vdc_vdcuser
+(
+  vdc_id int8 NOT NULL,
+  allowedfileusers_id int8 NOT NULL,
+  CONSTRAINT vdc_vdcuser_pkey PRIMARY KEY (vdc_id, allowedfileusers_id),
+  CONSTRAINT fk_vdc_vdcuser_allowedfileusers_id FOREIGN KEY (allowedfileusers_id)
+      REFERENCES vdcuser (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_vdc_vdcuser_vdc_id FOREIGN KEY (vdc_id)
+      REFERENCES vdc (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITHOUT OIDS;
+ALTER TABLE vdc_vdcuser OWNER TO "dvnApp";
+
+ALTER TABLE vdc ADD COLUMN filesrestricted bool;
+ALTER TABLE vdc ALTER COLUMN filesrestricted SET STORAGE PLAIN;
+
+ALTER TABLE vdc ADD COLUMN subsetrestricted bool;
+ALTER TABLE vdc ALTER COLUMN subsetrestricted SET STORAGE PLAIN;
+
 commit;

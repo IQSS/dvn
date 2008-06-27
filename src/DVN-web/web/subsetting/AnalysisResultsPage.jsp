@@ -50,7 +50,7 @@
                     <h:panelGroup id="pgDwnld" binding="#{AnalysisResultsPage.pgDwnld}">
                         <span class="dvAnalysisHeader">Download Subset</span>
                         <div class="dvAnalysisResults">
-                            Download instrustions: <h:outputLink value="#{AnalysisResultsPage.resultURLdwnld}" id="resultURLdwnld"><f:verbatim>Right-click this link and select, 'Save Link As...'</f:verbatim></h:outputLink> to download the requested subset file.
+                            Download instructions: <h:outputLink value="#{AnalysisResultsPage.resultURLdwnld}" id="resultURLdwnld"><f:verbatim>Right-click this link and select, 'Save Link As...'</f:verbatim></h:outputLink> to download the requested subset file.
                         </div>
                     </h:panelGroup>
                     

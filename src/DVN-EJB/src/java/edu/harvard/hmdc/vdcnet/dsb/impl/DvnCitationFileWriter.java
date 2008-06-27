@@ -81,18 +81,13 @@ public class DvnCitationFileWriter {
                     terminalN = lastN;
                 }                
                 for (int j = 0; j< terminalN; j++){
-                    if ( (divisor*(iter-1) +j +1) == vn.size()){ 
+                    if ( (divisor*i +j +1) == vn.size()){ 
                         sb.append(vn.get(j + i*divisor));
                     } else {
-                        
                         sb.append(vn.get(j + i*divisor) + ", ");
                     }
                 }
-                if (i < (iter-1)){
-                    sb.append(",\n");
-                } else {
-                    sb.append("\n");
-                }
+                sb.append("\n");
             }
             vnl = sb.toString();
             if (debug){

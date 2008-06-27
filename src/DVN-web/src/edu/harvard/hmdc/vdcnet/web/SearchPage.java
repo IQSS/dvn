@@ -628,6 +628,18 @@ public class SearchPage extends VDCBaseBean  implements java.io.Serializable {
                 }
             }
             
+        }  else if (mode == StudyListing.NEW_SEARCH) {
+            String  searchValue = getRequestParam("searchValue");
+            if (searchValue != null) {
+                String  searchField = getRequestParam("searchField");
+                if (searchField == null ) {
+                    searchField = "any"; // set a default searchField
+                }
+
+                sl = search(searchField, searchValue);
+                setStudyListingIndex(addToStudyListingMap(sl));
+            }
+            
         } else {
             // in this case we don't have a mode so we check to see if we
             // have a studyListing passed via the request
@@ -751,4 +763,37 @@ public class SearchPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     
+    private StudyListing search(String searchField, String searchValue) {
+        // TODO: combine the search logic from the search_action (which has more
+        // flexibility) with this one for one unified search code section
+        List searchTerms = new ArrayList();
+        SearchTerm st = new SearchTerm();
+        st.setFieldName( searchField );
+        st.setValue( searchValue );
+        searchTerms.add(st);
+
+        List studies = new ArrayList();
+        Map variableMap = new HashMap();
+
+        if ( searchField.equals("variable") ) {
+            List variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
+            varService.determineStudiesFromVariables(variables, studies, variableMap);
+
+        } else {
+            studies = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
+        }
+
+
+        StudyListing sl = new StudyListing(StudyListing.VDC_SEARCH);
+        sl.setStudyIds(studies);
+        sl.setSearchTerms(searchTerms);
+        sl.setVariableMap(variableMap);
+        
+        sl.setVdcId( getVDCRequestBean().getCurrentVDCId() );
+        sl.setCollectionTree(collectionTree);
+       
+        return sl;          
+    }
+            
+  
 }

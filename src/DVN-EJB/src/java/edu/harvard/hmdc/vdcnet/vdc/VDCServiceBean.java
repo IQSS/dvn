@@ -243,7 +243,12 @@ public class VDCServiceBean implements VDCServiceLocal {
        }
        return vdc;
     }
+
     public List findAll() {
+        return em.createQuery("select object(o) from VDC as o order by o.name").getResultList();
+    }
+
+    public List findBasic() {
         List myList = (List<VDC>) em.createQuery("select object(o) from VDC as o where o.dtype = 'Basic' order by o.name").getResultList();
         Iterator iterator = myList.iterator();
         return em.createQuery("select object(o) from VDC as o where o.dtype = 'Basic' order by o.name").getResultList();

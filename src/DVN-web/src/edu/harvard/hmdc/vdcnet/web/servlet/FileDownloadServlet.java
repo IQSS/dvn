@@ -268,7 +268,7 @@ public class FileDownloadServlet extends HttpServlet{
 			status = 404; 
 			createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
 						    ? method.getStatusLine().toString()
-						    : "DSB conversion failure");
+						    : "Attempted file format conversion has failed on a remote datafile (i.e., file from a harvested study), because the file could not be found at its remote location.");
 			if (method != null) { method.releaseConnection(); }
 			return;
 		    }
@@ -276,7 +276,7 @@ public class FileDownloadServlet extends HttpServlet{
 		    if ( status != 200 ) {
 			createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
 						    ? method.getStatusLine().toString()
-						    : "DSB conversion failure");
+						    : "DSB conversion failed on a remote (harvested) data file");
 			if (method != null) { method.releaseConnection(); }
 			return;
 		    }
@@ -329,7 +329,10 @@ public class FileDownloadServlet extends HttpServlet{
                 
                 
 		    } catch (IOException ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
+			String errorMessage = "An unknown I/O error has occured while trying to perform a format conversion; this operation was attempted on a remote data file (i.e., a file that belongs to a study harvested from a remote location), so it is possible that it is temporarily unavailable from that location or perhaps a temporary network error has occured. It is also possible that the problem has occured as the Application was communicating to the Data Services Broker. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+			createErrorResponseGeneric( res, 0, errorMessage);
+
 		    }
 		    
 		    method.releaseConnection();
@@ -524,7 +527,7 @@ public class FileDownloadServlet extends HttpServlet{
 		    if ( status != 200 ) {
 			createErrorResponseGeneric( res, status, (method.getStatusLine() != null)
 						    ? method.getStatusLine().toString()
-						    : "Unknown HTTP Error");
+						    : "Unknown HTTP Error has occured.");
 			if (method != null) { method.releaseConnection(); }
 			return;
 		    }
@@ -581,7 +584,10 @@ public class FileDownloadServlet extends HttpServlet{
                 
 			
 		    } catch (IOException ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
+			String errorMessage = "An unknown I/O error has occured while attempting to retreive a remote data file (i.e., a file that belongs to a harvested study). It is possible that it is temporarily unavailable from that location or perhaps a temporary network error has occured. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+			createErrorResponseGeneric( res, 0, errorMessage);
+
 		    }
 
 		    method.releaseConnection();
@@ -629,7 +635,10 @@ public class FileDownloadServlet extends HttpServlet{
                 
 			
 			} catch (IOException ex) {
-			    ex.printStackTrace();
+			    //ex.printStackTrace();
+			    String errorMessage = "An unknown I/O error has occured while trying to serve a locally stored data file in an alternative format. It. It could also be a result of a temporary network error. Please try again later, and if the problem persists report it to your DVN technical support contact.";
+			    createErrorResponseGeneric( res, 0, errorMessage);
+
 			}
 
 		    } else {
@@ -737,7 +746,10 @@ public class FileDownloadServlet extends HttpServlet{
 			    fileCachingStream.close(); 
                 
 			} catch (IOException ex) {
-			    ex.printStackTrace();
+			    //ex.printStackTrace();
+			    String errorMessage = "An unknown I/O error has occured while trying to perform a format conversion on a locally-stored data file. Unfortunately, no extra diagnostic information on the nature of the problem is available to the application. It is possible that it was caused by a temporary network error as the Application was communicating to the Data Services Broker. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+			    createErrorResponseGeneric( res, 0, errorMessage);
+
 			}
 		    
 			method.releaseConnection();
@@ -879,7 +891,9 @@ public class FileDownloadServlet extends HttpServlet{
                 
 			
 		    } catch (IOException ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
+			String errorMessage = "An unknown I/O error has occured while attempting to serve a locally-stored data file. Unfortunately, no extra diagnostic information on the nature of the problem is available to the Application at this point. This could indicate that the data file in question is corrupt. It is also possible that it was caused by a temporary network error. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+			createErrorResponseGeneric( res, 0, errorMessage);
 		    }
 		}
 	    }
@@ -1065,13 +1079,21 @@ public class FileDownloadServlet extends HttpServlet{
 		    method.releaseConnection(); 
 		}
 
-                ex.printStackTrace();
+                //ex.printStackTrace();
+		String errorMessage = "An unknown I/O error has occured while generating a Zip archive of multiple data files. Unfortunately, no further diagnostic information on the nature of the problem is avaiable to the Application at this point. It is possible that the problem was caused by a temporary network error. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+		createErrorResponseGeneric( res, 0, errorMessage);
+
             }
         }
     }
 
     private void createErrorResponseGeneric(HttpServletResponse res, int status, String statusLine) {
         res.setContentType("text/html");
+	
+	if ( status == 0 ) {
+	    status = 200; 
+	}
+
 	res.setStatus ( status ); 
 	PrintWriter out = null;
         try {
@@ -1103,7 +1125,10 @@ public class FileDownloadServlet extends HttpServlet{
 	try {
 	    res.sendRedirect ( remoteUrl ); 
 	} catch (IOException ex) {
-	    ex.printStackTrace();
+	    //ex.printStackTrace();
+	    String errorMessage = "An unknown I/O error has occured while the Application was attempting to issue a redirect to a remote resource (i.e., a URL pointing to a page on a remote server). Please try again later and if the problem persists, report it to your DVN technical support contact.";
+	    createErrorResponseGeneric( res, 0, errorMessage);
+
 	}
 
     }

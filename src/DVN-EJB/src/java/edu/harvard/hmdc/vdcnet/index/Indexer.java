@@ -523,10 +523,13 @@ public class Indexer implements java.io.Serializable  {
     }
 
     public List query(String adhocQuery) throws IOException {
-        QueryParser parser = new QueryParser("abstract",getAnalyzer());
+//        QueryParser parser = new QueryParser("abstract",new DVNStandardAnalyzer());
+        QueryParser parser = new QueryParser("abstract",new DVNSearchAnalyzer());
+        parser.setDefaultOperator(QueryParser.AND_OPERATOR);
         Query query=null;
         try {
             query = parser.parse(adhocQuery);
+            System.out.println("QQQ "+query.toString(indexDir));
         } catch (ParseException ex) {
             ex.printStackTrace();
         }

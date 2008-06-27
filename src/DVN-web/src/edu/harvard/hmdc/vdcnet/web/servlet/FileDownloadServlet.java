@@ -896,7 +896,7 @@ public class FileDownloadServlet extends HttpServlet{
             String catId = req.getParameter("catId");
             String studyId = req.getParameter("studyId");
 
-	    String fileManifest = null; 
+	    String fileManifest = ""; 
             
             if (catId != null) {
                 try {
@@ -930,7 +930,7 @@ public class FileDownloadServlet extends HttpServlet{
             while (iter.hasNext()) {
                 StudyFile file = (StudyFile) iter.next();
                 if (file.isFileRestrictedForUser(user, vdc,ipUserGroup) ) {
-		    fileManifest = fileManifest + file.getFileName() + " IS RESTRICTED AND CANNOT BE DOWNLOADED\n";
+		    fileManifest = fileManifest + file.getFileName() + " IS RESTRICTED AND CANNOT BE DOWNLOADED\r\n";
                     iter.remove();
                 } 
             }
@@ -1034,7 +1034,7 @@ public class FileDownloadServlet extends HttpServlet{
 			ft = "unknown filetype;"; 
 		    } 
 		    
-		    fileManifest = fileManifest + file.getFileName() + " " + ft + " " + fileSize + " bytes.\n";
+		    fileManifest = fileManifest + file.getFileName() + " " + ft + " " + fileSize + " bytes.\r\n";
 
 
 		    // if this was a remote stream, let's close

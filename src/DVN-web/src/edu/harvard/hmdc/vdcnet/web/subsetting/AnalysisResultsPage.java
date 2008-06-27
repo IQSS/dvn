@@ -20,12 +20,15 @@ import javax.faces.render.ResponseStateManager;
 
 import static java.lang.System.*;
 import java.util.*;
+import java.util.logging.*;
 /**
  *
  * @author asone
  */
 public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializable  {
 
+    /** Sets the logger (use the package name) */
+    private static Logger dbgLog = Logger.getLogger(AnalysisResultsPage.class.getPackage().getName());
 
     /**
      * The ID of the requested DataTable instance. Specified as a managed-property in
@@ -247,17 +250,17 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
             Map<String, Object> sessionMap = exCntxt.getSessionMap();
             
             if (true){
-                out.println("\ncontents of RequestParameterMap:\n"
+                dbgLog.fine("\ncontents of RequestParameterMap:\n"
                     + exCntxt.getRequestParameterMap());
-                out.println("\ncontents of SessionMap:\n"+sessionMap);
+                dbgLog.fine("\ncontents of SessionMap:\n"+sessionMap);
             }
             
             // gets the request header data
             Map<String, String> rqustHdrMp = exCntxt.getRequestHeaderMap();
             
             if (true){
-                out.println("\nRequest Header Values Map:\n" + rqustHdrMp);
-                out.println("\nRequest Header Values Map(user-agent):"
+                dbgLog.fine("\nRequest Header Values Map:\n" + rqustHdrMp);
+                dbgLog.fine("\nRequest Header Values Map(user-agent):"
                     + rqustHdrMp.get("user-agent"));
             }
             
@@ -267,14 +270,14 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
                 .get(ResponseStateManager.VIEW_STATE_PARAM);
             
             if (true){
-                out.println("ViewState value=" + currentViewStateValue);
-                out.println("VDCRequestBean: current VDC URL ="
+                dbgLog.fine("ViewState value=" + currentViewStateValue);
+                dbgLog.fine("VDCRequestBean: current VDC URL ="
                 + getVDCRequestBean().getCurrentVDCURL());
             }
             
             resultInfo = (Map<String, String>) sessionMap.get("resultInfo");            
             
-            out.println("resultInfo:\n"+resultInfo);
+            dbgLog.fine("resultInfo:\n"+resultInfo);
             
             requestResultPID = resultInfo.get("PID");
             String shortOptionName = resultInfo.get("option");
@@ -324,19 +327,19 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
                 resultURLdwnld = dsbUrl+
                               resultInfo.get("dsbContextRootDir") +
                               resultInfo.get("subsetfile");
-                out.println("subset url="+resultURLdwnld);         
+                dbgLog.fine("subset url="+resultURLdwnld);         
             } else if (resultInfo.get("option").equals("eda") ||
                 resultInfo.get("option").equals("xtab")) {
                 resultURLhtml = dsbUrl+
                               resultInfo.get("dsbContextRootDir") +
                               resultInfo.get("html");
                 
-                out.println("hmtl url="+ resultURLhtml);
+                dbgLog.fine("hmtl url="+ resultURLhtml);
             } else if (resultInfo.get("option").equals("zelig")) {
                 resultURLhtml = dsbUrl+
                               resultInfo.get("dsbContextRootDir") +
                               resultInfo.get("html");
-                out.println("html url="+ resultURLhtml);
+                dbgLog.fine("html url="+ resultURLhtml);
             }
         } catch (Exception e) {
             log("Page1 Initialization Failure", e);

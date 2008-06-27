@@ -31,15 +31,10 @@ import javax.faces.FacesException;
 
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 
-
 import javax.xml.bind.*;
-/*
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-*/
+
 import java.util.*;
+import java.util.logging.*;
 import static java.lang.System.*;
 import java.io.StringReader;
 
@@ -74,23 +69,22 @@ import edu.harvard.hmdc.vdcnet.dsb.impl.*;
  * this class.</p>
  */
 public class AnalysisApplicationBean extends AbstractApplicationBean implements java.io.Serializable  {
+
+
+
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
+    
+    /** Sets the logger (use the package name) */
+    private static Logger dbgLog = Logger.getLogger(AnalysisApplicationBean.class.getPackage().getName());
+   
     private int __placeholder;
     protected static Zelig zlg;
     protected static Zelig zlgxtb; 
-
     
     protected AdvancedStatGUIdata guiSpec;
     protected Map<String, AdvancedStatGUIdata.Model> specMap;
-    //protected List<SelectItemGroup> modelMenuOptions;
     protected List<Option> modelMenuOptions;
     
-    //protected Map<String, AdvancedStatGUIdata.Model> modelId2SpecMap;
-    //protected List <AdvancedStatGUIdata.Model> zlgList;
-    //protected Map<String, String> modelCategory;
-    //protected List<String> modelCategoryList;
-    //protected Map<String, String> modelId2NameMap;
-
     /**
      * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
      * This method is automatically generated, so any user-specified code inserted
@@ -160,7 +154,8 @@ public class AnalysisApplicationBean extends AbstractApplicationBean implements 
         try {
             _init();
         } catch (Exception e) {
-            log("AnalysisApplicationBean Initialization Failure", e);
+            dbgLog.severe("AnalysisApplicationBean Initialization Failure");
+            e.printStackTrace();
             throw e instanceof FacesException ? (FacesException) e: new FacesException(e);
         }
         // </editor-fold>
@@ -204,11 +199,11 @@ public class AnalysisApplicationBean extends AbstractApplicationBean implements 
 
     specMap = guiSpec.getModelId2SpecMap();
     
-    //out.println( "specMap: " + specMap +"\n");
+    dbgLog.finer( "specMap: " + specMap +"\n");
     
     Set kyzlg = specMap.keySet();
     
-    out.println("entry keys of zelig="+kyzlg);
+    dbgLog.fine("entry keys of zelig="+kyzlg);
 
     
     
@@ -235,7 +230,7 @@ public class AnalysisApplicationBean extends AbstractApplicationBean implements 
     
     String configXtabGUI=sbxtb.toString();
     
-    out.println("config Xtab:\n"+configXtabGUI+"\n");
+    dbgLog.fine("config Xtab:\n"+configXtabGUI+"\n");
     
     try {
       // create a JAXBContext
@@ -254,43 +249,43 @@ public class AnalysisApplicationBean extends AbstractApplicationBean implements 
     AdvancedStatGUIdata xtbSpec = new AdvancedStatGUIdata(zlgxtb.getModel());
     Map<String, AdvancedStatGUIdata.Model> specMapXtb = xtbSpec.getModelId2SpecMap();
 
-    out.println("specMapXtb: " + specMapXtb +"\n");
+    dbgLog.fine("specMapXtb: " + specMapXtb +"\n");
     
     Set kyxtb = specMapXtb.keySet();
-    out.println("entry keys of xtb="+kyxtb);
+    dbgLog.fine("entry keys of xtb="+kyxtb);
     
     // add xtab to the map by category
     Set kyXtb = specMapXtb.entrySet();
     for (Iterator it = kyXtb.iterator(); it.hasNext();){
       Map.Entry et = (Map.Entry)it.next();
-      out.println("xtab key="+et.getKey()+"\n=" + et.getValue());
+      dbgLog.fine("xtab key="+et.getKey()+"\n=" + et.getValue());
       specMap.put( (String)et.getKey(), (AdvancedStatGUIdata.Model)et.getValue() );
     }
-    out.println("new specMapXtb:\n"+specMapXtb);
+    dbgLog.fine("new specMapXtb:\n"+specMapXtb);
     
-    out.println("entry keys of zelig(after update)="+kyzlg);
+    dbgLog.fine("entry keys of zelig(after update)="+kyzlg);
     
     
     // add xtab to the map by mdlName
     Map<String, List> tmpId = guiSpec.getModelCategoryId();
     
-    out.println("tmpId(before update)\n"+tmpId);
+    dbgLog.fine("tmpId(before update)\n"+tmpId);
     
     Map<String, List> tmpIdxtb = xtbSpec.getModelCategoryId();
     
     Set kyTmpIdxtb = tmpIdxtb.entrySet();
     for (Iterator it = kyTmpIdxtb.iterator(); it.hasNext();){
       Map.Entry et = (Map.Entry)it.next();
-      out.println("xtab cat key="+et.getKey()+" value="+et.getValue());
+      dbgLog.fine("xtab cat key="+et.getKey()+" value="+et.getValue());
       
       tmpId.put((String)et.getKey(), (List)et.getValue());
     }
     
-    out.println("\ntmpId(after update)\n"+tmpId);
+    dbgLog.fine("\ntmpId(after update)\n"+tmpId);
     
     
     Set entr = tmpId.entrySet();
-    out.println("How many model categories="+entr.size());
+    dbgLog.fine("How many model categories="+entr.size());
     // object to be used in the subsetting page
     
     
@@ -325,7 +320,7 @@ public class AnalysisApplicationBean extends AbstractApplicationBean implements 
     for (Iterator it = entr.iterator(); it.hasNext();){
       Map.Entry et = (Map.Entry)it.next();
       ii++;
-      out.println(et.getKey()+"\n=" + et.getValue());
+      dbgLog.fine(et.getKey()+"\n=" + et.getValue());
       
       OptionGroup mdlGrp = new OptionGroup();
       
@@ -333,10 +328,10 @@ public class AnalysisApplicationBean extends AbstractApplicationBean implements 
       StringBuilder sb = new StringBuilder("MdlGrp_");
       sb.append(sigNo);
       String mdlGrpId = sb.toString();
-      out.print("group ID token="+mdlGrpId+"\n");
+      dbgLog.fine("group ID token="+mdlGrpId+"\n");
       
       List<String> IdSet = (List)et.getValue();
-      out.println("IdSet="+IdSet+"\n");
+      dbgLog.fine("IdSet="+IdSet+"\n");
       
       // for each Id set
       List<Option> tmp = new ArrayList<Option>();
@@ -344,7 +339,7 @@ public class AnalysisApplicationBean extends AbstractApplicationBean implements 
       for (int i=0; i<IdSet.size(); i++){
         if (specMap.containsKey(IdSet.get(i))){
             tmp.add(new Option(specMap.get(IdSet.get(i)).getMdlName(), specMap.get(IdSet.get(i)).getTitle()));
-            out.println(specMap.get(IdSet.get(i)).getMdlName()+"\t"+specMap.get(IdSet.get(i)).getTitle());
+            dbgLog.fine(specMap.get(IdSet.get(i)).getMdlName()+"\t"+specMap.get(IdSet.get(i)).getTitle());
         } else{
             flcnt++;
         }
@@ -358,24 +353,24 @@ public class AnalysisApplicationBean extends AbstractApplicationBean implements 
           modelMenuOptions.add(mdlGrp);
       
       } else {
-         out.println("former" + ii+"-th group was empty and excluded ");
+         dbgLog.fine("former" + ii+"-th group was empty and excluded ");
          ii--;
       }
-      out.println("end of "+ii+"-th group\n\n");
+      dbgLog.fine("end of "+ii+"-th group\n\n");
     } // for each model-category
-      out.println("\nmodelMenuOptions(size)="+modelMenuOptions.size()+"\n");
-      out.println("dump of modelMenuOptions[AnalysisApplicationBean]\n"+modelMenuOptions);
+      dbgLog.fine("\nmodelMenuOptions(size)="+modelMenuOptions.size()+"\n");
+      dbgLog.fine("dump of modelMenuOptions[AnalysisApplicationBean]\n"+modelMenuOptions);
 
     // contents check of modelMenuOptions
     // JEE5 tutorila book provides an example that uses an ArrayList instead of arrary to hold SelectItemGroups
 /*
     for (SelectItemGroup sige : modelMenuOptions) {
-      out.println("1st element(label)="+sige.getLabel());
-      out.println("2nd element(desc) ="+sige.getDescription());
-      out.println("4th element(array)="+sige.getSelectItems().length+" items\n");
+      dbgLog.fine("1st element(label)="+sige.getLabel());
+      dbgLog.fine("2nd element(desc) ="+sige.getDescription());
+      dbgLog.fine("4th element(array)="+sige.getSelectItems().length+" items\n");
       for (int j = 0; j< sige.getSelectItems().length; j++){
-        out.println("value="+sige.getSelectItems()[j].getValue());
-        out.println("label="+sige.getSelectItems()[j].getLabel());
+        dbgLog.fine("value="+sige.getSelectItems()[j].getValue());
+        dbgLog.fine("label="+sige.getSelectItems()[j].getLabel());
       }
     }
 */
@@ -384,18 +379,18 @@ public class AnalysisApplicationBean extends AbstractApplicationBean implements 
 /*
         // store all zelig model specs into List
         zlgList = guiSpec.getModel();
-        //out.println( "after: model size: " + zlgList.size());
+        //dbgLog.fine( "after: model size: " + zlgList.size());
         log( "after: getModel size: " + zlgList.size());
         
         
         modelCategory = guiSpec.getModelCategory();
-        log("\nMap =  guiSpec.getModelCategory()[Model ID => Model Name]\n"+modelCategory);
+        dbgLog.finer("\nMap =  guiSpec.getModelCategory()[Model ID => Model Name]\n"+modelCategory);
 
         modelCategoryList= guiSpec.getModelCategoryList();
-        log("\nunique model categories:\n"+modelCategoryList);
+        dbgLog.finer("\nunique model categories:\n"+modelCategoryList);
 
         modelId2NameMap=guiSpec.getModelId2NameMap();
-        log("\nunique model categories:\n"+modelId2NameMap);
+        dbgLog.finer("\nunique model categories:\n"+modelId2NameMap);
 */
     }
 

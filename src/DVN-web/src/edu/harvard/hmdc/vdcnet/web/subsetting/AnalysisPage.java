@@ -39,6 +39,7 @@ import java.util.*;
 import java.util.Map.*;
 import java.util.regex.*;
 import java.util.Collection.*;
+import java.util.logging.*;
 
 import java.io.*;
 
@@ -240,9 +241,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
     /** Sets the id number of the advanced statistics GUI pane */
     private static final int PANE_ADVSTAT = 5;
-
     
     private boolean resultPageTest = false;
+    
+    /** Sets the logger (use the package name) */
+    private static Logger dbgLog = Logger.getLogger(AnalysisPage.class.getPackage().getName());
+    
     // </editor-fold>
     
     // -----------------------------------------------------------------------
@@ -641,7 +645,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @param  acev    tab-clicking-action event
      */
     public void resetVariableInLBox(ActionEvent acev) {
-        out.println("Within resetVariableInLBox: tab Id ="
+        dbgLog.fine("Within resetVariableInLBox: tab Id ="
             + acev.getComponent().getId());
         
         // remove vars from RHS boxes
@@ -701,13 +705,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // dwnldBttn:h:commandButton@action
     public boolean checkDwnldParameters (){
         boolean result=true;
-        out.println("***** within checkDwnldParameters() *****");
+        dbgLog.fine("***** within checkDwnldParameters() *****");
         // param-checking conditions
         if (dwnldFileTypeSet.getValue()== null) {
-            out.println("download radio button set: no selected value");
+            dbgLog.warning("download radio button set: no selected value");
             result=false;
         } else {
-            out.println("download radio button set: selected value"+(String)dwnldFileTypeSet.getValue());
+            dbgLog.fine("download radio button set: selected value"+(String)dwnldFileTypeSet.getValue());
         }
          return result;
     }
@@ -723,11 +727,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             HttpServletRequest req = (HttpServletRequest) cntxt
                 .getExternalContext().getRequest();
             try {
-                out.println("***** within dwnldActionLstnr() *****");
+                dbgLog.fine("***** within dwnldActionLstnr() *****");
                 StudyFile sf = dataTable.getStudyFile();
                 // String formatType = req.getParameter("formatType");
                 String formatType = (String) dwnldFileTypeSet.getValue();
-                out.println("file type from the binding=" + formatType);
+                dbgLog.fine("file type from the binding=" + formatType);
                 // String formatType = "D01";
 
                 String dsbUrl = System.getProperty("vdc.dsb.host");
@@ -741,7 +745,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     dsbUrl = System.getProperty("vdc.dsb.url");
                 }
 
-                out.println("dsbUrl=" + dsbUrl);
+                dbgLog.fine("dsbUrl=" + dsbUrl);
 
                 // String serverPrefix =
                 // "http://vdc-build.hmdc.harvard.edu:8080/dvn";
@@ -758,7 +762,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     mpl.putAll(getRecodedVarParameters());
                 }
 
-                out.println("citation info to be sent:\n" + citation);
+                dbgLog.fine("citation info to be sent:\n" + citation);
                 mpl.put("OfflineCitation", Arrays.asList(citation));
 
                 mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
@@ -772,7 +776,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     getDataVariableForRequest(), formatType);
 
             } catch (IOException ex) {
-                out.println("disseminate:download failed due to io exception");
+                dbgLog.severe("disseminate:download failed due to io exception");
                 ex.printStackTrace();
             }
 
@@ -781,9 +785,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // show error message;
             msgDwnldButton.setVisible(true);
             setMsgDwnldButtonTxt("* Select a format");
-            out.println("exiting dwnldActionLstnr() due to incomplete data ");
+            dbgLog.warning("exiting dwnldActionLstnr() due to incomplete data ");
         }
-        out.println("***** within dwnldActionLstnr(): ends here *****");
+        dbgLog.fine("***** within dwnldActionLstnr(): ends here *****");
     }
 
     // msgDwnldButton:ui:StaticText@binding
@@ -826,7 +830,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * for the download button (dwnldButton)
      */
     public void resetMsgDwnldButton() {
-        out.println("***** within resetMsgDwnldButton *****");
+        dbgLog.fine("***** within resetMsgDwnldButton *****");
         // Replaces the error message text with spaces
         // so that the previous error message is not shown
         // even if the following setVisible(false) line fails
@@ -838,7 +842,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         
         // Hides the error message text next to the download button
         msgDwnldButton.setVisible(false);
-        out.println("***** resetMsgDwnldButton: end *****");
+        dbgLog.fine("***** resetMsgDwnldButton: end *****");
     }
 
 
@@ -862,25 +866,25 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 .getExternalContext().getRequest();
 
 
-                out.println("***** within dwnldAction() *****");
+                dbgLog.fine("***** within dwnldAction() *****");
                 
                 StudyFile sf = dataTable.getStudyFile();
                 Long noRecords = dataTable.getRecordsPerCase();
 
                 String dsbUrl = getDsbUrl();
-                out.println("dsbUrl=" + dsbUrl);
+                dbgLog.fine("dsbUrl=" + dsbUrl);
 
                 String serverPrefix = req.getScheme() + "://"
                     + req.getServerName() + ":" + req.getServerPort()
                     + req.getContextPath();
                 
-                out.println("serverPrefix"+serverPrefix);
+                dbgLog.fine("serverPrefix"+serverPrefix);
                 
                 Map<String, List<String>> mpl = new HashMap<String, List<String>>();
                 
                 // String formatType = req.getParameter("formatType");
                 String formatType = (String) dwnldFileTypeSet.getValue();
-                out.println("file type from the binding=" + formatType);
+                dbgLog.fine("file type from the binding=" + formatType);
 
                 mpl.put("dtdwnld", Arrays.asList(formatType));
 
@@ -889,7 +893,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     mpl.putAll(getRecodedVarParameters());
                 }
 
-                out.println("citation info to be sent:\n" + citation);
+                dbgLog.fine("citation info to be sent:\n" + citation);
                 
                 mpl.put("OfflineCitation", Arrays.asList(citation));
 
@@ -909,17 +913,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             String fileId = sf.getId().toString();
             String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
 
-            out.println("fileURL="+fileURL);
+            dbgLog.fine("fileURL="+fileURL);
             
             String fileloc = sf.getFileSystemLocation();
             String tabflnm = sf.getFileName();
             boolean sbstOK = sf.isSubsettable();
             String flct = sf.getFileType();
             
-            out.println("location="+fileloc);
-            out.println("filename="+tabflnm);
-            out.println("subsettable="+sbstOK);
-            out.println("filetype="+flct);
+            dbgLog.fine("location="+fileloc);
+            dbgLog.fine("filename="+tabflnm);
+            dbgLog.fine("subsettable="+sbstOK);
+            dbgLog.fine("filetype="+flct);
 
 
             // the data file for downloading/statistical analyses must be subset-ready
@@ -953,8 +957,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     }
                     outb.close();
                     if (tmpfl.exists()){
-                       out.println("file length="+tmpfl.length());
-                       out.println("tmp file name="+tmpfl.getAbsolutePath());
+                       dbgLog.fine("file length="+tmpfl.length());
+                       dbgLog.fine("tmp file name="+tmpfl.getAbsolutePath());
                        
                     }
 
@@ -992,7 +996,7 @@ if (fieldcut){
                     }
                     
 
-                     out.println("cols="+cols);
+                     dbgLog.fine("cols="+cols);
                     // source data file: full-path name
                     String cutOp1 = tmpfl.getAbsolutePath();
 
@@ -1008,7 +1012,7 @@ if (fieldcut){
                     
                     // Checks the result file 
                     if (tmpsbfl.exists()){
-                        out.println("subsettFile:Length="+tmpsbfl.length());
+                        dbgLog.fine("subsettFile:Length="+tmpsbfl.length());
                         mpl.put("subsetFileName", Arrays.asList(cutOp2));
                     }
                         mpl.put("requestType", Arrays.asList("Download"));
@@ -1058,7 +1062,7 @@ if (fieldcut){
                     
                     // Checks the result file 
                     if (tmpsbfl.exists()){
-                        out.println("subsettFile:Length="+tmpsbfl.length());
+                        dbgLog.fine("subsettFile:Length="+tmpsbfl.length());
                         mpl.put("subsetFileName", Arrays.asList(cutOp2));
                     }
                         mpl.put("requestType", Arrays.asList("Download"));
@@ -1069,7 +1073,7 @@ if (fieldcut){
                     // data-analysis-service class
                     DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
 
-                    out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+                    dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     // Step 4. Creates an instance of the the implemented 
                     // data-analysis-service class 
 
@@ -1092,7 +1096,7 @@ if (fieldcut){
 
             }
 
-            out.println("***** within dwnldAction(): ends here *****");
+            dbgLog.fine("***** within dwnldAction(): ends here *****");
             
                 resultInfo.put("offlineCitation", citation);
                 resultInfo.put("studyTitle", studyTitle);
@@ -1119,7 +1123,7 @@ if (fieldcut){
             // show error message;
             msgDwnldButton.setVisible(true);
             setMsgDwnldButtonTxt("* Select a format");
-            out.println("exiting dwnldAction() due to incomplete data ");
+            dbgLog.warning("exiting dwnldAction() due to incomplete data ");
             return "failure";
         }
     }
@@ -1147,29 +1151,29 @@ if (fieldcut){
     // moveRecodeVarBttn:h:commandButton@actionListener
     public void moveRecodeVariable(ActionEvent acev) {
 
-        out.println("***** moveRecodeVariable(): begins here *****");
+        dbgLog.fine("***** moveRecodeVariable(): begins here *****");
 
         String varId = getSelectedRecodeVariable();
 
-        out.println("recode-variable id=" + varId);
+        dbgLog.fine("recode-variable id=" + varId);
 
-        out.println("Is this a recoded var?[" + isRecodedVar(varId) + "]");
+        dbgLog.fine("Is this a recoded var?[" + isRecodedVar(varId) + "]");
         resetMsgSaveRecodeBttn();
         if (isRecodedVar(varId)) {
             // newly recoded var case
-            out.println("This a recoded var[" + varId + "]");
+            dbgLog.fine("This a recoded var[" + varId + "]");
 
             List<Object> rvs = getRecodedVarSetRow(varId);
             if (rvs != null) {
 
-                out.println("requested newly recoded var was found");
-                out.println("new varName=" + rvs.get(0));
-                out.println("new varLabel=" + rvs.get(1));
+                dbgLog.fine("requested newly recoded var was found");
+                dbgLog.fine("new varName=" + rvs.get(0));
+                dbgLog.fine("new varLabel=" + rvs.get(1));
 
                 recallRecodedVariable(varId);
 
             } else {
-                out.println("requested newly recoded var was not found="
+                dbgLog.fine("requested newly recoded var was not found="
                     + varId);
 
             }
@@ -1178,7 +1182,7 @@ if (fieldcut){
             if (varId != null) {
                 // set the name
                 String varName = getVariableNamefromId(varId);
-                out.print("recode variable Name=" + varName);
+                dbgLog.fine("recode variable Name=" + varName);
                 // setRecodeVariableName(varName);
 
                 setCurrentRecodeVariableName(varName);
@@ -1194,10 +1198,10 @@ if (fieldcut){
 
                 Collection<VariableCategory> catStat = dv.getCategories();
                 recodeDataList.clear();
-                out.println("catStat.size=" + catStat.size());
+                dbgLog.fine("catStat.size=" + catStat.size());
                 if (catStat.size() > 0) {
                     // catStat exists
-                    out.println("catStat exists");
+                    dbgLog.fine("catStat exists");
 
                     for (Iterator elc = catStat.iterator(); elc.hasNext();) {
                         VariableCategory dvcat = (VariableCategory) elc.next();
@@ -1217,8 +1221,8 @@ if (fieldcut){
 
                 } else {
                     // no catStat, either sumStat or too-many-categories
-                    out.println("catStat does not exists");
-                    out.println("create a default two-row table");
+                    dbgLog.fine("catStat does not exists");
+                    dbgLog.fine("create a default two-row table");
                     for (int i = 0; i < 2; i++) {
                         List<Object> rw = new ArrayList<Object>();
                         // 0th: Drop
@@ -1236,7 +1240,7 @@ if (fieldcut){
                 }
 
                 // show the recodeTable
-                out.println("Number of rows in this Recode Table="
+                dbgLog.fine("Number of rows in this Recode Table="
                     + recodeDataList.size());
                 groupPanelRecodeTableHelp.setRendered(true);
                 recodeTable.setRendered(true);
@@ -1250,15 +1254,15 @@ if (fieldcut){
                         currentRecodeVariableName);
 
             } else {
-                out.println("Variable to be recoded is null");
+                dbgLog.fine("Variable to be recoded is null");
             }
         }
-        out.println("***** moveRecodeVariable(): ends here *****");
+        dbgLog.fine("***** moveRecodeVariable(): ends here *****");
 
     }
 
     public void clearRecodeTargetVarInfo() {
-        out.println("pass the clear step");
+        dbgLog.fine("pass the clear step");
         recodeTargetVarName.resetValue();
         recodeTargetVarLabel.resetValue();
     }
@@ -1409,7 +1413,7 @@ if (fieldcut){
     // h:commandButton:addValueRangeBttn
     // @actionListener
     public void addValueRange(ActionEvent acev) {
-        out.println("before add: recodeDataList=" + recodeDataList);
+        dbgLog.fine("before add: recodeDataList=" + recodeDataList);
         List<Object> rw = new ArrayList<Object>();
         // 0th: Drop
         rw.add(new Boolean(false));
@@ -1421,7 +1425,7 @@ if (fieldcut){
         rw.add("enter a condition here");
         // 
         recodeDataList.add(rw);
-        out.println("after add: recodeDataList=" + recodeDataList);
+        dbgLog.fine("after add: recodeDataList=" + recodeDataList);
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
             "recodeDataList", recodeDataList);
     }
@@ -1461,27 +1465,27 @@ if (fieldcut){
      * whose id is recodeBttn
      */
     public void saveRecodedVariable(ActionEvent acev) {
-        out.println("***** saveRecodedVariable(): begins here *****");
+        dbgLog.fine("***** saveRecodedVariable(): begins here *****");
 
         // get the current var Id (base variable's ID)
         String oldVarId = getCurrentRecodeVariableId();
-        out.println("base var_id=" + oldVarId);
+        dbgLog.fine("base var_id=" + oldVarId);
 
         // get the varName in the input field
         String newVarName = (String) recodeTargetVarName.getValue();
-        out.println("new var name=" + newVarName);
+        dbgLog.fine("new var name=" + newVarName);
         if (isRecodedVar(oldVarId)) {
             // replace (re-save) case
-            out.println("This variable id is found in the new variable set"
+            dbgLog.fine("This variable id is found in the new variable set"
                 + " and recoding scheme would be updated");
-            out.println("currentVarId=" + oldVarId);
+            dbgLog.fine("currentVarId=" + oldVarId);
             replaceRecodedVariable(oldVarId);
             return;
         } else {
             // newly create case
             if (isDuplicatedVariableName(newVarName)) {
                 // duplicated name
-                out.println("The new variable name is already in use");
+                dbgLog.fine("The new variable name is already in use");
                 msgSaveRecodeBttn.setRendered(true);
                 msgSaveRecodeBttn.setText(
                     "The variable Name you entered is found "+
@@ -1519,7 +1523,7 @@ if (fieldcut){
                     return;
                 } else {
                     // unique and safe name
-                    out.println("The new variable name is unique");
+                    dbgLog.fine("The new variable name is unique");
                     msgSaveRecodeBttn.setRendered(false);
                 }
             }
@@ -1527,7 +1531,7 @@ if (fieldcut){
 
         // get the varLabel in the input field
         String newVarLabel = (String) getRecodeTargetVarLabel().getValue();
-        out.println("new var Label=" + newVarLabel);
+        dbgLog.fine("new var Label=" + newVarLabel);
 
         // create a new var Id
         // new-case only
@@ -1535,7 +1539,7 @@ if (fieldcut){
         StringBuilder sb = new StringBuilder(oldVarId + "_");
         sb.append(varIdGenerator(oldVarId));
         String newVarId = sb.toString();
-        out.println("newVarId=" + newVarId);
+        dbgLog.fine("newVarId=" + newVarId);
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
             .put("currentRecodeVariableId", newVarId);
 
@@ -1550,7 +1554,7 @@ if (fieldcut){
             // already used for recoding
             Set<String> tmps = baseVarToDerivedVar.get(oldVarId);
             if (tmps.contains(newVarId)) {
-                out.println("This new var Id [" + newVarId
+                dbgLog.fine("This new var Id [" + newVarId
                     + "] is found in the set");
             } else {
                 tmps.add(newVarId);
@@ -1558,29 +1562,29 @@ if (fieldcut){
         } else {
             // not-yet used for recoding
             Set<String> tmps = new HashSet<String>();
-            out.println("This new var Id [" + newVarId
+            dbgLog.fine("This new var Id [" + newVarId
                 + "] is NOT found in the set");
             tmps.add(newVarId);
             baseVarToDerivedVar.put(oldVarId, tmps);
         }
-        out.println("old-2-new-var map=" + baseVarToDerivedVar);
+        dbgLog.fine("old-2-new-var map=" + baseVarToDerivedVar);
 
         // remove a row whose condition cell is blank
         // both
-        out.println("start normalization");
+        dbgLog.fine("start normalization");
         for (int i = (recodeDataList.size() - 1); i >= 0; i--) {
             List<Object> row = (List<Object>) recodeDataList.get(i);
             String raw = removeWhiteSpacesfromBothEnds((String) row.get(3));
-            out.println("after removing white spaces[=" + raw + "]");
+            dbgLog.fine("after removing white spaces[=" + raw + "]");
 
             if (raw.equals("")) {
                 recodeDataList.remove(i);
-                out.println("element[" + i + "] was removed");
+                dbgLog.fine("element[" + i + "] was removed");
             }
         }
-        out.println("end of normalization");
+        dbgLog.fine("end of normalization");
 
-        out.println("recodeDataList=" + recodeDataList);
+        dbgLog.fine("recodeDataList=" + recodeDataList);
         // saving the data for the recode-table
         // new and replace: both cases
         // replace-case: remove the key first?
@@ -1590,7 +1594,7 @@ if (fieldcut){
         // new and replace: both cases
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
             .put("recodeSchema", recodeSchema);
-        out.println("recodeSchema=" + recodeSchema);
+        dbgLog.fine("recodeSchema=" + recodeSchema);
 
         if (!recodeVarNameSet.contains(newVarName)) {
             // 1st-time save
@@ -1598,7 +1602,7 @@ if (fieldcut){
             // add this var to the mapping table
             // add this new var to the new2old mappting table
             derivedVarToBaseVar.put(newVarId, oldVarId);
-            out.println("new-2-old-var map=" + derivedVarToBaseVar);
+            dbgLog.fine("new-2-old-var map=" + derivedVarToBaseVar);
 
             // add this var's name, label, id to the backing object
             // (recodedVarSet)
@@ -1626,13 +1630,13 @@ if (fieldcut){
         }
         // show the recoded-var table
         // recodedVarTable.setRendered(true);
-        out.println("recodeVarSet=" + recodedVarSet);
+        dbgLog.fine("recodeVarSet=" + recodedVarSet);
 
         // save recode-source variable name for the header
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
             .put("currentRecodeVariableName", currentRecodeVariableName);
 
-        out.println("***** saveRecodedVariable(): ends here *****");
+        dbgLog.fine("***** saveRecodedVariable(): ends here *****");
     }
 
     public String removeWhiteSpacesfromBothEnds(String src) {
@@ -1700,7 +1704,7 @@ if (fieldcut){
     }
 
     public void resetMsgSaveRecodeBttn() {
-        out.println("***** within resetMsgSaveRecodeBttn *****");
+        dbgLog.fine("***** within resetMsgSaveRecodeBttn *****");
         msgSaveRecodeBttn.setRendered(false);
         msgSaveRecodeBttn.setText(" ");
     }
@@ -1711,7 +1715,7 @@ if (fieldcut){
      * ui:hyperlink attr: actionListener see recode block above
      */
     public void removeRecodedVariable(ActionEvent e) {
-        out.println("***** removeRecodedVariable(): begins here *****");
+        dbgLog.fine("***** removeRecodedVariable(): begins here *****");
 
         // get data stored in the event row
         List<Object> tmpRecodeVarLine = 
@@ -1719,7 +1723,7 @@ if (fieldcut){
         // get varId as a key of recodeSchema
         String newVarId = (String) tmpRecodeVarLine.get(2);
         String newVarName = (String) tmpRecodeVarLine.get(0);
-        out.println("recoded-var id=" + newVarId);
+        dbgLog.fine("recoded-var id=" + newVarId);
         // clear the error message if it still exists
         resetMsgVariableSelection();
 
@@ -1728,7 +1732,7 @@ if (fieldcut){
         if (recodeSchema.containsKey(newVarId)) {
             recodeSchema.remove(newVarId);
         } else {
-            out.println("value-label table of this var [" + newVarId
+            dbgLog.fine("value-label table of this var [" + newVarId
                 + "] is not found");
         }
         // remove this recoded var from the recoded-var table (recodedVarSet)
@@ -1737,7 +1741,7 @@ if (fieldcut){
             List<Object> rvs = (List<Object>) recodedVarSet.get(i);
             String iter = (String) rvs.get(2);
             if (newVarId.equals(iter)) {
-                out.println("iter=" + i + " th element removed");
+                dbgLog.fine("iter=" + i + " th element removed");
                 recodedVarSet.remove(i);
                 break;
             }
@@ -1748,27 +1752,27 @@ if (fieldcut){
 
             Set<String> tmps = baseVarToDerivedVar.get(oldVarId);
             if (tmps.contains(newVarId)) {
-                out.println("This new var Id [" + newVarId
+                dbgLog.fine("This new var Id [" + newVarId
                     + "] is found in the set and to be removed");
                 tmps.remove(newVarId);
                 if (tmps.size() < 1) {
-                    out.println("There is no recoded var for this base-var(id="
+                    dbgLog.fine("There is no recoded var for this base-var(id="
                         + oldVarId + " name=" + getVariableNamefromId(oldVarId)
                         + ")");
                     baseVarToDerivedVar.remove(oldVarId);
                 } else {
-                    out.println("The set is " + tmps.size()
+                    dbgLog.fine("The set is " + tmps.size()
                         + " for this base-var(id=" + oldVarId + " name="
                         + getVariableNamefromId(oldVarId) + ")");
                 }
             } else {
-                out.println("This new var Id [" + newVarId
+                dbgLog.fine("This new var Id [" + newVarId
                     + "] is NOT found in the set");
             }
 
             derivedVarToBaseVar.remove(newVarId);
         } else {
-            out.println("recoded variable [" + newVarId
+            dbgLog.fine("recoded variable [" + newVarId
                 + "] is not found in the new2old mapping table");
         }
 
@@ -1776,15 +1780,15 @@ if (fieldcut){
         if (derivedVarToBaseVar.containsKey(newVarId)) {
             derivedVarToBaseVar.remove(newVarId);
         } else {
-            out.println("recoded variable [" + newVarId
+            dbgLog.fine("recoded variable [" + newVarId
                 + "] is not found in the new2old mapping table");
         }
 
         // if this variable is in the recode-table,
         String currentVarNameInBox = (String) recodeTargetVarName.getValue();
-        out.println("currentVarName in inputBox=" + currentVarNameInBox);
+        dbgLog.fine("currentVarName in inputBox=" + currentVarNameInBox);
         if (newVarName.equals(currentVarNameInBox)) {
-            out.println("The variable in the recode table is"
+            dbgLog.fine("The variable in the recode table is"
                  + " the variable to be removed");
             // clear the table
             recodeDataList.clear();
@@ -1812,7 +1816,7 @@ if (fieldcut){
             // remove the existing option first
             removeOption(newVarId, getVarSetAdvStat());
         } else {
-            out.println("The variable in the recode table differs "
+            dbgLog.fine("The variable in the recode table differs "
                + "from the variable to be removed");
         }
 
@@ -1820,7 +1824,7 @@ if (fieldcut){
         if (baseVarToDerivedVar.isEmpty()) {
             pgRecodedVarTable.setRendered(false);
         }
-        out.println("***** removeRecodedVariable(): ends here *****");
+        dbgLog.fine("***** removeRecodedVariable(): ends here *****");
     }
 
     public boolean isRecodedVar(String varId) {
@@ -1834,7 +1838,7 @@ if (fieldcut){
             List<Object> rvs = (List<Object>) recodedVarSet.get(i);
             String iter = (String) rvs.get(2);
             if (newVarId.equals(iter)) {
-                out.println("recode data(name) found at " + i + " th row");
+                dbgLog.fine("recode data(name) found at " + i + " th row");
                 return (String) rvs.get(0);
             }
         }
@@ -1846,7 +1850,7 @@ if (fieldcut){
             List<Object> rvs = (List<Object>) recodedVarSet.get(i);
             String iter = (String) rvs.get(2);
             if (newVarId.equals(iter)) {
-                out.println("recode data(label) found at " + i + " th row");
+                dbgLog.fine("recode data(label) found at " + i + " th row");
                 return (String) rvs.get(1);
             }
         }
@@ -1858,7 +1862,7 @@ if (fieldcut){
             List<Object> rvs = (List<Object>) recodedVarSet.get(i);
             String iter = (String) rvs.get(2);
             if (newVarId.equals(iter)) {
-                out.println("recode data(row) found at " + i + " th row");
+                dbgLog.fine("recode data(row) found at " + i + " th row");
                 return rvs;
             }
         }
@@ -1874,13 +1878,13 @@ if (fieldcut){
         // get data stored in the event row
         List<Object> tmpRecodeVarLine = (List<Object>) getRecodedVarTable()
             .getRowData();
-        out.println("current recodedVar row:size=" + tmpRecodeVarLine.size());
-        out.println("current recodedVar row=" + tmpRecodeVarLine);
+        dbgLog.fine("current recodedVar row:size=" + tmpRecodeVarLine.size());
+        dbgLog.fine("current recodedVar row=" + tmpRecodeVarLine);
         // get varId
         String newVarId = (String) tmpRecodeVarLine.get(2);
-        out.println("recoded-var id=" + newVarId);
+        dbgLog.fine("recoded-var id=" + newVarId);
 
-        out.println("Is this a recoded var?[" + isRecodedVar(newVarId) + "]");
+        dbgLog.fine("Is this a recoded var?[" + isRecodedVar(newVarId) + "]");
         // set this varId's list to the recodeTable
 
         if (recodeSchema.containsKey(newVarId)) {
@@ -1890,15 +1894,15 @@ if (fieldcut){
             // FacesContext.getCurrentInstance().getExternalContext()
             //      .getSessionMap().put("recodeDataList", recodeDataList);
                                                                            
-            out.println("contents of new value-label set="
+            dbgLog.fine("contents of new value-label set="
                 + (List<Object>) recodeSchema.get(newVarId));
-            out.println("contents of new value-label set=" + recodeDataList);
+            dbgLog.fine("contents of new value-label set=" + recodeDataList);
             clearRecodeTargetVarInfo();
             // update the current recode-Variable's ID
             String[] tmp = null;
             tmp = newVarId.split("_");
-            out.println("base-var Id from new var id=" + tmp[0]);
-            out.println("base-var Id from the map="
+            dbgLog.fine("base-var Id from new var id=" + tmp[0]);
+            dbgLog.fine("base-var Id from the map="
                 + derivedVarToBaseVar.get(newVarId));
             // setCurrentRecodeVariableId(tmp[0]);
 
@@ -1926,21 +1930,21 @@ if (fieldcut){
             FacesContext.getCurrentInstance().renderResponse();
 
         } else {
-            out.println("value-label table of this var [" + newVarId
+            dbgLog.fine("value-label table of this var [" + newVarId
                 + "] is not found");
         }
 
     }
 
     public void recallRecodedVariable(String newVarId) {
-        out.println("***** recallRecodedVariable(): begins here *****");
+        dbgLog.fine("***** recallRecodedVariable(): begins here *****");
 
         // get data stored in a row of the recodedVarTable by Id
         List<Object> rvs = getRecodedVarSetRow(newVarId);
         if (rvs != null) {
-            out.println("requested newly recoded var was found");
-            out.println("new varName=" + rvs.get(0));
-            out.println("new varLabel=" + rvs.get(1));
+            dbgLog.fine("requested newly recoded var was found");
+            dbgLog.fine("new varName=" + rvs.get(0));
+            dbgLog.fine("new varLabel=" + rvs.get(1));
 
             // set this varId's list to the recodeTable
 
@@ -1948,9 +1952,9 @@ if (fieldcut){
                 setRecodeDataList((List<Object>) recodeSchema.get(newVarId));
 
                 recodeTable.setValue((List<Object>) recodeSchema.get(newVarId));
-                out.println("contents of new value-label set="
+                dbgLog.fine("contents of new value-label set="
                     + (List<Object>) recodeSchema.get(newVarId));
-                out.println("contents of new value-label set="
+                dbgLog.fine("contents of new value-label set="
                     + recodeDataList);
                 FacesContext.getCurrentInstance().getExternalContext()
                     .getSessionMap().put("recodeDataList", recodeDataList);
@@ -1960,8 +1964,8 @@ if (fieldcut){
                 // update the current recode-Variable's ID
                 String[] tmp = null;
                 tmp = newVarId.split("_");
-                out.println("base-var Id from new var id=" + tmp[0]);
-                out.println("base-var Id from the map="
+                dbgLog.fine("base-var Id from new var id=" + tmp[0]);
+                dbgLog.fine("base-var Id from the map="
                     + derivedVarToBaseVar.get(newVarId));
 
                 // currentRecodeVariableId=tmp[0];
@@ -1976,28 +1980,28 @@ if (fieldcut){
                 FacesContext.getCurrentInstance().renderResponse();
 
             } else {
-                out.println("value-label table of this var [" + newVarId
+                dbgLog.fine("value-label table of this var [" + newVarId
                     + "] is not found");
             }
         } else {
-            out.println("requested newly recoded var was not found="
+            dbgLog.warning("requested newly recoded var was not found="
                 + newVarId);
         }
-        out.println("***** recallRecodedVariable(): ends here *****");
+        dbgLog.fine("***** recallRecodedVariable(): ends here *****");
 
     }
 
     // updating the current recoding scheme
     public void replaceRecodedVariable(String newVarId) {
 
-        out.println("***** replaceRecodedVariable(): begins here *****");
-        out.println("current var id (from: args)=" + newVarId);
-        out.println("current var id (from: method)="
+        dbgLog.fine("***** replaceRecodedVariable(): begins here *****");
+        dbgLog.fine("current var id (from: args)=" + newVarId);
+        dbgLog.fine("current var id (from: method)="
             + getCurrentRecodeVariableId());
 
         // get the latest varName in the input field
         String newVarName = (String) recodeTargetVarName.getValue();
-        out.println("new var Name =" + newVarName);
+        dbgLog.fine("new var Name =" + newVarName);
 
         // sanity check against the name
         String whiteSpace = "\\s+";
@@ -2023,18 +2027,18 @@ if (fieldcut){
             return;
         } else {
             // unique and safe name
-            out.println("The new variable name is unique");
+            dbgLog.fine("The new variable name is unique");
             msgSaveRecodeBttn.setRendered(false);
             // msgSaveRecodeBttn.setText("The variable name is unique");
         }
 
         // get the latest varLabel in the input field
         String newVarLabel = (String) getRecodeTargetVarLabel().getValue();
-        out.println("new var Label=" + newVarLabel);
+        dbgLog.fine("new var Label=" + newVarLabel);
 
         // create a new var Id
         // new-case only
-        out.println("newVarId=" + newVarId);
+        dbgLog.fine("newVarId=" + newVarId);
 
         // replace-case only
         // remove the current varId-varName pair: variable name might have been
@@ -2051,24 +2055,24 @@ if (fieldcut){
 
         // add this new var to the old2new mapping table
         // new-case only
-        out.println("old-2-new-var map=" + baseVarToDerivedVar);
+        dbgLog.fine("old-2-new-var map=" + baseVarToDerivedVar);
 
         // remove a row whose condition cell is blank
         // both
-        out.println("start normalization");
+        dbgLog.fine("start normalization");
         for (int i = (recodeDataList.size() - 1); i >= 0; i--) {
             List<Object> row = (List<Object>) recodeDataList.get(i);
             String raw = removeWhiteSpacesfromBothEnds((String) row.get(3));
-            out.println("after removing white spaces[=" + raw + "]");
+            dbgLog.fine("after removing white spaces[=" + raw + "]");
 
             if (raw.equals("")) {
                 recodeDataList.remove(i);
-                out.println("element[" + i + "] was removed");
+                dbgLog.fine("element[" + i + "] was removed");
             }
         }
-        out.println("end of normalization");
+        dbgLog.fine("end of normalization");
 
-        out.println("recodeDataList=" + recodeDataList);
+        dbgLog.fine("recodeDataList=" + recodeDataList);
         // saving the data for the recode-table
         // replace-case: remove the existing entry first
         recodeSchema.remove(newVarId);
@@ -2080,22 +2084,22 @@ if (fieldcut){
         // new and replace: both cases
         FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().put("recodeSchema", recodeSchema);
-        out.println("recodeSchema=" + recodeSchema);
+        dbgLog.fine("recodeSchema=" + recodeSchema);
 
         // replace case
         // 2nd-time save
         // update the existing variable name and label because they might have
         // been modified
-        out.println("new-2-old-var map=" + derivedVarToBaseVar);
+        dbgLog.fine("new-2-old-var map=" + derivedVarToBaseVar);
 
         // get the current row of this recoded var
         int location = -1;
         for (int i = 0; i < recodedVarSet.size(); i++) {
             List<Object> row = (List<Object>) recodedVarSet.get(i);
             String varId = (String) row.get(2);
-            out.println(i + "-th current varId=" + varId);
+            dbgLog.fine(i + "-th current varId=" + varId);
             if (varId.equals(newVarId)) {
-                out.println("The ID was found in the " + i + "-th row");
+                dbgLog.fine("The ID was found in the " + i + "-th row");
                 location = i;
             }
         }
@@ -2105,17 +2109,17 @@ if (fieldcut){
             boolean isVariableNameUpdated = false;
             String oldVarName = (String) oldrw.get(0);
             if (oldVarName.equals(newVarName)) {
-                out.println("The variable name was not updated");
+                dbgLog.fine("The variable name was not updated");
             } else {
-                out.println("The old variable name(" + oldVarName
+                dbgLog.fine("The old variable name(" + oldVarName
                     + ") is replaced by " + newVarName);
 
                 // The variable name has been updated;
                 // remove the current name from recodeVarNameSet first
                 if (recodeVarNameSet.remove(oldVarName)) {
-                    out.println("The old variable name was successfully removed");
+                    dbgLog.fine("The old variable name was successfully removed");
                 } else {
-                    out.println("The old variable name(" + oldVarName
+                    dbgLog.fine("The old variable name(" + oldVarName
                         + ") was not removed");
                 }
                 isVariableNameUpdated = true;
@@ -2146,12 +2150,12 @@ if (fieldcut){
                 recodeVarNameSet.add(newVarName);
             }
         } else {
-            out.println("This variable was not saved(id=" + newVarId + ")");
+            dbgLog.warning("This variable was not saved(id=" + newVarId + ")");
         }
         // show the recoded-var table
         // recodedVarTable.setRendered(true);
-        out.println("recodeVarSet(after update)=" + recodedVarSet);
-        out.println("***** replaceRecodedVariable(): ends here *****");
+        dbgLog.fine("recodeVarSet(after update)=" + recodedVarSet);
+        dbgLog.fine("***** replaceRecodedVariable(): ends here *****");
     }
 
 
@@ -2171,7 +2175,7 @@ if (fieldcut){
             String newVarId = (String) rwi.get(2);
             // add newVarId to newVarName
             mpl.put("v" + newVarId, Arrays.asList(newVarName));
-            out.println("Id-Name: " + newVarId + "=>" + newVarName);
+            dbgLog.fine("Id-Name: " + newVarId + "=>" + newVarName);
             // add new varName
             vns.add(newVarName);
             mpl.put("ud_" + newVarName + "_q_lebaLrav", Arrays
@@ -2180,20 +2184,20 @@ if (fieldcut){
             mpl.put("ud_" + newVarName + "_q_epyTrav", Arrays.asList("1")); 
             // add value-label-condition
             List<Object> rdtbl = (List<Object>) recodeSchema.get(newVarId);
-            out.println("rdtbl=" + rdtbl);
+            dbgLog.fine("rdtbl=" + rdtbl);
             List<String> delList = new ArrayList<String>();
             for (Object rdtblrw : rdtbl) {
                 List<Object> rdtbli = (List<Object>) rdtblrw;
                 String baseVarName = getVariableNamefromId(derivedVarToBaseVar
                     .get(newVarId));
-                out.println("rdtbli=" + rdtbli);
+                dbgLog.fine("rdtbli=" + rdtbli);
 
                 if ((Boolean) rdtbli.get(0)) {
                     // delete flag: boolean true
                     // delete value
                     // "ud_"+ {newVarName} + "_q_eteleD"
                     // "eteleD|"+{VarName}+"|"+{condition}
-                    out.println("delete this value=" + rdtbli.get(3));
+                    dbgLog.fine("delete this value=" + rdtbli.get(3));
                     delList.add("eteleD|" + baseVarName + "|" + rdtbli.get(3));
 
                 } else {
@@ -2201,18 +2205,18 @@ if (fieldcut){
                     // value - label - condition
                     // "ud_"+ {newVarName} + "_q_" +{value}
                     // {label}+"|"+{VarName}+"|"+{condition}
-                    out.println("keep this value=" + rdtbli.get(3));
+                    dbgLog.fine("keep this value=" + rdtbli.get(3));
                     String pmky = "ud_" + newVarName + "_q_" + rdtbli.get(1);
-                    out.println("pmky=" + pmky);
+                    dbgLog.fine("pmky=" + pmky);
                     if (mpl.containsKey(pmky)) {
                         // key exits
                         List<String> tmpvl = (List<String>) mpl.get(pmky);
-                        out.println("tmpvl:b=" + tmpvl);
+                        dbgLog.fine("tmpvl:b=" + tmpvl);
                         String pmvl = rdtbli.get(2) + "|" + baseVarName + "|"
                             + rdtbli.get(3);
-                        out.println("pmvl=" + pmvl);
+                        dbgLog.fine("pmvl=" + pmvl);
                         tmpvl.add(pmvl);
-                        out.println("tmpvl:a=" + tmpvl);
+                        dbgLog.fine("tmpvl:a=" + tmpvl);
                         // mpl.put(pmky, new ArrayList(tmpvl) );
                         mpl.put(pmky, tmpvl);
 
@@ -2362,10 +2366,10 @@ if (fieldcut){
         Object[] vs = edaOptionSet.getSelectedValues();
         // param-checking conditions
         if (vs.length < 1) {
-            out.println("EDA(checkEdaParameters()): no option is checked");
+            dbgLog.fine("EDA(checkEdaParameters()): no option is checked");
             result = false;
         } else {
-            out.println("EDA(checkEdaParameters): number of selected options="
+            dbgLog.fine("EDA(checkEdaParameters): number of selected options="
                 + vs.length);
         }
         return result;
@@ -2383,12 +2387,12 @@ if (fieldcut){
             HttpServletRequest req = (HttpServletRequest) cntxt
                 .getExternalContext().getRequest();            
             try {
-                out.println("***** within edaActionLstnr() *****");
+                dbgLog.fine("***** within edaActionLstnr() *****");
 
                 StudyFile sf = dataTable.getStudyFile();
 
                 String dsbUrl = getDsbUrl();
-                out.println("dsbUrl=" + dsbUrl);
+                dbgLog.fine("dsbUrl=" + dsbUrl);
 
                 /*
                     String serverPrefix = req.getScheme() + "://"
@@ -2397,7 +2401,7 @@ if (fieldcut){
                 */
                 String serverPrefix = "http://dvn-alpha.hmdc.harvard.edu"
                     + req.getContextPath();
-                out.println("serverPrefix"+serverPrefix);
+                dbgLog.fine("serverPrefix"+serverPrefix);
                 
                 // String serverPrefix = req.getScheme() +"://" + dsbUrl + ":" +
                 // req.getServerPort() + req.getContextPath();
@@ -2414,7 +2418,7 @@ if (fieldcut){
                 List<String> alst = new ArrayList<String>();
 
                 for (int i = 0; i < vs.length; i++) {
-                    out.println("eda option[" + i + "]=" + vs[i]);
+                    dbgLog.fine("eda option[" + i + "]=" + vs[i]);
                     alst.add((String) vs[i]);
                 }
                 mpl.put("analysis", alst);
@@ -2428,7 +2432,7 @@ if (fieldcut){
                     mpl.putAll(getRecodedVarParameters());
                 }
 
-                out.println("citation info to be sent:\n" + citation);
+                dbgLog.fine("citation info to be sent:\n" + citation);
                 mpl.put("OfflineCitation", Arrays.asList(citation));
 
                 mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
@@ -2443,7 +2447,7 @@ if (fieldcut){
                 new DSBWrapper().disseminate(res, mpl, sf, serverPrefix,
                     getDataVariableForRequest());                    
             } catch (IOException ex) {
-                out.println("disseminate:EDA failed due to io exception");
+                dbgLog.severe("disseminate:EDA failed due to io exception");
                 ex.printStackTrace();
             }
             cntxt.responseComplete();
@@ -2451,9 +2455,9 @@ if (fieldcut){
             // show error message;
             setMsgEdaButtonTxt("* Select at least one option");
             msgEdaButton.setVisible(true);
-            out.println("exiting edaActionLstnr() due to incomplete data ");
+            dbgLog.warning("exiting edaActionLstnr() due to incomplete data ");
         }
-        out.println("***** within edaActionLstnr(): ends here *****");
+        dbgLog.fine("***** within edaActionLstnr(): ends here *****");
     }
 
     // msgEdaButton:ui:StaticText@binding
@@ -2478,13 +2482,13 @@ if (fieldcut){
     }
 
     public void resetMsgEdaButton() {
-        out.println("***** within resetMsgEdaButton *****");
+        dbgLog.fine("***** within resetMsgEdaButton *****");
         setMsgEdaButtonTxt(" ");
         FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().put("msgEdaButtonTxt", msgEdaButtonTxt);
         msgEdaButton.setVisible(false);
 
-        out.println("***** resetMsgEdaButton: end  *****");
+        dbgLog.fine("***** resetMsgEdaButton: end  *****");
     }
 
     // end of eda section ----------------------------------------------------
@@ -2505,13 +2509,13 @@ if (fieldcut){
             HttpServletRequest req = (HttpServletRequest) cntxt
                 .getExternalContext().getRequest();
 
-                out.println("***** within edaAction() *****");
+                dbgLog.fine("***** within edaAction() *****");
 
                 StudyFile sf = dataTable.getStudyFile();
                 Long noRecords = dataTable.getRecordsPerCase();
 
                 String dsbUrl = getDsbUrl();
-                out.println("dsbUrl=" + dsbUrl);
+                dbgLog.fine("dsbUrl=" + dsbUrl);
 
                 String serverPrefix = req.getScheme() + "://"
                 + req.getServerName() + ":" + req.getServerPort()
@@ -2520,7 +2524,7 @@ if (fieldcut){
                 String serverPrefix = "http://dvn-alpha.hmdc.harvard.edu"
                     + req.getContextPath();
                 */    
-                out.println("serverPrefix"+serverPrefix);
+                dbgLog.fine("serverPrefix"+serverPrefix);
 
                 /*
                  * "optnlst_a" => "A01|A02|A03",
@@ -2537,7 +2541,7 @@ if (fieldcut){
                 List<String> alst = new ArrayList<String>();
 
                 for (int i = 0; i < vs.length; i++) {
-                    out.println("eda option[" + i + "]=" + vs[i]);
+                    dbgLog.fine("eda option[" + i + "]=" + vs[i]);
                     alst.add((String) vs[i]);
                 }
 
@@ -2550,7 +2554,7 @@ if (fieldcut){
                     mpl.putAll(getRecodedVarParameters());
                 }
 
-                out.println("citation info to be sent:\n" + citation);
+                dbgLog.fine("citation info to be sent:\n" + citation);
                 
                 mpl.put("OfflineCitation", Arrays.asList(citation));
 
@@ -2579,17 +2583,17 @@ if (fieldcut){
             String fileId = sf.getId().toString();
             String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
             //String fileURL = "http://dvn-alpha.hmdc.harvard.edu" + "/dvn/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-            out.println("fileURL="+fileURL);
+            dbgLog.fine("fileURL="+fileURL);
             
             String fileloc = sf.getFileSystemLocation();
             String tabflnm = sf.getFileName();
             boolean sbstOK = sf.isSubsettable();
             String flct = sf.getFileType();
             
-            out.println("location="+fileloc);
-            out.println("filename="+tabflnm);
-            out.println("subsettable="+sbstOK);
-            out.println("filetype="+flct);
+            dbgLog.fine("location="+fileloc);
+            dbgLog.fine("filename="+tabflnm);
+            dbgLog.fine("subsettable="+sbstOK);
+            dbgLog.fine("filetype="+flct);
 
 
             // the data file for downloading/statistical analyses must be subset-ready
@@ -2623,8 +2627,8 @@ if (fieldcut){
                     }
                     outb.close();
                     if (tmpfl.exists()){
-                       out.println("file length="+tmpfl.length());
-                       out.println("tmp file name="+tmpfl.getAbsolutePath());
+                       dbgLog.fine("file length="+tmpfl.length());
+                       dbgLog.fine("tmp file name="+tmpfl.getAbsolutePath());
                        
                     }
                     
@@ -2662,7 +2666,7 @@ if (fieldcut){
                     }
                     
 
-                     out.println("cols="+cols);
+                     dbgLog.fine("cols="+cols);
                     // source data file: full-path name
                     String cutOp1 = tmpfl.getAbsolutePath();
 
@@ -2678,7 +2682,7 @@ if (fieldcut){
                     
                     // Checks the result file 
                     if (tmpsbfl.exists()){
-                        out.println("subsettFile:Length="+tmpsbfl.length());
+                        dbgLog.fine("subsettFile:Length="+tmpsbfl.length());
                         mpl.put("subsetFileName", Arrays.asList(cutOp2));
                     }
                         mpl.put("requestType", Arrays.asList("EDA"));
@@ -2730,7 +2734,7 @@ if (fieldcut){
                     
                     // Checks the result file 
                     if (tmpsbfl.exists()){
-                        out.println("subsettFile:Length="+tmpsbfl.length());
+                        dbgLog.fine("subsettFile:Length="+tmpsbfl.length());
                         mpl.put("subsetFileName", Arrays.asList(cutOp2));
                     }
                         mpl.put("requestType", Arrays.asList("EDA"));
@@ -2742,7 +2746,7 @@ if (fieldcut){
                     // data-analysis-service class
                     DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
 
-                    out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+                    dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     // Step 4. Creates an instance of the the implemented 
                     // data-analysis-service class 
 
@@ -2765,7 +2769,7 @@ if (fieldcut){
 
 }  // end of the subsettable case
 
-            out.println("***** within edaAction(): succcessfully ends here *****");
+            dbgLog.fine("***** within edaAction(): succcessfully ends here *****");
             
                 resultInfo.put("offlineCitation", citation);
                 resultInfo.put("studyTitle", studyTitle);
@@ -2796,7 +2800,7 @@ if (fieldcut){
             // show error message;
             setMsgEdaButtonTxt("* Select at least one option");
             msgEdaButton.setVisible(true);
-            out.println("exiting edaAction() due to incomplete data ");
+            dbgLog.warning("exiting edaAction() due to incomplete data ");
             return "failure";
         }
 
@@ -2905,15 +2909,15 @@ if (fieldcut){
 
     // dropDown1: ui: dropDown@valueChangeListener
     public void dropDown1_processValueChange(ValueChangeEvent vce) {
-        out.println("\n\n***** dropDown1_processValueChange:start *****");        
+        dbgLog.fine("\n\n***** dropDown1_processValueChange:start *****");        
         String lastModelName = getCurrentModelName();
-        out.println("stored model name(get)=" + lastModelName);
-        out.println("stored model name=" + currentModelName);
+        dbgLog.fine("stored model name(get)=" + lastModelName);
+        dbgLog.fine("stored model name=" + currentModelName);
         FacesContext cntxt = FacesContext.getCurrentInstance();
 
-        out.println("pass the valueChangeListener dropDown1_processValueChange");
+        dbgLog.fine("pass the valueChangeListener dropDown1_processValueChange");
         String newModelName = (String) vce.getNewValue();
-        out.println("Newly selected model=" + newModelName);
+        dbgLog.fine("Newly selected model=" + newModelName);
         // IE users may select separator "---"
         if (newModelName.startsWith("---")){
             if (lastModelName==null){
@@ -2925,13 +2929,13 @@ if (fieldcut){
             } else {
                 // last option was some meaningful model name
                 newModelName = lastModelName;
-                out.println("revert to the previous choice");
-                out.println("selected model(---)=" + getCurrentModelName());
-                out.println("selected model(---)=" + lastModelName);
+                dbgLog.fine("revert to the previous choice");
+                dbgLog.fine("selected model(---)=" + getCurrentModelName());
+                dbgLog.fine("selected model(---)=" + lastModelName);
                 setCurrentModelName(lastModelName);
                 dropDown1.setSelected(lastModelName);
-                out.println("selected model(---)=" + dropDown1.getSelected());
-                out.println("selected model(---)=" + currentModelName);
+                dbgLog.fine("selected model(---)=" + dropDown1.getSelected());
+                dbgLog.fine("selected model(---)=" + currentModelName);
 
                 cntxt.getExternalContext().getSessionMap().put("currentModelName",
                 currentModelName);
@@ -2941,26 +2945,26 @@ if (fieldcut){
             // this model's name
             // String selectedModelName= (String)dropDown1.getSelected();
             setCurrentModelName((String) dropDown1.getSelected());
-            out.println("selected model=" + getCurrentModelName());
+            dbgLog.fine("selected model=" + getCurrentModelName());
             cntxt.getExternalContext().getSessionMap().put("currentModelName",
                 currentModelName);
         }
         // this model's spec
         AdvancedStatGUIdata.Model selectedModelSpec = getAnalysisApplicationBean()
             .getSpecMap().get(getCurrentModelName());
-        out.println("model info:\n" + selectedModelSpec);
+        dbgLog.fine("model info:\n" + selectedModelSpec);
         // cntxt.getExternalContext().getSessionMap().put("selectedModelSpec",selectedModelSpec);
 
         // for the first time only
         //if (!groupPanel8below.isRendered()) {
         if (!groupPanel8belowRendered) {
-            out.println("this is the first time to render the model-option panel");
+            dbgLog.fine("this is the first time to render the model-option panel");
             // groupPanel8below.setRendered(true);
             groupPanel8belowRendered=Boolean.TRUE;
         } else {
-            out.println("this is NOT the first time to render the model-option panel");
+            dbgLog.fine("this is NOT the first time to render the model-option panel");
             if (!newModelName.equals(lastModelName)) {
-                out.println("A New Model is selected: Clear all variables in the R boxes");
+                dbgLog.fine("A New Model is selected: Clear all variables in the R boxes");
                 advStatVarRBox1.clear();
                 advStatVarRBox2.clear();
                 advStatVarRBox3.clear();
@@ -2975,18 +2979,18 @@ if (fieldcut){
         } else {
             gridPanelModelInfoBox.setRendered(false);
         }
-        out.println("help Link=" + modelHelp);
+        dbgLog.fine("help Link=" + modelHelp);
 
         // this model's required variable boxes
         int noRboxes = selectedModelSpec.getNoRboxes();
-        out.println("model info:RBoxes=" + noRboxes);
+        dbgLog.fine("model info:RBoxes=" + noRboxes);
 
         if (noRboxes == 1) {
             // hide 2nd/3rd panels
             groupPanel13.setRendered(false);
             groupPanel14.setRendered(false);
 
-            out.println("varBoxR1 label="
+            dbgLog.fine("varBoxR1 label="
                 + selectedModelSpec.getVarBox().get(0).getLabel());
 
             // set var box label
@@ -2998,9 +3002,9 @@ if (fieldcut){
             groupPanel13.setRendered(true);
             groupPanel14.setRendered(false);
 
-            out.println("varBoxR1 label="
+            dbgLog.fine("varBoxR1 label="
                 + selectedModelSpec.getVarBox().get(0).getLabel());
-            out.println("varBoxR2 label="
+            dbgLog.fine("varBoxR2 label="
                 + selectedModelSpec.getVarBox().get(1).getLabel());
 
             // set var box label
@@ -3014,11 +3018,11 @@ if (fieldcut){
             groupPanel13.setRendered(true);
             groupPanel14.setRendered(true);
 
-            out.println("varBoxR1 label="
+            dbgLog.fine("varBoxR1 label="
                 + selectedModelSpec.getVarBox().get(0).getLabel());
-            out.println("varBoxR2 label="
+            dbgLog.fine("varBoxR2 label="
                 + selectedModelSpec.getVarBox().get(1).getLabel());
-            out.println("varBoxR3 label="
+            dbgLog.fine("varBoxR3 label="
                 + selectedModelSpec.getVarBox().get(2).getLabel());
 
             // set var box label
@@ -3054,9 +3058,9 @@ if (fieldcut){
         FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().put("groupPanel8belowRendered", 
             groupPanel8belowRendered);
-        out.println("groupPanel8belowRendered=" + groupPanel8belowRendered);
+        dbgLog.fine("groupPanel8belowRendered=" + groupPanel8belowRendered);
         cntxt.renderResponse();
-        out.println("***** dropDown1_processValueChange:end *****\n");
+        dbgLog.fine("***** dropDown1_processValueChange:end *****\n");
     }
 
     private String dropDown1ClientId;
@@ -3219,11 +3223,11 @@ if (fieldcut){
         }
 
         /*
-         * out.println("resetVarSetAdvStat: current tab
+         * dbgLog.fine("resetVarSetAdvStat: current tab
          * id="+tabSet1.getSelected()); if
-         * (tabSet1.getSelected().equals("tabRecode")){ out.println("current tab
+         * (tabSet1.getSelected().equals("tabRecode")){ dbgLog.fine("current tab
          * is: Recode[no recoded variables added]"); } else{
-         * out.println("current tab is not Recode [add recoded variables]"); }
+         * dbgLog.fine("current tab is not Recode [add recoded variables]"); }
          */
 
         Iterator all = vs.entrySet().iterator();
@@ -3485,8 +3489,8 @@ if (fieldcut){
                 noCat++;
             }
         }
-        out.println("non-exclude values="+noCat);
-        out.println("unique non-exclude values="+newValidValueSet.size());
+        dbgLog.fine("non-exclude values="+noCat);
+        dbgLog.fine("unique non-exclude values="+newValidValueSet.size());
         //return noCat;
         return newValidValueSet.size();
     }
@@ -3500,7 +3504,7 @@ if (fieldcut){
      */
     public int getSumStatSize(String varId) {
         int sumStatSize = getVariableById(varId).getSummaryStatistics().size();
-        out.println("sumStat size=" + sumStatSize);
+        dbgLog.fine("sumStat size=" + sumStatSize);
         return sumStatSize;
     }
     
@@ -3522,13 +3526,13 @@ if (fieldcut){
                 catStatSize++;
             }
         }
-        out.println("valid categories=" + catStatSize);
+        dbgLog.fine("valid categories=" + catStatSize);
         return catStatSize;
     }
 
     // check whether the requested move is permissible
     private Boolean checkVarType(String varId, String boxVarType, Boolean strict) {
-        out.println("variable id=" + varId);
+        dbgLog.fine("variable id=" + varId);
         int varType = 1;
         if (isRecodedVar(varId)) {
             // recoded var case
@@ -3542,7 +3546,7 @@ if (fieldcut){
             varType = getVariableType(getVariableById(varId));
         }
 
-        out.println("Type of the variable to be moved=" + varType);
+        dbgLog.fine("Type of the variable to be moved=" + varType);
         Integer boxType = dataType2Int.get(boxVarType);
 
         Boolean result = false;
@@ -3659,11 +3663,11 @@ if (fieldcut){
         }
 
         if (result) {
-            out.println("The move passed the test");
+            dbgLog.fine("The move passed the test");
         } else {
-            out.println("The move failed the test");
-            out.println("expected type=" + boxVarType);
-            out.println("variable's type="
+            dbgLog.fine("The move failed the test");
+            dbgLog.fine("expected type=" + boxVarType);
+            dbgLog.fine("variable's type="
                 + vtInt2String.get(Integer.toString(varType)));
         }
         return result;
@@ -3706,42 +3710,42 @@ if (fieldcut){
 
     // move from L to R1
     public void addVarBoxR1(ActionEvent acev) {
-        out.println("\n***** within addVarBoxR1(): model name=" + 
+        dbgLog.fine("\n***** within addVarBoxR1(): model name=" + 
             getCurrentModelName()+" *****");
             
-        out.println("advStatSelectedVarLBox="+advStatSelectedVarLBox);
+        dbgLog.fine("advStatSelectedVarLBox="+advStatSelectedVarLBox);
         String[] OptnSet = getAdvStatSelectedVarLBox();
-        out.println("OptnSet Length="+OptnSet.length);
-        out.println("OptnSet="+OptnSet);
+        dbgLog.fine("OptnSet Length="+OptnSet.length);
+        dbgLog.fine("OptnSet="+OptnSet);
 
         int BoxR1max = getAnalysisApplicationBean().getSpecMap().get(
             getCurrentModelName()).getVarBox().get(0).getMaxvar();
 
-        out.println("BoxR1max=" + BoxR1max);
+        dbgLog.fine("BoxR1max=" + BoxR1max);
 
-        // out.println("BoxR1min="+getAnalysisApplicationBean().getSpecMap().get(getCurrentModelName()).getVarBox().get(0).getMinvar()
+        // dbgLog.fine("BoxR1min="+getAnalysisApplicationBean().getSpecMap().get(getCurrentModelName()).getVarBox().get(0).getMinvar()
         // );
 
-        out.println("current listboxR1 size=" + advStatVarRBox1.size());
+        dbgLog.fine("current listboxR1 size=" + advStatVarRBox1.size());
 
         String varType = getAnalysisApplicationBean().getSpecMap().get(
             getCurrentModelName()).getVarBox().get(0).getVarType();
 
-        out.println("permissible variable type for advStatVarRBox1=" + varType);
+        dbgLog.fine("permissible variable type for advStatVarRBox1=" + varType);
 
         // for each selected item
         if (advStatVarRBox1.size() < BoxR1max) {
-            out.println("< BoxR1max case");
+            dbgLog.fine("< BoxR1max case");
             for (int i = 0; i < OptnSet.length; i++) {
                 // reset error message field
                 resetMsg4MoveVar();
                 // type check
-                out.println("OptnSet[" + i + "]=" + OptnSet[i]);
+                dbgLog.fine("OptnSet[" + i + "]=" + OptnSet[i]);
                 if (checkVarType(OptnSet[i], varType, true)) {
                     getAdvStatVarRBox1().add(
                         removeOption(OptnSet[i], getVarSetAdvStat()));
 
-                    out.println("current listboxR1 size(within loop)="
+                    dbgLog.fine("current listboxR1 size(within loop)="
                         + advStatVarRBox1.size());
                     if (advStatVarRBox1.size() == BoxR1max) {
                         return;
@@ -3758,7 +3762,7 @@ if (fieldcut){
                 }
             }
         } else {
-            out.println("1st RHS box is already maxed out");
+            dbgLog.fine("1st RHS box is already maxed out");
             // show error message;
             msgMoveVar1Bttn.setText("* The max number of variables<br/>for this box is: "
                     + BoxR1max);
@@ -3781,23 +3785,23 @@ if (fieldcut){
         // set left-selected items to a temp list
         String[] OptnSet = (String[])getAdvStatSelectedVarLBox();
 
-        out.println("***** within addVarBoxR2(): model name=" +
+        dbgLog.fine("***** within addVarBoxR2(): model name=" +
             getCurrentModelName()+" *****");
 
         int BoxR2max = getAnalysisApplicationBean().getSpecMap().get(
             getCurrentModelName()).getVarBox().get(1).getMaxvar();
 
-        out.println("BoxR2max=" + BoxR2max);
+        dbgLog.fine("BoxR2max=" + BoxR2max);
 
-        // out.println("BoxR2min="+getAnalysisApplicationBean().getSpecMap().get(getCurrentModelName()).getVarBox().get(1).getMinvar()
+        // dbgLog.fine("BoxR2min="+getAnalysisApplicationBean().getSpecMap().get(getCurrentModelName()).getVarBox().get(1).getMinvar()
         // );
 
-        out.println("current listbox size=" + advStatVarRBox2.size());
+        dbgLog.fine("current listbox size=" + advStatVarRBox2.size());
 
         String varType = getAnalysisApplicationBean().getSpecMap().get(
             getCurrentModelName()).getVarBox().get(1).getVarType();
 
-        out.println("permissible variable type for advStatVarRBox2=" + varType);
+        dbgLog.fine("permissible variable type for advStatVarRBox2=" + varType);
 
         // for each selected item
         if (advStatVarRBox2.size() < BoxR2max) {
@@ -3806,11 +3810,11 @@ if (fieldcut){
                 // reset error message field
                 resetMsg4MoveVar();
                 // type check
-                out.println("OptnSet[" + i + "]=" + OptnSet[i]);
+                dbgLog.fine("OptnSet[" + i + "]=" + OptnSet[i]);
                 if (checkVarType(OptnSet[i], varType, true)) {
                     getAdvStatVarRBox2().add(
                         removeOption(OptnSet[i], getVarSetAdvStat()));
-                    out.println("current listboxR2 size(within loop)="
+                    dbgLog.fine("current listboxR2 size(within loop)="
                         + advStatVarRBox2.size());
                     if (advStatVarRBox2.size() == BoxR2max) {
                         return;
@@ -3827,7 +3831,7 @@ if (fieldcut){
                 }
             }
         } else {
-            out.println("2nd RHS box is already maxed out");
+            dbgLog.warning("2nd RHS box is already maxed out");
             // show error message;
             msgMoveVar2Bttn.setText("* The max number of variables<br/>for this box is: "
                     + BoxR2max);
@@ -3850,24 +3854,24 @@ if (fieldcut){
         // set left-selected items to a temp list
         String[] OptnSet = (String[])getAdvStatSelectedVarLBox();
 
-        out.println("***** within addVarBoxR3(): model name=" + 
+        dbgLog.fine("***** within addVarBoxR3(): model name=" + 
             getCurrentModelName()+" *****" +
             "");
 
         int BoxR3max = getAnalysisApplicationBean().getSpecMap().get(
             getCurrentModelName()).getVarBox().get(2).getMaxvar();
 
-        out.println("BoxR3max=" + BoxR3max);
+        dbgLog.fine("BoxR3max=" + BoxR3max);
 
-        // out.println("BoxR2min="+getAnalysisApplicationBean().getSpecMap().get(getCurrentModelName()).getVarBox().get(2).getMinvar()
+        // dbgLog.fine("BoxR2min="+getAnalysisApplicationBean().getSpecMap().get(getCurrentModelName()).getVarBox().get(2).getMinvar()
         // );
 
-        out.println("current listboxR3 size=" + advStatVarRBox3.size());
+        dbgLog.fine("current listboxR3 size=" + advStatVarRBox3.size());
 
         String varType = getAnalysisApplicationBean().getSpecMap().get(
             getCurrentModelName()).getVarBox().get(2).getVarType();
 
-        out.println("permissible variable type for advStatVarRBox3=" + varType);
+        dbgLog.fine("permissible variable type for advStatVarRBox3=" + varType);
 
         // for each selected item
         if (advStatVarRBox3.size() < BoxR3max) {
@@ -3875,13 +3879,13 @@ if (fieldcut){
                 // reset error message field
                 resetMsg4MoveVar();
                 // type check
-                out.println("OptnSet[" + i + "]=" + OptnSet[i]);
+                dbgLog.fine("OptnSet[" + i + "]=" + OptnSet[i]);
                 if (checkVarType(OptnSet[i], varType, true)) {
 
                     getAdvStatVarRBox3().add(
                         removeOption(OptnSet[i], getVarSetAdvStat()));
 
-                    out.println("current listboxR3 size(within loop)="
+                    dbgLog.fine("current listboxR3 size(within loop)="
                         + advStatVarRBox3.size());
                     if (advStatVarRBox3.size() == BoxR3max) {
                         return;
@@ -3990,11 +3994,11 @@ if (fieldcut){
     }
 
     public void checkboxGroupXtbProcessValueChange(ValueChangeEvent vce) {
-        out.println("checkboxGroupXtbProcessValueChange");
-        out.println("checkbox: new value=" + vce.getNewValue());
+        dbgLog.fine("checkboxGroupXtbProcessValueChange");
+        dbgLog.fine("checkbox: new value=" + vce.getNewValue());
         Option[] outOption = (Option[]) checkboxGroupXtbOptions.getOptions();
         for (int i = 0; i < outOption.length; i++) {
-            out.println("output option[" + i + "]=" + outOption[i].getValue());
+            dbgLog.fine("output option[" + i + "]=" + outOption[i].getValue());
         }
     }
     // </editor-fold>
@@ -4103,17 +4107,17 @@ if (fieldcut){
         FacesContext cntxt = FacesContext.getCurrentInstance();
 
         String currentState = (String) vce.getNewValue();
-        out.println("currentState=" + currentState);
-        out.println("current model name in setx=" + getCurrentModelName());
+        dbgLog.fine("currentState=" + currentState);
+        dbgLog.fine("current model name in setx=" + getCurrentModelName());
 
-        out.print("within simulation-type choice: new selected="
+        dbgLog.fine("within simulation-type choice: new selected="
             + radioButtonGroup1.getSelected());
         if (getCurrentModelName() != null) {
 
             AdvancedStatGUIdata.Model selectedModelSpec = 
                 getAnalysisApplicationBean().getSpecMap()
                     .get(getCurrentModelName());
-            out.println("spec within setx:\n" + selectedModelSpec);
+            dbgLog.fine("spec within setx:\n" + selectedModelSpec);
             if ((currentState.toString()).equals("1")) {
                 groupPanel22.setRendered(true);
 
@@ -4311,20 +4315,20 @@ if (fieldcut){
         Integer noBoxR = getAnalysisApplicationBean().getSpecMap().get(mdlName)
             .getNoRboxes();
         List<Integer> RBoxSizes = getCurrentVarBoxSize(mdlName);
-        out.println("RBoxSizes=" + RBoxSizes);
+        dbgLog.fine("RBoxSizes=" + RBoxSizes);
         int noe = 0;
         resetMsg4MoveVar();
         for (int i = 0; i < noBoxR; i++) {
 
             Integer ithBoxMin = getAnalysisApplicationBean().getSpecMap().get(
                 mdlName).getVarBox().get(i).getMinvar();
-            out.println("ithBoxMin(" + i + ")=" + ithBoxMin);
+            dbgLog.fine("ithBoxMin(" + i + ")=" + ithBoxMin);
             if (RBoxSizes.get(i) < ithBoxMin) {
                 String ermsg = "No of Vars in Box" + i + " ("
                     + RBoxSizes.get(i) + ") is less than the minimum("
                     + ithBoxMin + ")";
 
-                out.println("* " + ermsg);
+                dbgLog.fine("* " + ermsg);
 
                 noe++;
                 if (i == 0) {
@@ -4340,7 +4344,7 @@ if (fieldcut){
             }
 
         }
-        out.println("noe=" + noe);
+        dbgLog.fine("noe=" + noe);
         return (noe == 0 ? true : false);
     }
 
@@ -4370,13 +4374,13 @@ if (fieldcut){
     }
 
     public void resetMsgAdvStatButton() {
-        out.println("***** within resetMsgAdvStatButton *****");
+        dbgLog.fine("***** within resetMsgAdvStatButton *****");
         setMsgAdvStatButtonTxt(" ");
         FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().put("msgAdvStatButtonTxt", msgAdvStatButtonTxt);
         msgAdvStatButton.setVisible(false);
 
-        out.println("***** resetMsgAdvStatButton: end  *****");
+        dbgLog.fine("***** resetMsgAdvStatButton: end  *****");
     }
 
 
@@ -4390,7 +4394,7 @@ if (fieldcut){
         // check the current model
 
         String mdlName = (String) dropDown1.getSelected();
-        out.println("model name=" + mdlName);
+        dbgLog.fine("model name=" + mdlName);
 
         if (checkAdvStatParameters(mdlName)) {
 
@@ -4401,7 +4405,7 @@ if (fieldcut){
             HttpServletRequest req = (HttpServletRequest) cntxt
                 .getExternalContext().getRequest();
             try {
-                out.println("***** within advStatActionLstnr() *****");
+                dbgLog.fine("***** within advStatActionLstnr() *****");
                 // common parts
                 // data file
                 StudyFile sf = dataTable.getStudyFile();
@@ -4418,7 +4422,7 @@ if (fieldcut){
                     dsbUrl = System.getProperty("vdc.dsb.url");
                 }
 
-                out.println("dsbUrl=" + dsbUrl);
+                dbgLog.fine("dsbUrl=" + dsbUrl);
 
                 // String serverPrefix =
                 // "http://vdc-build.hmdc.harvard.edu:8080/dvn";
@@ -4449,52 +4453,52 @@ if (fieldcut){
                     List<String> tv = new ArrayList<String>();
                     tv.add("T");
                     for (int j = 0; j < outOptn.length; j++) {
-                        out.println("output option[" + j + "]=" + outOptn[j]);
+                        dbgLog.fine("output option[" + j + "]=" + outOptn[j]);
 
                         mpl.put((String) outOptn[j], new ArrayList(tv));
                     }
                     // variables: 1st RBox
                     if (advStatVarRBox1.size() >= 1) {
-                        out.println("RB1:" + getDataVariableForRBox1());
+                        dbgLog.fine("RB1:" + getDataVariableForRBox1());
                         mpl.put("xtb_nmBxR1", getDataVariableForRBox1());
                     }
                     // variables: 2nd RBox
                     if (advStatVarRBox2.size() >= 1) {
-                        out.println("RB2:" + getDataVariableForRBox2());
+                        dbgLog.fine("RB2:" + getDataVariableForRBox2());
                         mpl.put("xtb_nmBxR2", getDataVariableForRBox2());
                     }
 
                     mpl.put("analysis", alst);
 
                 } else {
-                    out.println("***** zelig param block *****");
+                    dbgLog.fine("***** zelig param block *****");
                     // non-xtb, i.e., zelig cases
                     // check zlg value
                     // String mdlZname= mdlName+;
-                    out.println("model spec dump="
+                    dbgLog.fine("model spec dump="
                         + getAnalysisApplicationBean().getSpecMap()
                             .get(mdlName));
-                    out.println("model spec mdlId="
+                    dbgLog.fine("model spec mdlId="
                         + getAnalysisApplicationBean().getSpecMap()
                             .get(mdlName).getMdlId());
                     String zligPrefix = getAnalysisApplicationBean()
                         .getSpecMap().get(mdlName).getMdlId();
-                    out.println("model no=" + zligPrefix);
+                    dbgLog.fine("model no=" + zligPrefix);
                     // 1-RBox case
                     if (advStatVarRBox1.size() >= 1) {
-                        out.println("RB1:" + getDataVariableForRBox1());
+                        dbgLog.fine("RB1:" + getDataVariableForRBox1());
                         mpl.put(zligPrefix + "_nmBxR1",
                             getDataVariableForRBox1());
                     }
                     // 2-RBox case
                     if (advStatVarRBox2.size() >= 1) {
-                        out.println("RB2:" + getDataVariableForRBox2());
+                        dbgLog.fine("RB2:" + getDataVariableForRBox2());
                         mpl.put(zligPrefix + "_nmBxR2",
                             getDataVariableForRBox2());
                     }
                     // 3-RBox case
                     if (advStatVarRBox3.size() >= 1) {
-                        out.println("RB3:" + getDataVariableForRBox3());
+                        dbgLog.fine("RB3:" + getDataVariableForRBox3());
                         mpl.put(zligPrefix + "_nmBxR3",
                             getDataVariableForRBox3());
                     }
@@ -4509,13 +4513,13 @@ if (fieldcut){
                     // model title
                     String ttl = getAnalysisApplicationBean().getSpecMap().get(
                         mdlName).getTitle();
-                    out.println("model title=" + ttl);
+                    dbgLog.fine("model title=" + ttl);
                     mpl.put("mdlTitle_" + mdlName, Arrays.asList(ttl));
 
                     // nrBoxes
                     int noRboxes = getAnalysisApplicationBean().getSpecMap()
                         .get(mdlName).getNoRboxes();
-                    out.println("noRboxes=" + noRboxes);
+                    dbgLog.fine("noRboxes=" + noRboxes);
 
                     mpl.put("noBoxes_" + mdlName, Arrays.asList(Integer
                         .toString(noRboxes)));
@@ -4523,7 +4527,7 @@ if (fieldcut){
                     // binary
                     String mdlCategory = getAnalysisApplicationBean()
                         .getSpecMap().get(mdlName).getCategory();
-                    out.println("model category=" + mdlCategory);
+                    dbgLog.fine("model category=" + mdlCategory);
                     if (mdlCategory
                         .equals("Models for Dichotomous Dependent Variables")) {
                         mpl.put("mdlDepVarType_" + mdlName, Arrays
@@ -4538,7 +4542,7 @@ if (fieldcut){
                     for (int j = 0; j < outOptn.length; j++) {
                         String outputOptnkey = zligPrefix + "_"
                             + (String) outOptn[j];
-                        out.println("zelig: output option[" + j + "]="
+                        dbgLog.fine("zelig: output option[" + j + "]="
                             + outputOptnkey);
                         mpl.put(outputOptnkey, Arrays.asList("T"));
                     }
@@ -4584,14 +4588,14 @@ if (fieldcut){
                     }
 
                 }
-                out.println("contents(mpl):" + mpl);
+                dbgLog.fine("contents(mpl):" + mpl);
 
                 // if there is a user-defined (recoded) variables
                 if (recodedVarSet.size() > 0) {
                     mpl.putAll(getRecodedVarParameters());
                 }
 
-                out.println("citation info to be sent:\n" + citation);
+                dbgLog.fine("citation info to be sent:\n" + citation);
                 mpl.put("OfflineCitation", Arrays.asList(citation));
 
                 mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
@@ -4605,7 +4609,7 @@ if (fieldcut){
                     getDataVariableForRequest());
 
             } catch (IOException ex) {
-                out.println("disseminate: advanced Statistics failed due to io exception");
+                dbgLog.fine("disseminate: advanced Statistics failed due to io exception");
                 ex.printStackTrace();
             }
 
@@ -4614,9 +4618,9 @@ if (fieldcut){
             // return "success";
         } else {
             // return "failure";
-            out.println("exiting advStatActionLstnr() due to incomplete data ");
+            dbgLog.fine("exiting advStatActionLstnr() due to incomplete data ");
         }
-        out.println("***** advStatActionLstnr(): ends here *****");
+        dbgLog.fine("***** advStatActionLstnr(): ends here *****");
     }
 
     public List<String> getDataVariableForRBox1() {
@@ -4657,7 +4661,7 @@ if (fieldcut){
 
     public List<String> getMdlType(String mdlName, String sf) {
         List<String> ls = new ArrayList<String>();
-        out.println("model name=" + mdlName + "  special function=" + sf);
+        dbgLog.fine("model name=" + mdlName + "  special function=" + sf);
         int typeValue = 0;
 
         if (mdlName.equals("blogit") || mdlName.equals("bprobit")) {
@@ -4669,7 +4673,7 @@ if (fieldcut){
                 } else {
                     String[] tmp = null;
                     tmp = mdlName.split("\\.");
-                    out.println("tmp[0]=" + tmp[0]);
+                    dbgLog.fine("tmp[0]=" + tmp[0]);
                     if (tmp[0].equals("factor")) {
                         typeValue = 3;
                     }
@@ -4678,7 +4682,7 @@ if (fieldcut){
             }
         }
 
-        out.println("model type=" + typeValue);
+        dbgLog.fine("model type=" + typeValue);
         ls.add(Integer.toString(typeValue));
         return ls;
     }
@@ -4693,7 +4697,7 @@ if (fieldcut){
         // check the current model
 
         String mdlName = (String) dropDown1.getSelected();
-        out.println("model name=" + mdlName);
+        dbgLog.fine("model name=" + mdlName);
         
         AdvancedStatGUIdata.Model modelSpec = getAnalysisApplicationBean()
             .getSpecMap().get(mdlName);
@@ -4707,19 +4711,19 @@ if (fieldcut){
             HttpServletRequest req = (HttpServletRequest) cntxt
                 .getExternalContext().getRequest();
 
-                out.println("***** within advStatAction() *****");
+                dbgLog.fine("***** within advStatAction() *****");
                 // common parts
                 // data file
                 StudyFile sf = dataTable.getStudyFile();
                 Long noRecords = dataTable.getRecordsPerCase();
 
                 String dsbUrl = getDsbUrl();
-                out.println("dsbUrl=" + dsbUrl);
+                dbgLog.fine("dsbUrl=" + dsbUrl);
 
                 String serverPrefix = req.getScheme() + "://"
                     + req.getServerName() + ":" + req.getServerPort()
                     + req.getContextPath();
-                out.println("serverPrefix="+serverPrefix);
+                dbgLog.fine("serverPrefix="+serverPrefix);
 //                /
 //                  "optnlst_a" => "A01|A02|A03", "analysis" => "A01 A02",
 //                  "varbl" => "v1.3 v1.10 v1.13 v1.22 v1.40", "charVarNoSet" =>
@@ -4758,7 +4762,7 @@ if (fieldcut){
                     //tv.add("T");
                     
                     for (int j = 0; j < outOptn.length; j++) {
-                        out.println("output option[" + j + "]=" + outOptn[j]);
+                        dbgLog.fine("output option[" + j + "]=" + outOptn[j]);
                         mpl.put((String) outOptn[j], Arrays.asList("T"));
                         tv.add((String) outOptn[j]);
                     }
@@ -4766,13 +4770,13 @@ if (fieldcut){
                    
                     // variables: 1st RBox
                     if (advStatVarRBox1.size() >= 1) {
-                        out.println("RB1:" + getDataVariableForRBox1());
+                        dbgLog.fine("RB1:" + getDataVariableForRBox1());
                         mpl.put("xtb_nmBxR1", getDataVariableForRBox1());
                     }
                     
                     // variables: 2nd RBox
                     if (advStatVarRBox2.size() >= 1) {
-                        out.println("RB2:" + getDataVariableForRBox2());
+                        dbgLog.fine("RB2:" + getDataVariableForRBox2());
                         mpl.put("xtb_nmBxR2", getDataVariableForRBox2());
                     }
 
@@ -4781,34 +4785,34 @@ if (fieldcut){
                 } else {
                     // Zelig cases
                     
-                    out.println("***** zelig param block *****");
+                    dbgLog.fine("***** zelig param block *****");
                     // non-xtb, i.e., zelig cases
                     // check zlg value
                     
-                    out.println("model spec dump="+ modelSpec);
-                    out.println("model spec mdlId="+ modelSpec.getMdlId());
+                    dbgLog.fine("model spec dump="+ modelSpec);
+                    dbgLog.fine("model spec mdlId="+ modelSpec.getMdlId());
                         
                     String zligPrefix = modelSpec.getMdlId();
-                    out.println("model no=" + zligPrefix);
+                    dbgLog.fine("model no=" + zligPrefix);
                     
                     // get the varId-list of each box
                     // 1-RBox case
                     if (advStatVarRBox1.size() >= 1) {
-                        out.println("RB1:" + getDataVariableForRBox1());
+                        dbgLog.fine("RB1:" + getDataVariableForRBox1());
                         //mpl.put(zligPrefix + "_nmBxR1", getDataVariableForRBox1());
                         mpl.put("nmBxR1", getDataVariableForRBox1());
                     }
                     
                     // 2-RBox case
                     if (advStatVarRBox2.size() >= 1) {
-                        out.println("RB2:" + getDataVariableForRBox2());
+                        dbgLog.fine("RB2:" + getDataVariableForRBox2());
                         //mpl.put(zligPrefix + "_nmBxR2", getDataVariableForRBox2());
                         mpl.put("nmBxR2", getDataVariableForRBox2());
                     }
                     
                     // 3-RBox case
                     if (advStatVarRBox3.size() >= 1) {
-                        out.println("RB3:" + getDataVariableForRBox3());
+                        dbgLog.fine("RB3:" + getDataVariableForRBox3());
                         //mpl.put(zligPrefix + "_nmBxR3", getDataVariableForRBox3());
                         mpl.put("nmBxR3", getDataVariableForRBox3());
                     }
@@ -4822,13 +4826,13 @@ if (fieldcut){
 
                     // model title
                     //String ttl = modelSpec.getTitle();
-                    //out.println("model title=" + ttl);
+                    //dbgLog.fine("model title=" + ttl);
                     //mpl.put("mdlTitle_" + mdlName, Arrays.asList(ttl));
                     //mpl.put("mdlTitle", Arrays.asList(ttl));
 
                     // nrBoxes
                     int noRboxes = modelSpec.getNoRboxes();
-                    out.println("noRboxes=" + noRboxes);
+                    dbgLog.fine("noRboxes=" + noRboxes);
 
                     //mpl.put("noBoxes_" + mdlName, Arrays.asList(Integer.toString(noRboxes)));
                     mpl.put("noBoxes", Arrays.asList(Integer.toString(noRboxes)));
@@ -4837,7 +4841,7 @@ if (fieldcut){
                     String mdlCategory = modelSpec.getCategory();
                     String outcomeType = modelSpec.getVarBox().get(0).getVarType();
 
-                    out.println("model category=" + mdlCategory);
+                    dbgLog.fine("model category=" + mdlCategory);
                     
                     if (mdlCategory.equals("Models for Dichotomous Dependent Variables")) {
                         mpl.put("mdlDepVarType", Arrays.asList("binary"));
@@ -4857,7 +4861,7 @@ if (fieldcut){
                     for (int j = 0; j < outOptn.length; j++) {
                         //String outputOptnkey = zligPrefix + "_"+ (String) outOptn[j];
                         String outputOptnkey = (String) outOptn[j];
-                        out.println("zelig: output option[" + j + "]="+ outputOptnkey);
+                        dbgLog.fine("zelig: output option[" + j + "]="+ outputOptnkey);
                         mpl.put(outputOptnkey, Arrays.asList("T"));
                         tv.add((String) outOptn[j]);
                     }
@@ -4939,14 +4943,14 @@ if (fieldcut){
                     }
 
                 }
-                out.println("contents(mpl):" + mpl);
+                dbgLog.fine("contents(mpl):" + mpl);
 
                 // if there is a user-defined (recoded) variables
                 if (recodedVarSet.size() > 0) {
                     mpl.putAll(getRecodedVarParameters());
                 }
 
-                out.println("citation info to be sent:\n" + citation);
+                dbgLog.fine("citation info to be sent:\n" + citation);
                 mpl.put("OfflineCitation", Arrays.asList(citation));
 
                 mpl.put("appSERVER", Arrays.asList(req.getServerName() +
@@ -4964,16 +4968,16 @@ if (fieldcut){
     
             String fileId = sf.getId().toString();
             String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-            out.println("fileURL="+fileURL);
+            dbgLog.fine("fileURL="+fileURL);
             
             String fileloc = sf.getFileSystemLocation();
             String tabflnm = sf.getFileName();
             boolean sbstOK = sf.isSubsettable();
             String flct = sf.getFileType();
-            out.println("location="+fileloc);
-            out.println("filename="+tabflnm);
-            out.println("subsettable="+sbstOK);
-            out.println("filetype="+flct);
+            dbgLog.fine("location="+fileloc);
+            dbgLog.fine("filename="+tabflnm);
+            dbgLog.fine("subsettable="+sbstOK);
+            dbgLog.fine("filetype="+flct);
 
 
             // the data file for downloading/statistical analyses must be subset-ready
@@ -5007,8 +5011,8 @@ if (fieldcut){
                     }
                     outb.close();
                     if (tmpfl.exists()){
-                       out.println("file length="+tmpfl.length());
-                       out.println("tmp file name="+tmpfl.getAbsolutePath());
+                       dbgLog.fine("file length="+tmpfl.length());
+                       dbgLog.fine("tmp file name="+tmpfl.getAbsolutePath());
                        
                     }
 boolean fieldcut = true;
@@ -5045,7 +5049,7 @@ if (fieldcut){
                     }
                     
 
-                     out.println("cols="+cols);
+                     dbgLog.fine("cols="+cols);
                     // source data file: full-path name
                     String cutOp1 = tmpfl.getAbsolutePath();
 
@@ -5061,7 +5065,7 @@ if (fieldcut){
                     
                     // Checks the result file 
                     if (tmpsbfl.exists()){
-                        out.println("subsettFile:Length="+tmpsbfl.length());
+                        dbgLog.fine("subsettFile:Length="+tmpsbfl.length());
                         mpl.put("subsetFileName", Arrays.asList(cutOp2));
                     }
 
@@ -5110,7 +5114,7 @@ if (fieldcut){
                     
                     // Checks the result file 
                     if (tmpsbfl.exists()){
-                        out.println("subsettFile:Length="+tmpsbfl.length());
+                        dbgLog.fine("subsettFile:Length="+tmpsbfl.length());
                         mpl.put("subsetFileName", Arrays.asList(cutOp2));
                     }
 }
@@ -5119,7 +5123,7 @@ if (fieldcut){
                     // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
                     DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema, modelSpec);
-                    out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+                    dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     // Step 4. Creates an instance of the the implemented 
                     // data-analysis-service class 
 
@@ -5148,7 +5152,7 @@ if (fieldcut){
                 resultInfo.put("studyURL", studyURL);
 
 
-            out.println("***** advStatAction(): ends here *****");
+            dbgLog.fine("***** advStatAction(): ends here *****");
             
             
             if (resultPageTest){
@@ -5179,7 +5183,7 @@ if (fieldcut){
             if (resultInfo.get("R_run_status").equals("F")){
                 setMsgAdvStatButtonTxt("* The Request failed due to an R-runtime error");
                 msgAdvStatButton.setVisible(true);
-                out.println("exiting advStatAction() due to an R-runtime error");
+                dbgLog.fine("exiting advStatAction() due to an R-runtime error");
                 return "failure";
             }
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
@@ -5188,7 +5192,7 @@ if (fieldcut){
         } else {
             setMsgAdvStatButtonTxt("* Incomplete selection of variables");
             msgAdvStatButton.setVisible(true);
-            out.println("exiting advStatAction() due to incomplete data");
+            dbgLog.fine("exiting advStatAction() due to incomplete data");
             return "failure";
         }
         
@@ -5267,28 +5271,28 @@ if (fieldcut){
     // howManyRows@valueChangeListener
 
     public void howManyRows_processValueChange(ValueChangeEvent vce) {
-        out.println("***** howManyRows_processValueChange: start *****");
+        dbgLog.fine("***** howManyRows_processValueChange: start *****");
         // the value of show-all-rows option == 0
-        out.println("old number of Rows=" + vce.getOldValue());
-        out.println("new number of Rows=" + vce.getNewValue());
-        out.println("current Row Index(1)=" + data.getRowIndex());
+        dbgLog.fine("old number of Rows=" + vce.getOldValue());
+        dbgLog.fine("new number of Rows=" + vce.getNewValue());
+        dbgLog.fine("current Row Index(1)=" + data.getRowIndex());
         selectedNoRows = (String) howManyRows.getSelected();
-        out.println("selected number of Rows=" + selectedNoRows);
+        dbgLog.fine("selected number of Rows=" + selectedNoRows);
 
         int newNoRows = Integer.parseInt(selectedNoRows);
         if (newNoRows == 0) {
             newNoRows = data.getRowCount();
         }
-        out.println("acutually selected number of Rows=" + newNoRows);
+        dbgLog.fine("acutually selected number of Rows=" + newNoRows);
         data.setRows(newNoRows);
-        out.println("first row to be shown=" + data.getFirst());
-        out.println("current Row Index(2)=" + data.getRowIndex());
+        dbgLog.fine("first row to be shown=" + data.getFirst());
+        dbgLog.fine("current Row Index(2)=" + data.getRowIndex());
         FacesContext.getCurrentInstance().renderResponse();
         howManyVarsChecked();
         FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().put("selectedNoRows", selectedNoRows);
 
-        out.println("***** howManyRows_processValueChange: end *****");
+        dbgLog.fine("***** howManyRows_processValueChange: end *****");
     }
 
     private String howManyRowsClientId;
@@ -5387,7 +5391,7 @@ if (fieldcut){
 
     public void scroll(int row) {
         int rows = data.getRows();
-        out.println("within scroll:rows=" + rows);
+        dbgLog.fine("within scroll:rows=" + rows);
         if (rows < 1) {
             return;
         }
@@ -5410,20 +5414,20 @@ if (fieldcut){
         int currentRow = 1;
         UIComponent component = event.getComponent();
         Integer curRow = (Integer) component.getAttributes().get("currentRow");
-        out.println("within processScrollEvent: curRow=" + curRow);
+        dbgLog.fine("within processScrollEvent: curRow=" + curRow);
         int firstRow = data.getFirst();
-        out.println("b: 1st row-index value=" + firstRow);
+        dbgLog.fine("b: 1st row-index value=" + firstRow);
         int lastRow = data.getFirst() + data.getRows();
-        out.println("b: tentative last row-index value=" + lastRow);
+        dbgLog.fine("b: tentative last row-index value=" + lastRow);
         if (curRow != null) {
             currentRow = curRow.intValue();
         }
-        out.println("currentRow=" + currentRow);
+        dbgLog.fine("currentRow=" + currentRow);
         scroll(currentRow);
         firstRow = data.getFirst();
-        out.println("a: 1st row-index value=" + firstRow);
+        dbgLog.fine("a: 1st row-index value=" + firstRow);
         lastRow = data.getFirst() + data.getRows();
-        out.println("a: tentative last row-index value=" + lastRow);
+        dbgLog.fine("a: tentative last row-index value=" + lastRow);
         howManyVarsChecked();
     }
 
@@ -5524,18 +5528,18 @@ if (fieldcut){
      * saves this Boolean state in the sessionMap object
      */
     public void howManyVarsChecked() {
-        out.println("***** howManyVarsChecked: start *****");
+        dbgLog.fine("***** howManyVarsChecked: start *****");
         // get the 1st and last ones of the displayed rows
         int firstRow = data.getFirst();
-        out.println("1st row-index value=" + firstRow);
+        dbgLog.fine("1st row-index value=" + firstRow);
         int lastRow = data.getFirst() + data.getRows();
-        out.println("tentative last row-index value=" + lastRow);
+        dbgLog.fine("tentative last row-index value=" + lastRow);
         int remain = data.getRowCount() - firstRow;
         if (remain < data.getRows()) {
             lastRow = data.getFirst() + remain;
-            out.println("adjusted last row-index value=" + lastRow);
+            dbgLog.fine("adjusted last row-index value=" + lastRow);
         }
-        out.println("how many rows are displayed=" + data.getRows());
+        dbgLog.fine("how many rows are displayed=" + data.getRows());
         
         int counter = 0;
         for (int i = firstRow; i < lastRow; i++) {
@@ -5546,16 +5550,16 @@ if (fieldcut){
             }
         }
         int diff = lastRow - firstRow;
-        out.println("how many rows to be displayed=" + diff);
-        out.println("how many rows are checked=" + counter);
+        dbgLog.fine("how many rows to be displayed=" + diff);
+        dbgLog.fine("how many rows are checked=" + counter);
         if (counter == diff) {
             // check the checkbox
             checkboxSelectUnselectAll.setSelected(Boolean.TRUE);
-            out.println("set the select/unselect-all checkbox checked");
+            dbgLog.fine("set the select/unselect-all checkbox checked");
         } else {
             // uncheck the checkbox
             checkboxSelectUnselectAll.setSelected(Boolean.FALSE);
-            out.println("set the select/unselect-all checkbox UN-checked");
+            dbgLog.fine("set the select/unselect-all checkbox UN-checked");
         }
         
         // Stores the objects that represents the properties of the component
@@ -5570,7 +5574,7 @@ if (fieldcut){
             FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().put("checkboxSelectUnselectAllSelected",
                 checkboxSelectUnselectAllSelected);
-        out.println("***** howManyVarsChecked: end *****");
+        dbgLog.fine("***** howManyVarsChecked: end *****");
     }
     
     /**
@@ -5582,29 +5586,29 @@ if (fieldcut){
      * @param vce ValueChangeEvent event 
      */
     public void selectUnselectAllCheckbox(ValueChangeEvent vce) {
-        out.println("***** selectUnselectAllCheckbox: start *****");
+        dbgLog.fine("***** selectUnselectAllCheckbox: start *****");
 
         // toggle false to true or vice versa
         FacesContext cntxt = FacesContext.getCurrentInstance();
         Boolean oldState = (Boolean) vce.getOldValue();
-        out.println("oldState=" + oldState);
+        dbgLog.fine("oldState=" + oldState);
         Boolean currentState = (Boolean) vce.getNewValue();
-        out.println("newState=" + currentState);
+        dbgLog.fine("newState=" + currentState);
 
         // clear the error message if it still exists
         resetMsgVariableSelection();
 
         // check the displayed rows
         int firstRow = data.getFirst();
-        out.println("1st-row index value=" + firstRow);
+        dbgLog.fine("1st-row index value=" + firstRow);
         int lastRow = data.getFirst() + data.getRows();
-        out.println("tentative last row-index value=" + lastRow);
+        dbgLog.fine("tentative last row-index value=" + lastRow);
         int remain = data.getRowCount() - firstRow;
         if (remain < data.getRows()) {
             lastRow = data.getFirst() + remain;
-            out.println("adjusted last row-index value=" + lastRow);
+            dbgLog.fine("adjusted last row-index value=" + lastRow);
         }
-        out.println("how many rows are to be displayed=" + data.getRows());
+        dbgLog.fine("how many rows are to be displayed=" + data.getRows());
 
         Set<String> bvIdSet = new HashSet<String>();
         Set<String> rmIdSet = new HashSet<String>();
@@ -5626,12 +5630,12 @@ if (fieldcut){
             }
             dt4Display.set(i, rw);
         }
-        out.println("conents:bvIdSet=" + bvIdSet);
-        out.println("number of recoded vars=" + bvcnt);
+        dbgLog.fine("conents:bvIdSet=" + bvIdSet);
+        dbgLog.fine("number of recoded vars=" + bvcnt);
 
         if (currentState) {
             // select-all case
-            out.println("select all case: add all variable to varCart, etc.");
+            dbgLog.fine("select all case: add all variable to varCart, etc.");
 
             for (int i = firstRow; i < lastRow; i++) {
                 String keyS = (String) ((ArrayList) dt4Display.get(i)).get(2);
@@ -5649,10 +5653,10 @@ if (fieldcut){
             checkboxSelectUnselectAll.setSelected(Boolean.TRUE);
         } else {
             // unselect-all case
-            out.println("unselect all case");
+            dbgLog.fine("unselect all case");
             if (bvcnt == 0) {
                 // no recoded var case
-                out.println("un-select-all case: no recoding vars");
+                dbgLog.fine("un-select-all case: no recoding vars");
                 // backing Map object
                 varCart.clear();
                 // LHS listbox
@@ -5678,7 +5682,7 @@ if (fieldcut){
                 hideRecodeTableArea();
             } else {
                 // at least one recoded variable exists
-                out.println("un-select-all case: "+
+                dbgLog.fine("un-select-all case: "+
                 "some variables are used for recoding and they are kept");
                 
                 // clear varCart(Map) except for base vars for recoding
@@ -5686,7 +5690,7 @@ if (fieldcut){
                     varCart.remove(v);
                 }
 
-                out.println("pass the block for varCart");
+                dbgLog.fine("pass the block for varCart");
                 // clear varSetAdvStat except for base vars for recoding
                 // LHS listbox object (Collection ArrayList<Option>)
                 Collection<Option> tmpvs = new ArrayList<Option>();
@@ -5696,11 +5700,11 @@ if (fieldcut){
                         tmpvs.add(new Option(el.getValue(), el.getLabel()));
                     }
                 }
-                out.println("contents:tmpvs=" + tmpvs);
+                dbgLog.fine("contents:tmpvs=" + tmpvs);
                 varSetAdvStat.clear();
                 varSetAdvStat.addAll(tmpvs);
 
-                out.println("pass the block for varSetAdvState");
+                dbgLog.fine("pass the block for varSetAdvState");
 
                 // RHS listbox1
                 Collection<Option> tmpRBox1 = new ArrayList<Option>();
@@ -5713,7 +5717,7 @@ if (fieldcut){
                 }
                 advStatVarRBox1.clear();
                 advStatVarRBox1.addAll(tmpRBox1);
-                out.println("pass the block for advStatVarRBox1");
+                dbgLog.fine("pass the block for advStatVarRBox1");
 
                 // RHS listbox2
                 Collection<Option> tmpRBox2 = new ArrayList<Option>();
@@ -5755,7 +5759,7 @@ if (fieldcut){
             .put("checkboxSelectUnselectAllSelected",
             checkboxSelectUnselectAllSelected);
         cntxt.renderResponse();
-        out.println("***** selectUnselectAllCheckbox: end *****");
+        dbgLog.fine("***** selectUnselectAllCheckbox: end *****");
     }
 
     // -----------------------------------------------------------------------
@@ -5800,17 +5804,17 @@ if (fieldcut){
         int cr = 0;
 
         List<Object> tmpDataLine = (List<Object>) data.getRowData();
-        out.println("current varName=" + tmpDataLine.get(3));
-        out.println("current varId=" + tmpDataLine.get(2));
+        dbgLog.fine("current varName=" + tmpDataLine.get(3));
+        dbgLog.fine("current varId=" + tmpDataLine.get(2));
         String varId = (String) tmpDataLine.get(2);
 
         resetMsgVariableSelection();
 
         if ((Boolean) tmpDataLine.get(0)) {
-            out.println("row Id=" + tmpDataLine.get(2)
+            dbgLog.fine("row Id=" + tmpDataLine.get(2)
                 + ":current checkbox value is [true]");
         } else {
-            out.println("row Id=" + tmpDataLine.get(2)
+            dbgLog.fine("row Id=" + tmpDataLine.get(2)
                 + ":current checkbox value is [false]");
         }
 
@@ -5841,10 +5845,10 @@ if (fieldcut){
 
             if (baseVarToDerivedVar.containsKey(varId)) {
                 // Case: Used for recoding
-                out.println("this var is already used for recoding and cannot be unchekced");
+                dbgLog.fine("this var is already used for recoding and cannot be unchekced");
                 // flips back the checkbox [checked]
                 tmpDataLine.set(0, Boolean.TRUE);
-                out.println("flip the boolean value");
+                dbgLog.fine("flip the boolean value");
                 // shows the error message
                 msgVariableSelection.setRendered(true);
                 msgVariableSelection
@@ -5870,13 +5874,12 @@ if (fieldcut){
                             // Rbox3
                             if (removeOption((String) tmpDataLine.get(2),
                                 getAdvStatVarRBox3()) == null) {
-                                out.println("Unchecked var is not found in these boxes");
-                                log("Unchecked var is not found in these boxes");
+                                dbgLog.fine("Unchecked var is not found in these boxes");
                             }
                         }
                     }
                 }
-                out.println("recoded var is=" + getCurrentRecodeVariableId());
+                dbgLog.fine("recoded var is=" + getCurrentRecodeVariableId());
             }
 
         }
@@ -5923,10 +5926,10 @@ if (fieldcut){
      * error messages
      */
     public void resetMsgVariableSelection() {
-        out.println("***** resetMsgVariableSelection: start *****");
+        dbgLog.fine("***** resetMsgVariableSelection: start *****");
         msgVariableSelection.setRendered(false);
         msgVariableSelection.setText(" ");
-        out.println("***** resetMsgVariableSelection: end *****");
+        dbgLog.fine("***** resetMsgVariableSelection: end *****");
     }
     
     /**
@@ -6057,7 +6060,7 @@ if (fieldcut){
             DataVariable dv = (DataVariable) el.next();
             counter++;
             if (counter <= dbglns) {
-                out.println("dtId=" + dtId
+                dbgLog.fine("dtId=" + dtId
                     + " : within initDt4Display: row no=" + counter);
             }
 
@@ -6305,18 +6308,13 @@ if (fieldcut){
      * 
      */
     public void init() {
-        boolean debug_init = true; 
-        if (debug_init) {
-            out.println("\n***** init():start *****");
-        }        
+            dbgLog.fine("\n***** init():start *****");
         super.init();
         try {
             // sets default values to html components
             _init();
             
-            if (debug_init) {
-                out.println("pass _init() in init()");
-            }
+                dbgLog.fine("pass _init() in init()");
             // gets the FacesContext instance
             FacesContext cntxt = FacesContext.getCurrentInstance();
             
@@ -6327,24 +6325,22 @@ if (fieldcut){
             // gets session data from the ExternalContext
             Map<String, Object> sessionMap = exCntxt.getSessionMap();
             
-            if (false){
-                out.println("\ncontents of RequestParameterMap:\n"
+
+                dbgLog.finer("\ncontents of RequestParameterMap:\n"
                     + exCntxt.getRequestParameterMap());
-                // out.println("\ncontents of SessionMap:\n"+sessionMap);
-            }
+                dbgLog.finer("\ncontents of SessionMap:\n"+sessionMap);
+
             
             // gets the request header data
             Map<String, String> rqustHdrMp = exCntxt.getRequestHeaderMap();
             
-            if (true){
-                out.println("\nRequest Header Values Map:\n" + rqustHdrMp);
-                out.println("\nRequest Header Values Map(user-agent):"
+                dbgLog.fine("\nRequest Header Values Map:\n" + rqustHdrMp);
+                dbgLog.fine("\nRequest Header Values Map(user-agent):"
                     + rqustHdrMp.get("user-agent"));
-            }
             
             // gets an end-user's browser type
             if (isBrowserFirefox(rqustHdrMp.get("user-agent"))) {
-                out.println("user's browser is firefox");
+                dbgLog.fine("user's browser is firefox");
                 browserType = "Firefox";
             } else {
                 browserType = "notFirefox";
@@ -6355,8 +6351,8 @@ if (fieldcut){
                 .get(ResponseStateManager.VIEW_STATE_PARAM);
             
             if (true){
-                out.println("ViewState value=" + currentViewStateValue);
-                out.println("VDCRequestBean: current VDC URL ="
+                dbgLog.fine("ViewState value=" + currentViewStateValue);
+                dbgLog.fine("VDCRequestBean: current VDC URL ="
                 + getVDCRequestBean().getCurrentVDCURL());
             }
             
@@ -6364,9 +6360,9 @@ if (fieldcut){
             setStudyURL(getVDCRequestBean().getCurrentVDCURL());
             
             if (true){
-                out.println("VDCRequestBean: studyId ="
+                dbgLog.fine("VDCRequestBean: studyId ="
                     + getVDCRequestBean().getStudyId());
-                out.println("VDCRequestBean =" + getVDCRequestBean());
+                dbgLog.fine("VDCRequestBean =" + getVDCRequestBean());
             }
             /*
             // Deletes session-scoped objects if this page is rendered 
@@ -6397,45 +6393,35 @@ if (fieldcut){
                     }
                 }
                 
-                if (debug_init){
-                    out.println("left-over objects of the previous session"
+                    dbgLog.fine("left-over objects of the previous session"
                         +" have been removed");
-                }
             }
 
             // Gets the datatable Id if we're coming from editVariabePage
             if (dtId == null) {
                 dtId = getVDCRequestBean().getDtId();
-                if (debug_init){
-                    out.println("dtId(null case: came from editVariablePage)="
+                    dbgLog.fine("dtId(null case: came from editVariablePage)="
                         +dtId);
-                }
             }
 
             // we need to create the VariableServiceBean
             if (dtId != null) {
-                if (debug_init){
-                    out.println("Init() enters non-null-dtId case: dtId="
+                    dbgLog.fine("Init() enters non-null-dtId case: dtId="
                     + dtId);
-                }
                 // Gets the requested data table by its Id
                 dataTable = variableService.getDataTable(dtId);
                 
                 // Exposes the data file name to SubsettingPage.jsp
                 setFileName(dataTable.getStudyFile().getFileName());
                 
-                if (debug_init){
-                    out.println("file Name=" + fileName);
-                }
+                    dbgLog.fine("file Name=" + fileName);
                 
 
                 // Retrieves each var's data from the data table
                 // and saves them in Collection<DataVariable> dataVariables
                 dataVariables.addAll(dataTable.getDataVariables());
                 
-                if (debug_init){
-                    out.println("pass the addAll line");
-                }
+                    dbgLog.fine("pass the addAll line");
                 
                 // Gets VDCUser-related data
                 VDCUser user = null;
@@ -6444,28 +6430,22 @@ if (fieldcut){
                 }
                 
                 VDC vdc = getVDCRequestBean().getCurrentVDC();
-                if (debug_init){
-                    out.println("VDCUser instnce=" + user);
-                    out.println("VDC instnce=" + vdc);
-                }
+                    dbgLog.fine("VDCUser instnce=" + user);
+                    dbgLog.fine("VDC instnce=" + vdc);
                 
                 //  Gets the StudyFile object via the dataTable object.
                 //  This StudyFile determines whether
                 //  Subsetting functionalities are rendered or not
                 //  in SubsettingPage.jsp
-                if (debug_init){
-                    out.println("checking this end-user's permission status");
-                }
+                    dbgLog.fine("checking this end-user's permission status");
                 StudyFile sf = dataTable.getStudyFile();
                 HttpServletRequest request = 
                     (HttpServletRequest)this.getExternalContext().getRequest();
 
                 if (sf.isSubsetRestrictedForUser(user, vdc, 
                     getVDCSessionBean().getIpUserGroup())) {
-                    if (debug_init){
-                        out.println("restricted=yes: this user "+
+                        dbgLog.fine("restricted=yes: this user "+
                             "does not have the subsetting permission");
-                    }
                     subsettingPageAccess = Boolean.FALSE;
                     txtNonSubsettingInstruction.setRendered(false);
                     hideSubsettingFunctions();
@@ -6476,16 +6456,12 @@ if (fieldcut){
                     // checkboxSelectUnselectAll shown (TRUE)
                     checkboxSelectUnselectAllRendered=Boolean.TRUE;
                     checkboxSelectUnselectAllSelected=Boolean.FALSE;
-                    if (debug_init){
-                        out.println("restricted=no: " +
+                        dbgLog.fine("restricted=no: " +
                             "this user has the subsetting permission");
-                    }
                 }
                 
-                if (debug_init){
-                    out.println("Number of vars in this data table(" +
+                    dbgLog.fine("Number of vars in this data table(" +
                     dtId + ")=" + dataTable.getVarQuantity());
-                }
                 
                 // Sets data for the variable table in the subsetting page.
                 // Variable data are stored in List<Object> dt4Display
@@ -6493,18 +6469,14 @@ if (fieldcut){
                     // dt4Display does not exist => 
                     // the page was rendered for the first time
                     // not a post-back case
-                    if (debug_init){
-                        out.println("This is the 1st-time visit to this page:"+
+                        dbgLog.fine("This is the 1st-time visit to this page:"+
                             "(dt4Display does not exist in the session map)");
-                    }
                     // Fills List<Object> dt4Display with data
                     // and newly creaded data 
                     initDt4Display();
                     
-                    if (debug_init){
-                        out.println("how many variables in dt4Display="
+                        dbgLog.fine("how many variables in dt4Display="
                             + getDt4Display().size());
-                    }
                     
                     // Adds state-keeping objects to the session Map
                     // 
@@ -6517,9 +6489,7 @@ if (fieldcut){
                     // Collection<Option> varSetAdvStat: user-selected
                     // variables behind the LHS variable list box
                     sessionMap.put("varSetAdvStat", varSetAdvStat);
-                    if (debug_init){
-                        out.println("varSetAdvStat:\n"+varSetAdvStat);
-                    }
+                        dbgLog.fine("varSetAdvStat:\n"+varSetAdvStat);
                     // ui:PanelGroup component that shows/hides the pane for
                     // the advanced statistics. 
                     // The rendered attribute of this PanelGroup object
@@ -6582,21 +6552,17 @@ if (fieldcut){
                     sessionMap.put("selectedNoRows", selectedNoRows);
                     
                     
-                    if (debug_init){
-                        out.println("selectedNoRows=" + selectedNoRows);
-                        out.println("1st time visit: "+
+                        dbgLog.fine("selectedNoRows=" + selectedNoRows);
+                        dbgLog.fine("1st time visit: "+
                             "selected value for howManyRows="
                             + howManyRowsOptions.getSelectedValue());
-                    }
                 } else {
                     // Postback cases (not 1st-time visit to this page)
                     // Applies the stored data to the key page-scoped objects
                     
                     
-                    if (debug_init){
-                        out.println("Postback(non-1st-time) case: "+
+                        dbgLog.fine("Postback(non-1st-time) case: "+
                             "dt4Display was found in the session map=>");
-                    }
                     
                     // Gets the stored object backing the value attribute 
                     // of h:dataTable for the variable table 
@@ -6606,18 +6572,14 @@ if (fieldcut){
                     // Gets the stored object that records 
                     // the currently selected variables 
                     varCart = (Map<String, String>) sessionMap.get("varCart");
-                    if (debug_init){
-                        out.println("varCart:\n"+varCart);
-                    }
+                        dbgLog.fine("varCart:\n"+varCart);
 
                     // Gets the stored object backing the items attribute of 
                     // ui:listbox for the LHS list-box component, which is
                     // located in each tab
                     varSetAdvStat = (Collection<Option>) sessionMap
                         .get("varSetAdvStat");
-                    if (debug_init){
-                        out.println("varSetAdvStat:\n"+varSetAdvStat);
-                    }
+                        dbgLog.fine("varSetAdvStat:\n"+varSetAdvStat);
 
                     // Gets the stored object backing the items attribute of
                     // ui:listbox for the 1st RHS variable box
@@ -6632,16 +6594,12 @@ if (fieldcut){
                     // ditto (3rd)
                     advStatVarRBox3 = (Collection<Option>) sessionMap
                         .get("advStatVarRBox3");
-                    if (debug_init){
-                        out.println("advStatVarRBox1:\n"+advStatVarRBox1);
-                        out.println("advStatVarRBox2:\n"+advStatVarRBox2);
-                        out.println("advStatVarRBox3:\n"+advStatVarRBox3);
-                    }
+                        dbgLog.fine("advStatVarRBox1:\n"+advStatVarRBox1);
+                        dbgLog.fine("advStatVarRBox2:\n"+advStatVarRBox2);
+                        dbgLog.fine("advStatVarRBox3:\n"+advStatVarRBox3);
                     
                     radioButtonGroup1DefaultOptions.setSelectedValue( (String)sessionMap.get("lastSimCndtnSelected"));
-                    if (debug_init){
-                        out.println("lastSimCndtnSelected= "+ sessionMap.get("lastSimCndtnSelected"));
-                    }
+                        dbgLog.fine("lastSimCndtnSelected= "+ sessionMap.get("lastSimCndtnSelected"));
 
                     // Gets the stored object backing the items attribute
                     // of ui:dropDown for the 1st setx variable selector
@@ -6656,10 +6614,8 @@ if (fieldcut){
                     currentModelName = (String) sessionMap
                         .get("currentModelName");
                     
-                    if (debug_init){
-                        out.println("\nSelected model name(after post-back)="
+                        dbgLog.fine("\nSelected model name(after post-back)="
                             + currentModelName+"\n");
-                    }
                     // deprecated: 
                     // checkbox component
                     // Gets the stored object backing the binding attribute
@@ -6690,49 +6646,40 @@ if (fieldcut){
                     // of ui:dropDown for the menu of choosing
                     // an option of how many row per table
                     selectedNoRows = (String)sessionMap.get("selectedNoRows");
-                    if (debug_init){
-                        out.println("post-back case: "+
+                        dbgLog.fine("post-back case: "+
                             "returned the selected value for howManyRows="
                             + selectedNoRows);
-                    }
                     
                     howManyRowsOptions.setSelectedValue(selectedNoRows);
                     
-                    if (debug_init){
-                        out.println("post-back case:"+
+                        dbgLog.fine("post-back case:"+
                             " selected value for howManyRows="
                             + howManyRowsOptions.getSelectedValue());
-                    }
-                    if (debug_init){
+                            
                         if (currentRecodeVariableId == null) {
-                            out.println("currentRecodeVariableId is null");
+                            dbgLog.fine("currentRecodeVariableId is null");
                         } else {
-                            out.println("currentRecodeVariableId="
+                            dbgLog.fine("currentRecodeVariableId="
                                 + currentRecodeVariableId);
                         }
-                    }
-                    if (debug_init){
-                        out.println("currentRecodeVariableId: "+
+                        dbgLog.fine("currentRecodeVariableId: "+
                             "received value from sessionMap="
                              + (String) sessionMap
                              .get("currentRecodeVariableId"));
-                    }
                     
                     currentRecodeVariableId = (String) sessionMap
                         .get("currentRecodeVariableId");
                         
-                    if (debug_init){
-                        out.println("new currentRecodeVariableId="
+                        dbgLog.fine("new currentRecodeVariableId="
                             + currentRecodeVariableId);
-                    }
                     
                     // Gets the stored object backing the rendered attribute
                     // of ui:PaneGroup for groupPanel8below
                     groupPanel8belowRendered =(Boolean) 
                         sessionMap.get("groupPanel8belowRendered");
-                    out.println("groupPanel8belowRendered(map)="+
+                    dbgLog.fine("groupPanel8belowRendered(map)="+
                         sessionMap.get("groupPanel8belowRendered"));
-                    out.println("groupPanel8belowRendered(result)="+
+                    dbgLog.fine("groupPanel8belowRendered(result)="+
                         groupPanel8belowRendered);
                     // deprecated approach
                     // Gets the stored object backing the binding attribute of
@@ -6753,10 +6700,8 @@ if (fieldcut){
                             .get("currentRecodeVariableName");
                     }
                     
-                    if (debug_init){
-                        out.println("new currentRecodeVariableName="
+                        dbgLog.fine("new currentRecodeVariableName="
                             + currentRecodeVariableName);
-                    }
                     // deprecated (component-binding is used now)
                     // Gets the stored object backing the value attribute
                     // of h:inputText for the label of the recode variable
@@ -6884,11 +6829,7 @@ if (fieldcut){
 
             } else {
                 // dtId is not available case
-                if (debug_init){
-                    out.println("ERROR: in AnalysisPage, "+
-                        "without a serviceBean or a dtId");
-                }
-                log("ERROR: AanalysisPage.java: "+
+                dbgLog.severe("ERROR: AanalysisPage.java: "+
                     "without a serviceBean or a dtId");
             }
 
@@ -6902,37 +6843,31 @@ if (fieldcut){
                 setStudyId(sui.getStudy().getId());
                 setCitation(sui.getStudy().getCitation());
                 
-                if (debug_init){
-                    out.println("StudyUIclassName was found"+
+                    dbgLog.fine("StudyUIclassName was found"+
                         " in the session Map");
-                    out.println("Study Title="+studyTitle);
-                    out.println("Study Id="+studyId);
-                    out.println("Ciation="+citation);
-                }
+                    dbgLog.fine("Study Title="+studyTitle);
+                    dbgLog.fine("Study Id="+studyId);
+                    dbgLog.fine("Ciation="+citation);
             } else {
-                if (debug_init){
-                    out.println("StudyUIclassName was not in the session Map");
-                }
+                    dbgLog.fine("StudyUIclassName was not in the session Map");
             }
             
-            if (false){
-                out.println("\nSpec Map:\n"+
+                dbgLog.finer("\nSpec Map:\n"+
                     getAnalysisApplicationBean().getSpecMap());
-                out.println("\nMenu Option List:\n"+
+                dbgLog.finer("\nMenu Option List:\n"+
                     getAnalysisApplicationBean().getModelMenuOptions());
-                out.println("\ncontents of the cart:\n" + varCart);
-            }
+                dbgLog.finer("\ncontents of the cart:\n" + varCart);
+
         } catch (Exception e) {
-            log("AnalysisPage Initialization Failure", e);
+            dbgLog.severe("AnalysisPage Initialization Failure");
+            e.printStackTrace();
             throw e instanceof FacesException ? (FacesException) e
                 : new FacesException(e);
         } // end of try-catch block
         
-        if (debug_init){
-            out.println("init(): current tab id=" +
+            dbgLog.fine("init(): current tab id=" +
                 tabSet1.getSelected());
-            out.println("***** init():end *****\n\n");
-        }
+            dbgLog.fine("***** init():end *****\n\n");
     }
     
     // end of doInit() -------------------------------------------------------

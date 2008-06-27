@@ -9,6 +9,7 @@ import edu.harvard.hmdc.vdcnet.dsb.*;
 import java.io.*;
 import static java.lang.System.*;
 import java.util.*;
+import java.util.logging.*;
 import java.lang.reflect.*;
 import java.util.regex.*;
 
@@ -27,6 +28,8 @@ public class DvnRDataAnalysisServiceImpl{
 
     // ----------------------------------------------------- static filelds
     
+    private static Logger dbgLog = Logger.getLogger(DvnRDataAnalysisServiceImpl.class.getPackage().getName());
+
     static String DSB_TMP_DIR=null;
     static String WEB_TMP_DIR=null;
     static String TMP_DATA_FILE_NAME = "susetfile4Rjob";
@@ -127,12 +130,12 @@ public class DvnRDataAnalysisServiceImpl{
         
         try {
             // Set up an Rserve connection
-            out.println("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+            dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
             RConnection c = new RConnection(RSERVE_HOST, RSERVE_PORT);
-            out.println("hostname="+RSERVE_HOST);
+            dbgLog.fine("hostname="+RSERVE_HOST);
 
             c.login(RSERVE_USER, RSERVE_PWD);
-            out.println(">" + c.eval("R.version$version.string").asString() + "<");
+            dbgLog.fine(">" + c.eval("R.version$version.string").asString() + "<");
 
 
             // save the data file at the Rserve side
@@ -151,7 +154,7 @@ public class DvnRDataAnalysisServiceImpl{
             os.close();
 
             // Rserve code starts here
-            out.println("wrkdir="+wrkdir);
+            dbgLog.fine("wrkdir="+wrkdir);
             historyEntry.add(librarySetup);
             c.voidEval(librarySetup);
             
@@ -175,7 +178,7 @@ public class DvnRDataAnalysisServiceImpl{
             historyEntry.add("vartyp<-c(" + sb.toString()+")");
             c.assign("vartyp", new REXPInteger(jvartyp));
             String [] tmpt = c.eval("vartyp").asStrings();
-            out.println("vartyp length="+ tmpt.length + "\t " +
+            dbgLog.fine("vartyp length="+ tmpt.length + "\t " +
                 StringUtils.join(tmpt,","));
         
             // variable format (date/time)
@@ -220,7 +223,7 @@ public class DvnRDataAnalysisServiceImpl{
             if (sro.hasUnsafedVariableNames){
                 // create  list
                 jvnames =  sro.safeVarNames;
-                out.println("renamed="+StringUtils.join(jvnames,","));
+                dbgLog.fine("renamed="+StringUtils.join(jvnames,","));
             } else {
                 jvnames = jvnamesRaw;
             }
@@ -229,7 +232,7 @@ public class DvnRDataAnalysisServiceImpl{
             
             // confirmation
             String [] tmpjvnames = c.eval("vnames").asStrings();
-            out.println("vnames:"+ StringUtils.join(tmpjvnames, ","));
+            dbgLog.fine("vnames:"+ StringUtils.join(tmpjvnames, ","));
             
         
             /*
@@ -243,7 +246,7 @@ public class DvnRDataAnalysisServiceImpl{
             String readtableline = "x<-read.table141vdc(file='"+tempFileName+
                 "', col.names=vnames, colClassesx=vartyp, varFormat=varFmt )";
             historyEntry.add(readtableline);
-            out.println("readtable="+readtableline);
+            dbgLog.fine("readtable="+readtableline);
             c.voidEval(readtableline);
         
             // safe-to-raw variable name
@@ -252,7 +255,7 @@ public class DvnRDataAnalysisServiceImpl{
             */
             //if (nf.hasRenamedVariables()){
             if (sro.hasUnsafedVariableNames){
-                out.println("unsafeVariableNames exist");
+                dbgLog.fine("unsafeVariableNames exist");
                 // create  list
                 //jvnames = nf.getFilteredVarNames();
                 jvnames = sro.safeVarNames;
@@ -305,7 +308,7 @@ public class DvnRDataAnalysisServiceImpl{
             
             // confrimation
             String [] vno = c.eval("attr(x, 'var.nmbr')").asStrings();
-            out.println("varNo="+StringUtils.join(vno, ","));
+            dbgLog.fine("varNo="+StringUtils.join(vno, ","));
 
             
             // variable labels
@@ -323,7 +326,7 @@ public class DvnRDataAnalysisServiceImpl{
             
             // confirmation
             String [] vlbl = c.eval("attr(x, 'var.labels')").asStrings();
-            out.println("varlabels="+StringUtils.join(vlbl, ","));
+            dbgLog.fine("varlabels="+StringUtils.join(vlbl, ","));
         
         
         
@@ -356,8 +359,8 @@ public class DvnRDataAnalysisServiceImpl{
                     String[] tmpv = getValueSet(tmp, tmpk);
 
                     // debug
-                    out.println("tmp:k="+ StringUtils.join(tmpk,","));
-                    out.println("tmp:v="+ StringUtils.join(tmpv,","));
+                    dbgLog.fine("tmp:k="+ StringUtils.join(tmpk,","));
+                    dbgLog.fine("tmp:v="+ StringUtils.join(tmpv,","));
                     historyEntry.add("tmpk<-c("+ StringUtils.join(tmpk, ", ")+")");
                     c.assign("tmpk", new REXPString(tmpk));
                     historyEntry.add("tmpv<-c("+ StringUtils.join(tmpv, ", ")+")");
@@ -368,21 +371,21 @@ public class DvnRDataAnalysisServiceImpl{
                     
                     // index number starts from 1(not 0)
                     int indx = j +1;
-                    out.println("index="+indx);
+                    dbgLog.fine("index="+indx);
                     
                     String sbvl = "VALTABLE[['"+ Integer.toString(indx)+"']]" + "<- as.list(tmpv)";
-                    out.println("frag="+sbvl);
+                    dbgLog.fine("frag="+sbvl);
                     historyEntry.add(sbvl);
                     c.voidEval(sbvl);
                     
                     // confirmation test for j-th variable name
                     REXP jl = c.parseAndEval(sbvl);
-                    System.out.println("jl("+j+") = "+jl);
+                    dbgLog.fine("jl("+j+") = "+jl);
                 }
             }
             
             // debug: confirmation test for value-table
-            out.println("length of vl="+ c.eval("length(VALTABLE)").asInteger());
+            dbgLog.fine("length of vl="+ c.eval("length(VALTABLE)").asInteger());
             String attrValTableLine = "attr(x, 'val.table')<-VALTABLE";
             historyEntry.add(attrValTableLine);
             c.voidEval(attrValTableLine);
@@ -418,11 +421,11 @@ public class DvnRDataAnalysisServiceImpl{
         
         
             String requestTypeToken = sro.getRequestType();// (Download|EDA|Xtab|Zelig)
-            out.println("requestTypeToken="+requestTypeToken);
+            dbgLog.fine("requestTypeToken="+requestTypeToken);
             historyEntry.add("#### The Request is "+ requestTypeToken +" ####");
             // get a test method
             Method mthd = runMethods.get(requestTypeToken);
-            out.println("method="+mthd);
+            dbgLog.fine("method="+mthd);
             
             try {
                 // invoke this method
@@ -436,8 +439,8 @@ public class DvnRDataAnalysisServiceImpl{
             }
             
             // add the variable list
-            result.put("variableList", joinNelementsPerLine(jvnamesRaw, 5));
-            //result.put("variableList",StringUtils.join(jvnamesRaw, ","));
+            //result.put("variableList", joinNelementsPerLine(jvnamesRaw, 5));
+            result.put("variableList",StringUtils.join(jvnamesRaw, ", "));
 
             // calculate the file-leve UNF
             
@@ -467,7 +470,7 @@ public class DvnRDataAnalysisServiceImpl{
             result.put("Rversion", Rversion);
             result.put("RexecDate", RexecDate);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            out.println("result:\n"+result);
+            dbgLog.fine("result:\n"+result);
             
         
 // reflection block: end
@@ -520,13 +523,13 @@ public class DvnRDataAnalysisServiceImpl{
      * @return    
      */
     public Map<String, String> runDownloadRequest(DvnRJobRequest sro, RConnection c){
-        out.println("*********** downloading option ***********");
+        dbgLog.fine("*********** downloading option ***********");
         Map<String, String> sr = new HashMap<String, String>();
         
         try {
             // create a temp dir
             String createTmpDir = "dir.create('"+wrkdir +"')";
-            out.println("createTmpDir="+createTmpDir);
+            dbgLog.fine("createTmpDir="+createTmpDir);
             c.voidEval(createTmpDir);
             String dwnldOpt = sro.getDownloadRequestParameter();
             String dwnldFlxt = dwlndParam.get(dwnldOpt);
@@ -536,18 +539,18 @@ public class DvnRDataAnalysisServiceImpl{
                 "dwnldoptn='"+dwnldOpt+"'"+
                 ", dsnprfx='"+dsnprfx+"')";
 
-            out.println("univarDataDwnld="+univarDataDwnld);
+            dbgLog.fine("univarDataDwnld="+univarDataDwnld);
             c.voidEval(univarDataDwnld);
 
             // save workspace
             String RdataFileName = "Rworkspace."+PID+".RData";
             String saveWS = "save('x', file='"+wrkdir +"/"+ RdataFileName +"')";
-            out.println("save the workspace="+saveWS);
+            dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
 
             // move the temp dir to the web-temp root dir
             String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
-            out.println("web-temp_dir="+mvTmpDir);
+            dbgLog.fine("web-temp_dir="+mvTmpDir);
             c.voidEval(mvTmpDir);
         
             sr.put("requestdir", requestdir);
@@ -570,7 +573,7 @@ public class DvnRDataAnalysisServiceImpl{
      * @return    
      */
     public Map<String, String> runEDARequest(DvnRJobRequest sro, RConnection c){
-        out.println("*********** EDA option ***********");
+        dbgLog.fine("*********** EDA option ***********");
         Map<String, String> sr = new HashMap<String, String>();
         try {
             String univarStatLine = "try(x<-univarStat(dtfrm=x))";
@@ -579,10 +582,10 @@ public class DvnRDataAnalysisServiceImpl{
 
             c.voidEval("dol<-''");
             
-            out.println("aol="+ sro.getEDARequestParameter());
+            dbgLog.fine("aol="+ sro.getEDARequestParameter());
             String aol4EDA = "aol<-c("+ sro.getEDARequestParameter() +")";
             
-            out.println("aolLine="+ aol4EDA);
+            dbgLog.fine("aolLine="+ aol4EDA);
             c.voidEval(aol4EDA);
             
             // create a manifest page for this job request
@@ -590,7 +593,7 @@ public class DvnRDataAnalysisServiceImpl{
 
             // create a temp dir
             String createTmpDir = "dir.create('"+wrkdir +"')";
-            out.println("createTmpDir="+createTmpDir);
+            dbgLog.fine("createTmpDir="+createTmpDir);
             c.voidEval(createTmpDir);
 
             // copy the dvn-patch css file to the wkdir
@@ -605,18 +608,18 @@ public class DvnRDataAnalysisServiceImpl{
                 wrkdir +"', filename='"+ResultHtmlFileBase+
                 "', extension='html', CSSFile='R2HTML.css', Title ='"+
                 homePageTitle+"')";
-            out.println("openHtml="+openHtml);
+            dbgLog.fine("openHtml="+openHtml);
             c.voidEval(openHtml);
             
             String StudyTitle = sro.getStudytitle();//"Title comes here";
             String pageHeaderContents = "hdrContents <- \"<h1>Dataverse Analysis</h1><h2>Results</h2><p>Study Title:"+
             StudyTitle+"</p><hr />\"";
             
-            out.println("pageHeaderContents="+pageHeaderContents);
+            dbgLog.fine("pageHeaderContents="+pageHeaderContents);
             c.voidEval(pageHeaderContents);
             
             String pageHeader = "HTML(file=htmlsink,hdrContents)";
-            out.println("pageHeader="+pageHeader);
+            dbgLog.fine("pageHeader="+pageHeader);
             c.voidEval(pageHeader);
             
             // create visuals directory for an EDA case
@@ -625,7 +628,7 @@ public class DvnRDataAnalysisServiceImpl{
             c.voidEval(createVisualsDir);
             
             // command lines
-            out.println("univarStatLine="+univarStatLine);
+            dbgLog.fine("univarStatLine="+univarStatLine);
             c.voidEval(univarStatLine);
             
             String univarChart = "try({x<-univarChart(dtfrm=x, " +
@@ -633,12 +636,12 @@ public class DvnRDataAnalysisServiceImpl{
                 "imgflprfx='" + wrkdir + "/" + 
                 "visuals" + "/" + "Rvls." + PID +
                 "',standalone=F)})";
-            out.println("univarChart="+univarChart);
+            dbgLog.fine("univarChart="+univarChart);
             c.voidEval(univarChart);
             
             String univarStatHtmlBody = "try(univarStatHtmlBody(dtfrm=x,"+
             "whtml=htmlsink, analysisoptn=aol))";
-            out.println("univarStatHtmlBody="+univarStatHtmlBody);
+            dbgLog.fine("univarStatHtmlBody="+univarStatHtmlBody);
             c.voidEval(univarStatHtmlBody);
 
             String closeHtml = "HTMLEndFile()";
@@ -647,12 +650,12 @@ public class DvnRDataAnalysisServiceImpl{
             // save workspace
             String RdataFileName = "Rworkspace."+PID+".RData";
             String saveWS = "save('x', file='"+wrkdir +"/"+ RdataFileName +"')";
-            out.println("save the workspace="+saveWS);
+            dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
             
             // move the temp dir to the web-temp root dir
             String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
-            out.println("web-temp_dir="+mvTmpDir);
+            dbgLog.fine("web-temp_dir="+mvTmpDir);
             c.voidEval(mvTmpDir);
 
             sr.put("requestdir", requestdir);
@@ -674,7 +677,7 @@ public class DvnRDataAnalysisServiceImpl{
      * @return    
      */
     public Map<String, String> runXtabRequest(DvnRJobRequest sro, RConnection c){
-        out.println("*********** xtab option ***********");
+        dbgLog.fine("*********** xtab option ***********");
         Map<String, String> sr = new HashMap<String, String>();
 
         try {
@@ -691,7 +694,7 @@ public class DvnRDataAnalysisServiceImpl{
 
             // create a temp dir
             String createTmpDir = "dir.create('"+wrkdir +"')";
-            out.println("createTmpDir="+createTmpDir);
+            dbgLog.fine("createTmpDir="+createTmpDir);
             c.voidEval(createTmpDir);
             
             // copy the dvn-patch css file to the wkdir
@@ -707,18 +710,18 @@ public class DvnRDataAnalysisServiceImpl{
                 wrkdir +"', filename='"+ResultHtmlFileBase+
                 "', extension='html', CSSFile='R2HTML.css', Title ='"+
                 homePageTitle+"')";
-            out.println("openHtml="+openHtml);
+            dbgLog.fine("openHtml="+openHtml);
             c.voidEval(openHtml);
             
             String StudyTitle = sro.getStudytitle();//"Title comes here";
             String pageHeaderContents = "hdrContents <- \"<h1>Dataverse Analysis</h1><h2>Results</h2><p>Study Title:"+
             StudyTitle+"</p><hr />\"";
             
-            out.println("pageHeaderContents="+pageHeaderContents);
+            dbgLog.fine("pageHeaderContents="+pageHeaderContents);
             c.voidEval(pageHeaderContents);
             
             String pageHeader = "HTML(file=htmlsink,hdrContents)";
-            out.println("pageHeader="+pageHeader);
+            dbgLog.fine("pageHeader="+pageHeader);
             c.voidEval(pageHeader);
             /*
                 aol<-c(0,0,1)
@@ -733,7 +736,7 @@ public class DvnRDataAnalysisServiceImpl{
             */
             
             // command lines
-            out.println("univarStatLine="+univarStatLine);
+            dbgLog.fine("univarStatLine="+univarStatLine);
 
             c.voidEval(univarStatLine);
             c.voidEval(vdcUtilLibLine);
@@ -761,7 +764,7 @@ public class DvnRDataAnalysisServiceImpl{
                 ", wantTotals="+xtabOptns[0]+
                 ", wantStats="+xtabOptns[1]+
                 ", wantExtraTables="+xtabOptns[3]+"))";
-            out.println("VDCxtab="+VDCxtab);
+            dbgLog.fine("VDCxtab="+VDCxtab);
             c.voidEval(VDCxtab);
 
             String closeHtml = "HTMLEndFile()";
@@ -770,12 +773,12 @@ public class DvnRDataAnalysisServiceImpl{
             // save workspace
             String RdataFileName = "Rworkspace."+PID+".RData";
             String saveWS = "save('x', file='"+wrkdir +"/"+ RdataFileName +"')";
-            out.println("save the workspace="+saveWS);
+            dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
             
             // move the temp dir to the web-temp root dir
             String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
-            out.println("web-temp_dir="+mvTmpDir);
+            dbgLog.fine("web-temp_dir="+mvTmpDir);
             c.voidEval(mvTmpDir);
 
             sr.put("requestdir", requestdir);
@@ -797,7 +800,7 @@ public class DvnRDataAnalysisServiceImpl{
      * @return    
      */
     public Map<String, String> runZeligRequest(DvnRJobRequest sro, RConnection c){
-        out.println("*********** zelig option ***********");
+        dbgLog.fine("*********** zelig option ***********");
         Map<String, String> sr = new HashMap<String, String>();
         
         try {
@@ -873,7 +876,7 @@ public class DvnRDataAnalysisServiceImpl{
             if (simOptn.equals("T")){
                 // simulation was requested
                 setxType= sro.getZeligSetxType();
-                out.println("setxType="+setxType);
+                dbgLog.fine("setxType="+setxType);
                 if (setxType == null){
                     setxArgs = "NULL";
                     setx2Args= "NULL";
@@ -940,7 +943,7 @@ public class DvnRDataAnalysisServiceImpl{
                 \">Go back to the previous page</a>'"+
             
             */
-            out.println("VDCgenAnalysis="+VDCgenAnalysisline);
+            dbgLog.fine("VDCgenAnalysis="+VDCgenAnalysisline);
             
             // c.assign("zlg.out", VDCgenAnalysisline);
             c.voidEval(VDCgenAnalysisline);
@@ -948,11 +951,11 @@ public class DvnRDataAnalysisServiceImpl{
             //String strzo = c.parseAndEval("str(zlg.out)").asString();
             
             String[] kz = zlgout.keys();
-            out.println("zlg.out:no of keys="+kz.length );// "\t"+kz[0]+"\t"+kz[1]
+            dbgLog.fine("zlg.out:no of keys="+kz.length );// "\t"+kz[0]+"\t"+kz[1]
             
             for (int i=0; i<kz.length; i++){
                 String [] tmp = zlgout.at(kz[i]).asString().split("/");
-                out.println(kz[i]+"="+tmp[tmp.length-1]);
+                dbgLog.fine(kz[i]+"="+tmp[tmp.length-1]);
                 if (kz[i].equals("html")){
                    ResultHtmlFile = tmp[tmp.length-1];
                 } else if (kz[i].equals("Rdata")){
@@ -992,7 +995,7 @@ public class DvnRDataAnalysisServiceImpl{
             
             // move the temp dir to the web-temp root dir
             String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
-            out.println("web-temp_dir="+mvTmpDir);
+            dbgLog.fine("web-temp_dir="+mvTmpDir);
             c.voidEval(mvTmpDir);
             
             /*
@@ -1062,14 +1065,14 @@ public class DvnRDataAnalysisServiceImpl{
                     hostname = env.get(envName);
                 }
             }
-            out.println("hostname="+hostname);
+            dbgLog.fine("hostname="+hostname);
             
             // set-up R command lines
             // temp file
             String R_TMP_DIR = "/tmp/VDC/";
             //String cnfgfl = R_TMP_DIR +"configZeligGUI."+RandomStringUtils.randomNumeric(6)+ ".xml"; 
             String cnfgfl = R_TMP_DIR +"configZeligGUI.xml"; 
-            out.println("cnfgfl="+cnfgfl);
+            dbgLog.fine("cnfgfl="+cnfgfl);
             
             // remove the existing config file if exists
             String removeOLdLine = "if (file.exists('"+cnfgfl+"')){file.remove('"+cnfgfl+"');}";
@@ -1077,11 +1080,11 @@ public class DvnRDataAnalysisServiceImpl{
             // R code line part 1         
             String cmndline = "library(VDCutil);  printZeligSchemaInstance('"+ cnfgfl + "')";
             // cnfgfl  +  "'," + "'" + RSERVE_HOST + "')";
-            out.println("comand line="+cmndline);
+            dbgLog.fine("comand line="+cmndline);
             
             // write zelig GUI-config data  to the temp ifle
             c.voidEval(cmndline);
-            //out.println("commandline output="+outString);
+            //dbgLog.fine("commandline output="+outString);
             
             // check whether the temp file exists (Rserve is local)
             long filelength=0;
@@ -1090,12 +1093,12 @@ public class DvnRDataAnalysisServiceImpl{
                     File flnm =new File(cnfgfl);
                     boolean exists = flnm.exists();
                     if (exists) {
-                        out.println("configuration xml file ("+cnfgfl+") was found");
+                        dbgLog.fine("configuration xml file ("+cnfgfl+") was found");
                         filelength = flnm.length();
                         // Get the number of bytes in the file
-                        out.println("The size of the file ="+filelength);
+                        dbgLog.fine("The size of the file ="+filelength);
                     } else {
-                        out.println("configuration xml file ("+cnfgfl+") was not found");
+                        dbgLog.fine("configuration xml file ("+cnfgfl+") was not found");
                     }
                 }
             } catch (NullPointerException e) {
@@ -1107,9 +1110,9 @@ public class DvnRDataAnalysisServiceImpl{
                 c.voidEval("zz<-file('"+cnfgfl+"', 'r')");
                 c.voidEval("open(zz)");
                 zlgcnfg = c.eval("paste(readLines(zz),collapse='')").asString();
-                out.println("string length="+zlgcnfg.length());
+                dbgLog.fine("string length="+zlgcnfg.length());
                 if (zlgcnfg.length()>0){
-                    out.println("first 72 bytes=[\n"+zlgcnfg.substring(0, 71) +"\n]\n");
+                    dbgLog.fine("first 72 bytes=[\n"+zlgcnfg.substring(0, 71) +"\n]\n");
                 }
             //}
         } catch (Exception ex){
@@ -1119,7 +1122,6 @@ public class DvnRDataAnalysisServiceImpl{
     }
 
     public String joinNelementsPerLine(String[] vn, int divisor){
-        boolean debug = false;
         String vnl = null;
         if (vn.length < divisor){
             vnl = StringUtils.join(vn, ", ");
@@ -1131,13 +1133,14 @@ public class DvnRDataAnalysisServiceImpl{
             if (lastN != 0){
                 iter++;
             }
+            int iterm = iter - 1;
             for (int i= 0; i<iter; i++){
                 int terminalN = divisor;
-                if ((i == (iter-1))  && (lastN != 0)){
+                if ((i == iterm )  && (lastN != 0)){
                     terminalN = lastN;
                 }                
                 for (int j = 0; j< terminalN; j++){
-                    if ( (divisor*(iter-1) +j +1) == vn.length){ 
+                    if ( (divisor*iterm +j +1) == vn.length){ 
                         sb.append(vn[j + i*divisor]);
                     } else {
                         
@@ -1151,9 +1154,7 @@ public class DvnRDataAnalysisServiceImpl{
                 }
             }
             vnl = sb.toString();
-            if (debug){
-                out.println(vnl);
-            }
+            dbgLog.fine(vnl);
         }
         return vnl;
     }    

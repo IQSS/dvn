@@ -7,6 +7,7 @@ package edu.harvard.hmdc.vdcnet.dsb.impl;
 
 import java.util.*;
 import java.util.Scanner;
+import java.util.logging.*;
 import java.io.*;
 import java.io.FileNotFoundException;
 import static java.lang.System.*;
@@ -21,6 +22,9 @@ import edu.harvard.hmdc.vdcnet.dsb.*;
  */
  
 public class DvnJavaFieldCutter implements FieldCutter{
+
+    private static Logger dbgLog = Logger.getLogger(DvnJavaFieldCutter.class.getPackage().getName());
+
     
     public boolean debug=false;
     
@@ -33,9 +37,7 @@ public class DvnJavaFieldCutter implements FieldCutter{
         try {
           Scanner scanner =  new Scanner(new File(infile));
           
-          if (debug){
-            System.out.println("outfile="+outfile);
-          }
+          dbgLog.fine("outfile="+outfile);
           
           BufferedWriter out = new BufferedWriter(new FileWriter(outfile));
           scanner.useDelimiter("\\n");
@@ -50,9 +52,7 @@ public class DvnJavaFieldCutter implements FieldCutter{
                   ln.add(line[i]);
               }
               
-              if (debug){
-                System.out.println(StringUtils.join(ln,"\t"));
-              }
+              dbgLog.fine(StringUtils.join(ln,"\t"));
               
               out.write(StringUtils.join(ln,"\t")+"\n");
               ln=null;

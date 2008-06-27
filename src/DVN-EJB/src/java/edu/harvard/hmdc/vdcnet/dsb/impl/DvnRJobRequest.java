@@ -13,14 +13,17 @@ import edu.harvard.hmdc.vdcnet.dsb.*;
 import edu.harvard.hmdc.vdcnet.study.*;
 import static java.lang.System.*;
 import java.util.*;
+import java.util.logging.*;
 import org.apache.commons.lang.*;
 
 
 public class DvnRJobRequest {
 
+    private static Logger dbgLog = Logger.getLogger(DvnRJobRequest.class.getPackage().getName());
+
+
     public static Map<String, Integer> xtabOutputOptions =
         new HashMap<String, Integer>();
-        
         
     public static Map<String, Integer> zeligOutputOptions =
         new HashMap<String, Integer>();
@@ -35,11 +38,7 @@ public class DvnRJobRequest {
         
         zeligOutputOptions.put("Summary",0);
         zeligOutputOptions.put("Plots", 1);
-        zeligOutputOptions.put("BinOutput",2);
-
-     
-     
-     
+        zeligOutputOptions.put("BinOutput",2);     
     }
     // ----------------------------------------------------- Constructors
 
@@ -61,11 +60,11 @@ public class DvnRJobRequest {
         recodeSchema  = rs;
         zeligModelSpec = zp;
         
-        out.println("variables="+dataVariablesForRequest);
-        out.println("map="+listParametersForRequest);
-        out.println("value table="+valueTables);
-        out.println("recodeSchema"+recodeSchema);
-        out.println("model spec="+zeligModelSpec);
+        dbgLog.fine("variables="+dataVariablesForRequest);
+        dbgLog.fine("map="+listParametersForRequest);
+        dbgLog.fine("value table="+valueTables);
+        dbgLog.fine("recodeSchema"+recodeSchema);
+        dbgLog.fine("model spec="+zeligModelSpec);
         checkVariableNames();
     }
 
@@ -142,7 +141,7 @@ public class DvnRJobRequest {
     
     public String getStudytitle(){
         List<String> studytitle = listParametersForRequest.get("studytitle");
-        out.println("studytitle="+studytitle.get(0));
+        dbgLog.fine("studytitle="+studytitle.get(0));
         return studytitle.get(0);
     }
 
@@ -154,7 +153,7 @@ public class DvnRJobRequest {
      */
     public String getSubsetFileName(){
         List<String> subsetFile = listParametersForRequest.get("subsetFileName");
-        out.println("subsetFileName="+subsetFile.get(0));
+        dbgLog.fine("subsetFileName="+subsetFile.get(0));
         return subsetFile.get(0);
     }
 
@@ -183,7 +182,7 @@ public class DvnRJobRequest {
             }
         }
         Integer[]tmp = (Integer[])rw.toArray(new Integer[rw.size()]);
-        out.println("vartype="+ StringUtils.join(tmp, ", "));
+        dbgLog.fine("vartype="+ StringUtils.join(tmp, ", "));
         int[] variableTypes=new int[tmp.length];
         for (int j=0;j<tmp.length;j++){
             variableTypes[j]= tmp[j];
@@ -373,7 +372,7 @@ public class DvnRJobRequest {
         String type=null;
         List<String> requestTypeToken = listParametersForRequest.get("requestType");
         type =  requestTypeToken.get(0);
-        out.println("requestType="+type);
+        dbgLog.fine("requestType="+type);
         return type;
     }
 
@@ -386,7 +385,7 @@ public class DvnRJobRequest {
         String param=null;
         List<String> requestTypeToken = listParametersForRequest.get("dtdwnld");
         param =  requestTypeToken.get(0);
-        out.println("dtdwnld="+param);
+        dbgLog.fine("dtdwnld="+param);
         return param;
     }
 
@@ -410,7 +409,7 @@ public class DvnRJobRequest {
             param3[1] = "1";
         }
         String tmp = StringUtils.join(param3, ", ");
-        out.println("aol="+tmp);
+        dbgLog.fine("aol="+tmp);
         return tmp;
     }
 
@@ -423,7 +422,7 @@ public class DvnRJobRequest {
         String modelName = null;
         List<String> requestTypeToken = listParametersForRequest.get("modelName");
         modelName =  requestTypeToken.get(0);
-        out.println("modelName="+modelName);
+        dbgLog.fine("modelName="+modelName);
         return modelName;
     }
     
@@ -436,11 +435,11 @@ public class DvnRJobRequest {
     public String[] getXtabClassVars(){
         String[] cv = null;
         List<String> varIdSet = listParametersForRequest.get("xtb_nmBxR1");
-        out.println("class var Ids="+ varIdSet);
+        dbgLog.fine("class var Ids="+ varIdSet);
         if (varIdSet != null){
 
             List<String> varSet = getFileteredVarNameSet(varIdSet);
-            out.println("class-var non-null case:"+ varSet);
+            dbgLog.fine("class-var non-null case:"+ varSet);
             cv = (String[])varSet.toArray(new String[varSet.size()]);
         }
         return cv;
@@ -457,7 +456,7 @@ public class DvnRJobRequest {
         List<String> varIdSet = listParametersForRequest.get("xtb_nmBxR2");
         if (varIdSet != null){
             List<String> varSet = getFileteredVarNameSet(varIdSet);
-            out.println("freq-var non-null case:"+ varSet);
+            dbgLog.fine("freq-var non-null case:"+ varSet);
 
             fv = (String[])varSet.toArray(new String[varSet.size()]);
         }
@@ -510,7 +509,7 @@ public class DvnRJobRequest {
                 lhs = tmp.get(0);
             }
         }
-        out.println("lhs="+lhs);
+        dbgLog.fine("lhs="+lhs);
         return lhs;
     }
     

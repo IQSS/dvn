@@ -6,6 +6,7 @@
 package edu.harvard.hmdc.vdcnet.dsb.impl;
 
 import java.util.*;
+import java.util.logging.*;
 import java.io.*;
 import org.apache.commons.lang.*;
 import static java.lang.System.*;
@@ -16,6 +17,7 @@ import static java.lang.System.*;
  */
 public class DvnCitationFileWriter {
     
+    private static Logger dbgLog = Logger.getLogger(DvnCitationFileWriter.class.getPackage().getName());
     
     String title = "_Citation for the full data set you chose_:\n";
     String subsetTitle = "_Citation for this subset you chose_:\n";
@@ -94,7 +96,7 @@ public class DvnCitationFileWriter {
             }
             vnl = sb.toString();
             if (debug){
-                out.println(vnl);
+                dbgLog.fine(vnl);
             }
         }
         return vnl;

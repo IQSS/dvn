@@ -30,7 +30,7 @@ import java.util.*;
 import static java.lang.System.*;
 import java.math.*;
 import edu.harvard.hmdc.vdcnet.dsb.zelig.*;
-import java.util.logging.Logger;
+import java.util.logging.*;
 import java.util.regex.*;
 
 import org.apache.commons.lang.*;
@@ -41,11 +41,14 @@ import org.apache.commons.lang.*;
 *
 */
 public class AdvancedStatGUIdata  implements java.io.Serializable {
+
     // static fields
     
     private static String regex = "/zelig/doc/";
     private static Pattern p;
-    private static Logger theLogger = Logger.getLogger(AdvancedStatGUIdata.class.getName());
+    private static Logger dbgLog = Logger.getLogger(AdvancedStatGUIdata.class.getPackage().getName());
+    
+    
     // private static String[] modelFilter = {"gam.logit", "gam.normal","gam.poisson","gam.probit","logit.gee"};
     // as of 2008-02-28
     private static String[] modelFilter = {"coxph", "ei.RxC", "gamma.gee", 
@@ -95,7 +98,7 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
         modelCategoryList =  new ArrayList<String>();
         modelCategoryList.addAll(new TreeSet<String>(modelCategoryId.keySet()));
       }
-      //  out.println("List size="+modelCategoryList.size());
+      dbgLog.finer("List size="+modelCategoryList.size());
       return modelCategoryList;
     }
 
@@ -106,7 +109,7 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
       if (modelId2NameMap == null){
         modelId2NameMap = new HashMap<String, String>();
         for ( AdvancedStatGUIdata.Model mdl : this.model){
-          //out.println(mdl.getMdlId()+"=>"+mdl.getMdlName());
+          dbgLog.finer(mdl.getMdlId()+"=>"+mdl.getMdlName());
           modelId2NameMap.put(mdl.getMdlId(),mdl.getMdlName());
         }
       }
@@ -324,10 +327,10 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
         for (Zelig.Model z : zlgLst){
           ii++;
           AdvancedStatGUIdata.Model mdlii = new AdvancedStatGUIdata.Model();
-          // out.println("\n+++++++++++++++ start of model("+z.getName()+") +++++++++++++++\n");
+          dbgLog.fine("\n+++++++++++++++ start of model("+z.getName()+") +++++++++++++++\n");
           if (excludedModels.contains(z.getName())){
             ii--;
-            out.println("skip this model="+z.getName()+" (incompatible with DVN)");
+            dbgLog.fine("skip this model="+z.getName()+" (incompatible with DVN)");
             continue modelloop;
           }
           // fields that do not require calculations
@@ -337,20 +340,20 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
           StringBuilder sb = new StringBuilder("zlg_");
           sb.append(id);
           String mdlId = sb.toString();
-          //out.println("mdlId="+mdlId);
+          dbgLog.fine("mdlId="+mdlId);
 
           mdlii.setMdlId(mdlId);
 
           // mdlName
           String mdlName = z.getName();
-          // out.println("mdlName="+mdlName);
+          dbgLog.fine("mdlName="+mdlName);
 
           mdlii.setMdlName(mdlName);
 
 
           // packageDep: might be > 1
           List<Zelig.Model.PackageDependency> pdl = z.getPackageDependency();
-          // out.println("how many dependency-packages="+pdl.size());
+          dbgLog.finer("how many dependency-packages="+pdl.size());
 
 
           // create shallow String-type list for convenience
@@ -360,7 +363,7 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
           for (Zelig.Model.PackageDependency pd : pdl ){
               ipd++;
               if (pd.getName() != null && !(pd.getName().equals(null)) ) {
-                  // out.println("packageDep("+ipd+")="+pd.getName());
+                  dbgLog.finer("packageDep("+ipd+")="+pd.getName());
                   if (pd.getName().equals("sandwich")){
                       // do nothing
                   } else {
@@ -369,12 +372,12 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
               }
           }
 
-          // out.println("pd check = "+list2String(pckgDp));
+          // dbgLog.fine("pd check = "+list2String(pckgDp));
           mdlii.setPackageDep(pckgDp.get(0));
 
           // [model] category
           String category = z.getLabel();
-          // out.println("category="+category);
+          dbgLog.finer("category="+category);
           
           this.modelCategory.put(mdlName, category);
           //this.modelCategory.put(mdlId, category);
@@ -391,8 +394,7 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
 
           // helplink
           String helplinkRaw = z.getHelpLink().getUrl();
-          // out.println("helplink="+ helplink );
-
+          dbgLog.finer("helplinkRaw="+ helplinkRaw);
 
           // temporary fix: until zelig package is updated
           Matcher matcher = p.matcher(helplinkRaw);
@@ -401,12 +403,11 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
             helplink = matcher.replaceFirst("/zelig/docs/");
           }
 
-
           mdlii.setHelplink(helplink);
 
           // sepcialFunction
           String specialFunction = z.getSpecialFunction();
-          // out.println("specialFunction="+specialFunction);
+          dbgLog.finer("specialFunction="+specialFunction);
 
           mdlii.setSpecialFn(specialFunction);
 
@@ -420,20 +421,20 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
 
           // title
           String title = z.getDescription();
-          out.println("title="+title);
+          dbgLog.fine("title="+title);
          
           String sTitle = shortenTitle(title);
-          out.println("shorten="+sTitle);
+          dbgLog.fine("shorten="+sTitle);
           mdlii.setTitle(sTitle);
 
           // maxSetx
           int maxSetx = z.getSetx().getMaxSetx();
-          // out.println("maxSetx="+maxSetx);
+          dbgLog.finer("maxSetx="+maxSetx);
 
           mdlii.setMaxSetx(maxSetx);
 
           // how many equations
-          // out.println("# of equations="+z.getFormula().getEquation().size());
+          dbgLog.finer("# of equations="+z.getFormula().getEquation().size());
 
 
           // mono-equation or not
@@ -453,7 +454,7 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
                   minOutc  += outm.getMinVar().intValue();
                 }
               }
-              // out.println("outcome: total minVar="+minOutc);
+              dbgLog.finer("outcome: total minVar="+minOutc);
 
               // minExpl
               // exMinVar
@@ -469,37 +470,37 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
                   minExpl  += exm.getMinVar().intValue();
                 }
               }
-              // out.println("exMinVar: explanatory: minVar total="+exMinVar );
-              // out.println("explanatory: sum of minVar="+minExpl);
+              dbgLog.finer("exMinVar: explanatory: minVar total="+exMinVar );
+              dbgLog.finer("explanatory: sum of minVar="+minExpl);
 
               // minVars = minOutc + minExpl
               int minVars = minOutc + minExpl;
-              // out.println("minVars: sum(minOutc + minExpl)="+minVars);
+              dbgLog.finer("minVars: sum(minOutc + minExpl)="+minVars);
 
           mdlii.setMinVars(minVars);
 
               // nobox
               int nobox =  Eq.get(0).getOutcome().size() + Eq.get(0).getExplanatory().size();
-              // out.println("# of equations: all="+nobox);
+              dbgLog.finer("# of equations: all="+nobox);
 
               // noYs
               int noYs = Eq.get(0).getOutcome().size();
-              // out.println("# of equations: outcome="+noYs);
+              dbgLog.finer("# of equations: outcome="+noYs);
 
               // noXs
               int noXs = Eq.get(0).getExplanatory().size();                 
-              // out.println("# of equations: explanatory="+noXs);
+              dbgLog.finer("# of equations: explanatory="+noXs);
 
               // noRBoxes
               int noRBoxes = noXs + noYs;
-              // out.println("noRBoxes: # of RHS boxes="+noRBoxes);
+              dbgLog.finer("noRBoxes: # of RHS boxes="+noRBoxes);
           mdlii.setNoRboxes(noRBoxes);
 
 
 
-              //out.println("How many outcome boxes="+ Eq.get(0).getOutcome().size());
+              dbgLog.finer("How many outcome boxes="+ Eq.get(0).getOutcome().size());
 
-              //out.println("\n+++++++++++++++ start of outcome +++++++++++++++\n");
+              dbgLog.finer("\n+++++++++++++++ start of outcome +++++++++++++++\n");
 
               // for each outcome tag
               int k = 0;
@@ -515,7 +516,7 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
                   // iteration counter: outcome tag
                   k++;
               AdvancedStatGUIdata.Model.VarBox vbxi = new AdvancedStatGUIdata.Model.VarBox();
-                  //out.println("\n/////////// start of outcome("+k+") ///////////\n");
+                  dbgLog.finer("\n/////////// start of outcome("+k+") ///////////\n");
 
               vbxi.setType("D");
 
@@ -528,8 +529,8 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
                         maxvl = Integer.MAX_VALUE;
                     }
                   }
-                  //out.println("outcome("+k+"-th): minvl="+minvl);
-                  //out.println("outcome("+k+"-th): maxvl="+maxvl);
+                  dbgLog.finer("outcome("+k+"-th): minvl="+minvl);
+                  dbgLog.finer("outcome("+k+"-th): maxvl="+maxvl);
 
 
                   vbxi.setMinvar(minvl);
@@ -544,20 +545,20 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
 
                   int otsize = ot.getModelingType().size();
 
-                  //out.println("how many modeling types="+otsize);
-                  //out.println("modeling types: contents="+list2string(ot.getModelingType()));
+                  dbgLog.finer("how many modeling types="+otsize);
+                  dbgLog.finer("modeling types: contents="+list2string(ot.getModelingType()));
                   int fotsize =0;
                   for (int i=0; i<otsize ; i++){
                       Zelig.Model.Formula.Equation.Outcome.ModelingType mdt = ot.getModelingType().get(i);
                       // for each modelingType
                       //if  (mdt.getValue().equals("continuous")) {
                       //if ( mdt.getValue() == MODEL.fromValue("continuous")){
-                      //out.print("i="+i+"\t howmany="+otsize+"\n");
+                      dbgLog.finer("i="+i+"\t howmany="+otsize+"\n");
                       if (mdt.getValue() != null){
                       //if ( (mdt.getValue().value() != null) || (mdt.getValue().value().equals(""))){
                           String mdtv = mdt.getValue().value();
 
-                          //out.println("current("+i+"-th) modelingType="+mdtv);
+                          dbgLog.finer("current("+i+"-th) modelingType="+mdtv);
 
                           if (mdtv.equals("continuous")){
                             noContin++;
@@ -574,16 +575,16 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
                   }  // each modelingType
                     if (otsize == fotsize){
                         ii--;
-                        out.println("skip this model="+mdlName+" (modeling type for outcome is missing");
+                        dbgLog.fine("skip this model="+mdlName+" (modeling type for outcome is missing");
                         continue modelloop;
                     }
 
-                  //out.println("noContin: continuous modelingtype="+noContin);
-                  //out.println("noMT: # of modelingtype tags="+noMT);
+                  dbgLog.finer("noContin: continuous modelingtype="+noContin);
+                  dbgLog.finer("noMT: # of modelingtype tags="+noMT);
 
                   // varType
                   String mdltset = sbmt.toString();
-                  //out.println("varType(outcome: raw)("+k+")="+ mdltset);
+                  dbgLog.finer("varType(outcome: raw)("+k+")="+ mdltset);
 
                   StringBuilder str = new StringBuilder();
 
@@ -618,14 +619,14 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
                   }
 
                   String varType= str.toString();
-                  //out.println("varType("+k+")="+varType);
+                  dbgLog.finer("varType("+k+")="+varType);
               vbxi.setVarType(varType);
 
 
                   // outcome: box label
 
 
-                  //out.println("raw yLabel: outcome box="+ot.getLabel());
+                  dbgLog.finer("raw yLabel: outcome box="+ot.getLabel());
                   StringBuilder sbyLabel=  new StringBuilder();
                   if (ot.getLabel() != null && !(ot.getLabel().equals(null)) ) {
                      sbyLabel.append(ot.getLabel());
@@ -660,16 +661,16 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
 
                   String yLabel = sbyLabel.toString();
               vbxi.setLabel(yLabel);
-                  //out.println("outcome:box-label="+yLabel);
-                  //out.println("\n/////////// end of outcome("+k+") ///////////\n");
+                  dbgLog.finer("outcome:box-label="+yLabel);
+                  dbgLog.finer("\n/////////// end of outcome("+k+") ///////////\n");
 
                   // varBox processing
 
               mdlii.getVarBox().add(vbxi);
               } // each outcome tag
 
-              //out.println("\n+++++++++++++++ end of outcome +++++++++++++++\n");
-              //out.println("\n+++++++++++++++ start of explanatory +++++++++++++++\n");
+              dbgLog.finer("\n+++++++++++++++ end of outcome +++++++++++++++\n");
+              dbgLog.finer("\n+++++++++++++++ start of explanatory +++++++++++++++\n");
               // for each explanatory tag
 
               //if (Eq.get(0).getExplanatory().size() > 0){
@@ -681,7 +682,7 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
                       j++;
                   AdvancedStatGUIdata.Model.VarBox vbxi = new AdvancedStatGUIdata.Model.VarBox();
 
-                      //out.println("\n/////////// start of explanatory("+j+") ///////////\n");
+                      dbgLog.finer("\n/////////// start of explanatory("+j+") ///////////\n");
 
                   vbxi.setType("E");
                       int Eminvl=ex.getMinVar().intValue();
@@ -690,8 +691,8 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
                       if (Emaxvl == -1 ) {
                          Emaxvl = Integer.MAX_VALUE;
                       }
-                      //out.println("explanatory("+j+"-th): Eminvl="+Eminvl);
-                      //out.println("explanatory("+j+"-th): Emaxvl="+Emaxvl);
+                      dbgLog.finer("explanatory("+j+"-th): Eminvl="+Eminvl);
+                      dbgLog.finer("explanatory("+j+"-th): Emaxvl="+Emaxvl);
 
                   vbxi.setMinvar(Eminvl);
                   vbxi.setMaxvar(Emaxvl);
@@ -700,8 +701,8 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
                       StringBuilder sbmte = new StringBuilder();
                       int etsize = ex.getModelingType().size();
 
-                      //out.println("how many modeling types="+etsize);
-                      //out.println("modeling types: contents="+list2string(ex.getModelingType()));
+                      dbgLog.finer("how many modeling types="+etsize);
+                      dbgLog.finer("modeling types: contents="+list2string(ex.getModelingType()));
 
                       int EnoContin = 0;
                       int EnoMT =0;
@@ -710,7 +711,7 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
                         Zelig.Model.Formula.Equation.Explanatory.ModelingType emdt = ex.getModelingType().get(i);
                         if (emdt.getValue() != null){
                         String emdtv = emdt.getValue().value();
-                        //out.println("current("+j+"-th) modelingType="+emdtv);
+                        dbgLog.finer("current("+j+"-th) modelingType="+emdtv);
                         if (emdtv.equals("continuous")){
                           EnoContin++;
                         }
@@ -726,15 +727,15 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
                       } // each modelingType
                         if (fetsize == etsize){
                             ii--;
-                            out.println("skip this model="+mdlName+" (modeling type for explanatory is missing)");
+                            dbgLog.fine("skip this model="+mdlName+" (modeling type for explanatory is missing)");
                             continue modelloop;
                         }
-                      //out.println("EnoContin: continuous modelingtype="+EnoContin);
-                      //out.println("EnoMT: # of modelingtype tags="+EnoMT);
+                      dbgLog.finer("EnoContin: continuous modelingtype="+EnoContin);
+                      dbgLog.finer("EnoMT: # of modelingtype tags="+EnoMT);
 
                       // varType
                       String mdltsete = sbmte.toString();
-                      //out.println("varType(explanatory: raw)("+j+")="+ mdltsete);
+                      dbgLog.finer("varType(explanatory: raw)("+j+")="+ mdltsete);
 
 
                       StringBuilder str = new StringBuilder();
@@ -772,12 +773,12 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
 
                       // varType
                       String varType= str.toString();
-                      //out.println("varType("+j+")="+varType);
+                      dbgLog.finer("varType("+j+")="+varType);
 
               vbxi.setVarType(varType);
 
                      // str xLabel;
-                      //out.println("raw xLabel: explanatory box="+ex.getLabel());
+                      dbgLog.finer("raw xLabel: explanatory box="+ex.getLabel());
 
                       StringBuilder sbyLabel=  new StringBuilder();
                       if (ex.getLabel() != null && !(ex.getLabel().equals(null)) ) {
@@ -794,24 +795,24 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
                       }
 
                       String xLabel = sbyLabel.toString();
-                      //out.println("explanatory:box-label="+xLabel);
+                      dbgLog.finer("explanatory:box-label="+xLabel);
               vbxi.setLabel(xLabel);
                   // varBox processing
 
               mdlii.getVarBox().add(vbxi);
 
-                     //out.println("\n/////////// end of explantory("+j+") ///////////\n");
+                     dbgLog.finer("\n/////////// end of explantory("+j+") ///////////\n");
                   }
 
               }
 
-              //out.println("\n+++++++++++++++ end of explantory +++++++++++++++\n");
+              dbgLog.finer("\n+++++++++++++++ end of explantory +++++++++++++++\n");
           } // each eq
 
-          //out.println("\n+++++++++++++++ end of model("+z.getName()+") +++++++++++++++\n");
+          dbgLog.finer("\n+++++++++++++++ end of model("+z.getName()+") +++++++++++++++\n");
           
-          //out.println("model dump:\n"+mdlii);
-          //theLogger.info("model dump:\n"+mdlii);
+          dbgLog.finer("model dump:\n"+mdlii);
+
           // add this model to the list
           this.getModel().add((ii-1), mdlii);
           //this.getModelId2SpecMap().put(mdlId, mdlii);
@@ -819,14 +820,14 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
         } // each model
 
         // test
-        out.println("\n\nhow many models are processed="+this.getModel().size());
-        /*
-        out.println("\n\nmodel ID\tmodel Name\tModel Title");
+        dbgLog.fine("\n\nhow many models are processed="+this.getModel().size());
+
+        dbgLog.finer("\n\nmodel ID\tmodel Name\tModel Title");
+        
         for (AdvancedStatGUIdata.Model zl : this.getModel()){
-          out.println(zl.getMdlId()+","+zl.getMdlName()+","+zl.getTitle());
+          dbgLog.finer(zl.getMdlId()+","+zl.getMdlName()+","+zl.getTitle());
         }
-        out.print("\n");
-        */
+
     }  // top: constructor
 
 

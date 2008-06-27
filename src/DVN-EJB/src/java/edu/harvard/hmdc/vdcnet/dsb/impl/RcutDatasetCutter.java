@@ -1,6 +1,7 @@
 package edu.harvard.hmdc.vdcnet.dsb.impl;
 
 import java.io.*;
+import java.util.logging.*;
 import static java.lang.System.*;
 import edu.harvard.hmdc.vdcnet.dsb.*;
 /**
@@ -22,6 +23,9 @@ public class RcutDatasetCutter implements DatasetCutter{
             RCUT = rcut_dir + File.separator + "rcut";
         }
     }
+
+    private static Logger dbgLog = Logger.getLogger(RcutDatasetCutter.class.getPackage().getName());
+
 
     /** Set to true to end the loop */
     static boolean done = false;
@@ -64,7 +68,7 @@ public class RcutDatasetCutter implements DatasetCutter{
         } else {
             PROGRAM[2] = cmnd;
         }
-        out.println("command fragment=" + PROGRAM[2]);
+        dbgLog.fine("command fragment=" + PROGRAM[2]);
 
         try {
             p = Runtime.getRuntime().exec(PROGRAM);
@@ -78,7 +82,7 @@ public class RcutDatasetCutter implements DatasetCutter{
                         // OK, just quit.
                         return;
                     }
-                    System.out.println("rcut has been terminated!");
+                    dbgLog.fine("rcut has been terminated!");
                     done = true;
                 }
             };
@@ -87,7 +91,7 @@ public class RcutDatasetCutter implements DatasetCutter{
             is = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
             while (!done && ((line = is.readLine()) != null)) {
-                System.out.println(line);
+                dbgLog.fine(line);
             }
             // Debug.println("exec", "In Main after EOF");
             return;

@@ -554,6 +554,7 @@ public class FileDownloadServlet extends HttpServlet{
 				     method.getResponseHeaders()[i].getValue().startsWith("text/html")) {
 				    String remoteFileUrl = file.getFileSystemLocation(); 
 				    createRedirectResponse( res, remoteFileUrl );
+				    studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
 				    method.releaseConnection();
 				    return;
 				}
@@ -582,7 +583,8 @@ public class FileDownloadServlet extends HttpServlet{
 			in.close();
 			out.close();
                 
-			
+			studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
+
 		    } catch (IOException ex) {
 			//ex.printStackTrace();
 			String errorMessage = "An unknown I/O error has occured while attempting to retreive a remote data file (i.e., a file that belongs to a harvested study). It is possible that it is temporarily unavailable from that location or perhaps a temporary network error has occured. Please try again later and if the problem persists, report it to your DVN technical support contact.";
@@ -976,7 +978,7 @@ public class FileDownloadServlet extends HttpServlet{
                 List nameList = new ArrayList(); // used to check for duplicates
                 iter = files.iterator();
 		
-
+		StudyFile lastFile = null; 
 
                 while (iter.hasNext()) {
 		    int fileSize = 0; 
@@ -1059,6 +1061,8 @@ public class FileDownloadServlet extends HttpServlet{
 			    method.releaseConnection(); 
 			}
 		    }
+
+		    lastFile = file; 
 		}
 
 		// finally, let's create the manifest entry: 
@@ -1070,6 +1074,10 @@ public class FileDownloadServlet extends HttpServlet{
 		zout.closeEntry();
 		
                 zout.close();
+
+		// increment the per-study number of downloads: 
+
+		studyService.incrementNumberOfDownloads(lastFile.getFileCategory().getStudy().getId());
             } catch (IOException ex) {
 		// if the exception was caught while downloading 
 		// a remote object, let's make sure the network 

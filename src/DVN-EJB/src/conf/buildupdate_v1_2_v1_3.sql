@@ -531,5 +531,7 @@ ALTER TABLE study ALTER COLUMN lastindextime SET STORAGE PLAIN;
 ALTER TABLE datavariable ADD COLUMN formatcategory character varying(255);
 ALTER TABLE datavariable ALTER COLUMN formatcategory SET STORAGE EXTENDED;
 
+ALTER TABLE studyfile ADD COLUMN numberofdownloads bigint;
+
 
 commit;

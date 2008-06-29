@@ -83,8 +83,9 @@ public class DvnRJobRequest {
     }
 
     // ----------------------------------------------------- fields
-
-
+    
+    public boolean IsOutcomeVarRecoded = false;
+    
     /** metadata of requested variables */
     private List<DataVariable> dataVariablesForRequest;
     
@@ -335,15 +336,27 @@ public class DvnRJobRequest {
     }
 
     public String[] getUpdatedVariableLabels(){
-        return (String[])ArrayUtils.addAll(getVariableLabels(), getRecodedVarLabelSet());
+        if (hasRecodedVariables()){
+            return (String[])ArrayUtils.addAll(getVariableLabels(), getRecodedVarLabelSet());
+        } else {
+            return getVariableLabels();
+        }
     }
 
     public String[] getUpdatedVariableIds(){
-        return (String[])ArrayUtils.addAll(getVariableIds(), getRecodedVarIdSet());
+        if (hasRecodedVariables()){
+            return (String[])ArrayUtils.addAll(getVariableIds(), getRecodedVarIdSet());
+        } else {
+            return getVariableIds();
+        }
     }
 
     public int[] getUpdatedVariableTypes(){
-         return ArrayUtils.addAll(getVariableTypes(),getRecodedVarTypeSet());
+        if (hasRecodedVariables()){
+            return ArrayUtils.addAll(getVariableTypes(),getRecodedVarTypeSet());
+        } else {
+            return getVariableTypes();
+        }
     }
     /**
      * Getter for property value-label list
@@ -411,6 +424,21 @@ public class DvnRJobRequest {
         String tmp = StringUtils.join(param3, ", ");
         dbgLog.fine("aol="+tmp);
         return tmp;
+    }
+
+    public String getEDARequestType(){
+        List<String> param = listParametersForRequest.get("analysis");
+        int tmp = 0;
+        if (param.size() == 2){
+            tmp = 3;
+        } else if (param.get(0).equals("A01")) {
+            tmp = 1;
+        } else if (param.get(0).equals("A02")) {
+            tmp = 2;
+        }
+
+        dbgLog.fine("type="+tmp);
+        return Integer.toString(tmp);
     }
 
     /**
@@ -481,6 +509,34 @@ public class DvnRJobRequest {
         return xoo;
     }
     
+    public boolean isOutcomeBinary(){
+        List<String> oc = listParametersForRequest.get("isOutcomeBinary");
+        if (oc.get(0).equals("T")){
+            return true;
+        } 
+        return false;
+    }
+
+    public int getOutcomeVarPosition(){
+        int no = -1;
+        List<String> varIdSet = listParametersForRequest.get("nmBxR1");
+        if (varIdSet.size() == 1){
+             List<String> vi = Arrays.asList(getVariableIds());
+             
+             if (vi.indexOf(varIdSet.get(0)) > -1){
+                    no = vi.indexOf(varIdSet.get(0));
+             } else {
+                if (hasRecodedVariables()){
+                    List<String> rvi = listParametersForRequest.get("recodedVarIdSet");
+                    if (rvi.indexOf(varIdSet.get(0)) > -1){
+                        no = rvi.indexOf(varIdSet.get(0));
+                        IsOutcomeVarRecoded = true;
+                    }
+                }
+            }
+        }
+        return no;
+    }
     
     public String getLHSformula(){
         String lhs = null;
@@ -632,11 +688,47 @@ public class DvnRJobRequest {
         return vt;
     }
 
+    public String[] getBaseVarIdSet(){
+        List<String> bvid = listParametersForRequest.get("baseVarIdSet");
+        String[] tmp = (String[])bvid.toArray(new String[bvid.size()]);
+        return tmp;
 
+    }
+    
+    public String[] getBaseVarNameSet(){
+        List<String> bvn = listParametersForRequest.get("baseVarNameSet");
+        String[] tmp = (String[])bvn.toArray(new String[bvn.size()]);
+        return tmp;
+    }
+   
+    public Map<String, String> getVarIdToRecodedVarNameTable(){
+        Map<String, String> tb = new LinkedHashMap<String, String>();
+        List<String> lvi = listParametersForRequest.get("recodedVarIdSet");
+        List<String> lvn = listParametersForRequest.get("recodedVarNameSet");
+
+        for (int i = 0; i< lvi.size(); i++){
+            tb.put(lvi.get(i), lvn.get(i));
+        }
+        return tb;
+    }
+
+    public boolean isThisIdFromRecodedVar(String id){
+        boolean result = false;
+        
+        List<String> lvi = listParametersForRequest.get("recodedVarIdSet");
+        
+        if (lvi != null){
+            if ((lvi).indexOf(id) > -1){
+                result = true;
+            }
+        }
+        return result;
+    }
+    
     /**
      * 
      *
-     * @return    
+     * @return 
      */
     public List<String> getSubsettingConditions(){
         List<String> sb = new ArrayList<String>();

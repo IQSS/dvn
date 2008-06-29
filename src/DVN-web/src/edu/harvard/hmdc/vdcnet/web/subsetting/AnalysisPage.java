@@ -904,6 +904,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 mpl.put("studyURL", Arrays.asList(studyURL));
                 mpl.put("browserType", Arrays.asList(browserType));
 
+                mpl.put("recodedVarIdSet", getRecodedVarIdSet());
+                mpl.put("recodedVarNameSet",getRecodedVarNameSet());
+                mpl.put("recodedVarLabelSet", getRecodedVarLabelSet());
+                mpl.put("recodedVarTypeSet", getRecodedVariableType());
+                
+                mpl.put("baseVarIdSet",getBaseVarIdSetFromRecodedVarIdSet());
+                mpl.put("baseVarNameSet",getBaseVarNameSetFromRecodedVarIdSet());
 
             // -----------------------------------------------------
             // New processing route
@@ -979,7 +986,6 @@ if (fieldcut){
                     
                     List<String> variableList = new ArrayList();
                     
-                    List<String> variableOrder = new ArrayList();
                     Set<Integer> cols = new LinkedHashSet<Integer>();
                     
                     if (getDataVariableForRequest() != null) {
@@ -987,15 +993,10 @@ if (fieldcut){
                         while (iter.hasNext()) {
                             DataVariable dv = (DataVariable) iter.next();
                             variableList.add(dv.getId().toString());
-
-                            // the susbsetting parameter starts from 1 not 0,
-                            // add 1 to the number
-                            // variableOrder.add( Integer.toString(dv.getFileOrder()) );
                             cols.add(dv.getFileOrder());
                         }
                     }
                     
-
                      dbgLog.fine("cols="+cols);
                     // source data file: full-path name
                     String cutOp1 = tmpfl.getAbsolutePath();
@@ -1027,22 +1028,10 @@ if (fieldcut){
                     
                     int vidslen = getDataVariableForRequest().size();
                     
-                    List<String> variableList = new ArrayList();
+                    List<String> variableList = getVariableOrderForRequest();
                     
-                    List<String> variableOrder = new ArrayList();
+                    List<String> variableOrder = getVariableOrderForRequest();
                     
-                    if (getDataVariableForRequest() != null) {
-                        Iterator iter = getDataVariableForRequest().iterator();
-                        while (iter.hasNext()) {
-                            DataVariable dv = (DataVariable) iter.next();
-                            variableList.add(dv.getId().toString());
-
-                            // the susbsetting parameter starts from 1 not 0,
-                            // add 1 to the number
-                            variableOrder.add( Integer.toString(dv.getFileOrder()+1) );
-                        }
-                    }
-
                     vids = (String[]) variableOrder.toArray(new String[vidslen]);
                     String varsq = StringUtils.join(vids, ",");
                     String cutOp0 = "-f"+ varsq ;
@@ -2572,9 +2561,9 @@ if (fieldcut){
                 mpl.put("recodedVarLabelSet", getRecodedVarLabelSet());
                 mpl.put("recodedVarTypeSet", getRecodedVariableType());
                 
-                mpl.put("BaseVarIdSet",getBaseVarIdSetFromRecodedVarIdSet());
-                mpl.put("BaseVarNameSet",getBaseVarNameSetFromRecodedVarIdSet());
-
+                mpl.put("baseVarIdSet",getBaseVarIdSetFromRecodedVarIdSet());
+                mpl.put("baseVarNameSet",getBaseVarNameSetFromRecodedVarIdSet());
+                
             // -----------------------------------------------------
             // New processing route
             // 
@@ -2649,7 +2638,6 @@ if (fieldcut){
                     
                     List<String> variableList = new ArrayList();
                     
-                    List<String> variableOrder = new ArrayList();
                     Set<Integer> cols = new LinkedHashSet<Integer>();
                     
                     if (getDataVariableForRequest() != null) {
@@ -2657,10 +2645,6 @@ if (fieldcut){
                         while (iter.hasNext()) {
                             DataVariable dv = (DataVariable) iter.next();
                             variableList.add(dv.getId().toString());
-
-                            // the susbsetting parameter starts from 1 not 0,
-                            // add 1 to the number
-                            // variableOrder.add( Integer.toString(dv.getFileOrder()) );
                             cols.add(dv.getFileOrder());
                         }
                     }
@@ -2701,21 +2685,10 @@ if (fieldcut){
                     
                     List<String> variableList = new ArrayList();
                     
-                    List<String> variableOrder = new ArrayList();
-                    
-                    if (getDataVariableForRequest() != null) {
-                        Iterator iter = getDataVariableForRequest().iterator();
-                        while (iter.hasNext()) {
-                            DataVariable dv = (DataVariable) iter.next();
-                            variableList.add(dv.getId().toString());
-
-                            // the susbsetting parameter starts from 1 not 0,
-                            // add 1 to the number
-                            variableOrder.add( Integer.toString(dv.getFileOrder()+1) );
-                        }
-                    }
+                    List<String> variableOrder =getVariableOrderForRequest();
 
                     vids = (String[]) variableOrder.toArray(new String[vidslen]);
+                    
                     String varsq = StringUtils.join(vids, ",");
                     String cutOp0 = "-f"+ varsq ;
 
@@ -4959,7 +4932,14 @@ if (fieldcut){
                 mpl.put("studyno", Arrays.asList(studyId.toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
                 mpl.put("browserType", Arrays.asList(browserType));
-
+                
+                mpl.put("recodedVarIdSet", getRecodedVarIdSet());
+                mpl.put("recodedVarNameSet",getRecodedVarNameSet());
+                mpl.put("recodedVarLabelSet", getRecodedVarLabelSet());
+                mpl.put("recodedVarTypeSet", getRecodedVariableType());
+                
+                mpl.put("baseVarIdSet",getBaseVarIdSetFromRecodedVarIdSet());
+                mpl.put("baseVarNameSet",getBaseVarNameSetFromRecodedVarIdSet());
 
             // -----------------------------------------------------
             // New processing route
@@ -5032,7 +5012,6 @@ if (fieldcut){
                     
                     List<String> variableList = new ArrayList();
                     
-                    List<String> variableOrder = new ArrayList();
                     Set<Integer> cols = new LinkedHashSet<Integer>();
                     
                     if (getDataVariableForRequest() != null) {
@@ -5040,10 +5019,6 @@ if (fieldcut){
                         while (iter.hasNext()) {
                             DataVariable dv = (DataVariable) iter.next();
                             variableList.add(dv.getId().toString());
-
-                            // the susbsetting parameter starts from 1 not 0,
-                            // add 1 to the number
-                            // variableOrder.add( Integer.toString(dv.getFileOrder()) );
                             cols.add(dv.getFileOrder());
                         }
                     }
@@ -5081,21 +5056,10 @@ if (fieldcut){
                     
                     List<String> variableList = new ArrayList();
                     
-                    List<String> variableOrder = new ArrayList();
+                    List<String> variableOrder = getVariableOrderForRequest();
                     
-                    if (getDataVariableForRequest() != null) {
-                        Iterator iter = getDataVariableForRequest().iterator();
-                        while (iter.hasNext()) {
-                            DataVariable dv = (DataVariable) iter.next();
-                            variableList.add(dv.getId().toString());
-
-                            // the susbsetting parameter starts from 1 not 0,
-                            // add 1 to the number
-                            variableOrder.add( Integer.toString(dv.getFileOrder()+1) );
-                        }
-                    }
-
                     vids = (String[]) variableOrder.toArray(new String[vidslen]);
+                    
                     String varsq = StringUtils.join(vids, ",");
                     String cutOp0 = "-f"+ varsq ;
 
@@ -6970,6 +6934,10 @@ if (fieldcut){
         return variableList;
     }
     
+    public List<String> getVariableIdListForRequest(){
+        List<String> ids = generateVariableIdList(getVariableListForRequest());
+        return ids;
+    }
 
     /**
      * 
@@ -6978,7 +6946,7 @@ if (fieldcut){
      * @return    
      */
     
-    public List<String> getVariableOrderForRequest (){
+    public List<String> getVariableOrderForRequest(){
         List<String> variableOrder = new ArrayList();
         if (getDataVariableForRequest() != null) {
             Iterator iter = getDataVariableForRequest().iterator();

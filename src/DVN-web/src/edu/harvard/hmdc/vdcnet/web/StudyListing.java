@@ -48,6 +48,7 @@ public class StudyListing  implements java.io.Serializable {
     public static final int GENERIC_ERROR           =  0;
     
     public static final int COLLECTION_STUDIES      =  1;
+    public static final int NEW_SEARCH              =  2;
     public static final int VDC_SEARCH              =  3;
     public static final int VDC_RECENT_STUDIES      =  4;
     public static final int GENERIC_LIST            =  100;    

@@ -215,6 +215,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         vtInt2String.put("1", "discrete");
         vtInt2String.put("0", "character");
         
+        
+        getTabSet1().setSelected("tabDwnld");
+         getVDCRequestBean().setSelectedTab("tabDwnld");
     } // end of _init()
 
     // </editor-fold>
@@ -617,6 +620,25 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.tabAdvStat = tab5;
     }
 
+
+    private String tab;
+
+    public String getTab() {
+        return tab;
+    }
+
+    public void setTab(String tab) {
+        if (tab == null || tab.equals("tabDwnld") || tab.equals("tabRecode") || 
+         tab.equals("tabEda") || tab.equals("tabAdvStat")  ) {
+            this.tab = tab;
+        }
+    }
+
+
+
+
+
+
     /** The Id of the currently selected tab */
     private String currentTabId;
 
@@ -647,7 +669,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void resetVariableInLBox(ActionEvent acev) {
         dbgLog.fine("Within resetVariableInLBox: tab Id ="
             + acev.getComponent().getId());
-        
+        getVDCRequestBean().setSelectedTab(acev.getComponent().getId());
         // remove vars from RHS boxes
         advStatVarRBox1.clear();
         advStatVarRBox2.clear();
@@ -1077,33 +1099,43 @@ if (fieldcut){
                     e.printStackTrace();
                     // pass the error message to the resultPage
                     // resultInfo.put();
+                    setMsgEdaButtonTxt("* file URL is malformed");
+                    msgEdaButton.setVisible(true);
+                    dbgLog.warning("exiting dwnldAction() due to a URL problem ");
+                    getVDCRequestBean().setSelectedTab("tabDwnld");
+                    
                 } catch (IOException e) {
                     e.printStackTrace();
                     // ditto
                     // resultInt.put();
+                    
+                    setMsgEdaButtonTxt("* an IO problem occurred");
+                    msgEdaButton.setVisible(true);
+                    dbgLog.warning("exiting dwnldAction() due to an IO problem ");
+                    getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                    return "failure";
                 }
 
             }
 
             dbgLog.fine("***** within dwnldAction(): ends here *****");
-            
-                resultInfo.put("offlineCitation", citation);
-                resultInfo.put("studyTitle", studyTitle);
-                resultInfo.put("studyNo", studyId.toString());
-                resultInfo.put("studyURL", studyURL);
+            // pass metadata to the result pages
+            resultInfo.put("offlineCitation", citation);
+            resultInfo.put("studyTitle", studyTitle);
+            resultInfo.put("studyNo", studyId.toString());
+            resultInfo.put("studyURL", studyURL);
 
-            if (resultPageTest){
-                resultInfo.put("dsbHost", "vdc-build.hmdc.harvard.edu");
-                resultInfo.put("dsbPort","8080");
-                resultInfo.put("requestdir", "Zlg_669973");
-                resultInfo.put("dsbContextRootDir", "/temp");
-                resultInfo.put("format", "dat");
-                resultInfo.put("subsetfile", "/Zlg_669973/Data.669973.dta");
-                resultInfo.put("option", "download");
-                resultInfo.put("PID","669973");
-                resultInfo.put("Rdata", "/Zlg_669973/Rworkspace.669973.RData");
-            }            
-                     
+            if (resultInfo.get("RexecError").equals("true")){
+                setMsgAdvStatButtonTxt("* The Request failed due to an R-runtime error");
+                msgAdvStatButton.setVisible(true);
+                dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
+                getVDCRequestBean().setSelectedTab("tabDwnld");
+                return "failure";
+            }
+
+
+            // put resultInfo
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
             "resultInfo", resultInfo);
             
@@ -1113,6 +1145,7 @@ if (fieldcut){
             msgDwnldButton.setVisible(true);
             setMsgDwnldButtonTxt("* Select a format");
             dbgLog.warning("exiting dwnldAction() due to incomplete data ");
+            getVDCRequestBean().setSelectedTab("tabDwnld");
             return "failure";
         }
     }
@@ -2486,6 +2519,7 @@ if (fieldcut){
     // edaBttn:h:commandButton@action
     public String edaAction() {
         
+        dbgLog.fine("selected tab(eda)="+getTabSet1().getSelected());
         // clear the error message around the EDA button if they exisit
         resetMsgEdaButton();
         
@@ -2734,34 +2768,44 @@ if (fieldcut){
                     e.printStackTrace();
                     // pass the error message to the resultPage
                     // resultInfo.put();
+                    // show error message;
+                    setMsgEdaButtonTxt("* file URL is malformed");
+                    msgEdaButton.setVisible(true);
+                    dbgLog.warning("exiting edaAction() due to a URL problem ");
+                    getVDCRequestBean().setSelectedTab("tabEda");
+
+                    return "failure";
+                    
                 } catch (IOException e) {
                     e.printStackTrace();
                     // ditto
                     // resultInt.put();
+                    
+                    setMsgEdaButtonTxt("* an IO problem occurred");
+                    msgEdaButton.setVisible(true);
+                    dbgLog.warning("exiting edaAction() due to an IO problem ");
+                    getVDCRequestBean().setSelectedTab("tabEda");
+
+                    return "failure";
+
+                    
                 }
 
 }  // end of the subsettable case
 
             dbgLog.fine("***** within edaAction(): succcessfully ends here *****");
             
-                resultInfo.put("offlineCitation", citation);
-                resultInfo.put("studyTitle", studyTitle);
-                resultInfo.put("studyNo", studyId.toString());
-                resultInfo.put("studyURL", studyURL);
+            resultInfo.put("offlineCitation", citation);
+            resultInfo.put("studyTitle", studyTitle);
+            resultInfo.put("studyNo", studyId.toString());
+            resultInfo.put("studyURL", studyURL);
 
-            
-            
-            
-            if (resultPageTest){
-                resultInfo.put("dsbHost", "vdc-build.hmdc.harvard.edu");
-                resultInfo.put("dsbPort","8080");
-                resultInfo.put("requestdir", "Zlg_648335");
-                resultInfo.put("dsbContextRootDir", "/temp");
-                resultInfo.put("html", "/Zlg_648335/Rout.648335.html");
-                resultInfo.put("type", "3");
-                resultInfo.put("option", "eda");
-                resultInfo.put("PID","648335");
-                resultInfo.put("Rdata", "/Zlg_648335/Rworkspace.648335.RData");
+            if (resultInfo.get("RexecError").equals("true")){
+                setMsgAdvStatButtonTxt("* The Request failed due to an R-runtime error");
+                msgAdvStatButton.setVisible(true);
+                dbgLog.fine("exiting edaAction() due to an R-runtime error");
+                getVDCRequestBean().setSelectedTab("tabEda");
+                return "failure";
             }
 
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
@@ -2774,6 +2818,8 @@ if (fieldcut){
             setMsgEdaButtonTxt("* Select at least one option");
             msgEdaButton.setVisible(true);
             dbgLog.warning("exiting edaAction() due to incomplete data ");
+            getVDCRequestBean().setSelectedTab("tabEda");
+
             return "failure";
         }
 
@@ -4666,7 +4712,7 @@ if (fieldcut){
 
     // advStatBttn:h:commandButton@action
     public String advStatAction() {
-
+        dbgLog.fine("selected tab(advStat)="+getTabSet1().getSelected());
         // check the current model
 
         String mdlName = (String) dropDown1.getSelected();
@@ -5102,10 +5148,24 @@ if (fieldcut){
                     e.printStackTrace();
                     // pass the error message to the resultPage
                     // resultInfo.put();
+                    setMsgEdaButtonTxt("* file URL is malformed");
+                    msgEdaButton.setVisible(true);
+                    dbgLog.warning("exiting advStatAction() due to a URL problem ");
+                    getVDCRequestBean().setSelectedTab("tabAdvStat");
+
+                     return "failure";
                 } catch (IOException e) {
                     e.printStackTrace();
                     // ditto
                     // resultInt.put();
+                    
+                    setMsgEdaButtonTxt("* an IO problem occurred");
+                    msgEdaButton.setVisible(true);
+                    dbgLog.warning("exiting advStatAction() due to an IO problem ");
+                    getVDCRequestBean().setSelectedTab("tabAdvStat");
+
+                    return "failure";
+
                 }
 
             }
@@ -5118,38 +5178,14 @@ if (fieldcut){
 
             dbgLog.fine("***** advStatAction(): ends here *****");
             
-            
-            if (resultPageTest){
-                boolean isXtab = true ;
-                if (isXtab){
-                    resultInfo.put("dsbHost", "vdc-build.hmdc.harvard.edu");
-                    resultInfo.put("dsbPort","8080");
-                    resultInfo.put("requestdir", "Zlg_648335");
-                    resultInfo.put("dsbContextRootDir", "/temp");
-                    resultInfo.put("html", "/Zlg_648335/Rout.648335.html");
-                    resultInfo.put("model", "xtab");
-                    resultInfo.put("option", "zelig");
-                    resultInfo.put("PID","648335");
-                    resultInfo.put("Rdata", "/Zlg_648335/Rworkspace.648335.RData");
-                } else {
-                    resultInfo.put("dsbHost", "vdc-build.hmdc.harvard.edu");
-                    resultInfo.put("dsbPort","8080");
-                    resultInfo.put("requestdir", "Zlg_417584");
-                    resultInfo.put("dsbContextRootDir", "/temp");
-                    resultInfo.put("html", "/Zlg_417584/index1212643274.95944A3251A561370323.html");
-                    resultInfo.put("model", "logit");
-                    resultInfo.put("option", "zelig");
-                    resultInfo.put("PID","417584");
-                    resultInfo.put("Rdata", "/Zlg_417584/binfile1212643274.95944A3251A561370323.Rdata");
-                }
-            }
-            
-            if (resultInfo.get("R_run_status").equals("F")){
+            if (resultInfo.get("RexecError").equals("true")){
                 setMsgAdvStatButtonTxt("* The Request failed due to an R-runtime error");
                 msgAdvStatButton.setVisible(true);
                 dbgLog.fine("exiting advStatAction() due to an R-runtime error");
+                getVDCRequestBean().setSelectedTab("tabAdvStat");
                 return "failure";
             }
+            
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
                 "resultInfo", resultInfo);
             return "success";
@@ -5157,6 +5193,8 @@ if (fieldcut){
             setMsgAdvStatButtonTxt("* Incomplete selection of variables");
             msgAdvStatButton.setVisible(true);
             dbgLog.fine("exiting advStatAction() due to incomplete data");
+            getVDCRequestBean().setSelectedTab("tabAdvStat");
+
             return "failure";
         }
         
@@ -6314,20 +6352,31 @@ if (fieldcut){
             String currentViewStateValue = exCntxt.getRequestParameterMap()
                 .get(ResponseStateManager.VIEW_STATE_PARAM);
             
-            if (true){
                 dbgLog.fine("ViewState value=" + currentViewStateValue);
                 dbgLog.fine("VDCRequestBean: current VDC URL ="
                 + getVDCRequestBean().getCurrentVDCURL());
-            }
             
             // Stores the URL of the requested study 
             setStudyURL(getVDCRequestBean().getCurrentVDCURL());
             
-            if (true){
                 dbgLog.fine("VDCRequestBean: studyId ="
                     + getVDCRequestBean().getStudyId());
                 dbgLog.fine("VDCRequestBean =" + getVDCRequestBean());
+
+             dbgLog.fine("selected tab(init())="+getTabSet1().getSelected());
+
+            // set tab if it was it was sent as pamameter or part of request bean
+            if (getTab() != null) {
+                getTabSet1().setSelected(getTab());
+                dbgLog.fine("getTab()= "+getTab());
+            } else if (getVDCRequestBean().getSelectedTab() != null) {
+                dbgLog.fine("tab from the requestBean="+getVDCRequestBean().getSelectedTab());
+            
+                getTabSet1().setSelected(getVDCRequestBean().getSelectedTab());
             }
+            
+            
+            
             /*
             // Deletes session-scoped objects if this page is rendered 
             // for the first time, i.e. not post-back
@@ -6349,7 +6398,7 @@ if (fieldcut){
                     "derivedVarToBaseVar", "recodeVarNameSet",
                     "selectedNoRows", "msgEdaButtonTxt", "msgDwnldButtonTxt",
                      "msgAdvStatButtonTxt","gridPanelModelInfoBox",
-                     "lastSimCndtnSelected");
+                     "lastSimCndtnSelected", "resultInfo");
 
                 for (String obj : sessionObjects) {
                     if (sessionMap.containsKey(obj)) {
@@ -6829,8 +6878,7 @@ if (fieldcut){
                 : new FacesException(e);
         } // end of try-catch block
         
-            dbgLog.fine("init(): current tab id=" +
-                tabSet1.getSelected());
+            dbgLog.fine("init(): current tab id=" + tabSet1.getSelected());
             dbgLog.fine("***** init():end *****\n\n");
     }
     

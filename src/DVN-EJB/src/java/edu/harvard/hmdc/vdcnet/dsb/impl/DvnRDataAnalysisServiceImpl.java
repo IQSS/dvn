@@ -483,14 +483,14 @@ if (tmpv.length > 0){
             String Rversion = c.eval(RversionLine).asString();
             
             String RexecDate = c.eval("date()").asString();
-            
+            /*
             if (result.containsKey("option")){
                 result.put("R_run_status", "T");
             } else {
                 result.put("option", requestTypeToken.toLowerCase()); //download  zelig eda xtab
                 result.put("R_run_status", "F");
             }
-            
+            */
             result.put("fileUNF",fileUNF);
             result.put("dsbHost", RSERVE_HOST);
             result.put("dsbPort", DSB_HOST_PORT);
@@ -625,6 +625,7 @@ if (tmpv.length > 0){
         } catch (RserveException rse) {
             rse.printStackTrace();
             sr.put("RexecError", "true");
+            return sr;
         }
         sr.put("RexecError", "false");
         return sr;
@@ -766,6 +767,7 @@ if (tmpv.length > 0){
         } catch (RserveException rse) {
             rse.printStackTrace();
             sr.put("RexecError", "true");
+            return sr;
         }
         sr.put("RexecError", "false");
         return sr;
@@ -927,7 +929,7 @@ if (tmpv.length > 0){
         } catch (RserveException rse) {
             rse.printStackTrace();
             sr.put("RexecError", "true");
-
+            return sr;
         }
         sr.put("RexecError", "false");
 
@@ -1155,12 +1157,15 @@ if (tmpv.length > 0){
         } catch (REngineException ree){
             ree.printStackTrace();
             sr.put("RexecError", "true");
+            return sr;
         } catch (RserveException rse) {
             rse.printStackTrace();
             sr.put("RexecError", "true");
+            return sr;
         } catch (REXPMismatchException mme) {
             mme.printStackTrace();
             sr.put("RexecError", "true");
+            return sr;
         }
         sr.put("RexecError", "false");
 

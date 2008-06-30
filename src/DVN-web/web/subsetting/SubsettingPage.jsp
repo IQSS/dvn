@@ -184,7 +184,7 @@ xmlns:ui="http://www.sun.com/web/ui"
 
             <!--tab block starts here -->
         
-            <ui:tabSet binding="#{AnalysisPage.tabSet1}" id="tabSet1" lite="true" mini="true" selected="tabDwnld" styleClass="vdcStudyTabSet">
+            <ui:tabSet binding="#{AnalysisPage.tabSet1}" id="tabSet1" lite="true" mini="true" selected="#{AnalysisPage.tab}" styleClass="vdcStudyTabSet">
                 
                 
                 <!-- 1. Download -->

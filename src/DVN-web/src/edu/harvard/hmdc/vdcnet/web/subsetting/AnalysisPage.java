@@ -1039,6 +1039,38 @@ if (fieldcut){
                         mpl.put("subsetFileName", Arrays.asList(cutOp2));
                     }
                         mpl.put("requestType", Arrays.asList("Download"));
+                        
+                        
+if (formatType.equals("D01")){
+    
+                   FileInputStream in = null;
+                   PrintWriter out = null;
+                   try {
+                   
+                        res.setContentType("application/octet-stream");
+                        String sfname = tmpsbfl.getName();
+                        res.setHeader("content-disposition", "attachment; filename=" + sfname);
+
+                        in = new FileInputStream(cutOp2);
+                        out = res.getWriter();
+
+                        int i = in.read();
+                        while (i != -1){
+                            out.write(i);
+                            i = in.read();
+                        }
+                        in.close();
+                        out.close();
+                   
+                        FacesContext.getCurrentInstance().responseComplete();
+                        return "failure";
+                   } catch (IOException e){
+                        e.printStackTrace();
+                        dbgLog.fine("download IO exception");
+                   }
+                   
+} // d01 case
+                   
 
 } else {
                     // Step 2. Set-up parameters for subsetting: cutting requested columns of data

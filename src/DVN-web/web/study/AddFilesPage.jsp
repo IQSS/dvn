@@ -147,7 +147,8 @@
                         </ui:panelGroup>                                
                         <ui:panelGroup  block="true" id="groupPanel5"
                                         style="padding-top: 20px; " styleClass="vdcTextRight">
-                            <h:commandButton  id="saveButton" value="Save" action="#{AddFilesPage.save_action}"/>
+                            <h:commandButton  id="saveButton" value="Save" action="#{AddFilesPage.save_action}" onclick="this.style.display='none';this.nextSibling.nextSibling.style.display='';"/>
+                            <h:commandButton  id="saveButtonDisabled" value="Save" disabled="true" style="display:none;" />
                             <h:commandButton  immediate="true" id="button8" value="Cancel" action="#{AddFilesPage.cancel_action}" style="margin-left: 30px;" />
                         </ui:panelGroup>
                         

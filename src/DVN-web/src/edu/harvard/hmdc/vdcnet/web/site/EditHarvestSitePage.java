@@ -58,6 +58,7 @@ import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import javax.faces.component.html.HtmlSelectOneMenu;
+import javax.faces.component.html.HtmlSelectOneRadio;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
@@ -222,19 +223,27 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     
     public String save() {
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
-        String schedulePeriod=editHarvestSiteService.getHarvestingDataverse().getSchedulePeriod();
-        Integer dayOfWeek = editHarvestSiteService.getHarvestingDataverse().getScheduleDayOfWeek();
-        Integer hourOfDay = editHarvestSiteService.getHarvestingDataverse().getScheduleHourOfDay();
-        if (schedulePeriod!=null && schedulePeriod.equals("notSelected")) {
-            editHarvestSiteService.getHarvestingDataverse().setSchedulePeriod(null);
-        }
-        if  (hourOfDay!=null && hourOfDay.intValue()==-1) {
+        
+        if ( harvestingDataverse.isOai() ) {
+            String schedulePeriod=editHarvestSiteService.getHarvestingDataverse().getSchedulePeriod();
+            Integer dayOfWeek = editHarvestSiteService.getHarvestingDataverse().getScheduleDayOfWeek();
+            Integer hourOfDay = editHarvestSiteService.getHarvestingDataverse().getScheduleHourOfDay();
+            if (schedulePeriod!=null && schedulePeriod.equals("notSelected")) {
+                editHarvestSiteService.getHarvestingDataverse().setSchedulePeriod(null);
+            }
+            if  (hourOfDay!=null && hourOfDay.intValue()==-1) {
+                 editHarvestSiteService.getHarvestingDataverse().setScheduleHourOfDay(null);
+            }
+            if  (dayOfWeek!=null && dayOfWeek.intValue()==-1) {
+                 editHarvestSiteService.getHarvestingDataverse().setScheduleDayOfWeek(null);
+            }     
+        } else {
+             editHarvestSiteService.getHarvestingDataverse().setSchedulePeriod(null); 
              editHarvestSiteService.getHarvestingDataverse().setScheduleHourOfDay(null);
-        }
-        if  (dayOfWeek!=null && dayOfWeek.intValue()==-1) {
              editHarvestSiteService.getHarvestingDataverse().setScheduleDayOfWeek(null);
-        }        
-        editHarvestSiteService.save(dataverseName,dataverseAlias,userId);
+        }
+        
+        editHarvestSiteService.save(dataverseName,dataverseAlias, userId);
         success=true;
         return "success";
         
@@ -540,18 +549,27 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
    
     
     private void assignMetadataFormats(String oaiUrl) {
-        if (oaiUrl!=null) {          
-            editHarvestSiteService.setMetadataFormats(harvesterService.getMetadataFormats(oaiUrl));
-        } else {
+        if (HarvestingDataverse.HARVEST_TYPE_OAI.equals( inputHarvestType.getLocalValue() ) ) {
+            if (oaiUrl!=null) {          
+                editHarvestSiteService.setMetadataFormats(harvesterService.getMetadataFormats(oaiUrl));
+            } else {
+                editHarvestSiteService.setMetadataFormats(null);
+            }
+        } else if (HarvestingDataverse.HARVEST_TYPE_NESSTAR.equals( inputHarvestType.getLocalValue() ) ) {
+            List<String> formats = new ArrayList();
+            formats.add("ddi");
+            editHarvestSiteService.setMetadataFormats(formats);
+        }  else {
             editHarvestSiteService.setMetadataFormats(null);
         }
-        
+
     }
     
     private boolean assignHarvestingSets(String oaiUrl)   {
         
         boolean valid=true;
-        if (oaiUrl!=null) {
+
+        if (HarvestingDataverse.HARVEST_TYPE_OAI.equals( inputHarvestType.getLocalValue() ) && oaiUrl!=null) {
             try {
             editHarvestSiteService.setHarvestingSets(harvesterService.getSets(oaiUrl));
             } catch (EJBException e) {
@@ -784,6 +802,16 @@ public void validateDayOfWeek(FacesContext context,
     
     private boolean isCreateMode() {
        return editHarvestSiteService.getEditMode().equals(EditHarvestSiteService.EDIT_MODE_CREATE);
+    }
+    
+    private HtmlSelectOneRadio inputHarvestType;
+
+    public HtmlSelectOneRadio getInputHarvestType() {
+        return inputHarvestType;
+    }
+
+    public void setInputHarvestType(HtmlSelectOneRadio inputHarvestType) {
+        this.inputHarvestType = inputHarvestType;
     }
 
 }

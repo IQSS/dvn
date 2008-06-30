@@ -53,6 +53,8 @@ public class HarvestingDataverse implements Serializable {
     public static final String SCHEDULE_PERIOD_DAILY="daily";
     public static final String SCHEDULE_PERIOD_WEEKLY="weekly";
     
+    public static final String HARVEST_TYPE_OAI="oai";
+    public static final String HARVEST_TYPE_NESSTAR="nesstar";
     
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastHarvestTime;
@@ -63,7 +65,7 @@ public class HarvestingDataverse implements Serializable {
     }
     /** Creates a new instance of VDC */
     public HarvestingDataverse() {
-        
+        this.harvestType = harvestType = HARVEST_TYPE_OAI; // default harvestType
     }
     
     /**
@@ -476,4 +478,24 @@ public class HarvestingDataverse implements Serializable {
     public void setGenerateRandomIds(boolean generateRandomIds) {
         this.generateRandomIds = generateRandomIds;
     }
+    
+    String harvestType;
+
+    public String getHarvestType() {
+        return harvestType;
+    }
+
+    public void setHarvestType(String harvestType) {
+        this.harvestType = harvestType;
+    }
+    
+    public boolean isOai() {
+        return HARVEST_TYPE_OAI.equals(harvestType);
+    }
+    
+    public boolean isNesstar() {
+        return HARVEST_TYPE_NESSTAR.equals(harvestType);
+        
+    }   
+     
 }

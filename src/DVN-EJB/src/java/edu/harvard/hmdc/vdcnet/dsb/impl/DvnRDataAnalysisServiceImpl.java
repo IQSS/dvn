@@ -106,6 +106,7 @@ public class DvnRDataAnalysisServiceImpl{
     // ----------------------------------------------------- instance filelds
     public String PID = null;
     public String tempFileName = null;
+    public String tempFileNameNew = null;
     public String wrkdir = null;
     public String webwrkdir = null;
     public String requestdir = null;
@@ -116,11 +117,17 @@ public class DvnRDataAnalysisServiceImpl{
         
         // initialization
         PID = RandomStringUtils.randomNumeric(6);
+                 
+        requestdir = "Zlg_" + PID;
+        
+        wrkdir = DSB_TMP_DIR + "/" + requestdir;
+        
+        webwrkdir = WEB_TMP_DIR + "/" + requestdir;
+        
         tempFileName = DSB_TMP_DIR + "/" + TMP_DATA_FILE_NAME
                  +"." + PID + TMP_DATA_FILE_EXT;
-        requestdir = "Zlg_" + PID;
-        wrkdir = DSB_TMP_DIR + "/" +"Zlg_"+PID;
-        webwrkdir = WEB_TMP_DIR + "/" +"Zlg_"+PID;
+        tempFileNameNew = wrkdir + "/" + TMP_DATA_FILE_NAME
+                 +"." + PID + TMP_DATA_FILE_EXT;
     }
 
     /**
@@ -212,7 +219,7 @@ public class DvnRDataAnalysisServiceImpl{
             } else {
                 String [] varFmtN ={};
                 List<String> varFmtV = new ArrayList<String>();
-                historyEntry.add("varFmt <- List()");
+                historyEntry.add("varFmt <- list()");
                 c.assign("varFmt", new REXPList(new RList(varFmtV, varFmtN)));
             }
             /*
@@ -236,7 +243,7 @@ public class DvnRDataAnalysisServiceImpl{
             }
             //historyEntry.add("vnamnes<-c("+ StringUtils.join(jvnames, ", ")+")");
             String vnQList = DvnDSButil.joinNelementsPerLine(jvnames,true);
-            historyEntry.add("vnamnes<-c("+ vnQList+")");
+            historyEntry.add("vnames<-c("+ vnQList+")");
             
             
             c.assign("vnames", new REXPString(jvnames));
@@ -554,6 +561,8 @@ if (tmpv.length > 0){
         sr.put("requestdir", requestdir);
         sr.put("option", "download");
         
+        String RcodeFile = "Rcode." + PID + ".R";
+        
         try {
             // create a temp dir
             String createTmpDir = "dir.create('"+wrkdir +"')";
@@ -586,7 +595,6 @@ if (tmpv.length > 0){
             String objList = "objList<-ls()";
             dbgLog.fine("objList="+objList);
             c.voidEval(objList);
-
             
             String RdataFileName = "Rworkspace."+PID+".RData";
             
@@ -595,6 +603,19 @@ if (tmpv.length > 0){
             String saveWS = "save(list=objList, file='"+wrkdir +"/"+ RdataFileName +"')";
             dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
+
+            // command history
+            String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
+            c.assign("ch", new REXPString(ch));
+            String saveRcodeFile = "cat(file='"+ wrkdir +"/"+ RcodeFile +"',paste(ch,collapse='\n'))";
+            dbgLog.fine(saveRcodeFile);
+            c.voidEval(saveRcodeFile);
+
+            // tab data file
+            String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
+            c.voidEval(mvTmpTabFile);
+            dbgLog.fine("move temp file="+mvTmpTabFile);
+
 
             // move the temp dir to the web-temp root dir
             String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
@@ -621,12 +642,14 @@ if (tmpv.length > 0){
         historyEntry.add(optionBanner);
 
         Map<String, String> sr = new HashMap<String, String>();
-            sr.put("requestdir", requestdir);
-            sr.put("option", "eda");
-            sr.put("type", sro.getEDARequestType()); // 1=(1,0), 2=(0,1), 3=(1,1)
-            
-            String ResultHtmlFile = "Rout."+PID+".html" ;
-            sr.put("html", "/"+requestdir+ "/" +ResultHtmlFile);
+        sr.put("requestdir", requestdir);
+        sr.put("option", "eda");
+        sr.put("type", sro.getEDARequestType()); // 1=(1,0), 2=(0,1), 3=(1,1)
+
+        String ResultHtmlFile = "Rout."+PID+".html" ;
+        sr.put("html", "/"+requestdir+ "/" +ResultHtmlFile);
+        
+        String RcodeFile = "Rcode." + PID + ".R";
         
         try {
             String univarStatLine = "try(x<-univarStat(dtfrm=x))";
@@ -713,16 +736,27 @@ if (tmpv.length > 0){
             String RdataFileName = "Rworkspace."+PID+".RData";
             sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
             
-            
-            String saveWS = "save(list=objList, file='"+wrkdir +"/"+ RdataFileName +"')";
+            String saveWS = "save(list=objList, file='"+ wrkdir +"/"+ RdataFileName +"')";
             dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
+            
+            // command history
+            String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
+            c.assign("ch", new REXPString(ch));
+            String saveRcodeFile = "cat(file='"+ wrkdir +"/"+ RcodeFile +"',paste(ch,collapse='\n'))";
+            dbgLog.fine(saveRcodeFile);
+            c.voidEval(saveRcodeFile);
             
             // copy the dvn-patch css file to the wkdir
             // file.copy(from, to, overwrite = FALSE)
             String cssFile = R2HTML_CSS_DIR + "/" +"R2HTML.css";
             String cpCssFile = "file.copy('"+cssFile+"','"+wrkdir+"')";
             c.voidEval(cpCssFile);
+            
+            // tab data file
+            String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
+            c.voidEval(mvTmpTabFile);
+            dbgLog.fine("move temp file="+mvTmpTabFile);
             
             // move the temp dir to the web-temp root dir
             String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
@@ -754,6 +788,8 @@ if (tmpv.length > 0){
 
         String ResultHtmlFile = "Rout."+PID+".html" ;
         sr.put("html", "/"+requestdir+ "/" +ResultHtmlFile);
+
+        String RcodeFile = "Rcode." + PID + ".R";
 
         try {
             String univarStatLine = "try(x<-univarStat(dtfrm=x))";
@@ -865,11 +901,23 @@ if (tmpv.length > 0){
             dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
             
+            // command history
+            String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
+            c.assign("ch", new REXPString(ch));
+            String saveRcodeFile = "cat(file='"+ wrkdir +"/"+ RcodeFile +"',paste(ch,collapse='\n'))";
+            dbgLog.fine(saveRcodeFile);
+            c.voidEval(saveRcodeFile);
+            
             // copy the dvn-patch css file to the wkdir
             // file.copy(from, to, overwrite = FALSE)
             String cssFile =R2HTML_CSS_DIR + "/" +"R2HTML.css";
             String cpCssFile = "file.copy('"+cssFile+"','"+wrkdir+"')";
             c.voidEval(cpCssFile);
+            
+            // tab data file
+            String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
+            c.voidEval(mvTmpTabFile);
+            dbgLog.fine("move temp file="+mvTmpTabFile);
             
             // move the temp dir to the web-temp root dir
             String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
@@ -899,6 +947,9 @@ if (tmpv.length > 0){
         Map<String, String> sr = new HashMap<String, String>();
         sr.put("requestdir", requestdir);
         sr.put("option", "zelig");
+        
+        String RcodeFile = "Rcode." + PID + ".R";
+
         
         String modelname = sro.getZeligModelName();
         dbgLog.fine("modelname="+modelname);
@@ -1082,6 +1133,19 @@ if (tmpv.length > 0){
             String cssFile = R2HTML_CSS_DIR + "/" +"R2HTML.css";
             String cpCssFile = "file.copy('"+cssFile+"','"+wrkdir+"')";
             c.voidEval(cpCssFile);
+            
+            // command history
+            String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
+            c.assign("ch", new REXPString(ch));
+            String saveRcodeFile = "cat(file='"+ wrkdir +"/"+ RcodeFile +"',paste(ch,collapse='\n'))";
+            dbgLog.fine(saveRcodeFile);
+            c.voidEval(saveRcodeFile);
+            
+            // tab data file
+            String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
+            c.voidEval(mvTmpTabFile);
+            dbgLog.fine("move temp file="+mvTmpTabFile);
+
             
             // move the temp dir to the web-temp root dir
             String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";

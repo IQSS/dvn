@@ -1956,16 +1956,12 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     private void processFileDscr(XMLStreamReader xmlr, Study study, Map filesMap) throws XMLStreamException {
         StudyFile sf = new StudyFile();
-        sf.setFileSystemLocation( xmlr.getAttributeValue(null, "URI"));
-
         DataTable dt = new DataTable();
-        dt.setDataVariables( new ArrayList() );
+        dt.setDataVariables( new ArrayList() ); 
+        
+        sf.setFileSystemLocation( xmlr.getAttributeValue(null, "URI"));
+        String ddiFileId = xmlr.getAttributeValue(null, "ID");
        
-        List filesMapEntry = new ArrayList();
-        filesMapEntry.add(sf);
-        filesMapEntry.add(dt);
-        filesMap.put( xmlr.getAttributeValue(null, "ID"), filesMapEntry);
-
         /// the following Strings are used to determine the category
         String catName = null;
         String icpsrDesc = null;
@@ -1973,7 +1969,10 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("fileTxt")) processFileTxt(xmlr, sf, dt);
+                if (xmlr.getLocalName().equals("fileTxt")) {
+                    String tempDDIFileId = processFileTxt(xmlr, sf, dt);
+                    ddiFileId = ddiFileId != null ? ddiFileId : tempDDIFileId;
+                }
                 else if (xmlr.getLocalName().equals("notes")) {
                     String noteType = xmlr.getAttributeValue(null, "type");
                     if (NOTE_TYPE_UNF.equalsIgnoreCase(noteType) ) {
@@ -1996,25 +1995,37 @@ public class DDIServiceBean implements DDIServiceLocal {
                         sf.setFileName("file");
                     } 
                     addFileToCategory(sf, determineFileCategory(catName, icpsrDesc, icpsrId), study);
+                    
+                    if (ddiFileId != null) {
+                        List filesMapEntry = new ArrayList();
+                        filesMapEntry.add(sf);
+                        filesMapEntry.add(dt);
+                        filesMap.put( ddiFileId, filesMapEntry);
+                    }
+                    
                     return;
                 }
             }   
         }
     }   
 
-    private void processFileTxt(XMLStreamReader xmlr, StudyFile sf, DataTable dt) throws XMLStreamException {
+    private String processFileTxt(XMLStreamReader xmlr, StudyFile sf, DataTable dt) throws XMLStreamException {
+        String ddiFileId = null;
+        
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("fileName")) {
+                    ddiFileId = xmlr.getAttributeValue(null, "ID");
                     sf.setFileName( parseText(xmlr) );
                     sf.setFileType( FileUtil.determineFileType( sf.getFileName() ) );
                 } else if (xmlr.getLocalName().equals("fileCont")) {
                     sf.setDescription( parseText(xmlr) );
                 }  else if (xmlr.getLocalName().equals("dimensns")) processDimensns(xmlr, dt);
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (xmlr.getLocalName().equals("fileTxt")) return;
+                if (xmlr.getLocalName().equals("fileTxt")) return ddiFileId;
             } 
         }
+        return ddiFileId;
     }     
 
     private void processDimensns(XMLStreamReader xmlr, DataTable dt) throws XMLStreamException {
@@ -2059,7 +2070,28 @@ public class DDIServiceBean implements DDIServiceLocal {
         dv.setCategories( new ArrayList() );
         dv.setName( xmlr.getAttributeValue(null, "name") );
         dv.setFileOrder(fileOrder);
-       
+
+        // associate dv with the correct file
+        String x = xmlr.getAttributeValue(null, "files" );
+        String y = xmlr.getAttributeValue(null, "files" );
+        if ( x != null ) {
+            List filesMapEntry = (List) filesMap.get( x );
+            if (filesMapEntry != null) {
+                StudyFile sf = (StudyFile) filesMapEntry.get(0);
+                DataTable dt = (DataTable) filesMapEntry.get(1);
+                if (!sf.isSubsettable()) {
+                    // first time with this file, so attach the dt to the file and set as subsettable)
+                    dt.setStudyFile(sf);
+                    sf.setDataTable(dt);
+                    sf.setSubsettable(true);
+                    sf.setFileType( FileUtil.determineSubsettableFileType( sf ) ); // redetermine file type, now that we know it's subsettable
+                }
+
+                dv.setDataTable(dt);
+                dt.getDataVariables().add(dv);
+            }  
+        }
+        
         // interval type (DB value may be different than DDI value)
         String _interval = xmlr.getAttributeValue(null, "intrvl");
 
@@ -2104,20 +2136,22 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     private void processLocation(XMLStreamReader xmlr, DataVariable dv, Map filesMap) throws XMLStreamException {
         // associate dv with the correct file
-        List filesMapEntry = (List) filesMap.get( xmlr.getAttributeValue(null, "fileid" ) );
-        if (filesMapEntry != null) {
-            StudyFile sf = (StudyFile) filesMapEntry.get(0);
-            DataTable dt = (DataTable) filesMapEntry.get(1);
-            if (!sf.isSubsettable()) {
-                // first time with this file, so attach the dt to the file and set as subsettable)
-                dt.setStudyFile(sf);
-                sf.setDataTable(dt);
-                sf.setSubsettable(true);
-                sf.setFileType( FileUtil.determineSubsettableFileType( sf ) ); // redetermine file type, now that we know it's subsettable
-            }
+        if ( dv.getDataTable() == null ) {
+            List filesMapEntry = (List) filesMap.get( xmlr.getAttributeValue(null, "fileid" ) );
+            if (filesMapEntry != null) {
+                StudyFile sf = (StudyFile) filesMapEntry.get(0);
+                DataTable dt = (DataTable) filesMapEntry.get(1);
+                if (!sf.isSubsettable()) {
+                    // first time with this file, so attach the dt to the file and set as subsettable)
+                    dt.setStudyFile(sf);
+                    sf.setDataTable(dt);
+                    sf.setSubsettable(true);
+                    sf.setFileType( FileUtil.determineSubsettableFileType( sf ) ); // redetermine file type, now that we know it's subsettable
+                }
 
-            dv.setDataTable(dt);
-            dt.getDataVariables().add(dv);
+                dv.setDataTable(dt);
+                dt.getDataVariables().add(dv);
+            }
         }
         
         // fileStartPos, FileEndPos, and RecSegNo

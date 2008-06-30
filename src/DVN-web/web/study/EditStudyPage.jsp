@@ -228,9 +228,9 @@
                                     <h:outputText id="outputText26" value="Citation Information"/>      
                                 </ui:panelGroup>                                    
                                 
-                                <!--h:panelGrid cellpadding="0" cellspacing="0" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2" width="100%">
+                                <h:panelGrid cellpadding="0" cellspacing="0" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2" width="100%">
                                 
-                                     TITLE 
+                                    <!-- TITLE -->
                                     
                                     <ui:panelGroup block="true" id="groupPanel37" styleClass="vdcEditStudyField">                                              
                                         <dvn:inlinehelp helpMessage="#{editstudybundle.titleHelp}" linkText="#{editstudybundle.titleLabel}" heading="#{editstudybundle.titleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>                                            
@@ -255,7 +255,7 @@
                                         <h:inputText id="input_subtitle" size="90" value="#{EditStudyPage.study.subTitle}" required="#{EditStudyPage.studyMap[sfc.subTitle].required}"/>                                                                 
                                         <h:message styleClass="errorMessage" for="input_subtitle"/> 
                                     </ui:panelGroup> 
-                                </h:panelGrid-->
+                                </h:panelGrid>
                                 
                                 <!-- STUDY ID-->
                                 

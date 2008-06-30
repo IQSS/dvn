@@ -28,12 +28,12 @@ package edu.harvard.hmdc.vdcnet.web.common;
 import com.sun.rave.web.ui.appbase.AbstractRequestBean;
 import edu.harvard.hmdc.vdcnet.admin.PageDef;
 import edu.harvard.hmdc.vdcnet.admin.PageDefServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.StudyListing;
-import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
@@ -292,6 +292,8 @@ public class VDCRequestBean extends AbstractRequestBean implements java.io.Seria
         this.dvFilter = dvFilter;
     }
     
-  
+    public String getHostUrl() {
+        return PropertyUtil.getHostUrl();
+    }  
     
 }

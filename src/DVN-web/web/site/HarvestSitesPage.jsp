@@ -40,18 +40,18 @@
                             <f:facet name="header">
                                 <h:outputText  id="outputText4" value="Status"/>
                             </f:facet>
-                            <h:outputText  id="outputText4b" value="Scheduled" rendered="#{currentRow.scheduled and  !empty currentRow.schedulePeriod}"/>
-                            <h:outputText  id="outputText4c" value="Not Scheduled" rendered="#{!currentRow.scheduled and !empty currentRow.schedulePeriod}"/>
-                            <h:outputText   value="Harvesting Schedule Not Defined " rendered="#{empty currentRow.schedulePeriod}"/>
+                            <h:outputText  id="outputText4b" value="Scheduled" rendered="#{currentRow.oai and currentRow.scheduled and  !empty currentRow.schedulePeriod}"/>
+                            <h:outputText  id="outputText4c" value="Not Scheduled" rendered="#{currentRow.oai and !currentRow.scheduled and !empty currentRow.schedulePeriod}"/>
+                            <h:outputText   value="Harvesting Schedule Not Defined " rendered="#{currentRow.oai and empty currentRow.schedulePeriod}"/>
   
                         </h:column>
                         <h:column  >
                             <f:facet name="header">
                                 <h:outputText value=""/>
                             </f:facet>
-                            <h:commandButton value="Schedule Harvesting" rendered="#{!currentRow.scheduled and !empty currentRow.schedulePeriod }" actionListener="#{HarvestSitesPage.doSchedule}"/>
-                            <h:commandButton value="Unschedule Harvesting" rendered="#{currentRow.scheduled and !empty currentRow.schedulePeriod }" actionListener="#{HarvestSitesPage.doUnschedule}"/>                      
-                             <h:outputLink rendered="#{!currentRow.harvestingNow and empty currentRow.schedulePeriod}"  value="EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
+                            <h:commandButton value="Schedule Harvesting" rendered="#{currentRow.oai and !currentRow.scheduled and !empty currentRow.schedulePeriod }" actionListener="#{HarvestSitesPage.doSchedule}"/>
+                            <h:commandButton value="Unschedule Harvesting" rendered="#{currentRow.oai and currentRow.scheduled and !empty currentRow.schedulePeriod }" actionListener="#{HarvestSitesPage.doUnschedule}"/>                      
+                             <h:outputLink rendered="#{currentRow.oai and !currentRow.harvestingNow and empty currentRow.schedulePeriod}"  value="EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
                                 <h:outputText  value=" Define Harvesting Schedule"/>
                             </h:outputLink>
                        </h:column>
@@ -59,7 +59,7 @@
                             <f:facet name="header">
                                 <h:outputText  value=""/>
                             </f:facet>
-                            <h:commandButton value="Run Harvester Now"  rendered="#{!currentRow.harvestingNow}"   actionListener="#{HarvestSitesPage.doRunNow}"/>
+                            <h:commandButton value="Run Harvester Now"  rendered="#{!currentRow.harvestingNow and (currentRow.oai or empty currentRow.lastHarvestTime)}"   actionListener="#{HarvestSitesPage.doRunNow}"/>
                             <h:outputText  value="Harvesting Currently Running" rendered="#{currentRow.harvestingNow}" />   
                             
                         </h:column>

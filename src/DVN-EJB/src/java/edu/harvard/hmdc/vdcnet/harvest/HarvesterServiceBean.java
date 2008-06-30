@@ -52,8 +52,12 @@ import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -82,6 +86,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import no.uib.nsd.nesstar.NesstarHarvester.DDI;
+import no.uib.nsd.nesstar.NesstarHarvester.NesstarHarvester;
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -283,7 +289,14 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 if (lastHarvestTime != null) {
                     from = formatter.format(lastHarvestTime);
                 }
-                harvestedStudyCount = harvest(dataverse, hdLogger, from, until, harvestErrorOccurred, failedIdentifiers);
+                if (dataverse.isOai()) {
+                    harvestedStudyCount = harvestOAI(dataverse, hdLogger, from, until, harvestErrorOccurred, failedIdentifiers);
+                } else if ( dataverse.isNesstar() ) {
+                    harvestedStudyCount = harvestNesstar(dataverse, hdLogger, harvestErrorOccurred, failedIdentifiers);
+                } else {
+                    harvestErrorOccurred.setValue(true);
+                    hdLogger.log(Level.SEVERE, "Cannot begin harvesting, Unknown harvest type."); 
+                }
             }
             mailService.sendHarvestNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc().getName(), logFileName, logTimestamp, harvestErrorOccurred.booleanValue(), harvestedStudyCount, failedIdentifiers);
         } finally {
@@ -301,7 +314,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
      * @param harvestErrorOccurred  have we encountered any errors during harvest?
      * @param failedIdentifiers     Study Identifiers for failed "GetRecord" requests
      */
-    private int harvest(HarvestingDataverse dataverse, Logger hdLogger, String from, String until, MutableBoolean harvestErrorOccurred, List<String> failedIdentifiers) {
+    private int harvestOAI(HarvestingDataverse dataverse, Logger hdLogger, String from, String until, MutableBoolean harvestErrorOccurred, List<String> failedIdentifiers) {
    
         List<Long> harvestedStudyIds = new ArrayList<Long>();
    
@@ -617,5 +630,68 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             hft = (HarvestFormatType) resultList.get(0);
         }
         return hft;
+    }
+    
+    private int harvestNesstar(HarvestingDataverse dataverse, Logger hdLogger, MutableBoolean harvestErrorOccurred, List<String> failedIdentifiers) {
+        VDCUser networkAdmin = vdcNetworkService.find().getDefaultNetworkAdmin();
+        int count = 0;
+
+        List<Long> harvestedStudyIds = new ArrayList<Long>();
+
+        try {
+
+            havestingDataverseService.setHarvestingNow(dataverse.getId(), true);
+            Date lastHarvestTime = new Date();
+
+            hdLogger.log(Level.INFO, "BEGIN HARVEST..., nesstarServer=" + dataverse.getOaiServer() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix());
+
+            //Instantiate the NesstarHarvester class:
+            NesstarHarvester nh = new NesstarHarvester();
+            //Add a server (remember to use a standards compliant URL)
+            nh.addServer(dataverse.getOaiServer());
+            //Harvest the server:
+            DDI[] ddis = nh.harvest();
+            if (ddis != null) {
+                for (DDI ddi : ddis) {
+                    Writer out = null; 
+                    try {
+                        File xmlFile = File.createTempFile("study", ".xml");
+                        out = new BufferedWriter(new FileWriter(xmlFile));
+                        out.write( ddi.getXml() );
+                        out.close();
+
+                        Study harvestedStudy = studyService.importHarvestStudy(xmlFile, dataverse.getVdc().getId(), networkAdmin.getId(), String.valueOf(++count) );
+                        harvestedStudyIds.add(harvestedStudy.getId());               
+
+                    } catch (Exception e) {
+                        String errMessage = "Exception parsing DDI ,identifier=" + String.valueOf(count) + " " + e.getClass().getName() + " " + e.getMessage();
+                        hdLogger.log(Level.SEVERE, errMessage);
+                        logException(e, hdLogger);
+                        harvestErrorOccurred.setValue(true);
+                        failedIdentifiers.add( String.valueOf(count) );
+                    }
+                }
+            }
+            
+            hdLogger.log(Level.INFO, "COMPLETED HARVEST, nesstarServer=" + dataverse.getOaiServer() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix());
+            havestingDataverseService.setLastHarvestTime(dataverse.getId(), lastHarvestTime);
+            
+            // now index all studies (need to modify for update)
+            hdLogger.log(Level.INFO, "POST HARVEST, start calls to index.");
+            indexService.updateIndexList(harvestedStudyIds);
+            hdLogger.log(Level.INFO, "POST HARVEST, calls to index finished.");
+        } catch (Throwable e) {
+            harvestErrorOccurred.setValue(true);
+            String message = "Exception processing harvest, nesstarServer= " + dataverse.getOaiServer() + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix() + " " + e.getClass().getName() + " " + e.getMessage();
+            hdLogger.log(Level.SEVERE, message);
+            logException(e, hdLogger);
+            hdLogger.log(Level.INFO, "HARVEST NOT COMPLETED DUE TO UNEXPECTED ERROR.");
+          
+        } finally {
+            havestingDataverseService.setHarvestingNow(dataverse.getId(), false);
+        }
+
+        return harvestedStudyIds.size();
+
     }
 }

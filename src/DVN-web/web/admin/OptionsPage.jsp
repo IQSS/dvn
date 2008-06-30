@@ -47,9 +47,6 @@
                             <h:outputText value=""/> <!-- a hack to make the spacing work (sorry Merce) -->
                             </ui:panelGroup>
                             <ui:panelGroup block="true"  separator="&lt;br /&gt;" style="padding-left: 10px">
-                                <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=4"  id="recentStudy">
-                                    <h:outputText  value="Manage All Studies Uploaded and Released to this Dataverse (starting with most recent)" escape="false"/>
-                                </h:outputLink>
                                 <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/ManageTemplatesPage.jsp?mode=4" >
                                     <h:outputText  value="Manage Study Templates" escape="false"/>
                                 </h:outputLink>
@@ -76,23 +73,26 @@
                                 <h:outputText id="outputText5" styleClass="vdcSubHeader" value="Admin Options"/>
                             </ui:panelGroup>
                             <ui:panelGroup block="true" id="groupPanel6" separator="&lt;br /&gt;" style="padding-left: 10px" >
-                                <h:outputText id="outputText7" styleClass="vdcSubHeaderColor" value="Customization:"/>
+                                <h:outputText id="outputText7" styleClass="vdcSubHeaderColor" value="General Settings:"/>
                                 <ui:panelGroup block="true" id="groupPanel7"
                                                separator="&lt;br /&gt;" style="padding-left: 10px">
                                     <h:outputLink id="hyperlink15" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditSitePage.jsp">
-                                        <h:outputText id="hyperlink15Text" value="Edit Name and Alias"/>
+                                        <h:outputText id="hyperlink15Text" value="Edit Datavese Settings"/>
                                     </h:outputLink>
                                     <h:outputLink id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditBannerFooterPage.jsp">
-                                        <h:outputText id="hyperlink1Text2" value="Edit Banner and Footer"/>
+                                        <h:outputText id="hyperlink1Text2" value="Edit Layout Branding"/>
                                     </h:outputLink>
                                     <h:outputLink id="hyperlink4" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditHomePanelsPage.jsp">
                                         <h:outputText id="hyperlink2Text2" value="Edit Homepage Description"/>
                                     </h:outputLink>
                                     <h:outputLink id="hyperlink17" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditContactUsPage.jsp">
-                                        <h:outputText id="hyperlink17Text" value="Set Contact and Notifications E-Mail"/>
+                                        <h:outputText id="hyperlink17Text" value="Set E-Mail Notifications"/>
                                     </h:outputLink>
                                     <h:outputLink id="hyperlink16" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/SearchFieldsPage.jsp">
                                         <h:outputText id="hyperlink16Text" value="Set Additional Fields to Display in Search Results"/>
+                                    </h:outputLink>
+                                    <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PromotionalLinkSearchBoxPage.jsp">
+                                        <h:outputText value="Promotional Links and Search Box (add to your personal site)"/>
                                     </h:outputLink>
                                 </ui:panelGroup>
                                 

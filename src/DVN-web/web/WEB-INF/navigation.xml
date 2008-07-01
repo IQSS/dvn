@@ -460,6 +460,12 @@
       <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
     </navigation-case>
     
+    <navigation-case>
+      <from-action>#{AnalysisPage.dwnldAction}</from-action>
+      <from-outcome>download</from-outcome>
+      <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
+    </navigation-case>
+    
 <!-- eda request -->
     <navigation-case>
       <from-action>#{AnalysisPage.edaAction}</from-action>

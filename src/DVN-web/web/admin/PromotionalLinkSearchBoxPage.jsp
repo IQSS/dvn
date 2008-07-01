@@ -34,7 +34,7 @@
                             <ui:panelGroup block="true" styleClass="dvnPromotionalCode">
                                 <span>Code</span><br/>
                                 <textarea name="text_area1" rows="4">
-                                    <h:outputText value="&lt;strong&gt;&lt;a href=&quot;http://dvn.iq.harvard.edu/dvn#{VDCRequest.currentVDCURL}&quot;&gt;View My Dataverse&lt;/a&gt;&lt;/strong&gt;"/>
+                                    <h:outputText value="&lt;strong&gt;&lt;a href=&quot;http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}&quot;&gt;View My Dataverse&lt;/a&gt;&lt;/strong&gt;"/>
                                 </textarea>
                                 <br/>
                                 <input type="button" value="Select All Code" onClick="javascript:this.form.text_area1.focus();this.form.text_area1.select();"/>
@@ -58,7 +58,7 @@
                             <ui:panelGroup block="true" styleClass="dvnPromotionalCode">
                                 <span>Code</span><br/>
                                 <textarea name="text_area2" rows="4">
-                                    <h:outputText value="&lt;span style=&quot;padding: 4px 8px; border: 1px solid #c55b28; background: #e6ebed;&quot;&gt;&lt;strong&gt;&lt;a href=&quot;http://dvn.iq.harvard.edu/dvn#{VDCRequest.currentVDCURL}&quot; style=&quot;color: #c55b28;&quot;&gt;View My Dataverse&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;"/>
+                                    <h:outputText value="&lt;span style=&quot;padding: 4px 8px; border: 1px solid #c55b28; background: #e6ebed;&quot;&gt;&lt;strong&gt;&lt;a href=&quot;http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}&quot; style=&quot;color: #c55b28;&quot;&gt;View My Dataverse&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;"/>
                                 </textarea>
                                 <br/>
                                 <input type="button" value="Select All Code" onClick="javascript:this.form.text_area2.focus();this.form.text_area2.select();"/>
@@ -83,7 +83,7 @@
                             <ui:panelGroup block="true" styleClass="dvnPromotionalCode">
                                 <span>Code</span><br/>
                                 <textarea name="text_area3" rows="4">
-                                    <h:outputText value="&lt;span style=&quot;color: #526f76; text-transform: uppercase;&quot;&gt;Search&lt;/span&gt;&#38;#160;&lt;span style=&quot;color: #c55b28;&quot;&gt;My Dataverse&lt;/span&gt;&lt;br/&gt;&lt;input type=&quot;text&quot;/&gt;&#38;#160;&lt;input value=&quot;Search&quot; type=&quot;button&quot;/&gt;"/>
+                                    <h:outputText value="&lt;span style=&quot;color: #526f76; text-transform: uppercase;&quot;&gt;Search&lt;/span&gt;&#38;#160;&lt;span style=&quot;color: #c55b28;&quot;&gt;My Dataverse&lt;/span&gt;&lt;br/&gt;&lt;input type=&quot;text&quot;/&gt;&#38;#160;&lt;input value=&quot;Search&quot; type=&quot;button&quot; onclick=&quot;location='http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=2&amp;searchValue=' + this.previousSibling.previousSibling.value&quot; /&gt;"/>
                                 </textarea>
                                 <br/>
                                 <input type="button" value="Select All Code" onClick="javascript:text_area3.focus();text_area3.select();"/>

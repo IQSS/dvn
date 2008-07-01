@@ -16,7 +16,7 @@ public class DvnDSButil {
 
     /** logger setting(use the package name) */
     private static Logger dbgLog = Logger.getLogger(DvnCitationFileWriter.class.getPackage().getName());
-    
+
     /**
      * 
      *
@@ -95,6 +95,18 @@ public class DvnDSButil {
         return vnl;
     }
 
+    
+    /**
+     * List version
+     *
+     * @param     
+     * @return    
+     */
+    public static String joinNelementsPerLine(List<String> vnl, int divisor, String sp, 
+        boolean quote, String qm, String lnsp){
+        String[] vn = (String[])vnl.toArray(new String[vnl.size()]);
+        return joinNelementsPerLine(vn, divisor,sp,quote,qm, lnsp);
+    }
 
     /**
      * A convenience version of joinNelementsPerLine method that takes only
@@ -102,11 +114,35 @@ public class DvnDSButil {
      * or not.  Used for R-code/command-history writing. 
      * Uses a single-quation mark for quating and a comma for the separator
      * 
-     * @param     An array of String
-     * @param     ture for quoting or false for without quoting
+     * @param vn    An array of String
+     * @param quote    ture for quoting or false for without quoting
      * @return    A concatanated String
      */
     public static String joinNelementsPerLine(String[] vn, boolean quote){
-        return joinNelementsPerLine( vn, vn.length, ", ", quote, "'", null);
+        return joinNelementsPerLine(vn, vn.length, ", ", quote, "'", null);
     }
+
+    // List version
+    public static String joinNelementsPerLine(List<String> vnl, boolean quote){
+        return joinNelementsPerLine(vnl, vnl.size(), ", ", quote, "'", null);
+    }
+
+    /**
+     * A convenience version of joinNelementsPerLine method.
+     *  Used for writing a citation file 
+     * 
+     * @param vn    An array of String
+     * @param columns    number of elements per line
+     * @return    A concatanated String
+     */
+
+    public static String joinNelementsPerLine(String[] vn, int columns){
+        return joinNelementsPerLine(vn, columns, ", ", false, null, "\n");
+    }
+    
+    // List version
+    public static String joinNelementsPerLine(List<String> vnl, int columns){
+        return joinNelementsPerLine(vnl, columns, ", ", false, null, "\n");
+    }
+
 }

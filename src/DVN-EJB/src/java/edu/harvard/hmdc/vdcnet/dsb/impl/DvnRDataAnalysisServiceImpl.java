@@ -491,6 +491,12 @@ if (tmpv.length > 0){
                 result.put("R_run_status", "F");
             }
             */
+            if (sro.hasRecodedVariables()){
+                // TODO
+                result.put("subsettingCriteria", "");
+            } else {
+                result.put("subsettingCriteria", "");
+            }
             result.put("fileUNF",fileUNF);
             result.put("dsbHost", RSERVE_HOST);
             result.put("dsbPort", DSB_HOST_PORT);

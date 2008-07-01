@@ -159,6 +159,19 @@ public class DvnRJobRequest {
     }
 
     /**
+     * Getter for property datafile name
+     *
+     * @param     
+     * @return    
+     */
+    public String getSubsetDataFileName(){
+        List<String> subsetDataFile = listParametersForRequest.get("subsetDataFileName");
+        dbgLog.fine("subsetDataFileName="+subsetDataFile.get(0));
+        return subsetDataFile.get(0);
+    }
+
+
+    /**
      * Getter for property variable types
      *
      * @return    An arrary of variable types(0, 1, 2)

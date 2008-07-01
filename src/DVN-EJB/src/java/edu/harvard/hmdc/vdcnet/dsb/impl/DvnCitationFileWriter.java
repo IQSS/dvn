@@ -15,25 +15,39 @@ import static java.lang.System.*;
  *
  * @author asone
  */
+
 public class DvnCitationFileWriter {
     
     private static Logger dbgLog = Logger.getLogger(DvnCitationFileWriter.class.getPackage().getName());
     
     String title = "_Citation for the full data set you chose_:\n";
     String subsetTitle = "_Citation for this subset you chose_:\n";
+    
     String offlineCitation;
+    String subsetUNF;
+    String variableList;
+    String subsettingCriteria;
     
     public DvnCitationFileWriter(String oc){
         offlineCitation = oc;
     }
-    public void Write(String citationFilename, 
+    
+    public DvnCitationFileWriter(Map<String, String> resultInfo){
+        this.offlineCitation    = resultInfo.get("offlineCitation");
+        this.subsetUNF          = resultInfo.get("fileUNF");
+        this.variableList       = resultInfo.get("variableList");
+        this.subsettingCriteria = resultInfo.get("subsettingCriteria");
+        
+    }
+    
+    public void write(String citationFilename, 
         List<String> variableNameSet, String subsetUNF){
         
-        this.Write(citationFilename, variableNameSet, 
+        this.write(citationFilename, variableNameSet, 
             subsetUNF, null);
     }
 
-    public void Write(String citationFilename,
+    public void write(String citationFilename,
         List<String> variableNameSet, String subsetUNF, 
         String subsettingCriteria){
         OutputStream outs = null;
@@ -44,7 +58,6 @@ public class DvnCitationFileWriter {
             subsettingCriteria ="";
         }
         try {
-            //File cf = File.createTempFile("citationfile.", ".txt");
             File cf = new File(citationFilename);
             outs = new BufferedOutputStream(new FileOutputStream(cf));
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(outs, "utf8"), true);
@@ -53,8 +66,8 @@ public class DvnCitationFileWriter {
             pw.println("\n\n\n");
             pw.println(subsetTitle);
             pw.print(offlineCitation + " ");
-            pw.print(JoinNelementsPerLine(variableNameSet, 5));
-            pw.println("[VarGrp/@var(DDI)];"+ subsettingCriteria );
+            pw.print(DvnDSButil.joinNelementsPerLine(variableNameSet,5));
+            pw.println(" [VarGrp/@var(DDI)];"+ subsettingCriteria );
             pw.println(subsetUNF);
            outs.close();
         } catch (IOException ex) {
@@ -62,38 +75,29 @@ public class DvnCitationFileWriter {
         }
     }
     
-    public String JoinNelementsPerLine(List<String> vn, int divisor){
-        boolean debug = false;
-        String vnl = null;
-        if (vn.size() < divisor){
-            vnl = StringUtils.join(vn, ", ");
-        } else {
-            StringBuilder sb = new StringBuilder();
-            
-            int iter =  vn.size() / divisor;
-            int lastN = vn.size() % divisor;
-            if (lastN != 0){
-                iter++;
-            }
-            for (int i= 0; i<iter; i++){
-                int terminalN = divisor;
-                if ((i == (iter-1))  && (lastN != 0)){
-                    terminalN = lastN;
-                }                
-                for (int j = 0; j< terminalN; j++){
-                    if ( (divisor*i +j +1) == vn.size()){ 
-                        sb.append(vn.get(j + i*divisor));
-                    } else {
-                        sb.append(vn.get(j + i*divisor) + ", ");
-                    }
-                }
-                sb.append("\n");
-            }
-            vnl = sb.toString();
-            if (debug){
-                dbgLog.fine(vnl);
-            }
+    
+    public void write(File cf){
+
+        OutputStream outs = null;
+        try {
+            outs = new BufferedOutputStream(new FileOutputStream(cf));
+            PrintWriter pw = new PrintWriter(new OutputStreamWriter(outs, "utf8"), true);
+            pw.println(title);
+            pw.println(offlineCitation);
+            pw.println("\n\n\n");
+            pw.println(subsetTitle);
+            pw.print(offlineCitation + " ");
+            pw.print(variableList);
+            pw.println(" [VarGrp/@var(DDI)];"+ subsettingCriteria );
+            pw.println(subsetUNF);
+           outs.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-        return vnl;
+    }
+
+    public void write(String citationFilename){
+        File cf = new File(citationFilename);
+        write(cf);
     }
 }

@@ -96,6 +96,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+import java.util.zip.*;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.*;
 
@@ -888,51 +890,49 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 .getExternalContext().getRequest();
 
 
-                dbgLog.fine("***** within dwnldAction() *****");
-                
-                StudyFile sf = dataTable.getStudyFile();
-                Long noRecords = dataTable.getRecordsPerCase();
+            dbgLog.fine("***** within dwnldAction() *****");
 
-                String dsbUrl = getDsbUrl();
-                dbgLog.fine("dsbUrl=" + dsbUrl);
+            StudyFile sf = dataTable.getStudyFile();
+            Long noRecords = dataTable.getRecordsPerCase();
 
-                String serverPrefix = req.getScheme() + "://"
-                    + req.getServerName() + ":" + req.getServerPort()
-                    + req.getContextPath();
-                
-                dbgLog.fine("serverPrefix"+serverPrefix);
-                
-                Map<String, List<String>> mpl = new HashMap<String, List<String>>();
-                
-                // String formatType = req.getParameter("formatType");
-                String formatType = (String) dwnldFileTypeSet.getValue();
-                dbgLog.fine("file type from the binding=" + formatType);
+            String dsbUrl = getDsbUrl();
+            dbgLog.fine("dsbUrl=" + dsbUrl);
 
-                mpl.put("dtdwnld", Arrays.asList(formatType));
+            String serverPrefix = req.getScheme() + "://"
+                + req.getServerName() + ":" + req.getServerPort()
+                + req.getContextPath();
 
-                // if there is a user-defined (recoded) variables
-                if (recodedVarSet.size() > 0) {
-                    mpl.putAll(getRecodedVarParameters());
-                }
+            dbgLog.fine("serverPrefix"+serverPrefix);
 
-                dbgLog.fine("citation info to be sent:\n" + citation);
-                
-                mpl.put("OfflineCitation", Arrays.asList(citation));
+            Map<String, List<String>> mpl = new HashMap<String, List<String>>();
 
-                mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
-                    + req.getServerPort() + req.getContextPath()));
-                mpl.put("studytitle", Arrays.asList(studyTitle));
-                mpl.put("studyno", Arrays.asList(studyId.toString()));
-                mpl.put("studyURL", Arrays.asList(studyURL));
-                mpl.put("browserType", Arrays.asList(browserType));
+            // String formatType = req.getParameter("formatType");
+            String formatType = (String) dwnldFileTypeSet.getValue();
+            dbgLog.fine("file type from the binding=" + formatType);
 
-                mpl.put("recodedVarIdSet", getRecodedVarIdSet());
-                mpl.put("recodedVarNameSet",getRecodedVarNameSet());
-                mpl.put("recodedVarLabelSet", getRecodedVarLabelSet());
-                mpl.put("recodedVarTypeSet", getRecodedVariableType());
-                
-                mpl.put("baseVarIdSet",getBaseVarIdSetFromRecodedVarIdSet());
-                mpl.put("baseVarNameSet",getBaseVarNameSetFromRecodedVarIdSet());
+            mpl.put("dtdwnld", Arrays.asList(formatType));
+
+            // if there is a user-defined (recoded) variables
+            if (recodedVarSet.size() > 0) {
+                mpl.putAll(getRecodedVarParameters());
+            }
+
+            dbgLog.fine("citation info to be sent:\n" + citation);
+
+            mpl.put("studytitle", Arrays.asList(studyTitle));
+            mpl.put("studyno", Arrays.asList(studyId.toString()));
+            mpl.put("studyURL", Arrays.asList(studyURL));
+            mpl.put("browserType", Arrays.asList(browserType));
+
+            mpl.put("recodedVarIdSet", getRecodedVarIdSet());
+            mpl.put("recodedVarNameSet",getRecodedVarNameSet());
+            mpl.put("recodedVarLabelSet", getRecodedVarLabelSet());
+            mpl.put("recodedVarTypeSet", getRecodedVariableType());
+
+            mpl.put("baseVarIdSet",getBaseVarIdSetFromRecodedVarIdSet());
+            mpl.put("baseVarNameSet",getBaseVarNameSetFromRecodedVarIdSet());
+                        
+            mpl.put("requestType", Arrays.asList("Download"));
 
             // -----------------------------------------------------
             // New processing route
@@ -954,16 +954,18 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             dbgLog.fine("subsettable="+sbstOK);
             dbgLog.fine("filetype="+flct);
 
-
+            DvnRJobRequest sro = null;
             // the data file for downloading/statistical analyses must be subset-ready
             // local (relative to the application) file case 
             // note: a typical remote case is: US Census Bureau
+            
+            List<File> zipFileList = new ArrayList();
             
             if (sbstOK){
                 
                 try {
 
-            // Step 1. temporarily store the whole data set in a temp directory
+                // Step 1. temporarily store the whole data set in a temp directory
 
                     // Create a URL for the data file
                     URL url = new URL(fileURL);
@@ -973,7 +975,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     // temp subset file that stores requested variables 
                     File tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
-
+                    
+                    zipFileList.add(tmpsbfl);
+                    
                     // Typical file-copy idiom 
                     // incoming/outgoing streams
                     InputStream inb = new BufferedInputStream(url.openStream());
@@ -991,155 +995,111 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                        
                     }
 
-boolean fieldcut = true;
-if ((noRecords != null) && (noRecords >=1)){
-    fieldcut = false;
-}
-
-if (fieldcut){
-                    // Step 2. Set-up parameters for subsetting: cutting requested columns of data
-                    // from a temp (whole) file
-
-                    // create var ids for subsetting
-                    // data(int) are taken from DB's studyfile table -- FileOrder column
-                    String [] vids = null;
-                    
-                    int vidslen = getDataVariableForRequest().size();
-                    
-                    List<String> variableList = new ArrayList();
-                    
-                    Set<Integer> cols = new LinkedHashSet<Integer>();
-                    
-                    if (getDataVariableForRequest() != null) {
-                        Iterator iter = getDataVariableForRequest().iterator();
-                        while (iter.hasNext()) {
-                            DataVariable dv = (DataVariable) iter.next();
-                            variableList.add(dv.getId().toString());
-                            cols.add(dv.getFileOrder());
-                        }
-                    }
-                    
-                     dbgLog.fine("cols="+cols);
                     // source data file: full-path name
                     String cutOp1 = tmpfl.getAbsolutePath();
 
                     // result(subset) data file: full-path name
                     String cutOp2 = tmpsbfl.getAbsolutePath();
 
-                    // Create an instance of RcutDatasetCutter
-                    FieldCutter fc = new DvnJavaFieldCutter();
 
-                    // Executes the subsetting request
-                    fc.subsetFile(cutOp1, cutOp2, cols);
+                    boolean fieldcut = true;
+                    if ((noRecords != null) && (noRecords >=1)){
+                        fieldcut = false;
+                    }
+
+                    if (fieldcut){
+                // Step 2.a. Set-up parameters for subsetting: cutting requested fields of data
+                        // from a temp (whole) delimited file
+
+
+                        Set<Integer> fields = getFieldNumbersForSubsetting();
+                         dbgLog.fine("fields="+fields);
+
+                        // Create an instance of DvnJavaFieldCutter
+                        FieldCutter fc = new DvnJavaFieldCutter();
+
+                        // Executes the subsetting request
+                        fc.subsetFile(cutOp1, cutOp2, fields);
+
+
+                    } else {
+                // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
+                        // from a temp (whole) non-delimited file
+
+                        // create var ids for subsetting
+                        // data(int) are taken from DB's studyfile table -- FileOrder column
+                        String [] vids = null;
+
+                        int vidslen = getDataVariableForRequest().size();
+                        List<String> variableList = getVariableOrderForRequest();
+                        List<String> variableOrder = getVariableOrderForRequest();
+                        vids = (String[]) variableOrder.toArray(new String[vidslen]);
+                        String varsq = StringUtils.join(vids, ",");
+
+                        // cutter
+                        String cutOp0 = "-f"+ varsq ;
+
+                        // Create an instance of RcutDatasetCutter
+                        DatasetCutter dc = new RcutDatasetCutter(cutOp0, cutOp1, cutOp2);
+
+                        // Executes the subsetting request
+                        dc.run();
+
+                        // end: non-delimited case
+                    }
+
                     
-                    
-                    // Checks the result file 
+                    // Checks the resulting subset file 
                     if (tmpsbfl.exists()){
                         dbgLog.fine("subsettFile:Length="+tmpsbfl.length());
                         mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                        mpl.put("subsetDataFileName",Arrays.asList(tmpsbfl.getName()));
                     }
-                        mpl.put("requestType", Arrays.asList("Download"));
-                        
-                        
-if (formatType.equals("D01")){
-    
-                   FileInputStream in = null;
-                   PrintWriter out = null;
-                   try {
-                   
-                        res.setContentType("application/octet-stream");
-                        String sfname = tmpsbfl.getName();
-                        res.setHeader("content-disposition", "attachment; filename=" + sfname);
-
-                        in = new FileInputStream(cutOp2);
-                        out = res.getWriter();
-
-                        int i = in.read();
-                        while (i != -1){
-                            out.write(i);
-                            i = in.read();
-                        }
-                        in.close();
-                        out.close();
-                   
-                        FacesContext.getCurrentInstance().responseComplete();
-                        return "failure";
-                   } catch (IOException e){
-                        e.printStackTrace();
-                        dbgLog.fine("download IO exception");
-                   }
-                   
-} // d01 case
-                   
-
-} else {
-                    // Step 2. Set-up parameters for subsetting: cutting requested columns of data
-                    // from a temp (whole) file
-
-                    // create var ids for subsetting
-                    // data(int) are taken from DB's studyfile table -- FileOrder column
-                    String [] vids = null;
                     
-                    int vidslen = getDataVariableForRequest().size();
-                    
-                    List<String> variableList = getVariableOrderForRequest();
-                    
-                    List<String> variableOrder = getVariableOrderForRequest();
-                    
-                    vids = (String[]) variableOrder.toArray(new String[vidslen]);
-                    String varsq = StringUtils.join(vids, ",");
-                    String cutOp0 = "-f"+ varsq ;
 
-                    // source data file: full-path name
-                    String cutOp1 = tmpfl.getAbsolutePath();
-
-                    // result(subset) data file: full-path name
-                    String cutOp2 = tmpsbfl.getAbsolutePath();
-
-                    // Create an instance of RcutDatasetCutter
-                    DatasetCutter dc = new RcutDatasetCutter(cutOp0, cutOp1, cutOp2);
-
-                    // Executes the subsetting request
-                    dc.run();
-                    
-                    
-                    // Checks the result file 
-                    if (tmpsbfl.exists()){
-                        dbgLog.fine("subsettFile:Length="+tmpsbfl.length());
-                        mpl.put("subsetFileName", Arrays.asList(cutOp2));
-                    }
-                        mpl.put("requestType", Arrays.asList("Download"));
-}
-
-                    Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
-                    // Step 3. Organizes parameters/metadata to be sent to the implemented
+                // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
-                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
+                    
+                    Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
+                    
+                    sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
 
                     dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
-                    // Step 4. Creates an instance of the the implemented 
+                    
+                // Step 4. Creates an instance of the the implemented 
                     // data-analysis-service class 
 
                     DvnRDataAnalysisServiceImpl das = new DvnRDataAnalysisServiceImpl();
 
                     // Executes a request of downloading or data analysis and 
-                    // capture result info as a Map <String, String>
+                    // capture resulting information as a Map <String, String>
 
                     resultInfo = das.execute(sro);
 
+                // Step 5. Checks DSB-exit-status
+                    if (resultInfo.get("RexecError").equals("true")){
+                        setMsgAdvStatButtonTxt("* The Request failed due to an R-runtime error");
+                        msgAdvStatButton.setVisible(true);
+                        dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
+                        getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                        return "failure";
+                    }
+                    
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                     // pass the error message to the resultPage
-                    // resultInfo.put();
                     setMsgEdaButtonTxt("* file URL is malformed");
                     msgEdaButton.setVisible(true);
                     dbgLog.warning("exiting dwnldAction() due to a URL problem ");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
                     
+                    return "failure";
+
                 } catch (IOException e) {
+                    // this may occur if the dataverse is not released
+                    // the file exists, but it is not accessible 
                     e.printStackTrace();
-                    // ditto
-                    // resultInt.put();
                     
                     setMsgEdaButtonTxt("* an IO problem occurred");
                     msgEdaButton.setVisible(true);
@@ -1148,38 +1108,150 @@ if (formatType.equals("D01")){
 
                     return "failure";
                 }
+                
+               // end of subset-OK case
+            } else {
+                // not subsettable data file
+                setMsgEdaButtonTxt("* this data file is not subsettable file");
+                msgEdaButton.setVisible(true);
+                dbgLog.warning("exiting dwnldAction(): the data file is not subsettable ");
+                getVDCRequestBean().setSelectedTab("tabDwnld");
 
-            }
+                return "failure";
 
-            dbgLog.fine("***** within dwnldAction(): ends here *****");
-            // pass metadata to the result pages
+            } // end:subsetNotOKcase
+            
+            // final processing steps for all successful cases
+            
+            // add stuy-metadata to the resultInfo map
             resultInfo.put("offlineCitation", citation);
             resultInfo.put("studyTitle", studyTitle);
             resultInfo.put("studyNo", studyId.toString());
             resultInfo.put("studyURL", studyURL);
+            
+        try{
 
-            if (resultInfo.get("RexecError").equals("true")){
-                setMsgAdvStatButtonTxt("* The Request failed due to an R-runtime error");
-                msgAdvStatButton.setVisible(true);
-                dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
-                getVDCRequestBean().setSelectedTab("tabDwnld");
-                return "failure";
+            // write a citation file 
+            String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
+            File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
+
+            zipFileList.add(tmpcfl);
+
+
+            DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
+            String fmpcflFullname = tmpcfl.getAbsolutePath();
+            String fmpcflname = tmpcfl.getName();
+            dcfw.write(tmpcfl);
+            
+            String rhistoryFilePrefix = "rhistoryFile." + resultInfo.get("PID") + ".";
+            File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
+            
+            zipFileList.add(tmpRhfl);
+
+            writeRhistory(tmpRhfl, resultInfo.get("RCommandHistory"));
+            // write back them as a zip file
+            //              local     remote  local             local
+            // tab          citation, data,   command history,  codefiles 
+            // others       citation, data,   commandhistory
+            
+            if (formatType.equals("D01")){
+                // write code files
+                String codeFilePrefix = "codeFile." + resultInfo.get("PID") + ".";
+                File tmpCCsasfl = File.createTempFile(codeFilePrefix, ".sas");
+                zipFileList.add(tmpCCsasfl);
+
+                File tmpCCspsfl = File.createTempFile(codeFilePrefix, ".sps");
+                
+                zipFileList.add(tmpCCspsfl);
+                
+                
+                File tmpCCdofl  = File.createTempFile(codeFilePrefix, ".do");
+                
+                zipFileList.add(tmpCCdofl);
+
+                StatisticalCodeFileWriter scfw = new StatisticalCodeFileWriter(sro);
+                scfw.write(tmpCCsasfl, tmpCCspsfl, tmpCCdofl);
+
             }
+            
+            for (File f : zipFileList){
+                dbgLog.fine("path="+f.getAbsolutePath() +"\tname="+ f.getName());
+            }
+            
 
 
-            // put resultInfo
+try{
+    String zipFilePrefix = "zipFile." + resultInfo.get("PID") + ".";
+    File zipFile  = File.createTempFile(zipFilePrefix, ".zip");
+
+    res.setContentType("application/zip");
+    String zfname = zipFile.getName();
+    res.setHeader("content-disposition", "attachment; filename=" + zfname);
+
+    zipFiles(res.getOutputStream(), zipFileList);
+
+
+
+    FacesContext.getCurrentInstance().responseComplete();
+
+    return "download";
+
+} catch (IOException e){
+    // file-access problem, etc.
+    e.printStackTrace();
+    dbgLog.fine("download zipping IO exception");
+    setMsgEdaButtonTxt("* an IO problem occurred");
+    msgEdaButton.setVisible(true);
+    dbgLog.warning("exiting dwnldAction() due to an IO problem ");
+    getVDCRequestBean().setSelectedTab("tabDwnld");
+
+    return "failure";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+            
+            
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+            
+            
+
+            // put resultInfo into the session object
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
             "resultInfo", resultInfo);
             
-            return "success";
+            dbgLog.fine("***** within dwnldAction(): ends here *****");
+            
+            return "download";
+            
+            // end: params are OK-case
         } else {
+            // the selection is incomplete
             // show error message;
             msgDwnldButton.setVisible(true);
             setMsgDwnldButtonTxt("* Select a format");
             dbgLog.warning("exiting dwnldAction() due to incomplete data ");
             getVDCRequestBean().setSelectedTab("tabDwnld");
+            
             return "failure";
-        }
+        } // end: checking params
+        
+        
     }
 
     
@@ -6148,172 +6220,6 @@ if (fieldcut){
 
 
     // -----------------------------------------------------------------------
-    // utility methods 
-    // -----------------------------------------------------------------------
-    // <editor-fold desc="utiltiy methods">
-
-    /**
-     * Returns a List object that stores major metadata for all variables 
-     * selected by an end-user
-     *
-     * @return    List of DataVariable objects that stores metadata
-     */
-    public List<DataVariable> getDataVariableForRequest() {
-        List<DataVariable> dvs = new ArrayList<DataVariable>();
-        for (Iterator el = dataVariables.iterator(); el.hasNext();) {
-            DataVariable dv = (DataVariable) el.next();
-            String keyS = dv.getId().toString();
-            if (varCart.containsKey(keyS)) {
-                dvs.add(dv);
-            }
-        }
-        return dvs;
-    }
-
-    /**
-     * Returns the name of a given variable whose id is known.
-     * Because dt4Display is not a HashMap but a List, 
-     * loop-through is necessary
-     *
-     * @param varId    the id of a given variable
-     * @return    the name of a given variable
-     */
-    public String getVariableNamefromId(String varId) {
-
-        for (int i = 0; i < dt4Display.size(); i++) {
-            if (((String) ((ArrayList) dt4Display.get(i)).get(2)).equals(varId)) {
-                return (String) ((ArrayList) dt4Display.get(i)).get(3);
-
-            }
-        }
-        return null;
-    }
-
-
-    /**
-     * Returns the label of a given variable whose id is known.
-     * Because dt4Display is not a HashMap but a List, 
-     * loop-through is necessary
-     *
-     * @param varId    the id of a given variable
-     * @return    the label of a given variable
-     */
-    public String getVariableLabelfromId(String varId) {
-
-        for (int i = 0; i < dt4Display.size(); i++) {
-            if (((String) ((ArrayList) dt4Display.get(i)).get(2)).equals(varId)) {
-                return (String) ((ArrayList) dt4Display.get(i)).get(4);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns the file-order of a given variable whose id is known.
-     * Because dt4Display is not a HashMap but a List, 
-     * loop-through is necessary
-     *
-     * @param varId    the id of a given variable
-     * @return    the file-order number of a given variable
-     */
-    /*
-    public String getVariableFileOderfromId(String varId) {
-
-        for (int i = 0; i < dt4Display.size(); i++) {
-            if (((String) ((ArrayList) dt4Display.get(i)).get(2)).equals(varId)) {
-                return (String) ((ArrayList) dt4Display.get(i)).get(6);
-
-            }
-        }
-        return null;
-    }
-    */
-    /**
-     * Gets the row of metadata of a variable whose Id is given by a String
-     * object
-     *
-     * @param varId    a given variable's ID as a String object
-     * @return    a DataVariable instance that contains major metadata of the
-     *            requested variable
-     */
-    public DataVariable getVariableById(String varId) {
-
-        DataVariable dv = null;
-        for (Iterator el = dataVariables.iterator(); el.hasNext();) {
-            dv = (DataVariable) el.next();
-            // Id is Long
-            if (dv.getId().toString().equals(varId)) {
-                return dv;
-            }
-        }
-        return dv;
-    }
-
-    // <----------------------------------------------------------------------
-
-    /**
-     * Returns true if an end-user's brower is Firefox
-     *
-     * @param userAgent    hash value of the user-agent key in the request
-     *                     header's map
-     * @return    true if an end-user's brower is Firefox; false otherwise
-     */
-    public boolean isBrowserFirefox(String userAgent) {
-        boolean rtvl = false;
-        String regex = "Firefox";
-        Pattern p = null;
-        try {
-            p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-        } catch (PatternSyntaxException pex) {
-            pex.printStackTrace();
-        }
-        Matcher matcher = p.matcher(userAgent);
-        rtvl = matcher.find();
-        return rtvl;
-    }
-
-    // <----------------------------------------------------------------------
-
-    // hide subsetting functions according to the user's status
-    /**
-     * Hides the subsetting related components when an end-user does not 
-     * have permission to subset a data file
-     *
-     */
-    public void hideSubsettingFunctions() {
-        // Sets the rendered attribute of the following components as follows:
-        
-        // 1. Hides tabSet above the variable table
-        tabSet1.setRendered(false);
-        
-        // 2. Hides the subsetting intruction text
-        txtSubsettingInstruction.setRendered(false);
-        
-        // 3. Shows the non-Subsetting intruction text
-        txtNonSubsettingInstruction.setRendered(true);
-
-        // 4. Hides the select-all checkbox in the header(1st column) of 
-        //    the variable table
-        checkboxSelectUnselectAll.setRendered(false);
-        // Stores this hide state in a Boolean object
-        checkboxSelectUnselectAllRendered=Boolean.FALSE;
-        
-        // 5. Hides the variable-checkboxes in the 1st column of 
-        //    the variable table
-        varCheckbox.setRendered(false);
-        
-        // 6. Hides the title of the recoded-var table
-        recodedVarTableTitle.setRendered(false);
-
-        // 7. Hides the panel grid that contains the recoded-variable table
-        pgRecodedVarTable.setRendered(false);
-    }
-
-
-    // </editor-fold>
-
-
-    // -----------------------------------------------------------------------
     // Constructor and Init method
     // -----------------------------------------------------------------------
     // <editor-fold desc="Constructor and Init method">
@@ -6960,24 +6866,147 @@ if (fieldcut){
         return render;
     }
     
+
+
+
+    // hide subsetting functions according to the user's status
     /**
+     * Hides the subsetting related components when an end-user does not 
+     * have permission to subset a data file
      *
-     * @return    The url of the DSB
      */
-    public String getDsbUrl(){
+    public void hideSubsettingFunctions() {
+        // Sets the rendered attribute of the following components as follows:
+        
+        // 1. Hides tabSet above the variable table
+        tabSet1.setRendered(false);
+        
+        // 2. Hides the subsetting intruction text
+        txtSubsettingInstruction.setRendered(false);
+        
+        // 3. Shows the non-Subsetting intruction text
+        txtNonSubsettingInstruction.setRendered(true);
 
-        String dsbUrl = System.getProperty("vdc.dsb.host");
-        String dsbPort = System.getProperty("vdc.dsb.port");
+        // 4. Hides the select-all checkbox in the header(1st column) of 
+        //    the variable table
+        checkboxSelectUnselectAll.setRendered(false);
+        // Stores this hide state in a Boolean object
+        checkboxSelectUnselectAllRendered=Boolean.FALSE;
+        
+        // 5. Hides the variable-checkboxes in the 1st column of 
+        //    the variable table
+        varCheckbox.setRendered(false);
+        
+        // 6. Hides the title of the recoded-var table
+        recodedVarTableTitle.setRendered(false);
 
-        if (dsbPort != null) {
-            dsbUrl += ":" + dsbPort;
-        }
-
-        if (dsbUrl == null) {
-            dsbUrl = System.getProperty("vdc.dsb.url");
-        }
-        return dsbUrl;
+        // 7. Hides the panel grid that contains the recoded-variable table
+        pgRecodedVarTable.setRendered(false);
     }
+
+    // <----------------------------------------------------------------------
+    //  service-request-related methods
+    // <----------------------------------------------------------------------
+    // <editor-fold desc="service-request-related methods">
+
+    
+    /**
+     * Returns a List object that stores major metadata for all variables 
+     * selected by an end-user
+     *
+     * @return    List of DataVariable objects that stores metadata
+     */
+    public List<DataVariable> getDataVariableForRequest() {
+        List<DataVariable> dvs = new ArrayList<DataVariable>();
+        for (Iterator el = dataVariables.iterator(); el.hasNext();) {
+            DataVariable dv = (DataVariable) el.next();
+            String keyS = dv.getId().toString();
+            if (varCart.containsKey(keyS)) {
+                dvs.add(dv);
+            }
+        }
+        return dvs;
+    }
+
+    /**
+     * Returns the name of a given variable whose id is known.
+     * Because dt4Display is not a HashMap but a List, 
+     * loop-through is necessary
+     *
+     * @param varId    the id of a given variable
+     * @return    the name of a given variable
+     */
+    public String getVariableNamefromId(String varId) {
+
+        for (int i = 0; i < dt4Display.size(); i++) {
+            if (((String) ((ArrayList) dt4Display.get(i)).get(2)).equals(varId)) {
+                return (String) ((ArrayList) dt4Display.get(i)).get(3);
+
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Returns the label of a given variable whose id is known.
+     * Because dt4Display is not a HashMap but a List, 
+     * loop-through is necessary
+     *
+     * @param varId    the id of a given variable
+     * @return    the label of a given variable
+     */
+    public String getVariableLabelfromId(String varId) {
+
+        for (int i = 0; i < dt4Display.size(); i++) {
+            if (((String) ((ArrayList) dt4Display.get(i)).get(2)).equals(varId)) {
+                return (String) ((ArrayList) dt4Display.get(i)).get(4);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the file-order of a given variable whose id is known.
+     * Because dt4Display is not a HashMap but a List, 
+     * loop-through is necessary
+     *
+     * @param varId    the id of a given variable
+     * @return    the file-order number of a given variable
+     */
+    /*
+    public String getVariableFileOderfromId(String varId) {
+
+        for (int i = 0; i < dt4Display.size(); i++) {
+            if (((String) ((ArrayList) dt4Display.get(i)).get(2)).equals(varId)) {
+                return (String) ((ArrayList) dt4Display.get(i)).get(6);
+
+            }
+        }
+        return null;
+    }
+    */
+    /**
+     * Gets the row of metadata of a variable whose Id is given by a String
+     * object
+     *
+     * @param varId    a given variable's ID as a String object
+     * @return    a DataVariable instance that contains major metadata of the
+     *            requested variable
+     */
+    public DataVariable getVariableById(String varId) {
+
+        DataVariable dv = null;
+        for (Iterator el = dataVariables.iterator(); el.hasNext();) {
+            dv = (DataVariable) el.next();
+            // Id is Long
+            if (dv.getId().toString().equals(varId)) {
+                return dv;
+            }
+        }
+        return dv;
+    }
+    
     
     /**
      * 
@@ -7200,6 +7229,164 @@ if (fieldcut){
     }
     
     
+    public String getVariableHeaderForSubset() {
+        String varHeader = null; 
+        List<DataVariable> dvs = getDataVariableForRequest();
+        List<String> vn = new ArrayList<String>();
+        if (dvs != null) {
+            for (Iterator el = dvs.iterator(); el.hasNext();) {
+                DataVariable dv = (DataVariable) el.next();
+                vn.add(dv.getName());
+            }
+            varHeader = StringUtils.join(vn, "\t");
+            varHeader = varHeader + "\n";
+        }
+        return varHeader;
+    }
+    
+    
+    public Set<Integer> getFieldNumbersForSubsetting(){
+        // create var ids for subsetting
+        // data(int) are taken from DB's studyfile table -- FileOrder column
+        Set<Integer> fields = new LinkedHashSet<Integer>();
+        List<DataVariable> dvs = getDataVariableForRequest();
+
+        if (dvs != null) {
+            for (Iterator el = dvs.iterator(); el.hasNext();) {
+                DataVariable dv = (DataVariable) el.next();
+                fields.add(dv.getFileOrder());
+            }
+        }
+        return fields;
+    }
+    
+    
+    
+    
+    // </editor-fold>
+    
+    // -----------------------------------------------------------------------
+    // misc. methods 
+    // -----------------------------------------------------------------------
+    // <editor-fold desc="misc. methods">
+
+    /**
+     * Returns true if an end-user's brower is Firefox
+     *
+     * @param userAgent    hash value of the user-agent key in the request
+     *                     header's map
+     * @return    true if an end-user's brower is Firefox; false otherwise
+     */
+    public boolean isBrowserFirefox(String userAgent) {
+        boolean rtvl = false;
+        String regex = "Firefox";
+        Pattern p = null;
+        try {
+            p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        } catch (PatternSyntaxException pex) {
+            pex.printStackTrace();
+        }
+        Matcher matcher = p.matcher(userAgent);
+        rtvl = matcher.find();
+        return rtvl;
+    }
+
+    /**
+     *
+     * @return    The url of the DSB
+     */
+    public String getDsbUrl(){
+
+        String dsbUrl = System.getProperty("vdc.dsb.host");
+        String dsbPort = System.getProperty("vdc.dsb.port");
+
+        if (dsbPort != null) {
+            dsbUrl += ":" + dsbPort;
+        }
+
+        if (dsbUrl == null) {
+            dsbUrl = System.getProperty("vdc.dsb.url");
+        }
+        return dsbUrl;
+    }
+
+    // <----------------------------------------------------------------------
+        public void writeRhistory(File frh, String rh){
+            OutputStream outs = null;
+            try {
+                outs = new BufferedOutputStream(new FileOutputStream(frh));
+                PrintWriter pw = new PrintWriter(new OutputStreamWriter(outs, "utf8"), true);
+                pw.println(rh);
+               outs.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+    public void zipFiles(OutputStream out, List<File> fllst) {
+        ZipOutputStream zout = null;
+        BufferedInputStream infile = null;
+        
+       
+        zout = new ZipOutputStream(out);
+
+        
+        for (int i = 0; i< fllst.size(); i++) {
+            try {
+                infile = new BufferedInputStream(
+                    new FileInputStream(fllst.get(i)));
+                
+            } catch (FileNotFoundException e) {
+                err.println("input file is not found");
+                e.printStackTrace();
+                try {
+                    zout.close();
+                } catch (ZipException ze) {
+                    err.println("zip file invalid");
+                    ze.printStackTrace();
+                } catch (IOException ex) {
+                    err.println("closing output file");
+                    ex.printStackTrace();
+                }
+            }
+            
+            ZipEntry ze = new ZipEntry(fllst.get(i).getName());
+            try {
+                zout.putNextEntry(ze);
+                int len;
+                while ((len = infile.read())> 0) {
+                    zout.write(len);
+                }
+            } catch (ZipException zpe) {
+                zpe.printStackTrace();
+                err.println("zip file is invalid");
+            } catch (IOException ie) {
+                ie.printStackTrace();
+                err.println("output file io-error");
+            }
+            
+            try {
+                infile.close();
+            } catch (IOException ie) {
+                err.println("error: closing input file");
+            }
+        }
+        
+        try {
+            zout.close();
+        } catch (ZipException zpe) {
+            err.println("zip file invalid");
+            zpe.printStackTrace();
+        } catch (IOException ioe) {
+            err.println("error closing zip file");
+            ioe.printStackTrace();
+        }
+
+    }
+
+    // </editor-fold>
+
+
     
     // end of this class
 }

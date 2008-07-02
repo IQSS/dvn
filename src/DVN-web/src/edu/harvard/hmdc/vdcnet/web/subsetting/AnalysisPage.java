@@ -976,7 +976,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // temp subset file that stores requested variables 
                     File tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
                     
-                    zipFileList.add(tmpsbfl);
+                    //zipFileList.add(tmpsbfl);
                     
                     // Typical file-copy idiom 
                     // incoming/outgoing streams
@@ -1128,6 +1128,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("studyTitle", studyTitle);
             resultInfo.put("studyNo", studyId.toString());
             resultInfo.put("studyURL", studyURL);
+            dbgLog.fine("wbDataFileName="+resultInfo.get("wbDataFileName"));
+            dbgLog.fine("RwrkspFileName="+resultInfo.get("RwrkspFileName"));
             
         try{
 
@@ -1139,10 +1141,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 
             DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
+            
             String fmpcflFullname = tmpcfl.getAbsolutePath();
             String fmpcflname = tmpcfl.getName();
             dcfw.write(tmpcfl);
             
+            // R history file
             String rhistoryFilePrefix = "rhistoryFile." + resultInfo.get("PID") + ".";
             File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
             
@@ -1154,10 +1158,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // tab          citation, data,   command history,  codefiles 
             // others       citation, data,   commandhistory
             
+            
+            File wbSubsetDataFile = null;
             if (formatType.equals("D01")){
                 // write code files
                 String codeFilePrefix = "codeFile." + resultInfo.get("PID") + ".";
+                
                 File tmpCCsasfl = File.createTempFile(codeFilePrefix, ".sas");
+                
                 zipFileList.add(tmpCCsasfl);
 
                 File tmpCCspsfl = File.createTempFile(codeFilePrefix, ".sps");
@@ -1173,6 +1181,45 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 scfw.write(tmpCCsasfl, tmpCCspsfl, tmpCCdofl);
 
             }
+            String wbDataFileName = resultInfo.get("wbDataFileName");
+            dbgLog.fine("wbDataFileName="+wbDataFileName);
+            wbSubsetDataFile = new File(wbDataFileName);
+
+            if (wbSubsetDataFile.exists()){
+                dbgLog.fine("wbSubsetDataFile:length="+wbSubsetDataFile.length());
+                
+                zipFileList.add(wbSubsetDataFile);
+                
+            } else {
+                dbgLog.fine("wbSubsetDataFile does not exist");
+
+                setMsgEdaButtonTxt("* The requested data file is not available");
+                msgEdaButton.setVisible(true);
+                dbgLog.warning("exiting dwnldAction(): data file was not transferred");
+                getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                return "failure";
+            }
+           
+            String wrkspFileName = resultInfo.get("wrkspFileName");
+            dbgLog.fine("wrkspFileName="+wrkspFileName);
+            File RwrkspFileName = new File(wrkspFileName);
+            if (RwrkspFileName.exists()){
+                dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
+                
+                zipFileList.add(RwrkspFileName);
+                
+            } else {
+                dbgLog.fine("RwrkspFileName does not exist");
+                //setMsgEdaButtonTxt("* The workspace file is not available");
+                //msgEdaButton.setVisible(true);
+                dbgLog.warning("dwnldAction(): R workspace file was not transferred");
+                //getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                //return "failure";
+            }
+
+            
             
             for (File f : zipFileList){
                 dbgLog.fine("path="+f.getAbsolutePath() +"\tname="+ f.getName());
@@ -7323,18 +7370,20 @@ if (fieldcut){
             }
         }
 
+
+
     public void zipFiles(OutputStream out, List<File> fllst) {
         ZipOutputStream zout = null;
-        BufferedInputStream infile = null;
-        
+        //BufferedInputStream infile = null;
+        FileInputStream infile = null;
        
         zout = new ZipOutputStream(out);
 
         
         for (int i = 0; i< fllst.size(); i++) {
             try {
-                infile = new BufferedInputStream(
-                    new FileInputStream(fllst.get(i)));
+                infile = 
+                    new FileInputStream(fllst.get(i));//new BufferedInputStream()
                 
             } catch (FileNotFoundException e) {
                 err.println("input file is not found");
@@ -7353,10 +7402,26 @@ if (fieldcut){
             ZipEntry ze = new ZipEntry(fllst.get(i).getName());
             try {
                 zout.putNextEntry(ze);
+            /*
                 int len;
                 while ((len = infile.read())> 0) {
                     zout.write(len);
                 }
+            */
+
+                byte[] dataBuffer = new byte[8192]; 
+
+                int k = 0;
+                while ( ( k = infile.read (dataBuffer) ) > 0 ) {
+                    zout.write(dataBuffer,0,k);
+                    //fileSize += i; 
+                    out.flush(); 
+                }
+
+                
+                
+                
+                
             } catch (ZipException zpe) {
                 zpe.printStackTrace();
                 err.println("zip file is invalid");

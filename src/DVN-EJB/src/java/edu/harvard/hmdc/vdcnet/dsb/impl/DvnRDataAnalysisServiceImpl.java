@@ -158,7 +158,7 @@ public class DvnRDataAnalysisServiceImpl{
                     new FileInputStream(infile));
 
             int bufsize;
-            byte[] bffr = new byte[8192];
+            byte[] bffr = new byte[1024];
 
             RFileOutputStream os = 
                  c.createFile(tempFileName);
@@ -166,7 +166,7 @@ public class DvnRDataAnalysisServiceImpl{
                     os.write(bffr, 0, bufsize);
             }
             os.close();
-
+            inb.close();
             // Rserve code starts here
             dbgLog.fine("wrkdir="+wrkdir);
             historyEntry.add(librarySetup);
@@ -586,7 +586,7 @@ if (tmpv.length > 0){
             
             sr.put("subsetfile", "/"+requestdir+ "/" +dataFileName);
 
-            
+            // data file to be copied back to the dvn
             String dsnprfx = wrkdir + "/" + dataFileName;
             
             String univarDataDwnld = "univarDataDwnld(dtfrm=x,"+
@@ -596,7 +596,23 @@ if (tmpv.length > 0){
             dbgLog.fine("univarDataDwnld="+univarDataDwnld);
             historyEntry.add(univarDataDwnld);
             c.voidEval(univarDataDwnld);
-
+            
+            String fileSizeLine = "round(file.info('"+dsnprfx+"')$size)";
+            
+            int wbFileSize = c.eval(fileSizeLine).asInteger();
+            
+            dbgLog.fine("wbFileSize="+wbFileSize);
+            // write back the data file
+            String dtflprefix = "tmpDataFile";
+            
+            File dtfl = writeBackFileToDvn(c, dsnprfx, dtflprefix, dwlndParam.get(dwnldOpt), wbFileSize);
+            if (dtfl != null){
+                sr.put("wbDataFileName", dtfl.getAbsolutePath());
+                dbgLog.fine("wbDataFileName="+dtfl.getAbsolutePath());
+            } else {
+                dbgLog.fine("wbDataFileName is null");
+            }
+            
             // save workspace
             String objList = "objList<-ls()";
             dbgLog.fine("objList="+objList);
@@ -610,6 +626,22 @@ if (tmpv.length > 0){
             dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
 
+            String wrkspFileName = wrkdir +"/"+ RdataFileName;
+            dbgLog.fine("wrkspFileName="+wrkspFileName);
+            
+            String wrkspflprefix = "tmpWSfile";
+            
+            String wrkspflSizeLine = "round(file.info('"+wrkspFileName+"')$size)";
+            
+            int wrkspflSize = c.eval(wrkspflSizeLine).asInteger();
+            
+            File wsfl = writeBackFileToDvn(c, wrkspFileName, wrkspflprefix ,"RData", wrkspflSize);
+            if (wsfl != null){
+                sr.put("wrkspFileName", wsfl.getAbsolutePath());
+                dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
+            } else {
+                dbgLog.fine("wrkspFileName is null");
+            }
             // command history
             String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
             c.assign("ch", new REXPString(ch));
@@ -617,22 +649,28 @@ if (tmpv.length > 0){
             dbgLog.fine(saveRcodeFile);
             c.voidEval(saveRcodeFile);
 
+
             // tab data file
             String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
             c.voidEval(mvTmpTabFile);
             dbgLog.fine("move temp file="+mvTmpTabFile);
 
-
+/*
             // move the temp dir to the web-temp root dir
             String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
             dbgLog.fine("web-temp_dir="+mvTmpDir);
             c.voidEval(mvTmpDir);
-
+*/
         } catch (RserveException rse) {
             rse.printStackTrace();
             sr.put("RexecError", "true");
             return sr;
+        } catch (REXPMismatchException mme) {
+            mme.printStackTrace();
+            sr.put("RexecError", "true");
+            return sr;
         }
+
         sr.put("RexecError", "false");
         return sr;
     }
@@ -764,6 +802,16 @@ if (tmpv.length > 0){
             String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
             c.voidEval(mvTmpTabFile);
             dbgLog.fine("move temp file="+mvTmpTabFile);
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             
             // move the temp dir to the web-temp root dir
             String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
@@ -1366,6 +1414,67 @@ if (tmpv.length > 0){
             dbgLog.fine("results:\n"+vnl);
         }
         return vnl;
-    }    
+    }
+    
+    
+    public File writeBackFileToDvn(RConnection c, String targetFilename,
+        String tmpFilePrefix, String tmpFileExt, int fileSize){
+        
+        // set up a temp file
+        File tmprsltfl = null;
+        
+        String resultFilePrefix = tmpFilePrefix + PID + ".";
+        
+        String rfsffx = "." + tmpFileExt;
+        RFileInputStream ris = null;
+        OutputStream outbr   = null;
+        try {
+            tmprsltfl = File.createTempFile(resultFilePrefix, rfsffx);
+
+            //outbr = new FileOutputStream(tmprsltfl);
+            outbr = new BufferedOutputStream(new FileOutputStream(tmprsltfl));
+            //File tmp = new File(targetFilename);
+            //long tmpsize = tmp.length();
+            // open the input stream
+            ris = c.openFile(targetFilename);
+
+            if (fileSize < 1024*1024*500){
+                int bfsize = fileSize +1;
+                 byte[] obuf = new byte[bfsize];
+                 ris.read(obuf);
+                 //while ((obufsize =)) != -1) {
+                 outbr.write(obuf, 0, bfsize);
+                 //}
+            }
+            ris.close();
+            outbr.close();
+            return tmprsltfl;
+        } catch (FileNotFoundException fe){
+            fe.printStackTrace();
+            dbgLog.fine("FileNotFound exception occurred");
+            return tmprsltfl;
+        } catch (IOException ie){
+            ie.printStackTrace();
+            dbgLog.fine("IO exception occurred");
+        } finally {
+            if (ris != null){
+                try {
+                    ris.close();
+                } catch (IOException e){
+                   
+                }
+            }
+            
+            if (outbr != null){
+                try {
+                    outbr.close();
+                } catch (IOException e){
+                
+                }
+            }
+        
+        }
+        return tmprsltfl;
+    }
     
 }

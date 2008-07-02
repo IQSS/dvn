@@ -26,41 +26,42 @@
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-
 package edu.harvard.hmdc.vdcnet.web.study;
 
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.DataFileFormatType;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
+import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.util.WebStatisticsSupport;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.io.IOException;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletResponse;
 
 /**
  *
  * @author Ellen Kraffmiller
  */
-public class StudyFileUI implements java.io.Serializable  {
-    
+public class StudyFileUI implements java.io.Serializable {
+
     /** Creates a new instance of StudyFileUI */
     public StudyFileUI() {
     }
-    
+
     public StudyFileUI(StudyFile studyFile, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
-        this.studyFile=studyFile;
-        this.restrictedForUser = studyFile.isFileRestrictedForUser(user,vdc, ipUserGroup);
+        this.studyFile = studyFile;
+        this.restrictedForUser = studyFile.isFileRestrictedForUser(user, vdc, ipUserGroup);
         this.vdcId = vdc != null ? vdc.getId() : null;
     }
-
     /**
      * Holds value of property studyFile.
      */
@@ -81,7 +82,6 @@ public class StudyFileUI implements java.io.Serializable  {
     public void setStudyFile(StudyFile studyFile) {
         this.studyFile = studyFile;
     }
-
     /**
      * Holds value of property restrictedForUser.
      */
@@ -101,9 +101,7 @@ public class StudyFileUI implements java.io.Serializable  {
      */
     public void setRestrictedForUser(boolean restrictedForUser) {
         this.restrictedForUser = restrictedForUser;
-    }
-
-    // variables used in download
+    }    // variables used in download
     private Long vdcId;
 
     public Long getVdcId() {
@@ -122,22 +120,22 @@ public class StudyFileUI implements java.io.Serializable  {
     public void setFormat(String format) {
         this.format = format;
     }
-    
+
     public boolean isImage() {
-        
-         if ( studyFile.getFileType() != null && studyFile.getFileType().length() >= 6 &&
-              studyFile.getFileType().substring(0, 6).equalsIgnoreCase("image/") ){
-            return true; 
-         }  else {
-             return false;
-         }
+
+        if (studyFile.getFileType() != null && studyFile.getFileType().length() >= 6 &&
+                studyFile.getFileType().substring(0, 6).equalsIgnoreCase("image/")) {
+            return true;
+        } else {
+            return false;
+        }
     }
-     
-     public String getUserFriendlyFileType() {
-         return FileUtil.getUserFriendlyFileType(studyFile);          
-     }
-    
-     public String fileDownload_action () {
+
+    public String getUserFriendlyFileType() {
+        return FileUtil.getUserFriendlyFileType(studyFile);
+    }
+
+    public String fileDownload_action() {
         try {
             //get the xff arg used for web stats text report
             WebStatisticsSupport webstatistics = new WebStatisticsSupport();
@@ -145,15 +143,15 @@ public class StudyFileUI implements java.io.Serializable  {
             String xff = webstatistics.getQSArgument("xff", headerValue);
             String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.studyFile.getId() + xff;
             if (!StringUtil.isEmpty(format)) {
-                if ( format.equals(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT) ) {
-                    fileDownloadURL += "&downloadOriginalFormat=true";    
+                if (format.equals(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT)) {
+                    fileDownloadURL += "&downloadOriginalFormat=true";
                 } else {
                     fileDownloadURL += "&format=" + this.format;
                 }
             }
             if (vdcId != null) {
                 fileDownloadURL += "&vdcId=" + this.vdcId;
-            }            
+            }
 
             FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
             HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
@@ -162,7 +160,54 @@ public class StudyFileUI implements java.io.Serializable  {
         } catch (IOException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
         }
-        
+
         return null;
-     }  
+    }
+    
+
+    public List getDataFileFormatTypes(boolean includeOriginalFile, boolean FixedFieldFile) {
+
+        List dataFileFormatTypes = new ArrayList();
+        String tabDelimitedValue = "";
+
+        // first check for fixed field
+        if ("text/x-fixed-field".equals(studyFile.getFileType())) {
+            DataFileFormatType fixedFileType = new DataFileFormatType();
+            fixedFileType.setName("Fixed-Field");
+            fixedFileType.setValue("");
+            dataFileFormatTypes.add(fixedFileType);
+
+            tabDelimitedValue = "D00";
+        }
+
+        // now add tab delimited
+        DataFileFormatType tabDelimitedType = new DataFileFormatType();
+        tabDelimitedType.setName("Tab delimited");
+        tabDelimitedType.setValue(tabDelimitedValue);
+        dataFileFormatTypes.add(tabDelimitedType);
+
+        // and original file
+        if ( !StringUtil.isEmpty( studyFile.getOriginalFileType() ) ) {
+            DataFileFormatType originalFileType = new DataFileFormatType();
+            originalFileType.setName("Original File");
+            originalFileType.setValue(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT);
+            dataFileFormatTypes.add(originalFileType);
+        }    
+        
+        // finally, add types from db
+        StudyServiceLocal studyService = null;
+        try {
+            studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        dataFileFormatTypes = studyService.getDataFileFormatTypes();
+
+
+
+
+
+        return dataFileFormatTypes;
+    }
 }

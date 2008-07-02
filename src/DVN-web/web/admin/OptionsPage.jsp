@@ -92,7 +92,7 @@
                                         <h:outputText id="hyperlink16Text" value="Set Additional Fields to Display in Search Results"/>
                                     </h:outputLink>
                                     <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PromotionalLinkSearchBoxPage.jsp">
-                                        <h:outputText value="Promotional Links and Search Box (add to your personal site)"/>
+                                        <h:outputText value="Add Promotional Links and Search Box to Your Personal Site"/>
                                     </h:outputLink>
                                 </ui:panelGroup>
                                 

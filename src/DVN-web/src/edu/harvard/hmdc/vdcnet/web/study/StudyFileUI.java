@@ -101,7 +101,9 @@ public class StudyFileUI implements java.io.Serializable {
      */
     public void setRestrictedForUser(boolean restrictedForUser) {
         this.restrictedForUser = restrictedForUser;
-    }    // variables used in download
+    }    
+    
+    // variables used in download
     private Long vdcId;
 
     public Long getVdcId() {

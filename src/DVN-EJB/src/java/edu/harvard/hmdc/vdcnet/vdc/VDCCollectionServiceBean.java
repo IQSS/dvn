@@ -33,6 +33,7 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -49,6 +50,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
     
     @PersistenceContext(unitName="VDCNet-ejbPU")
     private EntityManager em;
+    private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.vdc.VDCCollectionServiceBean");
     
     /**
      * Creates a new instance of VDCCollectionServiceBean
@@ -84,6 +86,17 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
     
     public VDCCollection find(Object pk) {
         return (VDCCollection) em.find(VDCCollection.class, pk);
+    }
+    
+    public VDCCollection findByNameWithinDataverse(String name, VDC dataverse){
+     String query="SELECT v from VDCCollection v where v.name = :fieldName and v.owner = :owner";
+       VDCCollection vdcCollection=null;
+       try {
+           vdcCollection=(VDCCollection)em.createQuery(query).setParameter("fieldName",name).setParameter("owner", dataverse).getSingleResult();
+       } catch (javax.persistence.NoResultException e) {
+           logger.info("Collection "+ dataverse.getName()+"/"+ name+ " not found");
+       }
+       return vdcCollection;
     }
 
     public List findAll() {

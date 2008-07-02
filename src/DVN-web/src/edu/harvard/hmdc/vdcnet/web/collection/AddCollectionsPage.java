@@ -69,7 +69,11 @@ import com.sun.jsfcl.data.DefaultSelectItemsArray;
 import com.sun.rave.web.ui.component.AddRemove;
 import com.sun.rave.web.ui.model.MultipleSelectOptionsList;
 import com.sun.rave.web.ui.component.HelpInline;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.component.html.HtmlInputTextarea;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 /**
@@ -1386,6 +1390,29 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         Map m = getRequestMap();
         m.put("statusMessage",msg);
         return "manageCollections";        
+    }
+
+    public void validateName(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        String name = (String) value;
+        if (name != null && name.trim().length() == 0) {
+            FacesMessage message = new FacesMessage("The collection name field must have a value.");
+            context.addMessage(toValidate.getClientId(context), message);
+            context.renderResponse();
+        }
+        boolean nameFound = false;
+        VDCCollection vdcValidateCollection = vdcCollectionService.findByNameWithinDataverse(name, getVDCRequestBean().getCurrentVDC());
+        if (vdcValidateCollection != null) {
+            nameFound = true;
+        }
+        if (nameFound) {
+            ((UIInput) toValidate).setValid(false);
+
+            FacesMessage message = new FacesMessage("This name is already taken.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+
     }
 
     public String cancel(){

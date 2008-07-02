@@ -23,7 +23,7 @@
                     <div class="dvn_margin12">  
                         <ui:panelGroup block="true" style="padding-top: 10px; padding-left: 5px">
                             <h:outputText value="Enter collection name: "/>
-                            <h:inputText binding="#{AddCollectionsPage.textFieldCollectionName}" required="true" requiredMessage="This field is required." id="textFieldCollectionName"/>
+                            <h:inputText binding="#{AddCollectionsPage.textFieldCollectionName}" required="true" requiredMessage="This field is required." id="textFieldCollectionName" validator="#{AddCollectionsPage.validateName}"/>
                             <h:message for="textFieldCollectionName" showSummary="true" showDetail="false" errorClass="errorMessage"/>
                             <h:outputText  id="outputText5" value="Choose a parent: "/>
                             <h:selectOneMenu binding="#{AddCollectionsPage.dropdown3}" id="dropdown3">

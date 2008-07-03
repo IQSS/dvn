@@ -22,7 +22,7 @@
                         <h:outputText styleClass="vdcHelpText" value="Add a dataverse promotional link or dataverse search box to your website by copying the source code and pasting it anywhere on your website to link to your dataverse."/>
                     </ui:panelGroup>
                     
-                    <ui:panelGroup block="true">
+                    <ui:panelGroup block="true" styleClass="dvnPromotionalLinksBlock">
                         <ui:panelGroup block="true" styleClass="dvnPromotionalLinksHeader">
                             <h:outputText value="Text Link"/>
                         </ui:panelGroup>
@@ -46,7 +46,7 @@
                         </ui:panelGroup>
                     </ui:panelGroup>
                     
-                    <ui:panelGroup block="true">
+                    <ui:panelGroup block="true" styleClass="dvnPromotionalLinksBlock">
                         <ui:panelGroup block="true" styleClass="dvnPromotionalLinksHeader">
                             <h:outputText value="Button Link"/>
                         </ui:panelGroup>
@@ -70,7 +70,7 @@
                         </ui:panelGroup>
                     </ui:panelGroup>
                     
-                    <ui:panelGroup block="true">
+                    <ui:panelGroup block="true" styleClass="dvnPromotionalLinksBlock">
                         <ui:panelGroup block="true" styleClass="dvnPromotionalLinksHeader">
                             <h:outputText value="Search Box"/>
                         </ui:panelGroup>

@@ -148,9 +148,6 @@ public class StudyFileUI implements java.io.Serializable {
                     fileDownloadURL += "&format=" + this.format;
                 }
             }
-            if (vdcId != null) {
-                fileDownloadURL += "&vdcId=" + this.vdcId;
-            }
 
             FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
             HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();

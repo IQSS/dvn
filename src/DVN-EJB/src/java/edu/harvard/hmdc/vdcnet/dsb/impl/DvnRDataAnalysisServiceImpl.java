@@ -58,8 +58,8 @@ public class DvnRDataAnalysisServiceImpl{
         
         RSERVE_HOST = System.getProperty("vdc.dsb.host");
         if (RSERVE_HOST == null){
-            RSERVE_HOST= "dsb-2.hmdc.harvard.edu";
-            //RSERVE_HOST= "vdc-build.hmdc.harvard.edu";
+            //RSERVE_HOST= "dsb-2.hmdc.harvard.edu";
+            RSERVE_HOST= "vdc-build.hmdc.harvard.edu";
         }
         
         DSB_HOST_PORT = System.getProperty("vdc.dsb.port");
@@ -1560,7 +1560,7 @@ if (tmpv.length > 0){
             ris = c.openFile(targetFilename);
 
             if (fileSize < 1024*1024*500){
-                int bfsize = fileSize +1;
+                int bfsize = fileSize;
                  byte[] obuf = new byte[bfsize];
                  ris.read(obuf);
                  //while ((obufsize =)) != -1) {

@@ -325,6 +325,10 @@
        <put name="pageTitle"   type="string"   value="DVN - Web Site Statistics"/>
        <put name="content" type="template"     value="/admin/WebStatisticsPage.jsp"/>
    </definition>
+   <definition name="/admin/PromotionalLinkSearchBoxPage" extends="/main-layout">
+       <put name="pageTitle"   type="string"   value="DVN - Dataverse Promotional Link and Search Box"/>
+       <put name="content" type="template"     value="/admin/PromotionalLinkSearchBoxPage.jsp"/>
+   </definition>
    <!-- **************** Network Admin  ****************  -->
     <!-- About page has been removed: Announcements and About are combined to Homepage description.
    <definition name="/networkAdmin/EditNetworkAboutPage" extends="/main-layout">

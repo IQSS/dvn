@@ -167,7 +167,7 @@ public class StudyFileUI implements java.io.Serializable {
     }
     
 
-    public List getDataFileFormatTypes(boolean includeOriginalFile, boolean FixedFieldFile) {
+    public List getDataFileFormatTypes() {
 
         List dataFileFormatTypes = new ArrayList();
         String tabDelimitedValue = "";
@@ -184,7 +184,7 @@ public class StudyFileUI implements java.io.Serializable {
 
         // now add tab delimited
         DataFileFormatType tabDelimitedType = new DataFileFormatType();
-        tabDelimitedType.setName("Tab delimited");
+        tabDelimitedType.setName("Tab Delimited");
         tabDelimitedType.setValue(tabDelimitedValue);
         dataFileFormatTypes.add(tabDelimitedType);
 
@@ -204,7 +204,7 @@ public class StudyFileUI implements java.io.Serializable {
             e.printStackTrace();
         }
 
-        dataFileFormatTypes = studyService.getDataFileFormatTypes();
+        dataFileFormatTypes.addAll(studyService.getDataFileFormatTypes());
 
 
 

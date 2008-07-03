@@ -266,7 +266,7 @@ public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
         }
         
         
-        StudyListing sl = new StudyListing(StudyListing.VDC_SEARCH);
+        StudyListing sl = new StudyListing(StudyListing.SEARCH);
         sl.setStudyIds(studies);
         sl.setSearchTerms(searchTerms);
         sl.setVariableMap(variableMap);

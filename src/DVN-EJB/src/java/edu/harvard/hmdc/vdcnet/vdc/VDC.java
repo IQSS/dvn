@@ -1009,6 +1009,15 @@ public class VDC implements java.io.Serializable  {
         }
         return false;
     }
+       
+    public boolean isSubsetRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
+        if (areFilesRestrictedForUser(user, ipUserGroup)) {
+            return this.subsetRestricted;
+        } else {
+            return false;
+        }
+    }
+           
     /**
      * Holds value of property restricted.
      * If restricted = true, then only allowedGroups and allowedUsers can view

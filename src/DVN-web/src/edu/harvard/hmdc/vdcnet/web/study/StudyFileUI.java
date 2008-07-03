@@ -139,11 +139,8 @@ public class StudyFileUI implements java.io.Serializable {
 
     public String fileDownload_action() {
         try {
-            //get the xff arg used for web stats text report
-            WebStatisticsSupport webstatistics = new WebStatisticsSupport();
-            int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");
-            String xff = webstatistics.getQSArgument("xff", headerValue);
-            String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.studyFile.getId() + xff;
+            String fileDownloadURL = getFileDownloadURL();
+
             if (!StringUtil.isEmpty(format)) {
                 if (format.equals(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT)) {
                     fileDownloadURL += "&downloadOriginalFormat=true";
@@ -164,6 +161,22 @@ public class StudyFileUI implements java.io.Serializable {
         }
 
         return null;
+    }
+    
+    public String getFileDownloadURL() {
+        
+        String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.studyFile.getId();
+        if (vdcId != null) {
+            fileDownloadURL += "&vdcId=" + this.vdcId;
+        }
+  
+        //get the xff arg used for web stats text report
+        WebStatisticsSupport webstatistics = new WebStatisticsSupport();
+        int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");
+        String xff = webstatistics.getQSArgument("xff", headerValue);
+        fileDownloadURL  += xff;
+         
+         return fileDownloadURL;
     }
     
 
@@ -205,10 +218,6 @@ public class StudyFileUI implements java.io.Serializable {
         }
 
         dataFileFormatTypes.addAll(studyService.getDataFileFormatTypes());
-
-
-
-
 
         return dataFileFormatTypes;
     }

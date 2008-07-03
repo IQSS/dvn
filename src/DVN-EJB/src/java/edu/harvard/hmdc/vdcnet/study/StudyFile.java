@@ -347,12 +347,9 @@ public class StudyFile implements Serializable{
     }
 
     public boolean isSubsetRestrictedForUser(VDCUser user, VDC vdc, UserGroup ipUserGroup) {
-        if (this.getFileCategory().getStudy().getOwner().isHarvestingDataverse()) {
-            HarvestingDataverse hd = this.getFileCategory().getStudy().getOwner().getHarvestingDataverse();
-            return hd.isSubsetRestrictedForUser(user, ipUserGroup);
-        } else {
-            return isFileRestrictedForUser(user, vdc, ipUserGroup);
-        }
+        // the restrictions should be checked on the owner of the study, not the currentVDC (needs cleanup)
+        vdc = this.getFileCategory().getStudy().getOwner();        
+        return vdc.isSubsetRestrictedForUser(user, ipUserGroup);
     }    
     
     public boolean isFileRestrictedForUser( VDCUser user, VDC vdc, UserGroup ipUserGroup ) {
@@ -367,13 +364,10 @@ public class StudyFile implements Serializable{
             return true;
         }
 
-        // If file belongs to a study in a HarvestingDataverse, check dataverse permisssions
-        if (this.getFileCategory().getStudy().getOwner().isHarvestingDataverse()) {
-            HarvestingDataverse hd = this.getFileCategory().getStudy().getOwner().getHarvestingDataverse();
-             if (hd.areFilesRestrictedForUser(user, ipUserGroup)) {
-                 return true;
-             }
-        }
+        //  then check dataverse level file permisssions
+         if (vdc.areFilesRestrictedForUser(user, ipUserGroup)) {
+             return true;
+         }
         
         // otherwise check for restriction on file itself
         if ( isRestricted() ) {

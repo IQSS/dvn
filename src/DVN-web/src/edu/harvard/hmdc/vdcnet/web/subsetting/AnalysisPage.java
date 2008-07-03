@@ -32,7 +32,6 @@ package edu.harvard.hmdc.vdcnet.web.subsetting;
  * @author asone
  */
 
-import edu.harvard.hmdc.vdcnet.dsb.AdvancedStatGUIdata;
 import static java.lang.System.*;
 
 import java.util.*;
@@ -824,6 +823,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setMsgDwnldButton(StaticText txt) {
         this.msgDwnldButton = txt;
     }
+    
     /**
      * The object backing the value attribute of
      * ui:StaticText for msgDwnldButton that shows 
@@ -955,11 +955,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             dbgLog.fine("filetype="+flct);
 
             DvnRJobRequest sro = null;
-            // the data file for downloading/statistical analyses must be subset-ready
+             
+            List<File> zipFileList = new ArrayList();
+            
+           // the data file for downloading/statistical analyses must be subset-ready
             // local (relative to the application) file case 
             // note: a typical remote case is: US Census Bureau
-            
-            List<File> zipFileList = new ArrayList();
             
             if (sbstOK){
                 
@@ -988,11 +989,39 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     while ((bufsize = inb.read(bffr))!=-1) {
                         outb.write(bffr, 0, bufsize);
                     }
+                    
+                    inb.close();
                     outb.close();
+                    
+                    // Checks the obtained data file
                     if (tmpfl.exists()){
-                       dbgLog.fine("file length="+tmpfl.length());
-                       dbgLog.fine("tmp file name="+tmpfl.getAbsolutePath());
-                       
+                        Long wholeFileSize = tmpfl.length();
+                        dbgLog.fine("whole file:length="+wholeFileSize);
+                        dbgLog.fine("tmp file:name="+tmpfl.getAbsolutePath());
+                        
+                        if (wholeFileSize <= 0){
+                            // subset file exists but it is empty
+                        
+                            setMsgDwnldButtonTxt("* an data file is empty");
+                            msgDwnldButton.setVisible(true);
+                            dbgLog.warning("exiting dwnldAction() due to a file access error:"+
+                            "a data file is empty"
+                            );
+                            getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                            return "failure";
+                        }
+                        
+                    } else {
+                        // file was not created/downloaded
+                        setMsgDwnldButtonTxt("* a data file was not created");
+                        msgDwnldButton.setVisible(true);
+                        dbgLog.warning("exiting dwnldAction() due to a file access error:"+
+                        "a data file was not created"
+                        );
+                        getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                        return "failure";
                     }
 
                     // source data file: full-path name
@@ -1000,8 +1029,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     // result(subset) data file: full-path name
                     String cutOp2 = tmpsbfl.getAbsolutePath();
-
-
+                    
+                    // check whether a source file is tab-delimited or not
                     boolean fieldcut = true;
                     if ((noRecords != null) && (noRecords >=1)){
                         fieldcut = false;
@@ -1010,7 +1039,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     if (fieldcut){
                 // Step 2.a. Set-up parameters for subsetting: cutting requested fields of data
                         // from a temp (whole) delimited file
-
 
                         Set<Integer> fields = getFieldNumbersForSubsetting();
                          dbgLog.fine("fields="+fields);
@@ -1047,20 +1075,47 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                         // end: non-delimited case
                     }
-
                     
                     // Checks the resulting subset file 
                     if (tmpsbfl.exists()){
-                        dbgLog.fine("subsettFile:Length="+tmpsbfl.length());
-                        mpl.put("subsetFileName", Arrays.asList(cutOp2));
-                        mpl.put("subsetDataFileName",Arrays.asList(tmpsbfl.getName()));
+                        Long subsetFileSize = tmpsbfl.length();
+                        dbgLog.fine("subset file:Length="+subsetFileSize);
+                        dbgLog.fine("subset file:name="+tmpsbfl.getAbsolutePath());
+                        
+                        if (subsetFileSize > 0){
+                            mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                            mpl.put("subsetDataFileName",Arrays.asList(tmpsbfl.getName()));
+                        } else {
+                            // subset file exists but it is empty
+                        
+                            setMsgDwnldButtonTxt("* an subset file is empty");
+                            msgDwnldButton.setVisible(true);
+                            dbgLog.warning("exiting dwnldAction() due to a subsetting error:"+
+                            "a subset file is empty"
+                            );
+                            getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                            return "failure";
+
+                        }
+                    } else {
+                        // subset file was not created
+                        setMsgDwnldButtonTxt("* a subset file was not created");
+                        msgDwnldButton.setVisible(true);
+                        dbgLog.warning("exiting dwnldAction() due to a subsetting error:"+
+                        "a subset file was not created"
+                        );
+                        getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                        return "failure";
+
                     }
                     
-
                 // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
                     
-                    Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
+                    //Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
+                    Map<String, Map<String, String>> vls = getValueTablesForAllRequestedVariables();
                     
                     sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
 
@@ -1076,10 +1131,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     resultInfo = das.execute(sro);
 
-                // Step 5. Checks DSB-exit-status
+                // Step 5. Checks the DSB-exit-status code
                     if (resultInfo.get("RexecError").equals("true")){
-                        setMsgAdvStatButtonTxt("* The Request failed due to an R-runtime error");
-                        msgAdvStatButton.setVisible(true);
+                    
+                        setMsgDwnldButtonTxt("* The Request failed due to an R-runtime error");
+                        msgDwnldButton.setVisible(true);
                         dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
                         getVDCRequestBean().setSelectedTab("tabDwnld");
 
@@ -1088,9 +1144,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
-                    // pass the error message to the resultPage
-                    setMsgEdaButtonTxt("* file URL is malformed");
-                    msgEdaButton.setVisible(true);
+
+                    setMsgDwnldButtonTxt("* file URL is malformed");
+                    msgDwnldButton.setVisible(true);
                     dbgLog.warning("exiting dwnldAction() due to a URL problem ");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
                     
@@ -1101,8 +1157,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // the file exists, but it is not accessible 
                     e.printStackTrace();
                     
-                    setMsgEdaButtonTxt("* an IO problem occurred");
-                    msgEdaButton.setVisible(true);
+                    setMsgDwnldButtonTxt("* an IO problem occurred");
+                    msgDwnldButton.setVisible(true);
                     dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
 
@@ -1112,8 +1168,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                // end of subset-OK case
             } else {
                 // not subsettable data file
-                setMsgEdaButtonTxt("* this data file is not subsettable file");
-                msgEdaButton.setVisible(true);
+                setMsgDwnldButtonTxt("* this data file is not subsettable file");
+                msgDwnldButton.setVisible(true);
                 dbgLog.warning("exiting dwnldAction(): the data file is not subsettable ");
                 getVDCRequestBean().setSelectedTab("tabDwnld");
 
@@ -1128,170 +1184,166 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("studyTitle", studyTitle);
             resultInfo.put("studyNo", studyId.toString());
             resultInfo.put("studyURL", studyURL);
+            
             dbgLog.fine("wbDataFileName="+resultInfo.get("wbDataFileName"));
-            dbgLog.fine("RwrkspFileName="+resultInfo.get("RwrkspFileName"));
+            dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
             
-        try{
-
-            // write a citation file 
-            String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
-            File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
-
-            zipFileList.add(tmpcfl);
-
-
-            DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
+            // writing necessary files
             
-            String fmpcflFullname = tmpcfl.getAbsolutePath();
-            String fmpcflname = tmpcfl.getName();
-            dcfw.write(tmpcfl);
+            // files to be written back as a zip file
+            //           local     remote  local      local     remote
+            // tab       citation, data,   R history, codefiles, wrksp 
+            // others    citation, data,   R history,            wrksp
             
-            // R history file
-            String rhistoryFilePrefix = "rhistoryFile." + resultInfo.get("PID") + ".";
-            File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
+            try{
+
+                // write a citation file 
+                String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
+                File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
+
+                zipFileList.add(tmpcfl);
+
+
+                DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
+
+                String fmpcflFullname = tmpcfl.getAbsolutePath();
+                String fmpcflname = tmpcfl.getName();
+                dcfw.write(tmpcfl);
+
+                // write a R history file
+                String rhistoryFilePrefix = "rhistoryFile." + resultInfo.get("PID") + ".";
+                File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
+
+                zipFileList.add(tmpRhfl);
+
+                writeRhistory(tmpRhfl, resultInfo.get("RCommandHistory"));
+                
+                // tab-delimitd-format-only step
+                if (formatType.equals("D01")){
+                    // write code files
+                    String codeFilePrefix = "codeFile." + resultInfo.get("PID") + ".";
+
+                    File tmpCCsasfl = File.createTempFile(codeFilePrefix, ".sas");
+
+                    zipFileList.add(tmpCCsasfl);
+
+                    File tmpCCspsfl = File.createTempFile(codeFilePrefix, ".sps");
+
+                    zipFileList.add(tmpCCspsfl);
+
+
+                    File tmpCCdofl  = File.createTempFile(codeFilePrefix, ".do");
+
+                    zipFileList.add(tmpCCdofl);
+
+                    StatisticalCodeFileWriter scfw = new StatisticalCodeFileWriter(sro);
+                    scfw.write(tmpCCsasfl, tmpCCspsfl, tmpCCdofl);
+
+                }
+                
+                // The format-converted subset data file
+                // get the path-name of the data-file to be delivered 
+                String wbDataFileName = resultInfo.get("wbDataFileName");
+                dbgLog.fine("wbDataFileName="+wbDataFileName);
+                
+                File wbSubsetDataFile = new File(wbDataFileName);
+                if (wbSubsetDataFile.exists()){
+                    dbgLog.fine("wbSubsetDataFile:length="+wbSubsetDataFile.length());
+
+                    zipFileList.add(wbSubsetDataFile);
+
+                } else {
+                    // the data file was not created
+                    dbgLog.fine("wbSubsetDataFile does not exist");
+
+                    setMsgDwnldButtonTxt("* The requested data file is not available");
+                    msgDwnldButton.setVisible(true);
+                    dbgLog.warning("exiting dwnldAction(): data file was not transferred");
+                    getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                    return "failure";
+                }
+                
+                // R-work space file
+                String wrkspFileName = resultInfo.get("wrkspFileName");
+                dbgLog.fine("wrkspFileName="+wrkspFileName);
+                
+                File RwrkspFileName = new File(wrkspFileName);
+                if (RwrkspFileName.exists()){
+                    dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
+
+                    zipFileList.add(RwrkspFileName);
+
+                } else {
+                    dbgLog.fine("RwrkspFileName does not exist");
+                    //setMsgDwnldButtonTxt("* The workspace file is not available");
+                    //msgDwnldButton.setVisible(true);
+                    dbgLog.warning("dwnldAction(): R workspace file was not transferred");
+                    //getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                    //return "failure";
+                }
+
+                for (File f : zipFileList){
+                    dbgLog.fine("path="+f.getAbsolutePath() +"\tname="+ f.getName());
+                }
+
+
+                // zipping all required files
+                try{
+                    String zipFilePrefix = "zipFile." + resultInfo.get("PID") + ".";
+                    File zipFile  = File.createTempFile(zipFilePrefix, ".zip");
+
+                    res.setContentType("application/zip");
+                    String zfname = zipFile.getName();
+                    res.setHeader("content-disposition", "attachment; filename=" + zfname);
+
+                    zipFiles(res.getOutputStream(), zipFileList);
+
+                    FacesContext.getCurrentInstance().responseComplete();
+
             
-            zipFileList.add(tmpRhfl);
 
-            writeRhistory(tmpRhfl, resultInfo.get("RCommandHistory"));
-            // write back them as a zip file
-            //              local     remote  local             local
-            // tab          citation, data,   command history,  codefiles 
-            // others       citation, data,   commandhistory
-            
-            
-            File wbSubsetDataFile = null;
-            if (formatType.equals("D01")){
-                // write code files
-                String codeFilePrefix = "codeFile." + resultInfo.get("PID") + ".";
-                
-                File tmpCCsasfl = File.createTempFile(codeFilePrefix, ".sas");
-                
-                zipFileList.add(tmpCCsasfl);
+                    // put resultInfo into the session object
+                    // this step is unnecessary now because
+                    //  no transition to the result page
+                    //FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("resultInfo", resultInfo);
 
-                File tmpCCspsfl = File.createTempFile(codeFilePrefix, ".sps");
-                
-                zipFileList.add(tmpCCspsfl);
-                
-                
-                File tmpCCdofl  = File.createTempFile(codeFilePrefix, ".do");
-                
-                zipFileList.add(tmpCCdofl);
+                    dbgLog.fine("***** within dwnldAction(): ends here *****");
+                    
+                    return "download";
 
-                StatisticalCodeFileWriter scfw = new StatisticalCodeFileWriter(sro);
-                scfw.write(tmpCCsasfl, tmpCCspsfl, tmpCCdofl);
+                } catch (IOException e){
+                    // file-access problem, etc.
+                    e.printStackTrace();
+                    dbgLog.fine("download zipping IO exception");
+                    setMsgDwnldButtonTxt("* an IO problem occurred");
+                    msgDwnldButton.setVisible(true);
+                    dbgLog.warning("exiting dwnldAction() due to an IO problem ");
+                    getVDCRequestBean().setSelectedTab("tabDwnld");
 
-            }
-            String wbDataFileName = resultInfo.get("wbDataFileName");
-            dbgLog.fine("wbDataFileName="+wbDataFileName);
-            wbSubsetDataFile = new File(wbDataFileName);
+                    return "failure";
+                }
+                // end of zipping step
 
-            if (wbSubsetDataFile.exists()){
-                dbgLog.fine("wbSubsetDataFile:length="+wbSubsetDataFile.length());
+            } catch (IOException e){
+                e.printStackTrace();
                 
-                zipFileList.add(wbSubsetDataFile);
-                
-            } else {
-                dbgLog.fine("wbSubsetDataFile does not exist");
-
-                setMsgEdaButtonTxt("* The requested data file is not available");
-                msgEdaButton.setVisible(true);
-                dbgLog.warning("exiting dwnldAction(): data file was not transferred");
+                setMsgDwnldButtonTxt("* an IO problem occurred");
+                msgDwnldButton.setVisible(true);
+                dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabDwnld");
 
                 return "failure";
             }
-           
-            String wrkspFileName = resultInfo.get("wrkspFileName");
-            dbgLog.fine("wrkspFileName="+wrkspFileName);
-            File RwrkspFileName = new File(wrkspFileName);
-            if (RwrkspFileName.exists()){
-                dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
-                
-                zipFileList.add(RwrkspFileName);
-                
-            } else {
-                dbgLog.fine("RwrkspFileName does not exist");
-                //setMsgEdaButtonTxt("* The workspace file is not available");
-                //msgEdaButton.setVisible(true);
-                dbgLog.warning("dwnldAction(): R workspace file was not transferred");
-                //getVDCRequestBean().setSelectedTab("tabDwnld");
-
-                //return "failure";
-            }
-
             
-            
-            for (File f : zipFileList){
-                dbgLog.fine("path="+f.getAbsolutePath() +"\tname="+ f.getName());
-            }
-            
-
-
-try{
-    String zipFilePrefix = "zipFile." + resultInfo.get("PID") + ".";
-    File zipFile  = File.createTempFile(zipFilePrefix, ".zip");
-
-    res.setContentType("application/zip");
-    String zfname = zipFile.getName();
-    res.setHeader("content-disposition", "attachment; filename=" + zfname);
-
-    zipFiles(res.getOutputStream(), zipFileList);
-
-
-
-    FacesContext.getCurrentInstance().responseComplete();
-
-    return "download";
-
-} catch (IOException e){
-    // file-access problem, etc.
-    e.printStackTrace();
-    dbgLog.fine("download zipping IO exception");
-    setMsgEdaButtonTxt("* an IO problem occurred");
-    msgEdaButton.setVisible(true);
-    dbgLog.warning("exiting dwnldAction() due to an IO problem ");
-    getVDCRequestBean().setSelectedTab("tabDwnld");
-
-    return "failure";
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-            
-            
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-            
-            
-
-            // put resultInfo into the session object
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
-            "resultInfo", resultInfo);
-            
-            dbgLog.fine("***** within dwnldAction(): ends here *****");
-            
-            return "download";
             
             // end: params are OK-case
         } else {
             // the selection is incomplete
             // show error message;
-            msgDwnldButton.setVisible(true);
             setMsgDwnldButtonTxt("* Select a format");
+            msgDwnldButton.setVisible(true);
             dbgLog.warning("exiting dwnldAction() due to incomplete data ");
             getVDCRequestBean().setSelectedTab("tabDwnld");
             
@@ -2728,18 +2780,15 @@ try{
                     mpl.putAll(getRecodedVarParameters());
                 }
 
-                dbgLog.fine("citation info to be sent:\n" + citation);
-                
-                mpl.put("OfflineCitation", Arrays.asList(citation));
-
-                mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
-                    + req.getServerPort() + req.getContextPath()));
+//                dbgLog.fine("citation info to be sent:\n" + citation);
+//                mpl.put("OfflineCitation", Arrays.asList(citation));
+//                mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
+//                    + req.getServerPort() + req.getContextPath()));
                 
                 mpl.put("studytitle", Arrays.asList(studyTitle));
                 mpl.put("studyno", Arrays.asList(studyId.toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
                 mpl.put("browserType", Arrays.asList(browserType));
-                
                 
                 mpl.put("recodedVarIdSet", getRecodedVarIdSet());
                 mpl.put("recodedVarNameSet",getRecodedVarNameSet());
@@ -2749,6 +2798,9 @@ try{
                 mpl.put("baseVarIdSet",getBaseVarIdSetFromRecodedVarIdSet());
                 mpl.put("baseVarNameSet",getBaseVarNameSetFromRecodedVarIdSet());
                 
+                mpl.put("requestType", Arrays.asList("EDA"));
+
+                
             // -----------------------------------------------------
             // New processing route
             // 
@@ -2757,6 +2809,7 @@ try{
             String fileId = sf.getId().toString();
             String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
             //String fileURL = "http://dvn-alpha.hmdc.harvard.edu" + "/dvn/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+            
             dbgLog.fine("fileURL="+fileURL);
             
             String fileloc = sf.getFileSystemLocation();
@@ -2769,6 +2822,9 @@ try{
             dbgLog.fine("subsettable="+sbstOK);
             dbgLog.fine("filetype="+flct);
 
+            DvnRJobRequest sro = null;
+
+            List<File> zipFileList = new ArrayList();
 
             // the data file for downloading/statistical analyses must be subset-ready
             // local (relative to the application) file case 
@@ -2778,7 +2834,7 @@ try{
                 
                 try {
 
-            // Step 1. temporarily store the whole data set in a temp directory
+                // Step 1. temporarily store the whole data set in a temp directory
 
                     // Create a URL for the data file
                     URL url = new URL(fileURL);
@@ -2788,6 +2844,8 @@ try{
 
                     // temp subset file that stores requested variables 
                     File tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
+                    
+                    zipFileList.add(tmpsbfl);
 
                     // Typical file-copy idiom 
                     // incoming/outgoing streams
@@ -2799,89 +2857,83 @@ try{
                     while ((bufsize = inb.read(bffr))!=-1) {
                         outb.write(bffr, 0, bufsize);
                     }
+                    
+                    inb.close();
                     outb.close();
+                    
+                    // Checks the obtained data file
                     if (tmpfl.exists()){
-                       dbgLog.fine("file length="+tmpfl.length());
-                       dbgLog.fine("tmp file name="+tmpfl.getAbsolutePath());
-                       
-                    }
-                    
-boolean fieldcut = true;
-if ((noRecords != null) && (noRecords >=1)){
-    fieldcut = false;
-}
-                    
-if (fieldcut){
-                    // Step 2. Set-up parameters for subsetting: cutting requested columns of data
-                    // from a temp (whole) file
+                        Long wholeFileSize = tmpfl.length();
+                        dbgLog.fine("whole file:length="+wholeFileSize);
+                        dbgLog.fine("tmp file:name="+tmpfl.getAbsolutePath());
+                        
+                        if (wholeFileSize <= 0){
+                            // subset file exists but it is empty
+                        
+                            setMsgEdaButtonTxt("* an data file is empty");
+                            msgEdaButton.setVisible(true);
+                            dbgLog.warning("exiting edaAction() due to a file access error:"+
+                            "a data file is empty"
+                            );
+                            getVDCRequestBean().setSelectedTab("tabEda");
 
-                    // create var ids for subsetting
-                    // data(int) are taken from DB's studyfile table -- FileOrder column
-                    String [] vids = null;
-                    
-                    int vidslen = getDataVariableForRequest().size();
-                    
-                    List<String> variableList = new ArrayList();
-                    
-                    Set<Integer> cols = new LinkedHashSet<Integer>();
-                    
-                    if (getDataVariableForRequest() != null) {
-                        Iterator iter = getDataVariableForRequest().iterator();
-                        while (iter.hasNext()) {
-                            DataVariable dv = (DataVariable) iter.next();
-                            variableList.add(dv.getId().toString());
-                            cols.add(dv.getFileOrder());
+                            return "failure";
                         }
-                    }
-                    
+                       
+                    } else {
+                        // file was not created/downloaded
+                        setMsgEdaButtonTxt("* a data file was not created");
+                        msgEdaButton.setVisible(true);
+                        dbgLog.warning("exiting edaAction() due to a file access error:"+
+                        "a data file was not created"
+                        );
+                        getVDCRequestBean().setSelectedTab("tabEda");
 
-                     dbgLog.fine("cols="+cols);
+                        return "failure";
+                    }
+
                     // source data file: full-path name
                     String cutOp1 = tmpfl.getAbsolutePath();
 
                     // result(subset) data file: full-path name
                     String cutOp2 = tmpsbfl.getAbsolutePath();
 
-                    // Create an instance of RcutDatasetCutter
-                    FieldCutter fc = new DvnJavaFieldCutter();
+                    // check whether a source file is tab-delimited or not
 
-                    // Executes the subsetting request
-                    fc.subsetFile(cutOp1, cutOp2, cols);
-                    
-                    
-                    // Checks the result file 
-                    if (tmpsbfl.exists()){
-                        dbgLog.fine("subsettFile:Length="+tmpsbfl.length());
-                        mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                    boolean fieldcut = true;
+                    if ((noRecords != null) && (noRecords >=1)){
+                        fieldcut = false;
                     }
-                        mpl.put("requestType", Arrays.asList("EDA"));
+                    
+                    if (fieldcut){
+                // Step 2.a. Set-up parameters for subsetting: cutting requested fields of data
+                        // from a temp (whole) delimited file
 
-} else {
-                    // non-delimited file case
+                        Set<Integer> fields = getFieldNumbersForSubsetting();
+                         dbgLog.fine("fields="+fields);
 
-                    // Step 2. Set-up parameters for subsetting: cutting requested columns of data
-                    // from a temp (whole) file
+                        // Create an instance of DvnJavaFieldCutter
+                        FieldCutter fc = new DvnJavaFieldCutter();
+
+                        // Executes the subsetting request
+                        fc.subsetFile(cutOp1, cutOp2, fields);
+
+                    } else {
+                // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
+                        // from a temp (whole) non-delimited file
 
                     // create var ids for subsetting
                     // data(int) are taken from DB's studyfile table -- FileOrder column
                     String [] vids = null;
                     
                     int vidslen = getDataVariableForRequest().size();
-                    
                     List<String> variableList = new ArrayList();
-                    
                     List<String> variableOrder =getVariableOrderForRequest();
-
                     vids = (String[]) variableOrder.toArray(new String[vidslen]);
-                    
                     String varsq = StringUtils.join(vids, ",");
+                    
+                    // cutter
                     String cutOp0 = "-f"+ varsq ;
-
-                    // source data file: full-path name
-                    String cutOp1 = tmpfl.getAbsolutePath();
-
-                    // result(subset) data file: full-path name
-                    String cutOp2 = tmpsbfl.getAbsolutePath();
 
                     // Create an instance of RcutDatasetCutter
                     DatasetCutter dc = new RcutDatasetCutter(cutOp0, cutOp1, cutOp2);
@@ -2889,23 +2941,55 @@ if (fieldcut){
                     // Executes the subsetting request
                     dc.run();
                     
-                    
-                    // Checks the result file 
-                    if (tmpsbfl.exists()){
-                        dbgLog.fine("subsettFile:Length="+tmpsbfl.length());
-                        mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                    // end: non-delimited case
                     }
-                        mpl.put("requestType", Arrays.asList("EDA"));
-}
+                    
+                    // Checks the resulting subset file 
+                    if (tmpsbfl.exists()){
+                        Long subsetFileSize = tmpsbfl.length();
+                        dbgLog.fine("subsettFile:Length="+subsetFileSize);
+                        dbgLog.fine("tmpsb file name="+tmpsbfl.getAbsolutePath());
+                        
+                        if (subsetFileSize > 0){
+                            mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                            mpl.put("subsetDataFileName",Arrays.asList(tmpsbfl.getName()));
+                        } else {
+                            // subset file exists but it is empty
+                        
+                            setMsgEdaButtonTxt("* an subset file is empty");
+                            msgEdaButton.setVisible(true);
+                            dbgLog.warning("exiting edaAction() due to a subsetting error:"+
+                            "a subset file is empty"
+                            );
+                            getVDCRequestBean().setSelectedTab("tabEda");
 
+                            return "failure";
+
+                        }
+                    } else {
+                        // subset file was not created
+                        setMsgEdaButtonTxt("* a subset file was not created");
+                        msgEdaButton.setVisible(true);
+                        dbgLog.warning("exiting edaAction() due to a subsetting error:"+
+                        "a subset file was not created"
+                        );
+                        getVDCRequestBean().setSelectedTab("tabEda");
+
+                        return "failure";
+
+                    }
+                    
+                // Step 3. Organizes parameters/metadata to be sent to the implemented
+                    // data-analysis-service class
+                    
                     //Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
                     Map<String, Map<String, String>> vls = getValueTablesForAllRequestedVariables();
-                    // Step 3. Organizes parameters/metadata to be sent to the implemented
-                    // data-analysis-service class
-                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
+                    
+                    sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
 
                     dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
-                    // Step 4. Creates an instance of the the implemented 
+                    
+                // Step 4. Creates an instance of the the implemented 
                     // data-analysis-service class 
 
                     DvnRDataAnalysisServiceImpl das = new DvnRDataAnalysisServiceImpl();
@@ -2914,12 +2998,20 @@ if (fieldcut){
                     // capture result info as a Map <String, String>
 
                     resultInfo = das.execute(sro);
+                    
+                // Step 5. Checks the DSB-exit-status code
+                    if (resultInfo.get("RexecError").equals("true")){
+                        setMsgEdaButtonTxt("* The Request failed due to an R-runtime error");
+                        msgEdaButton.setVisible(true);
+                        dbgLog.fine("exiting edaAction() due to an R-runtime error");
+                        getVDCRequestBean().setSelectedTab("tabEda");
+
+                        return "failure";
+                    }
 
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
-                    // pass the error message to the resultPage
-                    // resultInfo.put();
-                    // show error message;
+
                     setMsgEdaButtonTxt("* file URL is malformed");
                     msgEdaButton.setVisible(true);
                     dbgLog.warning("exiting edaAction() due to a URL problem ");
@@ -2928,9 +3020,9 @@ if (fieldcut){
                     return "failure";
                     
                 } catch (IOException e) {
+                    // this may occur if the dataverse is not released
+                    // the file exists, but it is not accessible 
                     e.printStackTrace();
-                    // ditto
-                    // resultInt.put();
                     
                     setMsgEdaButtonTxt("* an IO problem occurred");
                     msgEdaButton.setVisible(true);
@@ -2938,37 +3030,160 @@ if (fieldcut){
                     getVDCRequestBean().setSelectedTab("tabEda");
 
                     return "failure";
-
-                    
                 }
+                
+                // end of the subset-OK case
+            } else {
+                // not subsettable data file
+                setMsgEdaButtonTxt("* this data file is not subsettable file");
+                msgEdaButton.setVisible(true);
+                dbgLog.warning("exiting edaAction(): the data file is not subsettable ");
+                getVDCRequestBean().setSelectedTab("tabEda");
 
-}  // end of the subsettable case
+                return "failure";
 
-            dbgLog.fine("***** within edaAction(): succcessfully ends here *****");
-            
+            } // end:subsetNotOKcase
+
+            // final processing steps for all successful cases
+
             resultInfo.put("offlineCitation", citation);
             resultInfo.put("studyTitle", studyTitle);
             resultInfo.put("studyNo", studyId.toString());
             resultInfo.put("studyURL", studyURL);
 
-            if (resultInfo.get("RexecError").equals("true")){
-                setMsgAdvStatButtonTxt("* The Request failed due to an R-runtime error");
-                msgAdvStatButton.setVisible(true);
-                dbgLog.fine("exiting edaAction() due to an R-runtime error");
+            dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
+
+            // writing necessary files
+            try{
+
+                // write a citation file 
+                String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
+                File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
+
+                zipFileList.add(tmpcfl);
+
+
+                DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
+
+                String fmpcflFullname = tmpcfl.getAbsolutePath();
+                String fmpcflname = tmpcfl.getName();
+                dcfw.write(tmpcfl);
+
+                // R history file
+                String rhistoryFilePrefix = "rhistoryFile." + resultInfo.get("PID") + ".";
+                File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
+
+                zipFileList.add(tmpRhfl);
+
+                writeRhistory(tmpRhfl, resultInfo.get("RCommandHistory"));
+
+                // R-work space file
+                String wrkspFileName = resultInfo.get("wrkspFileName");
+                dbgLog.fine("wrkspFileName="+wrkspFileName);
+                
+                File RwrkspFileName = new File(wrkspFileName);
+                if (RwrkspFileName.exists()){
+                    dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
+
+                    zipFileList.add(RwrkspFileName);
+
+                } else {
+                    dbgLog.fine("RwrkspFileName does not exist");
+                    //setMsgEdaButtonTxt("* The workspace file is not available");
+                    //msgEdaButton.setVisible(true);
+                    dbgLog.warning("dwnldAction(): R workspace file was not transferred");
+                    //getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                    //return "failure";
+                }
+
+                // zip the following files as a replication-pack
+                //
+                // local     local        local      remote
+                // citation, tab-file,   R history,  wrksp
+
+                for (File f : zipFileList){
+                    dbgLog.fine("path="+f.getAbsolutePath() +"\tname="+ f.getName());
+                }
+
+
+                // zipping all required files
+                try{
+                    String zipFilePrefix = "zipFile." + resultInfo.get("PID") + ".";
+                    File zipFile  = File.createTempFile(zipFilePrefix, ".zip");
+                    
+                    //res.setContentType("application/zip");
+                    String zfname = zipFile.getAbsolutePath();
+                    //res.setHeader("content-disposition", "attachment; filename=" + zfname);
+                    
+                    OutputStream zfout = new FileOutputStream(zipFile);
+                    //zipFiles(res.getOutputStream(), zipFileList);
+                    zipFiles(zfout, zipFileList);
+                    
+                    if (zipFile.exists()){
+                        Long zipFileSize = zipFile.length();
+                        dbgLog.fine("zip file:length="+zipFileSize);
+                        dbgLog.fine("zip file:name="+zipFile.getAbsolutePath());
+                        if (zipFileSize > 0){
+                            resultInfo.put("replicationZipFile", zfname);
+                            resultInfo.put("replicationZipFileName", zipFile.getName());
+                        } else {
+                            dbgLog.fine("zip file is empty");
+                        }
+                    } else {
+                        dbgLog.fine("zip file was not saved");
+                    }
+                    
+                    resultInfo.remove("RCommandHistory");
+
+                    // put resultInfo into the session object
+
+                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
+                        "resultInfo", resultInfo);
+                        
+                    dbgLog.fine("***** within edaAction(): succcessfully ends here *****");
+
+                        
+                    return "success";
+                
+                } catch (IOException e){
+                    // file-access problem, etc.
+                    e.printStackTrace();
+                    dbgLog.fine("zipping IO exception");
+                    setMsgEdaButtonTxt("* an IO problem occurred during zipping replication files");
+                    msgEdaButton.setVisible(true);
+                    dbgLog.warning("exiting edaAction() due to an zipping IO problem ");
+                    //getVDCRequestBean().setSelectedTab("tabEda");
+
+                    return "success";
+                }
+                // end of zipping step
+
+            } catch (IOException e){
+                // io errors caught during writing files
+                e.printStackTrace();
+                
+                setMsgEdaButtonTxt("* an IO problem occurred");
+                msgEdaButton.setVisible(true);
+                dbgLog.warning("exiting edaAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabEda");
+
                 return "failure";
             }
 
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
-                "resultInfo", resultInfo);
-            return "success";
+
+
+
+
+
+
             
-// end of CheckParameters: OK case
+            // end of CheckParameters: OK case
         } else {
-            // show error message;
+            // parameters are not complete: show error message;
             setMsgEdaButtonTxt("* Select at least one option");
             msgEdaButton.setVisible(true);
-            dbgLog.warning("exiting edaAction() due to incomplete data ");
+            dbgLog.warning("exiting edaAction(): selection is incomplete");
             getVDCRequestBean().setSelectedTab("tabEda");
 
             return "failure";
@@ -4893,12 +5108,14 @@ if (fieldcut){
                 String serverPrefix = req.getScheme() + "://"
                     + req.getServerName() + ":" + req.getServerPort()
                     + req.getContextPath();
+                    
                 dbgLog.fine("serverPrefix="+serverPrefix);
 //                /
 //                  "optnlst_a" => "A01|A02|A03", "analysis" => "A01 A02",
 //                  "varbl" => "v1.3 v1.10 v1.13 v1.22 v1.40", "charVarNoSet" =>
 //                  "v1.10|v1.719",
 //                 /
+
                 // common parameters
                 Map<String, List<String>> mpl = new HashMap<String, List<String>>();
                 
@@ -4909,6 +5126,7 @@ if (fieldcut){
                 mpl.put("optnlst_a", aoplst);
                 
                 Map<String, List<String>> xtbro = new HashMap<String, List<String>>();
+                
                 // xtbro: modelName
                 xtbro.put("modelName", Arrays.asList(mdlName));
                 
@@ -5113,18 +5331,19 @@ if (fieldcut){
                     }
 
                 }
-                dbgLog.fine("contents(mpl):" + mpl);
+                
+                dbgLog.fine("contents(mpl so far):" + mpl);
 
                 // if there is a user-defined (recoded) variables
                 if (recodedVarSet.size() > 0) {
                     mpl.putAll(getRecodedVarParameters());
                 }
 
-                dbgLog.fine("citation info to be sent:\n" + citation);
-                mpl.put("OfflineCitation", Arrays.asList(citation));
+//                dbgLog.fine("citation info to be sent:\n" + citation);
+//                mpl.put("OfflineCitation", Arrays.asList(citation));
+//                mpl.put("appSERVER", Arrays.asList(req.getServerName() +
+//                    ":"+ req.getServerPort() + req.getContextPath()));
 
-                mpl.put("appSERVER", Arrays.asList(req.getServerName() +
-                    ":"+ req.getServerPort() + req.getContextPath()));
                 mpl.put("studytitle", Arrays.asList(studyTitle));
                 mpl.put("studyno", Arrays.asList(studyId.toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
@@ -5145,17 +5364,22 @@ if (fieldcut){
     
             String fileId = sf.getId().toString();
             String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+            
             dbgLog.fine("fileURL="+fileURL);
             
             String fileloc = sf.getFileSystemLocation();
             String tabflnm = sf.getFileName();
             boolean sbstOK = sf.isSubsettable();
             String flct = sf.getFileType();
+            
             dbgLog.fine("location="+fileloc);
             dbgLog.fine("filename="+tabflnm);
             dbgLog.fine("subsettable="+sbstOK);
             dbgLog.fine("filetype="+flct);
 
+            DvnRJobRequest sro = null;
+
+            List<File> zipFileList = new ArrayList();
 
             // the data file for downloading/statistical analyses must be subset-ready
             // local (relative to the application) file case 
@@ -5165,7 +5389,7 @@ if (fieldcut){
                 
                 try {
 
-            // Step 1. temporarily store the whole data set in a temp directory
+                // Step 1. temporarily store the whole data set in a temp directory
 
                     // Create a URL for the data file
                     URL url = new URL(fileURL);
@@ -5175,6 +5399,8 @@ if (fieldcut){
 
                     // temp subset file that stores requested variables 
                     File tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
+
+                    zipFileList.add(tmpsbfl);
 
                     // Typical file-copy idiom 
                     // incoming/outgoing streams
@@ -5186,85 +5412,83 @@ if (fieldcut){
                     while ((bufsize = inb.read(bffr))!=-1) {
                         outb.write(bffr, 0, bufsize);
                     }
+                    
+                    inb.close();
                     outb.close();
+                    
+                    // Checks the obtained data file
                     if (tmpfl.exists()){
-                       dbgLog.fine("file length="+tmpfl.length());
-                       dbgLog.fine("tmp file name="+tmpfl.getAbsolutePath());
-                       
-                    }
-boolean fieldcut = true;
-if ((noRecords != null) && (noRecords >=1)){
-    fieldcut = false;
-}
-                    
-if (fieldcut){
-                    // Step 2. Set-up parameters for subsetting: cutting requested columns of data
-                    // from a temp (whole) file
+                        Long wholeFileSize = tmpfl.length();
+                        dbgLog.fine("whole file:length="+wholeFileSize);
+                        dbgLog.fine("tmp file:name="+tmpfl.getAbsolutePath());
+                        
+                        if (wholeFileSize <= 0){
+                            // subset file exists but it is empty
+                        
+                            setMsgAdvStatButtonTxt("* an data file is empty");
+                            msgAdvStatButton.setVisible(true);
+                            dbgLog.warning("exiting advStatAction() due to a file access error:"+
+                            "a data file is empty"
+                            );
+                            getVDCRequestBean().setSelectedTab("tabAdvStat");
 
-                    // create var ids for subsetting
-                    // data(int) are taken from DB's studyfile table -- FileOrder column
-                    String [] vids = null;
-                    
-                    int vidslen = getDataVariableForRequest().size();
-                    
-                    List<String> variableList = new ArrayList();
-                    
-                    Set<Integer> cols = new LinkedHashSet<Integer>();
-                    
-                    if (getDataVariableForRequest() != null) {
-                        Iterator iter = getDataVariableForRequest().iterator();
-                        while (iter.hasNext()) {
-                            DataVariable dv = (DataVariable) iter.next();
-                            variableList.add(dv.getId().toString());
-                            cols.add(dv.getFileOrder());
+                            return "failure";
                         }
-                    }
-                    
+                       
+                    } else {
+                        // file was not created/downloaded
+                        setMsgAdvStatButtonTxt("* a data file was not created");
+                        msgAdvStatButton.setVisible(true);
+                        dbgLog.warning("exiting advStatAction() due to a file access error:"+
+                        "a data file was not created"
+                        );
+                        getVDCRequestBean().setSelectedTab("tabAdvStat");
 
-                     dbgLog.fine("cols="+cols);
+                        return "failure";
+                    }                    
+                    
                     // source data file: full-path name
                     String cutOp1 = tmpfl.getAbsolutePath();
 
                     // result(subset) data file: full-path name
                     String cutOp2 = tmpsbfl.getAbsolutePath();
 
-                    // Create an instance of RcutDatasetCutter
-                    FieldCutter fc = new DvnJavaFieldCutter();
+                    // check whether a source file is tab-delimited or not
 
-                    // Executes the subsetting request
-                    fc.subsetFile(cutOp1, cutOp2, cols);
-                    
-                    
-                    // Checks the result file 
-                    if (tmpsbfl.exists()){
-                        dbgLog.fine("subsettFile:Length="+tmpsbfl.length());
-                        mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                    boolean fieldcut = true;
+                    if ((noRecords != null) && (noRecords >=1)){
+                        fieldcut = false;
                     }
+                    
+                    if (fieldcut){
+                // Step 2.a. Set-up parameters for subsetting: cutting requested fields of data
+                        // from a temp (whole) delimited file
 
-} else {
-                    // Step 2. Set-up parameters for subsetting: cutting requested columns of data
-                    // from a temp (whole) file
+                        Set<Integer> fields = getFieldNumbersForSubsetting();
+                         dbgLog.fine("fields="+fields);
+
+                        // Create an instance of DvnJavaFieldCutter
+                        FieldCutter fc = new DvnJavaFieldCutter();
+
+                        // Executes the subsetting request
+                        fc.subsetFile(cutOp1, cutOp2, fields);
+
+                    } else {
+                // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
+                        // from a temp (whole) non-delimited file
 
                     // create var ids for subsetting
                     // data(int) are taken from DB's studyfile table -- FileOrder column
                     String [] vids = null;
                     
                     int vidslen = getDataVariableForRequest().size();
-                    
                     List<String> variableList = new ArrayList();
-                    
-                    List<String> variableOrder = getVariableOrderForRequest();
-                    
+                    List<String> variableOrder =getVariableOrderForRequest();
                     vids = (String[]) variableOrder.toArray(new String[vidslen]);
-                    
                     String varsq = StringUtils.join(vids, ",");
+                    
+                    // cutter
                     String cutOp0 = "-f"+ varsq ;
-
-                    // source data file: full-path name
-                    String cutOp1 = tmpfl.getAbsolutePath();
-
-                    // result(subset) data file: full-path name
-                    String cutOp2 = tmpsbfl.getAbsolutePath();
 
                     // Create an instance of RcutDatasetCutter
                     DatasetCutter dc = new RcutDatasetCutter(cutOp0, cutOp1, cutOp2);
@@ -5272,20 +5496,55 @@ if (fieldcut){
                     // Executes the subsetting request
                     dc.run();
                     
-                    
-                    // Checks the result file 
-                    if (tmpsbfl.exists()){
-                        dbgLog.fine("subsettFile:Length="+tmpsbfl.length());
-                        mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                    // end: non-delimited case
                     }
-}
 
-                    Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
-                    // Step 3. Organizes parameters/metadata to be sent to the implemented
+                    // Checks the resulting subset file 
+                    if (tmpsbfl.exists()){
+                        Long subsetFileSize = tmpsbfl.length();
+                        dbgLog.fine("subsettFile:Length="+subsetFileSize);
+                        dbgLog.fine("tmpsb file name="+tmpsbfl.getAbsolutePath());
+                        
+                        if (subsetFileSize > 0){
+                            mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                            mpl.put("subsetDataFileName",Arrays.asList(tmpsbfl.getName()));
+                        } else {
+                            // subset file exists but it is empty
+                        
+                            setMsgAdvStatButtonTxt("* an subset file is empty");
+                            msgAdvStatButton.setVisible(true);
+                            dbgLog.warning("exiting advStatAction() due to a subsetting error:"+
+                            "a subset file is empty"
+                            );
+                            getVDCRequestBean().setSelectedTab("tabAdvStat");
+
+                            return "failure";
+
+                        }
+                    } else {
+                        // subset file was not created
+                        setMsgAdvStatButtonTxt("* a subset file was not created");
+                        msgAdvStatButton.setVisible(true);
+                        dbgLog.warning("exiting advStatAction() due to a subsetting error:"+
+                        "a subset file was not created"
+                        );
+                        getVDCRequestBean().setSelectedTab("tabAdvStat");
+
+                        return "failure";
+
+                    }
+
+                // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
-                    DvnRJobRequest sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema, modelSpec);
-                    dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
-                    // Step 4. Creates an instance of the the implemented 
+
+                    //Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
+                    Map<String, Map<String, String>> vls = getValueTablesForAllRequestedVariables();
+
+                    sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema, modelSpec);
+                    
+                    dbgLog.fine("Prepared sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+                    
+                // Step 4. Creates an instance of the the implemented 
                     // data-analysis-service class 
 
                     DvnRDataAnalysisServiceImpl das = new DvnRDataAnalysisServiceImpl();
@@ -5294,56 +5553,194 @@ if (fieldcut){
                     // capture result info as a Map <String, String>
 
                     resultInfo = das.execute(sro);
-
+                    
+                    
+                // Step 5. Checks the DSB-exit-status code
+                    if (resultInfo.get("RexecError").equals("true")){
+                        setMsgAdvStatButtonTxt("* The Request failed due to an R-runtime error");
+                        msgAdvStatButton.setVisible(true);
+                        dbgLog.fine("exiting advStatAction() due to an R-runtime error");
+                        getVDCRequestBean().setSelectedTab("tabAdvStat");
+                        
+                        return "failure";
+                    }
+                    
+                    
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                     // pass the error message to the resultPage
                     // resultInfo.put();
-                    setMsgEdaButtonTxt("* file URL is malformed");
-                    msgEdaButton.setVisible(true);
+                    setMsgAdvStatButtonTxt("* file URL is malformed");
+                    msgAdvStatButton.setVisible(true);
                     dbgLog.warning("exiting advStatAction() due to a URL problem ");
                     getVDCRequestBean().setSelectedTab("tabAdvStat");
 
                      return "failure";
+                     
                 } catch (IOException e) {
+                    // this may occur if the dataverse is not released
+                    // the file exists, but it is not accessible 
                     e.printStackTrace();
-                    // ditto
-                    // resultInt.put();
                     
-                    setMsgEdaButtonTxt("* an IO problem occurred");
-                    msgEdaButton.setVisible(true);
+                    setMsgAdvStatButtonTxt("* an IO problem occurred");
+                    msgAdvStatButton.setVisible(true);
                     dbgLog.warning("exiting advStatAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabAdvStat");
 
                     return "failure";
 
                 }
-
-            }
-
-                resultInfo.put("offlineCitation", citation);
-                resultInfo.put("studyTitle", studyTitle);
-                resultInfo.put("studyNo", studyId.toString());
-                resultInfo.put("studyURL", studyURL);
-
-
-            dbgLog.fine("***** advStatAction(): ends here *****");
-            
-            if (resultInfo.get("RexecError").equals("true")){
-                setMsgAdvStatButtonTxt("* The Request failed due to an R-runtime error");
+                // end of the subset-OK case
+            } else {
+                // not subsettable data file
+                setMsgAdvStatButtonTxt("* this data file is not subsettable file");
                 msgAdvStatButton.setVisible(true);
-                dbgLog.fine("exiting advStatAction() due to an R-runtime error");
+                dbgLog.warning("exiting advStatAction(): the data file is not subsettable ");
                 getVDCRequestBean().setSelectedTab("tabAdvStat");
+
+                return "failure";
+
+            } // end:subsetNotOKcase
+
+            // final processing steps for all successful cases
+
+            resultInfo.put("offlineCitation", citation);
+            resultInfo.put("studyTitle", studyTitle);
+            resultInfo.put("studyNo", studyId.toString());
+            resultInfo.put("studyURL", studyURL);
+
+            
+            dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
+
+            // writing necessary files
+            try{
+
+                // write a citation file 
+                String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
+                File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
+
+                zipFileList.add(tmpcfl);
+
+
+                DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
+
+                String fmpcflFullname = tmpcfl.getAbsolutePath();
+                String fmpcflname = tmpcfl.getName();
+                dcfw.write(tmpcfl);
+
+                // R history file
+                String rhistoryFilePrefix = "rhistoryFile." + resultInfo.get("PID") + ".";
+                File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
+
+                zipFileList.add(tmpRhfl);
+
+                writeRhistory(tmpRhfl, resultInfo.get("RCommandHistory"));
+
+                // R-work space file
+                String wrkspFileName = resultInfo.get("wrkspFileName");
+                dbgLog.fine("wrkspFileName="+wrkspFileName);
+                
+                File RwrkspFileName = new File(wrkspFileName);
+                if (RwrkspFileName.exists()){
+                    dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
+
+                    zipFileList.add(RwrkspFileName);
+
+                } else {
+                    dbgLog.fine("RwrkspFileName does not exist");
+                    //setMsgAdvStatButtonTxt("* The workspace file is not available");
+                    //msgAdvStatButton.setVisible(true);
+                    dbgLog.warning("dwnldAction(): R workspace file was not transferred");
+                    //getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                    //return "failure";
+                }
+
+                // zip the following files as a replication-pack
+                //
+                // local     local        local      remote
+                // citation, tab-file,   R history,  wrksp
+
+                for (File f : zipFileList){
+                    dbgLog.fine("path="+f.getAbsolutePath() +"\tname="+ f.getName());
+                }
+
+
+                // zipping all required files
+                try{
+                    String zipFilePrefix = "zipFile." + resultInfo.get("PID") + ".";
+                    File zipFile  = File.createTempFile(zipFilePrefix, ".zip");
+                    
+                    //res.setContentType("application/zip");
+                    String zfname = zipFile.getAbsolutePath();
+                    //res.setHeader("content-disposition", "attachment; filename=" + zfname);
+                    
+                    OutputStream zfout = new FileOutputStream(zipFile);
+                    //zipFiles(res.getOutputStream(), zipFileList);
+                    zipFiles(zfout, zipFileList);
+                    
+                    if (zipFile.exists()){
+                        Long zipFileSize = zipFile.length();
+                        dbgLog.fine("zip file:length="+zipFileSize);
+                        dbgLog.fine("zip file:name="+zipFile.getAbsolutePath());
+                        if (zipFileSize > 0){
+                            resultInfo.put("replicationZipFile", zfname);
+                            resultInfo.put("replicationZipFileName", zipFile.getName());
+                            
+                        } else {
+                            dbgLog.fine("zip file is empty");
+                        }
+                    } else {
+                        dbgLog.fine("zip file was not saved");
+                    }
+                                        
+                    // put resultInfo into the session object
+                    resultInfo.remove("RCommandHistory");
+                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
+                        "resultInfo", resultInfo);
+                        
+                    dbgLog.fine("***** within advStatAction(): succcessfully ends here *****");
+                        
+                    return "success";
+                
+                } catch (IOException e){
+                    // file-access problem, etc.
+                    e.printStackTrace();
+                    dbgLog.fine("zipping IO exception");
+                    setMsgAdvStatButtonTxt("* an IO problem occurred during zipping replication files");
+                    msgAdvStatButton.setVisible(true);
+                    dbgLog.warning("exiting edaAction() due to an zipping IO problem ");
+                    //getVDCRequestBean().setSelectedTab("tabAdvStat");
+
+                    return "success";
+                }
+                // end of zipping step
+
+            } catch (IOException e){
+                // io errors caught during writing files
+                e.printStackTrace();
+                
+                setMsgAdvStatButtonTxt("* an IO problem occurred");
+                msgAdvStatButton.setVisible(true);
+                dbgLog.warning("exiting edaAction() due to an IO problem ");
+                getVDCRequestBean().setSelectedTab("tabAdvStat");
+
                 return "failure";
             }
             
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(
-                "resultInfo", resultInfo);
-            return "success";
+            
+            
+            
+            
+            
+            
+            // end of CheckParameters: OK case
         } else {
-            setMsgAdvStatButtonTxt("* Incomplete selection of variables");
+            // parameters are not complete: show error message;
+
+            setMsgAdvStatButtonTxt("* Selection is incomplete");
             msgAdvStatButton.setVisible(true);
-            dbgLog.fine("exiting advStatAction() due to incomplete data");
+            dbgLog.fine("exiting advStatAction(): selection is incomplete");
             getVDCRequestBean().setSelectedTab("tabAdvStat");
 
             return "failure";
@@ -7417,10 +7814,6 @@ if (fieldcut){
                     //fileSize += i; 
                     out.flush(); 
                 }
-
-                
-                
-                
                 
             } catch (ZipException zpe) {
                 zpe.printStackTrace();

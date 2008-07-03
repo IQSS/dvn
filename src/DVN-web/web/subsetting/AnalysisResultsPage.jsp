@@ -36,12 +36,15 @@
                         <div class="dvAnalysisResults dvn_overflow">
                             This R workspace image contains the data file that you have used and manipulated in the current session. Download and run it on your local R installation for further analyses.
                             <div id="rWrkspButton">
-                                <h:commandButton value="Download Data File" action="#{AnalysisResultsPage.resultURLRworkspace}" id="resultURLRworkspace" />
+                                <ui:staticText id="msgDwnldButton" binding="#{AnalysisResultsPage.msgDwnldButton}" 
+                                    visible="false" escape="false" styleClass="errorMessage"
+                                    text="#{AnalysisResultsPage.msgDwnldButtonTxt}"/>
+                                <h:commandButton value="Download Workspace File" action="#{AnalysisResultsPage.getReplicationPack}" id="resultURLRworkspace" />
                             </div>
                             <div id="rWrkspMessage">
                                 <div id="rZeligInfo">
                                     <span>Statistical Software Info:</span><br />
-                                    <h:outputText value="#{AnalysisResultsPage.rversion}"/>, R package Zelig 3.1-1 - more info: <a href="http://gking.harvard.edu/zelig/">http://gking.harvard.edu/zelig/</a>
+                                    <h:outputText value="#{AnalysisResultsPage.rversion}"/>, R package Zelig <h:outputText value="#{AnalysisResultsPage.zeligVersion}"/> - more information: <a href="http://gking.harvard.edu/zelig/">http://gking.harvard.edu/zelig/</a>
                                 </div>
                             </div>
                         </div>

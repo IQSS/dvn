@@ -17,10 +17,14 @@ import javax.faces.context.*;
 import javax.faces.FacesException;
 import javax.faces.render.ResponseStateManager;
 
+import com.sun.rave.web.ui.component.*;
 
 import static java.lang.System.*;
 import java.util.*;
 import java.util.logging.*;
+import javax.servlet.http.*;
+import java.io.*;
+
 /**
  *
  * @author asone
@@ -29,7 +33,19 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
 
     /** Sets the logger (use the package name) */
     private static Logger dbgLog = Logger.getLogger(AnalysisResultsPage.class.getPackage().getName());
-
+    
+    private static Map<String, String> OPTION_NAME_TABLE = new HashMap<String, String>();
+    
+    static {
+    
+        OPTION_NAME_TABLE.put("download", "Download Subset");
+        OPTION_NAME_TABLE.put("eda",      "Descriptive Statistics");
+        OPTION_NAME_TABLE.put("xtab",     "Advanced Statistical Analysis");
+        OPTION_NAME_TABLE.put("zelig",    "Advanced Statistical Analysis");
+        
+    }
+    
+    
     /**
      * The ID of the requested DataTable instance. Specified as a managed-property in
      * managed-beans.xml <property-class>java.lang.Long</property-class>
@@ -146,7 +162,15 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         this.rexecDate = rexecDate;
     }
     
-    
+    public String zeligVersion;
+
+    public String getZeligVersion() {
+        return zeligVersion;
+    }
+
+    public void setZeligVersion(String zeligVersion) {
+        this.zeligVersion = zeligVersion;
+    }    
     
     // PanelGroups
     
@@ -170,7 +194,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
     public void setResultURLhtml(String resultURLhtml) {
         this.resultURLhtml = resultURLhtml;
     }
-
+/*
     public String resultURLRworkspace;
 
     public String getResultURLRworkspace() {
@@ -180,6 +204,8 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
     public void setResultURLRworkspace(String resultURLRworkspace) {
         this.resultURLRworkspace = resultURLRworkspace;
     }
+*/
+
     
     public HtmlPanelGroup pgDwnld = new HtmlPanelGroup() ;
 
@@ -212,6 +238,92 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
 
     public void setPgRwrksp(HtmlPanelGroup pgRwrksp) {
         this.pgRwrksp = pgRwrksp;
+    }
+    
+    // msgDwnldButton:ui:StaticText@binding
+    private StaticText msgDwnldButton = new StaticText();
+
+    public StaticText getMsgDwnldButton() {
+        return msgDwnldButton;
+    }
+
+    public void setMsgDwnldButton(StaticText txt) {
+        this.msgDwnldButton = txt;
+    }
+    
+    /**
+     * The object backing the value attribute of
+     * ui:StaticText for msgDwnldButton that shows 
+     * error messages for the action of the download
+     * button
+     */
+    private String msgDwnldButtonTxt;
+
+    /**
+     * Getter for property msgDwnldButtonTxt
+     *
+     * @return the error message text
+     */
+    public String getMsgDwnldButtonTxt() {
+        return msgDwnldButtonTxt;
+    }
+    /**
+     * Setter for property msgDwnldButtonTxt
+     *
+     * @param txt   the new error message text
+     */
+    public void setMsgDwnldButtonTxt(String txt) {
+        this.msgDwnldButtonTxt = txt;
+    }
+    
+    public String getReplicationPack(){
+    
+            FacesContext cntxt = FacesContext.getCurrentInstance();
+
+            HttpServletResponse res = (HttpServletResponse) cntxt
+                .getExternalContext().getResponse();
+            HttpServletRequest req = (HttpServletRequest) cntxt
+                .getExternalContext().getRequest();
+
+            String zipFile     = resultInfo.get("replicationZipFile");
+            String zipFileName = resultInfo.get("replicationZipFileName");
+
+            // zipping all required files
+            try{
+                FileInputStream in = new FileInputStream(zipFile);
+                
+                res.setContentType("application/zip");
+
+                res.setHeader("content-disposition", "attachment; filename=" + zipFileName);
+
+                OutputStream out = res.getOutputStream();
+
+                byte[] buf = new byte[1024];
+                int count = 0;
+                while ((count = in.read(buf)) >= 0) {
+                    out.write(buf, 0, count);
+                }
+                in.close();
+                out.close();
+
+                FacesContext.getCurrentInstance().responseComplete();
+
+                dbgLog.fine("***** within dwnldAction(): ends here *****");
+
+                return "success";
+
+            } catch (IOException e){
+                // file-access problem, etc.
+                e.printStackTrace();
+                dbgLog.fine("download zip file IO exception");
+                setMsgDwnldButtonTxt("* an IO problem occurred during downloading");
+                msgDwnldButton.setVisible(true);
+                dbgLog.warning("exiting dwnldAction() due to an IO problem ");
+                getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                return "failure";
+            }
+            
     }
     
     /**
@@ -275,42 +387,44 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
                 + getVDCRequestBean().getCurrentVDCURL());
             }
             
-            resultInfo = (Map<String, String>) sessionMap.get("resultInfo");            
+            resultInfo = (Map<String, String>) sessionMap.get("resultInfo");
             
-            dbgLog.fine("resultInfo:\n"+resultInfo);
+            dbgLog.fine("resultInfo from the subsetting Page:\n"+resultInfo);
             
-            requestResultPID = resultInfo.get("PID");
-            String shortOptionName = resultInfo.get("option");
-            if (shortOptionName.equals("download")){
-                requestedOption  = "Download Subset";
-            } else if (shortOptionName.equals("eda")){
-                requestedOption  = "Descriptive Statistics";
-            } else if (shortOptionName.equals("xtab") ||
-                    (shortOptionName.equals("zelig")) ){
-                requestedOption  = "Advanced Statistical Analysis";
+            if (resultInfo.containsKey("PID")){
+                requestResultPID = resultInfo.get("PID");
+            } else {
+                requestResultPID = "";
             }
-
-            
+            if (resultInfo.containsKey("option")){
+                requestedOption  = OPTION_NAME_TABLE.get( resultInfo.get("option") );
+            }
             
             // citation
-            
+            // dbgLog.fine("**** resultInfo from the subsetting Page ****:\n"+resultInfo);
             offlineCitation = resultInfo.get("offlineCitation");
             studyTitle      = resultInfo.get("studyTitle");
             fileUNF         = resultInfo.get("fileUNF");
             variableList    = resultInfo.get("variableList");
-            
+            zeligVersion    = resultInfo.get("zeligVersion");
             rversion        = resultInfo.get("Rversion");
             rexecDate       = resultInfo.get("RexecDate");
+            
+            dbgLog.fine("zeligVersion="+zeligVersion);
+            dbgLog.fine("rVersion="+rversion);
             
             
             String dsbUrl = "http://"+resultInfo.get("dsbHost");
             if (resultInfo.containsKey("dsbPort") && (!resultInfo.get("dsbPort").equals("")) ){
                dsbUrl += ":"+ resultInfo.get("dsbPort"); 
             }
-            
+            /*
             resultURLRworkspace = dsbUrl+
                               resultInfo.get("dsbContextRootDir") +
                               resultInfo.get("Rdata");
+            */
+                              
+                              
             if (resultInfo.get("option").equals("download")){
                 // show the panelgroup
                 pgDwnld.setRendered(true);
@@ -341,6 +455,11 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
                               resultInfo.get("html");
                 dbgLog.fine("html url="+ resultURLhtml);
             }
+            
+            
+                setMsgDwnldButtonTxt("");
+                msgDwnldButton.setVisible(false);
+            
         } catch (Exception e) {
             log("Page1 Initialization Failure", e);
             throw e instanceof FacesException ? (FacesException) e : new FacesException(e);

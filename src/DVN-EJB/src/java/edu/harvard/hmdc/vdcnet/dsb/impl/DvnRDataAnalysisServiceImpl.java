@@ -45,7 +45,7 @@ public class DvnRDataAnalysisServiceImpl{
     static String regexForRunMethods = "^run(\\w+)Request$" ;
     static String RESULT_DIR_PREFIX = "Zlg_";
     static String R2HTML_CSS_DIR = null;
-    
+    static String RWRKSP_FILE_PREFIX = "tmpRWSfile.";
     static {
     
         DSB_TMP_DIR = System.getProperty("vdc.dsb.temp.dir");
@@ -469,6 +469,7 @@ if (tmpv.length > 0){
             // add the variable list
             result.put("variableList", joinNelementsPerLine(jvnamesRaw, 5,
             null, false, null, null));
+            
             //result.put("variableList",StringUtils.join(jvnamesRaw, ", "));
 
             // calculate the file-leve UNF
@@ -481,6 +482,9 @@ if (tmpv.length > 0){
             }
             String RversionLine = "R.Version()$version.string";
             String Rversion = c.eval(RversionLine).asString();
+            
+            String zeligVersionLine = "packageDescription('Zelig')$Version";
+            String zeligVersion = c.eval(zeligVersionLine).asString();
             
             String RexecDate = c.eval("date()").asString();
             /*
@@ -503,9 +507,10 @@ if (tmpv.length > 0){
             result.put("dsbContextRootDir",  DSB_CTXT_DIR );
             result.put("PID", PID);
             result.put("Rversion", Rversion);
+            result.put("zeligVersion", zeligVersion);
             result.put("RexecDate", RexecDate);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            dbgLog.fine("result:\n"+result);
+            dbgLog.fine("result object (before closing the Rserve):\n"+result);
             
         
 // reflection block: end
@@ -516,13 +521,50 @@ if (tmpv.length > 0){
         } catch (RserveException rse) {
             // RserveException (Rserve is not running)
             rse.printStackTrace();
+            
+            result.put("dsbContextRootDir",  DSB_CTXT_DIR );
+            result.put("PID", PID);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            result.put("option",sro.getRequestType().toLowerCase());
+            
+            result.put("RexecError", "true");
+            return result;
+
         } catch (REXPMismatchException mme) {
+        
             // REXP mismatch exception (what we got differs from what we expected)
             mme.printStackTrace();
+            
+            result.put("dsbContextRootDir",  DSB_CTXT_DIR );
+            result.put("PID", PID);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            result.put("option",sro.getRequestType().toLowerCase());
+
+            result.put("RexecError", "true");
+            return result;
+
         } catch (IOException ie){
             ie.printStackTrace();
+            
+            result.put("dsbContextRootDir",  DSB_CTXT_DIR );
+            result.put("PID", PID);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            result.put("option",sro.getRequestType().toLowerCase());
+
+            result.put("RexecError", "true");
+            return result;
+            
         } catch (Exception ex){
             ex.printStackTrace();
+            
+            result.put("dsbContextRootDir",  DSB_CTXT_DIR );
+            result.put("PID", PID);
+
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            result.put("option",sro.getRequestType().toLowerCase());
+
+            result.put("RexecError", "true");
+            return result;
         }
         
         return result;
@@ -597,12 +639,12 @@ if (tmpv.length > 0){
             historyEntry.add(univarDataDwnld);
             c.voidEval(univarDataDwnld);
             
-            String fileSizeLine = "round(file.info('"+dsnprfx+"')$size)";
-            
-            int wbFileSize = c.eval(fileSizeLine).asInteger();
+            int wbFileSize = getFileSize(c,dsnprfx);
             
             dbgLog.fine("wbFileSize="+wbFileSize);
-            // write back the data file
+            
+            // write back the data file to the dvn
+            
             String dtflprefix = "tmpDataFile";
             
             File dtfl = writeBackFileToDvn(c, dsnprfx, dtflprefix, dwlndParam.get(dwnldOpt), wbFileSize);
@@ -626,22 +668,22 @@ if (tmpv.length > 0){
             dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
 
+            // write back the R workspace to the dvn 
+            
             String wrkspFileName = wrkdir +"/"+ RdataFileName;
             dbgLog.fine("wrkspFileName="+wrkspFileName);
             
-            String wrkspflprefix = "tmpWSfile";
+            int wrkspflSize = getFileSize(c,wrkspFileName);
             
-            String wrkspflSizeLine = "round(file.info('"+wrkspFileName+"')$size)";
+            File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX ,"RData", wrkspflSize);
             
-            int wrkspflSize = c.eval(wrkspflSizeLine).asInteger();
-            
-            File wsfl = writeBackFileToDvn(c, wrkspFileName, wrkspflprefix ,"RData", wrkspflSize);
             if (wsfl != null){
                 sr.put("wrkspFileName", wsfl.getAbsolutePath());
                 dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
             } else {
                 dbgLog.fine("wrkspFileName is null");
             }
+            
             // command history
             String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
             c.assign("ch", new REXPString(ch));
@@ -655,18 +697,13 @@ if (tmpv.length > 0){
             c.voidEval(mvTmpTabFile);
             dbgLog.fine("move temp file="+mvTmpTabFile);
 
-/*
             // move the temp dir to the web-temp root dir
             String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
             dbgLog.fine("web-temp_dir="+mvTmpDir);
             c.voidEval(mvTmpDir);
-*/
+
         } catch (RserveException rse) {
             rse.printStackTrace();
-            sr.put("RexecError", "true");
-            return sr;
-        } catch (REXPMismatchException mme) {
-            mme.printStackTrace();
             sr.put("RexecError", "true");
             return sr;
         }
@@ -785,6 +822,28 @@ if (tmpv.length > 0){
             dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
             
+            
+            
+            
+            
+            // write back the R workspace to the dvn 
+            
+            String wrkspFileName = wrkdir +"/"+ RdataFileName;
+            dbgLog.fine("wrkspFileName="+wrkspFileName);
+            
+            int wrkspflSize = getFileSize(c,wrkspFileName);
+            
+            File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX,"RData", wrkspflSize);
+            
+            if (wsfl != null){
+                sr.put("wrkspFileName", wsfl.getAbsolutePath());
+                dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
+            } else {
+                dbgLog.fine("wrkspFileName is null");
+            }
+            
+            
+            
             // command history
             String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
             c.assign("ch", new REXPString(ch));
@@ -823,6 +882,7 @@ if (tmpv.length > 0){
             sr.put("RexecError", "true");
             return sr;
         }
+        
         sr.put("RexecError", "false");
         return sr;
     }
@@ -957,6 +1017,37 @@ if (tmpv.length > 0){
             dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
             
+            
+            
+            
+            
+            
+            
+            // write back the R workspace to the dvn 
+            
+            String wrkspFileName = wrkdir +"/"+ RdataFileName;
+            dbgLog.fine("wrkspFileName="+wrkspFileName);
+            
+            int wrkspflSize = getFileSize(c,wrkspFileName);
+            
+            File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX ,"RData", wrkspflSize);
+            
+            if (wsfl != null){
+                sr.put("wrkspFileName", wsfl.getAbsolutePath());
+                dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
+            } else {
+                dbgLog.fine("wrkspFileName is null");
+            }
+            
+            
+
+            
+            
+            
+            
+            
+            
+            
             // command history
             String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
             c.assign("ch", new REXPString(ch));
@@ -985,6 +1076,7 @@ if (tmpv.length > 0){
             sr.put("RexecError", "true");
             return sr;
         }
+        
         sr.put("RexecError", "false");
 
         return sr;
@@ -1000,6 +1092,7 @@ if (tmpv.length > 0){
         String optionBanner = "########### zelig option ###########\n";
         dbgLog.fine(optionBanner);
         historyEntry.add(optionBanner);
+        
         Map<String, String> sr = new HashMap<String, String>();
         sr.put("requestdir", requestdir);
         sr.put("option", "zelig");
@@ -1012,6 +1105,7 @@ if (tmpv.length > 0){
         sr.put("model", modelname);
 
         try {
+        
             String univarStatLine = "try(x<-univarStat(dtfrm=x))";
             String ResultHtmlFile = null; //"Rout."+PID+".html" ;
             String RdataFileName  = null;
@@ -1150,8 +1244,6 @@ if (tmpv.length > 0){
             /*
                 o: sum(T), Plot(T), BinOut(F)
                 a: sim (F), sen(always F)
-                
-                
             
                "TMLInitArgs=list(Title='Dataverse Analysis'),"+
                 "HTMLnote= '<em>The following are the results of your
@@ -1179,9 +1271,38 @@ if (tmpv.length > 0){
                    RdataFileName = tmp[tmp.length-1];
                 }
             }
-            
+            /*
+                outDir = '/tmp/VDC/DSB/Zlg_562491' <= wrkdir
+                html   = index1214813662.23516A14671A1080869822.html
+                Rdata  = binfile1214813662.23516A14671A1080869822.Rdata
+            */
+
             sr.put("html", "/"+requestdir+ "/" +ResultHtmlFile);
             sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
+            
+            // write back the R workspace to the dvn 
+            
+            String wrkspFileName = wrkdir +"/"+ RdataFileName;
+            dbgLog.fine("wrkspFileName="+wrkspFileName);
+            
+            int wrkspflSize = getFileSize(c,wrkspFileName);
+            
+            File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX,"RData", wrkspflSize);
+            
+            if (wsfl != null){
+                sr.put("wrkspFileName", wsfl.getAbsolutePath());
+                dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
+            } else {
+                dbgLog.fine("wrkspFileName is null");
+            }
+            
+            
+            
+            
+            
+            
+            
+            
             
             
             // copy the dvn-patch css file to the wkdir
@@ -1477,4 +1598,18 @@ if (tmpv.length > 0){
         return tmprsltfl;
     }
     
+    
+    public int getFileSize(RConnection c, String targetFilename){
+        dbgLog.fine("targetFilename="+targetFilename);
+        int fileSize = 0;
+        try {
+            String fileSizeLine = "round(file.info('"+targetFilename+"')$size)";
+            fileSize = c.eval(fileSizeLine).asInteger();
+        } catch (RserveException rse) {
+            rse.printStackTrace();
+        } catch (REXPMismatchException mme) {
+            mme.printStackTrace();
+        }
+        return fileSize;
+    }
 }

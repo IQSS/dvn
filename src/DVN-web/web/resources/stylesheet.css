@@ -1330,10 +1330,11 @@ span.termsAgreementMessageTitle {display: block; padding-top: 1em; color: #526f7
 /**** Dataverse Promotional Link + Search Box ****/
 .dvnPromotionalLinks .dvnPromotionalLinksInstructions {padding-bottom: 1em;}
 .dvnPromotionalLinks .dvnPromotionalLinksInstructions img {vertical-align: bottom;}
+.dvnPromotionalLinks .dvnPromotionalLinksBlock {width: 100%; overflow: hidden;}
 .dvnPromotionalLinks .dvnPromotionalLinksHeader {width: 100%; padding-left: 1em; font-weight: bold; background-color: #dadee0;}
 .dvnPromotionalLinks .dvnPromotionalSampleBlock {padding: 1em; overflow: hidden;}
 .dvnPromotionalLinks .dvnPromotionalSample {float: left; width: 25.333%;}
 .dvnPromotionalLinks .dvnPromotionalCode {float: left; width: 36.333%;}
-.dvnPromotionalLinks .dvnPromotionalTip {float: left; width: 38.333%;}
+.dvnPromotionalLinks .dvnPromotionalTip {float: left; width: 36.333%;}
 .dvnPromotionalSample span, .dvnPromotionalCode span, .dvnPromotionalTip span {color: silver;}
 .dvnPromotionalSample textarea, .dvnPromotionalCode textarea, .dvnPromotionalTip textarea {width: 90%; border: 1px solid #6e7f90; overflow: scroll;}

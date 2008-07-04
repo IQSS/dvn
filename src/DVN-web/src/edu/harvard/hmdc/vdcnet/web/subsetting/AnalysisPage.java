@@ -7583,7 +7583,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     vl.put(vc.getValue(), vc.getLabel());
                 }
             }
-            vls.put("v"+dv.getId(), vl);
+            if (vl.size() > 0){
+                vls.put("v"+dv.getId(), vl);
+            }
         }
         return vls;
     }
@@ -7602,7 +7604,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     vl.put((String)rw.get(1), (String)rw.get(2));
                 }
             }
-            vls.put(varId.get(i),vl);
+            if (vl.size() > 0){
+                vls.put(varId.get(i),vl);
+            }
         }
         return vls;
     }

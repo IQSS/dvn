@@ -30,6 +30,9 @@ public class DvnRJobRequest {
     public static Map<String, Integer> zeligAnalysisOptions =
         new HashMap<String, Integer>();
 
+    public static Map<String, String> rangeOpMap = new HashMap<String, String>();
+
+
     static {
         xtabOutputOptions.put("xtb_Totals",0);
         xtabOutputOptions.put("xtb_Statistics", 1);
@@ -38,7 +41,16 @@ public class DvnRJobRequest {
         
         zeligOutputOptions.put("Summary",0);
         zeligOutputOptions.put("Plots", 1);
-        zeligOutputOptions.put("BinOutput",2);     
+        zeligOutputOptions.put("BinOutput",2);
+        
+        rangeOpMap.put("1","=");
+        rangeOpMap.put("2","!=");
+        rangeOpMap.put("3",">=");
+        rangeOpMap.put("4","<=");
+        rangeOpMap.put("5",">");
+        rangeOpMap.put("6","<");
+
+        
     }
     // ----------------------------------------------------- Constructors
 
@@ -66,6 +78,13 @@ public class DvnRJobRequest {
         dbgLog.fine("recodeSchema"+recodeSchema);
         dbgLog.fine("model spec="+zeligModelSpec);
         checkVariableNames();
+        
+        if (rs.size() > 0){
+            this.subsetRecodeConditions = generateSubsetRecodeConditions();
+            for (int i= 0; i < getRecodedVarIdSet().length; i++){
+                recodedVarIdToName.put(getRecodedVarIdSet()[i],getRecodedVarNameSet()[i]);
+            }
+        }
     }
 
     
@@ -100,9 +119,8 @@ public class DvnRJobRequest {
     /**  */
     private AdvancedStatGUIdata.Model zeligModelSpec;
     
-    private String subsetPrefix = "x <- subset(x, (  ";
     
-    private String subsetSuffix = "  ))";
+    public Map<String, List<String>> subsetRecodeConditions;
     // ----------------------------------------------------- accessors
 
     /**
@@ -134,7 +152,15 @@ public class DvnRJobRequest {
         return this.zeligModelSpec;
     }
 
-
+    public List<String> getSubsetConditions(){
+        return subsetRecodeConditions.get("subset");
+    }
+    
+    public List<String> getRecodeConditions(){
+        return subsetRecodeConditions.get("recode");
+    }
+    
+    public Map<String, String> recodedVarIdToName = new HashMap<String, String>();
 
     // ----------------------------------------------------- accessors
     // metadata for RServe
@@ -204,6 +230,30 @@ public class DvnRJobRequest {
         return variableTypes;
     }
 
+    public List<String> getVariableTypesAsString() {
+        
+        List<String> rw = new ArrayList<String>();
+        for(int i=0;i < dataVariablesForRequest.size(); i++){
+            DataVariable dv = (DataVariable) dataVariablesForRequest.get(i);
+            if (dv.getVariableFormatType().getId() == 1L) {
+                if (dv.getVariableIntervalType().getId() == null) {
+                    rw.add("2");
+                } else {
+                    if (dv.getVariableIntervalType().getId() == 2L) {
+                        rw.add("2");
+                    } else {
+                        rw.add("1");
+                    }
+                }
+            } else if (dv.getVariableFormatType().getId() == 2L) {
+                rw.add("0");
+            }
+        }
+        return rw;
+    }
+
+
+
     /**
      * Getter for property variable formats
      *
@@ -243,6 +293,7 @@ public class DvnRJobRequest {
     public Map<String, String> safe2rawTable = null;
 
     public boolean hasUnsafedVariableNames = false;
+    
     /**
      * Getter for property raw-to-safe-variable-name list
      * @return    A Map that maps an unsafe variable name to 
@@ -269,13 +320,28 @@ public class DvnRJobRequest {
     public List<String> getFileteredVarNameSet(List<String> varIdSet){
         List<String> varNameSet = new ArrayList<String>();
         for (String vid : varIdSet){
+            dbgLog.fine("name list: vid="+vid);
             String raw = getVarIdToRawVarNameTable().get(vid);
-            if (raw2safeTable.containsKey(raw)){
-                varNameSet.add(raw2safeTable.get(raw));
+            if (raw != null){
+                dbgLog.fine("raw is not null case="+raw);
+                if (raw2safeTable.containsKey(raw)){
+                    dbgLog.fine("raw is unsafe case");
+                    varNameSet.add(raw2safeTable.get(raw));
+                } else {
+                    dbgLog.fine("raw is safe case");
+                    varNameSet.add(raw);
+                }
             } else {
-                varNameSet.add(raw);
+                dbgLog.fine("raw is null-case");
+                if (hasRecodedVariables()){
+                    dbgLog.fine("recode case="+ recodedVarIdToName.get(vid));
+                    varNameSet.add(recodedVarIdToName.get(vid));
+                } else {
+                    dbgLog.fine("raw is null and not recode case");
+                }
             }
         }
+        dbgLog.fine("varNameSet="+varNameSet);
         return varNameSet;
     }
     
@@ -370,6 +436,24 @@ public class DvnRJobRequest {
         } else {
             return getVariableTypes();
         }
+    }
+    
+    public List<String> getUpdatedVariableTypesAsString(){
+        int[] vt;
+        
+        
+        if (hasRecodedVariables()){
+            vt =  ArrayUtils.addAll(getVariableTypes(),getRecodedVarTypeSet());
+        } else {
+            vt = getVariableTypes();
+        }
+        
+        List<String> vts = new ArrayList<String>();
+        
+        for (int i = 0; i< vt.length; i++){
+            vts.add(Integer.toString(vt[i]));
+        }
+        return vts;
     }
     /**
      * Getter for property value-label list
@@ -738,39 +822,454 @@ public class DvnRJobRequest {
         return result;
     }
     
+    public int[] getRecodedVarBaseTypeSet(){
+        List<String> lvt = listParametersForRequest.get("recodedVarBaseTypeSet");
+        String[] svt = (String[])lvt.toArray(new String[lvt.size()]);
+        int[] vt = new int[lvt.size()];
+        for (int i=0; i< svt.length; i++){
+            vt[i] = Integer.parseInt(svt[i]);
+        }
+        return vt;
+    }
+
+
+
+
     /**
      * 
      *
      * @return 
      */
-    public List<String> getSubsettingConditions(){
-        List<String> sb = new ArrayList<String>();
+    public Map<String, List<String>> generateSubsetRecodeConditions (){
+        List<String> subsetConditions = new ArrayList<String>();
+        List<String> recodeConditions = new ArrayList<String>();
+        Map<String, List<String>> conditions = new HashMap<String, List<String>>();
         
-        /*
-          delete by checkboxe case
-          x <- subset(x, (  
-          
-                !(x[["NAThex5FDISC"]] == 7) & 
-                !(x[["NAThex5FDISC"]] == 9) & 
-                !(x[["NAThex5FDISC"]] == 8)
+        List<String> recodedVarIdSet = listParametersForRequest.get("recodedVarIdSet");
+        
+        List<String> recodedVarNameSet = listParametersForRequest.get("recodedVarNameSet");
+        List<String> baseVarIdSet = listParametersForRequest.get("baseVarIdSet");
+        List<String> baseVarNameSet = listParametersForRequest.get("baseVarNameSet");        
+        int[] variableTypes = getRecodedVarBaseTypeSet();
+        
+        
+        
+        for (int j=0; j< recodedVarIdSet.size(); j++) {
+            // get each recode table
+//            List<List<Object>> rdtbl = (List<List<Object>>) recodeSchema.get(recodedVarIdSet.get(j));
+            // recodeSchema is indexed by the raw variable Id (without "v")
+            dbgLog.fine("old varId ="+ recodedVarIdSet.get(j));
+            String rVarId = recodedVarIdSet.get(j).substring(1);
+            dbgLog.fine("new varId to extract the recode table = "+rVarId);
+            List<Object> rdtbl = (List<Object>)recodeSchema.get(rVarId);
+            int rcnt=0;
+            List<String> delpool = new ArrayList<String>();
+            Map<String, List<String>> recpool = new LinkedHashMap<String, List<String>>();
+            
+            for (int i = 0; i < rdtbl.size(); i++){
+            
+                List<Object> rdtbli = (List<Object>) rdtbl.get(i);
                 
-             ))
-             
-             
-            //iteration unit: numeric case
-            "!(x[['" + ${safe_variablename} + "']] == "  + ${value} + ")";
+                
+                String val = (String)rdtbli.get(1);
+                String rawCnd = (String)rdtbli.get(3);
+                
+                
+                dbgLog.fine("condtion= "+rawCnd);
+                if ((Boolean) rdtbli.get(0)) {
+                    // delete line                    
+                    String varUnit = "x[[\"" + baseVarNameSet.get(j) + "\"]]";
 
-            // iteration unit: char case (quotation marks)
-            "!(x[['" + ${safe_variablename} + "']] == '" + ${value} + "')";
+                    String cnd = conditionDecoder(rawCnd, varUnit, "d", variableTypes[j]);
+                    
+                    if ((cnd == null) || (cnd.equals(""))){
+                        dbgLog.fine("this subsetting condition was invalid:["+rawCnd+"] ");
+                    } else {
+                        delpool.add(cnd);
+                    }
+                } else {
+                    // recode line
+                    rcnt++;
+                    String vn = "x[[\"" + recodedVarNameSet.get(j) + "\"]]";
+                    String vo = "x[[\"" + baseVarNameSet.get(j) + "\"]]";
+                    String recode1stLine = null;
+                    //  x[["nv"]]<-NA
+                    
+                    if (rcnt == 1){
+                        recode1stLine = vn  + " <- NA\n";
+                        recodeConditions.add(recode1stLine);
+                    }
+                    if (!recpool.containsKey(val)){
+                        // for the first time
+                        // x[["nv"]][ (x[["NATINT"]] == 4 ) | () | ...  ] <- 34
+                        String cnd = conditionDecoder(rawCnd, vo, "r", variableTypes[j]);
+                        if ((cnd == null) || (cnd.equals(""))){
+                            dbgLog.fine("this recode condition was invalid:["+rawCnd+"] ");
+                        } else {
+                            List<String> tmp = new ArrayList<String>();
+                            tmp.add(cnd);
+                            recpool.put(val, tmp);
+                        }
+                        
+                    } else {
+                        // x[["nv"]][ (x[["NATINT"]] == 4 ) | () | ...  ] <- 34
 
-             
-             
-             
-        */
-        
-        
-        
-        return sb;
+                        String cnd = conditionDecoder(rawCnd, vo, "r", variableTypes[j]);
+                        if ((cnd == null) || (cnd.equals(""))){
+                            dbgLog.fine("this recode condition was invalid:["+rawCnd+"] ");
+                        } else {
+                            (recpool.get(val)).add(cnd);
+                        }
+
+                        
+                    }
+                    dbgLog.fine("recpool within loop\n"+recpool);
+                } // subset or not
+            } // for each line of the recodeTable
+            
+            // subset
+            if (delpool.size() > 0){
+                subsetConditions.add("x <- subset(x, ( " + StringUtils.join(delpool," &" ) + " ))\n\n"  );
+            }
+            
+            // recode
+
+            if (recpool.size() > 0){
+                    dbgLog.fine("recpool outside loop\n"+recpool);
+                    String vn = "x[[\"" + recodedVarNameSet.get(j) + "\"]]";
+            
+            
+                String recode2ndLine = null;
+                for (Map.Entry<String, List<String>> recpooli : recpool.entrySet()){
+                    //dbgLog.fine("recpooli: foreach loop\n"+recpooli);
+                    //dbgLog.fine("recpooli: value foreach loop\n"+recpooli.getValue());
+                    //dbgLog.fine("recpooli: value foreach loop: size\n"+recpooli.getValue().size());
+                    
+                    if (variableTypes[j] > 0){
+                        
+                        recode2ndLine     =  vn + "[" + StringUtils.join(recpooli.getValue()," |" ) + "] <- " + recpooli.getKey() + "\n";
+                    } else {
+                        if (recpooli.getKey().equals("NA")){
+                            recode2ndLine =  vn + "[" + StringUtils.join(recpooli.getValue()," |" ) + "] <- " + recpooli.getKey() + "\n";
+                        } else {
+                            recode2ndLine =  vn + "[" + StringUtils.join(recpooli.getValue()," |" ) + "] <- '"+ recpooli.getKey() + "'\n";
+                        }
+                    }
+                    recodeConditions.add(recode2ndLine);
+                    
+                }
+            
+            }
+            
+       }
+        conditions.put("subset", subsetConditions);
+        conditions.put("recode", recodeConditions);
+        return conditions;
     }
+
+
+
+
+
+    public List<List<String>> getValueRange(String tkn){
+  
+        dbgLog.fine("received token="+tkn);
+        String step0 = StringUtils.strip(tkn);
+        dbgLog.fine("step0="+step0);
+
+        // string into tokens
+        String[] step1raw = step0.split(",");
+        
+        dbgLog.fine("step1raw="+StringUtils.join(step1raw, ","));
+        
+        // remove meaningless commas if exist
+        
+        List<String> step1 = new ArrayList<String>();
+
+        for (String el : step1raw) {
+            if (!el.equals("")) {
+                step1.add(el);
+            }
+        }
+        
+        dbgLog.fine("step1="+StringUtils.join(step1,","));
+
+        
+        List<List<String>> rangeData = new ArrayList<List<String>>();
+        
+        // for each token, check the range operator
+        
+        for (int i=0; i<step1.size(); i++){
+            LinkedList<String> tmp = new LinkedList<String>(
+                Arrays.asList(  String2StringArray(String.valueOf(step1.get(i)))));
+            
+            Map<String, String> token = new HashMap<String, String>();
+            
+            if ((!tmp.get(i).equals("[")) && (!tmp.get(i).equals("("))){
+                // no LHS range operator
+                // assume [
+                token.put("start","3");
+            } else if (tmp.get(0).equals( "[")) {
+                token.put("start", "3");
+                tmp.removeFirst();
+            } else if (tmp.get(0).equals("(")) {
+                token.put("start", "5");
+                tmp.removeFirst();
+            }
+            
+            if ((!tmp.getLast().equals("]")) && (!tmp.getLast().equals(")"))){
+                // no RHS range operator
+                // assume ]
+                token.put("end", "4");
+            } else if (tmp.getLast().equals("]")){
+                tmp.removeLast();
+                token.put("end", "4");
+            } else if (tmp.getLast().equals(")")){
+                tmp.removeLast();
+                token.put("end", "6"); 
+            }
+            
+          // after these steps, the string does not have range operators;
+          // i.e., '-9--3', '--9', '-9-','-9', '-1-1', '1', '3-4', '6-'
+
+            if ((tmp.get(0).equals("!")) && (tmp.get(1).equals("=")) ){
+                // != negation string is found
+                token.put("start", "2");
+                token.put("end", ""); 
+                token.put("v1", StringUtils.join( tmp.subList(2, tmp.size()),""));
+                token.put("v2", "");
+                dbgLog.fine( "value="+ StringUtils.join( tmp.subList(2, tmp.size()),"," ));
+                
+            } else if ((tmp.get(0).equals("-")) && (tmp.get(1).equals("-"))){
+                // type 2: --9
+                token.put("v1", "");
+                tmp.removeFirst();
+                token.put("v2", StringUtils.join(tmp, "")); 
+            } else if ((tmp.get(0).equals("-")) && (tmp.getLast().equals("-"))) {
+                // type 3: -9-
+                token.put("v2", "");
+                tmp.removeLast();
+                token.put("v1", StringUtils.join(tmp, ""));
+            } else if ((!tmp.get(0).equals("-")) && (tmp.getLast().equals("-"))) {
+                // type 8: 6-
+                token.put("v2", "");
+                tmp.removeLast();
+                token.put("v1", StringUtils.join(tmp,""));
+            } else {
+                int count=0;
+                List<Integer> index= new ArrayList<Integer>();
+                for (int j=0; j< tmp.size(); j++){
+                    if (tmp.get(j).equals("-")){
+                        count++;
+                        index.add(j);
+                    }
+                }
+
+                if (count >=2){
+                    // range type
+                    // divide the second hyphen
+                    // types 1 and 5: -9--3, -1-1
+                    // token.put("v1", StringUtils.join(tmp[0..($index[1]-1)],"" ));
+                    token.put("v2", StringUtils.join(tmp.subList((index.get(1)+1), tmp.size()), ""));
+
+                } else if (count == 1){
+                    if (tmp.get(0).equals("-")){
+                        // point negative type
+                        // type 4: -9 or -inf,9
+                        // do nothing
+                        if ( (token.get("start").equals("5")) &&
+                            ( (token.get("end").equals("6")) || (token.get("end").equals("4")) ) ) {
+                            token.put("v1", "");
+                            tmp.removeFirst();
+                            token.put("v2", StringUtils.join(tmp,""));
+                        } else {
+                            token.put("v1", StringUtils.join(tmp,""));
+                            token.put("v2", StringUtils.join(tmp,""));
+                        }
+                    } else {
+                        // type 7: 3-4
+                        // both positive value and range type
+                        String[] vset = (StringUtils.join(tmp,"")).split("-");
+                        token.put("v1", vset[0]);
+                        token.put("v2", vset[1]);
+                    }
+
+                } else {
+                    // type 6: 1
+                    token.put("v1", StringUtils.join(tmp,""));
+                    token.put("v2", StringUtils.join(tmp,""));
+                }
+            }
+            
+            dbgLog.fine(i + "-th result=" + token.get("start")+ "|" +
+                token.get("v1")+"|" +token.get("end")+"|" +token.get("v2"));
+            
+            List<String> rangeSet = new ArrayList<String>();
+            rangeSet.add(token.get("start"));
+            rangeSet.add(token.get("v1"));
+            rangeSet.add(token.get("end"));
+            rangeSet.add(token.get("v2"));
+            rangeData.add(rangeSet);
+           
+        }
+
+        dbgLog.fine("rangeData:\n"+rangeData);
+        return rangeData;
+    }
+
+    public String[] String2StringArray(String token) {
+        char[] temp = token.toCharArray();
+        String[] tmp = new String[temp.length];
+        for (int i=0; i<temp.length; i++) {
+           tmp[i] = String.valueOf(temp[i]);
+        }
+        return tmp;
+    }
+
+    public String conditionDecoder(String cndfrag, String vn, String type, int vt) {
+        String condition = null;
+        String parsedToken = null;
+        
+            List<List<String>> range = getValueRange(cndfrag);
+            
+            dbgLog.fine("cndfrag:\n"+ range);
+            
+            condition = getConditionString(range, vn, type, vt);
+            dbgLog.fine("returned condition:\n"+ parsedToken);
+            
+        
+        return condition;
+    }
+
+    
+    public String getConditionString( List<List<String>> rangeSet, 
+        String variableName, String type, int vtype){
+
+        if ((vtype > 2)|| (vtype < 0)){
+            dbgLog.fine("variable type undefined");
+            vtype=1;
+        }
+        
+        String sep =" | ";
+        if (type.equals("d")){;
+            sep = " & ";
+        }
+        
+        dbgLog.fine("range received:\n" + rangeSet);
+        dbgLog.fine("variable type =" + vtype);
+        
+        StringBuilder finalCondition = new StringBuilder();
+        List<Integer> removalList = new ArrayList<Integer>();
+        
+        for (int i=0; i< rangeSet.size(); i++){
+
+            dbgLog.fine( i + "-th set=\n" + rangeSet.get(i));
+            dbgLog.fine("range: 1 and 3:" + rangeSet.get(i).get(1) + "\t" + rangeSet.get(i).get(3));
+            
+            StringBuilder condition= new StringBuilder();
+
+            if (   (rangeSet.get(i).get(1).equals(rangeSet.get(i).get(3))) 
+                && (rangeSet.get(i).get(0).equals("3"))
+                && (rangeSet.get(i).get(2).equals("4")) ) {
+
+                // point type
+                if (vtype > 0){
+                    condition.append("(" +  variableName + " == " +  rangeSet.get(i).get(1) + ")");
+                } else {
+                    condition.append("(" +  variableName + " == '" +  rangeSet.get(i).get(1) + "')") ;
+                }
+                
+                if (type.equals("d")){
+                    condition.insert(0, " !");
+                } else {
+                    condition.insert(0, " ");
+                }
+                dbgLog.fine(i + "-th condition point:" + condition.toString());
+
+            } else if (rangeSet.get(i).get(0).equals("2")) {
+                // point negation
+                if (vtype > 0){
+                    condition.append( "("  +  variableName + " != " + rangeSet.get(i).get(1) + ")" );
+                } else {
+                    condition.append( "("  +  variableName + " != '"+ rangeSet.get(i).get(1) + "')" );
+                }
+
+                if (type.equals("d")){
+                    condition.insert(0, " !");
+                } else {
+                    condition.insert(0, " ") ;
+                }
+
+                dbgLog.fine(i + "-th condition point(negation):" + condition.toString());
+
+            } else {
+                if (vtype > 0){
+                    // range type
+                    StringBuilder conditionL = new StringBuilder(); 
+                    StringBuilder conditionU = new StringBuilder();
+
+                    if ((rangeSet.get(i).get(0).equals("5")) && (rangeSet.get(i).get(1).equals(""))){
+                        conditionL.append("");
+
+                    } else {
+                        conditionL.append( "("  +  variableName + " " + 
+                            rangeOpMap.get(rangeSet.get(i).get(0)) + "" +
+                            rangeSet.get(i).get(1) + ")");
+                    }
+
+                    dbgLog.fine(i + "-th condition(Lower/upper bounds)=" + conditionL.toString());
+
+                    if ((rangeSet.get(i).get(2).equals("6")) && (rangeSet.get(i).get(3).equals(""))){
+
+                        conditionU.append("");
+
+                    } else {
+                        String andop = null;
+
+                        if (!(conditionL.toString()).equals("")){
+                            andop =  " & " ;
+                        } else {
+                             andop = "";
+                        }
+
+                        conditionU.append( andop +  "(" + variableName  
+                            + " " +  rangeOpMap.get(rangeSet.get(i).get(2)) 
+                            + " " +  rangeSet.get(i).get(3) + ")");
+                    }
+
+                    dbgLog.fine("conditionU="+conditionU.toString());
+
+                    condition.append(conditionL.toString() + " " + conditionU.toString());
+
+                    if (type.equals("d")){
+                        condition.insert(0, " !");
+                    } else {
+                        condition.insert(0, " ") ;
+                    }
+                } else {
+                    removalList.add(i);
+                }// end: type check
+            } // end: range type-loop
+            
+            
+            dbgLog.fine(i + "-th " + condition.toString());
+
+            if (i < (rangeSet.size() -1) ) {
+                finalCondition.append(condition.toString() + sep) ;
+            } else {
+                finalCondition.append(condition.toString());
+            }
+        }
+        
+        
+        dbgLog.fine("final condition:\n" + finalCondition.toString());
+        
+        return finalCondition.toString();
+        
+        
+        
+        
+    }
+
 
 }

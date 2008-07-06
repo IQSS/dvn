@@ -913,10 +913,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             mpl.put("dtdwnld", Arrays.asList(formatType));
 
             // if there is a user-defined (recoded) variables
+            /*
             if (recodedVarSet.size() > 0) {
                 mpl.putAll(getRecodedVarParameters());
             }
-
+            */
+            
             dbgLog.fine("citation info to be sent:\n" + citation);
 
             mpl.put("studytitle", Arrays.asList(studyTitle));
@@ -928,6 +930,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             mpl.put("recodedVarNameSet",getRecodedVarNameSet());
             mpl.put("recodedVarLabelSet", getRecodedVarLabelSet());
             mpl.put("recodedVarTypeSet", getRecodedVariableType());
+            mpl.put("recodedVarBaseTypeSet", getBaseVariableTypeForRecodedVariable());
+
 
             mpl.put("baseVarIdSet",getBaseVarIdSetFromRecodedVarIdSet());
             mpl.put("baseVarNameSet",getBaseVarNameSetFromRecodedVarIdSet());
@@ -2776,10 +2780,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 mpl.put("optnlst_a", Arrays.asList("A01|A02|A03"));
 
                 // if there is a user-defined (recoded) variables
+                /*
                 if (recodedVarSet.size() > 0) {
                     mpl.putAll(getRecodedVarParameters());
                 }
-
+                */
 //                dbgLog.fine("citation info to be sent:\n" + citation);
 //                mpl.put("OfflineCitation", Arrays.asList(citation));
 //                mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
@@ -2794,6 +2799,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 mpl.put("recodedVarNameSet",getRecodedVarNameSet());
                 mpl.put("recodedVarLabelSet", getRecodedVarLabelSet());
                 mpl.put("recodedVarTypeSet", getRecodedVariableType());
+                mpl.put("recodedVarBaseTypeSet", getBaseVariableTypeForRecodedVariable());
                 
                 mpl.put("baseVarIdSet",getBaseVarIdSetFromRecodedVarIdSet());
                 mpl.put("baseVarNameSet",getBaseVarNameSetFromRecodedVarIdSet());
@@ -3811,6 +3817,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
     // </editor-fold>
     // <editor-fold desc="Adv Stat  movement">    
+    
+    
     // get variable type (int) from a given row of the dataTable
     public int getVariableType(DataVariable dv) {
         Integer varType;
@@ -3824,6 +3832,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         } else {
             varType = Integer.valueOf("0");
         }
+        dbgLog.fine("within: getVariableType: varType= "+varType);
         return varType.intValue();
     }
 
@@ -5335,10 +5344,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.fine("contents(mpl so far):" + mpl);
 
                 // if there is a user-defined (recoded) variables
+                /*
                 if (recodedVarSet.size() > 0) {
                     mpl.putAll(getRecodedVarParameters());
                 }
-
+                */
 //                dbgLog.fine("citation info to be sent:\n" + citation);
 //                mpl.put("OfflineCitation", Arrays.asList(citation));
 //                mpl.put("appSERVER", Arrays.asList(req.getServerName() +
@@ -5353,6 +5363,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 mpl.put("recodedVarNameSet",getRecodedVarNameSet());
                 mpl.put("recodedVarLabelSet", getRecodedVarLabelSet());
                 mpl.put("recodedVarTypeSet", getRecodedVariableType());
+                mpl.put("recodedVarBaseTypeSet", getBaseVariableTypeForRecodedVariable());
                 
                 mpl.put("baseVarIdSet",getBaseVarIdSetFromRecodedVarIdSet());
                 mpl.put("baseVarNameSet",getBaseVarNameSetFromRecodedVarIdSet());
@@ -7592,7 +7603,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     public Map<String, Map<String, String>> getValueTablesOfRecodedVariables(){
         Map<String, Map<String, String>> vls = new LinkedHashMap<String, Map<String, String>>();
-        List<String> varId = getRecodedVarIdSet();
+        List<String> varId = getRawRecodedVarIdSet();
         for (int i=0; i< varId.size();i++){
             Map<String, String> vl = new HashMap<String, String>();
             // get the outer-list by Id
@@ -7605,7 +7616,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 }
             }
             if (vl.size() > 0){
-                vls.put(varId.get(i),vl);
+                vls.put("v"+varId.get(i),vl);
             }
         }
         return vls;
@@ -7619,6 +7630,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
     
     public List<String> getRecodedVarIdSet() {
+        List<String> vi = new ArrayList<String>();
+        for (int i = 0; i < recodedVarSet.size(); i++) {
+            List<Object> rvs = (List<Object>) recodedVarSet.get(i);
+            vi.add("v" + (String) rvs.get(2));
+        }
+        return vi;
+    }    
+    
+    public List<String> getRawRecodedVarIdSet() {
         List<String> vi = new ArrayList<String>();
         for (int i = 0; i < recodedVarSet.size(); i++) {
             List<Object> rvs = (List<Object>) recodedVarSet.get(i);
@@ -7640,7 +7660,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         List<String> vi = new ArrayList<String>();
         for (int i = 0; i < recodedVarSet.size(); i++) {
             List<Object> rvs = (List<Object>) recodedVarSet.get(i);
-            vi.add( derivedVarToBaseVar.get( (String) rvs.get(2) ) );
+            vi.add("v" +  derivedVarToBaseVar.get( (String) rvs.get(2) ) );
         }
         return vi;
     }
@@ -7671,10 +7691,29 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         List<String> vt = new ArrayList<String>();
         for (int i = 0; i < recodedVarSet.size(); i++) {
             List<Object> rvs = (List<Object>) recodedVarSet.get(i);
-            vt.add( Integer.toString(getVariableType(  getVariableById((String) rvs.get(2)) ) ) );
+            dbgLog.fine("rvs="+rvs);
+            String newVarId = (String) rvs.get(2);
+            int rawType = getVariableType(  getVariableById( derivedVarToBaseVar.get(newVarId) ) ) ;
+            if (rawType == 2){
+                rawType = 1;
+            }
+            vt.add( Integer.toString(rawType));
         }
         return vt;
     }
+    
+    
+    // get variable type (int) from a given row of the dataTable
+    public List<String> getBaseVariableTypeForRecodedVariable() {
+        List<String> vt = new ArrayList<String>();
+        for (int i = 0; i < recodedVarSet.size(); i++) {
+            List<Object> rvs = (List<Object>) recodedVarSet.get(i);
+            vt.add( Integer.toString(getVariableType( 
+            getVariableById( derivedVarToBaseVar.get((String) rvs.get(2)) ) ) ) );
+        }
+        return vt;
+    }
+
     
     
     public String getVariableHeaderForSubset() {

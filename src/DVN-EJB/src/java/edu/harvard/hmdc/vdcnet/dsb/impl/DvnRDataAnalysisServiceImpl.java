@@ -178,7 +178,8 @@ public class DvnRDataAnalysisServiceImpl{
             */
             // java side
             // int [] jvartyp  = {1,1,1};// = mp.get("vartyp").toArray()
-            int [] jvartyp  = sro.getVariableTypes();
+            // int [] jvartyp  = sro.getVariableTypes();
+/*
             StringBuilder sb = new StringBuilder();
             for (int i = 0 ; i< jvartyp.length; i++){
                 if (i == (jvartyp.length -1)){
@@ -190,7 +191,11 @@ public class DvnRDataAnalysisServiceImpl{
             
             // R side
             historyEntry.add("vartyp<-c(" + sb.toString()+")");
-            c.assign("vartyp", new REXPInteger(jvartyp));
+*/
+            historyEntry.add("vartyp<-c(" + StringUtils.join(sro.getVariableTypesAsString(),",") + ")");
+            //c.assign("vartyp", new REXPInteger(jvartyp));
+            dbgLog.fine("raw variable type="+sro.getVariableTypes());
+            c.assign("vartyp", new REXPInteger(sro.getVariableTypes()));
             String [] tmpt = c.eval("vartyp").asStrings();
             dbgLog.fine("vartyp length="+ tmpt.length + "\t " +
                 StringUtils.join(tmpt,","));
@@ -310,13 +315,54 @@ public class DvnRDataAnalysisServiceImpl{
             historyEntry.add(asIsline);
             c.voidEval(asIsline);
             
+if (sro.hasRecodedVariables()){
+
+            // subsetting 
+            
+            List<String> scLst = sro.getSubsetConditions();
+            if (scLst != null){
+            for (String sci : scLst){
+                dbgLog.fine("sci:"+ sci);
+                historyEntry.add(sci);
+                c.voidEval(sci);
+            }
+            }
+            // recoding
+            
+            List<String> rcLst = sro.getRecodeConditions();
+            if (rcLst != null){
+            for (String rci : rcLst){
+                dbgLog.fine("rci:"+ rci);
+
+                historyEntry.add(rci);
+                c.voidEval(rci);
+            }
+            }
+}
+            // subsetting (mutating the data.frame strips 
+            // non-default attributes 
+            // variable type must be re-attached
+
+            String varTypeNew = "vartyp<-c(" + StringUtils.join( sro.getUpdatedVariableTypesAsString(),",")+")";
+            historyEntry.add(varTypeNew);
+            // c.voidEval(varTypeNew);
+            dbgLog.fine("updated var Type ="+ sro.getUpdatedVariableTypes());
+            c.assign("vartyp", new REXPInteger(sro.getUpdatedVariableTypes()));
+            
+            String reattachVarTypeLine = "attr(x, 'var.type') <- vartyp";
+            historyEntry.add(reattachVarTypeLine);
+            c.voidEval(reattachVarTypeLine);
+
             // variable Id
             /* 
                 attr(x, "var.nmbr")<-c("v198057","v198059","v198060")
             */
             
             // String[] jvarnmbr = {"v198057","v198059","v198060"};
-            String[] jvarnmbr = sro.getVariableIds();
+            //String[] jvarnmbr = sro.getVariableIds();
+            // after recoding 
+            String[] jvarnmbr = sro.getUpdatedVariableIds();
+
             String viQList = DvnDSButil.joinNelementsPerLine(jvarnmbr,true);
             historyEntry.add("varnmbr <-c("+viQList +")");
             c.assign("varnmbr",new REXPString(jvarnmbr));
@@ -336,7 +382,10 @@ public class DvnRDataAnalysisServiceImpl{
             */
             
             // String[] jvarlabels = {"race","age","vote"};
-            String[] jvarlabels = sro.getVariableLabels();
+            //String[] jvarlabels = sro.getVariableLabels();
+            // after recoding
+            String[] jvarlabels = sro.getUpdatedVariableLabels();
+            
             String vlQList = DvnDSButil.joinNelementsPerLine(jvarlabels,true);
 
             historyEntry.add("varlabels <-c("+ vlQList +")");
@@ -366,13 +415,19 @@ public class DvnRDataAnalysisServiceImpl{
             String vtFirstLine = "VALTABLE<-list()";
             historyEntry.add(vtFirstLine);
             c.voidEval(vtFirstLine);
+            // vltbl includes both base and recoded cases when it was generated
             Map<String, Map<String, String>> vltbl = sro.getValueTable();
             Map<String, String> rnm2vi = sro.getRawVarNameToVarIdTable();
-            for (int j=0;j<jvnamesRaw.length;j++){
+            String[] updatedVariableIds = sro.getUpdatedVariableIds();
+            //for (int j=0;j<jvnamesRaw.length;j++){
+            for (int j=0;j<updatedVariableIds.length;j++){
                 // if this variable has its value-label table,
                 // pass its key and value arrays to the Rserve
                 // and finalize a value-table at the Rserve
-                String varId = rnm2vi.get(jvnamesRaw[j]);
+                
+                //String varId = rnm2vi.get(jvnamesRaw[j]);
+                String varId = updatedVariableIds[j];
+                
                 if (vltbl.containsKey(varId)){
                     
                     Map<String, String> tmp = (HashMap<String, String>)vltbl.get(varId);
@@ -496,10 +551,13 @@ if (tmpv.length > 0){
             }
             */
             if (sro.hasRecodedVariables()){
-                // TODO
-                result.put("subsettingCriteria", "");
+                if (sro.getSubsetConditions() != null){
+                    result.put("subsettingCriteria", StringUtils.join(sro.getSubsetConditions(),"\n"));
+                }
             } else {
-                result.put("subsettingCriteria", "");
+                if (sro.getRecodeConditions() != null){
+                    result.put("subsettingCriteria", StringUtils.join(sro.getRecodeConditions(),"\n"));
+                }
             }
             result.put("fileUNF",fileUNF);
             result.put("dsbHost", RSERVE_HOST);

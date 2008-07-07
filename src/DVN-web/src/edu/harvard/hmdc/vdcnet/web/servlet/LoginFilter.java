@@ -271,7 +271,7 @@ public class LoginFilter implements Filter {
             user = loginBean.getUser();
         }
         VDC currentVDC = vdcService.getVDCFromRequest(request);
-        if (currentVDC != null && isVdcRestricted(pageDef, request)) {
+        if (currentVDC != null && !isTermsOfUsePage(pageDef) && isVdcRestricted(pageDef, request) ) {
             if (currentVDC.isVDCRestrictedForUser(user, ipUserGroup)) {
                 return false;
             }
@@ -367,15 +367,14 @@ public class LoginFilter implements Filter {
     private boolean isRolePage(PageDef pageDef, HttpServletRequest request) {
         //
         // Return true if pageDef has a network role or a vdc role
-        // or (isViewStudyPage and study is restricted) or (haveCurrentVDC and vdc is restricted)
+       
         //
-        boolean restricted = false;
+        boolean rolePage = false;
 
-        if (pageDef != null && (pageDef.getNetworkRole() != null || pageDef.getRole() != null) /*   || isViewStudyPage(pageDef)
-                || isVdcRestricted(pageDef, request) */) {
-            restricted = true;
+        if (pageDef != null && (pageDef.getNetworkRole() != null || pageDef.getRole() != null) ) {
+            rolePage = true;
         }
-        return restricted;
+        return rolePage;
     }
 
     private boolean isViewStudyPage(PageDef pageDef) {
@@ -385,6 +384,13 @@ public class LoginFilter implements Filter {
         return false;
     }
 
+    private boolean isTermsOfUsePage(PageDef pageDef) {
+         if (pageDef != null &&( pageDef.getName().equals(pageDefService.TERMS_OF_USE_PAGE))||pageDef.getName().equals(pageDefService.ACCOUNT_TERMS_OF_USE_PAGE) ) {
+            return true;
+        }
+        return false;
+       
+    }
     private boolean isSubsettingPage(PageDef pageDef) {
         if (pageDef != null && pageDef.getName().equals(pageDefService.SUBSETTING_PAGE)) {
             return true;

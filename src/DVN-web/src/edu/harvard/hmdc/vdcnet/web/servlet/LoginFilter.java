@@ -385,7 +385,7 @@ public class LoginFilter implements Filter {
     }
 
     private boolean isTermsOfUsePage(PageDef pageDef) {
-         if (pageDef != null &&( pageDef.getName().equals(pageDefService.TERMS_OF_USE_PAGE))||pageDef.getName().equals(pageDefService.ACCOUNT_TERMS_OF_USE_PAGE) ) {
+         if (pageDef != null &&( pageDef.getName().equals(pageDefService.TERMS_OF_USE_PAGE) ||pageDef.getName().equals(pageDefService.ACCOUNT_TERMS_OF_USE_PAGE)) ) {
             return true;
         }
         return false;

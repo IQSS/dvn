@@ -570,4 +570,7 @@ ALTER TABLE vdc ALTER COLUMN subsetrestricted SET STORAGE PLAIN;
 ALTER TABLE harvestingdataverse ADD COLUMN harvesttype character varying(255);
 ALTER TABLE harvestingdataverse ALTER COLUMN harvesttype SET STORAGE EXTENDED;
 
+ALTER TABLE datavariable ADD COLUMN numberofdecimalpoints bigint;
+ALTER TABLE datavariable ALTER COLUMN numberofdecimalpoints SET STORAGE PLAIN;
+
 commit;

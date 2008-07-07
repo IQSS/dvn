@@ -546,6 +546,18 @@ public class DataVariable implements java.io.Serializable{
     public void setFormatCategory(String formatCategory) {
         this.formatCategory = formatCategory;
     }
+    
+    private Long numberOfDecimalPoints;
+
+    public Long getNumberOfDecimalPoints() {
+        return numberOfDecimalPoints;
+    }
+
+    public void setNumberOfDecimalPoints(Long numberOfDecimalPoints) {
+        this.numberOfDecimalPoints = numberOfDecimalPoints;
+    }
+    
+    
 
     
     /**

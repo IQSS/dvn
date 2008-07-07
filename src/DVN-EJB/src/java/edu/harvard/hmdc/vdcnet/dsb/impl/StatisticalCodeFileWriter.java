@@ -106,11 +106,13 @@ public class StatisticalCodeFileWriter {
                         }
                         vnWithVl.add(IdToName.get(vlti.getKey()));
                         for (Map.Entry<String, String> vlt : vlti.getValue().entrySet()) {
+                        if (vlt.getValue() != null){
                             if (IdToType.get(vlti.getKey()) > 0){
                                 pw.println("    "+ vlt.getKey() + " = \""+ getSafeLabel(vlt.getValue(), 40) +"\"");
                             } else {
                                 pw.println("    \""+ vlt.getKey() + "\" = \""+ getSafeLabel(vlt.getValue(), 40) +"\"");
                             }
+                        }
                         }
                         pw.println(";\n");
                     }
@@ -138,7 +140,9 @@ public class StatisticalCodeFileWriter {
             //  label WThex5F2517 = "weight for rep. sample-see documentation";
             pw.println();
             for ( int i=0; i< variableNames.length;i++){
-                pw.println("label " +variableNames[i]+ " = \"" + getSafeLabel(variableLabels[i], 80) +"\";");
+                if (variableLabels[i] != null){
+                    pw.println("label " +variableNames[i]+ " = \"" + getSafeLabel(variableLabels[i], 80) +"\";");
+                }
             }
             pw.println();
             if (valueLabelTable != null) {
@@ -175,10 +179,12 @@ public class StatisticalCodeFileWriter {
             pw.println("VARIABLE LABELS");
             
             for ( int i=0; i< variableNames.length;i++){
-                if (i > 0){
-                    pw.println(" / " +variableNames[i]+ " \"" + getSafeLabel(variableLabels[i], 40) +"\"");
-                } else {
-                    pw.println(" " +variableNames[i]+ " \"" + getSafeLabel(variableLabels[i], 40) +"\"");
+                if (variableLabels[i] != null ){
+                    if (i > 0){
+                        pw.println(" / " +variableNames[i]+ " \"" + getSafeLabel(variableLabels[i], 40) +"\"");
+                    } else {
+                        pw.println(" " +variableNames[i]+ " \"" + getSafeLabel(variableLabels[i], 40) +"\"");
+                    }
                 }
             }
             pw.println(" .\n");
@@ -192,11 +198,13 @@ public class StatisticalCodeFileWriter {
                         pw.println(" "+ IdToName.get(vlti.getKey()));
                         counter ++;
                         for (Map.Entry<String, String> vlt : vlti.getValue().entrySet()) {
+                        if (vlt.getValue() != null){
                             if (IdToType.get(vlti.getKey()) > 0){
                                 pw.println("   "+ vlt.getKey() + " = \""+ getSafeLabel(vlt.getValue(), 40) +"\"");
                             } else {
                                 pw.println("   \""+ vlt.getKey() + "\" = \""+ getSafeLabel(vlt.getValue(), 40) +"\"");
                             }
+                        }
                         }
                         if (counter < vltSize) {
                             pw.println(" /");
@@ -226,8 +234,9 @@ public class StatisticalCodeFileWriter {
             pw.println("insheet using "+ subsetDataFileName + ", tab\n");
             // label variable wthex5f2517 "weight for rep. sample-see documentation"
             for ( int i=0; i< variableNames.length;i++){
-                pw.println("label variable " +variableNames[i]+ " \"" + getSafeLabel(variableLabels[i], 80) +"\"");
-               
+                if (variableLabels[i] != null){
+                    pw.println("label variable " +variableNames[i]+ " \"" + getSafeLabel(variableLabels[i], 80) +"\"");
+                }
             }
             if (valueLabelTable != null) {
                 pw.println();
@@ -237,7 +246,9 @@ public class StatisticalCodeFileWriter {
                 for (Map.Entry<String, Map<String, String>> vlti :valueLabelTable.entrySet()){
                     if ((vlti.getValue().size() > 0) && (IdToType.get(vlti.getKey()) > 0)) {
                         for (Map.Entry<String, String> vlt : vlti.getValue().entrySet()) {
-                            pw.println("lab def "+ IdToName.get(vlti.getKey()) +"_l "+ vlt.getKey() + " = \""+ getSafeLabel(vlt.getValue(), 40) +"\", add");
+                            if (vlt.getValue() != null){
+                                pw.println("lab def "+ IdToName.get(vlti.getKey()) +"_l "+ vlt.getKey() + " = \""+ getSafeLabel(vlt.getValue(), 40) +"\", add");
+                            }
                         }
                         pw.println("label values "+IdToName.get(vlti.getKey()) + " " + IdToName.get(vlti.getKey()) +"_l\n");
                     }
@@ -257,11 +268,16 @@ public class StatisticalCodeFileWriter {
     }
 
     public String getSafeLabel(String rawLabel, int maxLen) {
-        String tmp = rawLabel.replaceAll("\"", "'");
-        if (tmp.length() > maxLen) {
-            return tmp.substring(0, maxLen-1);
+        String tmp = null;
+        if (rawLabel != null){
+            tmp = rawLabel.replaceAll("\"", "'");
+            if (tmp.length() > maxLen) {
+                return tmp.substring(0, maxLen-1);
+            } else {
+                return tmp;
+            }
         } else {
-            return tmp;
+           return "";
         }
     }
     

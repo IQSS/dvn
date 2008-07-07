@@ -554,7 +554,7 @@ if (tmpv.length > 0){
                 if (sro.getSubsetConditions() != null){
                     result.put("subsettingCriteria", StringUtils.join(sro.getSubsetConditions(),"\n"));
                 }
-            } else {
+            
                 if (sro.getRecodeConditions() != null){
                     result.put("subsettingCriteria", StringUtils.join(sro.getRecodeConditions(),"\n"));
                 }

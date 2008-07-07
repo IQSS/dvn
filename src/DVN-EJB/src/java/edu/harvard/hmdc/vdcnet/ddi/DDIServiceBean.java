@@ -1186,6 +1186,11 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeStartElement("var");
         writeAttribute( xmlw, "ID", "v" + dv.getId().toString() );
         writeAttribute( xmlw, "name", dv.getName() );
+        
+        if (dv.getNumberOfDecimalPoints() != null) {
+            writeAttribute(xmlw, "dcml", dv.getNumberOfDecimalPoints().toString() );
+        }
+        
         if (dv.getVariableIntervalType() != null) {
             String interval = dv.getVariableIntervalType().getName();
             interval = DB_VAR_INTERVAL_TYPE_CONTINUOUS.equals(interval) ? VAR_INTERVAL_CONTIN : interval;
@@ -2072,10 +2077,8 @@ public class DDIServiceBean implements DDIServiceLocal {
         dv.setFileOrder(fileOrder);
 
         // associate dv with the correct file
-        String x = xmlr.getAttributeValue(null, "files" );
-        String y = xmlr.getAttributeValue(null, "files" );
-        if ( x != null ) {
-            List filesMapEntry = (List) filesMap.get( x );
+        if ( xmlr.getAttributeValue(null, "files") != null ) {
+            List filesMapEntry = (List) filesMap.get( xmlr.getAttributeValue(null, "files" ) );
             if (filesMapEntry != null) {
                 StudyFile sf = (StudyFile) filesMapEntry.get(0);
                 DataTable dt = (DataTable) filesMapEntry.get(1);
@@ -2101,7 +2104,11 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         dv.setWeighted( VAR_WEIGHTED.equals( xmlr.getAttributeValue(null, "wgt") ) );
         // default is not-wgtd, so null sets weighted to false
-       
+        
+        try {
+            dv.setNumberOfDecimalPoints( new Long( xmlr.getAttributeValue(null, "dcml") ) );
+        } catch (NumberFormatException nfe) {}
+        
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("location")) processLocation(xmlr, dv, filesMap);

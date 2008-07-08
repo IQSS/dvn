@@ -4,7 +4,7 @@
     <!--distributable/-->
     <context-param>
       <param-name>org.ajax4jsf.VIEW_HANDLERS</param-name>
-      <param-value>org.apache.shale.tiles.TilesViewHandler</param-value>
+      <param-value>com.sun.facelets.FaceletViewHandler</param-value>
     </context-param>
     <context-param>
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
@@ -34,7 +34,25 @@
         <listener-class>edu.harvard.hmdc.vdcnet.util.VDCContextListener</listener-class>
     </listener>
     <!--  ajax4jsf -->
-   <filter>
+    <context-param>
+        <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+        <param-value>.xhtml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>facelets.DEVELOPMENT</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+	<param-name>facelets.LIBRARIES</param-name>
+	<param-value>
+		/WEB-INF/creator.taglib.xml;/WEB-INF/dvn.taglib.xml;/WEB-INF/scroller.taglib.xml
+	</param-value>
+</context-param>
+    <filter>
        <display-name>Ajax4jsf Filter</display-name>
        <filter-name>ajax4jsf</filter-name>
        <filter-class>org.ajax4jsf.Filter</filter-class>
@@ -117,15 +135,6 @@
     <servlet>
         <servlet-name>Default Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Tiles Servlet</servlet-name>
-        <servlet-class>org.apache.tiles.servlets.TilesServlet</servlet-class>
-        <init-param>
-            <param-name>definitions-config</param-name>
-            <param-value>/WEB-INF/tiles.xml</param-value>
-        </init-param>
-        <load-on-startup>2</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>ErrorPageServlet</servlet-name>

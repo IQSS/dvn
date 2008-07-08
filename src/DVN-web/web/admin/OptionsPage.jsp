@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jsp:root version="2.0" xmlns:f="http://java.sun.com/jsf/core" 
-                        xmlns:h="http://java.sun.com/jsf/html" 
-                        xmlns:jsp="http://java.sun.com/JSP/Page" 
-                        xmlns:ui="http://www.sun.com/web/ui"
-                        xmlns:tiles="http://struts.apache.org/tags-tiles">
-   <f:subview id="OptionsPageView">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ui="http://www.sun.com/web/ui"
+      >
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+<gui:composition template="/template.xhtml">
+
+
+<gui:param name="pageTitle" value="DVN - My Options" />
+
+  <gui:define name="body">
+      <f:loadBundle basename="Bundle" var="bundle"/>
+     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+
       <ui:form id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             
@@ -64,7 +80,7 @@
                                 </h:outputLink >
                                 <ui:panelGroup block="true" >
                                     <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                    <h:outputText id="outputText4" styleClass="vdcHelpText" value="To Edit Studies (Edit Cataloging Information, Add or Edit Files, Change Study Permissions or Delete Study) search for the study and follow edit options displayed  in the study page. Studies that are not owned by  #{VDCRequest.currentVDC.name} Dataverse cannot be edited here."/>
+                                    <h:outputText id="outputText4" styleClass="vdcHelpText" value="To Edit Studies (Edit Cataloging Information, Add or Edit Files, ChangeStudy Permissions or Delete Study) search for the study and followedit options displayed in the study page. Studies that are not owned by  #{VDCRequest.currentVDC.name} Dataverse cannot be edited here."/>
                                 </ui:panelGroup>
                             </ui:panelGroup>
                         </ui:panelGroup>
@@ -83,7 +99,7 @@
                                         <h:outputText id="hyperlink1Text2" value="Edit Layout Branding"/>
                                     </h:outputLink>
                                     <h:outputLink id="hyperlink4" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditHomePanelsPage.jsp">
-                                        <h:outputText id="hyperlink2Text2" value="Edit Homepage Description"/>
+                                        <h:outputText id="hyperlink2Text2" value="EditHomepage Description"/>
                                     </h:outputLink>
                                     <h:outputLink id="hyperlink17" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditContactUsPage.jsp">
                                         <h:outputText id="hyperlink17Text" value="Set E-Mail Notifications"/>
@@ -123,5 +139,7 @@
                 </div>
             </div>
         </ui:form>                
-     </f:subview>
-</jsp:root>
+            </gui:define>
+        </gui:composition>
+    </body>
+</html>

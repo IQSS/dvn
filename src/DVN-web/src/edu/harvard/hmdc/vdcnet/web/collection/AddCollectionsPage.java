@@ -1402,15 +1402,17 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
             context.renderResponse();
         }
         boolean nameFound = false;
-        VDCCollection vdcValidateCollection = vdcCollectionService.findByNameWithinDataverse(name, getVDCRequestBean().getCurrentVDC());
-        if (vdcValidateCollection != null) {
-            nameFound = true;
-        }
-        if (nameFound) {
-            ((UIInput) toValidate).setValid(false);
+        if (!edit) {
+            VDCCollection vdcValidateCollection = vdcCollectionService.findByNameWithinDataverse(name, getVDCRequestBean().getCurrentVDC());
+            if (vdcValidateCollection != null) {
+                nameFound = true;
+            }
+            if (nameFound) {
+                ((UIInput) toValidate).setValid(false);
 
-            FacesMessage message = new FacesMessage("This name is already taken.");
-            context.addMessage(toValidate.getClientId(context), message);
+                FacesMessage message = new FacesMessage("This name is already taken.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
 
     }

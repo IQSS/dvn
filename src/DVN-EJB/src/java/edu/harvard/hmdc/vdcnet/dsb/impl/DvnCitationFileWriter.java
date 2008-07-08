@@ -22,12 +22,15 @@ public class DvnCitationFileWriter {
     
     String title = "_Citation for the full data set you chose_:\n";
     String subsetTitle = "_Citation for this subset you chose_:\n";
+    String subsetingCriteriaLineD = "_Row selection Criteria for the subset you chose_:\n";
+    String subsetingCriteriaLineA = "_Row selection criteria for the subset used in your analysis_:\n";
+    
     
     String offlineCitation;
     String subsetUNF;
     String variableList;
     String subsettingCriteria;
-    
+    String requestType;
     public DvnCitationFileWriter(String oc){
         offlineCitation = oc;
     }
@@ -36,9 +39,33 @@ public class DvnCitationFileWriter {
         this.offlineCitation    = resultInfo.get("offlineCitation");
         this.subsetUNF          = resultInfo.get("fileUNF");
         this.variableList       = resultInfo.get("variableList");
-        this.subsettingCriteria = resultInfo.get("subsettingCriteria");
-        
+        this.requestType        = resultInfo.get("option");
+        if (   (resultInfo.containsKey("subsettingCriteria")) 
+            && (resultInfo.get("subsettingCriteria") != null) 
+            ){
+                this.subsettingCriteria = resultInfo.get("subsettingCriteria");
+        } else {
+            this.subsettingCriteria = "";
+        }
     }
+    
+    public String generateSubsetCriteriaLine(){
+        String subsetCriteriaLine =null;
+        String subsettingCriteriaHeader = null;
+        if (requestType.equals("download")){
+            subsettingCriteriaHeader = subsetingCriteriaLineD;
+        } else {
+            subsettingCriteriaHeader = subsetingCriteriaLineA;
+        }
+
+        if (subsettingCriteria.equals("")){
+            subsetCriteriaLine = "";
+        } else {
+            subsetCriteriaLine = subsettingCriteriaHeader + subsettingCriteria + "\n";
+        }
+        return subsetCriteriaLine;
+    }
+    
     
     public void write(String citationFilename, 
         List<String> variableNameSet, String subsetUNF){
@@ -63,11 +90,17 @@ public class DvnCitationFileWriter {
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(outs, "utf8"), true);
             pw.println(title);
             pw.println(offlineCitation);
-            pw.println("\n\n\n");
+            
+            if (generateSubsetCriteriaLine().equals("")){
+                pw.println("\n\n");
+            } else {
+                pw.println("\n");
+                pw.println(generateSubsetCriteriaLine()+"\n");
+            }
             pw.println(subsetTitle);
             pw.print(offlineCitation + " ");
             pw.print(DvnDSButil.joinNelementsPerLine(variableNameSet,5));
-            pw.println(" [VarGrp/@var(DDI)];"+ subsettingCriteria );
+            pw.println(" [VarGrp/@var(DDI)];");
             pw.println(subsetUNF);
            outs.close();
         } catch (IOException ex) {
@@ -84,11 +117,17 @@ public class DvnCitationFileWriter {
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(outs, "utf8"), true);
             pw.println(title);
             pw.println(offlineCitation);
-            pw.println("\n\n\n");
+            
+            if (generateSubsetCriteriaLine().equals("")){
+                pw.println("\n\n");
+            } else {
+                pw.println("\n");
+                pw.println(generateSubsetCriteriaLine()+"\n");
+            }
             pw.println(subsetTitle);
             pw.print(offlineCitation + " ");
             pw.print(variableList);
-            pw.println(" [VarGrp/@var(DDI)];"+ subsettingCriteria );
+            pw.println(" [VarGrp/@var(DDI)];");
             pw.println(subsetUNF);
            outs.close();
         } catch (IOException ex) {

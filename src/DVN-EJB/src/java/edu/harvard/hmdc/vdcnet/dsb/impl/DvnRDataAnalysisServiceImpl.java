@@ -554,10 +554,11 @@ if (tmpv.length > 0){
                 if (sro.getSubsetConditions() != null){
                     result.put("subsettingCriteria", StringUtils.join(sro.getSubsetConditions(),"\n"));
                 }
-            
+                /* to be used in the future?
                 if (sro.getRecodeConditions() != null){
-                    result.put("subsettingCriteria", StringUtils.join(sro.getRecodeConditions(),"\n"));
+                    result.put("recodingCriteria", StringUtils.join(sro.getRecodeConditions(),"\n"));
                 }
+                */
             }
             result.put("fileUNF",fileUNF);
             result.put("dsbHost", RSERVE_HOST);

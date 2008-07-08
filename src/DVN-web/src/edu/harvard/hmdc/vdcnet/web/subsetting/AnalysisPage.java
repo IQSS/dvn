@@ -1134,6 +1134,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // capture resulting information as a Map <String, String>
 
                     resultInfo = das.execute(sro);
+                    
 
                 // Step 5. Checks the DSB-exit-status code
                     if (resultInfo.get("RexecError").equals("true")){
@@ -1144,6 +1145,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         getVDCRequestBean().setSelectedTab("tabDwnld");
 
                         return "failure";
+                    } else {
+                        if (recodeSchema.size()> 0){
+                            resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
+                        }
                     }
                     
                 } catch (MalformedURLException e) {
@@ -3013,6 +3018,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         getVDCRequestBean().setSelectedTab("tabEda");
 
                         return "failure";
+                    } else {
+                        if (recodeSchema.size()> 0){
+                            resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
+                        }
                     }
 
                 } catch (MalformedURLException e) {
@@ -5574,6 +5583,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         getVDCRequestBean().setSelectedTab("tabAdvStat");
                         
                         return "failure";
+                    } else {
+                        if (recodeSchema.size()> 0){
+                            resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
+                        }
                     }
                     
                     

@@ -119,6 +119,7 @@ public class DvnRJobRequest {
     /**  */
     private AdvancedStatGUIdata.Model zeligModelSpec;
     
+    public Map<String, List<String>> rowSelectionData =  new LinkedHashMap<String, List<String>>();
     
     public Map<String, List<String>> subsetRecodeConditions;
     // ----------------------------------------------------- accessors
@@ -156,9 +157,15 @@ public class DvnRJobRequest {
         return subsetRecodeConditions.get("subset");
     }
     
+    public String getSubsetConditionsForCitation(){
+        dbgLog.fine("subsetForCitation"+subsetRecodeConditions.get("subsetForCitation"));
+        return  StringUtils.join(subsetRecodeConditions.get("subsetForCitation"), " & ") ;
+    }
+    
     public List<String> getRecodeConditions(){
         return subsetRecodeConditions.get("recode");
     }
+
     
     public Map<String, String> recodedVarIdToName = new HashMap<String, String>();
 
@@ -842,6 +849,7 @@ public class DvnRJobRequest {
      */
     public Map<String, List<String>> generateSubsetRecodeConditions (){
         List<String> subsetConditions = new ArrayList<String>();
+        List<String> subsetConditionsForCitation = new ArrayList<String>();
         List<String> recodeConditions = new ArrayList<String>();
         Map<String, List<String>> conditions = new HashMap<String, List<String>>();
         
@@ -864,7 +872,40 @@ public class DvnRJobRequest {
             List<Object> rdtbl = (List<Object>)recodeSchema.get(rVarId);
             int rcnt=0;
             List<String> delpool = new ArrayList<String>();
+            List<String> delpoolForCitation = new ArrayList<String>();
             Map<String, List<String>> recpool = new LinkedHashMap<String, List<String>>();
+            
+            int delRowCount = 0;
+            int nonRecodeRowCount = 0;
+            boolean hasRecodeRow = true;
+            
+            for (int i = 0; i < rdtbl.size(); i++){
+            
+                List<Object> rdtbli = (List<Object>) rdtbl.get(i);
+                
+                
+                String val = (String)rdtbli.get(1);
+                String rawCnd = (String)rdtbli.get(3);
+                
+                
+                if ((Boolean) rdtbli.get(0)) {
+                    // delete rows
+                    delRowCount++;
+                } else {
+                    // recode ?
+                    if(val.equals(rawCnd)){
+                        nonRecodeRowCount++;
+                    }
+                }
+            }
+            
+            int allrows = delRowCount + nonRecodeRowCount;
+            if (allrows == rdtbl.size()) {
+                hasRecodeRow = false;
+                dbgLog.fine("no meaningful recodeing request is stored");
+            }
+            
+            
             
             for (int i = 0; i < rdtbl.size(); i++){
             
@@ -877,17 +918,19 @@ public class DvnRJobRequest {
                 
                 dbgLog.fine("condtion= "+rawCnd);
                 if ((Boolean) rdtbli.get(0)) {
-                    // delete line                    
+                    // delete rows                   
                     String varUnit = "x[[\"" + baseVarNameSet.get(j) + "\"]]";
-
+                    String varNameOnly = baseVarNameSet.get(j);
                     String cnd = conditionDecoder(rawCnd, varUnit, "d", variableTypes[j]);
-                    
+                    String cndForcitation = conditionDecoder(rawCnd, varNameOnly, "d", variableTypes[j]);
                     if ((cnd == null) || (cnd.equals(""))){
                         dbgLog.fine("this subsetting condition was invalid:["+rawCnd+"] ");
                     } else {
                         delpool.add(cnd);
+                        delpoolForCitation.add(cndForcitation);
                     }
                 } else {
+                  if (hasRecodeRow){
                     // recode line
                     rcnt++;
                     String vn = "x[[\"" + recodedVarNameSet.get(j) + "\"]]";
@@ -924,6 +967,7 @@ public class DvnRJobRequest {
                         
                     }
                     dbgLog.fine("recpool within loop\n"+recpool);
+                  } // no meaningful recoding
                 } // subset or not
             } // for each line of the recodeTable
             
@@ -931,7 +975,10 @@ public class DvnRJobRequest {
             if (delpool.size() > 0){
                 subsetConditions.add("x <- subset(x, ( " + StringUtils.join(delpool," &" ) + " ))\n\n"  );
             }
-            
+            if (delpoolForCitation.size() > 0){
+                subsetConditionsForCitation.add(StringUtils.join(delpoolForCitation," AND" ) );
+            }
+
             // recode
 
             if (recpool.size() > 0){
@@ -963,6 +1010,7 @@ public class DvnRJobRequest {
             
        }
         conditions.put("subset", subsetConditions);
+        conditions.put("subsetForCitation", subsetConditionsForCitation);
         conditions.put("recode", recodeConditions);
         return conditions;
     }

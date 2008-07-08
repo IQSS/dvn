@@ -188,17 +188,22 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     public void deleteStudy(Long studyId, boolean deleteFromIndex) {
+        long start = new Date().getTime();
+        logger.info("DEBUG: 0\t - deleteStudy - BEGIN");
         Study study = em.find(Study.class, studyId);
         if (study == null) {
             return;
         }
+        logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - remove from collections");
         for (Iterator<VDCCollection> it = study.getStudyColls().iterator(); it.hasNext();) {
             VDCCollection elem = it.next();
             elem.getStudies().remove(study);
 
         }
+        logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete data variables");
         studyService.deleteDataVariables(study.getId());
-
+        
+        logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete relationships");
         study.getAllowedGroups().clear();
         study.getAllowedUsers().clear();
         if (study.getOwner() != null) {
@@ -213,7 +218,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 elem.getDataTable().getDataVariables().clear();
             }
         }
-
+        
+        logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete physical files");
         File studyDir = new File(FileUtil.getStudyFileDir() + File.separator + study.getAuthority() + File.separator + study.getStudyId());
         if (studyDir.exists()) {
             File[] files = studyDir.listFiles();
@@ -228,15 +234,21 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
 
         // remove from HarvestStudy table
+        logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from HarvestStudy");
         harvestStudyService.markHarvestStudiesAsRemoved( harvestStudyService.findHarvestStudiesByGlobalId( study.getGlobalId() ), new Date() );
- 
+        
+        logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from DB and gnrs");
         em.remove(study);
         gnrsService.delete(study.getAuthority(), study.getStudyId());
+        
+        logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from Index");
         if (deleteFromIndex) {
             indexService.deleteStudy(studyId);
         }
-            
+        
+        logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - right before flush");
         em.flush();  // Force study deletion to the database, for cases when we are calling this before deleting the owning Dataverse
+        logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - FINISH");
         logger.log(Level.INFO, "Successfully deleted Study " + studyId + "!");
 
 
@@ -1833,7 +1845,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         final char[] chars = str.toCharArray();
         for (int x = 0; x < chars.length; x++) {
             final char c = chars[x];
-            if (StringUtil.isAlphaNumericChar(c) || c == '-' || c == '_') {
+            if (StringUtil.isAlphaNumericChar(c) || c == '-' || c == '_' || c == '.') {
                 continue;
             }
             return false;

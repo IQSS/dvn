@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jsp:root version="2.0" xmlns:f="http://java.sun.com/jsf/core" 
-                        xmlns:h="http://java.sun.com/jsf/html" 
-                        xmlns:jsp="http://java.sun.com/JSP/Page" 
-                        xmlns:ui="http://www.sun.com/web/ui"
-                        xmlns:tiles="http://struts.apache.org/tags-tiles">
-<f:subview id="OAISetsPageView">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ui="http://www.sun.com/web/ui"
+      >
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+</head>
+
+<body>
+<gui:composition template="/template.xhtml">
+
+<gui:param name="pageTitle" value="DVN - OAI Sets" />
+
+  <gui:define name="body">
+      <f:loadBundle basename="Bundle" var="bundle"/>
+     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+
     <ui:form id="form1">
         <div class="dvn_section">
             <div class="dvn_sectionTitle">
@@ -21,7 +37,7 @@
                         Once you've created a set, you can edit it by clicking on the set name."/>
                     </div>
                       
-                      <h:outputLink value="EditOAISetPage.jsp">
+                      <h:outputLink value="faces/networkAdmin/EditOAISetPage.jsp">
                         <h:outputText value="Create a New Set"/>
                     </h:outputLink>
                     
@@ -32,7 +48,7 @@
                             <f:facet name="header">
                                 <h:outputText id="column1Header" value="Set Name"/>
                             </f:facet>
-                            <h:outputLink value="EditOAISetPage.jsp?oaiSetId=#{currentRow.id}">
+                            <h:outputLink value="faces/networkAdmin/EditOAISetPage.jsp?oaiSetId=#{currentRow.id}">
                                 <h:outputText value="#{currentRow.name}"/>
                             </h:outputLink>
                         </h:column>
@@ -71,5 +87,7 @@
             </div>
         </div>
     </ui:form>
-    </f:subview>
-</jsp:root>
+            </gui:define>
+        </gui:composition>
+    </body>
+</html>

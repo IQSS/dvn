@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE facelet-taglib PUBLIC
+  "-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN"
+  "http://java.sun.com/dtd/facelet-taglib_1_0.dtd">
+  <facelet-taglib>
+      <namespace>/WEB-INF/tlds/scroller</namespace>
+    <tag>
+      <tag-name>scroller</tag-name>
+        <component>
+            <component-type>scroller</component-type>
+        </component>
+    </tag>
+   </facelet-taglib>

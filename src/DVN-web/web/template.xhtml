@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ui="http://www.sun.com/web/ui"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      >
+<jsp:directive.page errorPage="/ExceptionHandler"/> 
+<head>
+    <!-- page title param passed in by param -->
+    <title>#{pageTitle}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Language" content="en" />
+    <meta http-equiv="imagetoolbar" content="no" />
+	 <ui:link id="link2" url="/resources/stylesheet.css"/>
+         <ui:link id="link3" url="/resources/thickbox.css"/>
+         <ui:link id="iceStyles" url="/resources/ice_styles.css"/>
+         <ui:script url="/resources/EventCapture.js"/>
+         <ui:script url="/resources/jquery.js"/>
+         <ui:script url="/resources/jquery.corner.pack.js"/>
+         <ui:script url="/resources/excanvas.pack.js"/>
+         <ui:script url="/resources/jquery.ifixpng.js"/>
+         
+         <script type="text/javascript">
+          // <![CDATA[    
+             jQuery.noConflict();
+             jQuery(document).ready(function(){
+		jQuery("div.dvn_navblock").corner("10px bottom");
+		jQuery("div.dvn_searchblock").corner("10px");
+		jQuery("div.successMessage").corner("10px");
+		jQuery("div.dvn_block").corner("10px");
+		jQuery("div.dvn_blockTitleBar").corner("10px");
+                jQuery.ifixpng('/dvn/resources/pixel.gif');
+                jQuery('img[@src$=.png], a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active').ifixpng();
+              });
+          // ]]>
+         </script>
+         
+         <base href="#{facesContext.externalContext.request.scheme}://#{facesContext.externalContext.request.serverName}:#{facesContext.externalContext.request.serverPort}#{facesContext.externalContext.requestContextPath}/"/>
+
+</head>
+   <!--  this template is example 4.3 in the Facelets Shortcut -->
+   <body>
+       <div class="dvn_wrapper">
+       <div class="dvn_content" id="content-frame">
+          <gui:insert name="title">
+
+             <!--  ****** THIS IS THE HEADER ******** -->
+               <gui:include src="views/CustomBanner.xhtml"/>
+              <!-- <gui:include src="views/ConnectedBanner.xhtml"/> -->
+              <!-- *** MENUBAR (Included from template) *** -->
+             <gui:include src="views/Menubar.xhtml"/>
+          </gui:insert>
+
+        <gui:insert name="body">Default Body</gui:insert>
+
+        <gui:insert name="footer">
+               <gui:include src="views/CustomFooter.xhtml"/>
+        </gui:insert>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ui="http://www.sun.com/web/ui"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+<!-- <ice:outputDeclaration doctypeRoot="HTML"
+                       doctypePublic="-//W3C//DTD XHTML 1.0 Transitional//EN"
+                       doctypeSystem="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" /> -->
+<head>
+    <!-- page title param passed in by param -->
+    <title>Main Template - #{pageTitle}</title>
+         <ui:link  id="link2" url="/resources/stylesheet.css"/>
+         <ui:script url="/resources/EventCapture.js"/>
+         
+         <f:verbatim>
+             <script type="text/javascript">
+             // <![CDATA[                          
+                 var isChild = true;
+                 function printMe() {
+                    window.print();
+                 }
+             //]]>                     
+             </script>
+           
+         </f:verbatim>
+         
+         
+
+</head>
+   <!--  this template is example 4.3 in the Facelets Shortcut -->
+   <body>
+       <div class="dvn_wrapper">
+         <div class="dvn_content" id="content-frame">
+              <f:loadBundle basename="Bundle" var="bundle"/>
+              <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+             <gui:insert name="body">Default Body</gui:insert>
+         </div>
+       </div>
+</body>
+</html>

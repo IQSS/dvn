@@ -164,7 +164,8 @@ public class Indexer implements java.io.Serializable  {
         addKeyword(doc,"id",study.getId().toString());
         addKeyword(doc,"studyId", study.getStudyId());
         addText(1.0f,  doc,"studyId", study.getStudyId());
-        addText(1.0f,  doc,"owner",study.getOwner().getName());
+//        addText(1.0f,  doc,"owner",study.getOwner().getName());
+        addText(1.0f, doc, "dvOwnerId", Long.toString(study.getOwner().getId()));
         addKeyword(doc,"productionDate", study.getProductionDate());
         addKeyword(doc,"distributionDate", study.getDistributionDate());
         Collection <StudyKeyword> keywords = study.getStudyKeywords();

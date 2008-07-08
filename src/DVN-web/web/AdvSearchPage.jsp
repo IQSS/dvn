@@ -34,7 +34,7 @@
                                 <f:selectItems binding="#{AdvSearchPage.dropdown1SelectItems}" id="dropdown1SelectItems" value="#{AdvSearchPage.dropdown3DefaultItems}" />
                             </h:selectOneMenu>
                             <h:selectOneMenu binding="#{AdvSearchPage.dropdown9}" id="dropdown9" >
-                                <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems3}" id="dropdown4SelectItems3" value="#{AdvSearchPage.dateItem1 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
+                                <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems3}" id="dropdown4SelectItems3" value="#{AdvSearchPage.dateItem1 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4FirstNonDateItems}"/>
                             </h:selectOneMenu>
                             <ui:panelGroup>
                                 <h:inputText binding="#{AdvSearchPage.textField1}" id="textField1" size="40" required="true" requiredMessage="This field is required."/>

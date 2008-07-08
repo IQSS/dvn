@@ -129,6 +129,8 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         dropdown4DefaultItems.setItems(new String[] {messages.getString("contains"),messages.getString("doesNotContain"),messages.getString("isGreaterThan"), messages.getString("isLessThan")});
         dropdown4DateItems.setItems(new String[] {messages.getString("isGreaterThan"), messages.getString("isLessThan")});
         dropdown4NotDateItems.setItems(new String[] {messages.getString("contains"),messages.getString("doesNotContain")});
+        dropdown4FirstNonDateItems.setItems(new String[] {messages.getString("contains")});
+
         operatorMap.put(messages.getString("contains"),"=");
         operatorMap.put(messages.getString("doesNotContain"),"-");
         operatorMap.put(messages.getString("isGreaterThan"),">");
@@ -396,6 +398,16 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         this.dropdown4NotDateItems = dsia;
     }
 
+    private DefaultSelectItemsArray dropdown4FirstNonDateItems = new DefaultSelectItemsArray();    
+ 
+    public DefaultSelectItemsArray getDropdown4FirstNonDateItems() {
+        return dropdown4FirstNonDateItems;
+    }
+
+    public void setDropdown4FirstNonDateItems(DefaultSelectItemsArray dsia) {
+        this.dropdown4FirstNonDateItems = dsia;
+    }    
+    
     private UISelectItems dropdown4SelectItems = new UISelectItems();
 
     public UISelectItems getDropdown4SelectItems() {

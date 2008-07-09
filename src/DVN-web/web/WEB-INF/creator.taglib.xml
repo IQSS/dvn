@@ -159,4 +159,11 @@
 	    <renderer-type>com.sun.rave.web.ui.Upload</renderer-type>
 	</component>
     </tag>
+    <tag>
+	<tag-name>listbox</tag-name>
+	<component>
+	    <component-type>com.sun.rave.web.ui.Listbox</component-type>
+	    <renderer-type>com.sun.rave.web.ui.Listbox</renderer-type>
+	</component>
+    </tag>
 </facelet-taglib>

@@ -9,10 +9,10 @@
       xmlns:ui="http://www.sun.com/web/ui"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
       >
-<jsp:directive.page errorPage="/ExceptionHandler"/> 
+
 <head>
     <!-- page title param passed in by param -->
-    <title>#{pageTitle}</title>
+    <title><h:outputText value="#{pageTitle}"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Content-Language" content="en" />
     <meta http-equiv="imagetoolbar" content="no" />

@@ -166,4 +166,11 @@
 	    <renderer-type>com.sun.rave.web.ui.Listbox</renderer-type>
 	</component>
     </tag>
+    <tag>
+	<tag-name>checkbox</tag-name>
+	<component>
+	    <component-type>com.sun.rave.web.ui.Checkbox</component-type>
+	    <renderer-type>com.sun.rave.web.ui.Checkbox</renderer-type>
+	</component>
+    </tag>
 </facelet-taglib>

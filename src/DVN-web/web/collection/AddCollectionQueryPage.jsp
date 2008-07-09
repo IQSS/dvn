@@ -76,5 +76,7 @@
                 </div>                             
             </div>                     
         </ui:form>
-    </f:subview>
-</jsp:root>
+   </gui:define>
+        </gui:composition>
+    </body>
+</html>

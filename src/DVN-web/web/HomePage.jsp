@@ -16,7 +16,7 @@
 <body>
 <gui:composition template="/template.xhtml">
 
-<gui:param name="pageTitle" value="DVN - About" />
+<gui:param name="pageTitle" value="DVN - Home" />
 
   <gui:define name="body">
       <f:loadBundle basename="Bundle" var="bundle"/>

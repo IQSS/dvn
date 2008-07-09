@@ -288,7 +288,7 @@
                                 
                                 <!-- OTHER IDS -->
                                 
-                                <!--h:dataTable rowClasses="#{EditStudyPage.otherIdLevel}" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                <h:dataTable rowClasses="#{EditStudyPage.otherIdLevel}" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
                                     <h:column>                                  
                                         <h:dataTable  cellpadding="0" cellspacing="0" 
                                                       columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -331,12 +331,12 @@
                                             </h:column>
                                         </h:dataTable>
                                     </h:column>
-                                </h:dataTable-->                                
+                                </h:dataTable>                                
                                 
                                 <!-- Authors -->
                                 
                                 <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                                <!--h:dataTable rowClasses="#{EditStudyPage.authorInputLevel}" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                <h:dataTable rowClasses="#{EditStudyPage.authorInputLevel}" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
                                     <h:column>                                          
                                         <h:dataTable cellpadding="0" cellspacing="0"
                                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -395,11 +395,11 @@
                                             </h:column>               
                                         </h:dataTable>
                                     </h:column>
-                                </h:dataTable-->
+                                </h:dataTable>
                                 
                                 <!--Producers-->   
                                 <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                                <!--h:dataTable rowClasses="#{EditStudyPage.producerInputLevel}" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                                <h:dataTable rowClasses="#{EditStudyPage.producerInputLevel}" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
                                     <h:column>                                            
                                         <h:dataTable cellpadding="0" cellspacing="0"
                                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
@@ -489,7 +489,7 @@
                                             </h:column>
                                         </h:dataTable>
                                     </h:column>
-                                </h:dataTable-->
+                                </h:dataTable>
                                 
                                 <h:panelGrid cellpadding="0" cellspacing="0"  styleClass="#{EditStudyPage.studyMap[sfc.productionDate].templateField.fieldInputLevel.name}"
                                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2"  width="100%" >

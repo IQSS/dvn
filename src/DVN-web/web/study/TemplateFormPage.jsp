@@ -6,6 +6,7 @@
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ui="http://www.sun.com/web/ui"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -20,6 +21,7 @@
   <gui:define name="body">
       <f:loadBundle basename="Bundle" var="bundle"/>
      <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+      <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
         <f:verbatim>           
             <script type="text/javascript">
                 // <![CDATA[ 
@@ -95,7 +97,8 @@
                                
             <h:inputHidden id="token" value="#{TemplateFormPage.token}" />                        
             
-
+            <h:inputHidden immediate="true" binding="#{TemplateFormPage.hiddenStudyId}" id="studyId" value="#{TemplateFormPage.studyId}" />                        
+     
 
             <div class="dvn_section" >
                 <div class="dvn_sectionTitle">
@@ -120,8 +123,10 @@
                                                                             
                                        
                                         <input checked="checked" type="radio" id="hideRadio" name="hideShowRadio" value="hide" onclick="updateHideShow(this);"/> Show Required and Recommended Fields                                       
+                                        <br/>
                                         <input type="radio" id="showRadio" name="hideShowRadio" value="show" onclick="updateHideShow(this);" /> Show All Fields
-                                        <br/><h:outputText value="Template Name: "/><h:inputText value='#{TemplateFormPage.template.name}'/>
+                                        <br/><h:outputText value="Template Name: "/><h:inputText id="template_name" value='#{TemplateFormPage.template.name}' required='true' requiredMessage='This field is required.'/>
+                                         <h:message styleClass="errorMessage" for="template_name"/> 
                                     </ui:panelGroup>
                                     <ui:panelGroup block="true">
                                         <h:graphicImage value="/resources/icon_required.gif"/> <h:outputText style="vdcHelpText" value="Required Fields"/>

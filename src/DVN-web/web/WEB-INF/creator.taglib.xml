@@ -173,4 +173,18 @@
 	    <renderer-type>com.sun.rave.web.ui.Checkbox</renderer-type>
 	</component>
     </tag>
+    <tag>
+	<tag-name>checkboxGroup</tag-name>
+	<component>
+	    <component-type>com.sun.rave.web.ui.CheckboxGroup</component-type>
+	    <renderer-type>com.sun.rave.web.ui.CheckboxGroup</renderer-type>
+	</component>
+    </tag>
+    <tag>
+	<tag-name>radioButtonGroup</tag-name>
+	<component>
+	    <component-type>com.sun.rave.web.ui.radioButtonGroup</component-type>
+	    <renderer-type>com.sun.rave.web.ui.radioButtonGroup</renderer-type>
+	</component>
+    </tag>
 </facelet-taglib>

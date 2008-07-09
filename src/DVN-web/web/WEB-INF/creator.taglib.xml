@@ -106,8 +106,8 @@
     <tag>
         <tag-name>hyperlink</tag-name>
         <component>
-            <component-type>com.sun.rave.web.ui.HyperLink</component-type>
-            <renderer-type>com.sun.rave.web.ui.HyperLink</renderer-type>
+            <component-type>com.sun.rave.web.ui.Hyperlink</component-type>
+            <renderer-type>com.sun.rave.web.ui.Hyperlink</renderer-type>
         </component>
     </tag>
     <tag>

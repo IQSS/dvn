@@ -276,8 +276,14 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         return null;
     }
     
-    public String indexBatch_action(){
-        indexService.indexBatch();
+    public String indexBatch_action() {
+        try {
+            indexService.indexBatch();
+            addMessage("indexMessage", "Indexing update completed.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage("indexMessage", "Indexing failed: An unknown error occurred trying to update the index");
+        }
         return null;
     }
     // </editor-fold>

@@ -67,7 +67,7 @@
                                 <f:selectItem itemLabel="Cataloging Information" itemValue="any" />
                                 <f:selectItem itemLabel="- Author" itemValue="authorName" />
                                 <f:selectItem itemLabel="- Title" itemValue="title" />
-                                <f:selectItem itemLabel="- Study ID" itemValue="studyId" />
+                                <f:selectItem itemLabel="- Global ID" itemValue="globalId" />
                                 <f:selectItem itemLabel="Variable Information" itemValue="variable" />
                             </h:selectOneMenu>
                         </label>

@@ -7,7 +7,6 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:t="/WEB-INF/tlds/scroller"
       xmlns:ui="http://www.sun.com/web/ui"
-      xmlns:t="/WEB-INF/tlds/scroller"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>

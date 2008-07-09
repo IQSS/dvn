@@ -77,6 +77,7 @@ public class EditTemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.Ed
     EntityManager em;
     Template template;
     private boolean newTemplate=false;
+    private Long createdFromStudyId;
   
     
     /**
@@ -106,6 +107,7 @@ public class EditTemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.Ed
         Study study = em.find(Study.class, studyId);
         study.getMetadata().copyMetadata(template.getMetadata());
         template.setVdc(em.find(VDC.class, vdcId));
+        createdFromStudyId=studyId;
         em.persist(template);
     }
     
@@ -178,6 +180,13 @@ public class EditTemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.Ed
         return newTemplate;
     }
     
+    public void setCreatedFromStudy(Long createdFromStudyId) {
+        this.createdFromStudyId=createdFromStudyId;
+    }
+    
+    public Long getCreatedFromStudyId() {
+        return createdFromStudyId;
+    }
    
     
 }

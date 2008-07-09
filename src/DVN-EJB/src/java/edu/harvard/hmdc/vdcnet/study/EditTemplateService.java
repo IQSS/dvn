@@ -40,7 +40,7 @@ public interface EditTemplateService extends java.io.Serializable {
     public void save();
     public Template getTemplate();
     public void removeCollectionElement(Collection coll, Object elem);
-
+    public Long getCreatedFromStudyId();
     void removeCollectionElement(Iterator iter, Object elem);
  
 }

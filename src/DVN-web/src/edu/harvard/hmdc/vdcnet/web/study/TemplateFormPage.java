@@ -46,15 +46,12 @@ import edu.harvard.hmdc.vdcnet.study.StudySoftware;
 import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
 import edu.harvard.hmdc.vdcnet.study.Template;
 import edu.harvard.hmdc.vdcnet.study.TemplateField;
-import edu.harvard.hmdc.vdcnet.study.TemplateFileCategory;
-import edu.harvard.hmdc.vdcnet.util.SessionCounter;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.StudyFieldConstant;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,12 +62,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.html.HtmlDataTable;
+import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlInputTextarea;
-import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.model.SelectItem;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -103,7 +99,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         super.init();
         // set tab if it was it was sent as pamameter
        
-        token = this.getRequestParam("content:templateFormPageView:templateForm:token" );
+        token = this.getRequestParam("templateForm:token" );
         if ( token!=null) {
             if ( sessionGet(token)!=null) {
                 editTemplateService = (EditTemplateService) sessionGet(token);
@@ -603,13 +599,14 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     
     public String cancel() {
-        String forwardPage="viewStudy";
-        if (template.getMetadata().getId()==null) {
-            forwardPage="myOptions";
+        String forwardPage="manageTemplates";
+        if (editTemplateService.getCreatedFromStudyId()!=null) {
+            forwardPage="viewStudy";
+            getVDCRequestBean().setStudyId(editTemplateService.getCreatedFromStudyId());
         }
         editTemplateService.cancel();
         this.sessionRemove(token);
-        getVDCRequestBean().setStudyId(template.getMetadata().getId());
+       
         getVDCSessionBean().setStudyService(null);
         
         return  forwardPage;
@@ -1033,8 +1030,17 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     
+    private HtmlInputHidden hiddenStudyId;
+
+    public HtmlInputHidden getHiddenStudyId() {
+        return hiddenStudyId;
+    }
+
+    public void setHiddenStudyId(HtmlInputHidden hiddenStudyId) {
+        this.hiddenStudyId = hiddenStudyId;
+    }
     
- 
+    
     
     private Long templateId;
 

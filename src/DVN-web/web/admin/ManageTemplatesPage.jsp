@@ -40,7 +40,7 @@
                      
                         <h:outputText value="Manage Templates"/>
                         <br/>
-                        <h:commandButton value="Add Template" action="addTemplateAction"/>
+                        <h:commandButton value="Add Template" action="templateForm"/>
                       
                 </div>            
                 <div class="dvn_sectionBox">

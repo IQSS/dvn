@@ -164,4 +164,7 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
      */
     private void _init() {
     }
+    private String addTemplateAction() {
+        return "templateForm";
+    }
 }

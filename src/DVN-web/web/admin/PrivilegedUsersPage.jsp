@@ -153,6 +153,8 @@
             </div>
         </div>
     </ui:form>
+ </gui:define>
+        </gui:composition>
+    </body>
+</html>
 
-</f:subview>
-</jsp:root>

@@ -357,9 +357,14 @@ public class TermsOfUseFilter implements Filter {
                 dsbHost = System.getProperty("vdc.dsb.url");
             }
 
+	    String localHostByName = "localhost"; 
+	    String localHostNumeric = "127.0.0.1";
+
             boolean NOTaDSBrequest = true;
 
-            if (dsbHost.equals(req.getRemoteHost())) {
+            if ( dsbHost.equals(req.getRemoteHost()) ||
+		 localHostByName.equals(req.getRemoteHost()) ||
+		 localHostNumeric.equals(req.getRemoteHost()) ) {
                 NOTaDSBrequest = false;
             } else {
                 try {

@@ -151,10 +151,10 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         } else{
             String collIdStr = getRequestParam("collectionId");
             if (collIdStr == null){
-                collIdStr = getRequestParam("content:addCollectionStudiesPageView:form1:collId");
+                collIdStr = getRequestParam("form1:collId");
             }
             if (collIdStr == null){
-                collIdStr = getRequestParam("content:addCollectionQueryPageView:form1:collId");
+                collIdStr = getRequestParam("form1:collId");
             }
             if (collIdStr != null && collIdStr.length()>0){
                 collId = Long.parseLong(collIdStr.trim());
@@ -162,10 +162,10 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
             if (parentId == null){
                 String parentIdStr = getRequestParam("parentId");
                 if (parentIdStr == null){
-                    parentIdStr = getRequestParam("content:addCollectionStudiesPageView:form1:parentId");
+                    parentIdStr = getRequestParam("form1:parentId");
                 }
                 if (parentIdStr == null){
-                    parentIdStr = getRequestParam("content:addCollectionQueryPageView:form1:parentId");
+                    parentIdStr = getRequestParam("form1:parentId");
                 }
                 if (parentIdStr != null && parentIdStr.length()>0){
                     parentId = Long.parseLong(parentIdStr.trim());

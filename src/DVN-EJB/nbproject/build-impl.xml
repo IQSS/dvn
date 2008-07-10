@@ -15,7 +15,7 @@ is divided into following sections:
   - cleanup
 
         -->
-<project xmlns:ejbjarproject1="http://www.netbeans.org/ns/j2ee-ejbjarproject/1" xmlns:ejbjarproject2="http://www.netbeans.org/ns/j2ee-ejbjarproject/2" xmlns:ejbjarproject3="http://www.netbeans.org/ns/j2ee-ejbjarproject/3" basedir=".." default="default" name="DVN-ejb-impl">
+<project xmlns:ejbjarproject1="http://www.netbeans.org/ns/j2ee-ejbjarproject/1" xmlns:ejbjarproject2="http://www.netbeans.org/ns/j2ee-ejbjarproject/2" xmlns:ejbjarproject3="http://www.netbeans.org/ns/j2ee-ejbjarproject/3" basedir=".." default="default" name="DVN-EJB-impl">
     <import file="ant-deploy.xml"/>
     <target depends="dist,javadoc" description="Build whole project." name="default"/>
     <!-- 
@@ -71,14 +71,19 @@ is divided into following sections:
         <fail unless="platform.bootcp">Must set platform.bootcp</fail>
         <fail unless="platform.java">Must set platform.java</fail>
         <fail unless="platform.javac">Must set platform.javac</fail>
-        <fail if="platform.invalid">Platform is not correctly set up</fail>
+        <fail if="platform.invalid">
+ The J2SE Platform is not correctly set up.
+ Your active platform is: ${platform.active}, but the corresponding property "platforms.${platform.active}.home" is not found in the project's properties files. 
+ Either open the project in the IDE and setup the Platform with the same name or add it manually.
+ For example like this:
+     ant -Duser.properties.file=&lt;path_to_property_file&gt; jar (where you put the property "platforms.${platform.active}.home" in a .properties file)
+  or ant -Dplatforms.${platform.active}.home=&lt;path_to_JDK_home&gt; jar (where no properties file is used) 
+  </fail>
         <!-- Ensure configuration directory exists. -->
         <mkdir dir="${meta.inf}"/>
         <property name="runmain.jvmargs" value=""/>
         <condition property="have.tests">
-            <or>
-                <available file="${test.src.dir}"/>
-            </or>
+            <or/>
         </condition>
         <condition property="have.sources">
             <or>
@@ -119,6 +124,12 @@ is divided into following sections:
             </and>
         </condition>
         <property name="javadoc.encoding.used" value="${source.encoding}"/>
+        <condition else="" property="javac.compilerargs.jaxws" value="-Djava.endorsed.dirs='${jaxws.endorsed.dir}'">
+            <and>
+                <isset property="jaxws.endorsed.dir"/>
+                <available file="nbproject/jaxws-build.xml"/>
+            </and>
+        </condition>
     </target>
     <target name="-post-init">
         <!-- Empty placeholder for easier customization. -->
@@ -126,7 +137,6 @@ is divided into following sections:
     </target>
     <target depends="-pre-init,-init-private,-init-userdir,-init-user,-init-project,-do-init" name="-init-check">
         <fail unless="src.dir">Must set src.dir</fail>
-        <fail unless="test.src.dir">Must set test.src.dir</fail>
         <fail unless="build.dir">Must set build.dir</fail>
         <fail unless="build.generated.dir">Must set build.generated.dir</fail>
         <fail unless="dist.dir">Must set dist.dir</fail>
@@ -134,6 +144,13 @@ is divided into following sections:
         <fail unless="dist.javadoc.dir">Must set dist.javadoc.dir</fail>
         <fail unless="build.classes.excludes">Must set build.classes.excludes</fail>
         <fail unless="dist.jar">Must set dist.jar</fail>
+        <fail unless="j2ee.platform.classpath">
+The Java EE server classpath is not correctly set up. Your active server type is ${j2ee.server.type}.
+Either open the project in the IDE and assign the server or setup the server classpath manually.
+For example like this:
+   ant -Duser.properties.file=&lt;path_to_property_file&gt; (where you put the property "j2ee.platform.classpath" in a .properties file)
+or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties file is used)
+                </fail>
     </target>
     <target name="-init-macrodef-property">
         <macrodef name="property" uri="http://www.netbeans.org/ns/j2ee-ejbjarproject/1">
@@ -150,7 +167,6 @@ is divided into following sections:
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}:${j2ee.platform.classpath}" name="classpath"/>
             <attribute default="${javac.debug}" name="debug"/>
-            <attribute default="" name="javac.compilerargs.jaxws"/>
             <element name="customize" optional="true"/>
             <sequential>
                 <property name="javac.compilerargs" value=""/>
@@ -158,7 +174,7 @@ is divided into following sections:
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
-                    <compilerarg line="${javac.compilerargs} @{javac.compilerargs.jaxws}"/>
+                    <compilerarg line="${javac.compilerargs} ${javac.compilerargs.jaxws}"/>
                     <customize/>
                 </javac>
             </sequential>
@@ -169,9 +185,7 @@ is divided into following sections:
             <attribute default="**/*Test.java" name="includes"/>
             <sequential>
                 <junit dir="${basedir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" jvm="${platform.java}" showoutput="true">
-                    <batchtest todir="${build.test.results.dir}">
-                        <fileset dir="${test.src.dir}" includes="@{includes}"/>
-                    </batchtest>
+                    <batchtest todir="${build.test.results.dir}"/>
                     <classpath>
                         <path path="${run.test.classpath}"/>
                         <path path="${j2ee.platform.classpath}"/>
@@ -224,7 +238,9 @@ is divided into following sections:
             <attribute default="${build.classes.dir}" name="dir"/>
             <sequential>
                 <nbjpdareload>
-                    <fileset dir="@{dir}" includes="${fix.includes}*.class"/>
+                    <fileset dir="@{dir}" includes="${fix.classes}">
+                        <include name="${fix.includes}*.class"/>
+                    </fileset>
                 </nbjpdareload>
             </sequential>
         </macrodef>
@@ -288,6 +304,9 @@ is divided into following sections:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" name="library-inclusion-in-archive">
+        <copy file="${libs.dvn-EJB.classpath.libfile.18}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.17}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.16}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.15}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.14}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.13}" todir="${build.classes.dir}"/>
@@ -305,6 +324,9 @@ is divided into following sections:
         <copy file="${libs.dvn-EJB.classpath.libfile.1}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
+        <basename file="${libs.dvn-EJB.classpath.libfile.18}" property="included.lib.libs.dvn-EJB.classpath.18"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.17}" property="included.lib.libs.dvn-EJB.classpath.17"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.16}" property="included.lib.libs.dvn-EJB.classpath.16"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.15}" property="included.lib.libs.dvn-EJB.classpath.15"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.14}" property="included.lib.libs.dvn-EJB.classpath.14"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.13}" property="included.lib.libs.dvn-EJB.classpath.13"/>
@@ -320,6 +342,9 @@ is divided into following sections:
         <basename file="${libs.dvn-EJB.classpath.libfile.3}" property="included.lib.libs.dvn-EJB.classpath.3"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.2}" property="included.lib.libs.dvn-EJB.classpath.2"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.1}" property="included.lib.libs.dvn-EJB.classpath.1"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.18}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.17}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.16}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.15}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.14}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.13}" todir="${dist.ear.dir}"/>
@@ -336,7 +361,7 @@ is divided into following sections:
         <copy file="${libs.dvn-EJB.classpath.libfile.2}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.1}" todir="${dist.ear.dir}"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.libs.dvn-EJB.classpath.1} ${included.lib.libs.dvn-EJB.classpath.2} ${included.lib.libs.dvn-EJB.classpath.3} ${included.lib.libs.dvn-EJB.classpath.4} ${included.lib.libs.dvn-EJB.classpath.5} ${included.lib.libs.dvn-EJB.classpath.6} ${included.lib.libs.dvn-EJB.classpath.7} ${included.lib.libs.dvn-EJB.classpath.8} ${included.lib.libs.dvn-EJB.classpath.9} ${included.lib.libs.dvn-EJB.classpath.10} ${included.lib.libs.dvn-EJB.classpath.11} ${included.lib.libs.dvn-EJB.classpath.12} ${included.lib.libs.dvn-EJB.classpath.13} ${included.lib.libs.dvn-EJB.classpath.14} ${included.lib.libs.dvn-EJB.classpath.15} "/>
+            <attribute name="Class-Path" value="${included.lib.libs.dvn-EJB.classpath.1} ${included.lib.libs.dvn-EJB.classpath.2} ${included.lib.libs.dvn-EJB.classpath.3} ${included.lib.libs.dvn-EJB.classpath.4} ${included.lib.libs.dvn-EJB.classpath.5} ${included.lib.libs.dvn-EJB.classpath.6} ${included.lib.libs.dvn-EJB.classpath.7} ${included.lib.libs.dvn-EJB.classpath.8} ${included.lib.libs.dvn-EJB.classpath.9} ${included.lib.libs.dvn-EJB.classpath.10} ${included.lib.libs.dvn-EJB.classpath.11} ${included.lib.libs.dvn-EJB.classpath.12} ${included.lib.libs.dvn-EJB.classpath.13} ${included.lib.libs.dvn-EJB.classpath.14} ${included.lib.libs.dvn-EJB.classpath.15} ${included.lib.libs.dvn-EJB.classpath.16} ${included.lib.libs.dvn-EJB.classpath.17} ${included.lib.libs.dvn-EJB.classpath.18} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">
@@ -525,10 +550,8 @@ is divided into following sections:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="init,compile,-pre-pre-compile-test,-pre-compile-test" if="have.tests" name="-do-compile-test">
-        <ejbjarproject2:javac classpath="${javac.test.classpath}:${j2ee.platform.classpath}" debug="true" destdir="${build.test.classes.dir}" srcdir="${test.src.dir}"/>
-        <copy todir="${build.test.classes.dir}">
-            <fileset dir="${test.src.dir}" excludes="**/*.java"/>
-        </copy>
+        <ejbjarproject2:javac classpath="${javac.test.classpath}:${j2ee.platform.classpath}" debug="true" destdir="${build.test.classes.dir}" srcdir=""/>
+        <copy todir="${build.test.classes.dir}"/>
     </target>
     <target name="-post-compile-test">
         <!-- Empty placeholder for easier customization. -->
@@ -541,7 +564,7 @@ is divided into following sections:
     </target>
     <target depends="init,compile,-pre-pre-compile-test,-pre-compile-test-single" if="have.tests" name="-do-compile-test-single">
         <fail unless="javac.includes">Must select some files in the IDE or set javac.includes</fail>
-        <ejbjarproject2:javac classpath="${javac.test.classpath}:${j2ee.platform.classpath}" debug="true" destdir="${build.test.classes.dir}" srcdir="${test.src.dir}">
+        <ejbjarproject2:javac classpath="${javac.test.classpath}:${j2ee.platform.classpath}" debug="true" destdir="${build.test.classes.dir}" srcdir="">
             <customize>
                 <patternset includes="${javac.includes}"/>
             </customize>

@@ -50,10 +50,14 @@ import edu.harvard.hmdc.vdcnet.study.StudyRelStudy;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.StudySoftware;
 import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
+import edu.harvard.hmdc.vdcnet.util.DvnDate;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -218,7 +222,7 @@ public class StudyUI  implements java.io.Serializable {
             if (str != "") {
                 str += ", ";
             }
-            str += getStudy().getVersionDate();
+            str += reformatDate(getStudy().getVersionDate());
         }
         return str;
     }
@@ -226,28 +230,57 @@ public class StudyUI  implements java.io.Serializable {
     public String getTimePeriodCovered() {
         String str = "";
         if (!StringUtil.isEmpty(getStudy().getTimePeriodCoveredStart())) {
-            str += getStudy().getTimePeriodCoveredStart();
+            str += reformatDate(getStudy().getTimePeriodCoveredStart());
         }
         if (!StringUtil.isEmpty(getStudy().getTimePeriodCoveredEnd())) {
             if (str != "") {
                 str += " - ";
             }
-            str += getStudy().getTimePeriodCoveredEnd();
+            str += reformatDate(getStudy().getTimePeriodCoveredEnd());
         }
         return str;
+        
+    }
+    
+    public String getProductionDate() {
+        return reformatDate(getStudy().getProductionDate());
+    }
+    
+    public String getDistributionDate() {
+        return reformatDate(getStudy().getDistributionDate());
+    }
+    
+    public String getDateOfDeposit() {
+        return reformatDate(getStudy().getDateOfDeposit());
+    }
+    
+    private String reformatDate(String dateString) {
+         
+        Date date = DvnDate.convertFromPattern(dateString,"yyyy-MM-dd");
+        if (date!=null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("MMMMM dd yyyy");
+            return formatter.format(date);
+        }
+        date = DvnDate.convertFromPattern(dateString,"yyyy-MM");
+        if (date!=null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("MMMMM yyyy");
+            return formatter.format(date);
+        }
+             
+        return dateString;
         
     }
     
     public String getDateOfCollection() {
         String str = "";
         if (!StringUtil.isEmpty(getStudy().getDateOfCollectionStart())) {
-            str += getStudy().getDateOfCollectionStart();
+            str += reformatDate(getStudy().getDateOfCollectionStart());
         }
         if (!StringUtil.isEmpty(getStudy().getDateOfCollectionEnd())) {
             if (str != "") {
                 str += " - ";
             }
-            str += getStudy().getDateOfCollectionEnd();
+            str += reformatDate(getStudy().getDateOfCollectionEnd());
         }
         return str;
     }
@@ -340,7 +373,7 @@ public class StudyUI  implements java.io.Serializable {
                 if (str != "") {
                     str += "; ";
                 }
-                str += elem.getDate();
+                str += reformatDate(elem.getDate());
             }
             
         }

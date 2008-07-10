@@ -126,7 +126,7 @@
                                     <h:outputText id="text5"  value="#{studyPage.studyUI.producers}" rendered="#{!empty studyPage.studyUI.producers}" escape="false" />
                                     
                                     <dvn:inlinehelp helpMessage="#{studybundle.productionDateHelp}"  linkText="#{studybundle.productionDateLabel}" heading="#{studybundle.productionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.productionDate != '' and studyPage.studyUI.study.productionDate != null}" />
-                                    <h:outputText id="text6"  value="#{studyPage.studyUI.study.productionDate}" rendered="#{!empty studyPage.studyUI.study.productionDate}" />
+                                    <h:outputText id="text6"  value="#{studyPage.studyUI.productionDate}" rendered="#{!empty studyPage.studyUI.study.productionDate}" />
                                     
                                     <dvn:inlinehelp helpMessage="#{studybundle.productionPlaceHelp}"  linkText="#{studybundle.productionPlaceLabel}" heading="#{studybundle.productionPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.productionPlace != '' and studyPage.studyUI.study.productionPlace != null }" />
                                     <h:outputText id="text7"  value="#{studyPage.studyUI.study.productionPlace}" rendered="#{!empty studyPage.studyUI.study.productionPlace}" escape="false"/>
@@ -147,12 +147,12 @@
                                     <h:outputText id="text12" value="#{studyPage.studyUI.distributorContact}" rendered="#{!empty studyPage.studyUI.distributorContact}"  escape="false"/>
                                     
                                     <dvn:inlinehelp helpMessage="#{studybundle.distributionDateHelp}"  linkText="#{studybundle.distributionDateLabel}" heading="#{studybundle.distributionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.distributionDate != '' and studyPage.studyUI.study.distributionDate != null }"/>
-                                    <h:outputText id="text13" value="#{studyPage.studyUI.study.distributionDate}" rendered="#{!empty studyPage.studyUI.study.distributionDate}"/>
+                                    <h:outputText id="text13" value="#{studyPage.studyUI.distributionDate}" rendered="#{!empty studyPage.studyUI.study.distributionDate}"/>
                                     
                                     <dvn:inlinehelp helpMessage="#{studybundle.depositorHelp}"  linkText="#{studybundle.depositorLabel}" heading="#{studybundle.depositorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.depositor != '' and studyPage.studyUI.study.depositor != null }"/>
                                     <h:outputText  id="text14" value="#{studyPage.studyUI.study.depositor}" rendered="#{!empty studyPage.studyUI.study.depositor}" />
                                     <dvn:inlinehelp helpMessage="#{studybundle.depositDateHelp}"  linkText="#{studybundle.depositDateLabel}" heading="#{studybundle.depositDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.dateOfDeposit != '' and studyPage.studyUI.study.dateOfDeposit != null }"/>
-                                    <h:outputText id="text15"  value="#{studyPage.studyUI.study.dateOfDeposit}" rendered="#{!empty studyPage.studyUI.study.dateOfDeposit}"/>
+                                    <h:outputText id="text15"  value="#{studyPage.studyUI.dateOfDeposit}" rendered="#{!empty studyPage.studyUI.study.dateOfDeposit}"/>
                                     
                                     <dvn:inlinehelp helpMessage="#{studybundle.seriesHelp}"  linkText="#{studybundle.seriesLabel}" heading="#{studybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.series != '' }"/>
                                     <h:outputText  id="text16" value="#{studyPage.studyUI.series}" rendered="#{!empty studyPage.studyUI.series}" escape="false"/>

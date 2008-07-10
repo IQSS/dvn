@@ -179,8 +179,13 @@ public class FileDownloadServlet extends HttpServlet{
 	    }		   
 
 	    boolean NOTaDSBrequest = true;
-  
-	    if ( dsbHost.equals(req.getRemoteHost()) ) {
+
+	    String localHostByName = "localhost"; 
+	    String localHostNumeric = "127.0.0.1";
+
+	    if ( dsbHost.equals(req.getRemoteHost()) ||
+		 localHostByName.equals(req.getRemoteHost()) ||
+		 localHostNumeric.equals(req.getRemoteHost()) ) {
 		NOTaDSBrequest = false; 
 	    } else { 
 		try {

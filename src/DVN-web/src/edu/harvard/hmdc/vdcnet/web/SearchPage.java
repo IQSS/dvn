@@ -339,7 +339,7 @@ public class SearchPage extends VDCBaseBean  implements java.io.Serializable {
     public void init() {
         super.init();
         if ( isFromPage("SearchPage") ) { // this is a post, so get the studyListing and let actions handle the rest
-            String slIndex = getRequestParam("content:searchPageView:form1:studyListingIndex");
+            String slIndex = getRequestParam("form1:studyListingIndex");
             if (slIndex != null) {
                 studyListing =  getStudyListingFromMap(slIndex);
                 initText(studyListing.getMode());

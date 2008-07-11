@@ -11,7 +11,7 @@
                 </a>
              </div>
             <div class="dvn_headerTitleL"> 
-                <h:outputText  value=" " rendered="#{VDCRequest.currentVDC == null}" />
+                <h:outputText  value="&#160;" rendered="#{VDCRequest.currentVDC == null}" />
                 <h:outputLink value="/dvn" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" target="_top" rendered="#{VDCRequest.currentVDC != null}">
                     <h:outputText  value="All #{VDCRequest.vdcNetwork.name} Dataverses &#160;&gt;"  />
                 </h:outputLink>

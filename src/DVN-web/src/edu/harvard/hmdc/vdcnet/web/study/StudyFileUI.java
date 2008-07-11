@@ -219,8 +219,8 @@ public class StudyFileUI implements java.io.Serializable {
         return dataFileFormatTypes;
     }
     
-    public long getFileSize() {
+    public String getFileSize() {
         File pFile = new File (studyFile.getFileSystemLocation()); 
-        return pFile.length();
+        return String.valueOf( pFile.length() );
     }
 }

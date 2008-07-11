@@ -246,6 +246,25 @@
                         </h:panelGrid>
                         
                         
+                        <!-- DELETE PANEL -->
+                        <ui:panelGroup  block="true" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
+                            <h:outputText value="Delete Utilities"/>
+                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.deletePanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.jsp?selectedPanel=delete">  
+                                <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
+                            </h:outputLink>
+                            <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.deletePanelRendered}" />
+                        </ui:panelGroup>   
+                        
+                        <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.deletePanelRendered}" > 
+                            <h:messages id="deleteMessage"  styleClass="errorMessage"/> 
+                            <h:outputText value="To delete arbitrary studies, input the study ids and click on the button below:"/>
+                            <ui:panelGroup>
+                                <h:inputTextarea value="#{UtilitiesPage.deleteStudyIds}" rows="8" cols="80"/>
+                                <h:commandButton  value="Index Studies" action="#{UtilitiesPage.deleteStudies_action}"/>
+                            </ui:panelGroup>                            
+                        </h:panelGrid>
+                                          
+                        
                     </div>
                 </div>
             </div>

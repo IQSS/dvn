@@ -741,6 +741,43 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
 // </editor-fold>
 
     
+    // <editor-fold defaultstate="collapsed" desc="delete utilities">    
+    public boolean isDeletePanelRendered() {
+        return "delete".equals(selectedPanel);
+    }
+    
+    String deleteStudyIds;
+
+    public String getDeleteStudyIds() {
+        return deleteStudyIds;
+    }
+
+    public void setDeleteStudyIds(String deleteStudyIds) {
+        this.deleteStudyIds = deleteStudyIds;
+    }
+
+  
+    
+    public String deleteStudies_action() {
+        try {
+            Map tokenizedLists = determineStudyIds(deleteStudyIds);
+            studyService.deleteStudyList( (List) tokenizedLists.get("idList") );
+
+            addMessage( "deleteMessage", "Delete request completed." );
+            addStudyMessages( "deleteMessage", tokenizedLists);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "deleteMessage", "Delete failed: An unknown error occurred trying to delete the following: \"" + deleteStudyIds + "\"" );
+        }            
+ 
+        return null;
+    }   
+    
+
+    // </editor-fold>
+    
+    
     // ****************************
     // Common methods
     // ****************************

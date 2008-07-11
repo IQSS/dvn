@@ -87,7 +87,10 @@ public class UserServiceBean implements UserServiceLocal {
                 StudyFile studyFile = (StudyFile) it2.next();
                 studyFile.getAllowedUsers().remove(user);
             }
-
+            for (Iterator it = user.getAllowedFileVdcs().iterator(); it.hasNext();) {
+                VDC elem = (VDC) it.next();
+                elem.getAllowedFileUsers().remove(user);
+            }
 
             em.remove(user);
         }

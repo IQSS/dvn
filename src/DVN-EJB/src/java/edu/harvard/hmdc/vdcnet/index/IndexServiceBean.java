@@ -214,11 +214,13 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     
     public void indexAll(){
         Indexer indexer = Indexer.getInstance();
+        /*
         try {
             indexer.setup();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+         */ 
         List<Study> studies = studyService.getStudies();
         for (Iterator it = studies.iterator(); it.hasNext();) {
             Study elem = (Study) it.next();
@@ -228,11 +230,13 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     
     public void indexList(List <Long> studyIds){
         Indexer indexer = Indexer.getInstance();
+        /*
         try {
             indexer.setup();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+         */ 
         for (Iterator it = studyIds.iterator(); it.hasNext();) {
             Long elem = (Long) it.next();
             addDocument(elem.longValue());
@@ -241,11 +245,13 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     
     public void updateIndexList(List<Long> studyIds) {
         Indexer indexer = Indexer.getInstance();
+        /*
         try {
             indexer.setup();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+         */
         for (Iterator it = studyIds.iterator(); it.hasNext();) {
             Long elem = (Long) it.next();
             try {
@@ -264,11 +270,13 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     
     public void deleteIndexList(List<Long> studyIds) {
         Indexer indexer = Indexer.getInstance();
+        /*
         try {
             indexer.setup();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+         */
         for (Iterator it = studyIds.iterator(); it.hasNext();) {
             Long elem = (Long) it.next();
             try {

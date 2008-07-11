@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.io.FileUtils;
 
 /**
  *
@@ -221,6 +222,7 @@ public class StudyFileUI implements java.io.Serializable {
     
     public String getFileSize() {
         File pFile = new File (studyFile.getFileSystemLocation()); 
-        return String.valueOf( pFile.length() );
+        return FileUtils.byteCountToDisplaySize( pFile.length() );
+        //return String.valueOf( pFile.length() );
     }
 }

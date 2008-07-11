@@ -444,7 +444,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
             msg = "User not found.";
         }
         if (valid) {
-            for (Iterator it = harvestingDataverse.getAllowedFileUsers().iterator(); it.hasNext();) {
+            for (Iterator it = harvestingDataverse.getVdc().getAllowedFileUsers().iterator(); it.hasNext();) {
                 VDCUser elem = (VDCUser) it.next();
                 if (elem.getId().equals(user.getId())) {
                     valid=false;
@@ -483,7 +483,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
         }
         
         if (valid) {
-            for (Iterator it = harvestingDataverse.getAllowedFileGroups().iterator(); it.hasNext();) {
+            for (Iterator it = harvestingDataverse.getVdc().getAllowedFileGroups().iterator(); it.hasNext();) {
                 UserGroup elem = (UserGroup) it.next();
                 if (elem.getId().equals(group.getId())) {
                     valid=false;

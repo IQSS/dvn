@@ -260,7 +260,7 @@
                             <h:outputText value="To delete arbitrary studies, input the study ids and click on the button below:"/>
                             <ui:panelGroup>
                                 <h:inputTextarea value="#{UtilitiesPage.deleteStudyIds}" rows="8" cols="80"/>
-                                <h:commandButton  value="Index Studies" action="#{UtilitiesPage.deleteStudies_action}"/>
+                                <h:commandButton  value="Delete Studies" action="#{UtilitiesPage.deleteStudies_action}" onclick="return confirm('Please confirm this DELETE request. This change CANNOT be undone.');"/>
                             </ui:panelGroup>                            
                         </h:panelGrid>
                                           

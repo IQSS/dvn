@@ -412,6 +412,26 @@ public class VDCUser implements java.io.Serializable  {
         VDCUser other = (VDCUser)object;
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
         return true;
-    }  
+    } 
+    
+    @ManyToMany(mappedBy="allowedFileUsers")
+    @OrderBy("name ASC")
+    private java.util.List<VDC> allowedFileVdcs;
+
+    /**
+     * Getter for property memberVdcs.
+     * @return Value of property memberVdcs.
+     */
+    public java.util.List<VDC> getAllowedFileVdcs() {
+        return this.allowedFileVdcs;
+    }
+
+    /**
+     * Setter for property memberVdcs.
+     * @param memberVdcs New value of property memberVdcs.
+     */
+    public void setAllowedFileVdcs(java.util.List<VDC> memberVdcs) {
+        this.allowedFileVdcs = memberVdcs;
+    }    
         
 }

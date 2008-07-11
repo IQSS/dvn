@@ -178,7 +178,7 @@
                 
                 
                 <!-- 1. Download -->
-                <ui:tab id="tabDwnld" text="#{bundleAnalysis['dwnld.tab.text']}" 
+                <ui:tab id="tabDwnld" text="Download Subset" 
                     actionListener="#{AnalysisPage.resetVariableInLBox}" toolTip="Variable Selection and Downloading">
                     <ui:panelLayout id="layoutPanel3" panelLayout="flow" style="width: 100%;">
                         
@@ -251,7 +251,7 @@
                 <!-- 2. Recode -->
 
                 <ui:tab  id="tabRecode" 
-                         text="#{bundleAnalysis['recode.tab.text']}" 
+                         text="Recode and Case-Subsetting" 
                          actionListener="#{AnalysisPage.resetVariableInLBox}"
                          toolTip="Rocoding and Case Selection">
                     <ui:panelLayout id="layoutPanel2" panelLayout="flow" style="width: 100%;">
@@ -500,7 +500,7 @@
                 
                 
                 <!-- 3. EDA -->
-                <ui:tab id="tabEda" text="#{bundleAnalysis['eda.tab.text']}" 
+                <ui:tab id="tabEda" text="Descriptive Statistics" 
                     actionListener="#{AnalysisPage.resetVariableInLBox}"
                     toolTip="Calculate Numeric and Graphic Summaries">
                     <ui:panelLayout id="layoutPanel4" panelLayout="flow" style="width: 100%;">
@@ -562,7 +562,7 @@
                 
                 
                 <!-- 5. advStat -->
-                <ui:tab id="tabAdvStat" text="#{bundleAnalysis['advStat.tab.text']}"
+                <ui:tab id="tabAdvStat" text="Advanced Statistical Analysis"
                     toolTip="Advanced Statistical Modeling">
                     <ui:panelLayout id="layoutPanel5" panelLayout="flow" style="width: 100%;">
                         

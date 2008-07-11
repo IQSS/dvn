@@ -355,7 +355,7 @@
                                 <h:outputText style="white-space: nowrap; padding-right: 10px; " value="File Permissions"/> 
                             </ui:panelGroup>
                             <ui:panelGroup>
-                                <h:selectOneMenu  id="dropdown3" value="#{EditHarvestSitePage.harvestingDataverse.filesRestricted}" onchange="checkSubsetting(true)">
+                                <h:selectOneMenu  id="dropdown3" value="#{EditHarvestSitePage.harvestingDataverse.vdc.filesRestricted}" onchange="checkSubsetting(true)">
                                     <f:selectItem   itemLabel="Public" itemValue="false" />
                                     <f:selectItem   itemLabel="Restricted" itemValue="true" />
                                 </h:selectOneMenu>
@@ -384,8 +384,8 @@
                                 <h:outputText styleClass="vdcHelpText" value="Enter username to allow them to access restricted studies."/>
                                 <h:dataTable binding="#{EditHarvestSitePage.userTable}" cellpadding="0" cellspacing="0"
                                              columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" 
-                                             rowClasses="list-row-even,list-row-odd" value="#{EditHarvestSitePage.harvestingDataverse.allowedFileUsers}" var="currentRow" width="100%" 
-                                             rendered="#{not empty EditHarvestSitePage.harvestingDataverse.allowedFileUsers}">
+                                             rowClasses="list-row-even,list-row-odd" value="#{EditHarvestSitePage.harvestingDataverse.vdc.allowedFileUsers}" var="currentRow" width="100%" 
+                                             rendered="#{not empty EditHarvestSitePage.harvestingDataverse.vdc.allowedFileUsers}">
                                     <h:column >
                                         <f:facet name="header">
                                             <h:outputText id="users_tcol1" value="User Name"/>
@@ -410,8 +410,8 @@
                                 <h:outputText styleClass="vdcHelpText" value="Enter group name to allow them to access restricted studies."/>
                                 <h:dataTable binding="#{EditHarvestSitePage.groupTable}" cellpadding="0" cellspacing="0"
                                              columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" 
-                                             rowClasses="list-row-even,list-row-odd" value="#{EditHarvestSitePage.harvestingDataverse.allowedFileGroups}" var="currentRow" width="100%" 
-                                             rendered="#{not empty EditHarvestSitePage.harvestingDataverse.allowedFileGroups}">
+                                             rowClasses="list-row-even,list-row-odd" value="#{EditHarvestSitePage.harvestingDataverse.vdc.allowedFileGroups}" var="currentRow" width="100%" 
+                                             rendered="#{not empty EditHarvestSitePage.harvestingDataverse.vdc.allowedFileGroups}">
                                     <h:column >
                                         <f:facet name="header">
                                             <h:outputText id="groups_tcol1" value="User Name"/>

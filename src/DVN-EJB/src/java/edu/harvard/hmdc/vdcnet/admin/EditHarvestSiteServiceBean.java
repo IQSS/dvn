@@ -184,26 +184,26 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
     
     public void removeAllowedFileGroup(Long groupId) {
         UserGroup group = em.find(UserGroup.class,groupId);
-        harvestingDataverse.getAllowedFileGroups().remove(group);
+        harvestingDataverse.getVdc().getAllowedFileGroups().remove(group);
         
     }
     
     public void  addAllowedFileGroup(Long groupId) {
         UserGroup group = em.find(UserGroup.class,groupId);
-        harvestingDataverse.getAllowedFileGroups().add(group);
+        harvestingDataverse.getVdc().getAllowedFileGroups().add(group);
        
         
     }
     
      public void removeAllowedFileUser(Long userId) {
         VDCUser user = em.find(VDCUser.class,userId);
-        harvestingDataverse.getAllowedFileUsers().remove(user);
+        harvestingDataverse.getVdc().getAllowedFileUsers().remove(user);
       
     }
     
     public void  addAllowedFileUser(Long userId) {
         VDCUser user = em.find(VDCUser.class,userId);
-        harvestingDataverse.getAllowedFileUsers().add(user);
+        harvestingDataverse.getVdc().getAllowedFileUsers().add(user);
      
         
     }

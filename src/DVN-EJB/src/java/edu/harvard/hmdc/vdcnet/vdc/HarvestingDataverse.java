@@ -112,28 +112,7 @@ public class HarvestingDataverse implements Serializable {
         this.version = version;
     }
     
-    /**
-     * Holds value of property restricted.
-     * If restricted = true, then only allowedGroups and allowedUsers can view
-     * the VDC.  If false, then everyone can (it is public).
-     */
-    private boolean filesRestricted;
-    
-    /**
-     * Getter for property restricted.
-     * @return Value of property restricted.
-     */
-    public boolean isFilesRestricted() {
-        return this.filesRestricted;
-    }
-    
-    /**
-     * Setter for property restricted.
-     * @param restricted New value of property restricted.
-     */
-    public void setFilesRestricted(boolean filesRestricted) {
-        this.filesRestricted = filesRestricted;
-    }
+
 
     private boolean subsetRestricted;
 
@@ -147,112 +126,19 @@ public class HarvestingDataverse implements Serializable {
 
 
     
-    /**
-     * Holds value of property allowedFileGroups.
-     */
-    @ManyToMany(cascade={CascadeType.MERGE, CascadeType.PERSIST })
-    @JoinTable(name="harvestingdataverse_usergroup",
-            joinColumns=@JoinColumn(name="harvestingdataverse_id"),
-            inverseJoinColumns=@JoinColumn(name="allowedfilegroups_id"))
-    private Collection<UserGroup> allowedFileGroups;
-    
-    /**
-     * Getter for property allowedGroups.
-     * @return Value of property allowedGroups.
-     */
-    public Collection<UserGroup> getAllowedFileGroups() {
-        return this.allowedFileGroups;
-    }
-    
-    /**
-     * Setter for property allowedGroups.
-     * @param allowedGroups New value of property allowedGroups.
-     */
-    public void setAllowedFileGroups(Collection<UserGroup> allowedFileGroups) {
-        this.allowedFileGroups = allowedFileGroups;
-    }
-    
-    public boolean areFilesRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
-        if (this.filesRestricted) {
-            if (user!=null && user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
-                return false;
-            }
-            if (!allowedFileUsers.contains(user) ) {
-                boolean foundUserInGroup=false;
-                for (Iterator it = allowedFileGroups.iterator(); it.hasNext();) {
-                    UserGroup elem = (UserGroup) it.next();
-                    if (elem.equals(ipUserGroup)) {
-                        foundUserInGroup=true;
-                        break;
-                    }
-                    if (elem.getUsers().contains(user)) {
-                        foundUserInGroup=true;
-                        break;
-                    }
-                }
-                if (!foundUserInGroup) {
-                    return true;
-                }
-                     
-            }
-        }
-        return false;
-    }
+
     
     public boolean isSubsetRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
-        if (areFilesRestrictedForUser(user, ipUserGroup)) {
+        if (this.vdc.areFilesRestrictedForUser(user, ipUserGroup)) {
             return this.subsetRestricted;
         } else {
             return false;
         }
     }
     
-     /**
-     * Holds value of property allowedFileUsers.
-     */
-    @ManyToMany(cascade={ CascadeType.MERGE, CascadeType.PERSIST })
-    private Collection<VDCUser> allowedFileUsers;
-    
-    /**
-     * Getter for property allowedFileUsers.
-     * @return Value of property allowedGroups.
-     */
-    public Collection<VDCUser> getAllowedFileUsers() {
-        return this.allowedFileUsers;
-    }
-    
-    /**
-     * Setter for property allowedFileUsers.
-     * @param allowedGroups New value of property allowedGroups.
-     */
-    public void setAllowedFileUsers(Collection<VDCUser> allowedFileUsers) {
-        this.allowedFileUsers = allowedFileUsers;
-    }
-    
-    
-    public boolean userInAllowedFileGroups(VDCUser user) {
-        boolean foundUser=false;
-        for (Iterator it = allowedFileGroups.iterator(); it.hasNext();) {
-            UserGroup elem = (UserGroup) it.next();
-            if (elem.getUsers().contains(user)) {
-                foundUser=true;
-                break;
-            }
-        }
-        return foundUser;
-    }
-    
-    public boolean isAllowedGroup(UserGroup usergroup) {
-        boolean foundGroup=false;
-        for (Iterator it = allowedFileGroups.iterator(); it.hasNext();) {
-            UserGroup elem = (UserGroup) it.next();
-            if (elem.getId().equals(usergroup.getId())) {
-                foundGroup=true;
-                break;
-            }
-        }
-        return foundGroup;
-    }
+
+
+
 
     /**
      * Holds value of property oaiServer.

@@ -247,7 +247,7 @@ public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializa
             success = false;
             FacesMessage message = new FacesMessage("To enable announcements, you must also enter announcements in the field below.  Please enter local announcements as either plain text or html.");
             FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage("content:EditHomePanelsPageView:editHomePanelsForm:localAnnouncements", message);
+            context.addMessage("editHomePanelsForm:localAnnouncements", message);
             context.renderResponse();
         }
         return isAnnouncements;

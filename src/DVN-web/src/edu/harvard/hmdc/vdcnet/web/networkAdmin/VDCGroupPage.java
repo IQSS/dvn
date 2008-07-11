@@ -139,7 +139,7 @@ public class VDCGroupPage extends VDCBaseBean implements java.io.Serializable  {
                msg    = "Validation Error: The name field is required.";
                result = "failed";
                success = false;
-               FacesContext.getCurrentInstance().addMessage("content:vDCGroupEditView:vdcGroupEditForm:name", new FacesMessage(msg));
+               FacesContext.getCurrentInstance().addMessage("vdcGroupEditForm:name", new FacesMessage(msg));
                if (vdcgroup.getId() != null) {
                 HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
                 request.setAttribute("vdcGroupId", vdcgroup.getId());

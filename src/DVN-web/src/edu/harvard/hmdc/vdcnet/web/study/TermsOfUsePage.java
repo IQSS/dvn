@@ -94,7 +94,7 @@ public class TermsOfUsePage extends VDCBaseBean {
         if (touParam!=null) {
             type = touParam;
         } else  {
-            type = getRequestParam("content:termsOfUsePageView:form1:tou");
+            type = getRequestParam("form1:tou");
         }
         return type;
     }
@@ -139,9 +139,9 @@ public class TermsOfUsePage extends VDCBaseBean {
             // now check specific JSF post parameters
             try {
                 if ( isFromPage("TermsOfUsePage") ) {
-                    studyId = new Long(getRequestParam("content:termsOfUsePageView:form1:studyId"));   
+                    studyId = new Long(getRequestParam("form1:studyId"));   
                 } else if ( isFromPage("StudyPage") ) {
-                    studyId = new Long(getRequestParam("content:studyPageView:form1:studyId"));
+                    studyId = new Long(getRequestParam("form1:studyId"));
                 } else { //check the requestBean; if coming from some other page
                     studyId = getVDCRequestBean().getStudyId();
                 }

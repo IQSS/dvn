@@ -469,7 +469,7 @@ public class DvnDataList extends UICommand implements java.io.Serializable {
                 previousLink.setId("previous_" + formatSafeKey(heading) + "_" + appendToId); // Custom ID is required in dynamic UIInput and UICommand.
                 previousLink.getClientId(context);
                 previousLink.setValue(previousText);
-                previousLink.setReRender("content:homePageView:form1:dataMapOutput");
+                previousLink.setReRender("form1:dataMapOutput");
                 previousLink.setImmediate(true);
                 MethodExpression previousActionListener = expressionFactory.createMethodExpression(elContext, "#{HomePage.page_action}", null, new Class[] {ActionEvent.class});
                 previousLink.addActionListener(new MethodExpressionActionListener(previousActionListener));
@@ -490,7 +490,7 @@ public class DvnDataList extends UICommand implements java.io.Serializable {
                 nextLink.setId("next_" + formatSafeKey(heading) + "_" + appendToId); // Custom ID is required in dynamic UIInput and UICommand.
                 nextLink.getClientId(context);
                 nextLink.setValue(nextText);
-                nextLink.setReRender("content:homePageView:form1:dataMapOutput");
+                nextLink.setReRender("form1:dataMapOutput");
                 nextLink.setImmediate(true);
                 MethodExpression nextActionListener = expressionFactory.createMethodExpression(elContext, "#{HomePage.page_action}", null, new Class[] {ActionEvent.class});
                 nextLink.addActionListener(new MethodExpressionActionListener(nextActionListener));

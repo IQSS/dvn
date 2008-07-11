@@ -129,7 +129,7 @@ public class EditDepositUseTermsPage extends VDCBaseBean implements java.io.Seri
          if ( (elementValue == null || elementValue.equals("")) && (termsOfUseEnabled) ) {
             isUseTerms = false;
             FacesMessage message = new FacesMessage("To enable this feature, you must also enter terms of use in the field below.  Please enter terms of use as either plain text or html.");
-            FacesContext.getCurrentInstance().addMessage("content:EditUseTermsPageView:form1:textArea1", message);
+            FacesContext.getCurrentInstance().addMessage("form1:textArea1", message);
         }
         return isUseTerms;
     }

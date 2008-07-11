@@ -463,14 +463,14 @@ public class FileDownloadServlet extends HttpServlet{
 				    PostMethod TOUpostMethod = new PostMethod( redirectLocation + ";jsessionid=" + jsessionid ); 
 				
 				    Part[] parts = {
-					new StringPart( "content:termsOfUsePageView:form1:vdcId", "" ),
+					new StringPart( "form1:vdcId", "" ),
 					new StringPart( "pageName", "TermsOfUsePage" ),
-					new StringPart( "content:termsOfUsePageView:form1:studyId", studyid ),
-					new StringPart( "content:termsOfUsePageView:form1:redirectPage", "/FileDownload/?fileId=" + remotefileid ),
-					new StringPart( "content:termsOfUsePageView:form1:tou", "download" ),
-					new StringPart( "content:termsOfUsePageView:form1:termsAccepted", "on" ),
-					new StringPart( "content:termsOfUsePageView:form1:termsButton", "Continue" ),
-					new StringPart( "content:termsOfUsePageView:form1_hidden", "content:termsOfUsePageView:form1_hidden'" ),
+					new StringPart( "form1:studyId", studyid ),
+					new StringPart( "form1:redirectPage", "/FileDownload/?fileId=" + remotefileid ),
+					new StringPart( "form1:tou", "download" ),
+					new StringPart( "form1:termsAccepted", "on" ),
+					new StringPart( "form1:termsButton", "Continue" ),
+					new StringPart( "form1_hidden", "form1_hidden'" ),
 					new StringPart( "javax.faces.ViewState", viewstate )
 				    };
 

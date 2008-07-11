@@ -50,8 +50,8 @@ import org.w3c.dom.NodeList;
 public class XhtmlValidator implements Validator, java.io.Serializable  {
     private static String msg = new String();
 
-    public String partOneClientId = new String("content:editBannerFooterView:editBannerFooterForm:banner");
-    public String partTwoClientId = new String("content:editBannerFooterView:editBannerFooterForm:footer");
+    public String partOneClientId = new String("editBannerFooterForm:banner");
+    public String partTwoClientId = new String("editBannerFooterForm:footer");
     
     private static String partOneString = new String("");
     private static String partTwoString = new String("");
@@ -81,7 +81,7 @@ public class XhtmlValidator implements Validator, java.io.Serializable  {
                 message.setSeverity(FacesMessage.SEVERITY_ERROR);
                 ((UIInput)component).setValid(false);
                 if (isCombinedString) {
-                    context.addMessage("content:editBannerFooterView:editBannerFooterForm:combined", message);
+                    context.addMessage("editBannerFooterForm:combined", message);
                     isCombinedString = false;
                 } else {
                     context.addMessage(component.getClientId(context), message);

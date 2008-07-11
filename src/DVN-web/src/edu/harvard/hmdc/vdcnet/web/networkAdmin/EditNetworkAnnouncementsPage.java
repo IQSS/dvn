@@ -410,7 +410,7 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
             success = false;
             FacesMessage message = new FacesMessage("To enable announcements, you must also enter announcements in the field below.  Please enter announcements as either plain text or html.");
             FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage("content:EditNetworkAnnouncementsPageView:editNetworkAnnouncementsForm:networkAnnouncements", message);
+            context.addMessage("editNetworkAnnouncementsForm:networkAnnouncements", message);
             context.renderResponse();
         }
         return isAnnouncements;

@@ -117,10 +117,10 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         if (id != null){
             collId = id;
         } else{
-//            String collIdStr = getRequestParam("content:editCollectionPageView:form1:collectionId");
+//            String collIdStr = getRequestParam("form1:collectionId");
             String collIdStr = getRequestParam("collectionId");
             if (collIdStr == null){
-                collIdStr = getRequestParam("content:editCollectionPageView:form1:collectionId");
+                collIdStr = getRequestParam("form1:collectionId");
             }
             collId = Long.parseLong(collIdStr);
         }

@@ -992,6 +992,16 @@ public class FileDownloadServlet extends HttpServlet{
                     InputStream in = null;
 		    //ReadableByteChannel in = null; 
 
+
+		    String varHeaderLine = null; 
+		    String dbContentType = file.getFileType();
+
+		    if ( dbContentType != null && dbContentType.equals ("text/tab-separated-values") && file.isSubsettable() ) {
+			List datavariables = file.getDataTable().getDataVariables();
+			varHeaderLine = generateVariableHeader ( datavariables );
+		    }
+
+
 		    if ( file.isRemote() ) {
 
 			// do the http magic
@@ -1038,6 +1048,10 @@ public class FileDownloadServlet extends HttpServlet{
                     
                     zout.putNextEntry(e);
 
+		    if ( varHeaderLine != null ) {
+			zout.write(varHeaderLine.getBytes()); 
+		    }
+
 		    byte[] dataBuffer = new byte[8192]; 
 
 		    int i = 0;
@@ -1049,13 +1063,11 @@ public class FileDownloadServlet extends HttpServlet{
                     in.close();
                     zout.closeEntry();
 
-		    String ft = file.getFileType(); 
-
-		    if ( ft == null ) {
-			ft = "unknown filetype;"; 
+		    if ( dbContentType == null ) {
+			dbContentType = "unknown filetype;"; 
 		    } 
 		    
-		    fileManifest = fileManifest + file.getFileName() + " " + ft + " " + fileSize + " bytes.\r\n";
+		    fileManifest = fileManifest + file.getFileName() + " (" + dbContentType + ") " + fileSize + " bytes.\r\n";
 
 
 		    // if this was a remote stream, let's close

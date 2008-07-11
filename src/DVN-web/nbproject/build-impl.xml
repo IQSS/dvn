@@ -550,6 +550,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
     </target>
     <target depends="init,compile,compile-jsps,-pre-dist,-do-dist-with-manifest,-do-dist-without-manifest" name="do-dist"/>
     <target depends="init" if="dist.ear.dir" name="library-inclusion-in-manifest">
+        <copy file="${libs.dvn-WEB.classpath.libfile.21}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.20}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.19}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.18}" todir="${build.web.dir}/WEB-INF/lib"/>
@@ -586,6 +587,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <delete dir="${dist.ear.dir}/temp"/>
     </target>
     <target depends="init" name="library-inclusion-in-archive" unless="dist.ear.dir">
+        <copy file="${libs.dvn-WEB.classpath.libfile.21}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.20}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.19}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.dvn-WEB.classpath.libfile.18}" todir="${build.web.dir}/WEB-INF/lib"/>

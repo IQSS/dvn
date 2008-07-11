@@ -23,7 +23,7 @@
                 <library files="4">
                     <file>${libs.jsf12-support.classpath}</file>
                 </library>
-                <library files="20">
+                <library files="21">
                     <file>${libs.dvn-WEB.classpath}</file>
                 </library>
                 <library files="1">
@@ -31,7 +31,7 @@
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries>
-                <library files="20">
+                <library files="21">
                     <file>${libs.dvn-WEB.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>

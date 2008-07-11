@@ -388,7 +388,7 @@
                                         <f:facet name="header">
                                             <h:outputText id="users_tcol1" value="User Name"/>
                                         </f:facet>
-                                        <h:outputLink  value="../login/AccountPage.jsp?userId=#{currentRow.id}">
+                                        <h:outputLink  value="/dvn/faces/login/AccountPage.jsp?userId=#{currentRow.id}">
                                             <h:outputText  value="#{currentRow.userName}"/>
                                         </h:outputLink>
                                     </h:column>
@@ -414,7 +414,7 @@
                                         <f:facet name="header">
                                             <h:outputText id="groups_tcol1" value="User Name"/>
                                         </f:facet>
-                                        <h:outputLink  value="../networkAdmin/ViewUserGroupPage.jsp?userGroupId=#{currentRow.id}">
+                                        <h:outputLink  value="/dvn/faces/networkAdmin/ViewUserGroupPage.jsp?userGroupId=#{currentRow.id}">
                                             <h:outputText  value="#{currentRow.name}"/>
                                         </h:outputLink>
                                     </h:column>

@@ -43,7 +43,7 @@
                                 <f:facet name="header">
                                     <h:outputText id="outputText2" value="Username"/>
                                 </f:facet>
-                                <h:outputLink id="hyperlink2"  value="../login/AccountPage.jsp?userId=#{currentRow.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
+                                <h:outputLink id="hyperlink2"  value="/dvn/faces/login/AccountPage.jsp?userId=#{currentRow.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
                                     <h:outputText id="hyperlink2Text1" value="#{currentRow.user.userName}"/>
                                 </h:outputLink>
                             </h:column>

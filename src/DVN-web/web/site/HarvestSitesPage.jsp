@@ -46,7 +46,7 @@
                                 <h:outputText id="outputText2" value="Harvest Dataverse"/>
                             </f:facet>
                             <h:outputText  value="#{currentRow.vdc.name}" rendered="#{currentRow.harvestingNow}" />
-                            <h:outputLink rendered="#{!currentRow.harvestingNow}"  value="EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
+                            <h:outputLink rendered="#{!currentRow.harvestingNow}"  value="/dvn/faces/site/EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
                                 <h:outputText  value="#{currentRow.vdc.name}"/>
                             </h:outputLink>
                         </h:column>
@@ -65,7 +65,7 @@
                             </f:facet>
                             <h:commandButton value="Schedule Harvesting" rendered="#{currentRow.oai and !currentRow.scheduled and !empty currentRow.schedulePeriod }" actionListener="#{HarvestSitesPage.doSchedule}"/>
                             <h:commandButton value="Unschedule Harvesting" rendered="#{currentRow.oai and currentRow.scheduled and !empty currentRow.schedulePeriod }" actionListener="#{HarvestSitesPage.doUnschedule}"/>                      
-                             <h:outputLink rendered="#{currentRow.oai and !currentRow.harvestingNow and empty currentRow.schedulePeriod}"  value="EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
+                             <h:outputLink rendered="#{currentRow.oai and !currentRow.harvestingNow and empty currentRow.schedulePeriod}"  value="/dvn/faces/site/EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
                                 <h:outputText  value=" Define Harvesting Schedule"/>
                             </h:outputLink>
                        </h:column>
@@ -82,7 +82,7 @@
                                 <h:outputText id="outputText3" value="Remove"/>
                             </f:facet>
                             <!--h:commandButton  value="Remove"  actionListener="#{HarvestSitesPage.doRemoveHarvestDataverse}"/-->
-                            <h:outputLink disabled="#{currentRow.harvestingNow}" value="DeleteDataversePage.jsp?deleteId=#{currentRow.vdc.id}">
+                            <h:outputLink disabled="#{currentRow.harvestingNow}" value="/dvn/faces/site/DeleteDataversePage.jsp?deleteId=#{currentRow.vdc.id}">
                                 <h:outputText  value="Remove"/>
                             </h:outputLink>                           
                         </h:column>
@@ -114,7 +114,7 @@
                                 <h:outputText  value="Remove"/>
                             </f:facet>
                             <!--h:commandButton  value="Remove" actionListener="#{HarvestSitesPage.doRemoveDataverse}"/-->
-                            <h:outputLink   value="DeleteDataversePage.jsp?deleteId=#{currentRow.id}">
+                            <h:outputLink   value="/dvn/faces/site/DeleteDataversePage.jsp?deleteId=#{currentRow.id}">
                                 <h:outputText id="hyperlink1Text1" value="Remove"/>
                             </h:outputLink>                     
                         </h:column>

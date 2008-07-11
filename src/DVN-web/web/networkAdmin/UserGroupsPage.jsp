@@ -44,7 +44,7 @@
                             <f:facet name="header">
                                 <h:outputText id="column1Header" value="Group"/>
                             </f:facet>
-                            <h:outputLink value="EditUserGroupPage.jsp?userGroupId=#{currentRow.group.id}">
+                            <h:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.jsp?userGroupId=#{currentRow.group.id}">
                                 <h:outputText value="#{currentRow.group.name}"/>
                             </h:outputLink>
                         </h:column>
@@ -52,7 +52,7 @@
                             <f:facet name="header">
                                 <h:outputText id="column2Header" value="Friendly Group Name"/>
                             </f:facet>
-                            <h:outputLink value="EditUserGroupPage.jsp?userGroupId=#{currentRow.group.id}">
+                            <h:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.jsp?userGroupId=#{currentRow.group.id}">
                                 <h:outputText value="#{currentRow.group.friendlyName}"/>
                             </h:outputLink>
                         </h:column>

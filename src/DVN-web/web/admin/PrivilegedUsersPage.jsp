@@ -20,7 +20,6 @@
 
   <gui:define name="body">
 
-
 <ui:form id="privilegedUsersForm">
        <input type="hidden" name="pageName" value="PrivilegedUsersPage"/>
        <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/> 
@@ -143,6 +142,79 @@
                             <h:commandButton  id="removeGroupButton" value="Remove Group" actionListener="#{PrivilegedUsersPage.removeGroup}" />                                            
                         </h:column>
                     </h:dataTable>
+                    <ui:panelGroup block="true" style="padding-top: 10px; padding-bottom: 10px">
+                        <h:outputText styleClass="vdcSubHeaderColor" value="- Edit Dataverse Level File Permissions:"/>  
+                    </ui:panelGroup>                    
+                        <h:panelGrid cellpadding="0" cellspacing="0"
+                                     columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" style="margin-top: 30px; margin-bottom: 30px">
+                            <ui:panelGroup block="true" style="vertical-align: top;">
+                                <h:outputText style="white-space: nowrap; padding-right: 10px; " value="File Permissions"/> 
+                            </ui:panelGroup>
+                            <ui:panelGroup>
+                                <h:selectOneMenu  id="dropdown3" value="#{PrivilegedUsersPage.vdc.filesRestricted}" onchange="checkSubsetting(true)">
+                                    <f:selectItem   itemLabel="Public" itemValue="false" />
+                                    <f:selectItem   itemLabel="Restricted" itemValue="true" />
+                                </h:selectOneMenu>
+                                <br />
+                                <h:outputText styleClass="vdcHelpText" value="Select to make all files for all studies in this dataverse public or restricted."/>
+                            </ui:panelGroup>
+                                                                
+                            <ui:panelGroup block="true" style="vertical-align: top;">
+                                <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Allowed Users, if Files are Restricted"/> 
+                            </ui:panelGroup>
+                            <ui:panelGroup>
+                                <h:inputText binding="#{PrivilegedUsersPage.fileUserInputText}" value="#{PrivilegedUsersPage.addFileUserName}" />
+                                <h:commandButton  value="Add" actionListener="#{PrivilegedUsersPage.addFileUser}" />
+                                
+                                <br />
+                                <h:outputText styleClass="vdcHelpText" value="Enter username to allow them to access restricted studies."/>
+                                <h:dataTable binding="#{PrivilegedUsersPage.fileUserTable}" cellpadding="0" cellspacing="0"
+                                             columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" 
+                                             rowClasses="list-row-even,list-row-odd" value="#{PrivilegedUsersPage.vdc.allowedFileUsers}" var="currentRow" width="100%" 
+                                             rendered="#{not empty PrivilegedUsersPage.vdc.allowedFileUsers}">
+                                    <h:column >
+                                        <f:facet name="header">
+                                            <h:outputText id="users_tcol1" value="User Name"/>
+                                        </f:facet>
+                                        <h:outputLink  value="../login/AccountPage.jsp?userId=#{currentRow.id}">
+                                            <h:outputText  value="#{currentRow.userName}"/>
+                                        </h:outputLink>
+                                    </h:column>
+                                    
+                                    <h:column>
+                                        <h:commandButton  id="removeUserButton" value="Remove User" actionListener="#{PrivilegedUsersPage.removeFileUser}" />                                            
+                                    </h:column>
+                                </h:dataTable>                                            
+                            </ui:panelGroup>
+                            <ui:panelGroup block="true" style="vertical-align: top;">
+                                <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Allowed Groups, if Files are Restricted"/> 
+                            </ui:panelGroup>
+                            <ui:panelGroup>
+                                <h:inputText value="#{PrivilegedUsersPage.addFileGroupName}" /> <h:commandButton  value="Add"  actionListener="#{PrivilegedUsersPage.addFileGroup}" />
+                                
+                                <br />
+                                <h:outputText styleClass="vdcHelpText" value="Enter group name to allow them to access restricted studies."/>
+                                <h:dataTable binding="#{PrivilegedUsersPage.fileGroupTable}" cellpadding="0" cellspacing="0"
+                                             columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" 
+                                             rowClasses="list-row-even,list-row-odd" value="#{PrivilegedUsersPage.vdc.allowedFileGroups}" var="currentRow" width="100%" 
+                                             rendered="#{not empty PrivilegedUsersPage.vdc.allowedFileGroups}">
+                                    <h:column >
+                                        <f:facet name="header">
+                                            <h:outputText id="groups_tcol1" value="User Name"/>
+                                        </f:facet>
+                                        <h:outputLink  value="../networkAdmin/ViewUserGroupPage.jsp?userGroupId=#{currentRow.id}">
+                                            <h:outputText  value="#{currentRow.name}"/>
+                                        </h:outputLink>
+                                    </h:column>
+                                    
+                                    <h:column>
+                                        <h:commandButton  id="removeGroupButton" value="Remove Group" actionListener="#{PrivilegedUsersPage.removeFileGroup}" />                                            
+                                    </h:column>
+                                </h:dataTable>                                            
+                                
+                            </ui:panelGroup>
+                        </h:panelGrid>                    
+                    
                     <ui:panelGroup block="true"  style="padding-bottom: 10px; padding-top: 10px; padding-right: 5px;" styleClass="vdcTextRight">
                         <h:outputText  styleClass="vdcHelpText" value="(Nothing in this page will be saved until you click  Save Changes)"/>
                         <h:commandButton  id = "saveChangesButton" value="Save Changes" action="#{PrivilegedUsersPage.saveChanges}"/>   

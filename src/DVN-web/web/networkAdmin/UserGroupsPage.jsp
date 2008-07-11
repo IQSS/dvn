@@ -33,7 +33,7 @@
                         <h:outputText id="statusMessage"  value="#{UserGroupsPage.statusMessage.messageText}" />
                     </ui:panelLayout>
                     
-                    <h:outputLink value="EditUserGroupPage.jsp?userGroupType=usergroup">
+                    <h:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.jsp?userGroupType=usergroup">
                         <h:outputText value="Create a New Group"/>
                     </h:outputLink>
                     

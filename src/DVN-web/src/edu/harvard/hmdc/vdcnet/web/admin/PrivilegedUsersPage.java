@@ -25,7 +25,6 @@
  */
 package edu.harvard.hmdc.vdcnet.web.admin;   
 
-import edu.harvard.hmdc.vdcnet.admin.ContributorRequestBean;
 import edu.harvard.hmdc.vdcnet.admin.EditVDCPrivilegesService;
 import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceBean;
@@ -46,6 +45,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIData;
 import javax.faces.component.UIInput;
+import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -542,5 +542,162 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         this.sessionRemove(editVDCPrivileges.getClass().getName());
         return  forwardPage;
     }
+    
+  /**
+     * Holds value of property groupTable.
+     */
+    private HtmlDataTable fileGroupTable;
+    
+    /**
+     * Getter for property groupTable.
+     * @return Value of property groupTable.
+     */
+    public HtmlDataTable getFileGroupTable() {
+        return this.fileGroupTable;
+    }
+    
+    /**
+     * Setter for property groupTable.
+     * @param groupTable New value of property groupTable.
+     */
+    public void setFileGroupTable(HtmlDataTable fileGroupTable) {
+        this.fileGroupTable = fileGroupTable;
+    }
+    
+    /**
+     * Holds value of property userTable.
+     */
+    private HtmlDataTable fileUserTable;
+    
+    /**
+     * Getter for property userTable.
+     * @return Value of property userTable.
+     */
+    public HtmlDataTable getFileUserTable() {
+        return this.fileUserTable;
+    }
+    
+    /**
+     * Setter for property userTable.
+     * @param userTable New value of property userTable.
+     */
+    public void setFileUserTable(HtmlDataTable fileUserTable) {
+        this.fileUserTable = fileUserTable;
+    }
+    
+    /**
+     * Holds value of property addUserName.
+     */
+    private String addFileUserName;
+    
+    /**
+     * Getter for property addUserName.
+     * @return Value of property addUserName.
+     */
+    public String getAddFileUserName() {
+        return this.addFileUserName;
+    }
+    
+    /**
+     * Setter for property addUserName.
+     * @param addUserName New value of property addUserName.
+     */
+    public void setAddFileUserName(String addFileUserName) {
+        this.addFileUserName = addFileUserName;
+    }
+    
+    /**
+     * Holds value of property addGroupName.
+     */
+    private String addFileGroupName;
+    
+    /**
+     * Getter for property addGroupName.
+     * @return Value of property addGroupName.
+     */
+    public String getAddFileGroupName() {
+        return this.addFileGroupName;
+    }
+    
+    /**
+     * Setter for property addGroupName.
+     * @param addGroupName New value of property addGroupName.
+     */
+    public void setAddFileGroupName(String addFileGroupName) {
+        this.addFileGroupName = addFileGroupName;
+    }
+    
+    public void removeFileGroup(ActionEvent ae) {
+        this.editVDCPrivileges.removeAllowedFileGroup(((UserGroup)fileGroupTable.getRowData()).getId());
+        
+    }
+    
+    public void removeFileUser(ActionEvent ae) {
+        this.editVDCPrivileges.removeAllowedFileUser(((VDCUser)fileUserTable.getRowData()).getId());
+        
+    }
+    
+    public void addFileUser(ActionEvent ae) {
+        
+        if (validateUserName(FacesContext.getCurrentInstance(),fileUserInputText, addFileUserName)) {
+            VDCUser   user = userService.findByUserName(addFileUserName);
+            this.editVDCPrivileges.addAllowedFileUser(user.getId());
+            
+            addFileUserName="";
+        }
+        
+    }
+    
+    
+    public void addFileGroup(ActionEvent ae) {
+        if (validateGroupName(FacesContext.getCurrentInstance(), fileGroupInputText, addFileGroupName)) {
+            UserGroup group = groupService.findByName(addFileGroupName);
+            this.editVDCPrivileges.addAllowedFileGroup(group.getId());
+            addFileGroupName="";
+        }
+        
+    }   
+     /**
+     * Holds value of property userInputText.
+     */
+    private HtmlInputText fileUserInputText;
+    
+    /**
+     * Getter for property userInputText.
+     * @return Value of property userInputText.
+     */
+    public HtmlInputText getFileUserInputText() {
+        return this.fileUserInputText;
+    }
+    
+    /**
+     * Setter for property userInputText.
+     * @param userInputText New value of property userInputText.
+     */
+    public void setFileUserInputText(HtmlInputText fileUserInputText) {
+        this.fileUserInputText = fileUserInputText;
+    }
+    
+    /**
+     * Holds value of property groupInputText.
+     */
+    private HtmlInputText fileGroupInputText;
+    
+    /**
+     * Getter for property groupInputText.
+     * @return Value of property groupInputText.
+     */
+    public HtmlInputText getFileGroupInputText() {
+        return this.fileGroupInputText;
+    }
+    
+    /**
+     * Setter for property groupInputText.
+     * @param groupInputText New value of property groupInputText.
+     */
+    public void setFileGroupInputText(HtmlInputText fileGroupInputText) {
+        this.fileGroupInputText = fileGroupInputText;
+    }
+       
 }
 

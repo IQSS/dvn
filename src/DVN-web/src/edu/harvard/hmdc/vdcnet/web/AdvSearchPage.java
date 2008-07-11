@@ -99,7 +99,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     private ResourceBundle messages = ResourceBundle.getBundle("Bundle");
     private HashMap advSearchFieldMap= new HashMap();
     private HashMap operatorMap = new HashMap();
-    private String[] advancedSearchFields = {"title","authorName","studyId","otherId","abstractText","keywordValue","keywordVocabulary","topicClassValue","topicClassVocabulary","producerName","distributorName","fundingAgency","productionDate","distributionDate","dateOfDeposit","timePeriodCoveredStart","timePeriodCoveredEnd","country","geographicCoverage","geographicUnit","universe","kindOfData","variable"};
+    private String[] advancedSearchFields = {"title","authorName","globalId","otherId","abstractText","keywordValue","keywordVocabulary","topicClassValue","topicClassVocabulary","producerName","distributorName","fundingAgency","productionDate","distributionDate","dateOfDeposit","timePeriodCoveredStart","timePeriodCoveredEnd","country","geographicCoverage","geographicUnit","universe","kindOfData","variable"};
     private boolean collectionsIncluded;
     private boolean variableSearch;
 

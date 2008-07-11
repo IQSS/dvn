@@ -37,13 +37,13 @@ import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.util.WebStatisticsSupport;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletResponse;
 
@@ -217,5 +217,10 @@ public class StudyFileUI implements java.io.Serializable {
         dataFileFormatTypes.addAll(studyService.getDataFileFormatTypes());
 
         return dataFileFormatTypes;
+    }
+    
+    public long getFileSize() {
+        File pFile = new File (studyFile.getFileSystemLocation()); 
+        return pFile.length();
     }
 }

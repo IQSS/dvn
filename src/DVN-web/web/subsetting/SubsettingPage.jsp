@@ -22,35 +22,9 @@
       <f:loadBundle basename="Bundle" var="bundle"/>
       <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 
-<!-- to change the content type or response encoding change the following line -->
-<jsp:directive.page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"/>
-<jsp:directive.page import="java.util.*" />
-<!-- scriptlet to check request header and parameters -->
-<jsp:scriptlet>
-<![CDATA[  
-  //value=request.getParameter("form1:tabSet1:tabDwnld:dwnldBttn");
-
-  List<String> vec = new ArrayList<String>();
-  Enumeration em = request.getHeaderNames();
-  while( em.hasMoreElements() ) {
-      String name = (String)em.nextElement();
-      //String[] values = request.getHeader( name );
-      Enumeration emx = request.getHeaders( name );
-      while (emx.hasMoreElements()) {
-        vec.add( "<tr><td>"+name + "</td><td>" + (String)emx.nextElement() +"</td></tr>");
-      }
-  }
-    String cntxpth = request.getContextPath();    
-  Map hm = request.getParameterMap();
-  Set es = hm.entrySet();
-  String dataFileId = request.getParameter("dtId");
-  if (dataFileId == null) {
-    dataFileId = (String) request.getAttribute("dtId");
-  }
-  String shlurl = cntxpth + "/sumStat?" + "dtId="+dataFileId;
-]]></jsp:scriptlet>
-<![CDATA[
+    <f:verbatim>
     <script type="text/javascript">
+      //<![CDATA[
             // share-remoting related code
             var req=null;
             var cellId;
@@ -101,7 +75,9 @@
                     //alert("show case");
                     if (!isQStableAttached(rowId)){
                         //alert("make an ajax call");
-                        var qsString = "]]><jsp:expression>shlurl</jsp:expression><![CDATA[";
+                        var cntxpth = "${request.contextPath}";
+                        var afterCntxpth = "/sumStat" + "\x3F" + "dtId=${param.dtId}";
+                        var qsString = cntxpth + afterCntxpth;
                         var ampVId = "\x26" + "varId=";
                         qsString = qsString + ampVId + rowId;
                         sendRequest(qsString, processQSrequest);
@@ -168,8 +144,9 @@
                 alert("The browser failed to get summary statistics from the server.\n"+
                       "Please make sure of your internet connection and try again later");
             }
-            
-        </script>]]>
+       // ]]>      
+        </script>
+     </f:verbatim>
 <!-- to be renamed to subview -->
 
 
@@ -1348,8 +1325,9 @@
     </h:form>
 <!-- hr / -->
 
-  <script type="text/javascript">
-  // <![CDATA[
+    <f:verbatim>   
+    <script type="text/javascript">
+      //<![CDATA[
   function testJs(){
     alert("js test");
   }
@@ -1400,10 +1378,9 @@ function shwNshwTxt(id) {
   }
 }
 
-
-  //]]>
+       // ]]>    
   </script>
-  
+     </f:verbatim>  
 <input type="button" id="monitorBttn" style="display:none" value="show monitor block" onclick="shwNshwLnk('monitorBlock', 'monitorBttn', 'monitor block');"/>
 <div id="monitorBlock" style="display:none">
 </div>

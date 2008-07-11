@@ -2106,7 +2106,7 @@
                                             </h:column>
                                             <h:column>
                                                 <ui:panelGroup block="true" >
-                                                    <!--ui:panelGroup styleClass="#{EditStudyPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevel.name}">
+                                                    <ui:panelGroup styleClass="#{EditStudyPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].recommended}"/>
@@ -2119,8 +2119,8 @@
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_notesInformationType"/>   
                                                         <br/>
-                                                    </ui:panelGroup-->
-                                                    <!--ui:panelGroup styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.notesInformationSubject].templateField.fieldInputLevel.name}"  >
+                                                    </ui:panelGroup>
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.notesInformationSubject].templateField.fieldInputLevel.name}"  >
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.notesSubjectHelp}" linkText="#{editstudybundle.notesSubjectLabel}" heading="#{editstudybundle.notesSubjectHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationSubject].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesInformationSubject].recommended}"/>
@@ -2136,8 +2136,8 @@
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_notesInformationSubject"  />
                                                         <f:verbatim><br/></f:verbatim>
-                                                    </ui:panelGroup-->                                                   
-                                                    <!--ui:panelGroup styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.notesText].templateField.fieldInputLevel.name} " >
+                                                    </ui:panelGroup>                                                   
+                                                    <ui:panelGroup styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.notesText].templateField.fieldInputLevel.name} " >
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.notesTextHelp}" linkText="#{editstudybundle.notesTextLabel}" heading="#{editstudybundle.notesTextHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesText].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{EditStudyPage.studyMap[sfc.notesText].recommended}"/>
@@ -2153,15 +2153,15 @@
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_notesText"/>
                                                         <f:verbatim><br/></f:verbatim>
-                                                    </ui:panelGroup-->
+                                                    </ui:panelGroup>
                                                     
                                                 </ui:panelGroup>
                                             </h:column> 
                                             <h:column>
-                                                <ui:panelGroup block="true" > 
+                                               
                                                     <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
                                                     <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
-                                                </ui:panelGroup>
+                                               
                                             </h:column>                                       
                                         </h:dataTable>
                                     </h:column>

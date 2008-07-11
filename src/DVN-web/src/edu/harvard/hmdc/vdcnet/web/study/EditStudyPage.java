@@ -109,7 +109,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (tab != null) {
             tabSet1.setSelected(tab);
         }
-        token = this.getRequestParam("content:editStudyPageView:studyForm:token" );
+        token = this.getRequestParam("studyForm:token" );
         if ( token!=null) {
             if ( sessionGet(token)!=null) {
                 editStudyService = (EditStudyService) sessionGet(token);

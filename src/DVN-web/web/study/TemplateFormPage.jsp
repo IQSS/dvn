@@ -2050,10 +2050,8 @@
                                                 </ui:panelGroup>
                                             </h:column> 
                                             <h:column>
-                                                <ui:panelGroup block="true" > 
-                                                    <h:commandButton   image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/> 
-                                                    <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}" /> 
-                                                </ui:panelGroup>
+                                                <h:commandButton   image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/> 
+                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}" /> 
                                             </h:column>                                       
                                         </h:dataTable>
                                     </h:column>

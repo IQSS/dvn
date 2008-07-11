@@ -953,7 +953,10 @@ public class VDC implements java.io.Serializable  {
      * Holds value of property allowedFileUsers.
      */
     @ManyToMany(cascade={ CascadeType.MERGE, CascadeType.PERSIST })
-    private Collection<VDCUser> allowedFileUsers;
+    @JoinTable(name="vdc_fileuser",
+            joinColumns=@JoinColumn(name="vdc_id"),
+            inverseJoinColumns=@JoinColumn(name="allowedfileusers_id"))
+      private Collection<VDCUser> allowedFileUsers;
     
     /**
      * Getter for property allowedFileUsers.
@@ -1010,13 +1013,6 @@ public class VDC implements java.io.Serializable  {
         return false;
     }
        
-    public boolean isSubsetRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
-        if (areFilesRestrictedForUser(user, ipUserGroup)) {
-            return this.subsetRestricted;
-        } else {
-            return false;
-        }
-    }
            
     /**
      * Holds value of property restricted.
@@ -1041,15 +1037,6 @@ public class VDC implements java.io.Serializable  {
         this.filesRestricted = filesRestricted;
     }
 
-    private boolean subsetRestricted;
-
-    public boolean isSubsetRestricted() {
-        return subsetRestricted;
-    }
-
-    public void setSubsetRestricted(boolean subsetRestricted) {
-        this.subsetRestricted = subsetRestricted;
-    }
     
     
     

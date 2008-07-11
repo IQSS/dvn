@@ -27,7 +27,7 @@
                     <file>${libs.dvn-WEB.classpath}</file>
                 </library>
                 <library files="1">
-                    <file>${file.reference.DVN-EJB.jar}</file>
+                    <file>${reference.DVN-EJB.dist}</file>
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries>
@@ -60,6 +60,15 @@
                 <root id="test.src.dir"/>
             </test-roots>
         </data>
-        <references xmlns="http://www.netbeans.org/ns/ant-project-references/1"/>
+        <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
+            <reference>
+                <foreign-project>DVN-EJB</foreign-project>
+                <artifact-type>jar</artifact-type>
+                <script>build.xml</script>
+                <target>dist</target>
+                <clean-target>clean</clean-target>
+                <id>dist</id>
+            </reference>
+        </references>
     </configuration>
 </project>

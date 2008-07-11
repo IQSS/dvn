@@ -6,8 +6,10 @@
       >
         <div class="dvn_headerTitle">
             <div class="dvn_headerTitleR">   
-                <ui:imageHyperlink alt="Powered by the Dataverse Network Project" border="0" imageURL="/resources/dvnPoweredByLogo.gif" toolTip="Link to the Dataverse Network Project" url="http://thedata.org" target="_blank" />
-            </div>
+              <a href="http://thedata.org" target="_blank" title="Link to the Dataverse Network Project">
+                <img alt="Powered by the Dataverse Network Project" url="/dvn/resources/dvnPoweredByLogo.gif"  />
+                </a>
+             </div>
             <div class="dvn_headerTitleL"> 
                 <h:outputText  value=" " rendered="#{VDCRequest.currentVDC == null}" />
                 <h:outputLink value="/dvn" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" target="_top" rendered="#{VDCRequest.currentVDC != null}">
@@ -40,14 +42,6 @@
                     <li>
                       <h:outputLink value="http://thedata.org/guides" target="_blank" title="Go to User Guides">
                         <h:outputText value="#{bundle.helpLabel}"/>
-                      </h:outputLink>
-                    </li>
-                    <li>
-                      <h:outputLink value="/dvn/faces/SiteMapPage.jsp" title="Site Map for #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDC == null}">
-                        <h:outputText value="#{bundle.siteMapLabel}"/>
-                      </h:outputLink>
-                      <h:outputLink id="hyperlink4b" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/SiteMapPage.jsp" title="Site Map for #{VDCRequest.currentVDC.name} dataverse" rendered="#{VDCRequest.currentVDC != null}">
-                        <h:outputText value="#{bundle.siteMapLabel}"/>
                       </h:outputLink>
                     </li>
                     <li>

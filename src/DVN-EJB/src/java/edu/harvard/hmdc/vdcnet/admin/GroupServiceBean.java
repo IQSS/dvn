@@ -178,15 +178,15 @@ public class GroupServiceBean implements GroupServiceLocal  {
                 studyFile.getAllowedGroups().remove(group);
             }
             
-            for (Iterator it = group.getHarvestingDataverses().iterator(); it.hasNext();) {
-                HarvestingDataverse elem = (HarvestingDataverse) it.next();
+            for (Iterator it = group.getAllowedFileVdcs().iterator(); it.hasNext();) {
+                VDC elem = (VDC) it.next();
                 elem.getAllowedFileGroups().remove(group);
             }
             group.getUsers().clear();
             group.getVdcs().clear();
             group.getStudies().clear();
             group.getStudyFiles().clear();
-            group.getHarvestingDataverses().clear();
+            group.getAllowedFileVdcs().clear();
             em.remove(group);
         }
         

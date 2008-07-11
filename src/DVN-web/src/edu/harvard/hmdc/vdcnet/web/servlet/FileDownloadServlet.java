@@ -959,7 +959,6 @@ public class FileDownloadServlet extends HttpServlet{
                 createErrorResponse403(res); 
                 return;
             }
-            studyService.incrementNumberOfDownloads(study.getId());            
 
 	    // an HTTP GET method for remote files; 
 	    // we want it defined here so that it can be closed 
@@ -1049,7 +1048,9 @@ public class FileDownloadServlet extends HttpServlet{
                     zout.putNextEntry(e);
 
 		    if ( varHeaderLine != null ) {
-			zout.write(varHeaderLine.getBytes()); 
+			byte[] headerBuffer = varHeaderLine.getBytes();
+			zout.write(headerBuffer); 
+			fileSize+=(headerBuffer.length); 
 		    }
 
 		    byte[] dataBuffer = new byte[8192]; 
@@ -1069,6 +1070,9 @@ public class FileDownloadServlet extends HttpServlet{
 		    
 		    fileManifest = fileManifest + file.getFileName() + " (" + dbContentType + ") " + fileSize + " bytes.\r\n";
 
+		    if ( fileSize > 0 ) {
+			studyService.incrementNumberOfDownloads(study.getId());
+		    }
 
 		    // if this was a remote stream, let's close
 		    // the connection properly:

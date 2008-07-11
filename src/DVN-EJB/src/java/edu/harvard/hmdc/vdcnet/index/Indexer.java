@@ -122,6 +122,7 @@ public class Indexer implements java.io.Serializable  {
             }
         }
         try {
+            assureIndexDirExists();
             dir = FSDirectory.getDirectory(indexDir,isIndexEmpty());
             r = IndexReader.open(dir);
             searcher = new IndexSearcher(r);
@@ -131,7 +132,8 @@ public class Indexer implements java.io.Serializable  {
     }
     
     protected void setup() throws IOException {
-        dir = FSDirectory.getDirectory(indexDir,isIndexEmpty());
+        assureIndexDirExists();
+        dir = FSDirectory.getDirectory(indexDir, isIndexEmpty());
     }
     
     public static Indexer getInstance(){
@@ -988,5 +990,14 @@ public class Indexer implements java.io.Serializable  {
         int n = indexFiles.length;
         boolean isEmpty = (n == 0);
         return isEmpty;
+    }
+
+    private void assureIndexDirExists() {
+        File indexDirFile = new File(indexDir);
+        if (!indexDirFile.exists()) {
+            logger.info("Index directory does not exist - creating "+indexDir);
+            indexDirFile.mkdir();
+            logger.info(indexDir + " created");
+        }
     }
 }

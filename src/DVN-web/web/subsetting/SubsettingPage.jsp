@@ -178,7 +178,7 @@
 <!-- html top boiler-plate block -->    
 
     <h:form id="form1" >
-    <![CDATA[<input type="hidden" name="dtId" value="]]><jsp:expression>dataFileId</jsp:expression><![CDATA["/>]]>
+    <input type="hidden" name="dtId" value="${param.dtId}"/>
 
     <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 

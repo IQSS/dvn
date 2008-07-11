@@ -18,8 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Site Statistics" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+
                             
 
     <ui:form  id="siteStatisticsForm"> 
@@ -29,7 +28,7 @@
                 function changeValue(obj) {
                     if (window.event)
                         obj.value = window.event.srcElement.value;
-                        document.forms['content:siteStatistics:siteStatisticsForm'].submit();
+                        document.forms['siteStatisticsForm'].submit();
                 }
                //]]>                
             </script>

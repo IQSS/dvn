@@ -18,8 +18,6 @@
 <gui:param name="pageTitle" value="DVN - Edit Study Template" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-      <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
       <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
 
                     <ui:form binding="#{EditStudyTemplatePage.form1}" id="form1">

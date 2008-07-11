@@ -19,8 +19,6 @@
 This text will also not be displayed.
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 
         <h:form id="vdcGroupPageForm">
             

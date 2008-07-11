@@ -24,9 +24,9 @@
 // your Opera is configured to squawk otherwise.
 //
 // if (window.event) 
-//     return processEvent('', 'content:homePageView:form1:searchButton'); 
+//     return processEvent('', 'form1:searchButton'); 
 // else        
-//     return processEvent('content:homePageView:form1:searchButton');
+//     return processEvent('form1:searchButton');
 //
 // @author wbossons
 //*/

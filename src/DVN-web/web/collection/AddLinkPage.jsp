@@ -17,11 +17,8 @@
 
 <gui:param name="pageTitle" value="DVN - Add Collection Link" />
 
-  <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
-                            
-     
+  <gui:define name="body">                        
+    
         <ui:form  id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             

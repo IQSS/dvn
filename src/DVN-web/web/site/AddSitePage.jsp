@@ -18,8 +18,6 @@
 <gui:param name="pageTitle" value="DVN - Add Dataverse" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 
 
         <h:outputText id="statusMessage" styleClass="#{AddSitePage.msg.styleClass}" value="#{AddSitePage.msg.messageText}" />
@@ -29,12 +27,12 @@
                  function changeValue(obj) {
                     if (window.event)
                         obj.value = window.event.srcElement.value;
-                        document.getElementById('content:addSitePageView:form1').submit();
+                        document.getElementById('form1').submit();
                 }
                  
                  //init the hidden fields
                  function showAll(){
-                    var theForm = document.getElementById('content:addSitePageView:form1');
+                    var theForm = document.getElementById('form1');
                     var showScholarFields = false;
                     for (var i = 0; i < theForm.elements.length; i++) {
                         if ( (theForm.elements[i].checked) && (theForm.elements[i].value == "Scholar") ) {
@@ -43,14 +41,14 @@
                         }
                     }
                     if (!showScholarFields) {
-                        document.getElementById('content:addSitePageView:form1:firstName').style.display = 'none';
-                        document.getElementById('content:addSitePageView:form1:lastName').style.display = 'none';
+                        document.getElementById('form1:firstName').style.display = 'none';
+                        document.getElementById('form1:lastName').style.display = 'none';
                     }
                 }
                 
                 function createDvName() {
-                    if (document.getElementById('content:addSitePageView:form1:firstName').value != "" && document.getElementById('content:addSitePageView:form1:lastName').value != "") {
-                        document.getElementById('content:addSitePageView:form1:dataverseName').value = document.getElementById('content:addSitePageView:form1:firstName').value + " " + document.getElementById('content:addSitePageView:form1:lastName').value;
+                    if (document.getElementById('form1:firstName').value != "" && document.getElementById('form1:lastName').value != "") {
+                        document.getElementById('form1:dataverseName').value = document.getElementById('form1:firstName').value + " " + document.getElementById('form1:lastName').value;
                     }
                 }
                  // ]]>

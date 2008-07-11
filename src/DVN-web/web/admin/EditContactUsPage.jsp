@@ -19,8 +19,6 @@
 <gui:param name="pageTitle" value="DVN - Edit Contact Us E-Mail" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 
                             
         <ui:form  id="editContactUsForm">
@@ -51,7 +49,7 @@
                                 <h:graphicImage  id="image1" value="#{bundle.iconRequired}"/>
                             </ui:panelGroup>
                             
-                            <h:inputText onkeypress="if (window.event) return processEvent('', 'content:EditContactUsPageView:editContactUsForm:btnSave'); else return processEvent('content:EditContactUsPageView:editContactUsForm:btnSave');"  
+                            <h:inputText onkeypress="if (window.event) return processEvent('', 'editContactUsForm:btnSave'); else return processEvent('editContactUsForm:btnSave');"  
                                          id="contactUsEmail" 
                                          size="50" 
                                          value="#{EditContactUsPage.contactUsEmail}" 

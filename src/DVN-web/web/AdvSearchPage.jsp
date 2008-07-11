@@ -18,8 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Advanced Search" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+
 
         <ui:form binding="#{AdvSearchPage.form1}" id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

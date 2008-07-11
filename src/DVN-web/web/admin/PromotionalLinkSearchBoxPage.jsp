@@ -18,8 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Dataverse Promotional Link and Search Box" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+
 <ui:form id="privilegedUsersForm">
        <input type="hidden" name="pageName" value="PrivilegedUsersPage"/>
        <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/> 

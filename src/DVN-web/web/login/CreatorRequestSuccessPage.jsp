@@ -18,10 +18,6 @@
 <gui:param name="pageTitle" value="DVN - Dataverse Creation Success" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
-                            
-     
 
         <ui:form  id="creatorRequestForm">
           <input type="hidden" name="pageName" value="CreatorRequestPage"/>

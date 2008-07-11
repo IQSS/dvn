@@ -18,14 +18,12 @@
 <gui:param name="pageTitle" value="DVN - Dataverse Groups View" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 
     <f:verbatim>
         <script type="text/javascript">
             //<![CDATA[
                 function getAddRemoveLength() {
-                    if (document.getElementById('content:vDCGroupEditView:vdcGroupEditForm:addRemoveList_selected').length > 1) {
+                    if (document.getElementById('vdcGroupEditForm:addRemoveList_selected').length > 1) {
                         return true;
                     } else {
                         alert("Validation Error: There must be at least one entry in the Selected Dataverse(s) list." + "\n\r" + "Please add a Dataverse to continue.");
@@ -35,8 +33,8 @@
 
                 //workaround for the issue in Opera where the dvs are not getting added to the group.
                  function highlightSelectedItems() {
-                    for (var i = 0; i < document.getElementById('content:vDCGroupEditView:vdcGroupEditForm:addRemoveList_list_value').length; i++) {
-                        document.getElementById('content:vDCGroupEditView:vdcGroupEditForm:addRemoveList_list_value').options[i].selected = true;
+                    for (var i = 0; i < document.getElementById(' vdcGroupEditForm:addRemoveList_list_value').length; i++) {
+                        document.getElementById(' vdcGroupEditForm:addRemoveList_list_value').options[i].selected = true;
                     }
                 }
             // ]]>

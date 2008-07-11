@@ -19,7 +19,6 @@
 <gui:param name="pageTitle" value="DVN - Analysis and Subsetting" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
       <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 
     <f:verbatim>

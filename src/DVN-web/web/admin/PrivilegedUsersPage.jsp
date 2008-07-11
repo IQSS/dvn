@@ -19,8 +19,7 @@
 <gui:param name="pageTitle" value="DVN - Dataverse Privileged Users" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+
 
 <ui:form id="privilegedUsersForm">
        <input type="hidden" name="pageName" value="PrivilegedUsersPage"/>
@@ -66,7 +65,7 @@
                     </ui:panelGroup>
                     <ui:panelGroup block="true" id="groupPanel3" style="padding-bottom: 10px">
                         <h:outputText id="outputText2" value="Enter the Username of the user you want to add: "/>
-                        <h:inputText  binding="#{PrivilegedUsersPage.userInputText}" id="userName" value="#{PrivilegedUsersPage.userName}" onkeypress="if (window.event) return processEvent('', 'content:PrivilegedUsersPageView:privilegedUsersForm:addUserButton'); else return processEvent(event, 'content:PrivilegedUsersPageView:privilegedUsersForm:addUserButton');"/>
+                        <h:inputText  binding="#{PrivilegedUsersPage.userInputText}" id="userName" value="#{PrivilegedUsersPage.userName}" onkeypress="if (window.event) return processEvent('', 'privilegedUsersForm:addUserButton'); else return processEvent(event, 'privilegedUsersForm:addUserButton');"/>
                         <h:commandButton  id="addUserButton" value="Add" actionListener="#{PrivilegedUsersPage.addUser}" />
                         <h:message styleClass="errorMessage" for="userName"/> 
                     </ui:panelGroup>
@@ -113,7 +112,7 @@
                     
                     <ui:panelGroup block="true"  style="padding-bottom: 10px">
                         <h:outputText  value="Enter the name of the Group you want to add: "/>
-                        <h:inputText id="groupName" binding="#{PrivilegedUsersPage.groupInputText}" value="#{PrivilegedUsersPage.groupName}" onkeypress="if (window.event) return processEvent('', 'content:PrivilegedUsersPageView:privilegedUsersForm:addGroupButton'); else return processEvent(event, 'content:PrivilegedUsersPageView:privilegedUsersForm:addGroupButton');"/>
+                        <h:inputText id="groupName" binding="#{PrivilegedUsersPage.groupInputText}" value="#{PrivilegedUsersPage.groupName}" onkeypress="if (window.event) return processEvent('', 'privilegedUsersForm:addGroupButton'); else return processEvent(event, 'privilegedUsersForm:addGroupButton');"/>
                         <h:commandButton id="addGroupButton" value="Add" actionListener="#{PrivilegedUsersPage.addGroup}" />
                         <h:message styleClass="errorMessage" for="groupName"/> 
                     </ui:panelGroup>

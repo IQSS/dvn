@@ -18,9 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Description" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
-                            
+                           
 
         <ui:form  id="announcementsForm">  
             <h:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>

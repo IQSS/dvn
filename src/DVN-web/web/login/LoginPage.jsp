@@ -18,8 +18,8 @@
 <gui:param name="pageTitle" value="DVN - Login" />
 
   <gui:define name="body">
-     <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+
+
             <div id="loginPageWrap">
                     <ui:form id="vanillaLoginForm">
                         <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -53,7 +53,7 @@
                                             </h:outputLabel>
                                         </ui:panelGroup>
                                         <ui:panelGroup>
-                                            <h:inputSecret tabindex="2" onkeypress="if (window.event) return processEvent('', 'content:LoginPageView:loginForm:button1'); else return processEvent(event, 'content:LoginPageView:loginForm:button1');" id="password" value="#{LoginPage.password}" required="true" requiredMessage="This field is required."/>
+                                            <h:inputSecret tabindex="2" onkeypress="if (window.event) return processEvent('', 'loginForm:button1'); else return processEvent(event, 'loginForm:button1');" id="password" value="#{LoginPage.password}" required="true" requiredMessage="This field is required."/>
                                             <br />
                                             <h:message for="password" styleClass="errorMessage"/>
                                         </ui:panelGroup>

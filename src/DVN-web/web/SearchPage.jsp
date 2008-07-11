@@ -19,9 +19,6 @@
 <gui:param name="pageTitle" value="DVN - Search" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
-    
 
     <ui:form id="form1">
         <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}" />
@@ -30,7 +27,7 @@
             // <![CDATA[ 
            // workaround for issue where f:selectItems does not provide setStyle or setStyleClass wbossons
             function setSearchOptionsClass() {
-                var table = document.getElementById('content:searchPageView:form1:radioButtonList1'); //content:searchPageView:form1:radioButtonList1
+                var table = document.getElementById('form1:radioButtonList1'); //form1:radioButtonList1
                 var cells = table.getElementsByTagName('TD');
                 for (var i = 0; i < cells.length; i++) {
                     cells[i].className="vdcSearchOptions";
@@ -63,7 +60,7 @@
                     </h:selectOneMenu>
                 </label>
                 <label for="search">
-                    <h:inputText onkeypress="if (window.event) return processEvent('', 'content:searchPageView:form1:search'); else return processEvent(event, 'content:searchPageView:form1:search');" id="textField2" value="#{SearchPage.searchValue}" />
+                    <h:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" id="textField2" value="#{SearchPage.searchValue}" />
                 </label>
                 <h:outputLabel for="filter" rendered="#{SearchPage.renderSearchResultsFilter}" >
                     <h:selectBooleanCheckbox value="#{SearchPage.searchResultsFilter}" />

@@ -19,9 +19,6 @@
 <gui:param name="pageTitle" value="DVN - Study" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-      <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
-    
     <f:loadBundle basename="StudyBundle" var="studybundle"/>
         
 

@@ -18,13 +18,11 @@
 <gui:param name="pageTitle" value="DVN - Manage Study Templates" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
        
          <f:verbatim>           
            <script type="text/javascript">
                 function updateDefault(radioButton) {
-                    hiddenNetworkTemplate = document.getElementById("content:ManageTemplatesPageView:templateForm:tabSet1:files:fileDataTableWrapper:0:fileDataTable:catDropdown");
+                    hiddenNetworkTemplate = document.getElementById("templateForm:tabSet1:files:fileDataTableWrapper:0:fileDataTable:catDropdown");
                     hiddenNetworkTemplate.value=radioButton.value;
                 }
            

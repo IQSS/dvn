@@ -18,10 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Edit Network Announcements" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
-                            
-     
+
                             
 
     <ui:form  id="editNetworkAnnouncementsForm"> 

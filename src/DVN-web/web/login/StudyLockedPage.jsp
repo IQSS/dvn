@@ -17,10 +17,7 @@
 
 <gui:param name="pageTitle" value="DVN - Study Locked" />
 
-  <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
-                            
+  <gui:define name="body">             
      
 
         <ui:form  id="studyLockedForm">

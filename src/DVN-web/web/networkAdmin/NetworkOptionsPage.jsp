@@ -18,8 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Dataverse Network Admin Options" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+
 
         <ui:form  id="form1">
             <div class="dvn_section">

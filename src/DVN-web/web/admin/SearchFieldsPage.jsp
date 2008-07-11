@@ -19,9 +19,6 @@
 <gui:param name="pageTitle" value="DVN - Search Results Fields" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
-
 
     <ui:form  id="form1">
         <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

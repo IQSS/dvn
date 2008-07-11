@@ -19,8 +19,7 @@
 <gui:param name="pageTitle" value="DVN - Edit Dataverse Homepage Description" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+
 
         <ui:form  id="editHomePanelsForm">
             <h:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>

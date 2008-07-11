@@ -18,8 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Contact Us" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+
             <ui:form  id="contactUsForm">  
               <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
               

@@ -18,9 +18,6 @@
 <gui:param name="pageTitle" value="DVN - Edit Dataverse Name and Alias" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
-
 
                           
         <ui:form binding="#{EditSitePage.form1}" id="form1">
@@ -30,34 +27,34 @@
                     if (window.event)
                         obj.value = window.event.srcElement.value;
                         showAll();
-                        document.getElementById('content:editSitePageView:form1').submit();
+                        document.getElementById('form1').submit();
                 }
                  
                 //init the hidden fields
                  function showAll(){
-                    var theForm = document.getElementById('content:editSitePageView:form1');
+                    var theForm = document.getElementById('form1');
                     var showScholarFields = false;
                     for (var i = 0; i < theForm.elements.length; i++) {
                         if ( (theForm.elements[i].checked) && (theForm.elements[i].value == "Scholar") ) {
                             showScholarFields = true;
-                            document.getElementById('content:editSitePageView:form1:firstnameLabel').style.display = 'block';
-                            document.getElementById('content:editSitePageView:form1:lastnameLabel').style.display = 'block';
-                            document.getElementById('content:editSitePageView:form1:firstName').style.display = 'block';
-                            document.getElementById('content:editSitePageView:form1:lastName').style.display = 'block';
+                            document.getElementById('form1:firstnameLabel').style.display = 'block';
+                            document.getElementById('form1:lastnameLabel').style.display = 'block';
+                            document.getElementById('form1:firstName').style.display = 'block';
+                            document.getElementById('form1:lastName').style.display = 'block';
                             break;
                         }
                     }
                     if (!showScholarFields) {
-                        document.getElementById('content:editSitePageView:form1:firstnameLabel').style.display = 'none';
-                        document.getElementById('content:editSitePageView:form1:lastnameLabel').style.display = 'none';
-                        document.getElementById('content:editSitePageView:form1:firstName').style.display = 'none';
-                        document.getElementById('content:editSitePageView:form1:lastName').style.display = 'none';
+                        document.getElementById('form1:firstnameLabel').style.display = 'none';
+                        document.getElementById('form1:lastnameLabel').style.display = 'none';
+                        document.getElementById('form1:firstName').style.display = 'none';
+                        document.getElementById('form1:lastName').style.display = 'none';
                     }
                 }
                 
                 function createDvName() {
-                    if (document.getElementById('content:editSitePageView:form1:firstName').value != "" && document.getElementById('content:editSitePageView:form1:lastName').value != "") {
-                        document.getElementById('content:editSitePageView:form1:dataverseName').value = document.getElementById('content:editSitePageView:form1:firstName').value + " " + document.getElementById('content:editSitePageView:form1:lastName').value;
+                    if (document.getElementById('form1:firstName').value != "" && document.getElementById('form1:lastName').value != "") {
+                        document.getElementById('form1:dataverseName').value = document.getElementById('form1:firstName').value + " " + document.getElementById('form1:lastName').value;
                     }
                 }
                  // ]]>

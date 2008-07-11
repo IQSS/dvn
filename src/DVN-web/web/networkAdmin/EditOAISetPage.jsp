@@ -18,15 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Edit OAI Set" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
-
-                            
-      <f:verbatim>
-      
-    </f:verbatim>
-      
-            
+         
 
         <ui:form  id="form1">
          <h:inputHidden value="#{EditOAISetPage.oaiSet.id}" />

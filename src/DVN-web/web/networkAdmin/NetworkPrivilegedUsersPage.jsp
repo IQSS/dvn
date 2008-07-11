@@ -18,8 +18,6 @@
 This text will also not be displayed.
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 
         <ui:form id="NetworkPrivilegedUsersPageView">
                <input type="hidden" name="pageName" value="NetworkPrivilegedUsersPage"/>
@@ -54,7 +52,7 @@ This text will also not be displayed.
                            </ui:panelGroup>
                            <ui:panelGroup block="true"  style="padding-bottom: 5px">
                                <h:outputText id="outputText7" value="Enter the Username of the user you want to add: "/>
-                               <h:inputText  onkeypress="if (window.event) return processEvent('', 'content:NetworkPrivilegedUsersPage:NetworkPrivilegedUsersPageView:addUserbutton'); else return processEvent(event, 'content:NetworkPrivilegedUsersPage:NetworkPrivilegedUsersPageView:addUserbutton');" id="textField1" value="#{NetworkPrivilegedUsersPage.userName}"/>
+                               <h:inputText  onkeypress="if (window.event) return processEvent('', 'addUserbutton'); else return processEvent(event, 'addUserbutton');" id="textField1" value="#{NetworkPrivilegedUsersPage.userName}"/>
                                <h:commandLink  id="addUserbutton" value="Add" actionListener="#{NetworkPrivilegedUsersPage.addUser}"/>
                                <h:outputText styleClass="errorMessage" value="User Not Found." rendered="#{NetworkPrivilegedUsersPage.userNotFound}"/>
                            </ui:panelGroup>

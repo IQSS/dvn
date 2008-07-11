@@ -1233,7 +1233,7 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 /* *************** NetworkAdmin VDCGroup styles ******************** */
 .shadedRow              { background-color:#eeeeee; }
 .whiteRow               { background-color:#ffffff; }
-#content:vDCGroupPageView:vdcGroupPageForm:VDCGroups:dataTableCaption {font-size:1.2em; }/*overrides the default theme */
+#vdcGroupPageForm:VDCGroups:dataTableCaption {font-size:1.2em; }/*overrides the default theme */
 .Lst { max-width:700px; overflow:scroll; }
 
 .dvGroupAdminLayout     { margin-left:auto; margin-right:auto; margin-top:25px; border-width:1px 1px 1px 1px; border-style:solid; border-color:silver; }

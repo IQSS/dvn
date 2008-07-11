@@ -18,10 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Edit Dataverse Network Name" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 
-    
 
         <ui:form binding="#{EditNetworkNamePage.form1}" id="form1">
             <div class="dvn_section">
@@ -48,7 +45,7 @@
                                 <h:outputText binding="#{EditNetworkNamePage.outputText2}" id="outputText2" value="Network Name"/>
                                 <h:graphicImage binding="#{EditNetworkNamePage.image1}" id="image1" value="/resources/icon_required.gif"/>
                             </ui:panelGroup>
-                            <h:inputText binding="#{EditNetworkNamePage.textField1}" id="textField1" size="20" value="#{EditNetworkNamePage.networkName}" onkeypress="if (window.event) return processEvent('', 'content:EditNetworkNamePageView:form1:button1'); else return processEvent(event, 'content:EditNetworkNamePageView:form1:button1');"/>
+                            <h:inputText binding="#{EditNetworkNamePage.textField1}" id="textField1" size="20" value="#{EditNetworkNamePage.networkName}" onkeypress="if (window.event) return processEvent('', 'form1:button1'); else return processEvent(event, 'form1:button1');"/>
                         </h:panelGrid>
                         <ui:panelGroup binding="#{EditNetworkNamePage.groupPanel2}" block="true" id="groupPanel2" style="padding-left: 110px; padding-top: 20px">
                             <h:commandButton binding="#{EditNetworkNamePage.button1}" id="button1" value="Save" action="#{EditNetworkNamePage.saveNetworkName}"/>

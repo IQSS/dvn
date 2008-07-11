@@ -19,8 +19,8 @@
 <gui:param name="pageTitle" value="DVN - Home" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+   
+
        <h:form id="form1">
            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
            <!-- Success Message -->
@@ -72,7 +72,7 @@
                             </h:selectOneMenu>
                         </label>
                         <label for="search">
-                            <h:inputText onkeypress="if (window.event) return processEvent('', 'content:homePageView:form1:searchButton'); else return processEvent(event, 'content:homePageView:form1:searchButton');" id="textField2" value="#{HomePage.searchValue}"/>
+                            <h:inputText onkeypress="if (window.event) return processEvent('', 'form1:searchButton'); else return processEvent(event, 'form1:searchButton');" id="textField2" value="#{HomePage.searchValue}"/>
                         </label>
                         <label for="button">
                             <h:commandButton id="searchButton" value="Go" type="submit" action="#{HomePage.search_action}"/>                        

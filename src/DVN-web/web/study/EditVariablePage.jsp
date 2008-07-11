@@ -18,11 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Edit Variables" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-      <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
-      <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
-    
-
+   
         
         <ui:form  id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

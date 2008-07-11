@@ -18,8 +18,6 @@
 <gui:param name="pageTitle" value="DVN - Manage Collections" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
                             
         <ui:form binding="#{ManageCollectionsPage.form1}" id="form1">   
          <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

@@ -18,8 +18,6 @@
 <gui:param name="pageTitle" value="DVN - Dataverse Group Page" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
     
 
         <h:form id="vdcGroupPageForm">

@@ -18,8 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Delete Template View" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+
       
         <h:form  id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

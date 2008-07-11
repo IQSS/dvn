@@ -18,8 +18,6 @@
 <gui:param name="pageTitle" value="DVN - Edit Banner and Footer" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 
 
     <ui:form id="editBannerFooterForm">

@@ -18,10 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Request to Create a Dataverse" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
-                            
-     
+      <f:loadBundle basename="Bundle" var="bundle"/>   
 
         <ui:form  id="ContributorRequestForm">
           <input type="hidden" name="pageName" value="ContributorRequestPage"/>

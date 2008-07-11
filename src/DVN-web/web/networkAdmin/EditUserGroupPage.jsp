@@ -18,7 +18,6 @@
 
   <gui:define name="body">
       <f:loadBundle basename="Bundle" var="bundle"/>
-     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 
     
         <h:form id="form1">
@@ -27,10 +26,10 @@
                                          //<![CDATA[
                                             function showAll(){
                                                 if (location.href.indexOf("userGroupType") != -1) {
-                                                    if (document.getElementById('content:EditUserGroupPageView:form1:usergroups') != null)
-                                                        document.getElementById('content:EditUserGroupPageView:form1:usergroups').style.display='none';
-                                                    if (document.getElementById('content:EditUserGroupPageView:form1:ipgroups') != null)
-                                                        document.getElementById('content:EditUserGroupPageView:form1:ipgroups').style.display='none';
+                                                    if (document.getElementById('form1:usergroups') != null)
+                                                        document.getElementById('form1:usergroups').style.display='none';
+                                                    if (document.getElementById('form1:ipgroups') != null)
+                                                        document.getElementById('form1:ipgroups').style.display='none';
                                                 }
 
                                             }
@@ -38,9 +37,9 @@
                                             function setUserGroupType(obj) {
                                                  if (obj.checked) { 
                                                     if (obj.value == "usergroup")
-                                                        document.getElementById('content:EditUserGroupPageView:form1:userGroupType').value = "usergroup";
+                                                        document.getElementById('form1:userGroupType').value = "usergroup";
                                                     else
-                                                        document.getElementById('content:EditUserGroupPageView:form1:userGroupType').value = "ipgroup";
+                                                        document.getElementById('form1:userGroupType').value = "ipgroup";
                                                  }
                                             }
                                         //]]>
@@ -66,7 +65,7 @@
                                       <h:graphicImage id="image1" value="/resources/icon_required.gif"/>
                                   </ui:panelGroup>
                                   <ui:panelGroup>
-                                      <h:inputText id="inputGroupName" size="40" value="#{EditUserGroupPage.group.name}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');">
+                                      <h:inputText id="inputGroupName" size="40" value="#{EditUserGroupPage.group.name}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'form1:btnSave'); else return processEvent(event, 'form1:btnSave');">
                                          <f:validator validatorId="CharacterValidator"/>
                                       </h:inputText>
                                       <h:message styleClass="errorMessage" for="inputGroupName"/>
@@ -76,7 +75,7 @@
                                       <h:graphicImage value="/resources/icon_required.gif"/>
                                   </ui:panelGroup>
                                   <ui:panelGroup>
-                                      <h:inputText id="inputFriendlyGroupName" size="40" value="#{EditUserGroupPage.group.friendlyName}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'content:EditUserGroupPageView:form1:btnSave'); else return processEvent(event, 'content:EditUserGroupPageView:form1:btnSave');"/>
+                                      <h:inputText id="inputFriendlyGroupName" size="40" value="#{EditUserGroupPage.group.friendlyName}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'form1:btnSave'); else return processEvent(event, 'form1:btnSave');"/>
                                       <h:message styleClass="errorMessage" for="inputFriendlyGroupName"/>
                                   </ui:panelGroup>
                              </h:panelGrid>

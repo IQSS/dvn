@@ -19,8 +19,6 @@
 <gui:param name="pageTitle" value="DVN - Add/Edit Study" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-      <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
       <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
         <f:verbatim>           
             <script type="text/javascript">
@@ -141,7 +139,7 @@
                 function updateCategory( checkbox ) {
                     if (checkbox.checked) {
                         textField = document.getElementById(checkbox.id).nextSibling.nextSibling;
-                        dropdown = document.getElementById("content:editStudyPageView:studyForm:tabSet1:files:fileDataTableWrapper:0:fileDataTable:catDropdown");
+                        dropdown = document.getElementById("studyForm:tabSet1:files:fileDataTableWrapper:0:fileDataTable:catDropdown");
                         textField.value = dropdown.value;
                     }
                 }

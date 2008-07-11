@@ -18,8 +18,6 @@
 <gui:param name="pageTitle" value="DVN - Review Studies" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
-      <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 
 
         <ui:form binding="#{ReviewStudiesPage.form1}" id="form1">

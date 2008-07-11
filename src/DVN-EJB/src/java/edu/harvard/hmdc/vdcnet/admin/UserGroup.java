@@ -108,10 +108,8 @@ public class UserGroup implements java.io.Serializable  {
     @ManyToMany (mappedBy="userGroups",cascade={CascadeType.PERSIST } )
     private Collection<VDCUser> users;
 
-    @ManyToMany (mappedBy="allowedFileGroups",cascade={CascadeType.PERSIST } )
-    private Collection<HarvestingDataverse> harvestingDataverses;
-   
     
+
     /**
      * Getter for property users.
      * @return Value of property users.
@@ -321,11 +319,24 @@ public class UserGroup implements java.io.Serializable  {
         return "edu.harvard.hmdc.vdcnet.admin.UserGroup[id=" + id + "]";
     }
 
-    public Collection<HarvestingDataverse> getHarvestingDataverses() {
-        return harvestingDataverses;
+    
+    @ManyToMany(mappedBy="allowedFileGroups")
+    @OrderBy("name ASC")
+    private java.util.List<VDC> allowedFileVdcs;
+
+    /**
+     * Getter for property memberVdcs.
+     * @return Value of property memberVdcs.
+     */
+    public java.util.List<VDC> getAllowedFileVdcs() {
+        return this.allowedFileVdcs;
     }
 
-    public void setHarvestingDataverses(Collection<HarvestingDataverse> harvestingDataverses) {
-        this.harvestingDataverses = harvestingDataverses;
-    }
+    /**
+     * Setter for property memberVdcs.
+     * @param memberVdcs New value of property memberVdcs.
+     */
+    public void setAllowedFileVdcs(java.util.List<VDC> memberVdcs) {
+        this.allowedFileVdcs = memberVdcs;
+    }     
 }

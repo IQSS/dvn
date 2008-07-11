@@ -82,4 +82,12 @@ public interface EditVDCPrivilegesService extends java.io.Serializable  {
     
     public List getPrivilegedUsers();
     
+    public void removeAllowedFileGroup(Long groupId);
+    
+    public void  addAllowedFileGroup(Long groupId);
+    
+     public void removeAllowedFileUser(Long userId);
+    
+    public void  addAllowedFileUser(Long userId);
+    
 }

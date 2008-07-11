@@ -226,6 +226,32 @@ public class EditVDCPrivilegesServiceBean implements EditVDCPrivilegesService  {
         
     }
     
+   
+    public void removeAllowedFileGroup(Long groupId) {
+        UserGroup group = em.find(UserGroup.class,groupId);
+        getVdc().getAllowedFileGroups().remove(group);
+        
+    }
+    
+    public void  addAllowedFileGroup(Long groupId) {
+        UserGroup group = em.find(UserGroup.class,groupId);
+        getVdc().getAllowedFileGroups().add(group);
+       
+        
+    }
+    
+     public void removeAllowedFileUser(Long userId) {
+        VDCUser user = em.find(VDCUser.class,userId);
+        getVdc().getAllowedFileUsers().remove(user);
+      
+    }
+    
+    public void  addAllowedFileUser(Long userId) {
+        VDCUser user = em.find(VDCUser.class,userId);
+        getVdc().getAllowedFileUsers().add(user);
+     
+        
+    }
     
     
 }

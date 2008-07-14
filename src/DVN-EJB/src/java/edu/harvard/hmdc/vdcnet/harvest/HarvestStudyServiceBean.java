@@ -44,11 +44,16 @@ public class HarvestStudyServiceBean implements HarvestStudyServiceLocal {
         
         for (OAISet oaiSet : sets) {
             List<Long> studyIds = indexService.query(oaiSet.getDefinition());
-            updateHarvestStudies( oaiSet.getSpec(), studyService.getVisibleStudies(studyIds, null), updateTime);
+            studyIds = studyService.getVisibleStudies(studyIds, null);
+            studyIds = studyService.getViewableStudies(studyIds, null, null);
+            updateHarvestStudies( oaiSet.getSpec(), studyIds, updateTime);
         }
         
         // also do noset membet
-        updateHarvestStudies( null, studyService.getVisibleStudies(studyService.getAllNonHarvestedStudyIds(), null), updateTime);
+        List<Long> studyIds = studyService.getAllNonHarvestedStudyIds();
+        studyIds = studyService.getVisibleStudies(studyIds, null);
+        studyIds = studyService.getViewableStudies(studyIds, null, null);        
+        updateHarvestStudies( null, studyIds, updateTime);
         
     }    
     

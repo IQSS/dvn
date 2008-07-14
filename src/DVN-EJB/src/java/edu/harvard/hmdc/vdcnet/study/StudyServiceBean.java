@@ -1494,44 +1494,61 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             return new ArrayList();
         }
     }
-    private static final String SELECT_VIEWABLE_STUDIES = "select id from study s " +
-            "left join study_vdcuser su on (s.id = su.studies_id) " +
-            "left join study_usergroup sg on (s.id = sg.studies_id )" +
-            "where ( " +
-            "restricted = false " +
-            "or su.allowedusers_id = ? " +
-            "or sg.allowedgroups_id in (select usergroups_id from vdcuser_usergroup where users_id = ?) " +
-            "or sg.allowedgroups_id = ? " +
-            ") ";
 
     // viewable studies are those that are defined as not restricted to the user
     public List getViewableStudies(List<Long> studyIds, Long userId, Long ipUserGroupId) {
         List returnList = new ArrayList();
 
         if (studyIds != null && studyIds.size() > 0) {
-            // first we must add the dynamic part to the query
-            StringBuffer queryString = new StringBuffer();
-            if (studyIds.size() == 1) {
-                queryString.append(SELECT_VIEWABLE_STUDIES + "and id in ( ? ) ");
-            } else {
-                for (int i = 0; i < studyIds.size(); i++) {
-                    if (i == 0) {
-                        queryString.append(SELECT_VIEWABLE_STUDIES + "and id in ( ?, ");
-                    } else if (i == (studyIds.size() - 1)) {
-                        queryString.append(" ? ) ");
-                    } else {
-                        queryString.append(" ?, ");
-                    }
+            // dynamically generate the query
+            StringBuffer queryString = new StringBuffer("select id from study s ");
+            StringBuffer whereClause = new StringBuffer("where ( restricted = false ");
+            boolean groupJoinAdded = false;
+                        
+            if (userId != null) {
+                queryString.append("left join study_vdcuser su on (s.id = su.studies_id) ");
+                queryString.append("left join study_usergroup sg on (s.id = sg.studies_id ) ");
+                whereClause.append("or su.allowedusers_id = ? ");
+                whereClause.append("or sg.allowedgroups_id in (select usergroups_id from vdcuser_usergroup where users_id = ?) ");
+                groupJoinAdded = true;
+            }
+            
+            if (ipUserGroupId != null) {
+                if(!groupJoinAdded) {
+                    queryString.append("left join study_usergroup sg on (s.id = sg.studies_id ) ");
+                }
+                whereClause.append("or sg.allowedgroups_id = ? ");
+            }
+            
+            whereClause.append(") ");
+                       
+            // now add ids part of where clause
+            for (int i = 0; i < studyIds.size(); i++) {
+                if (i == 0) {
+                    whereClause.append("and id in ( ?");
+                } else {
+                    whereClause.append(", ?");
                 }
             }
 
-            Query query = em.createNativeQuery(queryString.toString());
-            query.setParameter(1, userId);
-            query.setParameter(2, userId);
-            query.setParameter(3, ipUserGroupId);
+            whereClause.append(" )");
 
-            // now set dynamic paramters
-            int parameterCount = 4;
+            
+            // we are now ready to create the query
+            Query query = em.createNativeQuery( queryString.toString() + whereClause.toString() );
+            
+            // now set parameters
+            int parameterCount = 1;
+            
+            if (userId != null) {
+                query.setParameter(parameterCount++, userId);
+                query.setParameter(parameterCount++, userId);
+            }
+            
+            if (ipUserGroupId != null) {
+                query.setParameter(parameterCount++, ipUserGroupId);
+            }
+            
             for (Long id : studyIds) {
                 query.setParameter(parameterCount++, id);
             }
@@ -1541,8 +1558,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 // convert results into Longs
                 returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
             }
-            ;
-
         }
 
         return returnList;

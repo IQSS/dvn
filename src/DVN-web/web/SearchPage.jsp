@@ -129,7 +129,7 @@
                               </t:scroller>
                           </ui:panelGroup>
                       </h:panelGrid>
-                      
+            
                       <h:dataTable binding="#{SearchPage.studyTable}" rows="10" headerClass="list-header" id="dataTable1" width="98%"
                                     rowClasses="list-row-odd, list-row-even" columnClasses="vdcSResultsList" value="#{SearchPage.studies}" var="studyUI">
                           <h:column id="column1">
@@ -138,7 +138,7 @@
                                   <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}&amp;studyListingIndex=#{SearchPage.studyListingIndex}"  id="hyperlink3">
                                       <h:outputText id="hyperlink3Text" value="#{studyUI.study.title}" />
                                   </h:outputLink>
-                                  <h:outputText styleClass="dvn_SResultsGlobalId" value=" (#{studyUI.study.globalId})" /><br/>
+                                  <h:outputText styleClass="dvn_SResultsGlobalId" value=" (#{studyUI.study.globalId})" />
                                   <h:outputText id="outputText13" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}" />
                               </ui:panelGroup> 
                               <ui:panelGroup block="true" id="groupPanel1b">

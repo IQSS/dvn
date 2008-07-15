@@ -258,7 +258,7 @@ public class StudyUI  implements java.io.Serializable {
          
         Date date = DvnDate.convertFromPattern(dateString,"yyyy-MM-dd");
         if (date!=null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("MMMMM dd yyyy");
+            SimpleDateFormat formatter = new SimpleDateFormat("MMMMM dd, yyyy");
             return formatter.format(date);
         }
         date = DvnDate.convertFromPattern(dateString,"yyyy-MM");

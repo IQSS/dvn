@@ -142,7 +142,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 setFiles(editStudyService.getCurrentFiles());
             } else {
                 Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
-                Long templateId = vdcNetworkService.find().getDefaultTemplate().getId();
+                Long templateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
                 editStudyService.newStudy(vdcId, getVDCSessionBean().getLoginBean().getUser().getId(), templateId);
                 study = editStudyService.getStudy();
                 studyId = SessionCounter.getNext();
@@ -419,7 +419,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
     public void initStudyMap() {
         editStudyService.setStudyMap(new HashMap());
-        for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
+        for (Iterator<TemplateField> it = vdcNetworkService.find().getDefaultTemplate().getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
             StudyMapValue smv = new StudyMapValue();
             smv.setTemplateField(tf);
@@ -902,13 +902,17 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     private String getInputLevel(String... fieldNames) {
         for (String fieldName : fieldNames) {
-            if (((StudyMapValue) getStudyMap().get(fieldName)).isRequired()) {
-                return "required";
+            if (((StudyMapValue) getStudyMap().get(fieldName))!=null) {
+                if (((StudyMapValue) getStudyMap().get(fieldName)).isRequired()) {
+                    return "required";
+                }
             }
         }
         for (String fieldName : fieldNames) {
-            if (((StudyMapValue) getStudyMap().get(fieldName)).isRecommended()) {
-                return "recommended";
+            if (((StudyMapValue) getStudyMap().get(fieldName))!=null) {
+                if (((StudyMapValue) getStudyMap().get(fieldName)).isRecommended()) {
+                    return "recommended";
+                }
             }
         }
         return "optional";

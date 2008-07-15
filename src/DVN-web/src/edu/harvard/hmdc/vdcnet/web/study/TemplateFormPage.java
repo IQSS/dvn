@@ -137,6 +137,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
                 } else {
                     editTemplateService.newTemplate(vdcId);
                 }
+              //  editTemplateService.addFields(vdcId);
                 template = editTemplateService.getTemplate();
             //     studyId = SessionCounter.getNext();
             }
@@ -828,15 +829,19 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
    
 
-    private String getInputLevel(String... fieldNames) {
+   private String getInputLevel(String... fieldNames) {
         for (String fieldName : fieldNames) {
-            if (((StudyMapValue) getStudyMap().get(fieldName)).isRequired()) {
-                return "required";
+            if (((StudyMapValue) getStudyMap().get(fieldName))!=null) {
+                if (((StudyMapValue) getStudyMap().get(fieldName)).isRequired()) {
+                    return "required";
+                }
             }
         }
         for (String fieldName : fieldNames) {
-            if (((StudyMapValue) getStudyMap().get(fieldName)).isRecommended()) {
-                return "recommended";
+            if (((StudyMapValue) getStudyMap().get(fieldName))!=null) {
+                if (((StudyMapValue) getStudyMap().get(fieldName)).isRecommended()) {
+                    return "recommended";
+                }
             }
         }
         return "optional";

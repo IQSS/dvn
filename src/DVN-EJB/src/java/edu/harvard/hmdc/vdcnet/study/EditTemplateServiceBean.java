@@ -94,19 +94,54 @@ public class EditTemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.Ed
     }
     
     public void newTemplate(Long vdcId ) {
-        newTemplate=true;        
-        VDC vdc = em.find(VDC.class, vdcId);
         template = new Template();
+        newTemplate=true;   
+        em.persist(template);
+        VDC vdc = em.find(VDC.class, vdcId);      
         template.setVdc(vdc);
         vdc.getTemplates().add(template);
-        em.persist(template);
+      //  addFields(vdcId);
+        
     }
     
+    public void addFields(Long vdcId) {
+          VDC vdc = em.find(VDC.class, vdcId);      
+           // Copy template fields from default template
+        // When the template form adds ability to edit "recommended/required",
+        // then we won't need this (unless we want to use the default)
+        Template defTemplate = vdc.getDefaultTemplate();
+     //   template.setTemplateFields(new ArrayList<TemplateField>());
+        for ( TemplateField templateField: defTemplate.getTemplateFields()) {
+            TemplateField tf = new TemplateField(templateField.getFieldInputLevel());
+            tf.setStudyField(templateField.getStudyField());
+            tf.setTemplate(template);
+            template.getTemplateFields().add(tf);
+        }
+    }
+    private Template createTemplate(Long vdcId) {
+        Template createdTemplate = new Template();
+        newTemplate=true;        
+        VDC vdc = em.find(VDC.class, vdcId);      
+        createdTemplate.setVdc(vdc);
+        vdc.getTemplates().add(createdTemplate);
+        // Copy template fields from default template
+        // When the template form adds ability to edit "recommended/required",
+        // then we won't need this (unless we want to use the default)
+        Template defTemplate = vdc.getDefaultTemplate();
+        createdTemplate.setTemplateFields(new ArrayList<TemplateField>());
+        for ( TemplateField templateField: defTemplate.getTemplateFields()) {
+            TemplateField tf = new TemplateField(templateField.getFieldInputLevel());
+            tf.setStudyField(templateField.getStudyField());
+            tf.setTemplate(createdTemplate);
+            createdTemplate.getTemplateFields().add(tf);
+        }
+        return createdTemplate;
+    }
     public void  newTemplate(Long vdcId, Long studyId) {
-         template = new Template();       
+        template = createTemplate(vdcId);       
         Study study = em.find(Study.class, studyId);
         study.getMetadata().copyMetadata(template.getMetadata());
-        template.setVdc(em.find(VDC.class, vdcId));
+      
         createdFromStudyId=studyId;
         em.persist(template);
     }

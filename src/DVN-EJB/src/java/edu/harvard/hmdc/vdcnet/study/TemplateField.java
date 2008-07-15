@@ -52,6 +52,10 @@ public class TemplateField implements java.io.Serializable {
     public TemplateField() {
     }
 
+    public TemplateField(FieldInputLevel inputLevel) {
+        this.fieldInputLevel=inputLevel;
+    }
+    
     private String defaultValue;
 
     public String getDefaultValue() {
@@ -129,8 +133,8 @@ public class TemplateField implements java.io.Serializable {
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="template_gen", sequenceName="template_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="template_gen")     
+    @SequenceGenerator(name="templatefield_gen", sequenceName="templatefield_id_seq")
+    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="templatefield_gen")     
     private Long id;
 
     /**

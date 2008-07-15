@@ -435,7 +435,9 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         // whether they contain data
         studyUI.setDataCollectionPanelIsRendered(false);
         studyUI.setDataAvailPanelIsRendered(false);
-        studyUI.setTermsOfUsePanelIsRendered(false);
+        if (!getTermsOfUseIsEmpty()) {
+            studyUI.setTermsOfUsePanelIsRendered(true);
+        }
         studyUI.setNotesPanelIsRendered(false);
     }
 

@@ -75,6 +75,7 @@ import javax.faces.component.UIInput;
 import javax.faces.component.html.HtmlInputTextarea;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.model.DataModel;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -98,6 +99,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
     private String searchField;
     private String searchValue;
     private static final String [] emptyCollection = {"No collections available for selection"};
+    private DataModel  model;
 
 
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
@@ -1082,7 +1084,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
     
     public String saveCollection(){
         VDC thisVDC =  getVDCRequestBean().getCurrentVDC();
-        Object[] s = (Object[]) addRemoveList1DefaultOptions.getSelectedValue();
+        String[] s = addRemoveList1.getValueAsStringArray (getFacesContext ());
         VDCCollection node = null;
         if (!edit || !rootCollection){
             node = vdcCollectionService.find(collectionsMap.get((String) dropdown3.getValue()));
@@ -1106,7 +1108,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         ArrayList studies = new ArrayList();
         HashSet studiesSet = new HashSet();
         for (int i=0;i<s.length;i++){
-            String studyStr =  s[i].toString();
+            String studyStr =  s[i];
             Long studyId = Long.valueOf(studyStr);
             studiesSet.add(studyId);
         }

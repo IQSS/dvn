@@ -99,7 +99,6 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
     private String searchField;
     private String searchValue;
     private static final String [] emptyCollection = {"No collections available for selection"};
-    private DataModel  model;
 
 
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">

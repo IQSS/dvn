@@ -91,36 +91,9 @@
                                 <h:commandButton value="Remove Checked Users/Groups" actionListener = "#{StudyPermissionsPage.removeStudyUserGroup}"/>
                             </ui:panelGroup>
                         </ui:panelGroup>
-                        <h:outputText   styleClass="vdcSubHeaderColor" value="- All Files Permissions:"/>
-                        <ui:panelGroup  block="true"  style="padding-top: 10px; padding-bottom: 10px">
-                            <h:outputText   value="Allow users to request access to restricted files for this study by creating a Dataverse Network account:"/>
-                            <h:selectBooleanCheckbox value="#{StudyPermissionsPage.editStudyPermissions.study.requestAccess}" />
-                            <ui:panelGroup block="true" style="padding-top: 5px">
-                                <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                <h:outputText styleClass="vdcHelpText" value="By checking this option, when users try to access a restricted file, they will have the choice to log in or create an account to request access. After user's request, you can choose to grant them access to restricted files."/>
-                            </ui:panelGroup>
-                        </ui:panelGroup>
-                        <ui:panelGroup  block="true" style="padding-bottom: 20px; padding-left: 50px;" rendered="#{!empty StudyPermissionsPage.editStudyPermissions.studyRequests}"> 
-                            <h:dataTable  columnClasses="vdcColPadded, vdcColPadded"
-                                          value="#{StudyPermissionsPage.editStudyPermissions.studyRequests}" var="currentRow" headerClass="list-header-left">
-                                <h:column  >
-                                    <f:facet name="header">
-                                        <h:outputText id="accessRequest_header" value="Users Requesting to have Access to Restricted Files"/>
-                                    </f:facet>
-                                    <h:outputLink   value="/dvn/faces/login/AccountPage.jsp?userId=#{currentRow.studyRequest.vdcUser.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
-                                        <h:outputText   value="#{currentRow.studyRequest.vdcUser.userName}"/>
-                                    </h:outputLink>
-                                </h:column>
-                                <h:column  >
-                                    <h:selectOneRadio value="#{currentRow.accept}">
-                                        <f:selectItem itemLabel="Accept" itemValue="true"/>
-                                        <f:selectItem itemLabel="Reject" itemValue="false"/>
-                                    </h:selectOneRadio>
-                                </h:column>
-                            </h:dataTable>
-                            <h:outputText value="Update Individual File Permissions for these users:"/>
-                            <h:commandButton value="Update" actionListener="#{StudyPermissionsPage.updateRequests}"/>
-                        </ui:panelGroup>
+                        
+                        <!-- commented out to allow users request restricted files -->
+
                         <h:outputText   styleClass="vdcSubHeaderColor" value="- Individual File Permissions:"/>
                         <ui:panelGroup  block="true" 
                                         style="padding-bottom: 10px" styleClass="vdcTextLeft">

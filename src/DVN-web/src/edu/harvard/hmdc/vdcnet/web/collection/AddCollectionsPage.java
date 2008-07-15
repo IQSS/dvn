@@ -75,7 +75,6 @@ import javax.faces.component.UIInput;
 import javax.faces.component.html.HtmlInputTextarea;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.model.DataModel;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This

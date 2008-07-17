@@ -17,7 +17,7 @@
 <gui:composition template="/template.xhtml">
 
 <gui:param name="pageTitle" value="DVN - Add/Edit Study" />
-
+   
   <gui:define name="body">
       <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
         <f:verbatim>           
@@ -2236,6 +2236,12 @@
             </div>
             
         </h:form>
+           <f:verbatim>           
+        
+            <script type="text/javascript">
+                addLoadEvent(initHide());
+            </script>
+        </f:verbatim>     
             </gui:define>
         </gui:composition>
     </body>

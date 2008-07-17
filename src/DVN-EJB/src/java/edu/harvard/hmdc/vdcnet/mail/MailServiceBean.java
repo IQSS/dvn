@@ -304,10 +304,22 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
           sendDoNotReplyMail(email,subject,messageText);
       }   
       
-      public void sendExportErrorNotification(String email, String vdcNetworkName) { 
-          String subject = "Dataverse Network: Export error notification";
-          String messageText = "An exception occurred during exporting in DVN "+vdcNetworkName+". See server.log for more details. ";
-              sendDoNotReplyMail(email,subject,messageText);
-      }
+    public void sendExportErrorNotification(String email, String vdcNetworkName) {
+        String subject = "Dataverse Network: Export error notification";
+        String messageText = "An exception occurred during exporting in DVN " + vdcNetworkName + ". See server.log for more details. ";
+        sendDoNotReplyMail(email, subject, messageText);
+    }
+
+    public void sendIndexUpdateErrorNotification(String email, String vdcNetworkName) {
+        String subject = "Dataverse Network: Index update error notification";
+        String messageText = "An exception occurred during index update in DVN " + vdcNetworkName + ". See server.log for more details. ";
+        sendDoNotReplyMail(email, subject, messageText);
+    }
+
+    public void sendIndexErrorNotification(String email, String vdcNetworkName, int howMany) {
+        String subject = "Dataverse Network: Index update error notification";
+        String messageText = howMany + " exceptions occurred during index update in DVN " + vdcNetworkName + ". See server.log for more details. \n You can use the index update utility or wait for the scheduled overnight update";
+        sendDoNotReplyMail(email, subject, messageText);
+    }
 
 }

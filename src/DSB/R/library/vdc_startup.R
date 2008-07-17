@@ -796,7 +796,12 @@ univarStatHtml<-function(dtfrm, tmpimgfile, analysisoptn, tmphtmlfile, standalon
                         tr1.l<-paste("<td",rowspan," valign=\"top\">\n<p><B><small>The number of categories is more than 10 or equal to 1.<br>Table substitutes for Bar plot</small></B></p>\n</td>\n",sep="")
                         cmbntn[1]<-1
                     } else {
-                        tr1.l<-paste("<td colspan=\"3\" valign=\"top\">\n<p><B><small>(The number of categories is more than 50 or equal to 1.<br>A bar plot or frequency table is not shown here</small></B></p>\n</td>\n",sep="")
+                        tr1.lm<-paste("<td align=\"left\" colspan=\"3\" valign=\"top\">\n<p><B><small>The number of categories is more than 50. Frequency/Percentage tables are not shown here</small></B></p>\n</td></tr>\n",sep="")
+                        
+                        tr1.lhdr<-paste("<tr><td align=\"left\" class=\"",clschm[2],"\" ><b>Value: Value Label</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Freq</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Percent</b></td>\n",sep="")
+                        
+                        tr1.l<-paste(tr1.lm,tr1.lhdr, sep="")
+                        
                         sprsstr1r<-TRUE
                     }
                 }
@@ -807,7 +812,11 @@ univarStatHtml<-function(dtfrm, tmpimgfile, analysisoptn, tmphtmlfile, standalon
                 if (class(statlst$freqtbl)=="table"){
                     tr1.r<-paste("<td align=\"left\" class=\"",clschm[2],"\" ><b>Value: Value Label</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Freq</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Percent</b></td>\n",sep="")
                 } else if (!sprsstr1r){
-                    tr1.r<-paste("<td align=\"left\" colspan=\"3\" valign=\"top\">\n<p><B><small>The number of categories is more than 50. Frequency/Percentage tables are not shown here</small></B></p>\n</td>\n",sep="")
+                    tr1.rm<-paste("<td align=\"left\" colspan=\"3\" valign=\"top\">\n<p><B><small>The number of categories is more than 50. Frequency/Percentage tables are not shown here</small></B></p>\n</td></tr>\n",sep="")
+                    
+                    tr1.rhdr<-paste("<tr><td align=\"left\" class=\"",clschm[2],"\" ><b>Value: Value Label</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Freq</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Percent</b></td>\n",sep="")
+                    
+                    tr1.r<-paste(tr1.rm,tr1.rhdr, sep="")
                 }
             }
             tr1<-paste("<tr>\n",tr1.l,tr1.r,"</tr>\n",sep="")
@@ -1354,7 +1363,12 @@ univarStatHtmlBody<-function(dtfrm, whtml, analysisoptn, standalone=F){
                         tr1.l<-paste("<td",rowspan," valign=\"top\">\n<p><B><small>The number of categories is more than 10 or equal to 1.<br>Table substitutes for Bar plot</small></B></p>\n</td>\n",sep="")
                         cmbntn[1]<-1
                     } else {
-                        tr1.l<-paste("<td colspan=\"3\" valign=\"top\">\n<p><B><small>(The number of categories is more than 50 or equal to 1.<br>A bar plot or frequency table is not shown here</small></B></p>\n</td>\n",sep="")
+
+                        tr1.lm<-paste("<td align=\"left\" colspan=\"3\" valign=\"top\">\n<p><B><small>The number of categories is more than 50. Frequency/Percentage tables are not shown here</small></B></p>\n</td></tr>\n",sep="")
+                        
+                        tr1.lhdr<-paste("<tr><td align=\"left\" class=\"",clschm[2],"\" ><b>Value: Value Label</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Freq</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Percent</b></td>\n",sep="")
+                        tr1.l<-paste(tr1.lm,tr1.lhdr, sep="")
+                        
                         sprsstr1r<-TRUE
                     }
                 }
@@ -1365,7 +1379,12 @@ univarStatHtmlBody<-function(dtfrm, whtml, analysisoptn, standalone=F){
                 if (class(statlst$freqtbl)=="table"){
                     tr1.r<-paste("<td align=\"left\" class=\"",clschm[2],"\" ><b>Value: Value Label</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Freq</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Percent</b></td>\n",sep="")
                 } else if (!sprsstr1r){
-                    tr1.r<-paste("<td align=\"left\" colspan=\"3\" valign=\"top\">\n<p><B><small>The number of categories is more than 50. Frequency/Percentage tables are not shown here</small></B></p>\n</td>\n",sep="")
+                
+                    tr1.rm<-paste("<td align=\"left\" colspan=\"3\" valign=\"top\">\n<p><B><small>The number of categories is more than 50. Frequency/Percentage tables are not shown here</small></B></p>\n</td></tr>\n",sep="")
+                    
+                    tr1.rhdr<-paste("<tr><td align=\"left\" class=\"",clschm[2],"\" ><b>Value: Value Label</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Freq</b></td><td align=\"right\" class=\"",clschm[2],"\" ><b>Percent</b></td>\n",sep="")
+                    
+                    tr1.r<-paste(tr1.rm,tr1.rhdr, sep="")
                 }
             }
             tr1<-paste("<tr>\n",tr1.l,tr1.r,"</tr>\n",sep="")

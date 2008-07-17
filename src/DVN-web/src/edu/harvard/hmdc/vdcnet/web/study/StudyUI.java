@@ -258,7 +258,7 @@ public class StudyUI  implements java.io.Serializable {
          
         Date date = DvnDate.convertFromPattern(dateString,"yyyy-MM-dd");
         if (date!=null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("MMMMM dd, yyyy");
+            SimpleDateFormat formatter = new SimpleDateFormat("MMMMM dd yyyy");
             return formatter.format(date);
         }
         date = DvnDate.convertFromPattern(dateString,"yyyy-MM");
@@ -867,6 +867,10 @@ public class StudyUI  implements java.io.Serializable {
     }
     
     public int getNumberOfDownloads() {
-        return (getStudy().getStudyDownload() != null ? getStudy().getStudyDownload().getNumberOfDownloads() : 0);
+        int downloadCount = 0;
+        for (StudyFile sf : study.getStudyFiles() ) {
+            downloadCount += sf.getStudyFileActivity() != null ? sf.getStudyFileActivity().getDownloadCount() : 0;
+        }
+        return downloadCount;
     }
 }

@@ -161,7 +161,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     public Study getStudyByHarvestInfo(VDC dataverse, String harvestIdentifier) {
-        String queryStr = "SELECT s FROM Study s WHERE s.owner.id = '" + dataverse.getId() + "' and s.harvestIdentifier = '" + harvestIdentifier + "'";
+        String queryStr = "SELECT s FROM Study s WHERE s.owner.id = '" + dataverse.getId() + "' and s.metadata.harvestIdentifier = '" + harvestIdentifier + "'";
         Query query = em.createQuery(queryStr);
         List resultList = query.getResultList();
         Study study = null;
@@ -1065,18 +1065,23 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             em.remove(lock);
         }
     }
+    
+    public void incrementNumberOfDownloads(Long studyFileId) {
+        incrementNumberOfDownloads( studyFileId, new Date() );
+    }
 
-    public void incrementNumberOfDownloads(Long studyId) {
-        Study s = getStudy(studyId);
-        StudyDownload sd = s.getStudyDownload();
+    public void incrementNumberOfDownloads(Long studyFileId, Date lastDownloadTime) {
+        StudyFile sf = getStudyFile(studyFileId);
+        StudyFileActivity sfActivity = sf.getStudyFileActivity();
 
-        if (sd == null) {
-            sd = new StudyDownload();
-            s.setStudyDownload(sd);
-            sd.setStudy(s);
+        if (sfActivity == null) {
+            sfActivity = new StudyFileActivity();
+            sf.setStudyFileActivity(sfActivity);
+            sfActivity.setStudyFile(sf);
         }
 
-        sd.setNumberOfDownloads(sd.getNumberOfDownloads() + 1);
+        sfActivity.setDownloadCount(sfActivity.getDownloadCount() + 1);
+        sfActivity.setLastDownloadTime( lastDownloadTime );
     }
 
     public Study getStudyByGlobalId(String identifier) {

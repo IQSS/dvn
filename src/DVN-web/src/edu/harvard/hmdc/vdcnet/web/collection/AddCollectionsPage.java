@@ -1338,6 +1338,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         VDCCollection addCollection = null; // addCollection is the new collection (subcollection)
         if (edit){
             addCollection = vdcCollectionService.find(collId);
+            addCollection.removeParentRelationship(); //071708
         } else{
             addCollection = new VDCCollection();
             
@@ -1352,15 +1353,12 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         addCollection.setName((String)textFieldCollectionName.getValue());
         addCollection.setQuery((String) textAreaQuery.getValue());
         addCollection.setVisible(true);
-        if (edit){
-           addCollection.setOwner(thisVDC);
-           vdcCollectionService.edit(addCollection);
-        } else {
+        if (!edit) {
             vdcCollectionService.create(addCollection);
-            addCollection.setParentRelationship(node); 
-            addCollection.setOwner(thisVDC);
-            vdcCollectionService.edit(addCollection);
         }
+        addCollection.setParentRelationship(node);
+        addCollection.setOwner(thisVDC);
+        vdcCollectionService.edit(addCollection);
         StatusMessage msg = new StatusMessage();
         msg.setMessageText("Collection "+ addCollection.getName()+ " has been saved");
         msg.setStyleClass("successMessage");

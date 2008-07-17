@@ -7,136 +7,166 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ui="http://www.sun.com/web/ui"
       >
-<head>
+    <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
-</head>
-
-<body>
-<gui:composition template="/template.xhtml">
-
-<gui:param name="pageTitle" value="DVN - Dataverse Network Admin Options" />
-
-  <gui:define name="body">
-
-
-        <ui:form  id="form1">
-            <div class="dvn_section">
-                <div class="dvn_sectionTitle">
-                    
-                        <h:outputText  value="#{VDCRequest.vdcNetwork.name} Dataverse Network Admin Options"/>
-                     
-                </div>            
-                <div class="dvn_sectionBox">
-                    <div class="dvn_margin12">
-                         <ui:panelGroup  block="true" style="padding-top: 20px; padding-bottom: 15px">
-                            <h:outputText   styleClass="vdcSubHeader" value="Dataverses, Harvesting, Exporting and OAI Sets:"/>
-                        </ui:panelGroup>
-                        <ui:panelGroup  block="true" id="groupPanel7"
-                                        separator="&lt;br /&gt;" style="padding-left: 10px">
-                            <h:outputLink  id="hyperlink4" value="/dvn/faces/site/AddSitePage.jsp">
-                                <h:outputText  id="hyperlink4Text" value="Create a New Dataverse"/>
-                            </h:outputLink>                  
-                            <h:outputLink  value="/dvn/faces/site/EditHarvestSitePage.jsp">
-                                <h:outputText   value="Create a New Harvesting Dataverse"/>
-                            </h:outputLink>                       
-                            <h:outputLink   value="/dvn/faces/site/HarvestSitesPage.jsp">
-                                <h:outputText  value="Manage Dataverses"/>
-                            </h:outputLink>
-                            <h:outputLink   value="/dvn/faces/networkAdmin/VDCGroupDetailPage.jsp">
-                                <h:outputText  value="Manage Dataverse Groups"/>
-                            </h:outputLink>
-                            <h:outputLink  value="/dvn/faces/networkAdmin/EditExportSchedulePage.jsp">
-                                <h:outputText  value="Schedule Study Export"/>
-                            </h:outputLink>                           
-                              <h:outputLink  value="/dvn/faces/networkAdmin/OAISetsPage.jsp">
-                                <h:outputText  value="Manage OAI Harvesting Sets"/>
-                            </h:outputLink>
-                        </ui:panelGroup>
-                        <ui:panelGroup  block="true" id="groupPanel3" style="padding-top: 20px; padding-bottom: 15px">
-                            <h:outputText  id="outputText3" styleClass="vdcSubHeader" value="Network Customization:"/>
-                        </ui:panelGroup>
-                        <ui:panelGroup  block="true" id="groupPanel4"
-                                        separator="&lt;br /&gt;" style="padding-left: 10px">
-                            <h:outputLink  id="hyperlink12" value="/dvn/faces/networkAdmin/EditNetworkNamePage.jsp">
-                                <h:outputText  id="hyperlink12Text" value="Edit Dataverse Network Name"/>
-                            </h:outputLink>
-                            <h:outputLink  id="hyperlink3" value="/dvn/faces/admin/EditBannerFooterPage.jsp">
-                                <h:outputText  id="hyperlink1Text2" value="Edit Banner and Footer for Network Pages"/>
-                            </h:outputLink>
-                            <h:outputLink  id="hyperlink5" value="/dvn/faces/networkAdmin/EditNetworkAnnouncementsPage.jsp">
-                                <h:outputText  id="hyperlink3Text1" value="Edit Network Homepage description"/>
-                            </h:outputLink>                                                  
-                            <h:outputLink id="hyperlink17" value="/dvn/faces/admin/EditContactUsPage.jsp">
-                                <h:outputText id="hyperlink17Text" value="Set Contact and Notifications E-Mail"/>
-                            </h:outputLink>  
-                          </ui:panelGroup>
-                          
-                        <ui:panelGroup  block="true"  style="padding-top: 20px; padding-bottom: 15px">
-                            <h:outputText  styleClass="vdcSubHeader" value="Terms of Use:"/>
-                        </ui:panelGroup>
-                        <ui:panelGroup  block="true" 
-                                        separator="&lt;br /&gt;" style="padding-left: 10px">  
-                             <h:outputLink  value="/dvn/faces/networkAdmin/EditAccountUseTermsPage.jsp">
-                                <h:outputText  value="Edit Network Terms of Use for Account Creation"/>
-                            </h:outputLink>                                                  
-                           <h:outputLink  value="/dvn/faces/networkAdmin/EditNetworkDepositUseTermsPage.jsp">
-                                <h:outputText  value="Edit Network Terms Of Use for Study Creation and Data Deposit"/>
-                            </h:outputLink>                                                  
-                            <h:outputLink  value="/dvn/faces/networkAdmin/EditNetworkDownloadUseTermsPage.jsp">
-                                <h:outputText  value="Edit Network Terms Of Use for File Download"/>
-                            </h:outputLink>      
-                         </ui:panelGroup>
-                         
-                        <ui:panelGroup  block="true" id="groupPanel1" style="padding-top: 20px; padding-bottom: 15px">
-                            <h:outputText  id="outputText2" styleClass="vdcSubHeader" value="Users, Groups, Privileges:"/>
-                        </ui:panelGroup>
-                        <ui:panelGroup  block="true" id="groupPanel2"
-                                        separator="&lt;br /&gt;" style="padding-left: 10px">
-                            <h:outputLink  id="hyperlink1" value="/dvn/faces/networkAdmin/NetworkPrivilegedUsersPage.jsp">
-                                <h:outputText  id="hyperlink1Text1" value="Manage Network Users' Privileges (Dataverse creators and Network admins)"/>
-                            </h:outputLink>
-                            <h:outputLink   value="/dvn/faces/login/AddAccountPage.jsp">
-                                <h:outputText styleClass="vdcMenuItem" value="Add New User Account"/>
-                            </h:outputLink>
-                            <h:outputLink  id="hyperlink6" value="/dvn/faces/networkAdmin/AllUsersPage.jsp">
-                                <h:outputText  id="hyperlink6Text" value="Manage Users"/>
-                            </h:outputLink>
-                            <h:outputLink  id="hyperlink7" value="/dvn/faces/networkAdmin/UserGroupsPage.jsp">
-                                <h:outputText  id="hyperlink7Text" value="Manage Users and IP Groups"/>
-                            </h:outputLink>
-                            
-                        </ui:panelGroup>
-                        
-                        <ui:panelGroup  block="true"  style="padding-top: 20px; padding-bottom: 15px">
-                            <h:outputText  styleClass="vdcSubHeader" value="Utilities, Web stats, Version:"/>
-                        </ui:panelGroup>
-                        <ui:panelGroup  block="true" separator="&lt;br /&gt;" style="padding-left: 10px">
-                            
-                            <h:outputLink  value="/dvn/faces/networkAdmin/UtilitiesPage.jsp">
-                                <h:outputText value="Utilities"/>
-                            </h:outputLink>
-                             <ui:panelGroup>
-                            <h:outputLink  rendered="#{ MainLayoutBean.googleAnalyticsKey != null }" 
-                                                id="siteStatslink" 
-                                                value="http://www.google.com/analytics/"
-                                                target="_blank">
-                                                <h:outputText  value="Access Google Analytics"/>
-                               </h:outputLink>
-                               <h:outputText  rendered="#{ MainLayoutBean.googleAnalyticsKey == null }" 
-                                                id="siteStatsText" 
-                                                value="Note: Google analytics is not configured for this dataverse network."
-                                                />
-                               </ui:panelGroup>
-                               <h:outputLink   value="/dvn/faces/VersionPage.jsp">
-                                <h:outputText  value="About this Dataverse Network installation"/>
-                            </h:outputLink>  
-                        </ui:panelGroup>
-                        
+        
+    </head>
+    
+    <body>
+        <gui:composition template="/template.xhtml">
+            
+            <gui:param name="pageTitle" value="DVN - Dataverse Network Admin Options" />
+            
+            <gui:define name="body">
+                
+                <ui:form  id="form1">
+                    <div class="dvn_section">
+                        <div class="dvn_sectionTitle">   
+                            <h:outputText  value="#{VDCRequest.vdcNetwork.name} Dataverse Network Admin Options"/>
+                        </div>            
+                        <div class="dvn_sectionBox">
+                            <div class="dvn_margin12">
+                                <div>
+                                    <h:outputText value="#{bundle.DataversesSection}"/>
+                                </div>
+                                <div>
+                                    <h:outputLink  id="hyperlink4" value="/dvn/faces/site/AddSitePage.jsp">
+                                        <h:outputText  id="hyperlink4Text" value="#{bundle.CreateDvTitle}"/>
+                                    </h:outputLink> 
+                                    <h:outputText  value=" - #{bundle.CreateDvHelp}"/>
+                                    <br />
+                                    <h:outputLink  value="/dvn/faces/site/EditHarvestSitePage.jsp">
+                                        <h:outputText   value="#{bundle.CreateHarvestingDvTitle}"/>
+                                    </h:outputLink>
+                                    <h:outputText  value=" - #{bundle.CreateHarvestingDvHelp}"/>
+                                    <br />
+                                    <h:outputLink   value="/dvn/faces/site/HarvestSitesPage.jsp">
+                                        <h:outputText  value="#{bundle.ManageDvsTitle}"/>
+                                    </h:outputLink>
+                                    <h:outputText  value=" - #{bundle.ManageDvsHelp}"/>
+                                    <br />
+                                    <h:outputLink   value="/dvn/faces/networkAdmin/VDCGroupDetailPage.jsp">
+                                        <h:outputText  value="#{bundle.ManageDvGroupsTitle}"/>
+                                    </h:outputLink>
+                                    <h:outputText  value=" - #{bundle.ManageDvGroupsHelp}"/>
+                                    <br />
+                                    <h:outputLink  value="/dvn/faces/networkAdmin/EditExportSchedulePage.jsp">
+                                        <h:outputText  value="#{bundle.ExportsTitle}"/>
+                                    </h:outputLink> 
+                                    <h:outputText  value=" - #{bundle.ExportsHelp}"/>
+                                    <br />
+                                    <h:outputLink  value="/dvn/faces/networkAdmin/OAISetsPage.jsp">
+                                        <h:outputText  value="#{bundle.OAISetsTitle}"/>
+                                    </h:outputLink>
+                                    <h:outputText  value=" - #{bundle.OAISetsHelp}"/>
+                                    <br />
+                                </div>
+                                <div>
+                                    <h:outputText  id="outputText3" value="#{bundle.NetworkSettingsSection}"/>
+                                </div>
+                                <div>
+                                    <h:outputLink  id="hyperlink12" value="/dvn/faces/networkAdmin/EditNetworkNamePage.jsp">
+                                        <h:outputText  id="hyperlink12Text" value="#{bundle.NetworkNameTitle}"/>
+                                    </h:outputLink>
+                                    <h:outputText  value=" - #{bundle.NetworkNameHelp}"/>
+                                    <br />
+                                    <h:outputLink  id="hyperlink3" value="/dvn/faces/admin/EditBannerFooterPage.jsp">
+                                        <h:outputText  id="hyperlink1Text2" value="#{bundle.BrandingTitle}"/>
+                                    </h:outputLink>
+                                    <h:outputText  value=" - #{bundle.BrandingHelp}"/>
+                                    <br />
+                                    <h:outputLink  id="hyperlink5" value="/dvn/faces/networkAdmin/EditNetworkAnnouncementsPage.jsp">
+                                        <h:outputText  id="hyperlink3Text1" value="#{bundle.DescriptionTitle}"/>
+                                    </h:outputLink> 
+                                    <h:outputText  value=" - #{bundle.NetworkDescriptionHelp}"/>
+                                    <br />
+                                    <h:outputLink id="hyperlink17" value="/dvn/faces/admin/EditContactUsPage.jsp">
+                                        <h:outputText id="hyperlink17Text" value="#{bundle.NotificationsTitle}"/>
+                                    </h:outputLink>  
+                                    <h:outputText  value=" - #{bundle.NotificationsHelp}"/>
+                                    <br />
+                                </div>
+                                
+                                <div>
+                                    <h:outputText  value="#{bundle.NetworkTermsSection}"/>
+                                </div>
+                                <div>  
+                                    <h:outputLink  value="/dvn/faces/networkAdmin/EditAccountUseTermsPage.jsp">
+                                        <h:outputText  value="#{bundle.TermsAccountTitle}"/>
+                                    </h:outputLink>     
+                                    <h:outputText  value=" - #{bundle.TermsAccountHelp}"/>
+                                    <br />
+                                    <h:outputLink  value="/dvn/faces/networkAdmin/EditNetworkDepositUseTermsPage.jsp">
+                                        <h:outputText  value="#{bundle.TermsStudyTitle}"/>
+                                    </h:outputLink>  
+                                    <h:outputText  value=" - #{bundle.TermsStudyHelp}"/>
+                                    <br />
+                                    <h:outputLink  value="/dvn/faces/networkAdmin/EditNetworkDownloadUseTermsPage.jsp">
+                                        <h:outputText  value="#{bundle.TermsFileTitle}"/>
+                                    </h:outputLink>      
+                                    <h:outputText  value=" - #{bundle.TermsFileHelp}"/>
+                                    <br />
+                                </div>
+                                
+                                <div>
+                                    <h:outputText value="#{bundle.NetworkPrivilegesSection}"/>
+                                </div>
+                                <div>
+                                    <h:outputLink  id="hyperlink1" value="/dvn/faces/networkAdmin/NetworkPrivilegedUsersPage.jsp">
+                                        <h:outputText  id="hyperlink1Text1" value="#{bundle.NetworkPrivilegesTitle}"/>
+                                    </h:outputLink>
+                                    <h:outputText  value=" - #{bundle.NetworkPrivilegesHelp}"/>
+                                    <br />
+                                    <h:outputLink   value="/dvn/faces/login/AddAccountPage.jsp">
+                                        <h:outputText styleClass="vdcMenuItem" value="#{bundle.AddAccountTitle}"/>
+                                    </h:outputLink>
+                                    <h:outputText  value=" - #{bundle.AddAccountHelp}"/>
+                                    <br />
+                                    <h:outputLink  id="hyperlink6" value="/dvn/faces/networkAdmin/AllUsersPage.jsp">
+                                        <h:outputText  id="hyperlink6Text" value="#{bundle.UsersTitle}"/>
+                                    </h:outputLink>
+                                    <h:outputText  value=" - #{bundle.UsersHelp}"/>
+                                    <br />
+                                    <h:outputLink  id="hyperlink7" value="/dvn/faces/networkAdmin/UserGroupsPage.jsp">
+                                        <h:outputText  id="hyperlink7Text" value="#{bundle.GroupsTitle}"/>
+                                    </h:outputLink>
+                                    <h:outputText  value=" - #{bundle.GroupsHelp}"/>
+                                    <br />
+                                    
+                                </div>
+                                
+                                <div>
+                                    <h:outputText  value="#{bundle.UtilitiesSection}"/>
+                                </div>
+                                <div>                      
+                                    <h:outputLink  value="/dvn/faces/networkAdmin/UtilitiesPage.jsp">
+                                        <h:outputText value="#{bundle.TroubleshootTitle}"/>
+                                    </h:outputLink>
+                                    <h:outputText  value=" - #{bundle.TroubleshootHelp}"/>
+                                    <br />
+                                    
+                                    <h:outputLink  rendered="#{ MainLayoutBean.googleAnalyticsKey != null }" 
+                                                   id="siteStatslink" 
+                                                   value="http://www.google.com/analytics/"
+                                                   target="_blank">
+                                        <h:outputText  value="#{bundle.WebUsageTitle}"/>
+                                    </h:outputLink>
+                                    <h:outputText rendered="#{ MainLayoutBean.googleAnalyticsKey != null }" value=" - #{bundle.WebUsageHelp}"/>
+                                    <h:outputText  rendered="#{ MainLayoutBean.googleAnalyticsKey == null }" 
+                                                   id="siteStatsText" 
+                                                   value="Note: Google analytics is not configured for this dataverse network."
+                                                   />
+                                    
+                                    <br />
+                                    <h:outputLink   value="/dvn/faces/VersionPage.jsp">
+                                        <h:outputText  value="#{bundle.VersionTitle}"/>
+                                    </h:outputLink>  
+                                </div>
+                                
+                            </div>
+                        </div>
                     </div>
-                  </div>
-             </div>
-        </ui:form>               
+                </ui:form>               
             </gui:define>
         </gui:composition>
     </body>

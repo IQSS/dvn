@@ -559,7 +559,8 @@ public class FileDownloadServlet extends HttpServlet{
 				     method.getResponseHeaders()[i].getValue().startsWith("text/html")) {
 				    String remoteFileUrl = file.getFileSystemLocation(); 
 				    createRedirectResponse( res, remoteFileUrl );
-				    studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
+				    //studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
+				    studyService.incrementNumberOfDownloads(file.getId());
 				    method.releaseConnection();
 				    return;
 				}
@@ -588,7 +589,8 @@ public class FileDownloadServlet extends HttpServlet{
 			in.close();
 			out.close();
                 
-			studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
+			//studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
+			studyService.incrementNumberOfDownloads(file.getId());
 
 		    } catch (IOException ex) {
 			//ex.printStackTrace();
@@ -602,7 +604,7 @@ public class FileDownloadServlet extends HttpServlet{
 	    } else {
 		// local object
 
-		studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
+		//studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
 
 		if (formatRequested != null) {
 
@@ -896,7 +898,9 @@ public class FileDownloadServlet extends HttpServlet{
 			in.close();
 			out.close();
                 
-			
+			if ( imageThumb == null || ( ! dbContentType.substring(0, 6).equalsIgnoreCase ("image/") ) ) {
+			    studyService.incrementNumberOfDownloads(file.getId());
+			}
 		    } catch (IOException ex) {
 			//ex.printStackTrace();
 			String errorMessage = "An unknown I/O error has occured while attempting to serve a locally-stored data file. Unfortunately, no extra diagnostic information on the nature of the problem is available to the Application at this point. This could indicate that the data file in question is corrupt. It is also possible that it was caused by a temporary network error. Please try again later and if the problem persists, report it to your DVN technical support contact.";
@@ -1071,7 +1075,7 @@ public class FileDownloadServlet extends HttpServlet{
 		    fileManifest = fileManifest + file.getFileName() + " (" + dbContentType + ") " + fileSize + " bytes.\r\n";
 
 		    if ( fileSize > 0 ) {
-			studyService.incrementNumberOfDownloads(study.getId());
+			studyService.incrementNumberOfDownloads(file.getId());
 		    }
 
 		    // if this was a remote stream, let's close
@@ -1096,9 +1100,6 @@ public class FileDownloadServlet extends HttpServlet{
 		
                 zout.close();
 
-		// increment the per-study number of downloads: 
-
-		studyService.incrementNumberOfDownloads(lastFile.getFileCategory().getStudy().getId());
             } catch (IOException ex) {
 		// if the exception was caught while downloading 
 		// a remote object, let's make sure the network 

@@ -449,9 +449,36 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
     
     public void changeTemplate(Long templateId) {
         Template newTemplate = em.find(Template.class, templateId);
-        // Copy Template Metadata into study Metadata
+        // Clear existing metadata from study
+        clearCollection(study.getStudyAbstracts());
+        clearCollection(study.getStudyAuthors());
+        clearCollection(study.getStudyDistributors());
+        clearCollection(study.getStudyGeoBoundings());
+        clearCollection(study.getStudyGrants());
+        clearCollection(study.getStudyKeywords());
+        clearCollection(study.getStudyNotes());
+        clearCollection(study.getStudyOtherIds());
+        clearCollection(study.getStudyOtherRefs());
+        clearCollection(study.getStudyProducers());
+        clearCollection(study.getStudyRelMaterials());
+        clearCollection(study.getStudyRelPublications());
+        clearCollection(study.getStudyRelStudies());
+        clearCollection(study.getStudySoftware());
+        clearCollection(study.getStudyTopicClasses());
+        
+        // Copy Template Metadata into Study Metadata
         newTemplate.getMetadata().copyMetadata(study.getMetadata());
         FacesContext.getCurrentInstance( ).renderResponse( );
+    }
+    
+    private void clearCollection(Collection collection) {
+        if (collection!=null) {
+            for (Iterator it = collection.iterator(); it.hasNext();) {
+                Object elem =  it.next();          
+                it.remove();
+                em.remove(elem);
+            }
+        }
     }
     
 }

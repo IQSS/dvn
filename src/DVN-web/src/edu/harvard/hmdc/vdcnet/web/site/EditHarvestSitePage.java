@@ -125,10 +125,11 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
                 if (harvestingDataverse.getVdc()!=null) {
                     dataverseName = harvestingDataverse.getVdc().getName();
                     dataverseAlias = harvestingDataverse.getVdc().getAlias();
+                    filesRestricted = harvestingDataverse.getVdc().isFilesRestricted();
                 }
                 try {
-                    assignHarvestingSets(editHarvestSiteService.getHarvestingDataverse().getOaiServer());        
-                    assignMetadataFormats(editHarvestSiteService.getHarvestingDataverse().getOaiServer());       
+                    assignHarvestingSets(editHarvestSiteService.getHarvestingDataverse().getOaiServer(), harvestingDataverse.getHarvestType());        
+                    assignMetadataFormats(editHarvestSiteService.getHarvestingDataverse().getOaiServer(), harvestingDataverse.getHarvestType());       
                 } catch(Exception e) {
                     e.printStackTrace();
                     FacesContext context = FacesContext.getCurrentInstance();
@@ -165,9 +166,9 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
      
         boolean valid=true;            
 
-       valid= assignHarvestingSets(((String)value).trim());
+       valid= assignHarvestingSets(((String)value).trim(), (String) inputHarvestType.getLocalValue());
        if (valid) {
-            assignMetadataFormats(((String)value).trim());
+            assignMetadataFormats(((String)value).trim(), (String) inputHarvestType.getLocalValue());
        }
         if (!valid) {
             ((UIInput)toValidate).setValid(false);
@@ -243,7 +244,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
              editHarvestSiteService.getHarvestingDataverse().setScheduleDayOfWeek(null);
         }
         
-        editHarvestSiteService.save(dataverseName,dataverseAlias, userId);
+        editHarvestSiteService.save(userId, dataverseName,dataverseAlias, filesRestricted);
         success=true;
         return "success";
         
@@ -444,7 +445,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
             msg = "User not found.";
         }
         if (valid) {
-            for (Iterator it = harvestingDataverse.getVdc().getAllowedFileUsers().iterator(); it.hasNext();) {
+            for (Iterator it = getAllowedFileUsers().iterator(); it.hasNext();) {
                 VDCUser elem = (VDCUser) it.next();
                 if (elem.getId().equals(user.getId())) {
                     valid=false;
@@ -548,14 +549,14 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     
    
     
-    private void assignMetadataFormats(String oaiUrl) {
-        if (HarvestingDataverse.HARVEST_TYPE_OAI.equals( inputHarvestType.getLocalValue() ) ) {
+    private void assignMetadataFormats(String oaiUrl, String harvestType) {
+        if (HarvestingDataverse.HARVEST_TYPE_OAI.equals( harvestType ) ) {
             if (oaiUrl!=null) {          
                 editHarvestSiteService.setMetadataFormats(harvesterService.getMetadataFormats(oaiUrl));
             } else {
                 editHarvestSiteService.setMetadataFormats(null);
             }
-        } else if (HarvestingDataverse.HARVEST_TYPE_NESSTAR.equals( inputHarvestType.getLocalValue() ) ) {
+        } else if (HarvestingDataverse.HARVEST_TYPE_NESSTAR.equals( harvestType ) ) {
             List<String> formats = new ArrayList();
             formats.add("ddi");
             editHarvestSiteService.setMetadataFormats(formats);
@@ -564,12 +565,12 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
         }
 
     }
-    
-    private boolean assignHarvestingSets(String oaiUrl)   {
+
+    private boolean assignHarvestingSets(String oaiUrl, String harvestType)   {
         
         boolean valid=true;
 
-        if (HarvestingDataverse.HARVEST_TYPE_OAI.equals( inputHarvestType.getLocalValue() ) && oaiUrl!=null) {
+        if (HarvestingDataverse.HARVEST_TYPE_OAI.equals(harvestType) && oaiUrl!=null) {
             try {
             editHarvestSiteService.setHarvestingSets(harvesterService.getSets(oaiUrl));
             } catch (EJBException e) {
@@ -812,6 +813,27 @@ public void validateDayOfWeek(FacesContext context,
 
     public void setInputHarvestType(HtmlSelectOneRadio inputHarvestType) {
         this.inputHarvestType = inputHarvestType;
+    }
+    
+    boolean filesRestricted;
+
+    
+    public boolean isFilesRestricted() {
+        return filesRestricted;
+    }
+
+    public void setFilesRestricted(boolean filesRestricted) {
+        this.filesRestricted = filesRestricted;
+    }
+    
+    public List getAllowedFileGroups() {
+        return this.getEditHarvestSiteService().getAllowedFileGroups();
+    }
+
+
+
+    public List getAllowedFileUsers() {
+        return this.getEditHarvestSiteService().getAllowedFileUsers();
     }
 
 }

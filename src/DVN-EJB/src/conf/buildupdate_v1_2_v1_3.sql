@@ -579,4 +579,11 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AccountTer
 
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'PromotionalLinkSearchBoxPage','/admin/PromotionalLinkSearchBoxPage.jsp', 3,null );
 
+SELECT setval('templatefield_id_seq',200);
+ALTER TABLE study ADD COLUMN harvestidentifier varchar(255);
+ALTER TABLE study ALTER COLUMN harvestidentifier SET STORAGE PLAIN;
+
+update study set harvestidentifier = (select harvestidentifier from metadata where metadata.id = study.metadata_id);
+alter table metadata drop column harvestidentifier;
+
 commit;

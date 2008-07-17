@@ -1938,7 +1938,16 @@ End of deprecated methods section
         this.authority = authority;
     }
     
-   
+    private String harvestIdentifier;
+    
+    public String getHarvestIdentifier() {
+        return harvestIdentifier;
+    }
+
+    public void setHarvestIdentifier(String harvestIdentifier) {
+        this.harvestIdentifier = harvestIdentifier;
+    }     
+    
     /**
      * Getter for property studyOtherRefs.
      * @return Value of property studyOtherRefs.
@@ -2085,14 +2094,6 @@ End of deprecated methods section
         metadata.setHarvestHoldings(harvestHoldings);
     }
     
-  
-    public String getHarvestIdentifier() {
-        return metadata.getHarvestIdentifier();
-    }
-
-    public void setHarvestIdentifier(String harvestIdentifier) {
-        metadata.setHarvestIdentifier(harvestIdentifier);
-    } 
     
     public Date getLastExportTime() {
         return lastExportTime;

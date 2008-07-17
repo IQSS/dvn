@@ -121,7 +121,6 @@ public class Metadata implements java.io.Serializable {
         copyTarget.setHarvestDVNTermsOfUse(harvestDVNTermsOfUse);
         copyTarget.setHarvestDVTermsOfUse(harvestDVTermsOfUse);
         copyTarget.setHarvestHoldings(harvestHoldings);
-        copyTarget.setHarvestIdentifier(harvestIdentifier);
         copyTarget.setKindOfData(kindOfData);
         copyTarget.setOriginOfSources(originOfSources);
         copyTarget.setOriginalArchive(originalArchive);
@@ -2006,15 +2005,7 @@ public class Metadata implements java.io.Serializable {
         return true;
     }
 
-    private String harvestIdentifier;
-    
-    public String getHarvestIdentifier() {
-        return harvestIdentifier;
-    }
-
-    public void setHarvestIdentifier(String harvestIdentifier) {
-        this.harvestIdentifier = harvestIdentifier;
-    }   
+  
     
     private String harvestHoldings;
 

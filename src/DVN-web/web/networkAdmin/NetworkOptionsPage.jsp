@@ -154,15 +154,16 @@
                                     <h:outputText rendered="#{ MainLayoutBean.googleAnalyticsKey != null }" value=" - #{bundle.WebUsageHelp}"/>
                                     <h:outputText  rendered="#{ MainLayoutBean.googleAnalyticsKey == null }" 
                                                    id="siteStatsText" 
-                                                   value="Note: Google analytics is not configured for this dataverse network."
+                                                   value="Note: Google analytics is not configured for this Dataverse Network."
                                                    />
                                     
                                     <br />
-                                    <h:outputLink   value="/dvn/faces/VersionPage.jsp">
-                                        <h:outputText  value="#{bundle.VersionTitle}"/>
-                                    </h:outputLink>  
+                                    <div>
+                                    Dataverse Network Version <h:outputText value="#{VersionPage.versionNumber}" />.<h:outputText value="#{VersionPage.buildNumber}" />
+                                    <br />
+                                    This software is distributed under the <a href="http://www.affero.org/oagpl.html" target="_blank">Affero General Public License</a>    
+                                    </div>
                                 </div>
-                                
                             </div>
                         </div>
                     </div>

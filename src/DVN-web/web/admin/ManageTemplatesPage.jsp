@@ -78,7 +78,7 @@
                                 <h:outputText  value="Remove"/>
                             </f:facet>
                            
-                            <h:outputLink  rendered="#{currentRow.id!=ManageTemplatesPage.networkTemplateId}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.jsp?templateId=#{currentRow.id}">
+                            <h:outputLink  rendered="#{currentRow.id!=ManageTemplatesPage.networkTemplateId and  currentRow.id!=ManageTemplatesPage.defaultTemplateId}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.jsp?templateId=#{currentRow.id}">
                                 <h:outputText  value="Remove"/>
                             </h:outputLink>                           
                         </h:column>

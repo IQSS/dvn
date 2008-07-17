@@ -35,6 +35,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +57,10 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.ejb.Timeout;
 import javax.ejb.Timer;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Queue;
@@ -80,11 +84,13 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     @EJB StudyServiceLocal studyService;
     @EJB VDCServiceLocal vdcService;
     @EJB MailServiceLocal mailService;
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
     @Resource(mappedName="jms/IndexMessage") Queue queue;
     @Resource(mappedName="jms/IndexMessageFactory") QueueConnectionFactory factory;
     @PersistenceContext(unitName="VDCNet-ejbPU") EntityManager em;
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.index.IndexServiceBean");
     private static final String INDEX_TIMER = "IndexTimer";
+    private static final String INDEX_NOTIFICATION_TIMER = "IndexNotificationTimer";
 
     static {
         try {
@@ -125,6 +131,50 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         timerService.createTimer(initialExpiration, intervalDuration,INDEX_TIMER);
         
     }
+    
+    public void createIndexNotificationTimer() {
+        for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
+            Timer timer = (Timer) it.next();
+            if (timer.getInfo().equals(INDEX_NOTIFICATION_TIMER)) {
+                logger.info("Cannot create IndexNotificationTimer, timer already exists.");
+                logger.info("IndexNotificationTimer next timeout is " +timer.getNextTimeout());
+                return;
+                
+            }
+            
+        }
+        
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR,1);
+        cal.set(Calendar.HOUR_OF_DAY,15);
+        
+        logger.log(Level.INFO,"Indexer notification timer set for "+cal.getTime());
+        System.out.println("Indexer notification timer set for "+cal.getTime());
+        Date initialExpiration = cal.getTime();  // First timeout is 1:00 AM of next day
+        long intervalDuration = 1000*60 *60*24;  // repeat every 24 hours
+        timerService.createTimer(initialExpiration, intervalDuration,INDEX_TIMER);
+        
+    }
+    
+    @Timeout
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public void handleTimeout(javax.ejb.Timer timer) {
+        try {
+            if (timer.getInfo() instanceof IndexTimerInfo) {
+                IndexTimerInfo info = (IndexTimerInfo) timer.getInfo();
+                logger.log(Level.INFO, "Index update");
+                if (info.getName().equals(INDEX_TIMER)){
+                indexBatch();
+                } else if (info.getName().equals(INDEX_NOTIFICATION_TIMER)){
+                    indexProblemNotify();
+                }
+            }
+        } catch (Throwable e) {
+            mailService.sendIndexUpdateErrorNotification(vdcNetworkService.find().getContactEmail(), vdcNetworkService.find().getName());
+            e.printStackTrace();
+        }
+    }
+    
     public void indexStudy(long studyId){
         IndexEdit op = new IndexEdit();
         op.setStudyId(studyId);
@@ -133,10 +183,22 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     }
 
     private void getCollectionStudies(List studyIds, VDCCollection elem) {
-        Collection studies = elem.getStudies();
-        for (Iterator it2 = studies.iterator(); it2.hasNext();) {
-            Study elem2 = (Study) it2.next();
-            studyIds.add(elem2.getId());
+        if (elem.getQuery() != null) {
+            List<Long> queryStudyIds = query(elem.getQuery());
+            studyIds.addAll(queryStudyIds);
+        } else {
+            Collection studies = elem.getStudies();
+            for (Iterator it2 = studies.iterator(); it2.hasNext();) {
+                Study elem2 = (Study) it2.next();
+                studyIds.add(elem2.getId());
+            }
+        }
+    }
+
+    private void indexProblemNotify() {
+        List<Study> studies = (List<Study>) em.createQuery("SELECT s from Study s where s.lastIndexTime < s.lastUpdateTime OR s.lastIndexTime is NULL").getResultList();
+        if (studies.size() > 0){
+            mailService.sendIndexErrorNotification(vdcNetworkService.find().getContactEmail(), vdcNetworkService.find().getName(), studies.size());
         }
     }
 
@@ -373,6 +435,7 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
                         Study elem2 = (Study) it2.next();
                         studyIds.add(elem2.getId());
                     }
+
                 }
             } else {
                 getCollectionStudies(studyIds, vdc.getRootCollection());

@@ -37,6 +37,7 @@ import edu.harvard.hmdc.vdcnet.vdc.HandlePrefix;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
@@ -110,6 +111,9 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
         if (harvestingDataverse.getHarvestFormatType()!=null) {
             selectedMetadataPrefixId = harvestingDataverse.getHarvestFormatType().getId();
         }
+        
+        allowedFileGroups.addAll( harvestingDataverse.getVdc().getAllowedFileGroups() );
+        allowedFileUsers.addAll( harvestingDataverse.getVdc().getAllowedFileUsers() );
     }
     
     public void newHarvestingDataverse( ) {
@@ -128,18 +132,26 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
  
         
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void save(String name, String alias, Long userId ) {
+    public void save(Long userId, String name, String alias, boolean filesRestricted) {
+        VDC vdc = null;
         if (harvestingDataverse.getVdc()==null) {
             vdcService.create(userId,name,alias);
-            VDC vdc = vdcService.findByAlias(alias);
+            vdc = vdcService.findByAlias(alias);
             // Get managed entity so we can update it with harvesting dataverse reference
             VDC managedVdc = em.find(VDC.class, vdc.getId());  
             harvestingDataverse.setVdc(managedVdc);
             managedVdc.setHarvestingDataverse(harvestingDataverse);
         } else {
-            harvestingDataverse.getVdc().setName(name);
-            harvestingDataverse.getVdc().setAlias(alias);
+            vdc = harvestingDataverse.getVdc();
+            vdc.setName(name);
+            vdc.setAlias(alias);
         }
+        
+        vdc.setFilesRestricted(filesRestricted);
+        vdc.setAllowedFileGroups(allowedFileGroups);
+        vdc.setAllowedFileUsers(allowedFileUsers);
+
+        
         if (selectedHandlePrefixId==null) {
             harvestingDataverse.setHandlePrefix(null);
         } else {
@@ -184,26 +196,26 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
     
     public void removeAllowedFileGroup(Long groupId) {
         UserGroup group = em.find(UserGroup.class,groupId);
-        harvestingDataverse.getVdc().getAllowedFileGroups().remove(group);
+        getAllowedFileGroups().remove(group);
         
     }
     
     public void  addAllowedFileGroup(Long groupId) {
         UserGroup group = em.find(UserGroup.class,groupId);
-        harvestingDataverse.getVdc().getAllowedFileGroups().add(group);
+        getAllowedFileGroups().add(group);
        
         
     }
     
      public void removeAllowedFileUser(Long userId) {
         VDCUser user = em.find(VDCUser.class,userId);
-        harvestingDataverse.getVdc().getAllowedFileUsers().remove(user);
+        getAllowedFileUsers().remove(user);
       
     }
     
     public void  addAllowedFileUser(Long userId) {
         VDCUser user = em.find(VDCUser.class,userId);
-        harvestingDataverse.getVdc().getAllowedFileUsers().add(user);
+        getAllowedFileUsers().add(user);
      
         
     }
@@ -238,4 +250,22 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
     public void setMetadataFormats(List<String> metadataFormats){
         this.metadataFormats=metadataFormats;
     }
+    
+    List allowedFileGroups = new ArrayList();
+    List allowedFileUsers = new ArrayList();
+
+    public List getAllowedFileGroups() {
+        return allowedFileGroups;
+    }
+
+
+
+    public List getAllowedFileUsers() {
+        return allowedFileUsers;
+    }
+
+
+    
+    
+
 }

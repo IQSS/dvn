@@ -24,6 +24,7 @@ import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Local;
@@ -79,6 +80,7 @@ public interface StudyServiceLocal extends java.io.Serializable {
    java.util.List<edu.harvard.hmdc.vdcnet.study.Study> getNewStudies(Long vdcId);
 
     void incrementNumberOfDownloads(Long studyId);
+    void incrementNumberOfDownloads(Long studyFileId, Date lastDownloadTime);
     
     List<DataFileFormatType> getDataFileFormatTypes();
 

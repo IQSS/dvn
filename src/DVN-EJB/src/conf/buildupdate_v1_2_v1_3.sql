@@ -2,6 +2,8 @@
 -- Add metadata_id to study table and copy primary key into it
 begin;
 
+update dvnversion set versionnumber=1, buildnumber=3;
+
 ALTER TABLE study ADD COLUMN metadata_id int8;
 ALTER TABLE study ALTER COLUMN metadata_id SET STORAGE PLAIN;
 update study set metadata_id = id;

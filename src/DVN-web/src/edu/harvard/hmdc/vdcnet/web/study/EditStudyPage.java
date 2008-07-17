@@ -358,7 +358,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     public boolean getShowTemplateList() {
-          return (!getTemplatesMap().isEmpty() && editStudyService.isNewStudy());
+          return (!getTemplatesMap().isEmpty() && getTemplatesMap().size() >1 && editStudyService.isNewStudy());
         
     }
     

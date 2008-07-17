@@ -36,7 +36,7 @@ import javax.ejb.Remove;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-/**
+/** 
  *
  * @author Ellen Kraffmiller
  */
@@ -61,7 +61,7 @@ public interface EditHarvestSiteService extends java.io.Serializable  {
     public void setSelectedMetadataPrefixId(Long selectedMetadataPrefixId);
    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void save(String name, String alias, Long userId);
+    public void save(Long userId, String name, String alias, boolean filesRestricted);
 
    
     public void removeAllowedFileGroup(Long groupId);
@@ -86,5 +86,8 @@ public interface EditHarvestSiteService extends java.io.Serializable  {
     public void setMetadataFormats(List<String> metadataFormats);
     
     public String getEditMode();
+    
+    public List getAllowedFileGroups();
+    public List getAllowedFileUsers();
     
 }

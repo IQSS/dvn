@@ -83,9 +83,6 @@
                        
                         <ui:panelGroup block="true" rendered="#{VDCSession.loginBean.admin == true or VDCSession.loginBean.networkAdmin == true}">
                             <div>
-                                <h:outputText  value="#{bundle.AdminSection}"/>
-                            </div>
-                            <div>
                                 <h:outputText value="#{bundle.DvSettingsSection}"/>
                               </div>
                              <div>

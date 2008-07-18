@@ -821,6 +821,19 @@ public class FileDownloadServlet extends HttpServlet{
 			    }
 			}
 
+			// send the file as the response
+
+			// InputStream in = new FileInputStream(inFile);
+
+			// we want to open the actual physical file *before*
+			// we set content-type headers; otherwise, if the file
+			// is corrupt/damaged and can't be open, the exception 
+			// will be caught and the error message will be printed, 
+			// but the browser will already be told to expect whatever
+			// content-type that file was supposed to be. 
+			
+			FileChannel in = new FileInputStream(inFile).getChannel();
+
 			if ( dbFileName != null ) {
 			    if ( dbContentType != null ) {
 
@@ -869,12 +882,6 @@ public class FileDownloadServlet extends HttpServlet{
 				res.setContentType( dbContentType );
 			    }
 			}
-			
-			// send the file as the response
-
-			// InputStream in = new FileInputStream(inFile);
-			
-			FileChannel in = new FileInputStream(inFile).getChannel();
 			
 			// OutputStream out = res.getOutputStream();
 
@@ -986,8 +993,6 @@ public class FileDownloadServlet extends HttpServlet{
                 List nameList = new ArrayList(); // used to check for duplicates
                 iter = files.iterator();
 		
-		StudyFile lastFile = null; 
-
                 while (iter.hasNext()) {
 		    int fileSize = 0; 
                     StudyFile file = (StudyFile) iter.next();
@@ -1004,90 +1009,114 @@ public class FileDownloadServlet extends HttpServlet{
 			varHeaderLine = generateVariableHeader ( datavariables );
 		    }
 
+		    Boolean Success = true; 
 
-		    if ( file.isRemote() ) {
+		    try {
+			if ( file.isRemote() ) {
 
-			// do the http magic
+			    // do the http magic
 
-			int status = 200;
+			    int status = 200;
 			
-			method = new GetMethod ( file.getFileSystemLocation() );
-			status = getClient().executeMethod(method);
+			    method = new GetMethod ( file.getFileSystemLocation() );
+			    status = getClient().executeMethod(method);
 
-			if ( status != 200 ) {
+			    if ( status != 200 ) {
+				
+				if (method != null) { 
+				    method.releaseConnection(); 
+				}
+				
+			    } else {
 
+				// the incoming HTTP stream is the source of 
+				// the current chunk of the zip stream we are
+				// creating.
+
+				in = method.getResponseBodyAsStream(); 
+			    }
+			
+			    // well, yes, the logic above will result in 
+			    // adding an empty file to the zip archive in 
+			    // case the remote object is not accessible. 
+
+			    // I can't think of a better solution right now, 
+			    // but it should work for now.
+
+			} else {
+			    // local file.		       
+			    in = new FileInputStream(new File(file.getFileSystemLocation()));
+			}
+		    } catch (IOException ex) {
+			Success = false; 
+
+			if ( dbContentType == null ) {
+			    dbContentType = "unknown filetype;"; 
+			} 
+		    
+			fileManifest = fileManifest + file.getFileName() + " (" + dbContentType + ") COULD NOT be downloaded because an I/O error has occured. \r\n";
+
+			if ( in != null ) {
+			    in.close(); 
+			}
+
+			// if this was a remote stream, let's close
+			// the connection properly:
+
+			if ( file.isRemote() ) {
 			    if (method != null) { 
 				method.releaseConnection(); 
 			    }
+			}
+		    }
 
-			} else {
+		    if ( Success ) {
+			String zipEntryName = file.getFileName();
+			if (createDirectoriesForCategories) {
+			    String catName = new FileCategoryUI( file.getFileCategory() ).getDownloadName();    
+			    zipEntryName = catName + "/" + zipEntryName;
+			}
+			zipEntryName = checkZipEntryName( zipEntryName, nameList );
+			ZipEntry e = new ZipEntry(zipEntryName);
+                    
+			zout.putNextEntry(e);
 
-			    // the incoming HTTP stream is the source of 
-			    // the current chunk of the zip stream we are
-			    // creating.
-
-			    in = method.getResponseBodyAsStream(); 
+			if ( varHeaderLine != null ) {
+			    byte[] headerBuffer = varHeaderLine.getBytes();
+			    zout.write(headerBuffer); 
+			    fileSize+=(headerBuffer.length); 
 			}
 			
-			// well, yes, the logic above will result in 
-			// adding an empty file to the zip archive in 
-			// case the remote object is not accessible. 
+			byte[] dataBuffer = new byte[8192]; 
 
-			// I can't think of a better solution right now, 
-			// but it should work for now.
-
-		    } else {
-			// local file.		       
-			in = new FileInputStream(new File(file.getFileSystemLocation()));
-                    }
-
-                    String zipEntryName = file.getFileName();
-                    if (createDirectoriesForCategories) {
-                        String catName = new FileCategoryUI( file.getFileCategory() ).getDownloadName();    
-                        zipEntryName = catName + "/" + zipEntryName;
-                    }
-                    zipEntryName = checkZipEntryName( zipEntryName, nameList );
-                    ZipEntry e = new ZipEntry(zipEntryName);
-                    
-                    zout.putNextEntry(e);
-
-		    if ( varHeaderLine != null ) {
-			byte[] headerBuffer = varHeaderLine.getBytes();
-			zout.write(headerBuffer); 
-			fileSize+=(headerBuffer.length); 
-		    }
-
-		    byte[] dataBuffer = new byte[8192]; 
-
-		    int i = 0;
-		    while ( ( i = in.read (dataBuffer) ) > 0 ) {
-			zout.write(dataBuffer,0,i);
-			fileSize += i; 
-			out.flush(); 
-		    }
-                    in.close();
-                    zout.closeEntry();
-
-		    if ( dbContentType == null ) {
-			dbContentType = "unknown filetype;"; 
-		    } 
-		    
-		    fileManifest = fileManifest + file.getFileName() + " (" + dbContentType + ") " + fileSize + " bytes.\r\n";
-
-		    if ( fileSize > 0 ) {
-			studyService.incrementNumberOfDownloads(file.getId());
-		    }
-
-		    // if this was a remote stream, let's close
-		    // the connection properly:
-
-		    if ( file.isRemote() ) {
-			if (method != null) { 
-			    method.releaseConnection(); 
+			int i = 0;
+			while ( ( i = in.read (dataBuffer) ) > 0 ) {
+			    zout.write(dataBuffer,0,i);
+			    fileSize += i; 
+			    out.flush(); 
 			}
-		    }
+			in.close();
+			zout.closeEntry();
 
-		    lastFile = file; 
+			if ( dbContentType == null ) {
+			    dbContentType = "unknown filetype;"; 
+			} 
+		    
+			fileManifest = fileManifest + file.getFileName() + " (" + dbContentType + ") " + fileSize + " bytes.\r\n";
+
+			if ( fileSize > 0 ) {
+			    studyService.incrementNumberOfDownloads(file.getId());
+			}
+
+			// if this was a remote stream, let's close
+			// the connection properly:
+
+			if ( file.isRemote() ) {
+			    if (method != null) { 
+				method.releaseConnection(); 
+			    }
+			}
+		    }		    
 		}
 
 		// finally, let's create the manifest entry: 
@@ -1101,17 +1130,22 @@ public class FileDownloadServlet extends HttpServlet{
                 zout.close();
 
             } catch (IOException ex) {
-		// if the exception was caught while downloading 
-		// a remote object, let's make sure the network 
-		// connection is closed properly.
+		// if we caught an exception *here*, it means something
+		// catastrophic has happened while packaging the zip archive
+		// itself (I/O errors on individual files would be caught
+		// above); so there's not much we can do except print a
+		// generic error message: 
+
+                //ex.printStackTrace();
+
+		String errorMessage = "An unknown I/O error has occured while generating a Zip archive of multiple data files. Unfortunately, no further diagnostic information on the nature of the problem is avaiable to the Application at this point. It is possible that the problem was caused by a temporary network error. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+		createErrorResponseGeneric( res, 0, errorMessage);
+
 
 		if (method != null) { 
 		    method.releaseConnection(); 
 		}
 
-                //ex.printStackTrace();
-		String errorMessage = "An unknown I/O error has occured while generating a Zip archive of multiple data files. Unfortunately, no further diagnostic information on the nature of the problem is avaiable to the Application at this point. It is possible that the problem was caused by a temporary network error. Please try again later and if the problem persists, report it to your DVN technical support contact.";
-		createErrorResponseGeneric( res, 0, errorMessage);
 
             }
         }

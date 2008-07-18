@@ -225,4 +225,8 @@ public class StudyFileUI implements java.io.Serializable {
         return FileUtils.byteCountToDisplaySize( pFile.length() );
         //return String.valueOf( pFile.length() );
     }
+    
+    public int getDownloadCount() {
+        return studyFile.getStudyFileActivity() != null ? studyFile.getStudyFileActivity().getDownloadCount() : 0;
+    }    
 }

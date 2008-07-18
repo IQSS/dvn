@@ -186,11 +186,18 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
   background-color: white;
 }
 
-.list-row-even { 
+.list-row-even {
+}
+.list-row-even td {
+  border-bottom: 1px solid #dddfde;
 }
 
 .list-row-odd { 
   background-color: #eeeeee;
+}
+.list-row-odd td { 
+  background-color: #eeeeee;
+  border-bottom: 1px solid #dddfde;
 }
 
 /* Style rules for message severity levels */
@@ -456,7 +463,7 @@ a.vdcSiteMapLink:link, a.vdcSiteMapLink:visited, a.vdcSiteMapLink:hover, a.vdcSi
 
 .vdcSResultsPageNLast {
    padding-left: 2px;
-   padding-right: 4px
+   padding-right: 4px;
 }
 
 .vdcSResultsTop{
@@ -469,13 +476,13 @@ span.vdcSResultsField {
 
 .vdcSResultsCol1{
    background-color:inherit !important;
-   width: 50%
+   width: 50%;
 }
 
 .vdcSResultsCol2{
    background-color:inherit !important;
    text-align: right;
-   width: 50%
+   width: 50%;
 }
 
 .vdcSResultsList{
@@ -530,132 +537,216 @@ span.vdcSResultsField {
 .vdcStudyInfoDownload {
    font-weight: bold;
    padding-top: 10px;
-   text-align: center
+   text-align: center;
 }
+
+/* STUDY FILES
+*/
+
+.vdcStudyFilesPage {width: 100%}
+.vdcStudyFilesEmpty {padding: 20px 0;}
+.vdcStudyFilesEmpty div.vdcStudyFilesEmptyMessage {text-align: center;}
+div.vdcStudyFilesUploadingMsg {
+    width: 60%;
+    padding: 0.75em;
+    margin: 0 auto 12px auto;
+    text-align: center;
+    font-weight: normal;
+}
+div.vdcStudyFilesMessage {
+    width: 60%;
+    padding: 0.75em;
+    margin: 0 auto 12px auto;
+    text-align: center;
+    font-weight: normal;
+    background-color: #f4ebc7; 
+    color: #c55b28;
+}
+div.vdcStudyFilesMessage span {
+    display: block;
+    padding: .5em 0;
+}
+div.vdcStudyFilesMessage a:link, div.vdcStudyFilesMessage a:visited, div.vdcStudyFilesMessage a:hover, div.vdcStudyFilesMessage a:active {
+    font-weight: bold;
+}
+
+.vdcStudyFilesDownloadAll {padding-bottom: 1em;}
+.vdcStudyFilesDownloadAllMessage {vertical-align: top;}
 
 .vdcStudyFilesCat {
    background-color: #d2d2d2;
    border-bottom-color: #ffffff;
    border-bottom-style: solid;
    border-bottom-width: 1px;
-   padding-bottom: 2px;
-   padding-left: 4px;
-   padding-top: 2px;
-   text-align: left
+   padding: 2px 0;
+   overflow: hidden;
 }
 
 .vdcStudyFilesCatLabel {
+   float: left;
    font-weight: bold;
-   padding-left: 8px;
+   padding-left: 22px;
    padding-right: 8px;
-}
-.vdcStudyFilesHead1{
-   white-space: nowrap;
-   width: 150px;
-   font-weight: bold;
-   font-style: italic;
-  background-color : #b2b2b2;
-  text-align: center;  
-}
-.vdcStudyFilesHead2{ 
-   white-space: nowrap; 
-   font-weight: bold;
-   font-style : italic;
-  background-color : #b2b2b2;
-  text-align: center;  
-}
-.vdcStudyFilesHead3{
-   white-space: nowrap;  
-   width: 120px;
-   font-weight: bold;
-   font-style : italic;
-  background-color : #b2b2b2;
-  text-align: center;  
-}
-.vdcStudyFilesHead4{
-   white-space: nowrap;  
-   width: 30px;
-   font-weight: bold;
-   font-style : italic;
-  background-color : #b2b2b2;
-  text-align: center;  
-}
-.vdcStudyFilesHead5{
-   white-space: nowrap;  
-   width: 30px;
-   font-weight: bold;
-   font-style : italic;
-  background-color : #b2b2b2;
-  text-align: center;  
-}
-.vdcStudyFilesHead6{
-   white-space: nowrap;  
-   width: 90px;
-   font-weight: bold;
-   font-style : italic;
-  background-color : #b2b2b2;
-  text-align: center;  
+   vertical-align: middle;
 }
 
-.vdcStudyFilesCol1{
-   white-space: normal;
-   width: 150px;
-   border-color: #dadee0;
-   border-style: solid;
-   border-width: 1px;
-   padding-right: 2px;
-   padding-left: 2px; 
-}
-.vdcStudyFilesCol2{
-   white-space: normal; 
-   border-color: #dadee0;
-   border-style: solid;
-   border-width: 1px;
-   padding-right: 2px;
-   padding-left: 2px; 
-}
-.vdcStudyFilesCol3{
-   white-space: normal;  
-   width: 130px;
-   border-color: #dadee0;
-   border-style: solid;
-   border-width: 1px;
-   padding-right: 2px;
-   padding-left: 2px; 
-}
-.vdcStudyFilesCol4{
-   white-space: normal;  
-   width: 30px;
-   border-color: #dadee0;
-   border-style: solid;
-   border-width: 1px;
-   padding-right: 2px;
-   padding-left: 2px; 
-}
-.vdcStudyFilesCol5{
-   white-space: normal;  
-   width: 30px;
-   border-color: #dadee0;
-   border-style: solid;
-   border-width: 1px;
-   padding-right: 2px;
-   padding-left: 2px;
-}
-.vdcStudyFilesCol6{
-   white-space: normal;  
-   width: 90px;
-   border-color: #dadee0;
-   border-style: solid;
-   border-width: 1px;
-   padding-left: 4px;  
+.vdcStudyFilesCatDownload {float: right; margin-right: 162px; width: 50%;}
+
+a.vdcStudyCatDownloadLink {
+        background-image: url(icon_downloadall.gif);
+	background-repeat: no-repeat;
+	padding-left: 26px;
+        padding-bottom: 2px;
 }
 
-.vdcLegendHeader {padding-top: 15px; font-weight: bold !important; color: #666; font-style: italic;}
-
-.vdcCitationText{
-    text-indent: -15px; 
-    padding-left: 15px;
+span.vdcStudyCatDownloadLink {
+	font-size: 90% !important;
 }
+
+.TogglePaneFancyHeader {
+	background-image: url(icon_expand.gif);
+	background-repeat: no-repeat;
+	background-position: .25em .25em;
+}
+.TogglePaneFancyHeaderClosed {
+	background-image: url(icon_contract.gif);
+	background-repeat: no-repeat;
+	background-position: .25em .25em;
+}
+a.vdcTruncatorLinkMore:link, a.vdcTruncatorLinkMore:hover, a.vdcTruncatorLinkMore:active, a.vdcTruncatorLinkMore:visited,
+a.vdcTruncatorLinkLess:link, a.vdcTruncatorLinkLess:hover, a.vdcTruncatorLinkLess:active, a.vdcTruncatorLinkLess:visited {font-size: 90% !important;}
+
+.vdcStudyFileRow {width: 100%;}
+.vdcStudyFileRowLeft {float: left; width: 50%;}
+.vdcStudyFileRowFileInfo {float: left; width: auto; padding: 0 .25em;}
+.vdcStudyFileRowFileThumb {float: left; padding: .25em;}
+.vdcStudyFileRowFileName {float: left;}
+span.vdcStudyFileRowFileDetails {font-size: 90% !important; color: darkgray;}
+.vdcStudyFileRowFileDownload {float: right; width: 160px; padding: .25em 0;}
+
+a.vdcStudyFileRowFileDownloadLink:link, a.vdcStudyFileRowFileDownloadLink:hover, 
+a.vdcStudyFileRowFileDownloadLink:active, a.vdcStudyFileRowFileDownloadLink:visited {padding-left: 24px; padding-bottom: 4px; background: url(icon_download.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
+span.vdcStudyFileRowFileDownloadRestricted {margin-left: 3px; font-size: 90% !important; color: darkgray; vertical-align: top;}
+
+.vdcStudyDesc a.vdcTruncatorLinkLess {display: block; text-align: right;}
+
+.vdcStudyFileRowRight {float: left; width: 48%; padding: 0 .25em;}
+.vdcStudyFileRowSubset {overflow: hidden; clear: left; width: 100%;}
+.vdcStudyFileRowSubsetLeft {float: left; width: 50%;}
+.vdcStudyFileSubsetTable {float: left; width: auto; padding: 0 .25em;}
+.vdcStudyFileSubsetTable table {margin: .5em 0; border-collapse: collapse;}
+.vdcStudyFileSubsetTable td {border: 1px solid #c55b28; padding: 0 .5em; font-size: 90% !important;}
+.vdcStudyFileSubsetTable td span {text-transform: uppercase; font-size: 100% !important;}
+.vdcStudyFileSubsetAnalysis {float: right; width: 160px;}
+.vdcStudyFileSubsetAnalysis a:hover, .vdcStudyFileSubsetAnalysis a:active {color: #c55b28; text-decoration: underline;}
+
+a.vdcStudyFileSubsetAnalysisLink:link, a.vdcStudyFileSubsetAnalysisLink:hover, 
+a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visited {padding-left: 24px; padding-bottom: 2px; background: url(icon_analyze.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
+
+.vdcStudyDataCitationContainer {float: left; width: 48%; padding: 0 0.25em;}
+.vdcStudyDataCitation a.vdcTruncatorLinkMore {
+        padding-left: 24px;
+        padding-bottom: 2px;
+        background-image: url(icon_citation.gif);
+	background-repeat: no-repeat;
+        margin: 0;
+}
+.vdcStudyDataCitation span {
+        padding-left: 24px;
+        padding-bottom: 2px;
+        background-image: url(icon_citation.gif);
+	background-repeat: no-repeat;
+        font-size: 90% !important;
+}
+.vdcStudyDataCitation a.vdcTruncatorLinkLess {display: block; text-align: right;}
+
+/* studyFileDownloadAs */
+.downloadas, .downloadas ul { 
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.downloadas {
+    position: relative;
+}
+.downloadas li {
+    float: left;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+.downloadas li img {
+    border: 0;
+}
+.downloadas li ul {
+    z-index: 100;
+    opacity: 0.9999;
+    display: block;
+}
+.downloadas li a, .downloadas li a:link, .downloadas li a:active, .downloadas li a:visited {
+    background: inherit;
+    color: #0c54b3;
+    display: block;
+    padding: 0 3px;
+    text-decoration: none;
+    font-size: 90% !important;
+    vertical-align: top;
+}
+.downloadas li a:hover {
+    background: khaki;
+    color: #0c54b3;
+    text-decoration: none;
+}
+.downloadas li a.downloadasLink {
+    display: inline;
+}
+.downloadas li a:hover.downloadasLink {
+    color: #0c54b3;
+    text-decoration: none !important;
+}
+.studyFileDownloadAs li:hover a, 
+.studyFileDownloadAs li.sfHover a {
+    background: khaki;
+    color: #0c54b3;
+    font-size: 90% !important;
+}
+.studyFileDownloadAs li:hover ul a, 
+.studyFileDownloadAs li.sfHover ul a {
+    background: khaki;
+    color: #0c54b3;
+    font-size: 90% !important;
+}
+.studyFileDownloadAs li:hover ul a:hover, 
+.studyFileDownloadAs li.sfHover ul a:hover {
+    background: khaki;
+    color: #c55b28;	
+}
+.downloadas ul {
+    list-style: none;
+    margin: 0;
+    width: 80px;
+    position: absolute;
+    top: -999em;
+    left: -1px;
+}
+.downloadas li:hover ul,
+.downloadas li.sfHover ul {
+    top: 16px;
+    left: 25px;
+}
+.downloadas ul li {
+    border: 0;
+    float: none;
+}
+.downloadas ul a {
+    width: 80px;
+    white-space: nowrap;
+}
+.downloadas ul a:hover {
+    background: khaki;
+    color: #c55b28;
+}
+
 /* Edit Study/Files style rules
 */
 .vdcEditFilesColA{
@@ -912,6 +1003,7 @@ span.vdcSResultsField {
 }
 
 /* Network Homepage Style Rules */
+
 .vdcDataverseGroupLeft{
    padding-bottom: 0px;
    padding-left: 80px;
@@ -966,26 +1058,6 @@ span.vdcSResultsField {
     padding-right: 0px;
 }
 .vdcAbstractSResults div, .vdcAbstractSResults p {margin: 0; padding: 0; display: inline;}
-
-.vdcRequestPanelFiles{
-    padding: 15px 10px 15px 10px; 
-    text-align: center;
-    font-weight: normal;
-    background-color: #f2ffe6;
-    border: 1px solid #a3bfb1; 
-}
-a.vdcRequestPanelLink:link{
-    font-weight: bold;
-}
-a.vdcRequestPanelLink:visited{
-    font-weight: bold;
-}
-a.vdcRequestPanelLink:hover{
-    font-weight: bold;
-}
-a.vdcRequestPanelLink:active{
-    font-weight: bold;
-}
 
 /* Scrollable div for terms  of use
 */
@@ -1274,6 +1346,13 @@ span.loginHeader {color: #c55b28; font-size: 112%; line-height: 2;}
 table#loginBlock label {color: #526f76;}
 table#loginBlock select {margin: 0;}
 table#loginBlock img {margin: 1em 0 0 0;}
+
+/**** Network Options Page  + My Options Page ****/
+.dvnOptionsTable {margin-bottom: 2em; width: 85%;}
+.dvnOptionsTable td {padding: .5em 2em; border-bottom: 1px solid lightgray;}
+td.dvnOptionsTableHeader {padding: .5em 1em; background: gainsboro; color: grey; text-transform: uppercase;}
+.dvnOptionsTableOption {width: 240px;}
+span.dvnOptionsTableNote {font-size: 90% !important;}
 
 /**** Create a Dataverse ****/
 .requestHmpgSide {position: absolute; top: 0; right: 0; margin-bottom: 18px;}

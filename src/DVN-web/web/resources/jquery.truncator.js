@@ -24,11 +24,11 @@
       // This is an ugly approximation for getting the last block tag:
       // we just pick the last <p> or else the container itself.
       truncated_node.find('p:last').add(truncated_node).eq(0).
-        append('&nbsp; <a href="#show more content" style="font-size: 90% !important;">'+opts.more+'</a>');
+        append('<a href="#show more content" class="vdcTruncatorLinkMore">'+opts.more+'</a>');
 
       full_node.hide();
       full_node.find('p:last').add(full_node).eq(0).
-        append('&nbsp; <a href="#show less content" style="font-size: 90% !important;">'+opts.less+'</a>');
+        append('<a href="#show less content" class="vdcTruncatorLinkLess">'+opts.less+'</a>');
 
       truncated_node.find('a:last').click(function() {
         truncated_node.hide(); full_node.show(); return false;

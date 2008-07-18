@@ -383,17 +383,12 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         if (this.selectedGroup != null) {
             System.out.println("the group is" + this.getSelectedGroup());
         }
-        Long selectedgroup      = this.getSelectedGroup();
-        String dataversetype    = dataverseType;
-        String name             = (String) dataverseName.getValue();
-        String alias            = (String) dataverseAlias.getValue();
-        String affiliation      = this.getAffiliation();
+        Long selectedgroup  = this.getSelectedGroup();
+        String dtype        = dataverseType;
+        String name         = (String) dataverseName.getValue();
+        String alias        = (String) dataverseAlias.getValue();
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
-        if (affiliation != null && affiliation != "") {
-            vdcService.create(userId, name, alias, affiliation);
-        } else {
-            vdcService.create(userId, name, alias);
-        }
+        vdcService.create(userId, name, alias, dtype);
         if (selectedGroup != null && selectedGroup > 0) {
             //the following method requires a string array
             VDCGroup vdcgroup   = vdcGroupService.findById(selectedGroup);
@@ -422,6 +417,8 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         getVDCRequestBean().getCurrentVDC().setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
         getVDCRequestBean().getCurrentVDC().setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
         getVDCRequestBean().getCurrentVDC().setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
+        if (getAffiliation() != null && !getAffiliation().equals("") )
+            getVDCRequestBean().getCurrentVDC().setAffiliation(getAffiliation());
         vdcService.edit(createdVDC);
         // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
         getVDCRequestBean().getCurrentVDCURL();

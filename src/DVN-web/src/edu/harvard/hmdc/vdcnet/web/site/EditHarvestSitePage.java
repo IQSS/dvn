@@ -79,6 +79,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     @EJB HandlePrefixServiceLocal handlePrefixService;
     HtmlSelectBooleanCheckbox scheduledCheckbox;
     HtmlSelectOneMenu schedulePeriod;
+    String _HARVEST_DTYPE = "Basic";
 
     public HtmlSelectOneMenu getSchedulePeriod() {
         return schedulePeriod;
@@ -244,7 +245,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
              editHarvestSiteService.getHarvestingDataverse().setScheduleDayOfWeek(null);
         }
         
-        editHarvestSiteService.save(userId, dataverseName,dataverseAlias, filesRestricted);
+        editHarvestSiteService.save(userId, dataverseName,dataverseAlias, filesRestricted, _HARVEST_DTYPE);
         success=true;
         return "success";
         

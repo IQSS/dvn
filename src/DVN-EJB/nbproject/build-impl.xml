@@ -322,6 +322,9 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <copy file="${libs.dvn-EJB.classpath.libfile.3}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.2}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.1}" todir="${build.classes.dir}"/>
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${libs.dvn-EJB.classpath.libdir.1}" includes="**/*"/>
+        </copy>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
         <basename file="${libs.dvn-EJB.classpath.libfile.18}" property="included.lib.libs.dvn-EJB.classpath.18"/>
@@ -360,8 +363,11 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <copy file="${libs.dvn-EJB.classpath.libfile.3}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.2}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.1}" todir="${dist.ear.dir}"/>
+        <copy todir="${dist.ear.dir}">
+            <fileset dir="${libs.dvn-EJB.classpath.libdir.1}" includes="**/*"/>
+        </copy>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.libs.dvn-EJB.classpath.1} ${included.lib.libs.dvn-EJB.classpath.2} ${included.lib.libs.dvn-EJB.classpath.3} ${included.lib.libs.dvn-EJB.classpath.4} ${included.lib.libs.dvn-EJB.classpath.5} ${included.lib.libs.dvn-EJB.classpath.6} ${included.lib.libs.dvn-EJB.classpath.7} ${included.lib.libs.dvn-EJB.classpath.8} ${included.lib.libs.dvn-EJB.classpath.9} ${included.lib.libs.dvn-EJB.classpath.10} ${included.lib.libs.dvn-EJB.classpath.11} ${included.lib.libs.dvn-EJB.classpath.12} ${included.lib.libs.dvn-EJB.classpath.13} ${included.lib.libs.dvn-EJB.classpath.14} ${included.lib.libs.dvn-EJB.classpath.15} ${included.lib.libs.dvn-EJB.classpath.16} ${included.lib.libs.dvn-EJB.classpath.17} ${included.lib.libs.dvn-EJB.classpath.18} "/>
+            <attribute name="Class-Path" value=". ${included.lib.libs.dvn-EJB.classpath.1} ${included.lib.libs.dvn-EJB.classpath.2} ${included.lib.libs.dvn-EJB.classpath.3} ${included.lib.libs.dvn-EJB.classpath.4} ${included.lib.libs.dvn-EJB.classpath.5} ${included.lib.libs.dvn-EJB.classpath.6} ${included.lib.libs.dvn-EJB.classpath.7} ${included.lib.libs.dvn-EJB.classpath.8} ${included.lib.libs.dvn-EJB.classpath.9} ${included.lib.libs.dvn-EJB.classpath.10} ${included.lib.libs.dvn-EJB.classpath.11} ${included.lib.libs.dvn-EJB.classpath.12} ${included.lib.libs.dvn-EJB.classpath.13} ${included.lib.libs.dvn-EJB.classpath.14} ${included.lib.libs.dvn-EJB.classpath.15} ${included.lib.libs.dvn-EJB.classpath.16} ${included.lib.libs.dvn-EJB.classpath.17} ${included.lib.libs.dvn-EJB.classpath.18} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">

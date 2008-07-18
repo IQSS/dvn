@@ -150,7 +150,7 @@
                                       <h:graphicImage styleClass="vdcNoBorders" alt="This study contains only non-subsettable files." rendered="#{!studyUI.subsettable}"
                                                       title="This study contains only non-subsettable files." value="/resources/icon_files.gif" />
                                   </h:outputLink>
-                                  <h:outputText id="outputText18" value=" #{studyUI.downloadCount}" rendered="#{studyUI.files}" /><h:outputText value=" downloads" rendered="#{studyUI.files and studyUI.numberOfDownloads != 1}" /><h:outputText value=" download" rendered="#{studyUI.files and studyUI.numberOfDownloads == 1}" />
+                                  <h:outputText id="outputText18" value=" #{studyUI.downloadCount}" rendered="#{studyUI.files}" /><h:outputText value=" downloads" rendered="#{studyUI.files and studyUI.downloadCount != 1}" /><h:outputText value=" download" rendered="#{studyUI.files and studyUI.downloadCount == 1}" />
                               </ui:panelGroup>
                               
                               <ui:panelGroup block="true" id="groupPanel2" rendered="#{studyUI.abstracts != null and studyUI.abstracts != ''}" >

@@ -866,7 +866,7 @@ public class StudyUI  implements java.io.Serializable {
         return false;
     }
     
-    public int getNumberOfDownloads() {
+    public int getDownloadCount() {
         int downloadCount = 0;
         for (StudyFile sf : study.getStudyFiles() ) {
             downloadCount += sf.getStudyFileActivity() != null ? sf.getStudyFileActivity().getDownloadCount() : 0;

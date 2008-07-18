@@ -43,9 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface VDCServiceLocal extends java.io.Serializable  {
     public void create(VDC vDC);
     
-    public void create(Long userId, String name, String alias);
-    
-    public void create(Long userId, String name, String alias, String affiliation);
+    public void create(Long userId, String name, String alias, String dType);
     
     public void createScholarDataverse(Long userId, String firstName, String lastName, String name, String affiliation, String alias, String dataverseType);
 

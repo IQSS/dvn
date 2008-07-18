@@ -44,6 +44,9 @@ import java.io.*;
 
 import javax.servlet.http.*;
 
+import java.lang.Integer;
+import java.lang.Long; 
+
 // jsf-api classes
 import javax.faces.component.*;
 import javax.faces.component.UIComponent.*;
@@ -1055,28 +1058,28 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 
                     } else {
-                // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
+			// Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
                         // from a temp (whole) non-delimited file
 
-                        // create var ids for subsetting
-                        // data(int) are taken from DB's studyfile table -- FileOrder column
-                        String [] vids = null;
+			// Using new, native implementation of fixed-field cutting 
+			// (instead of executing rcut in a shell)
+			
+			Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData (); 
+			DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
-                        int vidslen = getDataVariableForRequest().size();
-                        List<String> variableList = getVariableOrderForRequest();
-                        List<String> variableOrder = getVariableOrderForRequest();
-                        vids = (String[]) variableOrder.toArray(new String[vidslen]);
-                        String varsq = StringUtils.join(vids, ",");
+			try {
+			    fc.cutColumns(new File(cutOp1), 3, 0, "\t", cutOp2);
+			} catch (FileNotFoundException e) {
+			    e.printStackTrace();
 
-                        // cutter
-                        String cutOp0 = "-f"+ varsq ;
+			    setMsgDwnldButtonTxt("* could not generate subset due to an IO problem");
+			    msgDwnldButton.setVisible(true); 
+			    dbgLog.warning("exiting dwnldAction() due to an IO problem ");
+			    getVDCRequestBean().setSelectedTab("tabDwnld");
 
-                        // Create an instance of RcutDatasetCutter
-                        DatasetCutter dc = new RcutDatasetCutter(cutOp0, cutOp1, cutOp2);
-
-                        // Executes the subsetting request
-                        dc.run();
-
+			    return "failure";
+			    
+			}
                         // end: non-delimited case
                     }
                     
@@ -2930,29 +2933,29 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         fc.subsetFile(cutOp1, cutOp2, fields);
 
                     } else {
-                // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
+			// Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
                         // from a temp (whole) non-delimited file
+			// Using new, native implementation of fixed-field cutting 
+			// (instead of executing rcut in a shell)
+			
+			Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData (); 
+			DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
-                    // create var ids for subsetting
-                    // data(int) are taken from DB's studyfile table -- FileOrder column
-                    String [] vids = null;
-                    
-                    int vidslen = getDataVariableForRequest().size();
-                    List<String> variableList = new ArrayList();
-                    List<String> variableOrder =getVariableOrderForRequest();
-                    vids = (String[]) variableOrder.toArray(new String[vidslen]);
-                    String varsq = StringUtils.join(vids, ",");
-                    
-                    // cutter
-                    String cutOp0 = "-f"+ varsq ;
+			try {
+			    fc.cutColumns(new File(cutOp1), 3, 0, "\t", cutOp2);
+			} catch (FileNotFoundException e) {
+			    e.printStackTrace();
 
-                    // Create an instance of RcutDatasetCutter
-                    DatasetCutter dc = new RcutDatasetCutter(cutOp0, cutOp1, cutOp2);
+			    setMsgDwnldButtonTxt("* could not generate subset due to an IO problem");
+			    msgDwnldButton.setVisible(true); 
+			    dbgLog.warning("exiting dwnldAction() due to an IO problem ");
+			    getVDCRequestBean().setSelectedTab("tabDwnld");
 
-                    // Executes the subsetting request
-                    dc.run();
-                    
-                    // end: non-delimited case
+			    return "failure";
+			    
+			}
+                        // end: non-delimited case
+
                     }
                     
                     // Checks the resulting subset file 
@@ -5494,29 +5497,28 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         fc.subsetFile(cutOp1, cutOp2, fields);
 
                     } else {
-                // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
+			// Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
                         // from a temp (whole) non-delimited file
+			// Using new, native implementation of fixed-field cutting 
+			// (instead of executing rcut in a shell)
+			
+			Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData (); 
+			DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
-                    // create var ids for subsetting
-                    // data(int) are taken from DB's studyfile table -- FileOrder column
-                    String [] vids = null;
-                    
-                    int vidslen = getDataVariableForRequest().size();
-                    List<String> variableList = new ArrayList();
-                    List<String> variableOrder =getVariableOrderForRequest();
-                    vids = (String[]) variableOrder.toArray(new String[vidslen]);
-                    String varsq = StringUtils.join(vids, ",");
-                    
-                    // cutter
-                    String cutOp0 = "-f"+ varsq ;
+			try {
+			    fc.cutColumns(new File(cutOp1), 3, 0, "\t", cutOp2);
+			} catch (FileNotFoundException e) {
+			    e.printStackTrace();
 
-                    // Create an instance of RcutDatasetCutter
-                    DatasetCutter dc = new RcutDatasetCutter(cutOp0, cutOp1, cutOp2);
+			    setMsgDwnldButtonTxt("* could not generate subset due to an IO problem");
+			    msgDwnldButton.setVisible(true); 
+			    dbgLog.warning("exiting dwnldAction() due to an IO problem ");
+			    getVDCRequestBean().setSelectedTab("tabDwnld");
 
-                    // Executes the subsetting request
-                    dc.run();
-                    
-                    // end: non-delimited case
+			    return "failure";
+			    
+			}
+                        // end: non-delimited case
                     }
 
                     // Checks the resulting subset file 
@@ -7561,28 +7563,37 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      *
      * @return    
      */
-    public String getStartEndColumns (){
-        String carg = null;
-        Map<Long, Map<Integer, List<Long>>> cargSet = new HashMap<Long, Map<Integer, List<Long>>>(); 
-        if (getDataVariableForRequest() != null) {
-            //Iterator iter = getDataVariableForRequest().iterator();
-            //while (iter.hasNext()) {
-            List<DataVariable> dvs = getDataVariableForRequest();
-            
+    public Map<Long, List<List<Integer>>> getSubsettingMetaData (){
+
+	Map<Long, List<List<Integer>>> varMetaSet = new LinkedHashMap<Long, List<List<Integer>>>();
+
+	List<DataVariable> dvs = getDataVariableForRequest();
+
+        if (dvs != null) {
             for (int i = 0; i < dvs.size();i++  ){
+
                 DataVariable dv = dvs.get(i);
-                // getFileStartPosition()
-                // getFileEndPosition()
-                List<Long> pos = new ArrayList<Long>();
-                Map<Integer, List<Long>> cargPair = new HashMap<Integer, List<Long>>();
-                pos.add( dv.getFileStartPosition());
-                pos.add( dv.getFileEndPosition());
-                Integer fo = dv.getFileOrder()+1;
-                cargPair.put(fo, pos);
-                cargSet.put(dv.getRecordSegmentNumber(), cargPair);
+
+                List<Integer> varMeta = new ArrayList<Integer>();
+
+                varMeta.add( Integer.valueOf(dv.getFileStartPosition().toString()) );
+                varMeta.add( Integer.valueOf(dv.getFileEndPosition().toString()) );
+                varMeta.add( Integer.valueOf(dv.getVariableFormatType().toString()) ); 
+		varMeta.add( Integer.valueOf(dv.getNumberOfDecimalPoints().toString()) ); 
+
+		Long recordSegmentNumber = dv.getRecordSegmentNumber(); 
+
+		if ( varMetaSet.get(recordSegmentNumber) == null ) {
+		    List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
+		    varMetaSet.put(recordSegmentNumber, cardVarMetaSet); 
+		}
+
+		varMetaSet.get(recordSegmentNumber).add(varMeta); 
+		    
             }
         }
-        return carg;
+
+        return varMetaSet; 
     }
     
     public Map<String, String> getValueTableForRequestedVariable(DataVariable dv){

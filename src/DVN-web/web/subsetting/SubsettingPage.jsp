@@ -261,9 +261,9 @@
                             <ui:panelGroup id="groupPanel10" separator="&lt;br /&gt;">
                                 
                                 <!-- ui tag solution -->
-                                <ui:listbox id="mListboxRecode" 
+                                <ui:listbox id="listboxRecode" 
                                             items="#{AnalysisPage.varSetAdvStat}" 
-
+                                            binding="#{AnalysisPage.listboxRecode}"
                                             selected="#{AnalysisPage.selectedRecodeVariable}"
                                             rows="10" 
                                             labelLevel="3" 
@@ -422,12 +422,18 @@
                                                 <h:outputText id="recodeHdrDrop" 
                                                               value="#{bundleAnalysis['recode.valueTable.drop.header']}"/>
                                             </f:facet>
-                                            
+                                            <!--
                                             <ui:checkbox id="recodeDropValueCheckbox"
                                                          binding="#{AnalysisPage.recodeDropValueCheckbox}"
                                                          selected="#{rd[0]}"
                                                          toolTip="#{bundleAnalysis['recode.valueTable.drop.checkbox']}"
                                                          immediate="true"/>
+                                            -->
+                                            <h:selectBooleanCheckbox id="recodeDropValueCheckboxx"
+                                                     binding="#{AnalysisPage.recodeDropValueCheckboxx}" 
+                                                     value="#{rd[0]}" 
+                                                     title="#{bundleAnalysis['recode.valueTable.drop.checkbox']}"
+                                                     immediate="true"/>   
                                             
                                         </h:column>
                                         <h:column id="recodeClValue">
@@ -577,7 +583,7 @@
                                 
                                 <!-- ui tag solution -->
 
-                                <ui:listbox id="mListboxAdvStat" 
+                                <ui:listbox id="listboxAdvStat" 
                                             items="#{AnalysisPage.varSetAdvStat}" 
                                             binding="#{AnalysisPage.listboxAdvStat}"
                                             selected="#{AnalysisPage.advStatSelectedVarLBox}"
@@ -617,9 +623,6 @@
                                                      submitForm="false"
                                                      immediate="true" />
                                         
-                                        <!-- 
-                            </ui:panelGroup>
-                            -->
                                     <h:panelGrid id="modelInfoBox"
                                                  binding="#{AnalysisPage.gridPanelModelInfoBox}"
                                                  cellpadding="0" 
@@ -660,8 +663,6 @@
                                                                binding="#{AnalysisPage.groupPanel12}" 
                                                                rendered="true" >
                                                     
-                                                    <!-- h:outputText id="moveVar1BttnLabel" 
-                                  value="#{bundleAnalysis['advStat.modelVarbox.dependent.label']}"/ -->
 
                                                     <h:panelGrid columns="2" id="gridPanel12">
                                                         
@@ -683,9 +684,7 @@
                                                             
                                                         </h:panelGrid>
                                                         <h:panelGrid columns="1" id="gridPanel12r">
-                                                            <!--h:outputText id="moveVarListbox1lbl"
-                                        binding="#{AnalysisPage.moveVarListbox1lbl}"
-                                        value="1st box"/ -->
+
                                                             <ui:label id="varListbox1Lbl" 
                                                                       binding="#{AnalysisPage.varListbox1Lbl}"
                                                                       for="moveVarListbox1"
@@ -713,8 +712,6 @@
                                                                binding="#{AnalysisPage.groupPanel13}" 
                                                                rendered="false">
                                                     
-                                                    <!-- h:outputText id="outputText22" value="#{bundleAnalysis['advStat.modelVarbox.explanatory.label']}"/
-                                -->
                                                     <h:panelGrid columns="2" id="gridPanel13">
                                                         
                                                         <h:panelGrid columns="1" id="gridPanel13in">
@@ -765,9 +762,6 @@
                                                                binding="#{AnalysisPage.groupPanel14}"  
                                                                rendered="false">
                                                     
-                                                    <!-- h:outputText id="outputText44" 
-                                value="#{bundleAnalysis['advStat.modelVarbox.observed.label']}"/
-                                -->
                                                     <h:panelGrid columns="2" id="gridPanel14">
                                                         
                                                         <h:panelGrid columns="1" id="gridPanel14in">
@@ -916,13 +910,7 @@
                                                                                  items="#{AnalysisPage.setxDiffVarBox1}"
                                                                                  submitForm="false"
                                                                                  immediate="true" />
-                                                                    <!--
-                                            <h:selectOneMenu binding="#{AnalysisPage.dropdown3}" id="dropdown3">
-                                                <f:selectItems 
-                                                   binding="#{AnalysisPage.dropdown3SelectItems}"
-                                                   id="dropdown3SelectItems" value="#{AnalysisPage.dropdown3DefaultItems}"/>
-                                            </h:selectOneMenu>
-                                        -->
+                                                                                 
                                                                     <ui:staticText id="staticText2" text=" = "/>
                                                                     <ui:textField binding="#{AnalysisPage.textField10}" columns="10" id="textField10"/>
                                                                 </h:panelGrid>
@@ -941,15 +929,7 @@
                                                                                  items="#{AnalysisPage.setxDiffVarBox2}"
                                                                                  submitForm="false"
                                                                                  immediate="true" />
-                                                                    
-                                                                    <!--
-                                            <h:selectOneMenu id="dropdown2"
-                                               binding="#{AnalysisPage.dropdown2}" >
-                                                <f:selectItems id="dropdown2SelectItems"
-                                                  binding="#{AnalysisPage.dropdown2SelectItems}"
-                                                  value="#{AnalysisPage.dropdown2DefaultItems}"/>
-                                            </h:selectOneMenu>
-                                            -->
+
                                                                     <ui:staticText id="staticText1" text=" = "/>
                                                                     
                                                                     <ui:textField id="textField8" binding="#{AnalysisPage.textField8}" columns="10"/>
@@ -959,38 +939,10 @@
                                                         </ui:panelGroup><!--groupPanel20 -->
 
                                                         <!-- checkbox: Sensitivity analysis -->
-                                                        <!-- 
-                                <ui:checkbox id="sensitivity"
-                                    binding="#{AnalysisPage.sensitivity}" 
-                                    label="#{bundleAnalysis['advStat.sensitivity.Option']}"
-                                    valueChangeListener="#{AnalysisPage.showHideSensitivityOptPanel}" 
-                                    immediate="true"
-                                    rendered="false"
-                                    visible="false"
-                                    onClick="submit();"/>
-
-
-                                <ui:panelGroup id="groupPanel23"
-                                    binding="#{AnalysisPage.groupPanel23}" 
-                                    block="true" 
-                                    rendered="false"
-                                    visible="false">
-                                    <ui:label for="advStatSensitivityQ" id="label3" labelLevel="3" text="#{bundleAnalysis['advStat.sensitivity.LevelBox']}"/>
-                                    <ui:textField columns="8" id="advStatSensitivityQ" text="0.05"/>
-                                </ui:panelGroup>
-                                -->
                                                         <!--groupPanel23 -->
                                                     </ui:panelGroup>
                                                     <!-- checkbox: Missing Values -->
-                                                    <!--
-                                <ui:checkbox id="advStatNaMethod" 
-                                    binding="#{AnalysisPage.advStatNaMethod}"
-                                    immediate="true"
-                                    name="naMethod"
-                                    label="Included Missing Values" 
-                                    selectedValue="none"
-                                    />
-                                    -->
+                                                    
                                                 </ui:panelGroup><!-- analysisOptionPanel-->
 
 
@@ -1104,6 +1056,7 @@
                                  submitForm="false"
                                  label="Show "
                                  labelLevel="3"
+                                 disabled="false"
                                  immediate="true" />
                     
                     
@@ -1141,7 +1094,7 @@
                                          toolTip="select or unselect all rows in this view"
                             />
                         </f:facet>
-                        
+                        <!--
                         <ui:checkbox id="varCheckbox"
                                      binding="#{AnalysisPage.varCheckbox}"
                                      immediate="true"   
@@ -1150,6 +1103,18 @@
                                      valueChangeListener="#{AnalysisPage.updateCheckBoxState}" 
                                      onClick="submit();" >
                         </ui:checkbox> 
+                        -->
+                        
+                        <h:selectBooleanCheckbox id="varCheckboxx"
+                                     binding="#{AnalysisPage.varCheckboxx}" 
+                                     value="#{currentRow[0]}" 
+                                     title="#{currentRow[3]}"
+                                     valueChangeListener="#{AnalysisPage.updateCheckBoxState}" 
+                                     onclick="this.form.submit();"
+                        />                        
+                        
+                        
+                        
                     </h:column>
                     <h:column id="column2">
                         <f:facet name="header">
@@ -1254,14 +1219,6 @@
                             <f:facet name="header">
                                 <h:outputText id="RVThdr0" value="#{bundleAnalysis['recodedVarTable.colHdr.remove']}"/>
                             </f:facet>
-                            <!--
-        <ui:checkbox id="removeRecodedVarCheckbox" 
-          immediate="true"   
-          selected="#{rcw[0]}" 
-          valueChangeListener="#{AnalysisPage.removeRecodedVar}" 
-          onClick="submit();" >
-        </ui:checkbox>
--->
 
                             <ui:hyperlink id="removeRecodedVariable" 
                                           actionListener="#{AnalysisPage.removeRecodedVariable}"

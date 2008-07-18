@@ -1058,28 +1058,28 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 
                     } else {
-			// Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
+                // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
                         // from a temp (whole) non-delimited file
 
-			// Using new, native implementation of fixed-field cutting 
-			// (instead of executing rcut in a shell)
-			
-			Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData (); 
-			DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
+            // Using new, native implementation of fixed-field cutting 
+            // (instead of executing rcut in a shell)
+            
+            Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData (); 
+            DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
-			try {
-			    fc.cutColumns(new File(cutOp1), 3, 0, "\t", cutOp2);
-			} catch (FileNotFoundException e) {
-			    e.printStackTrace();
+            try {
+                fc.cutColumns(new File(cutOp1), 3, 0, "\t", cutOp2);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
 
-			    setMsgDwnldButtonTxt("* could not generate subset due to an IO problem");
-			    msgDwnldButton.setVisible(true); 
-			    dbgLog.warning("exiting dwnldAction() due to an IO problem ");
-			    getVDCRequestBean().setSelectedTab("tabDwnld");
+                setMsgDwnldButtonTxt("* could not generate subset due to an IO problem");
+                msgDwnldButton.setVisible(true); 
+                dbgLog.warning("exiting dwnldAction() due to an IO problem ");
+                getVDCRequestBean().setSelectedTab("tabDwnld");
 
-			    return "failure";
-			    
-			}
+                return "failure";
+                
+            }
                         // end: non-delimited case
                     }
                     
@@ -1389,11 +1389,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void moveRecodeVariable(ActionEvent acev) {
 
         dbgLog.fine("***** moveRecodeVariable(): begins here *****");
-
-        String varId = getSelectedRecodeVariable();
-
+        
+        String varId = null;// getSelectedRecodeVariable();
+        if (getSelectedRecodeVariable() == null){
+            varId = (String)listboxRecode.getSelected();
+        } else {
+            varId = getSelectedRecodeVariable();
+        }
         dbgLog.fine("recode-variable id=" + varId);
-
+        dbgLog.fine("selected from the binding="+listboxRecode.getSelected());
         dbgLog.fine("Is this a recoded var?[" + isRecodedVar(varId) + "]");
         resetMsgSaveRecodeBttn();
         if (isRecodedVar(varId)) {
@@ -1528,9 +1532,28 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.recodeDropValueCheckbox = c;
     }
 
-    // mListboxRecode:ui:listbox@binding => varSetAdvStat
+    private HtmlSelectBooleanCheckbox recodeDropValueCheckboxx = new HtmlSelectBooleanCheckbox();
+    
+    public HtmlSelectBooleanCheckbox getRecodeDropValueCheckboxx() {
+        return recodeDropValueCheckboxx;
+    }
 
-    // mListboxRecode:ui:listbox@selected
+    public void setRecodeDropValueCheckboxx(HtmlSelectBooleanCheckbox cb) {
+        this.recodeDropValueCheckboxx = cb;
+    }    
+    
+    // listboxRecode:ui:listbox@binding => varSetAdvStat
+    // boxL1:listbox@binding
+    private Listbox listboxRecode = new Listbox();
+
+    public Listbox getListboxRecode() {
+        return listboxRecode;
+    }
+
+    public void setListboxRecode(Listbox lstbx) {
+        this.listboxRecode = lstbx;
+    }
+    // listboxRecode:ui:listbox@selected
     private String selectedRecodeVariable;
 
     public void setSelectedRecodeVariable(String s) {
@@ -2933,27 +2956,27 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         fc.subsetFile(cutOp1, cutOp2, fields);
 
                     } else {
-			// Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
+                // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
                         // from a temp (whole) non-delimited file
-			// Using new, native implementation of fixed-field cutting 
-			// (instead of executing rcut in a shell)
-			
-			Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData (); 
-			DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
+            // Using new, native implementation of fixed-field cutting 
+            // (instead of executing rcut in a shell)
+            
+            Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData (); 
+            DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
-			try {
-			    fc.cutColumns(new File(cutOp1), 3, 0, "\t", cutOp2);
-			} catch (FileNotFoundException e) {
-			    e.printStackTrace();
+            try {
+                fc.cutColumns(new File(cutOp1), 3, 0, "\t", cutOp2);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
 
-			    setMsgDwnldButtonTxt("* could not generate subset due to an IO problem");
-			    msgDwnldButton.setVisible(true); 
-			    dbgLog.warning("exiting dwnldAction() due to an IO problem ");
-			    getVDCRequestBean().setSelectedTab("tabDwnld");
+                setMsgDwnldButtonTxt("* could not generate subset due to an IO problem");
+                msgDwnldButton.setVisible(true); 
+                dbgLog.warning("exiting dwnldAction() due to an IO problem ");
+                getVDCRequestBean().setSelectedTab("tabDwnld");
 
-			    return "failure";
-			    
-			}
+                return "failure";
+                
+            }
                         // end: non-delimited case
 
                     }
@@ -4118,9 +4141,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void addVarBoxR1(ActionEvent acev) {
         dbgLog.fine("\n***** within addVarBoxR1(): model name=" + 
             getCurrentModelName()+" *****");
-            
+        
         dbgLog.fine("advStatSelectedVarLBox="+advStatSelectedVarLBox);
-        String[] OptnSet = getAdvStatSelectedVarLBox();
+        dbgLog.fine("advStatSelectedVar from binding="+listboxAdvStat.getSelected());
+        String[] OptnSet = null;
+        if (getAdvStatSelectedVarLBox() == null){
+            OptnSet = (String[])listboxAdvStat.getSelected();
+        } else {
+            OptnSet = getAdvStatSelectedVarLBox();
+        }
+        
         dbgLog.fine("OptnSet Length="+OptnSet.length);
         dbgLog.fine("OptnSet="+OptnSet);
 
@@ -4189,11 +4219,23 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // move from L to R2
     public void addVarBoxR2(ActionEvent acev) {
         // set left-selected items to a temp list
-        String[] OptnSet = (String[])getAdvStatSelectedVarLBox();
+        //String[] OptnSet = (String[])getAdvStatSelectedVarLBox();
 
         dbgLog.fine("***** within addVarBoxR2(): model name=" +
             getCurrentModelName()+" *****");
-
+        
+        dbgLog.fine("advStatSelectedVarLBox="+advStatSelectedVarLBox);
+        dbgLog.fine("advStatSelectedVar from binding="+listboxAdvStat.getSelected());
+        String[] OptnSet = null;
+        if (getAdvStatSelectedVarLBox() == null){
+            OptnSet = (String[])listboxAdvStat.getSelected();
+        } else {
+            OptnSet = getAdvStatSelectedVarLBox();
+        }
+        
+        dbgLog.fine("OptnSet Length="+OptnSet.length);
+        dbgLog.fine("OptnSet="+OptnSet);
+        
         int BoxR2max = getAnalysisApplicationBean().getSpecMap().get(
             getCurrentModelName()).getVarBox().get(1).getMaxvar();
 
@@ -4258,12 +4300,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // move from L to R3
     public void addVarBoxR3(ActionEvent acev) {
         // set left-selected items to a temp list
-        String[] OptnSet = (String[])getAdvStatSelectedVarLBox();
+        //String[] OptnSet = (String[])getAdvStatSelectedVarLBox();
 
         dbgLog.fine("***** within addVarBoxR3(): model name=" + 
-            getCurrentModelName()+" *****" +
-            "");
-
+            getCurrentModelName()+" *****");
+        dbgLog.fine("advStatSelectedVarLBox="+advStatSelectedVarLBox);
+        dbgLog.fine("advStatSelectedVar from binding="+listboxAdvStat.getSelected());
+        String[] OptnSet = null;
+        if (getAdvStatSelectedVarLBox() == null){
+            OptnSet = (String[])listboxAdvStat.getSelected();
+        } else {
+            OptnSet = getAdvStatSelectedVarLBox();
+        }
+        
+        dbgLog.fine("OptnSet Length="+OptnSet.length);
+        dbgLog.fine("OptnSet="+OptnSet);
+        
         int BoxR3max = getAnalysisApplicationBean().getSpecMap().get(
             getCurrentModelName()).getVarBox().get(2).getMaxvar();
 
@@ -4312,8 +4364,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // move from R1 to L
     public void removeVarBoxR1(ActionEvent acev) {
+        
+        dbgLog.fine("************  within removeVarBoxR1() ************");
         // set left-selected items to a temp list
-        String[] OptnSet = getAdvStatSelectedVarRBox1();
+        //String[] OptnSet = getAdvStatSelectedVarRBox1();
+        
+        dbgLog.fine("advStatSelectedVarRBox1="+advStatSelectedVarRBox1);
+        dbgLog.fine("advStatSelectedVar from binding="+advStatVarListboxR1.getSelected());
+        String[] OptnSet = null;
+        if (getAdvStatSelectedVarRBox1() == null){
+            OptnSet = (String[])advStatVarListboxR1.getSelected();
+        } else {
+            OptnSet = getAdvStatSelectedVarRBox1();
+        }
+        
+        dbgLog.fine("OptnSet Length="+OptnSet.length);
+        dbgLog.fine("OptnSet="+OptnSet);
         // for each selected item
         for (int i = 0; i < OptnSet.length; i++) {
             getVarSetAdvStat().add(
@@ -4323,8 +4389,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // move from R2 to L
     public void removeVarBoxR2(ActionEvent acev) {
+        dbgLog.fine("************  within removeVarBoxR2() ************");
         // set left-selected items to a temp array, Option []
-        String[] OptnSet = getAdvStatSelectedVarRBox2();
+        //String[] OptnSet = getAdvStatSelectedVarRBox2();
+        
+        dbgLog.fine("advStatSelectedVarRBox2="+advStatSelectedVarRBox2);
+        dbgLog.fine("advStatSelectedVar from binding="+advStatVarListboxR2.getSelected());
+        String[] OptnSet = null;
+        if (getAdvStatSelectedVarRBox2() == null){
+            OptnSet = (String[])advStatVarListboxR2.getSelected();
+        } else {
+            OptnSet = getAdvStatSelectedVarRBox2();
+        }
+        
+        dbgLog.fine("OptnSet Length="+OptnSet.length);
+        dbgLog.fine("OptnSet="+OptnSet);
+        
         // for each selected item
         for (int i = 0; i < OptnSet.length; i++) {
             getVarSetAdvStat().add(
@@ -4334,8 +4414,24 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // move from R3 to L
     public void removeVarBoxR3(ActionEvent acev) {
+        dbgLog.fine("************  within removeVarBoxR3() ************");
         // set left-selected items to a temp array, Option []
-        String[] OptnSet = getAdvStatSelectedVarRBox3();
+        //String[] OptnSet = getAdvStatSelectedVarRBox3();
+        
+        dbgLog.fine("advStatSelectedVarRBox3="+advStatSelectedVarRBox3);
+        dbgLog.fine("advStatSelectedVar from binding="+advStatVarListboxR3.getSelected());
+        String[] OptnSet = null;
+        if (getAdvStatSelectedVarRBox3() == null){
+            OptnSet = (String[])advStatVarListboxR3.getSelected();
+        } else {
+            OptnSet = getAdvStatSelectedVarRBox3();
+        }
+        
+        dbgLog.fine("OptnSet Length="+OptnSet.length);
+        dbgLog.fine("OptnSet="+OptnSet);        
+        
+        
+        
         // for each selected item
         for (int i = 0; i < OptnSet.length; i++) {
             getVarSetAdvStat().add(
@@ -5497,28 +5593,28 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         fc.subsetFile(cutOp1, cutOp2, fields);
 
                     } else {
-			// Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
+                // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
                         // from a temp (whole) non-delimited file
-			// Using new, native implementation of fixed-field cutting 
-			// (instead of executing rcut in a shell)
-			
-			Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData (); 
-			DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
+            // Using new, native implementation of fixed-field cutting 
+            // (instead of executing rcut in a shell)
+            
+            Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData (); 
+            DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
-			try {
-			    fc.cutColumns(new File(cutOp1), 3, 0, "\t", cutOp2);
-			} catch (FileNotFoundException e) {
-			    e.printStackTrace();
+            try {
+                fc.cutColumns(new File(cutOp1), 3, 0, "\t", cutOp2);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
 
-			    setMsgDwnldButtonTxt("* could not generate subset due to an IO problem");
-			    msgDwnldButton.setVisible(true); 
-			    dbgLog.warning("exiting dwnldAction() due to an IO problem ");
-			    getVDCRequestBean().setSelectedTab("tabDwnld");
+                setMsgDwnldButtonTxt("* could not generate subset due to an IO problem");
+                msgDwnldButton.setVisible(true); 
+                dbgLog.warning("exiting dwnldAction() due to an IO problem ");
+                getVDCRequestBean().setSelectedTab("tabDwnld");
 
-			    return "failure";
-			    
-			}
-                        // end: non-delimited case
+                return "failure";
+                
+            }
+                    // end: non-delimited case
                     }
 
                     // Checks the resulting subset file 
@@ -5850,6 +5946,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dbgLog.fine("***** howManyRows_processValueChange: start *****");
         // the value of show-all-rows option == 0
         dbgLog.fine("old number of Rows=" + vce.getOldValue());
+        if (vce.getOldValue()==null){
+            return;
+        }
         dbgLog.fine("new number of Rows=" + vce.getNewValue());
         dbgLog.fine("current Row Index(1)=" + data.getRowIndex());
         selectedNoRows = (String) howManyRows.getSelected();
@@ -6342,6 +6441,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // variable-table: Checkboxes in the first column
     // -----------------------------------------------------------------------
 
+    private HtmlSelectBooleanCheckbox varCheckboxx = new HtmlSelectBooleanCheckbox();
+    
+    public HtmlSelectBooleanCheckbox getVarCheckboxx() {
+        return varCheckboxx;
+    }
+
+    public void setVarCheckboxx(HtmlSelectBooleanCheckbox varCheckboxx) {
+        this.varCheckboxx = varCheckboxx;
+    }
+
     /**
      * ui:checkbox component backing the binding attribute of a checkbox
      * in the first column of the variable table in the subsetting page and
@@ -6399,7 +6508,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // update the state of the selected value of this row
 
         tmpDataLine.set(0, currentState);
-
+        varCheckbox.setSelected(currentState);
         if (currentState) {
             // put
             // varCart.put(dt4Display.get(cr).getVarId(),
@@ -6413,6 +6522,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             getVarSetAdvStat().add(
                 new Option((String) tmpDataLine.get(2), (String) tmpDataLine
                     .get(3)));
+            
+            FacesContext.getCurrentInstance().renderResponse();
         } else {
             // remove
 
@@ -7565,9 +7676,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      */
     public Map<Long, List<List<Integer>>> getSubsettingMetaData (){
 
-	Map<Long, List<List<Integer>>> varMetaSet = new LinkedHashMap<Long, List<List<Integer>>>();
+    Map<Long, List<List<Integer>>> varMetaSet = new LinkedHashMap<Long, List<List<Integer>>>();
 
-	List<DataVariable> dvs = getDataVariableForRequest();
+    List<DataVariable> dvs = getDataVariableForRequest();
 
         if (dvs != null) {
             for (int i = 0; i < dvs.size();i++  ){
@@ -7579,23 +7690,23 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 varMeta.add( Integer.valueOf(dv.getFileStartPosition().toString()) );
                 varMeta.add( Integer.valueOf(dv.getFileEndPosition().toString()) );
                 varMeta.add( Integer.valueOf(dv.getVariableFormatType().toString()) ); 
-		varMeta.add( Integer.valueOf(dv.getNumberOfDecimalPoints().toString()) ); 
+        varMeta.add( Integer.valueOf(dv.getNumberOfDecimalPoints().toString()) ); 
 
-		Long recordSegmentNumber = dv.getRecordSegmentNumber(); 
+        Long recordSegmentNumber = dv.getRecordSegmentNumber(); 
 
-		if ( varMetaSet.get(recordSegmentNumber) == null ) {
-		    List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
-		    varMetaSet.put(recordSegmentNumber, cardVarMetaSet); 
-		}
+        if ( varMetaSet.get(recordSegmentNumber) == null ) {
+            List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
+            varMetaSet.put(recordSegmentNumber, cardVarMetaSet); 
+        }
 
-		varMetaSet.get(recordSegmentNumber).add(varMeta); 
-		    
+        varMetaSet.get(recordSegmentNumber).add(varMeta); 
+            
             }
         }
 
         return varMetaSet; 
     }
-    
+        
     public Map<String, String> getValueTableForRequestedVariable(DataVariable dv){
         List<VariableCategory> varCat = new ArrayList<VariableCategory>();
         varCat.addAll(dv.getCategories());

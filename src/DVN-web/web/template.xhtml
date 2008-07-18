@@ -26,6 +26,8 @@
          <script type="text/javascript" src="/dvn/resources/jquery.corner.pack.js"/>
          <script type="text/javascript" src="/dvn/resources/excanvas.pack.js"/>
          <script type="text/javascript" src="/dvn/resources/jquery.ifixpng.js"/>
+         <ui:script url="/resources/jquery.truncator.js"/>
+         <ui:script url="/resources/sgbeal-togglepane.jquery.js"/>
          
          <script type="text/javascript">
           // <![CDATA[    
@@ -34,10 +36,14 @@
 		jQuery("div.dvn_navblock").corner("10px bottom");
 		jQuery("div.dvn_searchblock").corner("10px");
 		jQuery("div.successMessage").corner("10px");
+		jQuery("div.vdcStudyFilesMessage").corner("10px");
 		jQuery("div.dvn_block").corner("10px");
 		jQuery("div.dvn_blockTitleBar").corner("10px");
                 jQuery.ifixpng('/dvn/resources/pixel.gif');
                 jQuery('img[@src$=.png], a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active').ifixpng();
+                jQuery('.vdcStudyDesc').truncate({max_length: 198});
+                jQuery('.vdcStudyDataCitation').truncate({max_length: 25, more: "View Data Citation [+]", less: "Collapse [-]"});
+                jQuery('.TogglePaneFancy').initTogglePane({headerClassClosed:'TogglePaneFancyHeaderClosed'});
               });
           // ]]>
          </script>

@@ -61,7 +61,7 @@ public interface EditHarvestSiteService extends java.io.Serializable  {
     public void setSelectedMetadataPrefixId(Long selectedMetadataPrefixId);
    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void save(Long userId, String name, String alias, boolean filesRestricted);
+    public void save(Long userId, String name, String alias, boolean filesRestricted, String dtype);
 
    
     public void removeAllowedFileGroup(Long groupId);

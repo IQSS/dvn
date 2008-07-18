@@ -127,15 +127,11 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
         return harvestingDataverse;
     }
     
-    
-  
- 
-        
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void save(Long userId, String name, String alias, boolean filesRestricted) {
+    public void save(Long userId, String name, String alias, boolean filesRestricted, String dtype) {
         VDC vdc = null;
         if (harvestingDataverse.getVdc()==null) {
-            vdcService.create(userId,name,alias);
+            vdcService.create(userId, name, alias, dtype);
             vdc = vdcService.findByAlias(alias);
             // Get managed entity so we can update it with harvesting dataverse reference
             VDC managedVdc = em.find(VDC.class, vdc.getId());  

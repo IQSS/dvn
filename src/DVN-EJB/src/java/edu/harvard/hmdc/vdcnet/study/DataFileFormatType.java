@@ -76,7 +76,7 @@ public class DataFileFormatType implements Serializable {
         this.value = value;
     }
     
-    public boolean isOrginalFileDataFileFormat() {
+    public boolean isOriginalFileDataFileFormat() {
         return ( ORIGINAL_FILE_DATA_FILE_FORMAT.equals(value) );
     }
     

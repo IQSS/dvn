@@ -161,7 +161,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     public Study getStudyByHarvestInfo(VDC dataverse, String harvestIdentifier) {
-        String queryStr = "SELECT s FROM Study s WHERE s.owner.id = '" + dataverse.getId() + "' and s.metadata.harvestIdentifier = '" + harvestIdentifier + "'";
+        String queryStr = "SELECT s FROM Study s WHERE s.owner.id = '" + dataverse.getId() + "' and s.harvestIdentifier = '" + harvestIdentifier + "'";
         Query query = em.createQuery(queryStr);
         List resultList = query.getResultList();
         Study study = null;

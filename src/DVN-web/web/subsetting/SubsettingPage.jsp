@@ -983,7 +983,10 @@
                           cellpadding="0" cellspacing="0"
                           columns="1" 
                           style="margin-left: 8px; margin-top: 10px" width="98%">
-                <ui:panelGroup id="wrapSusettingInstruction">
+                
+                <ui:panelGroup id="wrapSubsettingInstruction"
+                    rendered="#{AnalysisPage.wrapSubsettingInstructionRendered}"
+                >
                     <h:graphicImage 
                         alt="Information" 
                         title="Information" 
@@ -994,11 +997,16 @@
                     <h:outputText id="txtSubsettingInstruction" 
                                   binding="#{AnalysisPage.txtSubsettingInstruction}" 
                                   value="#{bundleAnalysis['subsettingInstruction']}" />
-                    <h:outputText id="txtNonSubsettingInstruction" 
-                                  binding="#{AnalysisPage.txtNonSubsettingInstruction}" 
-                                  value="#{bundleAnalysis['nonSubsettingInstruction']}" />
-
                 </ui:panelGroup>
+               <ui:panelGroup 
+                    id="wrapNonSubsettingInstruction"
+                    block="true" 
+                    styleClass="successMessage"
+                    rendered="#{AnalysisPage.wrapNonSubsettingInstructionRendered}">
+                    <h:outputText id="txtNonSubsettingInstruction"
+                                 binding="#{AnalysisPage.txtNonSubsettingInstruction}"
+                                 value="#{bundleAnalysis['nonSubsettingInstruction']}" />
+               </ui:panelGroup>                 
                 
                 <ui:staticText id="msgVariableSelection"
                                binding="#{AnalysisPage.msgVariableSelection}" 

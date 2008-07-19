@@ -5897,6 +5897,86 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.txtNonSubsettingInstruction = hot;
     }
 
+
+    private PanelGroup wrapSubsettingInstruction = new PanelGroup();
+    /**
+     * Getter for component wrapSubsettingInstruction
+     *
+     * @return    ui:panelGroup of the pane 
+     */
+    public PanelGroup getWrapSubsettingInstruction() {
+        return wrapSubsettingInstruction;
+    }
+    /**
+     * Setter for panelGroup wrapSubsettingInstruction
+     *
+     * @param pg    ui:panelGroup of the pane
+     */
+    public void setWrapSubsettingInstruction(PanelGroup pg) {
+        wrapSubsettingInstruction = pg;
+    }
+
+    private Boolean wrapSubsettingInstructionRendered;
+
+    /**
+     * Getter for attribute wrapSubsettingInstructionRendered
+     *
+     * @return    the rendered attribute of ui:panelGroup
+     */    
+    public Boolean getWrapSubsettingInstructionRendered(){
+        return wrapSubsettingInstructionRendered;
+    }
+
+    /**
+     * Setter for attribute wrapSubsettingInstructionRendered
+     *
+     * @param rndrd    the rendered attribute of ui:panelGroup
+     */
+    public void setWrapSusettingInstructionRendered(Boolean rndrd){
+        wrapSubsettingInstructionRendered = rndrd;
+    }
+
+
+    private PanelGroup wrapNonSubsettingInstruction = new PanelGroup();
+    /**
+     * Getter for component wrapNonSubsettingInstruction
+     *
+     * @return    ui:panelGroup of the pane 
+     */
+    public PanelGroup getWrapNonSubsettingInstruction() {
+        return wrapSubsettingInstruction;
+    }
+    /**
+     * Setter for panelGroup wrapNonSubsettingInstruction
+     *
+     * @param pg    ui:panelGroup of the pane
+     */
+    public void setWrapNonSubsettingInstruction(PanelGroup pg) {
+        wrapNonSubsettingInstruction = pg;
+    }
+
+    private Boolean wrapNonSubsettingInstructionRendered;
+
+    /**
+     * Getter for attribute wrapNonSubsettingInstructionRendered
+     *
+     * @return    the rendered attribute of ui:panelGroup
+     */    
+    public Boolean getWrapNonSubsettingInstructionRendered(){
+        return wrapNonSubsettingInstructionRendered;
+    }
+
+    /**
+     * Setter for attribute wrapNonSubsettingInstructionRendered
+     *
+     * @param rndrd    the rendered attribute of ui:panelGroup
+     */
+    public void setWrapNonSubsettingInstructionRendered(Boolean rndrd){
+        wrapNonSubsettingInstructionRendered = rndrd;
+    }
+    
+    
+    
     // end of subsetting-instruction
     // <----------------------------------------------------------------------
     // </editor-fold>
@@ -6456,7 +6536,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * in the first column of the variable table in the subsetting page and
      * whose id is varCheckbox
      */
-    private Checkbox varCheckbox = new Checkbox();
+//    private Checkbox varCheckbox = new Checkbox();
     
     /**
      * Getter for component varCheckbox
@@ -6464,18 +6544,18 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return    Checkbox object
      */
     
-    public Checkbox getVarCheckbox() {
-        return varCheckbox;
-    }
+//    public Checkbox getVarCheckbox() {
+//        return varCheckbox;
+//    }
     
     /**
      * Setter for component varCheckbox 
      *
      * @param c    Checkbox object
      */
-    public void setVarCheckbox(Checkbox c) {
-        this.varCheckbox = c;
-    }
+//    public void setVarCheckbox(Checkbox c) {
+//        this.varCheckbox = c;
+//    }
 
     /**
      * Updates backing objects and components after
@@ -6508,7 +6588,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // update the state of the selected value of this row
 
         tmpDataLine.set(0, currentState);
-        varCheckbox.setSelected(currentState);
         if (currentState) {
             // put
             // varCart.put(dt4Display.get(cr).getVarId(),
@@ -6523,7 +6602,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 new Option((String) tmpDataLine.get(2), (String) tmpDataLine
                     .get(3)));
             
-            FacesContext.getCurrentInstance().renderResponse();
         } else {
             // remove
 
@@ -6917,7 +6995,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     "derivedVarToBaseVar", "recodeVarNameSet",
                     "selectedNoRows", "msgEdaButtonTxt", "msgDwnldButtonTxt",
                      "msgAdvStatButtonTxt","gridPanelModelInfoBox",
-                     "lastSimCndtnSelected", "resultInfo");
+                     "lastSimCndtnSelected", "resultInfo",
+                     "wrapSubsettingInstructionRendered", 
+                     "wrapNonSubsettingInstructionRendered"
+                     );
 
                 for (String obj : sessionObjects) {
                     if (sessionMap.containsKey(obj)) {
@@ -6979,7 +7060,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         dbgLog.fine("restricted=yes: this user "+
                             "does not have the subsetting permission");
                     subsettingPageAccess = Boolean.FALSE;
-                    txtNonSubsettingInstruction.setRendered(false);
+                    txtNonSubsettingInstruction.setRendered(true);
+                    wrapNonSubsettingInstructionRendered=Boolean.TRUE;
+                    wrapSubsettingInstructionRendered=Boolean.FALSE;
                     hideSubsettingFunctions();
                 } else {
                     // Sets the state of the Subsetting Page to subsettable
@@ -6988,6 +7071,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // checkboxSelectUnselectAll shown (TRUE)
                     checkboxSelectUnselectAllRendered=Boolean.TRUE;
                     checkboxSelectUnselectAllSelected=Boolean.FALSE;
+                    
+                    wrapNonSubsettingInstructionRendered=Boolean.FALSE;
+                    wrapSubsettingInstructionRendered=Boolean.TRUE;
                         dbgLog.fine("restricted=no: " +
                             "this user has the subsetting permission");
                 }
@@ -7077,6 +7163,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                     sessionMap.put("checkboxSelectUnselectAllRendered",
                         checkboxSelectUnselectAllRendered);
+
+                    sessionMap.put("wrapSubsettingInstructionRendered",
+                        wrapSubsettingInstructionRendered);
+                    sessionMap.put("wrapNonSubsettingInstructionRendered",
+                        wrapNonSubsettingInstructionRendered);                    
                     
                     // String selectedNoRows
                     selectedNoRows = Integer.toString(INITIAL_ROW_NO);
@@ -7174,6 +7265,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     checkboxSelectUnselectAll.setRendered(
                         checkboxSelectUnselectAllRendered);
 
+                    wrapSubsettingInstructionRendered = (Boolean) sessionMap
+                        .get("wrapSubsettingInstructionRendered");
+                    wrapNonSubsettingInstructionRendered = (Boolean) sessionMap
+                        .get("wrapNonSubsettingInstructionRendered");                        
+                    
                     // Gets the stored object backing the selected attribute
                     // of ui:dropDown for the menu of choosing
                     // an option of how many row per table
@@ -7463,10 +7559,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         tabSet1.setRendered(false);
         
         // 2. Hides the subsetting intruction text
-        txtSubsettingInstruction.setRendered(false);
+        //txtSubsettingInstruction.setRendered(false);
         
         // 3. Shows the non-Subsetting intruction text
-        txtNonSubsettingInstruction.setRendered(true);
+        //txtNonSubsettingInstruction.setRendered(true);
 
         // 4. Hides the select-all checkbox in the header(1st column) of 
         //    the variable table
@@ -7476,7 +7572,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         
         // 5. Hides the variable-checkboxes in the 1st column of 
         //    the variable table
-        varCheckbox.setRendered(false);
+        varCheckboxx.setRendered(false);
         
         // 6. Hides the title of the recoded-var table
         recodedVarTableTitle.setRendered(false);

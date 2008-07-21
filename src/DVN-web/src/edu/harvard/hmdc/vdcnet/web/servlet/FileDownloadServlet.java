@@ -351,7 +351,49 @@ public class FileDownloadServlet extends HttpServlet{
 			if ( remoteFileUrl != null ) {
 			    remoteFileUrl = remoteFileUrl.replaceAll (" ", "+");
 			}
-			method = new GetMethod ( remoteFileUrl);
+
+			
+			// See if remote authentication is required; 
+
+			String remoteHost = null; 
+			String regexRemoteHost = "https*://([^/]*)/"; 
+			Pattern patternRemoteHost = Pattern.compile(regexRemoteHost); 
+			Matcher hostMatcher = patternRemoteHost.matcher(remoteFileUrl);
+
+			if ( hostMatcher.find() ) {
+			    remoteHost = hostMatcher.group(1); 
+			}
+
+			String jsessionid     = null; 
+			String remoteAuthHeader     = null; 
+
+
+
+			String remoteAuthType = remoteAuthRequired(remoteHost); 
+			if ( remoteAuthType != null ) {
+			    if ( remoteAuthType.equals("httpbasic") ) {
+				// get the basic HTTP auth credentials
+				// (password and username) from the database:
+
+				remoteAuthHeader = getRemoteAuthCredentials(remoteHost); 
+			    } else if ( remoteAuthType.equals("dvn") ) { 
+				// Authenticate with the remote DVN:
+				
+				jsessionid = dvnRemoteAuth ( remoteHost ); 
+			    }
+			}
+	
+			if ( jsessionid != null ) {
+			    method = new GetMethod (remoteFileUrl + ";jsessionid=" + jsessionid);
+			    method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+			} else {
+			    method = new GetMethod (remoteFileUrl);
+			}
+
+
+			if ( remoteAuthHeader != null ) {
+			    method.addRequestHeader("Authorization", remoteAuthHeader ); 
+			}
 
 			// normally, the HTTP client follows redirects 
 			// automatically, so we need to explicitely tell it
@@ -362,7 +404,7 @@ public class FileDownloadServlet extends HttpServlet{
 			status = getClient().executeMethod(method);
 
 			// The code below is to enable the click through
-			// authentication.
+			// Terms-of-Use Agreement.
 			// We are assuming that if they have gotten here, 
 			// they must have already clicked on all the 
 			// licensing agreement forms (the terms-of-use
@@ -411,7 +453,6 @@ public class FileDownloadServlet extends HttpServlet{
 
 				String line = null;
 
-				String jsessionid     = null; 
 				String viewstate      = null; 
 				String studyid        = null; 
 				String remotefileid   = null; 
@@ -455,8 +496,8 @@ public class FileDownloadServlet extends HttpServlet{
 				if ( jsessionid != null ) {
 				    
 				    // we seem to have found a JSESSIONID; 
-				    // looks like an authentication form. 
-				    // let's make an authentication call, 
+				    // looks like a TOU click-through. 
+				    // let's make an agreement call 
 				    // which has to be a POST method: 
 
 				    redirectLocation = redirectLocation.substring(0, redirectLocation.indexOf( "?" )); 
@@ -1408,5 +1449,116 @@ public class FileDownloadServlet extends HttpServlet{
         nameList.add(name);
         return name;            
     }
+
+    private String remoteAuthRequired ( String remoteHost ) { 
+	String remoteAuthType = null; 
+
+	if ( remoteHost == null ) {
+	    return null; 
+	}
+
+	// remoteAuthType = lookupRemoteAuthByHost ( remoteHost ); 
+	return remoteAuthType; 
+    }
+
+    private String getRemoteAuthCredentials ( String remoteHost ) {
+	String remoteAuthCreds = null; 
+
+	if ( remoteHost == null ) {
+	    return null; 
+	}
+
+	// remoteAuthCreds = lookupRemoteCredsByHost ( remoteHost ); 
+
+	if ( remoteAuthCreds != null ) {
+	    return "Basic " + remoteAuthCreds; 
+	}
+
+	return null; 
+    }
+
+    private String dvnRemoteAuth ( String remoteHost ) {
+	String remoteJsessionid = null; 
+	String remoteDvnUser = null; 
+	String remoteDvnPassword = null; 
+
+	GetMethod authMethod = null; 
+	PostMethod loginMethod = null; 
+	    
+	int status = 0; 
+
+	try {
+
+	    String remoteAuthUrl = "http://" + remoteHost + "/dvn/faces/login/LoginPage.jsp"; 
+	    authMethod = new GetMethod (remoteAuthUrl);
+	    status = getClient().executeMethod(authMethod);
+
+	    InputStream in = authMethod.getResponseBodyAsStream(); 
+	    BufferedReader rd = new BufferedReader(new InputStreamReader(in)); 
+
+	    String line = null;
+
+	    String viewstate      = null; 
+
+
+	    String regexpJsession = "jsessionid=([^\"?&]*)"; 
+	    String regexpViewState = "ViewState\" value=\"([^\"]*)\""; 
+
+	    Pattern patternJsession = Pattern.compile(regexpJsession); 
+	    Pattern patternViewState= Pattern.compile(regexpViewState); 
+	
+	    Matcher matcher = null; 
+
+	    while ( ( line = rd.readLine () ) != null ) {
+		matcher = patternJsession.matcher(line);
+		if ( matcher.find() ) {
+		    remoteJsessionid = matcher.group(1); 
+		}
+		matcher = patternViewState.matcher(line);
+		if ( matcher.find() ) {
+		    viewstate = matcher.group(1); 
+		}
+	    }
+
+	    rd.close();
+	    authMethod.releaseConnection(); 
+
+	    if ( remoteJsessionid != null ) {
+		
+		// We have found Jsession;
+		// now we can log in, 
+		// has to be a POST method: 
+
+		loginMethod = new PostMethod( remoteAuthUrl + ";jsessionid=" + remoteJsessionid ); 
+		
+		Part[] parts = {
+		    new StringPart( "vanillaLoginForm:vdcId", "" ),
+		    new StringPart( "vanillaLoginForm:username", "" ),
+		    new StringPart( "vanillaLoginForm:password", "" ),
+		    new StringPart( "vanillaLoginForm_hidden", "vanillaLoginForm_hidden" ),
+		    new StringPart( "vanillaLoginForm:button1", "Log in" ),
+		    new StringPart( "javax.faces.ViewState", viewstate )
+		};
+
+
+		loginMethod.setRequestEntity(new MultipartRequestEntity(parts, loginMethod.getParams()));
+		loginMethod.addRequestHeader("Cookie", "JSESSIONID=" + remoteJsessionid ); 
+		status = getClient().executeMethod(loginMethod);
+		loginMethod.releaseConnection();
+	    }
+
+	} catch (IOException ex) {
+	    if (authMethod != null) { 
+		authMethod.releaseConnection(); 
+	    }
+	    if (loginMethod != null) { 
+		loginMethod.releaseConnection(); 
+	    }
+	    return null; 
+	}
+
+	return remoteJsessionid; 
+    }
+
 }
 

@@ -15,7 +15,7 @@
 <body>
 <gui:composition template="/template.xhtml">
 
-<gui:param name="pageTitle" value="DVN - Add/Edit Harvest Dataverse" />
+<gui:param name="pageTitle" value="DVN - Harvest Dataverse General Settings" />
 
   <gui:define name="body">
 
@@ -124,7 +124,7 @@
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                     
-                    <h:outputText value="Harvest Dataverse"/>
+                    <h:outputText value="Harvest Dataverse General Seetings"/>
                     
                 </div>            
                 <div class="dvn_sectionBox"> 

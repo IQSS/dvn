@@ -15,7 +15,7 @@
 <body>
 <gui:composition template="/template.xhtml">
 
-<gui:param name="pageTitle" value="DVN - Edit Dataverse Name and Alias" />
+<gui:param name="pageTitle" value="DVN - Dataverse General Settings" />
 
   <gui:define name="body">
 
@@ -63,7 +63,7 @@
              <div class="dvn_section">
                  <div class="dvn_sectionTitle">
                      
-                         <h:outputText binding="#{EditSitePage.outputText1}" value="Edit Dataverse Name and Alias"/>
+                         <h:outputText binding="#{EditSitePage.outputText1}" value="Dataverse General Settings"/>
                       
                  </div>            
                  <div class="dvn_sectionBox"> 

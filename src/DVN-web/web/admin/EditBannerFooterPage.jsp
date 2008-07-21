@@ -15,7 +15,7 @@
 <body>
 <gui:composition template="/template.xhtml">
 
-<gui:param name="pageTitle" value="DVN - Edit Banner and Footer" />
+<gui:param name="pageTitle" value="DVN - Layout Branding" />
 
   <gui:define name="body">
 
@@ -24,10 +24,8 @@
         <h:inputHidden rendered="#{VDCRequest.currentVDC != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         
         <div class="dvn_section">
-                <div class="dvn_sectionTitle">
-                    
-                         <h:outputText  value="#{bundle.editBannerFooterHeading}"/>
-                    
+                <div class="dvn_sectionTitle">    
+                         <h:outputText  value="#{bundle.editBannerFooterHeading}"/>              
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">

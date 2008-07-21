@@ -28,7 +28,7 @@
                     </div>            
                     <div class="dvn_sectionBox">             
                         <div class="dvn_margin12">
-                            <ui:panelGroup block="true" rendered="#{VDCSession.loginBean.contributor and not VDCRequest.currentVDC.harvestingDataverse}">
+                            <ui:panelGroup block="true" rendered="#{VDCSession.loginBean.contributor and not VDCRequest.currentVDC.harvestingDv}">
                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                     <tr><td colspan="2" class="dvnOptionsTableHeader"><h:outputText value="#{bundle.ContributorSection}"/></td></tr>
                                     <tr>
@@ -53,7 +53,7 @@
                             <ui:panelGroup block="true" rendered="#{VDCSession.loginBean.curator or VDCSession.loginBean.admin or VDCSession.loginBean.networkAdmin}">
                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                     <tr><td colspan="2" class="dvnOptionsTableHeader"><h:outputText value="#{bundle.CuratorSection}"/></td></tr>                                    
-                                    <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDataverse}">
+                                    <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
                                         <tr>
                                             <td class="dvnOptionsTableOption">
                                                 <h:outputLink id="hyperlink5" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.jsp">
@@ -101,14 +101,26 @@
                             <ui:panelGroup block="true" rendered="#{VDCSession.loginBean.admin == true or VDCSession.loginBean.networkAdmin == true}">
                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                     <tr><td colspan="2" class="dvnOptionsTableHeader"><h:outputText value="#{bundle.DvSettingsSection}"/></td></tr>
-                                    <tr>
-                                        <td class="dvnOptionsTableOption">
-                                            <h:outputLink id="hyperlink15" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditSitePage.jsp">
-                                                <h:outputText id="hyperlink15Text" value="#{bundle.DvSettingsTitle}"/>
-                                            </h:outputLink>
-                                        </td>
-                                        <td><h:outputText class="dvnOptionsTableNote" value="#{bundle.DvSettingsHelp}"/></td>
-                                    </tr>
+                                    <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
+                                        <tr>
+                                            <td class="dvnOptionsTableOption">
+                                                <h:outputLink id="hyperlink15a" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditSitePage.jsp">
+                                                    <h:outputText id="hyperlink15aText" value="#{bundle.DvSettingsTitle}"/>
+                                                </h:outputLink>
+                                            </td>
+                                            <td><h:outputText class="dvnOptionsTableNote" value="#{bundle.DvSettingsHelp}"/></td>
+                                        </tr>
+                                    </gui:fragment>
+                                    <gui:fragment rendered="#{VDCRequest.currentVDC.harvestingDv}">
+                                        <tr>
+                                            <td class="dvnOptionsTableOption">
+                                                <h:outputLink id="hyperlink15b" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditHarvestSitePage.jsp?harvestId=#{VDCRequest.currentVDC.harvestingDataverse.id}">
+                                                    <h:outputText id="hyperlink15bText" value="#{bundle.DvSettingsTitle}"/>
+                                                </h:outputLink>
+                                            </td>
+                                            <td><h:outputText class="dvnOptionsTableNote" value="#{bundle.DvHarvestSettingsHelp}"/></td>
+                                        </tr>
+                                    </gui:fragment>
                                     <tr>
                                         <td class="dvnOptionsTableOption">
                                             <h:outputLink id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditBannerFooterPage.jsp">
@@ -153,7 +165,7 @@
                                 
                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                     <tr><td colspan="2" class="dvnOptionsTableHeader"><h:outputText value="#{bundle.DvTermsSection}"/></td></tr>
-                                    <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDataverse}">
+                                    <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
                                         <tr>
                                             <td class="dvnOptionsTableOption">
                                                 <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditDepositUseTermsPage.jsp" >

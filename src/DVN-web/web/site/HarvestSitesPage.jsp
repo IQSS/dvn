@@ -46,7 +46,7 @@
                                 <h:outputText id="outputText2" value="Harvest Dataverse"/>
                             </f:facet>
                             <h:outputText  value="#{currentRow.vdc.name}" rendered="#{currentRow.harvestingNow}" />
-                            <h:outputLink rendered="#{!currentRow.harvestingNow}"  value="/dvn/faces/site/EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
+                            <h:outputLink rendered="#{!currentRow.harvestingNow}"  value="/dvn/dv/#{currentRow.vdc.alias}/faces/site/EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
                                 <h:outputText  value="#{currentRow.vdc.name}"/>
                             </h:outputLink>
                         </h:column>
@@ -65,7 +65,7 @@
                             </f:facet>
                             <h:commandButton value="Schedule Harvesting" rendered="#{currentRow.oai and !currentRow.scheduled and !empty currentRow.schedulePeriod }" actionListener="#{HarvestSitesPage.doSchedule}"/>
                             <h:commandButton value="Unschedule Harvesting" rendered="#{currentRow.oai and currentRow.scheduled and !empty currentRow.schedulePeriod }" actionListener="#{HarvestSitesPage.doUnschedule}"/>                      
-                             <h:outputLink rendered="#{currentRow.oai and !currentRow.harvestingNow and empty currentRow.schedulePeriod}"  value="/dvn/faces/site/EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
+                             <h:outputLink rendered="#{currentRow.oai and !currentRow.harvestingNow and empty currentRow.schedulePeriod}"  value="/dvn/dv/#{currentRow.vdc.alias}/faces/site/EditHarvestSitePage.jsp?harvestId=#{currentRow.id}">
                                 <h:outputText  value=" Define Harvesting Schedule"/>
                             </h:outputLink>
                        </h:column>
@@ -91,7 +91,7 @@
                    
                     <ui:panelGroup block="true" style="padding-bottom: 10px">
                         <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                        <h:outputText  styleClass="vdcHelpText" escape="false" value="Clicking a dataverse name takes you to the 'My Options' page for that dataverse. Keep in mind that by removing a dataverse you delete any study owned by that dataverse." />
+                        <h:outputText  styleClass="vdcHelpText" escape="false" value="Clicking a dataverse name takes you to the 'Edit General Settings' page for that dataverse. Keep in mind that by removing a dataverse you delete any study owned by that dataverse." />
                     </ui:panelGroup>
                     
                     <h:dataTable cellpadding="0" cellspacing="0"
@@ -103,7 +103,7 @@
                             <f:facet name="header">
                                 <h:outputText  value="Dataverse"/>
                             </f:facet>
-                            <h:outputLink value="/dvn/dv/#{currentRow.alias}/faces/admin/OptionsPage.jsp?currentVDCId=#{currentRow.id}">
+                            <h:outputLink value="/dvn/dv/#{currentRow.alias}/faces/site/EditSitePage.jsp">
                                 <h:outputText  value="#{currentRow.name}"/>
                             </h:outputLink>
                         </h:column>

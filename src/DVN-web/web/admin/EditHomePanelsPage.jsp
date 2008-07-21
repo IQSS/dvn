@@ -16,7 +16,7 @@
 <gui:composition template="/template.xhtml">
 
 
-<gui:param name="pageTitle" value="DVN - Edit Dataverse Homepage Description" />
+<gui:param name="pageTitle" value="DVN - Edit Description" />
 
   <gui:define name="body">
 

@@ -26,7 +26,7 @@
         <div class="dvn_section">
             <div class="dvn_sectionTitle">
                 
-                <h:outputText value="Dataverse Promotional Link + Search Box"/>
+                <h:outputText value="Dataverse Promotional Link and Search Box"/>
                 
             </div>
             <div class="dvn_sectionBox dvnPromotionalLinks"> 

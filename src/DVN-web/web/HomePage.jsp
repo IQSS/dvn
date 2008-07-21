@@ -16,7 +16,7 @@
 <body>
 <gui:composition template="/template.xhtml">
 
-<gui:param name="pageTitle" value="DVN - Home" />
+ <gui:param name="pageTitle" value="DVN - #{(VDCRequest.currentVDC== null) ? 'Homepage' : 'Dataverse Homepage'}" />
 
   <gui:define name="body">
    

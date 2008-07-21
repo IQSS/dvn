@@ -145,6 +145,10 @@ public class Metadata implements java.io.Serializable {
         copyTarget.setTitle(title);
         copyTarget.setUnitOfAnalysis(unitOfAnalysis);
         copyTarget.setUniverse(universe);
+        copyTarget.setVersionDate(versionDate);
+        copyTarget.setWeighting(weighting);
+        copyTarget.setStudyLevelErrorNotes(studyLevelErrorNotes);
+        copyTarget.setStudyCompletion(studyCompletion);
         
         
         
@@ -246,6 +250,7 @@ public class Metadata implements java.io.Serializable {
             cloneProd.setMetadata(copyTarget);
             cloneProd.setName(prod.getName());
             cloneProd.setUrl(prod.getUrl());
+            copyTarget.getStudyProducers().add(cloneProd);
         }
        copyTarget.setStudyRelMaterials(new ArrayList<StudyRelMaterial>());        
        for(StudyRelMaterial rel: studyRelMaterials) {

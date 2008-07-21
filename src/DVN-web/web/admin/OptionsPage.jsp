@@ -186,7 +186,7 @@
                                 </table>
                                 
                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                    <tr><td colspan="2" class="dvnOptionsTableHeader"><h:outputText  value="#{bundle.DvPrivilegesTitle}"/></td></tr>
+                                    <tr><td colspan="2" class="dvnOptionsTableHeader"><h:outputText  value="#{bundle.DvPrivilegesSection}"/></td></tr>
                                     <tr>
                                         <td class="dvnOptionsTableOption">
                                             <h:outputLink id="hyperlink11" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.jsp">

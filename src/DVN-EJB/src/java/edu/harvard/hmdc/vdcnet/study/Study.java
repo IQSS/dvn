@@ -2017,7 +2017,7 @@ End of deprecated methods section
     public boolean isUserAuthorizedToEdit(VDCUser user) {   
         String  studyVDCRoleName =null;
         // No users are allowed to edit a Harvested Study
-        if (owner.isHarvestingDataverse()) {
+        if (owner.isHarvestingDv()) {
             return false;
         }
         if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
@@ -2038,7 +2038,7 @@ End of deprecated methods section
     public boolean isUserAuthorizedToRelease(VDCUser user) {   
         String  studyVDCRoleName =null;
         // No users are allowed to edit a Harvested Study
-        if (owner.isHarvestingDataverse()) {
+        if (owner.isHarvestingDv()) {
             return false;
         }
         if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {

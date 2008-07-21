@@ -402,7 +402,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         
       
         
-        if (vdc.isHarvestingDataverse()) {
+        if (vdc.isHarvestingDv()) {
             harvesterService.removeHarvestTimer(vdc.getHarvestingDataverse());
         }
         em.remove(vdc);

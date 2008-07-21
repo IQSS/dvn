@@ -419,7 +419,7 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     private List listVdcStudyIds(final VDC vdc) {
         List studyIds = new ArrayList();
         if (vdc != null) {
-            if (!vdc.isHarvestingDataverse()) {
+            if (!vdc.isHarvestingDv()) {
                 List<VDCCollection> vdcCollections = getCollections(vdc);
                 vdcCollections.add(vdc.getRootCollection()); // may want to change getCollections to include root collection
                 for (Iterator it = vdcCollections.iterator(); it.hasNext();) {

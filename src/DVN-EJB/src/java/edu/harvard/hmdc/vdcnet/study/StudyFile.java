@@ -335,7 +335,7 @@ public class StudyFile implements Serializable {
     public boolean isSubsetRestrictedForUser(VDCUser user, VDC vdc, UserGroup ipUserGroup) {
         // the restrictions should be checked on the owner of the study, not the currentVDC (needs cleanup)
         VDC owner = this.getFileCategory().getStudy().getOwner();
-        if (owner.isHarvestingDataverse()) {
+        if (owner.isHarvestingDv()) {
             HarvestingDataverse hd = owner.getHarvestingDataverse();
             return hd.isSubsetRestrictedForUser(user, ipUserGroup);
         } else {

@@ -716,7 +716,7 @@ public class VDC implements java.io.Serializable  {
         this.harvestingDataverse = harvestingDataverse;
     }
 
-    public boolean isHarvestingDataverse() {
+    public boolean isHarvestingDv() {
         return harvestingDataverse!=null;
     }
     public Collection<VDCCollection> getOwnedCollections() {

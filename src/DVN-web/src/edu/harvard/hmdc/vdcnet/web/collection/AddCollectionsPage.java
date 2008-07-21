@@ -1038,7 +1038,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
             VDCCollection elem = (VDCCollection) it.next();
             String name=null;
             if (elem.isVisible()){
-                name = getLevelRepStr(elem.getLevel()) + elem.getFullCollectionName() + " (Visible)";
+                name = getLevelRepStr(elem.getLevel()) + elem.getFullCollectionName();
             } else{
                 name = getLevelRepStr(elem.getLevel()) + elem.getFullCollectionName()+ " (Hidden) ";
             }
@@ -1235,11 +1235,6 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
        int x =collectionNameStr.indexOf(" (Hidden)");
        if (x>-1){
            collectionNameStr = collectionNameStr.substring(0,x);
-       }else {
-           x=collectionNameStr.indexOf(" (Visible)");
-           if (x>-1){
-               collectionNameStr = collectionNameStr.substring(0,x);
-           }
        }
        Long collectionId = (Long) collectionsMap.get(collectionNameStr);
        long collectionIdSelected = collectionId.longValue() ;

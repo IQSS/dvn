@@ -649,7 +649,7 @@ public class ManageCollectionsPage extends VDCBaseBean implements java.io.Serial
         CollectionModel row = new CollectionModel();
         row.setLevel(treeLevel);
         row.setId(vdcRootCollection.getId());
-        row.setName(vdcRootCollection.getName() + (vdcRootCollection.isVisible()? " (Visible)" : " (Hidden)") + " (Root) (Studies Assigned)");
+        row.setName(vdcRootCollection.getName() + (vdcRootCollection.isVisible()? "" : " (Hidden)") + " (Root) (Studies Assigned)");
         row.setSelected(false);
         row.setParentId(0);
         row.setLink(false);
@@ -682,7 +682,7 @@ public class ManageCollectionsPage extends VDCBaseBean implements java.io.Serial
             CollectionModel row = new CollectionModel();
             row.setLevel(level);
             row.setId(collection.getId());
-            row.setName(collection.getName() + (collection.isVisible()? " (Visible)" : " (Hidden)") + ((collection.getQuery() != null)? " (Query)" : " (Studies Assigned)"));
+            row.setName(collection.getName() + (collection.isVisible()? "" : " (Hidden)") + ((collection.getQuery() != null)? " (Query)" : " (Studies Assigned)"));
             row.setSelected(false);
             row.setQueryType(collection.getQuery()!=null);
             row.setParentId(collection.getParentCollection().getId());

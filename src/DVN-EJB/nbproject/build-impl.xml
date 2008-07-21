@@ -304,6 +304,12 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" name="library-inclusion-in-archive">
+        <copy file="${libs.dvn-EJB.classpath.libfile.24}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.23}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.22}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.21}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.20}" todir="${build.classes.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.19}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.18}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.17}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.16}" todir="${build.classes.dir}"/>
@@ -322,11 +328,14 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <copy file="${libs.dvn-EJB.classpath.libfile.3}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.2}" todir="${build.classes.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.1}" todir="${build.classes.dir}"/>
-        <copy todir="${build.classes.dir}">
-            <fileset dir="${libs.dvn-EJB.classpath.libdir.1}" includes="**/*"/>
-        </copy>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
+        <basename file="${libs.dvn-EJB.classpath.libfile.24}" property="included.lib.libs.dvn-EJB.classpath.24"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.23}" property="included.lib.libs.dvn-EJB.classpath.23"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.22}" property="included.lib.libs.dvn-EJB.classpath.22"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.21}" property="included.lib.libs.dvn-EJB.classpath.21"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.20}" property="included.lib.libs.dvn-EJB.classpath.20"/>
+        <basename file="${libs.dvn-EJB.classpath.libfile.19}" property="included.lib.libs.dvn-EJB.classpath.19"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.18}" property="included.lib.libs.dvn-EJB.classpath.18"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.17}" property="included.lib.libs.dvn-EJB.classpath.17"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.16}" property="included.lib.libs.dvn-EJB.classpath.16"/>
@@ -345,6 +354,12 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <basename file="${libs.dvn-EJB.classpath.libfile.3}" property="included.lib.libs.dvn-EJB.classpath.3"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.2}" property="included.lib.libs.dvn-EJB.classpath.2"/>
         <basename file="${libs.dvn-EJB.classpath.libfile.1}" property="included.lib.libs.dvn-EJB.classpath.1"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.24}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.23}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.22}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.21}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.20}" todir="${dist.ear.dir}"/>
+        <copy file="${libs.dvn-EJB.classpath.libfile.19}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.18}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.17}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.16}" todir="${dist.ear.dir}"/>
@@ -363,11 +378,8 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <copy file="${libs.dvn-EJB.classpath.libfile.3}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.2}" todir="${dist.ear.dir}"/>
         <copy file="${libs.dvn-EJB.classpath.libfile.1}" todir="${dist.ear.dir}"/>
-        <copy todir="${dist.ear.dir}">
-            <fileset dir="${libs.dvn-EJB.classpath.libdir.1}" includes="**/*"/>
-        </copy>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value=". ${included.lib.libs.dvn-EJB.classpath.1} ${included.lib.libs.dvn-EJB.classpath.2} ${included.lib.libs.dvn-EJB.classpath.3} ${included.lib.libs.dvn-EJB.classpath.4} ${included.lib.libs.dvn-EJB.classpath.5} ${included.lib.libs.dvn-EJB.classpath.6} ${included.lib.libs.dvn-EJB.classpath.7} ${included.lib.libs.dvn-EJB.classpath.8} ${included.lib.libs.dvn-EJB.classpath.9} ${included.lib.libs.dvn-EJB.classpath.10} ${included.lib.libs.dvn-EJB.classpath.11} ${included.lib.libs.dvn-EJB.classpath.12} ${included.lib.libs.dvn-EJB.classpath.13} ${included.lib.libs.dvn-EJB.classpath.14} ${included.lib.libs.dvn-EJB.classpath.15} ${included.lib.libs.dvn-EJB.classpath.16} ${included.lib.libs.dvn-EJB.classpath.17} ${included.lib.libs.dvn-EJB.classpath.18} "/>
+            <attribute name="Class-Path" value="${included.lib.libs.dvn-EJB.classpath.1} ${included.lib.libs.dvn-EJB.classpath.2} ${included.lib.libs.dvn-EJB.classpath.3} ${included.lib.libs.dvn-EJB.classpath.4} ${included.lib.libs.dvn-EJB.classpath.5} ${included.lib.libs.dvn-EJB.classpath.6} ${included.lib.libs.dvn-EJB.classpath.7} ${included.lib.libs.dvn-EJB.classpath.8} ${included.lib.libs.dvn-EJB.classpath.9} ${included.lib.libs.dvn-EJB.classpath.10} ${included.lib.libs.dvn-EJB.classpath.11} ${included.lib.libs.dvn-EJB.classpath.12} ${included.lib.libs.dvn-EJB.classpath.13} ${included.lib.libs.dvn-EJB.classpath.14} ${included.lib.libs.dvn-EJB.classpath.15} ${included.lib.libs.dvn-EJB.classpath.16} ${included.lib.libs.dvn-EJB.classpath.17} ${included.lib.libs.dvn-EJB.classpath.18} ${included.lib.libs.dvn-EJB.classpath.19} ${included.lib.libs.dvn-EJB.classpath.20} ${included.lib.libs.dvn-EJB.classpath.21} ${included.lib.libs.dvn-EJB.classpath.22} ${included.lib.libs.dvn-EJB.classpath.23} ${included.lib.libs.dvn-EJB.classpath.24} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">

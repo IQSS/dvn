@@ -192,7 +192,7 @@ public class Metadata implements java.io.Serializable {
             cloneGeo.setNorthLatitude(geo.getNorthLatitude());
             cloneGeo.setSouthLatitude(geo.getSouthLatitude());
             cloneGeo.setWestLongitude(geo.getWestLongitude());
-            copyTarget.getStudyGeoBoundings().add(geo);
+            copyTarget.getStudyGeoBoundings().add(cloneGeo);
         }
         copyTarget.setStudyGrants(new ArrayList<StudyGrant>());        
         for(StudyGrant grant: studyGrants) {
@@ -211,7 +211,7 @@ public class Metadata implements java.io.Serializable {
             cloneKey.setValue(key.getValue());
             cloneKey.setVocab(key.getVocab());
             cloneKey.setVocabURI(key.getVocabURI());
-            copyTarget.getStudyKeywords().add(key);
+            copyTarget.getStudyKeywords().add(cloneKey);
         }
        copyTarget.setStudyNotes(new ArrayList<StudyNote>());        
        for(StudyNote note: studyNotes) {
@@ -221,7 +221,7 @@ public class Metadata implements java.io.Serializable {
             cloneNote.setSubject(note.getSubject());
             cloneNote.setText(note.getText());
             cloneNote.setType(note.getType());
-            copyTarget.getStudyNotes().add(note);
+            copyTarget.getStudyNotes().add(cloneNote);
         }
         copyTarget.setStudyOtherIds(new ArrayList<StudyOtherId>());        
         for(StudyOtherId id: studyOtherIds) {
@@ -230,7 +230,7 @@ public class Metadata implements java.io.Serializable {
             cloneId.setDisplayOrder(id.getDisplayOrder());
             cloneId.setMetadata(copyTarget);
             cloneId.setOtherId(id.getOtherId());
-            copyTarget.getStudyOtherIds().add(id);
+            copyTarget.getStudyOtherIds().add(cloneId);
         }
         copyTarget.setStudyOtherRefs(new ArrayList<StudyOtherRef>());        
         for(StudyOtherRef ref: studyOtherRefs) {
@@ -238,7 +238,7 @@ public class Metadata implements java.io.Serializable {
             cloneRef.setDisplayOrder(ref.getDisplayOrder());
             cloneRef.setMetadata(copyTarget);
             cloneRef.setText(ref.getText());
-            copyTarget.getStudyOtherRefs().add(ref);
+            copyTarget.getStudyOtherRefs().add(cloneRef);
         }
         copyTarget.setStudyProducers(new ArrayList<StudyProducer>());        
         for(StudyProducer prod: studyProducers) {
@@ -262,11 +262,11 @@ public class Metadata implements java.io.Serializable {
         }
        copyTarget.setStudyRelPublications(new ArrayList<StudyRelPublication>());        
         for(StudyRelPublication rel: studyRelPublications){
-            StudyRelStudy cloneRel = new StudyRelStudy();
+            StudyRelPublication cloneRel = new StudyRelPublication();
             cloneRel.setDisplayOrder(rel.getDisplayOrder());
             cloneRel.setMetadata(copyTarget);
             cloneRel.setText(rel.getText());
-            copyTarget.getStudyRelPublications().add(rel);
+            copyTarget.getStudyRelPublications().add(cloneRel);
         }
         copyTarget.setStudyRelStudies(new ArrayList<StudyRelStudy>());        
         for(StudyRelStudy rel: studyRelStudies){
@@ -274,7 +274,7 @@ public class Metadata implements java.io.Serializable {
             cloneRel.setDisplayOrder(rel.getDisplayOrder());
             cloneRel.setMetadata(copyTarget);
             cloneRel.setText(rel.getText());
-            copyTarget.getStudyRelStudies().add(rel);
+            copyTarget.getStudyRelStudies().add(cloneRel);
         }
         copyTarget.setStudySoftware(new ArrayList<StudySoftware>());
         for(StudySoftware soft: studySoftware){
@@ -283,7 +283,7 @@ public class Metadata implements java.io.Serializable {
             cloneSoft.setMetadata(copyTarget);
             cloneSoft.setName(soft.getName());
             cloneSoft.setSoftwareVersion(soft.getSoftwareVersion());
-            copyTarget.getStudySoftware().add(soft);
+            copyTarget.getStudySoftware().add(cloneSoft);
         }
         copyTarget.setStudyTopicClasses(new ArrayList<StudyTopicClass>());
         for (StudyTopicClass topic: studyTopicClasses){
@@ -293,7 +293,7 @@ public class Metadata implements java.io.Serializable {
             cloneTopic.setValue(topic.getValue());
             cloneTopic.setVocab(topic.getVocab());
             cloneTopic.setVocabURI(topic.getVocabURI());
-            copyTarget.getStudyTopicClasses().add(topic);
+            copyTarget.getStudyTopicClasses().add(cloneTopic);
         }
        
     }

@@ -183,27 +183,6 @@ public class HarvestingDataverse implements Serializable {
     }
 
     /**
-     * Holds value of property format.
-     */
-    private String format;
-
-    /**
-     * Getter for property format.
-     * @return Value of property format.
-     */
-    public String getFormat() {
-        return this.format;
-    }
-
-    /**
-     * Setter for property format.
-     * @param format New value of property format.
-     */
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    /**
      * Holds value of property vdc.
      */
     @OneToOne (mappedBy="harvestingDataverse",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST })

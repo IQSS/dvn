@@ -34,7 +34,7 @@
               <ui:panelLayout styleClass="requestContent">
                   
                   <ui:panelLayout styleClass="requestContentDescLeft requestContentSucessH4">
-                      <h4>Your are now a contributor to the <h:outputText value="#{VDCRequest.currentVDC.name}"/> dataverse!</h4>
+                      <h4><h:outputText value="You are now a contributor to the "/> <h:outputText value="#{VDCRequest.currentVDC.name}"/> dataverse!</h4>
                   </ui:panelLayout>
                   
                   <ui:panelLayout styleClass="requestContentDescRight requestContentSucess">

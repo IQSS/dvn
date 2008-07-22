@@ -587,3 +587,29 @@ update study set harvestidentifier = (select harvestidentifier from metadata whe
 alter table metadata drop column harvestidentifier;
 
 commit;
+
+-- copy filesrestricted values from harvestingdataverse (and relationship tables)
+
+update vdc
+set filesrestricted = hd.filesrestricted
+from harvestingdataverse hd
+where harvestingdataverse_id = hd.id;
+
+insert into vdc_fileuser
+	select vdc.id, allowedfileusers_id
+	from vdc, harvestingdataverse hd, harvestingdataverse_vdcuser hdu
+	where vdc.harvestingdataverse_id = hd.id
+	and hd.id = hdu.harvestingdataverse_id;
+	
+insert into vdc_fileusergroup
+	select vdc.id, allowedfilegroups_id
+	from vdc, harvestingdataverse hd, harvestingdataverse_usergroup hdug
+	where vdc.harvestingdataverse_id = hd.id
+	and hd.id = hdug.harvestingdataverse_id;
+
+-- remove unused columns
+alter table harvestingdataverse drop column filesrestricted;
+alter table harvestingdataverse drop column format;
+
+
+

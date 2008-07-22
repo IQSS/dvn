@@ -34,12 +34,8 @@
             <h:inputHidden id="hiddenNetworkTemplateId" value="#{ManageTemplatesPage.networkTemplateId}"/>
            
             <div class="dvn_section">
-                <div class="dvn_sectionTitle">
-                     
+                <div class="dvn_sectionTitle">                    
                         <h:outputText value="Manage Templates"/>
-                        <br/>
-                        <h:commandButton value="Add Template" action="templateForm"/>
-                      
                 </div>            
                 <div class="dvn_sectionBox">
                   <div class="dvn_margin12">  
@@ -48,12 +44,15 @@
                         <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                         <h:outputText  styleClass="vdcHelpText" escape="false" value="Template help text here" />
                     </ui:panelGroup>
-                    
+             
+                    <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/TemplateFormPage.jsp">
+                        <h:outputText value="Add Template"/>
+                    </h:outputLink>                
                     <h:dataTable cellpadding="0" cellspacing="0"
                                  binding="#{ManageTemplatesPage.templateDataTable}"
                                  headerClass="list-header-left vdcColPadded" id="dataTable1" 
                                  rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded" 
-                                 value="#{ManageTemplatesPage.templateList}" var="currentRow" width="100%">
+                                 value="#{ManageTemplatesPage.templateData}" var="currentRow" width="100%">
                        
                                      
                          <h:column >
@@ -61,15 +60,15 @@
                                 <h:outputText  value="Default"/>
                             </f:facet>
                              
-                            <h:outputText  value="Current Default Template" rendered="#{ManageTemplatesPage.defaultTemplateId==currentRow.id}" />   
-                            <h:commandLink  value="Make Default" rendered="#{ManageTemplatesPage.defaultTemplateId!=currentRow.id}"  action="#{ManageTemplatesPage.updateDefaultAction}"/>
+                            <h:outputText  value="Current Default Template" rendered="#{ManageTemplatesPage.defaultTemplateId==currentRow[0].id}" />   
+                            <h:commandLink  value="Make Default" rendered="#{ManageTemplatesPage.defaultTemplateId!=currentRow[0].id}"  action="#{ManageTemplatesPage.updateDefaultAction}"/>
                                 
                         </h:column>
                        <h:column >
                             <f:facet name="header">
                                 <h:outputText  value="Name"/>
                             </f:facet>
-                            <h:outputText  value="#{currentRow.name}" />
+                            <h:outputText  value="#{currentRow[0].name}" />
                             
                         </h:column>
               
@@ -78,19 +77,25 @@
                                 <h:outputText  value="Remove"/>
                             </f:facet>
                            
-                            <h:outputLink  rendered="#{currentRow.id!=ManageTemplatesPage.networkTemplateId and  currentRow.id!=ManageTemplatesPage.defaultTemplateId}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.jsp?templateId=#{currentRow.id}">
+                            <h:outputLink  rendered="#{currentRow[1]==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.jsp?templateId=#{currentRow[0].id}">
                                 <h:outputText  value="Remove"/>
-                            </h:outputLink>                           
+                            </h:outputLink>    
+                            <h:outputText rendered="#{currentRow[1]!=null}" value="Cannot Remove"/>
+                            
                         </h:column>
                          <h:column >
                             <f:facet name="header">
                                 <h:outputText value="Edit"/>
                             </f:facet>
                            
-                            <h:outputLink  rendered="#{currentRow.id!=ManageTemplatesPage.networkTemplateId}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.jsp?templateId=#{currentRow.id}">
+                            <h:outputLink  rendered="#{currentRow[0].id!=ManageTemplatesPage.networkTemplateId}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.jsp?templateId=#{currentRow[0].id}">
                                 <h:outputText  value="Edit"/>
                             </h:outputLink>                           
-                        </h:column>
+                       
+                           <h:outputText  rendered="#{currentRow[0].id==ManageTemplatesPage.networkTemplateId}" value="Cannot Edit"/>
+                          
+                                                 
+                         </h:column>
                         
                     </h:dataTable>
 

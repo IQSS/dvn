@@ -28,8 +28,8 @@ package edu.harvard.hmdc.vdcnet.web.study;
 
 
 import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Template;
+import edu.harvard.hmdc.vdcnet.study.TemplateServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 
@@ -42,7 +42,7 @@ import javax.ejb.EJB;
  */
 @EJB(name="editStudy", beanInterface=edu.harvard.hmdc.vdcnet.study.EditStudyService.class)
 public class DeleteTemplatePage extends VDCBaseBean implements java.io.Serializable  {
-    @EJB StudyServiceLocal studyService;
+    @EJB TemplateServiceLocal templateService;
     
     /**
      * <p>Construct a new Page bean instance.</p>
@@ -65,7 +65,7 @@ public class DeleteTemplatePage extends VDCBaseBean implements java.io.Serializa
     
        public void init() {
         super.init();
-        Template template = studyService.getTemplate(templateId);
+        Template template = templateService.getTemplate(templateId);
         
          templateName = template.getName();
         
@@ -136,7 +136,7 @@ public class DeleteTemplatePage extends VDCBaseBean implements java.io.Serializa
     
     public String delete() {
        //editStudyService.deleteStudy();
-        studyService.deleteTemplate(templateId);
+        templateService.deleteTemplate(templateId);
         getVDCSessionBean().setStudyService(null);
         return "success";
     }

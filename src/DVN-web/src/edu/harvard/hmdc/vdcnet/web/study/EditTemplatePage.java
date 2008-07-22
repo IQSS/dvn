@@ -27,9 +27,7 @@
 package edu.harvard.hmdc.vdcnet.web.study;
 
 
-import edu.harvard.hmdc.vdcnet.study.EditStudyService;
-import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.study.TemplateServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import javax.faces.FacesException;
@@ -44,7 +42,7 @@ import javax.faces.FacesException;
 
 public class EditTemplatePage extends VDCBaseBean implements java.io.Serializable  {
    
-    @EJB StudyServiceLocal studyService;
+    @EJB TemplateServiceLocal templateService;
     
     /**
      * <p>Construct a new Page bean instance.</p>
@@ -127,7 +125,7 @@ public class EditTemplatePage extends VDCBaseBean implements java.io.Serializabl
     
     public String save() {
       
-        studyService.createStudyTemplate(templateName,studyId, this.getVDCRequestBean().getCurrentVDCId());
+        templateService.createTemplate(templateName,studyId, this.getVDCRequestBean().getCurrentVDCId());
     
         return "home";
     }

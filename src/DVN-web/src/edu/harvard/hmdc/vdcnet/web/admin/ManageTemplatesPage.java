@@ -30,13 +30,18 @@
 package edu.harvard.hmdc.vdcnet.web.admin;
 
 import edu.harvard.hmdc.vdcnet.study.Template;
+import edu.harvard.hmdc.vdcnet.study.TemplateServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import java.util.List;
 import javax.ejb.EJB;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.faces.component.html.HtmlDataTable;
+import javax.faces.model.DataModel;
+import javax.faces.model.ListDataModel;
 
 /**
  *
@@ -46,7 +51,8 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
     @EJB HarvestingDataverseServiceLocal harvestingDataverseService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB VDCServiceLocal vdcService;
-    
+    @EJB TemplateServiceLocal templateService;
+
     
     /** Creates a new instance of HarvestSitesPage */
     public ManageTemplatesPage() {
@@ -81,6 +87,34 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
         return templateList;
         
         
+    }
+    
+      public DataModel getTemplateData(){
+         List displayFields = new ArrayList();
+        for (Iterator it = templateList.iterator(); it.hasNext();) {
+            Template template = (Template) it.next();
+           
+                Object[] row = new Object[2];
+                row[0] = template;
+                row[1] = getRemoveText(template);
+             
+                displayFields.add(row);
+           
+        }
+       return new ListDataModel(displayFields);
+       
+    }
+    
+    private String getRemoveText(Template template) {
+        String removeText=null;
+        if (template.getId().equals(networkTemplateId)) {
+            removeText = "Cannot remove - Network Default Template";
+        } else if (template.getId().equals(this.defaultTemplateId)) {
+            removeText = "Cannot remove - Dataverse Default Template";
+        } else if (templateService.isTemplateUsed(template.getId())){
+            removeText="Cannot remove - template associated with created studies";     
+        }
+        return removeText;
     }
     
     Long networkTemplateId;

@@ -403,10 +403,12 @@ public class Indexer implements java.io.Serializable  {
         for (Iterator it = searchTerms.iterator(); it.hasNext();){
             SearchTerm elem = (SearchTerm) it.next();
             if (elem.getFieldName().equals("variable")){
-                variableSearchTerms.add(elem);
+                SearchTerm st = dvnTokenizeSearchTerm(elem);
+                variableSearchTerms.add(st);
                 variableSearch = true;
             } else {
-                nonVariableSearchTerms.add(elem);
+                SearchTerm nvst = dvnTokenizeSearchTerm(elem);
+                nonVariableSearchTerms.add(nvst);
                 nonVariableSearch = true;
             }
         }
@@ -440,6 +442,14 @@ public class Indexer implements java.io.Serializable  {
 
         return results;
         
+    }
+
+    private SearchTerm dvnTokenizeSearchTerm(SearchTerm elem) {
+        SearchTerm st = new SearchTerm();
+        st.setFieldName(elem.getFieldName());
+        st.setOperator(elem.getOperator());
+        st.setValue(getDVNTokenString(elem.getValue()));
+        return st;
     }
 
     private String getDVNTokenString(final String value) {
@@ -531,12 +541,12 @@ public class Indexer implements java.io.Serializable  {
         parser.setDefaultOperator(QueryParser.AND_OPERATOR);
         Query query=null;
         try {
-            query = parser.parse(adhocQuery);
-            System.out.println("QQQ "+query.toString(indexDir));
+            query = parser.parse(adhocQuery); 
         } catch (ParseException ex) {
             ex.printStackTrace();
         }
-        return getHitIds(query);
+        return getHitIds(getHits(query));
+//        return getHitIds(query);
     }
         
     private String[] getPhrase(final String value) {
@@ -563,7 +573,8 @@ public class Indexer implements java.io.Serializable  {
     public List searchVariables(SearchTerm searchTerm) throws IOException {
         Query indexQuery = null;        
         if (searchTerm.getFieldName().equalsIgnoreCase("variable")){
-            indexQuery = buildVariableQuery(searchTerm.getValue().toLowerCase().trim());
+//            indexQuery = buildVariableQuery(searchTerm.getValue().toLowerCase().trim());
+            indexQuery = buildVariableQuery(searchTerm);
         }
         return getHitIds(indexQuery);
     }
@@ -572,7 +583,8 @@ public class Indexer implements java.io.Serializable  {
         List <BooleanQuery> searchParts = new ArrayList();
         BooleanQuery indexQuery = null;        
         if (searchTerm.getFieldName().equalsIgnoreCase("variable")){
-            indexQuery = buildVariableQuery(searchTerm.getValue().toLowerCase().trim());
+//            indexQuery = buildVariableQuery(searchTerm.getValue().toLowerCase().trim());
+            indexQuery = buildVariableQuery(searchTerm);
             searchParts.add(indexQuery);
         }
         BooleanQuery searchQuery = andQueryClause(searchParts);
@@ -588,7 +600,8 @@ public class Indexer implements java.io.Serializable  {
             SearchTerm elem = (SearchTerm) it.next();
             BooleanQuery indexQuery = null;
             if (elem.getFieldName().equalsIgnoreCase("variable")) {
-                indexQuery = buildVariableQuery(elem.getValue().toLowerCase().trim());
+//                indexQuery = buildVariableQuery(elem.getValue().toLowerCase().trim());
+            indexQuery = buildVariableQuery(elem);
                 searchParts.add(indexQuery);
             }
         }
@@ -973,9 +986,24 @@ public class Indexer implements java.io.Serializable  {
         return orPhraseQuery(variableTerms);        
     }
 
+    private BooleanQuery buildVariableQuery(SearchTerm term) {
+        List <SearchTerm> variableTerms = new ArrayList();
+        variableTerms.add(buildAnyTerm("varName",term.getValue().toLowerCase().trim(),term.getOperator()));
+        variableTerms.add(buildAnyTerm("varLabel",term.getValue().toLowerCase().trim(),term.getOperator()));
+        return orPhraseQuery(variableTerms);        
+    }
+
     SearchTerm buildAnyTerm(String fieldName,String value){
         SearchTerm term = new SearchTerm();
         term.setOperator("=");
+        term.setFieldName(fieldName);
+        term.setValue(value.toLowerCase().trim());
+        return term;
+    }
+    
+    SearchTerm buildAnyTerm(String fieldName,String value, String operator){
+        SearchTerm term = new SearchTerm();
+        term.setOperator(operator);
         term.setFieldName(fieldName);
         term.setValue(value.toLowerCase().trim());
         return term;

@@ -586,7 +586,6 @@ ALTER TABLE study ALTER COLUMN harvestidentifier SET STORAGE PLAIN;
 update study set harvestidentifier = (select harvestidentifier from metadata where metadata.id = study.metadata_id);
 alter table metadata drop column harvestidentifier;
 
-commit;
 
 -- copy filesrestricted values from harvestingdataverse (and relationship tables)
 
@@ -610,6 +609,8 @@ insert into vdc_fileusergroup
 -- remove unused columns
 alter table harvestingdataverse drop column filesrestricted;
 alter table harvestingdataverse drop column format;
+
+commit;
 
 
 

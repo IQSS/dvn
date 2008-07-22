@@ -474,8 +474,8 @@
                                                                     <h:inputHidden id="vdcIdforFile" value="#{studyFileUI.vdcId}"/>
                                                                     <br/>
                                                                     <h:outputText styleClass="vdcStudyFileRowFileDetails" value="#{studyFileUI.userFriendlyFileType}" />
-                                                                    <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.fileSize}" rendered="#{!studyFileUI.studyFile.remote}" />
-                                                                    <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" - Unknown file size" rendered="#{studyFileUI.studyFile.remote}" />
+                                                                    <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.fileSize}" rendered="#{!empty studyFileUI.studyFile.fileSystemLocation and !studyFileUI.studyFile.remote}" />
+                                                                    <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" - Unknown file size" rendered="#{empty studyFileUI.studyFile.fileSystemLocation or studyFileUI.studyFile.remote}" />
                                                                     <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.downloadCount}" /><h:outputText styleClass="vdcStudyFileRowFileDetails" value=" downloads" rendered="#{studyFileUI.downloadCount != 1}" /><h:outputText styleClass="vdcStudyFileRowFileDetails" value=" download" rendered="#{studyFileUI.downloadCount == 1}" />
                                                                 </ui:panelGroup>
                                                             </ui:panelGroup>

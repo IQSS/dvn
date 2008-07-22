@@ -50,10 +50,12 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
     
     
     // private static String[] modelFilter = {"gam.logit", "gam.normal","gam.poisson","gam.probit","logit.gee"};
-    // as of 2008-02-28
+    // as of 2008-07-22
     private static String[] modelFilter = {"coxph", "ei.RxC", "gamma.gee", 
     "logit.gee", "normal.gee", "poisson.gee", "probit.gee", 
-    "logit.gam", "normal.gam", "poisson.gam", "probit.gam"};
+    "logit.gam", "normal.gam", "poisson.gam", "probit.gam",
+    "cloglog.net", "gamma.net", "logit.net", "ls.net", "normal.net", 
+    "poisson.net", "probit.net" };
     
     private static Set<String> excludedModels = new HashSet<String>();
     static {

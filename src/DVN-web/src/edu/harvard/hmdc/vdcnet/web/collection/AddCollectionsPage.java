@@ -202,10 +202,13 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         }
         collectionsMap = getCollectionsMap();
         dropdown1DefaultItems.setItems( getOtherPublicVDCs());
-        long vdcId =  getVDCRequestBean().getCurrentVDC().getId().longValue();
-        try{
+        long vdcId = getVDCRequestBean().getCurrentVDC().getId().longValue();
+        try {
             dropdown2DefaultItems.setItems(getParentVDCCollections(vdcId));
-        } catch (NullPointerException n){
+            if (edit) {
+                dropdown2SelectItems.setValue(parentCollectionSelected);
+            } 
+        } catch (NullPointerException n) {
             n.printStackTrace();
         }
         if (parentCollectionSelected != null){
@@ -1148,7 +1151,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         for (Iterator it = vdcCollections.iterator(); it.hasNext();) {
             VDCCollection elem = (VDCCollection) it.next();
                 if (elem.getId().equals(parentId)){
-                    parentCollectionSelected = getLevelRepStr(level)+elem.getName();
+                    parentCollectionSelected = getLevelRepStr(level)+elem.getFullCollectionName();
                 }
                 elem.setLevel(level);
                 collections.add(elem);
@@ -1179,7 +1182,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
                     dummy.setName("Root collection cannot be changed");
                     dummy.setLevel(treeLevel);
                     collections.add(dummy);
-                    parentCollectionSelected = getLevelRepStr(treeLevel)+dummy.getName();                }
+                    parentCollectionSelected = getLevelRepStr(treeLevel)+dummy.getFullCollectionName();                }
             }
         }
         return collections;
@@ -1191,7 +1194,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
             VDCCollection elem = (VDCCollection) it.next();
             if (!edit || !elem.getId().equals(collId) ){
                 if (elem.getId().equals(parentId)){
-                    parentCollectionSelected = getLevelRepStr(level)+elem.getName();
+                    parentCollectionSelected = getLevelRepStr(level)+elem.getFullCollectionName();
                 }
                 elem.setLevel(level);
                 collections.add(elem);

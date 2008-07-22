@@ -68,8 +68,20 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
     }
     
     public void edit(VDCCollection vDCCollection) {
-        VDCCollection managedCollection = em.merge(vDCCollection);
+//        VDCCollection managedCollection = em.merge(vDCCollection);
+//        managedCollection.setName(vDCCollection.getName());
+        VDCCollection managedCollection = em.find(VDCCollection.class,vDCCollection.getId());
         managedCollection.setName(vDCCollection.getName());
+        managedCollection.setLinkedVDCs(vDCCollection.getLinkedVDCs());
+        managedCollection.setLongDesc(vDCCollection.getLongDesc());
+        managedCollection.setOwner(vDCCollection.getOwner());
+        managedCollection.setParentCollection(vDCCollection.getParentCollection());
+        managedCollection.setQuery(vDCCollection.getQuery());
+        managedCollection.setReviewState(vDCCollection.getReviewState());
+        managedCollection.setShortDesc(vDCCollection.getShortDesc());
+        managedCollection.setStudies(vDCCollection.getStudies());
+        managedCollection.setSubCollections(vDCCollection.getSubCollections());
+        managedCollection.setVisible(vDCCollection.isVisible());
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

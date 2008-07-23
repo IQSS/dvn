@@ -1084,6 +1084,22 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         sfActivity.setLastDownloadTime( lastDownloadTime );
     }
 
+    public RemoteAccessAuth lookupRemoteAuthByHost (String hostName) {
+        String queryStr = "SELECT r FROM RemoteAccessAuth r WHERE r.hostName = :hostName'" ;
+
+        RemoteAccessAuth remoteAuth = null;
+	
+        try {
+            Query query = em.createQuery(queryStr);
+            query.setParameter("hostName", hostName);
+            remoteAuth = (RemoteAccessAuth) query.getSingleResult();
+        } catch (javax.persistence.NoResultException e) {
+            // DO nothing, just return null.
+        }
+        return remoteAuth;
+    }
+	
+
     public Study getStudyByGlobalId(String identifier) {
 
         String protocol = null;

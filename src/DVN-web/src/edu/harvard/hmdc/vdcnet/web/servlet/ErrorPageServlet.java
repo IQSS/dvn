@@ -53,13 +53,7 @@ public class ErrorPageServlet extends HttpServlet  {
         FacesContext facescontext = FacesContext.getCurrentInstance();
         String cause = new String();
         Exception exception = null;
-        //check for session attribute
-        //HttpSession session = req.getSession();
-        //if (session.getAttribute("exception") != null) {
-            //exception = (Exception) session.getAttribute("exception");
-        //} else if (req.getAttribute("exception") != null) {
-            exception = (Exception) req.getAttribute("exception");
-        //} 
+        exception = (Exception) req.getAttribute("exception");
         String virtualPath = null;
         if (req.getAttribute("virtualPath") != null) {
             virtualPath = (String) req.getAttribute("virtualPath"); // set in the VDCFacesServlet wjb
@@ -84,8 +78,7 @@ public class ErrorPageServlet extends HttpServlet  {
             cause += "%20%20If this continues to occur%2C please <a href=\"/dvn/faces/ContactUsPage.jsp\">Contact</a> the Dataverse Network admin with this message.";
             time = "&time=" + URLEncoder.encode(this.getTimeStamp().toString(), "UTF-8");
         }
-        //clean up the session
-        //session.removeAttribute("exception");
+
         if (virtualPath != null) {
             res.sendRedirect(virtualPath + "/ErrorPage.jsp?errorMsg=" + cause + time);
         } else {

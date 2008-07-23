@@ -26,7 +26,6 @@
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-
 package edu.harvard.hmdc.vdcnet.web.site;
 
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
@@ -37,6 +36,7 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import java.util.List;
 import javax.ejb.EJB;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import java.util.Date;
 import javax.faces.component.html.HtmlDataTable;
 import javax.faces.event.ActionEvent;
 
@@ -44,55 +44,56 @@ import javax.faces.event.ActionEvent;
  *
  * @author Ellen Kraffmiller
  */
-public class HarvestSitesPage extends VDCBaseBean implements java.io.Serializable  {
-    @EJB HarvestingDataverseServiceLocal harvestingDataverseService;
-    @EJB HarvesterServiceLocal harvesterService;
-    @EJB VDCServiceLocal vdcService;
-    
-    
+public class HarvestSitesPage extends VDCBaseBean implements java.io.Serializable {
+
+    @EJB
+    HarvestingDataverseServiceLocal harvestingDataverseService;
+    @EJB
+    HarvesterServiceLocal harvesterService;
+    @EJB
+    VDCServiceLocal vdcService;
+
     /** Creates a new instance of HarvestSitesPage */
     public HarvestSitesPage() {
     }
-    
-    public void init(){
+
+    public void init() {
         super.init();
         harvestSiteList = harvestingDataverseService.findAll();
         dataverseSiteList = vdcService.findAllNonHarvesting();
     }
-    
     /**
      * Holds value of property harvestSiteList.
      */
     private List<HarvestingDataverse> harvestSiteList;
-    
+
     /**
      * Getter for property harvestSiteList.
      * @return Value of property harvestSiteList.
      */
     public List<HarvestingDataverse> getHarvestSiteList() {
-        
+
         return harvestSiteList;
-        
-        
+
+
     }
     private List<VDC> dataverseSiteList;
+
     /**
      * Getter for property harvestSiteList.
      * @return Value of property harvestSiteList.
      */
     public List<VDC> getDataverseSiteList() {
-        
+
         return dataverseSiteList;
-        
-        
+
+
     }
-    
-    
     /**
      * Holds value of property harvestDataTable.
      */
     private HtmlDataTable harvestDataTable;
-    
+
     /**
      * Getter for property siteDataTable.
      * @return Value of property siteDataTable.
@@ -100,23 +101,19 @@ public class HarvestSitesPage extends VDCBaseBean implements java.io.Serializabl
     public HtmlDataTable getHarvestDataTable() {
         return this.harvestDataTable;
     }
-    
-    
+
     public void doSchedule(ActionEvent ae) {
-        HarvestingDataverse hd = (HarvestingDataverse)this.harvestDataTable.getRowData();
+        HarvestingDataverse hd = (HarvestingDataverse) this.harvestDataTable.getRowData();
         hd.setScheduled(true);
         harvestingDataverseService.edit(hd);
     }
-    
+
     public void doUnschedule(ActionEvent ae) {
-        HarvestingDataverse hd = (HarvestingDataverse)this.harvestDataTable.getRowData();
+        HarvestingDataverse hd = (HarvestingDataverse) this.harvestDataTable.getRowData();
         hd.setScheduled(false);
         harvestingDataverseService.edit(hd);
     }
-    
-    
-    
-    
+
     /**
      * Setter for property siteDataTable.
      * @param siteDataTable New value of property siteDataTable.
@@ -124,48 +121,63 @@ public class HarvestSitesPage extends VDCBaseBean implements java.io.Serializabl
     public void setHarvestDataTable(HtmlDataTable harvestDataTable) {
         this.harvestDataTable = harvestDataTable;
     }
+
+ 
     
-    public void doRunNow(ActionEvent ae) {
-        
-        HarvestingDataverse hd = (HarvestingDataverse)this.harvestDataTable.getRowData();
+    
+        public void doRunNow(ActionEvent ae) {
+
+        HarvestingDataverse hd = (HarvestingDataverse) this.harvestDataTable.getRowData();
         // TODO: replace this with lastUpdateTime when after we remove call to stateful session bean in harvesterService
         harvesterService.doAsyncHarvest(hd);
-        HarvestingDataverse tempHD=null;
-        try  {
+        Date previousDate = hd.getLastHarvestTime();
+        HarvestingDataverse tempHD = null;
+        Date tempDate = null;
+        try {
             do {
-                Thread.sleep(500);  // sleep for 1/2 second to wait for "harvestingNow" to be updated
+                Thread.sleep(100);  // sleep for 1/10 second to wait for harvestingNow or lastHarvestDate to be updated
                 tempHD = harvestingDataverseService.find(hd.getId());
-            } while (!tempHD.isHarvestingNow());
-        } catch(InterruptedException e) {
+                tempDate = tempHD.getLastHarvestTime();
+            } while (!tempHD.isHarvestingNow() && !isHarvestingDateUpdated(previousDate, tempDate));
+        } catch (InterruptedException e) {
         }
         //       harvesterService.getRecord(hd,"hdl:1902.2/06635",hd.getFormat(),null);
         //       harvesterService.getRecord(hd,"hdl:1902.2/zzzzzzz",hd.getFormat(),null);
-       this.harvestSiteList = harvestingDataverseService.findAll();
+        this.harvestSiteList = harvestingDataverseService.findAll();
+    }
+
+    private boolean isHarvestingDateUpdated(Date previousDate, Date tempDate) {
+        boolean isUpdated=false;
+        if (previousDate==null) {
+            if (tempDate!=null) {
+                isUpdated=true;
+            }
+        } else if (!previousDate.equals(tempDate)){
+            isUpdated= true;
+        }
+        return isUpdated;
     }
     
-  
-     public void doRemoveHarvestDataverse(ActionEvent ae) {
-           HarvestingDataverse hd = (HarvestingDataverse)this.harvestDataTable.getRowData();      
-           harvestingDataverseService.delete(hd.getId());
-           this.harvestSiteList = harvestingDataverseService.findAll();
-        
-    }
-       public void doRemoveDataverse(ActionEvent ae) {
-           VDC vdc = (VDC)this.dataverseDataTable.getRowData();      
-           vdcService.delete(vdc.getId());
-           dataverseSiteList = vdcService.findAllNonHarvesting();
     
-        
+    public void doRemoveHarvestDataverse(ActionEvent ae) {
+        HarvestingDataverse hd = (HarvestingDataverse) this.harvestDataTable.getRowData();
+        harvestingDataverseService.delete(hd.getId());
+        this.harvestSiteList = harvestingDataverseService.findAll();
+
     }
-        
-        
-       
-    
+
+    public void doRemoveDataverse(ActionEvent ae) {
+        VDC vdc = (VDC) this.dataverseDataTable.getRowData();
+        vdcService.delete(vdc.getId());
+        dataverseSiteList = vdcService.findAllNonHarvesting();
+
+
+    }
     /**
      * Holds value of property dataverseDataTable.
      */
     private HtmlDataTable dataverseDataTable;
-    
+
     /**
      * Getter for property dataverseDataTable.
      * @return Value of property dataverseDataTable.
@@ -173,7 +185,7 @@ public class HarvestSitesPage extends VDCBaseBean implements java.io.Serializabl
     public HtmlDataTable getDataverseDataTable() {
         return this.dataverseDataTable;
     }
-    
+
     /**
      * Setter for property dataverseDataTable.
      * @param dataverseDataTable New value of property dataverseDataTable.

@@ -1319,9 +1319,13 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         List <Study> releasedStudies = new ArrayList();
         for (Iterator it = studyIds.iterator(); it.hasNext();) {
             Long elem = (Long) it.next();
-            Study study = studyService.getStudy(elem);
-            if (StudyUI.isStudyVisibleToUser(study,vdc,user)){
-                releasedStudies.add(study);
+            try {                    
+                Study study = studyService.getStudy(elem);
+                if (StudyUI.isStudyVisibleToUser(study,vdc,user)){
+                    releasedStudies.add(study);
+                }                 
+            } catch (IllegalArgumentException ex) {
+                System.out.println("Study (ID=" + elem + ") was found in index, but is not in DB.");
             }
         }
         for (Iterator it = releasedStudies.iterator(); it.hasNext();) {

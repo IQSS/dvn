@@ -436,7 +436,7 @@
                             <ui:panelLayout id="layoutPanel3" panelLayout="flow" styleClass="vdcStudyFilesContent" rendered="#{!empty studyPage.studyUI.study.fileCategories}">
                                 <ui:panelGroup block="true" id="groupPanel7a" styleClass="vdcStudyFilesDownloadAll" rendered="#{studyPage.studyUI.anyFileUnrestricted}">
                                     <h:commandButton onclick="window.location.href='/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?studyId=#{studyPage.studyUI.study.id}#{studyPage.xff}';return false;" value="Download All Files"/>
-                                    <h:outputText id="outputText33" styleClass="vdcStudyFilesDownloadAllMessage" value="Note: you will be prompted to save a single archive file. Study files that have restricted access will not be downloaded."/>
+                                    <h:outputText id="outputText33" styleClass="vdcStudyFilesDownloadAllMessage" value="Note: you will be prompted to save a single archive file. Study files that have restricted access will not be downloaded. Data files will be downloaded in their default format."/>
                                 </ui:panelGroup>
                                 
                                 <h:dataTable cellpadding="0" cellspacing="0" value="#{studyPage.studyUI.categoryUIList}" id="catDataTable" var="catUI" width="100%">
@@ -476,7 +476,7 @@
                                                                     <h:outputText styleClass="vdcStudyFileRowFileDetails" value="#{studyFileUI.userFriendlyFileType}" />
                                                                     <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.fileSize}" rendered="#{!empty studyFileUI.studyFile.fileSystemLocation and !studyFileUI.studyFile.remote}" />
                                                                     <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" - Unknown file size" rendered="#{empty studyFileUI.studyFile.fileSystemLocation or studyFileUI.studyFile.remote}" />
-                                                                    <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.downloadCount}" /><h:outputText styleClass="vdcStudyFileRowFileDetails" value=" downloads" rendered="#{studyFileUI.downloadCount != 1}" /><h:outputText styleClass="vdcStudyFileRowFileDetails" value=" download" rendered="#{studyFileUI.downloadCount == 1}" />
+                                                                    <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.downloadCount}" /><h:outputText styleClass="vdcStudyFileRowFileDetails" value=" downloads/analysis" rendered="#{studyFileUI.downloadCount != 1}" /><h:outputText styleClass="vdcStudyFileRowFileDetails" value=" download" rendered="#{studyFileUI.downloadCount == 1}" />
                                                                 </ui:panelGroup>
                                                             </ui:panelGroup>
 
@@ -565,7 +565,7 @@
                                                         </ui:panelGroup>
 
                                                         <ui:panelGroup block="true" styleClass="vdcStudyDataCitationContainer">
-                                                            <h:outputText styleClass="vdcStudyDataCitation" escape="false" value="&lt;span&gt;View Data Citation&lt;/span&gt;&lt;br /&gt;#{studyPage.studyUI.study.citation}&lt;br /&gt;#{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)] #{studyFileUI.studyFile.dataTable.unf}" />
+                                                            <h:outputText styleClass="vdcStudyDataCitation" escape="false" value="&lt;span&gt;View Data Citation&lt;/span&gt;&lt;br /&gt;#{studyPage.studyUI.study.citation} #{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)]" />
                                                         </ui:panelGroup>
 
                                                     </ui:panelGroup>

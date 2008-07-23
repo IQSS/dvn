@@ -49,20 +49,13 @@ public class VDCActionListener extends ActionListenerImpl implements ActionListe
             super.processAction(action);
         } catch (Exception e) {
             FacesContext facesContext = FacesContext.getCurrentInstance();
-            // leaving request attribute in case it's still used, wjb
             HttpServletRequest request = (HttpServletRequest)facesContext.getExternalContext().getRequest();
             request.setAttribute("exception", e);
-            //HttpSession session = request.getSession();
-            //session.setAttribute("exception", e);
-            //dispatch the view
-            //ViewHandler viewhandler = facesContext.getApplication().getViewHandler();
-            //String viewUrl = viewhandler.getResourceURL(facesContext, "/ExceptionHandler");
             try {
-                 //facesContext.getExternalContext().redirect(viewUrl);
                 FacesContext context = FacesContext.getCurrentInstance();
                 ServletContext servletContext = (ServletContext)context.getExternalContext().getContext();
                 HttpServletResponse response = (HttpServletResponse)context.getExternalContext().getResponse();
-                servletContext.getRequestDispatcher("/ExceptionHandler").forward(request, response);
+                servletContext.getRequestDispatcher("/ExceptionHandler").forward(request, response); //required method to maintain request
             } catch (Exception ioe) {
                 System.out.println("An exception was thrown in the action listener  . . . ");
             } finally {

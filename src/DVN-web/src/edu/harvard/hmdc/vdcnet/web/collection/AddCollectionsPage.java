@@ -1303,6 +1303,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         VDC vdc = getVDCRequestBean().getCurrentVDC();
         VDCUser user = getVDCSessionBean().getUser();
         
+        // first call search to determine studies
         StringBuffer query = new StringBuffer();
         query.append(searchField + "=" + searchValue);
         SearchTerm searchTerm = new SearchTerm();
@@ -1310,12 +1311,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         searchTerm.setOperator("=");
         searchTerm.setValue(searchValue);
         List<Long> studyIds = indexService.search(searchTerm);
-        int i = 0;
-        Option [] studiesOptions = (Option []) addRemoveList1.getItems();
-        Option [] studies = new Option[studyIds.size()+studiesOptions.length];
-        for (int j = 0; j < studiesOptions.length; j++) {
-            studies[i++] = studiesOptions[j];
-        }
+
         List <Study> releasedStudies = new ArrayList();
         for (Iterator it = studyIds.iterator(); it.hasNext();) {
             Long elem = (Long) it.next();
@@ -1328,6 +1324,15 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
                 System.out.println("Study (ID=" + elem + ") was found in index, but is not in DB.");
             }
         }
+        
+        // now populate list
+        int i = 0;
+        Option [] studiesOptions = (Option []) addRemoveList1.getItems();
+        Option [] studies = new Option[releasedStudies.size()+studiesOptions.length];
+        for (int j = 0; j < studiesOptions.length; j++) {
+            studies[i++] = studiesOptions[j];
+        }        
+        
         for (Iterator it = releasedStudies.iterator(); it.hasNext();) {
             Study elem = (Study) it.next();
             studies[i++] = new Option(Long.toString(elem.getId().longValue()),elem.getTitle());            

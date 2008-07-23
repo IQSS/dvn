@@ -135,6 +135,14 @@ public class EditTemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.Ed
             tf.setTemplate(createdTemplate);
             createdTemplate.getTemplateFields().add(tf);
         }
+        // Also copy default file categories
+        createdTemplate.setTemplateFileCategories(new ArrayList<TemplateFileCategory>());
+        for(TemplateFileCategory templateFileCategory: defTemplate.getTemplateFileCategories()) {
+            TemplateFileCategory tfc = new TemplateFileCategory();
+            tfc.setName(templateFileCategory.getName());
+            tfc.setDisplayOrder(templateFileCategory.getDisplayOrder());
+            tfc.setTemplate(templateFileCategory.getTemplate());
+        }
         return createdTemplate;
     }
     public void  newTemplate(Long vdcId, Long studyId) {

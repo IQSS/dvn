@@ -37,6 +37,7 @@ import edu.harvard.hmdc.vdcnet.study.DataVariable;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.study.RemoteAccessAuth; 
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.study.FileCategoryUI;
@@ -1457,7 +1458,9 @@ public class FileDownloadServlet extends HttpServlet{
 	    return null; 
 	}
 
-	// remoteAuthType = lookupRemoteAuthByHost ( remoteHost ); 
+	RemoteAccessAuth remoteAuth = studyService.lookupRemoteAuthByHost ( remoteHost ); 
+	remoteAuthType = remoteAuth.getType(); 
+
 	return remoteAuthType; 
     }
 
@@ -1468,7 +1471,7 @@ public class FileDownloadServlet extends HttpServlet{
 	    return null; 
 	}
 
-	// remoteAuthCreds = lookupRemoteCredsByHost ( remoteHost ); 
+	remoteAuthCreds = studyService.lookupRemoteAuthByHost( remoteHost ).getAuthCred1(); 
 
 	if ( remoteAuthCreds != null ) {
 	    return "Basic " + remoteAuthCreds; 
@@ -1478,12 +1481,20 @@ public class FileDownloadServlet extends HttpServlet{
     }
 
     private String dvnRemoteAuth ( String remoteHost ) {
+	// if successful, this method will return the JSESSION string
+	// for the authenticated session on the remote DVN. 
+
 	String remoteJsessionid = null; 
 	String remoteDvnUser = null; 
-	String remoteDvnPassword = null; 
+	String remoteDvnPw = null; 
 
 	GetMethod authMethod = null; 
 	PostMethod loginMethod = null; 
+
+
+	RemoteAccessAuth remoteAuth = studyService.lookupRemoteAuthByHost ( remoteHost ); 
+	remoteDvnUser = remoteAuth.getAuthCred1(); 
+	remoteDvnPw   = remoteAuth.getAuthCred2(); 
 	    
 	int status = 0; 
 
@@ -1533,8 +1544,8 @@ public class FileDownloadServlet extends HttpServlet{
 		
 		Part[] parts = {
 		    new StringPart( "vanillaLoginForm:vdcId", "" ),
-		    new StringPart( "vanillaLoginForm:username", "" ),
-		    new StringPart( "vanillaLoginForm:password", "" ),
+		    new StringPart( "vanillaLoginForm:username", remoteDvnUser ),
+		    new StringPart( "vanillaLoginForm:password", remoteDvnPw ),
 		    new StringPart( "vanillaLoginForm_hidden", "vanillaLoginForm_hidden" ),
 		    new StringPart( "vanillaLoginForm:button1", "Log in" ),
 		    new StringPart( "javax.faces.ViewState", viewstate )

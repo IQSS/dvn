@@ -141,8 +141,8 @@
                         <ui:panelGroup  block="true" rendered="#{AddFilesPage.emailRequested}"
                                         style="padding-top: 20px; padding-bottom: 10px" >
                             <h:outputText  styleClass="vdcTextStandOut" value="NOTE: "/>     
-                            <h:outputText id="email" escape="false" styleClass="warnMessage" value="SPSS and STATA files will be converted to a &lt;b&gt; tab delimited &lt;/b&gt; format and become &lt;b&gt; subsettable &lt;/b&gt; . You will still be able to download the original file, as well as other formats.
-               Subsettable files might take long time to upload and be processed. We will send you an e-mail notification when the upload process starts and when it completes."/> 
+                            <h:outputText id="email" escape="false" styleClass="warnMessage" value="SPSS and STATA files will be converted to a &lt;b&gt; tab delimited &lt;/b&gt; format and become &lt;b&gt; subsettable&lt;/b&gt;. You will still be able to download the original file, as well as other formats.
+               Subsettable files might take a long time to upload and be processed. We will send you an e-mail notification when the upload process starts and when it completes."/> 
                           <f:verbatim><br /></f:verbatim>
                             <h:outputText value="E-Mail Address:"/>
                             <h:inputText  id="textField3" size="50" value="#{AddFilesPage.ingestEmail}">
@@ -153,7 +153,7 @@
                             <ui:panelGroup>
                                 <f:verbatim><br /></f:verbatim>
                                 <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                <h:outputText id="outputText4" styleClass="vdcHelpText" value="Separate multiple email addresses with a comma (and no spaces). Example: admin@mydvn.edu,user@mydvn.edu"/>
+                                <h:outputText id="outputText4" styleClass="vdcHelpText" value="Separate multiple e-mail addresses with a comma (and no spaces). Example: admin@mydvn.edu, user@mydvn.edu"/>
                                 <f:verbatim><br /></f:verbatim>
                             </ui:panelGroup>
                             

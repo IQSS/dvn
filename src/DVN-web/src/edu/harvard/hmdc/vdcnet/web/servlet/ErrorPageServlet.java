@@ -33,14 +33,13 @@ import edu.harvard.hmdc.vdcnet.util.DateUtils;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.util.Date;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
 import javax.persistence.OptimisticLockException;
+import javax.servlet.http.HttpSession;
 
 public class ErrorPageServlet extends HttpServlet  {
 
@@ -53,8 +52,18 @@ public class ErrorPageServlet extends HttpServlet  {
     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException  {
         FacesContext facescontext = FacesContext.getCurrentInstance();
         String cause = new String();
-        Exception exception = (Exception) req.getAttribute("exception");
-        String virtualPath = (String) req.getAttribute("virtualPath"); // set in the VDCFacesServlet wjb
+        Exception exception = null;
+        //check for session attribute
+        //HttpSession session = req.getSession();
+        //if (session.getAttribute("exception") != null) {
+            //exception = (Exception) session.getAttribute("exception");
+        //} else if (req.getAttribute("exception") != null) {
+            exception = (Exception) req.getAttribute("exception");
+        //} 
+        String virtualPath = null;
+        if (req.getAttribute("virtualPath") != null) {
+            virtualPath = (String) req.getAttribute("virtualPath"); // set in the VDCFacesServlet wjb
+        }
         boolean optimisticLock=false;
         if (exception != null) {
             if (checkForOptimistLockException(exception) ) {
@@ -75,7 +84,9 @@ public class ErrorPageServlet extends HttpServlet  {
             cause += "%20%20If this continues to occur%2C please <a href=\"/dvn/faces/ContactUsPage.jsp\">Contact</a> the Dataverse Network admin with this message.";
             time = "&time=" + URLEncoder.encode(this.getTimeStamp().toString(), "UTF-8");
         }
-        if (virtualPath!=null) {
+        //clean up the session
+        //session.removeAttribute("exception");
+        if (virtualPath != null) {
             res.sendRedirect(virtualPath + "/ErrorPage.jsp?errorMsg=" + cause + time);
         } else {
            res.sendRedirect(req.getContextPath() + "/faces" + "/ErrorPage.jsp?errorMsg=" + cause + time);  

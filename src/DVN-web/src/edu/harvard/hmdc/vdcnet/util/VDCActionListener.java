@@ -30,12 +30,12 @@
 package edu.harvard.hmdc.vdcnet.util;
 
 import com.sun.faces.application.ActionListenerImpl;
-import javax.faces.application.Application;
-import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -44,16 +44,30 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class VDCActionListener extends ActionListenerImpl implements ActionListener, java.io.Serializable {  
     
-    public void processAction(ActionEvent action){
+    public void processAction(ActionEvent action) {
         try {
             super.processAction(action);
         } catch (Exception e) {
             FacesContext facesContext = FacesContext.getCurrentInstance();
-            HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+            // leaving request attribute in case it's still used, wjb
+            HttpServletRequest request = (HttpServletRequest)facesContext.getExternalContext().getRequest();
             request.setAttribute("exception", e);
-            NavigationHandler navigationhandler = facesContext.getApplication().getNavigationHandler();
-            navigationhandler.handleNavigation(facesContext, null, "exceptionNavigation");
-            facesContext.renderResponse();
+            //HttpSession session = request.getSession();
+            //session.setAttribute("exception", e);
+            //dispatch the view
+            //ViewHandler viewhandler = facesContext.getApplication().getViewHandler();
+            //String viewUrl = viewhandler.getResourceURL(facesContext, "/ExceptionHandler");
+            try {
+                 //facesContext.getExternalContext().redirect(viewUrl);
+                FacesContext context = FacesContext.getCurrentInstance();
+                ServletContext servletContext = (ServletContext)context.getExternalContext().getContext();
+                HttpServletResponse response = (HttpServletResponse)context.getExternalContext().getResponse();
+                servletContext.getRequestDispatcher("/ExceptionHandler").forward(request, response);
+            } catch (Exception ioe) {
+                System.out.println("An exception was thrown in the action listener  . . . ");
+            } finally {
+                System.out.println("Completed action listener ...");
+            }
         }
     }
     

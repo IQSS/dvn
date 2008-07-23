@@ -71,7 +71,7 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
     }
     
     public String updateDefaultAction() {
-        Template currentTemplate = (Template)this.templateDataTable.getRowData();
+        Template currentTemplate = (Template)((Object[])this.templateDataTable.getRowData())[0];
         vdcService.updateDefaultTemplate(getVDCRequestBean().getCurrentVDCId(),currentTemplate.getId());
         defaultTemplateId = currentTemplate.getId();
         return "manageTemplates";

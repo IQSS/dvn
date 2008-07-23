@@ -597,11 +597,12 @@ a.vdcStudyCatDownloadLink {
         background-image: url(icon_downloadall.gif);
 	background-repeat: no-repeat;
 	padding-left: 26px;
-        padding-bottom: 2px;
+        padding-top: 2px;
 }
 
 span.vdcStudyCatDownloadLink {
 	font-size: 90% !important;
+        padding-bottom: 1px;
 }
 
 .TogglePaneFancyHeader {
@@ -626,7 +627,7 @@ span.vdcStudyFileRowFileDetails {font-size: 90% !important; color: darkgray;}
 .vdcStudyFileRowFileDownload {float: right; width: 160px; padding: .25em 0;}
 
 a.vdcStudyFileRowFileDownloadLink:link, a.vdcStudyFileRowFileDownloadLink:hover, 
-a.vdcStudyFileRowFileDownloadLink:active, a.vdcStudyFileRowFileDownloadLink:visited {padding-left: 24px; padding-bottom: 4px; background: url(icon_download.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
+a.vdcStudyFileRowFileDownloadLink:active, a.vdcStudyFileRowFileDownloadLink:visited {padding-left: 24px; padding-bottom: 4px; padding-top: 4px; background: url(icon_download.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
 span.vdcStudyFileRowFileDownloadRestricted {margin-left: 3px; font-size: 90% !important; color: darkgray; vertical-align: top;}
 
 .vdcStudyDesc a.vdcTruncatorLinkLess {display: block; text-align: right;}
@@ -642,12 +643,14 @@ span.vdcStudyFileRowFileDownloadRestricted {margin-left: 3px; font-size: 90% !im
 .vdcStudyFileSubsetAnalysis a:hover, .vdcStudyFileSubsetAnalysis a:active {color: #c55b28; text-decoration: underline;}
 
 a.vdcStudyFileSubsetAnalysisLink:link, a.vdcStudyFileSubsetAnalysisLink:hover, 
-a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visited {padding-left: 24px; padding-bottom: 2px; background: url(icon_analyze.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
+a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visited {padding-left: 24px; padding-bottom: 2px; padding-top: 2px; background: url(icon_analyze.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
 
 .vdcStudyDataCitationContainer {float: left; width: 48%; padding: 0 0.25em;}
+.vdcStudyDataCitation {}
 .vdcStudyDataCitation a.vdcTruncatorLinkMore {
         padding-left: 24px;
         padding-bottom: 2px;
+        padding-top: 2px;
         background-image: url(icon_citation.gif);
 	background-repeat: no-repeat;
         margin: 0;
@@ -655,6 +658,7 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
 .vdcStudyDataCitation span {
         padding-left: 24px;
         padding-bottom: 2px;
+        padding-top: 2px;
         background-image: url(icon_citation.gif);
 	background-repeat: no-repeat;
         font-size: 90% !important;

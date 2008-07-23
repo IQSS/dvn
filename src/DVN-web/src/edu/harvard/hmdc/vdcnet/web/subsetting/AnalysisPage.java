@@ -7789,7 +7789,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 varMeta.add( Integer.valueOf(dv.getFileStartPosition().toString()) );
                 varMeta.add( Integer.valueOf(dv.getFileEndPosition().toString()) );
                 varMeta.add( Integer.valueOf(dv.getVariableFormatType().getId().toString()) ); 
-		varMeta.add( Integer.valueOf(dv.getNumberOfDecimalPoints().toString()) ); 
+		if ( dv.getNumberOfDecimalPoints() == null ) {
+		    varMeta.add ( 0 ); 
+		} else if ( dv.getNumberOfDecimalPoints().toString().equals ("") ) {
+		    varMeta.add ( 0 ); 
+		} else {
+		    varMeta.add( Integer.valueOf(dv.getNumberOfDecimalPoints().toString()) ); 
+		}
 
         Long recordSegmentNumber = dv.getRecordSegmentNumber(); 
 

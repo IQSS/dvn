@@ -27,7 +27,7 @@
         <div class="dvn_section">
             <div class="dvn_sectionTitle">
                 
-                    <h:outputText value="Site Restrictions and Users' Privileges"/>
+                    <h:outputText value="Site Restrictions and User Privileges"/>
                 
             </div>            
             <div class="dvn_sectionBox"> 

@@ -948,7 +948,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
             String fileId = sf.getId().toString();
             //String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-	    String fileURL = "http://localhost/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+        String fileURL = "http://localhost/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
 
             dbgLog.fine("fileURL="+fileURL);
             
@@ -1065,11 +1065,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // Using new, native implementation of fixed-field cutting 
             // (instead of executing rcut in a shell)
             
-            Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData (); 
+            Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(); 
             DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
             try {
-                fc.cutColumns(new File(cutOp1), 3, 0, "\t", cutOp2);
+                fc.cutColumns(new File(cutOp1), varMetaSet.size(), 0, "\t", cutOp2);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
 
@@ -2846,7 +2846,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
             String fileId = sf.getId().toString();
             //String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-	    String fileURL = "http://localhost/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+        String fileURL = "http://localhost/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
             //String fileURL = "http://dvn-alpha.hmdc.harvard.edu" + "/dvn/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
             
             dbgLog.fine("fileURL="+fileURL);
@@ -2963,11 +2963,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // Using new, native implementation of fixed-field cutting 
             // (instead of executing rcut in a shell)
             
-            Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData (); 
+            Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(); 
             DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
             try {
-                fc.cutColumns(new File(cutOp1), 3, 0, "\t", cutOp2);
+                fc.cutColumns(new File(cutOp1), varMetaSet.size(), 0, "\t", cutOp2);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
 
@@ -5485,7 +5485,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
             String fileId = sf.getId().toString();
             //String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-	    String fileURL = "http://localhost/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+        String fileURL = "http://localhost/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
             
             dbgLog.fine("fileURL="+fileURL);
             
@@ -5601,11 +5601,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // Using new, native implementation of fixed-field cutting 
             // (instead of executing rcut in a shell)
             
-            Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData (); 
+            Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(); 
             DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
             try {
-                fc.cutColumns(new File(cutOp1), 3, 0, "\t", cutOp2);
+                fc.cutColumns(new File(cutOp1), varMetaSet.size(), 0, "\t", cutOp2);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
 
@@ -7773,11 +7773,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      *
      * @return    
      */
-    public Map<Long, List<List<Integer>>> getSubsettingMetaData (){
+    public Map<Long, List<List<Integer>>> getSubsettingMetaData(){
 
-    Map<Long, List<List<Integer>>> varMetaSet = new LinkedHashMap<Long, List<List<Integer>>>();
+        Map<Long, List<List<Integer>>> varMetaSet = new LinkedHashMap<Long, List<List<Integer>>>();
 
-    List<DataVariable> dvs = getDataVariableForRequest();
+        List<DataVariable> dvs = getDataVariableForRequest();
 
         if (dvs != null) {
             for (int i = 0; i < dvs.size();i++  ){
@@ -7788,23 +7788,25 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 varMeta.add( Integer.valueOf(dv.getFileStartPosition().toString()) );
                 varMeta.add( Integer.valueOf(dv.getFileEndPosition().toString()) );
-                varMeta.add( Integer.valueOf(dv.getVariableFormatType().getId().toString()) ); 
-		if ( dv.getNumberOfDecimalPoints() == null ) {
-		    varMeta.add ( 0 ); 
-		} else if ( dv.getNumberOfDecimalPoints().toString().equals ("") ) {
-		    varMeta.add ( 0 ); 
-		} else {
-		    varMeta.add( Integer.valueOf(dv.getNumberOfDecimalPoints().toString()) ); 
-		}
+                // raw data: 1: numeric 2: character=> 0: numeric; 1 character
+                varMeta.add( Integer.valueOf( (int)(dv.getVariableFormatType().getId()-1)  ) ); 
+                
+                if ( dv.getNumberOfDecimalPoints() == null ) {
+                    varMeta.add ( 0 ); 
+                } else if ( dv.getNumberOfDecimalPoints().toString().equals ("") ) {
+                    varMeta.add ( 0 ); 
+                } else {
+                    varMeta.add( Integer.valueOf(dv.getNumberOfDecimalPoints().toString()) ); 
+                }
 
-        Long recordSegmentNumber = dv.getRecordSegmentNumber(); 
+                Long recordSegmentNumber = dv.getRecordSegmentNumber(); 
 
-        if ( varMetaSet.get(recordSegmentNumber) == null ) {
-            List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
-            varMetaSet.put(recordSegmentNumber, cardVarMetaSet); 
-        }
+                if ( varMetaSet.get(recordSegmentNumber) == null ) {
+                    List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
+                    varMetaSet.put(recordSegmentNumber, cardVarMetaSet); 
+                }
 
-        varMetaSet.get(recordSegmentNumber).add(varMeta); 
+                varMetaSet.get(recordSegmentNumber).add(varMeta); 
             
             }
         }

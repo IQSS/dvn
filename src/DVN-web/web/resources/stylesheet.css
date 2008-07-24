@@ -1403,7 +1403,7 @@ span.termsAgreementMessageTitle {display: block; padding-top: 1em; color: #526f7
 .dvAnalysisResults p.resultsNewWindowLink {margin-top: 0; padding-top: 0; text-align: right;}
 .dvAnalysisResults iframe {width: 100%; height: 440px; border: 1px solid #6e7f90;}
 .dvAnalysisResults #rWrkspButton {float: left; width: 180px; padding-top: .5em;}
-.dvAnalysisResults #rWrkspMessage {float: left; width: auto; padding-top: .5em;}
+.dvAnalysisResults #rWrkspMessage {float: left; width: auto; padding-top: .5em; padding-left: 1em;}
 .dvAnalysisResults #rWrkspMessage #rZeligInfo {font-size: 90% !important;}
 .dvAnalysisResults #rWrkspMessage #rZeligInfo span {font-size: 100% !important; color: silver;}
 .dvAnalysisResults #rWrkspMessage #rZeligInfo a {font-size: 100% !important;}

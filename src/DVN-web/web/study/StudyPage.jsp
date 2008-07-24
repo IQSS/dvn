@@ -414,7 +414,7 @@
                                     <h:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
                                 </ui:panelGroup>
                             </ui:panelLayout>
-                            <ui:panelGroup block="true" id="noFilesPanel4b" styleClass="vdcStudyFilesUploadingMsg" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null) and !empty studyPage.studyUI.study.fileCategories}">
+                            <ui:panelGroup block="true" id="noFilesPanel4b" styleClass="vdcStudyFilesMessage" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null) and !empty studyPage.studyUI.study.fileCategories}">
                                 <h:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
                             </ui:panelGroup>
                             <ui:panelLayout styleClass="vdcStudyFilesMessage" rendered="#{studyPage.studyUI.anyFileRestricted or !empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
@@ -426,10 +426,10 @@
                                 </ui:panelGroup>
                                 <ui:panelGroup rendered="#{studyPage.studyUI.anyFileRestricted}">
                                         <h:outputText value="Access to some files is restricted, and those files are not available for downloading." />
-                                        <h:outputText value=" No information about the restriction is available." rendered="#{studyPage.termsOfUseIsEmpty}" />
+                                        <h:outputText value=" No information about the restriction is available" rendered="#{studyPage.termsOfUseIsEmpty}" />
                                         <h:outputText value=" For more information, check the " rendered="#{!studyPage.termsOfUseIsEmpty}" />
                                         <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#termsofuse" rendered="#{!studyPage.termsOfUseIsEmpty}">
-                                            <h:outputText value="Terms of Use."/>
+                                            <h:outputText value="Terms of Use."></h:outputText>
                                         </h:outputLink>
                                 </ui:panelGroup>
                             </ui:panelLayout>

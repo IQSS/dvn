@@ -873,6 +873,7 @@
                                                                 id="groupPanelSimTypeChoice" 
                                                                 binding="#{AnalysisPage.groupPanelSimTypeChoice}"
                                                                 rendered="false"
+                                                                layout="block"
                                                                 style="border: 1px groove rgb(153, 153, 153); padding: 2px; "
                                                                 >
                                                             <!-- contional simulation: radio selection -->
@@ -901,6 +902,7 @@
                                                             <h:panelGroup 
                                                                     id="groupPanelSimNonDefault"
                                                                     binding="#{AnalysisPage.groupPanelSimNonDefault}"
+                                                                    layout="block"
                                                                     style="border: 1px groove rgb(153, 153, 153); margin: 2px; padding: 2px; "
                                                                     rendered="false"
                                                                 >

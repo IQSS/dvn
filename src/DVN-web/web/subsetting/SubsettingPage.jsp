@@ -850,7 +850,10 @@
                                                                style="border: 1px groove #999999; padding: 2px; ">
                                                     
                                                     
-                                                    <h:outputText id="outputText46" value="Analysis Options"/>
+                                                    <h:outputLabel 
+                                                          id="outputText46" 
+                                                          for="groupPanelSetxOption"
+                                                          value="Analysis Options"/>
                                                     
                                                     <ui:panelGroup id="groupPanelSetxOption"
                                                                    binding="#{AnalysisPage.setxOptionPanel}" 
@@ -865,43 +868,50 @@
                                                                      onClick="submit()"
                                                                      label="Simulations" />
                                                         
-                                                        
-                                                        <ui:panelGroup id="groupPanel20" 
-                                                                       binding="#{AnalysisPage.groupPanel20}" 
-                                                                       block="true" 
-                                                                       rendered="false"
-                                                                       style="border: 1px groove rgb(153, 153, 153); padding: 2px; " >
-                                                            
-                                                            <!-- contional simulation: radio selection -->
-                                                            <ui:label id="label4" 
-                                                                      labelLevel="3" 
-                                                                      text="#{bundleAnalysis['advStat.simulation.optionPanel']}"/>
-                                                            
-                                                            
-                                                            <ui:radioButtonGroup id="radioButtonGroup1"
-                                                                                 binding="#{AnalysisPage.radioButtonGroup1}" 
-                                                                                 items="#{AnalysisPage.radioButtonGroup1DefaultOptions.options}" 
-                                                                                 labelLevel="3" 
-                                                                                 selected="#{AnalysisPage.radioButtonGroup1DefaultOptions.selectedValue}"
-                                                                                 valueChangeListener="#{AnalysisPage.showHideSimCndtnOptPanel}"
-                                                                                 immediate="true"
-                                                                                 onClick="submit()" />
-                                                            
-                                                            <!-- gui when the option of select values is chosen-->
-                                                            <ui:panelGroup id="groupPanel22" 
-                                                                           binding="#{AnalysisPage.groupPanel22}" 
-                                                                           block="true" 
 
-                                                                           style="border: 1px groove rgb(153, 153, 153); margin: 2px; padding: 2px; "  
-                                                                           rendered="false">
-                                                                
+                                                        <h:panelGroup
+                                                                id="groupPanelSimTypeChoice" 
+                                                                binding="#{AnalysisPage.groupPanelSimTypeChoice}"
+                                                                rendered="false"
+                                                                style="border: 1px groove rgb(153, 153, 153); padding: 2px; "
+                                                                >
+                                                            <!-- contional simulation: radio selection -->
+
+                                                            <h:outputLabel 
+                                                                id="outputTextSimchoice" 
+                                                                for="radioSimTypeChoice"
+                                                                value="#{bundleAnalysis['advStat.simulation.optionPanel']}"/>
+                                                            
+
+                                                            <h:selectOneRadio
+                                                                id="radioSimTypeChoice"
+                                                                binding="#{AnalysisPage.radioSimTypeChoice}"
+                                                                valueChangeListener="#{AnalysisPage.showHideSimCndtnOptPanel}"
+                                                                value="#{AnalysisPage.radioSimTypeChoiceSelected}"
+                                                                immediate="true"
+                                                                layout="pageDirection"
+                                                                onclick="this.form.submit();"
+                                                                >
+                                                                  <f:selectItems  value="#{AnalysisPage.simOptionMap}" />
+                                                            </h:selectOneRadio>
+                                                            
+
+                                                            <!-- gui when the option of select values is chosen-->
+
+                                                            <h:panelGroup 
+                                                                    id="groupPanelSimNonDefault"
+                                                                    binding="#{AnalysisPage.groupPanelSimNonDefault}"
+                                                                    style="border: 1px groove rgb(153, 153, 153); margin: 2px; padding: 2px; "
+                                                                    rendered="false"
+                                                                >
                                                                 <!--1st option: Explnatory variable values -->
 
-                                                                <ui:label id="label1" 
-                                                                          binding="#{AnalysisPage.label1}" 
-                                                                          labelLevel="3" 
-                                                                          text="#{bundleAnalysis['advStat.simulation.setValues.values']}"/>
-                                                                
+
+                                                                <h:outputLabel 
+                                                                  id="setxlabel1"
+                                                                  for="gridPanel11"
+                                                                  value="#{bundleAnalysis['advStat.simulation.setValues.values']}"
+                                                                  />
                                                                 <h:panelGrid id="gridPanel11" 
                                                                              binding="#{AnalysisPage.gridPanel11}" columns="3">
                                                                     
@@ -917,10 +927,12 @@
                                                                 
                                                                 <!-- 2nd option: Value for the first difference(optional)-->
 
-                                                                <ui:label id="label2"
-                                                                          binding="#{AnalysisPage.label2}" labelLevel="3" 
-                                                                          text="#{bundleAnalysis['advStat.simulation.setValues.diff']}"/>
-                                                                
+
+                                                                <h:outputText 
+                                                                    id="setxlabel2"
+                                                                    for="gridPanel10"
+                                                                    value="#{bundleAnalysis['advStat.simulation.setValues.diff']}"
+                                                                    />
                                                                 <h:panelGrid id="gridPanel10"
                                                                              binding="#{AnalysisPage.gridPanel10}" columns="3" >
                                                                     
@@ -934,9 +946,10 @@
                                                                     
                                                                     <ui:textField id="textField8" binding="#{AnalysisPage.textField8}" columns="10"/>
                                                                 </h:panelGrid>
-                                                                
-                                                            </ui:panelGroup><!-- groupPanel22 -->
-                                                        </ui:panelGroup><!--groupPanel20 -->
+                                                            </h:panelGroup><!-- groupPanelSimNonDefault -->
+                                                            <!-- /ui:panelGroup --><!-- groupPanel22 -->
+                                                        </h:panelGroup><!-- groupPaneSimChoice -->
+                                                        <!-- /ui:panelGroup --><!--groupPanel20 -->
 
                                                         <!-- checkbox: Sensitivity analysis -->
                                                         <!--groupPanel23 -->

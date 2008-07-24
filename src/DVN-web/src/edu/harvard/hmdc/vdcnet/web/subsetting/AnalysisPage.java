@@ -141,7 +141,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             //  new Option("1","Set a value for 1 or 2 variables") 
             //  new Option("2","First differences between baseline and alterantive")
             
-            
+        
+        
+        simOptionMap.put("Use average values (setx default)","0");
+        simOptionMap.put("Select values", "1");
+        //radioSimTypeChoiceSelected = "0";
+        radioSimTypeChoice.setValue("0");
+        
         // Sets the default value of the above setx option
         radioButtonGroup1DefaultOptions.setSelectedValue("0");
 
@@ -4544,6 +4550,19 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.groupPanel20 = pg;
     }
 
+    private HtmlPanelGroup groupPanelSimTypeChoice = new HtmlPanelGroup();
+
+    public HtmlPanelGroup getGroupPanelSimTypeChoice() {
+        return groupPanelSimTypeChoice;
+    }
+
+    public void setGroupPanelSimTypeChoice(HtmlPanelGroup groupPanelSimTypeChoice) {
+        this.groupPanelSimTypeChoice = groupPanelSimTypeChoice;
+    }
+
+
+
+
     // simulation option: checkbox
 
     private Checkbox checkbox3 = new Checkbox();
@@ -4560,9 +4579,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
         Boolean currentState = (Boolean) vce.getNewValue();
         if ((currentState.toString()).equals("true")) {
-            groupPanel20.setRendered(true);
+            //groupPanel20.setRendered(true);
+            groupPanelSimTypeChoice.setRendered(true);
         } else if ((currentState.toString()).equals("false")) {
-            groupPanel20.setRendered(false);
+            //groupPanel20.setRendered(false);
+            groupPanelSimTypeChoice.setRendered(false);
         }
 
         FacesContext.getCurrentInstance().renderResponse();
@@ -4603,8 +4624,36 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.lastSimCndtnSelected = lastSimCndtnSelected;
     }
 
+    private HtmlSelectOneRadio radioSimTypeChoice = new HtmlSelectOneRadio();
+
+    public HtmlSelectOneRadio getRadioSimTypeChoice() {
+        return radioSimTypeChoice;
+    }
+
+    public void setRadioSimTypeChoice(HtmlSelectOneRadio radioSimTypeChoice) {
+        this.radioSimTypeChoice = radioSimTypeChoice;
+    }
 
 
+    public Map<String, String> simOptionMap = new LinkedHashMap<String, String>();
+
+    public Map<String, String> getSimOptionMap() {
+        return simOptionMap;
+    }
+
+    public void setSimOptionMap(Map<String, String> simOptionMap) {
+        this.simOptionMap = simOptionMap;
+    }
+
+    public String radioSimTypeChoiceSelected;
+
+    public String getRadioSimTypeChoiceSelected() {
+        return radioSimTypeChoiceSelected;
+    }
+
+    public void setRadioSimTypeChoiceSelected(String radioSimTypeChoiceSelected) {
+        this.radioSimTypeChoiceSelected = radioSimTypeChoiceSelected;
+    }
 
     // @valueChangeListener
     public void showHideSimCndtnOptPanel(ValueChangeEvent vce) {
@@ -4623,8 +4672,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     .get(getCurrentModelName());
             dbgLog.fine("spec within setx:\n" + selectedModelSpec);
             if ((currentState.toString()).equals("1")) {
-                groupPanel22.setRendered(true);
-
+                //groupPanel22.setRendered(true);
+                groupPanelSimNonDefault.setRendered(true);
                 // set up the @items for dropDown2/dropDown3
 
                 if (selectedModelSpec.getNoRboxes() == 2) {
@@ -4644,12 +4693,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 cntxt.getExternalContext().getSessionMap().put(
                 "lastSimCndtnSelected", currentState.toString());
             } else if ((currentState.toString()).equals("0")) {
-                groupPanel22.setRendered(false);
+                //groupPanel22.setRendered(false);
+                groupPanelSimNonDefault.setRendered(false);
                 cntxt.getExternalContext().getSessionMap().put(
                 "lastSimCndtnSelected", currentState.toString());
             }
         } else {
-            groupPanel22.setRendered(false);
+            //groupPanel22.setRendered(false);
+            groupPanelSimNonDefault.setRendered(false);
         }
 
         cntxt.renderResponse();
@@ -4666,6 +4717,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setGroupPanel22(PanelGroup pg) {
         this.groupPanel22 = pg;
     }
+
+
+
+
+    private HtmlPanelGroup groupPanelSimNonDefault = new HtmlPanelGroup();
+
+    public HtmlPanelGroup getGroupPanelSimNonDefault() {
+        return groupPanelSimNonDefault;
+    }
+
+    public void setGroupPanelSimNonDefault(HtmlPanelGroup groupPanelSimNonDefault) {
+        this.groupPanelSimNonDefault = groupPanelSimNonDefault;
+    }
+
+
+
 
     // simulation : value for 1st diff: casing pane
 
@@ -6430,8 +6497,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // simulation-type radio button group
                 radioButtonGroup1.setSelected("0");
                 groupPanel20.setRendered(false);
-                groupPanel22.setRendered(false);
-
+                groupPanelSimTypeChoice.setRendered(false);
+                //groupPanel22.setRendered(false);
+                groupPanelSimNonDefault.setRendered(false);
                 // deactivate buttons
                 deactivateButtons();
                 // clear the recodeTable area

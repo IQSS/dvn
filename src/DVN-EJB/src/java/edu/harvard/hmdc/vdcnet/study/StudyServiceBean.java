@@ -1085,7 +1085,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     public RemoteAccessAuth lookupRemoteAuthByHost (String hostName) {
-        String queryStr = "SELECT r FROM RemoteAccessAuth r WHERE r.hostName = :hostName'" ;
+        String queryStr = "SELECT r FROM RemoteAccessAuth r WHERE r.hostName = :hostName" ;
 
         RemoteAccessAuth remoteAuth = null;
 	

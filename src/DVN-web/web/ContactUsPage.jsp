@@ -15,7 +15,7 @@
 <body>
 <gui:composition template="/template.xhtml">
 
-<gui:param name="pageTitle" value="DVN - Contact Us" />
+<gui:param name="pageTitle" value="DVN - Report Issue" />
 
   <gui:define name="body">
 

@@ -15,7 +15,7 @@
 <body>
 <gui:composition template="/template.xhtml">
 
-<gui:param name="pageTitle" value="DVN - Contact Us Email Confirmation" />
+<gui:param name="pageTitle" value="DVN - Report Issue Confirmation" />
 
   <gui:define name="body">
    

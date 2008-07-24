@@ -254,7 +254,7 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
         
         /* decide if you're done */
         if (count < nativeItems.length) {
-            String resumptionId = getResumptionId();
+            String resumptionId = getResumptionId(set);
             /*****************************************************************
              * Store an object appropriate for your database API in the
              * resumptionResults Map in place of nativeItems. This object
@@ -353,7 +353,7 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
         
         /* decide if you're done. */
         if (count+oldCount < nativeItems.length) {
-            resumptionId = getResumptionId();
+            resumptionId = getResumptionId(set);
             
             /*****************************************************************
              * Store an object appropriate for your database API in the
@@ -582,7 +582,7 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
 
         /* decide if you're done */
         if (count < nativeItem.length) {
-            String resumptionId = getResumptionId();
+            String resumptionId = getResumptionId(set);
             
             /*****************************************************************
              * Store an object appropriate for your database API in the
@@ -686,7 +686,7 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
         
         /* decide if you're done */
         if (count+oldCount < nativeItem.length) {
-            resumptionId = getResumptionId();
+            resumptionId = getResumptionId(set);
             
             /*****************************************************************
              * Store an object appropriate for your database API in the
@@ -934,7 +934,13 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
         Iterator keySet = resumptionResults.keySet().iterator();
         while (keySet.hasNext()) {
             String key = (String)keySet.next();
-            Date then = new Date(Long.parseLong(key) + getMillisecondsToLive());
+            String dateValue = key;
+            
+            if (key.indexOf("_") != -1) {
+                dateValue = key.substring( 0, key.indexOf("_") );
+            }
+            
+            Date then = new Date(Long.parseLong(dateValue) + getMillisecondsToLive());
             if (now.after(then)) {
                 old.add(key);
             }
@@ -945,7 +951,7 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
             resumptionResults.remove(key);
         }
     }
-    
+
     /**
      * Use the current date as the basis for the resumptiontoken
      *
@@ -955,7 +961,12 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
         Date now = new Date();
         return Long.toString(now.getTime());
     }
-
+    
+    private synchronized static String getResumptionId(String set) {
+        Date now = new Date();
+        return Long.toString(now.getTime()) + "_" + set;    
+    }
+    
     public static void copy(InputStream in, OutputStream out)
     throws IOException {
         byte[] buffer = new byte[8192];

@@ -73,7 +73,8 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
         managedCollection.setQuery(vDCCollection.getQuery());
         managedCollection.setLongDesc(vDCCollection.getLongDesc());
         managedCollection.setShortDesc(vDCCollection.getShortDesc());
-        managedCollection.setVisible(vDCCollection.isVisible());        
+        managedCollection.setVisible(vDCCollection.isVisible());
+        managedCollection.setDisplayOrder(vDCCollection.getDisplayOrder());        
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

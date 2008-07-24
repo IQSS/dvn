@@ -330,7 +330,7 @@ public class ManageCollectionsPage extends VDCBaseBean implements java.io.Serial
             StatusMessage newMsg = new StatusMessage();
             String msgText;
             msgText = "The linked collection(s) " + selectedLinks.toString()+ "cannot be changed.";
-            newMsg.setStyleClass("warnMessage");
+            newMsg.setStyleClass("errorMessage");
             newMsg.setMessageText(msgText);
             Map m = getRequestMap();
             m.put("statusMessage",newMsg);            
@@ -391,7 +391,7 @@ public class ManageCollectionsPage extends VDCBaseBean implements java.io.Serial
             StatusMessage newMsg = new StatusMessage();
             String msgText;
             msgText = "The root collection cannot be removed.";
-            newMsg.setStyleClass("warnMessage");
+            newMsg.setStyleClass("errorMessage");
             newMsg.setMessageText(msgText);
             Map m = getRequestMap();
             m.put("statusMessage",newMsg);

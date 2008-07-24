@@ -58,10 +58,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.LowerCaseTokenizer;
 import org.apache.lucene.analysis.PorterStemFilter;
 import org.apache.lucene.analysis.Token;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
@@ -148,16 +146,18 @@ public class Indexer implements java.io.Serializable  {
         return indexer;
     }
     
-    public void deleteDocument(long studyId){
+    public void deleteDocument(long studyId) {
         try {
             IndexReader reader = IndexReader.open(dir);
-            reader.deleteDocuments(new Term("id",Long.toString(studyId)));
+            reader.deleteDocuments(new Term("id", Long.toString(studyId)));
+            // this won't be necessary with new Document format
+//            reader.deleteDocuments(new Term("varStudyId",Long.toString(studyId)));
             reader.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
-    
+
     protected void addDocument(Study study) throws IOException{
         Document doc = new Document();
         logger.info("Start indexing study "+study.getStudyId());
@@ -315,12 +315,6 @@ public class Indexer implements java.io.Serializable  {
         addText(1.0f,  doc,"authority",study.getAuthority());
         addText(1.0f,  doc,"globalId",study.getGlobalId());
         List <FileCategory> fileCategories = study.getFileCategories();
-        writer = new IndexWriter(dir, true, getAnalyzer(),isIndexEmpty());
-        
-        writer.setUseCompoundFile(true);
-        writer.addDocument(doc);
-        writer.close();
-        writerVar = new IndexWriter(dir, getAnalyzer());
         for (int i = 0; i < fileCategories.size(); i++) {
             FileCategory fileCategory = fileCategories.get(i);
             Collection<StudyFile> studyFiles = fileCategory.getStudyFiles();
@@ -330,21 +324,22 @@ public class Indexer implements java.io.Serializable  {
                 if (dataTable != null) {
                     List<DataVariable> dataVariables = dataTable.getDataVariables();
                     for (int j = 0; j < dataVariables.size(); j++) {
-                        Document docVariables = new Document();
-                        addText(1.0f,  docVariables, "varStudyId", study.getId().toString());
-                        addText(1.0f,  docVariables, "varStudyFileId", elem.getId().toString());
+                        addText(1.0f,  doc, "varStudyId", study.getId().toString());
+                        addText(1.0f,  doc, "varStudyFileId", elem.getId().toString());
                         DataVariable dataVariable = dataVariables.get(j);
-                        addText(1.0f,  docVariables, "id", dataVariable.getId().toString());
-                        addText(1.0f,  docVariables, "varName", dataVariable.getName());
-                        addText(1.0f,  docVariables, "varLabel", dataVariable.getLabel());
-                        addText(1.0f,  docVariables, "varId", dataVariable.getId().toString());
-                        writerVar.addDocument(docVariables);
-                    }
+                        addText(1.0f,  doc, "varId", dataVariable.getId().toString());
+                        addText(1.0f,  doc, "varName", dataVariable.getName());
+                        addText(1.0f,  doc, "varLabel", dataVariable.getLabel());
+                     }
                 }
             }
         }
-        writerVar.close();
-        logger.info("End indexing study "+study.getStudyId());
+        
+        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
+        writer.setUseCompoundFile(true);
+        writer.addDocument(doc);
+        writer.close();
+        logger.info("End indexing study " + study.getStudyId());
     }
     
     
@@ -580,14 +575,16 @@ public class Indexer implements java.io.Serializable  {
     }
     
     public List searchVariables(List <Long> studyIds,SearchTerm searchTerm) throws IOException {
-        List <BooleanQuery> searchParts = new ArrayList();
         BooleanQuery indexQuery = null;        
+        BooleanQuery searchQuery = new BooleanQuery();
         if (searchTerm.getFieldName().equalsIgnoreCase("variable")){
-//            indexQuery = buildVariableQuery(searchTerm.getValue().toLowerCase().trim());
             indexQuery = buildVariableQuery(searchTerm);
-            searchParts.add(indexQuery);
+            if (searchTerm.getOperator().equals("=")) {
+                searchQuery.add(indexQuery, BooleanClause.Occur.MUST);
+            } else {
+                searchQuery.add(indexQuery, BooleanClause.Occur.MUST_NOT);
+            }
         }
-        BooleanQuery searchQuery = andQueryClause(searchParts);
         List <Document> variableResults = getHits(searchQuery);
         List <Long> variableIdResults = getHitIds(variableResults);
         List<Long> finalResults = studyIds != null ? intersectionDocResults(variableResults, studyIds) : variableIdResults;
@@ -595,26 +592,28 @@ public class Indexer implements java.io.Serializable  {
     }
     
     public List searchVariables(List<Long> studyIds, List<SearchTerm> searchTerms, boolean varIdReturnValues) throws IOException {
-        List<BooleanQuery> searchParts = new ArrayList();
+        BooleanQuery searchQuery = new BooleanQuery();
         for (Iterator it = searchTerms.iterator(); it.hasNext();) {
             SearchTerm elem = (SearchTerm) it.next();
             BooleanQuery indexQuery = null;
             if (elem.getFieldName().equalsIgnoreCase("variable")) {
-//                indexQuery = buildVariableQuery(elem.getValue().toLowerCase().trim());
-            indexQuery = buildVariableQuery(elem);
-                searchParts.add(indexQuery);
+                indexQuery = buildVariableQuery(elem);
+                if (elem.getOperator().equals("=")) {
+                    searchQuery.add(indexQuery, BooleanClause.Occur.MUST);
+                } else {
+                    searchQuery.add(indexQuery, BooleanClause.Occur.MUST_NOT);
+                }
             }
         }
-        BooleanQuery searchQuery = andQueryClause(searchParts);
         List<Long> finalResults = null;
         if (varIdReturnValues) {
-            List <Document> variableResults = getHits(searchQuery);
+            List<Document> variableResults = getHits(searchQuery);
             List<Long> variableIdResults = getHitIds(variableResults);
             finalResults = studyIds != null ? intersectionDocResults(variableResults, studyIds) : variableIdResults;
         } else {
-            List <Long> studyIdResults = getVarHitIds(searchQuery); // gets the study ids
+            List<Long> studyIdResults = getVarHitIds(searchQuery); // gets the study ids
             finalResults = studyIds != null ? intersectionResults(studyIdResults, studyIds) : studyIdResults;
-        } 
+        }
         return finalResults;
     }
     
@@ -673,7 +672,6 @@ public class Indexer implements java.io.Serializable  {
                 matchIdsSet.add(studyIdLong);
             }
             logger.info("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            searcher.close();
         }
         matchIds.addAll(matchIdsSet);
         return matchIds;

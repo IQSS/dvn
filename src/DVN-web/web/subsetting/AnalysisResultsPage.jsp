@@ -15,7 +15,7 @@
 <body>
 <gui:composition template="/template.xhtml">
 
-
+<gui:param name="pageTitle" value="DVN - Analysis Results" />
 
   <gui:define name="body">
 

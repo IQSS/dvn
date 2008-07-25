@@ -1353,11 +1353,12 @@ table#loginBlock select {margin: 0;}
 table#loginBlock img {margin: 1em 0 0 0;}
 
 /**** Network Options Page  + My Options Page ****/
-.dvnOptionsTable {margin-bottom: 2em; width: 85%;}
+.dvnOptionsTable {width: 85%;}
 .dvnOptionsTable td {padding: .5em 2em; border-bottom: 1px solid lightgray;}
 td.dvnOptionsTableHeader {padding: .5em 1em; background: gainsboro; color: grey; text-transform: uppercase;}
 .dvnOptionsTableOption {width: 240px;}
 span.dvnOptionsTableNote {font-size: 90% !important;}
+div.dvnOptionsTableLicense {padding-top: .5em;}
 
 /**** Create a Dataverse ****/
 .requestHmpgSide {position: absolute; top: 0; right: 0; margin-bottom: 18px;}

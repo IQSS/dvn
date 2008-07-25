@@ -38,7 +38,9 @@ Micah Altman
 }
 
 
-\seealso{\code{\link[pkg:R2HTML]{HTML}}, \link[pkg:Zelig]{sim}}}}
+\seealso{
+\code{\link[pkg:R2HTML]{HTML}}, \code{\link[pkg:Zelig]{sim}}
+}
 
 \keyword{iplot}
 \keyword{IO}

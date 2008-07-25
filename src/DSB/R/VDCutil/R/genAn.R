@@ -66,7 +66,7 @@ VDCgenAnalysis<-function(
          # run setx2 if requested
          setx2.out=NULL
          if (!is.null(setx2Args)) {
-            setx2.out<-do.call("setx",c(list(zel.out),setxArgs ))
+            setx2.out<-do.call("setx",c(list(zel.out),setx2Args ))
         simArgs$x1=setx2.out
          }
       }
@@ -173,12 +173,7 @@ VDCgenAnalysis<-function(
       # binary output
       if(wantBinOutput) {
           save(list=savelist,file=binFilePath)
-      HTML( paste(
-        "<br/><center><small><a href='",
-         basename(binFilePath),
-        "'>[Replication data]</a></small></center><br/>",
-        sep="")
-     )
+        #HTML( paste("<br/><center><small><a href='",basename(binFilePath), "'>[Replication data]</a></small></center><br/>",sep=""))
         
       } else {
           binFilePath=NULL;

@@ -27,7 +27,7 @@ Micah Altman
 }
 
 
-\seealso{\link[pkg:Zelig]{zelig}}}}
+\seealso{\link[pkg:Zelig]{zelig}}
 
 \keyword{IO}
 \keyword{print}

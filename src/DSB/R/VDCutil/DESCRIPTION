@@ -1,8 +1,8 @@
 Package: VDCutil
 Title:   utilities supporting the VDC system
-Version: 1.15
+Version: 1.16
 Author: Micah Altman, Akio Sone
-Date: 2008-05-01
+Date: 2008-07-25
 Description: The VDC system is an open source digital library system for 
 	quantitative data. This is a package to support on-line analysis using 
 	VDC and Zelig, accuracy, and R2HTML

@@ -19,7 +19,9 @@ zeligModelDependencies<-function(inZeligOnly=T,schemaVersion="1.1",uninstalledOn
     deps=NULL
     for (i in ml) {
         zd = zeligModelDependency (i,repos)
-            if (is.null(zd)) next
+            if (is.null(zd)){
+                next
+            }
         deps=rbind(deps,zd)
     }   
     deps=unique(deps)
@@ -37,11 +39,12 @@ printZeligSchemaInstance<-function(filename=NULL, serverName=NULL,vdcAbsDirPrefi
     if (is.null(serverName)) {
         serverName<-getHostname()
     }
-    if (is.null(vdcAbsDirPrefix)){
-        locationURL<-paste('http://', serverName, '/VDC/Schema/analysis/ZeligInterfaceDefinition.xsd',sep="");
-    } else {
-        locationURL<-paste('file://', vdcAbsDirPrefix, '/VDC/Schema/analysis/ZeligInterfaceDefinition.xsd',sep="");
-    }
+    locationURL<-'http://thedata.org/files/thedata/schema/ZeligInterfaceDefinition_1_1.xsd'
+    #if (is.null(vdcAbsDirPrefix)){
+    #    locationURL<-paste('http://', serverName, '/VDC/Schema/analysis/ZeligInterfaceDefinition.xsd',sep="");
+    #} else {
+    #    locationURL<-paste('file://', vdcAbsDirPrefix, '/VDC/Schema/analysis/ZeligInterfaceDefinition.xsd',sep="");
+    #}
     schemaLocation<-paste(schemaURL, ' ', locationURL, sep='');
     con<-"";
     if ((!is.null(filename)) && filename !="" ){
@@ -59,8 +62,7 @@ printZeligSchemaInstance<-function(filename=NULL, serverName=NULL,vdcAbsDirPrefi
     cat(file=con,"\n</zelig>\n",sep="");
 }
 
-zeligInstalledModelsVDC<-function (inZeligOnly = T, schemaVersion = "1.1") 
-{
+zeligInstalledModelsVDC<-function (inZeligOnly = T, schemaVersion = "1.1"){
     chkpkgs <- function(name) {
         zd = zeligDescribeModelXML(name, schemaVersion = schemaVersion)
         if (is.null(zd)) {
@@ -82,8 +84,7 @@ zeligInstalledModelsVDC<-function (inZeligOnly = T, schemaVersion = "1.1")
 }
 
 # taken from R.utils 
-getHostname<-function () 
-{
+getHostname<-function (){
     host <- Sys.getenv(c("HOST", "HOSTNAME", "COMPUTERNAME"))
     host <- host[host != ""]
     if (length(host) == 0) {
@@ -93,8 +94,9 @@ getHostname<-function ()
         }, error = function(ex) {
         })
     }
-    if (length(host) == 0) 
+    if (length(host) == 0){
         host <- NA
+    }
     host[1]
 }
 
@@ -145,12 +147,13 @@ plot.zelig.strata<-function(x,ask=dev.interactive(),...) {
 }
 
 HTML.summary.zelig.strata <- function(x, subset = NULL, ...){
-  if (is.null(subset))        
+  if (is.null(subset)){
     m <- length(x)
-  else if (any(subset > max(m)))
+  } else if (any(subset > max(m))) {
     stop("the subset selected lies outside the range of available \n        sets of regression output.")
-  else
+  } else {
     m <- subset 
+  }
   for (i in 1:m) {
     HTML(paste("\nResults for", names(x)[i], "\n"),...)
     HTML(x[[i]],...)
@@ -171,11 +174,11 @@ HTML.summary.MCMCZelig <- function(x, digits=max(3, getOption("digits") -
   cat("\n",...)
 }   
 
-HTML.summary.zelig <- function(x, digits=getOption("digits"),
-                              print.x=FALSE, ...){
+HTML.summary.zelig <- function(x, digits=getOption("digits"), print.x=FALSE, ...){
   HTML(paste("\n  Model:", x$model, "\n"),...)
-  if (!is.null(x$num))
+  if (!is.null(x$num)){
       HTML(paste("  Number of simulations:", x$num, "\n"),...)
+  }
   if (!is.null(x$x)) {
     if (print.x || nrow(x$x) == 1 || is.null(dim(x$x))) {
       if (any(class(x$x) == "cond"))
@@ -189,10 +192,11 @@ HTML.summary.zelig <- function(x, digits=getOption("digits"),
       }
     }
     else {
-      if (any(class(x$x) == "cond"))
+      if (any(class(x$x) == "cond")){
         HTML(paste("\nMean Values of Observed Data (n = ", nrow(x$x), ") \n", sep = ""),...)
-      else
+      } else {
         HTML(paste("\nMean Values of X (n = ", nrow(x$x), ") \n", sep = ""),...)
+      }
       HTML(apply(x$x, 2, mean), digits=digits, ...)
       if (!is.null(x$x1)) {
         HTML(paste("\nMean Values of X1 (n = ", nrow(x$x1), ") \n", sep = ""),...)
@@ -208,16 +212,18 @@ HTML.summary.zelig <- function(x, digits=getOption("digits"),
     if (length(dim(tmp)) == 3) {
         for (j in 1:dim(tmp)[3]){
           HTML(paste("\n  Observation", rownames(x$x)[j], "\n"),...)
-          if (is.null(rownames(tmp[,,j])))
+          if (is.null(rownames(tmp[,,j]))){
             rownames(tmp[,,j]) <- 1:nrow(tmp[,,j])
-          if (!is.null(names(tmp[,,j])))
+          }
+          if (!is.null(names(tmp[,,j]))){
             names(tmp[,,j]) <- NULL
+          }
           HTML(tmp[,,j], digits=digits, ...)
         }
-      }
-    else {
-      if (is.matrix(tmp) & is.null(rownames(tmp)))
+    } else {
+      if (is.matrix(tmp) & is.null(rownames(tmp))){
         rownames(tmp) <- 1:nrow(tmp)
+      }
       HTML(tmp, digits=digits, ...)
     }
   }

@@ -34,7 +34,9 @@ Micah Altman
 }
 
 
-\seealso{\code{\link[pkg:R2HTML]{HTML}}, \link{VDCxtabs}}}}
+\seealso{
+\code{\link[pkg:R2HTML]{HTML}}, \code{\link{VDCxtabs}}
+}
 
 \keyword{iplot}
 \keyword{IO}

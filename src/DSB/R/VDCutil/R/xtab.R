@@ -28,8 +28,7 @@ VDCcrossTabulation<-function(data=parent.env(),classificationVars=NULL, freqVars
  }
 
 
-VDCxtabs<-function (formula, data = parent.env(), ...) 
-{
+VDCxtabs<-function (formula, data = parent.env(), ...){
     res = list()
     
     res[[1]] = do.call("xtabs", list(formula = formula, data = as.name("data"), 

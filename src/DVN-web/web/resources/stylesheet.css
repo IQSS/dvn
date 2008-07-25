@@ -638,7 +638,7 @@ span.vdcStudyFileRowFileDownloadRestricted {margin-left: 3px; font-size: 90% !im
 .vdcStudyFileSubsetTable {float: left; width: auto; padding: 0 .25em;}
 .vdcStudyFileSubsetTable table {margin: .5em 0; border-collapse: collapse;}
 .vdcStudyFileSubsetTable td {border: 1px solid #c55b28; padding: 0 .5em; font-size: 90% !important;}
-.vdcStudyFileSubsetTable td span {text-transform: uppercase; font-size: 100% !important;}
+.vdcStudyFileSubsetTable td span {text-transform: uppercase; font-size: 90% !important;}
 .vdcStudyFileSubsetAnalysis {float: right; width: 160px;}
 .vdcStudyFileSubsetAnalysis a:hover, .vdcStudyFileSubsetAnalysis a:active {color: #c55b28; text-decoration: underline;}
 

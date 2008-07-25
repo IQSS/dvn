@@ -128,14 +128,18 @@
                         
                         <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.exportPanelRendered}" > 
                             <h:messages id="exportMessage"  styleClass="errorMessage"/> 
-                            <h:outputText value="To run export now (all updated studies in all formats), click on the button below:"/>
+                            <h:outputText value="To run export now (all updated studies in all formats will be exported and update harvest studies will be run), click on the button below:"/>
                             <ui:panelGroup>
                                 <h:commandButton  value="Run Export" action="#{UtilitiesPage.exportUpdated_action}"/>
                             </ui:panelGroup> 
                             <hr/>
+                            <h:outputText value="To update harvest studies, click on the button below:"/>
+                            <ui:panelGroup>
+                                <h:commandButton  value="Update Harvest Studies" action="#{UtilitiesPage.updateHarvestStudies_action}"/>
+                            </ui:panelGroup>                             
                             <hr/>
                             <hr/>
-                            <h:outputText value="OR, for a CUSTOM export, select export format(s):"/>
+                            <h:outputText value="OR, for a CUSTOM export (note: harvest studies will NOT be updated), select export format, then either:"/>
                             <h:selectOneMenu id="dropdown1" value="#{UtilitiesPage.exportFormat}">
                                 <f:selectItem itemLabel="Export all formats" itemValue="" />
                                 <f:selectItem itemLabel="- Export DDI only" itemValue="ddi" />
@@ -143,18 +147,18 @@
                                 <f:selectItem itemLabel="- Export Marc only" itemValue="marc" /> 
                             </h:selectOneMenu>
                             <hr/>
-                            <h:outputText value="To export all studies (regardless of update time), click the button below:"/>
+                            <h:outputText value="a) export all studies (regardless of update time), click the button below:"/>
                             <ui:panelGroup>
                                 <h:commandButton  value="Export All" action="#{UtilitiesPage.exportAll_action}"/>
                             </ui:panelGroup>
                             <hr/>
-                            <h:outputText value="To export studies owned by a specific dataverse (regardless of update time), input the dataverse id and click on the button below:"/>
+                            <h:outputText value="b) export studies owned by a specific dataverse (regardless of update time), input the dataverse id and click on the button below:"/>
                             <ui:panelGroup>
                                 <h:inputText value="#{UtilitiesPage.exportDVId}" size="6" />
                                 <h:commandButton  value="Export Dataverse" action="#{UtilitiesPage.exportDV_action}"/>
                             </ui:panelGroup>
                             <hr/>
-                            <h:outputText value="To export arbitrary studies (regardless of update time), input the study ids and click on the button below:"/>
+                            <h:outputText value="c) export arbitrary studies (regardless of update time), input the study ids and click on the button below:"/>
                             <ui:panelGroup>
                                 <h:inputTextarea value="#{UtilitiesPage.exportStudyIds}" rows="8" cols="80"/>
                                 <h:commandButton  value="Export Studies" action="#{UtilitiesPage.exportStudies_action}"/>

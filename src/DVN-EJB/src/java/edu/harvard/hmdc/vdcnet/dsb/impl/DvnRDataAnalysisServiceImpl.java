@@ -1354,24 +1354,52 @@ if (tmpv.length > 0){
             dbgLog.fine("zlg.out:no of keys="+kz.length );// "\t"+kz[0]+"\t"+kz[1]
             
             for (int i=0; i<kz.length; i++){
-                String [] tmp = zlgout.at(kz[i]).asString().split("/");
-                dbgLog.fine(kz[i]+"="+tmp[tmp.length-1]);
-                if (kz[i].equals("html")){
-                   ResultHtmlFile = tmp[tmp.length-1];
-                } else if (kz[i].equals("Rdata")){
-                   RdataFileName = tmp[tmp.length-1];
+                if (!zlgout.at(kz[i]).isNull()){
+                    String [] tmp = zlgout.at(kz[i]).asString().split("/");
+
+                    dbgLog.fine(kz[i]+"="+tmp[tmp.length-1]);
+                    if (kz[i].equals("html")){
+                       ResultHtmlFile = tmp[tmp.length-1];
+                       sr.put("html", "/"+requestdir+ "/" +ResultHtmlFile);
+                    } else if (kz[i].equals("Rdata")){
+                       RdataFileName = tmp[tmp.length-1];
+                       sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
+                    }
+                } else {
+                    if (kz[i].equals("html")){
+                        
+                    } else if (kz[i].equals("Rdata")){
+                      
+                    }
                 }
             }
             /*
                 outDir = '/tmp/VDC/DSB/Zlg_562491' <= wrkdir
                 html   = index1214813662.23516A14671A1080869822.html
                 Rdata  = binfile1214813662.23516A14671A1080869822.Rdata
+            sr.put("html", "/"+requestdir+ "/" +ResultHtmlFile);
+            sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);                
             */
 
-            sr.put("html", "/"+requestdir+ "/" +ResultHtmlFile);
-            sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
+
             
             // write back the R workspace to the dvn 
+            if (RdataFileName == null){
+                // no-save-ws during zelig modeling
+                // save the current global  workspace
+                String objList = "objList<-ls()";
+                dbgLog.fine("objList="+objList);
+                c.voidEval(objList);
+
+                RdataFileName = "Rworkspace."+PID+".RData";
+
+                sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
+
+                String saveWS = "save(list=objList, file='"+wrkdir +"/"+ RdataFileName +"')";
+                dbgLog.fine("save the workspace="+saveWS);
+                c.voidEval(saveWS);
+            }
+            
             
             String wrkspFileName = wrkdir +"/"+ RdataFileName;
             dbgLog.fine("wrkspFileName="+wrkspFileName);
@@ -1386,7 +1414,7 @@ if (tmpv.length > 0){
             } else {
                 dbgLog.fine("wrkspFileName is null");
             }
-            
+
             
             // write back vdc_startup.R to the dvn
             int vdcStartupSize = getFileSize(c, VDC_R_STARTUP);

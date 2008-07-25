@@ -822,23 +822,42 @@
                                                     
                                                     <!-- Output-option block: checkbox set -->
                                                     <h:outputText id="outputText45" value="Output Options"/>
-                                                    <ui:checkboxGroup id="checkboxGroup2"
-                                                                      binding="#{AnalysisPage.checkboxGroup2}" 
-                                                                      items="#{AnalysisPage.checkboxGroup2DefaultOptions.options}"
+                                                    <!-- ui:checkboxGroup id="checkboxGroup2"
+                                                                      binding="{AnalysisPage.checkboxGroup2}" 
+                                                                      items="{AnalysisPage.checkboxGroup2DefaultOptions.options}"
                                                                       labelLevel="3" 
-                                                                      selected="#{AnalysisPage.checkboxGroup2DefaultOptions.selectedValue}"
+                                                                      selected="{AnalysisPage.checkboxGroup2DefaultOptions.selectedValue}"
                                                                       rendered="true"
-                                                    />
+                                                    / -->
                                                     
-                                                    <ui:checkboxGroup id="checkboxGroupXtb"
-                                                                      binding="#{AnalysisPage.checkboxGroupXtb}" 
-                                                                      items="#{AnalysisPage.checkboxGroupXtbOptions.options}"
+                                                    <h:selectManyCheckbox 
+                                                            id="chkbxAdvStatOutputOpt" 
+                                                            binding="#{AnalysisPage.chkbxAdvStatOutputOpt}"
+                                                            
+                                                            layout="pageDirection"
+                                                            rendered="true"
+                                                            >
+                                                            <f:selectItems value="#{AnalysisPage.chkbxAdvStatOutputOptMap}"/>
+                                                    </h:selectManyCheckbox>
+                                                    
+                                                    
+                                                    <!-- ui:checkboxGroup id="checkboxGroupXtb"
+                                                                      binding="{AnalysisPage.checkboxGroupXtb}" 
+                                                                      items="{AnalysisPage.checkboxGroupXtbOptions.options}"
                                                                       labelLevel="3" 
-                                                                      selected="#{AnalysisPage.checkboxGroupXtbOptions.selectedValue}"
+                                                                      selected="{AnalysisPage.checkboxGroupXtbOptions.selectedValue}"
                                                                       rendered="false"
-                                                                      valueChangeListener="#{AnalysisPage.checkboxGroupXtbProcessValueChange}"
-                                                    />
-                                                    
+                                                                      valueChangeListener="{AnalysisPage.checkboxGroupXtbProcessValueChange}"
+                                                    / -->
+                                                    <h:selectManyCheckbox 
+                                                            id="chkbxAdvStatOutputXtbOpt" 
+                                                            binding="#{AnalysisPage.chkbxAdvStatOutputXtbOpt}"
+                                                            
+                                                            layout="pageDirection"
+                                                            rendered="false"
+                                                            >
+                                                            <f:selectItems value="#{AnalysisPage.chkbxAdvStatOutputXtbOptMap}"/>
+                                                    </h:selectManyCheckbox>
                                                 </ui:panelGroup><!-- groupPanel25 -->
 
                                                 <!-- Analysis option block: complex -->

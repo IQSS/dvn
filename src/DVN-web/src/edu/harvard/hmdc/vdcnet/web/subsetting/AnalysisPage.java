@@ -142,7 +142,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             //  new Option("2","First differences between baseline and alterantive")
             
         
-        
         simOptionMap.put("Use average values (setx default)","0");
         simOptionMap.put("Select values", "1");
         //radioSimTypeChoiceSelected = "0";
@@ -163,6 +162,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         checkboxGroup2DefaultOptions.setSelectedValue(new Object[] { "Summary",
             "Plots", "BinOutput" });
 
+
+        chkbxAdvStatOutputOptMap.put("Include Summary Statistics", "Summary");
+        chkbxAdvStatOutputOptMap.put("Include Plot", "Plots");
+        chkbxAdvStatOutputOptMap.put("Include Replication Data", "BinOutput");
+        
+        chkbxAdvStatOutputOpt.setValue(new String[]{"Summary", "Plots", "BinOutput"});
+
+        chkbxAdvStatOutputXtbOptMap.put("Include Totals","xtb_Totals");
+        chkbxAdvStatOutputXtbOptMap.put("Include Statistics","xtb_Statistics");
+        chkbxAdvStatOutputXtbOptMap.put("Include Percentages","xtb_Percentages");
+        chkbxAdvStatOutputXtbOptMap.put("Include Extra Tables","xtb_ExtraTables");
+        
+        chkbxAdvStatOutputXtbOpt.setValue(new String[]{"xtb_Totals", "xtb_Statistics", 
+                "xtb_Percentages",});
+        
         // Advanced Statistics: checkbox group for the output option pane(xtab)
         checkboxGroupXtbOptions.setOptions(
             new Option[] {
@@ -3369,12 +3383,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         if (getCurrentModelName().equals("xtb")) {
             // cross-tabulation (non-zelig)
             checkboxGroup2.setRendered(false);
+            chkbxAdvStatOutputOpt.setRendered(false);
             checkboxGroupXtb.setRendered(true);
-
+            chkbxAdvStatOutputXtbOpt.setRendered(true);
             analysisOptionPanel.setRendered(false);
+            
         } else {
             // zelig
             checkboxGroup2.setRendered(true);
+            chkbxAdvStatOutputOpt.setRendered(true);
+            chkbxAdvStatOutputXtbOpt.setRendered(false);
             checkboxGroupXtb.setRendered(false);
             analysisOptionPanel.setRendered(true);
             // show/hide setx-option panel
@@ -4378,6 +4396,55 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.checkboxGroup2DefaultOptions = msol;
     }
 
+
+
+
+
+
+    private HtmlSelectManyCheckbox chkbxAdvStatOutputOpt = new HtmlSelectManyCheckbox();
+
+    public HtmlSelectManyCheckbox getChkbxAdvStatOutputOpt() {
+        return chkbxAdvStatOutputOpt;
+    }
+
+    public void setChkbxAdvStatOutputOpt(HtmlSelectManyCheckbox chkbxAdvStatOutputOpt) {
+        this.chkbxAdvStatOutputOpt = chkbxAdvStatOutputOpt;
+    }
+
+
+    public Map<String, String> chkbxAdvStatOutputOptMap = new LinkedHashMap<String, String>();
+
+    public Map<String, String> getChkbxAdvStatOutputOptMap() {
+        return chkbxAdvStatOutputOptMap;
+    }
+
+    public void setChkbxAdvStatOutputOptMap(Map<String, String> chkbxAdvStatOutputOptMap) {
+        this.chkbxAdvStatOutputOptMap = chkbxAdvStatOutputOptMap;
+    }
+
+
+    private HtmlSelectManyCheckbox chkbxAdvStatOutputXtbOpt = new HtmlSelectManyCheckbox();
+
+    public HtmlSelectManyCheckbox getChkbxAdvStatOutputXtbOpt() {
+        return chkbxAdvStatOutputXtbOpt;
+    }
+
+    public void setChkbxAdvStatOutputXtbOpt(HtmlSelectManyCheckbox chkbxAdvStatOutputXtbOpt) {
+        this.chkbxAdvStatOutputXtbOpt = chkbxAdvStatOutputXtbOpt;
+    }
+
+
+    public Map<String, String> chkbxAdvStatOutputXtbOptMap = new LinkedHashMap<String, String>();
+
+    public Map<String, String> getChkbxAdvStatOutputXtbOptMap() {
+        return chkbxAdvStatOutputXtbOptMap;
+    }
+
+    public void setChkbxAdvStatOutputXtbOptMap(Map<String, String> chkbxAdvStatOutputXtbOptMap) {
+        this.chkbxAdvStatOutputXtbOptMap = chkbxAdvStatOutputXtbOptMap;
+    }
+
+
     // output option checkbox group: xtab
     private CheckboxGroup checkboxGroupXtb = new CheckboxGroup();
 
@@ -4989,7 +5056,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     alst.add("A03");
                     
                     // output options
-                    Object[] outOptn = (Object[]) checkboxGroupXtbOptions.getSelectedValue();
+                    // Object[] outOptn = (Object[]) checkboxGroupXtbOptions.getSelectedValue();
+                    Object[] outOptn = chkbxAdvStatOutputXtbOpt.getSelectedValues();
                     List<String> tv = new ArrayList<String>();
                     //tv.add("T");
                     
@@ -5087,7 +5155,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                    //
 //                     // zlg_017_Summary zlg_017_Plots zlg_017_BinOutput
 //                     //
-                    Object[] outOptn = (Object[]) checkboxGroup2DefaultOptions.getSelectedValue();
+                    //Object[] outOptn = (Object[]) checkboxGroup2DefaultOptions.getSelectedValue();
+                    Object[] outOptn = chkbxAdvStatOutputOpt.getSelectedValues();
                     List<String> tv = new ArrayList<String>();
 
                     for (int j = 0; j < outOptn.length; j++) {

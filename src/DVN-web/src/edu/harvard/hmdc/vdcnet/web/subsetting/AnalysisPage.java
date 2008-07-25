@@ -748,79 +748,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
          return result;
     }
 
-    // dwnldButton:h:commandButton@actionListener
-    public void dwnldActionLstnr(ActionEvent acev) {
-        resetMsgDwnldButton();
-        if (checkDwnldParameters()) {
-            FacesContext cntxt = FacesContext.getCurrentInstance();
 
-            HttpServletResponse res = (HttpServletResponse) cntxt
-                .getExternalContext().getResponse();
-            HttpServletRequest req = (HttpServletRequest) cntxt
-                .getExternalContext().getRequest();
-            try {
-                dbgLog.fine("***** within dwnldActionLstnr() *****");
-                StudyFile sf = dataTable.getStudyFile();
-                // String formatType = req.getParameter("formatType");
-                String formatType = (String) dwnldFileTypeSet.getValue();
-                dbgLog.fine("file type from the binding=" + formatType);
-                // String formatType = "D01";
-
-                String dsbUrl = System.getProperty("vdc.dsb.host");
-                String dsbPort = System.getProperty("vdc.dsb.port");
-
-                if (dsbPort != null) {
-                    dsbUrl += ":" + dsbPort;
-                }
-
-                if (dsbUrl == null) {
-                    dsbUrl = System.getProperty("vdc.dsb.url");
-                }
-
-                dbgLog.fine("dsbUrl=" + dsbUrl);
-
-                // String serverPrefix =
-                // "http://vdc-build.hmdc.harvard.edu:8080/dvn";
-                String serverPrefix = req.getScheme() + "://"
-                    + req.getServerName() + ":" + req.getServerPort()
-                    + req.getContextPath();
-                // String serverPrefix = req.getScheme() +"://" + dsbUrl + ":" +
-                // req.getServerPort() + req.getContextPath();
-
-                Map<String, List<String>> mpl = new HashMap<String, List<String>>();
-
-                // if there is a user-defined (recoded) variables
-                if (recodedVarSet.size() > 0) {
-                    mpl.putAll(getRecodedVarParameters());
-                }
-
-                dbgLog.fine("citation info to be sent:\n" + citation);
-                mpl.put("OfflineCitation", Arrays.asList(citation));
-
-                mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
-                    + req.getServerPort() + req.getContextPath()));
-                // mpl.put("appSERVER",Arrays.asList(dsbUrl + ":" +
-                // req.getServerPort() + req.getContextPath()));
-                mpl.put("studytitle", Arrays.asList(studyTitle));
-                mpl.put("studyno", Arrays.asList(studyId.toString()));
-
-                new DSBWrapper().disseminate(res, mpl, sf, serverPrefix,
-                    getDataVariableForRequest(), formatType);
-
-            } catch (IOException ex) {
-                dbgLog.severe("disseminate:download failed due to io exception");
-                ex.printStackTrace();
-            }
-
-            cntxt.responseComplete();
-        } else {
-            // show error message;
-            msgDwnldButton.setVisible(true);
-            setMsgDwnldButtonTxt("* Select a format");
-            dbgLog.warning("exiting dwnldActionLstnr() due to incomplete data ");
-        }
-        dbgLog.fine("***** within dwnldActionLstnr(): ends here *****");
-    }
 
     // msgDwnldButton:ui:StaticText@binding
     private StaticText msgDwnldButton = new StaticText();
@@ -867,7 +795,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // Replaces the error message text with spaces
         // so that the previous error message is not shown
         // even if the following setVisible(false) line fails
-        setMsgDwnldButtonTxt("     ");
+        msgDwnldButton.setText("     ");
         
         // Stores the new state of msgDwnldButtonTxt in the session map
         FacesContext.getCurrentInstance().getExternalContext()
@@ -954,7 +882,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
             String fileId = sf.getId().toString();
             //String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-	    String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+            String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
 
             dbgLog.fine("fileURL="+fileURL);
             
@@ -1016,7 +944,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         if (wholeFileSize <= 0){
                             // subset file exists but it is empty
                         
-                            setMsgDwnldButtonTxt("* an data file is empty");
+                            msgDwnldButton.setText("* an data file is empty");
                             msgDwnldButton.setVisible(true);
                             dbgLog.warning("exiting dwnldAction() due to a file access error:"+
                             "a data file is empty"
@@ -1028,7 +956,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         
                     } else {
                         // file was not created/downloaded
-                        setMsgDwnldButtonTxt("* a data file was not created");
+                        msgDwnldButton.setText("* a data file was not created");
                         msgDwnldButton.setVisible(true);
                         dbgLog.warning("exiting dwnldAction() due to a file access error:"+
                         "a data file was not created"
@@ -1079,7 +1007,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
 
-                setMsgDwnldButtonTxt("* could not generate subset due to an IO problem");
+                msgDwnldButton.setText("* could not generate subset due to an IO problem");
                 msgDwnldButton.setVisible(true); 
                 dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1102,7 +1030,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         } else {
                             // subset file exists but it is empty
                         
-                            setMsgDwnldButtonTxt("* an subset file is empty");
+                            msgDwnldButton.setText("* an subset file is empty");
                             msgDwnldButton.setVisible(true);
                             dbgLog.warning("exiting dwnldAction() due to a subsetting error:"+
                             "a subset file is empty"
@@ -1114,7 +1042,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         }
                     } else {
                         // subset file was not created
-                        setMsgDwnldButtonTxt("* a subset file was not created");
+                        msgDwnldButton.setText("* a subset file was not created");
                         msgDwnldButton.setVisible(true);
                         dbgLog.warning("exiting dwnldAction() due to a subsetting error:"+
                         "a subset file was not created"
@@ -1149,7 +1077,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // Step 5. Checks the DSB-exit-status code
                     if (resultInfo.get("RexecError").equals("true")){
                     
-                        setMsgDwnldButtonTxt("* The Request failed due to an R-runtime error");
+                        msgDwnldButton.setText("* The Request failed due to an R-runtime error");
                         msgDwnldButton.setVisible(true);
                         dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
                         getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1164,7 +1092,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
 
-                    setMsgDwnldButtonTxt("* file URL is malformed");
+                    msgDwnldButton.setText("* file URL is malformed");
                     msgDwnldButton.setVisible(true);
                     dbgLog.warning("exiting dwnldAction() due to a URL problem ");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1176,7 +1104,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // the file exists, but it is not accessible 
                     e.printStackTrace();
                     
-                    setMsgDwnldButtonTxt("* an IO problem occurred");
+                    msgDwnldButton.setText("* an IO problem occurred");
                     msgDwnldButton.setVisible(true);
                     dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1187,7 +1115,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                // end of subset-OK case
             } else {
                 // not subsettable data file
-                setMsgDwnldButtonTxt("* this data file is not subsettable file");
+                msgDwnldButton.setText("* this data file is not subsettable file");
                 msgDwnldButton.setVisible(true);
                 dbgLog.warning("exiting dwnldAction(): the data file is not subsettable ");
                 getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1275,7 +1203,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // the data file was not created
                     dbgLog.fine("wbSubsetDataFile does not exist");
 
-                    setMsgDwnldButtonTxt("* The requested data file is not available");
+                    msgDwnldButton.setText("* The requested data file is not available");
                     msgDwnldButton.setVisible(true);
                     dbgLog.warning("exiting dwnldAction(): data file was not transferred");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1295,7 +1223,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 } else {
                     dbgLog.fine("RwrkspFileName does not exist");
-                    //setMsgDwnldButtonTxt("* The workspace file is not available");
+                    //msgDwnldButton.setText("* The workspace file is not available");
                     //msgDwnldButton.setVisible(true);
                     dbgLog.warning("dwnldAction(): R workspace file was not transferred");
                     //getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1336,7 +1264,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // file-access problem, etc.
                     e.printStackTrace();
                     dbgLog.fine("download zipping IO exception");
-                    setMsgDwnldButtonTxt("* an IO problem occurred");
+                    msgDwnldButton.setText("* an IO problem occurred");
                     msgDwnldButton.setVisible(true);
                     dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1348,7 +1276,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             } catch (IOException e){
                 e.printStackTrace();
                 
-                setMsgDwnldButtonTxt("* an IO problem occurred");
+                msgDwnldButton.setText("* an IO problem occurred");
                 msgDwnldButton.setVisible(true);
                 dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1361,7 +1289,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         } else {
             // the selection is incomplete
             // show error message;
-            setMsgDwnldButtonTxt("* Select a format");
+            msgDwnldButton.setText("* Select a format");
             msgDwnldButton.setVisible(true);
             dbgLog.warning("exiting dwnldAction() due to incomplete data ");
             getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -2642,90 +2570,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return result;
     }
 
-    // edaBttn:h:commandButton@actionListener
-    public void edaActionLstnr(ActionEvent acev) {
-        resetMsgEdaButton();        
-        if (checkEdaParameters()) {
-
-            FacesContext cntxt = FacesContext.getCurrentInstance();
-
-            HttpServletResponse res = (HttpServletResponse) cntxt
-                .getExternalContext().getResponse();
-            HttpServletRequest req = (HttpServletRequest) cntxt
-                .getExternalContext().getRequest();            
-            try {
-                dbgLog.fine("***** within edaActionLstnr() *****");
-
-                StudyFile sf = dataTable.getStudyFile();
-
-                String dsbUrl = getDsbUrl();
-                dbgLog.fine("dsbUrl=" + dsbUrl);
-
-                /*
-                    String serverPrefix = req.getScheme() + "://"
-                    + req.getServerName() + ":" + req.getServerPort()
-                    + req.getContextPath();
-                */
-                String serverPrefix = "http://dvn-alpha.hmdc.harvard.edu"
-                    + req.getContextPath();
-                dbgLog.fine("serverPrefix"+serverPrefix);
-                
-                // String serverPrefix = req.getScheme() +"://" + dsbUrl + ":" +
-                // req.getServerPort() + req.getContextPath();
-                //+ "vdc-build.hmdc.harvard.edu"
-                /*
-                 * "optnlst_a" => "A01|A02|A03", 
-                 * "analysis" => "A01 A02",
-                 * "varbl" => "v1.3 v1.10 v1.13 v1.22 v1.40", 
-                 * "charVarNoSet" => "v1.10|v1.719",
-                 */
-
-                Map<String, List<String>> mpl = new HashMap<String, List<String>>();
-                Object[] vs = edaOptionSet.getSelectedValues();
-                List<String> alst = new ArrayList<String>();
-
-                for (int i = 0; i < vs.length; i++) {
-                    dbgLog.fine("eda option[" + i + "]=" + vs[i]);
-                    alst.add((String) vs[i]);
-                }
-                mpl.put("analysis", alst);
-                // List<String> aoplst = new ArrayList<String>();
-                // aoplst.add("A01|A02|A03");
-                // mpl.put("optnlst_a", aoplst);
-                mpl.put("optnlst_a", Arrays.asList("A01|A02|A03"));
-
-                // if there is a user-defined (recoded) variables
-                if (recodedVarSet.size() > 0) {
-                    mpl.putAll(getRecodedVarParameters());
-                }
-
-                dbgLog.fine("citation info to be sent:\n" + citation);
-                mpl.put("OfflineCitation", Arrays.asList(citation));
-
-                mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
-                    + req.getServerPort() + req.getContextPath()));
-                // mpl.put("appSERVER",Arrays.asList(dsbUrl + ":" +
-                // req.getServerPort() + req.getContextPath()));
-                mpl.put("studytitle", Arrays.asList(studyTitle));
-                mpl.put("studyno", Arrays.asList(studyId.toString()));
-                mpl.put("studyURL", Arrays.asList(studyURL));
-                mpl.put("browserType", Arrays.asList(browserType));
-
-                new DSBWrapper().disseminate(res, mpl, sf, serverPrefix,
-                    getDataVariableForRequest());                    
-            } catch (IOException ex) {
-                dbgLog.severe("disseminate:EDA failed due to io exception");
-                ex.printStackTrace();
-            }
-            cntxt.responseComplete();
-        } else {
-            // show error message;
-            setMsgEdaButtonTxt("* Select at least one option");
-            msgEdaButton.setVisible(true);
-            dbgLog.warning("exiting edaActionLstnr() due to incomplete data ");
-        }
-        dbgLog.fine("***** within edaActionLstnr(): ends here *****");
-    }
 
     // msgEdaButton:ui:StaticText@binding
     private StaticText msgEdaButton = new StaticText();
@@ -2750,7 +2594,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     public void resetMsgEdaButton() {
         dbgLog.fine("***** within resetMsgEdaButton *****");
-        setMsgEdaButtonTxt(" ");
+        msgEdaButton.setText(" ");
         FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().put("msgEdaButtonTxt", msgEdaButtonTxt);
         msgEdaButton.setVisible(false);
@@ -2853,7 +2697,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             String fileId = sf.getId().toString();
             //String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
             //String fileURL = "http://dvn-alpha.hmdc.harvard.edu" + "/dvn/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-	    String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+            String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
             
             dbgLog.fine("fileURL="+fileURL);
             
@@ -2915,7 +2759,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         if (wholeFileSize <= 0){
                             // subset file exists but it is empty
                         
-                            setMsgEdaButtonTxt("* an data file is empty");
+                            msgEdaButton.setText("* an data file is empty");
                             msgEdaButton.setVisible(true);
                             dbgLog.warning("exiting edaAction() due to a file access error:"+
                             "a data file is empty"
@@ -2927,7 +2771,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                        
                     } else {
                         // file was not created/downloaded
-                        setMsgEdaButtonTxt("* a data file was not created");
+                        msgEdaButton.setText("* a data file was not created");
                         msgEdaButton.setVisible(true);
                         dbgLog.warning("exiting edaAction() due to a file access error:"+
                         "a data file was not created"
@@ -2977,10 +2821,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
 
-                setMsgDwnldButtonTxt("* could not generate subset due to an IO problem");
-                msgDwnldButton.setVisible(true); 
-                dbgLog.warning("exiting dwnldAction() due to an IO problem ");
-                getVDCRequestBean().setSelectedTab("tabDwnld");
+                msgEdaButton.setText("* could not generate subset due to an IO problem");
+                msgEdaButton.setVisible(true); 
+                dbgLog.warning("exiting edaAction() due to an IO problem ");
+                getVDCRequestBean().setSelectedTab("tabEda");
 
                 return "failure";
                 
@@ -3001,7 +2845,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         } else {
                             // subset file exists but it is empty
                         
-                            setMsgEdaButtonTxt("* an subset file is empty");
+                            msgEdaButton.setText("* an subset file is empty");
                             msgEdaButton.setVisible(true);
                             dbgLog.warning("exiting edaAction() due to a subsetting error:"+
                             "a subset file is empty"
@@ -3013,7 +2857,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         }
                     } else {
                         // subset file was not created
-                        setMsgEdaButtonTxt("* a subset file was not created");
+                        msgEdaButton.setText("* a subset file was not created");
                         msgEdaButton.setVisible(true);
                         dbgLog.warning("exiting edaAction() due to a subsetting error:"+
                         "a subset file was not created"
@@ -3046,7 +2890,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                 // Step 5. Checks the DSB-exit-status code
                     if (resultInfo.get("RexecError").equals("true")){
-                        setMsgEdaButtonTxt("* The Request failed due to an R-runtime error");
+                        msgEdaButton.setText("* The Request failed due to an R-runtime error");
                         msgEdaButton.setVisible(true);
                         dbgLog.fine("exiting edaAction() due to an R-runtime error");
                         getVDCRequestBean().setSelectedTab("tabEda");
@@ -3061,7 +2905,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
 
-                    setMsgEdaButtonTxt("* file URL is malformed");
+                    msgEdaButton.setText("* file URL is malformed");
                     msgEdaButton.setVisible(true);
                     dbgLog.warning("exiting edaAction() due to a URL problem ");
                     getVDCRequestBean().setSelectedTab("tabEda");
@@ -3073,7 +2917,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // the file exists, but it is not accessible 
                     e.printStackTrace();
                     
-                    setMsgEdaButtonTxt("* an IO problem occurred");
+                    msgEdaButton.setText("* an IO problem occurred");
                     msgEdaButton.setVisible(true);
                     dbgLog.warning("exiting edaAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabEda");
@@ -3084,7 +2928,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // end of the subset-OK case
             } else {
                 // not subsettable data file
-                setMsgEdaButtonTxt("* this data file is not subsettable file");
+                msgEdaButton.setText("* this data file is not subsettable file");
                 msgEdaButton.setVisible(true);
                 dbgLog.warning("exiting edaAction(): the data file is not subsettable ");
                 getVDCRequestBean().setSelectedTab("tabEda");
@@ -3138,7 +2982,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 } else {
                     dbgLog.fine("RwrkspFileName does not exist");
-                    //setMsgEdaButtonTxt("* The workspace file is not available");
+                    //msgEdaButton.setText("* The workspace file is not available");
                     //msgEdaButton.setVisible(true);
                     dbgLog.warning("dwnldAction(): R workspace file was not transferred");
                     //getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -3199,7 +3043,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // file-access problem, etc.
                     e.printStackTrace();
                     dbgLog.fine("zipping IO exception");
-                    setMsgEdaButtonTxt("* an IO problem occurred during zipping replication files");
+                    msgEdaButton.setText("* an IO problem occurred during zipping replication files");
                     msgEdaButton.setVisible(true);
                     dbgLog.warning("exiting edaAction() due to an zipping IO problem ");
                     //getVDCRequestBean().setSelectedTab("tabEda");
@@ -3212,7 +3056,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // io errors caught during writing files
                 e.printStackTrace();
                 
-                setMsgEdaButtonTxt("* an IO problem occurred");
+                msgEdaButton.setText("* an IO problem occurred");
                 msgEdaButton.setVisible(true);
                 dbgLog.warning("exiting edaAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabEda");
@@ -3230,7 +3074,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // end of CheckParameters: OK case
         } else {
             // parameters are not complete: show error message;
-            setMsgEdaButtonTxt("* Select at least one option");
+            msgEdaButton.setText("* Select at least one option");
             msgEdaButton.setVisible(true);
             dbgLog.warning("exiting edaAction(): selection is incomplete");
             getVDCRequestBean().setSelectedTab("tabEda");
@@ -4946,7 +4790,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     public void resetMsgAdvStatButton() {
         dbgLog.fine("***** within resetMsgAdvStatButton *****");
-        setMsgAdvStatButtonTxt(" ");
+        msgAdvStatButton.setText(" ");
         FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().put("msgAdvStatButtonTxt", msgAdvStatButtonTxt);
         msgAdvStatButton.setVisible(false);
@@ -4955,244 +4799,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
 
-
-
-
-
-    // advStatBttn:h:commandButton@actionListener
-    public void advStatActionLstnr(ActionEvent acev) {
-
-        // check the current model
-
-        String mdlName = (String) dropDown1.getSelected();
-        dbgLog.fine("model name=" + mdlName);
-
-        if (checkAdvStatParameters(mdlName)) {
-
-            FacesContext cntxt = FacesContext.getCurrentInstance();
-
-            HttpServletResponse res = (HttpServletResponse) cntxt
-                .getExternalContext().getResponse();
-            HttpServletRequest req = (HttpServletRequest) cntxt
-                .getExternalContext().getRequest();
-            try {
-                dbgLog.fine("***** within advStatActionLstnr() *****");
-                // common parts
-                // data file
-                StudyFile sf = dataTable.getStudyFile();
-                // server prefix
-
-                String dsbUrl = System.getProperty("vdc.dsb.host");
-                String dsbPort = System.getProperty("vdc.dsb.port");
-
-                if (dsbPort != null) {
-                    dsbUrl += ":" + dsbPort;
-                }
-
-                if (dsbUrl == null) {
-                    dsbUrl = System.getProperty("vdc.dsb.url");
-                }
-
-                dbgLog.fine("dsbUrl=" + dsbUrl);
-
-                // String serverPrefix =
-                // "http://vdc-build.hmdc.harvard.edu:8080/dvn";
-                String serverPrefix = req.getScheme() + "://"
-                    + req.getServerName() + ":" + req.getServerPort()
-                    + req.getContextPath();
-
-                /*
-                 * "optnlst_a" => "A01|A02|A03", "analysis" => "A01 A02",
-                 * "varbl" => "v1.3 v1.10 v1.13 v1.22 v1.40", "charVarNoSet" =>
-                 * "v1.10|v1.719",
-                 */
-                // common parameters
-                Map<String, List<String>> mpl = new HashMap<String, List<String>>();
-                List<String> alst = new ArrayList<String>();
-                List<String> aoplst = new ArrayList<String>();
-                aoplst.add("A01|A02|A03");
-                mpl.put("optnlst_a", aoplst);
-                // outoput options
-
-                List<String> outOptionList = new ArrayList<String>();
-
-                if (mdlName.equals("xtb")) {
-                    alst.add("A03");
-                    // output options
-                    Object[] outOptn = (Object[]) checkboxGroupXtbOptions
-                        .getSelectedValue();
-                    List<String> tv = new ArrayList<String>();
-                    tv.add("T");
-                    for (int j = 0; j < outOptn.length; j++) {
-                        dbgLog.fine("output option[" + j + "]=" + outOptn[j]);
-
-                        mpl.put((String) outOptn[j], new ArrayList(tv));
-                    }
-                    // variables: 1st RBox
-                    if (advStatVarRBox1.size() >= 1) {
-                        dbgLog.fine("RB1:" + getDataVariableForRBox1());
-                        mpl.put("xtb_nmBxR1", getDataVariableForRBox1());
-                    }
-                    // variables: 2nd RBox
-                    if (advStatVarRBox2.size() >= 1) {
-                        dbgLog.fine("RB2:" + getDataVariableForRBox2());
-                        mpl.put("xtb_nmBxR2", getDataVariableForRBox2());
-                    }
-
-                    mpl.put("analysis", alst);
-
-                } else {
-                    dbgLog.fine("***** zelig param block *****");
-                    // non-xtb, i.e., zelig cases
-                    // check zlg value
-                    // String mdlZname= mdlName+;
-                    dbgLog.fine("model spec dump="
-                        + getAnalysisApplicationBean().getSpecMap()
-                            .get(mdlName));
-                    dbgLog.fine("model spec mdlId="
-                        + getAnalysisApplicationBean().getSpecMap()
-                            .get(mdlName).getMdlId());
-                    String zligPrefix = getAnalysisApplicationBean()
-                        .getSpecMap().get(mdlName).getMdlId();
-                    dbgLog.fine("model no=" + zligPrefix);
-                    // 1-RBox case
-                    if (advStatVarRBox1.size() >= 1) {
-                        dbgLog.fine("RB1:" + getDataVariableForRBox1());
-                        mpl.put(zligPrefix + "_nmBxR1",
-                            getDataVariableForRBox1());
-                    }
-                    // 2-RBox case
-                    if (advStatVarRBox2.size() >= 1) {
-                        dbgLog.fine("RB2:" + getDataVariableForRBox2());
-                        mpl.put(zligPrefix + "_nmBxR2",
-                            getDataVariableForRBox2());
-                    }
-                    // 3-RBox case
-                    if (advStatVarRBox3.size() >= 1) {
-                        dbgLog.fine("RB3:" + getDataVariableForRBox3());
-                        mpl.put(zligPrefix + "_nmBxR3",
-                            getDataVariableForRBox3());
-                    }
-                    // model name
-
-                    mpl.put("zlg", getZlg(zligPrefix, mdlName));
-                    // model type
-                    String sfn = getAnalysisApplicationBean().getSpecMap().get(
-                        mdlName).getSpecialFn();
-                    mpl.put("mdlType_" + mdlName, getMdlType(mdlName, sfn));
-
-                    // model title
-                    String ttl = getAnalysisApplicationBean().getSpecMap().get(
-                        mdlName).getTitle();
-                    dbgLog.fine("model title=" + ttl);
-                    mpl.put("mdlTitle_" + mdlName, Arrays.asList(ttl));
-
-                    // nrBoxes
-                    int noRboxes = getAnalysisApplicationBean().getSpecMap()
-                        .get(mdlName).getNoRboxes();
-                    dbgLog.fine("noRboxes=" + noRboxes);
-
-                    mpl.put("noBoxes_" + mdlName, Arrays.asList(Integer
-                        .toString(noRboxes)));
-
-                    // binary
-                    String mdlCategory = getAnalysisApplicationBean()
-                        .getSpecMap().get(mdlName).getCategory();
-                    dbgLog.fine("model category=" + mdlCategory);
-                    if (mdlCategory
-                        .equals("Models for Dichotomous Dependent Variables")) {
-                        mpl.put("mdlDepVarType_" + mdlName, Arrays
-                            .asList("binary"));
-                    }
-                    // output options
-                    /*
-                     * zlg_017_Summary zlg_017_Plots zlg_017_BinOutput
-                     */
-                    Object[] outOptn = (Object[]) checkboxGroup2DefaultOptions
-                        .getSelectedValue();
-                    for (int j = 0; j < outOptn.length; j++) {
-                        String outputOptnkey = zligPrefix + "_"
-                            + (String) outOptn[j];
-                        dbgLog.fine("zelig: output option[" + j + "]="
-                            + outputOptnkey);
-                        mpl.put(outputOptnkey, Arrays.asList("T"));
-                    }
-
-                    // analysis options
-                    /*
-                     * zlg_017_Sim zlg_017_setx zlg_017_setx_var
-                     * zlg_017_setx_val_1 zlg_017_setx_val_2
-                     * 
-                     * zlg_017_naMethod
-                     */
-                    //
-                    if (checkbox3.isChecked()) {
-                        mpl.put(zligPrefix + "_Sim", Arrays.asList("T"));
-                        Object simOptn = radioButtonGroup1DefaultOptions
-                            .getSelectedValue();
-                        mpl.put(zligPrefix + "_setx", Arrays
-                            .asList((String) simOptn));
-                        if (((String) simOptn).equals("1")) {
-                            Object v1 = dropDown2.getSelected();
-                            Object v2 = dropDown3.getSelected();
-                            Object vl1 = textField10.getValue();
-                            Object vl2 = textField8.getValue();
-                            List<String> setxVars = new ArrayList<String>();
-                            if (v1 != null) {
-                                setxVars.add((String) v1);
-
-                            }
-                            if (v2 != null) {
-                                setxVars.add((String) v2);
-                            }
-                            mpl.put(zligPrefix + "_setx_var", setxVars);
-                            if (vl1 != null) {
-                                mpl.put(zligPrefix + "_setx_val_1", Arrays
-                                    .asList((String) vl1));
-                            }
-                            if (vl2 != null) {
-                                mpl.put(zligPrefix + "_setx_val_2", Arrays
-                                    .asList((String) vl2));
-                            }
-
-                        }
-                    }
-
-                }
-                dbgLog.fine("contents(mpl):" + mpl);
-
-                // if there is a user-defined (recoded) variables
-                if (recodedVarSet.size() > 0) {
-                    mpl.putAll(getRecodedVarParameters());
-                }
-
-                dbgLog.fine("citation info to be sent:\n" + citation);
-                mpl.put("OfflineCitation", Arrays.asList(citation));
-
-                mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
-                    + req.getServerPort() + req.getContextPath()));
-                mpl.put("studytitle", Arrays.asList(studyTitle));
-                mpl.put("studyno", Arrays.asList(studyId.toString()));
-                mpl.put("studyURL", Arrays.asList(studyURL));
-                mpl.put("browserType", Arrays.asList(browserType));
-                // Disseminate Request
-                new DSBWrapper().disseminate(res, mpl, sf, serverPrefix,
-                    getDataVariableForRequest());
-
-            } catch (IOException ex) {
-                dbgLog.fine("disseminate: advanced Statistics failed due to io exception");
-                ex.printStackTrace();
-            }
-
-            cntxt.responseComplete();
-
-            // return "success";
-        } else {
-            // return "failure";
-            dbgLog.fine("exiting advStatActionLstnr() due to incomplete data ");
-        }
-        dbgLog.fine("***** advStatActionLstnr(): ends here *****");
-    }
 
     public List<String> getDataVariableForRBox1() {
         List<String> dvs = new ArrayList<String>();
@@ -5552,7 +5158,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
             String fileId = sf.getId().toString();
             //String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-	    String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+            String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
 
             
             dbgLog.fine("fileURL="+fileURL);
@@ -5615,7 +5221,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         if (wholeFileSize <= 0){
                             // subset file exists but it is empty
                         
-                            setMsgAdvStatButtonTxt("* an data file is empty");
+                            msgAdvStatButton.setText("* an data file is empty");
                             msgAdvStatButton.setVisible(true);
                             dbgLog.warning("exiting advStatAction() due to a file access error:"+
                             "a data file is empty"
@@ -5627,7 +5233,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                        
                     } else {
                         // file was not created/downloaded
-                        setMsgAdvStatButtonTxt("* a data file was not created");
+                        msgAdvStatButton.setText("* a data file was not created");
                         msgAdvStatButton.setVisible(true);
                         dbgLog.warning("exiting advStatAction() due to a file access error:"+
                         "a data file was not created"
@@ -5677,10 +5283,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
 
-                setMsgDwnldButtonTxt("* could not generate subset due to an IO problem");
-                msgDwnldButton.setVisible(true); 
-                dbgLog.warning("exiting dwnldAction() due to an IO problem ");
-                getVDCRequestBean().setSelectedTab("tabDwnld");
+                msgAdvStatButton.setText("* could not generate subset due to an IO problem");
+                msgAdvStatButton.setVisible(true); 
+                dbgLog.warning("exiting advStatAction() due to an IO problem ");
+                getVDCRequestBean().setSelectedTab("tabAdvStat");
 
                 return "failure";
                 
@@ -5700,7 +5306,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         } else {
                             // subset file exists but it is empty
                         
-                            setMsgAdvStatButtonTxt("* an subset file is empty");
+                            msgAdvStatButton.setText("* an subset file is empty");
                             msgAdvStatButton.setVisible(true);
                             dbgLog.warning("exiting advStatAction() due to a subsetting error:"+
                             "a subset file is empty"
@@ -5712,7 +5318,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         }
                     } else {
                         // subset file was not created
-                        setMsgAdvStatButtonTxt("* a subset file was not created");
+                        msgAdvStatButton.setText("* a subset file was not created");
                         msgAdvStatButton.setVisible(true);
                         dbgLog.warning("exiting advStatAction() due to a subsetting error:"+
                         "a subset file was not created"
@@ -5746,7 +5352,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                 // Step 5. Checks the DSB-exit-status code
                     if (resultInfo.get("RexecError").equals("true")){
-                        setMsgAdvStatButtonTxt("* The Request failed due to an R-runtime error");
+                        //msgAdvStatButton.setText("* The Request failed due to an R-runtime error");
+                        msgAdvStatButton.setText("* The Request failed due to an R-runtime error");
                         msgAdvStatButton.setVisible(true);
                         dbgLog.fine("exiting advStatAction() due to an R-runtime error");
                         getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5763,7 +5370,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     e.printStackTrace();
                     // pass the error message to the resultPage
                     // resultInfo.put();
-                    setMsgAdvStatButtonTxt("* file URL is malformed");
+                    msgAdvStatButton.setText("* file URL is malformed");
                     msgAdvStatButton.setVisible(true);
                     dbgLog.warning("exiting advStatAction() due to a URL problem ");
                     getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5775,7 +5382,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // the file exists, but it is not accessible 
                     e.printStackTrace();
                     
-                    setMsgAdvStatButtonTxt("* an IO problem occurred");
+                    msgAdvStatButton.setText("* an IO problem occurred");
                     msgAdvStatButton.setVisible(true);
                     dbgLog.warning("exiting advStatAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5786,7 +5393,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // end of the subset-OK case
             } else {
                 // not subsettable data file
-                setMsgAdvStatButtonTxt("* this data file is not subsettable file");
+                msgAdvStatButton.setText("* this data file is not subsettable file");
                 msgAdvStatButton.setVisible(true);
                 dbgLog.warning("exiting advStatAction(): the data file is not subsettable ");
                 getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5841,7 +5448,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 } else {
                     dbgLog.fine("RwrkspFileName does not exist");
-                    //setMsgAdvStatButtonTxt("* The workspace file is not available");
+                    //msgAdvStatButton.setText("* The workspace file is not available");
                     //msgAdvStatButton.setVisible(true);
                     dbgLog.warning("dwnldAction(): R workspace file was not transferred");
                     //getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -5900,7 +5507,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // file-access problem, etc.
                     e.printStackTrace();
                     dbgLog.fine("zipping IO exception");
-                    setMsgAdvStatButtonTxt("* an IO problem occurred during zipping replication files");
+                    msgAdvStatButton.setText("* an IO problem occurred during zipping replication files");
                     msgAdvStatButton.setVisible(true);
                     dbgLog.warning("exiting edaAction() due to an zipping IO problem ");
                     //getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5913,7 +5520,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // io errors caught during writing files
                 e.printStackTrace();
                 
-                setMsgAdvStatButtonTxt("* an IO problem occurred");
+                msgAdvStatButton.setText("* an IO problem occurred");
                 msgAdvStatButton.setVisible(true);
                 dbgLog.warning("exiting edaAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5931,7 +5538,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         } else {
             // parameters are not complete: show error message;
 
-            setMsgAdvStatButtonTxt("* Selection is incomplete");
+            msgAdvStatButton.setText("* Selection is incomplete");
             msgAdvStatButton.setVisible(true);
             dbgLog.fine("exiting advStatAction(): selection is incomplete");
             getVDCRequestBean().setSelectedTab("tabAdvStat");

@@ -901,7 +901,7 @@ public class DvnRJobRequest {
             
             int allrows = delRowCount + nonRecodeRowCount;
             if (allrows == rdtbl.size()) {
-                hasRecodeRow = false;
+                //hasRecodeRow = false;
                 dbgLog.fine("no meaningful recodeing request is stored");
             }
             

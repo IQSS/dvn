@@ -308,7 +308,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
 
                 FacesContext.getCurrentInstance().responseComplete();
 
-                dbgLog.fine("***** within dwnldAction(): ends here *****");
+                dbgLog.fine("***** within AnalysisResultsPage: getReplicationPack(): ends here *****");
 
                 return "success";
 
@@ -316,7 +316,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
                 // file-access problem, etc.
                 e.printStackTrace();
                 dbgLog.fine("download zip file IO exception");
-                setMsgDwnldButtonTxt("* an IO problem occurred during downloading");
+                msgDwnldButton.setText("* an IO problem occurred during downloading");
                 msgDwnldButton.setVisible(true);
                 dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabDwnld");

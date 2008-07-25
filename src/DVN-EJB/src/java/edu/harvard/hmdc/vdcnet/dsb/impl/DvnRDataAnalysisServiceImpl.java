@@ -743,6 +743,22 @@ if (tmpv.length > 0){
                 dbgLog.fine("wrkspFileName is null");
             }
             
+            
+            
+            // write back vdc_startup.R to the dvn
+            int vdcStartupSize = getFileSize(c, VDC_R_STARTUP);
+            File vdcstrtfl = writeBackFileToDvn(c, VDC_R_STARTUP, "vdc_startup.", "R",vdcStartupSize);
+            
+            if (vdcstrtfl !=null){
+                sr.put("vdc_startupFileName",vdcstrtfl.getAbsolutePath());
+                dbgLog.fine("vdc_startupFileName="+vdcstrtfl.getAbsolutePath());
+            } else {
+                dbgLog.fine("vdc_startupFileName is null");
+            }
+            
+            
+            
+            
             // command history
             String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
             c.assign("ch", new REXPString(ch));
@@ -901,6 +917,16 @@ if (tmpv.length > 0){
                 dbgLog.fine("wrkspFileName is null");
             }
             
+            // write back vdc_startup.R to the dvn
+            int vdcStartupSize = getFileSize(c, VDC_R_STARTUP);
+            File vdcstrtfl = writeBackFileToDvn(c, VDC_R_STARTUP, "vdc_startup.", "R",vdcStartupSize);
+            
+            if (vdcstrtfl !=null){
+                sr.put("vdc_startupFileName",vdcstrtfl.getAbsolutePath());
+                dbgLog.fine("vdc_startupFileName="+vdcstrtfl.getAbsolutePath());
+            } else {
+                dbgLog.fine("vdc_startupFileName is null");
+            }
             
             
             // command history
@@ -1099,10 +1125,16 @@ if (tmpv.length > 0){
             }
             
             
-
+            // write back vdc_startup.R to the dvn
+            int vdcStartupSize = getFileSize(c, VDC_R_STARTUP);
+            File vdcstrtfl = writeBackFileToDvn(c, VDC_R_STARTUP, "vdc_startup.", "R",vdcStartupSize);
             
-            
-            
+            if (vdcstrtfl !=null){
+                sr.put("vdc_startupFileName",vdcstrtfl.getAbsolutePath());
+                dbgLog.fine("vdc_startupFileName="+vdcstrtfl.getAbsolutePath());
+            } else {
+                dbgLog.fine("vdc_startupFileName is null");
+            }
             
             
             
@@ -1356,12 +1388,16 @@ if (tmpv.length > 0){
             }
             
             
+            // write back vdc_startup.R to the dvn
+            int vdcStartupSize = getFileSize(c, VDC_R_STARTUP);
+            File vdcstrtfl = writeBackFileToDvn(c, VDC_R_STARTUP, "vdc_startup.", "R",vdcStartupSize);
             
-            
-            
-            
-            
-            
+            if (vdcstrtfl !=null){
+                sr.put("vdc_startupFileName",vdcstrtfl.getAbsolutePath());
+                dbgLog.fine("vdc_startupFileName="+vdcstrtfl.getAbsolutePath());
+            } else {
+                dbgLog.fine("vdc_startupFileName is null");
+            }
             
             
             // copy the dvn-patch css file to the wkdir

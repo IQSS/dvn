@@ -1241,6 +1241,25 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     //return "failure";
                 }
 
+
+                // vdc_startup.R file
+                String vdc_startupFileName = resultInfo.get("vdc_startupFileName");
+                dbgLog.fine("vdc_startupFileName="+vdc_startupFileName);
+                File vdcstrtFileName = new File(vdc_startupFileName);
+                if (vdcstrtFileName.exists()){
+                    dbgLog.fine("vdcstrtFileName:length="+vdcstrtFileName.length());
+                    zipFileList.add(vdcstrtFileName);
+                } else {
+                    dbgLog.fine("vdcstrtFileName does not exist");
+                    //msgDwnldButton.setText("* vdc_startup.R is not available");
+                    //msgDwnldButton.setVisible(true);
+                    dbgLog.warning("dwnldAction(): vdc_startup.R was not transferred");
+                    //getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                    //return "failure";
+                }
+
+
                 for (File f : zipFileList){
                     dbgLog.fine("path="+f.getAbsolutePath() +"\tname="+ f.getName());
                 }
@@ -2999,12 +3018,30 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     dbgLog.fine("RwrkspFileName does not exist");
                     //msgEdaButton.setText("* The workspace file is not available");
                     //msgEdaButton.setVisible(true);
-                    dbgLog.warning("dwnldAction(): R workspace file was not transferred");
-                    //getVDCRequestBean().setSelectedTab("tabDwnld");
+                    dbgLog.warning("edaAction(): R workspace file was not transferred");
+                    //getVDCRequestBean().setSelectedTab("tabEda");
 
                     //return "failure";
                 }
 
+                // vdc_startup.R file
+                String vdc_startupFileName = resultInfo.get("vdc_startupFileName");
+                dbgLog.fine("vdc_startupFileName="+vdc_startupFileName);
+                File vdcstrtFileName = new File(vdc_startupFileName);
+                if (vdcstrtFileName.exists()){
+                    dbgLog.fine("vdcstrtFileName:length="+vdcstrtFileName.length());
+                    zipFileList.add(vdcstrtFileName);
+                } else {
+                    dbgLog.fine("vdcstrtFileName does not exist");
+                    //msgEdaButton.setText("* vdc_startup.R is not available");
+                    //msgEdaButton.setVisible(true);
+                    dbgLog.warning("edaAction(): vdc_startup.R was not transferred");
+                    //getVDCRequestBean().setSelectedTab("tabEda");
+
+                    //return "failure";
+                }
+                
+                
                 // zip the following files as a replication-pack
                 //
                 // local     local        local      remote
@@ -5474,8 +5511,26 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     dbgLog.fine("RwrkspFileName does not exist");
                     //msgAdvStatButton.setText("* The workspace file is not available");
                     //msgAdvStatButton.setVisible(true);
-                    dbgLog.warning("dwnldAction(): R workspace file was not transferred");
-                    //getVDCRequestBean().setSelectedTab("tabDwnld");
+                    dbgLog.warning("advStatAction(): R workspace file was not transferred");
+                    //getVDCRequestBean().setSelectedTab("tabAdvStat");
+
+                    //return "failure";
+                }
+
+
+                // vdc_startup.R file
+                String vdc_startupFileName = resultInfo.get("vdc_startupFileName");
+                dbgLog.fine("vdc_startupFileName="+vdc_startupFileName);
+                File vdcstrtFileName = new File(vdc_startupFileName);
+                if (vdcstrtFileName.exists()){
+                    dbgLog.fine("vdcstrtFileName:length="+vdcstrtFileName.length());
+                    zipFileList.add(vdcstrtFileName);
+                } else {
+                    dbgLog.fine("vdcstrtFileName does not exist");
+                    //msgAdvStatButton.setText("* vdc_startup.R is not available");
+                    //msgAdvStatButton.setVisible(true);
+                    dbgLog.warning("advStatAction(): vdc_startup.R was not transferred");
+                    //getVDCRequestBean().setSelectedTab("tabAdvStat");
 
                     //return "failure";
                 }

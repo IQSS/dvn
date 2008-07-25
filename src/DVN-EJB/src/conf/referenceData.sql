@@ -955,8 +955,10 @@ INSERT INTO DataFileFormatType VALUES (1, 'D02', 'Splus');
 INSERT INTO DataFileFormatType VALUES (2, 'D03', 'Stata');
 INSERT INTO DataFileFormatType VALUES (3, 'D04', 'R');
 
-insert into harvestformattype (id,metadataprefix, name, stylesheetfilename) values(0, 'ddi', 'DDI', null);
-insert into harvestformattype (id,metadataprefix, name, stylesheetfilename) values (1, 'oai_etdms', 'MIF', 'mif2ddi.xsl');
+INSERT INTO harvestformattype (id, metadataprefix, name, stylesheetfilename) VALUES (0, 'ddi', 'DDI', null);
+INSERT INTO harvestformattype (id, metadataprefix, name, stylesheetfilename) VALUES (1, 'oai_etdms', 'MIF', 'mif2ddi.xsl');
+INSERT INTO harvestformattype (id, metadataprefix, name, stylesheetfilename) VALUES (2, 'oai_dc', 'DC', 'oai_dc2ddi.xsl');
+INSERT INTO harvestformattype (id, metadataprefix, name, stylesheetfilename) VALUES (3, 'oai_fgdc', 'FGDC', 'fgdc2ddi.xsl');
 
 create index datavariable_id_index on  datavariable (id);
 create index summarystatistic_id_index on  summarystatistic (id);

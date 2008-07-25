@@ -50,22 +50,7 @@
                        </ui:panelLayout>
                         <ui:panelGroup styleClass="termsAgreementBox" block="true">
                             <ui:panelGroup rendered="#{TermsOfUsePage.touTypeDownload}" block="true">
-                                   
-                                <h:outputText value="Dataverse Network Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" />
-                                <h:outputText value="#{TermsOfUsePage.vdcNetwork.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" escape="false"/>
-                             
-                                <h:outputText value="Dataverse Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" />
-                                <h:outputText value="#{TermsOfUsePage.study.owner.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" escape="false"/>
-                                
-                                 <h:outputText value="Original Dataverse Network Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.harvestDVNTermsOfUse}"/>
-                                <h:outputText value="#{TermsOfUsePage.study.harvestDVNTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.harvestDVNTermsOfUse}" escape="false"/>
-                             
-                                <h:outputText value="Original Dataverse Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}" />
-                                <h:outputText value="#{TermsOfUsePage.study.harvestDVTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}"  escape="false"/>
-                              
-                             
-                                <h:outputText value="Study Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.study.termsOfUseEnabled}" />
-                                    
+                                <!-- Study Terms of Use -->  
                                 <h:outputText value="Confidentiality Declaration" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.confidentialityDeclaration}"/>     
                                 <h:outputText value="#{TermsOfUsePage.study.confidentialityDeclaration}" rendered="#{!empty TermsOfUsePage.study.confidentialityDeclaration}" escape="false"/>
                                 
@@ -89,7 +74,20 @@
                                 
                                 <h:outputText value="Disclaimer" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.disclaimer}"/>
                                 <h:outputText value="#{TermsOfUsePage.study.disclaimer}" rendered="#{!empty TermsOfUsePage.study.disclaimer}" escape="false"/>
-                          
+                                
+                                <!-- Dataverse, Dataverse Network and Harvest Terms of Use -->
+                                <h:outputText value="Dataverse Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" />
+                                <h:outputText value="#{TermsOfUsePage.study.owner.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" escape="false"/>
+                                
+                                <h:outputText value="Dataverse Network Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" />
+                                <h:outputText value="#{TermsOfUsePage.vdcNetwork.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" escape="false"/>
+                                
+                                 <h:outputText value="Original Dataverse Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}" />
+                                <h:outputText value="#{TermsOfUsePage.study.harvestDVTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}"  escape="false"/>
+                               
+                                <h:outputText value="Original Dataverse Network Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.harvestDVNTermsOfUse}"/>
+                                <h:outputText value="#{TermsOfUsePage.study.harvestDVNTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.harvestDVNTermsOfUse}" escape="false"/>
+                             
                             </ui:panelGroup>
                             
                             <ui:panelGroup rendered="#{TermsOfUsePage.touTypeDeposit}" block="true">

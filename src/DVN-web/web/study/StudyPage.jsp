@@ -331,49 +331,48 @@
                                     <h:commandButton id="commandButtonTermsOfUseContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}" actionListener="#{studyPage.updateTermsOfUseDisplay}" />                      
                                     <h:commandButton id="commandButtonTermsOfUseExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.termsOfUsePanelIsRendered}" actionListener="#{studyPage.updateTermsOfUseDisplay}"/> 
                                 </ui:panelGroup>
-                                <h:panelGrid binding="#{studyPage.termsOfUsePanel}" cellpadding="0" cellspacing="0"
-                                             columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelTermsOfUse"  rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}"
-                                             width="100%">
-                                    <dvn:inlinehelp helpMessage="#{studybundle.networkHarvestedTermsofUseHelp}"  linkText="#{studybundle.networkHarvestedTermsofUseLabel}" heading="#{studybundle.networkHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.study.harvestDVNTermsOfUse}"/>
-                                    <h:outputText  value="#{studyPage.studyUI.study.harvestDVNTermsOfUse}" rendered="#{!empty studyPage.studyUI.study.harvestDVNTermsOfUse}" escape="false"/>
-                                    
-                                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseHarvestedTermsofUseHelp}"  linkText="#{studybundle.dataverseHarvestedTermsofUseLabel}" heading="#{studybundle.dataverseHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.study.harvestDVTermsOfUse}"/>
-                                    <h:outputText  value="#{studyPage.studyUI.study.harvestDVTermsOfUse}" rendered="#{!empty studyPage.studyUI.study.harvestDVTermsOfUse}" escape="false"/>
-                                    
-                                    <dvn:inlinehelp helpMessage="#{studybundle.networkTermsofUseHelp}"  linkText="#{studybundle.networkTermsofUseLabel}" heading="#{studybundle.networkTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}"/>
-                                    <h:outputText value="#{VDCRequest.vdcNetwork.downloadTermsOfUse}" rendered="#{VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}" escape="false"/>
-                                    
-                                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseTermsofUseHelp}"  linkText="#{studybundle.dataverseTermsofUseLabel}" heading="#{studybundle.dataverseTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}"/>
-                                    <h:outputText   value="#{studyPage.studyUI.dataverseTermsOfUse}" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}" escape="false"/>
-                                    
-                                    <h:outputText value="Study Terms of Use: " style="font-weight: bold;" rendered="#{studyPage.studyUI.study.termsOfUseEnabled}" />
-                                    <h:outputText value=" " rendered="#{studyPage.studyUI.study.termsOfUseEnabled}" />
-                                    
-                                    <dvn:inlinehelp helpMessage="#{studybundle.confidentialityHelp}"  linkText="#{studybundle.confidentialityLabel}" heading="#{studybundle.confidentialityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.confidentialityDeclaration != '' and studyPage.studyUI.study.confidentialityDeclaration != null }"/>
-                                    <h:outputText  id="outputText129" value="#{studyPage.studyUI.study.confidentialityDeclaration}" rendered="#{!empty studyPage.studyUI.study.confidentialityDeclaration}" escape="false"/>
-                                    
-                                    <dvn:inlinehelp helpMessage="#{studybundle.specialPermissionsHelp}"  linkText="#{studybundle.specialPermissionsLabel}" heading="#{studybundle.specialPermissionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.specialPermissions != '' and studyPage.studyUI.study.specialPermissions != null }"/>
-                                    <h:outputText  id="outputText131" value="#{studyPage.studyUI.study.specialPermissions}" rendered="#{!empty studyPage.studyUI.study.specialPermissions}" escape="false"/>
-                                    
-                                    <dvn:inlinehelp helpMessage="#{studybundle.restrictionsHelp}"  linkText="#{studybundle.restrictionsLabel}" heading="#{studybundle.restrictionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.restrictions != '' and studyPage.studyUI.study.restrictions != null }" />
-                                    <h:outputText  id="outputText133" value="#{studyPage.studyUI.study.restrictions}" rendered="#{!empty studyPage.studyUI.study.restrictions}" escape="false"/>
-                                    
-                                    <dvn:inlinehelp helpMessage="#{studybundle.contactHelp}"  linkText="#{studybundle.contactLabel}" heading="#{studybundle.contactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.contact != '' and studyPage.studyUI.study.contact != null }" />
-                                    <h:outputText  id="outputText135" value="#{studyPage.studyUI.study.contact}" rendered="#{!empty studyPage.studyUI.study.contact}" escape="false"/>
-                                    
-                                    <dvn:inlinehelp helpMessage="#{studybundle.citationRequirementsHelp}"  linkText="#{studybundle.citationRequirementsLabel}" heading="#{studybundle.citationRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.citationRequirements != '' and studyPage.studyUI.study.citationRequirements != null }"/>
-                                    <h:outputText  id="outputText137" value="#{studyPage.studyUI.study.citationRequirements}" rendered="#{!empty studyPage.studyUI.study.citationRequirements}" escape="false"/>
-                                    
-                                    <dvn:inlinehelp helpMessage="#{studybundle.depositorRequirementsHelp}"  linkText="#{studybundle.depositorRequirementsLabel}" heading="#{studybundle.depositorRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.depositorRequirements != '' and studyPage.studyUI.study.depositorRequirements != null }"/>
-                                    <h:outputText  id="outputText139" value="#{studyPage.studyUI.study.depositorRequirements}" rendered="#{!empty studyPage.studyUI.study.depositorRequirements}" escape="false"/>
-                                    
-                                    <dvn:inlinehelp helpMessage="#{studybundle.conditionsHelp}"  linkText="#{studybundle.conditionsLabel}" heading="#{studybundle.conditionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.conditions != '' and studyPage.studyUI.study.conditions != null }"/>
-                                    <h:outputText  id="outputText141" value="#{studyPage.studyUI.study.conditions}" rendered="#{!empty studyPage.studyUI.study.conditions}" escape="false"/>
-                                    
-                                    <dvn:inlinehelp helpMessage="#{studybundle.disclaimerHelp}"  linkText="#{studybundle.disclaimerLabel}" heading="#{studybundle.disclaimerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.disclaimer != '' and studyPage.studyUI.study.disclaimer != null }"/>
-                                    <h:outputText  id="outputText143" value="#{studyPage.studyUI.study.disclaimer}" rendered="#{!empty studyPage.studyUI.study.disclaimer}" escape="false"/>
-                                </h:panelGrid>
-                                
+					<h:panelGrid binding="#{studyPage.termsOfUsePanel}" cellpadding="0" cellspacing="0"
+                                                     columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelTermsOfUse"  rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}"
+                                                     width="100%">
+                                            <!-- Study Terms of Use -->  
+                                            <dvn:inlinehelp helpMessage="#{studybundle.confidentialityHelp}"  linkText="#{studybundle.confidentialityLabel}" heading="#{studybundle.confidentialityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.confidentialityDeclaration != '' and studyPage.studyUI.study.confidentialityDeclaration != null }"/>
+                                            <h:outputText  id="outputText129" value="#{studyPage.studyUI.study.confidentialityDeclaration}" rendered="#{!empty studyPage.studyUI.study.confidentialityDeclaration}" escape="false"/>
+                                            
+                                            <dvn:inlinehelp helpMessage="#{studybundle.specialPermissionsHelp}"  linkText="#{studybundle.specialPermissionsLabel}" heading="#{studybundle.specialPermissionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.specialPermissions != '' and studyPage.studyUI.study.specialPermissions != null }"/>
+                                            <h:outputText  id="outputText131" value="#{studyPage.studyUI.study.specialPermissions}" rendered="#{!empty studyPage.studyUI.study.specialPermissions}" escape="false"/>
+                                            
+                                            <dvn:inlinehelp helpMessage="#{studybundle.restrictionsHelp}"  linkText="#{studybundle.restrictionsLabel}" heading="#{studybundle.restrictionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.restrictions != '' and studyPage.studyUI.study.restrictions != null }" />
+                                            <h:outputText  id="outputText133" value="#{studyPage.studyUI.study.restrictions}" rendered="#{!empty studyPage.studyUI.study.restrictions}" escape="false"/>
+                                            
+                                            <dvn:inlinehelp helpMessage="#{studybundle.contactHelp}"  linkText="#{studybundle.contactLabel}" heading="#{studybundle.contactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.contact != '' and studyPage.studyUI.study.contact != null }" />
+                                            <h:outputText  id="outputText135" value="#{studyPage.studyUI.study.contact}" rendered="#{!empty studyPage.studyUI.study.contact}" escape="false"/>
+                                            
+                                            <dvn:inlinehelp helpMessage="#{studybundle.citationRequirementsHelp}"  linkText="#{studybundle.citationRequirementsLabel}" heading="#{studybundle.citationRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.citationRequirements != '' and studyPage.studyUI.study.citationRequirements != null }"/>
+                                            <h:outputText  id="outputText137" value="#{studyPage.studyUI.study.citationRequirements}" rendered="#{!empty studyPage.studyUI.study.citationRequirements}" escape="false"/>
+                                            
+                                            <dvn:inlinehelp helpMessage="#{studybundle.depositorRequirementsHelp}"  linkText="#{studybundle.depositorRequirementsLabel}" heading="#{studybundle.depositorRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.depositorRequirements != '' and studyPage.studyUI.study.depositorRequirements != null }"/>
+                                            <h:outputText  id="outputText139" value="#{studyPage.studyUI.study.depositorRequirements}" rendered="#{!empty studyPage.studyUI.study.depositorRequirements}" escape="false"/>
+                                            
+                                            <dvn:inlinehelp helpMessage="#{studybundle.conditionsHelp}"  linkText="#{studybundle.conditionsLabel}" heading="#{studybundle.conditionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.conditions != '' and studyPage.studyUI.study.conditions != null }"/>
+                                            <h:outputText  id="outputText141" value="#{studyPage.studyUI.study.conditions}" rendered="#{!empty studyPage.studyUI.study.conditions}" escape="false"/>
+                                            
+                                            <dvn:inlinehelp helpMessage="#{studybundle.disclaimerHelp}"  linkText="#{studybundle.disclaimerLabel}" heading="#{studybundle.disclaimerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.disclaimer != '' and studyPage.studyUI.study.disclaimer != null }"/>
+                                            <h:outputText  id="outputText143" value="#{studyPage.studyUI.study.disclaimer}" rendered="#{!empty studyPage.studyUI.study.disclaimer}" escape="false"/>
+                                            
+                                            <!-- Dataverse, Dataverse Network and Harvest Terms of Use -->
+                                            <dvn:inlinehelp helpMessage="#{studybundle.dataverseTermsofUseHelp}"  linkText="#{studybundle.dataverseTermsofUseLabel}" heading="#{studybundle.dataverseTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}"/>
+                                            <h:outputText   value="#{studyPage.studyUI.dataverseTermsOfUse}" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}" escape="false"/>
+                                            
+                                            <dvn:inlinehelp helpMessage="#{studybundle.networkTermsofUseHelp}"  linkText="#{studybundle.networkTermsofUseLabel}" heading="#{studybundle.networkTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}"/>
+                                            <h:outputText value="#{VDCRequest.vdcNetwork.downloadTermsOfUse}" rendered="#{VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}" escape="false"/>
+                                            
+                                            <dvn:inlinehelp helpMessage="#{studybundle.dataverseHarvestedTermsofUseHelp}"  linkText="#{studybundle.dataverseHarvestedTermsofUseLabel}" heading="#{studybundle.dataverseHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.study.harvestDVTermsOfUse}"/>
+                                            <h:outputText  value="#{studyPage.studyUI.study.harvestDVTermsOfUse}" rendered="#{!empty studyPage.studyUI.study.harvestDVTermsOfUse}" escape="false"/>
+                                            
+                                            <dvn:inlinehelp helpMessage="#{studybundle.networkHarvestedTermsofUseHelp}"  linkText="#{studybundle.networkHarvestedTermsofUseLabel}" heading="#{studybundle.networkHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.study.harvestDVNTermsOfUse}"/>
+                                            <h:outputText  value="#{studyPage.studyUI.study.harvestDVNTermsOfUse}" rendered="#{!empty studyPage.studyUI.study.harvestDVNTermsOfUse}" escape="false"/>
+
+                                        </h:panelGrid>
                                 <ui:panelGroup  block="true" id="groupPanel15" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.notesIsEmpty}">
                                     <h:outputText  id="outputText144" value="Other Information"/>
                                     <h:commandButton id="commandButtonNotesContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.notesPanelIsRendered}" actionListener="#{studyPage.updateNotesDisplay}" />                      

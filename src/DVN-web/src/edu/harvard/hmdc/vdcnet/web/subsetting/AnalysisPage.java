@@ -996,25 +996,35 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
                         // from a temp (whole) non-delimited file
 
-            // Using new, native implementation of fixed-field cutting 
-            // (instead of executing rcut in a shell)
-            
-            Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(); 
-            DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
+                        // Using new, native implementation of fixed-field cutting 
+                        // (instead of executing rcut in a shell)
 
-            try {
-                fc.cutColumns(new File(cutOp1), varMetaSet.size(), 0, "\t", cutOp2);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                        Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(); 
+                        DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
-                msgDwnldButton.setText("* could not generate subset due to an IO problem");
-                msgDwnldButton.setVisible(true); 
-                dbgLog.warning("exiting dwnldAction() due to an IO problem ");
-                getVDCRequestBean().setSelectedTab("tabDwnld");
+                        try {
+                            fc.cutColumns(new File(cutOp1), varMetaSet.size(), 0, "\t", cutOp2);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
 
-                return "failure";
-                
-            }
+                            msgDwnldButton.setText("* could not generate subset due to an IO problem");
+                            msgDwnldButton.setVisible(true); 
+                            dbgLog.warning("exiting dwnldAction() due to an IO problem ");
+                            getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                            return "failure";
+
+                        } catch (RuntimeException re){
+                            re.printStackTrace();
+                            
+                            msgDwnldButton.setText("* could not generate subset due to an runtime error");
+                            msgDwnldButton.setVisible(true); 
+                            dbgLog.warning("exiting dwnldAction() due to an runtime error");
+                            getVDCRequestBean().setSelectedTab("tabDwnld");
+
+                            return "failure";
+                            
+                        }
                         // end: non-delimited case
                     }
                     
@@ -2810,27 +2820,32 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     } else {
                 // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
                         // from a temp (whole) non-delimited file
-            // Using new, native implementation of fixed-field cutting 
-            // (instead of executing rcut in a shell)
-            
-            Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(); 
-            DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
+                        // Using new, native implementation of fixed-field cutting 
+                        // (instead of executing rcut in a shell)
 
-            try {
-                fc.cutColumns(new File(cutOp1), varMetaSet.size(), 0, "\t", cutOp2);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                        Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(); 
+                        DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
-                msgEdaButton.setText("* could not generate subset due to an IO problem");
-                msgEdaButton.setVisible(true); 
-                dbgLog.warning("exiting edaAction() due to an IO problem ");
-                getVDCRequestBean().setSelectedTab("tabEda");
+                        try {
+                            fc.cutColumns(new File(cutOp1), varMetaSet.size(), 0, "\t", cutOp2);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
 
-                return "failure";
-                
-            }
+                            msgEdaButton.setText("* could not generate subset due to an IO problem");
+                            msgEdaButton.setVisible(true); 
+                            dbgLog.warning("exiting edaAction() due to an IO problem ");
+                            getVDCRequestBean().setSelectedTab("tabEda");
+
+                            return "failure";
+                        } catch (RuntimeException re){
+                            re.printStackTrace();
+                            
+                            msgEdaButton.setText("* could not generate subset due to an runtime error");
+                            msgEdaButton.setVisible(true); 
+                            dbgLog.warning("exiting edaAction() due to an runtime error");
+                            getVDCRequestBean().setSelectedTab("tabEda");
+                        }
                         // end: non-delimited case
-
                     }
                     
                     // Checks the resulting subset file 
@@ -5272,26 +5287,35 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     } else {
                 // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
                         // from a temp (whole) non-delimited file
-            // Using new, native implementation of fixed-field cutting 
-            // (instead of executing rcut in a shell)
-            
-            Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(); 
-            DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
+                        // Using new, native implementation of fixed-field cutting 
+                        // (instead of executing rcut in a shell)
 
-            try {
-                fc.cutColumns(new File(cutOp1), varMetaSet.size(), 0, "\t", cutOp2);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                        Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(); 
+                        DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
-                msgAdvStatButton.setText("* could not generate subset due to an IO problem");
-                msgAdvStatButton.setVisible(true); 
-                dbgLog.warning("exiting advStatAction() due to an IO problem ");
-                getVDCRequestBean().setSelectedTab("tabAdvStat");
+                        try {
+                            fc.cutColumns(new File(cutOp1), varMetaSet.size(), 0, "\t", cutOp2);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
 
-                return "failure";
-                
-            }
-                    // end: non-delimited case
+                            msgAdvStatButton.setText("* could not generate subset due to an IO problem");
+                            msgAdvStatButton.setVisible(true); 
+                            dbgLog.warning("exiting advStatAction() due to an IO problem ");
+                            getVDCRequestBean().setSelectedTab("tabAdvStat");
+
+                            return "failure";
+
+                        } catch (RuntimeException re){
+                            re.printStackTrace();
+
+                            msgAdvStatButton.setText("* could not generate subset due to an runtime error");
+                            msgAdvStatButton.setVisible(true); 
+                            dbgLog.warning("exiting advStatAction() due to an runtime error ");
+                            getVDCRequestBean().setSelectedTab("tabAdvStat");
+
+                            return "failure";
+                        }
+                        // end: non-delimited case
                     }
 
                     // Checks the resulting subset file 

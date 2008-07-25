@@ -1544,7 +1544,7 @@ if (tmpv.length > 0){
                 zlgcnfg = c.eval("paste(readLines(zz),collapse='')").asString();
                 dbgLog.fine("string length="+zlgcnfg.length());
                 if (zlgcnfg.length()>0){
-                    dbgLog.fine("first 72 bytes=[\n"+zlgcnfg.substring(0, 71) +"\n]\n");
+                    dbgLog.fine("first 20 bytes=[\n"+zlgcnfg.substring(0, 19) +"\n]\n");
                 }
             //}
         } catch (Exception ex){

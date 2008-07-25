@@ -546,7 +546,9 @@
                                                             <ui:panelGroup block="true" styleClass="vdcStudyFileSubsetTable">
                                                                 <h:panelGrid columns="3" cellpadding="2" cellspacing="0" border="0">
                                                                     <h:column id="column1">
-                                                                        <span>Subsetting</span>
+                                                                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.jsp?dtId=#{studyFileUI.studyFile.dataTable.id}">
+                                                                            <span>Subsetting</span>
+                                                                        </h:outputLink>
                                                                     </h:column>
                                                                     <h:column id="column2">
                                                                         <h:outputText value="#{studyFileUI.studyFile.dataTable.caseQuantity} Cases"/>

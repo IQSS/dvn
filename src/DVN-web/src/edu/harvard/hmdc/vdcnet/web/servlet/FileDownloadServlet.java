@@ -1459,7 +1459,7 @@ public class FileDownloadServlet extends HttpServlet{
 	}
 
 	RemoteAccessAuth remoteAuth = studyService.lookupRemoteAuthByHost ( remoteHost ); 
-	if ( remoteAuthType != null ) {
+	if ( remoteAuth != null ) {
 	    remoteAuthType = remoteAuth.getType(); 
 	}
 
@@ -1496,7 +1496,7 @@ public class FileDownloadServlet extends HttpServlet{
 
 	RemoteAccessAuth remoteAuth = studyService.lookupRemoteAuthByHost ( remoteHost ); 
 
-	if ( RemoteAccessAuth == null ) {
+	if ( remoteAuth == null ) {
 	    return null; 
 	}
 

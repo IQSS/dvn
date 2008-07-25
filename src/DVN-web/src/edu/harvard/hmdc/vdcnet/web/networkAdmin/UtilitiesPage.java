@@ -31,6 +31,7 @@ package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
 import com.sun.rave.web.ui.model.UploadedFile;
 import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
+import edu.harvard.hmdc.vdcnet.harvest.HarvestStudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.Indexer;
@@ -54,7 +55,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.FileHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -74,6 +74,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
             
     @EJB StudyServiceLocal studyService;
     @EJB IndexServiceLocal indexService;
+    @EJB HarvestStudyServiceLocal harvestStudyService;
     @EJB HarvestingDataverseServiceLocal harvestingDataverseService;    
     @EJB HarvesterServiceLocal harvesterService;
     @EJB VDCServiceLocal vdcService;
@@ -331,6 +332,16 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         }
         return null;
     }  
+     
+     public String updateHarvestStudies_action() {
+        try {
+            harvestStudyService.updateHarvestStudies();
+            addMessage( "exportMessage", "Update Harvest Studies succeeded.");
+        } catch (Exception e) {
+            addMessage( "exportMessage", "Export failed: An unknown exception occurred while updating harvest studies.");   
+        }
+        return null;
+    }       
      
     public String exportAll_action() {
         try {

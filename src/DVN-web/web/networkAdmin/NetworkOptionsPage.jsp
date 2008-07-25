@@ -210,7 +210,7 @@
                                     </tr>
                                 </table>
                                 
-                                <div>This software is distributed under the <a href="http://www.affero.org/oagpl.html" target="_blank">Affero General Public License</a></div>
+                                <div class="dvnOptionsTableLicense">This software is distributed under the <a href="http://www.affero.org/oagpl.html" target="_blank">Affero General Public License</a></div>
                                 
                             </div>
                         </div>

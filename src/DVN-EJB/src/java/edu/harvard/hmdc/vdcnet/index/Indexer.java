@@ -398,12 +398,10 @@ public class Indexer implements java.io.Serializable  {
         for (Iterator it = searchTerms.iterator(); it.hasNext();){
             SearchTerm elem = (SearchTerm) it.next();
             if (elem.getFieldName().equals("variable")){
-                SearchTerm st = dvnTokenizeSearchTerm(elem);
-                variableSearchTerms.add(st);
+                variableSearchTerms.add(elem);
                 variableSearch = true;
             } else {
-                SearchTerm nvst = dvnTokenizeSearchTerm(elem);
-                nonVariableSearchTerms.add(nvst);
+                nonVariableSearchTerms.add(elem);
                 nonVariableSearch = true;
             }
         }

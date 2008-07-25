@@ -57,7 +57,10 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
     "cloglog.net", "gamma.net", "logit.net", "ls.net", "normal.net", 
     "poisson.net", "probit.net",
     "gamma.survey", "logit.survey", "normal.survey", "probit.survey",
-    "poisson.survey"};
+    "poisson.survey",
+    "factor.bayes", "logit.bayes", "mlogit.bayes",
+    "oprobit.bayes", "poisson.bayes", "probit.bayes",
+    "tobit.bayes" };
     
     private static Set<String> excludedModels = new HashSet<String>();
     static {

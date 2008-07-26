@@ -314,7 +314,12 @@ public class Indexer implements java.io.Serializable  {
         addText(1.0f,  doc,"protocol",study.getProtocol());
         addText(1.0f,  doc,"authority",study.getAuthority());
         addText(1.0f,  doc,"globalId",study.getGlobalId());
+        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
+        writer.setUseCompoundFile(true);
+        writer.addDocument(doc);
+        writer.close();
         List <FileCategory> fileCategories = study.getFileCategories();
+        writerVar = new IndexWriter(dir, getAnalyzer(), !(new File(indexDir + "/segments").exists()));
         for (int i = 0; i < fileCategories.size(); i++) {
             FileCategory fileCategory = fileCategories.get(i);
             Collection<StudyFile> studyFiles = fileCategory.getStudyFiles();
@@ -324,21 +329,20 @@ public class Indexer implements java.io.Serializable  {
                 if (dataTable != null) {
                     List<DataVariable> dataVariables = dataTable.getDataVariables();
                     for (int j = 0; j < dataVariables.size(); j++) {
-                        addText(1.0f,  doc, "varStudyId", study.getId().toString());
-                        addText(1.0f,  doc, "varStudyFileId", elem.getId().toString());
+                        Document docVariables = new Document();
+                        addText(1.0f, docVariables, "varStudyId", study.getId().toString());
+                        addText(1.0f, docVariables, "varStudyFileId", elem.getId().toString());
                         DataVariable dataVariable = dataVariables.get(j);
-                        addText(1.0f,  doc, "varId", dataVariable.getId().toString());
-                        addText(1.0f,  doc, "varName", dataVariable.getName());
-                        addText(1.0f,  doc, "varLabel", dataVariable.getLabel());
-                     }
+                        addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
+                        addText(1.0f, docVariables, "varName", dataVariable.getName());
+                        addText(1.0f, docVariables, "varLabel", dataVariable.getLabel());
+                        addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
+                        writerVar.addDocument(docVariables);
+                    }
                 }
             }
         }
-        
-        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
-        writer.setUseCompoundFile(true);
-        writer.addDocument(doc);
-        writer.close();
+        writerVar.close();
         logger.info("End indexing study " + study.getStudyId());
     }
     
@@ -469,7 +473,7 @@ public class Indexer implements java.io.Serializable  {
             String studyIdStr = studyId.stringValue();
             Long studyIdLong = Long.valueOf(studyIdStr);
             if (results2.contains(studyIdLong)) {
-                Field varId = d.getField("id");
+                Field varId = d.getField("varId");
                 String varIdStr = varId.stringValue();
                 Long varIdLong = Long.valueOf(varIdStr);
                 if (!mergeResults.contains(varIdLong)) {
@@ -584,7 +588,7 @@ public class Indexer implements java.io.Serializable  {
             }
         }
         List <Document> variableResults = getHits(searchQuery);
-        List <Long> variableIdResults = getHitIds(variableResults);
+        List <Long> variableIdResults = getVariableHitIds(variableResults);
         List<Long> finalResults = studyIds != null ? intersectionDocResults(variableResults, studyIds) : variableIdResults;
         return finalResults;
     }
@@ -606,7 +610,7 @@ public class Indexer implements java.io.Serializable  {
         List<Long> finalResults = null;
         if (varIdReturnValues) {
             List<Document> variableResults = getHits(searchQuery);
-            List<Long> variableIdResults = getHitIds(variableResults);
+            List<Long> variableIdResults = getVariableHitIds(variableResults);
             finalResults = studyIds != null ? intersectionDocResults(variableResults, studyIds) : variableIdResults;
         } else {
             List<Long> studyIdResults = getVarHitIds(searchQuery); // gets the study ids
@@ -621,6 +625,27 @@ public class Indexer implements java.io.Serializable  {
     }
     
     private List<Document> getHits( Query query ) throws IOException {
+        Hits hits = null;
+        List <Document> documents = new ArrayList();
+        if (query != null){
+            if (searcher == null) {
+                searcher = new IndexSearcher(dir);
+            }
+            logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            hits = searcher.search(query); 
+            logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            for (int i = 0; i < hits.length(); i++) {
+                System.out.println("Score: "+hits.score(i));
+                documents.add(hits.doc(i));
+            }
+            logger.info("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            searcher.close();
+        }
+        return documents;
+    }
+    
+    private List<Document> getVariableHits( Query query ) throws IOException {
         Hits hits = null;
         List <Document> documents = new ArrayList();
         if (query != null){
@@ -696,6 +721,20 @@ public class Indexer implements java.io.Serializable  {
         for (Iterator it = hits.iterator(); it.hasNext();){
             Document d = (Document) it.next();
             Field studyId = d.getField("varStudyId");
+            String studyIdStr = studyId.stringValue();
+            Long studyIdLong = Long.valueOf(studyIdStr);
+            matchIdsSet.add(studyIdLong);
+        }
+        matchIds.addAll(matchIdsSet);
+        return matchIds;
+    }
+
+    private List getVariableHitIds(List <Document> hits) throws IOException {
+        ArrayList matchIds = new ArrayList();
+        LinkedHashSet matchIdsSet = new LinkedHashSet();
+        for (Iterator it = hits.iterator(); it.hasNext();){
+            Document d = (Document) it.next();
+            Field studyId = d.getField("varId");
             String studyIdStr = studyId.stringValue();
             Long studyIdLong = Long.valueOf(studyIdStr);
             matchIdsSet.add(studyIdLong);

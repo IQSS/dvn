@@ -339,13 +339,16 @@
                                         <h:outputText id="recodeHowToRecodeInstruction" 
                                                       value="#{bundleAnalysis['recode.howToRecode.instruction']}"/>
                                         
-                                        <ui:imageHyperlink id="showRecodeDetails" 
-                                                           onClick="return shwNshwTxt('recodeDetail');"
-                                                           imageURL="/resources/icon_help.gif"
-                                                           styleClass="vdcNoBorders" 
-                                                           alt="Click to show the how-to information"
-                                                           toolTip="Click to show/hide how-to information"
-                                        />
+
+                                        
+                                        <h:graphicImage 
+                                            alt="Click to show the how-to information" 
+                                            title="Click to show/hide how-to information" 
+                                            styleClass="vdcNoBorders" 
+                                            style="vertical-align: bottom" 
+                                            value="/resources/icon_help.gif" onclick="return shwNshwTxt('recodeDetail');"/>
+                                            
+                                            
                                         <div id="recodeDetail" style="display:none">
                                             <br/>
                                             <h:outputText id="recodeHowToRecodeDetails"
@@ -364,13 +367,12 @@
                                         <h:outputText id="recodeHowToSubsetInstruction" 
                                                       value="#{bundleAnalysis['recode.howToSubset.instruction']}"/>
                                         
-                                        <ui:imageHyperlink id="showSubsetDetails" 
-                                                           onClick="return shwNshwTxt('subsetDetail');"
-                                                           imageURL="/resources/icon_help.gif"
-                                                           styleClass="vdcNoBorders" 
-                                                           alt="Click to show the how-to information"
-                                                           toolTip="Click to show/hide how-to information"
-                                        />
+                                        <h:graphicImage 
+                                            alt="Click to show the how-to information" 
+                                            title="Click to show/hide how-to information" 
+                                            styleClass="vdcNoBorders" 
+                                            style="vertical-align: bottom" 
+                                            value="/resources/icon_help.gif" onclick="return shwNshwTxt('subsetDetail');"/>
                                         
                                         <div id="subsetDetail" style="display:none">
                                             <br/>
@@ -391,13 +393,13 @@
                                         <h:outputText id="recodeHowToEnterConditionInstruction" 
                                                       value="#{bundleAnalysis['recode.howToEnterCondition.instruction']}"/>
                                         
-                                        <ui:imageHyperlink id="showConditionDetails" 
-                                                           onClick="return shwNshwTxt('conditionDetail');"
-                                                           imageURL="/resources/icon_help.gif"
-                                                           styleClass="vdcNoBorders" 
-                                                           alt="Click to show the how-to information"
-                                                           toolTip="Click to show/hide how-to information"
-                                        />
+                                        
+                                        <h:graphicImage 
+                                            alt="Click to show the how-to information" 
+                                            title="Click to show/hide how-to information" 
+                                            styleClass="vdcNoBorders" 
+                                            style="vertical-align: bottom" 
+                                            value="/resources/icon_help.gif" onclick="return shwNshwTxt('conditionDetail');"/>
                                         
                                         <div id="conditionDetail" style="display:none">
                                             <br/>

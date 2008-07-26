@@ -702,6 +702,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // add existing vars to LHS box
         // add user-defined vars to LHS box if available
         resetVarSetAdvStat(varCart);
+        
+        resetMsgSaveRecodeBttn();
+        resetMsg4MoveVar();
+        msgEdaButton.setText(" ");
+        msgEdaButton.setVisible(false);
     }
 
     // </editor-fold>
@@ -1707,12 +1712,29 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
         // get the current var Id (base variable's ID)
         String oldVarId = getCurrentRecodeVariableId();
-        dbgLog.fine("base var_id=" + oldVarId);
+        dbgLog.fine("base var_id=" + oldVarId);        
+        if (oldVarId == null){
+            dbgLog.fine("source variable is not selected");
+            msgSaveRecodeBttn.setRendered(true);
+            msgSaveRecodeBttn.setText(
+                "Select one of the existing variables as a source variable;<br />"+
+                "and click the arrow button to set up the recode table"
+                );
+            return;
+        }
+
 
         // get the varName in the input field
         String newVarName = (String) recodeTargetVarName.getValue();
         dbgLog.fine("new var name=" + newVarName);
-        if (isRecodedVar(oldVarId)) {
+        if (StringUtils.isEmpty(newVarName)){
+            dbgLog.fine("Recode variable is not entered");
+                msgSaveRecodeBttn.setRendered(true);
+                msgSaveRecodeBttn.setText(
+                "New variable name is not entered;<br />"+
+                "enter a unique name in the variable-name box;");
+                return;
+        } else if (isRecodedVar(oldVarId)) {
             // replace (re-save) case
             dbgLog.fine("This variable id is found in the new variable set"
                 + " and recoding scheme would be updated");
@@ -1943,8 +1965,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     public void resetMsgSaveRecodeBttn() {
         dbgLog.fine("***** within resetMsgSaveRecodeBttn *****");
-        msgSaveRecodeBttn.setRendered(false);
         msgSaveRecodeBttn.setText(" ");
+        msgSaveRecodeBttn.setRendered(false);
+        
     }
 
     /**

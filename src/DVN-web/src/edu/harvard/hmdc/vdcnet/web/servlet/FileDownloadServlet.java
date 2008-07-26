@@ -384,13 +384,11 @@ public class FileDownloadServlet extends HttpServlet{
 			    }
 			}
 	
-			if ( jsessionid != null ) {
-			    method = new GetMethod (remoteFileUrl + ";jsessionid=" + jsessionid);
-			    method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
-			} else {
-			    method = new GetMethod (remoteFileUrl);
-			}
+			method = new GetMethod (remoteFileUrl);
 
+			if ( jsessionid != null ) {
+			    method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+			}
 
 			if ( remoteAuthHeader != null ) {
 			    method.addRequestHeader("Authorization", remoteAuthHeader ); 
@@ -401,7 +399,6 @@ public class FileDownloadServlet extends HttpServlet{
 			// not to: 
 
 			method.setFollowRedirects(false); 
-
 			status = getClient().executeMethod(method);
 
 			// The code below is to enable the click through
@@ -496,13 +493,17 @@ public class FileDownloadServlet extends HttpServlet{
 
 				if ( jsessionid != null ) {
 				    
-				    // we seem to have found a JSESSIONID; 
-				    // looks like a TOU click-through. 
-				    // let's make an agreement call 
-				    // which has to be a POST method: 
+				    // We seem to have been issued a new JSESSIONID; 
+				    // or perhaps already had a JSESSIONID issued
+				    // to us when we logged in.
+				    // Now we can make the call agreeing to
+				    // to the Terms of Use;
+				    // it has to be a POST method: 
 
 				    redirectLocation = redirectLocation.substring(0, redirectLocation.indexOf( "?" )); 
 				    PostMethod TOUpostMethod = new PostMethod( redirectLocation + ";jsessionid=" + jsessionid ); 
+				    TOUpostMethod.setFollowRedirects(false);
+
 				
 				    Part[] parts = {
 					new StringPart( "form1:vdcId", "" ),
@@ -520,18 +521,55 @@ public class FileDownloadServlet extends HttpServlet{
 				    TOUpostMethod.setRequestEntity(new MultipartRequestEntity(parts, TOUpostMethod.getParams()));
 				    TOUpostMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
 				    status = getClient().executeMethod(TOUpostMethod);
+				    int counter = 0;
 
-				    // TODO -- more diagnostics needed here! 
+				    // Now the TOU system is going to redirect
+				    // us to the actual download URL. 
+				    // Note that it can be MORE THAN ONE 
+				    // redirects (first to the homepage, then
+				    // eventually to the file download url); 
+				    // So we want to just keep following the
+				    // redirects until we get the file. 
+				    // But just in case, we'll be counting the
+				    // redirect hoops to make sure we're not
+				    // stuck in a loop. 
+
+				    redirectLocation = null;
+				    
+				    if ( status == 302 ) {
+					for (int i = 0; i < TOUpostMethod.getResponseHeaders().length; i++) {
+					    String headerName = TOUpostMethod.getResponseHeaders()[i].getName();
+					    if (headerName.equals("Location")) {
+						redirectLocation = TOUpostMethod.getResponseHeaders()[i].getValue(); 
+					    }
+					}
+				    }
+
+				    while ( status == 302 && counter < 10 ) {
+			  
+					if ( counter > 0 ) {
+					    for (int i = 0; i < method.getResponseHeaders().length; i++) {
+						String headerName = method.getResponseHeaders()[i].getName();
+						if (headerName.equals("Location")) {
+						    redirectLocation = method.getResponseHeaders()[i].getValue(); 
+						}
+					    }
+					}
+			    
+					method = new GetMethod ( redirectLocation );
+					method.setFollowRedirects(false);
+					method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+					status = getClient().executeMethod(method);
+
+					if ( status == 302 ) {
+					    method.releaseConnection(); 
+					}
+					counter++; 
+
+				    }
+
 				
 				    TOUpostMethod.releaseConnection();
-
-				    // And now, let's try and download the file
-				    // again: 
-
-				    method = new GetMethod ( remoteFileUrl);
-
-				    method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
-				    status = getClient().executeMethod(method);
 				}
 			    } else {
 				// just try again (and hope for the best!)
@@ -1490,8 +1528,8 @@ public class FileDownloadServlet extends HttpServlet{
 	String remoteDvnUser = null; 
 	String remoteDvnPw = null; 
 
-	GetMethod authMethod = null; 
-	PostMethod loginMethod = null; 
+	GetMethod loginGetMethod = null; 
+	PostMethod loginPostMethod = null; 
 
 
 	RemoteAccessAuth remoteAuth = studyService.lookupRemoteAuthByHost ( remoteHost ); 
@@ -1503,15 +1541,20 @@ public class FileDownloadServlet extends HttpServlet{
 	remoteDvnUser = remoteAuth.getAuthCred1(); 
 	remoteDvnPw   = remoteAuth.getAuthCred2(); 
 	    
+	if ( remoteDvnUser == null || remoteDvnPw == null ) {
+	    return null; 
+	}
+
 	int status = 0; 
 
 	try {
 
 	    String remoteAuthUrl = "http://" + remoteHost + "/dvn/faces/login/LoginPage.jsp"; 
-	    authMethod = new GetMethod (remoteAuthUrl);
-	    status = getClient().executeMethod(authMethod);
+	    loginGetMethod = new GetMethod (remoteAuthUrl);
+	    loginGetMethod.setFollowRedirects(false);
+	    status = getClient().executeMethod(loginGetMethod);
 
-	    InputStream in = authMethod.getResponseBodyAsStream(); 
+	    InputStream in = loginGetMethod.getResponseBodyAsStream(); 
 	    BufferedReader rd = new BufferedReader(new InputStreamReader(in)); 
 
 	    String line = null;
@@ -1539,7 +1582,7 @@ public class FileDownloadServlet extends HttpServlet{
 	    }
 
 	    rd.close();
-	    authMethod.releaseConnection(); 
+	    loginGetMethod.releaseConnection(); 
 
 	    if ( remoteJsessionid != null ) {
 		
@@ -1547,8 +1590,9 @@ public class FileDownloadServlet extends HttpServlet{
 		// now we can log in, 
 		// has to be a POST method: 
 
-		loginMethod = new PostMethod( remoteAuthUrl + ";jsessionid=" + remoteJsessionid ); 
-		
+		loginPostMethod = new PostMethod( remoteAuthUrl + ";jsessionid=" + remoteJsessionid ); 
+		loginPostMethod.setFollowRedirects(false);
+
 		Part[] parts = {
 		    new StringPart( "vanillaLoginForm:vdcId", "" ),
 		    new StringPart( "vanillaLoginForm:username", remoteDvnUser ),
@@ -1559,18 +1603,58 @@ public class FileDownloadServlet extends HttpServlet{
 		};
 
 
-		loginMethod.setRequestEntity(new MultipartRequestEntity(parts, loginMethod.getParams()));
-		loginMethod.addRequestHeader("Cookie", "JSESSIONID=" + remoteJsessionid ); 
-		status = getClient().executeMethod(loginMethod);
-		loginMethod.releaseConnection();
+		loginPostMethod.setRequestEntity(new MultipartRequestEntity(parts, loginPostMethod.getParams()));
+		loginPostMethod.addRequestHeader("Cookie", "JSESSIONID=" + remoteJsessionid ); 
+		status = getClient().executeMethod(loginPostMethod);
+
+		String redirectLocation = null;
+			  
+		if ( status == 302 ) {
+		    for (int i = 0; i < loginPostMethod.getResponseHeaders().length; i++) {
+			String headerName = loginPostMethod.getResponseHeaders()[i].getName();
+			if (headerName.equals("Location")) {
+			    redirectLocation = loginPostMethod.getResponseHeaders()[i].getValue(); 
+			}
+		    }
+		}
+
+		int counter = 0; 
+
+		while ( status == 302 && counter < 10 ) {
+
+		    if ( counter > 0 ) {
+			for (int i = 0; i < loginGetMethod.getResponseHeaders().length; i++) {
+			    String headerName = loginGetMethod.getResponseHeaders()[i].getName();
+			    if (headerName.equals("Location")) {
+				redirectLocation = loginGetMethod.getResponseHeaders()[i].getValue(); 
+			    }
+			}
+		    }
+			    
+		    // try following redirects until we get a static page,
+		    // or until we exceed the hoop limit.
+
+		    loginGetMethod = new GetMethod ( redirectLocation );
+		    loginGetMethod.setFollowRedirects(false);
+		    loginGetMethod.addRequestHeader("Cookie", "JSESSIONID=" + remoteJsessionid ); 
+		    status = getClient().executeMethod(loginGetMethod);
+
+		    //InputStream in = loginGetMethod.getResponseBodyAsStream(); 
+		    //BufferedReader rd = new BufferedReader(new InputStreamReader(in)); 
+		    //rd.close(); 
+		    loginGetMethod.releaseConnection(); 
+		    counter++; 
+		}
+
+		loginPostMethod.releaseConnection();
 	    }
 
 	} catch (IOException ex) {
-	    if (authMethod != null) { 
-		authMethod.releaseConnection(); 
+	    if (loginGetMethod != null) { 
+		loginGetMethod.releaseConnection(); 
 	    }
-	    if (loginMethod != null) { 
-		loginMethod.releaseConnection(); 
+	    if (loginPostMethod != null) { 
+		loginPostMethod.releaseConnection(); 
 	    }
 	    return null; 
 	}

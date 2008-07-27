@@ -100,6 +100,7 @@ import java.util.Scanner;
 
 import java.util.zip.*;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.*;
 
@@ -767,7 +768,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
          return result;
     }
 
+    HtmlPanelGroup pgDwnldErrMsg = new HtmlPanelGroup();
 
+    public HtmlPanelGroup getPgDwnldErrMsg() {
+        return pgDwnldErrMsg;
+    }
+
+    public void setPgDwnldErrMsg(HtmlPanelGroup pgDwnldErrMsg) {
+        this.pgDwnldErrMsg = pgDwnldErrMsg;
+    }
+    
 
     // msgDwnldButton:ui:StaticText@binding
     private StaticText msgDwnldButton = new StaticText();
@@ -822,6 +832,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         
         // Hides the error message text next to the download button
         msgDwnldButton.setVisible(false);
+        pgDwnldErrMsg.setRendered(false);
         dbgLog.fine("***** resetMsgDwnldButton: end *****");
     }
 
@@ -1337,7 +1348,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         } else {
             // the selection is incomplete
             // show error message;
-            msgDwnldButton.setText("* Select a format");
+            pgDwnldErrMsg.setRendered(true);
+            msgDwnldButton.setText("* Error: Select a file format");
             msgDwnldButton.setVisible(true);
             dbgLog.warning("exiting dwnldAction() due to incomplete data ");
             getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1367,12 +1379,56 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setMoveRecodeVarBttn(HtmlCommandButton hcb) {
         this.moveRecodeVarBttn = hcb;
     }
+    private PanelGroup groupPanelRecodeNewVarInfo = new PanelGroup();
 
+    public PanelGroup getGroupPanelRecodeNewVarInfo() {
+        return groupPanelRecodeNewVarInfo;
+    }
+
+    public void setGroupPanelRecodeNewVarInfo(PanelGroup groupPanelRecodeNewVarInfo) {
+        this.groupPanelRecodeNewVarInfo = groupPanelRecodeNewVarInfo;
+    }
+
+    private HtmlPanelGroup groupPanelRecodeInstruction1 = new HtmlPanelGroup();
+
+    public HtmlPanelGroup getGroupPanelRecodeInstruction1() {
+        return groupPanelRecodeInstruction1;
+    }
+
+    public void setGroupPanelRecodeInstruction1(HtmlPanelGroup groupPanelRecodeInstruction1) {
+        this.groupPanelRecodeInstruction1 = groupPanelRecodeInstruction1;
+    }
+    
+    
+    private HtmlPanelGroup groupPanelRecodeInstruction2 = new HtmlPanelGroup();
+
+    public HtmlPanelGroup getGroupPanelRecodeInstruction2() {
+        return groupPanelRecodeInstruction2;
+    }
+
+    public void setGroupPanelRecodeInstruction2(HtmlPanelGroup groupPanelRecodeInstruction2) {
+        this.groupPanelRecodeInstruction2 = groupPanelRecodeInstruction2;
+    }
+    
+    private HtmlPanelGroup groupPanelRecodeTableArea = new HtmlPanelGroup();
+
+    public HtmlPanelGroup getGroupPanelRecodeTableArea() {
+        return groupPanelRecodeTableArea;
+    }
+
+    public void setGroupPanelRecodeTableArea(HtmlPanelGroup groupPanelRecodeTableArea) {
+        this.groupPanelRecodeTableArea = groupPanelRecodeTableArea;
+    }
+    
     // moveRecodeVarBttn:h:commandButton@actionListener
     public void moveRecodeVariable(ActionEvent acev) {
 
         dbgLog.fine("***** moveRecodeVariable(): begins here *****");
-        
+        if (!groupPanelRecodeTableArea.isRendered()){
+            groupPanelRecodeTableArea.setRendered(true);
+            groupPanelRecodeInstruction2.setRendered(true);
+            groupPanelRecodeInstruction1.setRendered(false);
+        }
         String varId = null;// getSelectedRecodeVariable();
         if (getSelectedRecodeVariable() == null){
             varId = (String)listboxRecode.getSelected();
@@ -1413,9 +1469,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 setCurrentRecodeVariableId(varId);
                 // set the label
                 // setRecodeVariableLabel(getVariableLabelfromId(varId));
-
-                recodeTargetVarName.setValue(varName);
-                recodeTargetVarLabel.setValue(getVariableLabelfromId(varId));
+                String newNamePrefix = "new_"+ RandomStringUtils.randomAlphanumeric(2) +"_";
+                recodeTargetVarName.setValue(newNamePrefix+varName);
+                recodeTargetVarLabel.setValue(newNamePrefix+getVariableLabelfromId(varId));
 
                 // get value/label data and set them to the table
                 DataVariable dv = getVariableById(varId);
@@ -1883,15 +1939,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
             // show the recode-var table
             pgRecodedVarTable.setRendered(true);
-
+            dbgLog.fine("updated recodeVarNameSet:"+recodeVarNameSet);
         } else {
             // 2nd-time save
             // not required to add this var to mapping tables
+            dbgLog.fine("newVarName="+newVarName);
+            dbgLog.fine("existing recodeVarNameSet:"+recodeVarNameSet);
         }
         // show the recoded-var table
         // recodedVarTable.setRendered(true);
         dbgLog.fine("recodeVarSet=" + recodedVarSet);
-
         // save recode-source variable name for the header
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
             .put("currentRecodeVariableName", currentRecodeVariableName);
@@ -2085,6 +2142,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         if (baseVarToDerivedVar.isEmpty()) {
             pgRecodedVarTable.setRendered(false);
         }
+        // reset the recode-woring area
+        groupPanelRecodeTableArea.setRendered(false);
+        groupPanelRecodeInstruction2.setRendered(false);
+        groupPanelRecodeInstruction1.setRendered(true);
+            
         dbgLog.fine("***** removeRecodedVariable(): ends here *****");
     }
 
@@ -2522,15 +2584,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.recodedVarTableTitle = hot;
     }
 
-    // ui:panelGroup PGrecodedVarTable
+    // h:panelGroup PGrecodedVarTable
     // @binding
-    private PanelGroup pgRecodedVarTable = new PanelGroup();
+    private HtmlPanelGroup pgRecodedVarTable = new HtmlPanelGroup();
 
-    public PanelGroup getPgRecodedVarTable() {
+    public HtmlPanelGroup getPgRecodedVarTable() {
         return pgRecodedVarTable;
     }
 
-    public void setPgRecodedVarTable(PanelGroup pg) {
+    public void setPgRecodedVarTable(HtmlPanelGroup pg) {
         this.pgRecodedVarTable = pg;
     }
 
@@ -7428,7 +7490,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         recodedVarTableTitle.setRendered(false);
 
         // 7. Hides the panel grid that contains the recoded-variable table
-        pgRecodedVarTable.setRendered(false);
+        //pgRecodedVarTable.setRendered(false);
+        groupPanelRecodeTableArea.setRendered(false);
     }
 
     // <----------------------------------------------------------------------

@@ -220,24 +220,45 @@
                                     <f:selectItem id="dwnldFileTypeSplus" itemLabel="#{bundleAnalysis['dwnld.fileType.Splus']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[2]}"/>
                                     <f:selectItem id="dwnldFileTypeStata" itemLabel="#{bundleAnalysis['dwnld.fileType.stata']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[3]}"/>
                                 </h:selectOneRadio>
-                                <ui:staticText id="msgDwnldButton" binding="#{AnalysisPage.msgDwnldButton}" 
-                                                visible="false" escape="false" styleClass="errorMessage"
-                                                text="#{AnalysisPage.msgDwnldButtonTxt}"
-                                                />
-                                                <br />
+                                
+                                <!-- message block submit button -->
+                                <h:panelGroup layout="block">
+                                <br/>
+                                <h:panelGroup id="pgDwnldErrMsg"
+                                    binding="#{AnalysisPage.pgDwnldErrMsg}"
+                                    rendered="false"
+                                    style="margin:4px 4px;background:#f4ebc7;padding:10px;"
+                                    >
+                                <h:graphicImage 
+                                    alt="Error" 
+                                    title="Error" 
+                                    styleClass="vdcNoBorders" 
+                                    style="vertical-align: middle" 
+                                    value="/resources/error_small.gif" />
+                                <ui:staticText id="msgDwnldButton"
+                                    binding="#{AnalysisPage.msgDwnldButton}" 
+                                    visible="false" 
+                                    escape="true" 
+                                    styleClass="errorMessage"
+                                    
+                                    text="#{AnalysisPage.msgDwnldButtonTxt}"
+                                    />
+                                </h:panelGroup>
+                                <br />
+                                
                                 <h:commandButton id="dwnldBttn"
-                                                 binding="#{AnalysisPage.dwnldButton}" 
-                                                 type="submit" 
-                                                 disabled="true" 
-                                                 value="#{bundleAnalysis['dwnld.button.submit']}" 
-                                                 action="#{AnalysisPage.dwnldAction}">
-                                    <!--f:param name="PID" value="{AnalysisPage.requestResultPID}"/ -->
-                                    <!--f:param name="requestOption" value="{AnalysisPage.requestOption}"/ -->
+                                    binding="#{AnalysisPage.dwnldButton}" 
+                                    type="submit" 
+                                    disabled="true" 
+                                    style="margin-top:10px"
+                                    value="#{bundleAnalysis['dwnld.button.submit']}" 
+                                    action="#{AnalysisPage.dwnldAction}">
                                 </h:commandButton>
+                                </h:panelGroup>
                             </ui:panelGroup>
    
                         </h:panelGrid>
-                        
+                        <!-- Edit-variable block-->
                         <ui:panelGroup block="true" rendered="#{AnalysisPage.editVariableActionRendered}" style="padding-top:10px; padding-bottom:10px;">
                             <h:commandLink id="linkAction5" action="#{AnalysisPage.gotoEditVariableAction}">
                                     <h:outputText id="linkAction5Text" value="Edit selected variables"/>   
@@ -258,29 +279,49 @@
                         <h:panelGrid  id="gridPanel7"
                                       cellpadding="0" cellspacing="0" columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" columns="2" width="100%">
                             <!-- 1st column -->
-                            <ui:panelGroup id="groupPanel10" separator="&lt;br /&gt;">
-                                
+                            <ui:panelGroup id="groupPanel10">
+                            <h:panelGrid columns="2">
+                                <h:panelGroup>
                                 <!-- ui tag solution -->
                                 <ui:listbox id="listboxRecode" 
-                                            items="#{AnalysisPage.varSetAdvStat}" 
-                                            binding="#{AnalysisPage.listboxRecode}"
-                                            selected="#{AnalysisPage.selectedRecodeVariable}"
-                                            rows="10" 
-                                            labelLevel="3" 
-                                            monospace="true"  
-                                            multiple="false" 
-                                            label="#{bundleAnalysis['advStat.selectedVarBox.title']}"
-                                            labelOnTop="true"/>
-                                
+                                    items="#{AnalysisPage.varSetAdvStat}" 
+                                    binding="#{AnalysisPage.listboxRecode}"
+                                    selected="#{AnalysisPage.selectedRecodeVariable}"
+                                    rows="10" 
+                                    labelLevel="3" 
+                                    monospace="true"  
+                                    multiple="false" 
+                                    label="#{bundleAnalysis['advStat.selectedVarBox.title']}"
+                                    labelOnTop="true"/>
                                 <ui:helpInline 
                                     id="helpInline4" 
-                                    text="#{bundleAnalysis['recode.selectedvarBox.bttmHelpText']}" type="field" rendered="false" />
+                                    text="#{bundleAnalysis['recode.selectedvarBox.bttmHelpText']}" 
+                                    type="field" 
+                                    rendered="false" />
+                                </h:panelGroup>
+                                <h:panelGroup id="groupPanelRecodeMiddleColumn">
+                                
+                                <h:commandButton id="moveRecodeVarBttn"
+                                     binding="#{AnalysisPage.moveRecodeVarBttn}"
+                                     immediate="true"
+                                     actionListener="#{AnalysisPage.moveRecodeVariable}"
+                                     disabled="true"
+                                     style="vertical-align:top"
+                                     alt="#{bundleAnalysis['recode.button.moveVar.alt']}"  
+                                     value="start" />
+                                </h:panelGroup>  
+                            </h:panelGrid>
                             </ui:panelGroup>
                             <!-- end: 1st column -->
-                        
+                            
                             <!-- 2nd column -->
-                            <ui:panelGroup id="groupPanel11" separator="&lt;br /&gt;">
-                                <ui:panelGroup id="wrapRecodeInstruction">
+                            
+                            <ui:panelGroup id="groupPanel11" block="true">
+                                <!-- instruction lines-->
+                                <h:panelGroup id="groupPanelRecodeInstruction1" 
+                                    binding="#{AnalysisPage.groupPanelRecodeInstruction1}"
+                                    rendered="true" 
+                                    layout="block">
                                     <h:graphicImage 
                                         alt="Information" 
                                         title="Information" 
@@ -288,46 +329,85 @@
                                         style="vertical-align: bottom" 
                                         value="/resources/icon_info.gif" />
                                     
-                                    <h:outputText id="outputText49" 
-                                                  value="#{bundleAnalysis['recode.instruction']}"/>
-                                </ui:panelGroup>
-                                <br />
+                                    <h:outputText id="outputText491" 
+                                        value="#{bundleAnalysis['recode.instruction.line1']}"/>
+                                    <br />
+                                </h:panelGroup>
                                 
-                                <ui:panelGroup id="recodeTableArea">
-                                    <h:panelGrid id="groupPanel15" cellpadding="0" cellspacing="10px" columns="2" >
-                                        <h:commandButton id="moveRecodeVarBttn"
-                                                         binding="#{AnalysisPage.moveRecodeVarBttn}"
-                                                         immediate="true"
-                                                         actionListener="#{AnalysisPage.moveRecodeVariable}"
-                                                         disabled="true"
-                                                         style="vertical-align:top"
-                                                         alt="#{bundleAnalysis['recode.button.moveVar.alt']}"  
-                                                         value=" &gt; "   />
-                                        
-                                        <ui:panelGroup id="recodeNewVarInfo">
+                                <h:panelGroup id="groupPanelRecodeInstruction2" 
+                                    binding="#{AnalysisPage.groupPanelRecodeInstruction2}"
+                                    rendered="false"
+                                    layout="block">
+                                    <h:graphicImage 
+                                        alt="Information" 
+                                        title="Information" 
+                                        styleClass="vdcNoBorders" 
+                                        style="vertical-align: bottom" 
+                                        value="/resources/icon_info.gif" />
+                                    <h:outputText id="outputText492" 
+                                        value="#{bundleAnalysis['recode.instruction.line2']}"/>
+                                    <br />
+                                    <h:outputText id="outputText493" 
+                                        value="#{bundleAnalysis['recode.instruction.line3']}"/>
+                                    <h:panelGroup id="requiredfield" layout="block">
+                                    <h:outputText id="rfb" escape="false" value="(" />
+                                    <h:graphicImage value="/resources/icon_required.gif" />
+                                    <h:outputText id="rfa" style="vdcHelpText"
+                                        value="indicates a required field.)" />
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                                <br />
+                                <!-- recoding working area -->
+                                <h:panelGroup id="groupPanelRecodeTableArea" 
+                                    binding="#{AnalysisPage.groupPanelRecodeTableArea}"
+                                    rendered="false"
+                                    block="true" >
+                                    <!-- input boxes for variable name/label -->
+                                    <h:panelGrid id="groupPanel15" 
+                                        cellpadding="0" 
+                                        cellspacing="10px" 
+                                        columns="2" >
+    
+                                        <h:panelGroup id="groupPanelRecodeNewVarInfo" 
+                                                binding="#{AnalysisPage.groupPanelRecodeNewVarInfo}" >
+                                            <h:panelGroup>
+                                            <h:outputText id="currentConditionVar" 
+                                                 value="#{bundleAnalysis['recode.currentConditionVar']}"/>
+                                                
+                                            </h:panelGroup>
+                                            <br/>
+                                            <h:panelGroup>    
                                             <h:outputText id="recodeNewVarName" 
-                                                          value="#{bundleAnalysis['recode.newVar.name']}"/>
+                                                 value="#{bundleAnalysis['recode.newVar.name']}"/>
+                                                <h:graphicImage  value="/resources/icon_required.gif"/>
+                                            </h:panelGroup>
+                                            <br/>
+                                            <h:panelGroup>
+                                            <h:outputText id="recodeNewVarLabel"
+                                                value="#{bundleAnalysis['recode.newVar.label']}"/>
+                                                
+                                            </h:panelGroup>
                                             
+                                        </h:panelGroup>
+                                        <h:panelGroup>
+                                            <h:outputText id="currentRecodeVariableName"
+                                                value="#{AnalysisPage.currentRecodeVariableName}"
+                                                />
+                                            <br/>
                                             <h:inputText id="recodeTargetVarName"
                                                          binding="#{AnalysisPage.recodeTargetVarName}"
-                                            /> <br/>
-                                            <!-- value="#{AnalysisPage.recodeVariableName}"  -->
-
-                                            <h:outputText id="recodeNewVarLabel"
-                                                          value="#{bundleAnalysis['recode.newVar.label']}"/>
-                                            
+                                            />
+                                            <br />
                                             <h:inputText id="recodeTargetVarLabel"
-                                                         binding="#{AnalysisPage.recodeTargetVarLabel}"
-                                                         
-                                                         size="40"/>
-                                            <!-- value="#{AnalysisPage.recodeVariableLabel}" -->
-                                        </ui:panelGroup>
+                                                binding="#{AnalysisPage.recodeTargetVarLabel}"
+                                                size="40"/>                                            
+                                        </h:panelGroup>
                                     </h:panelGrid>
+                                    <!-- end of variable name/label boxes-->
+                                    <!-- help pane -->
                                     <ui:panelGroup id="recodeTableHelpPanel" 
                                                    binding="#{AnalysisPage.groupPanelRecodeTableHelp}" 
-                                                   rendered="false">
-                                        
-                                        
+                                                   >
                                         
                                         <h:graphicImage 
                                             alt="Information" 
@@ -410,96 +490,93 @@
                                         
                                         
                                     </ui:panelGroup>
+                                    <!-- end of help panel -->
+                                    <!-- recoding table panel -->
                                     <h:dataTable id="recodeTable" 
-                                                 binding="#{AnalysisPage.recodeTable}"
-                                                 var="rd"
-                                                 value="#{AnalysisPage.recodeDataList}"
-                                                 rendered="false"
-                                                 cellpadding="0" cellspacing="0" columnClasses="vdcRecodesColA, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB" 
-                                                 headerClass="vdcRecodesHeader" 
-                                                 style="margin-top: 20px" >
+                                        binding="#{AnalysisPage.recodeTable}"
+                                        var="rd"
+                                        value="#{AnalysisPage.recodeDataList}"
+                                        rendered="false"
+                                        cellpadding="0" cellspacing="0" columnClasses="vdcRecodesColA, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB" 
+                                        headerClass="vdcRecodesHeader" 
+                                        style="margin-top: 20px" >
                                         
                                         <h:column id="recodeClDropx">
                                             <f:facet name="header">
                                                 <h:outputText id="recodeHdrDrop" 
-                                                              value="#{bundleAnalysis['recode.valueTable.drop.header']}"/>
+                                                    value="#{bundleAnalysis['recode.valueTable.drop.header']}"/>
                                             </f:facet>
-                                            <!--
-                                            <ui:checkbox id="recodeDropValueCheckbox"
-                                                         binding="#{AnalysisPage.recodeDropValueCheckbox}"
-                                                         selected="#{rd[0]}"
-                                                         toolTip="#{bundleAnalysis['recode.valueTable.drop.checkbox']}"
-                                                         immediate="true"/>
-                                            -->
-                                            <h:selectBooleanCheckbox id="recodeDropValueCheckboxx"
-                                                     binding="#{AnalysisPage.recodeDropValueCheckboxx}" 
-                                                     value="#{rd[0]}" 
-                                                     title="#{bundleAnalysis['recode.valueTable.drop.checkbox']}"
-                                                     immediate="true"/>   
-                                            
-                                        </h:column>
-                                        <h:column id="recodeClValue">
-                                            <f:facet name="header">
-                                                <h:outputText id="recodeHdrValue" 
-                                                              value="#{bundleAnalysis['recode.valueTable.value.header']}"/>
-                                            </f:facet>
-                                            
-                                            <h:inputText  id="recodeValueBox" 
-                                                          
-                                                          value="#{rd[1]}"
-                                                          size="10"/>
-                                            
-                                        </h:column>
-                                        <h:column id="recodeClValueLabel">
-                                            <f:facet name="header">
-                                                <h:outputText id="recodeHdrValueLabel" 
-                                                              value="#{bundleAnalysis['recode.valueTable.valuelabel.header']}"/>
-                                            </f:facet>
-                                            
-                                            <h:inputText  id="recodeValueLabelBox"
-                                                          value="#{rd[2]}" 
-                                                          size="25"/>
+                                            <h:selectBooleanCheckbox
+                                                id="recodeDropValueCheckboxx"
+                                                binding="#{AnalysisPage.recodeDropValueCheckboxx}" 
+                                                value="#{rd[0]}" 
+                                                title="#{bundleAnalysis['recode.valueTable.drop.checkbox']}"
+                                                immediate="true"/>   
                                             
                                         </h:column>
                                         <h:column id="recodeClVariable">
                                             <f:facet name="header">
                                                 <h:outputText id="recodeHdrVariable" 
-                                                              value="#{AnalysisPage.currentRecodeVariableName}"/>
+                                                    value="#{AnalysisPage.currentRecodeVariableName}"/>
                                             </f:facet>
                                             
                                             <h:inputText  id="recodeVariableNameBox"
-                                                          value="#{rd[3]}" 
-                                                          size="10"/>
+                                                value="#{rd[3]}" 
+                                                size="10"/>
+                                        </h:column> 
+                                        <h:column id="recodeClValue">
+                                            <f:facet name="header">
+                                                <h:outputText id="recodeHdrValue" 
+                                                    value="#{bundleAnalysis['recode.valueTable.value.header']}"/>
+                                            </f:facet>
+                                            
+                                            <h:inputText  id="recodeValueBox" 
+                                                          
+                                                value="#{rd[1]}"
+                                                size="10"/>
                                             
                                         </h:column>
+                                        <h:column id="recodeClValueLabel">
+                                            <f:facet name="header">
+                                                <h:outputText id="recodeHdrValueLabel" 
+                                                    value="#{bundleAnalysis['recode.valueTable.valuelabel.header']}"/>
+                                            </f:facet>
+                                            
+                                            <h:inputText  id="recodeValueLabelBox"
+                                                value="#{rd[2]}" 
+                                                size="25"/>
+                                            
+                                        </h:column>
+
                                     </h:dataTable>
+                                    <!-- end of recoding table -->
                                     <br />
                                     <h:commandButton id="addValueRangeBttn" 
-                                                     binding="#{AnalysisPage.addValueRangeBttn}"
-                                                     value="#{bundleAnalysis['recode.button.addValue']}"
-                                                     actionListener="#{AnalysisPage.addValueRange}"
-                                                     rendered ="false"/>
+                                        binding="#{AnalysisPage.addValueRangeBttn}"
+                                        value="#{bundleAnalysis['recode.button.addValue']}"
+                                        actionListener="#{AnalysisPage.addValueRange}"
+                                        rendered ="false"/>
                                     
                                     <ui:panelGroup id="groupPanel18" 
-                                                   block="true" 
-                                                   style="padding-left: 300px; white-space: nowrap">
+                                        block="true" 
+                                        style="padding-left: 300px; white-space: nowrap">
                                         
                                         <h:commandButton id="recodeBttn"
-                                                         binding="#{AnalysisPage.recodeButton}" 
-                                                         value="#{bundleAnalysis['recode.button.save']}"
-                                                         actionListener="#{AnalysisPage.saveRecodedVariable}"
-                                                         disabled="true" />
+                                            binding="#{AnalysisPage.recodeButton}" 
+                                            value="#{bundleAnalysis['recode.button.save']}"
+                                            actionListener="#{AnalysisPage.saveRecodedVariable}"
+                                            disabled="true" />
                                         
                                         <ui:staticText id="msgSaveRecodeBttn"
-                                                       binding="#{AnalysisPage.msgSaveRecodeBttn}" 
-                                                       rendered="false"
-                                                       escape="false"
-                                                       styleClass="errorMessage"/>
+                                            binding="#{AnalysisPage.msgSaveRecodeBttn}" 
+                                            rendered="false"
+                                            escape="false"
+                                            styleClass="errorMessage"/>
                                         
                                         
                                     </ui:panelGroup>
                                     
-                                </ui:panelGroup><!-- recodeTableArea -->
+                                </h:panelGroup><!-- recodeTableArea -->
 
                             </ui:panelGroup><!--end 2nd column  -->
                         </h:panelGrid>
@@ -508,25 +585,30 @@
                 
                 
                 <!-- 3. EDA -->
-                <ui:tab id="tabEda" text="Descriptive Statistics" 
+                <ui:tab id="tabEda" 
+                    text="Descriptive Statistics" 
                     actionListener="#{AnalysisPage.resetVariableInLBox}"
                     toolTip="Calculate Numeric and Graphic Summaries">
-                    <ui:panelLayout id="layoutPanel4" panelLayout="flow" style="width: 100%;">
+                    <ui:panelLayout id="layoutPanel4" 
+                        panelLayout="flow" 
+                        style="width: 100%;">
                         
-                        <h:panelGrid cellpadding="0" cellspacing="0" columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" columns="2" id="gridPanel2" width="100%">
+                        <h:panelGrid id="gridPanel2" 
+                            cellpadding="0" cellspacing="0" columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" columns="2" width="100%">
                             
                             <ui:panelGroup id="groupPanel3" separator="&lt;br /&gt;">
                                 <!-- ui tag solution -->
                                 <ui:listbox id="mListboxEda" 
-                                            items="#{AnalysisPage.varSetAdvStat}" 
-                                            rows="10" 
-                                            labelLevel="3" 
-                                            disabled="true"
-                                            monospace="true"  
-                                            multiple="true" 
-                                            label="#{bundleAnalysis['eda.selectedVarBox.title']}"
-                                            labelOnTop="true"/>
-                                <ui:helpInline id="helpInline3" text="#{bundleAnalysis['eda.selectedvarBox.bttmHelpText']}" type="field" rendered="false" />
+                                    items="#{AnalysisPage.varSetAdvStat}" 
+                                    rows="10" 
+                                    labelLevel="3" 
+                                    disabled="true"
+                                    monospace="true"  
+                                    multiple="true" 
+                                    label="#{bundleAnalysis['eda.selectedVarBox.title']}"
+                                    labelOnTop="true"/>
+                                <ui:helpInline id="helpInline3"
+                                    text="#{bundleAnalysis['eda.selectedvarBox.bttmHelpText']}" type="field" rendered="false" />
                                 
                             </ui:panelGroup>
                             
@@ -544,22 +626,24 @@
                                 <h:selectManyCheckbox binding="#{AnalysisPage.edaOptionSet}" id="analysis" layout="pageDirection">
                                     
                                     <f:selectItem  id="edaOptionNumeric" 
-                                                   itemLabel="#{bundleAnalysis['eda.option.numeric']}" 
-                                                   itemValue="#{AnalysisPage.edaOptionItems[0]}"/>
+                                        itemLabel="#{bundleAnalysis['eda.option.numeric']}" 
+                                        itemValue="#{AnalysisPage.edaOptionItems[0]}"/>
                                     <f:selectItem  id="edaOptionGraphic" 
-                                                   itemLabel="#{bundleAnalysis['eda.option.graphic']}"  
-                                                   itemValue="#{AnalysisPage.edaOptionItems[1]}"/>
+                                        itemLabel="#{bundleAnalysis['eda.option.graphic']}"  
+                                        itemValue="#{AnalysisPage.edaOptionItems[1]}"/>
                                     
                                 </h:selectManyCheckbox>
-                                <ui:staticText  id="msgEdaButton" binding="#{AnalysisPage.msgEdaButton}" 
-                                                visible="false" escape="false" styleClass="errorMessage" 
-                                                 text="#{AnalysisPage.msgEdaButtonTxt}"/>
+                                <ui:staticText  id="msgEdaButton"
+                                    binding="#{AnalysisPage.msgEdaButton}" 
+                                    visible="false" escape="false" 
+                                    styleClass="errorMessage" 
+                                    text="#{AnalysisPage.msgEdaButtonTxt}"/>
                                                 <br />
                                 <h:commandButton  id="edaBttn"
-                                                  binding="#{AnalysisPage.edaButton}" 
-                                                  disabled="true" 
-                                                  value="#{bundleAnalysis['eda.button.submit']}" 
-                                                  action="#{AnalysisPage.edaAction}"/>
+                                    binding="#{AnalysisPage.edaButton}" 
+                                    disabled="true" 
+                                    value="#{bundleAnalysis['eda.button.submit']}" 
+                                    action="#{AnalysisPage.edaAction}"/>
                                 
                             </ui:panelGroup>
                             
@@ -1234,13 +1318,14 @@
             <!---->
             <h:panelGrid id="belowDT">
                 
-                <ui:panelGroup id="pgRecodedVarTable"
-                               binding="#{AnalysisPage.pgRecodedVarTable}"
-                               rendered="false">
+                <h:panelGroup id="pgRecodedVarTable"
+                    binding="#{AnalysisPage.pgRecodedVarTable}"
+                    layout="block"
+                    rendered="false">
                     
                     <h:outputText id="recodedVarTableTitle" 
-                                  binding="#{AnalysisPage.recodedVarTableTitle}"
-                                  value="#{bundleAnalysis['recodedVarTable.title']}"/>
+                        binding="#{AnalysisPage.recodedVarTableTitle}"
+                        value="#{bundleAnalysis['recodedVarTable.title']}"/>
                     <!--
 <br />
 
@@ -1249,26 +1334,32 @@
   value="#{bundleAnalysis['recodedVarTable.state']}"/>
                 -->
                     <h:dataTable id="recodedVarTable"
-                                 binding="#{AnalysisPage.recodedVarTable}" 
-                                 var="rcw"
-                                 value="#{AnalysisPage.recodedVarSet}"
-                                 headerClass="list-header"  rowClasses="list-row-even,list-row-odd"
-                                 cellpadding="0"
-                                 cellspacing="0"
-                                 columnClasses="vdcVariablesCol3, vdcVariablesCol4, vdcVariablesCol5, vdcVariablesCol2"
-                                 style="margin: 10px 4px 10px 8px;">
+                        binding="#{AnalysisPage.recodedVarTable}" 
+                        var="rcw"
+                        value="#{AnalysisPage.recodedVarSet}"
+                        headerClass="list-header"  
+                        rowClasses="list-row-odd,list-row-even"
+                        cellpadding="2px"
+                        cellspacing="0"
+                        columnClasses="vdcVariablesCol3, vdcVariablesCol4, vdcVariablesCol5, vdcVariablesCol2"
+                        style="margin: 10px 4px 10px 8px;">
                         
                         <!-- chekcbox: remove --><!---->
                         <h:column id="RVTcolumn0">
                             <f:facet name="header">
-                                <h:outputText id="RVThdr0" value="#{bundleAnalysis['recodedVarTable.colHdr.remove']}"/>
+                                <h:outputText id="RVThdr0" 
+                                value="#{bundleAnalysis['recodedVarTable.colHdr.remove']}"/>
                             </f:facet>
 
-                            <ui:hyperlink id="removeRecodedVariable" 
-                                          actionListener="#{AnalysisPage.removeRecodedVariable}"
-                                          immediate="true" 
-                                          text="#{bundleAnalysis['recodedVarTable.hyperLink.title.remove']}" 
-                                          toolTip="#{bundleAnalysis['recodedVarTable.tooltip.remove']}" /> 
+                            
+                            <h:commandLink id="removeRecodedVariable"
+                                actionListener="#{AnalysisPage.removeRecodedVariable}"
+                                title="#{bundleAnalysis['recodedVarTable.tooltip.remove']}"
+                                immediate="true"
+                                shape="rect" 
+                                >
+                                <h:outputText value="#{bundleAnalysis['recodedVarTable.hyperLink.title.remove']}"/>
+                            </h:commandLink>
                             
                         </h:column>
                         
@@ -1295,11 +1386,11 @@
                             </f:facet>
                             <!-- h:outputText id="RVTcolv3" value="#{rcw[3]}"/ -->
                             <ui:hyperlink id="RVTcolv3" 
-                                          actionListener="#{AnalysisPage.editRecodedVariable}"
-                                          immediate="true" 
-                                          text="#{bundleAnalysis['recodedVarTable.hyperLink.title.modify']}" 
-                                          toolTip="#{bundleAnalysis['recodedVarTable.tooltip.modify']}"
-                                          visible="false"
+                                actionListener="#{AnalysisPage.editRecodedVariable}"
+                                immediate="true" 
+                                text="#{bundleAnalysis['recodedVarTable.hyperLink.title.modify']}" 
+                                toolTip="#{bundleAnalysis['recodedVarTable.tooltip.modify']}"
+                                visible="false"
                             /> 
                             
                         </h:column>
@@ -1314,7 +1405,7 @@
                         
                     </h:dataTable>
                     
-                </ui:panelGroup>
+                </h:panelGroup>
             </h:panelGrid>
             
             

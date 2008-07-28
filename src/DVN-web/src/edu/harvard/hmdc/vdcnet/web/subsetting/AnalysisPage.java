@@ -275,6 +275,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /** Sets the logger (use the package name) */
     private static Logger dbgLog = Logger.getLogger(AnalysisPage.class.getPackage().getName());
     
+    private static String SUBSET_FILENAME_PREFIX="dvnSubsetFile.";
+    
     // </editor-fold>
     
     // -----------------------------------------------------------------------
@@ -934,6 +936,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // local (relative to the application) file case 
             // note: a typical remote case is: US Census Bureau
             
+            File tmpsbfl= null;
+            
             if (sbstOK){
                 
                 try {
@@ -947,7 +951,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     File tmpfl = File.createTempFile("tempTabfile.", ".tab");
 
                     // temp subset file that stores requested variables 
-                    File tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
+                    tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
                     
                     //zipFileList.add(tmpsbfl);
                     
@@ -1184,6 +1188,27 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             
             try{
 
+                // rename the subsetting file
+                File tmpsbflnew = File.createTempFile(SUBSET_FILENAME_PREFIX + resultInfo.get("PID") +".", ".tab");
+                
+                InputStream inb = new BufferedInputStream(new FileInputStream(tmpsbfl));
+                OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpsbflnew));
+
+                int bufsize;
+                byte [] bffr = new byte[8192];
+                while ((bufsize = inb.read(bffr))!=-1) {
+                    outb.write(bffr, 0, bufsize);
+                }
+                inb.close();
+                outb.close();
+                
+                
+                String rhistNew = StringUtils.replace(resultInfo.get("RCommandHistory"), tmpsbfl.getName(),tmpsbflnew.getName());
+                
+                
+                zipFileList.add(tmpsbflnew);
+
+
                 // write a citation file 
                 String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
                 File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
@@ -1198,12 +1223,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dcfw.write(tmpcfl);
 
                 // write a R history file
-                String rhistoryFilePrefix = "rhistoryFile." + resultInfo.get("PID") + ".";
+                String rhistoryFilePrefix = "RcommandFile." + resultInfo.get("PID") + ".";
                 File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
 
                 zipFileList.add(tmpRhfl);
 
-                writeRhistory(tmpRhfl, resultInfo.get("RCommandHistory"));
+                writeRhistory(tmpRhfl, rhistNew);
                 
                 // tab-delimitd-format-only step
                 if (formatType.equals("D01")){
@@ -1259,7 +1284,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 if (RwrkspFileName.exists()){
                     dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
 
-                    zipFileList.add(RwrkspFileName);
+                    //zipFileList.add(RwrkspFileName);
 
                 } else {
                     dbgLog.fine("RwrkspFileName does not exist");
@@ -1288,8 +1313,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     //return "failure";
                 }
-
-
+                    
                 for (File f : zipFileList){
                     dbgLog.fine("path="+f.getAbsolutePath() +"\tname="+ f.getName());
                 }
@@ -2846,7 +2870,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // the data file for downloading/statistical analyses must be subset-ready
             // local (relative to the application) file case 
             // note: a typical remote case is: US Census Bureau
-            
+            File tmpsbfl = null;
             if (sbstOK){
                 
                 try {
@@ -2860,9 +2884,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     File tmpfl = File.createTempFile("tempTabfile.", ".tab");
 
                     // temp subset file that stores requested variables 
-                    File tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
+                    tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
                     
-                    zipFileList.add(tmpsbfl);
+                    //zipFileList.add(tmpsbfl);
 
                     // Typical file-copy idiom 
                     // incoming/outgoing streams
@@ -3081,6 +3105,26 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
             // writing necessary files
             try{
+            
+            
+                // rename the subsetting file
+                File tmpsbflnew = File.createTempFile(SUBSET_FILENAME_PREFIX + resultInfo.get("PID") +".", ".tab");
+                
+                InputStream inb = new BufferedInputStream(new FileInputStream(tmpsbfl));
+                OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpsbflnew));
+
+                int bufsize;
+                byte [] bffr = new byte[8192];
+                while ((bufsize = inb.read(bffr))!=-1) {
+                    outb.write(bffr, 0, bufsize);
+                }
+                inb.close();
+                outb.close();
+                
+                String rhistNew = StringUtils.replace(resultInfo.get("RCommandHistory"), tmpsbfl.getName(),tmpsbflnew.getName());
+                
+                
+                zipFileList.add(tmpsbflnew);
 
                 // write a citation file 
                 String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
@@ -3096,12 +3140,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dcfw.write(tmpcfl);
 
                 // R history file
-                String rhistoryFilePrefix = "rhistoryFile." + resultInfo.get("PID") + ".";
+                String rhistoryFilePrefix = "RcommandFile." + resultInfo.get("PID") + ".";
                 File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
 
                 zipFileList.add(tmpRhfl);
 
-                writeRhistory(tmpRhfl, resultInfo.get("RCommandHistory"));
+                writeRhistory(tmpRhfl, rhistNew);
 
                 // R-work space file
                 String wrkspFileName = resultInfo.get("wrkspFileName");
@@ -3111,7 +3155,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 if (RwrkspFileName.exists()){
                     dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
 
-                    zipFileList.add(RwrkspFileName);
+                    //zipFileList.add(RwrkspFileName);
 
                 } else {
                     dbgLog.fine("RwrkspFileName does not exist");
@@ -3149,7 +3193,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 for (File f : zipFileList){
                     dbgLog.fine("path="+f.getAbsolutePath() +"\tname="+ f.getName());
                 }
-
 
                 // zipping all required files
                 try{
@@ -5386,7 +5429,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // the data file for downloading/statistical analyses must be subset-ready
             // local (relative to the application) file case 
             // note: a typical remote case is: US Census Bureau
-            
+            File tmpsbfl = null;
             if (sbstOK){
                 
                 try {
@@ -5400,9 +5443,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     File tmpfl = File.createTempFile("tempTabfile.", ".tab");
 
                     // temp subset file that stores requested variables 
-                    File tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
+                    tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
 
-                    zipFileList.add(tmpsbfl);
+                    //zipFileList.add(tmpsbfl);
 
                     // Typical file-copy idiom 
                     // incoming/outgoing streams
@@ -5630,6 +5673,24 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // writing necessary files
             try{
 
+                // rename the subsetting file
+                File tmpsbflnew = File.createTempFile(SUBSET_FILENAME_PREFIX + resultInfo.get("PID") +".", ".tab");
+                
+                InputStream inb = new BufferedInputStream(new FileInputStream(tmpsbfl));
+                OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpsbflnew));
+
+                int bufsize;
+                byte [] bffr = new byte[8192];
+                while ((bufsize = inb.read(bffr))!=-1) {
+                    outb.write(bffr, 0, bufsize);
+                }
+                inb.close();
+                outb.close();
+                
+                String rhistNew = StringUtils.replace(resultInfo.get("RCommandHistory"), tmpsbfl.getName(),tmpsbflnew.getName());
+                
+                zipFileList.add(tmpsbflnew);
+
                 // write a citation file 
                 String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
                 File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
@@ -5644,12 +5705,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dcfw.write(tmpcfl);
 
                 // R history file
-                String rhistoryFilePrefix = "rhistoryFile." + resultInfo.get("PID") + ".";
+                String rhistoryFilePrefix = "RcommandFile." + resultInfo.get("PID") + ".";
                 File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
 
                 zipFileList.add(tmpRhfl);
 
-                writeRhistory(tmpRhfl, resultInfo.get("RCommandHistory"));
+                writeRhistory(tmpRhfl, rhistNew);
 
                 // R-work space file
                 String wrkspFileName = resultInfo.get("wrkspFileName");
@@ -5659,7 +5720,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 if (RwrkspFileName.exists()){
                     dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
 
-                    zipFileList.add(RwrkspFileName);
+                    //zipFileList.add(RwrkspFileName);
 
                 } else {
                     dbgLog.fine("RwrkspFileName does not exist");
@@ -5689,6 +5750,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     //return "failure";
                 }
 
+                
                 // zip the following files as a replication-pack
                 //
                 // local     local        local      remote

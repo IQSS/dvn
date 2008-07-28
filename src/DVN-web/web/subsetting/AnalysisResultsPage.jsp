@@ -46,12 +46,12 @@
                     <h:panelGroup id="pgRwrksp" binding="#{AnalysisResultsPage.pgRwrksp}">
                         <span class="dvAnalysisHeader">Replication</span>
                         <div class="dvAnalysisResults dvn_overflow">
-                            This R workspace image contains the data file that you have used and manipulated in the current session. Download and run it on your local R installation for further analyses.
+                            A copy of the data file used for this request with an R-command file are downloadable as a ZIP file by clicking the button below. To replicate the request on your local R installation for further analyses, please read the README file included in a ZIP File.
                             <div id="rWrkspButton">
                                 <ui:staticText id="msgDwnldButton" binding="#{AnalysisResultsPage.msgDwnldButton}" 
                                     visible="false" escape="false" styleClass="errorMessage"
                                     text="#{AnalysisResultsPage.msgDwnldButtonTxt}"/>
-                                <h:commandButton value="Download Workspace File" action="#{AnalysisResultsPage.getReplicationPack}" id="resultURLRworkspace" />
+                                <h:commandButton value="Download a relication-Zip File" action="#{AnalysisResultsPage.getReplicationPack}" id="resultURLRworkspace" />
                             </div>
                             <div id="rWrkspMessage">
                                 <div id="rZeligInfo">

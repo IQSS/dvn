@@ -458,7 +458,7 @@ public class FileDownloadServlet extends HttpServlet{
 				String regexpJsession = "jsessionid=([^\"?&]*)"; 
 				String regexpViewState = "ViewState\" value=\"([^\"]*)\""; 
 				String regexpStudyId = "studyId\" value=\"([0-9]*)\""; 
-				String regexpRemoteFileId = "fileId=([0-9]*)\"";
+				String regexpRemoteFileId = "fileId=([0-9]*)";
 
 				Pattern patternJsession = Pattern.compile(regexpJsession); 
 				Pattern patternViewState= Pattern.compile(regexpViewState); 

@@ -64,7 +64,7 @@
                         
                         <ui:panelGroup  block="true"  style="padding-top: 15px; padding-bottom: 20px; padding-left: 50px;">
                             <ui:panelGroup block="true" style="padding-bottom: 5px">
-                                <h:outputText styleClass="vdcSubHeader" value="If a study is set as Restricted:"/>
+                                <h:outputText styleClass="vdcSubHeader" value="If a study is set as Restricted:"/>
                             </ui:panelGroup>  
                             <h:inputText id="newStudyUser" binding="#{StudyPermissionsPage.studyUserInputText}" value="#{StudyPermissionsPage.newStudyUser}"/>                         
                             <h:commandButton   value="Add User/Group" actionListener="#{StudyPermissionsPage.addStudyPermission}"/>

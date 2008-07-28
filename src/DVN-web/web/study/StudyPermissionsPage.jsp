@@ -1,3 +1,15 @@
+
+
+
+
+
+
+
+
+
+
+
+
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -35,19 +47,6 @@
 
     <ui:form  id="form1">
         <input type="hidden" name="pageName" value="StudyPermissionsPage"/>
-
-        <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-        <h:inputHidden id="studyId" value="#{StudyPermissionsPage.studyId}"/>
-
-
-            <div class="dvn_section">
-                <div class="dvn_sectionTitle">
-                     
-                        <h:outputText value="Set Permissions for this Study" />
-                     
-                </div>            
-                <div class="dvn_sectionBox"> 
-                    <div class="dvn_margin12">
                         
                         <h:outputText   styleClass="vdcSubHeaderColor" value="- Entire Study Permissions:"/>
                         <ui:panelGroup  block="true"  style="padding-top: 10px">
@@ -65,25 +64,27 @@
                         <ui:panelGroup  block="true"  style="padding-top: 15px; padding-bottom: 20px; padding-left: 50px;">
                             <ui:panelGroup block="true" style="padding-bottom: 5px">
                                 <h:outputText styleClass="vdcSubHeader" value="If a study is set as Restricted:"/>
-                            </ui:panelGroup>  
-                            <h:inputText id="newStudyUser" binding="#{StudyPermissionsPage.studyUserInputText}" value="#{StudyPermissionsPage.newStudyUser}"/>                         
-                            <h:commandButton   value="Add User/Group" actionListener="#{StudyPermissionsPage.addStudyPermission}"/>
-                            <h:message styleClass="errorMessage" for="newStudyUser"/> 
-                            <ui:panelGroup  block="true" rendered="#{!empty StudyPermissionsPage.editStudyPermissions.studyPermissions}">
-                                <h:dataTable  
-                                    value="#{StudyPermissionsPage.editStudyPermissions.studyPermissions}" var="currentRow" style="margin-top: 10px;" headerClass="list-header-left">
-                                    <h:column>
-                                        <h:selectBooleanCheckbox value="#{currentRow.checked}" />
-                                    </h:column>
-                                    <h:column  >
-                                        <f:facet name="header">
-                                            <h:outputText id="access_header"  value="Users/Groups with Access"/>
+                                        <h:outputText   value="#{currentRow.studyRequest.vdcUser.userName}"/>
+                                    </h:outputLink>
+                                </h:column>
+                                <h:column  >
+                                    <h:selectOneRadio value="#{currentRow.accept}">
+                                        <f:selectItem itemLabel="Accept" itemValue="true"/>
+                                        <f:selectItem itemLabel="Reject" itemValue="false"/>
+                                    </h:selectOneRadio>
+                                </h:column>
+                            </h:dataTable>
+                            <h:outputText value="Update Individual File Permissions for these users:"/>
+                            <h:commandButton value="Update" actionListener="#{StudyPermissionsPage.updateRequests}"/>
+                        </ui:panelGroup>
                                         </f:facet>
+
+
                                         
-                                        <h:outputLink rendered="#{currentRow.user != null}" value="/dvn/faces/login/AccountPage.jsp?userId=#{currentRow.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
+                                        <h:outputLink rendered="#{currentRow.user != null}" value="../login/AccountPage.jsp?userId=#{currentRow.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
                                             <h:outputText   value="#{currentRow.user.userName}"/>
                                         </h:outputLink>
-                                        <h:outputLink rendered="#{currentRow.group != null}" value="/dvn/faces/login/AccountPage.jsp?userId=#{currentRow.group.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
+                                        <h:outputLink rendered="#{currentRow.group != null}" value="../login/AccountPage.jsp?userId=#{currentRow.group.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
                                             <h:outputText   value="#{currentRow.group.name}"/>
                                         </h:outputLink>
                                     </h:column>
@@ -107,7 +108,7 @@
                                     <f:facet name="header">
                                         <h:outputText id="accessRequest_header" value="Users Requesting to have Access to Restricted Files"/>
                                     </f:facet>
-                                    <h:outputLink   value="/dvn/faces/login/AccountPage.jsp?userId=#{currentRow.studyRequest.vdcUser.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
+                                    <h:outputLink   value="../login/AccountPage.jsp?userId=#{currentRow.studyRequest.vdcUser.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
                                         <h:outputText   value="#{currentRow.studyRequest.vdcUser.userName}"/>
                                     </h:outputLink>
                                 </h:column>

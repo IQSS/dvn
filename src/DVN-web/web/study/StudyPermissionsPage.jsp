@@ -81,10 +81,10 @@
 
 
                                         
-                                        <h:outputLink rendered="#{currentRow.user != null}" value="../login/AccountPage.jsp?userId=#{currentRow.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
+                                        <h:outputLink rendered="#{currentRow.user != null}" value="/dvn/faces/login/AccountPage.jsp?userId=#{currentRow.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
                                             <h:outputText   value="#{currentRow.user.userName}"/>
                                         </h:outputLink>
-                                        <h:outputLink rendered="#{currentRow.group != null}" value="../login/AccountPage.jsp?userId=#{currentRow.group.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
+                                        <h:outputLink rendered="#{currentRow.group != null}" value="/dvn/faces/login/AccountPage.jsp?userId=#{currentRow.group.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
                                             <h:outputText   value="#{currentRow.group.name}"/>
                                         </h:outputLink>
                                     </h:column>
@@ -108,7 +108,7 @@
                                     <f:facet name="header">
                                         <h:outputText id="accessRequest_header" value="Users Requesting to have Access to Restricted Files"/>
                                     </f:facet>
-                                    <h:outputLink   value="../login/AccountPage.jsp?userId=#{currentRow.studyRequest.vdcUser.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
+                                    <h:outputLink  value="/dvn/faces/login/AccountPage.jsp?userId=#{currentRow.studyRequest.vdcUser.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
                                         <h:outputText   value="#{currentRow.studyRequest.vdcUser.userName}"/>
                                     </h:outputLink>
                                 </h:column>

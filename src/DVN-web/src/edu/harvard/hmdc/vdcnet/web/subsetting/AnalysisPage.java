@@ -96,6 +96,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.Scanner;
 
 import java.util.zip.*;
@@ -242,7 +244,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         
         
         getTabSet1().setSelected("tabDwnld");
-         getVDCRequestBean().setSelectedTab("tabDwnld");
+        getVDCRequestBean().setSelectedTab("tabDwnld");
+       
+        REP_README_FILE = new File(this.getClass().getResource("README").getFile());
     } // end of _init()
 
     // </editor-fold>
@@ -277,6 +281,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
     private static String SUBSET_FILENAME_PREFIX="dvnSubsetFile.";
     
+    private static File REP_README_FILE;
     // </editor-fold>
     
     // -----------------------------------------------------------------------
@@ -936,6 +941,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // local (relative to the application) file case 
             // note: a typical remote case is: US Census Bureau
             
+
+            
             File tmpsbfl= null;
             
             if (sbstOK){
@@ -1313,6 +1320,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     //return "failure";
                 }
+                // add replication readme file
+                zipFileList.add(REP_README_FILE);
                     
                 for (File f : zipFileList){
                     dbgLog.fine("path="+f.getAbsolutePath() +"\tname="+ f.getName());
@@ -3184,7 +3193,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     //return "failure";
                 }
                 
-                
+                // add replication readme file
+                zipFileList.add(REP_README_FILE);
                 // zip the following files as a replication-pack
                 //
                 // local     local        local      remote
@@ -5750,7 +5760,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     //return "failure";
                 }
 
-                
+                // add replication readme file
+                zipFileList.add(REP_README_FILE);
                 // zip the following files as a replication-pack
                 //
                 // local     local        local      remote

@@ -444,6 +444,10 @@ public class FileDownloadServlet extends HttpServlet{
 
 				// try again: 
 				method = new GetMethod ( redirectLocation + "&clicker=downloadServlet" );
+				if ( jsessionid != null ) {
+				    method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+				}
+
 				status = getClient().executeMethod(method);
 
 				InputStream in = method.getResponseBodyAsStream(); 
@@ -458,7 +462,7 @@ public class FileDownloadServlet extends HttpServlet{
 				String regexpJsession = "jsessionid=([^\"?&]*)"; 
 				String regexpViewState = "ViewState\" value=\"([^\"]*)\""; 
 				String regexpStudyId = "studyId\" value=\"([0-9]*)\""; 
-				String regexpRemoteFileId = "fileId=([0-9]*)";
+				String regexpRemoteFileId = "(/FileDownload.*fileId=[0-9]*)";
 
 				Pattern patternJsession = Pattern.compile(regexpJsession); 
 				Pattern patternViewState= Pattern.compile(regexpViewState); 
@@ -509,7 +513,7 @@ public class FileDownloadServlet extends HttpServlet{
 					new StringPart( "form1:vdcId", "" ),
 					new StringPart( "pageName", "TermsOfUsePage" ),
 					new StringPart( "form1:studyId", studyid ),
-					new StringPart( "form1:redirectPage", "/FileDownload/?fileId=" + remotefileid ),
+					new StringPart( "form1:redirectPage", remotefileid ),
 					new StringPart( "form1:tou", "download" ),
 					new StringPart( "form1:termsAccepted", "on" ),
 					new StringPart( "form1:termsButton", "Continue" ),

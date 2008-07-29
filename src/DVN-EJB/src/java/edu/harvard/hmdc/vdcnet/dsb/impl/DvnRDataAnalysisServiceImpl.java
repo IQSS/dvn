@@ -1004,6 +1004,20 @@ if (tmpv.length > 0){
                 historyEntry.set(0, "source('"+VDC_R_STARTUP_FILE+"');");
             }
             
+            if (REPLICATION){
+                String strDir = "./"+ requestdir;
+                
+                String mvCss = "file.rename('R2HTML.css', '" +strDir+ "/R2HTML.css')";
+                historyEntry.add(mvCss);
+                String wkdr = "wrkdir<-'"+ strDir +"'";
+                historyEntry.add(wkdr);
+                String htmlfl = "htmlfile <- paste(wrkdir,'/', list.files(wrkdir, pattern='.html'), sep='')";
+                historyEntry.add(htmlfl);
+                String brws = "browseURL(htmlfile)";
+                historyEntry.add(brws);
+            }
+            
+            
             
             // command history
 //            String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
@@ -1231,7 +1245,18 @@ if (tmpv.length > 0){
             }
             
             
-            
+            if (REPLICATION){
+                String strDir = "./"+ requestdir;
+                
+                String mvCss = "file.rename('R2HTML.css', '" +strDir+ "/R2HTML.css')";
+                historyEntry.add(mvCss);
+                String wkdr = "wrkdir<-'"+ strDir +"'";
+                historyEntry.add(wkdr);
+                String htmlfl = "htmlfile <- paste(wrkdir,'/', list.files(wrkdir, pattern='.html'), sep='')";
+                historyEntry.add(htmlfl);
+                String brws = "browseURL(htmlfile)";
+                historyEntry.add(brws);
+            }
             
             // command history
 //            String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
@@ -1555,6 +1580,22 @@ if (tmpv.length > 0){
                 dbgLog.fine("vdc_startupFileName is null");
                 historyEntry.set(0, "source('"+VDC_R_STARTUP_FILE+"');");
             }
+            
+            
+            if (REPLICATION){
+                String strDir = "./"+ requestdir;
+                
+                //String mvCss = "file.rename('R2HTML.css', '" +strDir+ "/R2HTML.css')";
+                //historyEntry.add(mvCss);
+                String wkdr = "wrkdir<-'"+ strDir +"'";
+                historyEntry.add(wkdr);
+                String htmlfl = "htmlfile <- paste(wrkdir,'/', list.files(wrkdir, pattern='.html'), sep='')";
+                historyEntry.add(htmlfl);
+                String brws = "browseURL(htmlfile)";
+                historyEntry.add(brws);
+            }
+            
+            
             
             
             // copy the dvn-patch css file to the wkdir

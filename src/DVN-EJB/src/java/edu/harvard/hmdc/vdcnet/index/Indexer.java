@@ -319,7 +319,7 @@ public class Indexer implements java.io.Serializable  {
         writer.addDocument(doc);
         writer.close();
         List <FileCategory> fileCategories = study.getFileCategories();
-        writerVar = new IndexWriter(dir, getAnalyzer(), !(new File(indexDir + "/segments").exists()));
+        writerVar = new IndexWriter(dir, getAnalyzer(), isIndexEmpty());
         for (int i = 0; i < fileCategories.size(); i++) {
             FileCategory fileCategory = fileCategories.get(i);
             Collection<StudyFile> studyFiles = fileCategory.getStudyFiles();
@@ -402,9 +402,13 @@ public class Indexer implements java.io.Serializable  {
         for (Iterator it = searchTerms.iterator(); it.hasNext();){
             SearchTerm elem = (SearchTerm) it.next();
             if (elem.getFieldName().equals("variable")){
+//                SearchTerm st = dvnTokenizeSearchTerm(elem);
+//                variableSearchTerms.add(st);
                 variableSearchTerms.add(elem);
                 variableSearch = true;
             } else {
+//                SearchTerm nvst = dvnTokenizeSearchTerm(elem);
+//                nonVariableSearchTerms.add(nvst);
                 nonVariableSearchTerms.add(elem);
                 nonVariableSearch = true;
             }
@@ -683,7 +687,7 @@ public class Indexer implements java.io.Serializable  {
             logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             DocumentCollector s = new DocumentCollector(searcher);
             searcher.search(query, s);
-            searcher.close();
+//            searcher.close();
             logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             List hits = s.getStudies();
@@ -695,6 +699,7 @@ public class Indexer implements java.io.Serializable  {
                 matchIdsSet.add(studyIdLong);
             }
             logger.info("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            searcher.close();
         }
         matchIds.addAll(matchIdsSet);
         return matchIds;

@@ -1,60 +1,68 @@
-How to replicate your dvn request on your local machine
+README
+For the Version 1.3 of the Dataverse Network application.
+July 2007
 
 
-A. Software requirements for replicaiton
+_How to Replciate Analysis_ 
 
-To replicate your dvn request on your local machine, 
-the following software packages must be installed at least:
 
-0. An unarchiving software package 
-   such as Info-ZIP (http://www.info-zip.org) to open a downloaded replication-zip file
-1. R (ver. or later) 
-2. VDCutil package for R
+1. If you do not already have 'R' (version 2.7 or later) installed on your 
+   computer, install it from:
+   
+       http://cran.r-project.org
 
-Note: R-VDCutil package is required for a Zelig modeling request only. Wile the relication of a Zelig modeling requires R-Zelig package, if your machine lacks such a required R-package, VDCutil package would automatically have R install Zelig and other necessary packages on your machine.  
-However, sometimes the software configuraton of your machine may not be compatible with the requirements of R-packages to be used by Zelig package.  If so, such R-packages imcompatible with your R environment would not be installed on your machine,  and you may not be able to replicate a dvn request.
+   Note: Some analyses require additional modules, the replication file will
+   attempt to install any that are missing, as long as your system is 
+   connected to the Internet.
 
-B. Contents of a replication-zip file
 
-The contents of a relication-zip file are usually as follows:
+2. Open the accompanying 'zipFile.xxxxxx.xxxxxx.zip' file, and copy the files
+   in it to a new location (for example, your desktop).
 
-1. citation file            citationFile.xxxxxx.ccccc.txt
-2. tab-delmited data file   dvnSubsetFile.xxxxxx.aaaaa.tab
-3. R-command file           RcommandFile.xxxxxx.ddddd.R
-4. R-function file          vdc_startup.xxxxxx.bbbbb.R
+   Note: This normally contains four files:
 
-where xxxxxx stands for the 6-digit ID number of a modeling request.
+    1. citation file            citationFile.xxxxxx.ccccc.txt
+    2. tab-delmited data file   dvnSubsetFile.xxxxxx.aaaaa.tab
+    3. R-command file           RcommandFile.xxxxxx.ddddd.R
+    4. R-function file          vdc_startup.xxxxxx.bbbbb.R
 
-C. How to run the R-command sourc file on your local machine
+    where xxxxxx is an arbitrary identification number.
 
-1. Commandline window
 
-(i) Change the current directory to the one where you opened the contents of a replication-zip files.
-(ii-a) Start R at a commandline,  then run the following R command
+3. Run R
 
-$ R
 
-> source("RcommandFile.xxxxxx.R")
+4. From the R menus, change the working directoy to the location of the
+   replication files (for example, your desktop)
 
-where xxxxxx stands for the 6-digit ID number of a modeling request.
+    Note: In windows, from R, use  File -> "Change dir ..."; 
+          in Mac OS X, use Misc => "Change Working Directory ..." 
 
-(ii-b) Run the following command at a commandline:
 
-$ R --slave < RcommandFile.xxxxxx.R
+5. Run the R-command file
+    
+    From R, use File->"Source File", and select the Rcommandfile.xxxxxx.ddddd.R
 
-2. R-gui tools
 
-(i) Change your working directory to the diretory where you opened the contents of a replication-zip files [for RGui for MS Windows, from the top Menu bar, File => Chage dir ...; for R for Mac OS X Cocoa GUI, from the top Menu bar, Misc => Change Working Directory ... ]
+6. View results -- these will open automatically in your browser.
 
-(ii) Open the R-command file, RcommandFile.xxxxxx.R
 
-Results from an R-command file (RcommandFile.xxxxxx.R) are stored in a sub-directory named as "Zlg_xxxxxx".
 
-D. Support
+_To Get Support_
 
-If you need to contact us about results of a specific modeling request, besides your questions and comments, please provide us with (1) approximate date and time you submitted the request and (2) the above 6-digit request id number (first 6-digt number within a file name).
+You may want to consult the "Data Users Guide" of the Dataverse Network Project web-page first:
+
+    http://thedata.org/guides/users
+    
+    especially, "Subset, Analyze, and Download Data Sets":
+
+    http://thedata.org/guides/users/use_data
+
+If you need to contact us about results of a specific modeling request, besides your questions and comments, please provide us with (1) approximate date and time you submitted the request and (2) the 6-digit request id number (first 6-digt number within a file name).
+
 
 Thank your using the Daverse Network.
+
 
 Dataverse Network Project
 dvn_support@help.hmdc.harvard.edu

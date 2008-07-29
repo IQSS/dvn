@@ -1085,15 +1085,18 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     public RemoteAccessAuth lookupRemoteAuthByHost (String hostName) {
-        String queryStr = "SELECT r FROM RemoteAccessAuth r WHERE r.hostName = :hostName" ;
+        String queryStr = "SELECT r FROM RemoteAccessAuth r WHERE r.hostName= :hostName" ;
 
         RemoteAccessAuth remoteAuth = null;
 	
         try {
             Query query = em.createQuery(queryStr);
             query.setParameter("hostName", hostName);
-            remoteAuth = (RemoteAccessAuth) query.getSingleResult();
-        } catch (javax.persistence.NoResultException e) {
+	    List resultList = query.getResultList();
+	    if (resultList.size() > 0) {
+		remoteAuth = (RemoteAccessAuth) resultList.get(0);
+	    }
+	} catch (javax.persistence.NoResultException e) {
             // DO nothing, just return null.
         }
         return remoteAuth;

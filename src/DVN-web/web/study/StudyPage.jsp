@@ -484,7 +484,11 @@
                                                                     <h:outputText styleClass="vdcStudyFileRowFileDetails" value="#{studyFileUI.userFriendlyFileType}" />
                                                                     <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.fileSize}" rendered="#{!empty studyFileUI.studyFile.fileSystemLocation and !studyFileUI.studyFile.remote}" />
                                                                     <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" - Unknown file size" rendered="#{empty studyFileUI.studyFile.fileSystemLocation or studyFileUI.studyFile.remote}" />
-                                                                    <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.downloadCount}" /><h:outputText styleClass="vdcStudyFileRowFileDetails" value=" downloads/analysis" rendered="#{studyFileUI.downloadCount != 1}" /><h:outputText styleClass="vdcStudyFileRowFileDetails" value=" download" rendered="#{studyFileUI.downloadCount == 1}" />
+                                                                    <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.downloadCount}" />
+                                                                        <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" download" rendered="#{studyFileUI.downloadCount == 1 and !studyFileUI.studyFile.subsettable}" />
+                                                                        <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" download/analysis" rendered="#{studyFileUI.downloadCount == 1 and studyFileUI.studyFile.subsettable}" />
+                                                                        <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" downloads" rendered="#{studyFileUI.downloadCount != 1 and !studyFileUI.studyFile.subsettable}" />
+                                                                        <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" downloads/analysis" rendered="#{studyFileUI.downloadCount != 1 and studyFileUI.studyFile.subsettable}" />
                                                                 </ui:panelGroup>
                                                             </ui:panelGroup>
 

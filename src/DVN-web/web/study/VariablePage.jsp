@@ -25,7 +25,7 @@
             
             <div class="dvn_section">
                   <span class="dvn_sectionTitleR">
-                    <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage?studyId=#{VariablePage.variable.dataTable.studyFile.fileCategory.study.id}">
+                    <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{VariablePage.variable.dataTable.studyFile.fileCategory.study.id}">
                         <h:outputText  value="Go to Study"/>                       
                     </h:outputLink>
                  </span>
@@ -41,7 +41,7 @@
                         <h:outputText value="#{VariablePage.variable.unf}"/>
                     </ui:panelGroup> 
                     <ui:panelGroup  block="true" style="text-align: right; padding-bottom: 10px;">
-                        <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage?dtId=#{VariablePage.variable.dataTable.id}">
+                        <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.jsp?dtId=#{VariablePage.variable.dataTable.id}">
                             <h:outputText value="See all variables in data file: #{VariablePage.variable.dataTable.studyFile.fileName}"/>
                         </h:outputLink>
                     </ui:panelGroup>

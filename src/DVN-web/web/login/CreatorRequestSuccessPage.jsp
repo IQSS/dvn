@@ -49,6 +49,7 @@
                              <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp">
                                 <h:outputText value="My Options"/>
                             </h:outputLink> <h:outputText value=" to administrate your dataverse "/>
+                            </li>
                             <li> <h:outputText value=" Begin "/>      
                              <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.jsp">
                                 <h:outputText value="adding studies and uploading files"/>

@@ -426,12 +426,21 @@
                                 <ui:panelGroup rendered="#{studyPage.studyUI.anyFileRestricted}">
                                         <h:outputText value="Access to some files is restricted, and those files are not available for downloading." />
                                         <h:outputText value=" No information about the restriction is available" rendered="#{studyPage.termsOfUseIsEmpty}" />
-                                        <h:outputText value=" For more information, check the " rendered="#{!studyPage.termsOfUseIsEmpty}" />
+                                        <h:outputText value=" Check the " rendered="#{!studyPage.termsOfUseIsEmpty}" />
                                         <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#termsofuse" rendered="#{!studyPage.termsOfUseIsEmpty}">
-                                            <h:outputText value="Terms of Use."></h:outputText>
+                                            <h:outputText value="Terms of Use"></h:outputText>
                                         </h:outputLink>
+                                        <h:outputText value=" for more information." rendered="#{!studyPage.termsOfUseIsEmpty}" />
+                                        <h:outputLink rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.jsp?studyId=#{studyPage.studyId}">
+                                            <h:outputText value="Send a Request"/>
+                                        </h:outputLink>
+                                        <h:outputLink rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestAccountPage.jsp?studyId=#{studyPage.studyId}">
+                                            <h:outputText value="Send a Request"/>
+                                        </h:outputLink>
+                                        <h:outputText value=" if you would like to access the restricted files in this study." rendered="#{studyPage.studyUI.study.requestAccess}"/>
                                 </ui:panelGroup>
                             </ui:panelLayout>
+                            
                             <ui:panelLayout id="layoutPanel3" panelLayout="flow" styleClass="vdcStudyFilesContent" rendered="#{!empty studyPage.studyUI.study.fileCategories}">
                                 <ui:panelGroup block="true" id="groupPanel7a" styleClass="vdcStudyFilesDownloadAll" rendered="#{studyPage.studyUI.anyFileUnrestricted}">
                                     <h:commandButton onclick="window.location.href='/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?studyId=#{studyPage.studyUI.study.id}#{studyPage.xff}';return false;" value="Download All Files"/>

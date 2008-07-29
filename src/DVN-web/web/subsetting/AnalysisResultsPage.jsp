@@ -46,17 +46,17 @@
                     <h:panelGroup id="pgRwrksp" binding="#{AnalysisResultsPage.pgRwrksp}">
                         <span class="dvAnalysisHeader">Replication</span>
                         <div class="dvAnalysisResults dvn_overflow">
-                            A copy of the data file used for this request with an R-command file are downloadable as a ZIP file by clicking the button below. To replicate the request on your local R installation for further analyses, please read the README file included in a ZIP File.
+                            <div id="dvAnalysisReplicationMsg">A copy of the data file used for this request with an R-command file are downloadable as a ZIP file by clicking the button below. To replicate the request on your local R installation for further analyses, please read the README file included in a ZIP File.</div>
                             <div id="rWrkspButton">
                                 <ui:staticText id="msgDwnldButton" binding="#{AnalysisResultsPage.msgDwnldButton}" 
                                     visible="false" escape="false" styleClass="errorMessage"
                                     text="#{AnalysisResultsPage.msgDwnldButtonTxt}"/>
-                                <h:commandButton value="Download a relication-Zip File" action="#{AnalysisResultsPage.getReplicationPack}" id="resultURLRworkspace" />
+                                <h:commandButton value="Download Replication-ZIP File" action="#{AnalysisResultsPage.getReplicationPack}" id="resultURLRworkspace" />
                             </div>
                             <div id="rWrkspMessage">
                                 <div id="rZeligInfo">
                                     <span>Statistical Software Info:</span><br />
-                                    <h:outputText value="#{AnalysisResultsPage.rversion}"/>, R package Zelig <h:outputText value="#{AnalysisResultsPage.zeligVersion}"/> - more information: <a href="http://gking.harvard.edu/zelig/">http://gking.harvard.edu/zelig/</a>
+                                    <h:outputText value="#{AnalysisResultsPage.rversion}"/>, R package Zelig&#160;<h:outputText value="#{AnalysisResultsPage.zeligVersion}"/> - more information: <a href="http://gking.harvard.edu/zelig/">http://gking.harvard.edu/zelig/</a>
                                 </div>
                             </div>
                         </div>

@@ -673,13 +673,18 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
     padding: 0;
 }
 .downloadas {
-    position: relative;
+    
 }
 .downloadas li {
-    float: left;
     margin: 0;
     padding: 0;
+    display: block;
     position: relative;
+    z-index: 5;
+}
+.downloadas li:hover {
+    z-index: 10000;
+    white-space: normal;
 }
 .downloadas li img {
     border: 0;
@@ -742,12 +747,13 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
     position: absolute;
     top: -999em;
     left: -1px;
-    z-index: 1000;
+    z-index: 10;
 }
 .downloadas li:hover ul,
 .downloadas li.sfHover ul {
     top: 16px;
     left: 25px;
+    border: 0;
 }
 .downloadas ul li {
     border: 0;

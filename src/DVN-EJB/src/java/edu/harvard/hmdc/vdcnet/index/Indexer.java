@@ -150,8 +150,7 @@ public class Indexer implements java.io.Serializable  {
         try {
             IndexReader reader = IndexReader.open(dir);
             reader.deleteDocuments(new Term("id", Long.toString(studyId)));
-            // this won't be necessary with new Document format
-//            reader.deleteDocuments(new Term("varStudyId",Long.toString(studyId)));
+            reader.deleteDocuments(new Term("varStudyId",Long.toString(studyId)));
             reader.close();
         } catch (IOException ex) {
             ex.printStackTrace();

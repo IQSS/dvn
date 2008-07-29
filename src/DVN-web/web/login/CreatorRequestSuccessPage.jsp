@@ -45,27 +45,26 @@
                         <p>Your new dataverse is set to <em>Not Released</em> by default, and appears on the Coming Soon tab of the Network homepage.
                             </p>
                            <ul>
-                            <li> Click                              
-                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp">
+                            <li> <h:outputText value=" Click "/>                                
+                             <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp">
                                 <h:outputText value="My Options"/>
-                            </h:outputLink> to administrate your dataverse.
-                            </li>
-                            <li> Begin    
+                            </h:outputLink> <h:outputText value=" to administrate your dataverse "/>
+                            <li> <h:outputText value=" Begin "/>      
                              <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.jsp">
                                 <h:outputText value="adding studies and uploading files"/>
-                             </h:outputLink> or 
+                             </h:outputLink> <h:outputText value=" or "/>
                              <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/ManageCollectionsPage.jsp">
                                  <h:outputText value="creating collections"/> 
-                             </h:outputLink>of data from other dataverses.
+                             </h:outputLink> <h:outputText value=" of data from other dataverses."/>
                             </li>
                             <li>
                              <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditBannerFooterPage.jsp">
                                    <h:outputText value="Customize the layout"/>
-                            </h:outputLink>, and then you are ready to 
+                            </h:outputLink><h:outputText value=", and then you are ready to "/> 
                             <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.jspp">
                                    <h:outputText value="release"/>
                             </h:outputLink>
-                            your dataverse live!
+                            <h:outputText value=" your dataverse live!"/>
                            </li>
                         </ul>
                         <p>

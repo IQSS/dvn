@@ -45,9 +45,10 @@ public class DvnRDataAnalysisServiceImpl{
     static String regexForRunMethods = "^run(\\w+)Request$" ;
     static String RESULT_DIR_PREFIX = "Zlg_";
     static String R2HTML_CSS_DIR = null;
-    static String RWRKSP_FILE_PREFIX = "tmpRWSfile.";
+    static String RWRKSP_FILE_PREFIX = "replicationDVNDataFramefile.";
     static boolean REPLICATION = true;
     static String dtflprefix = "dvnDataFile.";
+    
     static {
     
         DSB_TMP_DIR = System.getProperty("vdc.dsb.temp.dir");
@@ -78,8 +79,6 @@ public class DvnRDataAnalysisServiceImpl{
         if (R2HTML_CSS_DIR == null) {
             R2HTML_CSS_DIR = "/usr/local/VDC/R/library";
         }
-
-        
         
         // various constants: option-wise
         // download formats
@@ -113,6 +112,7 @@ public class DvnRDataAnalysisServiceImpl{
     public String webwrkdir = null;
     public String requestdir = null;
     public List<String> historyEntry = new ArrayList<String>();
+    public List<String> replicationFile = new LinkedList<String>();
     
     // ----------------------------------------------------- constructor
     public DvnRDataAnalysisServiceImpl(){
@@ -128,11 +128,12 @@ public class DvnRDataAnalysisServiceImpl{
         
         tempFileName = DSB_TMP_DIR + "/" + TMP_DATA_FILE_NAME
                  +"." + PID + TMP_DATA_FILE_EXT;
+        
         tempFileNameNew = wrkdir + "/" + TMP_DATA_FILE_NAME
                  +"." + PID + TMP_DATA_FILE_EXT;
     }
 
-    /**
+    /** *************************************************************
      * Execute an R-based dvn statistical analysis request 
      *
      * @param sro    a DvnRJobRequest object that contains various parameters
@@ -169,15 +170,10 @@ public class DvnRDataAnalysisServiceImpl{
             }
             os.close();
             inb.close();
+            
             // Rserve code starts here
             dbgLog.fine("wrkdir="+wrkdir);
-            if (REPLICATION){
-                String librarySetup4rep = "source('"+ VDC_R_STARTUP_FILE + "');";
-                historyEntry.add(librarySetup4rep);
-                dbgLog.fine("librarySetup4rep="+librarySetup4rep);
-            } else {
-                historyEntry.add(librarySetup);
-            }
+            historyEntry.add(librarySetup);
             c.voidEval(librarySetup);
             
             // variable type
@@ -276,15 +272,7 @@ public class DvnRDataAnalysisServiceImpl{
             // tab-delimited file name = tempFileName
             String readtableline = "x<-read.table141vdc(file='"+tempFileName+
                 "', col.names=vnames, colClassesx=vartyp, varFormat=varFmt )";
-            
-            if (REPLICATION){
-                String readtableline4rep = "x<-read.table141vdc(file='"+sro.getSubsetDataFileName()+
-                "', col.names=vnames, colClassesx=vartyp, varFormat=varFmt )";
-                historyEntry.add(readtableline4rep);
-                dbgLog.fine("readtable4rep="+readtableline4rep);
-            } else {
-                historyEntry.add(readtableline);
-            }
+            historyEntry.add(readtableline);
             dbgLog.fine("readtable="+readtableline);
 
             c.voidEval(readtableline);
@@ -332,32 +320,37 @@ public class DvnRDataAnalysisServiceImpl{
             historyEntry.add(asIsline);
             c.voidEval(asIsline);
             
+            // replication: copy the data.frame
+            String repDVN_Xdupline = "dvnData<-x";
+            c.voidEval(repDVN_Xdupline);
+            
+            // recoding line
 if (sro.hasRecodedVariables()){
 
             // subsetting 
             
             List<String> scLst = sro.getSubsetConditions();
             if (scLst != null){
-            for (String sci : scLst){
-                dbgLog.fine("sci:"+ sci);
-                historyEntry.add(sci);
-                c.voidEval(sci);
-            }
+                for (String sci : scLst){
+                    dbgLog.fine("sci:"+ sci);
+                    historyEntry.add(sci);
+                    c.voidEval(sci);
+                }
             }
             // recoding
             
             List<String> rcLst = sro.getRecodeConditions();
             if (rcLst != null){
-            for (String rci : rcLst){
-                dbgLog.fine("rci:"+ rci);
+                for (String rci : rcLst){
+                    dbgLog.fine("rci:"+ rci);
 
-                historyEntry.add(rci);
-                c.voidEval(rci);
-            }
+                    historyEntry.add(rci);
+                    c.voidEval(rci);
+                }
             }
 }
-            // subsetting (mutating the data.frame strips 
-            // non-default attributes 
+            // subsetting (mutating the data.frame strips non-default attributes 
+            // 
             // variable type must be re-attached
 
             String varTypeNew = "vartyp<-c(" + StringUtils.join( sro.getUpdatedVariableTypesAsString(),",")+")";
@@ -369,7 +362,11 @@ if (sro.hasRecodedVariables()){
             String reattachVarTypeLine = "attr(x, 'var.type') <- vartyp";
             historyEntry.add(reattachVarTypeLine);
             c.voidEval(reattachVarTypeLine);
-
+            
+            // replication: variable type
+            String repDVN_vt = "attr(dvnData, 'var.type') <- vartyp";
+            c.voidEval(repDVN_vt);
+            
             // variable Id
             /* 
                 attr(x, "var.nmbr")<-c("v198057","v198059","v198060")
@@ -388,10 +385,13 @@ if (sro.hasRecodedVariables()){
             historyEntry.add(attrVarNmbrLine);
             c.voidEval(attrVarNmbrLine);
             
-            // confrimation
+            // confirmation
             String [] vno = c.eval("attr(x, 'var.nmbr')").asStrings();
             dbgLog.fine("varNo="+StringUtils.join(vno, ","));
 
+            // replication: variable number
+            String repDVN_vn = "attr(dvnData, 'var.nmbr') <- varnmbr";
+            c.voidEval(repDVN_vn);
             
             // variable labels
             /* 
@@ -399,7 +399,7 @@ if (sro.hasRecodedVariables()){
             */
             
             // String[] jvarlabels = {"race","age","vote"};
-            //String[] jvarlabels = sro.getVariableLabels();
+            // String[] jvarlabels = sro.getVariableLabels();
             // after recoding
             String[] jvarlabels = sro.getUpdatedVariableLabels();
             
@@ -416,9 +416,11 @@ if (sro.hasRecodedVariables()){
             String [] vlbl = c.eval("attr(x, 'var.labels')").asStrings();
             dbgLog.fine("varlabels="+StringUtils.join(vlbl, ","));
         
+            // replication: 
+            String repDVN_vl = "attr(dvnData, 'var.labels') <- varlabels";
+            c.voidEval(repDVN_vl);
         
-        
-// --------- block to be used for the production code
+// --------- start: block to be used for the production code
             // value-label table
             /* 
                 VALTABLE<-list()
@@ -432,10 +434,12 @@ if (sro.hasRecodedVariables()){
             String vtFirstLine = "VALTABLE<-list()";
             historyEntry.add(vtFirstLine);
             c.voidEval(vtFirstLine);
+            
             // vltbl includes both base and recoded cases when it was generated
             Map<String, Map<String, String>> vltbl = sro.getValueTable();
             Map<String, String> rnm2vi = sro.getRawVarNameToVarIdTable();
             String[] updatedVariableIds = sro.getUpdatedVariableIds();
+            
             //for (int j=0;j<jvnamesRaw.length;j++){
             for (int j=0;j<updatedVariableIds.length;j++){
                 // if this variable has its value-label table,
@@ -490,7 +494,11 @@ if (tmpv.length > 0){
             historyEntry.add(attrValTableLine);
             c.voidEval(attrValTableLine);
             
-// --------- block to be used for the production code
+            // replication: value-label table
+            String repDVN_vlt = "attr(dvnData, 'val.table') <- VALTABLE";
+            c.voidEval(repDVN_vlt);
+            
+// --------- end: block to be used for the production code
 
             
             // missing-value list: TO DO
@@ -505,6 +513,11 @@ if (tmpv.length > 0){
             historyEntry.add(attrMissvalLine);
             c.voidEval(attrMissvalLine);
             
+            
+            // replication: missing value table
+            String repDVN_mvlt = "attr(dvnData, 'missval.table') <- MSVLTBL";
+            c.voidEval(repDVN_mvlt);
+            
             // attach attributes(tables) to the data.frame
             /*
                 x<-createvalindex(dtfrm=x, attrname='val.index')
@@ -516,6 +529,8 @@ if (tmpv.length > 0){
             String createMVIndexLine = "x<-createvalindex(dtfrm=x, attrname='missval.index');";
             historyEntry.add(createMVIndexLine);
             c.voidEval(createMVIndexLine);
+
+
 
 // reflection block: start ------------------------------------------>
         
@@ -543,7 +558,11 @@ if (tmpv.length > 0){
             null, false, null, null));
             
             //result.put("variableList",StringUtils.join(jvnamesRaw, ", "));
-
+            
+            // replication: var-level unf
+            String repDVN_varUNF = "attr(dvnData, 'variableUNF') <- paste(unf(dvnData,version=3))";
+            c.voidEval(repDVN_varUNF);
+            
             // calculate the file-leve UNF
             
             String fileUNFline = "fileUNF <- paste(summary(unf(x, version=3)))";
@@ -552,13 +571,27 @@ if (tmpv.length > 0){
             if (fileUNF == null){
                 fileUNF = "NA";
             }
+
+            // replication: file-level unf
+            String repDVN_fileUNF = "attr(dvnData, 'fileUNF') <- fileUNF";
+            c.voidEval(repDVN_fileUNF);
+
             String RversionLine = "R.Version()$version.string";
             String Rversion = c.eval(RversionLine).asString();
+            
+            // replication: R version
+            String repDVN_Rversion = "attr(dvnData, 'R.version') <- R.Version()$version.string";
+            c.voidEval(repDVN_Rversion);
             
             String zeligVersionLine = "packageDescription('Zelig')$Version";
             String zeligVersion = c.eval(zeligVersionLine).asString();
             
             String RexecDate = c.eval("date()").asString();
+            
+            // replication: date
+            String repDVN_date = "attr(dvnData, 'date') <- date()";
+            c.voidEval(repDVN_date);
+            
             /*
             if (result.containsKey("option")){
                 result.put("R_run_status", "T");
@@ -570,13 +603,57 @@ if (tmpv.length > 0){
             if (sro.hasRecodedVariables()){
                 if (sro.getSubsetConditions() != null){
                     result.put("subsettingCriteria", StringUtils.join(sro.getSubsetConditions(),"\n"));
+                    // replication: subset lines
+                    String[] sbst = null;
+                    sbst = (String[])sro.getSubsetConditions().toArray(new String[sro.getSubsetConditions().size()]);
+                    
+                    c.assign("sbstLines", new REXPString(sbst));
+                    
+                    String repDVN_sbst = "attr(dvnData, 'subsetLines') <- sbstLines";
+                    c.voidEval(repDVN_sbst);
                 }
-                /* to be used in the future?
+                /* to be used in the future? */
                 if (sro.getRecodeConditions() != null){
-                    result.put("recodingCriteria", StringUtils.join(sro.getRecodeConditions(),"\n"));
+                    //result.put("recodingCriteria", StringUtils.join(sro.getRecodeConditions(),"\n"));
+                    String[] rcd = null;
+                    rcd = (String[])sro.getRecodeConditions().toArray(new String[sro.getRecodeConditions().size()]);
+                    
+                    c.assign("rcdtLines", new REXPString(rcd));
+                    
+                    String repDVN_rcd = "attr(dvnData, 'recodeLines') <- rcdtLines";
+                    c.voidEval(repDVN_rcd);
                 }
-                */
+                
             }
+            
+            // save workspace as a replication data set
+            
+            String RdataFileName = "DVNdataFrame."+PID+".RData";
+            result.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
+            
+            String saveWS = "save('dvnData', file='"+ wrkdir +"/"+ RdataFileName +"')";
+            dbgLog.fine("save the workspace="+saveWS);
+            c.voidEval(saveWS);
+            
+            // write back the R workspace to the dvn 
+            
+            String wrkspFileName = wrkdir +"/"+ RdataFileName;
+            dbgLog.fine("wrkspFileName="+wrkspFileName);
+            
+            int wrkspflSize = getFileSize(c,wrkspFileName);
+            
+            File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX,"RData", wrkspflSize);
+            
+            if (wsfl != null){
+                result.put("wrkspFileName", wsfl.getAbsolutePath());
+                dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
+            } else {
+                dbgLog.fine("wrkspFileName is null");
+            }
+            
+            
+            
+            
             result.put("fileUNF",fileUNF);
             result.put("dsbHost", RSERVE_HOST);
             result.put("dsbPort", DSB_HOST_PORT);
@@ -590,7 +667,11 @@ if (tmpv.length > 0){
             
         
 // reflection block: end
-        
+            
+            // move the temp dir to the web-temp root dir
+            String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
+            dbgLog.fine("web-temp_dir="+mvTmpDir);
+            c.voidEval(mvTmpDir);        
             // close the Rserve connection
             c.close();
         
@@ -669,7 +750,7 @@ if (tmpv.length > 0){
     }
     
     
-    /**
+    /** *************************************************************
      * Handles a downloading request 
      *
      * @param     
@@ -692,21 +773,14 @@ if (tmpv.length > 0){
             String createTmpDir = "dir.create('"+wrkdir +"')";
             dbgLog.fine("createTmpDir="+createTmpDir);
             
-            if (REPLICATION){
-                String createTmpDir4rep = "dir.create('./"+requestdir +"')";
-                dbgLog.fine("createTmpDir4rep="+createTmpDir4rep);
-                historyEntry.add(createTmpDir4rep);
-            } else {
-                historyEntry.add(createTmpDir);
-            }
+            historyEntry.add(createTmpDir);
 
             c.voidEval(createTmpDir);
-            
             
             String dwnldOpt = sro.getDownloadRequestParameter();
             String dwnldFlxt = dwlndParam.get(dwnldOpt);
             
-            sr.put("format", dwnldFlxt);            
+            sr.put("format", dwnldFlxt);
             
             String dataFileName = "Data." + PID + "." + dwnldFlxt;
             
@@ -721,17 +795,7 @@ if (tmpv.length > 0){
             
             dbgLog.fine("univarDataDwnld="+univarDataDwnld);
             
-            if (REPLICATION){
-                String dsnprfx4rep = requestdir+ "/" + dataFileName;
-                dbgLog.fine("dsnprfx4rep="+dsnprfx4rep);
-                String univarDataDwnld4rep = "univarDataDwnld(dtfrm=x,"+
-                "dwnldoptn='"+dwnldOpt+"'"+
-                ", dsnprfx='./"+ dsnprfx4rep+"')";
-                historyEntry.add(univarDataDwnld4rep);
-                dbgLog.fine("univarDataDwnld4rep="+univarDataDwnld4rep);
-            } else {
-                historyEntry.add(univarDataDwnld);
-            }
+            historyEntry.add(univarDataDwnld);
             c.voidEval(univarDataDwnld);
             
             int wbFileSize = getFileSize(c,dsnprfx);
@@ -740,9 +804,8 @@ if (tmpv.length > 0){
             
             // write back the data file to the dvn
             
-            
-            
             File dtfl = writeBackFileToDvn(c, dsnprfx, dtflprefix, dwlndParam.get(dwnldOpt), wbFileSize);
+            
             if (dtfl != null){
                 sr.put("wbDataFileName", dtfl.getAbsolutePath());
                 dbgLog.fine("wbDataFileName="+dtfl.getAbsolutePath());
@@ -750,71 +813,16 @@ if (tmpv.length > 0){
                 dbgLog.fine("wbDataFileName is null");
             }
             
-            // save workspace
-            String objList = "objList<-ls()";
-            dbgLog.fine("objList="+objList);
-            c.voidEval(objList);
-            
-            String RdataFileName = "Rworkspace."+PID+".RData";
-            
-            sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
-            
-            String saveWS = "save(list=objList, file='"+wrkdir +"/"+ RdataFileName +"')";
-            dbgLog.fine("save the workspace="+saveWS);
-            c.voidEval(saveWS);
-
-            // write back the R workspace to the dvn 
-            
-            String wrkspFileName = wrkdir +"/"+ RdataFileName;
-            dbgLog.fine("wrkspFileName="+wrkspFileName);
-            
-            int wrkspflSize = getFileSize(c,wrkspFileName);
-            
-            File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX ,"RData", wrkspflSize);
-            
-            if (wsfl != null){
-                sr.put("wrkspFileName", wsfl.getAbsolutePath());
-                dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
-            } else {
-                dbgLog.fine("wrkspFileName is null");
-            }
-            
-            
-            
-            // write back vdc_startup.R to the dvn
-            int vdcStartupSize = getFileSize(c, VDC_R_STARTUP);
-            File vdcstrtfl = writeBackFileToDvn(c, VDC_R_STARTUP, "vdc_startup.", "R",vdcStartupSize);
-            
-            if (vdcstrtfl !=null){
-                sr.put("vdc_startupFileName",vdcstrtfl.getAbsolutePath());
-                historyEntry.set(0, "source('"+vdcstrtfl.getName()+"');");
-                dbgLog.fine("vdc_startupFileName="+vdcstrtfl.getAbsolutePath());
-            } else {
-                dbgLog.fine("vdc_startupFileName is null");
-                historyEntry.set(0, "source('"+VDC_R_STARTUP_FILE+"');");
-            }
-            
-            
-            
-            
-            // command history
-//            String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
-//            c.assign("ch", new REXPString(ch));
-//            String saveRcodeFile = "cat(file='"+ wrkdir +"/"+ RcodeFile +"',paste(ch,collapse='\n'))";
-//            dbgLog.fine(saveRcodeFile);
-//            c.voidEval(saveRcodeFile);
-
-
             // tab data file
             String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
             c.voidEval(mvTmpTabFile);
             dbgLog.fine("move temp file="+mvTmpTabFile);
 
             // move the temp dir to the web-temp root dir
-            String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
-            dbgLog.fine("web-temp_dir="+mvTmpDir);
-            c.voidEval(mvTmpDir);
-
+//            String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
+//            dbgLog.fine("web-temp_dir="+mvTmpDir);
+//            c.voidEval(mvTmpDir);
+            
         } catch (RserveException rse) {
             rse.printStackTrace();
             sr.put("RexecError", "true");
@@ -825,7 +833,7 @@ if (tmpv.length > 0){
         return sr;
     }
     
-    /**
+    /** *************************************************************
      * Handles an EDA request 
      *
      * @param     
@@ -868,14 +876,7 @@ if (tmpv.length > 0){
             // create a temp dir
             String createTmpDir = "dir.create('"+wrkdir +"')";
             dbgLog.fine("createTmpDir="+createTmpDir);
-            
-            if (REPLICATION){
-                String createTmpDir4rep = "dir.create('./"+requestdir +"')";
-                dbgLog.fine("createTmpDir4rep="+createTmpDir4rep);
-                historyEntry.add(createTmpDir4rep);
-            } else {
-                historyEntry.add(createTmpDir);
-            }
+            historyEntry.add(createTmpDir);
             c.voidEval(createTmpDir);
 
             String ResultHtmlFileBase = "Rout."+PID ;
@@ -884,17 +885,8 @@ if (tmpv.length > 0){
                 "', extension='html', CSSFile='R2HTML.css', Title ='"+
                 homePageTitle+"')";
             dbgLog.fine("openHtml="+openHtml);
+            historyEntry.add(openHtml);
             
-            if (REPLICATION){
-                String openHtml4rep =  "htmlsink<-HTMLInitFile(outdir = './"+
-                requestdir +"', filename='"+ResultHtmlFileBase+
-                "', extension='html', CSSFile='R2HTML.css', Title ='"+
-                homePageTitle+"')";
-                historyEntry.add(openHtml4rep);
-                dbgLog.fine("openHtml4rep="+openHtml4rep);
-            } else {
-                historyEntry.add(openHtml);
-            }
             c.voidEval(openHtml);
             
             String StudyTitle = sro.getStudytitle();
@@ -915,14 +907,7 @@ if (tmpv.length > 0){
                 "/" + "visuals" +"')";
             dbgLog.fine("visualsDir="+createVisualsDir);
             
-            if (REPLICATION){
-                String createVisualsDir4rep = "dir.create('./"+ requestdir +
-                "/" + "visuals" +"')";
-                historyEntry.add(createVisualsDir4rep);
-                dbgLog.fine("createVisualsDir4rep="+createVisualsDir4rep);
-            } else {
-                historyEntry.add(createVisualsDir);
-            }
+            historyEntry.add(createVisualsDir);
             c.voidEval(createVisualsDir);
             
             // command lines
@@ -935,18 +920,7 @@ if (tmpv.length > 0){
                 "visuals" + "/" + "Rvls." + PID +
                 "',standalone=F)})";
             dbgLog.fine("univarChart="+univarChart);
-            
-            if (REPLICATION){
-                String univarChart4rep = "try({x<-univarChart(dtfrm=x, " +
-                "analysisoptn=aol, " +
-                "imgflprfx='./" + requestdir + "/" + 
-                "visuals" + "/" + "Rvls." + PID +
-                "',standalone=F)})";
-                historyEntry.add(univarChart4rep);
-                dbgLog.fine("univarChart4rep="+univarChart4rep);
-            } else {
-                historyEntry.add(univarChart);
-            }
+            historyEntry.add(univarChart);
             c.voidEval(univarChart);
             
             String univarStatHtmlBody = "try(univarStatHtmlBody(dtfrm=x,"+
@@ -959,98 +933,40 @@ if (tmpv.length > 0){
             historyEntry.add(closeHtml);
             c.voidEval(closeHtml);
             
-            // save workspace
-            String objList = "objList<-ls()";
-            dbgLog.fine("objList="+objList);
-            c.voidEval(objList);
-            
-            String RdataFileName = "Rworkspace."+PID+".RData";
-            sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
-            
-            String saveWS = "save(list=objList, file='"+ wrkdir +"/"+ RdataFileName +"')";
-            dbgLog.fine("save the workspace="+saveWS);
-            c.voidEval(saveWS);
-            
-            
-            
-            
-            
-            // write back the R workspace to the dvn 
-            
-            String wrkspFileName = wrkdir +"/"+ RdataFileName;
-            dbgLog.fine("wrkspFileName="+wrkspFileName);
-            
-            int wrkspflSize = getFileSize(c,wrkspFileName);
-            
-            File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX,"RData", wrkspflSize);
-            
-            if (wsfl != null){
-                sr.put("wrkspFileName", wsfl.getAbsolutePath());
-                dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
-            } else {
-                dbgLog.fine("wrkspFileName is null");
-            }
-            
-            // write back vdc_startup.R to the dvn
-            int vdcStartupSize = getFileSize(c, VDC_R_STARTUP);
-            File vdcstrtfl = writeBackFileToDvn(c, VDC_R_STARTUP, "vdc_startup.", "R",vdcStartupSize);
-            
-            if (vdcstrtfl !=null){
-                sr.put("vdc_startupFileName",vdcstrtfl.getAbsolutePath());
-                historyEntry.set(0, "source('"+vdcstrtfl.getName()+"');");
-                dbgLog.fine("vdc_startupFileName="+vdcstrtfl.getAbsolutePath());
-            } else {
-                dbgLog.fine("vdc_startupFileName is null");
-                historyEntry.set(0, "source('"+VDC_R_STARTUP_FILE+"');");
-            }
-            
-            if (REPLICATION){
-                String strDir = "./"+ requestdir;
-                
-                String mvCss = "file.rename('R2HTML.css', '" +strDir+ "/R2HTML.css')";
-                historyEntry.add(mvCss);
-                String wkdr = "wrkdir<-'"+ strDir +"'";
-                historyEntry.add(wkdr);
-                String htmlfl = "htmlfile <- paste(wrkdir,'/', list.files(wrkdir, pattern='.html'), sep='')";
-                historyEntry.add(htmlfl);
-                String brws = "browseURL(htmlfile)";
-                historyEntry.add(brws);
-            }
-            
-            
-            
-            // command history
-//            String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
-//            c.assign("ch", new REXPString(ch));
-//            String saveRcodeFile = "cat(file='"+ wrkdir +"/"+ RcodeFile +"',paste(ch,collapse='\n'))";
-//            dbgLog.fine(saveRcodeFile);
-//            c.voidEval(saveRcodeFile);
-            
-            // copy the dvn-patch css file to the wkdir
-            // file.copy(from, to, overwrite = FALSE)
-            String cssFile = R2HTML_CSS_DIR + "/" +"R2HTML.css";
-            String cpCssFile = "file.copy('"+cssFile+"','"+wrkdir+"')";
-            c.voidEval(cpCssFile);
+            // save workspace as a replication data set
+//            
+//            String RdataFileName = "DVNdataFrame."+PID+".RData";
+//            sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
+//            
+//            String saveWS = "save('dvnData', file='"+ wrkdir +"/"+ RdataFileName +"')";
+//            dbgLog.fine("save the workspace="+saveWS);
+//            c.voidEval(saveWS);
+//            
+//            // write back the R workspace to the dvn 
+//            
+//            String wrkspFileName = wrkdir +"/"+ RdataFileName;
+//            dbgLog.fine("wrkspFileName="+wrkspFileName);
+//            
+//            int wrkspflSize = getFileSize(c,wrkspFileName);
+//            
+//            File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX,"RData", wrkspflSize);
+//            
+//            if (wsfl != null){
+//                sr.put("wrkspFileName", wsfl.getAbsolutePath());
+//                dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
+//            } else {
+//                dbgLog.fine("wrkspFileName is null");
+//            }
             
             // tab data file
             String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
             c.voidEval(mvTmpTabFile);
             dbgLog.fine("move temp file="+mvTmpTabFile);
             
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             // move the temp dir to the web-temp root dir
-            String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
-            dbgLog.fine("web-temp_dir="+mvTmpDir);
-            c.voidEval(mvTmpDir);
+//            String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
+//            dbgLog.fine("web-temp_dir="+mvTmpDir);
+//            c.voidEval(mvTmpDir);
 
         } catch (RserveException rse) {
             rse.printStackTrace();
@@ -1062,7 +978,7 @@ if (tmpv.length > 0){
         return sr;
     }
     
-    /**
+    /** *************************************************************
      * Handles an Xtab request 
      *
      * @param     
@@ -1098,14 +1014,7 @@ if (tmpv.length > 0){
             // create a temp dir
             String createTmpDir = "dir.create('"+wrkdir +"')";
             dbgLog.fine("createTmpDir="+createTmpDir);
-            
-            if (REPLICATION){
-                String createTmpDir4rep = "dir.create('./"+requestdir +"')";
-                dbgLog.fine("createTmpDir4rep="+createTmpDir4rep);
-                historyEntry.add(createTmpDir4rep);
-            } else {
-                historyEntry.add(createTmpDir);
-            }
+            historyEntry.add(createTmpDir);
             c.voidEval(createTmpDir);            
             
             String ResultHtmlFileBase = "Rout."+PID ;
@@ -1114,17 +1023,7 @@ if (tmpv.length > 0){
                 "', extension='html', CSSFile='R2HTML.css', Title ='"+
                 homePageTitle+"')";
             dbgLog.fine("openHtml="+openHtml);
-            
-            if (REPLICATION){
-                String openHtml4rep = "htmlsink<-HTMLInitFile(outdir = './" +
-                requestdir +"', filename='"+ResultHtmlFileBase+
-                "', extension='html', CSSFile='R2HTML.css', Title ='"+
-                homePageTitle+"')";
-                historyEntry.add(openHtml4rep);
-                dbgLog.fine("openHtml4rep="+openHtml4rep);
-            } else {
                 historyEntry.add(openHtml);
-            }
             c.voidEval(openHtml);
             
             String StudyTitle = sro.getStudytitle();
@@ -1195,81 +1094,30 @@ if (tmpv.length > 0){
             historyEntry.add(closeHtml);
             c.voidEval(closeHtml);
             
-            // save workspace
-            String objList = "objList<-ls()";
-            dbgLog.fine("objList="+objList);
-            c.voidEval(objList);
-
-            String RdataFileName = "Rworkspace."+PID+".RData";
-
-            sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
-            
-            String saveWS = "save(list=objList, file='"+wrkdir +"/"+ RdataFileName +"')";
-            dbgLog.fine("save the workspace="+saveWS);
-            c.voidEval(saveWS);
-            
-            
-            
-            
-            
-            
-            
-            // write back the R workspace to the dvn 
-            
-            String wrkspFileName = wrkdir +"/"+ RdataFileName;
-            dbgLog.fine("wrkspFileName="+wrkspFileName);
-            
-            int wrkspflSize = getFileSize(c,wrkspFileName);
-            
-            File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX ,"RData", wrkspflSize);
-            
-            if (wsfl != null){
-                sr.put("wrkspFileName", wsfl.getAbsolutePath());
-                dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
-            } else {
-                dbgLog.fine("wrkspFileName is null");
-            }
-            
-            
-            // write back vdc_startup.R to the dvn
-            int vdcStartupSize = getFileSize(c, VDC_R_STARTUP);
-            File vdcstrtfl = writeBackFileToDvn(c, VDC_R_STARTUP, "vdc_startup.", "R",vdcStartupSize);
-            
-            if (vdcstrtfl !=null){
-                sr.put("vdc_startupFileName",vdcstrtfl.getAbsolutePath());
-                historyEntry.set(0, "source('"+vdcstrtfl.getName()+"');");
-                dbgLog.fine("vdc_startupFileName="+vdcstrtfl.getAbsolutePath());
-            } else {
-                dbgLog.fine("vdc_startupFileName is null");
-                historyEntry.set(0, "source('"+VDC_R_STARTUP_FILE+"');");
-            }
-            
-            
-            if (REPLICATION){
-                String strDir = "./"+ requestdir;
-                
-                String mvCss = "file.rename('R2HTML.css', '" +strDir+ "/R2HTML.css')";
-                historyEntry.add(mvCss);
-                String wkdr = "wrkdir<-'"+ strDir +"'";
-                historyEntry.add(wkdr);
-                String htmlfl = "htmlfile <- paste(wrkdir,'/', list.files(wrkdir, pattern='.html'), sep='')";
-                historyEntry.add(htmlfl);
-                String brws = "browseURL(htmlfile)";
-                historyEntry.add(brws);
-            }
-            
-            // command history
-//            String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
-//            c.assign("ch", new REXPString(ch));
-//            String saveRcodeFile = "cat(file='"+ wrkdir +"/"+ RcodeFile +"',paste(ch,collapse='\n'))";
-//            dbgLog.fine(saveRcodeFile);
-//            c.voidEval(saveRcodeFile);
-            
-            // copy the dvn-patch css file to the wkdir
-            // file.copy(from, to, overwrite = FALSE)
-            String cssFile =R2HTML_CSS_DIR + "/" +"R2HTML.css";
-            String cpCssFile = "file.copy('"+cssFile+"','"+wrkdir+"')";
-            c.voidEval(cpCssFile);
+            // save workspace as a replication data set
+//            
+//            String RdataFileName = "DVNdataFrame."+PID+".RData";
+//            sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
+//            
+//            String saveWS = "save('dvnData', file='"+ wrkdir +"/"+ RdataFileName +"')";
+//            dbgLog.fine("save the workspace="+saveWS);
+//            c.voidEval(saveWS);
+//            
+//            // write back the R workspace to the dvn 
+//            
+//            String wrkspFileName = wrkdir +"/"+ RdataFileName;
+//            dbgLog.fine("wrkspFileName="+wrkspFileName);
+//            
+//            int wrkspflSize = getFileSize(c,wrkspFileName);
+//            
+//            File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX,"RData", wrkspflSize);
+//            
+//            if (wsfl != null){
+//                sr.put("wrkspFileName", wsfl.getAbsolutePath());
+//                dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
+//            } else {
+//                dbgLog.fine("wrkspFileName is null");
+//            }
             
             // tab data file
             String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
@@ -1277,9 +1125,9 @@ if (tmpv.length > 0){
             dbgLog.fine("move temp file="+mvTmpTabFile);
             
             // move the temp dir to the web-temp root dir
-            String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
-            dbgLog.fine("web-temp_dir="+mvTmpDir);
-            c.voidEval(mvTmpDir);
+//            String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
+//            dbgLog.fine("web-temp_dir="+mvTmpDir);
+//            c.voidEval(mvTmpDir);
 
         } catch (RserveException rse) {
             rse.printStackTrace();
@@ -1292,7 +1140,7 @@ if (tmpv.length > 0){
         return sr;
     }
     
-    /**
+    /** *************************************************************
      * Handles a Zelig request 
      *
      * @param     
@@ -1384,14 +1232,7 @@ if (tmpv.length > 0){
             // create a temp dir
             String createTmpDir = "dir.create('"+wrkdir +"')";
             dbgLog.fine("createTmpDir="+createTmpDir);
-            
-            if (REPLICATION){
-                String createTmpDir4rep = "dir.create('./"+requestdir +"')";
-                dbgLog.fine("createTmpDir4rep="+createTmpDir4rep);
-                historyEntry.add(createTmpDir4rep);
-            } else {
-                historyEntry.add(createTmpDir);
-            }
+            historyEntry.add(createTmpDir);
             c.voidEval(createTmpDir);
             
             // output option: sum plot Rdata
@@ -1460,23 +1301,6 @@ if (tmpv.length > 0){
                 ")  } )";
                 
                 
-            String VDCgenAnalysisline4rep = 
-                "try( { zlg.out<- VDCgenAnalysis(" +
-                "outDir='./"        + requestdir    +"',"+
-                lhsTerm + "~"     + rhsTerm       + ","+
-                "model='"         + modelname     +"',"+
-                "data=x,"         +
-                "wantSummary="    + zeligOptns[0] + ","+
-                "wantPlots="      + zeligOptns[1] + ","+
-                "wantSensitivity=F"               + ","+
-                "wantSim="        + simOptn       + ","+
-                "wantBinOutput="  + zeligOptns[2] + ","+
-                "setxArgs="       + setxArgs      + ","+
-                "setx2Args="      + setx2Args     + ","+
-                "HTMLInitArgs= list(Title='Dataverse Analysis')"+ "," +
-                "HTMLnote= '<em>The following are the results of your requested analysis.</em>'"+
-                ")  } )";
-                
             /*
                 o: sum(T), Plot(T), BinOut(F)
                 a: sim (F), sen(always F)
@@ -1489,13 +1313,7 @@ if (tmpv.length > 0){
             
             */
             dbgLog.fine("VDCgenAnalysis="+VDCgenAnalysisline);
-            
-            if (REPLICATION){
-                historyEntry.add(VDCgenAnalysisline4rep);
-                dbgLog.fine("VDCgenAnalysisline4rep="+VDCgenAnalysisline4rep);
-            } else {
-                historyEntry.add(VDCgenAnalysisline);
-            }
+            historyEntry.add(VDCgenAnalysisline);
             
             c.voidEval(VDCgenAnalysisline);
             
@@ -1514,8 +1332,9 @@ if (tmpv.length > 0){
                        ResultHtmlFile = tmp[tmp.length-1];
                        sr.put("html", "/"+requestdir+ "/" +ResultHtmlFile);
                     } else if (kz[i].equals("Rdata")){
-                       RdataFileName = tmp[tmp.length-1];
-                       sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
+                       // this workspace is no longer saved
+                       //RdataFileName = tmp[tmp.length-1];
+                       //sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
                     }
                 } else {
                     if (kz[i].equals("html")){
@@ -1533,94 +1352,12 @@ if (tmpv.length > 0){
             sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);                
             */
 
-
-            
-            // write back the R workspace to the dvn 
-            if (RdataFileName == null){
-                // no-save-ws during zelig modeling
-                // save the current global  workspace
-                String objList = "objList<-ls()";
-                dbgLog.fine("objList="+objList);
-                c.voidEval(objList);
-
-                RdataFileName = "Rworkspace."+PID+".RData";
-
-                sr.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
-
-                String saveWS = "save(list=objList, file='"+wrkdir +"/"+ RdataFileName +"')";
-                dbgLog.fine("save the workspace="+saveWS);
-                c.voidEval(saveWS);
-            }
-            
-            
-            String wrkspFileName = wrkdir +"/"+ RdataFileName;
-            dbgLog.fine("wrkspFileName="+wrkspFileName);
-            
-            int wrkspflSize = getFileSize(c,wrkspFileName);
-            
-            File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX,"RData", wrkspflSize);
-            
-            if (wsfl != null){
-                sr.put("wrkspFileName", wsfl.getAbsolutePath());
-                dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
-            } else {
-                dbgLog.fine("wrkspFileName is null");
-            }
-
-            
-            // write back vdc_startup.R to the dvn
-            int vdcStartupSize = getFileSize(c, VDC_R_STARTUP);
-            File vdcstrtfl = writeBackFileToDvn(c, VDC_R_STARTUP, "vdc_startup.", "R",vdcStartupSize);
-            
-            if (vdcstrtfl !=null){
-                sr.put("vdc_startupFileName",vdcstrtfl.getAbsolutePath());
-                historyEntry.set(0, "source('"+vdcstrtfl.getName()+"');");
-                dbgLog.fine("vdc_startupFileName="+vdcstrtfl.getAbsolutePath());
-            } else {
-                dbgLog.fine("vdc_startupFileName is null");
-                historyEntry.set(0, "source('"+VDC_R_STARTUP_FILE+"');");
-            }
-            
-            
-            if (REPLICATION){
-                String strDir = "./"+ requestdir;
-                
-                //String mvCss = "file.rename('R2HTML.css', '" +strDir+ "/R2HTML.css')";
-                //historyEntry.add(mvCss);
-                String wkdr = "wrkdir<-'"+ strDir +"'";
-                historyEntry.add(wkdr);
-                String htmlfl = "htmlfile <- paste(wrkdir,'/', list.files(wrkdir, pattern='.html'), sep='')";
-                historyEntry.add(htmlfl);
-                String brws = "browseURL(htmlfile)";
-                historyEntry.add(brws);
-            }
-            
-            
-            
-            
-            // copy the dvn-patch css file to the wkdir
-            // file.copy(from, to, overwrite = FALSE)
-            String cssFile = R2HTML_CSS_DIR + "/" +"R2HTML.css";
-            String cpCssFile = "file.copy('"+cssFile+"','"+wrkdir+"')";
-            c.voidEval(cpCssFile);
-            
-            // command history
-//            String[] ch = (String[])historyEntry.toArray(new String[historyEntry.size()]);
-//            c.assign("ch", new REXPString(ch));
-//            String saveRcodeFile = "cat(file='"+ wrkdir +"/"+ RcodeFile +"',paste(ch,collapse='\n'))";
-//            dbgLog.fine(saveRcodeFile);
-//            c.voidEval(saveRcodeFile);
-            
             // tab data file
             String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
             c.voidEval(mvTmpTabFile);
             dbgLog.fine("move temp file="+mvTmpTabFile);
 
-            
-            // move the temp dir to the web-temp root dir
-            String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
-            dbgLog.fine("web-temp_dir="+mvTmpDir);
-            c.voidEval(mvTmpDir);
+
                         
         } catch (REngineException ree){
             ree.printStackTrace();
@@ -1641,7 +1378,7 @@ if (tmpv.length > 0){
     }
     
     
-    /**
+    /** *************************************************************
      * returns zelig-configuration data as an XML string
      *
      * @return    XML string
@@ -1723,6 +1460,13 @@ if (tmpv.length > 0){
         return zlgcnfg;
     }
 
+
+    /** *************************************************************
+     * 
+     *
+     * @param     
+     * @return    
+     */
     public String joinNelementsPerLine(String[] vn, int divisor){
         String vnl = null;
         if (vn.length < divisor){
@@ -1757,7 +1501,12 @@ if (tmpv.length > 0){
         return vnl;
     }
     
-    
+    /** *************************************************************
+     * 
+     *
+     * @param     
+     * @return    
+     */
     public String joinNelementsPerLine(String[] vn, int divisor, String sp, 
         boolean quote, String qm, String lnsp){
         if (!(divisor >= 1)){
@@ -1830,7 +1579,12 @@ if (tmpv.length > 0){
         return vnl;
     }
     
-    
+    /** *************************************************************
+     * 
+     *
+     * @param     
+     * @return    
+     */
     public File writeBackFileToDvn(RConnection c, String targetFilename,
         String tmpFilePrefix, String tmpFileExt, int fileSize){
         
@@ -1891,7 +1645,12 @@ if (tmpv.length > 0){
         return tmprsltfl;
     }
     
-    
+    /** *************************************************************
+     * 
+     *
+     * @param     
+     * @return    
+     */
     public int getFileSize(RConnection c, String targetFilename){
         dbgLog.fine("targetFilename="+targetFilename);
         int fileSize = 0;

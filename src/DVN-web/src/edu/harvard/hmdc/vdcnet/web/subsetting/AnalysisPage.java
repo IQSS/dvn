@@ -247,6 +247,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
        
         REP_README_FILE = new File(this.getClass().getResource("README").getFile());
         DVN_R2HTML_CSS_FILE = new File(this.getClass().getResource("R2HTML.css").getFile());
+        DVN_R_HELPER_FILE = new File(this.getClass().getResource("dvn_helper.R").getFile());
     } // end of _init()
 
     // </editor-fold>
@@ -284,6 +285,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     private static File REP_README_FILE;
     
     private static File DVN_R2HTML_CSS_FILE;
+    
+    private static File DVN_R_HELPER_FILE;
     
     private static Long TEMP_FILE_LIFETIME=10L;
     
@@ -1222,7 +1225,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 String rhistNew = StringUtils.replace(resultInfo.get("RCommandHistory"), tmpsbfl.getName(),tmpsbflnew.getName());
                 
                 
-                zipFileList.add(tmpsbflnew);
+                //zipFileList.add(tmpsbflnew);
 
                 // write a citation file 
                 String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
@@ -1293,43 +1296,44 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 }
                 
                 // R-work space file
-                String wrkspFileName = resultInfo.get("wrkspFileName");
-                dbgLog.fine("wrkspFileName="+wrkspFileName);
+//                String wrkspFileName = resultInfo.get("wrkspFileName");
+//                dbgLog.fine("wrkspFileName="+wrkspFileName);
+//                
+//                File RwrkspFileName = new File(wrkspFileName);
+//                if (RwrkspFileName.exists()){
+//                    dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
+//
+//                    //zipFileList.add(RwrkspFileName);
+//
+//                } else {
+//                    dbgLog.fine("RwrkspFileName does not exist");
+//                    //msgDwnldButton.setText("* The workspace file is not available");
+//                    //msgDwnldButton.setVisible(true);
+//                    dbgLog.warning("dwnldAction(): R workspace file was not transferred");
+//                    //getVDCRequestBean().setSelectedTab("tabDwnld");
+//
+//                    //return "failure";
+//                }
+//                deleteTempFileList.add(RwrkspFileName);
+
+//                // vdc_startup.R file
+//                String vdc_startupFileName = resultInfo.get("vdc_startupFileName");
+//                dbgLog.fine("vdc_startupFileName="+vdc_startupFileName);
+//                File vdcstrtFileName = new File(vdc_startupFileName);
+//                if (vdcstrtFileName.exists()){
+//                    dbgLog.fine("vdcstrtFileName:length="+vdcstrtFileName.length());
+//                    zipFileList.add(vdcstrtFileName);
+//                } else {
+//                    dbgLog.fine("vdcstrtFileName does not exist");
+//                    //msgDwnldButton.setText("* vdc_startup.R is not available");
+//                    //msgDwnldButton.setVisible(true);
+//                    dbgLog.warning("dwnldAction(): vdc_startup.R was not transferred");
+//                    //getVDCRequestBean().setSelectedTab("tabDwnld");
+//
+//                    //return "failure";
+//                }
+//                deleteTempFileList.add(vdcstrtFileName);
                 
-                File RwrkspFileName = new File(wrkspFileName);
-                if (RwrkspFileName.exists()){
-                    dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
-
-                    //zipFileList.add(RwrkspFileName);
-
-                } else {
-                    dbgLog.fine("RwrkspFileName does not exist");
-                    //msgDwnldButton.setText("* The workspace file is not available");
-                    //msgDwnldButton.setVisible(true);
-                    dbgLog.warning("dwnldAction(): R workspace file was not transferred");
-                    //getVDCRequestBean().setSelectedTab("tabDwnld");
-
-                    //return "failure";
-                }
-                deleteTempFileList.add(RwrkspFileName);
-
-                // vdc_startup.R file
-                String vdc_startupFileName = resultInfo.get("vdc_startupFileName");
-                dbgLog.fine("vdc_startupFileName="+vdc_startupFileName);
-                File vdcstrtFileName = new File(vdc_startupFileName);
-                if (vdcstrtFileName.exists()){
-                    dbgLog.fine("vdcstrtFileName:length="+vdcstrtFileName.length());
-                    zipFileList.add(vdcstrtFileName);
-                } else {
-                    dbgLog.fine("vdcstrtFileName does not exist");
-                    //msgDwnldButton.setText("* vdc_startup.R is not available");
-                    //msgDwnldButton.setVisible(true);
-                    dbgLog.warning("dwnldAction(): vdc_startup.R was not transferred");
-                    //getVDCRequestBean().setSelectedTab("tabDwnld");
-
-                    //return "failure";
-                }
-                deleteTempFileList.add(vdcstrtFileName);
                 // add replication readme file
                 zipFileList.add(REP_README_FILE);
                 
@@ -3146,7 +3150,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 String rhistNew = StringUtils.replace(resultInfo.get("RCommandHistory"), tmpsbfl.getName(),tmpsbflnew.getName());
                 
                 
-                zipFileList.add(tmpsbflnew);
+                //zipFileList.add(tmpsbflnew);
 
                 // write a citation file 
                 String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
@@ -3178,7 +3182,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 if (RwrkspFileName.exists()){
                     dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
 
-                    //zipFileList.add(RwrkspFileName);
+                    zipFileList.add(RwrkspFileName);
 
                 } else {
                     dbgLog.fine("RwrkspFileName does not exist");
@@ -3191,26 +3195,27 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 }
                 deleteTempFileList.add(RwrkspFileName);
                 
-                // vdc_startup.R file
-                String vdc_startupFileName = resultInfo.get("vdc_startupFileName");
-                dbgLog.fine("vdc_startupFileName="+vdc_startupFileName);
-                File vdcstrtFileName = new File(vdc_startupFileName);
-                if (vdcstrtFileName.exists()){
-                    dbgLog.fine("vdcstrtFileName:length="+vdcstrtFileName.length());
-                    zipFileList.add(vdcstrtFileName);
-                } else {
-                    dbgLog.fine("vdcstrtFileName does not exist");
-                    //msgEdaButton.setText("* vdc_startup.R is not available");
-                    //msgEdaButton.setVisible(true);
-                    dbgLog.warning("edaAction(): vdc_startup.R was not transferred");
-                    //getVDCRequestBean().setSelectedTab("tabEda");
-
-                    //return "failure";
-                }
-                deleteTempFileList.add(vdcstrtFileName);
+//                // vdc_startup.R file
+//                String vdc_startupFileName = resultInfo.get("vdc_startupFileName");
+//                dbgLog.fine("vdc_startupFileName="+vdc_startupFileName);
+//                File vdcstrtFileName = new File(vdc_startupFileName);
+//                if (vdcstrtFileName.exists()){
+//                    dbgLog.fine("vdcstrtFileName:length="+vdcstrtFileName.length());
+//                    zipFileList.add(vdcstrtFileName);
+//                } else {
+//                    dbgLog.fine("vdcstrtFileName does not exist");
+//                    //msgEdaButton.setText("* vdc_startup.R is not available");
+//                    //msgEdaButton.setVisible(true);
+//                    dbgLog.warning("edaAction(): vdc_startup.R was not transferred");
+//                    //getVDCRequestBean().setSelectedTab("tabEda");
+//
+//                    //return "failure";
+//                }
+//                deleteTempFileList.add(vdcstrtFileName);
                 // add replication readme file
                 zipFileList.add(REP_README_FILE);
                 zipFileList.add(DVN_R2HTML_CSS_FILE);
+                zipFileList.add(DVN_R_HELPER_FILE);
                 // zip the following files as a replication-pack
                 //
                 // local     local        local      remote
@@ -5717,7 +5722,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 
                 String rhistNew = StringUtils.replace(resultInfo.get("RCommandHistory"), tmpsbfl.getName(),tmpsbflnew.getName());
                 
-                zipFileList.add(tmpsbflnew);
+                //zipFileList.add(tmpsbflnew);
 
                 // write a citation file 
                 String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
@@ -5749,7 +5754,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 if (RwrkspFileName.exists()){
                     dbgLog.fine("RwrkspFileName:length="+RwrkspFileName.length());
 
-                    //zipFileList.add(RwrkspFileName);
+                    zipFileList.add(RwrkspFileName);
 
                 } else {
                     dbgLog.fine("RwrkspFileName does not exist");
@@ -5763,26 +5768,27 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 deleteTempFileList.add(RwrkspFileName);
 
                 // vdc_startup.R file
-                String vdc_startupFileName = resultInfo.get("vdc_startupFileName");
-                dbgLog.fine("vdc_startupFileName="+vdc_startupFileName);
-                File vdcstrtFileName = new File(vdc_startupFileName);
-                if (vdcstrtFileName.exists()){
-                    dbgLog.fine("vdcstrtFileName:length="+vdcstrtFileName.length());
-                    zipFileList.add(vdcstrtFileName);
-                } else {
-                    dbgLog.fine("vdcstrtFileName does not exist");
-                    //msgAdvStatButton.setText("* vdc_startup.R is not available");
-                    //msgAdvStatButton.setVisible(true);
-                    dbgLog.warning("advStatAction(): vdc_startup.R was not transferred");
-                    //getVDCRequestBean().setSelectedTab("tabAdvStat");
-
-                    //return "failure";
-                }
-                deleteTempFileList.add(vdcstrtFileName);
+//                String vdc_startupFileName = resultInfo.get("vdc_startupFileName");
+//                dbgLog.fine("vdc_startupFileName="+vdc_startupFileName);
+//                File vdcstrtFileName = new File(vdc_startupFileName);
+//                if (vdcstrtFileName.exists()){
+//                    dbgLog.fine("vdcstrtFileName:length="+vdcstrtFileName.length());
+//                    zipFileList.add(vdcstrtFileName);
+//                } else {
+//                    dbgLog.fine("vdcstrtFileName does not exist");
+//                    //msgAdvStatButton.setText("* vdc_startup.R is not available");
+//                    //msgAdvStatButton.setVisible(true);
+//                    dbgLog.warning("advStatAction(): vdc_startup.R was not transferred");
+//                    //getVDCRequestBean().setSelectedTab("tabAdvStat");
+//
+//                    //return "failure";
+//                }
+//                deleteTempFileList.add(vdcstrtFileName);
                 // add replication readme file
                 zipFileList.add(REP_README_FILE);
                 if (mdlName.equals("xtb")){
                     zipFileList.add(DVN_R2HTML_CSS_FILE);
+                    zipFileList.add(DVN_R_HELPER_FILE);
                 }
                 // zip the following files as a replication-pack
                 //

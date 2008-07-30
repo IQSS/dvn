@@ -49,6 +49,13 @@ public class DvnDSBTimerService implements DvnDSBTimerServiceLocal{
                 boolean sc = f.delete();
                 if (!sc){
                     dbgLog.fine("failed to delete file: path="+f.getAbsolutePath() +"\tname="+ f.getName());
+                } else{
+                    dbgLog.fine("successfully deleted? let's check its existence");
+                    if(f.exists()){
+                        dbgLog.fine("surprise: actually the File still exists");
+                    } else {
+                        dbgLog.fine("The file no longer exists");
+                    }
                 }
             }
         }

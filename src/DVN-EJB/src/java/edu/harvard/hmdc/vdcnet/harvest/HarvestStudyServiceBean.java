@@ -46,17 +46,17 @@ public class HarvestStudyServiceBean implements HarvestStudyServiceLocal {
             List<Long> studyIds = indexService.query(oaiSet.getDefinition());
             studyIds = studyService.getVisibleStudies(studyIds, null);
             studyIds = studyService.getViewableStudies(studyIds, null, null);
-            updateHarvestStudies( oaiSet.getSpec(), studyIds, updateTime);
+            updateHarvestStudies( oaiSet.getSpec(), studyIds, updateTime );
         }
         
         // also do noset membet
         List<Long> studyIds = studyService.getAllNonHarvestedStudyIds();
         studyIds = studyService.getVisibleStudies(studyIds, null);
         studyIds = studyService.getViewableStudies(studyIds, null, null);        
-        updateHarvestStudies( null, studyIds, updateTime);
+        updateHarvestStudies( null, studyIds, updateTime );
         
     }    
-    
+
     private void updateHarvestStudies(String setName, List<Long> studyIds, Date updateTime) {
 
         // create Map of HarvestStudies
@@ -71,19 +71,21 @@ public class HarvestStudyServiceBean implements HarvestStudyServiceLocal {
             Study study = studyService.getStudy(studyId);
             em.refresh(study); // workaround to get updated lastExportTime (to be investigated)
             
-            HarvestStudy hs = hsMap.get( study.getGlobalId() );
-            if (hs == null) {
-                hs = new HarvestStudy( setName, study.getGlobalId(), updateTime );
-                em.persist(hs);                    
-            } else {
-                if (hs.isRemoved()) {
-                    hs.setRemoved(false);
-                    hs.setLastUpdateTime( updateTime );
-                } else if (study.getLastExportTime().after( hs.getLastUpdateTime() ) ) {
-                    hs.setLastUpdateTime( updateTime );
-                }
+            if ( study.getLastExportTime() != null ) {     
+                HarvestStudy hs = hsMap.get( study.getGlobalId() );
+                if (hs == null) {
+                    hs = new HarvestStudy( setName, study.getGlobalId(), updateTime );
+                    em.persist(hs);                    
+                } else {
+                    if (hs.isRemoved()) {
+                        hs.setRemoved(false);
+                        hs.setLastUpdateTime( updateTime );
+                    } else if (study.getLastExportTime().after( hs.getLastUpdateTime() ) ) {
+                        hs.setLastUpdateTime( updateTime );
+                    }
 
-                hsMap.remove(hs.getGlobalId());
+                    hsMap.remove(hs.getGlobalId());
+                }
             }
         }
 

@@ -431,12 +431,15 @@
                                             <h:outputText value="Terms of Use"></h:outputText>
                                         </h:outputLink>
                                         <h:outputText value=" for more information." rendered="#{!studyPage.termsOfUseIsEmpty}" />
-                                        <h:outputLink rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.jsp?studyId=#{studyPage.studyId}">
+                                        <h:outputLink action="#{StudyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.jsp?studyId=#{studyPage.studyId}">
                                             <h:outputText value="Send a Request"/>
                                         </h:outputLink>
-                                        <h:outputLink rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestAccountPage.jsp?studyId=#{studyPage.studyId}">
+                                        <!--h:commandLink styleClass="requestIntroContLink" action="#{LoginWorkflowBean.beginCreatorWorkflow}">
+                                             <h:outputText value="Continue" escape="false"/>
+                                        </h:commandLink-->                                        
+                                        <h:commandLink action="#{studyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}" >
                                             <h:outputText value="Send a Request"/>
-                                        </h:outputLink>
+                                        </h:commandLink>
                                         <h:outputText value=" if you would like to access the restricted files in this study." rendered="#{studyPage.studyUI.study.requestAccess}"/>
                                 </ui:panelGroup>
                             </ui:panelLayout>

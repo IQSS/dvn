@@ -643,4 +643,10 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public String getStudyListingIndexAsParameter() {
         return studyListingIndex != null ? "&studyListingIndex=" + studyListingIndex : "";
     }
+    
+    public String beginRequestWorkflow() {
+            LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");       
+            return lwf.beginFileAccessWorkflow(studyId);
+    }
+    
 }

@@ -59,6 +59,8 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
     MailServiceLocal mailService;
     @EJB
     UserServiceLocal userService;
+    
+    Long studyId;
 
     /**
      * <p>Construct a new Page bean instance.</p>
@@ -80,6 +82,10 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
      */
     public void init() {
         super.init();
+        if (studyId!=null) {
+            LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");       
+            lwf.beginFileAccessWorkflow(studyId);
+        }
    
    
     }
@@ -110,21 +116,31 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
      * @return Value of property alreadyRequested.
      */
     public boolean isAlreadyRequested() {
-        boolean alreadyRequested=false;
+        Long requestStudyId=null;
         LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
+      
+        boolean alreadyRequested=false;
+     
         VDCUser user = this.getVDCSessionBean().getLoginBean().getUser();
-        if (studyRequestService.findByUserStudy(user.getId(), lwf.getStudyId()) != null) {
+        if (studyRequestService.findByUserStudy(user.getId(), getRequestStudyId()) != null) {
             alreadyRequested = true;
         }
         return alreadyRequested;
     }
 
-  
+    private Long getRequestStudyId() {
+        LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
+        if (studyId!=null) {
+            return studyId;
+        } else {
+            return lwf.getStudyId();
+        }
+    }
     public String generateRequest() {
 
         LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");
         VDCUser user = this.getVDCSessionBean().getLoginBean().getUser();
-        Study study = studyService.getStudy(lwf.getStudyId());
+        Study study = studyService.getStudy(getRequestStudyId());
        
         studyRequestService.create(user.getId(), study.getId());
         // Notify Admin of request       
@@ -159,5 +175,14 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
     public void setFileRequest(boolean fileRequest) {
         this.fileRequest = fileRequest;
     }
+
+    public Long getStudyId() {
+        return studyId;
+    }
+
+    public void setStudyId(Long studyId) {
+        this.studyId = studyId;
+    }
+    
 }
 

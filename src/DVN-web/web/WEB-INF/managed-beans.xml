@@ -156,7 +156,11 @@
         <managed-bean-name>FileRequestPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.FileRequestPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
-        
+        <managed-property>
+            <property-name>studyId</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.studyId}</value>
+        </managed-property>        
     </managed-bean>
 
     <!-- Privileged Users Pages -->

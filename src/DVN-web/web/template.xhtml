@@ -19,7 +19,6 @@
          <link rel="stylesheet" type="text/css" href="/dvn/theme/com/sun/rave/web/ui/defaulttheme/css/dvn_css_master.css"/>
 	 <link rel="stylesheet" type="text/css" href="/dvn/resources/stylesheet.css"/>
          <link rel="stylesheet" type="text/css" href="/dvn/resources/thickbox.css"/>
-         <link id="iceStyles" rel="stylesheet" type="text/css" href="/dvn/resources/ice_styles.css"/>
          <script type="text/javascript" src="/dvn/theme/com/sun/rave/web/ui/defaulttheme/javascript/formElements.js"/>
          <script type="text/javascript" src="/dvn/resources/EventCapture.js"/>
          <script type="text/javascript" src="/dvn/resources/jquery.js"/>
@@ -54,23 +53,23 @@
    <!--  this template is example 4.3 in the Facelets Shortcut -->
    <body>
        <f:loadBundle basename="Bundle" var="bundle"/>
+       <gui:insert name="title">
+           <!--  ****** THIS IS THE HEADER ******** -->
+           <gui:include src="views/CustomBanner.xhtml"/>
+           <!-- <gui:include src="views/ConnectedBanner.xhtml"/> -->
+       </gui:insert>
        <div class="dvn_wrapper">
-       <div class="dvn_content" id="content-frame">
-          <gui:insert name="title">
-
-             <!--  ****** THIS IS THE HEADER ******** -->
-               <gui:include src="views/CustomBanner.xhtml"/>
-              <!-- <gui:include src="views/ConnectedBanner.xhtml"/> -->
-              <!-- *** MENUBAR (Included from template) *** -->
-             <gui:include src="views/Menubar.xhtml"/>
-          </gui:insert>
-
-        <gui:insert name="body">Default Body</gui:insert>
-
-        <gui:insert name="footer">
-               <gui:include src="views/CustomFooter.xhtml"/>
-        </gui:insert>
-    </div>
-</div>
-</body>
+           <div class="dvn_content" id="content-frame">
+               <gui:insert name="title">
+                   <!-- *** MENUBAR (Included from template) *** -->
+                   <gui:include src="views/Menubar.xhtml"/>
+               </gui:insert>
+               <gui:insert name="body">Default Body</gui:insert>
+                   
+           </div>
+       </div>
+       <gui:insert name="footer">
+           <gui:include src="views/CustomFooter.xhtml"/>
+       </gui:insert>
+   </body>
 </html>

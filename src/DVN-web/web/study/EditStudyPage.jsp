@@ -363,7 +363,7 @@
                                                                      maxlength="255"
                                                                      binding="#{EditStudyPage.inputAuthorName}"                                                      
                                                                      required="#{EditStudyPage.studyMap[sfc.authorName].required}" /> 
-                                                        <h:outputText value="(firstName LastName)"/>
+                                                        <h:outputText value="(FirstName LastName)"/>
                                                         <h:message styleClass="errorMessage" for="input_authorName"/>
                                                         <f:verbatim><br/></f:verbatim>
                                                     </ui:panelGroup>

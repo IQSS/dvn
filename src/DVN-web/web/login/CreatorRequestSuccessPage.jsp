@@ -62,7 +62,7 @@
                              <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditBannerFooterPage.jsp">
                                    <h:outputText value="Customize the layout"/>
                             </h:outputLink><h:outputText value=", and then you are ready to "/> 
-                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.jspp">
+                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.jsp">
                                    <h:outputText value="release"/>
                             </h:outputLink>
                             <h:outputText value=" your dataverse live!"/>

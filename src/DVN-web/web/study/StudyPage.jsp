@@ -491,7 +491,7 @@
                                                                         <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" download" rendered="#{studyFileUI.downloadCount == 1 and !studyFileUI.studyFile.subsettable}" />
                                                                         <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" download/analysis" rendered="#{studyFileUI.downloadCount == 1 and studyFileUI.studyFile.subsettable}" />
                                                                         <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" downloads" rendered="#{studyFileUI.downloadCount != 1 and !studyFileUI.studyFile.subsettable}" />
-                                                                        <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" downloads/analysis" rendered="#{studyFileUI.downloadCount != 1 and studyFileUI.studyFile.subsettable}" />
+                                                                        <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" downloads + analyses" rendered="#{studyFileUI.downloadCount != 1 and studyFileUI.studyFile.subsettable}" />
                                                                 </ui:panelGroup>
                                                             </ui:panelGroup>
 

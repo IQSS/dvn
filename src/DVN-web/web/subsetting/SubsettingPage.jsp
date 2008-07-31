@@ -227,14 +227,15 @@
                                 <h:panelGroup id="pgDwnldErrMsg"
                                     binding="#{AnalysisPage.pgDwnldErrMsg}"
                                     rendered="false"
-                                    style="margin:4px 4px;background:#f4ebc7;padding:10px;"
+                                    style="margin:4px 4px;padding:10px;"
                                     >
                                 <h:graphicImage 
                                     alt="Error" 
                                     title="Error" 
                                     styleClass="vdcNoBorders" 
                                     style="vertical-align: middle" 
-                                    value="/resources/error_small.gif" />
+                                    value="/resources/error_small.gif"
+                                    rendered="false"/>
                                 <ui:staticText id="msgDwnldButton"
                                     binding="#{AnalysisPage.msgDwnldButton}" 
                                     visible="false" 

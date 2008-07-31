@@ -721,12 +721,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         
         resetMsgSaveRecodeBttn();
         resetMsg4MoveVar();
+        
+        // download message area
+        msgDwnldButton.setText(" ");
+        msgDwnldButton.setVisible(false);
+        // recode message area
+        msgSaveRecodeBttn.setText(" ");
+        msgSaveRecodeBttn.setRendered(false);
+        
         // eda message area
         msgEdaButton.setText(" ");
         msgEdaButton.setVisible(false);
-        // download message area
         
-        // 
+        // advance stat area
+        msgAdvStatButton.setText(" ");
+        msgAdvStatButton.setVisible(false);
     }
 
     // </editor-fold>

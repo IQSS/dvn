@@ -408,7 +408,7 @@
                                 <h:outputText styleClass="vdcHelpText" value="Enter group name to allow them to access restricted studies."/>
                                 <h:dataTable binding="#{EditHarvestSitePage.groupTable}" cellpadding="0" cellspacing="0"
                                              columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" 
-                                             rowClasses="list-row-even,list-row-odd" value="#{EditHarvestSitePage.allowedfileGroups}" var="currentRow" width="100%" 
+                                             rowClasses="list-row-even,list-row-odd" value="#{EditHarvestSitePage.allowedFileGroups}" var="currentRow" width="100%" 
                                              rendered="#{not empty EditHarvestSitePage.allowedFileGroups}">
                                     <h:column >
                                         <f:facet name="header">

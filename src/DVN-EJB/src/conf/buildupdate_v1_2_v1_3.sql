@@ -606,9 +606,14 @@ insert into vdc_fileusergroup
 	where vdc.harvestingdataverse_id = hd.id
 	and hd.id = hdug.harvestingdataverse_id;
 
+update vdc set filesrestricted=false where harvestingdataverse_id is null;
+
 -- remove unused columns
 alter table harvestingdataverse drop column filesrestricted;
 alter table harvestingdataverse drop column format;
+
+update harvestingdataverse set harvesttype='oai';
+
 
 commit;
 

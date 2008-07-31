@@ -6615,6 +6615,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
         resetMsgVariableSelection();
 
+        // remove vars from RHS boxes
+        resetMsgDwnldButton();
+        resetMsgSaveRecodeBttn();
+        resetMsgEdaButton();
+        resetMsg4MoveVar();
+        resetMsgAdvStatButton();
+
+
+
         if ((Boolean) tmpDataLine.get(0)) {
             dbgLog.fine("row Id=" + tmpDataLine.get(2)
                 + ":current checkbox value is [true]");

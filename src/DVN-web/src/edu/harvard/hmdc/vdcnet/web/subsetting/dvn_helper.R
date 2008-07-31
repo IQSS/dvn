@@ -1501,3 +1501,90 @@ univarStatHtmlBody<-function(dtfrm, whtml, analysisoptn, standalone=F){
     
 
 } #end of the function univarStatHtml
+
+
+# A set of attributes to be saved and re-attached during subsetting and recoding
+saveAttList<- c(
+"var.type",
+"Rsafe2raw",
+"var.nmbr",
+"var.labels",
+"val.table",
+"missval.table",
+"variableUNF",
+"fileUNF",
+"R.version",
+"date",
+"subsetLines",
+"recodeLines",
+"val.index",
+"val.list",
+"missval.list",
+"data.frame.origin"
+)
+
+
+# subsetting data.frame
+# conditions as strings are attached to the data.frame as a vector of strings
+subsetVariables<-function(x){
+    dbg<-F
+    if (!is.null(attr(x,'subsetLines'))){
+        tmpl<-list()
+        for (i in saveAttList){
+            if (!is.null(attr(x,i))) {
+                tmpl[[i]] <- attr(x, i)
+            }
+        }
+        if (dbg){
+            cat("dimension: before attr assignment=", paste(dim(x),collapse=','), '\n', sep='')
+        }
+
+        subsetLines <- attr(x,'subsetLines')
+        for(i in 1:length(subsetLines)) {
+            if (dbg) {
+                cat(subsetLines[i],'\n',sep='')
+            }
+            eval(parse(text=subsetLines[i],n=1))
+        }
+        for (i in names(tmpl)){
+            attr(x, i) <- tmpl[[i]]
+        }
+        if (dbg){
+            cat("dimension: after attr assignment=", paste(dim(x),collapse=','), '\n', sep='')
+        }
+    }
+    invisible(x)
+}
+
+# recoding data.frame
+# conditions are attached to the data.frame as a vector of strings
+
+recodeVariables<-function(x){
+    dbg<-F
+    if (!is.null(attr(x,'recodeLines'))){
+        tmpl<-list()
+        for (i in saveAttList){
+            if (!is.null(attr(x,i))) {
+                tmpl[[i]] <- attr(x, i)
+            }
+        }
+        if (dbg){
+            cat("dimension: before attr assignment=", paste(dim(x),collapse=','), '\n', sep='')
+        }
+        
+        recodeLines <- attr(x,'recodeLines')
+        for(i in 1:length(recodeLines)) {
+            if (dbg) {
+                cat(recodeLines[i],'\n',sep='')
+            }
+            eval(parse(text=recodeLines[i],n=1))
+        }
+        for (i in names(tmpl)){
+            attr(x, i) <- tmpl[[i]]
+        }
+        if (dbg){
+            cat("dimension: after attr assignment=", paste(dim(x),collapse=','), '\n', sep='')
+        }
+    }
+    invisible(x)
+}

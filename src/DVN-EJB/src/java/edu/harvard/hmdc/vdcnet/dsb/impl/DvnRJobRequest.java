@@ -673,6 +673,44 @@ public class DvnRJobRequest {
         return lhs;
     }
     
+    
+    public String getLHSformula4rep(){
+        String lhs = null;
+        List<String> varIdSet2 = null;
+        List<String> varIdSet  = null;
+        int noRboxes = zeligModelSpec.getNoRboxes();
+        
+        if (noRboxes >= 3) {
+
+            // box stores Ids = "v" + ID-integer
+            varIdSet = listParametersForRequest.get("nmBxR1");
+            varIdSet2 = listParametersForRequest.get("nmBxR2");
+            
+            List<String> tmp = getFileteredVarNameSet(varIdSet);
+            tmp.addAll(getFileteredVarNameSet(varIdSet2));
+
+           lhs = "Surv(" + StringUtils.join(tmp,",") + ")";
+             
+        } else {
+            varIdSet = listParametersForRequest.get("nmBxR1");
+            List<String> tmp = getFileteredVarNameSet(varIdSet);
+
+            if (varIdSet.size() > 1){
+                lhs = "cbind(" + StringUtils.join(tmp,",") + ")";
+            } else {
+                if ((getZeligModelName().equals("ologit")) || 
+                    (getZeligModelName().equals("oprobit"))){
+                    lhs = "as.factor("+ tmp.get(0) +")";
+                } else {
+                    lhs = tmp.get(0);
+                }
+            }
+        }
+        dbgLog.fine("lhs="+lhs);
+        return lhs;
+    }
+    
+    
     public String getRHSformula(){
         String rhs = null;
         List<String> varIdSet = null;
@@ -749,7 +787,31 @@ public class DvnRJobRequest {
         return setxArg;
     }
     
+    public String getSetx1stSet4rep(){
+        String setxArg = null;
+        List<String> valueSet  = listParametersForRequest.get("setx_var1");
+        List<String> v = new ArrayList();
+        v.add(valueSet.get(0));
+        List<String> tmp = getFileteredVarNameSet(v);
+        if (!valueSet.get(1).equals("")){
+            setxArg = tmp.get(0) + " = " + valueSet.get(1);
+        }
+        return setxArg;
+    }
     
+    
+    public String getSetx2ndSet4rep(){
+        String setxArg = null;
+        List<String> valueSet  = listParametersForRequest.get("setx_var2");
+        List<String> v = new ArrayList();
+        v.add(valueSet.get(0));
+        List<String> tmp = getFileteredVarNameSet(v);
+        if (!valueSet.get(1).equals("")){
+            setxArg = tmp.get(0) + " = " + valueSet.get(1);
+        }
+        return setxArg;
+    }
+
     /**
      * Methods for Recoded variables
      *

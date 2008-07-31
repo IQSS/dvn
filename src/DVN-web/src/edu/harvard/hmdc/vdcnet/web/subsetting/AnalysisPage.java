@@ -1227,7 +1227,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 
                 //zipFileList.add(tmpsbflnew);
 
-                // write a citation file 
+                // (1) write a citation file 
                 String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
                 File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
 
@@ -1240,16 +1240,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 String fmpcflname = tmpcfl.getName();
                 dcfw.write(tmpcfl);
 
-                // write a R history file
-                String rhistoryFilePrefix = "RcommandFile." + resultInfo.get("PID") + ".";
-                File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
+                // write a R command file
+                //String rhistoryFilePrefix = "RcommandFile." + resultInfo.get("PID") + ".";
+                //File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
 
-                zipFileList.add(tmpRhfl);
-                deleteTempFileList.add(tmpRhfl);
+                //zipFileList.add(tmpRhfl);
+                //deleteTempFileList.add(tmpRhfl);
                 
-                writeRhistory(tmpRhfl, rhistNew);
+                //writeRhistory(tmpRhfl, rhistNew);
                 
-                // tab-delimitd-format-only step
+                // (2) tab-delimitd-format-only step
                 if (formatType.equals("D01")){
                     // write code files
                     String codeFilePrefix = "codeFile." + resultInfo.get("PID") + ".";
@@ -1272,7 +1272,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 }
                 
-                // The format-converted subset data file
+                // (2)The format-converted subset data file
                 // get the path-name of the data-file to be delivered 
                 String wbDataFileName = resultInfo.get("wbDataFileName");
                 dbgLog.fine("wbDataFileName="+wbDataFileName);
@@ -1334,7 +1334,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                }
 //                deleteTempFileList.add(vdcstrtFileName);
                 
-                // add replication readme file
+                // (3) add replication readme file
                 zipFileList.add(REP_README_FILE);
                 
                     
@@ -3152,7 +3152,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 
                 //zipFileList.add(tmpsbflnew);
 
-                // write a citation file 
+                // (1) write a citation file 
                 String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
                 File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
 
@@ -3165,16 +3165,18 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 String fmpcflname = tmpcfl.getName();
                 dcfw.write(tmpcfl);
 
-                // R history file
+                // (2) R command file
                 String rhistoryFilePrefix = "RcommandFile." + resultInfo.get("PID") + ".";
                 File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
 
                 zipFileList.add(tmpRhfl);
                 deleteTempFileList.add(tmpRhfl);
+                resultInfo.put("dvn_R_helper_file","dvn_helper.R");
+                DvnReplicationCodeFileWriter rcfw = new DvnReplicationCodeFileWriter(resultInfo);
+                rcfw.writeEdaCode(tmpRhfl);
                 
-                writeRhistory(tmpRhfl, rhistNew);
 
-                // R-work space file
+                // (3)RData Replication file
                 String wrkspFileName = resultInfo.get("wrkspFileName");
                 dbgLog.fine("wrkspFileName="+wrkspFileName);
                 
@@ -3213,8 +3215,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                }
 //                deleteTempFileList.add(vdcstrtFileName);
                 // add replication readme file
+                // (4) readme file
                 zipFileList.add(REP_README_FILE);
+                // (5) css file
                 zipFileList.add(DVN_R2HTML_CSS_FILE);
+                // (6) dvn_R_helper
                 zipFileList.add(DVN_R_HELPER_FILE);
                 // zip the following files as a replication-pack
                 //
@@ -5724,7 +5729,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 
                 //zipFileList.add(tmpsbflnew);
 
-                // write a citation file 
+                // (1) write a citation file 
                 String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
                 File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
 
@@ -5737,16 +5742,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 String fmpcflname = tmpcfl.getName();
                 dcfw.write(tmpcfl);
 
-                // R history file
+                // (2) R command file
                 String rhistoryFilePrefix = "RcommandFile." + resultInfo.get("PID") + ".";
                 File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
 
                 zipFileList.add(tmpRhfl);
                 deleteTempFileList.add(tmpRhfl);
+                resultInfo.put("dvn_R_helper_file","dvn_helper.R");
+                DvnReplicationCodeFileWriter rcfw = new DvnReplicationCodeFileWriter(resultInfo);
+                if (mdlName.equals("xtb")){
+                    rcfw.writeXtabCode(tmpRhfl);
+                } else {
+                    rcfw.writeZeligCode(tmpRhfl);
+                }
                 
-                writeRhistory(tmpRhfl, rhistNew);
-
-                // R-work space file
+                // (3) RData Replication file
                 String wrkspFileName = resultInfo.get("wrkspFileName");
                 dbgLog.fine("wrkspFileName="+wrkspFileName);
                 
@@ -5784,11 +5794,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                    //return "failure";
 //                }
 //                deleteTempFileList.add(vdcstrtFileName);
-                // add replication readme file
+                // (4) add replication readme file
                 zipFileList.add(REP_README_FILE);
+                // (5) helper
+                zipFileList.add(DVN_R_HELPER_FILE);
                 if (mdlName.equals("xtb")){
+                    // (6) css file
                     zipFileList.add(DVN_R2HTML_CSS_FILE);
-                    zipFileList.add(DVN_R_HELPER_FILE);
+                   
                 }
                 // zip the following files as a replication-pack
                 //

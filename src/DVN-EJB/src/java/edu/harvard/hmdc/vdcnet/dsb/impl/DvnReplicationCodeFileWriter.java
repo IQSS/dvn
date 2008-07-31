@@ -25,41 +25,31 @@ public class DvnReplicationCodeFileWriter {
     // static fields
     // message lines (to be factored out as a Message class)
     public static String headerTemplate =
-        "# R Code File for Replicating the DVN analysis request ${dvn_request_id} \n"+
+        "# R Code File for Replicating the DVN analysis request ${PID} \n"+
+        "# \n"+
         "# Dataverse Network Project (http://thedata.org/) \n"+
-        "# ${file_creation_date} \n"+
+        "# ${RexecDate} \n"+
         "# \n"+
         "# This R code file lists R-command lines that replicate modeling \n"+
         "# results you obtained from the DVN site on your local R environment. \n"+
         "# \n"+
-        "# About the dvn-data.frame format\n"+
-        "# Medata such as variable labels and value-label sets are \n"+
-        "# attached to the data.frame named 'dvnData', as attributes.\n"+
-        "# 'str(dvnData)' command shows these meta-data attributes.\n"+
+        "# The accompanying RData format file ('${dvn_RData_FileName}') stores\n" +
+        "# the requested data in a data.frame named '${dvn_dataframe}'.\n"+
+        "# \n"+
+        "# The data.frame was saved before the steps of row-subsetting and \n"+
+        "# recoding were executed so that you can try another subset \n" +
+        "# without downloading the whole set again.\n"+
+        "# \n"+
+        "# Metadata such as variable labels and value-label sets are \n"+
+        "# attached to the data.frame as attributes ('var.labels','val.table',\n"+
+        "# respectively) if they were available.\n"+
+        "# 'str(${dvn_dataframe})' command can show other available meta-data and\n"+
+        "# additional information about the data set you subset.\n"+
+        "# \n"+
+        "# The accompanying citation file provides information how to cite \n"+
+        "# this subset and README file explains how to begin replication steps.\n"+
         "# \n";
     
-    public static String[] subsetLines = {
-        "if (!is.null(attr(dvnData,'subsetLines')){",
-            "subsetLines <- attr(dvnData,'subsetLines');",
-            "for(i in 1:length(subsetLines)) {",
-            "eval(parse(text=sbsetLines[i],n=1))",
-        "}"
-    };
-    
-    public static String[] recodeLines = {
-        "if (!is.null(attr(dvnData,'recodeLines')){",
-            "recodeLines <- attr(dvnData,'recodeLines');",
-            "for(i in 1:length(recodeLines)) {",
-            "eval(parse(text=recodeLines[i],n=1))",
-        "}"
-    };
-    
-    public static String[] valueTalbeIndexingLines ={
-        "x<-createvalindex(dtfrm=dvnData, attrname='val.index');",
-        "x<-createvalindex(dtfrm=dvnData, attrname='missval.index');"
-    }
-        
-        ;
     // instance fields
 
     // value map
@@ -94,7 +84,7 @@ public class DvnReplicationCodeFileWriter {
     }
     
     public String generateDvnRHelperFileLine(){
-        String template = "source(${dvn_R_helper_file})";
+        String template = "source('./${dvn_R_helper_file}')";
         StrSubstitutor sub = new StrSubstitutor(valueMap);
         return sub.replace(template);
     }    
@@ -104,8 +94,19 @@ public class DvnReplicationCodeFileWriter {
         return sub.replace(template);
     }
     
+    public String generateSubsetLine(){
+        String template = "${dvn_dataframe}<-subsetVariables(${dvn_dataframe})";
+        StrSubstitutor sub = new StrSubstitutor(valueMap);
+        return sub.replace(template);
+    }
+    
+    public String generateRecodeLine(){
+        String template = "${dvn_dataframe}<-recodeVariables(${dvn_dataframe})";
+        StrSubstitutor sub = new StrSubstitutor(valueMap);
+        return sub.replace(template);
+    }
     public String generateZeligModelLine(){
-        String template = "z.out<-Zelig(${zelig_formula}, model='${zelig_model_name}', data=dvnData)";
+        String template = "z.out<-zelig(${zelig_formula}, model='${model}', data=dvnData)";
         StrSubstitutor sub = new StrSubstitutor(valueMap);
         return sub.replace(template);
     }
@@ -121,7 +122,68 @@ public class DvnReplicationCodeFileWriter {
         StrSubstitutor sub = new StrSubstitutor(valueMap);
         return sub.replace(template);
     }    
-    
+    public String generateIndexingLines(){
+        String template =
+            "${dvn_dataframe}<-createvalindex(dtfrm=${dvn_dataframe}, attrname='val.index')\n"+
+            "${dvn_dataframe}<-createvalindex(dtfrm=${dvn_dataframe}, attrname='missval.index')\n";
+        StrSubstitutor sub = new StrSubstitutor(valueMap);
+        
+        return sub.replace(template);
+    } 
+    public String generateEdaLines() {
+        String template =
+            "aol<-c(1,1,0)\n" +
+            "dir.create('./Zlg_${PID}')\n" +
+            "htmlsink<-HTMLInitFile(outdir = './Zlg_${PID}', filename='Rout_${PID}', \n" +
+            "extension='html', CSSFile='R2HTML.css', Title ='Dataverse Analysis: Request #${PID}')\n" +
+            "hdrContents <- '<h1>Dataverse Analysis</h1><h2>Results</h2><p>Study\n" +
+            " Title:testDataForDSB</p><hr />'\n"+
+            "HTML(file=htmlsink,hdrContents)\n" +
+            "dir.create('./Zlg_${PID}/visuals')\n" +
+            "try(${dvn_dataframe}<-univarStat(dtfrm=${dvn_dataframe}))\n"+
+            "try({${dvn_dataframe}<-univarChart(dtfrm=${dvn_dataframe}, analysisoptn=aol,\n" +
+            "imgflprfx='./Zlg_${PID}/visuals/Rvls.${PID}',standalone=F)})\n"+
+            "try(univarStatHtmlBody(dtfrm=${dvn_dataframe},whtml=htmlsink, analysisoptn=aol))\n"+
+            "HTMLEndFile()\n" +
+            "file.rename('R2HTML.css', './Zlg_${PID}/R2HTML.css')\n" +
+            "wrkdir<-'./Zlg_${PID}'\n" +
+            "htmlfile <- paste(wrkdir,'/', list.files(wrkdir, pattern='.html'), sep='')\n" +
+            "browseURL(htmlfile)\n";
+        StrSubstitutor sub = new StrSubstitutor(valueMap);
+        
+        return sub.replace(template);
+    }
+    public String generateXtabLines() {
+        String template =
+            "aol<-c(0,0,1)\n" +
+            "dir.create('./Zlg_${PID}')\n" +
+            "htmlsink<-HTMLInitFile(outdir = './Zlg_${PID}', filename='Rout_${PID}', \n" +
+            "extension='html', CSSFile='R2HTML.css', Title ='Dataverse Analysis: Request #${PID}')\n" +
+            "hdrContents <- '<h1>Dataverse Analysis</h1><h2>Results</h2><p>Study\n" +
+            " Title:testDataForDSB</p><hr />'\n"+
+            "HTML(file=htmlsink,hdrContents)\n" +
+            
+            "try(${dvn_dataframe}<-univarStat(dtfrm=${dvn_dataframe}))\n" +
+            "library(VDCutil)\n" +
+            "classVar<-c(${class_var_set})\n" +
+            "freqVar<-c(${freq_var})\n" +
+            
+            "try(VDCcrossTabulation(HTMLfile=htmlsink, data=${dvn_dataframe},\n" +
+            
+            "classificationVars=classVar, freqVars=freqVar, wantPercentages=${wantPercentages}, \n" +
+            
+            "wantTotals=${wantTotals}, wantStats=${wantStats}, wantExtraTables=${wantExtraTables}))\n" +
+            
+            "HTMLEndFile()\n" +
+            "file.rename('R2HTML.css', './Zlg_${PID}/R2HTML.css')\n" +
+            "wrkdir<-'./Zlg_${PID}'\n" +
+            "htmlfile <- paste(wrkdir,'/', list.files(wrkdir, pattern='.html'), sep='')\n" +
+            "browseURL(htmlfile)\n";
+        
+        StrSubstitutor sub = new StrSubstitutor(valueMap);
+        
+        return sub.replace(template);
+    }
     
     public void writeZeligCode(File rcf){
         OutputStream outs = null;
@@ -130,29 +192,30 @@ public class DvnReplicationCodeFileWriter {
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(outs, "utf8"), true);
             pw.println(generateHeaderBlock()+"\n");
             
+            pw.println(generateDvnRHelperFileLine());
             pw.println(generateLibraryLine());
             
             pw.println(generateLoadDataFileLine());
             
             if (valueMap.containsKey("subset")){
-                pw.println(StringUtils.join(subsetLines, "\n"));
+                pw.println(generateSubsetLine());
             }
             if (valueMap.containsKey("recode")){
-                pw.println(StringUtils.join(recodeLines, "\n"));
+                pw.println(generateRecodeLine());
             }
             pw.println(generateZeligModelLine());
-            
+            pw.println("summary(z.out)");
             if (valueMap.containsKey("zelig_sim_2")){
                 pw.println(generateZeligSim1Line());
                 pw.println(generateZeligSim2Line());
                 pw.println("s.out <- sim(z.out, x = x.first, x1 = x.second)");
-                pw.println("summary(s.out);");
-                pw.println("plot(s.out);");
+                pw.println("summary(s.out)");
+                pw.println("plot(s.out)");
             } else if (valueMap.containsKey("zelig_sim_1")) {
                 pw.println(generateZeligSim1Line());
                 pw.println("s.out <- sim(z.out, x = x.first)");
-                pw.println("summary(s.out);");
-                pw.println("plot(s.out);");
+                pw.println("summary(s.out)");
+                pw.println("plot(s.out)");
             } else {
                 pw.println("x.out <- setx(z.out)");
                 pw.println("s.out <- sim(z.out, x=x.out)");
@@ -172,18 +235,20 @@ public class DvnReplicationCodeFileWriter {
         try {
             outs = new BufferedOutputStream(new FileOutputStream(rcf));
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(outs, "utf8"), true);
+            
             pw.println(generateHeaderBlock()+"\n");
             pw.println(generateDvnRHelperFileLine());
-            // call VDCuitl
-            pw.println(generateLibraryLine());
             
+            pw.println(generateLoadDataFileLine());
             if (valueMap.containsKey("subset")){
-                pw.println(StringUtils.join(subsetLines, "\n"));
+                pw.println(generateSubsetLine());
             }
             if (valueMap.containsKey("recode")){
-                pw.println(StringUtils.join(recodeLines, "\n"));
+                pw.println(generateRecodeLine());
             }
-            pw.println(StringUtils.join(valueTalbeIndexingLines, "\n"));
+            pw.println(generateIndexingLines());
+            
+            pw.println(generateXtabLines());
             
            outs.close();
         } catch (IOException ex) {
@@ -196,18 +261,19 @@ public class DvnReplicationCodeFileWriter {
         try {
             outs = new BufferedOutputStream(new FileOutputStream(rcf));
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(outs, "utf8"), true);
+            
             pw.println(generateHeaderBlock()+"\n");
             pw.println(generateDvnRHelperFileLine());
-            // call VDCuitl
-            pw.println(generateLibraryLine());
-            
+            pw.println(generateLoadDataFileLine());
             if (valueMap.containsKey("subset")){
-                pw.println(StringUtils.join(subsetLines, "\n"));
+                pw.println(generateSubsetLine());
             }
             if (valueMap.containsKey("recode")){
-                pw.println(StringUtils.join(recodeLines, "\n"));
+                pw.println(generateRecodeLine());
             }
-            pw.println(StringUtils.join(valueTalbeIndexingLines, "\n"));
+            pw.println(generateIndexingLines());
+            
+            pw.println(generateEdaLines());
             
            outs.close();
         } catch (IOException ex) {

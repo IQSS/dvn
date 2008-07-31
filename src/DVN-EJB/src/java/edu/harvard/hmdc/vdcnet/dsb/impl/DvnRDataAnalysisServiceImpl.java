@@ -45,7 +45,7 @@ public class DvnRDataAnalysisServiceImpl{
     static String regexForRunMethods = "^run(\\w+)Request$" ;
     static String RESULT_DIR_PREFIX = "Zlg_";
     static String R2HTML_CSS_DIR = null;
-    static String RWRKSP_FILE_PREFIX = "replicationDVNDataFramefile.";
+    static String RWRKSP_FILE_PREFIX = "dvnDataFramefile.";
     static boolean REPLICATION = true;
     static String dtflprefix = "dvnDataFile.";
     
@@ -144,6 +144,8 @@ public class DvnRDataAnalysisServiceImpl{
     
         // set the return object
         Map<String, String> result = new HashMap<String, String>();
+        // temporary result
+        Map<String, String> tmpResult = new HashMap<String, String>();
         
         try {
             // Set up an Rserve connection
@@ -323,7 +325,7 @@ public class DvnRDataAnalysisServiceImpl{
             // replication: copy the data.frame
             String repDVN_Xdupline = "dvnData<-x";
             c.voidEval(repDVN_Xdupline);
-            
+            tmpResult.put("dvn_dataframe", "dvnData");
             // recoding line
 if (sro.hasRecodedVariables()){
 
@@ -336,6 +338,7 @@ if (sro.hasRecodedVariables()){
                     historyEntry.add(sci);
                     c.voidEval(sci);
                 }
+                tmpResult.put("subset", "T");
             }
             // recoding
             
@@ -347,6 +350,7 @@ if (sro.hasRecodedVariables()){
                     historyEntry.add(rci);
                     c.voidEval(rci);
                 }
+                tmpResult.put("recode", "T");
             }
 }
             // subsetting (mutating the data.frame strips non-default attributes 
@@ -586,12 +590,17 @@ if (tmpv.length > 0){
             String zeligVersionLine = "packageDescription('Zelig')$Version";
             String zeligVersion = c.eval(zeligVersionLine).asString();
             
-            String RexecDate = c.eval("date()").asString();
-            
+            //String RexecDate = c.eval("date()").asString();
+             String RexecDate = c.eval("as.character(as.POSIXct(Sys.time()))").asString();
             // replication: date
-            String repDVN_date = "attr(dvnData, 'date') <- date()";
+            String repDVN_date = "attr(dvnData, 'date') <- as.character(as.POSIXct(Sys.time()))";
             c.voidEval(repDVN_date);
             
+            String repDVN_dfOrigin = 
+                "attr(dvnData, 'data.frame.origin')<- " +
+                "list('provider'='Dataverse Network Project'," +
+                "'format' = list('name' = 'DVN data.frame', 'version'='1.3'))";
+            c.voidEval(repDVN_dfOrigin);
             /*
             if (result.containsKey("option")){
                 result.put("R_run_status", "T");
@@ -614,7 +623,7 @@ if (tmpv.length > 0){
                 }
                 /* to be used in the future? */
                 if (sro.getRecodeConditions() != null){
-                    //result.put("recodingCriteria", StringUtils.join(sro.getRecodeConditions(),"\n"));
+                    result.put("recodingCriteria", StringUtils.join(sro.getRecodeConditions(),"\n"));
                     String[] rcd = null;
                     rcd = (String[])sro.getRecodeConditions().toArray(new String[sro.getRecodeConditions().size()]);
                     
@@ -644,6 +653,8 @@ if (tmpv.length > 0){
             
             File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX,"RData", wrkspflSize);
             
+            result.put("dvn_RData_FileName",wsfl.getName());
+            
             if (wsfl != null){
                 result.put("wrkspFileName", wsfl.getAbsolutePath());
                 dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
@@ -653,7 +664,8 @@ if (tmpv.length > 0){
             
             
             
-            
+            result.put("library_1","VDCutil");
+
             result.put("fileUNF",fileUNF);
             result.put("dsbHost", RSERVE_HOST);
             result.put("dsbPort", DSB_HOST_PORT);
@@ -663,6 +675,8 @@ if (tmpv.length > 0){
             result.put("zeligVersion", zeligVersion);
             result.put("RexecDate", RexecDate);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            
+            result.putAll(tmpResult);
             dbgLog.fine("result object (before closing the Rserve):\n"+result);
             
         
@@ -957,6 +971,11 @@ if (tmpv.length > 0){
 //            } else {
 //                dbgLog.fine("wrkspFileName is null");
 //            }
+            // copy the dvn-patch css file to the wkdir
+            // file.copy(from, to, overwrite = FALSE)
+            String cssFile =R2HTML_CSS_DIR + "/" +"R2HTML.css";
+            String cpCssFile = "file.copy('"+cssFile+"','"+wrkdir+"')";
+            c.voidEval(cpCssFile);
             
             // tab data file
             String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
@@ -1059,16 +1078,22 @@ if (tmpv.length > 0){
             c.voidEval(vdcUtilLibLine);
             
             String[] classVar =  sro.getXtabClassVars();
-            historyEntry.add("classVar<-c("+ DvnDSButil.joinNelementsPerLine(classVar, true)+")");
+            String classVarSeg =  DvnDSButil.joinNelementsPerLine(classVar, true);
+            historyEntry.add("classVar<-c("+classVarSeg+")");
             c.assign("classVar", new REXPString(classVar));
-            
+            sr.put("class_var_set",classVarSeg );
             String[] freqVar = sro.getXtabFreqVars();
             
             if (freqVar != null){
-                historyEntry.add("freqVar<-c("+ DvnDSButil.joinNelementsPerLine(freqVar, true) +")");
+                String freqVarSeg = DvnDSButil.joinNelementsPerLine(freqVar, true);
+                sr.put("freq_var", freqVarSeg);
+                historyEntry.add("freqVar<-c("+ freqVarSeg +")");
+                
                 c.assign("freqVar", new REXPString(freqVar));
             }else {
                 historyEntry.add("freqVar<-c()");
+                sr.put("freq_var", "");
+
                 c.voidEval("freqVar<-c()");
             }
             
@@ -1085,6 +1110,11 @@ if (tmpv.length > 0){
                 ", wantTotals="+xtabOptns[0]+
                 ", wantStats="+xtabOptns[1]+
                 ", wantExtraTables="+xtabOptns[3]+"))";
+                
+            sr.put("wantPercentages",xtabOptns[2]);
+            sr.put("wantTotals",xtabOptns[0]);
+            sr.put("wantStats",xtabOptns[1]);
+            sr.put("wantExtraTables",xtabOptns[3]);
                 
             dbgLog.fine("VDCxtab="+VDCxtab);
             historyEntry.add(VDCxtab);
@@ -1119,6 +1149,12 @@ if (tmpv.length > 0){
 //                dbgLog.fine("wrkspFileName is null");
 //            }
             
+            // copy the dvn-patch css file to the wkdir
+            // file.copy(from, to, overwrite = FALSE)
+            String cssFile =R2HTML_CSS_DIR + "/" +"R2HTML.css";
+            String cpCssFile = "file.copy('"+cssFile+"','"+wrkdir+"')";
+            c.voidEval(cpCssFile);
+
             // tab data file
             String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
             c.voidEval(mvTmpTabFile);
@@ -1262,10 +1298,14 @@ if (tmpv.length > 0){
                             setxArgs = sro.getSetx1stSet();
                             setx2Args= sro.getSetx2ndSet();
                             
+                            sr.put("zelig_sim_1",sro.getSetx1stSet4rep());
+                            sr.put("zelig_sim_2",sro.getSetx2ndSet4rep());
+                            
                         } else if (sro.getSetx2ndSet() == null){
                             // single condition
                             setxArgs = sro.getSetx1stSet();
                             setx2Args= "NULL";
+                            sr.put("zelig_sim_1",sro.getSetx1stSet4rep());
                         } else {
                             setxArgs = "NULL";
                             setx2Args= "NULL";
@@ -1277,7 +1317,7 @@ if (tmpv.length > 0){
                 setxArgs = "NULL";
                 setx2Args= "NULL";
             }
-            
+
 // Additional coding required here
             
             String lhsTerm = sro.getLHSformula();
@@ -1299,7 +1339,10 @@ if (tmpv.length > 0){
                 "HTMLInitArgs= list(Title='Dataverse Analysis')"+ "," +
                 "HTMLnote= '<em>The following are the results of your requested analysis.</em>'"+
                 ")  } )";
-                
+            
+            String lhsTerm4rep = sro.getLHSformula4rep();
+            sr.put("zelig_formula", lhsTerm4rep + " ~ "+ rhsTerm );
+
                 
             /*
                 o: sum(T), Plot(T), BinOut(F)

@@ -26,9 +26,9 @@ _How to Replicate Analysis_
    Note: This normally contains four files:
 
     1. citation file            citationFile.xxxxxx.ccccc.txt
-    2. tab-delmited data file   dvnSubsetFile.xxxxxx.aaaaa.tab
+    2. RData file               dvnDataFramefile.xxxxxx.aaaaa.tab
     3. R-command file           RcommandFile.xxxxxx.ddddd.R
-    4. R-function file          vdc_startup.xxxxxx.bbbbb.R
+    4. R-function file          dvn_helper.R
 
     where xxxxxx and other five-character-long strings are an arbitrary 
     identification numbers.

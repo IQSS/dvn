@@ -719,15 +719,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // add user-defined vars to LHS box if available
         resetVarSetAdvStat(varCart);
         
+        // recode message area
         resetMsgSaveRecodeBttn();
         resetMsg4MoveVar();
         
         // download message area
         msgDwnldButton.setText(" ");
         msgDwnldButton.setVisible(false);
-        // recode message area
-        msgSaveRecodeBttn.setText(" ");
-        msgSaveRecodeBttn.setRendered(false);
+
         
         // eda message area
         msgEdaButton.setText(" ");
@@ -3434,6 +3433,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dbgLog.fine("stored model name=" + currentModelName);
         FacesContext cntxt = FacesContext.getCurrentInstance();
 
+        // clear message
+        resetMsg4MoveVar();
+        resetMsgAdvStatButton();
+        
         dbgLog.fine("pass the valueChangeListener dropDown1_processValueChange");
         String newModelName = (String) vce.getNewValue();
         dbgLog.fine("Newly selected model=" + newModelName);

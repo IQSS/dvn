@@ -127,8 +127,12 @@ public class Study implements java.io.Serializable {
     public String getGlobalId() {
         return protocol+":"+authority+"/"+getStudyId();
     }
-    
+
     public String getCitation() {
+        return getCitation(true);
+    }
+
+    public String getCitation(boolean includeLink) {
         
         String str="";
         boolean includeAffiliation=false;
@@ -160,7 +164,11 @@ public class Study implements java.io.Serializable {
             if (!StringUtil.isEmpty(str)) {
                 str+=", ";
             }
-            str+="<a href='"+getHandleURL()+"'>"+getGlobalId()+"</a>";
+            if (includeLink) {
+                str+="<a href='"+getHandleURL()+"'>"+getGlobalId()+"</a>";
+            } else {
+                str+=getGlobalId();
+            }
                     
 
         }

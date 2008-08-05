@@ -1362,7 +1362,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 // zipping all required files
                 try{
-                    String zipFilePrefix = "zipFile." + resultInfo.get("PID") + ".";
+                    String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + "_";
                     File zipFile  = File.createTempFile(zipFilePrefix, ".zip");
                     deleteTempFileList.add(zipFile);
                     res.setContentType("application/zip");
@@ -3259,7 +3259,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 // zipping all required files
                 try{
-                    String zipFilePrefix = "zipFile." + resultInfo.get("PID") + ".";
+                    String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + "_";
                     File zipFile  = File.createTempFile(zipFilePrefix, ".zip");
                     
                     //res.setContentType("application/zip");
@@ -5879,7 +5879,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 // zipping all required files
                 try{
-                    String zipFilePrefix = "zipFile." + resultInfo.get("PID") + ".";
+                    String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + "_";
                     File zipFile  = File.createTempFile(zipFilePrefix, ".zip");
                     deleteTempFileList.add(zipFile);
                     //res.setContentType("application/zip");

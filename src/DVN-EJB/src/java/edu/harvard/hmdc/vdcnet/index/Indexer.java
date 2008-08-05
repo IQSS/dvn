@@ -97,7 +97,7 @@ public class Indexer implements java.io.Serializable  {
     private static Indexer indexer;
     Directory dir;
     String indexDir = "index-dir";
-    int dvnMaxClauseCount = 4096;
+    int dvnMaxClauseCount = 8192;
     
     
     /** Creates a new instance of Indexer */

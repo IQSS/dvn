@@ -57,7 +57,6 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public Study getStudyForSearch(Long studyId, Map studyFields);
     
     public void updateStudy(Study study);
-    public void updateStudyNow(Study detachedStudy);
     
     public void deleteStudy(Long studyId) ;
     
@@ -136,7 +135,8 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public List<StudyFile> getStudyFilesByExtension(String extension);
 
     public void updateStudyFile(StudyFile detachedStudyFile);
-    public boolean isValidStudyIdString(String studyId); 
-    
+    public boolean isValidStudyIdString(String studyId);
+
+    public void setIndexTime(Long studyId, Date indexTime);
  
 }

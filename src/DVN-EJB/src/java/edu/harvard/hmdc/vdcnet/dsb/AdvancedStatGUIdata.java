@@ -532,9 +532,9 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
 
                   // fail-safe measure for factor analysis models
                   if (maxvl == 1) {
-                    if ((minvl > 1) && (noXs == 0)) {
+                    if (((minvl > 1) && (noXs == 0)) || (mdlName.equals("ei.RxC"))) {
                         maxvl = Integer.MAX_VALUE;
-                    }
+                    } 
                   }
                   dbgLog.finer("outcome("+k+"-th): minvl="+minvl);
                   dbgLog.finer("outcome("+k+"-th): maxvl="+maxvl);

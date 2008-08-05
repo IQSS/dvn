@@ -246,6 +246,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         getVDCRequestBean().setSelectedTab("tabDwnld");
        
         REP_README_FILE = new File(this.getClass().getResource("README").getFile());
+        REP_README_FILE_PREFIX = "README_";
         DVN_R2HTML_CSS_FILE = new File(this.getClass().getResource("R2HTML.css").getFile());
         DVN_R_HELPER_FILE = new File(this.getClass().getResource("dvn_helper.R").getFile());
     } // end of _init()
@@ -283,6 +284,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     private static String SUBSET_FILENAME_PREFIX="dvnSubsetFile.";
     
     private static File REP_README_FILE;
+    private static String REP_README_FILE_PREFIX;
     
     private static File DVN_R2HTML_CSS_FILE;
     
@@ -1202,6 +1204,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("studyTitle", studyTitle);
             resultInfo.put("studyNo", studyId.toString());
             resultInfo.put("studyURL", studyURL);
+            resultInfo.put("R_min_verion_no","2.7.0");
+            resultInfo.put("dataverse_version_no","1.3");
             
             dbgLog.fine("wbDataFileName="+resultInfo.get("wbDataFileName"));
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
@@ -1236,7 +1240,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 //zipFileList.add(tmpsbflnew);
 
                 // (1) write a citation file 
-                String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
+                String citationFilePrefix = "citationFile_"+ resultInfo.get("PID") + "_";
                 File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
 
                 zipFileList.add(tmpcfl);
@@ -1249,7 +1253,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dcfw.write(tmpcfl);
 
                 // write a R command file
-                //String rhistoryFilePrefix = "RcommandFile." + resultInfo.get("PID") + ".";
+                //String rhistoryFilePrefix = "RcommandFile_" + resultInfo.get("PID") + "_";
                 //File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
 
                 //zipFileList.add(tmpRhfl);
@@ -1260,7 +1264,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // (2) tab-delimitd-format-only step
                 if (formatType.equals("D01")){
                     // write code files
-                    String codeFilePrefix = "codeFile." + resultInfo.get("PID") + ".";
+                    String codeFilePrefix = "codeFile_" + resultInfo.get("PID") + "_";
                     
                     File tmpCCsasfl = File.createTempFile(codeFilePrefix, ".sas");
                     deleteTempFileList.add(tmpCCsasfl);
@@ -1343,8 +1347,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                deleteTempFileList.add(vdcstrtFileName);
                 
                 // (3) add replication readme file
-                zipFileList.add(REP_README_FILE);
-                
+                //zipFileList.add(REP_README_FILE);
+                File readMeFile = File.createTempFile(REP_README_FILE_PREFIX + resultInfo.get("PID") +"_", ".txt");
+                DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
+                rw.writeREADMEfile(readMeFile);
+                //zipFileList.add(REP_README_FILE);
+                zipFileList.add(readMeFile);
+                deleteTempFileList.add(readMeFile);
                     
                 for (File f : zipFileList){
                     dbgLog.fine("path="+f.getAbsolutePath() +"\tname="+ f.getName());
@@ -3134,7 +3143,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("studyTitle", studyTitle);
             resultInfo.put("studyNo", studyId.toString());
             resultInfo.put("studyURL", studyURL);
-
+            resultInfo.put("R_min_verion_no","2.7.0");
+            resultInfo.put("dataverse_version_no","1.3");
+            
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
 
             // writing necessary files
@@ -3161,7 +3172,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 //zipFileList.add(tmpsbflnew);
 
                 // (1) write a citation file 
-                String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
+                String citationFilePrefix = "citationFile_"+ resultInfo.get("PID") + "_";
                 File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
 
                 zipFileList.add(tmpcfl);
@@ -3174,7 +3185,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dcfw.write(tmpcfl);
 
                 // (2) R command file
-                String rhistoryFilePrefix = "RcommandFile." + resultInfo.get("PID") + ".";
+                String rhistoryFilePrefix = "RcommandFile_" + resultInfo.get("PID") + "_";
                 File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
 
                 zipFileList.add(tmpRhfl);
@@ -3224,7 +3235,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                deleteTempFileList.add(vdcstrtFileName);
                 // add replication readme file
                 // (4) readme file
-                zipFileList.add(REP_README_FILE);
+               // zipFileList.add(REP_README_FILE);
+               
+                File readMeFile = File.createTempFile(REP_README_FILE_PREFIX + resultInfo.get("PID") +"_", ".txt");
+                DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
+                rw.writeREADMEfile(readMeFile);
+                //zipFileList.add(REP_README_FILE);
+                zipFileList.add(readMeFile);
+                deleteTempFileList.add(readMeFile);
+               
                 // (5) css file
                 zipFileList.add(DVN_R2HTML_CSS_FILE);
                 // (6) dvn_R_helper
@@ -3495,8 +3514,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
         }
         String modelHelp = selectedModelSpec.getHelplink();
-        if ((modelHelp != null) && (!modelHelp.equals(""))) {
+        if (!StringUtils.isEmpty(modelHelp)) {
             setModelHelpLinkURL(modelHelp);
+            FacesContext.getCurrentInstance().getExternalContext()
+                 .getSessionMap().put("modelHelpLinkURL", modelHelp);
             gridPanelModelInfoBox.setRendered(true);
         } else {
             gridPanelModelInfoBox.setRendered(false);
@@ -3568,16 +3589,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             
         } else {
             // zelig
+            if (selectedModelSpec.getMaxSetx() == 0) {
+                // hide analysis option panel such as factor models
+                setxOptionPanel.setRendered(false);
+                analysisOptionPanel.setRendered(false);
+            } else {
             checkboxGroup2.setRendered(true);
             chkbxAdvStatOutputOpt.setRendered(true);
             chkbxAdvStatOutputXtbOpt.setRendered(false);
             checkboxGroupXtb.setRendered(false);
             analysisOptionPanel.setRendered(true);
             // show/hide setx-option panel
-            if (selectedModelSpec.getMaxSetx() == 0) {
-                // hide analysis option
-                setxOptionPanel.setRendered(false);
-            } else {
                 setxOptionPanel.setRendered(true);
             }
         }
@@ -4242,6 +4264,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dbgLog.fine("\n***** within addVarBoxR1(): model name=" + 
             getCurrentModelName()+" *****");
         
+        resetMsg4MoveVar();
+        resetMsgAdvStatButton();
+        
         dbgLog.fine("advStatSelectedVarLBox="+advStatSelectedVarLBox);
         dbgLog.fine("advStatSelectedVar from binding="+listboxAdvStat.getSelected());
         String[] OptnSet = null;
@@ -4324,6 +4349,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dbgLog.fine("***** within addVarBoxR2(): model name=" +
             getCurrentModelName()+" *****");
         
+        resetMsg4MoveVar();
+        resetMsgAdvStatButton();
+        
         dbgLog.fine("advStatSelectedVarLBox="+advStatSelectedVarLBox);
         dbgLog.fine("advStatSelectedVar from binding="+listboxAdvStat.getSelected());
         String[] OptnSet = null;
@@ -4404,6 +4432,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
         dbgLog.fine("***** within addVarBoxR3(): model name=" + 
             getCurrentModelName()+" *****");
+        
+        resetMsg4MoveVar();
+        resetMsgAdvStatButton();
+        
         dbgLog.fine("advStatSelectedVarLBox="+advStatSelectedVarLBox);
         dbgLog.fine("advStatSelectedVar from binding="+listboxAdvStat.getSelected());
         String[] OptnSet = null;
@@ -4469,6 +4501,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // set left-selected items to a temp list
         //String[] OptnSet = getAdvStatSelectedVarRBox1();
         
+        
+        resetMsg4MoveVar();
+        resetMsgAdvStatButton();
+        
+        
         dbgLog.fine("advStatSelectedVarRBox1="+advStatSelectedVarRBox1);
         dbgLog.fine("advStatSelectedVar from binding="+advStatVarListboxR1.getSelected());
         String[] OptnSet = null;
@@ -4492,6 +4529,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dbgLog.fine("************  within removeVarBoxR2() ************");
         // set left-selected items to a temp array, Option []
         //String[] OptnSet = getAdvStatSelectedVarRBox2();
+        
+        resetMsg4MoveVar();
+        resetMsgAdvStatButton();
         
         dbgLog.fine("advStatSelectedVarRBox2="+advStatSelectedVarRBox2);
         dbgLog.fine("advStatSelectedVar from binding="+advStatVarListboxR2.getSelected());
@@ -4517,6 +4557,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dbgLog.fine("************  within removeVarBoxR3() ************");
         // set left-selected items to a temp array, Option []
         //String[] OptnSet = getAdvStatSelectedVarRBox3();
+        
+        resetMsg4MoveVar();
+        resetMsgAdvStatButton();
         
         dbgLog.fine("advStatSelectedVarRBox3="+advStatSelectedVarRBox3);
         dbgLog.fine("advStatSelectedVar from binding="+advStatVarListboxR3.getSelected());
@@ -5034,7 +5077,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
             Integer ithBoxMin = getAnalysisApplicationBean().getSpecMap().get(
                 mdlName).getVarBox().get(i).getMinvar();
-            dbgLog.fine("ithBoxMin(" + i + ")=" + ithBoxMin);
+                
+            dbgLog.fine("i-th BoxMin(" + i + ")=" + ithBoxMin);
+            
             if (RBoxSizes.get(i) < ithBoxMin) {
                 String ermsg = "No of Vars in Box" + i + " ("
                     + RBoxSizes.get(i) + ") is less than the minimum("
@@ -5716,7 +5761,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("studyTitle", studyTitle);
             resultInfo.put("studyNo", studyId.toString());
             resultInfo.put("studyURL", studyURL);
-
+            resultInfo.put("R_min_verion_no","2.7.0");
+            resultInfo.put("dataverse_version_no","1.3");
             
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
 
@@ -5742,7 +5788,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 //zipFileList.add(tmpsbflnew);
 
                 // (1) write a citation file 
-                String citationFilePrefix = "citationFile."+ resultInfo.get("PID") + ".";
+                String citationFilePrefix = "citationFile_"+ resultInfo.get("PID") + "_";
                 File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
 
                 zipFileList.add(tmpcfl);
@@ -5755,7 +5801,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dcfw.write(tmpcfl);
 
                 // (2) R command file
-                String rhistoryFilePrefix = "RcommandFile." + resultInfo.get("PID") + ".";
+                String rhistoryFilePrefix = "RcommandFile_" + resultInfo.get("PID") + "_";
                 File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
 
                 zipFileList.add(tmpRhfl);
@@ -5807,7 +5853,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                }
 //                deleteTempFileList.add(vdcstrtFileName);
                 // (4) add replication readme file
-                zipFileList.add(REP_README_FILE);
+                
+                File readMeFile = File.createTempFile(REP_README_FILE_PREFIX + resultInfo.get("PID") +"_", ".txt");
+                DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
+                rw.writeREADMEfile(readMeFile);
+                //zipFileList.add(REP_README_FILE);
+                zipFileList.add(readMeFile);
+                deleteTempFileList.add(readMeFile);
                 // (5) helper
                 zipFileList.add(DVN_R_HELPER_FILE);
                 if (mdlName.equals("xtb")){
@@ -7046,7 +7098,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                      "msgAdvStatButtonTxt","gridPanelModelInfoBox",
                      "lastSimCndtnSelected", "resultInfo",
                      "wrapSubsettingInstructionRendered", 
-                     "wrapNonSubsettingInstructionRendered"
+                     "wrapNonSubsettingInstructionRendered", "modelHelpLinkURL"
                      );
 
                 for (String obj : sessionObjects) {
@@ -7500,6 +7552,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     }
                     // Hides the error message text for edaButton
                     msgAdvStatButton.setVisible(false);
+
+
+//                    if (sessionMap.containsKey("modelHelpLinkURL")) {
+//                        dbgLog.fine("modelHelpLinkURL="+sessionMap.get("modelHelpLinkURL"));
+//                        modelHelpLinkURL= (String) sessionMap.get("modelHelpLinkURL");
+//                    }
+
 
                     // end of post-back cases
                 }

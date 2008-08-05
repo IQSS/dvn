@@ -45,9 +45,9 @@ public class DvnRDataAnalysisServiceImpl{
     static String regexForRunMethods = "^run(\\w+)Request$" ;
     static String RESULT_DIR_PREFIX = "Zlg_";
     static String R2HTML_CSS_DIR = null;
-    static String RWRKSP_FILE_PREFIX = "dvnDataFramefile.";
+    static String RWRKSP_FILE_PREFIX = "dvnDataFramefile_";
     static boolean REPLICATION = true;
-    static String dtflprefix = "dvnDataFile.";
+    static String dtflprefix = "dvnDataFile_";
     
     static {
     
@@ -1634,7 +1634,7 @@ if (tmpv.length > 0){
         // set up a temp file
         File tmprsltfl = null;
         
-        String resultFilePrefix = tmpFilePrefix + PID + ".";
+        String resultFilePrefix = tmpFilePrefix + PID + "_";
         
         String rfsffx = "." + tmpFileExt;
         RFileInputStream ris = null;

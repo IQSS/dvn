@@ -51,13 +51,13 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
     
     // private static String[] modelFilter = {"gam.logit", "gam.normal","gam.poisson","gam.probit","logit.gee"};
     // as of 2008-07-22
-    private static String[] modelFilter = {"coxph", "ei.RxC", "gamma.gee", 
-    "logit.gee", "normal.gee", "poisson.gee", "probit.gee", 
+    private static String[] modelFilter = {"coxph","ei.dynamic", "ei.hier", 
+    "gamma.gee", "logit.gee", "normal.gee", "poisson.gee", "probit.gee", 
     "logit.gam", "normal.gam", "poisson.gam", "probit.gam",
     "cloglog.net", "gamma.net", "logit.net", "ls.net", "normal.net", 
     "poisson.net", "probit.net",
-    "gamma.survey", "logit.survey", "normal.survey", "probit.survey",
-    "poisson.survey",
+    "gamma.survey", "logit.survey", "normal.survey", "probit.survey","poisson.survey",
+    "factor.mix","factor.ord","irt1d",
     "factor.bayes", "logit.bayes", "mlogit.bayes",
     "oprobit.bayes", "poisson.bayes", "probit.bayes",
     "tobit.bayes" };

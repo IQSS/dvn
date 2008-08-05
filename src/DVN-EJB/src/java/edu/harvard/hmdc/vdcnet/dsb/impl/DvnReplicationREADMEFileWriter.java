@@ -91,7 +91,8 @@ public class DvnReplicationREADMEFileWriter {
         return sub.replace(pt5Template);
     }
     public static String pt6Template = 
-        "6. View results -- these will open automatically in your browser.\n\n";
+        "6. View results -- for a cross-tabulation and descriptive statistics cases,"+
+        "   results will open automatically in your browser rather than the R GUI.\n\n";
     
     public String generatePt6Block(){
         StrSubstitutor sub = new StrSubstitutor(valueMap);

@@ -132,7 +132,7 @@ public class Study implements java.io.Serializable {
         return getCitation(true);
     }
 
-    public String getCitation(boolean includeLink) {
+    public String getCitation(boolean isOnlineVersion) {
         
         String str="";
         boolean includeAffiliation=false;
@@ -164,10 +164,10 @@ public class Study implements java.io.Serializable {
             if (!StringUtil.isEmpty(str)) {
                 str+=", ";
             }
-            if (includeLink) {
+            if (isOnlineVersion) {
                 str+="<a href='"+getHandleURL()+"'>"+getGlobalId()+"</a>";
             } else {
-                str+=getGlobalId();
+                str+=getHandleURL();
             }
                     
 

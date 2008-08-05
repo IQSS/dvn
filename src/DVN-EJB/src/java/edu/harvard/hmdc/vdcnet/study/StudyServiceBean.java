@@ -160,10 +160,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         em.merge(detachedStudy);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void updateStudyNow(Study detachedStudy) {
-        em.merge(detachedStudy);
-    }
 
     public Study getStudyByHarvestInfo(VDC dataverse, String harvestIdentifier) {
         String queryStr = "SELECT s FROM Study s WHERE s.owner.id = '" + dataverse.getId() + "' and s.harvestIdentifier = '" + harvestIdentifier + "'";
@@ -1912,5 +1908,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         em.merge(detachedStudyFile);
     }
 
-  
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void setIndexTime(Long studyId, Date indexTime) {
+        Study study = em.find(Study.class, studyId);
+        study.setLastIndexTime(indexTime);
+        em.merge(study);
+    }
 }

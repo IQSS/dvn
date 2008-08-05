@@ -109,6 +109,7 @@ public class IndexMessage implements MessageListener, java.io.Serializable {
     
     private void addDocument(final long studyId) {
         Study study=null;
+        Date indexTime = new Date();
         try {
             study = studyService.getStudy(studyId);
         } catch (IllegalArgumentException e) {
@@ -124,9 +125,8 @@ public class IndexMessage implements MessageListener, java.io.Serializable {
         }
         try {
             indexer.addDocument(study);
-            study.setLastIndexTime(new Date());
             try {
-                studyService.updateStudyNow(study);
+                studyService.setIndexTime(studyId, indexTime);
             } catch (Exception e) {
                 e.printStackTrace(); // print stacktrace, but continue processing
             }

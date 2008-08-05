@@ -535,7 +535,7 @@ sub addSumstat{
 	my $runtab=1;
 	my $moptn = '-m ' . $RtmpDataBase;
 	if ($divisor > 1){
-		open(PH, "/usr/local/VDC/bin/rcut  $foptn $moptn <$Rdata 2>&1 |");
+		open(PH, "/usr/local/VDC/bin/rcut  $foptn $moptn < '$Rdata' 2>&1 |");
 		while (<PH>) {
 			print $FH $_ if $DEBUG;
 			if (/No such file or directory/i){

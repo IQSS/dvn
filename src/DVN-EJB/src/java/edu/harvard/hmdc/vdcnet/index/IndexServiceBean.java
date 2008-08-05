@@ -243,6 +243,7 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
      }
 
     private void addDocument(final long studyId) {
+        Date indexTime = new Date();
         Study study = studyService.getStudy(studyId);    
         Indexer indexer = Indexer.getInstance();
         String indexAdminMail = System.getProperty("dvn.indexadmin");
@@ -251,9 +252,8 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
         }
         try {
             indexer.addDocument(study);
-            study.setLastIndexTime(new Date());
             try {
-                studyService.updateStudyNow(study);
+                studyService.setIndexTime(studyId, indexTime);
             } catch (Exception e) {
                 e.printStackTrace(); // print stacktrace, but continue processing
             }

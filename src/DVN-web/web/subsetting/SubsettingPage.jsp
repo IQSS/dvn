@@ -524,7 +524,24 @@
                                             <h:inputText  id="recodeVariableNameBox"
                                                 value="#{rd[3]}" 
                                                 size="10"/>
-                                        </h:column> 
+                                        </h:column>
+                                       
+                                        
+                                        <h:column id="recodeClArrow">
+                                            <f:facet name="header">
+                                            </f:facet>
+
+                                        <h:graphicImage 
+                                            alt="Information" 
+                                            title="Information" 
+                                            styleClass="vdcNoBorders" 
+                                            style="vertical-align: middle" 
+                                            value="/resources/arrow_right.gif" />
+
+
+                                        </h:column>
+                                        
+                                        
                                         <h:column id="recodeClValue">
                                             <f:facet name="header">
                                                 <h:outputText id="recodeHdrValue" 

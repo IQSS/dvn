@@ -1,3 +1,83 @@
+# dvn_helper.R for the Dataverse Network Application version 1.3 or later
+# 
+# Dataverse Network Project
+# dvn_support@help.hmdc.harvard.edu
+# http://thedata.org/contact
+# 
+# This R source file contains supplementary R functions that handle 
+# row-subsetting and variable-recoding requests in the accompanying
+# R source file (RcommandFile_xxxxxx.R), if requested, and also 
+# calculate and render numerical and graphical summaries for 
+# descriptive statistics requests.
+# 
+
+
+# subsetting data.frame
+# conditions as strings are attached to the data.frame as a vector of strings
+subsetVariables<-function(x){
+    dbg<-F
+    if (!is.null(attr(x,'subsetLines'))){
+        tmpl<-list()
+        for (i in saveAttList){
+            if (!is.null(attr(x,i))) {
+                tmpl[[i]] <- attr(x, i)
+            }
+        }
+        if (dbg){
+            cat("dimension: before attr assignment=", paste(dim(x),collapse=','), '\n', sep='')
+        }
+
+        subsetLines <- attr(x,'subsetLines')
+        for(i in 1:length(subsetLines)) {
+            if (dbg) {
+                cat(subsetLines[i],'\n',sep='')
+            }
+            eval(parse(text=subsetLines[i],n=1))
+        }
+        for (i in names(tmpl)){
+            attr(x, i) <- tmpl[[i]]
+        }
+        if (dbg){
+            cat("dimension: after attr assignment=", paste(dim(x),collapse=','), '\n', sep='')
+        }
+    }
+    invisible(x)
+}
+
+# recoding data.frame
+# conditions are attached to the data.frame as a vector of strings
+
+recodeVariables<-function(x){
+    dbg<-F
+    if (!is.null(attr(x,'recodeLines'))){
+        tmpl<-list()
+        for (i in saveAttList){
+            if (!is.null(attr(x,i))) {
+                tmpl[[i]] <- attr(x, i)
+            }
+        }
+        if (dbg){
+            cat("dimension: before attr assignment=", paste(dim(x),collapse=','), '\n', sep='')
+        }
+        
+        recodeLines <- attr(x,'recodeLines')
+        for(i in 1:length(recodeLines)) {
+            if (dbg) {
+                cat(recodeLines[i],'\n',sep='')
+            }
+            eval(parse(text=recodeLines[i],n=1))
+        }
+        for (i in names(tmpl)){
+            attr(x, i) <- tmpl[[i]]
+        }
+        if (dbg){
+            cat("dimension: after attr assignment=", paste(dim(x),collapse=','), '\n', sep='')
+        }
+    }
+    invisible(x)
+}
+
+
 library(foreign)
 library(stats)
 library(methods)
@@ -1524,67 +1604,4 @@ saveAttList<- c(
 )
 
 
-# subsetting data.frame
-# conditions as strings are attached to the data.frame as a vector of strings
-subsetVariables<-function(x){
-    dbg<-F
-    if (!is.null(attr(x,'subsetLines'))){
-        tmpl<-list()
-        for (i in saveAttList){
-            if (!is.null(attr(x,i))) {
-                tmpl[[i]] <- attr(x, i)
-            }
-        }
-        if (dbg){
-            cat("dimension: before attr assignment=", paste(dim(x),collapse=','), '\n', sep='')
-        }
 
-        subsetLines <- attr(x,'subsetLines')
-        for(i in 1:length(subsetLines)) {
-            if (dbg) {
-                cat(subsetLines[i],'\n',sep='')
-            }
-            eval(parse(text=subsetLines[i],n=1))
-        }
-        for (i in names(tmpl)){
-            attr(x, i) <- tmpl[[i]]
-        }
-        if (dbg){
-            cat("dimension: after attr assignment=", paste(dim(x),collapse=','), '\n', sep='')
-        }
-    }
-    invisible(x)
-}
-
-# recoding data.frame
-# conditions are attached to the data.frame as a vector of strings
-
-recodeVariables<-function(x){
-    dbg<-F
-    if (!is.null(attr(x,'recodeLines'))){
-        tmpl<-list()
-        for (i in saveAttList){
-            if (!is.null(attr(x,i))) {
-                tmpl[[i]] <- attr(x, i)
-            }
-        }
-        if (dbg){
-            cat("dimension: before attr assignment=", paste(dim(x),collapse=','), '\n', sep='')
-        }
-        
-        recodeLines <- attr(x,'recodeLines')
-        for(i in 1:length(recodeLines)) {
-            if (dbg) {
-                cat(recodeLines[i],'\n',sep='')
-            }
-            eval(parse(text=recodeLines[i],n=1))
-        }
-        for (i in names(tmpl)){
-            attr(x, i) <- tmpl[[i]]
-        }
-        if (dbg){
-            cat("dimension: after attr assignment=", paste(dim(x),collapse=','), '\n', sep='')
-        }
-    }
-    invisible(x)
-}

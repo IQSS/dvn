@@ -50,15 +50,15 @@ public class DvnReplicationREADMEFileWriter {
     
     public static String pt2Template = 
         "2.  Open the accompanying " +
-        "'zipFile.xxxxxx.xxxxxx.zip' file, and copy the\n" +
+        "'zipFile_xxxxxx.zip' file, and copy the\n" +
         "    files in it to a new location (for example, your desktop).\n\n" +
-        "    Note: This normally contains four files:\n\n"+
-        "    1. README file              README_xxxxxx_ccccc.txt\n"+
-        "    2. RData file               dvnDataFramefile_xxxxxx_aaaaa.tab\n"+
-        "    3. R-command file           RcommandFile_xxxxxx_ddddd.R\n"+
+        "    Note: This normally contains four files for an advanced statistical\n" +
+        "    analysis request:\n\n"+
+        "    1. README file              README_xxxxxx.txt\n"+
+        "    2. RData file               dvnDataFramefile_xxxxxx.RData\n"+
+        "    3. R-command file           RcommandFile_xxxxxx.R\n"+
         "    4. R-function file          dvn_helper.R\n\n"+
-        "    where xxxxxx and other five-character-long strings are an arbitrary\n"+ 
-        "    identification numbers.\n";
+        "    where xxxxxx is an arbitrary identification numbers.\n\n";
 
     public String generatePt2Block(){
         StrSubstitutor sub = new StrSubstitutor(valueMap);

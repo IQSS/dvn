@@ -249,6 +249,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         REP_README_FILE_PREFIX = "README_";
         DVN_R2HTML_CSS_FILE = new File(this.getClass().getResource("R2HTML.css").getFile());
         DVN_R_HELPER_FILE = new File(this.getClass().getResource("dvn_helper.R").getFile());
+        
+        R_COMMAND_FILE_PREFIX = "RcommandFile_";
     } // end of _init()
 
     // </editor-fold>
@@ -285,12 +287,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
     private static File REP_README_FILE;
     private static String REP_README_FILE_PREFIX;
-    
+    private static String R_COMMAND_FILE_PREFIX;
     private static File DVN_R2HTML_CSS_FILE;
     
     private static File DVN_R_HELPER_FILE;
     
     private static Long TEMP_FILE_LIFETIME=10L;
+    
+    private static String TEMP_DIR = System.getProperty("java.io.tmpdir");
     
     // </editor-fold>
     
@@ -1255,8 +1259,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                dcfw.write(tmpcfl);
 
                 // write a R command file
-                //String rhistoryFilePrefix = "RcommandFile_" + resultInfo.get("PID") + "_";
-                //File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
+                //String rhistoryFilePrefix = R_COMMAND_FILE_PREFIX + resultInfo.get("PID") + ".R";
+                //File tmpRhfl = new File(TEMP_DIR, rhistoryFilePrefix);
 
                 //zipFileList.add(tmpRhfl);
                 //deleteTempFileList.add(tmpRhfl);
@@ -1266,18 +1270,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // (2) tab-delimitd-format-only step
                 if (formatType.equals("D01")){
                     // write code files
-                    String codeFilePrefix = "codeFile_" + resultInfo.get("PID") + "_";
+                    String codeFileSas = "codeFile_sas_" + resultInfo.get("PID") + ".sas";
+                    File tmpCCsasfl = new File(TEMP_DIR, codeFileSas);
                     
-                    File tmpCCsasfl = File.createTempFile(codeFilePrefix, ".sas");
                     deleteTempFileList.add(tmpCCsasfl);
                     zipFileList.add(tmpCCsasfl);
-
-                    File tmpCCspsfl = File.createTempFile(codeFilePrefix, ".sps");
+                    
+                    String codeFileSpss = "codeFile_spss_" + resultInfo.get("PID") + ".sps";
+                    File tmpCCspsfl = new File(TEMP_DIR, codeFileSpss);
+                    
                     deleteTempFileList.add(tmpCCspsfl);
                     zipFileList.add(tmpCCspsfl);
 
-
-                    File tmpCCdofl  = File.createTempFile(codeFilePrefix, ".do");
+                    String codeFileStata = "codeFile_stata_" + resultInfo.get("PID") + ".do";
+                    File tmpCCdofl  = new File(TEMP_DIR, codeFileStata);
+                    
                     deleteTempFileList.add(tmpCCdofl);
                     zipFileList.add(tmpCCdofl);
 
@@ -1350,7 +1357,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 
                 // (3) add replication readme file
                 //zipFileList.add(REP_README_FILE);
-                File readMeFile = File.createTempFile(REP_README_FILE_PREFIX + resultInfo.get("PID") +"_", ".txt");
+                String readMeFileName = REP_README_FILE_PREFIX + resultInfo.get("PID") +  ".txt";
+                File readMeFile = new File(TEMP_DIR, readMeFileName);
+                
                 DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
                 rw.writeREADMEfile(readMeFile);
                 //zipFileList.add(REP_README_FILE);
@@ -1364,8 +1373,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 // zipping all required files
                 try{
-                    String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + "_";
-                    File zipFile  = File.createTempFile(zipFilePrefix, ".zip");
+                    String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + ".zip";
+                    File zipFile  = new File(TEMP_DIR, zipFilePrefix);
+                    
                     deleteTempFileList.add(zipFile);
                     res.setContentType("application/zip");
                     String zfname = zipFile.getName();
@@ -3189,8 +3199,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                dcfw.write(tmpcfl);
 
                 // (2) R command file
-                String rhistoryFilePrefix = "RcommandFile_" + resultInfo.get("PID") + "_";
-                File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
+                String rhistoryFilePrefix = R_COMMAND_FILE_PREFIX + resultInfo.get("PID") + ".R";
+                File tmpRhfl = new File(TEMP_DIR, rhistoryFilePrefix);
 
                 zipFileList.add(tmpRhfl);
                 deleteTempFileList.add(tmpRhfl);
@@ -3240,8 +3250,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // add replication readme file
                 // (4) readme file
                // zipFileList.add(REP_README_FILE);
-               
-                File readMeFile = File.createTempFile(REP_README_FILE_PREFIX + resultInfo.get("PID") +"_", ".txt");
+                String readMeFileName = REP_README_FILE_PREFIX + resultInfo.get("PID") +  ".txt";
+                File readMeFile = new File(TEMP_DIR, readMeFileName);
+                
                 DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
                 rw.writeREADMEfile(readMeFile);
                 //zipFileList.add(REP_README_FILE);
@@ -3263,8 +3274,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 // zipping all required files
                 try{
-                    String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + "_";
-                    File zipFile  = File.createTempFile(zipFilePrefix, ".zip");
+                    String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + ".zip";
+                    File zipFile  = new File(TEMP_DIR, zipFilePrefix);
                     
                     //res.setContentType("application/zip");
                     String zfname = zipFile.getAbsolutePath();
@@ -5807,8 +5818,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                dcfw.write(tmpcfl);
 
                 // (2) R command file
-                String rhistoryFilePrefix = "RcommandFile_" + resultInfo.get("PID") + "_";
-                File tmpRhfl = File.createTempFile(rhistoryFilePrefix, ".R");
+                String rhistoryFilePrefix = R_COMMAND_FILE_PREFIX + resultInfo.get("PID") + ".R";
+                File tmpRhfl = new File(TEMP_DIR, rhistoryFilePrefix);
 
                 zipFileList.add(tmpRhfl);
                 deleteTempFileList.add(tmpRhfl);
@@ -5859,8 +5870,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                }
 //                deleteTempFileList.add(vdcstrtFileName);
                 // (4) add replication readme file
+                String readMeFileName = REP_README_FILE_PREFIX + resultInfo.get("PID") +  ".txt";
+                File readMeFile = new File(TEMP_DIR, readMeFileName);
                 
-                File readMeFile = File.createTempFile(REP_README_FILE_PREFIX + resultInfo.get("PID") +"_", ".txt");
                 DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
                 rw.writeREADMEfile(readMeFile);
                 //zipFileList.add(REP_README_FILE);
@@ -5885,8 +5897,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 // zipping all required files
                 try{
-                    String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + "_";
-                    File zipFile  = File.createTempFile(zipFilePrefix, ".zip");
+                    String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + ".zip";
+                    File zipFile  = new File(TEMP_DIR, zipFilePrefix);
+                    
                     deleteTempFileList.add(zipFile);
                     //res.setContentType("application/zip");
                     String zfname = zipFile.getAbsolutePath();

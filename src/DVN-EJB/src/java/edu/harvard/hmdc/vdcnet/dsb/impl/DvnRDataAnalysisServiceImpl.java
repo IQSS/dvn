@@ -30,24 +30,25 @@ public class DvnRDataAnalysisServiceImpl{
     
     private static Logger dbgLog = Logger.getLogger(DvnRDataAnalysisServiceImpl.class.getPackage().getName());
 
-    static String DSB_TMP_DIR=null;
-    static String WEB_TMP_DIR=null;
-    static String TMP_DATA_FILE_NAME = "susetfile4Rjob";
-    static String TMP_DATA_FILE_EXT =".tab";
-    static String RSERVE_HOST = null;
-    static String RSERVE_USER = "rserve";
-    static String RSERVE_PWD = "rserve";    
-    static int RSERVE_PORT = 6311;
-    static String DSB_HOST_PORT= null;
-    static String DSB_CTXT_DIR =null;
-    static Map<String, String> dwlndParam = new HashMap<String, String>();
-    static Map<String, Method> runMethods = new HashMap<String, Method>();
-    static String regexForRunMethods = "^run(\\w+)Request$" ;
-    static String RESULT_DIR_PREFIX = "Zlg_";
-    static String R2HTML_CSS_DIR = null;
-    static String RWRKSP_FILE_PREFIX = "dvnDataFramefile_";
-    static boolean REPLICATION = true;
-    static String dtflprefix = "dvnDataFile_";
+    public static String DSB_TMP_DIR=null;
+    public static String WEB_TMP_DIR=null;
+    private static String TMP_DATA_FILE_NAME = "susetfile4Rjob";
+    public static String TMP_DATA_FILE_EXT =".tab";
+    private static String RSERVE_HOST = null;
+    private static String RSERVE_USER = "rserve";
+    private static String RSERVE_PWD = "rserve";    
+    private static int RSERVE_PORT = 6311;
+    private static String DSB_HOST_PORT= null;
+    public static String DSB_CTXT_DIR =null;
+    private static Map<String, String> dwlndParam = new HashMap<String, String>();
+    private static Map<String, Method> runMethods = new HashMap<String, Method>();
+    private static String regexForRunMethods = "^run(\\w+)Request$" ;
+    private static String RESULT_DIR_PREFIX = "Zlg_";
+    private static String R2HTML_CSS_DIR = null;
+    public static String RWRKSP_FILE_PREFIX = "dvnDataFramefile_";
+    private static boolean REPLICATION = true;
+    public static String dtflprefix = "dvnDataFile_";
+    public static String TEMP_DIR = System.getProperty("java.io.tmpdir");
     
     static {
     
@@ -1633,15 +1634,15 @@ if (tmpv.length > 0){
         
         // set up a temp file
         File tmprsltfl = null;
+        String resultFile =  tmpFilePrefix + PID + "." + tmpFileExt;
+        //String resultFilePrefix = tmpFilePrefix + PID + "_";
         
-        String resultFilePrefix = tmpFilePrefix + PID + "_";
-        
-        String rfsffx = "." + tmpFileExt;
+        //String rfsffx = "." + tmpFileExt;
         RFileInputStream ris = null;
         OutputStream outbr   = null;
         try {
-            tmprsltfl = File.createTempFile(resultFilePrefix, rfsffx);
-
+            //tmprsltfl = File.createTempFile(resultFilePrefix, rfsffx);
+              tmprsltfl = new File(TEMP_DIR, resultFile);
             //outbr = new FileOutputStream(tmprsltfl);
             outbr = new BufferedOutputStream(new FileOutputStream(tmprsltfl));
             //File tmp = new File(targetFilename);

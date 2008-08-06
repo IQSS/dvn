@@ -652,13 +652,15 @@ public class DvnRJobRequest {
 
             // box stores Ids = "v" + ID-integer
             varIdSet = listParametersForRequest.get("nmBxR1");
+            
             varIdSet2 = listParametersForRequest.get("nmBxR2");
             
             List<String> tmp = getFileteredVarNameSet(varIdSet);
-            tmp.addAll(getFileteredVarNameSet(varIdSet2));
-
+            if (varIdSet2 != null){
+                tmp.addAll(getFileteredVarNameSet(varIdSet2));
+            }
            lhs = "list(" + StringUtils.join(tmp,",") + ")";
-             
+           dbgLog.fine("lhs(noRboxes>=3)="+lhs);
         } else {
             varIdSet = listParametersForRequest.get("nmBxR1");
             List<String> tmp = getFileteredVarNameSet(varIdSet);
@@ -668,8 +670,9 @@ public class DvnRJobRequest {
             } else {
                 lhs = tmp.get(0);
             }
+           dbgLog.fine("lhs(noRboxes<3)="+lhs); 
         }
-        dbgLog.fine("lhs="+lhs);
+        
         return lhs;
     }
     
@@ -685,12 +688,13 @@ public class DvnRJobRequest {
             // box stores Ids = "v" + ID-integer
             varIdSet = listParametersForRequest.get("nmBxR1");
             varIdSet2 = listParametersForRequest.get("nmBxR2");
-            
-            List<String> tmp = getFileteredVarNameSet(varIdSet);
-            tmp.addAll(getFileteredVarNameSet(varIdSet2));
 
+            List<String> tmp = getFileteredVarNameSet(varIdSet);
+            if (varIdSet2 != null){
+                tmp.addAll(getFileteredVarNameSet(varIdSet2));
+            }
            lhs = "Surv(" + StringUtils.join(tmp,",") + ")";
-             
+           dbgLog.fine("lhs4rep(noRboxes>=3)="+lhs);
         } else {
             varIdSet = listParametersForRequest.get("nmBxR1");
             List<String> tmp = getFileteredVarNameSet(varIdSet);
@@ -705,8 +709,8 @@ public class DvnRJobRequest {
                     lhs = tmp.get(0);
                 }
             }
+           dbgLog.fine("lhs4rep(noRboxes<3)="+lhs); 
         }
-        dbgLog.fine("lhs="+lhs);
         return lhs;
     }
     

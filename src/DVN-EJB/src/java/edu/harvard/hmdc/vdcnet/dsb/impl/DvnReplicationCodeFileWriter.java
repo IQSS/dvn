@@ -46,7 +46,7 @@ public class DvnReplicationCodeFileWriter {
         "# 'str(${dvn_dataframe})' command can show other available meta-data and\n"+
         "# additional information about the data set you subset.\n"+
         "# \n"+
-        "# The accompanying citation file provides information how to cite \n"+
+        "# The accompanying citation file stores information how to cite \n"+
         "# this subset and README file explains how to begin replication steps.\n"+
         "# \n";
     

@@ -569,7 +569,7 @@ if (tmpv.length > 0){
             
             // calculate the file-leve UNF
             
-            String fileUNFline = "fileUNF <- paste(summary(unf(x, version=3)))";
+            String fileUNFline = "fileUNF <- paste(summary(unf(dvnData, version=3)))";
             c.voidEval(fileUNFline);
             String fileUNF = c.eval("fileUNF").asString();
             if (fileUNF == null){

@@ -33,22 +33,31 @@ public class DvnReplicationCodeFileWriter {
         "# This R code file lists R-command lines that replicate modeling \n"+
         "# results you obtained from the DVN site on your local R environment. \n"+
         "# \n"+
-        "# The accompanying RData format file ('${dvn_RData_FileName}') stores\n" +
-        "# the requested data in a data.frame named '${dvn_dataframe}'.\n"+
+        "# The accompanying RData format file ('${dvn_RData_FileName}')\n" +
+        "# stores the subset you chose in a data.frame named '${dvn_dataframe}'.\n"+
+        "# While you might have requested row-subsetting and/or recoding,\n"+
+        "# the data.frame was saved before the steps of row-subsetting\n"+
+        "# and recoding.  Since this data.frame maintians the original number\n"+
+        "# of rows and keeps the original columns (variables) intact without\n" +
+        "# recoding or transformation, you can try different case-selections of\n"+
+        "# requested variables without downloading them again and still\n"+
+        "# use the following citation data (subset) for the data.frame.\n"+
         "# \n"+
-        "# The data.frame was saved before the steps of row-subsetting and \n"+
-        "# recoding were executed so that you can try another subset \n" +
-        "# without downloading the whole set again.\n"+
+        "#      ${offlineCitation}\n" +
+        "#      ${variableList}\n" +
+        "#      [VarGrp/@var(DDI)];\n"+
+        "#      ${fileUNF}\n"+
         "# \n"+
         "# Metadata such as variable labels and value-label sets are \n"+
         "# attached to the data.frame as attributes ('var.labels','val.table',\n"+
-        "# respectively) if they were available.\n"+
-        "# 'str(${dvn_dataframe})' command can show other available meta-data and\n"+
-        "# additional information about the data set you subset.\n"+
+        "# respectively) if available.  'str(${dvn_dataframe})' command can \n"+
+        "# show other available meta-data and additional information about\n"+
+        "# the data set you subset.\n"+
         "# \n"+
-        "# The accompanying citation file stores information how to cite \n"+
-        "# this subset and README file explains how to begin replication steps.\n"+
-        "# \n";
+        "# The accompanying README file explains how to begin replication steps,\n"+
+        "# and includes data citations for the whole data set and this subset\n"+
+        "# (data.frame) you requested and additional support information.\n"+
+        "# ";
     
     // instance fields
 

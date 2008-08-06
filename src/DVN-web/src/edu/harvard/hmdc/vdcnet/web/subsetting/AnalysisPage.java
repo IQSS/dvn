@@ -1159,6 +1159,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     } else {
                         if (recodeSchema.size()> 0){
                             resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
+                        } else {
+                            resultInfo.put("subsettingCriteria","");
                         }
                     }
                     
@@ -1240,17 +1242,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 //zipFileList.add(tmpsbflnew);
 
                 // (1) write a citation file 
-                String citationFilePrefix = "citationFile_"+ resultInfo.get("PID") + "_";
-                File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
-
-                zipFileList.add(tmpcfl);
-                deleteTempFileList.add(tmpcfl);
-
-                DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
-
-                String fmpcflFullname = tmpcfl.getAbsolutePath();
-                String fmpcflname = tmpcfl.getName();
-                dcfw.write(tmpcfl);
+//                String citationFilePrefix = "citationFile_"+ resultInfo.get("PID") + "_";
+//                File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
+//
+//                zipFileList.add(tmpcfl);
+//                deleteTempFileList.add(tmpcfl);
+//
+//                DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
+//
+//                String fmpcflFullname = tmpcfl.getAbsolutePath();
+//                String fmpcflname = tmpcfl.getName();
+//                dcfw.write(tmpcfl);
 
                 // write a R command file
                 //String rhistoryFilePrefix = "RcommandFile_" + resultInfo.get("PID") + "_";
@@ -3099,6 +3101,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     } else {
                         if (recodeSchema.size()> 0){
                             resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
+                        } else {
+                            resultInfo.put("subsettingCriteria","");
                         }
                     }
 
@@ -3172,17 +3176,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 //zipFileList.add(tmpsbflnew);
 
                 // (1) write a citation file 
-                String citationFilePrefix = "citationFile_"+ resultInfo.get("PID") + "_";
-                File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
-
-                zipFileList.add(tmpcfl);
-                deleteTempFileList.add(tmpcfl);
-
-                DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
-
-                String fmpcflFullname = tmpcfl.getAbsolutePath();
-                String fmpcflname = tmpcfl.getName();
-                dcfw.write(tmpcfl);
+//                String citationFilePrefix = "citationFile_"+ resultInfo.get("PID") + "_";
+//                File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
+//
+//                zipFileList.add(tmpcfl);
+//                deleteTempFileList.add(tmpcfl);
+//
+//                DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
+//
+//                String fmpcflFullname = tmpcfl.getAbsolutePath();
+//                String fmpcflname = tmpcfl.getName();
+//                dcfw.write(tmpcfl);
 
                 // (2) R command file
                 String rhistoryFilePrefix = "RcommandFile_" + resultInfo.get("PID") + "_";
@@ -5715,6 +5719,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     } else {
                         if (recodeSchema.size()> 0){
                             resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
+                        } else {
+                            resultInfo.put("subsettingCriteria","");
                         }
                     }
                     
@@ -5788,17 +5794,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 //zipFileList.add(tmpsbflnew);
 
                 // (1) write a citation file 
-                String citationFilePrefix = "citationFile_"+ resultInfo.get("PID") + "_";
-                File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
-
-                zipFileList.add(tmpcfl);
-                deleteTempFileList.add(tmpcfl);
-
-                DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
-
-                String fmpcflFullname = tmpcfl.getAbsolutePath();
-                String fmpcflname = tmpcfl.getName();
-                dcfw.write(tmpcfl);
+//                String citationFilePrefix = "citationFile_"+ resultInfo.get("PID") + "_";
+//                File tmpcfl = File.createTempFile(citationFilePrefix, ".txt");
+//
+//                zipFileList.add(tmpcfl);
+//                deleteTempFileList.add(tmpcfl);
+//
+//                DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
+//
+//                String fmpcflFullname = tmpcfl.getAbsolutePath();
+//                String fmpcflname = tmpcfl.getName();
+//                dcfw.write(tmpcfl);
 
                 // (2) R command file
                 String rhistoryFilePrefix = "RcommandFile_" + resultInfo.get("PID") + "_";
@@ -7577,7 +7583,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // Stores the title, Id, and Citation of the requested study
                 setStudyTitle(sui.getStudy().getTitle());
                 setStudyId(sui.getStudy().getId());
-                setCitation(sui.getStudy().getCitation());
+                setCitation(sui.getStudy().getCitation(false));
                 
                     dbgLog.fine("StudyUIclassName was found"+
                         " in the session Map");

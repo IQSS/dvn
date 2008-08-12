@@ -33,7 +33,7 @@
                         <!-- STUDY LOCK PANEL -->
                         <ui:panelGroup  block="true" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                             <h:outputText value="StudyLock Utilities"/>
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.studyLockPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.jsp?selectedPanel=studyLock">  
+                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.studyLockPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=studyLock">  
                                 <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
                             </h:outputLink>
                             <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.studyLockPanelRendered}" />
@@ -80,7 +80,7 @@
                         <!-- INDEX PANEL -->
                         <ui:panelGroup  block="true" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                             <h:outputText value="Index Utilities"/>
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.indexPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.jsp?selectedPanel=index">  
+                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.indexPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=index">  
                                 <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
                             </h:outputLink>
                             <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.indexPanelRendered}" />
@@ -120,7 +120,7 @@
                         <!-- EXPORT PANEL -->  
                         <ui:panelGroup  block="true" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                             <h:outputText value="Export Utilities"/>                           
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.exportPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.jsp?selectedPanel=export">  
+                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.exportPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=export">  
                                 <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
                             </h:outputLink>
                             <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.exportPanelRendered}" />
@@ -169,7 +169,7 @@
                         <!-- HARVEST PANEL -->
                         <ui:panelGroup  block="true" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                             <h:outputText value="Harvest Utilities"/>
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.harvestPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.jsp?selectedPanel=harvest">  
+                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.harvestPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=harvest">  
                                 <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
                             </h:outputLink>
                             <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.harvestPanelRendered}" />
@@ -191,7 +191,7 @@
                         <!-- FILE PANEL -->
                         <ui:panelGroup  block="true" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                             <h:outputText value="File Utilities"/>
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.filePanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.jsp?selectedPanel=file">  
+                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.filePanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=file">  
                                 <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
                             </h:outputLink>
                             <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.filePanelRendered}" />
@@ -214,7 +214,7 @@
                         <!-- IMPORT PANEL -->
                         <ui:panelGroup  block="true" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                             <h:outputText value="Import Utilities"/>
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.importPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.jsp?selectedPanel=import">  
+                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.importPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=import">  
                                 <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
                             </h:outputLink>
                             <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.importPanelRendered}" />
@@ -253,7 +253,7 @@
                         <!-- DELETE PANEL -->
                         <ui:panelGroup  block="true" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                             <h:outputText value="Delete Utilities"/>
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.deletePanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.jsp?selectedPanel=delete">  
+                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.deletePanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=delete">  
                                 <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
                             </h:outputLink>
                             <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.deletePanelRendered}" />

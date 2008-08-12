@@ -36,7 +36,7 @@
                         Once you've created a set, you can edit it by clicking on the set name."/>
                     </div>
                       
-                      <h:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.jsp">
+                      <h:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.xhtml">
                         <h:outputText value="Create a New Set"/>
                     </h:outputLink>
                     
@@ -47,7 +47,7 @@
                             <f:facet name="header">
                                 <h:outputText id="column1Header" value="Set Name"/>
                             </f:facet>
-                            <h:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.jsp?oaiSetId=#{currentRow.id}">
+                            <h:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.xhtml?oaiSetId=#{currentRow.id}">
                                 <h:outputText value="#{currentRow.name}"/>
                             </h:outputLink>
                         </h:column>

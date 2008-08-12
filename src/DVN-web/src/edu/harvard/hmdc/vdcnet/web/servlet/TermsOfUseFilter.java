@@ -273,7 +273,7 @@ public class TermsOfUseFilter implements Filter {
             if (currentVDC != null) {
                 params += "&vdcId=" + currentVDC.getId();
             }
-            res.sendRedirect(req.getContextPath() + "/faces/study/TermsOfUsePage.jsp" + params);
+            res.sendRedirect(req.getContextPath() + "/faces/study/TermsOfUsePage.xhtml" + params);
             return true; // don't continue with chain since we are redirecting'
         }
 
@@ -393,7 +393,7 @@ public class TermsOfUseFilter implements Filter {
                     if (currentVDC != null) {
                         params += "&vdcId=" + currentVDC.getId();
                     }
-                    res.sendRedirect(req.getContextPath() + "/faces/study/TermsOfUsePage.jsp" + params);
+                    res.sendRedirect(req.getContextPath() + "/faces/study/TermsOfUsePage.xhtml" + params);
                     return true; // don't continue with chain since we are redirecting'
                 }
             }

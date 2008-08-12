@@ -1438,7 +1438,7 @@ private String remoteAuthRequired ( String remoteHost ) {
 
 	try {
 
-	    String remoteAuthUrl = "http://" + remoteHost + "/dvn/faces/login/LoginPage.jsp"; 
+	    String remoteAuthUrl = "http://" + remoteHost + "/dvn/faces/login/LoginPage.xhtml"; 
 	    loginGetMethod = new GetMethod (remoteAuthUrl);
 	    loginGetMethod.setFollowRedirects(false);
 	    status = getClient().executeMethod(loginGetMethod);

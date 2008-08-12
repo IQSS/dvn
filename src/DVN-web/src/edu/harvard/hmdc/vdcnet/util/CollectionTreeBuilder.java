@@ -64,7 +64,7 @@ public class CollectionTreeBuilder extends VDCBaseBean implements java.io.Serial
             if (vdc != null) {
                 VDCCollectionTree vdcTree = new VDCCollectionTree();
                 vdcTree.setExpandAll(true);
-                vdcTree.setCollectionUrl("/faces/SearchPage.jsp?mode=1");
+                vdcTree.setCollectionUrl("/faces/SearchPage.xhtml?mode=1");
                 collectionTree = vdcTree.populate(vdc);
             }
         }
@@ -80,7 +80,7 @@ public class CollectionTreeBuilder extends VDCBaseBean implements java.io.Serial
         if (collectionTree == null) {
             VDCCollectionTree vdcTree = new VDCCollectionTree();
             vdcTree.setVDCUrl("");
-            vdcTree.setCollectionUrl("/faces/SearchPage.jsp?mode=1");
+            vdcTree.setCollectionUrl("/faces/SearchPage.xhtml?mode=1");
             
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             vdcTree.setExpandAll(true);

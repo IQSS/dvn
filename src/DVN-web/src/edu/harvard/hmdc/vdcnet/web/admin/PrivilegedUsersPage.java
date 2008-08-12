@@ -256,7 +256,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         if (port!=80) {
             portStr=":"+port;
         }
-        String contributorUrl = "http://"+hostName+portStr+request.getContextPath()+"/dv/"+getVDCRequestBean().getCurrentVDC().getAlias()+"/faces/admin/OptionsPage.jsp";
+        String contributorUrl = "http://"+hostName+portStr+request.getContextPath()+"/dv/"+getVDCRequestBean().getCurrentVDC().getAlias()+"/faces/admin/OptionsPage.xhtml";
        this.editVDCPrivileges.save(contributorUrl);
         
         success=true;

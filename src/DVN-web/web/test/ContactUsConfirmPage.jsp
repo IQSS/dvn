@@ -18,7 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Report Issue Confirmation" />
 
   <gui:define name="body">
-   
+   THISIsATEST
     <ui:form  id="contactConfirmForm">  
       <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
                       

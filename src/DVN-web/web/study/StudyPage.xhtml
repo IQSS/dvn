@@ -34,7 +34,7 @@
                     </div>
 
                     <ui:panelGroup styleClass="dvn_sectionTitleLinksL" rendered="#{!empty studyPage.studyListingIndex}"> 
-                      <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?studyListingIndex=#{studyPage.studyListingIndex}">
+                      <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.xhtml?studyListingIndex=#{studyPage.studyListingIndex}">
                           <h:outputText value="&lt; View Previous Study Listing"/>
                       </h:outputLink>
                     </ui:panelGroup>
@@ -56,16 +56,16 @@
                                 ]]>
                             </ui:script>
                             
-                            <dvn:tooltip tooltipMessage="#{studybundle.editTip}" linkText="#{studybundle.editText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tabSet1.selected}" cssClass="vdcTooltipLink"/>
+                            <dvn:tooltip tooltipMessage="#{studybundle.editTip}" linkText="#{studybundle.editText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tabSet1.selected}" cssClass="vdcTooltipLink"/>
 
-                            <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
+                            <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
 
-                            <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
+                            <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
 
-                            <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
+                            <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
                             
                             <ui:panelGroup rendered="#{studyPage.userAuthorizedToRelease}">
-                                <dvn:tooltip tooltipMessage="#{studybundle.templateTip}" linkText="#{studybundle.templateText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.jsp?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
+                                <dvn:tooltip tooltipMessage="#{studybundle.templateTip}" linkText="#{studybundle.templateText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
                             </ui:panelGroup>
                             <h:commandButton rendered="#{studyPage.studyUI.study.new}" value="Ready for Review" actionListener="#{studyPage.setReadyForReview}"/>
                         </ui:panelGroup>
@@ -77,7 +77,7 @@
              
                 <div class="dvn_sectionBoxNoBorders"> 
                     <ui:tabSet binding="#{studyPage.tabSet1}" id="tabSet1" lite="true" mini="true"  >
-                        <ui:tab id="catalog" text="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
+                        <ui:tab id="catalog" text="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
                             <ui:panelLayout id="layoutPanel1" panelLayout="flow" style="width: 98%"> 
                             
                                 <ui:panelGroup block="true" id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
@@ -161,7 +161,7 @@
                                             <h:outputLink value="#{studyPage.studyUI.study.harvestHoldings}" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
                                                 <h:outputText value="Original Source > " />
                                             </h:outputLink>
-                                        <h:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog" >
+                                        <h:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog" >
                                             <h:outputText value="#{studyPage.studyUI.study.owner.name} Dataverse" />
                                         </h:outputLink> 
                                     </ui:panelGroup>
@@ -400,7 +400,7 @@
                             </ui:panelLayout>
                         </ui:tab>
 <!-- FILES -->                        
-                        <ui:tab id="files" text="Documentation, Data and Analysis" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=files#{studyPage.studyListingIndexAsParameter}">
+                        <ui:tab id="files" text="Documentation, Data and Analysis" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files#{studyPage.studyListingIndexAsParameter}">
                            <ui:panelLayout id="layoutPanel2" panelLayout="flow" styleClass="vdcStudyFilesPage">
                             <ui:panelLayout id="noFilesPanel1" panelLayout="flow" styleClass="vdcStudyFilesEmpty" rendered="#{empty studyPage.studyUI.study.fileCategories}">
                                 <ui:panelGroup block="true" id="noFilesPanel2" styleClass="vdcStudyFilesEmptyMessage" rendered="#{!studyPage.userAuthorizedToEdit}">
@@ -427,11 +427,11 @@
                                         <h:outputText value="Access to some files is restricted, and those files are not available for downloading." />
                                         <h:outputText value=" No information about the restriction is available" rendered="#{studyPage.termsOfUseIsEmpty}" />
                                         <h:outputText value=" Check the " rendered="#{!studyPage.termsOfUseIsEmpty}" />
-                                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#termsofuse" rendered="#{!studyPage.termsOfUseIsEmpty}">
+                                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#termsofuse" rendered="#{!studyPage.termsOfUseIsEmpty}">
                                             <h:outputText value="Terms of Use"></h:outputText>
                                         </h:outputLink>
                                         <h:outputText value=" for more information." rendered="#{!studyPage.termsOfUseIsEmpty}" />
-                                        <h:outputLink action="#{StudyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.jsp?studyId=#{studyPage.studyId}">
+                                        <h:outputLink action="#{StudyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.xhtml?studyId=#{studyPage.studyId}">
                                             <h:outputText value="Send a Request"/>
                                         </h:outputLink>
                                         <!--h:commandLink styleClass="requestIntroContLink" action="#{LoginWorkflowBean.beginCreatorWorkflow}">
@@ -561,7 +561,7 @@
                                                             <ui:panelGroup block="true" styleClass="vdcStudyFileSubsetTable">
                                                                 <h:panelGrid columns="3" cellpadding="2" cellspacing="0" border="0">
                                                                     <h:column id="column1">
-                                                                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.jsp?dtId=#{studyFileUI.studyFile.dataTable.id}">
+                                                                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}">
                                                                             <span>Subsetting</span>
                                                                         </h:outputLink>
                                                                     </h:column>
@@ -575,7 +575,7 @@
                                                             </ui:panelGroup>
 
                                                             <ui:panelGroup block="true" styleClass="vdcStudyFileSubsetAnalysis">
-                                                                <h:outputLink id="fileSubset2" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.jsp?dtId=#{studyFileUI.studyFile.dataTable.id}">
+                                                                <h:outputLink id="fileSubset2" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}">
                                                                     <h:outputText value="Access Subset/Analysis" />
                                                                 </h:outputLink>
                                                             </ui:panelGroup>

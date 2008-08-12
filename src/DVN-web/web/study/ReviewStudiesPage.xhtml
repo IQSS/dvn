@@ -45,7 +45,7 @@
                                 <f:facet name="header">
                                     <h:outputText binding="#{ReviewStudiesPage.outputText2}" id="outputText2" value="Studies in Review"/>
                                 </f:facet>
-                                <h:outputLink binding="#{ReviewStudiesPage.hyperlink1}" id="hyperlink1" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.jsp?studyId=#{currentRow[0]}">
+                                <h:outputLink binding="#{ReviewStudiesPage.hyperlink1}" id="hyperlink1" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml?studyId=#{currentRow[0]}">
                                     <h:outputText binding="#{ReviewStudiesPage.hyperlink1Text1}" id="hyperlink1Text1" value="#{currentRow[1]} - #{currentRow[2]}"/>
                                 </h:outputLink>
                             </h:column>
@@ -62,7 +62,7 @@
                                 </f:facet>
                             </h:column>
                             <h:column binding="#{ReviewStudiesPage.column3}" id="column3">
-                                <h:outputLink binding="#{ReviewStudiesPage.hyperlink2}" id="hyperlink2" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.jsp?userId=#{currentRow[6]}">
+                                <h:outputLink binding="#{ReviewStudiesPage.hyperlink2}" id="hyperlink2" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currentRow[6]}">
                                     <h:outputText binding="#{ReviewStudiesPage.hyperlink2Text}" id="hyperlink2Text" value="#{currentRow[4]}"/>
                                 </h:outputLink>
                                 <f:facet name="header">
@@ -70,7 +70,7 @@
                                 </f:facet>
                             </h:column>
                             <h:column binding="#{ReviewStudiesPage.column4}" id="column4">
-                                <h:outputLink binding="#{ReviewStudiesPage.hyperlink3}" id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.jsp?userId=#{currentRow[7]}">
+                                <h:outputLink binding="#{ReviewStudiesPage.hyperlink3}" id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currentRow[7]}">
                                     <h:outputText binding="#{ReviewStudiesPage.hyperlink2Text1}" id="hyperlink2Text1" value="#{currentRow[5]}"/>
                                 </h:outputLink>
                                 <f:facet name="header">
@@ -99,13 +99,13 @@
                                 <f:facet name="header">
                                     <h:outputText   value="New Studies"/>
                                 </f:facet>
-                                <h:outputLink  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.jsp?studyId=#{currentRow[0]}">
+                                <h:outputLink  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml?studyId=#{currentRow[0]}">
                                     <h:outputText  value="#{currentRow[1]} - #{currentRow[2]}"/>
                                 </h:outputLink>
                             </h:column>
                             
                             <h:column  >
-                                <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.jsp?userId=#{currentRow[6]}">
+                                <h:outputLink   value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currentRow[6]}">
                                     <h:outputText value="#{currentRow[4]}"/>
                                 </h:outputLink>
                                 <f:facet name="header">
@@ -113,7 +113,7 @@
                                 </f:facet>
                             </h:column>
                             <h:column >
-                                <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.jsp?userId=#{currentRow[7]}">
+                                <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currentRow[7]}">
                                     <h:outputText  value="#{currentRow[5]}"/>
                                 </h:outputLink>
                                 <f:facet name="header">

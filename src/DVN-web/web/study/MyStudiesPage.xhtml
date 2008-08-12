@@ -44,7 +44,7 @@
                                 <f:facet name="header">
                                     <h:outputText binding="#{MyStudiesPage.outputText3}" id="outputText3" value="Study ID - Study Title" />
                                 </f:facet>
-                                <h:outputLink binding="#{MyStudiesPage.hyperlink1}" id="hyperlink1" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.jsp?studyId=#{currentRow[3]}">
+                                <h:outputLink binding="#{MyStudiesPage.hyperlink1}" id="hyperlink1" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml?studyId=#{currentRow[3]}">
                                     <h:outputText binding="#{MyStudiesPage.hyperlink1Text}" id="hyperlink1Text" value="#{currentRow[0]} - #{currentRow[1]}"/>
                                 </h:outputLink>
                             </h:column>

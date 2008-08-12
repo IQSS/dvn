@@ -36,7 +36,7 @@
                     
                     <ui:panelGroup  block="true"  style="padding-top: 10px" rendered="#{ContributorRequestPage.alreadyRequested}">
                         <h:outputText value="You have already requested to become a Contributor to #{VDCRequest.currentVDC.name} dataverse.  Please wait for approval from the administrator."/>
-                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.jsp">
+                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.xhtml">
                             <h:outputText value="Go to Dataverse Home Page"/>
                         </h:outputLink>
                     </ui:panelGroup>

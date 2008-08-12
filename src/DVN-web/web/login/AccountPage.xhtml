@@ -37,15 +37,15 @@
                         </ui:panelLayout>                  
                         
                         <ui:panelGroup block="true" id="groupPanel2" style="padding-right: 10px; padding-bottom: 20px; text-align: right">
-                            <h:outputLink id="linkAction1" value="/dvn/faces/login/EditAccountPage.jsp?userId=#{AccountPage.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
+                            <h:outputLink id="linkAction1" value="/dvn/faces/login/EditAccountPage.xhtml?userId=#{AccountPage.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
                                 <h:outputText id="linkAction1Text" value="Update Account"/>
                             </h:outputLink>
                              <h:outputText value=" | " />
-                              <h:outputLink id="linkAction2" value="/dvn/faces/login/EditPasswordPage.jsp?userId=#{AccountPage.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
+                              <h:outputLink id="linkAction2" value="/dvn/faces/login/EditPasswordPage.xhtml?userId=#{AccountPage.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
                                 <h:outputText id="linkAction2Text" value="Change Password"/>
                             </h:outputLink>
                             <h:outputText value=" | " rendered="#{VDCSession.loginBean.networkAdmin and VDCRequest.currentVDC == null}" />
-                            <h:outputLink  rendered="#{VDCSession.loginBean.networkAdmin and VDCRequest.currentVDC == null}" value="/dvn/faces/networkAdmin/AllUsersPage.jsp?vdcId=#{VDCRequest.currentVDCId}">
+                            <h:outputLink  rendered="#{VDCSession.loginBean.networkAdmin and VDCRequest.currentVDC == null}" value="/dvn/faces/networkAdmin/AllUsersPage.xhtml?vdcId=#{VDCRequest.currentVDCId}">
                                 <h:outputText  value="Go To All Users List"/>
                             </h:outputLink>
                         </ui:panelGroup>

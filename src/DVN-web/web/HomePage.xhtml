@@ -44,14 +44,14 @@
               </div>
       
               <ui:panelGroup id="createDataverse" block="true" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestCreator}">
-                  <h:outputLink styleClass="requestHmpgSideLink"  value="/dvn/faces/login/CreatorRequestInfoPage.jsp">
+                  <h:outputLink styleClass="requestHmpgSideLink"  value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
                            <h:outputText value="Create your own Dataverse" escape="false"/>
                   </h:outputLink>
                  
               </ui:panelGroup>
               
                <ui:panelGroup id="beContributor" block="true" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestContributor}">
-                    <h:outputLink styleClass="requestHmpgSideLink"  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/ContributorRequestInfoPage.jsp">
+                    <h:outputLink styleClass="requestHmpgSideLink"  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/ContributorRequestInfoPage.xhtml">
                         <h:outputText value="Become a Contributor" escape="false"/>
                     </h:outputLink>
                 
@@ -79,7 +79,7 @@
                         </label>
                     </fieldset>
                     <div class="dvn_searchLinks">
-                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
+                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
                             <h:outputText value="Advanced Search"/>
                         </h:outputLink>
                         &#160; | &#160;

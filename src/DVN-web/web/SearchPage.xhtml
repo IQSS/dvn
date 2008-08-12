@@ -75,7 +75,7 @@
                 </label>
            </fieldset>
            <div class="dvn_searchLinks">
-                <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.jsp">
+                <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
                     <h:outputText value="Advanced Search" />
                 </h:outputLink>
                 &#160; | &#160;
@@ -135,7 +135,7 @@
                           <h:column id="column1">
                               <ui:panelGroup block="true" id="groupPanel1" style="padding-bottom: 5px">
                                   
-                                  <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}&amp;studyListingIndex=#{SearchPage.studyListingIndex}"  id="hyperlink3">
+                                  <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}&amp;studyListingIndex=#{SearchPage.studyListingIndex}"  id="hyperlink3">
                                       <h:outputText id="hyperlink3Text" value="#{studyUI.study.title}" />
                                   </h:outputLink>
                                   <h:outputText styleClass="dvn_SResultsGlobalId" value=" (#{studyUI.study.globalId})" />
@@ -144,7 +144,7 @@
                               <ui:panelGroup block="true" id="groupPanel1b">
                                   <h:graphicImage alt="This study contains no files." rendered="#{!studyUI.files}"
                                                   title="This study contains no files." value="/resources/icon_nofiles.gif" />
-                                  <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.jsp?studyId=#{studyUI.study.id}&amp;tab=files&amp;studyListingIndex=#{SearchPage.studyListingIndex}" rendered="#{studyUI.files}">
+                                  <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}&amp;tab=files&amp;studyListingIndex=#{SearchPage.studyListingIndex}" rendered="#{studyUI.files}">
                                       <h:graphicImage styleClass="vdcNoBorders" alt="This study contains subsettable files." rendered="#{studyUI.subsettable}"
                                                       title="This study contains subsettable files." value="/resources/icon_subsettable.gif" />
                                       <h:graphicImage styleClass="vdcNoBorders" alt="This study contains only non-subsettable files." rendered="#{!studyUI.subsettable}"
@@ -200,7 +200,7 @@
                                   <h:outputText value="Found In Variables:" styleClass="vdcSResultsField" />
                                   <h:dataTable id="dvDataTable" value="#{studyUI.foundInVariables}" var="dv" width="100%">
                                       <h:column>
-                                          <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/VariablePage.jsp?dvId=#{dv.id}">
+                                          <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/VariablePage.xhtml?dvId=#{dv.id}">
                                               <h:outputText value="#{dv.name}" />
                                           </h:outputLink>
                                       </h:column>

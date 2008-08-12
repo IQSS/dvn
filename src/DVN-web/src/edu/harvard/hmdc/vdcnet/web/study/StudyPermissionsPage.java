@@ -265,7 +265,7 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
         if (port!=80) {
             portStr=":"+port;
         }
-        String studyUrl = "http://"+hostName+portStr+request.getContextPath()+"/dv/"+getVDCRequestBean().getCurrentVDC().getAlias()+"/faces/study/StudyPage.jsp?studyId="+studyId+"&tab=files";
+        String studyUrl = "http://"+hostName+portStr+request.getContextPath()+"/dv/"+getVDCRequestBean().getCurrentVDC().getAlias()+"/faces/study/StudyPage.xhtml?studyId="+studyId+"&tab=files";
         
         
         editStudyPermissions.updateRequests(studyUrl);

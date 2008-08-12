@@ -76,8 +76,8 @@
                         </h:outputLink>
                     </ui:panelLayout>
                     <ui:panelLayout rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}">
-                        <h:outputLink styleClass="dvn_navUserOptions" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp" title="My Options in #{VDCRequest.currentVDC.name} dataverse">
-                            <h:outputText value="#{bundle.myOptionsLabel}"/>
+                        <h:outputLink rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}" styleClass="dvn_navUserOptions" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.jsp" title="My Options in #{VDCRequest.currentVDC.name} dataverse">
+                            <h:outputText rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}" value="#{bundle.myOptionsLabel}"/>
                         </h:outputLink>
                     </ui:panelLayout>
                 </ui:panelLayout>

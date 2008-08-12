@@ -4,123 +4,123 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
     version="1.2">
     <navigation-rule>
-        <from-view-id>/study/StudyList.jsp</from-view-id>
+        <from-view-id>/study/StudyList.xhtml</from-view-id>
           <navigation-case>
             <from-outcome>view</from-outcome>
-            <to-view-id>/study/StudyPage.jsp</to-view-id>
+            <to-view-id>/study/StudyPage.xhtml</to-view-id>
         </navigation-case>
            <navigation-case>
             <from-outcome>edit</from-outcome>
-            <to-view-id>/study/EditStudyPage.jsp</to-view-id>
+            <to-view-id>/study/EditStudyPage.xhtml</to-view-id>
         </navigation-case>   
         <navigation-case>
             <from-outcome>add</from-outcome>
-            <to-view-id>/study/EditStudyPage.jsp</to-view-id>
+            <to-view-id>/study/EditStudyPage.xhtml</to-view-id>
         </navigation-case>   
    </navigation-rule> 
     <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>search</from-outcome>
-            <to-view-id>/SearchPage.jsp</to-view-id>
+            <to-view-id>/SearchPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>viewStudy</from-outcome>
-            <to-view-id>/study/StudyPage.jsp</to-view-id>
+            <to-view-id>/study/StudyPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>   
     <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>editStudy</from-outcome>
-            <to-view-id>/study/EditStudyPage.jsp</to-view-id>
+            <to-view-id>/study/EditStudyPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>templateForm</from-outcome>
-            <to-view-id>/study/TemplateFormPage.jsp</to-view-id>
+            <to-view-id>/study/TemplateFormPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
      <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>myOptions</from-outcome>
-            <to-view-id>/admin/OptionsPage.jsp</to-view-id>
+            <to-view-id>/admin/OptionsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
      <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>manageTemplates</from-outcome>
-            <to-view-id>/admin/ManageTemplatesPage.jsp</to-view-id>
+            <to-view-id>/admin/ManageTemplatesPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>    
      <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>myNetworkOptions</from-outcome>
-            <to-view-id>/networkAdmin/NetworkOptionsPage.jsp</to-view-id>
+            <to-view-id>/networkAdmin/NetworkOptionsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
       <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>addSite</from-outcome>
-            <to-view-id>/site/AddSitePage.jsp</to-view-id>
+            <to-view-id>/site/AddSitePage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
   <navigation-rule>
      <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>deleteStudy</from-outcome>
-            <to-view-id>/study/DeleteStudyPage.jsp</to-view-id>
+            <to-view-id>/study/DeleteStudyPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule> 
    <navigation-rule>
-        <from-view-id>/study/DeleteStudyPage.jsp</from-view-id>
+        <from-view-id>/study/DeleteStudyPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>success</from-outcome>
-            <to-view-id>/study/DeleteSuccessPage.jsp</to-view-id>
+            <to-view-id>/study/DeleteSuccessPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>    
    <navigation-rule>
-        <from-view-id>/study/EditTemplatePage.jsp</from-view-id>
+        <from-view-id>/study/EditTemplatePage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>success</from-outcome>
-            <to-view-id>/admin/ManageTemplatesPage.jsp</to-view-id>
+            <to-view-id>/admin/ManageTemplatesPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>  
   <navigation-rule>
      <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>deleteTemplate</from-outcome>
-            <to-view-id>/study/DeleteTemplatePage.jsp</to-view-id>
+            <to-view-id>/study/DeleteTemplatePage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule> 
    <navigation-rule>
-        <from-view-id>/study/DeleteTemplatePage.jsp</from-view-id>
+        <from-view-id>/study/DeleteTemplatePage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>success</from-outcome>
-            <to-view-id>/study/DeleteTemplateSuccessPage.jsp</to-view-id>
+            <to-view-id>/study/DeleteTemplateSuccessPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>        
     <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>studyList</from-outcome>
-            <to-view-id>/study/StudyList.jsp</to-view-id>
+            <to-view-id>/study/StudyList.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
       <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>home</from-outcome>
-            <to-view-id>/HomePage.jsp</to-view-id>
+            <to-view-id>/HomePage.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
@@ -128,7 +128,7 @@
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>error</from-outcome>
-            <to-view-id>/ErrorPage.jsp</to-view-id>
+            <to-view-id>/ErrorPage.xhtml</to-view-id>
            
         </navigation-case>
     </navigation-rule>
@@ -137,14 +137,14 @@
          <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>subsetting</from-outcome>
-            <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
+            <to-view-id>/subsetting/SubsettingPage.xhtml</to-view-id>
         </navigation-case>
      </navigation-rule>  
   <navigation-rule>
          <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>accountTermsOfUse</from-outcome>
-            <to-view-id>/login/AccountTermsOfUsePage.jsp</to-view-id>
+            <to-view-id>/login/AccountTermsOfUsePage.xhtml</to-view-id>
         </navigation-case>
   </navigation-rule>  
  
@@ -152,7 +152,7 @@
          <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>contributorSuccess</from-outcome>
-            <to-view-id>/login/ContributorRequestSuccessPage.jsp</to-view-id>
+            <to-view-id>/login/ContributorRequestSuccessPage.xhtml</to-view-id>
         </navigation-case>
      </navigation-rule>  
      
@@ -161,7 +161,7 @@
          <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>creatorSuccess</from-outcome>
-            <to-view-id>/login/CreatorRequestSuccessPage.jsp</to-view-id>
+            <to-view-id>/login/CreatorRequestSuccessPage.xhtml</to-view-id>
         </navigation-case>
      </navigation-rule>  
  
@@ -169,21 +169,21 @@
          <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>addAccount</from-outcome>
-            <to-view-id>/login/AddAccountPage.jsp</to-view-id>
+            <to-view-id>/login/AddAccountPage.xhtml</to-view-id>
         </navigation-case>
      </navigation-rule>       
      <navigation-rule>
          <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>login</from-outcome>
-            <to-view-id>/login/LoginPage.jsp</to-view-id>
+            <to-view-id>/login/LoginPage.xhtml</to-view-id>
         </navigation-case>
      </navigation-rule>       
      <navigation-rule>
          <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>passwordSent</from-outcome>
-            <to-view-id>/login/PasswordSentPage.jsp</to-view-id>
+            <to-view-id>/login/PasswordSentPage.xhtml</to-view-id>
         </navigation-case>
      </navigation-rule>       
 
@@ -191,104 +191,104 @@
          <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>fileRequestAccount</from-outcome>
-            <to-view-id>/login/FileRequestAccountPage.jsp</to-view-id>
+            <to-view-id>/login/FileRequestAccountPage.xhtml</to-view-id>
         </navigation-case>
      </navigation-rule>       
    <navigation-rule>
          <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>fileRequest</from-outcome>
-            <to-view-id>/login/FileRequestPage.jsp</to-view-id>
+            <to-view-id>/login/FileRequestPage.xhtml</to-view-id>
         </navigation-case>
      </navigation-rule>       
 
   
     
     <navigation-rule>
-        <from-view-id>/login/FileRequestPage.jsp</from-view-id>
+        <from-view-id>/login/FileRequestPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>success</from-outcome>
-            <to-view-id>/login/FileRequestSuccessPage.jsp</to-view-id>        
+            <to-view-id>/login/FileRequestSuccessPage.xhtml</to-view-id>        
         </navigation-case>         
     </navigation-rule>
        
     <navigation-rule>
-        <from-view-id>/login/AddAccountPage.jsp</from-view-id>
+        <from-view-id>/login/AddAccountPage.xhtml</from-view-id>
        
        
         <navigation-case>
             <from-outcome>viewAccount</from-outcome>
-            <to-view-id>/login/AccountPage.jsp</to-view-id>       
+            <to-view-id>/login/AccountPage.xhtml</to-view-id>       
         </navigation-case>        
         <navigation-case>
             <from-outcome>home</from-outcome>
-            <to-view-id>/HomePage.jsp</to-view-id>
+            <to-view-id>/HomePage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 <navigation-rule>
-        <from-view-id>/site/AddSitePage.jsp</from-view-id>
+        <from-view-id>/site/AddSitePage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>home</from-outcome>
-            <to-view-id>/HomePage.jsp</to-view-id>
+            <to-view-id>/HomePage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>    
     <navigation-rule>
-        <from-view-id>/AdvSearchPage.jsp</from-view-id>
+        <from-view-id>/AdvSearchPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>home</from-outcome>
-            <to-view-id>/HomePage.jsp</to-view-id>
+            <to-view-id>/HomePage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
       <navigation-rule>
-            <from-view-id>/site/DeleteDataversePage.jsp</from-view-id>
+            <from-view-id>/site/DeleteDataversePage.xhtml</from-view-id>
             <navigation-case>
                 <from-outcome>success</from-outcome>
-                <to-view-id>/site/DeleteDataverseSuccessPage.jsp</to-view-id>
+                <to-view-id>/site/DeleteDataverseSuccessPage.xhtml</to-view-id>
             </navigation-case>
         <navigation-case>
                 <from-outcome>cancel</from-outcome>
-                <to-view-id>/site/HarvestSitesPage.jsp</to-view-id>
+                <to-view-id>/site/HarvestSitesPage.xhtml</to-view-id>
             </navigation-case>           
     </navigation-rule>    
     <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>logoutSuccess</from-outcome>
-            <to-view-id>/login/LogoutSuccessPage.jsp</to-view-id>
+            <to-view-id>/login/LogoutSuccessPage.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>        
     <navigation-rule>
-        <from-view-id>/collection/ManageCollectionsPage.jsp</from-view-id>
+        <from-view-id>/collection/ManageCollectionsPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>editCollection</from-outcome>
-            <to-view-id>/collection/EditCollectionPage.jsp</to-view-id>
+            <to-view-id>/collection/EditCollectionPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>manageCollections</from-outcome>
-            <to-view-id>/collection/ManageCollectionsPage.jsp</to-view-id>
+            <to-view-id>/collection/ManageCollectionsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <from-view-id>/collection/AddLinkPage.jsp</from-view-id>
+        <from-view-id>/collection/AddLinkPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>home</from-outcome>
-            <to-view-id>/HomePage.jsp</to-view-id>
+            <to-view-id>/HomePage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <!-- ******************* END-USER FACING PAGES ********************* -->
     <navigation-rule>
-        <from-view-id>/ContactUsPage.jsp</from-view-id>
+        <from-view-id>/ContactUsPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>
-            <to-view-id>/ContactUsPage.jsp</to-view-id>
+            <to-view-id>/ContactUsPage.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
             <from-outcome>success</from-outcome>
-            <to-view-id>/ContactUsConfirmPage.jsp</to-view-id>
+            <to-view-id>/ContactUsConfirmPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <!-- ******************* admin navigation rules ******************** -->
@@ -297,199 +297,199 @@
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>cancelVDC</from-outcome>
-            <to-view-id>/admin/OptionsPage.jsp</to-view-id>
+            <to-view-id>/admin/OptionsPage.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
             <from-outcome>cancelNetwork</from-outcome>
-            <to-view-id>/networkAdmin/NetworkOptionsPage.jsp</to-view-id>
+            <to-view-id>/networkAdmin/NetworkOptionsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/admin/*</from-view-id>
         <navigation-case>
             <from-outcome>cancelVDC</from-outcome>
-            <to-view-id>/admin/OptionsPage.jsp</to-view-id>
+            <to-view-id>/admin/OptionsPage.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
             <from-outcome>cancelNetwork</from-outcome>
-            <to-view-id>/networkAdmin/NetworkOptionsPage.jsp</to-view-id>
+            <to-view-id>/networkAdmin/NetworkOptionsPage.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
             <from-outcome>searchFields</from-outcome>
-            <to-view-id>/admin/SearchFieldsPage.jsp</to-view-id>
+            <to-view-id>/admin/SearchFieldsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <!-- EditAboutPage serves the network and the vdc views -->
     <navigation-rule>
-        <from-view-id>/admin/EditAboutPage.jsp</from-view-id>
+        <from-view-id>/admin/EditAboutPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>
-            <to-view-id>/admin/EditAboutPage.jsp</to-view-id>
+            <to-view-id>/admin/EditAboutPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <from-view-id>/admin/EditBannerFooterPage.jsp</from-view-id>
+        <from-view-id>/admin/EditBannerFooterPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>
-            <to-view-id>/admin/EditBannerFooterPage.jsp</to-view-id>
+            <to-view-id>/admin/EditBannerFooterPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <!-- EditContactPage serves the network and the vdc views -->
     <navigation-rule>
-        <from-view-id>/admin/EditContactUsPage.jsp</from-view-id>
+        <from-view-id>/admin/EditContactUsPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>
-            <to-view-id>/admin/EditContactUsPage.jsp</to-view-id>
+            <to-view-id>/admin/EditContactUsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <from-view-id>/admin/EditHomePanelsPage.jsp</from-view-id>
+        <from-view-id>/admin/EditHomePanelsPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>
-            <to-view-id>/admin/EditHomePanelsPage.jsp</to-view-id>
+            <to-view-id>/admin/EditHomePanelsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
       <navigation-rule>
-        <from-view-id>/admin/PrivilegedUsersPage.jsp</from-view-id>
+        <from-view-id>/admin/PrivilegedUsersPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>
-            <to-view-id>/admin/PrivilegedUsersPage.jsp</to-view-id>
+            <to-view-id>/admin/PrivilegedUsersPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>  
     <!-- ******************* adminNetwork navigation rules ******************** -->
     <navigation-rule>
-        <from-view-id>/networkAdmin/EditNetworkAnnouncementsPage.jsp</from-view-id>
+        <from-view-id>/networkAdmin/EditNetworkAnnouncementsPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>
-            <to-view-id>/networkAdmin/EditNetworkAnnouncementsPage.jsp</to-view-id>
+            <to-view-id>/networkAdmin/EditNetworkAnnouncementsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <from-view-id>/networkAdmin/EditOAISetPage.jsp</from-view-id>
+        <from-view-id>/networkAdmin/EditOAISetPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>success</from-outcome>
-            <to-view-id>/networkAdmin/OAISetsPage.jsp</to-view-id>
+            <to-view-id>/networkAdmin/OAISetsPage.xhtml</to-view-id>
         </navigation-case>
   <navigation-case>
             <from-outcome>cancel</from-outcome>
-            <to-view-id>/networkAdmin/OAISetsPage.jsp</to-view-id>
+            <to-view-id>/networkAdmin/OAISetsPage.xhtml</to-view-id>
         </navigation-case>       
     </navigation-rule>    
     <navigation-rule>
-        <from-view-id>/admin/EditNetworkBannerFooterPage.jsp</from-view-id>
+        <from-view-id>/admin/EditNetworkBannerFooterPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>
-            <to-view-id>/admin/EditNetworkBannerFooterPage.jsp</to-view-id>
+            <to-view-id>/admin/EditNetworkBannerFooterPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <from-view-id>/networkAdmin/AllUsersPage.jsp</from-view-id>
+        <from-view-id>/networkAdmin/AllUsersPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>
-            <to-view-id>/networkAdmin/AllUsersPage.jsp</to-view-id>       
+            <to-view-id>/networkAdmin/AllUsersPage.xhtml</to-view-id>       
         </navigation-case>
     </navigation-rule>
      <navigation-rule>
-        <from-view-id>/login/EditAccountPage.jsp</from-view-id>
+        <from-view-id>/login/EditAccountPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>
-            <to-view-id>/login/AccountPage.jsp</to-view-id>       
+            <to-view-id>/login/AccountPage.xhtml</to-view-id>       
         </navigation-case>
     </navigation-rule>   
        <navigation-rule>
-        <from-view-id>/login/EditPasswordPage.jsp</from-view-id>
+        <from-view-id>/login/EditPasswordPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>success</from-outcome>
-            <to-view-id>/login/PasswordSuccessPage.jsp</to-view-id>       
+            <to-view-id>/login/PasswordSuccessPage.xhtml</to-view-id>       
         </navigation-case>
     </navigation-rule>     
      <navigation-rule>
-        <from-view-id>/networkAdmin/EditUserGroupPage.jsp</from-view-id>
+        <from-view-id>/networkAdmin/EditUserGroupPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>
-            <to-view-id>/networkAdmin/UserGroupsPage.jsp</to-view-id>       
+            <to-view-id>/networkAdmin/UserGroupsPage.xhtml</to-view-id>       
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <from-view-id>/networkAdmin/VDCGroupDetailPage.jsp</from-view-id>
+        <from-view-id>/networkAdmin/VDCGroupDetailPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>
-            <to-view-id>/networkAdmin/VDCGroupDetailPage.jsp</to-view-id> 
+            <to-view-id>/networkAdmin/VDCGroupDetailPage.xhtml</to-view-id> 
             <redirect />
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <from-view-id>/networkAdmin/VDCGroupDetailPage.jsp</from-view-id>
+        <from-view-id>/networkAdmin/VDCGroupDetailPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>dvgroup_edit</from-outcome>
-            <to-view-id>/networkAdmin/VDCGroupEditPage.jsp</to-view-id>
+            <to-view-id>/networkAdmin/VDCGroupEditPage.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
             <from-outcome>dvgroup_add</from-outcome>
-            <to-view-id>/networkAdmin/VDCGroupEditPage.jsp</to-view-id>
+            <to-view-id>/networkAdmin/VDCGroupEditPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <from-view-id>/networkAdmin/VDCGroupEditPage.jsp</from-view-id>
+        <from-view-id>/networkAdmin/VDCGroupEditPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>success</from-outcome>
-            <to-view-id>/networkAdmin/VDCGroupDetailPage.jsp</to-view-id>
+            <to-view-id>/networkAdmin/VDCGroupDetailPage.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
             <from-outcome>failed</from-outcome>
-            <to-view-id>/networkAdmin/VDCGroupEditPage.jsp</to-view-id>
+            <to-view-id>/networkAdmin/VDCGroupEditPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 <!-- 
-  Navigation rules from SubsettingPage.jsp to RequestSummaryPage.jsp
+  Navigation rules from SubsettingPage.xhtml to RequestSummaryPage.xhtml
   ///////////////// start ////////////////
 -->
   <navigation-rule>
-    <from-view-id>/subsetting/SubsettingPage.jsp</from-view-id>
+    <from-view-id>/subsetting/SubsettingPage.xhtml</from-view-id>
     
 <!-- download request -->
     <navigation-case>
       <from-action>#{AnalysisPage.dwnldAction}</from-action>
       <from-outcome>success</from-outcome>
-      <to-view-id>/subsetting/AnalysisResultsPage.jsp</to-view-id>
+      <to-view-id>/subsetting/AnalysisResultsPage.xhtml</to-view-id>
     </navigation-case>
 
     <navigation-case>
       <from-action>#{AnalysisPage.dwnldAction}</from-action>
       <from-outcome>failure</from-outcome>
-      <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
+      <to-view-id>/subsetting/SubsettingPage.xhtml</to-view-id>
     </navigation-case>
     
     <navigation-case>
       <from-action>#{AnalysisPage.dwnldAction}</from-action>
       <from-outcome>download</from-outcome>
-      <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
+      <to-view-id>/subsetting/SubsettingPage.xhtml</to-view-id>
     </navigation-case>
     
 <!-- eda request -->
     <navigation-case>
       <from-action>#{AnalysisPage.edaAction}</from-action>
       <from-outcome>success</from-outcome>
-      <to-view-id>/subsetting/AnalysisResultsPage.jsp</to-view-id>
+      <to-view-id>/subsetting/AnalysisResultsPage.xhtml</to-view-id>
     </navigation-case>
     
     <navigation-case>
       <from-action>#{AnalysisPage.edaAction}</from-action>
       <from-outcome>failure</from-outcome>
-      <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
+      <to-view-id>/subsetting/SubsettingPage.xhtml</to-view-id>
     </navigation-case>
     
 <!-- recode rquest-->
     <navigation-case>
       <from-action>#{AnalysisPage.recodeAction}</from-action>
       <from-outcome>success</from-outcome>
-      <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
+      <to-view-id>/subsetting/SubsettingPage.xhtml</to-view-id>
     </navigation-case>
     
     <navigation-case>
       <from-action>#{AnalysisPage.recodeAction}</from-action>
       <from-outcome>failure</from-outcome>
-      <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
+      <to-view-id>/subsetting/SubsettingPage.xhtml</to-view-id>
     </navigation-case>
 
 <!-- advanced statistics request-->
@@ -497,20 +497,20 @@
     <navigation-case>
       <from-action>#{AnalysisPage.advStatAction}</from-action>
       <from-outcome>success</from-outcome>
-      <to-view-id>/subsetting/AnalysisResultsPage.jsp</to-view-id>
+      <to-view-id>/subsetting/AnalysisResultsPage.xhtml</to-view-id>
     </navigation-case>
     
     <!-- advanced statistics request-->
     <navigation-case>
       <from-action>#{AnalysisPage.advStatAction}</from-action>
       <from-outcome>failure</from-outcome>
-      <to-view-id>/subsetting/SubsettingPage.jsp</to-view-id>
+      <to-view-id>/subsetting/SubsettingPage.xhtml</to-view-id>
     </navigation-case>
 
     <navigation-case>
       <from-action>#{AnalysisPage.gotoEditVariableAction}</from-action>
       <from-outcome>editVariable</from-outcome>
-      <to-view-id>/study/EditVariablePage.jsp</to-view-id>
+      <to-view-id>/study/EditVariablePage.xhtml</to-view-id>
     </navigation-case>   
 
   </navigation-rule> 
@@ -518,7 +518,7 @@
   
   
 <!-- 
-  Navigation rules from SubsettingPage.jsp to RequestSummaryPage.jsp
+  Navigation rules from SubsettingPage.xhtml to RequestSummaryPage.xhtml
   ///////////////// end ////////////////
 -->
 <navigation-rule>

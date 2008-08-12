@@ -454,7 +454,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
     /** 
      * The name of the requested data file
-     * Exposed to SubsettingPage.jsp
+     * Exposed to SubsettingPage.xhtml
      */
     private String fileName;
     
@@ -3436,7 +3436,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * The Boolean object backing the rendered attribute of 
      * gridPanelModelInfoBox (h:panelGrid) component.
-     * Exposed to the SubsettingPage.jsp.
+     * Exposed to the SubsettingPage.xhtml.
      * Must be state-kept.
      */
     private Boolean gridPanelModelInfoBoxRendered;
@@ -3663,7 +3663,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * The Boolean object backing the rendered attribute of 
      * groupPanel8below (ui:panelGroup) component.
-     * Exposed to the SubsettingPage.jsp.
+     * Exposed to the SubsettingPage.xhtml.
      * Must be state-kept. 
      * Added after serialization problems of the component-binding
      */
@@ -7023,7 +7023,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
     /**
      * Prepares the state-keeping html components 
-     * and their backing java objects for rendering SubsettingPage.jsp
+     * and their backing java objects for rendering SubsettingPage.xhtml
      * 
      */
     public void init() {
@@ -7100,7 +7100,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             */
             if (currentViewStateValue == null || 
                 getVDCRequestBean().getDtId() != null) {
-                // The first time visit to the SubsettingPage.jsp
+                // The first time visit to the SubsettingPage.xhtml
 
                 List<String> sessionObjects = new ArrayList<String>();
                 
@@ -7144,7 +7144,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // Gets the requested data table by its Id
                 dataTable = variableService.getDataTable(dtId);
                 
-                // Exposes the data file name to SubsettingPage.jsp
+                // Exposes the data file name to SubsettingPage.xhtml
                 setFileName(dataTable.getStudyFile().getFileName());
                 
                     dbgLog.fine("file Name=" + fileName);
@@ -7169,7 +7169,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 //  Gets the StudyFile object via the dataTable object.
                 //  This StudyFile determines whether
                 //  Subsetting functionalities are rendered or not
-                //  in SubsettingPage.jsp
+                //  in SubsettingPage.xhtml
                     dbgLog.fine("checking this end-user's permission status");
                 StudyFile sf = dataTable.getStudyFile();
                 HttpServletRequest request = 
@@ -7477,7 +7477,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                     // Gets the stored object for recodeSchema that 
                     // stores each recode variable's recodeDataList
-                    // as a hash table. Not exposed to SubsettingPage.jsp
+                    // as a hash table. Not exposed to SubsettingPage.xhtml
                     if (!sessionMap.containsKey("recodeSchema")) {
                         sessionMap.put("recodeSchema", recodeSchema);
                     } else {
@@ -7497,7 +7497,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                     // Gets the stored object for derivedVarToBaseVar
                     // that maps a new variable to its base one.
-                    // No exposed to SubsettingPage.jsp
+                    // No exposed to SubsettingPage.xhtml
                     if (!sessionMap.containsKey("derivedVarToBaseVar")) {
                         sessionMap.put("derivedVarToBaseVar",
                             derivedVarToBaseVar);
@@ -7508,7 +7508,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     // Gets the stored object for baseVarToDerivedVar
                     // that maps a base variable to its derived variables.
-                    // Not exposed to SubsettingPage.jsp
+                    // Not exposed to SubsettingPage.xhtml
                     if (!sessionMap.containsKey("baseVarToDerivedVar")) {
                         sessionMap.put("baseVarToDerivedVar",
                             baseVarToDerivedVar);
@@ -7520,7 +7520,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // Gets the stored object for recodeVarNameSet that
                     // checks the uniqueness of a name 
                     // for a new recode-variable.
-                    // Not exposed to SubsettingPage.jsp
+                    // Not exposed to SubsettingPage.xhtml
                     if (!sessionMap.containsKey("recodeVarNameSet")) {
                         sessionMap.put("recodeVarNameSet", recodeVarNameSet);
                     } else {

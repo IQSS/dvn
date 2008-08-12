@@ -79,7 +79,7 @@
                             <f:facet name="header">
                                 <h:outputText id="outputText3" value="Username"/>
                             </f:facet>
-                            <h:outputLink id="hyperlink2" value="/dvn/faces/login/AccountPage.jsp?userId=#{currentRow[0].vdcUser.id}">
+                            <h:outputLink id="hyperlink2" value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow[0].vdcUser.id}">
                                 <h:outputText id="hyperlink2Text" value="#{currentRow[0].vdcUser.userName}"/>
                             </h:outputLink>
                         </h:column>
@@ -126,7 +126,7 @@
                             <f:facet name="header">
                                 <h:outputText id="groups_tcol1" value="Group Name"/>
                             </f:facet>
-                            <h:outputLink  value="/dvn/faces/networkAdmin/ViewUserGroupPage.jsp?userGroupId=#{currentRow.id}">
+                            <h:outputLink  value="/dvn/faces/networkAdmin/ViewUserGroupPage.xhtml?userGroupId=#{currentRow.id}">
                                 <h:outputText  value="#{currentRow.name}"/>
                             </h:outputLink>
                         </h:column>
@@ -176,7 +176,7 @@
                                         <f:facet name="header">
                                             <h:outputText id="users_tcol1" value="User Name"/>
                                         </f:facet>
-                                        <h:outputLink  value="/dvn/faces/login/AccountPage.jsp?userId=#{currentRow.id}">
+                                        <h:outputLink  value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow.id}">
                                             <h:outputText  value="#{currentRow.userName}"/>
                                         </h:outputLink>
                                     </h:column>
@@ -202,7 +202,7 @@
                                         <f:facet name="header">
                                             <h:outputText id="groups_tcol1" value="User Name"/>
                                         </f:facet>
-                                        <h:outputLink  value="/dvn/faces/networkAdmin/ViewUserGroupPage.jsp?userGroupId=#{currentRow.id}">
+                                        <h:outputLink  value="/dvn/faces/networkAdmin/ViewUserGroupPage.xhtml?userGroupId=#{currentRow.id}">
                                             <h:outputText  value="#{currentRow.name}"/>
                                         </h:outputLink>
                                     </h:column>

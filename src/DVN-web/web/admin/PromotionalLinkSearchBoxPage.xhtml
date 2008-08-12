@@ -97,7 +97,7 @@
                             <ui:panelGroup block="true" styleClass="dvnPromotionalCode">
                                 <span>Code</span><br/>
                                 <textarea name="text_area3" rows="4">
-                                    <h:outputText value="&lt;span style=&quot;color: #526f76; text-transform: uppercase;&quot;&gt;Search&lt;/span&gt;&#38;#160;&lt;span style=&quot;color: #c55b28;&quot;&gt;My Dataverse&lt;/span&gt;&lt;br/&gt;&lt;input type=&quot;text&quot;/&gt;&#38;#160;&lt;input value=&quot;Search&quot; type=&quot;button&quot; onclick=&quot;location='http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.jsp?mode=2&amp;searchValue=' + this.previousSibling.previousSibling.value&quot; /&gt;"/>
+                                    <h:outputText value="&lt;span style=&quot;color: #526f76; text-transform: uppercase;&quot;&gt;Search&lt;/span&gt;&#38;#160;&lt;span style=&quot;color: #c55b28;&quot;&gt;My Dataverse&lt;/span&gt;&lt;br/&gt;&lt;input type=&quot;text&quot;/&gt;&#38;#160;&lt;input value=&quot;Search&quot; type=&quot;button&quot; onclick=&quot;location='http://#{VDCRequest.hostUrl}/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.xhtml?mode=2&amp;searchValue=' + this.previousSibling.previousSibling.value&quot; /&gt;"/>
                                 </textarea>
                                 <br/>
                                 <input type="button" value="Select All Code" onClick="javascript:text_area3.focus();text_area3.select();"/>

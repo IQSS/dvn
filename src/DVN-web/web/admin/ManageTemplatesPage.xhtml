@@ -45,7 +45,7 @@
                         <h:outputText  styleClass="vdcHelpText" escape="false" value="Template help text here" />
                     </ui:panelGroup>
              
-                    <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/TemplateFormPage.jsp">
+                    <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/TemplateFormPage.xhtml">
                         <h:outputText value="Add Template"/>
                     </h:outputLink>                
                     <h:dataTable cellpadding="0" cellspacing="0"
@@ -77,7 +77,7 @@
                                 <h:outputText  value="Remove"/>
                             </f:facet>
                            
-                            <h:outputLink  rendered="#{currentRow[1]==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.jsp?templateId=#{currentRow[0].id}">
+                            <h:outputLink  rendered="#{currentRow[1]==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.xhtml?templateId=#{currentRow[0].id}">
                                 <h:outputText  value="Remove"/>
                             </h:outputLink>    
                             <h:outputText rendered="#{currentRow[1]!=null}" value="Cannot Remove"/>
@@ -88,7 +88,7 @@
                                 <h:outputText value="Edit"/>
                             </f:facet>
                            
-                            <h:outputLink  rendered="#{currentRow[0].id!=ManageTemplatesPage.networkTemplateId}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.jsp?templateId=#{currentRow[0].id}">
+                            <h:outputLink  rendered="#{currentRow[0].id!=ManageTemplatesPage.networkTemplateId}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{currentRow[0].id}">
                                 <h:outputText  value="Edit"/>
                             </h:outputLink>                           
                        

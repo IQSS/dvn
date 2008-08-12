@@ -33,7 +33,7 @@
                                     <tr><td colspan="2" class="dvnOptionsTableHeader"><h:outputText value="#{bundle.ContributorSection}"/></td></tr>
                                     <tr>
                                         <td class="dvnOptionsTableOption">
-                                            <h:outputLink id="hyperlink1" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.jsp">
+                                            <h:outputLink id="hyperlink1" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
                                                 <h:outputText id="hyperlink1Text" value="#{bundle.AddStudyTitle}"/>
                                             </h:outputLink>
                                         </td>
@@ -41,7 +41,7 @@
                                     </tr>
                                     <tr>
                                         <td class="dvnOptionsTableOption">
-                                            <h:outputLink id="hyperlink2" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/MyStudiesPage.jsp">
+                                            <h:outputLink id="hyperlink2" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/MyStudiesPage.xhtml">
                                                 <h:outputText id="hyperlink2Text" value="#{bundle.MyStudiesTitle}"/>
                                             </h:outputLink>
                                         </td>
@@ -56,7 +56,7 @@
                                     <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
                                         <tr>
                                             <td class="dvnOptionsTableOption">
-                                                <h:outputLink id="hyperlink5" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.jsp">
+                                                <h:outputLink id="hyperlink5" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
                                                     <h:outputText id="hyperlink1Text1" value="#{bundle.AddStudyTitle}"/>
                                                 </h:outputLink>
                                             </td>
@@ -64,7 +64,7 @@
                                         </tr>
                                         <tr>
                                             <td class="dvnOptionsTableOption">
-                                                <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/MyStudiesPage.jsp">
+                                                <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/MyStudiesPage.xhtml">
                                                     <h:outputText value="#{bundle.MyStudiesTitle}"/>
                                                 </h:outputLink>
                                             </td>
@@ -72,7 +72,7 @@
                                         </tr>
                                         <tr>
                                             <td class="dvnOptionsTableOption">
-                                                <h:outputLink id="hyperlink6" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/ReviewStudiesPage.jsp">
+                                                <h:outputLink id="hyperlink6" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/ReviewStudiesPage.xhtml">
                                                     <h:outputText id="hyperlink2Text1" value="#{bundle.ReviewStudiesTitle}"/>
                                                 </h:outputLink>
                                             </td>
@@ -80,7 +80,7 @@
                                         </tr>
                                         <tr>
                                             <td class="dvnOptionsTableOption">
-                                                <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/ManageTemplatesPage.jsp?mode=4" >
+                                                <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/ManageTemplatesPage.xhtml?mode=4" >
                                                     <h:outputText value="#{bundle.TemplatesTitle}" escape="false"/>
                                                 </h:outputLink>
                                             </td>
@@ -89,7 +89,7 @@
                                     </gui:fragment>                                    
                                     <tr>
                                         <td class="dvnOptionsTableOption">
-                                            <h:outputLink id="hyperlink8" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/ManageCollectionsPage.jsp">
+                                            <h:outputLink id="hyperlink8" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/ManageCollectionsPage.xhtml">
                                                 <h:outputText id="hyperlink4Text1" value="#{bundle.CollectionsTitle}"/>
                                             </h:outputLink>
                                         </td>
@@ -104,7 +104,7 @@
                                     <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
                                         <tr>
                                             <td class="dvnOptionsTableOption">
-                                                <h:outputLink id="hyperlink15a" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditSitePage.jsp">
+                                                <h:outputLink id="hyperlink15a" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditSitePage.xhtml">
                                                     <h:outputText id="hyperlink15aText" value="#{bundle.DvSettingsTitle}"/>
                                                 </h:outputLink>
                                             </td>
@@ -114,7 +114,7 @@
                                     <gui:fragment rendered="#{VDCRequest.currentVDC.harvestingDv}">
                                         <tr>
                                             <td class="dvnOptionsTableOption">
-                                                <h:outputLink id="hyperlink15b" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditHarvestSitePage.jsp?harvestId=#{VDCRequest.currentVDC.harvestingDataverse.id}">
+                                                <h:outputLink id="hyperlink15b" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditHarvestSitePage.xhtml?harvestId=#{VDCRequest.currentVDC.harvestingDataverse.id}">
                                                     <h:outputText id="hyperlink15bText" value="#{bundle.DvSettingsTitle}"/>
                                                 </h:outputLink>
                                             </td>
@@ -123,7 +123,7 @@
                                     </gui:fragment>
                                     <tr>
                                         <td class="dvnOptionsTableOption">
-                                            <h:outputLink id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditBannerFooterPage.jsp">
+                                            <h:outputLink id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditBannerFooterPage.xhtml">
                                                 <h:outputText id="hyperlink1Text2" value="#{bundle.BrandingTitle}"/>
                                             </h:outputLink>
                                         </td>
@@ -131,7 +131,7 @@
                                     </tr>
                                     <tr>
                                         <td class="dvnOptionsTableOption">
-                                            <h:outputLink id="hyperlink4" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditHomePanelsPage.jsp">
+                                            <h:outputLink id="hyperlink4" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditHomePanelsPage.xhtml">
                                                 <h:outputText id="hyperlink2Text2" value="#{bundle.DescriptionTitle}"/>
                                             </h:outputLink>
                                         </td>
@@ -139,7 +139,7 @@
                                     </tr>
                                     <tr>
                                         <td class="dvnOptionsTableOption">
-                                            <h:outputLink id="hyperlink17" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditContactUsPage.jsp">
+                                            <h:outputLink id="hyperlink17" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditContactUsPage.xhtml">
                                                 <h:outputText id="hyperlink17Text" value="#{bundle.NotificationsTitle}"/>
                                             </h:outputLink>
                                         </td>
@@ -147,7 +147,7 @@
                                     </tr>
                                     <tr>
                                         <td class="dvnOptionsTableOption">
-                                            <h:outputLink id="hyperlink16" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/SearchFieldsPage.jsp">
+                                            <h:outputLink id="hyperlink16" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/SearchFieldsPage.xhtml">
                                                 <h:outputText id="hyperlink16Text" value="#{bundle.FieldsSearchResultsTitle}"/>
                                             </h:outputLink>
                                         </td>
@@ -155,7 +155,7 @@
                                     </tr>
                                     <tr>
                                         <td class="dvnOptionsTableOption">
-                                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PromotionalLinkSearchBoxPage.jsp">
+                                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PromotionalLinkSearchBoxPage.xhtml">
                                                 <h:outputText value="#{bundle.CodePromotionalTitle}"/>
                                             </h:outputLink>
                                         </td>
@@ -168,7 +168,7 @@
                                     <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
                                         <tr>
                                             <td class="dvnOptionsTableOption">
-                                                <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditDepositUseTermsPage.jsp" >
+                                                <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditDepositUseTermsPage.xhtml" >
                                                     <h:outputText id="hyperlink5Text3" value="#{bundle.TermsStudyTitle}"/>
                                                 </h:outputLink>
                                             </td>
@@ -177,7 +177,7 @@
                                     </gui:fragment>
                                     <tr>
                                         <td class="dvnOptionsTableOption">
-                                            <h:outputLink id="hyperlink14" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.jsp">
+                                            <h:outputLink id="hyperlink14" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.xhtml">
                                                 <h:outputText id="hyperlink4Text3" value="#{bundle.TermsFileTitle}"/>
                                             </h:outputLink>
                                         </td>
@@ -189,7 +189,7 @@
                                     <tr><td colspan="2" class="dvnOptionsTableHeader"><h:outputText  value="#{bundle.DvPrivilegesSection}"/></td></tr>
                                     <tr>
                                         <td class="dvnOptionsTableOption">
-                                            <h:outputLink id="hyperlink11" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.jsp">
+                                            <h:outputLink id="hyperlink11" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.xhtml">
                                                 <h:outputText id="hyperlink1Text3" value="#{bundle.DvPrivilegesTitle}"/>
                                             </h:outputLink>
                                         </td>
@@ -197,7 +197,7 @@
                                     </tr>
                                     <tr>
                                         <td class="dvnOptionsTableOption">
-                                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.jsp">
+                                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.xhtml">
                                                 <h:outputText value="#{bundle.AddAccountTitle}"/>
                                             </h:outputLink>
                                         </td>

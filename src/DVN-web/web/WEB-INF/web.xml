@@ -202,7 +202,7 @@
         <url-pattern>/OAIHandler</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
-        <welcome-file>faces/HomePage.jsp</welcome-file>
+        <welcome-file>faces/HomePage.xhtml</welcome-file>
     </welcome-file-list>
     <jsp-config>
         <jsp-property-group>

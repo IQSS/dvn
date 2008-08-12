@@ -172,7 +172,7 @@ public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
         if (collectionTree == null) {
             VDCCollectionTree vdcTree = new VDCCollectionTree();
             vdcTree.setVDCUrl("");
-            vdcTree.setCollectionUrl("/faces/SearchPage.jsp?mode=1");
+            vdcTree.setCollectionUrl("/faces/SearchPage.xhtml?mode=1");
             
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             VDCUser user = getVDCSessionBean().getUser();
@@ -193,7 +193,7 @@ public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
                         // we will have to revisit this
                         vdcTree.setStudyFilter( StudyUI.filterVisibleStudies(rootCollUI.getStudies(), vdc, user, getVDCSessionBean().getIpUserGroup()) );
                         vdcTree.setIncludeStudies(true);
-                        vdcTree.setStudyUrl("/faces/study/StudyPage.jsp");
+                        vdcTree.setStudyUrl("/faces/study/StudyPage.xhtml");
                     }
                 }
                 
@@ -310,9 +310,9 @@ public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
         if ( truncatedAnnouncements != null && !truncatedAnnouncements.equals(announcements) ) {
             ResourceBundle resourceBundle = ResourceBundle.getBundle("Bundle");
             if (isLocal) {
-                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.jsp?vdcId=" + getVDCRequestBean().getCurrentVDC().getId() + "\" title=\"" + resourceBundle.getString("moreLocalAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
+                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml?vdcId=" + getVDCRequestBean().getCurrentVDC().getId() + "\" title=\"" + resourceBundle.getString("moreLocalAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
             } else {
-                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.jsp\" title=\"" + resourceBundle.getString("moreNetworkAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
+                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml\" title=\"" + resourceBundle.getString("moreNetworkAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
             }
         }
         return truncatedAnnouncements;

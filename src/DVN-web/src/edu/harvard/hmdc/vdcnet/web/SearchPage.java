@@ -542,9 +542,9 @@ public class SearchPage extends VDCBaseBean  implements java.io.Serializable {
             // performace of filtering the tree is slow, so for now just show entire tree
             //vdcTree.setStudyFilter(studies);
             //vdcTree.setIncludeCount(true);
-            vdcTree.setCollectionUrl("/faces/SearchPage.jsp?mode=3&oslIndex=" + studyListingIndex);
+            vdcTree.setCollectionUrl("/faces/SearchPage.xhtml?mode=3&oslIndex=" + studyListingIndex);
         } else {
-            vdcTree.setCollectionUrl("/faces/SearchPage.jsp?mode=1");
+            vdcTree.setCollectionUrl("/faces/SearchPage.xhtml?mode=1");
         }
         
         if (studyListing.getCollectionId() != null) {

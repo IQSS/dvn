@@ -82,9 +82,9 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
         String defaultPage = new String("");
         String serverPort = new String((request.getServerPort() != 80 ? ":" + request.getServerPort() : ""));
         if (getVDCRequestBean().getCurrentVDC() != null) {
-            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + "/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() + request.getServletPath() + "/HomePage.jsp";
+            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + "/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() + request.getServletPath() + "/HomePage.xhtml";
         } else {
-            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + request.getServletPath() + "/HomePage.jsp";
+            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + request.getServletPath() + "/HomePage.xhtml";
         }
         // Set referer needed by loginAffiliate -- must be passed on the querystring to the EZProxy
         if (sessionGet("refererUrl") == null) {

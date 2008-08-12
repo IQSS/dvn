@@ -237,14 +237,14 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         String requestContextPath = this.getExternalContext().getRequestContextPath();
         VDC currentVDC = getVDCRequestBean().getCurrentVDC();
         if (WORKFLOW_TYPE_CONTRIBUTOR.equals(workflowType)) {
-            sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/login/ContributorRequestSuccessPage.jsp");
+            sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/login/ContributorRequestSuccessPage.xhtml");
         } else if (WORKFLOW_TYPE_CREATOR.equals(workflowType)) {
-            sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/site/AddSitePage.jsp");
+            sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/site/AddSitePage.xhtml");
         } else if (WORKFLOW_TYPE_FILE_ACCESS.equals(workflowType)) {
             if (currentVDC != null) {
-                sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/login/FileRequestPage.jsp?studyId=" + studyId);
+                sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/login/FileRequestPage.xhtml?studyId=" + studyId);
             } else {
-                sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/login/FileRequestPage.jsp");
+                sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/login/FileRequestPage.xhtml");
             }
         } else {
             if (sessionMap.get("ORIGINAL_URL") != null) {
@@ -253,9 +253,9 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             } else {
                 //  HttpServletRequest request = this.getExternalContext().getRequestContextPath()
                 if (currentVDC != null) {
-                    sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/HomePage.jsp");
+                    sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/HomePage.xhtml");
                 } else {
-                    sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/HomePage.jsp");
+                    sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/HomePage.xhtml");
                 }
             }
         }

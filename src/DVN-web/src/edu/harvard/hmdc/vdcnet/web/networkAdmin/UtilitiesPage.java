@@ -446,7 +446,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                 // create link String
                 HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
                 link = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
-                        + "/dv/" + hd.getVdc().getAlias() + "/faces/study/StudyPage.jsp?studyId=" + studyId;
+                        + "/dv/" + hd.getVdc().getAlias() + "/faces/study/StudyPage.xhtml?studyId=" + studyId;
             }
                        
             addMessage( "harvestMessage", "Harvest succeeded" + (link == null ? "." : ": " + link ) );
@@ -736,7 +736,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
             // create result message
             HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
             String studyURL = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
-                    + "/dv/" + study.getOwner().getAlias() + "/faces/study/StudyPage.jsp?studyId=" + study.getId();
+                    + "/dv/" + study.getOwner().getAlias() + "/faces/study/StudyPage.xhtml?studyId=" + study.getId();
 
             addMessage( "importMessage", "Import succeeded." );
             addMessage( "importMessage", "Study URL: " + studyURL );

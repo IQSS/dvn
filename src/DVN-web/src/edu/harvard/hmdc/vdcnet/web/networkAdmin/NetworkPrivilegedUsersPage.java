@@ -197,7 +197,7 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
             portStr=":"+port;
         }
         // Needed to send an approval email to approved creators
-        String creatorUrl = "http://"+hostName+portStr+request.getContextPath()+"/faces/site/AddSitePage.jsp";
+        String creatorUrl = "http://"+hostName+portStr+request.getContextPath()+"/faces/site/AddSitePage.xhtml";
 
         privileges.save(creatorUrl);
         success=true;

@@ -142,7 +142,7 @@ public class ImportStudyPage extends VDCBaseBean implements java.io.Serializable
                 // create result message
                 HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
                 String link = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
-                        + "/faces/study/StudyPage.jsp?studyId=" + study.getId();
+                        + "/faces/study/StudyPage.xhtml?studyId=" + study.getId();
                 
                 resultMsg = "Import succeeded: " + link;
                 

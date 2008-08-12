@@ -37,17 +37,17 @@
                             
                             <div>
                             <span style="padding: 10px">
-                                <h:outputLink id="hyperlinkAddStudiesCollection" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddCollectionStudiesPage.jsp">
+                                <h:outputLink id="hyperlinkAddStudiesCollection" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddCollectionStudiesPage.xhtml">
                                     <h:outputText  id="hyperlink3Text2" value="Add Collection by Assigning Studies"/>
                                 </h:outputLink>
                             </span>
                             <span style="padding: 10px">
-                                <h:outputLink id="hyperlinkAddQueryCollection" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddCollectionQueryPage.jsp">
+                                <h:outputLink id="hyperlinkAddQueryCollection" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddCollectionQueryPage.xhtml">
                                     <h:outputText  id="hyperlink3Text1" value="Add Collection as a Query"/>
                                 </h:outputLink>
                             </span>
                             <span style="padding: 10px">
-                                <h:outputLink  id="hyperlinkAddLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddLinkPage.jsp">
+                                <h:outputLink  id="hyperlinkAddLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddLinkPage.xhtml">
                                     <h:outputText id="hyperlinkTextAddLink" value="Add Collection Link"/>
                                 </h:outputLink>
                             </span>
@@ -68,7 +68,7 @@
                                          style="padding-left: 10px; margin-top: 20px" columnClasses="vdcColPadded" value="#{ManageCollectionsPage.dataTable1Model}" var="currentRow" width="100%">
                                 <h:column binding="#{ManageCollectionsPage.column1}" id="column1">
                                     <h:selectBooleanCheckbox  id="checkbox1" style="margin-left: 10px; margin-right:  #{currentRow['level']}0px;"  value="#{currentRow['selected']}"/>
-                                    <h:outputLink disabled="#{currentRow['link']}" id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/#{currentRow['queryType'] ? 'AddCollectionQueryPage' : 'AddCollectionStudiesPage' }.jsp?collectionId=#{currentRow['id']}&amp;parentId=#{currentRow['parentId']}">
+                                    <h:outputLink disabled="#{currentRow['link']}" id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/#{currentRow['queryType'] ? 'AddCollectionQueryPage' : 'AddCollectionStudiesPage' }.xhtml?collectionId=#{currentRow['id']}&amp;parentId=#{currentRow['parentId']}">
                                         <h:outputText binding="#{ManageCollectionsPage.outputText11}" id="outputText11" value="#{currentRow['name']}"/>
                                     </h:outputLink>
                                 </h:column>

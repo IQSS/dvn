@@ -47,15 +47,13 @@ public class AllPhaseListener implements PhaseListener, java.io.Serializable  {
      } 
      
      public void beforePhase(PhaseEvent pe){
-        //nothing to do yet.
+        //code any needed beforephase actions here
      }
      
      public void afterPhase(PhaseEvent pe) {
-         String contentType = FacesContext.getCurrentInstance().getExternalContext().getResponseContentType();
          if (pe.getPhaseId() == PhaseId.RENDER_RESPONSE) {
-             HttpServletResponse response = (HttpServletResponse)FacesContext.getCurrentInstance().getExternalContext().getResponse();
-             response.setContentType("text/html; UTF-8");
-             contentType = FacesContext.getCurrentInstance().getExternalContext().getResponseContentType();
+             // code any needed afterphase actions here (render response)
+             // can work for other phases by referencing the correct phaseid
          }
      }
 }

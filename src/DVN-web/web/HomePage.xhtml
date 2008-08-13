@@ -7,21 +7,43 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ui="http://www.sun.com/web/ui"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
-      xmlns:a4j="https://ajax4jsf.dev.java.net/ajax">
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
+         <script type="text/javascript">
+            // <![CDATA[    
+            //TODO: change this so that the div is free floating and positioned relative to the mouseX and mouseY
+                function getNextSibling (elem) {
+                  isTarget = false;
+                  while (!isTarget) {
+                        elem = elem.nextSibling;
+                        if (elem.id != undefined && elem.id.indexOf("hideShow_description") != -1) {
+                            isTarget = true;
+                            if (elem.style.display == 'none') {
+                                elem.style.display = 'block';
+                            } else {
+                                elem.style.display = 'none';
+                            }
+                        }
+                        if (isTarget) break;
+                    }
+                }
+                
+            // ]]>
+        </script>
 </head>
 
 <body>
 <gui:composition template="/template.xhtml">
 
- <gui:param name="pageTitle" value="DVN - #{(VDCRequest.currentVDC== null) ? 'Homepage' : 'Dataverse Homepage'}" />
+<gui:param name="pageTitle" value="DVN - Home" />
 
   <gui:define name="body">
-   
-
-       <h:form id="form1">
+      <f:loadBundle basename="Bundle" var="bundle"/>
+     <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+                        
+         <ice:form>
            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
            <!-- Success Message -->
          <ui:panelLayout styleClass="#{HomePage.msg.styleClass}" rendered="#{!empty HomePage.msg.messageText}">
@@ -44,14 +66,14 @@
               </div>
       
               <ui:panelGroup id="createDataverse" block="true" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestCreator}">
-                  <h:outputLink styleClass="requestHmpgSideLink"  value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
+                  <h:outputLink styleClass="requestHmpgSideLink"  value="/dvn/login/CreatorRequestInfoPage.xhtml">
                            <h:outputText value="Create your own Dataverse" escape="false"/>
                   </h:outputLink>
                  
               </ui:panelGroup>
               
                <ui:panelGroup id="beContributor" block="true" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestContributor}">
-                    <h:outputLink styleClass="requestHmpgSideLink"  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/ContributorRequestInfoPage.xhtml">
+                    <h:outputLink styleClass="requestHmpgSideLink"  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/login/ContributorRequestInfoPage.xhtml">
                         <h:outputText value="Become a Contributor" escape="false"/>
                     </h:outputLink>
                 
@@ -67,7 +89,7 @@
                                 <f:selectItem itemLabel="Cataloging Information" itemValue="any" />
                                 <f:selectItem itemLabel="- Author" itemValue="authorName" />
                                 <f:selectItem itemLabel="- Title" itemValue="title" />
-                                <f:selectItem itemLabel="- Global ID" itemValue="globalId" />
+                                <f:selectItem itemLabel="- Study ID" itemValue="studyId" />
                                 <f:selectItem itemLabel="Variable Information" itemValue="variable" />
                             </h:selectOneMenu>
                         </label>
@@ -79,10 +101,10 @@
                         </label>
                     </fieldset>
                     <div class="dvn_searchLinks">
-                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
+                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/AdvSearchPage.xhtml">
                             <h:outputText value="Advanced Search"/>
                         </h:outputLink>
-                        &#160; | &#160;
+                        <h:outputText value=" | " escape="true"/>
                         <h:outputLink value="http://thedata.org/guides/users/search/tips" target="_blank" style="margin: 0;">
                             <h:outputText value="Tips"/>
                         </h:outputLink>
@@ -99,28 +121,31 @@
                         <div class="dvn_Totals">
                             <h:outputText escape="false" value="#{HomePage.networkData}"/>
                         </div>
-                   
-                     <a4j:region id="ajaxRegionBak" renderRegionOnly="true">
-                            <h:messages layout="table"/>
-                            <a4j:outputPanel id="dataMapOutput" layout="block" ajaxRendered="true">
-                                    <dvn:datalist binding="#{HomePage.dataList}" 
-                                                    rendered="#{VDCRequest.currentVDC == null}"
-                                                    idName="#{HomePage.dataMapId}"/>
-                            </a4j:outputPanel> 
-                       </a4j:region>
+                  <!-- THE DV GROUPS AND DVS GO HERE -->
+                  
                     </ui:panelLayout>
                     
                   
                   <!-- Dataverse Homepage -->
                     <!-- Display Tree at dataverse level -->
-                    <ui:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
+                   <ui:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
             </div>
 
       </div>
-      <!-- Main Section ends here -->
-    
-        </h:form>
-            </gui:define>
+        <!-- Main Section ends here -->
+                <br /><br />
+                <ice:panelLayout style="width:50%; margin-left: auto;margin-right: auto;">
+                    Hello and welcome to the HomePage stub. This is temporary while the Network Home Page is being redesigned/refitted in the absence of ajax4jsf.
+                    
+                    To navigate directly to a dataverse home page version, please type in the fully qualified path to the dataverse in the address bar.
+                </ice:panelLayout>
+                <ice:messages></ice:messages>
+                <br /><br />
+
+</ice:form>
+        
+
+          </gui:define>
         </gui:composition>
     </body>
 </html>

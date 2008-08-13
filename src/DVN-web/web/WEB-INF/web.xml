@@ -117,7 +117,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     </filter>
     <filter-mapping>
         <filter-name>UploadFilter</filter-name>
-        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
     </filter-mapping> 
     
     <!-- login filter -->
@@ -127,7 +127,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     </filter>
     <filter-mapping>
         <filter-name>LoginFilter</filter-name>
-        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
@@ -139,7 +139,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     </filter>
     <filter-mapping>
         <filter-name>TermsOfUseFilter</filter-name>
-        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>

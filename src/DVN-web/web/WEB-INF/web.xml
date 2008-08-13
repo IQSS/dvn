@@ -1,46 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <display-name>DVN webapp</display-name>
-    <!--distributable/-->
+    <!-- ICEFACES START -->
+    <!-- remove if this does not work delegateNonIface-->
+   <context-param>
+       <param-name>com.icesoft.faces.delegateNonIface</param-name> 
+       <param-value>true</param-value> 
+   </context-param>
     <context-param>
-      <param-name>org.ajax4jsf.VIEW_HANDLERS</param-name>
-      <param-value>com.sun.facelets.FaceletViewHandler</param-value>
-    </context-param>
-    <context-param>
-        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-        <param-value>server</param-value>
-    </context-param>
-    <context-param>
-        <param-name>javax.faces.CONFIG_FILES</param-name>
-        <param-value>/WEB-INF/navigation.xml,/WEB-INF/managed-beans.xml</param-value>
-    </context-param>
-    <context-param>
-        <param-name>com.sun.faces.validateXml</param-name>
+        <param-name>com.icesoft.faces.concurrentDOMViews</param-name>
         <param-value>true</param-value>
     </context-param>
+    <!-- optional for use with push -->
     <context-param>
-        <param-name>com.sun.faces.verifyObjects</param-name>
+        <param-name>com.icesoft.faces.synchronousUpdate</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <!-- end optional for use with push -->
+    <context-param>
+        <param-name>com.icesoft.faces.debugDOMUpdate</param-name>
         <param-value>false</param-value>
     </context-param>
     <context-param>
-       <param-name>edu.harvard.hmdc.export</param-name>
-        <param-value>false</param-value>        
+        <param-name>com.icesoft.faces.standardRequestScope</param-name>
+        <param-value>false</param-value>
     </context-param>
     <context-param>
-       <param-name>properties</param-name>
-        <param-value>oaicat.properties</param-value>        
-    </context-param>
-    <listener>
-        <listener-class>edu.harvard.hmdc.vdcnet.util.VDCContextListener</listener-class>
-    </listener>
-    <!--  ajax4jsf -->
-    <context-param>
-        <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
-        <param-value>.xhtml</param-value>
+        <param-name>com.icesoft.faces.uploadMaxFileSize</param-name>
+        <param-value>4048576</param-value>
     </context-param>
     <context-param>
-        <param-name>facelets.DEVELOPMENT</param-name>
+        <param-name>com.sun.faces.enableRestoreView11Compatibility</param-name>
         <param-value>true</param-value>
+    </context-param>
+<!-- Facelets -->
+    <context-param>
+      <param-name>facelets.DEVELOPMENT</param-name>
+      <param-value>true</param-value>
     </context-param>
     <context-param>
         <param-name>facelets.SKIP_COMMENTS</param-name>
@@ -51,23 +49,51 @@
 	<param-value>
 		/WEB-INF/creator.taglib.xml;/WEB-INF/dvn.taglib.xml;/WEB-INF/scroller.taglib.xml
 	</param-value>
-</context-param>
-    <filter>
-       <display-name>Ajax4jsf Filter</display-name>
-       <filter-name>ajax4jsf</filter-name>
-       <filter-class>org.ajax4jsf.Filter</filter-class>
-       <init-param>
-            <param-name>forceparser</param-name>
-            <param-value>false</param-value>
-        </init-param>
-   </filter>
-   <filter-mapping>
-      <filter-name>ajax4jsf</filter-name>
-      <servlet-name>Faces Servlet</servlet-name>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>INCLUDE</dispatcher>
-   </filter-mapping>
+     </context-param>
+    <!-- JSF -->
+    <context-param>
+        <param-name>com.sun.faces.validateXml</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <!-- set verifyObjects to true for debugging if needed -->
+    <context-param>
+        <param-name>com.sun.faces.verifyObjects</param-name>
+        <param-value>false</param-value>
+    </context-param>
+   <!-- <context-param>
+        <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+        <param-value>.xhtml</param-value>
+    </context-param> -->
+    <context-param>
+    <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+    <param-value>.xhtml</param-value>
+  </context-param>
+  <context-param>
+    <param-name>facelets.VIEW_MAPPINGS</param-name>
+    <param-value>*.jsp</param-value>
+  </context-param>
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+     <context-param>
+        <param-name>javax.faces.CONFIG_FILES</param-name>
+        <param-value>/WEB-INF/navigation.xml,/WEB-INF/managed-beans.xml</param-value>
+    </context-param>
+    <context-param>
+       <param-name>edu.harvard.hmdc.export</param-name>
+        <param-value>false</param-value>        
+    </context-param>
+    <context-param>
+       <param-name>properties</param-name>
+        <param-value>oaicat.properties</param-value>        
+    </context-param>
+    <listener>
+        <listener-class>com.icesoft.faces.util.event.servlet.ContextEventRepeater</listener-class>
+    </listener>
+    <listener>
+        <listener-class>edu.harvard.hmdc.vdcnet.util.VDCContextListener</listener-class>
+    </listener>
    <!-- upload filter -->
     <filter>
         <filter-name>UploadFilter</filter-name>
@@ -123,6 +149,30 @@
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
+    <!-- Icefaces Servlets -->
+   <!-- <servlet>
+        <servlet-name>Grizzly Push Servlet</servlet-name>
+        <servlet-class>
+            com.icesoft.faces.webapp.http.servlet.GrizzlyPushServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet> -->
+     <servlet>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
+            <servlet-class>com.icesoft.faces.webapp.xmlhttp.PersistentFacesServlet</servlet-class>
+            <load-on-startup>1</load-on-startup>
+        </servlet>
+        <servlet>
+            <servlet-name>Blocking Servlet</servlet-name>
+            <servlet-class>com.icesoft.faces.webapp.xmlhttp.BlockingServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        </servlet>
+        <servlet>
+            <servlet-name>uploadServlet</servlet-name>
+            <servlet-class>com.icesoft.faces.component.inputfile.FileUploadServlet</servlet-class>
+            <load-on-startup>1</load-on-startup>
+        </servlet>
+        <!-- DVN SPECIFIC SERVLETS -->
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCFacesServlet</servlet-class>
@@ -169,8 +219,31 @@
         <servlet-name>OAIHandler</servlet-name>
         <servlet-class>ORG.oclc.oai.server.OAIHandler</servlet-class>
     </servlet>
+    <!-- END DVN SPECIFIC SERVLETS -->
+    <!-- ICEFACES MAPPINGS START -->
+   <!-- <servlet-mapping>
+        <servlet-name>Grizzly Push Servlet</servlet-name>
+        <url-pattern>/block/receive-updated-views/*</url-pattern>
+    </servlet-mapping> -->
      <servlet-mapping>
-        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
+        <url-pattern>/xmlhttp/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
+        <url-pattern>*.iface</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Blocking Servlet</servlet-name>
+        <url-pattern>/block/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>uploadServlet</servlet-name>
+        <url-pattern>/uploadHtml</url-pattern>
+    </servlet-mapping>
+<!-- DVN SPECIFIC SERVLET MAPPINGS START -->
+     <servlet-mapping>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
@@ -202,7 +275,7 @@
         <url-pattern>/OAIHandler</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
-        <welcome-file>faces/HomePage.xhtml</welcome-file>
+        <welcome-file>HomePage.jsp</welcome-file>
     </welcome-file-list>
     <jsp-config>
         <jsp-property-group>
@@ -270,4 +343,5 @@
         <servlet-name>VDCSummaryStatisticsServlet</servlet-name>
         <url-pattern>/sumStat</url-pattern>
     </servlet-mapping>
+    <!-- DVN SPECIFIC SERVLET MAPPINGS END -->
 </web-app>

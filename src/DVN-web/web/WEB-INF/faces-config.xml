@@ -5,7 +5,6 @@
          version="1.2">
   <lifecycle>
             <phase-listener>edu.harvard.hmdc.vdcnet.util.AllPhaseListener</phase-listener>
-            <phase-listener>edu.harvard.hmdc.vdcnet.util.AjaxPhaseListener</phase-listener>
             <phase-listener>edu.harvard.hmdc.vdcnet.util.RestoreViewPhaseListener</phase-listener>
   </lifecycle>           
   <factory>
@@ -15,6 +14,9 @@
       <render-kit-factory>com.sun.faces.renderkit.RenderKitFactoryImpl</render-kit-factory>
   </factory>
   <application>
+      <view-handler>
+          com.icesoft.faces.facelets.D2DFaceletViewHandler
+     </view-handler>
    <!-- Set default locale and add supported locales here... -->
    <locale-config>
       <default-locale>en</default-locale>
@@ -84,4 +86,9 @@
       <validator-id>DateValidator</validator-id>
       <validator-class>edu.harvard.hmdc.vdcnet.util.DateValidator</validator-class>
   </validator>
+    <managed-bean>
+        <managed-bean-name>woodstock$DynamicGroupTable</managed-bean-name>
+        <managed-bean-class>vdcnetwar.woodstock.DynamicGroupTable</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
 </faces-config>

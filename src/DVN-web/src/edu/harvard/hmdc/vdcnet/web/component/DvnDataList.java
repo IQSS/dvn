@@ -61,7 +61,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.MethodExpressionActionListener;
-import org.ajax4jsf.ajax.html.HtmlAjaxCommandLink;
+// import org.ajax4jsf.ajax.html.HtmlAjaxCommandLink;
 
 
 /**
@@ -465,7 +465,7 @@ public class DvnDataList extends UICommand implements java.io.Serializable {
                 previousOut.setStyleClass("dvnDisabled");
                 previousPanel.getChildren().add(previousOut);
             } else {
-                HtmlAjaxCommandLink previousLink = new HtmlAjaxCommandLink();
+             /*   HtmlAjaxCommandLink previousLink = new HtmlAjaxCommandLink();
                 previousLink.setId("previous_" + formatSafeKey(heading) + "_" + appendToId); // Custom ID is required in dynamic UIInput and UICommand.
                 previousLink.getClientId(context);
                 previousLink.setValue(previousText);
@@ -474,6 +474,7 @@ public class DvnDataList extends UICommand implements java.io.Serializable {
                 MethodExpression previousActionListener = expressionFactory.createMethodExpression(elContext, "#{HomePage.page_action}", null, new Class[] {ActionEvent.class});
                 previousLink.addActionListener(new MethodExpressionActionListener(previousActionListener));
                previousPanel.getChildren().add(previousLink);
+              */
             }
 
             HtmlPanelGroup nextPanel = new HtmlPanelGroup();
@@ -486,7 +487,7 @@ public class DvnDataList extends UICommand implements java.io.Serializable {
                 nextPanel.getChildren().add(nextOut);
                 
             } else {
-                HtmlAjaxCommandLink nextLink = new HtmlAjaxCommandLink();
+               /* HtmlAjaxCommandLink nextLink = new HtmlAjaxCommandLink();
                 nextLink.setId("next_" + formatSafeKey(heading) + "_" + appendToId); // Custom ID is required in dynamic UIInput and UICommand.
                 nextLink.getClientId(context);
                 nextLink.setValue(nextText);
@@ -494,7 +495,7 @@ public class DvnDataList extends UICommand implements java.io.Serializable {
                 nextLink.setImmediate(true);
                 MethodExpression nextActionListener = expressionFactory.createMethodExpression(elContext, "#{HomePage.page_action}", null, new Class[] {ActionEvent.class});
                 nextLink.addActionListener(new MethodExpressionActionListener(nextActionListener));
-                nextPanel.getChildren().add(nextLink);
+                nextPanel.getChildren().add(nextLink); */
             }
             
             linkPanel.getChildren().add(previousPanel);

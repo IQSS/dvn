@@ -30,12 +30,13 @@
 package edu.harvard.hmdc.vdcnet.util;
 
 import com.sun.faces.application.ActionListenerImpl;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 /**
@@ -48,19 +49,19 @@ public class VDCActionListener extends ActionListenerImpl implements ActionListe
         try {
             super.processAction(action);
         } catch (Exception e) {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            HttpServletRequest request = (HttpServletRequest)facesContext.getExternalContext().getRequest();
-            request.setAttribute("exception", e);
+                FacesContext facesContext = FacesContext.getCurrentInstance();
             try {
-                FacesContext context = FacesContext.getCurrentInstance();
-                ServletContext servletContext = (ServletContext)context.getExternalContext().getContext();
-                HttpServletResponse response = (HttpServletResponse)context.getExternalContext().getResponse();
-                servletContext.getRequestDispatcher("/ExceptionHandler").forward(request, response); //required method to maintain request
-            } catch (Exception ioe) {
+                FacesContext context            = FacesContext.getCurrentInstance();
+                ExternalContext externalContext = context.getExternalContext();
+                HttpServletRequest request      = (HttpServletRequest) externalContext.getRequest();
+                HttpSession session             = request.getSession(false);
+                session.setAttribute("exception", e);
+                String redirectUrl              = request.getProtocol().substring(0, request.getProtocol().indexOf("/")) + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/ExceptionHandler";
+                System.out.println("The redirect url is " + redirectUrl);
+                externalContext.redirect(redirectUrl);
+             } catch (Exception ioe) {
                 System.out.println("An exception was thrown in the action listener  . . . ");
-            } finally {
-                System.out.println("Completed action listener ...");
-            }
+            } 
         }
     }
     

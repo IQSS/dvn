@@ -14,6 +14,7 @@ SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('metadata', 'id'), 10
 
 SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('template', 'id'), 10, false);
 
+
 --
 -- TOC entry 1840 (class 0 OID 0)
 -- Dependencies: 1304
@@ -863,6 +864,7 @@ INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VA
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(97,1,97,3);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(98,1,98,3);
 
+SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('templatefield', 'id'), 100, false);
 
 
 ALTER TABLE templatefield ENABLE TRIGGER ALL;

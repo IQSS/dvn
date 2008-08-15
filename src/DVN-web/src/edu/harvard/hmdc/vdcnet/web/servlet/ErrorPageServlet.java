@@ -70,6 +70,10 @@ public class ErrorPageServlet extends HttpServlet  {
         else if (req.getQueryString() != null)  {
             cause = req.getQueryString();
         }
+        else if (req.getSession().getAttribute("exception") != null) {
+            cause = ((Exception)req.getSession().getAttribute("exception")).getCause().toString();
+            req.getSession().removeAttribute("exception");
+        }
         else {
             cause = "We are sorry. An unspecified error occurred.";
         }

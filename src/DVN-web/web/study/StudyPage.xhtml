@@ -46,14 +46,14 @@
 
                         <ui:panelGroup styleClass="dvn_tooltip" rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
                             <ui:script type="text/javascript">
-                                <![CDATA[
+                                // <![CDATA[
                                     $('.dvn_tooltip a').tooltip({
                                             track: true,
                                             delay: 0,
                                             showURL: false,
                                             showBody: " - "
                                     });
-                                ]]>
+                               // ]]>
                             </ui:script>
                             
                             <dvn:tooltip tooltipMessage="#{studybundle.editTip}" linkText="#{studybundle.editText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tabSet1.selected}" cssClass="vdcTooltipLink"/>

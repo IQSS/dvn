@@ -21,7 +21,7 @@
   <gui:define name="body">
       <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
           
-        <f:verbatim>           
+                   
             <script type="text/javascript">
                 // <![CDATA[ 
                 // Functions for hiding and showing study fields
@@ -87,7 +87,7 @@
      
                 // ]]> 
             </script> 
-        </f:verbatim>
+        
         <dvn:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" rendered="true"/>
         <f:loadBundle  basename="BundleHelp" var="helpText" />
         <h:form id="templateForm">
@@ -199,16 +199,16 @@
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.otheridHelp}" linkText="#{editstudybundle.otheridLabel}" heading="#{editstudybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>         
                                                         <h:graphicImage  value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherId].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherId].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText maxlength="255" binding="#{TemplateFormPage.inputOtherId}" id = "input_otherId" value="#{currentRow.otherId}" required="#{TemplateFormPage.studyMap[sfc.otherId].required}"/>
                                                         <h:message styleClass="errorMessage" for="input_otherId"/> 
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                     </ui:panelGroup>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.otherIdAgency].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.otherAgencyHelp}" linkText="#{editstudybundle.otherAgencyLabel}" heading="#{editstudybundle.otherAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherIdAgency].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherIdAgency].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim> 
+                                                        <br/> 
                                                         <h:inputText maxlength="255" binding="#{TemplateFormPage.inputOtherIdAgency}"     validator ="#{TemplateFormPage.validateStudyOtherId}" 
                                                                      id="input_otherIdAgency" value="#{currentRow.agency}"  required="#{TemplateFormPage.studyMap[sfc.otherIdAgency].required}"/>
                                                         <h:message styleClass="errorMessage" for="input_otherIdAgency"/> 
@@ -249,7 +249,7 @@
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.authorNameHelp}" linkText="#{editstudybundle.authorNameLabel}" heading="#{editstudybundle.authorNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.authorName].required}"/>
                                                         <h:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.authorName].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText id="input_authorName" 
                                                                      value="#{currentAuthor.name}" 
                                                                      size="45" 
@@ -258,13 +258,13 @@
                                                                      required="#{TemplateFormPage.studyMap[sfc.authorName].required}" /> 
                                                         <h:outputText value="(firstName LastName)"/>
                                                         <h:message styleClass="errorMessage" for="input_authorName"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                     </ui:panelGroup>
                                                     <ui:panelGroup styleClass="#{TemplateFormPage.studyMap[sfc.authorAffiliation].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.authorAffiliationHelp}" linkText="#{editstudybundle.authorAffiliationLabel}" heading="#{editstudybundle.authorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.authorAffiliation].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.authorAffiliation].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText id="input_authorAffiliation" size="45" maxlength="255"
                                                                      binding="#{TemplateFormPage.inputAuthorAffiliation}"
                                                                      value="#{currentAuthor.affiliation}" 
@@ -310,37 +310,37 @@
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.producerName].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.producerName].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText maxlength="255" binding="#{TemplateFormPage.inputProducerName}" id="input_producerName" value="#{currentRow.name}" size="45" required="#{TemplateFormPage.studyMap[sfc.producerName].required}"/>
                                                         <h:message styleClass="errorMessage" for="input_producerName"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                     </ui:panelGroup>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField  #{TemplateFormPage.studyMap[sfc.producerAffiliation].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.producerAffiliationHelp}" linkText="#{editstudybundle.producerAffiliationLabel}" heading="#{editstudybundle.producerAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.producerAffiliation].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.producerAffiliation].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText  maxlength="255" validator ="#{TemplateFormPage.validateStudyProducer}"  binding="#{TemplateFormPage.inputProducerAffiliation}"    id="input_producerAffiliation" size="45" value="#{currentRow.affiliation}" required="#{TemplateFormPage.studyMap[sfc.producerAffiliation].required}"
                                                                       styleClass="formHtmlEnabled">
                                                             <f:validator validatorId="XhtmlValidator"/>
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_producerAffiliation"/>
-                                                        <f:verbatim><br /></f:verbatim>
+                                                        <br />
                                                     </ui:panelGroup>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerAbbreviation].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.producerAbbreviationHelp}" linkText="#{editstudybundle.producerAbbreviationLabel}" heading="#{editstudybundle.producerAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.producerAbbreviation].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.producerAbbreviation].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText maxlength="255" validator ="#{TemplateFormPage.validateStudyProducer}"   binding="#{TemplateFormPage.inputProducerAbbreviation}"  id="input_producerAbbreviation" value="#{currentRow.abbreviation}" required="#{TemplateFormPage.studyMap[sfc.producerAbbreviation].required}"/>
                                                         <h:message styleClass="errorMessage" for="input_producerAbbreviation"/>
-                                                        <f:verbatim><br /></f:verbatim>
+                                                        <br />
                                                     </ui:panelGroup>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.producerURL].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.producerURLHelp}" linkText="#{editstudybundle.producerURLLabel}" heading="#{editstudybundle.producerURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.producerURL].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.producerURL].recommended}"/>
-                                                        <f:verbatim><br /></f:verbatim>
+                                                        <br />
                                                         <h:inputText id="input_producerURL" 
                                                                      validator ="#{TemplateFormPage.validateStudyProducer}"
                                                                      binding="#{TemplateFormPage.inputProducerUrl}" 
@@ -352,13 +352,13 @@
                                                             <f:validator validatorId="UrlValidator"/>
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_producerURL"/>
-                                                        <f:verbatim><br /></f:verbatim>
+                                                        <br />
                                                     </ui:panelGroup>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField  #{TemplateFormPage.studyMap[sfc.producerLogo].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.producerLogoHelp}" linkText="#{editstudybundle.producerLogoLabel}" heading="#{editstudybundle.producerLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.producerLogo].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.producerLogo].recommended}"/>
-                                                        <f:verbatim><br /></f:verbatim>
+                                                        <br />
                                                         <h:inputText id="input_producerLogo" 
                                                                      binding="#{TemplateFormPage.inputProducerLogo}" 
                                                                      validator ="#{TemplateFormPage.validateStudyProducer}"
@@ -370,7 +370,7 @@
                                                             <f:validator validatorId="UrlValidator"/>
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_producerLogo"/>
-                                                        <f:verbatim><br /></f:verbatim>
+                                                        <br />
                                                     </ui:panelGroup>
                                                 </ui:panelGroup>
                                             </h:column>
@@ -433,19 +433,19 @@
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.softwareNameHelp}" linkText="#{editstudybundle.softwareNameLabel}" heading="#{editstudybundle.softwareNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.softwareName].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.softwareName].recommended}"/>
-                                                        <f:verbatim><br /></f:verbatim>
+                                                        <br />
                                                         <h:inputText maxlength="255" binding="#{TemplateFormPage.inputSoftwareName}" id="input_softwareName" size="45"  value="#{currentRow.name}" required="#{TemplateFormPage.studyMap[sfc.softwareName].required}"/>
                                                         <h:message styleClass="errorMessage" for="input_softwareName"/>  
-                                                        <f:verbatim><br /></f:verbatim>
+                                                        <br />
                                                     </ui:panelGroup>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.softwareVersion].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.softwareVersionHelp}" linkText="#{editstudybundle.softwareVersionLabel}" heading="#{editstudybundle.softwareVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.softwareVersion].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.softwareVersion].recommended}"/>
-                                                        <f:verbatim><br /></f:verbatim>
+                                                        <br />
                                                         <h:inputText maxlength="255" binding="#{TemplateFormPage.inputSoftwareVersion}" validator ="#{TemplateFormPage.validateStudySoftware}"  id="input_softwareVersion" value="#{currentRow.softwareVersion}" required="#{TemplateFormPage.studyMap[sfc.softwareVersion].required}"/>
                                                         <h:message styleClass="errorMessage" for="input_softwareVersion"/> 
-                                                        <f:verbatim><br /></f:verbatim>
+                                                        <br />
                                                     </ui:panelGroup>                                                                                  
                                                 </ui:panelGroup>
                                             </h:column> 
@@ -492,18 +492,18 @@
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.grantNumberHelp}" linkText="#{editstudybundle.grantNumberLabel}" heading="#{editstudybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.grantNumber].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.grantNumber].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText maxlength="255" immediate="true" binding="#{TemplateFormPage.inputGrantNumber}" id="input_grantNumber" size="45"  value="#{currentRow.number}" required="#{TemplateFormPage.studyMap[sfc.grantNumber].required}"/>
                                                         <h:message styleClass="errorMessage" for="input_grantNumber"/> 
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                     </ui:panelGroup>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.grantNumberAgency].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.grantingAgencyHelp}" linkText="#{editstudybundle.grantingAgencyLabel}" heading="#{editstudybundle.grantingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.grantNumberAgency].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.grantNumberAgency].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText  maxlength="255" immediate="true" binding="#{TemplateFormPage.inputGrantAgency}" validator ="#{TemplateFormPage.validateStudyGrant}" id="input_grantNumberAgency" size="45" value="#{currentRow.agency}" required="#{TemplateFormPage.studyMap[sfc.grantNumberAgency].required}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:message styleClass="errorMessage" for="input_grantNumberAgency"/>
                                                     </ui:panelGroup>                                                                                    
                                                 </ui:panelGroup>
@@ -537,16 +537,16 @@
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.distributorHelp}" linkText="#{editstudybundle.distributorLabel}" heading="#{editstudybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorName].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorName].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText maxlength="255" binding="#{TemplateFormPage.inputDistributorName}" id="input_distributorName" value="#{currentRow.name}" size="45" required="#{TemplateFormPage.studyMap[sfc.distributorName].required}"/>
                                                         <h:message styleClass="errorMessage" for="input_distributorName"/> 
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                     </ui:panelGroup>
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorAffiliation].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.distributorAffiliationHelp}" linkText="#{editstudybundle.distributorAffiliationLabel}" heading="#{editstudybundle.distributorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorAffiliation].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorAffiliation].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText maxlength="255" id="input_distributorAffiliation" validator ="#{TemplateFormPage.validateStudyDistributor}" binding="#{TemplateFormPage.inputDistributorAffiliation}" size="45"
                                                                      value="#{currentRow.affiliation}" 
                                                                      required="#{TemplateFormPage.studyMap[sfc.distributorAffiliation].required}" 
@@ -554,23 +554,23 @@
                                                             <f:validator validatorId="XhtmlValidator"/>
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_distributorAffiliation"/> 
-                                                        <f:verbatim><br /></f:verbatim>
+                                                        <br />
                                                     </ui:panelGroup>                                                   
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorAbbreviation].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.distributorAbbreviationHelp}" linkText="#{editstudybundle.distributorAbbreviationLabel}" heading="#{editstudybundle.distributorAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorAbbreviation].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorAbbreviation].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText maxlength="255" validator ="#{TemplateFormPage.validateStudyDistributor}" binding="#{TemplateFormPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"  required="#{TemplateFormPage.studyMap[sfc.distributorAbbreviation].required}"/>
                                                         <h:message styleClass="errorMessage" for="input_distributorAbbreviation"/>  
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                     </ui:panelGroup>
                                                     
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorURL].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.distributorURLHelp}" linkText="#{editstudybundle.distributorURLLabel}" heading="#{editstudybundle.distributorURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorURL].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorURL].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText id="input_distributorURL" 
                                                                      validator ="#{TemplateFormPage.validateStudyDistributor}"
                                                                      binding="#{TemplateFormPage.inputDistributorUrl}" 
@@ -582,14 +582,14 @@
                                                             <f:validator validatorId="UrlValidator"/>
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_distributorURL"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                     </ui:panelGroup>
                                                     
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField  #{TemplateFormPage.studyMap[sfc.distributorLogo].templateField.fieldInputLevel.name}">
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.distributorLogoHelp}" linkText="#{editstudybundle.distributorLogoLabel}" heading="#{editstudybundle.distributorLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorLogo].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorLogo].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText binding="#{TemplateFormPage.inputDistributorLogo}" id="input_distributorLogo"  
                                                                      validator ="#{TemplateFormPage.validateStudyDistributor}"
                                                                      value="#{currentRow.logo}" 
@@ -600,7 +600,7 @@
                                                             <f:validator validatorId="UrlValidator"/>
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_distributorLogo"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                     </ui:panelGroup>
                                                     
                                                 </ui:panelGroup>
@@ -626,18 +626,18 @@
                                             <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactHelp}" linkText="#{editstudybundle.distributorContactLabel}" heading="#{editstudybundle.distributorContactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorContact].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorContact].recommended}"/>
-                                            <f:verbatim><br/></f:verbatim>
+                                            <br/>
                                             
                                             <h:inputText binding ="#{TemplateFormPage.inputDistributorContact}" id="input_distributorContact" size="45"  value="#{TemplateFormPage.template.metadata.distributorContact}"  required="#{TemplateFormPage.studyMap[sfc.distributorContact].required}"/>
                                             <h:message styleClass="errorMessage" for="input_distributorContact"/>    
-                                            <f:verbatim><br/></f:verbatim>
+                                            <br/>
                                         </ui:panelGroup>
                                         
                                         <ui:panelGroup styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorContactAffiliation].templateField.fieldInputLevel.name}">
                                             <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactAffiliationHelp}" linkText="#{editstudybundle.distributorContactAffiliationLabel}" heading="#{editstudybundle.distributorContactAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorContactAffiliation].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorContactAffiliation].recommended}"/>
-                                            <f:verbatim><br/></f:verbatim>
+                                            <br/>
                                             <h:inputText id="distributorContactAffiliation"  
                                                          binding ="#{TemplateFormPage.inputDistributorContactAffiliation}" 
                                                          value="#{TemplateFormPage.template.metadata.distributorContactAffiliation}" 
@@ -647,17 +647,17 @@
                                                 <f:validator validatorId="XhtmlValidator"/>
                                             </h:inputText>   
                                             <h:message styleClass="errorMessage" for="distributorContactAffiliation"/>
-                                            <f:verbatim><br/></f:verbatim>
+                                            <br/>
                                         </ui:panelGroup>
                                         
                                         <ui:panelGroup styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.distributorContactEmail].templateField.fieldInputLevel.name}" >
                                             <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactEmailHelp}" linkText="#{editstudybundle.distributorContactEmailLabel}" heading="#{editstudybundle.distributorContactEmailHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorContactEmail].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.distributorContactEmail].recommended}"/>
-                                            <f:verbatim><br/></f:verbatim>
+                                            <br/>
                                             <h:inputText  binding ="#{TemplateFormPage.inputDistributorContactEmail}"  id="input_distributorContactEmail" size="45" value="#{TemplateFormPage.template.metadata.distributorContactEmail}" required="#{TemplateFormPage.studyMap[sfc.distributorContactEmail].required}"/>
                                             <h:message styleClass="errorMessage" for="input_distributorContactEmail"/>    
-                                            <f:verbatim><br/></f:verbatim>
+                                            <br/>
                                         </ui:panelGroup>
                                     </ui:panelGroup>                                          
                                  </h:panelGrid>
@@ -718,7 +718,7 @@
                                             <dvn:inlinehelp helpMessage="#{editstudybundle.seriesHelp}" linkText="#{editstudybundle.seriesLabel}" heading="#{editstudybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.seriesName].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.seriesName].recommended}"/>
-                                            <f:verbatim><br/></f:verbatim>
+                                            <br/>
                                             <h:inputText  binding="#{TemplateFormPage.inputSeries}" id="input_seriesName" 
                                                           value="#{TemplateFormPage.template.metadata.seriesName}"  
                                                           required="#{TemplateFormPage.studyMap[sfc.seriesName].required}"                                                     
@@ -726,13 +726,13 @@
                                                 <f:validator validatorId="XhtmlValidator"/>
                                             </h:inputText>                                         
                                             <h:message styleClass="errorMessage" for="input_seriesName"/>  
-                                            <f:verbatim><br/></f:verbatim>
+                                            <br/>
                                         </ui:panelGroup>
                                         <ui:panelGroup styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.seriesName].templateField.fieldInputLevel.name}" >
                                             <dvn:inlinehelp helpMessage="#{editstudybundle.seriesInformationHelp}" linkText="#{editstudybundle.seriesInformationLabel}" heading="#{editstudybundle.seriesInformationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.seriesInformation].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.seriesInformation].recommended}"/>
-                                            <f:verbatim><br/></f:verbatim>
+                                            <br/>
                                             <h:inputText  binding ="#{TemplateFormPage.inputSeriesInformation}" id="input_seriesInformation" 
                                                           size="45"  
                                                           value="#{TemplateFormPage.template.metadata.seriesInformation}"  
@@ -742,7 +742,7 @@
                                                 <f:validator validatorId="XhtmlValidator"/>
                                             </h:inputText>
                                             <h:message styleClass="errorMessage" for="input_seriesInformation"/>  
-                                            <f:verbatim><br/></f:verbatim>
+                                            <br/>
                                         </ui:panelGroup >
                                     </ui:panelGroup>
                                     </h:panelGrid> 
@@ -758,16 +758,16 @@
                                             <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionHelp}" linkText="#{editstudybundle.seriesVersionLabel}" heading="#{editstudybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>                                           
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.studyVersion].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.studyVersion].recommended}"/>
-                                            <f:verbatim><br/></f:verbatim>
+                                            <br/>
                                             <h:inputText  binding="#{TemplateFormPage.inputVersion}" id="input_studyVersion"  value="#{TemplateFormPage.template.metadata.studyVersion}"  required="#{TemplateFormPage.studyMap[sfc.studyVersion].required}"/>
                                             <h:message styleClass="errorMessage" for="input_studyVersion"/>  
-                                            <f:verbatim><br/></f:verbatim>
+                                            <br/>
                                         </ui:panelGroup>
                                         <ui:panelGroup styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.versionDate].templateField.fieldInputLevel.name}">
                                             <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionDateHelp}" linkText="#{editstudybundle.seriesVersionDateLabel}" heading="#{editstudybundle.seriesVersionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                             <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.versionDate].required}"/>
                                             <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.versionDate].recommended}"/>
-                                            <f:verbatim><br/></f:verbatim>
+                                            <br/>
                                             <h:inputText  binding="#{TemplateFormPage.inputVersionDate}" validator="#{TemplateFormPage.validateVersion}" id="input_versionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.versionDate}" required="#{TemplateFormPage.studyMap[sfc.versionDate].required}" >
                                                 <f:validator validatorId="DateValidator"/>
                                             </h:inputText>
@@ -794,7 +794,7 @@
                                             <f:validator validatorId="XhtmlValidator"/>
                                         </h:inputTextarea>
                                         <h:message styleClass="errorMessage" for="input_replicationFor"/>
-                                        <f:verbatim><br /></f:verbatim>
+                                        <br />
                                     </ui:panelGroup>
                                 </h:panelGrid>        
                                 
@@ -1017,7 +1017,7 @@
                                                         <f:validator validatorId="XhtmlValidator"/>
                                                     </h:inputTextarea>
                                                     <h:message styleClass="errorMessage" for="input_relatedPublications"/>
-                                                    <f:verbatim><br /></f:verbatim>
+                                                    <br />
                                                 </ui:panelGroup>
                                             </h:column>
                                             
@@ -1056,7 +1056,7 @@
                                                         <f:validator validatorId="XhtmlValidator"/>
                                                     </h:inputTextarea>
                                                     <h:message styleClass="errorMessage" for="input_relatedMaterial"/>
-                                                    <f:verbatim><br /></f:verbatim>
+                                                    <br />
                                                 </ui:panelGroup>
                                             </h:column>
                                             
@@ -1095,7 +1095,7 @@
                                                         <f:validator validatorId="XhtmlValidator"/>
                                                     </h:inputTextarea>
                                                     <h:message styleClass="errorMessage" for="input_relatedStudies"/>
-                                                    <f:verbatim><br /></f:verbatim>
+                                                    <br />
                                                 </ui:panelGroup>
                                             </h:column>
                                             
@@ -1134,7 +1134,7 @@
                                                         <f:validator validatorId="XhtmlValidator"/>
                                                     </h:inputText>
                                                     <h:message styleClass="errorMessage" for="input_otherReferences"/>
-                                                    <f:verbatim><br /></f:verbatim>
+                                                    <br />
                                                 </ui:panelGroup>
                                             </h:column>
                                             
@@ -2015,7 +2015,7 @@
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.notesSubjectHelp}" linkText="#{editstudybundle.notesSubjectLabel}" heading="#{editstudybundle.notesSubjectHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.notesInformationSubject].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.notesInformationSubject].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText id="input_notesInformationSubject" 
                                                                      maxlength="255"
                                                                      binding="#{TemplateFormPage.inputNoteSubject}"
@@ -2026,13 +2026,13 @@
                                                             <f:validator validatorId="XhtmlValidator"/>
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_notesInformationSubject"  />
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                     </ui:panelGroup>                                                   
                                                     <ui:panelGroup styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.notesText].templateField.fieldInputLevel.name} " >
                                                         <dvn:inlinehelp helpMessage="#{editstudybundle.notesTextHelp}" linkText="#{editstudybundle.notesTextLabel}" heading="#{editstudybundle.notesTextHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                                         <h:graphicImage  value="/resources/icon_required.gif"  rendered="#{TemplateFormPage.studyMap[sfc.notesText].required}"/>
                                                         <h:graphicImage  value="/resources/icon_recommended.gif"  rendered="#{TemplateFormPage.studyMap[sfc.notesText].recommended}"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                         <h:inputText id="input_notesText" 
                                                                      size="90" 
                                                                      binding="#{TemplateFormPage.inputNoteText}"
@@ -2043,7 +2043,7 @@
                                                             <f:validator validatorId="XhtmlValidator"/>
                                                         </h:inputText>
                                                         <h:message styleClass="errorMessage" for="input_notesText"/>
-                                                        <f:verbatim><br/></f:verbatim>
+                                                        <br/>
                                                     </ui:panelGroup>
                                                     
                                                 </ui:panelGroup>
@@ -2068,12 +2068,12 @@
             </div>
             
         </h:form>
-        <f:verbatim>           
+                   
         
             <script type="text/javascript">
                 addLoadEvent(initHide());
             </script>
-        </f:verbatim>     
+             
      </gui:define>
     </gui:composition>
   </body>

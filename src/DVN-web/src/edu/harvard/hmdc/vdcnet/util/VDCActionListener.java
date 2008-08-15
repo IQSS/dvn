@@ -49,19 +49,17 @@ public class VDCActionListener extends ActionListenerImpl implements ActionListe
         try {
             super.processAction(action);
         } catch (Exception e) {
-                FacesContext facesContext = FacesContext.getCurrentInstance();
-            try {
                 FacesContext context            = FacesContext.getCurrentInstance();
                 ExternalContext externalContext = context.getExternalContext();
                 HttpServletRequest request      = (HttpServletRequest) externalContext.getRequest();
                 HttpSession session             = request.getSession(false);
                 session.setAttribute("exception", e);
                 String redirectUrl              = request.getProtocol().substring(0, request.getProtocol().indexOf("/")) + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/ExceptionHandler";
-                System.out.println("The redirect url is " + redirectUrl);
-                externalContext.redirect(redirectUrl);
-             } catch (Exception ioe) {
-                System.out.println("An exception was thrown in the action listener  . . . ");
-            } 
+                try {
+                    externalContext.redirect(redirectUrl);
+                 } catch (Exception ioe) {
+                    System.out.println("An exception was thrown in the action listener  . . . ");
+                } 
         }
     }
     

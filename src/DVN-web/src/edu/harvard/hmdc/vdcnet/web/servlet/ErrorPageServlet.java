@@ -71,7 +71,12 @@ public class ErrorPageServlet extends HttpServlet  {
             cause = req.getQueryString();
         }
         else if (req.getSession().getAttribute("exception") != null) {
-            cause = ((Exception)req.getSession().getAttribute("exception")).getCause().toString();
+            if (checkForOptimistLockException(((Exception)req.getSession().getAttribute("exception"))) ) {
+                 optimisticLock=true;
+                 cause = "%20%20The form could not be saved because it contains stale data (due to concurrent editing by another user).  Please reload the form and try again.";
+            } else {
+                cause = ((Exception)req.getSession().getAttribute("exception")).getCause().toString();
+            }
             req.getSession().removeAttribute("exception");
         }
         else {

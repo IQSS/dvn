@@ -38,7 +38,7 @@
                         <div class="dvAnalysisResults">
                             Request ID: <h:outputText value="#{AnalysisResultsPage.requestResultPID}"/><br/>
                             File Created: <h:outputText value="#{AnalysisResultsPage.rexecDate}"/> (US EST) - Note: will be erased one hour later.
-                            <p class="resultsNewWindowLink"><h:outputLink value="#{AnalysisResultsPage.resultURLhtml}" id="resultURLhtml" target="_blank"><f:verbatim>Open results in a new window</f:verbatim></h:outputLink></p>
+                            <p class="resultsNewWindowLink"><h:outputLink value="#{AnalysisResultsPage.resultURLhtml}" id="resultURLhtml" target="_blank">Open results in a new window</h:outputLink></p>
                             <h:outputText escape="false" value="&lt;iframe src=&quot;#{AnalysisResultsPage.resultURLhtml}&quot;&gt;&lt;!-- results --&gt;&lt;/iframe&gt;"/>
                         </div>
                     </h:panelGroup>
@@ -65,7 +65,7 @@
                     <h:panelGroup id="pgDwnld" binding="#{AnalysisResultsPage.pgDwnld}">
                         <span class="dvAnalysisHeader">Download Subset</span>
                         <div class="dvAnalysisResults">
-                            Download instructions: <h:outputLink value="#{AnalysisResultsPage.resultURLdwnld}" id="resultURLdwnld"><f:verbatim>Right-click this link and select, 'Save Link As...'</f:verbatim></h:outputLink> to download the requested subset file.
+                            Download instructions: <h:outputLink value="#{AnalysisResultsPage.resultURLdwnld}" id="resultURLdwnld">Right-click this link and select, 'Save Link As...'</h:outputLink> to download the requested subset file.
                         </div>
                     </h:panelGroup>
                     

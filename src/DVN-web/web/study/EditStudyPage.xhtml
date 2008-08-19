@@ -7,6 +7,7 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ui="http://www.sun.com/web/ui"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"      
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -120,9 +121,9 @@
                     }
                 }
                 function initHide() {
-                    //  alert("in initHide")
-                    //  document.getElementById("hideRadio").checked=true
-                    hideShowOptional("hide");
+               
+                       hideShowOptional("hide");
+                   
                 }
                 
                 function updateHideShow(radioButton) {
@@ -325,7 +326,7 @@
                                             </h:column> 
                                             <h:column id="groupPanel61">
                                                 <h:commandButton  image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                <h:commandButton  image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton  rendered="#{EditStudyPage.dataTableOtherIds.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                             </h:column>
                                         </h:dataTable>
                                     </h:column>
@@ -389,7 +390,7 @@
                                             
                                             <h:column>
                                                 <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton   rendered="#{EditStudyPage.dataTableAuthors.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                             </h:column>               
                                         </h:dataTable>
                                     </h:column>
@@ -483,7 +484,7 @@
                                             </h:column>
                                             <h:column>
                                                 <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton   rendered="#{EditStudyPage.dataTableProducers.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                             </h:column>
                                         </h:dataTable>
                                     </h:column>
@@ -558,7 +559,7 @@
                                             </h:column> 
                                             <h:column>
                                                 <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton   rendered="#{EditStudyPage.dataTableSoftware.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                             </h:column>                                       
                                         </h:dataTable>
                                     </h:column>
@@ -617,7 +618,7 @@
                                             </h:column>
                                             <h:column>
                                                 <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton   rendered="#{EditStudyPage.dataTableGrants.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                             </h:column>
                                         </h:dataTable>
                                     </h:column>
@@ -714,7 +715,7 @@
                                             </h:column>
                                             <h:column>
                                                 <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton  rendered="#{EditStudyPage.dataTableDistributors.rowCount gt 1}"  image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                             </h:column>
                                         </h:dataTable>
                                     </h:column>
@@ -963,7 +964,7 @@
                                             </h:column>
                                             <h:column>
                                                 <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton  rendered="#{EditStudyPage.dataTableAbstracts.rowCount gt 1}"  image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                             </h:column>
                                         </h:dataTable>
                                     </h:column>
@@ -1026,7 +1027,7 @@
                                             </h:column>
                                             <h:column>
                                                 <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton   rendered="#{EditStudyPage.dataTableKeywords.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                             </h:column>
                                         </h:dataTable>
                                     </h:column>
@@ -1090,7 +1091,7 @@
                                             </h:column>
                                             <h:column>
                                                 <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton   rendered="#{EditStudyPage.dataTableTopicClass.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                             </h:column>
                                         </h:dataTable>
                                     </h:column>
@@ -1130,7 +1131,7 @@
                                             
                                             <h:column>
                                                 <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton  rendered="#{EditStudyPage.dataTableRelPublications.rowCount gt 1}"  image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                             </h:column>               
                                         </h:dataTable>
                                     </h:column>
@@ -1169,7 +1170,7 @@
                                             
                                             <h:column>
                                                 <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton  rendered="#{EditStudyPage.dataTableRelMaterials.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                             </h:column>               
                                         </h:dataTable>
                                     </h:column>
@@ -1208,7 +1209,7 @@
                                             
                                             <h:column>
                                                 <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton  rendered="#{EditStudyPage.dataTableRelStudies.rowCount gt 1}"  image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                             </h:column>               
                                         </h:dataTable>
                                     </h:column>
@@ -1247,7 +1248,7 @@
                                             
                                             <h:column>
                                                 <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                <h:commandButton  rendered="#{EditStudyPage.dataTableOtherReferences.rowCount gt 1}"  image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                             </h:column>               
                                         </h:dataTable>
                                     </h:column>
@@ -2158,7 +2159,7 @@
                                             <h:column>
                                                
                                                     <h:commandButton   image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/> 
-                                                    <h:commandButton   image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
+                                                    <h:commandButton  rendered="#{EditStudyPage.dataTableNotes.rowCount gt 1}"  image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" /> 
                                                
                                             </h:column>                                       
                                         </h:dataTable>

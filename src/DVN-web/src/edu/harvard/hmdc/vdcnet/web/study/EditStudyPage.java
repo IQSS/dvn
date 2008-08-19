@@ -46,19 +46,19 @@ import edu.harvard.hmdc.vdcnet.study.StudyRelStudy;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.StudySoftware;
 import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
-import edu.harvard.hmdc.vdcnet.study.Template;
 import edu.harvard.hmdc.vdcnet.study.TemplateField;
 import edu.harvard.hmdc.vdcnet.study.TemplateFileCategory;
+import edu.harvard.hmdc.vdcnet.util.DvnDate;
 import edu.harvard.hmdc.vdcnet.util.SessionCounter;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.StudyFieldConstant;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import edu.harvard.hmdc.vdcnet.web.login.LoginWorkflowBean;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -158,7 +158,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
              // Add empty first element to subcollections, so the input text fields will be visible
             initCollections();
             selectTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
-          
+            initDvnDates();
             
         }
         
@@ -508,7 +508,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             study.getStudyOtherRefs().add(dataTable.getRowIndex()+1,newElem);
         }
         
-        
+  
         
         
     }
@@ -516,9 +516,9 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void removeRow(ActionEvent ae) {
         
         HtmlDataTable dataTable = (HtmlDataTable)ae.getComponent().getParent().getParent();
-        if (dataTable.getRowCount()>1) {
+        if (dataTable.getRowCount()>1) { 
             List data = (List)dataTable.getValue();
-            editStudyService.removeCollectionElement(data,dataTable.getRowData());
+            editStudyService.removeCollectionElement(data,dataTable.getRowIndex());
         }
     }
     
@@ -2680,8 +2680,21 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         this.inputSouthLatitude = inputSouthLatitude;
     }
     
+    private DvnDate productionDate;
+
+    public DvnDate getProductionDate() {
+        return productionDate;
+    }
+
+    public void setProductionDate(DvnDate productionDate) {
+        this.productionDate = productionDate;
+    }
+  
+    private void initDvnDates() {
+        productionDate = new DvnDate(study.getProductionDate());
+        
+    }
     
   
-    
 }
 

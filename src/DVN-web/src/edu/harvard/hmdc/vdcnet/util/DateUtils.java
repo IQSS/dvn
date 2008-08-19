@@ -29,7 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.util;
 
-import java.util.Calendar;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.text.DateFormat;
 
@@ -47,9 +47,16 @@ public class DateUtils implements java.io.Serializable {
     
     private static String timestamp = null;
 
-    public static String getTimeStamp() {
+    public static String getTimeStampString() {
         Date date = new Date();
         timestamp = DateFormat.getDateTimeInstance().format(date);
+        return timestamp;
+    }
+    
+    public static Timestamp getTimestamp() {
+        Timestamp timestamp   = null;
+        Date date = new Date();
+        timestamp = new Timestamp(date.getTime());
         return timestamp;
     }
     

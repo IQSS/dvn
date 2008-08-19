@@ -137,7 +137,11 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
         coll.remove(elem);
         em.remove(elem);
     }
-    
+     public void removeCollectionElement(List list,int index) {
+        System.out.println("index is "+index+", list size is "+list.size());
+        em.remove(list.get(index));
+        list.remove(index);
+    }  
     public void removeCollectionElement(Iterator iter, Object elem) {
         iter.remove();
         em.remove(elem);

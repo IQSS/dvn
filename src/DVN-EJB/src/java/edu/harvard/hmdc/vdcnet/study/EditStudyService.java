@@ -40,7 +40,9 @@ public interface EditStudyService extends java.io.Serializable {
     public Study getStudy();
     public void deleteStudy();
     public void removeCollectionElement(Collection coll, Object elem);
-
+    public void removeCollectionElement(List list,int index);
+    public void removeCollectionElement(Iterator iter, Object elem);
+    
     java.util.List getCurrentFiles();
 
     void setCurrentFiles(List currentFiles);
@@ -49,7 +51,7 @@ public interface EditStudyService extends java.io.Serializable {
 
     void setNewFiles(List newFiles);
 
-    void removeCollectionElement(Iterator iter, Object elem);
+  
     
     public HashMap getStudyMap();
     public void setStudyMap(HashMap studyMap);

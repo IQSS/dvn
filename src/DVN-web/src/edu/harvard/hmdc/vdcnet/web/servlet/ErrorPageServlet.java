@@ -118,7 +118,7 @@ public class ErrorPageServlet extends HttpServlet  {
      *
      */
     private String getTimeStamp() {
-        timestamp = DateUtils.getTimeStamp();
+        timestamp = DateUtils.getTimeStampString();
         return timestamp;
     }
     

@@ -56,10 +56,10 @@ import javax.faces.component.html.HtmlSelectOneMenu;
 import com.sun.rave.web.ui.component.PanelGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
+import edu.harvard.hmdc.vdcnet.util.DateUtils;
 import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.web.login.LoginWorkflowBean;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -380,9 +380,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public String create() {
-        if (this.selectedGroup != null) {
-            System.out.println("the group is" + this.getSelectedGroup());
-        }
         Long selectedgroup  = this.getSelectedGroup();
         String dtype        = dataverseType;
         String name         = (String) dataverseName.getValue();
@@ -419,6 +416,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         getVDCRequestBean().getCurrentVDC().setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
         if (getAffiliation() != null && !getAffiliation().equals("") )
             getVDCRequestBean().getCurrentVDC().setAffiliation(getAffiliation());
+        getVDCRequestBean().getCurrentVDC().setCreatedDate(DateUtils.getTimestamp());
         vdcService.edit(createdVDC);
         // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
         getVDCRequestBean().getCurrentVDCURL();

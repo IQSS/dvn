@@ -36,6 +36,7 @@ import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyField;
 import edu.harvard.hmdc.vdcnet.study.Template;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -1038,6 +1039,34 @@ public class VDC implements java.io.Serializable  {
     }
 
     
+    private Timestamp releaseDate;
     
+    public Timestamp getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(Timestamp releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+    
+    protected Timestamp createdDate;
+
+    public Timestamp getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Timestamp creationDate) {
+        this.createdDate = creationDate;
+    }
+
+    private String dvnDescription;
+
+    public String getDvnDescription() {
+        return dvnDescription;
+    }
+
+    public void setDvnDescription(String dvnDescription) {
+        this.dvnDescription = dvnDescription;
+    }
     
 }

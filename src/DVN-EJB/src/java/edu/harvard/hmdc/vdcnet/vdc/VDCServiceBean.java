@@ -42,6 +42,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyField;
 import edu.harvard.hmdc.vdcnet.study.StudyFieldServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Template;
+import edu.harvard.hmdc.vdcnet.util.DateUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
@@ -99,6 +100,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         sDV.setName(name);
         sDV.setAlias(alias);
         sDV.setDtype(dataverseType);
+        sDV.setCreatedDate(DateUtil.getTimestamp());
         VDCCollection addedRootCollection = new VDCCollection();
         addedRootCollection.setName(name);
         addedRootCollection.setReviewState(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED));
@@ -260,6 +262,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         addedSite.setName(name);
         addedSite.setAlias(alias);
         addedSite.setDtype(dtype);
+        addedSite.setCreatedDate(DateUtil.getTimestamp());
         VDCCollection addedRootCollection = new VDCCollection();
         addedRootCollection.setName(name);
         addedRootCollection.setReviewState(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED));

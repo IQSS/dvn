@@ -416,7 +416,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         getVDCRequestBean().getCurrentVDC().setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
         if (getAffiliation() != null && !getAffiliation().equals("") )
             getVDCRequestBean().getCurrentVDC().setAffiliation(getAffiliation());
-        getVDCRequestBean().getCurrentVDC().setCreatedDate(DateUtils.getTimestamp());
         vdcService.edit(createdVDC);
         // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
         getVDCRequestBean().getCurrentVDCURL();

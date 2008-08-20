@@ -34,6 +34,7 @@ import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.util.DateUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.util.ArrayList;
@@ -216,6 +217,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     public String saveChanges() {
         if (siteRestriction.equals("Public")) {
             vdc.setRestricted(false);
+            vdc.setReleaseDate(DateUtil.getTimestamp());
         } else {
             vdc.setRestricted(true);
         }

@@ -60,6 +60,8 @@ public interface StudyServiceLocal extends java.io.Serializable {
     
     public void deleteStudy(Long studyId) ;
     
+    public void deleteStudyInNewTransaction(Long studyId, boolean deleteFromIndex) ;
+     
     public void deleteStudyList(List<Long> studyIds);
    
     public List getStudies();

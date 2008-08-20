@@ -182,12 +182,18 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     public void deleteStudyList(List<Long> studyIds) {
         indexService.deleteIndexList(studyIds);
-        for (Long studyId : studyIds) {
-            deleteStudy(studyId, false);
+        for (Long studyId : studyIds) {         
+            studyService.deleteStudyInNewTransaction(studyId, false);
         }
 
     }
-
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void deleteStudyInNewTransaction(Long studyId, boolean deleteFromIndex) {
+        deleteStudy(studyId, deleteFromIndex);
+    }
+    
+ 
     public void deleteStudy(Long studyId, boolean deleteFromIndex) {
         long start = new Date().getTime();
         logger.info("DEBUG: 0\t - deleteStudy - BEGIN");

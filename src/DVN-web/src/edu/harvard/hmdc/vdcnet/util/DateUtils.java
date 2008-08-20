@@ -54,10 +54,10 @@ public class DateUtils implements java.io.Serializable {
     }
     
     public static Timestamp getTimestamp() {
-        Timestamp timestamp   = null;
+        Timestamp timeStamp   = null;
         Date date = new Date();
-        timestamp = new Timestamp(date.getTime());
-        return timestamp;
+        timeStamp = new Timestamp(date.getTime());
+        return timeStamp;
     }
     
     

@@ -29,6 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.util;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -83,6 +84,14 @@ public class DateUtil implements java.io.Serializable  {
         }
         
         return valid;       
-    }    
+    } 
+    
+    public static Timestamp getTimestamp() {
+        Timestamp timeStamp   = null;
+        Date date = new Date();
+        timeStamp = new Timestamp(date.getTime());
+        return timeStamp;
+    }
+    
     
 }

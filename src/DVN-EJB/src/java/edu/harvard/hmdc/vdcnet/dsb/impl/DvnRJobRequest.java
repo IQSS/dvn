@@ -214,18 +214,39 @@ public class DvnRJobRequest {
         List<Integer> rw = new ArrayList<Integer>();
         for(int i=0;i < dataVariablesForRequest.size(); i++){
             DataVariable dv = (DataVariable) dataVariablesForRequest.get(i);
-            if (dv.getVariableFormatType().getId() == 1L) {
-                if (dv.getVariableIntervalType().getId() == null) {
-                    rw.add(2);
+            if (!StringUtils.isEmpty(dv.getFormatCategory())){
+                if (dv.getFormatCategory().toLowerCase().equals("date") ||
+                    (dv.getFormatCategory().toLowerCase().equals("time"))){
+                    rw.add(0);
                 } else {
-                    if (dv.getVariableIntervalType().getId() == 2L) {
-                        rw.add(2);
-                    } else {
-                        rw.add(1);
+                    if (dv.getVariableFormatType().getId() == 1L) {
+                        if (dv.getVariableIntervalType().getId() == null) {
+                            rw.add(2);
+                        } else {
+                            if (dv.getVariableIntervalType().getId() == 2L) {
+                                rw.add(2);
+                            } else {
+                                rw.add(1);
+                            }
+                        }
+                    } else if (dv.getVariableFormatType().getId() == 2L) {
+                        rw.add(0);
                     }
                 }
-            } else if (dv.getVariableFormatType().getId() == 2L) {
-                rw.add(0);
+            } else {
+                if (dv.getVariableFormatType().getId() == 1L) {
+                    if (dv.getVariableIntervalType().getId() == null) {
+                        rw.add(2);
+                    } else {
+                        if (dv.getVariableIntervalType().getId() == 2L) {
+                            rw.add(2);
+                        } else {
+                            rw.add(1);
+                        }
+                    }
+                } else if (dv.getVariableFormatType().getId() == 2L) {
+                    rw.add(0);
+                }
             }
         }
         Integer[]tmp = (Integer[])rw.toArray(new Integer[rw.size()]);
@@ -242,18 +263,39 @@ public class DvnRJobRequest {
         List<String> rw = new ArrayList<String>();
         for(int i=0;i < dataVariablesForRequest.size(); i++){
             DataVariable dv = (DataVariable) dataVariablesForRequest.get(i);
-            if (dv.getVariableFormatType().getId() == 1L) {
-                if (dv.getVariableIntervalType().getId() == null) {
-                    rw.add("2");
+            if (!StringUtils.isEmpty(dv.getFormatCategory())){
+                if (dv.getFormatCategory().toLowerCase().equals("date") ||
+                    dv.getFormatCategory().toLowerCase().equals("time")){
+                    rw.add("0");
                 } else {
-                    if (dv.getVariableIntervalType().getId() == 2L) {
-                        rw.add("2");
-                    } else {
-                        rw.add("1");
+                    if (dv.getVariableFormatType().getId() == 1L) {
+                        if (dv.getVariableIntervalType().getId() == null) {
+                            rw.add("2");
+                        } else {
+                            if (dv.getVariableIntervalType().getId() == 2L) {
+                                rw.add("2");
+                            } else {
+                                rw.add("1");
+                            }
+                        }
+                    } else if (dv.getVariableFormatType().getId() == 2L) {
+                        rw.add("0");
                     }
                 }
-            } else if (dv.getVariableFormatType().getId() == 2L) {
-                rw.add("0");
+            } else {
+                if (dv.getVariableFormatType().getId() == 1L) {
+                    if (dv.getVariableIntervalType().getId() == null) {
+                        rw.add("2");
+                    } else {
+                        if (dv.getVariableIntervalType().getId() == 2L) {
+                            rw.add("2");
+                        } else {
+                            rw.add("1");
+                        }
+                    }
+                } else if (dv.getVariableFormatType().getId() == 2L) {
+                    rw.add("0");
+                }
             }
         }
         return rw;
@@ -268,11 +310,64 @@ public class DvnRJobRequest {
      *            its corresponding type, either time or date
      */
     public Map<String, String> getVariableFormats() {
-        Map<String, String> variableFormats=null;
-        
+        Map<String, String> variableFormats=new LinkedHashMap<String, String>();
+        for(int i=0;i < dataVariablesForRequest.size(); i++){
+            DataVariable dv = (DataVariable) dataVariablesForRequest.get(i);
+            dbgLog.fine(i+"-th \tformatschema="+dv.getFormatSchema());
+            dbgLog.fine(i+"-th \tformatcategory="+dv.getFormatCategory());
+            if (!StringUtils.isEmpty(dv.getFormatCategory())) {
+                if (dv.getFormatSchema().toLowerCase().equals("spss")){
+                    if (dv.getFormatCategory().toLowerCase().equals("date")){
+                        // add this var to this map value D
+                        variableFormats.put(getSafeVariableName(dv.getName()), "D");
+                    } else if (dv.getFormatCategory().toLowerCase().equals("time")){
+                        // add this var to this map
+                        if ( dv.getFormatSchemaName().toLowerCase().startsWith("dtime")){
+                            // value JT
+                            variableFormats.put(getSafeVariableName(dv.getName()), "JT");
+                            
+                        } else if ( dv.getFormatSchemaName().toLowerCase().startsWith("datetime")){
+                            // value DT
+                            variableFormats.put(getSafeVariableName(dv.getName()), "DT");
+                        } else {
+                            // value T
+                            variableFormats.put(getSafeVariableName(dv.getName()), "T");
+                        }
+                    }
+                } else if (dv.getFormatSchema().toLowerCase().equals("other")) {
+                    if (dv.getFormatCategory().toLowerCase().equals("date")){
+                        // value = D
+                        variableFormats.put(getSafeVariableName(dv.getName()), "D");
+                    }
+                }
+            } else {
+                dbgLog.fine(i+"\t var: not date or time variable");
+            }
+        }
+        dbgLog.fine("format="+variableFormats);
         return variableFormats;
     }
     
+    private String getSafeVariableName(String raw){
+        String safe =null;
+        if ((raw2safeTable == null) || (raw2safeTable.isEmpty())) {
+            // use raw
+            dbgLog.fine("no unsafe variables");
+            safe = raw;
+        } else {
+            // check this var is unsafe
+            
+            if (raw2safeTable.containsKey(raw)){
+                dbgLog.fine("this var is unsafe="+raw);
+                safe = raw2safeTable.get(raw);
+                dbgLog.fine("safe var is:"+ safe);
+            } else {
+                dbgLog.fine("not on the unsafe list");
+                safe = raw;
+            }
+        }
+        return safe;
+    }
     /**
      * Getter for property variable names
      *

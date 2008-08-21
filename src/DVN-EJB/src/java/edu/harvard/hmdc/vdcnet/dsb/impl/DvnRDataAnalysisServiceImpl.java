@@ -35,9 +35,9 @@ public class DvnRDataAnalysisServiceImpl{
     private static String TMP_DATA_FILE_NAME = "susetfile4Rjob";
     public static String TMP_DATA_FILE_EXT =".tab";
     private static String RSERVE_HOST = null;
-    private static String RSERVE_USER = "rserve";
-    private static String RSERVE_PWD = "rserve";    
-    private static int RSERVE_PORT = 6311;
+    private static String RSERVE_USER = null;
+    private static String RSERVE_PWD = null;    
+    private static int RSERVE_PORT;
     private static String DSB_HOST_PORT= null;
     public static String DSB_CTXT_DIR =null;
     private static Map<String, String> dwlndParam = new HashMap<String, String>();
@@ -80,6 +80,26 @@ public class DvnRDataAnalysisServiceImpl{
         if (R2HTML_CSS_DIR == null) {
             R2HTML_CSS_DIR = "/usr/local/VDC/R/library";
         }
+        
+        RSERVE_USER = System.getProperty("vdc.dsb.rserve.user");
+        if (RSERVE_USER == null){
+            RSERVE_USER= "rserve";
+        }
+        
+        RSERVE_PWD = System.getProperty("vdc.dsb.rserve.pwrd");
+        if (RSERVE_PWD == null){
+            RSERVE_PWD= "rserve";
+        }
+        
+
+        RSERVE_PORT = Integer.parseInt(System.getProperty("vdc.dsb.rserve.port"));
+        if (System.getProperty("vdc.dsb.rserve.port") == null ){
+            RSERVE_PORT= 6311;
+        }
+        
+
+        
+        
         
         // various constants: option-wise
         // download formats
@@ -151,6 +171,11 @@ public class DvnRDataAnalysisServiceImpl{
         try {
             // Set up an Rserve connection
             dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+            
+            dbgLog.fine("RSERVE_USER="+RSERVE_USER+"[default=rserve]");
+            dbgLog.fine("RSERVE_PWD="+RSERVE_PWD+"[default=rserve]");
+            dbgLog.fine("RSERVE_PORT="+RSERVE_PORT+"[default=6311]");
+
             RConnection c = new RConnection(RSERVE_HOST, RSERVE_PORT);
             dbgLog.fine("hostname="+RSERVE_HOST);
 
@@ -214,6 +239,7 @@ public class DvnRDataAnalysisServiceImpl{
             */
             
             Map<String, String> tmpFmt = sro.getVariableFormats();
+            dbgLog.fine("tmpFmt="+tmpFmt);
             if (tmpFmt != null){
                 Set<String> vfkeys = tmpFmt.keySet();
                 String[] tmpfk = (String[]) vfkeys.toArray(new String[vfkeys.size()]);

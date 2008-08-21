@@ -158,7 +158,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
              // Add empty first element to subcollections, so the input text fields will be visible
             initCollections();
             selectTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
-            initDvnDates();
+          //  initDvnDates();
             
         }
         
@@ -2679,7 +2679,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void setInputSouthLatitude(HtmlInputText inputSouthLatitude) {
         this.inputSouthLatitude = inputSouthLatitude;
     }
-    
+/*    
     private DvnDate productionDate;
 
     public DvnDate getProductionDate() {
@@ -2694,7 +2694,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         productionDate = new DvnDate(study.getProductionDate());
         
     }
-    
+  */  
   
 }
 

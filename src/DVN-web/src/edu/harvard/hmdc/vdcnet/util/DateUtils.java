@@ -60,5 +60,31 @@ public class DateUtils implements java.io.Serializable {
         return timeStamp;
     }
     
-    
+    public static String getTimeInterval(Long startMilliseconds) {
+        Long currentMilliseconds = System.currentTimeMillis();
+        Long interval            = (currentMilliseconds - startMilliseconds);
+        //System.out.println("currentMillis are " + currentMilliseconds + " and startMillis are " + startMilliseconds + " Time elapsed in minutes is : " + interval.toString() + " minutes");   
+        Long uBoundMinutes = new Long(60 * 60);
+        Long uBoundHours   = new Long(uBoundMinutes * 24);
+        Long uBoundDays    = new Long(uBoundHours * 7);
+        Long uBoundWeeks   = new Long(uBoundDays * 4);
+        Long uBoundMonths  = new Long(uBoundWeeks * 12);
+        interval           = interval/1000;
+        if (interval > 0 && interval < 60)
+            return interval + ((interval > 1) ? " seconds ago" : " second ago");
+        else if (interval > 60 && interval < uBoundMinutes)
+            return interval/(60) + ((interval > 1) ? " minutes ago" : " minute ago");
+        else if (interval >= uBoundMinutes && interval < uBoundHours)
+            return interval/uBoundMinutes + ((interval/uBoundMinutes > 1) ? " hours ago" : " hour ago");
+        else if (interval >= uBoundHours && interval < uBoundDays)
+            return interval/uBoundHours + ((interval/uBoundHours > 1) ? " days ago" : " day ago");
+        else if (interval >= uBoundDays && interval < uBoundWeeks)
+            return interval/uBoundDays + ((interval/uBoundDays > 1) ? " weeks ago" : " week ago");
+        else if (interval >= uBoundWeeks && interval < uBoundMonths)
+            return interval/uBoundWeeks + ((interval/uBoundWeeks > 1) ? " months ago" : " month ago");
+        else if (interval >= uBoundMonths)
+            return "More than a year ago";
+        else 
+            return "--";
+        }
 }

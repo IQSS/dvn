@@ -24,6 +24,7 @@ import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -141,4 +142,5 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     public void setIndexTime(Long studyId, Date indexTime);
  
+    public Timestamp getLastUpdatedTime(Long vdcId);
 }

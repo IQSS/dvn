@@ -51,6 +51,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -1919,5 +1920,18 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         Study study = em.find(Study.class, studyId);
         study.setLastIndexTime(indexTime);
         em.merge(study);
+    }
+
+    public Timestamp getLastUpdatedTime(Long vdcId) {
+        String queryString = "SELECT s.lastUpdateTime FROM Study s WHERE s.owner.id = '" + vdcId + "' ORDER BY s.lastUpdateTime DESC";
+        Query query        = em.createQuery(queryString);
+        List list          = query.getResultList();
+        Date lastupdatetime = null;
+        Timestamp convertedDate = null;
+        if (list.size() >= 1) { 
+            lastupdatetime = (Date)list.get(0);
+            convertedDate = new java.sql.Timestamp(lastupdatetime.getTime());
+        } 
+        return convertedDate;
     }
 }

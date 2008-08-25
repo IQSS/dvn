@@ -1252,6 +1252,52 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
 /* subsetting page: summary statistics: ends here */
 
 /* *************** dvn network homepage page specific ***************** */
+        /*
+        v1.4 styles
+        */
+
+            div.content {
+                float:none;
+                clear:left;
+            }
+        
+            div.header {
+                padding:0.5em;
+                clear:left;
+            }
+            
+            h1.header {
+                padding:0;
+                font-size:large;
+                margin:0;
+            }
+            
+            div.left {
+                float:left;
+                width:40%;
+                margin:0;
+                padding:1em;
+                text-align:left;
+            }
+            div.dataPaginator {
+                float:right;
+                width:40%;
+                padding:1em;
+                text-align:right;
+            }
+
+            .activity {width: 120px; text-align: center;}
+            .activitylevelicon { vertical-align:middle; width: 48px; height: 8px; background: url(/dvn/resources/activity-icons.png) no-repeat;}
+            .al-0 {background-position: -50 0;}
+            .al-1 {background-position: -40 0;}
+            .al-2 {background-position: -30 0;}
+            .al-3 {background-position: -20 0;}
+            .al-4 {background-position: -10 0;}
+            .al-5 {background-position: 0 0;}
+            .numbervalue {display: none;}
+
+/* end v1.4 styles */
+            
 .dvn_Totals {position: absolute; top: .75em; right: .75em;}
 .dvn_totalsLabel {color: #526f76; font-size: 112%;}
 .dvn_totalsValue {color: #c55b28; font-weight: bold;}

@@ -11,27 +11,7 @@
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-         <script type="text/javascript">
-            // <![CDATA[    
-            //TODO: change this so that the div is free floating and positioned relative to the mouseX and mouseY
-                function getNextSibling (elem) {
-                  isTarget = false;
-                  while (!isTarget) {
-                        elem = elem.nextSibling;
-                        if (elem.id != undefined && elem.id.indexOf("hideShow_description") != -1) {
-                            isTarget = true;
-                            if (elem.style.display == 'none') {
-                                elem.style.display = 'block';
-                            } else {
-                                elem.style.display = 'none';
-                            }
-                        }
-                        if (isTarget) break;
-                    }
-                }
-                
-            // ]]>
-        </script>
+         
 </head>
 
 <body>
@@ -112,36 +92,183 @@
                 </div>
             </div>
             <!-- Search Section ends here -->
-    
-            <!-- Start Browse section (with side panels, if available) -->
-            <div id="dvn_hmpgMainSection">
-                  <!-- Network Homepage -->
-                    <!-- datalist component for NETWORK HOME PAGE -->
-                    <ui:panelLayout rendered="#{VDCRequest.currentVDC == null}">
-                        <div class="dvn_Totals">
-                            <h:outputText escape="false" value="#{HomePage.networkData}"/>
-                        </div>
-                  <!-- THE DV GROUPS AND DVS GO HERE -->
-                  
-                    </ui:panelLayout>
-                    
-                  
-                  <!-- Dataverse Homepage -->
-                    <!-- Display Tree at dataverse level -->
-                   <ui:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
-            </div>
-
+            
       </div>
         <!-- Main Section ends here -->
-                <br /><br />
-                <ice:panelLayout style="width:50%; margin-left: auto;margin-right: auto;">
-                    Hello and welcome to the HomePage stub. This is temporary while the Network Home Page is being redesigned/refitted in the absence of ajax4jsf.
+        <!-- ***************** NETWORK HOMEPAGE CONTENT *************************  --> 
+    <ice:panelSeries styleClass="dvn_networkHomePanel" 
+                    value="#{dvRecordsManager.itemBeans}" 
+                    var="dvItems" 
+                    rendered="#{VDCRequest.currentVDC == null}">
                     
-                    To navigate directly to a dataverse home page version, please type in the fully qualified path to the dataverse in the address bar.
-                </ice:panelLayout>
-                <ice:messages></ice:messages>
-                <br /><br />
+        <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }" styleClass="header">
+                <h1 class="header">
+                    <ice:outputText value="#{dvItems.name}" />
+                </h1>
+                <ice:commandLink immediate="true" action="#{dvItems.toggleSubGroupAction}">
+                    <ice:graphicImage style="border:0px solid; vertical-align:middle;" value="#{dvItems.expandContractImage}"/>
+                </ice:commandLink>
+        </div>
+        <!-- Start Browse section (with side panels, if available) -->
+        <div>
+        <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems)and VDCRequest.currentVDC == null }" styleClass="left">
+            <p>
+              <!-- Network Homepage -->
+                <!-- datalist component for NETWORK HOME PAGE -->
+                        <h:outputText escape="false" value="#{HomePage.networkData}"/>
+              <!-- THE DV GROUPS AND DVS GO HERE -->
+              <!-- Dataverse Homepage -->
+                <!-- Display Tree at dataverse level -->
+               <!-- <ui:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/> -->
+               </p>
+        </div>
+        <div align="right" jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }" styleClass="dataPaginator">
+            <ice:dataPaginator id="dataScroll_3"
+                               for="dataverseList"
+                               paginator="true"
+                               fastStep="3"
+                               paginatorMaxPages="4">
+                <f:facet name="first">
+                    <ice:graphicImage
+                        url="./xmlhttp/css/xp/css-images/arrow-first.gif"
+                        style="border:none;"
+                        title="First Page"/>
+                </f:facet> 
+                <f:facet name="previous">
+                    <ice:graphicImage
+                        url="./xmlhttp/css/xp/css-images/arrow-previous.gif"
+                        style="border:none;"
+                        title="Previous"/>
+                </f:facet>
+                <f:facet name="next">
+                    <ice:graphicImage
+                        url="./xmlhttp/css/xp/css-images/arrow-next.gif"
+                        style="border:none;"
+                        title="Previous"/>
+                </f:facet>
+                <f:facet name="last">
+                    <ice:graphicImage
+                        url="./xmlhttp/css/xp/css-images/arrow-last.gif"
+                        style="border:none;"
+                        title="Previous"/>
+                </f:facet>
 
+            </ice:dataPaginator>
+        </div>
+        </div>
+        <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }" styleClass="content">
+            <ice:dataTable headerClass="groupRow" 
+                                id="dataverseList"
+                                rendered="#{not empty(dvItems.childItems) }"
+                                rowClasses="evenRow oddRow"
+                                rows="5"
+                                sortColumn="#{dvItems.sortColumnName}"
+                                sortAscending="#{dvItems.ascending}"
+                                styleClass="dvn_networkHomePanelInner"
+                                value="#{dvItems.childItems}" 
+                                var="item" 
+                                width="100%">
+                <!-- name number -->
+                <f:facet name="header">
+
+                </f:facet>
+                <ice:column style="width:35%">
+                    <f:facet name="header">
+                        <ice:commandSortHeader
+                            columnName="#{dvItems.nameColumnName}"
+                            arrow="true">
+                            <ice:outputText value="#{dvItems.nameColumnName}"/>
+                        </ice:commandSortHeader>
+                    </f:facet>
+                    <ice:outputLink id="hideShow" value="javascript:void(0);" style="display:inline;float:right;" onclick="getNextSibling(this);">
+                        <ice:outputText id="more_info" value="More Info"/>
+                    </ice:outputLink>
+                    <ice:outputLink id="dataverse_link" value="/dvn/dv/#{item.alias}">
+                        <ice:outputText  value="#{item.name}"/>
+                    </ice:outputLink>
+                    <div id="hideShow_description" style="display:none; width:400px; z-Index:500;">
+                        <ice:outputText value="#{item.dvnDescription}"/>
+                    </div>
+                </ice:column>
+                <!-- affiliation -->
+                <ice:column style="width:35%">
+                    <f:facet name="header">
+                        <ice:commandSortHeader
+                            columnName="#{dvItems.affiliationColumnName}"
+                            arrow="true">
+                            <ice:outputText value="#{dvItems.affiliationColumnName}"/>
+                        </ice:commandSortHeader>
+                    </f:facet>
+                    <ice:outputText value="#{item.affiliation}"/>
+                </ice:column>
+
+                <!-- DateReleased  -->
+                <ice:column style="width:10%">
+                    <f:facet name="header">
+                        <ice:commandSortHeader
+                            columnName="#{dvItems.dateReleasedColumnName}"
+                            arrow="true">
+                            <ice:outputText value="#{dvItems.dateReleasedColumnName}"/>
+                        </ice:commandSortHeader>
+                    </f:facet>
+                    <ice:outputText value="#{item.releaseDate}"/>
+                </ice:column>
+
+                <!-- Last Update -->
+                <ice:column style="width:10%">
+                    <f:facet name="header">
+                        <ice:commandSortHeader
+                            columnName="#{dvItems.lastUpdatedColumnName}"
+                            arrow="true">
+                            <ice:outputText value="#{dvItems.lastUpdatedColumnName}"/>
+                        </ice:commandSortHeader>
+                    </f:facet>
+                    <ice:outputText value="#{item.lastUpdateTime}"/>
+                </ice:column>
+
+                <!-- Activity -->
+                <ice:column style="width:10%">
+                    <f:facet name="header">
+                        <ice:commandSortHeader
+                            columnName="#{dvItems.activityColumnName}"
+                            arrow="true">
+                            <ice:outputText value="#{dvItems.activityColumnName}"/>
+                        </ice:commandSortHeader>
+                    </f:facet>
+                    <div class="activity">
+                        <div jsfc="ice:panelLayout" styleClass="#{item.activity}">
+                            <span class="numbervalue">0</span>
+                        </div>
+                    </div>
+                   
+
+                   <!-- <ice:outputText value="#{item.activity}"/> -->
+                </ice:column>
+            </ice:dataTable>
+            <ice:dataPaginator id="dataScroll_2" for="dataverseList"
+                               rowsCountVar="rowsCount"
+                               displayedRowsCountVar="displayedRowsCount"
+                               firstRowIndexVar="firstRowIndex"
+                               lastRowIndexVar="lastRowIndex"
+                               pageCountVar="pageCount"
+                               pageIndexVar="pageIndex">
+                <ice:outputFormat
+                    styleClass="standard"
+                    value="{0} dataverses found, displaying {1} dataverse(s), from {2} to {3}. Page {4} / {5}.">
+                    <f:param value="#{rowsCount}"/>
+                    <f:param value="#{displayedRowsCount}"/>
+                    <f:param value="#{firstRowIndex}"/>
+                    <f:param value="#{lastRowIndex}"/>
+                    <f:param value="#{pageIndex}"/>
+                    <f:param value="#{pageCount}"/>
+                </ice:outputFormat>
+            </ice:dataPaginator>
+        </div>
+    </ice:panelSeries>
+            <ice:messages></ice:messages>
+            <!-- Dataverse Homepage -->
+                    <!-- Display Tree at dataverse level -->
+            <ui:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
 </ice:form>
         
 

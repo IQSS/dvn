@@ -66,21 +66,14 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
 
      @SuppressWarnings("unchecked")
     public void init() {
-// Perform initializations inherited from our superclass
         super.init();
-// Perform application initialization that must complete
-        // *before* managed components are initialized
-        // TODO - add your own initialiation code here
-
-// <editor-fold defaultstate="collapsed" desc="Visual-Web-managed Component Initialization">
-// Initialize automatically managed components
-        // *Note* - this logic should NOT be modified
-        try {
-            _init();
-        } catch (Exception e) {
-            log("Page1 Initialization Failure", e);
-            throw e instanceof FacesException ? (FacesException) e : new FacesException(e);
-        }
+        itemBeans = new ArrayList();
+        List list = (List)vdcGroupService.findAll();
+        initGroupBean(list);
+        List scholarlist = (List)vdcService.findVdcsNotInGroups("Scholar");
+        initUnGroupedBeans(scholarlist, "Scholar Dataverses");
+        List otherlist = (List)vdcService.findVdcsNotInGroups("Basic");
+        initUnGroupedBeans(otherlist, "Other");
      }
 
      DataverseGrouping parentItem = null;

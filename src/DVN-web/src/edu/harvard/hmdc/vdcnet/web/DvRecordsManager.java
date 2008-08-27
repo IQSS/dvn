@@ -157,6 +157,7 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
             while (iterator.hasNext()) {
                 StudyDownload studydownload = new StudyDownload();
                 numberOfDownloads += studydownload.getNumberOfDownloads();
+                iterator.next();
             }
         } catch (Exception e) {
             System.out.println("an exception was thrown while calculating activity");

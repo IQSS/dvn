@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
       >
 <head>
@@ -22,7 +22,7 @@
     <f:loadBundle basename="StudyBundle" var="studybundle"/>
 
      <dvn:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" writePopupDiv="true" rendered="true"/>
-        <ui:form id="form1">
+        <h:form id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             <input type="hidden" value="StudyPage" name="pageName"/>
             <h:inputHidden id="studyId" value="#{studyPage.studyId}"/>
@@ -33,19 +33,19 @@
                         <h:outputText value="#{studyPage.studyUI.study.title}"/>
                     </div>
 
-                    <ui:panelGroup styleClass="dvn_sectionTitleLinksL" rendered="#{!empty studyPage.studyListingIndex}"> 
+                    <div jsfc="ice:panelGroup" styleClass="dvn_sectionTitleLinksL" rendered="#{!empty studyPage.studyListingIndex}"> 
                       <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/SearchPage.xhtml?studyListingIndex=#{studyPage.studyListingIndex}">
                           <h:outputText value="&lt; View Previous Study Listing"/>
                       </h:outputLink>
-                    </ui:panelGroup>
+                    </div>
 
-                    <ui:panelGroup styleClass="dvn_sectionTitleLinksR" rendered="#{studyPage.userAuthorizedToEdit or studyPage.studyUI.study.inReview or studyPage.studyUI.study.new}">
+                    <div jsfc="ice:panelGroup" styleClass="dvn_sectionTitleLinksR" rendered="#{studyPage.userAuthorizedToEdit or studyPage.studyUI.study.inReview or studyPage.studyUI.study.new}">
                         <h:outputText styleClass="vdcStudyStatus" value=" (In Review) " rendered="#{studyPage.studyUI.study.inReview}"/>
                         <h:outputText styleClass="vdcStudyStatus" value=" (New) " rendered="#{studyPage.studyUI.study.new}"/>
                         <h:outputText styleClass="vdcStudyStatus" value=" Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
 
-                        <ui:panelGroup styleClass="dvn_tooltip" rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
-                            <ui:script type="text/javascript">
+                        <div jsfc="ice:panelGroup" styleClass="dvn_tooltip" rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
+                            <script type="text/javascript">
                                 // <![CDATA[
                                     $('.dvn_tooltip a').tooltip({
                                             track: true,
@@ -54,7 +54,7 @@
                                             showBody: " - "
                                     });
                                // ]]>
-                            </ui:script>
+                            </script>
                             
                             <dvn:tooltip tooltipMessage="#{studybundle.editTip}" linkText="#{studybundle.editText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tabSet1.selected}" cssClass="vdcTooltipLink"/>
 
@@ -64,33 +64,33 @@
 
                             <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
                             
-                            <ui:panelGroup rendered="#{studyPage.userAuthorizedToRelease}">
+                            <div jsfc="ice:panelGroup" rendered="#{studyPage.userAuthorizedToRelease}">
                                 <dvn:tooltip tooltipMessage="#{studybundle.templateTip}" linkText="#{studybundle.templateText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
-                            </ui:panelGroup>
+                            </div>
                             <h:commandButton rendered="#{studyPage.studyUI.study.new}" value="Ready for Review" actionListener="#{studyPage.setReadyForReview}"/>
-                        </ui:panelGroup>
-                        <ui:panelGroup rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}">                              
+                        </div>
+                        <div jsfc="ice:panelGroup" rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}">                              
                             <h:commandButton  value="Release" actionListener="#{studyPage.setReleased}"/>
-                        </ui:panelGroup>
+                        </div>
                     
-                    </ui:panelGroup>           
+                    </div>           
              
                 <div class="dvn_sectionBoxNoBorders"> 
                     <ui:tabSet binding="#{studyPage.tabSet1}" id="tabSet1" lite="true" mini="true"  >
                         <ui:tab id="catalog" text="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
-                            <ui:panelLayout id="layoutPanel1" panelLayout="flow" style="width: 98%"> 
+                            <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" style="width: 98%"> 
                             
-                                <ui:panelGroup block="true" id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
+                                <div jsfc="ice:panelGroup"  id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                                     <h:outputText id="outputText11" value="Citation Information"/>
                                     <h:commandButton id="commandButtonCitationInfoContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}" />                      
                                     <h:commandButton id="commandButtonCitationInfoExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}"/>    
-                                </ui:panelGroup>
+                                </div>
                                 <h:panelGrid binding="#{studyPage.citationInformationPanel}" id="panelGridCitationInfo" cellpadding="0" cellspacing="0" 
                                              columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" width="100%" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" > 
                                     <dvn:inlinehelp helpMessage="#{studybundle.howCiteHelp}"  linkText="#{studybundle.howCiteLabel}" heading="#{studybundle.howCiteHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"/>
-                                    <ui:panelGroup  block="true" styleClass="vdcCitationText" >
+                                    <div jsfc="ice:panelGroup"   styleClass="vdcCitationText" >
                                         <h:outputText value="#{studyPage.studyUI.study.citation}" escape="false"/>
-                                    </ui:panelGroup>
+                                    </div>
                                     <dvn:inlinehelp helpMessage="#{studybundle.subtitleHelp}"  linkText="#{studybundle.subtitleLabel}" heading="#{studybundle.subtitleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.subTitle!='' and studyPage.studyUI.study.subTitle!=null}"/>
                                     <h:outputText id="text1" value="#{studyPage.studyUI.study.subTitle}" rendered="#{!empty studyPage.studyUI.study.subTitle}"/>
                                     
@@ -157,22 +157,22 @@
                                     -->
                                     
                                     <dvn:inlinehelp helpMessage="#{studybundle.provenanceHelp}"  linkText="#{studybundle.provenanceLabel}" heading="#{studybundle.provenanceHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  />  
-                                    <ui:panelGroup block="true"> 
+                                    <div jsfc="ice:panelGroup" > 
                                             <h:outputLink value="#{studyPage.studyUI.study.harvestHoldings}" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
                                                 <h:outputText value="Original Source > " />
                                             </h:outputLink>
                                         <h:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog" >
                                             <h:outputText value="#{studyPage.studyUI.study.owner.name} Dataverse" />
                                         </h:outputLink> 
-                                    </ui:panelGroup>
+                                    </div>
                                 </h:panelGrid>
                                 
-                                <ui:panelGroup block="true" id="groupPanel12" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.abstractAndScopePanelIsEmpty}" >
+                                <div jsfc="ice:panelGroup"  id="groupPanel12" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.abstractAndScopePanelIsEmpty}" >
                                     <h:outputText   id="AbstractAndScopeText" value="Abstract and Scope"/>
                                     <h:commandButton id="commandButtonAbstractScopeContract"  image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.abstractAndScopePanelIsRendered }" actionListener="#{studyPage.updateAbstractScopeDisplay}"/> 
                                     <h:commandButton id="commandButtonAbstractScopeExpand" image="/resources/icon_contract.gif" title="Show fields in this section"  rendered="#{!studyPage.studyUI.abstractAndScopePanelIsRendered }" actionListener="#{studyPage.updateAbstractScopeDisplay}"/> 
                                     <!--h:outputText   value="(This section is empty)" rendered="#{studyPage.abstractAndScopePanelIsEmpty}" /-->
-                                </ui:panelGroup>
+                                </div>
                                 <h:panelGrid   binding="#{studyPage.abstractAndScopePanel}"  cellpadding="0" cellspacing="0"
                                                columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelAbstractAndScope" rendered="#{studyPage.studyUI.abstractAndScopePanelIsRendered}"  width="100%">
                                     
@@ -229,11 +229,11 @@
                                     <h:outputText id="text32"  value="#{studyPage.studyUI.study.kindOfData}" rendered="#{!empty studyPage.studyUI.study.kindOfData}"/>
                                 </h:panelGrid>
                                 
-                                <ui:panelGroup  block="true" id="groupPanel13" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataCollectionIsEmpty}">
+                                <div jsfc="ice:panelGroup"   id="groupPanel13" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataCollectionIsEmpty}">
                                     <h:outputText  id="outputText78" value="Data Collection / Methodology"/>
                                     <h:commandButton id="commandButtondataCollectionoContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.dataCollectionPanelIsRendered}" actionListener="#{studyPage.updateDataCollectionDisplay}" />                      
                                     <h:commandButton id="commandButtondataCollectionExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.dataCollectionPanelIsRendered}" actionListener="#{studyPage.updateDataCollectionDisplay}"/> 
-                                </ui:panelGroup>
+                                </div>
                                 <h:panelGrid   binding="#{studyPage.dataCollectionPanel}" cellpadding="0" cellspacing="0"
                                                columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelDataCollection" 
                                                width="100%"  rendered="#{studyPage.studyUI.dataCollectionPanelIsRendered}" > 
@@ -298,11 +298,11 @@
                                     <h:outputText  id="outputText114" value="#{studyPage.studyUI.study.otherDataAppraisal}"  rendered="#{!empty studyPage.studyUI.study.otherDataAppraisal}" escape="false" />
                                 </h:panelGrid>
                                 
-                                <ui:panelGroup   block="true" id="groupPanel14a" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataAvailIsEmpty}">
+                                <div jsfc="ice:panelGroup"    id="groupPanel14a" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataAvailIsEmpty}">
                                     <h:outputText  id="outputText115a" value="Data Set Availability"/>
                                     <h:commandButton id="commandButtonDataAvailContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.dataAvailPanelIsRendered}" actionListener="#{studyPage.updateDataAvailDisplay}" />                      
                                     <h:commandButton id="commandButtonDataAvailExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.dataAvailPanelIsRendered}" actionListener="#{studyPage.updateDataAvailDisplay}"/> 
-                                </ui:panelGroup>
+                                </div>
                                 <h:panelGrid  binding="#{studyPage.dataAvailPanel}" cellpadding="0" cellspacing="0"
                                              columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelDataAvail" rendered="#{studyPage.studyUI.dataAvailPanelIsRendered}"
                                              width="100%">
@@ -325,12 +325,12 @@
                                     <h:outputText  id="outputText127" value="#{studyPage.studyUI.study.numberOfFiles}" rendered="#{!empty studyPage.studyUI.study.numberOfFiles}" escape="false"/>
                                 </h:panelGrid>
                                 
-                                <ui:panelGroup   block="true" id="groupPanel14b" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.termsOfUseIsEmpty}">
+                                <div jsfc="ice:panelGroup"    id="groupPanel14b" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.termsOfUseIsEmpty}">
                                     <a name="termsofuse"><!--TERMS OF USE--></a>
                                     <h:outputText id="outputText115" value="Terms of Use"/>
                                     <h:commandButton id="commandButtonTermsOfUseContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}" actionListener="#{studyPage.updateTermsOfUseDisplay}" />                      
                                     <h:commandButton id="commandButtonTermsOfUseExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.termsOfUsePanelIsRendered}" actionListener="#{studyPage.updateTermsOfUseDisplay}"/> 
-                                </ui:panelGroup>
+                                </div>
 					<h:panelGrid binding="#{studyPage.termsOfUsePanel}" cellpadding="0" cellspacing="0"
                                                      columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelTermsOfUse"  rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}"
                                                      width="100%">
@@ -373,11 +373,11 @@
                                             <h:outputText  value="#{studyPage.studyUI.study.harvestDVNTermsOfUse}" rendered="#{!empty studyPage.studyUI.study.harvestDVNTermsOfUse}" escape="false"/>
 
                                         </h:panelGrid>
-                                <ui:panelGroup  block="true" id="groupPanel15" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.notesIsEmpty}">
+                                <div jsfc="ice:panelGroup"   id="groupPanel15" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.notesIsEmpty}">
                                     <h:outputText  id="outputText144" value="Other Information"/>
                                     <h:commandButton id="commandButtonNotesContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.notesPanelIsRendered}" actionListener="#{studyPage.updateNotesDisplay}" />                      
                                     <h:commandButton id="commandButtonNotesExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.notesPanelIsRendered}" actionListener="#{studyPage.updateNotesDisplay}"/> 
-                                </ui:panelGroup>
+                                </div>
                                 <h:panelGrid   binding="#{studyPage.notesPanel}" cellpadding="0" cellspacing="0"
                                                columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelNotes"  rendered="#{studyPage.studyUI.notesPanelIsRendered}" 
                                                width="100%">
@@ -386,44 +386,44 @@
                                 </h:panelGrid>
                                 
                                 <!--
-                                <ui:panelGroup  block="true" id="groupPanel3" styleClass="vdcStudyInfoDownload" rendered="false">
+                                <div jsfc="ice:panelGroup"   id="groupPanel3" styleClass="vdcStudyInfoDownload" rendered="false">
                                     <h:outputLink  id="hyperlink2" value="http://www.sun.com/jscreator">
                                         <h:outputText  id="hyperlink2Text" value="Download the complete cataloging information in XML format (without variables)"/>
                                     </h:outputLink>
-                                </ui:panelGroup>
-                                <ui:panelGroup  block="true" id="groupPanel2" styleClass="vdcStudyInfoDownload" rendered="false">
+                                </div>
+                                <div jsfc="ice:panelGroup"   id="groupPanel2" styleClass="vdcStudyInfoDownload" rendered="false">
                                     <h:outputLink  id="hyperlink1" value="http://www.sun.com/jscreator">
                                         <h:outputText  id="hyperlink1Text" value="Download the complete cataloging information in XML format (with variables)"/>
                                     </h:outputLink>
-                                </ui:panelGroup>
+                                </div>
                                 -->
-                            </ui:panelLayout>
+                            </div>
                         </ui:tab>
 <!-- FILES -->                        
                         <ui:tab id="files" text="Documentation, Data and Analysis" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files#{studyPage.studyListingIndexAsParameter}">
-                           <ui:panelLayout id="layoutPanel2" panelLayout="flow" styleClass="vdcStudyFilesPage">
-                            <ui:panelLayout id="noFilesPanel1" panelLayout="flow" styleClass="vdcStudyFilesEmpty" rendered="#{empty studyPage.studyUI.study.fileCategories}">
-                                <ui:panelGroup block="true" id="noFilesPanel2" styleClass="vdcStudyFilesEmptyMessage" rendered="#{!studyPage.userAuthorizedToEdit}">
+                           <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" styleClass="vdcStudyFilesPage">
+                            <div jsfc="ice:panelGroup" id="noFilesPanel1" panelLayout="flow" styleClass="vdcStudyFilesEmpty" rendered="#{empty studyPage.studyUI.study.fileCategories}">
+                                <div jsfc="ice:panelGroup"  id="noFilesPanel2" styleClass="vdcStudyFilesEmptyMessage" rendered="#{!studyPage.userAuthorizedToEdit}">
                                     <h:outputText value="No files have been provided for this study."/>
-                                </ui:panelGroup>
-                                <ui:panelGroup block="true" id="noFilesPanel3" styleClass="vdcStudyFilesEmptyMessage" rendered="#{studyPage.userAuthorizedToEdit and (studyPage.studyUI.study.studyLock==null)}">
+                                </div>
+                                <div jsfc="ice:panelGroup"  id="noFilesPanel3" styleClass="vdcStudyFilesEmptyMessage" rendered="#{studyPage.userAuthorizedToEdit and (studyPage.studyUI.study.studyLock==null)}">
                                     <h:outputText value="No files have been uploaded to this study. To add a file, follow the 'Add File(s)' link on the top right of this page."/>
-                                </ui:panelGroup>
-                                <ui:panelGroup block="true" id="noFilesPanel4a" styleClass="vdcStudyFilesEmptyMessage" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
+                                </div>
+                                <div jsfc="ice:panelGroup"  id="noFilesPanel4a" styleClass="vdcStudyFilesEmptyMessage" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
                                     <h:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
-                                </ui:panelGroup>
-                            </ui:panelLayout>
-                            <ui:panelGroup block="true" id="noFilesPanel4b" styleClass="vdcStudyFilesMessage" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null) and !empty studyPage.studyUI.study.fileCategories}">
+                                </div>
+                            </div>
+                            <div jsfc="ice:panelGroup"  id="noFilesPanel4b" styleClass="vdcStudyFilesMessage" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null) and !empty studyPage.studyUI.study.fileCategories}">
                                 <h:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
-                            </ui:panelGroup>
-                            <ui:panelLayout styleClass="vdcStudyFilesMessage" rendered="#{studyPage.studyUI.anyFileRestricted or !empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
-                                <ui:panelGroup rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcStudyFilesMessage" rendered="#{studyPage.studyUI.anyFileRestricted or !empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
+                                <div jsfc="ice:panelGroup" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
                                     Files for this study may also be accessed from their
                                     <h:outputLink value="#{studyPage.studyUI.study.harvestHoldings}">
                                         <h:outputText value="original source." />
                                     </h:outputLink>
-                                </ui:panelGroup>
-                                <ui:panelGroup rendered="#{studyPage.studyUI.anyFileRestricted}">
+                                </div>
+                                <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.anyFileRestricted}">
                                         <h:outputText value="Access to some files is restricted, and those files are not available for downloading." />
                                         <h:outputText value=" No information about the restriction is available" rendered="#{studyPage.termsOfUseIsEmpty}" />
                                         <h:outputText value=" Check the " rendered="#{!studyPage.termsOfUseIsEmpty}" />
@@ -434,53 +434,51 @@
                                         <h:outputLink action="#{StudyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.xhtml?studyId=#{studyPage.studyId}">
                                             <h:outputText value="Send a Request"/>
                                         </h:outputLink>
-                                        <!--h:commandLink styleClass="requestIntroContLink" action="#{LoginWorkflowBean.beginCreatorWorkflow}">
-                                             <h:outputText value="Continue" escape="false"/>
-                                        </h:commandLink-->                                        
+                                                                                
                                         <h:commandLink action="#{studyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}" >
                                             <h:outputText value="Send a Request"/>
                                         </h:commandLink>
                                         <h:outputText value=" if you would like to access the restricted files in this study." rendered="#{studyPage.studyUI.study.requestAccess}"/>
-                                </ui:panelGroup>
-                            </ui:panelLayout>
+                                </div>
+                            </div>
                             
-                            <ui:panelLayout id="layoutPanel3" panelLayout="flow" styleClass="vdcStudyFilesContent" rendered="#{!empty studyPage.studyUI.study.fileCategories}">
-                                <ui:panelGroup block="true" id="groupPanel7a" styleClass="vdcStudyFilesDownloadAll" rendered="#{studyPage.studyUI.anyFileUnrestricted}">
+                            <div jsfc="ice:panelGroup" id="layoutPanel3" panelLayout="flow" styleClass="vdcStudyFilesContent" rendered="#{!empty studyPage.studyUI.study.fileCategories}">
+                                <div jsfc="ice:panelGroup"  id="groupPanel7a" styleClass="vdcStudyFilesDownloadAll" rendered="#{studyPage.studyUI.anyFileUnrestricted}">
                                     <h:commandButton onclick="window.location.href='/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?studyId=#{studyPage.studyUI.study.id}#{studyPage.xff}';return false;" value="Download All Files"/>
                                     <h:outputText id="outputText33" styleClass="vdcStudyFilesDownloadAllMessage" value="Note: you will be prompted to save a single archive file. Study files that have restricted access will not be downloaded. Data files will be downloaded in their default format."/>
-                                </ui:panelGroup>
+                                </div>
                                 
                                 <h:dataTable cellpadding="0" cellspacing="0" value="#{studyPage.studyUI.categoryUIList}" id="catDataTable" var="catUI" width="100%">
                                     <h:column id="catColumn">
                                 <div class="TogglePaneFancy">
                                 <div>
-                                        <ui:panelGroup block="true" id="groupPanel4" styleClass="TogglePaneFancyHeader vdcStudyFilesCat">
-                                            <ui:panelGroup block="true" styleClass="vdcStudyFilesCatLabel">
+                                        <div jsfc="ice:panelGroup"  id="groupPanel4" styleClass="TogglePaneFancyHeader vdcStudyFilesCat">
+                                            <div jsfc="ice:panelGroup"  styleClass="vdcStudyFilesCatLabel">
                                                 <h:outputText id="outputText16" value="#{catUI.fileCategory.name}"/>
-                                            </ui:panelGroup>
-                                            <ui:panelGroup block="true" styleClass="vdcStudyFilesCatDownload">
+                                            </div>
+                                            <div jsfc="ice:panelGroup"  styleClass="vdcStudyFilesCatDownload">
                                                 <h:graphicImage styleClass="vdcNoBorders" value="/resources/icon_downloadall_locked.gif" rendered="#{!catUI.anyFileUnrestricted}" alt="You do not have permissions to access any files in this category." />
                                                 <h:outputText styleClass="vdcStudyFileRowFileDownloadRestricted" value="Files in this category are restricted" rendered="#{!catUI.anyFileUnrestricted}" />
                                                 <h:outputLink styleClass="vdcStudyCatDownloadLink" id="catDownloadLink" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}_#{catUI.downloadName}.zip?catId=#{catUI.fileCategory.id}#{studyPage.xff}" title="Download all files in this category in a single archive file." rendered="#{catUI.anyFileUnrestricted}">
                                                     <h:outputText styleClass="vdcStudyCatDownloadLink" value="Download all files in this category" />
                                                 </h:outputLink>
-                                            </ui:panelGroup>
-                                        </ui:panelGroup>
-                                        <ui:panelGroup block="true" styleClass="TogglePaneContent">
+                                            </div>
+                                        </div>
+                                        <div jsfc="ice:panelGroup"  styleClass="TogglePaneContent">
                                             <h:dataTable rendered="#{catUI.rendered}" cellpadding="0" cellspacing="0"
                                                          id="dataTable5" rowClasses="list-row-even,list-row-odd"
                                                          value="#{catUI.studyFileUIs}" var="studyFileUI" width="100%">
 
                                                 <h:column id="column9">
                                                     
-                                                    <ui:panelGroup block="true" styleClass="vdcStudyFileRow">
+                                                    <div jsfc="ice:panelGroup"  styleClass="vdcStudyFileRow">
 
-                                                        <ui:panelGroup block="true" styleClass="vdcStudyFileRowLeft">
-                                                            <ui:panelGroup block="true" styleClass="vdcStudyFileRowFileInfo">
-                                                                <ui:panelGroup block="true" styleClass="vdcStudyFileRowFileThumb" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.image}">
+                                                        <div jsfc="ice:panelGroup"  styleClass="vdcStudyFileRowLeft">
+                                                            <div jsfc="ice:panelGroup"  styleClass="vdcStudyFileRowFileInfo">
+                                                                <div jsfc="ice:panelGroup"  styleClass="vdcStudyFileRowFileThumb" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.image}">
                                                                     <h:graphicImage styleClass="vdcNoBorders" value="/FileDownload/?fileId=#{studyFileUI.studyFile.id}&amp;imageThumb" alt="Thumbnail" />
-                                                                </ui:panelGroup>
-                                                                <ui:panelGroup block="true" styleClass="vdcStudyFileRowFileName">
+                                                                </div>
+                                                                <div jsfc="ice:panelGroup"  styleClass="vdcStudyFileRowFileName">
                                                                     <h:outputText id="outputText15" value="#{studyFileUI.studyFile.fileName}"/>
                                                                     <h:inputHidden id="vdcIdforFile" value="#{studyFileUI.vdcId}"/>
                                                                     <br/>
@@ -492,10 +490,10 @@
                                                                         <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" download/analysis" rendered="#{studyFileUI.downloadCount == 1 and studyFileUI.studyFile.subsettable}" />
                                                                         <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" downloads" rendered="#{studyFileUI.downloadCount != 1 and !studyFileUI.studyFile.subsettable}" />
                                                                         <h:outputText styleClass="vdcStudyFileRowFileDetails" value=" downloads + analyses" rendered="#{studyFileUI.downloadCount != 1 and studyFileUI.studyFile.subsettable}" />
-                                                                </ui:panelGroup>
-                                                            </ui:panelGroup>
+                                                                </div>
+                                                            </div>
 
-                                                            <ui:panelGroup block="true" styleClass="vdcStudyFileRowFileDownload">
+                                                            <div jsfc="ice:panelGroup"  styleClass="vdcStudyFileRowFileDownload">
                                                                 <h:graphicImage styleClass="vdcNoBorders" value="/resources/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" alt="You do not have permissions to access this file."/>
                                                                 <h:outputText styleClass="vdcStudyFileRowFileDownloadRestricted" value="Restricted Access" rendered="#{studyFileUI.restrictedForUser}" />
                                                                 
@@ -503,9 +501,9 @@
                                                                     <h:outputText value="Download" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}" />
                                                                 </h:outputLink>
                                                                 
-                                                                <ui:panelGroup block="true" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.studyFile.subsettable}">
-                                                                    <ui:script type="text/javascript">
-                                                                        // <![CDATA[
+                                                                <div jsfc="ice:panelGroup"  rendered="#{!studyFileUI.restrictedForUser and studyFileUI.studyFile.subsettable}">
+                                                                    <script type="text/javascript">
+                                                                         // <![CDATA[
                                                                               jQuery(document).ready(function(){
                                                                                             jQuery(".studyFileDownloadAs li").hover(
                                                                                                     function(){ jQuery("ul", this).fadeIn("fast"); }, 
@@ -524,7 +522,7 @@
                                                                                       });
                                                                               };
                                                                         // ]]>
-                                                                    </ui:script>
+                                                                    </script>
                                                                     <ul class="studyFileDownloadAs downloadas">
                                                                         <li>
                                                                             <h:graphicImage styleClass="vdcNoBorders" value="/resources/icon_download.gif" alt="View or download this File."/><a class="downloadasLink">Download as...</a>
@@ -545,20 +543,20 @@
                                                                             </ul>
                                                                         </li>
                                                                     </ul>
-                                                                </ui:panelGroup>
-                                                            </ui:panelGroup>
-                                                        </ui:panelGroup>
+                                                                </div>
+                                                            </div>
+                                                        </div>
 
-                                                        <ui:panelGroup block="true" styleClass="vdcStudyFileRowRight">
+                                                        <div jsfc="ice:panelGroup"  styleClass="vdcStudyFileRowRight">
                                                             <h:outputText styleClass="vdcStudyDesc" id="outputText17" value="#{studyFileUI.studyFile.description}"/>
-                                                        </ui:panelGroup>
+                                                        </div>
 
-                                                    </ui:panelGroup>
+                                                    </div>
 
-                                                    <ui:panelGroup rendered="#{studyFileUI.studyFile.subsettable}" block="true" styleClass="vdcStudyFileRowSubset">
+                                                    <div jsfc="ice:panelGroup" rendered="#{studyFileUI.studyFile.subsettable}"  styleClass="vdcStudyFileRowSubset">
 
-                                                        <ui:panelGroup block="true" styleClass="vdcStudyFileRowSubsetLeft">
-                                                            <ui:panelGroup block="true" styleClass="vdcStudyFileSubsetTable">
+                                                        <div jsfc="ice:panelGroup"  styleClass="vdcStudyFileRowSubsetLeft">
+                                                            <div jsfc="ice:panelGroup"  styleClass="vdcStudyFileSubsetTable">
                                                                 <h:panelGrid columns="3" cellpadding="2" cellspacing="0" border="0">
                                                                     <h:column id="column1">
                                                                         <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}">
@@ -572,38 +570,38 @@
                                                                         <h:outputText value="#{studyFileUI.studyFile.dataTable.varQuantity} Variables"/>
                                                                     </h:column>
                                                                 </h:panelGrid>
-                                                            </ui:panelGroup>
+                                                            </div>
 
-                                                            <ui:panelGroup block="true" styleClass="vdcStudyFileSubsetAnalysis">
+                                                            <div jsfc="ice:panelGroup"  styleClass="vdcStudyFileSubsetAnalysis">
                                                                 <h:outputLink id="fileSubset2" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}">
                                                                     <h:outputText value="Access Subset/Analysis" />
                                                                 </h:outputLink>
-                                                            </ui:panelGroup>
-                                                        </ui:panelGroup>
+                                                            </div>
+                                                        </div>
 
-                                                        <ui:panelGroup block="true" styleClass="vdcStudyDataCitationContainer">
+                                                        <div jsfc="ice:panelGroup"  styleClass="vdcStudyDataCitationContainer">
                                                             <h:outputText styleClass="vdcStudyDataCitation" escape="false" value="&lt;span&gt;View Data Citation&lt;/span&gt;&lt;br /&gt;#{studyPage.studyUI.study.citation} #{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)]" />
-                                                        </ui:panelGroup>
+                                                        </div>
 
-                                                    </ui:panelGroup>
+                                                    </div>
                                                     
                                                 </h:column>
 
                                             </h:dataTable>
-                                        </ui:panelGroup>
+                                        </div>
                                 </div>
                                 </div>
                                     </h:column>
                                 </h:dataTable>
                                 
-                            </ui:panelLayout>
-                          </ui:panelLayout>
+                            </div>
+                          </div>
                         </ui:tab>
                     </ui:tabSet>
                 </div>
             </div>
 
-        </ui:form>
+        </h:form>
             </gui:define>
         </gui:composition>
     </body>

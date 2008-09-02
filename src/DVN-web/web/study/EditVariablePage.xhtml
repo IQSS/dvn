@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -20,7 +20,7 @@
   <gui:define name="body">
    
         
-        <ui:form  id="form1">
+        <h:form  id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             <input type="hidden"  name="pageName" value="EditVariablePage"/>
             <h:inputHidden id="dtId" value="#{EditVariablePage.dtId}"/>
@@ -34,9 +34,9 @@
                     <br />
                     <span class="dvn_preFileTitle">Variables: </span>
                     <br />
-                    <ui:panelGroup id="messagePanel" styleClass="errorMessage" rendered="#{! empty facesContext.maximumSeverity}">
+                    <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{! empty facesContext.maximumSeverity}">
                         <h:outputText value="Some errors occurred, please check details below" rendered="#{! empty facesContext.maximumSeverity}" />
-                    </ui:panelGroup>
+                    </div>
                     <br />
                     <h:dataTable   value="#{EditVariablePage.dataVariables}"  var="dv"  columnClasses="vdcColPadded">
                         <h:column>
@@ -61,7 +61,7 @@
                     <h:commandButton  id="cancelButton" value="Cancel" action="#{EditVariablePage.cancel_action}" immediate="true" />
                 </div>            
             </div>
-        </ui:form>
+        </h:form>
             </gui:define>
         </gui:composition>
     </body>

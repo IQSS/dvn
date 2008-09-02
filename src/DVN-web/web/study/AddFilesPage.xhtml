@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -55,7 +55,7 @@
               // ]]>
             </script>
         
-        <ui:form  id="form1">
+        <h:form  id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             <h:inputHidden id="studyId" value="#{AddFilesPage.study.id}"/>
             <input type="hidden"  name="pageName" value="AddFilesPage"/>
@@ -70,27 +70,27 @@
                     <div class="dvn_margin12">
                         
                         <!-- validation errors occurred? -->
-                        <ui:panelGroup id="messagePanel" styleClass="errorMessage" rendered="#{! empty facesContext.maximumSeverity}">
+                        <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{! empty facesContext.maximumSeverity}">
                             <h:outputText value="Some errors occurred, please check details below" rendered="#{! empty facesContext.maximumSeverity}" />
-                        </ui:panelGroup>     
-                        <ui:panelGroup  block="true" id="groupPanel1" style="padding-bottom: 15px">
+                        </div>     
+                        <div jsfc="ice:panelGroup"   id="groupPanel1" style="padding-bottom: 15px">
                             <h:outputText  id="outputText1" value="Adding Files to: "/>
                             <h:outputText  id="outputText2b" styleClass="vdcSubHeaderColor" value="#{AddFilesPage.study.title}"/>
-                        </ui:panelGroup>
-                        <ui:panelGroup block="true" style="padding-bottom: 5px;">
+                        </div>
+                        <div jsfc="ice:panelGroup"  style="padding-bottom: 5px;">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                             <h:outputText styleClass="vdcHelpText" value="You may upload multiple files to this page (by browsing each file individually) and then save all of them at once. If you upload a STATA (.dta) or SPSS (.sav or .por) file, it will be processed as a subsettable data file."/>
-                        </ui:panelGroup>
-                        <ui:panelGroup  block="true" id="groupPanel2" style="padding-bottom: 5px;">
+                        </div>
+                        <div jsfc="ice:panelGroup"   id="groupPanel2" style="padding-bottom: 5px;">
                             <ui:upload  id="fileBrowser" onChange="disableSave();submit();" valueChangeListener="#{AddFilesPage.fileBrowser_add}"/>
-                        </ui:panelGroup>
+                        </div>
                         
                         <!-- Comment Save and Cancel buttons on top (per Isabelle's request)
-                        <ui:panelGroup  block="true" id="groupPanel3"
+                        <div jsfc="ice:panelGroup"   id="groupPanel3"
                         style="padding-top: 20px; padding-bottom: 10px" styleClass="vdcTextRight">
                         <h:commandButton  id="button2" value="Save" action="#{AddFilesPage.save_action}"/>
                         <h:commandButton  immediate="true" id="button4" value="Cancel" action="#{AddFilesPage.cancel_action}" style="margin-left: 30px;"/>
-                        </ui:panelGroup>
+                        </div>
                         -->
                         <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                         <h:dataTable id="fileDataTableWrapper" cellpadding="0" cellspacing="0" width="98%" value="dummy_datatable">
@@ -100,19 +100,19 @@
                                               headerClass="vdcEditFilesHeader" id="fileDataTable" rowClasses="list-row-even,list-row-odd"
                                               value="#{AddFilesPage.files}" var="file" width="98%">
                                     <h:column id="catCol">
-                                        <ui:panelGroup block="true" style="white-space: nowrap;">   
+                                        <div jsfc="ice:panelGroup"  style="white-space: nowrap;">   
                                             <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box; 
                                             changing them may require corresponding changes in the Javascript  -->
                                             <h:selectBooleanCheckbox id="catCheckbox"  onclick="updateCategory(this);"/>
                                             <h:inputText id="catTextField" size="30" value="#{file.fileCategoryName}" onfocus="deselectCategory(this)"/>
-                                        </ui:panelGroup>
+                                        </div>
                                         <f:facet name="header">
-                                            <ui:panelGroup id="catColPanelGroup">
+                                            <div jsfc="ice:panelGroup" id="catColPanelGroup">
                                                 <h:outputText id="catLabel" value="Category"/>
                                                 <h:selectOneMenu id="catDropdown" onchange="updateAllCheckedCategories(this);">
                                                     <f:selectItems value="#{AddFilesPage.templateFileCategories}" />
                                                 </h:selectOneMenu>  
-                                            </ui:panelGroup>
+                                            </div>
                                         </f:facet>   
                                     </h:column>
                                     <h:column id="column3">
@@ -138,7 +138,7 @@
                                 </h:dataTable>
                             </h:column>                                      
                         </h:dataTable>                                        
-                        <ui:panelGroup  block="true" rendered="#{AddFilesPage.emailRequested}"
+                        <div jsfc="ice:panelGroup"   rendered="#{AddFilesPage.emailRequested}"
                                         style="padding-top: 20px; padding-bottom: 10px" >
                             <h:outputText  styleClass="vdcTextStandOut" value="NOTE: "/>     
                             <h:outputText id="email" escape="false" styleClass="warnMessage" value="SPSS and STATA files will be converted to a &lt;b&gt; tab delimited &lt;/b&gt; format and become &lt;b&gt; subsettable&lt;/b&gt;. You will still be able to download the original file, as well as other formats.
@@ -150,25 +150,25 @@
                             </h:inputText>
                             <h:message for="textField3" id="validatorMessage" styleClass="errorMessage"/>
                             
-                            <ui:panelGroup>
+                            <div jsfc="ice:panelGroup">
                                 <br />
                                 <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                                 <h:outputText id="outputText4" styleClass="vdcHelpText" value="Separate multiple e-mail addresses with a comma (and no spaces). Example: admin@mydvn.edu, user@mydvn.edu"/>
                                 <br />
-                            </ui:panelGroup>
+                            </div>
                             
-                        </ui:panelGroup>                                
-                        <ui:panelGroup  block="true" id="groupPanel5"
+                        </div>                                
+                        <div jsfc="ice:panelGroup"   id="groupPanel5"
                                         style="padding-top: 20px; " styleClass="vdcTextRight">
                             <h:commandButton  id="saveButton" value="Save" action="#{AddFilesPage.save_action}" onclick="this.style.display='none';this.nextSibling.nextSibling.style.display='';"/>
                             <h:commandButton  id="saveButtonDisabled" value="Save" disabled="true" style="display:none;" />
                             <h:commandButton  immediate="true" id="button8" value="Cancel" action="#{AddFilesPage.cancel_action}" style="margin-left: 30px;" />
-                        </ui:panelGroup>
+                        </div>
                         
                     </div>
                 </div>
             </div>
-        </ui:form>
+        </h:form>
             </gui:define>
         </gui:composition>
     </body>

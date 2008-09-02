@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -116,7 +116,7 @@
                 //]]>  
             </script>
                 
-        <ui:form id="form1">
+        <h:form id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             <input type="hidden" name="pageName" value="EditHarvestSitePage"/>
             <h:inputHidden id="harvestId" value="#{EditHarvestSitePage.harvestId}"/>
@@ -130,21 +130,21 @@
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">
                         
-                        <ui:panelLayout styleClass="successMessage" rendered="#{EditHarvestSitePage.success}">
+                        <div jsfc="ice:panelGroup" styleClass="successMessage" rendered="#{EditHarvestSitePage.success}">
                             <h:outputText value="Update Successful!" />
-                        </ui:panelLayout>
-                        <ui:panelGroup block="true" style="padding-left: 20px; padding-right: 30px">
+                        </div>
+                        <div style="padding-left: 20px; padding-right: 30px">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                             <h:outputText  id="outputText2" styleClass="vdcHelpText" value="A Harvesting dataverse gathers studies from an OAI Server (which could be another Dataverse Network). A Harvesting dataverse provides most of the same functionality as a regular dataverse with the following differences: 1) You cannot edit a harvested study. 2) You search for the cataloging and variable information (study metadata) locally but you access the files remotely. "/>
                             <h:outputText   styleClass="vdcHelpText" value="Any changes you make to this page will not be saved until you click the Save button. "/>
-                        </ui:panelGroup>
+                        </div>
                         <h:panelGrid cellpadding="0" cellspacing="0"
                                      columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" id="gridPanel1" style="margin-top: 30px; margin-bottom: 30px;">
                             
-                            <ui:panelGroup block="true" style="vertical-align: top;"  > 
+                            <div style="vertical-align: top;"  > 
                                 <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Harvesting Type"/> 
-                            </ui:panelGroup>                          
-                            <ui:panelGroup block="true">
+                            </div>                          
+                            <div>
                                 <h:selectOneRadio id="harvestType"
                                                   layout="pageDirection" 
                                                   binding="#{EditHarvestSitePage.inputHarvestType}"
@@ -155,16 +155,16 @@
                                     <f:selectItem itemLabel="OAI Server" itemValue="oai" />
                                     <f:selectItem itemLabel="Nesstar Server" itemValue="nesstar" />
                                 </h:selectOneRadio>
-                            </ui:panelGroup>
+                            </div>
                             
                             
                             
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            <div style="vertical-align: top;">
                                 <h:outputLabel  for="componentLabel1" id="componentLabel1">
                                     <h:outputText  id="componentLabel1Text" style="white-space: nowrap; padding-right: 10px; " value="Dataverse Name"/>                                              
                                 </h:outputLabel>
-                            </ui:panelGroup>
-                            <ui:panelGroup>
+                            </div>
+                            <div>
                                 
                                 <h:inputText id="dataverseName" value="#{EditHarvestSitePage.dataverseName}" required="true" requiredMessage="This field is required." validator="#{EditHarvestSitePage.validateName}" size="60">
                                     
@@ -172,23 +172,23 @@
                                 <h:message styleClass="errorMessage" for="dataverseName"/> 
                                 <br />
                                 <h:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
-                            </ui:panelGroup>
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            </div>
+                            <div style="vertical-align: top;">
                                 <h:outputLabel for="componentLabel2" id="componentLabel2">
                                     <h:outputText id="componentLabel2Text" style="white-space: nowrap; padding-right: 10px; " value="Dataverse Alias"/> 
                                 </h:outputLabel>
-                            </ui:panelGroup>
-                            <ui:panelGroup>
+                            </div>
+                            <dv>
                                 <h:inputText id="dataverseAlias" value="#{EditHarvestSitePage.dataverseAlias}" validator="#{EditHarvestSitePage.validateAlias}" required="true" requiredMessage="This field is required." />
                                 <h:message styleClass="errorMessage" for="dataverseAlias"/> 
                                 
                                 <br />
                                 <h:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
-                            </ui:panelGroup>
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            </div>
+                            <div style="vertical-align: top;">
                                 <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Server URL"/> 
-                            </ui:panelGroup>
-                            <ui:panelGroup>
+                            </div>
+                            <div>
                                 <h:inputText id="dataverseServer" validator="#{EditHarvestSitePage.validateOAIServer}"  value="#{EditHarvestSitePage.harvestingDataverse.oaiServer}"  required="true" requiredMessage="This field is required." size="60">
                                     <f:validator validatorId="UrlValidator"/>
                                 </h:inputText>  
@@ -197,72 +197,72 @@
                                 
                                 <br />
                                 <h:outputText styleClass="vdcHelpText" value="Enter server name, e.g., http://dvn.iq.harvard.edu/dvn/OAIHandler."/> 
-                            </ui:panelGroup>               
+                            </div>               
                             
-                            <ui:panelGroup block="true" style="vertical-align: top;" rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.harvestingSets}" > 
+                            <div jsfc="ice:panelGroup" style="vertical-align: top;" rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.harvestingSets}" > 
                                 <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Harvesting Set"/> 
-                            </ui:panelGroup>
-                            <ui:panelGroup rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.harvestingSets}">                          
+                            </div>
+                            <div jsfc="ice:panelGroup" rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.harvestingSets}">                          
                                 <h:selectOneMenu  id="radioButtonList1" value="#{EditHarvestSitePage.harvestingDataverse.harvestingSet}"  >
                                     <f:selectItem itemValue="" itemLabel="No Set (harvest all)"/>
                                     <f:selectItems  id="radio1SelectItem" value="#{EditHarvestSitePage.harvestingSetsSelect}" />
                                 </h:selectOneMenu>
                                 <verbatim><br /></verbatim>
                                 <h:outputText styleClass="vdcHelpText" value="Select the set you would like to harvest. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."/>
-                            </ui:panelGroup> 
-                            <ui:panelGroup rendered="#{ EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and  EditHarvestSitePage.harvestingDataverse.oaiServer !=null}"> 
+                            </div> 
+                            <div jsfc="ice:panelGroup" rendered="#{ EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and  EditHarvestSitePage.harvestingDataverse.oaiServer !=null}"> 
                                 <verbatim><br /></verbatim>
-                            </ui:panelGroup>
-                            <ui:panelGroup rendered="#{ EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and  EditHarvestSitePage.harvestingDataverse.oaiServer !=null}">   
+                            </div>
+                            <div jsfc="ice:panelGroup" rendered="#{ EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and  EditHarvestSitePage.harvestingDataverse.oaiServer !=null}">   
                                 <h:outputText value="This Server does not support sets. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."/>
-                            </ui:panelGroup>
-                            <ui:panelGroup block="true" style="vertical-align: top;" rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.metadataFormats}">
+                            </div>
+                            <div jsfc="ice:panelGroup" style="vertical-align: top;" rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.metadataFormats}">
                                 <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Harvesting Format"/> 
-                            </ui:panelGroup>
-                            <ui:panelGroup  rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.metadataFormats}">
+                            </div>
+                            <div jsfc="ice:panelGroup" rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.metadataFormats}">
                                 <h:selectOneMenu   value="#{EditHarvestSitePage.editHarvestSiteService.selectedMetadataPrefixId}" >
                                     
                                     <f:selectItems  value="#{EditHarvestSitePage.metadataFormatsSelect}" />
                                 </h:selectOneMenu>
                                 <br />
                                 <h:outputText styleClass="vdcHelpText" value="This is the XML format when used harvesting studies from this Server."/>
-                            </ui:panelGroup>  
+                            </div>  
                         </h:panelGrid>
                         
                         <h:panelGrid cellpadding="0" cellspacing="0"
                                      columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" style="margin-top: 30px; margin-bottom: 30px">                       
-                            <ui:panelGroup  >
+                            <div >
                                 <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Handle Registration"/> 
-                            </ui:panelGroup >
-                            <ui:panelGroup>    
+                            </div >
+                            <div>    
                                 <h:selectOneMenu  binding="#{EditHarvestSitePage.handlePrefixSelectOneMenu}" value="#{EditHarvestSitePage.editHarvestSiteService.selectedHandlePrefixId}" >
                                     <f:selectItem itemValue="" itemLabel="Do not register harvested studies (studies must already have a handle)"/>
                                     <f:selectItems  value="#{EditHarvestSitePage.handlePrefixSelect}" />
                                 </h:selectOneMenu>
                                 <br />
                                 
-                            </ui:panelGroup> 
+                            </div> 
                         </h:panelGrid>
                         
                         <div id="scheduleBlock">
                             <h:panelGrid cellpadding="0" cellspacing="0"
                                          columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" style="margin-top: 30px; margin-bottom: 30px">                       
                                 
-                                <ui:panelGroup  >
+                                <div  >
                                     <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Schedule Harvesting?"/> 
-                                </ui:panelGroup >
-                                <ui:panelGroup  >
+                                </div >
+                                <div  >
                                     
                                     <h:selectBooleanCheckbox binding="#{EditHarvestSitePage.scheduledCheckbox}" id="scheduledCheckBox" value="#{EditHarvestSitePage.harvestingDataverse.scheduled}"  onclick='updateScheduleInput();'/>
                                     
-                                </ui:panelGroup >
+                                </div >
                                 
-                                <ui:panelGroup>
+                                <div>
                                     <div id="periodDiv1">
                                         <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Period"/> 
                                     </div>  
-                                </ui:panelGroup>                          
-                                <ui:panelGroup>
+                                </div>                          
+                                <div>
                                     <div id="periodDiv2">
                                         <h:selectOneMenu  binding="#{EditHarvestSitePage.schedulePeriod}" validator="#{EditHarvestSitePage.validateSchedulePeriod}" id="selectSchedulePeriod" value="#{EditHarvestSitePage.harvestingDataverse.schedulePeriod}"  onchange='updateScheduleInput();' >
                                             <f:selectItem itemValue="notSelected" itemLabel="Not Selected"/>
@@ -274,13 +274,13 @@
                                         
                                         <br />
                                     </div>
-                                </ui:panelGroup>  
-                                <ui:panelGroup  >
+                                </div>  
+                                <div  >
                                     <div id="hourOfDayDiv1">
                                         <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Hour of Day "/> 
                                     </div>
-                                </ui:panelGroup >
-                                <ui:panelGroup  >
+                                </div >
+                                <div  >
                                     <!--
                                     <h:inputText required="true" requiredMessage="This field is required." id="inputScheduleHourOfDay" value="#{EditHarvestSitePage.harvestingDataverse.scheduleHourOfDay}">
                                <f:validateLongRange minimum="0" maximum="23" />
@@ -316,14 +316,14 @@
                       
                             <h:message id="inputScheduleHourOfDayMsg" styleClass="errorMessage" for="inputScheduleHourOfDay"/> 
                              
-                          </ui:panelGroup >
+                          </div >
 
-                       <ui:panelGroup  >
+                       <div  >
                                     <div id="dayOfWeekDiv1">
                                         <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Scheduled Harvesting Day Of Week"/> 
                                     </div>
-                                </ui:panelGroup >
-                                <ui:panelGroup  >
+                                </div >
+                                <div  >
                                     <!--    
                                     <h:inputText required="true" requiredMessage="This field is required." id="inputScheduleDayOfWeek" value="#{EditHarvestSitePage.harvestingDataverse.scheduleDayOfWeek}">
                                <f:validateLongRange minimum="1" maximum="7" />
@@ -341,7 +341,7 @@
                           </h:selectOneMenu>     
                              <h:message id="inputScheduleDayOfWeekMsg" styleClass="errorMessage" for="inputScheduleDayOfWeek"/> 
                        
-                       </ui:panelGroup >
+                       </div >
 
                         
                     </h:panelGrid>
@@ -349,32 +349,32 @@
                         
                         <h:panelGrid cellpadding="0" cellspacing="0"
                                      columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" style="margin-top: 30px; margin-bottom: 30px">
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            <div style="vertical-align: top;">
                                 <h:outputText style="white-space: nowrap; padding-right: 10px; " value="File Permissions"/> 
-                            </ui:panelGroup>
-                            <ui:panelGroup>
+                            </div>
+                            <div>
                                 <h:selectOneMenu  id="dropdown3" value="#{EditHarvestSitePage.filesRestricted}" onchange="checkSubsetting(true)">
                                     <f:selectItem   itemLabel="Public" itemValue="false" />
                                     <f:selectItem   itemLabel="Restricted" itemValue="true" />
                                 </h:selectOneMenu>
                                 <br />
                                 <h:outputText styleClass="vdcHelpText" value="Select to make all files for all studies in this dataverse public or restricted."/>
-                            </ui:panelGroup>
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            </div>
+                            <div  style="vertical-align: top;">
                                 <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Subset Permissions"/> 
-                            </ui:panelGroup>
-                            <ui:panelGroup>
+                            </div>
+                            <div>
                                 <h:selectOneMenu  id="dropdown4" value="#{EditHarvestSitePage.subsetRestrictedWrapper}">
                                     <f:selectItem   itemLabel="Public" itemValue="false" />
                                     <f:selectItem   itemLabel="Restricted" itemValue="true" />
                                 </h:selectOneMenu>                                            
                                 <br />
                                 <h:outputText styleClass="vdcHelpText" value="Select to make subsetting for all studies in this dataverse public or restricted."/>
-                            </ui:panelGroup>                                           
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            </div>                                           
+                            <div  style="vertical-align: top;">
                                 <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Allowed Users, if Files are Restricted"/> 
-                            </ui:panelGroup>
-                            <ui:panelGroup>
+                            </div>
+                            <div>
                                 <h:inputText binding="#{EditHarvestSitePage.userInputText}" value="#{EditHarvestSitePage.addUserName}" />
                                 <h:commandButton  value="Add" actionListener="#{EditHarvestSitePage.addUser}" />
                                 
@@ -397,11 +397,11 @@
                                         <h:commandButton  id="removeUserButton" value="Remove User" actionListener="#{EditHarvestSitePage.removeUser}" />                                            
                                     </h:column>
                                 </h:dataTable>                                            
-                            </ui:panelGroup>
-                            <ui:panelGroup block="true" style="vertical-align: top;">
+                            </div>
+                            <div style="vertical-align: top;">
                                 <h:outputText style="white-space: nowrap; padding-right: 10px; " value="Allowed Groups, if Files are Restricted"/> 
-                            </ui:panelGroup>
-                            <ui:panelGroup>
+                            </div>
+                            <div>
                                 <h:inputText value="#{EditHarvestSitePage.addGroupName}" /> <h:commandButton  value="Add"  actionListener="#{EditHarvestSitePage.addGroup}" />
                                 
                                 <br />
@@ -424,19 +424,19 @@
                                     </h:column>
                                 </h:dataTable>                                            
                                 
-                            </ui:panelGroup>
+                            </div>
                         </h:panelGrid>
                         
-                        <ui:panelGroup block="true"  style="padding-left: 160px">
+                        <div style="padding-left: 160px">
                             <h:commandButton id="button1" value="Save"  action="#{EditHarvestSitePage.save}"/>
                             <h:commandButton id="button2" style="margin-left: 20px" immediate="true" value="Cancel" action="#{EditHarvestSitePage.cancel}"/>
                             
-                        </ui:panelGroup>
+                        </div>
                         
                     </div>
                 </div>
             </div>
-        </ui:form>
+        </h:form>
 
     <script type="text/javascript">
         // initial call to disable subsetting Restricted (if needed)

@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -18,7 +18,7 @@
 <gui:param name="pageTitle" value="DVN - Add/Edit Collection" />
 
 <gui:define name="body">
-        <ui:form id="form1" >
+        <h:form id="form1" >
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>                       
             <h:inputHidden id="edit" value="#{AddCollectionsPage.edit}"/>                       
             <h:inputHidden id="collId" value="#{AddCollectionsPage.collId}"/>                       
@@ -83,7 +83,7 @@
                     </div>
                 </div>
             </div>
-        </ui:form>
+        </h:form>
             </gui:define>
         </gui:composition>
     </body>

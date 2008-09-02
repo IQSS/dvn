@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -24,9 +24,9 @@
             <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
             <h:dataTable  id="VDCGroups" value="#{VDCGroupPage.VDCGroups}" var="item" cellspacing="0" style="width:100%; border-width:1px 1px 0px 1px; border-style:solid; border-color:silver; padding:0px;" headerClass="groupEditHeader" columnClasses="groupEditColumnCenter, groupEditColumnLeft, groupEditColumnLeft, groupEditColumnCenter">
                 <f:facet name="caption">
-                    <ui:panelGroup block="true" style="margin-top:25px;border-left:1px solid silver; border-right:1px solid silver;font-size:1.3em;" styleClass="vdcSectionHeader">
+                    <div jsfc="ice:panelGroup"  style="margin-top:25px;border-left:1px solid silver; border-right:1px solid silver;font-size:1.3em;" styleClass="vdcSectionHeader">
                         <h:outputText id="dataTableCaption" value="Dataverse Groups"/>
-                    </ui:panelGroup>
+                    </div>
                 </f:facet>
                 <h:column headerClass="groupEditHeader">
                     <f:facet name="header">

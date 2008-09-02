@@ -4,7 +4,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
@@ -19,7 +19,7 @@ This text will also not be displayed.
 
   <gui:define name="body">
 
-        <ui:form id="NetworkPrivilegedUsersPageView">
+        <h:form id="NetworkPrivilegedUsersPageView">
                <input type="hidden" name="pageName" value="NetworkPrivilegedUsersPage"/>
                
                <div class="dvn_section">
@@ -31,35 +31,35 @@ This text will also not be displayed.
                    <div class="dvn_sectionBox"> 
                        <div class="dvn_margin12">
                            
-                           <ui:panelLayout  styleClass="successMessage" rendered="#{NetworkPrivilegedUsersPage.success}" >
+                           <div jsfc="ice:panelGroup"  styleClass="successMessage" rendered="#{NetworkPrivilegedUsersPage.success}" >
                                <h:outputText value="Update Successful!" />
-                           </ui:panelLayout>
+                           </div>
                            
                            <h:outputText id="outputText4"
                                          styleClass="vdcSubHeaderColor" value="- Creating a New Dataverse:"/>
-                           <ui:panelGroup block="true" id="groupPanel2" style="padding-top: 10px; padding-bottom: 10px">
+                           <div jsfc="ice:panelGroup"  id="groupPanel2" style="padding-top: 10px; padding-bottom: 10px">
                                <h:outputText id="outputText5" value="Allow users to request to create a new Dataverse when they create an account: "/>
                                <h:selectBooleanCheckbox id="checkbox1" value="#{NetworkPrivilegedUsersPage.privileges.network.allowCreateRequest}"/>
-                               <ui:panelGroup block="true" >
+                               <div jsfc="ice:panelGroup"  >
                                    <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                                    <h:outputText styleClass="vdcHelpText" value="By checking this option, your Dataverse Network homepage will display an invitation to create a dataverse (only users without Dataverse creator privileges will see the invitation)."/>
-                               </ui:panelGroup>  
+                               </div>  
 
-                           </ui:panelGroup>
+                           </div>
                            
-                           <ui:panelGroup block="true" style="padding-top: 10px; padding-bottom: 10px">
+                           <div jsfc="ice:panelGroup"  style="padding-top: 10px; padding-bottom: 10px">
                                <h:outputText id="outputText2" styleClass="vdcSubHeaderColor" value="- Network Privileged Users:"/>
-                           </ui:panelGroup>
-                           <ui:panelGroup block="true"  style="padding-bottom: 5px">
+                           </div>
+                           <div jsfc="ice:panelGroup"   style="padding-bottom: 5px">
                                <h:outputText id="outputText7" value="Enter the Username of the user you want to add: "/>
                                <h:inputText  onkeypress="if (window.event) return processEvent('', 'addUserbutton'); else return processEvent(event, 'addUserbutton');" id="textField1" value="#{NetworkPrivilegedUsersPage.userName}"/>
                                <h:commandLink  id="addUserbutton" value="Add" actionListener="#{NetworkPrivilegedUsersPage.addUser}"/>
                                <h:outputText styleClass="errorMessage" value="User Not Found." rendered="#{NetworkPrivilegedUsersPage.userNotFound}"/>
-                           </ui:panelGroup>
-                           <ui:panelGroup block="true" style="padding-bottom: 10px;">
+                           </div>
+                           <div jsfc="ice:panelGroup"  style="padding-bottom: 10px;">
                                <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                                <h:outputText styleClass="vdcHelpText" value="You can add a network privileged user to be another network admin or a Dataverse creator. After privileged users are added to this list, if you want to remove a user, click 'Clear Role' for that user."/>
-                           </ui:panelGroup>
+                           </div>
                            <h:dataTable binding="#{NetworkPrivilegedUsersPage.userTable}" cellpadding="0" cellspacing="0"
                                         columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" 
                                         rowClasses="list-row-even,list-row-odd" value="#{NetworkPrivilegedUsersPage.privileges.privilegedUsers}" var="currentRow" width="98%">
@@ -86,18 +86,18 @@ This text will also not be displayed.
                                </h:column>
                            </h:dataTable>
                            
-                           <ui:panelGroup block="true" id="groupPanel6"
+                           <div jsfc="ice:panelGroup"  id="groupPanel6"
                                           style="padding-bottom: 10px; padding-top: 10px; padding-right: 5px;" styleClass="vdcTextRight">
                                <h:outputText  styleClass="vdcHelpText" value="(Nothing in this page will be saved until you click  Save Changes)"/>  
                                <h:commandButton id="button5" value="Save Changes" action="#{NetworkPrivilegedUsersPage.save}"/>
                                <h:commandButton immediate="true" id = "cancelButton" value="Cancel" action="#{NetworkPrivilegedUsersPage.cancel}"/>   
-                           </ui:panelGroup>
+                           </div>
                            
                        </div>
                    </div>
                </div>
                           
-        </ui:form>
+        </h:form>
             </gui:define>
         </gui:composition>
     </body>

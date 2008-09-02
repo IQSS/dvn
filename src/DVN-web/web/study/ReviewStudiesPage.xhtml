@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -20,7 +20,7 @@
   <gui:define name="body">
 
 
-        <ui:form binding="#{ReviewStudiesPage.form1}" id="form1">
+        <h:form binding="#{ReviewStudiesPage.form1}" id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
             <div class="dvn_section">
@@ -32,10 +32,10 @@
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
                         
-                        <ui:panelGroup block="true" style="padding-bottom: 10px">
+                        <div style="padding-bottom: 10px">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                             <h:outputText  styleClass="vdcHelpText" escape="false" value="When curators or admins add a study, the study is set to 'In Review' by default. Set it to 'Released' if it's ready for users to see it (once study is released, it's not displayed in this page anymore). A study status is set to 'New' when a contributor adds a study. A curator or admin can set to 'In Review' and, when ready, set it to 'Released'. Click the study name to go to the study page and edit/delete options for that study." />
-                        </ui:panelGroup>
+                        </div>
                         
                         <h:dataTable binding="#{ReviewStudiesPage.dataTable1}" cellpadding="0" cellspacing="0"
                                      headerClass="list-header-left vdcColPadded" id="dataTable1" columnClasses="vdcReviewCol1, vdcReviewCol2, vdcReviewCol3, vdcReviewCol4, vdcReviewCol5, vdcReviewCol6"
@@ -134,17 +134,17 @@
                             </h:column>
                         </h:dataTable>
                         
-                        <ui:panelGroup block="true" style="padding-top: 10px" rendered="#{ReviewStudiesPage.displayNoStudiesText}">
+                        <div jsfc="ice:panelGroup" style="padding-top: 10px" rendered="#{ReviewStudiesPage.displayNoStudiesText}">
                             <h:outputText id="noStudiesText" value="There are currently no New studies or studies In Review." styleClass="warnMessage"  />
-                        </ui:panelGroup>
-                        <ui:panelGroup binding="#{ReviewStudiesPage.groupPanel1}" block="true" id="groupPanel1" style="padding-top: 10px" styleClass="vdcTextRight">
+                        </div>
+                        <div jsfc="ice:panelGroup" binding="#{ReviewStudiesPage.groupPanel1}" id="groupPanel1" style="padding-top: 10px" styleClass="vdcTextRight">
                             <h:commandButton binding="#{ReviewStudiesPage.button1}" id="button1" value="Update" actionListener="#{ReviewStudiesPage.updateStudy}"/>
-                        </ui:panelGroup>
+                        </div>
                         
                     </div>
                 </div>
             </div>
-        </ui:form>          
+        </h:form>          
             </gui:define>
         </gui:composition>
     </body>

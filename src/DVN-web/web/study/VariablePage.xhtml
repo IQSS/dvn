@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -20,7 +20,7 @@
   <gui:define name="body">
 
        
-        <ui:form  id="form1">
+        <h:form  id="form1">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             
             <div class="dvn_section">
@@ -37,19 +37,19 @@
                 </div>            
                 <div class="dvn_sectionBoxNoBorders">     
 
-                    <ui:panelGroup  block="true" style="padding-left: 4px;">
+                    <div jsfc="ice:panelGroup"   style="padding-left: 4px;">
                         <h:outputText value="#{VariablePage.variable.unf}"/>
-                    </ui:panelGroup> 
-                    <ui:panelGroup  block="true" style="text-align: right; padding-bottom: 10px;">
+                    </div> 
+                    <div jsfc="ice:panelGroup"   style="text-align: right; padding-bottom: 10px;">
                         <h:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{VariablePage.variable.dataTable.id}">
                             <h:outputText value="See all variables in data file: #{VariablePage.variable.dataTable.studyFile.fileName}"/>
                         </h:outputLink>
-                    </ui:panelGroup>
+                    </div>
                     
-                    <ui:panelGroup block="true" style="margin-bottom: 30px; padding: 20px 10px 20px 10px; border: 1px solid #cccccc; background-color: #f5faff;" rendered="#{!empty VariablePage.variable.summaryStatistics}" >
-                        <ui:panelGroup  block="true" style="padding-bottom: 10px;" styleClass="vdcSubHeaderColor">
+                    <div jsfc="ice:panelGroup"  style="margin-bottom: 30px; padding: 20px 10px 20px 10px; border: 1px solid #cccccc; background-color: #f5faff;" rendered="#{!empty VariablePage.variable.summaryStatistics}" >
+                        <div jsfc="ice:panelGroup"   style="padding-bottom: 10px;" styleClass="vdcSubHeaderColor">
                             <h:outputText value="Summary Statistics"/>
-                        </ui:panelGroup>  
+                        </div>  
                         <h:dataTable     value="#{VariablePage.variable.summaryStatistics}" var="ss" width="500px;" columnClasses="vdcColPadded">
                             <h:column>
                                 <h:outputText  value="#{ss.type.name}" />
@@ -64,12 +64,12 @@
                                 </f:facet>
                             </h:column>                                            
                         </h:dataTable>                        
-                    </ui:panelGroup>    
+                    </div>    
                     
-                <ui:panelGroup block="true" style="padding: 30px 10px 30px 10px; border: 1px solid #cccccc; background-color: #f5faff;" rendered="#{!empty VariablePage.variable.categories}">
-                        <ui:panelGroup  block="true" style="padding-bottom: 10px;" styleClass="vdcSubHeaderColor">
+                <div jsfc="ice:panelGroup"  style="padding: 30px 10px 30px 10px; border: 1px solid #cccccc; background-color: #f5faff;" rendered="#{!empty VariablePage.variable.categories}">
+                        <div jsfc="ice:panelGroup"   style="padding-bottom: 10px;" styleClass="vdcSubHeaderColor">
                             <h:outputText value="Category Statistics"/>
-                        </ui:panelGroup>  
+                        </div>  
                         <h:dataTable   value="#{VariablePage.variable.categories}" var="cs" width="500px;" columnClasses="vdcColPadded">
                             <h:column>
                                 <h:outputText  value="#{cs.label} (#{cs.value})" />
@@ -84,11 +84,11 @@
                                 </f:facet>
                             </h:column>                                            
                         </h:dataTable>   
-                    </ui:panelGroup>
+                    </div>
                     
                 </div>
             </div>
-        </ui:form>
+        </h:form>
             </gui:define>
         </gui:composition>
     </body>

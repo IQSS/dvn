@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -19,7 +19,7 @@
 
   <gui:define name="body">
                             
-        <ui:form binding="#{ManageCollectionsPage.form1}" id="form1">   
+        <h:form binding="#{ManageCollectionsPage.form1}" id="form1">   
          <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
          
          <div class="dvn_section">
@@ -31,9 +31,9 @@
                 <div class="dvn_sectionBox"> 
                         <div class="dvn_margin12"> 
                             
-                            <ui:panelLayout id="statusMessPanel" styleClass="#{ManageCollectionsPage.msg.styleClass}" rendered="#{!empty ManageCollectionsPage.msg.messageText}">
+                            <div jsfc="ice:panelGroup" id="statusMessPanel" styleClass="#{ManageCollectionsPage.msg.styleClass}" rendered="#{!empty ManageCollectionsPage.msg.messageText}">
                                 <h:outputText id="statusMessage" value="#{ManageCollectionsPage.msg.messageText}" />
-                            </ui:panelLayout>
+                            </div>
                             
                             <div>
                             <span style="padding: 10px">
@@ -77,7 +77,7 @@
                         </div>
                     </div>
                 </div>
-        </ui:form>
+        </h:form>
             </gui:define>
         </gui:composition>
     </body>

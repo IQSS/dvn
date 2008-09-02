@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -20,7 +20,7 @@
   <gui:define name="body">
 
 
-        <ui:form  id="form1"> 
+        <h:form  id="form1"> 
           <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
           
             <div class="dvn_section">
@@ -34,10 +34,10 @@
                         
                        <h:messages  layout="list" showDetail="false" showSummary="true" styleClass="successMessage" />                        
 
-                        <ui:panelGroup block="true" style="padding-bottom: 15px">
+                        <div jsfc="ice:panelGroup"  style="padding-bottom: 15px">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                             <h:outputText styleClass="vdcHelpText" value="By enabling these Terms of Use, users will be asked to agree to them when creating an account in the #{VDCRequest.vdcNetwork.name} Dataverse Network."/>
-                        </ui:panelGroup>
+                        </div>
                         
                         <h:outputText value="Enable Terms of Use?"/>
                         <h:selectBooleanCheckbox value="#{EditAccountUseTermsPage.termsOfUseEnabled}"/>
@@ -57,14 +57,14 @@
                             </h:panelGroup>
                             
                         </h:panelGrid>
-                        <ui:panelGroup block="true" id="groupPanel2" style="padding-left: 140px; padding-top: 20px">
+                        <div jsfc="ice:panelGroup"  id="groupPanel2" style="padding-left: 140px; padding-top: 20px">
                             <h:commandButton id="button1" value="Save" action="#{EditAccountUseTermsPage.save_action}"/>
                             <h:commandButton id="button2" style="margin-left: 30px" value="Cancel" action="#{EditAccountUseTermsPage.cancel_action}"/>
-                        </ui:panelGroup>
+                        </div>
                     </div> 
                 </div>
             </div>
-        </ui:form>             
+        </h:form>             
             </gui:define>
         </gui:composition>
     </body>

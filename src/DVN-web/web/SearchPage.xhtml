@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:t="/WEB-INF/tlds/scroller"
       >
 <head>
@@ -92,8 +92,8 @@
     <!-- Search Section ends here -->
                    
     <!-- Start Search Results (with side panel, if available) -->      
-      <ui:panelLayout styleClass="#{ (SearchPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'}" >  
-           <ui:panelLayout styleClass="#{ (SearchPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}" >    	
+      <div jsfc="ice:panelGroup"  styleClass="#{ (SearchPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'}" >  
+           <div jsfc="ice:panelGroup"  styleClass="#{ (SearchPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}" >    	
               <div class="dvn_sectionTitle">
                   <a name="recent" title="">
                       <h:outputText value="#{SearchPage.listHeader}" />
@@ -110,15 +110,15 @@
                       
                       <h:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2" width="98%"
                                     styleClass="vdcSResultsTop" rendered="#{SearchPage.renderSort or SearchPage.renderScroller}">
-                          <ui:panelGroup id="groupPanel5" rendered="#{SearchPage.renderSort}">
+                         <div jsfc="ice:panelGroup" id="groupPanel5" rendered="#{SearchPage.renderSort}">
                               <h:selectOneMenu id="dropdown2" valueChangeListener="#{SearchPage.sort_action}" onchange="submit();">
                                   <f:selectItem itemLabel="Sort By:" itemValue="" />
                                   <f:selectItem itemLabel="- Study ID" itemValue="studyId" />
                                   <f:selectItem itemLabel="- Title" itemValue="title" />
                               </h:selectOneMenu>
-                          </ui:panelGroup>
+                          </div>
                           
-                          <ui:panelGroup block="true" id="groupPanel4" rendered="#{SearchPage.renderScroller}">
+                          <div jsfc="ice:panelGroup"  id="groupPanel4" rendered="#{SearchPage.renderScroller}">
                               <t:scroller binding="#{SearchPage.scroller}" for="dataTable1" actionListener="#{SearchPage.scroll_action}">
                                   <f:facet name="previous">
                                       <h:graphicImage id="scrollBack" value="/resources/arrow-left.gif" styleClass="vdcNoBorders" />
@@ -127,21 +127,21 @@
                                       <h:graphicImage id="scrollNext" value="/resources/arrow-right.gif" styleClass="vdcNoBorders" />
                                   </f:facet>                                            
                               </t:scroller>
-                          </ui:panelGroup>
+                          </div>
                       </h:panelGrid>
             
                       <h:dataTable binding="#{SearchPage.studyTable}" rows="10" headerClass="list-header" id="dataTable1" width="98%"
                                     rowClasses="list-row-odd, list-row-even" columnClasses="vdcSResultsList" value="#{SearchPage.studies}" var="studyUI">
                           <h:column id="column1">
-                              <ui:panelGroup block="true" id="groupPanel1" style="padding-bottom: 5px">
+                              <div jsfc="ice:panelGroup" id="groupPanel1" style="padding-bottom: 5px">
                                   
                                   <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}&amp;studyListingIndex=#{SearchPage.studyListingIndex}"  id="hyperlink3">
                                       <h:outputText id="hyperlink3Text" value="#{studyUI.study.title}" />
                                   </h:outputLink>
                                   <h:outputText styleClass="dvn_SResultsGlobalId" value=" (#{studyUI.study.globalId})" />
                                   <h:outputText id="outputText13" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}" />
-                              </ui:panelGroup> 
-                              <ui:panelGroup block="true" id="groupPanel1b">
+                              </div> 
+                              <div>
                                   <h:graphicImage alt="This study contains no files." rendered="#{!studyUI.files}"
                                                   title="This study contains no files." value="/resources/icon_nofiles.gif" />
                                   <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}&amp;tab=files&amp;studyListingIndex=#{SearchPage.studyListingIndex}" rendered="#{studyUI.files}">
@@ -151,52 +151,52 @@
                                                       title="This study contains only non-subsettable files." value="/resources/icon_files.gif" />
                                   </h:outputLink>
                                   <h:outputText id="outputText18" value=" #{studyUI.downloadCount}" rendered="#{studyUI.files}" /><h:outputText value=" downloads" rendered="#{studyUI.files and studyUI.downloadCount != 1}" /><h:outputText value=" download" rendered="#{studyUI.files and studyUI.downloadCount == 1}" />
-                              </ui:panelGroup>
+                              </div>
                               
-                              <ui:panelGroup block="true" id="groupPanel2" rendered="#{studyUI.abstracts != null and studyUI.abstracts != ''}" >
+                              <div jsfc="ice:panelGroup"  id="groupPanel2" rendered="#{studyUI.abstracts != null and studyUI.abstracts != ''}" >
                                   <h:outputText id="outputText10" styleClass="vdcSResultsField" value="Abstract:" />
                                   <h:outputText id="outputText14" styleClass="vdcAbstractSResults" escape="false" value="#{studyUI.truncatedAbstracts}" />
                                   
-                                  <!-- <ui:panelGroup block="true" styleClass="vdcAbstractSResults"> 
+                                  <!-- <div jsfc="ice:panelGroup"  styleClass="vdcAbstractSResults"> 
                                       <h:outputText  id="outputText14" escape="false" value="#{studyUI.truncatedAbstracts}" />
-                                  </ui:panelGroup> -->
-                              </ui:panelGroup>
-                              <ui:panelGroup block="true" id="groupPanel7" rendered="#{studyUI.study.productionDate != null and studyUI.study.productionDate != ''}">
+                                  </div> -->
+                              </div>
+                              <div jsfc="ice:panelGroup" id="groupPanel7" rendered="#{studyUI.study.productionDate != null and studyUI.study.productionDate != ''}">
                                   <h:outputText id="outputText15" styleClass="vdcSResultsField" value="Production Date:" />
                                   <h:outputText id="outputText11" value="#{studyUI.study.productionDate}" />
-                              </ui:panelGroup>
+                              </div>
                               
                               <!-- Optional search fields  -->
-                              <ui:panelGroup block="true" rendered="#{!empty SearchPage.studyFields[sfc.producerName]  and !empty studyUI.producers}">
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.producerName]  and !empty studyUI.producers}">
                                   <h:outputText value="Producer:" styleClass="vdcSResultsField" />
                                   <h:outputText value="#{studyUI.producers}" escape="false" />
-                              </ui:panelGroup>
-                              <ui:panelGroup block="true" rendered="#{!empty SearchPage.studyFields[sfc.distributionDate]  and !empty studyUI.study.distributionDate}">
+                              </div>
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.distributionDate]  and !empty studyUI.study.distributionDate}">
                                   <h:outputText value="Distribution Date:" styleClass="vdcSResultsField" />
                                   <h:outputText value="#{studyUI.study.distributionDate}" escape="false" />
-                              </ui:panelGroup>
-                              <ui:panelGroup block="true" rendered="#{!empty SearchPage.studyFields[sfc.distributorName]  and !empty studyUI.distributors}">
+                              </div>
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.distributorName]  and !empty studyUI.distributors}">
                                   <h:outputText value="Distributor:" styleClass="vdcSResultsField" />
                                   <h:outputText value="#{studyUI.distributors}" escape="false" />
-                              </ui:panelGroup>
-                              <ui:panelGroup block="true" rendered="#{!empty SearchPage.studyFields[sfc.replicationFor]  and !empty studyUI.study.replicationFor}">
+                              </div>
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.replicationFor]  and !empty studyUI.study.replicationFor}">
                                   <h:outputText value="Replication For:" styleClass="vdcSResultsField" />
                                   <h:outputText value="#{studyUI.study.replicationFor}" escape="false" />
-                              </ui:panelGroup>
-                              <ui:panelGroup block="true" rendered="#{!empty SearchPage.studyFields[sfc.relatedPublications]  and !empty studyUI.relPublications}">
+                              </div>
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.relatedPublications]  and !empty studyUI.relPublications}">
                                   <h:outputText value="Related Publications:" styleClass="vdcSResultsField" />
                                   <h:outputText value="#{studyUI.relPublications}" escape="false" />
-                              </ui:panelGroup>
-                              <ui:panelGroup block="true" rendered="#{!empty SearchPage.studyFields[sfc.relatedMaterial]  and !empty studyUI.relMaterials}">
+                              </div>
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.relatedMaterial]  and !empty studyUI.relMaterials}">
                                   <h:outputText value="Related Material:" styleClass="vdcSResultsField" />
                                   <h:outputText value="#{studyUI.relMaterials}" escape="false" />
-                              </ui:panelGroup>
-                              <ui:panelGroup block="true" rendered="#{!empty SearchPage.studyFields[sfc.relatedStudies]  and !empty studyUI.relStudies}">
+                              </div>
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.relatedStudies]  and !empty studyUI.relStudies}">
                                   <h:outputText value="Related Studies:" styleClass="vdcSResultsField" />
                                   <h:outputText value="#{studyUI.relStudies}" escape="false" />
-                              </ui:panelGroup>
+                              </div>
                               
-                              <ui:panelGroup block="true" rendered="#{ !empty studyUI.foundInVariables}">
+                              <div jsfc="ice:panelGroup"  rendered="#{ !empty studyUI.foundInVariables}">
                                   <h:outputText value="Found In Variables:" styleClass="vdcSResultsField" />
                                   <h:dataTable id="dvDataTable" value="#{studyUI.foundInVariables}" var="dv" width="100%">
                                       <h:column>
@@ -211,18 +211,18 @@
                                           <h:outputText value="#{dv.dataTable.studyFile.fileName}" />
                                       </h:column>
                                   </h:dataTable>
-                              </ui:panelGroup>                                    
+                              </div>                                    
                           
                           </h:column>
                       </h:dataTable>
                       
                       <h:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22" width="98%"
                                     styleClass="vdcSResultsTop" rendered="#{SearchPage.renderSort or SearchPage.renderScroller}">
-                          <ui:panelGroup id="groupPanel55" rendered="#{SearchPage.renderSort}">
+                          <div jsfc="ice:panelGroup"  id="groupPanel55" rendered="#{SearchPage.renderSort}">
                               
-                          </ui:panelGroup>
+                          </div>
                           
-                          <ui:panelGroup block="true" id="groupPanel44" rendered="#{SearchPage.renderScroller}">
+                          <div jsfc="ice:panelGroup"  id="groupPanel44" rendered="#{SearchPage.renderScroller}">
                               <t:scroller binding="#{SearchPage.scroller2}" for="dataTable1" actionListener="#{SearchPage.scroll_action}">
                                   <f:facet name="previous">
                                       <h:graphicImage id="scrollBack2" value="/resources/arrow-left.gif" styleClass="vdcNoBorders" />
@@ -231,20 +231,14 @@
                                       <h:graphicImage id="scrollNext2" value="/resources/arrow-right.gif" styleClass="vdcNoBorders" />
                                   </f:facet>                                            
                               </t:scroller>
-                          </ui:panelGroup>
+                          </div>
                       </h:panelGrid>
                       
                   </div>
               </div>   
-          </ui:panelLayout>
+          </div>
           
-          <ui:panelGroup block="true" rendered="#{SearchPage.renderTree}" styleClass="dvn_sectionPanels">
-              <div class="dvn_block"><span><h:outputText value="#{SearchPage.treeHeader}"/></span>
-                <ui:tree binding="#{SearchPage.collectionTree}" id="collectionTree" text="" />
-              </div>    
-          </ui:panelGroup>
-          
-      </ui:panelLayout>   
+      </div>   
     
       </div>
       <!-- Main Section ends here -->

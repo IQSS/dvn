@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -20,7 +20,7 @@
   <gui:define name="body">
       <f:loadBundle basename="Bundle" var="bundle"/>   
 
-        <ui:form  id="ContributorRequestForm">
+        <h:form  id="ContributorRequestForm">
           <input type="hidden" name="pageName" value="ContributorRequestPage"/>
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
@@ -72,7 +72,7 @@
         </div>
     </div>
 
-        </ui:form>
+        </h:form>
             </gui:define>
         </gui:composition>
     </body>

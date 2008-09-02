@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
           
 <head>
@@ -21,7 +21,7 @@
   <gui:define name="body">
 
                             
-        <ui:form  id="editContactUsForm">
+        <h:form  id="editContactUsForm">
             <h:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             
             <div class="dvn_section">
@@ -35,19 +35,19 @@
  
                         <h:messages  layout="list" showDetail="false" showSummary="true" styleClass="successMessage" />
                         
-                        <ui:helpInline  id="helpInline1" style="margin-bottom: 20px" text="#{bundle.editContactUsHelpMsg}"/>
-                        <ui:panelGroup>
+                        <h:outputText  id="helpInline1" style="margin-bottom: 20px" value="#{bundle.editContactUsHelpMsg}"/>
+                        <div jsfc="ice:panelGroup">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                             <h:outputText id="outputText4" styleClass="vdcHelpText" value="Separate multiple email addresses with a comma (and no spaces). Example: admin@mydvn.edu,user@mydvn.edu"/>
-                        </ui:panelGroup>
+                        </div>
                         <br />
                         <h:panelGrid  cellpadding="0" cellspacing="0"
                                       columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
                             
-                            <ui:panelGroup  id="groupPanel2">
+                            <div jsfc="ice:panelGroup"  id="groupPanel2">
                                 <h:outputText  id="outputText5" value="#{bundle.editContactUsEmailLabel}"/>
                                 <h:graphicImage  id="image1" value="#{bundle.iconRequired}"/>
-                            </ui:panelGroup>
+                            </div>
                             
                             <h:inputText onkeypress="if (window.event) return processEvent('', 'editContactUsForm:btnSave'); else return processEvent('editContactUsForm:btnSave');"  
                                          id="contactUsEmail" 
@@ -63,15 +63,15 @@
                                        for="contactUsEmail"
                                        styleClass="errorMessage"/>
                         </h:panelGrid>
-                        <ui:panelGroup  block="true" id="groupPanel6" style="padding-left: 140px; padding-top: 20px">
+                        <div jsfc="ice:panelGroup"   id="groupPanel6" style="padding-left: 140px; padding-top: 20px">
                             <h:commandButton  id="btnSave" value="#{bundle.saveButtonLabel}" action="#{EditContactUsPage.save_action}"/>
                             <h:commandButton  id="btnCancel" style="margin-left: 30px" immediate="true" value="#{bundle.cancelButtonLabel}" action="#{EditContactUsPage.cancel_action}"/>
-                        </ui:panelGroup>
+                        </div>
                     </div>   
                 </div>
             </div>
               
-        </ui:form>              
+        </h:form>              
             </gui:define>
         </gui:composition>
     </body>

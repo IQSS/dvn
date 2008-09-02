@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -19,7 +19,7 @@
             
         <gui:define name="body">
             
-            <ui:form id="form1">
+            <h:form id="form1">
                 <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
                     
                 <div class="dvn_section">
@@ -28,7 +28,7 @@
                     </div>            
                     <div class="dvn_sectionBox">             
                         <div class="dvn_margin12">
-                            <ui:panelGroup block="true" rendered="#{VDCSession.loginBean.contributor and not VDCRequest.currentVDC.harvestingDv}">
+                            <div jsfc="ice:panelGroup"  rendered="#{VDCSession.loginBean.contributor and not VDCRequest.currentVDC.harvestingDv}">
                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                     <tr><td colspan="2" class="dvnOptionsTableHeader"><h:outputText value="#{bundle.ContributorSection}"/></td></tr>
                                     <tr>
@@ -48,9 +48,9 @@
                                         <td><h:outputText class="dvnOptionsTableNote" value="#{bundle.MyStudiesHelp}"/></td>
                                     </tr>
                                 </table>
-                            </ui:panelGroup>   
+                            </div>   
                                 
-                            <ui:panelGroup block="true" rendered="#{VDCSession.loginBean.curator or VDCSession.loginBean.admin or VDCSession.loginBean.networkAdmin}">
+                            <div jsfc="ice:panelGroup"  rendered="#{VDCSession.loginBean.curator or VDCSession.loginBean.admin or VDCSession.loginBean.networkAdmin}">
                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                     <tr><td colspan="2" class="dvnOptionsTableHeader"><h:outputText value="#{bundle.CuratorSection}"/></td></tr>                                    
                                     <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
@@ -96,9 +96,9 @@
                                         <td><h:outputText class="dvnOptionsTableNote" value="#{bundle.CollectionsHelp}"/></td>
                                     </tr>
                                 </table>                                    
-                            </ui:panelGroup>
+                            </div>
                                 
-                            <ui:panelGroup block="true" rendered="#{VDCSession.loginBean.admin == true or VDCSession.loginBean.networkAdmin == true}">
+                            <div jsfc="ice:panelGroup"  rendered="#{VDCSession.loginBean.admin == true or VDCSession.loginBean.networkAdmin == true}">
                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                     <tr><td colspan="2" class="dvnOptionsTableHeader"><h:outputText value="#{bundle.DvSettingsSection}"/></td></tr>
                                     <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
@@ -204,11 +204,11 @@
                                         <td><h:outputText class="dvnOptionsTableNote" value="#{bundle.AddAccountHelp}"/></td>
                                     </tr>
                                 </table>
-                            </ui:panelGroup> 
+                            </div> 
                         </div>
                     </div>
                 </div>
-            </ui:form>                
+            </h:form>                
         </gui:define>
     </gui:composition>
 </body>

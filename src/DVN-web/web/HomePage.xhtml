@@ -5,7 +5,6 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
@@ -26,17 +25,17 @@
          <ice:form>
            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
            <!-- Success Message -->
-         <ui:panelLayout styleClass="#{HomePage.msg.styleClass}" rendered="#{!empty HomePage.msg.messageText}">
+         <div jsfc="ice:panelGroup" styleClass="#{HomePage.msg.styleClass}" rendered="#{!empty HomePage.msg.messageText}">
            <h:outputText id="statusMessage" escape="false" value="#{HomePage.msg.messageText}" />
-         </ui:panelLayout>
+         </div>
        
-           <ui:panelGroup styleClass="dvn_hmpgMainMessage" block="true" rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
+           <div jsfc="ice:panelGroup" styleClass="dvn_hmpgMainMessage"  rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
                 <h:outputText id="networkAnnouncementsMessages" escape="false" value="#{HomePage.parsedNetworkAnnouncements}"/>
-            </ui:panelGroup>
+            </div>
             
-            <ui:panelGroup styleClass="dvn_hmpgMainMessage" rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" id="announcementsHeaderPanel" block="true">
+            <div jsfc="ice:panelGroup" styleClass="dvn_hmpgMainMessage" rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" id="announcementsHeaderPanel" >
                 <h:outputText rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" escape="false" value="#{HomePage.parsedLocalAnnouncements}"/>
-            </ui:panelGroup>
+            </div>
       
          <!-- Main Section starts here -->
          <div id="dvn_mainSection">
@@ -45,19 +44,19 @@
               <h:outputText value="Studies" rendered="#{VDCRequest.currentVDC != null}" />
               </div>
       
-              <ui:panelGroup id="createDataverse" block="true" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestCreator}">
+              <div jsfc="ice:panelGroup" id="createDataverse"  styleClass="requestHmpgSide" rendered="#{HomePage.showRequestCreator}">
                   <h:outputLink styleClass="requestHmpgSideLink"  value="/dvn/login/CreatorRequestInfoPage.xhtml">
                            <h:outputText value="Create your own Dataverse" escape="false"/>
                   </h:outputLink>
                  
-              </ui:panelGroup>
+              </div>
               
-               <ui:panelGroup id="beContributor" block="true" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestContributor}">
+               <div jsfc="ice:panelGroup" id="beContributor"  styleClass="requestHmpgSide" rendered="#{HomePage.showRequestContributor}">
                     <h:outputLink styleClass="requestHmpgSideLink"  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/login/ContributorRequestInfoPage.xhtml">
                         <h:outputText value="Become a Contributor" escape="false"/>
                     </h:outputLink>
                 
-              </ui:panelGroup>
+              </div>
 
               <!-- Search Section starts here -->                                       
               <div class="dvn_searchblock">
@@ -117,9 +116,7 @@
                 <!-- datalist component for NETWORK HOME PAGE -->
                         <h:outputText escape="false" value="#{HomePage.networkData}"/>
               <!-- THE DV GROUPS AND DVS GO HERE -->
-              <!-- Dataverse Homepage -->
-                <!-- Display Tree at dataverse level -->
-               <!-- <ui:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/> -->
+              
                </p>
         </div>
         <div align="right" jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }" styleClass="dataPaginator">
@@ -267,8 +264,14 @@
     </ice:panelSeries>
             <ice:messages></ice:messages>
             <!-- Dataverse Homepage -->
-                    <!-- Display Tree at dataverse level -->
-            <ui:tree binding="#{HomePage.collectionTree}" id="collectionTree" text="" rendered="#{VDCRequest.currentVDC != null}"/>
+            
+            
+                    <!-- This is temporary until Dataverse homepage ans search results page are changed -->
+            
+               <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/SearchPage.xhtml?mode=1&amp;collectionId=#{VDCRequest.currentVDC.rootCollection.id}" rendered="#{VDCRequest.currentVDC != null}">
+                    <h:outputText value="#{VDCRequest.currentVDC.name} Dataverse - Study Listing (temporary link)" />
+                </h:outputLink>
+           
 </ice:form>
         
 

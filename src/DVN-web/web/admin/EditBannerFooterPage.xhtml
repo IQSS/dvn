@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html" 
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page" 
-      xmlns:ui="http://www.sun.com/web/ui"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
      >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
@@ -20,7 +20,7 @@
   <gui:define name="body">
 
 
-    <ui:form id="editBannerFooterForm">
+    <h:form id="editBannerFooterForm">
         <h:inputHidden rendered="#{VDCRequest.currentVDC != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         
         <div class="dvn_section">
@@ -32,10 +32,10 @@
 
                         <h:messages layout="list" globalOnly="true" styleClass="successMessage" />
                         
-                        <ui:panelGroup block="true" style="padding-bottom: 10px">
+                        <div jsfc="ice:panelGroup"  style="padding-bottom: 10px">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                             <h:outputText id="htmlHelp" styleClass="vdcHelpText" value="#{bundle.htmlHelpText}"/>
-                        </ui:panelGroup>
+                        </div>
                         <h:panelGrid cellpadding="0" cellspacing="0"
                                      columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2" style="margin-top: 10px">
                             <h:outputText  id="outputText2" styleClass="vdcFieldTitle" value="#{bundle.editCustomBannerLabel}"/>
@@ -70,14 +70,14 @@
                             </h:panelGroup>
                             
                         </h:panelGrid>
-                        <ui:panelGroup  block="true" id="groupPanel1" style="padding-left: 200px; padding-top: 20px">
+                        <div jsfc="ice:panelGroup"   id="groupPanel1" style="padding-left: 200px; padding-top: 20px">
                             <h:commandButton id="btnSave" value="#{bundle.saveButtonLabel}" action="#{EditBannerFooterPage.save_action}"/>
                             <h:commandButton id="btnCancel" immediate="true" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditBannerFooterPage.cancel_action}"/>
-                        </ui:panelGroup>
+                        </div>
                     </div>
                </div>
             </div>
-        </ui:form>
+        </h:form>
             </gui:define>
         </gui:composition>
     </body>

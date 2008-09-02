@@ -5,7 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://www.sun.com/web/ui"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
       >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
@@ -22,11 +22,11 @@ This text will also not be displayed.
 
         <h:form id="vdcGroupPageForm">
             
-            <ui:panelGroup rendered="#{VDCGroupPage.success}" styleClass="successMessage" >
+            <div jsfc="ice:panelGroup" rendered="#{VDCGroupPage.success}" styleClass="successMessage" >
                  <h:messages  layout="list" showDetail="false" showSummary="true"/>
-            </ui:panelGroup>
+            </div>
             
-            <!--<ui:panelLayout panelLayout="flow" styleClass="dvGroupAdminLayout"> -->
+            <!--<div jsfc="ice:panelGroup" panelLayout="flow" styleClass="dvGroupAdminLayout"> -->
             
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">    
@@ -34,16 +34,16 @@ This text will also not be displayed.
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
-                         <ui:panelGroup block="true" >
+                         <div jsfc="ice:panelGroup"  >
                                     <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                                     <h:outputText  styleClass="vdcHelpText" value="You can create dataverse groups to organize the dataverses in the Network Homepage. A dataverse can belong to multiple groups. Any dataverse that is not part of a group will be displayed in an 'Other' category at the bottom of the Network Homepage. 
                                     Keep in mind that if you want to move a dataverse from one group to another, you will need to explicitly remove it from one group and add it to the other. To change the order, enter a display order number, and then click Save. "/>
-                        </ui:panelGroup>
+                        </div>
                         <br />
                         <br />
-                         <ui:panelGroup block="true" >
+                         <div jsfc="ice:panelGroup"  >
                             <h:message for="defaultDisplayNumber" styleClass="errorMessage"/>
-                         </ui:panelGroup>
+                         </div>
                         <h:panelGroup layout="block">
                             <h:outputLabel value="1)  Number of dataverses to display per group, per page."/>
                             <h:inputText id="defaultDisplayNumber" 
@@ -117,9 +117,9 @@ This text will also not be displayed.
                             </h:column>
                         </h:dataTable>
                         
-                        <ui:panelGroup rendered="#{VDCGroupPage.VDCGroups == null}" block="true" style="padding-top: 0.5em; padding-bottom: 0.5em;">
+                        <div jsfc="ice:panelGroup" rendered="#{VDCGroupPage.VDCGroups == null}"  style="padding-top: 0.5em; padding-bottom: 0.5em;">
                             <h:outputText escape="false" value="There are no Dataverse groups to display"/> 
-                        </ui:panelGroup>
+                        </div>
                         <h:panelGrid columns="5" styleClass="dvGroupAdminFooter" columnClasses="groupAdminOrderFooter, groupAdminNameFooter, groupAdminDescriptionFooter, groupAdminDeleteFooter" cellspacing="0">
                             <h:column><h:outputText escape="false" value="&lt;!-- placeholder --&gt;"/></h:column>
                             <h:column><h:commandLink id="add" value="Add Group" action="#{VDCGroupPage.addGroup}"/></h:column>

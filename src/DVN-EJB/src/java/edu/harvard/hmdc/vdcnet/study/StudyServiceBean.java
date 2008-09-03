@@ -6,7 +6,7 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -55,6 +55,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -132,7 +133,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     /**
      * Add given Study to persistent storage.
      */
-    /*  Commented out - not used  
+    /*  Commented out - not used
     public void addStudy(Study study) {
     // For each collection of dependent objects, set the relationship to this study.
     if (study.getStudyAbstracts() != null) {
@@ -143,18 +144,18 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
     if (study.getStudyOtherIds() != null) {
     for (Iterator<StudyOtherId> it = study.getStudyOtherIds().iterator(); it.hasNext();) {
-    
+
     StudyOtherId elem = it.next();
     elem.setStudy(study);
     }
     }
-    
+
     Template template = study.getTemplate();
     study.setTemplate(null);
     em.persist(study);
     study.setTemplate(template);
-    
-    
+
+
     }
      */
     public void updateStudy(Study detachedStudy) {
@@ -183,18 +184,18 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     public void deleteStudyList(List<Long> studyIds) {
         indexService.deleteIndexList(studyIds);
-        for (Long studyId : studyIds) {         
+        for (Long studyId : studyIds) {
             studyService.deleteStudyInNewTransaction(studyId, false);
         }
 
     }
-    
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void deleteStudyInNewTransaction(Long studyId, boolean deleteFromIndex) {
         deleteStudy(studyId, deleteFromIndex);
     }
-    
- 
+
+
     public void deleteStudy(Long studyId, boolean deleteFromIndex) {
         long start = new Date().getTime();
         logger.info("DEBUG: 0\t - deleteStudy - BEGIN");
@@ -210,7 +211,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
         logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete data variables");
         studyService.deleteDataVariables(study.getId());
-        
+
         logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete relationships");
         study.getAllowedGroups().clear();
         study.getAllowedUsers().clear();
@@ -226,7 +227,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 elem.getDataTable().getDataVariables().clear();
             }
         }
-        
+
         logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete physical files");
         File studyDir = new File(FileUtil.getStudyFileDir() + File.separator + study.getAuthority() + File.separator + study.getStudyId());
         if (studyDir.exists()) {
@@ -244,16 +245,16 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         // remove from HarvestStudy table
         logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from HarvestStudy");
         harvestStudyService.markHarvestStudiesAsRemoved( harvestStudyService.findHarvestStudiesByGlobalId( study.getGlobalId() ), new Date() );
-        
+
         logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from DB and gnrs");
         em.remove(study);
         gnrsService.delete(study.getAuthority(), study.getStudyId());
-        
+
         logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from Index");
         if (deleteFromIndex) {
             indexService.deleteStudy(studyId);
         }
-        
+
         logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - right before flush");
         em.flush();  // Force study deletion to the database, for cases when we are calling this before deleting the owning Dataverse
         logger.info("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - FINISH");
@@ -510,7 +511,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         return returnList;
     }
-    
+
     public List<Long> getAllNonHarvestedStudyIds() {
         String queryStr = "select id from study where isharvested='false'";
         Query query = em.createNativeQuery(queryStr);
@@ -522,7 +523,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
 
         return returnList;
-    }    
+    }
 
     public List getOrderedStudies(List studyIdList, String orderBy) {
         String studyIds = "";
@@ -987,7 +988,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     // copy study files.
     File studyDir = new File(FileUtil.getStudyFileDir() + File.separatorChar + authority + File.separatorChar + study.getStudyId());
     File legacyStudyDir = new File(FileUtil.getLegacyFileDir() + File.separatorChar + authority + File.separatorChar + study.getStudyId());
-    
+
     // If the directory exists in the legacy system, then clear out all the files contained in it
     if (legacyStudyDir.exists() && legacyStudyDir.isDirectory()) {
     File[] files = legacyStudyDir.listFiles();
@@ -997,7 +998,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     } else {
     legacyStudyDir.mkdirs();
     }
-    
+
     // Export the study to study.xml in the legacy directory
     FileWriter fileWriter = new FileWriter(new File(legacyStudyDir, "study.xml"));
     try {
@@ -1006,9 +1007,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     } finally {
     fileWriter.close();
     }
-    
+
     // Copy all the study files to the legacy directory
-    
+
     for (Iterator it = study.getStudyFiles().iterator(); it.hasNext();) {
     StudyFile studyFile = (StudyFile) it.next();
     FileUtil.copyFile(new File(studyDir, studyFile.getFileSystemName()), new File(legacyStudyDir, studyFile.getFileSystemName()));
@@ -1073,7 +1074,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             em.remove(lock);
         }
     }
-    
+
     public void incrementNumberOfDownloads(Long studyFileId) {
         incrementNumberOfDownloads( studyFileId, new Date() );
     }
@@ -1096,7 +1097,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         String queryStr = "SELECT r FROM RemoteAccessAuth r WHERE r.hostName= :hostName" ;
 
         RemoteAccessAuth remoteAuth = null;
-	
+
         try {
             Query query = em.createQuery(queryStr);
             query.setParameter("hostName", hostName);
@@ -1109,7 +1110,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
         return remoteAuth;
     }
-	
+
 
     public Study getStudyByGlobalId(String identifier) {
 
@@ -1260,7 +1261,42 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
     }
 
+    public void changeTemplate(Long templateId, Study study) {
+        Template newTemplate = em.find(Template.class, templateId);
+        // Clear existing metadata from study
+        clearCollection(study.getStudyAbstracts());
+        clearCollection(study.getStudyAuthors());
+        clearCollection(study.getStudyDistributors());
+        clearCollection(study.getStudyGeoBoundings());
+        clearCollection(study.getStudyGrants());
+        clearCollection(study.getStudyKeywords());
+        clearCollection(study.getStudyNotes());
+        clearCollection(study.getStudyOtherIds());
+        clearCollection(study.getStudyOtherRefs());
+        clearCollection(study.getStudyProducers());
+        clearCollection(study.getStudyRelMaterials());
+        clearCollection(study.getStudyRelPublications());
+        clearCollection(study.getStudyRelStudies());
+        clearCollection(study.getStudySoftware());
+        clearCollection(study.getStudyTopicClasses());
+
+        // Copy Template Metadata into Study Metadata
+        newTemplate.getMetadata().copyMetadata(study.getMetadata());
+        //FacesContext.getCurrentInstance( ).renderResponse( );
+    }
+
+    private void clearCollection(Collection collection) {
+        if (collection!=null) {
+            for (Iterator it = collection.iterator(); it.hasNext();) {
+                Object elem =  it.next();
+                it.remove();
+                em.remove(elem);
+            }
+        }
+    }
+
     private void clearStudy(Study study) {
+        // first delete variables via query (for performance)
         deleteDataVariables(study.getId());
 
         for (StudyFile elem : study.getStudyFiles()) {
@@ -1269,161 +1305,56 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             }
         }
 
-        for (Iterator iter = study.getFileCategories().iterator(); iter.hasNext();) {
-            FileCategory elem = (FileCategory) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyAbstracts().iterator(); iter.hasNext();) {
-            StudyAbstract elem = (StudyAbstract) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyAuthors().iterator(); iter.hasNext();) {
-            StudyAuthor elem = (StudyAuthor) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyDistributors().iterator(); iter.hasNext();) {
-            StudyDistributor elem = (StudyDistributor) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyGeoBoundings().iterator(); iter.hasNext();) {
-            StudyGeoBounding elem = (StudyGeoBounding) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyGrants().iterator(); iter.hasNext();) {
-            StudyGrant elem = (StudyGrant) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyKeywords().iterator(); iter.hasNext();) {
-            StudyKeyword elem = (StudyKeyword) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyNotes().iterator(); iter.hasNext();) {
-            StudyNote elem = (StudyNote) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyOtherIds().iterator(); iter.hasNext();) {
-            StudyOtherId elem = (StudyOtherId) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyOtherRefs().iterator(); iter.hasNext();) {
-            StudyOtherRef elem = (StudyOtherRef) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyProducers().iterator(); iter.hasNext();) {
-            StudyProducer elem = (StudyProducer) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyRelMaterials().iterator(); iter.hasNext();) {
-            StudyRelMaterial elem = (StudyRelMaterial) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyRelPublications().iterator(); iter.hasNext();) {
-            StudyRelPublication elem = (StudyRelPublication) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyRelStudies().iterator(); iter.hasNext();) {
-            StudyRelStudy elem = (StudyRelStudy) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudySoftware().iterator(); iter.hasNext();) {
-            StudySoftware elem = (StudySoftware) iter.next();
-            removeCollectionElement(iter, elem);
-        }
-        for (Iterator iter = study.getStudyTopicClasses().iterator(); iter.hasNext();) {
-            StudyTopicClass elem = (StudyTopicClass) iter.next();
-            removeCollectionElement(iter, elem);
-        }
+        // then clear collections
+        clearCollection(study.getFileCategories());
+        clearCollection(study.getStudyAbstracts());
+        clearCollection(study.getStudyAuthors());
+        clearCollection(study.getStudyDistributors());
+        clearCollection(study.getStudyGeoBoundings());
+        clearCollection(study.getStudyGrants());
+        clearCollection(study.getStudyKeywords());
+        clearCollection(study.getStudyNotes());
+        clearCollection(study.getStudyOtherIds());
+        clearCollection(study.getStudyOtherRefs());
+        clearCollection(study.getStudyProducers());
+        clearCollection(study.getStudyRelMaterials());
+        clearCollection(study.getStudyRelPublications());
+        clearCollection(study.getStudyRelStudies());
+        clearCollection(study.getStudySoftware());
+        clearCollection(study.getStudyTopicClasses());
 
-        study.setAccessToSources(null);
-        study.setActionsToMinimizeLoss(null);
-        study.setAuthority(null);
-        study.setAvailabilityStatus(null);
-        study.setCharacteristicOfSources(null);
-        study.setCitationRequirements(null);
-        study.setCleaningOperations(null);
-        study.setCollectionMode(null);
-        study.setCollectionSize(null);
-        study.setConditions(null);
-        study.setConfidentialityDeclaration(null);
-        study.setContact(null);
-        study.setControlOperations(null);
-        study.setCountry(null);
+        // and metatdata
+        study.setMetadata(new Metadata());
+
+        //study.setHarvestDVNTermsOfUse(null); // metadata
+        //study.setHarvestDVTermsOfUse(null); // metadata
+        //study.setHarvestHoldings(null);  //metadata
+
+        //study.setHarvestIdentifier(null);
+        //study.setProtocol(null);
+        //study.setAuthority(null);
+        //study.setStudyId(null);
+
+
         //study.setCreateTime(null);
         //study.setCreator(null);
-        study.setDataCollectionSituation(null);
-        study.setDataCollector(null);
-        study.setDataSources(null);
-        study.setDateOfCollectionEnd(null);
-        study.setDateOfCollectionStart(null);
-        study.setDateOfDeposit(null);
         //study.setDefaultFileCategory(null);
-        study.setDepositor(null);
-        study.setDepositorRequirements(null);
-        study.setDeviationsFromSampleDesign(null);
-        study.setDisclaimer(null);
-        study.setDistributionDate(null);
-        study.setDistributorContact(null);
-        study.setDistributorContactAffiliation(null);
-        study.setDistributorContactEmail(null);
-        study.setFrequencyOfDataCollection(null);
-        study.setFundingAgency(null);
-        study.setGeographicCoverage(null);
-        study.setGeographicUnit(null);
-        study.setHarvestDVNTermsOfUse(null);
-        study.setHarvestDVTermsOfUse(null);
-        study.setHarvestHoldings(null);
-        study.setHarvestIdentifier(null);
         //study.setId(null);
         //study.setIsHarvested(null);
-        study.setKindOfData(null);
         //study.setLastExportTime(null);
         //study.setLastUpdateTime(null);
         //study.setLastUpdater(null);
         //study.setNumberOfDownloads(null);
         //study.setNumberOfFiles(null);
-        study.setOriginOfSources(null);
-        study.setOriginalArchive(null);
-        study.setOtherDataAppraisal(null);
         //study.setOwner(null);
-        study.setPlaceOfAccess(null);
-        study.setProductionDate(null);
-        study.setProductionPlace(null);
-        study.setProtocol(null);
-        study.setReplicationFor(null);
         //study.setRequestAccess(null);
-        study.setResearchInstrument(null);
-        study.setResponseRate(null);
         //study.setRestricted(restricted)s(null);
-        study.setRestrictions(null);
         //study.setReviewState(null);
         //study.setReviewer(null);
-        study.setSamplingErrorEstimate(null);
-        study.setSamplingProcedure(null);
-        study.setSeriesInformation(null);
-        study.setSeriesName(null);
-        study.setSpecialPermissions(null);
-        study.setStudyCompletion(null);
-        study.setStudyId(null);
-        study.setStudyLevelErrorNotes(null);
-        study.setStudyVersion(null);
-        study.setSubTitle(null);
         //study.setTemplate(null);
-        study.setTimeMethod(null);
-        study.setTimePeriodCoveredEnd(null);
-        study.setTimePeriodCoveredStart(null);
-        study.setTitle(null);
-        study.setUNF(null);
-        study.setUnitOfAnalysis(null);
-        study.setUniverse(null);
         //study.setVersion(null);
-        study.setVersionDate(null);
-        study.setWeighting(null);
     }
 
-    private void removeCollectionElement(Iterator iter, Object elem) {
-        iter.remove();
-        em.remove(elem);
-    }
 
     private void setDisplayOrders(Study study) {
         int i = 0;
@@ -1536,7 +1467,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             StringBuffer queryString = new StringBuffer("select id from study s ");
             StringBuffer whereClause = new StringBuffer("where ( restricted = false ");
             boolean groupJoinAdded = false;
-                        
+
             if (userId != null) {
                 queryString.append("left join study_vdcuser su on (s.id = su.studies_id) ");
                 queryString.append("left join study_usergroup sg on (s.id = sg.studies_id ) ");
@@ -1544,16 +1475,16 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 whereClause.append("or sg.allowedgroups_id in (select usergroups_id from vdcuser_usergroup where users_id = ?) ");
                 groupJoinAdded = true;
             }
-            
+
             if (ipUserGroupId != null) {
                 if(!groupJoinAdded) {
                     queryString.append("left join study_usergroup sg on (s.id = sg.studies_id ) ");
                 }
                 whereClause.append("or sg.allowedgroups_id = ? ");
             }
-            
+
             whereClause.append(") ");
-                       
+
             // now add ids part of where clause
             for (int i = 0; i < studyIds.size(); i++) {
                 if (i == 0) {
@@ -1565,22 +1496,22 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
             whereClause.append(" )");
 
-            
+
             // we are now ready to create the query
             Query query = em.createNativeQuery( queryString.toString() + whereClause.toString() );
-            
+
             // now set parameters
             int parameterCount = 1;
-            
+
             if (userId != null) {
                 query.setParameter(parameterCount++, userId);
                 query.setParameter(parameterCount++, userId);
             }
-            
+
             if (ipUserGroupId != null) {
                 query.setParameter(parameterCount++, ipUserGroupId);
             }
-            
+
             for (Long id : studyIds) {
                 query.setParameter(parameterCount++, id);
             }
@@ -1662,7 +1593,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     public void exportUpdatedStudies() {
         exportStudies(studyService.getStudyIdsForExport());
-        
+
         harvestStudyService.updateHarvestStudies();
     }
 
@@ -1727,8 +1658,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         logger.info("Begin doImportStudy");
 
         Study study = null;
-        Map<String, String> globalIdComponents = null; // used if this is an update of a harvested study
+        boolean newStudy = true;
         boolean isHarvest = (harvestIdentifier != null);
+        Map<String, String> globalIdComponents = null; // used if this is an update of a harvested study
 
         VDC vdc = em.find(VDC.class, vdcId);
         VDCUser creator = em.find(VDCUser.class, userId);
@@ -1749,11 +1681,12 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         if (isHarvest) {
             study = getStudyByHarvestInfo(vdc, harvestIdentifier);
             if (study != null) {
-                if (!study.isIsHarvested()) {
-                    // This study actually belongs to the local DVN, so don't continue with harvest
-                    // TODO: this check is probably no longer needed, now that we get study by harvestIdentifier
-                    throw new EJBException("This study originated in the local DVN - we don't need to harvest it.");
-                }
+//                if (!study.isIsHarvested()) {
+//                    // This study actually belongs to the local DVN, so don't continue with harvest
+//                    // TODO: this check is probably no longer needed, now that we get study by harvestIdentifier
+//                    throw new EJBException("This study originated in the local DVN - we don't need to harvest it.");
+//                }
+                newStudy = false;
 
                 // store old global ID components
                 globalIdComponents = new HashMap<String, String>();
@@ -1763,6 +1696,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 globalIdComponents.put("studyId", study.getStudyId());
 
                 clearStudy(study);
+
+                study.setLastUpdateTime(new Date());
+                study.setLastUpdater(creator);
             }
         }
 
@@ -1790,6 +1726,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
         setDisplayOrders(study);
         boolean registerHandle = determineId(study, vdc, globalIdComponents);
+        if (newStudy && studyService.getStudyByGlobalId(study.getGlobalId()) != null) {
+            throw new EJBException("A study with this globalId already exists (likely cause: the study was previously harvested into a different dataverse).");
+        }
 
 
         // step 5: upload files
@@ -1928,10 +1867,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         List list          = query.getResultList();
         Date lastupdatetime = null;
         Timestamp convertedDate = null;
-        if (list.size() >= 1) { 
+        if (list.size() >= 1) {
             lastupdatetime = (Date)list.get(0);
             convertedDate = new java.sql.Timestamp(lastupdatetime.getTime());
-        } 
+        }
         return convertedDate;
     }
 }

@@ -19,20 +19,17 @@
 
   <gui:define name="body">
 
-
-        <h:form binding="#{AdvSearchPage.form1}" id="form1">
+        <h:form id="advsearch">
             <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                    <a name="advancedSearch" title="">
-                        Advanced Search
-                    </a>
+                     <h:outputText value="Advanced Search" />
                 </div>            
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">
                         
-                        <div jsfc="ice:panelGroup" style="padding-bottom: 20px;">
+                        <div style="padding-bottom: 20px;">
                             <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                             <h:outputText  styleClass="vdcHelpText" value="Date searches accept the following formats: YYYY or YYYY-MM or YYYY-MM-DD."/>
                         </div>
@@ -54,7 +51,7 @@
                                 <h:inputText binding="#{AdvSearchPage.textField1}" id="textField1" size="40" required="true" requiredMessage="This field is required."/>
                                 <h:message for="textField1" errorClass="errorMessage" showDetail="false" showSummary="true" />
                             </div>
-                            <div jsfc="ice:panelGroup" binding="#{AdvSearchPage.groupPanel1}" id="groupPanel1" style="white-space: nowrap;">
+                            <div style="white-space: nowrap;">
                                 <h:outputText binding="#{AdvSearchPage.outputText7}" id="outputText7" value="and "/>
                                 <h:selectOneMenu binding="#{AdvSearchPage.dropdown3}" id="dropdown3" value="Producer" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
                                     <f:selectItems binding="#{AdvSearchPage.dropdown3SelectItems}" id="dropdown3SelectItems" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
@@ -64,7 +61,7 @@
                                 <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems}" id="dropdown4SelectItems" value="#{AdvSearchPage.dateItem2 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
                             </h:selectOneMenu>
                             <h:inputText binding="#{AdvSearchPage.textField2}" id="textField2" size="40"/>
-                            <div jsfc="ice:panelGroup" binding="#{AdvSearchPage.groupPanel2}" id="groupPanel2" style="white-space: nowrap;">
+                            <div style="white-space: nowrap;">
                                 <h:outputText binding="#{AdvSearchPage.outputText6}" id="outputText6" value="and "/>
                                 <h:selectOneMenu binding="#{AdvSearchPage.dropdown5}" id="dropdown5" value="Production Date" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
                                     <f:selectItems binding="#{AdvSearchPage.dropdown3SelectItems1}" id="dropdown3SelectItems1" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
@@ -74,7 +71,7 @@
                                 <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems1}" id="dropdown4SelectItems1" value="#{AdvSearchPage.dateItem3 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
                             </h:selectOneMenu>
                             <h:inputText binding="#{AdvSearchPage.textField3}" id="textField3" size="40"/>
-                            <div jsfc="ice:panelGroup" binding="#{AdvSearchPage.groupPanel3}" id="groupPanel3" style="white-space: nowrap;">
+                            <div style="white-space: nowrap;">
                                 <h:outputText binding="#{AdvSearchPage.outputText8}" id="outputText8" value="and "/>
                                 <h:selectOneMenu binding="#{AdvSearchPage.dropdown7}" id="dropdown7" value="Time Period Covered Start" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
                                     <f:selectItems binding="#{AdvSearchPage.dropdown3SelectItems2}" id="dropdown3SelectItems2" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
@@ -85,12 +82,8 @@
                             </h:selectOneMenu>
                             <h:inputText binding="#{AdvSearchPage.textField4}" id="textField4" size="40"/>
                         </h:panelGrid>
-                        
-                        <!--
-                    <h:commandButton binding="#{AdvSearchPage.button1}" id="button1"
-                        style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px" value="Add Row"/>
-                        -->
-                        <div jsfc="ice:panelGroup" binding="#{AdvSearchPage.groupPanel4}"  id="groupPanel4" style="padding-left: 4px; padding-top: 20px; padding-bottom: 10px">
+                         
+                        <div style="padding-left: 4px; padding-top: 20px; padding-bottom: 10px">
                             <h:outputText binding="#{AdvSearchPage.outputText5}" id="outputText5" style="font-size: 1.2em; font-weight: bold" value="Collections" rendered="#{AdvSearchPage.collectionsIncluded}"/>
                             <h:selectOneRadio binding="#{AdvSearchPage.radioButtonList1}" id="radioButtonList1" layout="pageDirection"  style="padding-top: 10px" value="Search All Collections" rendered="#{AdvSearchPage.collectionsIncluded}">
                                 <f:selectItems binding="#{AdvSearchPage.radioButtonList1SelectItems}" id="radioButtonList1SelectItems" value="#{AdvSearchPage.radioButtonList1DefaultItems}"/>
@@ -107,7 +100,7 @@
                                     <h:outputText binding="#{AdvSearchPage.outputText11}" id="outputText11" value="#{currentRow['name']}"/>
                                 </h:column>
                             </h:dataTable>
-                            <div jsfc="ice:panelGroup" binding="#{AdvSearchPage.groupPanel5}"  id="groupPanel5" style="padding-left: 10px; padding-top: 30px; padding-bottom: 20px">
+                            <div style="padding-left: 10px; padding-top: 30px; padding-bottom: 20px">
                                 <h:commandButton binding="#{AdvSearchPage.button2}" id="button2" style="" value="Search" action="#{AdvSearchPage.search}"/>
                                 <h:commandButton binding="#{AdvSearchPage.button3}" id="button3" style="margin-left:10px" value="Cancel" immediate="true" action="#{AdvSearchPage.cancel}"/>
                             </div>

@@ -69,6 +69,11 @@ public class VDCServlet extends HttpServlet{
         VDC vdc = vdcService.findByAlias(vdcAlias);
         
         if (vdc != null) {
+            if (destination.equals("/")) {
+                // set to search page
+                destination="/faces/SearchPage.xhtml?mode=1&collectionId=" + vdc.getRootCollection().getId();
+            }
+
             req.setAttribute("vdc",vdc);
             RequestDispatcher rd = req.getRequestDispatcher(destination);
             try {

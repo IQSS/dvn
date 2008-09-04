@@ -24,13 +24,6 @@
  * Created on September 19, 2006, 9:57 AM
  */
 package edu.harvard.hmdc.vdcnet.web.site;
-
-import com.sun.rave.web.ui.component.Body;
-import com.sun.rave.web.ui.component.Form;
-import com.sun.rave.web.ui.component.Head;
-import com.sun.rave.web.ui.component.Html;
-import com.sun.rave.web.ui.component.Link;
-import com.sun.rave.web.ui.component.Page;
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
@@ -44,7 +37,6 @@ import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.util.Map;
 import javax.ejb.EJB;
-import com.sun.rave.web.ui.component.PanelLayout;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -53,10 +45,8 @@ import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.component.html.HtmlOutputLabel;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlSelectOneMenu;
-import com.sun.rave.web.ui.component.PanelGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
-import edu.harvard.hmdc.vdcnet.util.DateUtils;
 import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.web.login.LoginWorkflowBean;
@@ -140,78 +130,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             setGroupItems(groupItems);
         }
     }
-    private Page page1 = new Page();
 
-    public Page getPage1() {
-        return page1;
-    }
-
-    public void setPage1(Page p) {
-        this.page1 = p;
-    }
-    private Html html1 = new Html();
-
-    public Html getHtml1() {
-        return html1;
-    }
-
-    public void setHtml1(Html h) {
-        this.html1 = h;
-    }
-    private Head head1 = new Head();
-
-    public Head getHead1() {
-        return head1;
-    }
-
-    public void setHead1(Head h) {
-        this.head1 = h;
-    }
-    private Link link1 = new Link();
-
-    public Link getLink1() {
-        return link1;
-    }
-
-    public void setLink1(Link l) {
-        this.link1 = l;
-    }
-    private Body body1 = new Body();
-
-    public Body getBody1() {
-        return body1;
-    }
-
-    public void setBody1(Body b) {
-        this.body1 = b;
-    }
-    private Form form1 = new Form();
-
-    public Form getForm1() {
-        return form1;
-    }
-
-    public void setForm1(Form f) {
-        this.form1 = f;
-    }
-    private PanelLayout layoutPanel1 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel1() {
-        return layoutPanel1;
-    }
-
-    public void setLayoutPanel1(PanelLayout pl) {
-        this.layoutPanel1 = pl;
-    }
-    private PanelLayout layoutPanel2 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel2() {
-        return layoutPanel2;
-    }
-
-    public void setLayoutPanel2(PanelLayout pl) {
-        this.layoutPanel2 = pl;
-    }
     private HtmlOutputText outputText1 = new HtmlOutputText();
 
     public HtmlOutputText getOutputText1() {
@@ -221,15 +140,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     public void setOutputText1(HtmlOutputText hot) {
         this.outputText1 = hot;
     }
-    private PanelLayout layoutPanel3 = new PanelLayout();
 
-    public PanelLayout getLayoutPanel3() {
-        return layoutPanel3;
-    }
-
-    public void setLayoutPanel3(PanelLayout pl) {
-        this.layoutPanel3 = pl;
-    }
     private HtmlOutputText outputText2 = new HtmlOutputText();
 
     public HtmlOutputText getOutputText2() {
@@ -311,15 +222,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     public void setGridPanel2(HtmlPanelGrid hpg) {
         this.gridPanel2 = hpg;
     }
-    private PanelGroup groupPanel1 = new PanelGroup();
 
-    public PanelGroup getGroupPanel1() {
-        return groupPanel1;
-    }
-
-    public void setGroupPanel1(PanelGroup pg) {
-        this.groupPanel1 = pg;
-    }
     private HtmlCommandButton button1 = new HtmlCommandButton();
 
     public HtmlCommandButton getButton1() {

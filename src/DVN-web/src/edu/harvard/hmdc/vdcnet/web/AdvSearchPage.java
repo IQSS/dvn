@@ -25,12 +25,6 @@
  */
 package edu.harvard.hmdc.vdcnet.web;
 
-import com.sun.rave.web.ui.component.Body;
-import com.sun.rave.web.ui.component.Form;
-import com.sun.rave.web.ui.component.Head;
-import com.sun.rave.web.ui.component.Html;
-import com.sun.rave.web.ui.component.Link;
-import com.sun.rave.web.ui.component.Page;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.SearchTerm;
@@ -54,7 +48,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import com.sun.rave.web.ui.component.PanelLayout;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -64,7 +57,6 @@ import javax.faces.component.html.HtmlSelectOneMenu;
 import com.sun.jsfcl.data.DefaultSelectItemsArray;
 import javax.faces.component.UISelectItems;
 import javax.faces.component.html.HtmlInputText;
-import com.sun.rave.web.ui.component.PanelGroup;
 import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.html.HtmlSelectOneRadio;
@@ -148,66 +140,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         dataTable1Model.setWrappedData(getCollectionsDisplay());
     }
     
-    private Page page1 = new Page();
-    
-    public Page getPage1() {
-        return page1;
-    }
-    
-    public void setPage1(Page p) {
-        this.page1 = p;
-    }
-    
-    private Html html1 = new Html();
-    
-    public Html getHtml1() {
-        return html1;
-    }
-    
-    public void setHtml1(Html h) {
-        this.html1 = h;
-    }
-    
-    private Head head1 = new Head();
-    
-    public Head getHead1() {
-        return head1;
-    }
-    
-    public void setHead1(Head h) {
-        this.head1 = h;
-    }
-    
-    private Link link1 = new Link();
-    
-    public Link getLink1() {
-        return link1;
-    }
-    
-    public void setLink1(Link l) {
-        this.link1 = l;
-    }
-    
-    private Body body1 = new Body();
-    
-    public Body getBody1() {
-        return body1;
-    }
-    
-    public void setBody1(Body b) {
-        this.body1 = b;
-    }
-    
-    private Form form1 = new Form();
-    
-    public Form getForm1() {
-        return form1;
-    }
-    
-    public void setForm1(Form f) {
-        this.form1 = f;
-    }
-
     private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
 
     public HtmlPanelGrid getGridPanel1() {
@@ -288,16 +220,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         this.textField1 = hit;
     }
 
-    private PanelLayout layoutPanel2 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel2() {
-        return layoutPanel2;
-    }
-
-    public void setLayoutPanel2(PanelLayout pl) {
-        this.layoutPanel2 = pl;
-    }
-
     private HtmlOutputText outputText4 = new HtmlOutputText();
 
     public HtmlOutputText getOutputText4() {
@@ -316,16 +238,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
     public void setGridPanel2(HtmlPanelGrid hpg) {
         this.gridPanel2 = hpg;
-    }
-
-    private PanelGroup groupPanel1 = new PanelGroup();
-
-    public PanelGroup getGroupPanel1() {
-        return groupPanel1;
-    }
-
-    public void setGroupPanel1(PanelGroup pg) {
-        this.groupPanel1 = pg;
     }
 
     private HtmlSelectOneMenu dropdown3 = new HtmlSelectOneMenu();
@@ -428,16 +340,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         this.textField2 = hit;
     }
 
-    private PanelGroup groupPanel2 = new PanelGroup();
-
-    public PanelGroup getGroupPanel2() {
-        return groupPanel2;
-    }
-
-    public void setGroupPanel2(PanelGroup pg) {
-        this.groupPanel2 = pg;
-    }
-
     private HtmlSelectOneMenu dropdown5 = new HtmlSelectOneMenu();
 
     public HtmlSelectOneMenu getDropdown5() {
@@ -486,16 +388,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
     public void setTextField3(HtmlInputText hit) {
         this.textField3 = hit;
-    }
-
-    private PanelGroup groupPanel3 = new PanelGroup();
-
-    public PanelGroup getGroupPanel3() {
-        return groupPanel3;
-    }
-
-    public void setGroupPanel3(PanelGroup pg) {
-        this.groupPanel3 = pg;
     }
 
     private HtmlSelectOneMenu dropdown7 = new HtmlSelectOneMenu();
@@ -568,25 +460,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         this.outputText5 = hot;
     }
 
-    private PanelLayout layoutPanel1 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel1() {
-        return layoutPanel1;
-    }
-
-    public void setLayoutPanel1(PanelLayout pl) {
-        this.layoutPanel1 = pl;
-    }
-
-    private PanelGroup groupPanel4 = new PanelGroup();
-
-    public PanelGroup getGroupPanel4() {
-        return groupPanel4;
-    }
-
-    public void setGroupPanel4(PanelGroup pg) {
-        this.groupPanel4 = pg;
-    }
 
     private HtmlSelectOneRadio radioButtonList1 = new HtmlSelectOneRadio();
 
@@ -636,16 +509,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
     public void setButton3(HtmlCommandButton hcb) {
         this.button3 = hcb;
-    }
-
-    private PanelGroup groupPanel5 = new PanelGroup();
-
-    public PanelGroup getGroupPanel5() {
-        return groupPanel5;
-    }
-
-    public void setGroupPanel5(PanelGroup pg) {
-        this.groupPanel5 = pg;
     }
 
     private HtmlSelectOneMenu dropdown9 = new HtmlSelectOneMenu();

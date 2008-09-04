@@ -19,36 +19,36 @@
 
   <gui:define name="body">
       
-        <h:form  id="form1">
-            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:form  id="form1">
+            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             <input type="hidden" name="pageName" value="EditTemplatePage"/>
-            <h:inputHidden id="studyId" value="#{EditTemplatePage.studyId}"/>                                    
+            <ice:inputHidden id="studyId" value="#{EditTemplatePage.studyId}"/>                                    
 
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                   
-                        <h:outputText  value="Creating a Study Template"/>
+                        <ice:outputText  value="Creating a Study Template"/>
                      
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
                         
                         <div>
-                            <h:outputText   value="Creating a Template from Study"/>
+                            <ice:outputText   value="Creating a Template from Study"/>
                              <br />
                            
-                           <h:outputText   value="Enter Template Name:"/>
-                           <h:inputText value="#{EditTemplatePage.templateName}" />
+                           <ice:outputText   value="Enter Template Name:"/>
+                           <ice:inputText value="#{EditTemplatePage.templateName}" />
                         </div>
                         <div style="padding-top: 30px; text-align: center">
-                            <h:commandButton  id="button1" value="Create Template" action="#{EditTemplatePage.save}"/>
-                            <h:commandButton  immediate="true" id="button2" style="margin-left: 30px" value="Cancel" action="#{EditTemplatePage.cancel}"/>
+                            <ice:commandButton  id="button1" value="Create Template" action="#{EditTemplatePage.save}"/>
+                            <ice:commandButton  immediate="true" id="button2" style="margin-left: 30px" value="Cancel" action="#{EditTemplatePage.cancel}"/>
                         </div>
                         
                     </div>
                 </div>
             </div>
-        </h:form>
+        </ice:form>
                
         </gui:define>
     </gui:composition>

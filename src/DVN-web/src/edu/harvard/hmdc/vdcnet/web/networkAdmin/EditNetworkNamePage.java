@@ -30,20 +30,9 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import com.sun.rave.web.ui.appbase.AbstractPageBean;
-import com.sun.rave.web.ui.component.Body;
-import com.sun.rave.web.ui.component.Form;
-import com.sun.rave.web.ui.component.Head;
-import com.sun.rave.web.ui.component.Html;
-import com.sun.rave.web.ui.component.Link;
-import com.sun.rave.web.ui.component.Page;
 import javax.ejb.EJB;
-import javax.faces.FacesException;
 import javax.faces.component.html.HtmlPanelGrid;
-import com.sun.rave.web.ui.component.PanelLayout;
 import javax.faces.component.html.HtmlOutputText;
-import com.sun.rave.web.ui.component.HelpInline;
-import com.sun.rave.web.ui.component.PanelGroup;
 import javax.faces.component.html.HtmlGraphicImage;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlCommandButton;
@@ -88,67 +77,7 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
      */
     private void _init() throws Exception {
     }
-    
-    private Page page1 = new Page();
-    
-    public Page getPage1() {
-        return page1;
-    }
-    
-    public void setPage1(Page p) {
-        this.page1 = p;
-    }
-    
-    private Html html1 = new Html();
-    
-    public Html getHtml1() {
-        return html1;
-    }
-    
-    public void setHtml1(Html h) {
-        this.html1 = h;
-    }
-    
-    private Head head1 = new Head();
-    
-    public Head getHead1() {
-        return head1;
-    }
-    
-    public void setHead1(Head h) {
-        this.head1 = h;
-    }
-    
-    private Link link1 = new Link();
-    
-    public Link getLink1() {
-        return link1;
-    }
-    
-    public void setLink1(Link l) {
-        this.link1 = l;
-    }
-    
-    private Body body1 = new Body();
-    
-    public Body getBody1() {
-        return body1;
-    }
-    
-    public void setBody1(Body b) {
-        this.body1 = b;
-    }
-    
-    private Form form1 = new Form();
-    
-    public Form getForm1() {
-        return form1;
-    }
-    
-    public void setForm1(Form f) {
-        this.form1 = f;
-    }
-
+ 
     private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
 
     public HtmlPanelGrid getGridPanel1() {
@@ -159,26 +88,7 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
         this.gridPanel1 = hpg;
     }
 
-    private PanelLayout layoutPanel1 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel1() {
-        return layoutPanel1;
-    }
-
-    public void setLayoutPanel1(PanelLayout pl) {
-        this.layoutPanel1 = pl;
-    }
-
-    private PanelLayout layoutPanel2 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel2() {
-        return layoutPanel2;
-    }
-
-    public void setLayoutPanel2(PanelLayout pl) {
-        this.layoutPanel2 = pl;
-    }
-
+  
     private HtmlOutputText outputText1 = new HtmlOutputText();
 
     public HtmlOutputText getOutputText1() {
@@ -189,25 +99,6 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
         this.outputText1 = hot;
     }
 
-    private PanelLayout layoutPanel3 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel3() {
-        return layoutPanel3;
-    }
-
-    public void setLayoutPanel3(PanelLayout pl) {
-        this.layoutPanel3 = pl;
-    }
-
-    private HelpInline helpInline1 = new HelpInline();
-
-    public HelpInline getHelpInline1() {
-        return helpInline1;
-    }
-
-    public void setHelpInline1(HelpInline hi) {
-        this.helpInline1 = hi;
-    }
 
     private HtmlPanelGrid gridPanel2 = new HtmlPanelGrid();
 
@@ -217,16 +108,6 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
 
     public void setGridPanel2(HtmlPanelGrid hpg) {
         this.gridPanel2 = hpg;
-    }
-
-    private PanelGroup groupPanel1 = new PanelGroup();
-
-    public PanelGroup getGroupPanel1() {
-        return groupPanel1;
-    }
-
-    public void setGroupPanel1(PanelGroup pg) {
-        this.groupPanel1 = pg;
     }
 
     private HtmlOutputText outputText2 = new HtmlOutputText();
@@ -257,16 +138,6 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
 
     public void setTextField1(HtmlInputText hit) {
         this.textField1 = hit;
-    }
-
-    private PanelGroup groupPanel2 = new PanelGroup();
-
-    public PanelGroup getGroupPanel2() {
-        return groupPanel2;
-    }
-
-    public void setGroupPanel2(PanelGroup pg) {
-        this.groupPanel2 = pg;
     }
 
     private HtmlCommandButton button1 = new HtmlCommandButton();

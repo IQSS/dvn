@@ -20,48 +20,48 @@
   <gui:define name="body">
    
         
-        <h:form  id="form1">
-            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:form  id="form1">
+            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             <input type="hidden"  name="pageName" value="EditVariablePage"/>
-            <h:inputHidden id="dtId" value="#{EditVariablePage.dtId}"/>
-            <h:inputHidden id="dvFilter" value="#{EditVariablePage.dvFilter}"/>
+            <ice:inputHidden id="dtId" value="#{EditVariablePage.dtId}"/>
+            <ice:inputHidden id="dvFilter" value="#{EditVariablePage.dvFilter}"/>
             
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                    <h:outputText value="#{EditVariablePage.dt.studyFile.fileName}"/>
+                    <ice:outputText value="#{EditVariablePage.dt.studyFile.fileName}"/>
                  </div>   
                  <div class="dvn_sectionBoxNoBorders">    
                     <br />
                     <span class="dvn_preFileTitle">Variables: </span>
                     <br />
                     <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{! empty facesContext.maximumSeverity}">
-                        <h:outputText value="Some errors occurred, please check details below" rendered="#{! empty facesContext.maximumSeverity}" />
+                        <ice:outputText value="Some errors occurred, please check details below" rendered="#{! empty facesContext.maximumSeverity}" />
                     </div>
                     <br />
-                    <h:dataTable   value="#{EditVariablePage.dataVariables}"  var="dv"  columnClasses="vdcColPadded">
-                        <h:column>
-                            <h:inputHidden  value="#{dv.id}" />
-                            <h:inputText  id="dv_name" value="#{dv.name}" required="true" requiredMessage="This field is required." validator ="#{EditVariablePage.validateDVName}"/>
+                    <ice:dataTable   value="#{EditVariablePage.dataVariables}"  var="dv"  columnClasses="vdcColPadded">
+                        <ice:column>
+                            <ice:inputHidden  value="#{dv.id}" />
+                            <ice:inputText  id="dv_name" value="#{dv.name}" required="true" requiredMessage="This field is required." validator ="#{EditVariablePage.validateDVName}"/>
                             <br />
-                            <h:message styleClass="errorMessage" for="dv_name"/>
+                            <ice:message styleClass="errorMessage" for="dv_name"/>
                             <f:facet name="header">
-                                <h:outputText   value="Name"/>
+                                <ice:outputText   value="Name"/>
                             </f:facet>
-                        </h:column>
-                        <h:column>
-                            <h:inputText  id="dv_label" value="#{dv.label}" size="80"/>
+                        </ice:column>
+                        <ice:column>
+                            <ice:inputText  id="dv_label" value="#{dv.label}" size="80"/>
                             <br />
-                            <h:message styleClass="errorMessage" for="dv_label"/>
+                            <ice:message styleClass="errorMessage" for="dv_label"/>
                             <f:facet name="header">
-                                <h:outputText   value="Label"/>
+                                <ice:outputText   value="Label"/>
                             </f:facet>
-                        </h:column>                                            
-                    </h:dataTable>    
-                    <h:commandButton  id="saveButton" value="Save" action="#{EditVariablePage.save_action}"/>  
-                    <h:commandButton  id="cancelButton" value="Cancel" action="#{EditVariablePage.cancel_action}" immediate="true" />
+                        </ice:column>                                            
+                    </ice:dataTable>    
+                    <ice:commandButton  id="saveButton" value="Save" action="#{EditVariablePage.save_action}"/>  
+                    <ice:commandButton  id="cancelButton" value="Cancel" action="#{EditVariablePage.cancel_action}" immediate="true" />
                 </div>            
             </div>
-        </h:form>
+        </ice:form>
             </gui:define>
         </gui:composition>
     </body>

@@ -19,116 +19,114 @@
 
   <gui:define name="body">
 
-            <h:form  id="contactUsForm">  
-              <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+            <ice:form  id="contactUsForm">  
+              <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
               
               <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                    <a name="contact" title="">
-                        <h:outputText  value="#{bundle.contactUsHeading}"/>
-                    </a>
+                    <ice:outputText  value="#{bundle.contactUsHeading}"/>
                 </div>            
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">
                         
                         <div jsfc="ice:panelGroup"  rendered="#{ContactUsPage.success}" styleClass="successMessage">
-                            <h:messages layout="list" globalOnly="true"  />
+                            <ice:messages layout="list" globalOnly="true"  />
                         </div>
                             
                         <div jsfc="ice:panelGroup" styleClass="errorMessage" rendered="#{ContactUsPage.exception}">
-                            <h:messages layout="table" globalOnly="true" />
+                            <ice:messages layout="table" globalOnly="true" />
                         </div>
                         
-                        <div jsfc="ice:panelGroup"   id="groupPanel2"  style="padding-bottom: 20px">
-                            <h:outputText  id="outputText2" escape="false"  value="#{bundle.contactUsFormMessage} ("/>
-                            <h:graphicImage value="/resources/icon_required.gif"/> <h:outputText style="vdcHelpText" value="Indicates a required field.)"/>
+                        <div style="padding-bottom: 20px">
+                            <ice:outputText  id="outputText2" escape="false"  value="#{bundle.contactUsFormMessage} ("/>
+                            <ice:graphicImage value="/resources/icon_required.gif"/> <ice:outputText style="vdcHelpText" value="Indicates a required field.)"/>
                         </div>
-                        <h:panelGrid  cellpadding="0" cellspacing="0"
+                        <ice:panelGrid cellpadding="0" cellspacing="0"
                                       columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
-                            <h:outputText  id="outputText7" style="font-weight: bold" value="#{bundle.contactUsToLabel}"/>
-                            <h:outputFormat value="#{bundle.contactUsTo}">
+                            <ice:outputText  id="outputText7" style="font-weight: bold" value="#{bundle.contactUsToLabel}"/>
+                            <ice:outputFormat value="#{bundle.contactUsTo}">
                                 <f:param value="#{(VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.name : VDCRequest.currentVDC.name }" />
                                 <f:param value="#{ (VDCRequest.currentVDCId == null) ? ('Network') : ('')}"/>
                                 <f:param value="(#{ (VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.contactEmail : VDCRequest.currentVDC.contactEmail})"/>
-                            </h:outputFormat>
+                            </ice:outputFormat>
                              
                             <div>
-                                <h:outputText  id="outputText4" style="font-weight: bold" value="#{bundle.contactUsEmailLabel}"/>
-                                <h:graphicImage  id="image2" value="/resources/icon_required.gif"/>
-                                <h:outputText styleClass="vdcHelpText" value="(E-mail Address)"/>
+                                <ice:outputText  id="outputText4" style="font-weight: bold" value="#{bundle.contactUsEmailLabel}"/>
+                                <ice:graphicImage  id="image2" value="/resources/icon_required.gif"/>
+                                <ice:outputText styleClass="vdcHelpText" value="(E-mail Address)"/>
                             </div>
                             <div> 
-                                <h:inputText  id="emailAddress" size="30"
+                                <ice:inputText  id="emailAddress" size="30"
                                               value="#{ContactUsPage.emailAddress}" 
                                               required="true"
                                               requiredMessage="This field is required.">
                                     <f:validator validatorId="EmailValidator"/>
-                                </h:inputText>
-                                <h:message id="emailAddressMsg" 
+                                </ice:inputText>
+                                <ice:message id="emailAddressMsg" 
                                            for="emailAddress"
                                            styleClass="errorMessage"/>
                             </div>
                             
                             <div>
-                                <h:outputText  id="outputText3" value="#{bundle.contactUsFromLabel}"/>
-                                <h:graphicImage  id="image1" value="/resources/icon_required.gif"/>
+                                <ice:outputText  id="outputText3" value="#{bundle.contactUsFromLabel}"/>
+                                <ice:graphicImage  id="image1" value="/resources/icon_required.gif"/>
                             </div>
                             <div> 
-                                <h:inputText id="fullName" 
+                                <ice:inputText id="fullName" 
                                              size="30"
                                              value       = "#{ContactUsPage.fullName}"
                                              required="true"
                                              requiredMessage="This field is required."
                                 />
                                 
-                                <h:message id="fullNameMsg" 
+                                <ice:message id="fullNameMsg" 
                                            for="fullName"
                                            styleClass="errorMessage" 
                                 />
                             </div>
                             
                             <div>
-                                <h:outputText  id="outputText5" value="#{bundle.contactUsSubjectLabel}"/>
-                                <h:graphicImage  id="image3" value="/resources/icon_required.gif"/>
+                                <ice:outputText  id="outputText5" value="#{bundle.contactUsSubjectLabel}"/>
+                                <ice:graphicImage  id="image3" value="/resources/icon_required.gif"/>
                             </div>
                             <div> 
-                                <h:selectOneMenu id="listSubjects"
+                                <ice:selectOneMenu id="listSubjects"
                                                  required="true" 
                                                  validator="#{ContactUsPage.validateSubject}"
                                                  value="#{ContactUsPage.selectedSubject}"
                                 >
                                     <f:selectItems id="listSubjectItems" value="#{ContactUsPage.listSubjectDefaults}"/>
-                                </h:selectOneMenu>
+                                </ice:selectOneMenu>
                                 
-                                <h:message id="subjectListMsg" 
+                                <ice:message id="subjectListMsg" 
                                            for="listSubjects"
                                            styleClass="errorMessage"/>
                             </div>
                             <div styleClass="vdcTextNoWrap">
-                                <h:outputText  id="outputText6" value="#{bundle.contactUsBodyLabel}"/>
-                                <h:graphicImage  id="image4" value="/resources/icon_required.gif"/>
+                                <ice:outputText  id="outputText6" value="#{bundle.contactUsBodyLabel}"/>
+                                <ice:graphicImage  id="image4" value="/resources/icon_required.gif"/>
                             </div>
                             <div> 
-                                <h:inputTextarea cols="50" id="emailBody" 
+                                <ice:inputTextarea cols="50" id="emailBody" 
                                                  value="#{ContactUsPage.emailBody}" 
                                                  required="true" 
                                                  requiredMessage="This field is required."
                                                  rows="8"/>
                                 
-                                <h:message id="emailBodyMsg"
+                                <ice:message id="emailBodyMsg"
                                            for="emailBody"
                                            styleClass="errorMessage"/>
                             </div>
-                        </h:panelGrid>
+                        </ice:panelGrid>
                         <div style="padding-left: 170px; padding-top: 20px">
-                            <h:commandButton  id="btnSend" value="Send E-mail" action="#{ContactUsPage.send_action}"/>
+                            <ice:commandButton  id="btnSend" value="Send E-mail" action="#{ContactUsPage.send_action}"/>
                         </div>
                         
                     </div>
                 </div>
             </div>
        
-         </h:form>
+         </ice:form>
             </gui:define>
         </gui:composition>
     </body>

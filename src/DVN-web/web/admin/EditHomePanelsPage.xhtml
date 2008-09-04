@@ -21,50 +21,50 @@
   <gui:define name="body">
 
 
-        <h:form  id="editHomePanelsForm">
-            <h:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:form  id="editHomePanelsForm">
+            <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                               
-                        <h:outputText value="#{bundle.editHomePanelsHeading}"/>
+                        <ice:outputText value="#{bundle.editHomePanelsHeading}"/>
                     
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
 
-                       <h:messages layout="list" showDetail="false" showSummary="true" styleClass="successMessage" />
+                       <ice:messages layout="list" showDetail="false" showSummary="true" styleClass="successMessage" />
                         
                         <div jsfc="ice:panelGroup"   id="groupPanel3" style="padding-bottom: 10px">
-                            <h:outputText  id="outputText3" value="#{bundle.displayLocalAnnouncementsLabel}"/>
-                            <h:selectBooleanCheckbox  id="chkLocalAnnouncements"  value="#{EditHomePanelsPage.chkLocalAnnouncements}"/>
+                            <ice:outputText  id="outputText3" value="#{bundle.displayLocalAnnouncementsLabel}"/>
+                            <ice:selectBooleanCheckbox  id="chkLocalAnnouncements"  value="#{EditHomePanelsPage.chkLocalAnnouncements}"/>
                             <div jsfc="ice:panelGroup"   style="padding-right: 70px">
-                                <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                <h:outputText id="htmlHelp" styleClass="vdcHelpText" value="#{bundle.htmlHelpText}"/>
+                                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                                <ice:outputText id="htmlHelp" styleClass="vdcHelpText" value="#{bundle.htmlHelpText}"/>
                             </div>
-                            <h:message id="announcementsMsg" 
+                            <ice:message id="announcementsMsg" 
                                        for="localAnnouncements"
                                        styleClass="errorMessage"/>                  
                         </div>
                         <div jsfc="ice:panelGroup"   id="groupPanel5" style="padding-top: 5px; padding-bottom: 20px">
-                            <h:inputTextarea  cols="100" 
+                            <ice:inputTextarea  cols="100" 
                                               id="localAnnouncements" 
                                               rows="15"
                                               value="#{EditHomePanelsPage.localAnnouncements}"
                                               styleClass="formHtmlEnabled">
                                 <f:validator validatorId="XhtmlValidator"/>
-                            </h:inputTextarea>
+                            </ice:inputTextarea>
                         </div>
                                              
                         <div jsfc="ice:panelGroup"   id="groupPanel1" style="padding-left: 200px; padding-top: 20px">
-                            <h:commandButton id="btnSave" value="#{bundle.saveButtonLabel}" action="#{EditHomePanelsPage.save_action}"/>
-                            <h:commandButton id="btnCancel" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditHomePanelsPage.cancel_action}"/>
+                            <ice:commandButton id="btnSave" value="#{bundle.saveButtonLabel}" action="#{EditHomePanelsPage.save_action}"/>
+                            <ice:commandButton id="btnCancel" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditHomePanelsPage.cancel_action}"/>
                         </div>
                     </div>  
                 </div>
             </div>
                  
-        </h:form>             
+        </ice:form>             
             </gui:define>
         </gui:composition>
     </body>

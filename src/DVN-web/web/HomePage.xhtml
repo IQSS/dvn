@@ -23,38 +23,38 @@
      <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
                         
          <ice:form>
-           <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+           <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
            <!-- Success Message -->
          <div jsfc="ice:panelGroup" styleClass="#{HomePage.msg.styleClass}" rendered="#{!empty HomePage.msg.messageText}">
-           <h:outputText id="statusMessage" escape="false" value="#{HomePage.msg.messageText}" />
+           <ice:outputText id="statusMessage" escape="false" value="#{HomePage.msg.messageText}" />
          </div>
        
            <div jsfc="ice:panelGroup" styleClass="dvn_hmpgMainMessage"  rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
-                <h:outputText id="networkAnnouncementsMessages" escape="false" value="#{HomePage.parsedNetworkAnnouncements}"/>
+                <ice:outputText id="networkAnnouncementsMessages" escape="false" value="#{HomePage.parsedNetworkAnnouncements}"/>
             </div>
             
             <div jsfc="ice:panelGroup" styleClass="dvn_hmpgMainMessage" rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" id="announcementsHeaderPanel" >
-                <h:outputText rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" escape="false" value="#{HomePage.parsedLocalAnnouncements}"/>
+                <ice:outputText rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" escape="false" value="#{HomePage.parsedLocalAnnouncements}"/>
             </div>
       
          <!-- Main Section starts here -->
          <div id="dvn_mainSection">
               <div id="dvn_mainSectionTitle">
-              <h:outputText value="Dataverses" rendered="#{VDCRequest.currentVDC == null}"/>
-              <h:outputText value="Studies" rendered="#{VDCRequest.currentVDC != null}" />
+              <ice:outputText value="Dataverses" rendered="#{VDCRequest.currentVDC == null}"/>
+              <ice:outputText value="Studies" rendered="#{VDCRequest.currentVDC != null}" />
               </div>
       
               <div jsfc="ice:panelGroup" id="createDataverse"  styleClass="requestHmpgSide" rendered="#{HomePage.showRequestCreator}">
-                  <h:outputLink styleClass="requestHmpgSideLink"  value="/dvn/login/CreatorRequestInfoPage.xhtml">
-                           <h:outputText value="Create your own Dataverse" escape="false"/>
-                  </h:outputLink>
+                  <ice:outputLink styleClass="requestHmpgSideLink"  value="/dvn/login/CreatorRequestInfoPage.xhtml">
+                           <ice:outputText value="Create your own Dataverse" escape="false"/>
+                  </ice:outputLink>
                  
               </div>
               
                <div jsfc="ice:panelGroup" id="beContributor"  styleClass="requestHmpgSide" rendered="#{HomePage.showRequestContributor}">
-                    <h:outputLink styleClass="requestHmpgSideLink"  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/login/ContributorRequestInfoPage.xhtml">
-                        <h:outputText value="Become a Contributor" escape="false"/>
-                    </h:outputLink>
+                    <ice:outputLink styleClass="requestHmpgSideLink"  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/login/ContributorRequestInfoPage.xhtml">
+                        <ice:outputText value="Become a Contributor" escape="false"/>
+                    </ice:outputLink>
                 
               </div>
 
@@ -64,29 +64,29 @@
                     <div class="dvn_searchTitle"><a name="search" title="">Search</a></div>
                     <fieldset>
                         <label for="options">
-                            <h:selectOneMenu id="dropdown1" value="#{HomePage.searchField}">
+                            <ice:selectOneMenu id="dropdown1" value="#{HomePage.searchField}">
                                 <f:selectItem itemLabel="Cataloging Information" itemValue="any" />
                                 <f:selectItem itemLabel="- Author" itemValue="authorName" />
                                 <f:selectItem itemLabel="- Title" itemValue="title" />
                                 <f:selectItem itemLabel="- Study ID" itemValue="studyId" />
                                 <f:selectItem itemLabel="Variable Information" itemValue="variable" />
-                            </h:selectOneMenu>
+                            </ice:selectOneMenu>
                         </label>
                         <label for="search">
-                            <h:inputText onkeypress="if (window.event) return processEvent('', 'form1:searchButton'); else return processEvent(event, 'form1:searchButton');" id="textField2" value="#{HomePage.searchValue}"/>
+                            <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:searchButton'); else return processEvent(event, 'form1:searchButton');" id="textField2" value="#{HomePage.searchValue}"/>
                         </label>
                         <label for="button">
-                            <h:commandButton id="searchButton" value="Go" type="submit" action="#{HomePage.search_action}"/>                        
+                            <ice:commandButton id="searchButton" value="Go" type="submit" action="#{HomePage.search_action}"/>                        
                         </label>
                     </fieldset>
                     <div class="dvn_searchLinks">
-                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
-                            <h:outputText value="Advanced Search"/>
-                        </h:outputLink>
-                        <h:outputText value=" | " escape="true"/>
-                        <h:outputLink value="http://thedata.org/guides/users/search/tips" target="_blank" style="margin: 0;">
-                            <h:outputText value="Tips"/>
-                        </h:outputLink>
+                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
+                            <ice:outputText value="Advanced Search"/>
+                        </ice:outputLink>
+                        <ice:outputText value=" | " escape="true"/>
+                        <ice:outputLink value="http://thedata.org/guides/users/search/tips" target="_blank" style="margin: 0;">
+                            <ice:outputText value="Tips"/>
+                        </ice:outputLink>
                     </div>
                 </div>
             </div>
@@ -114,7 +114,7 @@
             <p>
               <!-- Network Homepage -->
                 <!-- datalist component for NETWORK HOME PAGE -->
-                        <h:outputText escape="false" value="#{HomePage.networkData}"/>
+                        <ice:outputText escape="false" value="#{HomePage.networkData}"/>
               <!-- THE DV GROUPS AND DVS GO HERE -->
               
                </p>
@@ -268,9 +268,9 @@
             
                     <!-- This is temporary until Dataverse homepage ans search results page are changed -->
             
-               <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/SearchPage.xhtml?mode=1&amp;collectionId=#{VDCRequest.currentVDC.rootCollection.id}" rendered="#{VDCRequest.currentVDC != null}">
-                    <h:outputText value="#{VDCRequest.currentVDC.name} Dataverse - Study Listing (temporary link)" />
-                </h:outputLink>
+               <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/SearchPage.xhtml?mode=1&amp;collectionId=#{VDCRequest.currentVDC.rootCollection.id}" rendered="#{VDCRequest.currentVDC != null}">
+                    <ice:outputText value="#{VDCRequest.currentVDC.name} Dataverse - Study Listing (temporary link)" />
+                </ice:outputLink>
            
 </ice:form>
         

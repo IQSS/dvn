@@ -20,7 +20,6 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
-import com.sun.rave.web.ui.component.Tree;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleRequestServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
@@ -34,24 +33,19 @@ import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.util.Tab;
 import edu.harvard.hmdc.vdcnet.util.TabSort;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
-import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
-import edu.harvard.hmdc.vdcnet.web.collection.CollectionUI;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
 import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import edu.harvard.hmdc.vdcnet.web.component.DvnDataList;
 import edu.harvard.hmdc.vdcnet.web.component.DataListing;
-import edu.harvard.hmdc.vdcnet.web.component.VDCCollectionTree;
-import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -73,7 +67,7 @@ import javax.ejb.EJB;
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-import javax.faces.component.UIComponent;
+
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -102,7 +96,6 @@ public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
     private List<VDC> scholarDvGroup;
     private List<VDC> vdcGroups;
     private List<VDC> vdcsSansGroups;
-    private Tree collectionTree;
     private String searchField;
     private String searchValue;
     private Map dataMap    = new LinkedHashMap();
@@ -163,55 +156,7 @@ public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
         initVdcsSansGroups();
         initNetworkData();
     }
-    
-    /**
-     * Getter for property collectionTree.
-     * @return Value of property collectionTree.
-     */
-    public Tree getCollectionTree() {
-        if (collectionTree == null) {
-            VDCCollectionTree vdcTree = new VDCCollectionTree();
-            vdcTree.setVDCUrl("");
-            vdcTree.setCollectionUrl("/faces/SearchPage.xhtml?mode=1");
-            
-            VDC vdc = getVDCRequestBean().getCurrentVDC();
-            VDCUser user = getVDCSessionBean().getUser();
-            
-            if (vdc == null) {
-                collectionTree = vdcTree.populate(vdcService.findAll());
-            } else {
-                //vdcTree.setExpandAll(true);
-                
-                // if only root collection (check links and subcollections), then include studies
-                VDCUI vdcUI = new VDCUI(vdc);
-                if (vdcUI.getLinkedCollections() == null || vdcUI.getLinkedCollections().size() == 0 ) {
-                    CollectionUI rootCollUI = new CollectionUI(vdc.getRootCollection());
-                    List subColls = rootCollUI.getSubCollections();
-                    if (subColls == null || subColls.size() == 0 ) {
-                        // we can use the studyFilter for this currently, since the root collection
-                        // is always shown; if at some point we include studies for a tree with subcollections
-                        // we will have to revisit this
-                        vdcTree.setStudyFilter( StudyUI.filterVisibleStudies(rootCollUI.getStudies(), vdc, user, getVDCSessionBean().getIpUserGroup()) );
-                        vdcTree.setIncludeStudies(true);
-                        vdcTree.setStudyUrl("/faces/study/StudyPage.xhtml");
-                    }
-                }
-                
-                collectionTree = vdcTree.populate(vdc);
-            }
-        }
-        
-        return this.collectionTree;
-    }
-    
-    /**
-     * Setter for property collectionTree.
-     * @param collectionTree New value of property collectionTree.
-     */
-    public void setCollectionTree(Tree collectionTree) {
-        this.collectionTree = collectionTree;
-    }
-    
+
     public String getSearchField() {
         return searchField;
     }

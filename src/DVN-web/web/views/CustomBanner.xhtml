@@ -6,10 +6,8 @@
        >
 
     <gui:composition>
-        <h:panelGroup>
             <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null}" value="#{VDCRequest.currentVDC.header}"/>
             <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId == null}" value="#{VDCRequest.vdcNetwork.networkPageHeader}"/>
-        </h:panelGroup>
     </gui:composition>
 </div>
 

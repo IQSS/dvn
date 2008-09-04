@@ -27,25 +27,12 @@
 package edu.harvard.hmdc.vdcnet.web.admin;
 
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import com.sun.rave.web.ui.component.Body;
-import com.sun.rave.web.ui.component.Form;
-import com.sun.rave.web.ui.component.Head;
-import com.sun.rave.web.ui.component.Html;
-import com.sun.rave.web.ui.component.Link;
-import com.sun.rave.web.ui.component.Page;
-import javax.faces.component.html.HtmlPanelGrid;
-import com.sun.rave.web.ui.component.PanelLayout;
-import javax.faces.component.html.HtmlOutputText;
-import com.sun.rave.web.ui.component.HelpInline;
-import javax.faces.component.html.HtmlInputTextarea;
-import com.sun.rave.web.ui.component.PanelGroup;
 import edu.harvard.hmdc.vdcnet.util.ExceptionMessageWriter;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import javax.faces.context.FacesContext;
 
 /**

@@ -19,10 +19,9 @@
 
   <gui:define name="body">
 
-
-        <h:outputText id="statusMessage" styleClass="#{AddSitePage.msg.styleClass}" value="#{AddSitePage.msg.messageText}" />
-        <h:form binding="#{AddSitePage.form1}" id="form1">
-            <script type="text/javascript">
+        <h:form>
+          <h:outputText id="statusMessage" styleClass="#{AddSitePage.msg.styleClass}" value="#{AddSitePage.msg.messageText}" />  
+          <script type="text/javascript">
                 //<![CDATA[
                  function changeValue(obj) {
                     if (window.event)
@@ -134,24 +133,24 @@
                                 <h:message for="lastName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                             </div>
                             <!-- affiliation -->
-                            <div jsfc="ice:panelGroup" >
+                            <div>
                                 <h:outputLabel for="affiliation" id="affiliationLabel">
                                     <h:outputText value="Affiliation"/>                                              
                                 </h:outputLabel>
                             </div>
-                            <div jsfc="ice:panelGroup" >
+                            <div>
                                 <h:inputText id="affiliation" immediate="true" value="#{AddSitePage.affiliation}" valueChangeListener="#{AddSitePage.changeAffiliation}" />
                                 <br />
                                 <h:outputText styleClass="vdcHelpText" value="University, center, or research project."/>
                             </div>
                             <!-- Dataverse Name -->
-                            <div jsfc="ice:panelGroup" >
+                            <div>
                                 <h:outputLabel binding="#{AddSitePage.componentLabel1}" for="componentLabel1" id="componentLabel1">
                                     <h:outputText binding="#{AddSitePage.componentLabel1Text}" id="componentLabel1Text" value="Dataverse Name"/>                                              
                                     <h:graphicImage value="#{bundle.iconRequired}"/>
                                 </h:outputLabel>
                             </div>
-                            <div jsfc="ice:panelGroup">
+                            <div>
                                 <h:inputText binding="#{AddSitePage.dataverseName}" id="dataverseName" 
                                                 required="#{(AddSitePage.dataverseType == 'Scholar') ? false : true}"
                                                 requiredMessage="This field is required." 
@@ -161,7 +160,7 @@
                                 <h:message for="dataverseName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                             </div>
                             <!-- Dataverse Alias -->
-                            <div jsfc="ice:panelGroup" >
+                            <div>
                                 <h:outputLabel binding="#{AddSitePage.componentLabel2}" for="componentLabel2" id="componentLabel2">
                                     <h:outputText binding="#{AddSitePage.componentLabel2Text}" id="componentLabel2Text" value="Dataverse Alias"/> 
                                     <h:graphicImage value="#{bundle.iconRequired}"/>
@@ -199,19 +198,19 @@
                                     value="#{bundle.scholarGroupSelect}" />
                             </div>
                         </h:panelGrid>
-                        <div jsfc="ice:panelGroup" binding="#{AddSitePage.groupPanel1}"  id="groupPanel1" style="padding-left: 160px">
+                        <div style="padding-left: 160px">
                             <h:commandButton rendered="#{AddSitePage.dataverseType != 'Scholar'}" id="button1" value="Save" action="#{AddSitePage.create}"/>
                             <h:commandButton rendered="#{AddSitePage.dataverseType == 'Scholar'}" id="btnCreateSdv" value="Save" action="#{AddSitePage.createScholarDataverse}"/>
                             <h:commandButton binding="#{AddSitePage.button2}" id="button2" style="margin-left: 20px" immediate="true" value="Cancel" action="#{AddSitePage.cancel}"/>
                         </div>
-                       <script type="text/javascript">
+                      <script type="text/javascript">
                             //<![CDATA[
                                  
                                     // this is done to ensure that the scholar fields are properly inited. wjb
                                     showAll();
                             // ]]>
                         </script>
-                        
+                       
                     </div>
                     </div>
                     

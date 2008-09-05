@@ -51,22 +51,18 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlSelectOneMenu;
 import com.sun.jsfcl.data.DefaultSelectItemsArray;
 import javax.faces.component.UISelectItems;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlSelectBooleanCheckbox;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlSelectOneRadio;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.component.html.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import com.icesoft.faces.component.ext.HtmlInputText;
+import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
+import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
+import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.sun.jsfcl.data.DefaultTableDataModel;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import javax.faces.component.UIColumn;
-import javax.faces.component.html.HtmlGraphicImage;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.HashMap;
@@ -139,46 +135,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         dropdown3DefaultItems.setItems(getAdvSearchFieldDefaults());
         dataTable1Model.setWrappedData(getCollectionsDisplay());
     }
-    
-    private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
 
-    public HtmlPanelGrid getGridPanel1() {
-        return gridPanel1;
-    }
-
-    public void setGridPanel1(HtmlPanelGrid hpg) {
-        this.gridPanel1 = hpg;
-    }
-
-    private HtmlOutputText outputText1 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText1() {
-        return outputText1;
-    }
-
-    public void setOutputText1(HtmlOutputText hot) {
-        this.outputText1 = hot;
-    }
-
-    private HtmlOutputText outputText2 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText2() {
-        return outputText2;
-    }
-
-    public void setOutputText2(HtmlOutputText hot) {
-        this.outputText2 = hot;
-    }
-
-    private HtmlOutputText outputText3 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText3() {
-        return outputText3;
-    }
-
-    public void setOutputText3(HtmlOutputText hot) {
-        this.outputText3 = hot;
-    }
 
     private HtmlSelectOneMenu dropdown1 = new HtmlSelectOneMenu();
 
@@ -218,26 +175,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
     public void setTextField1(HtmlInputText hit) {
         this.textField1 = hit;
-    }
-
-    private HtmlOutputText outputText4 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText4() {
-        return outputText4;
-    }
-
-    public void setOutputText4(HtmlOutputText hot) {
-        this.outputText4 = hot;
-    }
-
-    private HtmlPanelGrid gridPanel2 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel2() {
-        return gridPanel2;
-    }
-
-    public void setGridPanel2(HtmlPanelGrid hpg) {
-        this.gridPanel2 = hpg;
     }
 
     private HtmlSelectOneMenu dropdown3 = new HtmlSelectOneMenu();
@@ -440,27 +377,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         this.textField4 = hit;
     }
 
-    private HtmlCommandButton button1 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton1() {
-        return button1;
-    }
-
-    public void setButton1(HtmlCommandButton hcb) {
-        this.button1 = hcb;
-    }
-
-    private HtmlOutputText outputText5 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText5() {
-        return outputText5;
-    }
-
-    public void setOutputText5(HtmlOutputText hot) {
-        this.outputText5 = hot;
-    }
-
-
     private HtmlSelectOneRadio radioButtonList1 = new HtmlSelectOneRadio();
 
     public HtmlSelectOneRadio getRadioButtonList1() {
@@ -491,26 +407,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         this.radioButtonList1SelectItems = uisi;
     }
 
-    private HtmlCommandButton button2 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton2() {
-        return button2;
-    }
-
-    public void setButton2(HtmlCommandButton hcb) {
-        this.button2 = hcb;
-    }
-
-    private HtmlCommandButton button3 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton3() {
-        return button3;
-    }
-
-    public void setButton3(HtmlCommandButton hcb) {
-        this.button3 = hcb;
-    }
-
     private HtmlSelectOneMenu dropdown9 = new HtmlSelectOneMenu();
 
     public HtmlSelectOneMenu getDropdown9() {
@@ -529,36 +425,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
     public void setDropdown4SelectItems3(UISelectItems uisi) {
         this.dropdown4SelectItems3 = uisi;
-    }
-
-    private HtmlOutputText outputText6 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText6() {
-        return outputText6;
-    }
-
-    public void setOutputText6(HtmlOutputText hot) {
-        this.outputText6 = hot;
-    }
-
-    private HtmlOutputText outputText7 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText7() {
-        return outputText7;
-    }
-
-    public void setOutputText7(HtmlOutputText hot) {
-        this.outputText7 = hot;
-    }
-
-    private HtmlOutputText outputText8 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText8() {
-        return outputText8;
-    }
-
-    public void setOutputText8(HtmlOutputText hot) {
-        this.outputText8 = hot;
     }
 
     private HtmlDataTable dataTable1 = new HtmlDataTable();
@@ -591,15 +457,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         this.column1 = uic;
     }
 
-    private HtmlOutputText outputText11 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText11() {
-        return outputText11;
-    }
-
-    public void setOutputText11(HtmlOutputText hot) {
-        this.outputText11 = hot;
-    }
 
     private HtmlSelectBooleanCheckbox checkbox1 = new HtmlSelectBooleanCheckbox();
 
@@ -609,16 +466,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
     public void setCheckbox1(HtmlSelectBooleanCheckbox hsbc) {
         this.checkbox1 = hsbc;
-    }
-
-    private HtmlGraphicImage image1 = new HtmlGraphicImage();
-
-    public HtmlGraphicImage getImage1() {
-        return image1;
-    }
-
-    public void setImage1(HtmlGraphicImage hgi) {
-        this.image1 = hgi;
     }
     
     // </editor-fold>

@@ -323,7 +323,6 @@ public class FileDownloadServlet extends HttpServlet{
 			    }
 			}
 
-
 			int i = 0; 
 			while ( ( i = in.read (dataReadBuffer)) > 0 ) {
 			    out.write(dataReadBuffer, 0, i);
@@ -351,6 +350,16 @@ public class FileDownloadServlet extends HttpServlet{
 			String remoteFileUrl = file.getFileSystemLocation(); 
 			if ( remoteFileUrl != null ) {
 			    remoteFileUrl = remoteFileUrl.replaceAll (" ", "+");
+			}
+
+			// If it's another DVN from which we are getting
+			// the file, we need to pass the "noVarHeader" 
+			// argument along:
+
+			if ( noVarHeader != null ) {
+			    if ( remoteFileUrl.matches ( ".*/dvn/.*FileDownload.*" )) {
+				remoteFileUrl = remoteFileUrl + "&noVarHeader=1"; 
+			    }
 			}
 
 			
@@ -383,7 +392,7 @@ public class FileDownloadServlet extends HttpServlet{
 				jsessionid = dvnRemoteAuth ( remoteHost ); 
 			    }
 			}
-	
+
 			method = new GetMethod (remoteFileUrl);
 
 			if ( jsessionid != null ) {
@@ -1563,8 +1572,6 @@ private String remoteAuthRequired ( String remoteHost ) {
 
 	String compatibilityPrefix = ""; 
 	Boolean compatibilityMode = false; 
-	    
-
 
 	try { 
 

@@ -38,10 +38,10 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.component.html.HtmlOutputLabel;
-import javax.faces.component.html.HtmlInputText;
+import com.icesoft.faces.component.ext.HtmlOutputText;
+import com.icesoft.faces.component.ext.HtmlOutputLabel;
+import com.icesoft.faces.component.ext.HtmlInputText;
+import com.icesoft.faces.component.ext.HtmlCommandButton;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
@@ -49,7 +49,6 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
@@ -133,39 +132,8 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
             }
         } catch (Exception nfe) {
             System.out.println("An error occurred " + nfe.toString());
-        }
+        }        
         
-        
-    }
-
-    private HtmlOutputText outputText1 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText1() {
-        return outputText1;
-    }
-
-    public void setOutputText1(HtmlOutputText hot) {
-        this.outputText1 = hot;
-    }
-
-    private HtmlOutputText outputText2 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText2() {
-        return outputText2;
-    }
-
-    public void setOutputText2(HtmlOutputText hot) {
-        this.outputText2 = hot;
-    }
-
-    private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel1() {
-        return gridPanel1;
-    }
-
-    public void setGridPanel1(HtmlPanelGrid hpg) {
-        this.gridPanel1 = hpg;
     }
 
     private HtmlOutputLabel componentLabel1 = new HtmlOutputLabel();
@@ -227,17 +195,6 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     public void setDataverseAlias(HtmlInputText hit) {
         this.dataverseAlias = hit;
     }
-
-    private HtmlPanelGrid gridPanel2 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel2() {
-        return gridPanel2;
-    }
-
-    public void setGridPanel2(HtmlPanelGrid hpg) {
-        this.gridPanel2 = hpg;
-    }
-
 
     private HtmlCommandButton button1 = new HtmlCommandButton();
 

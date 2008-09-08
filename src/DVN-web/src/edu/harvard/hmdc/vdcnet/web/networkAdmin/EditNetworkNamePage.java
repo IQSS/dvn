@@ -31,11 +31,7 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlGraphicImage;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlCommandButton;
+import com.icesoft.faces.component.ext.HtmlInputText;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -77,58 +73,6 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
      */
     private void _init() throws Exception {
     }
- 
-    private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel1() {
-        return gridPanel1;
-    }
-
-    public void setGridPanel1(HtmlPanelGrid hpg) {
-        this.gridPanel1 = hpg;
-    }
-
-  
-    private HtmlOutputText outputText1 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText1() {
-        return outputText1;
-    }
-
-    public void setOutputText1(HtmlOutputText hot) {
-        this.outputText1 = hot;
-    }
-
-
-    private HtmlPanelGrid gridPanel2 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel2() {
-        return gridPanel2;
-    }
-
-    public void setGridPanel2(HtmlPanelGrid hpg) {
-        this.gridPanel2 = hpg;
-    }
-
-    private HtmlOutputText outputText2 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText2() {
-        return outputText2;
-    }
-
-    public void setOutputText2(HtmlOutputText hot) {
-        this.outputText2 = hot;
-    }
-
-    private HtmlGraphicImage image1 = new HtmlGraphicImage();
-
-    public HtmlGraphicImage getImage1() {
-        return image1;
-    }
-
-    public void setImage1(HtmlGraphicImage hgi) {
-        this.image1 = hgi;
-    }
 
     private HtmlInputText textField1 = new HtmlInputText();
 
@@ -138,26 +82,6 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
 
     public void setTextField1(HtmlInputText hit) {
         this.textField1 = hit;
-    }
-
-    private HtmlCommandButton button1 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton1() {
-        return button1;
-    }
-
-    public void setButton1(HtmlCommandButton hcb) {
-        this.button1 = hcb;
-    }
-
-    private HtmlCommandButton button2 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton2() {
-        return button2;
-    }
-
-    public void setButton2(HtmlCommandButton hcb) {
-        this.button2 = hcb;
     }
     
     // </editor-fold>

@@ -9,7 +9,6 @@
 
 package edu.harvard.hmdc.vdcnet.study;
 
-import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.ddi.DDIServiceLocal;
 import edu.harvard.hmdc.vdcnet.dublinCore.DCServiceLocal;
 import edu.harvard.hmdc.vdcnet.marc.MarcServiceLocal;

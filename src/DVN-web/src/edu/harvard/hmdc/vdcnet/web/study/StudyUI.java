@@ -30,7 +30,7 @@ package edu.harvard.hmdc.vdcnet.web.study;
 
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
-import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceBean;
+import edu.harvard.hmdc.vdcnet.ddi.DDIServiceBean;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyAbstract;
@@ -55,7 +55,6 @@ import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -385,7 +384,7 @@ public class StudyUI  implements java.io.Serializable {
         String str = "";
         for (Iterator<StudyNote> it = getStudy().getStudyNotes().iterator(); it.hasNext();) {
             StudyNote elem = it.next();
-            if (elem.getType()==null || !elem.getType().equals(DDI20ServiceBean.NOTE_TYPE_TERMS_OF_USE)) {
+            if (elem.getType()==null || !elem.getType().equals(DDIServiceBean.NOTE_TYPE_TERMS_OF_USE)) {
                 if (!StringUtil.isEmpty(elem.getType())) {
                     if (str != "") {
                         str += "; ";

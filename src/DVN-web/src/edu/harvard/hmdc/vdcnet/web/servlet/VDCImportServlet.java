@@ -26,7 +26,6 @@
 
 package edu.harvard.hmdc.vdcnet.web.servlet;
 
-import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.ddi.MappingException;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.EditStudyService;

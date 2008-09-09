@@ -57,7 +57,6 @@ import org.xml.sax.SAXException;
 @EJB(name="editStudy", beanInterface=edu.harvard.hmdc.vdcnet.study.EditStudyService.class)
 public class VDCImportServlet extends HttpServlet {
     
-    @EJB DDI20ServiceLocal ddiService;
     @EJB StudyServiceLocal studyService;
     @EJB IndexServiceLocal indexService;
     

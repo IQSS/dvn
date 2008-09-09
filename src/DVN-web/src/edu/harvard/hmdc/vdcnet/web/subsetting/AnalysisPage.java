@@ -1066,11 +1066,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         // Using new, native implementation of fixed-field cutting 
                         // (instead of executing rcut in a shell)
 
-                        Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(); 
+                        Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(noRecords); 
                         DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
                         try {
-                            fc.cutColumns(new File(cutOp1), varMetaSet.size(), 0, "\t", cutOp2);
+                            fc.cutColumns(new File(cutOp1), noRecords.intValue(), 0, "\t", cutOp2);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
 
@@ -3020,11 +3020,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         // Using new, native implementation of fixed-field cutting 
                         // (instead of executing rcut in a shell)
 
-                        Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(); 
+                        Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(noRecords); 
                         DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
                         try {
-                            fc.cutColumns(new File(cutOp1), varMetaSet.size(), 0, "\t", cutOp2);
+                            fc.cutColumns(new File(cutOp1), noRecords.intValue(), 0, "\t", cutOp2);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
 
@@ -5634,11 +5634,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         // Using new, native implementation of fixed-field cutting 
                         // (instead of executing rcut in a shell)
 
-                        Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(); 
+                        Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(noRecords); 
                         DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
                         try {
-                            fc.cutColumns(new File(cutOp1), varMetaSet.size(), 0, "\t", cutOp2);
+                            fc.cutColumns(new File(cutOp1), noRecords.intValue(), 0, "\t", cutOp2);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
 
@@ -7898,11 +7898,20 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      *
      * @return    
      */
-    public Map<Long, List<List<Integer>>> getSubsettingMetaData(){
+    public Map<Long, List<List<Integer>>> getSubsettingMetaData(Long noRecords){
 
         Map<Long, List<List<Integer>>> varMetaSet = new LinkedHashMap<Long, List<List<Integer>>>();
 
         List<DataVariable> dvs = getDataVariableForRequest();
+
+	// populate the initial, empty varMetaSet: 
+
+	//for (int i = 0; i < noRecords; i++){
+
+	while (noRecords-- > 0){
+	    List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
+	    varMetaSet.put(noRecords, cardVarMetaSet); 
+	}
 
         if (dvs != null) {
             for (int i = 0; i < dvs.size();i++  ){
@@ -7925,11 +7934,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 }
 
                 Long recordSegmentNumber = dv.getRecordSegmentNumber(); 
-
-                if ( varMetaSet.get(recordSegmentNumber) == null ) {
-                    List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
-                    varMetaSet.put(recordSegmentNumber, cardVarMetaSet); 
-                }
 
                 varMetaSet.get(recordSegmentNumber).add(varMeta); 
             

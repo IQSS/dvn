@@ -26,7 +26,6 @@
 
 package edu.harvard.hmdc.vdcnet.web.servlet;
 
-import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.ddi.DDIServiceLocal;
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;

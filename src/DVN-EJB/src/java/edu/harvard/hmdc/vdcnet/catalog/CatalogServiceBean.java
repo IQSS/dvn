@@ -29,7 +29,6 @@
 package edu.harvard.hmdc.vdcnet.catalog;
 
 import ORG.oclc.oai.server.verb.NoItemsMatchException;
-import edu.harvard.hmdc.vdcnet.ddi.DDI20ServiceLocal;
 import edu.harvard.hmdc.vdcnet.harvest.HarvestStudy;
 import edu.harvard.hmdc.vdcnet.harvest.HarvestStudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
@@ -66,7 +65,6 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class CatalogServiceBean implements CatalogServiceLocal {
     @PersistenceContext(unitName="VDCNet-ejbPU") EntityManager em;
-    @EJB DDI20ServiceLocal ddiService;
     @EJB StudyExporterFactoryLocal studyExporterFactory;
     @EJB OAISetServiceLocal oaiSetService;
     @EJB IndexServiceLocal indexService;

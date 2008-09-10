@@ -30,8 +30,6 @@
 package edu.harvard.hmdc.vdcnet.web.login;
 
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
-import edu.harvard.hmdc.vdcnet.admin.VDCUser;
-import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;

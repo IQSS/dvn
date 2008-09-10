@@ -37,7 +37,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.util.Date;
-import javax.faces.component.html.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlDataTable;
 import javax.faces.event.ActionEvent;
 
 /**

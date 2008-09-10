@@ -27,19 +27,10 @@
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-
-import javax.faces.component.html.HtmlSelectBooleanCheckbox;
-
 import edu.harvard.hmdc.vdcnet.util.ExceptionMessageWriter;
-import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.context.FacesContext;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This

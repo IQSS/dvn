@@ -19,7 +19,6 @@
  */
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
-import edu.harvard.hmdc.vdcnet.util.ExceptionMessageWriter;
 import edu.harvard.hmdc.vdcnet.vdc.OAISet;
 import edu.harvard.hmdc.vdcnet.vdc.OAISetServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;

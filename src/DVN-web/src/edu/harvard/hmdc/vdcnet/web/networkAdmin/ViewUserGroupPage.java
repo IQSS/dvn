@@ -26,22 +26,13 @@
  */
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
-import edu.harvard.hmdc.vdcnet.admin.EditUserGroupService;
-import edu.harvard.hmdc.vdcnet.admin.LoginDomain;
-import edu.harvard.hmdc.vdcnet.admin.UserDetailBean;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.UserGroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
-import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlDataTable;
-import javax.faces.event.ActionEvent;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This

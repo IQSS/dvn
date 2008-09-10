@@ -26,17 +26,13 @@
  */
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
-import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
-import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.vdc.OAISet;
 import edu.harvard.hmdc.vdcnet.vdc.OAISetServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.component.html.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlDataTable;
 import javax.faces.event.ActionEvent;
 
 /**

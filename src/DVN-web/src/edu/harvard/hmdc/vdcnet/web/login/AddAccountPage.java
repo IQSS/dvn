@@ -25,7 +25,7 @@
  */
 package edu.harvard.hmdc.vdcnet.web.login;
 
-import javax.faces.component.html.HtmlSelectOneMenu;
+import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.sun.jsfcl.data.DefaultSelectItemsArray;
 import edu.harvard.hmdc.vdcnet.admin.EditUserService;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
@@ -43,9 +43,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.UISelectItems;
-import javax.faces.component.html.HtmlInputHidden;
-import javax.faces.component.html.HtmlInputSecret;
-import javax.faces.component.html.HtmlSelectManyCheckbox;
+import com.icesoft.faces.component.ext.HtmlInputHidden;
+import com.icesoft.faces.component.ext.HtmlInputSecret;
+import com.icesoft.faces.component.ext.HtmlSelectManyCheckbox;
 import javax.faces.context.FacesContext;
 
 /**

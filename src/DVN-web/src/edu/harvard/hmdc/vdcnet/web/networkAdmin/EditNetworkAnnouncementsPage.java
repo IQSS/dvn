@@ -27,16 +27,11 @@
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlSelectBooleanCheckbox;
-import javax.faces.component.html.HtmlInputTextarea;
 import edu.harvard.hmdc.vdcnet.util.ExceptionMessageWriter;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
-import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.context.FacesContext;
 
 /**
@@ -57,78 +52,6 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
      * here is subject to being replaced.</p>
      */
     private void _init() throws Exception {
-    }
-    
-    private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel1() {
-        return gridPanel1;
-    }
-
-    public void setGridPanel1(HtmlPanelGrid hpg) {
-        this.gridPanel1 = hpg;
-    }
-    
-    private HtmlOutputText outputText1 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText1() {
-        return outputText1;
-    }
-
-    public void setOutputText1(HtmlOutputText hot) {
-        this.outputText1 = hot;
-    }
-
-
-    private HtmlOutputText outputText4 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText4() {
-        return outputText4;
-    }
-
-    public void setOutputText4(HtmlOutputText hot) {
-        this.outputText4 = hot;
-    }
-
-    private HtmlSelectBooleanCheckbox checkbox2 = new HtmlSelectBooleanCheckbox();
-
-    public HtmlSelectBooleanCheckbox getCheckbox2() {
-        return checkbox2;
-    }
-
-    public void setCheckbox2(HtmlSelectBooleanCheckbox hsbc) {
-        this.checkbox2 = hsbc;
-    }
-
-
-    private HtmlInputTextarea textArea1 = new HtmlInputTextarea();
-
-    public HtmlInputTextarea getTextArea1() {
-        return textArea1;
-    }
-
-    public void setTextArea1(HtmlInputTextarea hit) {
-        this.textArea1 = hit;
-    }
-
-    private HtmlCommandButton btnSave = new HtmlCommandButton();
-
-    public HtmlCommandButton getBtnSave() {
-        return btnSave;
-    }
-
-    public void setBtnSave(HtmlCommandButton hcb) {
-        this.btnSave = hcb;
-    }
-
-    private HtmlCommandButton btnCancel = new HtmlCommandButton();
-
-    public HtmlCommandButton getBtnCancel() {
-        return btnCancel;
-    }
-
-    public void setBtnCancel(HtmlCommandButton hcb) {
-        this.btnCancel = hcb;
     }
     
     // </editor-fold>

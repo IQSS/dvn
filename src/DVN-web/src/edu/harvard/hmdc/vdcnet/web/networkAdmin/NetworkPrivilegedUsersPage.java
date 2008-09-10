@@ -33,7 +33,6 @@ import edu.harvard.hmdc.vdcnet.admin.NetworkRole;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
-
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;

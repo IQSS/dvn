@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.component.html.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlDataTable;
 import javax.faces.event.ActionEvent;
 
 /**

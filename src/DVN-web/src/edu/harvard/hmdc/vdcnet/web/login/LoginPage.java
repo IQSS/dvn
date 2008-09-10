@@ -29,25 +29,18 @@ import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.LoginAffiliate;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
-import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
-import edu.harvard.hmdc.vdcnet.web.StudyListing;
-import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import edu.harvard.hmdc.vdcnet.web.common.VDCSessionBean;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.FacesException;
-import javax.faces.component.html.HtmlInputHidden;
-import javax.faces.context.ExternalContext;
+import com.icesoft.faces.component.ext.HtmlInputHidden;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -82,9 +75,9 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
         String defaultPage = new String("");
         String serverPort = new String((request.getServerPort() != 80 ? ":" + request.getServerPort() : ""));
         if (getVDCRequestBean().getCurrentVDC() != null) {
-            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + "/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() + request.getServletPath() + "/HomePage.xhtml";
+            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + "/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() + request.getServletPath();
         } else {
-            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + request.getServletPath() + "/HomePage.xhtml";
+            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + request.getServletPath() + "/dvn";
         }
         // Set referer needed by loginAffiliate -- must be passed on the querystring to the EZProxy
         if (sessionGet("refererUrl") == null) {

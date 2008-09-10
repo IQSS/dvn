@@ -7908,10 +7908,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 	//for (int i = 0; i < noRecords; i++){
 
-	while (noRecords-- > 0){
-	    List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
-	    varMetaSet.put(noRecords, cardVarMetaSet); 
-	}
+	//while (noRecords-- > 0){
+	//    List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
+	//    varMetaSet.put(noRecords, cardVarMetaSet); 
+	//}
 
         if (dvs != null) {
             for (int i = 0; i < dvs.size();i++  ){
@@ -7934,6 +7934,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 }
 
                 Long recordSegmentNumber = dv.getRecordSegmentNumber(); 
+
+                if ( varMetaSet.get(recordSegmentNumber) == null ) {
+                    List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
+                    varMetaSet.put(recordSegmentNumber, cardVarMetaSet); 
+                }
 
                 varMetaSet.get(recordSegmentNumber).add(varMeta); 
             

@@ -18,9 +18,8 @@
 
   <gui:define name="body">
       <f:loadBundle basename="Bundle" var="bundle"/>
-
-    
-        <h:form id="form1">
+      
+        <ice:form id="form1">
                   <f:verbatim rendered="#{param.userGroupId == null}">
                                  <script type="text/javascript">
                                          //<![CDATA[
@@ -45,129 +44,129 @@
                                         //]]>
                                  </script>
                              </f:verbatim>
-                 <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
                  <input type="hidden" name="pageName" value="EditUserGroupPage"/>
                  
                  <div class="dvn_section">
                      <div class="dvn_sectionTitle">                       
-                             <h:outputText value="User Group"/>  
+                             <ice:outputText value="User Group"/>  
                      </div>            
                      <div class="dvn_sectionBox"> 
                          <div class="dvn_margin12">
                              <div jsfc="ice:panelGroup"  style="padding-bottom: 15px;">
-                                 <h:graphicImage value="/resources/icon_required.gif"/> <h:outputText style="vdcHelpText" value="Indicates a required field."/>
+                                 <ice:graphicImage value="/resources/icon_required.gif"/> <ice:outputText style="vdcHelpText" value="Indicates a required field."/>
                              </div>
                              <!-- group name -->
-                             <h:panelGrid  cellpadding="0" cellspacing="0"
+                             <ice:panelGrid  cellpadding="0" cellspacing="0"
                                     columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
                                   <div jsfc="ice:panelGroup" id="groupPanel1">
-                                      <h:outputText value="Group Name"/>
-                                      <h:graphicImage id="image1" value="/resources/icon_required.gif"/>
+                                      <ice:outputText value="Group Name"/>
+                                      <ice:graphicImage id="image1" value="/resources/icon_required.gif"/>
                                   </div>
                                   <div jsfc="ice:panelGroup">
-                                      <h:inputText id="inputGroupName" size="40" value="#{EditUserGroupPage.group.name}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'form1:btnSave'); else return processEvent(event, 'form1:btnSave');">
+                                      <ice:inputText id="inputGroupName" size="40" value="#{EditUserGroupPage.group.name}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'form1:btnSave'); else return processEvent(event, 'form1:btnSave');">
                                          <f:validator validatorId="CharacterValidator"/>
-                                      </h:inputText>
-                                      <h:message styleClass="errorMessage" for="inputGroupName"/>
+                                      </ice:inputText>
+                                      <ice:message styleClass="errorMessage" for="inputGroupName"/>
                                   </div>
                                   <div jsfc="ice:panelGroup" id="groupPanelFriendlyName">
-                                      <h:outputText value="Friendly Group Name"/>
-                                      <h:graphicImage value="/resources/icon_required.gif"/>
+                                      <ice:outputText value="Friendly Group Name"/>
+                                      <ice:graphicImage value="/resources/icon_required.gif"/>
                                   </div>
                                   <div jsfc="ice:panelGroup">
-                                      <h:inputText id="inputFriendlyGroupName" size="40" value="#{EditUserGroupPage.group.friendlyName}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'form1:btnSave'); else return processEvent(event, 'form1:btnSave');"/>
-                                      <h:message styleClass="errorMessage" for="inputFriendlyGroupName"/>
+                                      <ice:inputText id="inputFriendlyGroupName" size="40" value="#{EditUserGroupPage.group.friendlyName}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'form1:btnSave'); else return processEvent(event, 'form1:btnSave');"/>
+                                      <ice:message styleClass="errorMessage" for="inputFriendlyGroupName"/>
                                   </div>
-                             </h:panelGrid>
+                             </ice:panelGrid>
                              <br />
                              <!--TBD (wjb) What type of group is this -->
                              <div jsfc="ice:panelGroup">
-                                 <h:selectOneRadio rendered="#{EditUserGroupPage.userGroupType == 'none' and param.userGroupId == null}" onclick="setUserGroupType(this);document.forms[0].submit();" value="#{EditUserGroupPage.userGroupType}">
+                                 <ice:selectOneRadio rendered="#{EditUserGroupPage.userGroupType == 'none' and param.userGroupId == null}" onclick="setUserGroupType(this);document.forms[0].submit();" value="#{EditUserGroupPage.userGroupType}">
                                      <f:selectItems value="#{EditUserGroupPage.userGroupTypes}"/>
-                                 </h:selectOneRadio>
+                                 </ice:selectOneRadio>
                                  
                              </div>
-                             <h:inputHidden valueChangeListener="#{EditUserGroupPage.changeUserGroupType}" value="#{EditUserGroupPage.userGroupType}" id="userGroupType"/>
+                             <ice:inputHidden valueChangeListener="#{EditUserGroupPage.changeUserGroupType}" value="#{EditUserGroupPage.userGroupType}" id="userGroupType"/>
                              
-                             <h:message for="userGroupType" styleClass="errorMessage" id="userGroupTypeMsg"/>
+                             <ice:message for="userGroupType" styleClass="errorMessage" id="userGroupTypeMsg"/>
                              <br />
                              <!-- User Groups -->
                              <div jsfc="ice:panelGroup" rendered="#{ EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'usergroup'}" id="usergroups" style="display:block;">
                                  <div jsfc="ice:panelGroup"  style="padding-bottom: 10px">
-                                     <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                     <h:outputText styleClass="vdcHelpText" value="Enter usernames in the field below. Add/remove a user by clicking the icons next to the username field."/>
+                                     <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                                     <ice:outputText styleClass="vdcHelpText" value="Enter usernames in the field below. Add/remove a user by clicking the icons next to the username field."/>
                                  </div>
-                                 <h:outputText value="Usernames"/>
-                                 <h:dataTable binding="#{EditUserGroupPage.dataTableUserNames}" var="currentRow" cellpadding="0" cellspacing="0" value="#{EditUserGroupPage.userDetails}">
-                                     <h:column>
-                                         <h:inputText id="usertable" value="#{currentRow.userName}" validator="#{EditUserGroupPage.validateUserName}" immediate="true"/>
-                                     </h:column>
-                                     <h:column>
-                                         <h:commandButton  image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addRow}"/> 
-                                         <h:commandButton  image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeRow}" /> 
+                                 <ice:outputText value="Usernames"/>
+                                 <ice:dataTable binding="#{EditUserGroupPage.dataTableUserNames}" var="currentRow" cellpadding="0" cellspacing="0" value="#{EditUserGroupPage.userDetails}">
+                                     <ice:column>
+                                         <ice:inputText id="usertable" value="#{currentRow.userName}" validator="#{EditUserGroupPage.validateUserName}" immediate="true"/>
+                                     </ice:column>
+                                     <ice:column>
+                                         <ice:commandButton  image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addRow}"/> 
+                                         <ice:commandButton  image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeRow}" /> 
                                          
-                                     </h:column>
-                                     <h:column>
-                                         <h:message for="usertable" styleClass="errorMessage"/>
-                                         <h:outputText styleClass="errorMessage" value="Username is invalid." rendered = "#{!currentRow.valid}"/>
-                                         <h:outputText styleClass="errorMessage" value="Duplicate username." rendered = "#{currentRow.duplicate}"/>
-                                     </h:column>
-                                 </h:dataTable> 
+                                     </ice:column>
+                                     <ice:column>
+                                         <ice:message for="usertable" styleClass="errorMessage"/>
+                                         <ice:outputText styleClass="errorMessage" value="Username is invalid." rendered = "#{!currentRow.valid}"/>
+                                         <ice:outputText styleClass="errorMessage" value="Duplicate username." rendered = "#{currentRow.duplicate}"/>
+                                     </ice:column>
+                                 </ice:dataTable> 
                              </div>
                              
                              <!-- IP Based Users Groups -->
                              <div jsfc="ice:panelGroup" rendered="#{ (EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'ipgroup')}" id="ipgroups" style="display:block;">
                                  <div jsfc="ice:panelGroup"  style="padding-bottom: 10px">
-                                     <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                     <h:outputText styleClass="vdcHelpText" value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable. Add/remove an entry by clicking the icons next to the username field."/>
+                                     <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                                     <ice:outputText styleClass="vdcHelpText" value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable. Add/remove an entry by clicking the icons next to the username field."/>
                                  </div>
-                                 <h:outputText value="IP Addresses/Domains"/>
-                                 <h:dataTable binding="#{EditUserGroupPage.dataTableIpAddresses}"  var="currentIpRow" cellpadding="0" cellspacing="0" value="#{EditUserGroupPage.group.loginDomains}">
-                                     <h:column>
-                                         <h:inputText id="iptable" immediate="true" validator="#{EditUserGroupPage.validateLoginDomain}" value="#{currentIpRow.ipAddress}"/>
-                                     </h:column>
-                                     <h:column>
-                                         <h:commandButton  image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addIpRow}"/> 
-                                         <h:commandButton  image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeIpRow}" /> 
-                                     </h:column>
-                                     <h:column>
-                                         <h:message for="iptable" styleClass="errorMessage"/>
-                                     </h:column>
-                                 </h:dataTable> 
+                                 <ice:outputText value="IP Addresses/Domains"/>
+                                 <ice:dataTable binding="#{EditUserGroupPage.dataTableIpAddresses}"  var="currentIpRow" cellpadding="0" cellspacing="0" value="#{EditUserGroupPage.group.loginDomains}">
+                                     <ice:column>
+                                         <ice:inputText id="iptable" immediate="true" validator="#{EditUserGroupPage.validateLoginDomain}" value="#{currentIpRow.ipAddress}"/>
+                                     </ice:column>
+                                     <ice:column>
+                                         <ice:commandButton  image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addIpRow}"/> 
+                                         <ice:commandButton  image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeIpRow}" /> 
+                                     </ice:column>
+                                     <ice:column>
+                                         <ice:message for="iptable" styleClass="errorMessage"/>
+                                     </ice:column>
+                                 </ice:dataTable> 
                                  
                              </div>
                              
                              <!-- ******************** Affiliate login services for IP Groups ****************** -->
                              <div jsfc="ice:panelGroup" rendered="#{ (EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'ipgroup')}"  id="affiliateLoginServices" style="#{(EditUserGroupPage.userGroupType == 'ipgroup') ? 'display:block' : 'display:none;'}">
-                                 <h:selectBooleanCheckbox id="chkAffiliateLoginService" valueChangeListener="#{EditUserGroupPage.changeChkAffiliateLoginService}" onclick="this.form.submit();" immediate="true" value="#{EditUserGroupPage.chkAffiliateLoginService}">
-                                     <h:outputLabel for="chkAffiliateLoginService" value="This IP group has an affiliate login service."/>
-                                 </h:selectBooleanCheckbox>
+                                 <ice:selectBooleanCheckbox id="chkAffiliateLoginService" valueChangeListener="#{EditUserGroupPage.changeChkAffiliateLoginService}" onclick="this.form.submit();" immediate="true" value="#{EditUserGroupPage.chkAffiliateLoginService}">
+                                     <ice:outputLabel for="chkAffiliateLoginService" value="This IP group has an affiliate login service."/>
+                                 </ice:selectBooleanCheckbox>
                                  <f:verbatim><br /></f:verbatim><f:verbatim><br /></f:verbatim>
                                  <div jsfc="ice:panelGroup"  style="padding-right:15px;padding-bottom: 10px; #{(EditUserGroupPage.chkAffiliateLoginService) ? 'display:block' : 'display:none;'}">
-                                     <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                     <h:outputText styleClass="vdcHelpText" value="Affiliate login services can be configured here. Enter affiliate names (ex. MySchool's Pin Service)  and urls (http://ez.pinserver.edu) in the field below."/>
+                                     <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                                     <ice:outputText styleClass="vdcHelpText" value="Affiliate login services can be configured here. Enter affiliate names (ex. MySchool's Pin Service)  and urls (http://ez.pinserver.edu) in the field below."/>
                                  </div>
-                                 <h:dataTable binding="#{EditUserGroupPage.affiliatesTable}" rendered="true" value="#{EditUserGroupPage.group.loginAffiliates}" var="affiliate" style="margin-right:50px;#{(EditUserGroupPage.chkAffiliateLoginService) ? 'display:block' : 'display:none;'}">
-                                     <h:column>
+                                 <ice:dataTable binding="#{EditUserGroupPage.affiliatesTable}" rendered="true" value="#{EditUserGroupPage.group.loginAffiliates}" var="affiliate" style="margin-right:50px;#{(EditUserGroupPage.chkAffiliateLoginService) ? 'display:block' : 'display:none;'}">
+                                     <ice:column>
                                          <f:facet name="header">
-                                             <h:outputText value="Affiliate Name"/>
+                                             <ice:outputText value="Affiliate Name"/>
                                          </f:facet>
-                                         <h:inputText id="affiliateName" value="#{affiliate.name}"/> 
-                                     </h:column>
-                                     <h:column>
+                                         <ice:inputText id="affiliateName" value="#{affiliate.name}"/> 
+                                     </ice:column>
+                                     <ice:column>
                                          <f:facet name="header">
-                                             <h:outputText value="Affiliate URL"/>
+                                             <ice:outputText value="Affiliate URL"/>
                                          </f:facet>
-                                         <h:inputText id="affiliateURL" value="#{affiliate.url}" />
-                                     </h:column>
-                                     <h:column>
-                                         <h:commandButton image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addAffiliateRow}"/> 
-                                         <h:commandButton image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeAffiliateRow}" /> 
-                                     </h:column>
-                                     <h:column>
-                                         <h:message for="affiliateName" styleClass="errorMessage"/>
-                                     </h:column>
-                                 </h:dataTable>
+                                         <ice:inputText id="affiliateURL" value="#{affiliate.url}" />
+                                     </ice:column>
+                                     <ice:column>
+                                         <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addAffiliateRow}"/> 
+                                         <ice:commandButton image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeAffiliateRow}" /> 
+                                     </ice:column>
+                                     <ice:column>
+                                         <ice:message for="affiliateName" styleClass="errorMessage"/>
+                                     </ice:column>
+                                 </ice:dataTable>
                              </div>
                              
                              <!-- end ip groups -->
@@ -182,15 +181,15 @@
                              
                              
                              <div jsfc="ice:panelGroup"  style="padding-left: 100px; padding-top: 10px">
-                                 <h:commandButton id="btnSave" value="Save" action="#{EditUserGroupPage.save}"/>
-                                 <h:commandButton immediate="true" style="margin-left: 30px" value="Cancel" action="#{EditUserGroupPage.cancel}"/>
+                                 <ice:commandButton id="btnSave" value="Save" action="#{EditUserGroupPage.save}"/>
+                                 <ice:commandButton immediate="true" style="margin-left: 30px" value="Cancel" action="#{EditUserGroupPage.cancel}"/>
                              </div>
                              
                          </div>
                      </div>
                  </div>
                             
-            </h:form>
+            </ice:form>
             </gui:define>
         </gui:composition>
     </body>

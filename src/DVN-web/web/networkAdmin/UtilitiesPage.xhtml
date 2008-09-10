@@ -20,260 +20,259 @@
 
   <gui:define name="body">
 
-
-        <h:form  id="utilitiesForm1">
-            <h:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:form  id="utilitiesForm1">
+            <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             <input type ="hidden"  name="selectedPanel" value="${UtilitiesPage.selectedPanel}"/>
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                    <h:outputText value="Dataverse Network Utilities" />
+                    <ice:outputText value="Dataverse Network Utilities" />
                 </div>            
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">
                         
                         <!-- STUDY LOCK PANEL -->
-                        <div jsfc="ice:panelGroup"   styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
-                            <h:outputText value="StudyLock Utilities"/>
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.studyLockPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=studyLock">  
-                                <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
-                            </h:outputLink>
-                            <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.studyLockPanelRendered}" />
+                        <div styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
+                            <ice:outputText value="StudyLock Utilities"/>
+                            <ice:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.studyLockPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=studyLock">  
+                                <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
+                            </ice:outputLink>
+                            <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.studyLockPanelRendered}" />
                         </div>
                         
-                        <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.studyLockPanelRendered}" > 
-                            <h:messages id="studyLockMessage"  styleClass="errorMessage"/> 
-                            <h:outputText value="Current Locks:"/>
-                            <h:dataTable value="#{UtilitiesPage.studyLockList}" var="studyLock" width="100%">
-                                <h:column>
+                        <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.studyLockPanelRendered}" > 
+                            <ice:messages id="studyLockMessage"  styleClass="errorMessage"/> 
+                            <ice:outputText value="Current Locks:"/>
+                            <ice:dataTable value="#{UtilitiesPage.studyLockList}" var="studyLock" width="100%">
+                                <ice:column>
                                     <f:facet name="header">
-                                        <h:outputText value="Study Id"/>
+                                        <ice:outputText value="Study Id"/>
                                     </f:facet> 
-                                    <h:outputText value="#{studyLock.study.id}"/>
-                                </h:column>
-                                <h:column>
+                                    <ice:outputText value="#{studyLock.study.id}"/>
+                                </ice:column>
+                                <ice:column>
                                     <f:facet name="header">
-                                        <h:outputText value="User Name"/>
+                                        <ice:outputText value="User Name"/>
                                     </f:facet>                                     
-                                    <h:outputText value="#{studyLock.user.userName}"/>
-                                </h:column>
-                                <h:column>
+                                    <ice:outputText value="#{studyLock.user.userName}"/>
+                                </ice:column>
+                                <ice:column>
                                     <f:facet name="header">
-                                        <h:outputText value="Start Time"/>
+                                        <ice:outputText value="Start Time"/>
                                     </f:facet>                                     
-                                    <h:outputText value="#{studyLock.startTime}"/>
-                                </h:column>
-                                <h:column>
+                                    <ice:outputText value="#{studyLock.startTime}"/>
+                                </ice:column>
+                                <ice:column>
                                     <f:facet name="header">
-                                        <h:outputText value="Detail"/>
+                                        <ice:outputText value="Detail"/>
                                     </f:facet>                                     
-                                    <h:outputText value="#{studyLock.detail}"/>
-                                </h:column>                                
-                            </h:dataTable> 
+                                    <ice:outputText value="#{studyLock.detail}"/>
+                                </ice:column>                                
+                            </ice:dataTable> 
                             <hr/>
-                            <h:outputText value="To remove a study lock, input the study id and click on the button below:"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:inputText value="#{UtilitiesPage.studyLockStudyId}" size="6" />
-                                <h:commandButton  value="Remove Lock" action="#{UtilitiesPage.removeLock_action}"/>
+                            <ice:outputText value="To remove a study lock, input the study id and click on the button below:"/>
+                            <div>
+                                <ice:inputText value="#{UtilitiesPage.studyLockStudyId}" size="6" />
+                                <ice:commandButton  value="Remove Lock" action="#{UtilitiesPage.removeLock_action}"/>
                             </div>
-                        </h:panelGrid>
+                        </ice:panelGrid>
                         
                         
                         <!-- INDEX PANEL -->
-                        <div jsfc="ice:panelGroup"   styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
-                            <h:outputText value="Index Utilities"/>
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.indexPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=index">  
-                                <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
-                            </h:outputLink>
-                            <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.indexPanelRendered}" />
+                        <div styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
+                            <ice:outputText value="Index Utilities"/>
+                            <ice:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.indexPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=index">  
+                                <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
+                            </ice:outputLink>
+                            <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.indexPanelRendered}" />
                         </div>   
                         
-                        <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.indexPanelRendered}" > 
-                            <h:messages id="indexMessage"  styleClass="errorMessage"/> 
-                            <h:outputText value="To reindex all studies, click on the button below:"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:commandButton  value="Index All" action="#{UtilitiesPage.indexAll_action}"/>
+                        <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.indexPanelRendered}" > 
+                            <ice:messages id="indexMessage"  styleClass="errorMessage"/> 
+                            <ice:outputText value="To reindex all studies, click on the button below:"/>
+                            <div>
+                                <ice:commandButton  value="Index All" action="#{UtilitiesPage.indexAll_action}"/>
                             </div>
                             <hr/>
-                            <h:outputText value="To index studies owned by a specific dataverse, input the dataverse id and click on the button below:"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:inputText value="#{UtilitiesPage.indexDVId}" size="6" />
-                                <h:commandButton  value="Index Dataverse" action="#{UtilitiesPage.indexDV_action}"/>
+                            <ice:outputText value="To index studies owned by a specific dataverse, input the dataverse id and click on the button below:"/>
+                            <div>
+                                <ice:inputText value="#{UtilitiesPage.indexDVId}" size="6" />
+                                <ice:commandButton  value="Index Dataverse" action="#{UtilitiesPage.indexDV_action}"/>
                             </div>
                             <hr/>
-                            <h:outputText value="To index arbitrary studies, input the study ids and click on the button below:"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:inputTextarea value="#{UtilitiesPage.indexStudyIds}" rows="8" cols="80"/>
-                                <h:commandButton  value="Index Studies" action="#{UtilitiesPage.indexStudies_action}"/>
+                            <ice:outputText value="To index arbitrary studies, input the study ids and click on the button below:"/>
+                            <div>
+                                <ice:inputTextarea value="#{UtilitiesPage.indexStudyIds}" rows="8" cols="80"/>
+                                <ice:commandButton  value="Index Studies" action="#{UtilitiesPage.indexStudies_action}"/>
                             </div>                            
                             <hr/>
-                            <h:outputText value="To index unindexed studies, click on the button below:"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:commandButton  value="Index Update" action="#{UtilitiesPage.indexBatch_action}"/>
+                            <ice:outputText value="To index unindexed studies, click on the button below:"/>
+                            <div>
+                                <ice:commandButton  value="Index Update" action="#{UtilitiesPage.indexBatch_action}"/>
                             </div>
                             <hr/>
-                            <h:outputText value="#{UtilitiesPage.indexLocks}"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:commandButton  value="Delete Lock" action="#{UtilitiesPage.indexLocks_action}" disabled="#{UtilitiesPage.deleteLockDisabled}"/>
+                            <ice:outputText value="#{UtilitiesPage.indexLocks}"/>
+                            <div>
+                                <ice:commandButton  value="Delete Lock" action="#{UtilitiesPage.indexLocks_action}" disabled="#{UtilitiesPage.deleteLockDisabled}"/>
                             </div>                            
-                        </h:panelGrid>
+                        </ice:panelGrid>
                         
                         
                         <!-- EXPORT PANEL -->  
-                        <div jsfc="ice:panelGroup"   styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
-                            <h:outputText value="Export Utilities"/>                           
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.exportPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=export">  
-                                <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
-                            </h:outputLink>
-                            <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.exportPanelRendered}" />
+                        <div styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
+                            <ice:outputText value="Export Utilities"/>                           
+                            <ice:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.exportPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=export">  
+                                <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
+                            </ice:outputLink>
+                            <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.exportPanelRendered}" />
                         </div>  
                         
-                        <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.exportPanelRendered}" > 
-                            <h:messages id="exportMessage"  styleClass="errorMessage"/> 
-                            <h:outputText value="To run export now (all updated studies in all formats will be exported and update harvest studies will be run), click on the button below:"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:commandButton  value="Run Export" action="#{UtilitiesPage.exportUpdated_action}"/>
+                        <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.exportPanelRendered}" > 
+                            <ice:messages id="exportMessage"  styleClass="errorMessage"/> 
+                            <ice:outputText value="To run export now (all updated studies in all formats will be exported and update harvest studies will be run), click on the button below:"/>
+                            <div>
+                                <ice:commandButton  value="Run Export" action="#{UtilitiesPage.exportUpdated_action}"/>
                             </div> 
                             <hr/>
-                            <h:outputText value="To update harvest studies, click on the button below:"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:commandButton  value="Update Harvest Studies" action="#{UtilitiesPage.updateHarvestStudies_action}"/>
+                            <ice:outputText value="To update harvest studies, click on the button below:"/>
+                            <div>
+                                <ice:commandButton  value="Update Harvest Studies" action="#{UtilitiesPage.updateHarvestStudies_action}"/>
                             </div>                             
                             <hr/>
                             <hr/>
-                            <h:outputText value="OR, for a CUSTOM export (note: harvest studies will NOT be updated), select export format, then either:"/>
-                            <h:selectOneMenu id="dropdown1" value="#{UtilitiesPage.exportFormat}">
+                            <ice:outputText value="OR, for a CUSTOM export (note: harvest studies will NOT be updated), select export format, then either:"/>
+                            <ice:selectOneMenu id="dropdown1" value="#{UtilitiesPage.exportFormat}">
                                 <f:selectItem itemLabel="Export all formats" itemValue="" />
                                 <f:selectItem itemLabel="- Export DDI only" itemValue="ddi" />
                                 <f:selectItem itemLabel="- Export Dublin Core only" itemValue="oai_dc" />
                                 <f:selectItem itemLabel="- Export Marc only" itemValue="marc" /> 
-                            </h:selectOneMenu>
+                            </ice:selectOneMenu>
                             <hr/>
-                            <h:outputText value="a) export all studies (regardless of update time), click the button below:"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:commandButton  value="Export All" action="#{UtilitiesPage.exportAll_action}"/>
+                            <ice:outputText value="a) export all studies (regardless of update time), click the button below:"/>
+                            <div>
+                                <ice:commandButton  value="Export All" action="#{UtilitiesPage.exportAll_action}"/>
                             </div>
                             <hr/>
-                            <h:outputText value="b) export studies owned by a specific dataverse (regardless of update time), input the dataverse id and click on the button below:"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:inputText value="#{UtilitiesPage.exportDVId}" size="6" />
-                                <h:commandButton  value="Export Dataverse" action="#{UtilitiesPage.exportDV_action}"/>
+                            <ice:outputText value="b) export studies owned by a specific dataverse (regardless of update time), input the dataverse id and click on the button below:"/>
+                            <div>
+                                <ice:inputText value="#{UtilitiesPage.exportDVId}" size="6" />
+                                <ice:commandButton  value="Export Dataverse" action="#{UtilitiesPage.exportDV_action}"/>
                             </div>
                             <hr/>
-                            <h:outputText value="c) export arbitrary studies (regardless of update time), input the study ids and click on the button below:"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:inputTextarea value="#{UtilitiesPage.exportStudyIds}" rows="8" cols="80"/>
-                                <h:commandButton  value="Export Studies" action="#{UtilitiesPage.exportStudies_action}"/>
+                            <ice:outputText value="c) export arbitrary studies (regardless of update time), input the study ids and click on the button below:"/>
+                            <div>
+                                <ice:inputTextarea value="#{UtilitiesPage.exportStudyIds}" rows="8" cols="80"/>
+                                <ice:commandButton  value="Export Studies" action="#{UtilitiesPage.exportStudies_action}"/>
                             </div>  
-                        </h:panelGrid>   
+                        </ice:panelGrid>   
                         
                         
                         <!-- HARVEST PANEL -->
-                        <div jsfc="ice:panelGroup"   styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
-                            <h:outputText value="Harvest Utilities"/>
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.harvestPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=harvest">  
-                                <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
-                            </h:outputLink>
-                            <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.harvestPanelRendered}" />
+                        <div styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
+                            <ice:outputText value="Harvest Utilities"/>
+                            <ice:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.harvestPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=harvest">  
+                                <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
+                            </ice:outputLink>
+                            <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.harvestPanelRendered}" />
                         </div>   
                         
-                        <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.harvestPanelRendered}" > 
-                            <h:messages id="harvestMessage"  styleClass="errorMessage"/> 
-                            <h:outputText value="To harvest a specific study, input the DV and the harvest identifier, and click on the button below:"/>
+                        <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.harvestPanelRendered}" > 
+                            <ice:messages id="harvestMessage"  styleClass="errorMessage"/> 
+                            <ice:outputText value="To harvest a specific study, input the DV and the harvest identifier, and click on the button below:"/>
                             <div jsfc="ice:panelGroup">
-                                <h:selectOneMenu  value="#{UtilitiesPage.harvestDVId}">
+                                <ice:selectOneMenu  value="#{UtilitiesPage.harvestDVId}">
                                     <f:selectItems value="#{UtilitiesPage.harvestDVs}" />
-                                </h:selectOneMenu>                            
-                                <h:inputText value="#{UtilitiesPage.harvestIdentifier}" size="60" />                                
-                                <h:commandButton  value="Harvest Study" action="#{UtilitiesPage.harvestStudy_action}"/>
+                                </ice:selectOneMenu>                            
+                                <ice:inputText value="#{UtilitiesPage.harvestIdentifier}" size="60" />                                
+                                <ice:commandButton  value="Harvest Study" action="#{UtilitiesPage.harvestStudy_action}"/>
                             </div>                            
-                        </h:panelGrid>                        
+                        </ice:panelGrid>                        
                         
                         
                         <!-- FILE PANEL -->
-                        <div jsfc="ice:panelGroup"   styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
-                            <h:outputText value="File Utilities"/>
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.filePanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=file">  
-                                <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
-                            </h:outputLink>
-                            <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.filePanelRendered}" />
+                        <div styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
+                            <ice:outputText value="File Utilities"/>
+                            <ice:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.filePanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=file">  
+                                <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
+                            </ice:outputLink>
+                            <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.filePanelRendered}" />
                         </div>   
                         
-                        <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.filePanelRendered}" > 
-                            <h:messages id="fileMessage"  styleClass="errorMessage"/>
-                            <h:outputText value="To determine the file types for files with a particular extension:"/>
+                        <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.filePanelRendered}" > 
+                            <ice:messages id="fileMessage"  styleClass="errorMessage"/>
+                            <ice:outputText value="To determine the file types for files with a particular extension:"/>
                             <div jsfc="ice:panelGroup">
-                                <h:inputText value="#{UtilitiesPage.fileExtension}" size="6" />
-                                <h:commandButton  value="Determine File Types for Extension" action="#{UtilitiesPage.determineFileTypeForExtension_action}"/>
+                                <ice:inputText value="#{UtilitiesPage.fileExtension}" size="6" />
+                                <ice:commandButton  value="Determine File Types for Extension" action="#{UtilitiesPage.determineFileTypeForExtension_action}"/>
                             </div>
                             <hr/>
-                            <h:outputText value="To determine the file types for files in arbitrary studies, input the study ids and click on the button below:"/>
-                            <h:inputTextarea value="#{UtilitiesPage.fileStudyIds}" rows="8" cols="80"/>
-                            <h:commandButton  value="Determine File Types for Studies" action="#{UtilitiesPage.determineFileTypeForStudies_action}"/>
-                        </h:panelGrid>  
+                            <ice:outputText value="To determine the file types for files in arbitrary studies, input the study ids and click on the button below:"/>
+                            <ice:inputTextarea value="#{UtilitiesPage.fileStudyIds}" rows="8" cols="80"/>
+                            <ice:commandButton  value="Determine File Types for Studies" action="#{UtilitiesPage.determineFileTypeForStudies_action}"/>
+                        </ice:panelGrid>  
                         
                         
                         <!-- IMPORT PANEL -->
-                        <div jsfc="ice:panelGroup"   styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
-                            <h:outputText value="Import Utilities"/>
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.importPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=import">  
-                                <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
-                            </h:outputLink>
-                            <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.importPanelRendered}" />
+                        <div  styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
+                            <ice:outputText value="Import Utilities"/>
+                            <ice:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.importPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=import">  
+                                <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
+                            </ice:outputLink>
+                            <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.importPanelRendered}" />
                         </div>  
                         
-                        <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.importPanelRendered}" > 
-                            <h:messages id="importMessage"  styleClass="errorMessage"/> 
-                            <h:outputText value="Select the file format and the dataverse for the import, then either:"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:selectOneMenu  value="#{UtilitiesPage.importFileFormat}">
+                        <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.importPanelRendered}" > 
+                            <ice:messages id="importMessage"  styleClass="errorMessage"/> 
+                            <ice:outputText value="Select the file format and the dataverse for the import, then either:"/>
+                            <div>
+                                <ice:selectOneMenu  value="#{UtilitiesPage.importFileFormat}">
                                     <f:selectItems value="#{UtilitiesPage.importFileFormatTypes}" />
-                                </h:selectOneMenu>                                   
-                                <h:selectOneMenu  value="#{UtilitiesPage.importDVId}">
+                                </ice:selectOneMenu>                                   
+                                <ice:selectOneMenu  value="#{UtilitiesPage.importDVId}">
                                     <f:selectItems value="#{UtilitiesPage.importDVs}" />
-                                </h:selectOneMenu> 
+                                </ice:selectOneMenu> 
                             </div>    
                             <hr/>
                             
-                            <h:outputText value="a) Batch import - input directory and click on the button:"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:inputText value="#{UtilitiesPage.importBatchDir}" size="80" />
-                                <h:commandButton  value="Batch Import" action="#{UtilitiesPage.importBatch_action}"/>
+                            <ice:outputText value="a) Batch import - input directory and click on the button:"/>
+                            <div>
+                                <ice:inputText value="#{UtilitiesPage.importBatchDir}" size="80" />
+                                <ice:commandButton  value="Batch Import" action="#{UtilitiesPage.importBatch_action}"/>
                             </div>
                             <hr/>
 
-                            <h:outputText value="or b) Single import - browse for the file and click on the button:"/>
-                            <div jsfc="ice:panelGroup">                         
+                            <ice:outputText value="or b) Single import - browse for the file and click on the button:"/>
+                            <div>                         
                                 <ui:upload  id="fileBrowser"  uploadedFile ="#{UtilitiesPage.importFile}"/>
-                                <h:commandButton  value="Single Import" action="#{UtilitiesPage.importSingleFile_action}"/>
+                                <ice:commandButton  value="Single Import" action="#{UtilitiesPage.importSingleFile_action}"/>
                             </div>  
                             <hr/>
                             
-                        </h:panelGrid>
+                        </ice:panelGrid>
                         
                         
                         <!-- DELETE PANEL -->
-                        <div jsfc="ice:panelGroup"   styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
-                            <h:outputText value="Delete Utilities"/>
-                            <h:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.deletePanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=delete">  
-                                <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
-                            </h:outputLink>
-                            <h:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.deletePanelRendered}" />
+                        <div styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
+                            <ice:outputText value="Delete Utilities"/>
+                            <ice:outputLink  title="Display this panel" rendered="#{!UtilitiesPage.deletePanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=delete">  
+                                <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_contract.gif" />
+                            </ice:outputLink>
+                            <ice:graphicImage  styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.deletePanelRendered}" />
                         </div>   
                         
-                        <h:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.deletePanelRendered}" > 
-                            <h:messages id="deleteMessage"  styleClass="errorMessage"/> 
-                            <h:outputText value="To delete arbitrary studies, input the study ids and click on the button below:"/>
-                            <div jsfc="ice:panelGroup">
-                                <h:inputTextarea value="#{UtilitiesPage.deleteStudyIds}" rows="8" cols="80"/>
-                                <h:commandButton  value="Delete Studies" action="#{UtilitiesPage.deleteStudies_action}" onclick="return confirm('Please confirm this DELETE request. This change CANNOT be undone.');"/>
+                        <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.deletePanelRendered}" > 
+                            <ice:messages id="deleteMessage"  styleClass="errorMessage"/> 
+                            <ice:outputText value="To delete arbitrary studies, input the study ids and click on the button below:"/>
+                            <div>
+                                <ice:inputTextarea value="#{UtilitiesPage.deleteStudyIds}" rows="8" cols="80"/>
+                                <ice:commandButton  value="Delete Studies" action="#{UtilitiesPage.deleteStudies_action}" onclick="return confirm('Please confirm this DELETE request. This change CANNOT be undone.');"/>
                             </div>                            
-                        </h:panelGrid>
+                        </ice:panelGrid>
                                           
                         
                     </div>
                 </div>
             </div>
-        </h:form>
+        </ice:form>
             </gui:define>
         </gui:composition>
     </body>

@@ -20,41 +20,43 @@
   <gui:define name="body">                    
      
 
-    <h:form  id="contributorRequestForm">
-       <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-       <h:inputHidden binding="#{ContributorRequestPage.hiddenUserId}" value="#{ContributorRequestPage.userId}"/>
+    <ice:form  id="contributorRequestForm">
+       <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+       <ice:inputHidden binding="#{ContributorRequestPage.hiddenUserId}" value="#{ContributorRequestPage.userId}"/>
 
 
         <div class="dvn_section">
             <div class="dvn_sectionTitle">
                 <a name="request" title="">
-                    <h:outputText value="Request to Become a Dataverse Contributor"/>
+                    <ice:outputText value="Request to Become a Dataverse Contributor"/>
                 </a>
             </div>            
             <div class="dvn_sectionBox">
                 <div class="dvn_margin12">
                     
                     <div jsfc="ice:panelGroup"    style="padding-top: 10px" rendered="#{ContributorRequestPage.alreadyRequested}">
-                        <h:outputText value="You have already requested to become a Contributor to #{VDCRequest.currentVDC.name} dataverse.  Please wait for approval from the administrator."/>
-                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.xhtml">
-                            <h:outputText value="Go to Dataverse Home Page"/>
-                        </h:outputLink>
+                        <ice:outputText value="You have already requested to become a Contributor to #{VDCRequest.currentVDC.name} dataverse.  Please wait for approval from the administrator."/>
+                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.xhtml">
+                            <ice:outputText value="Go to Dataverse Home Page"/>
+                        </ice:outputLink>
                     </div>
                     
                     <div jsfc="ice:panelGroup" rendered="#{!ContributorRequestPage.alreadyRequested}">
-                        <div jsfc="ice:panelGroup"   style="padding-top: 10px"  >
-                            <!--h:selectBooleanCheckbox id="contributorCheckbox" value="#{!ContributorRequestPage.alreadyRequested}" /-->
-                            <h:outputText value="I want to become a contributor to #{VDCRequest.currentVDC.name} dataverse. This will allow me to upload my own data in this archive."/>
+                        <div style="padding-top: 10px"  >
+                            <!--ice:selectBooleanCheckbox id="contributorCheckbox" value="#{!ContributorRequestPage.alreadyRequested}" /-->
+                            <ice:outputText value="I want to become a contributor to #{VDCRequest.currentVDC.name} dataverse. This will allow me to upload my own data in this archive."/>
                         </div>
                         <div jsfc="ice:panelGroup"   style="padding-top: 10px; text-align: center;"  >                                      
-                            <h:commandButton value="Submit Request" action="#{ContributorRequestPage.generateRequest}"/>
-                            <h:commandButton value="Cancel" action="home"/>
+                            <ice:commandButton value="Submit Request" action="#{ContributorRequestPage.generateRequest}"/>
+                            <ice:commandButton value="Cancel" action="home"/>
                         </div>
                     </div>
                     
                 </div>
             </div>
         </div>
-    </h:form>
+    </ice:form>
+    </gui:define>
+   </gui:composition> 
 </body>
 </html>

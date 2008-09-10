@@ -20,9 +20,9 @@
   <gui:define name="body">
       <f:loadBundle basename="Bundle" var="bundle"/>   
 
-        <h:form  id="ContributorRequestForm">
+        <ice:form  id="ContributorRequestForm">
           <input type="hidden" name="pageName" value="ContributorRequestPage"/>
-            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
             <div class="dvn_createDvRequest dvn_section dvn_overflow">
     	<div class="requestHeader dvn_overflow">
@@ -41,7 +41,7 @@
                     <h3>Create<br/>Account</h3>
                     <p>Register with our network, by creating an account...</p>
                     <div class="stepCardBtm">
-                     <h:outputText value="&#160;" escape="false"/>
+                     <ice:outputText value="&#160;" escape="false"/>
                     </div>
 		</div>
         	<div class="requestIntroStepCard" style="margin-right: 12px; background: #f4ebc7 url(/dvn/resources/request-intro-rndtop2.png) no-repeat;">
@@ -49,30 +49,30 @@
                     <p>Read and agree to the terms of use...</p>
                     <p>Click continue...</p>
                     <div class="stepCardBtm">
-                     <h:outputText value="&#160;" escape="false"/>
+                     <ice:outputText value="&#160;" escape="false"/>
                     </div>
 		</div>
                 <div class="requestIntroStepCard" style="background: #f4ebc7 url(/dvn/resources/request-intro-rndtop4.png) no-repeat;">
                     <h3 style="line-height:1.85;">Success!</h3>
                     <p>You have access to upload your studies and data sets to the dataverse.</p>
                     <div class="stepCardBtm">
-                     <h:outputText value="&#160;" escape="false"/>
+                     <ice:outputText value="&#160;" escape="false"/>
                     </div>
 		</div>
             </div>
             <div id="requestIntroCont">
-                  <h:commandLink styleClass="requestIntroContLink" action="#{LoginWorkflowBean.beginContributorWorkflow}">
-                                <h:outputText value="Continue" escape="false"/>
-                  </h:commandLink>
+                  <ice:commandLink styleClass="requestIntroContLink" action="#{LoginWorkflowBean.beginContributorWorkflow}">
+                                <ice:outputText value="Continue" escape="false"/>
+                  </ice:commandLink>
                   <br/>
-                  <h:commandLink styleClass="requestIntroContLinkNote" rendered="#{VDCSession.loginBean==null }" action="#{LoginWorkflowBean.beginLoginContributorWorkflow}">
-                                <h:outputText value="Already have an account? Log In" escape="false"/>
-                  </h:commandLink>
+                  <ice:commandLink styleClass="requestIntroContLinkNote" rendered="#{VDCSession.loginBean==null }" action="#{LoginWorkflowBean.beginLoginContributorWorkflow}">
+                                <ice:outputText value="Already have an account? Log In" escape="false"/>
+                  </ice:commandLink>
             </div>
         </div>
     </div>
 
-        </h:form>
+        </ice:form>
             </gui:define>
         </gui:composition>
     </body>

@@ -20,38 +20,38 @@
   <gui:define name="body">                
      
 
-        <h:form  id="logoutForm">
-            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:form  id="logoutForm">
+            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             <div jsfc="ice:panelGroup" styleClass="successMessage">
-                <h:outputText value="You are now logged out."/>
+                <ice:outputText value="You are now logged out."/>
             </div>
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
-                        <h:outputText value="Options"/>
+                        <ice:outputText value="Options"/>
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
-                        <div jsfc="ice:panelGroup"  style=" " rendered="#{LogoutPage.success}">
+                        <div jsfc="ice:panelGroup" rendered="#{LogoutPage.success}">
                            <p> 
-                               <h:outputLink value="/dvn">
-                                    <h:outputText value="Go to the #{VDCRequest.vdcNetwork.name} Dataverse Network homepage"/>
-                               </h:outputLink>
+                               <ice:outputLink value="/dvn">
+                                    <ice:outputText value="Go to the #{VDCRequest.vdcNetwork.name} Dataverse Network homepage"/>
+                               </ice:outputLink>
                             </p>
                             <p>
-                               <h:outputLink rendered="#{VDCRequest.currentVDC != null}" value="/dvn#{VDCRequest.currentVDCURL}">
-                                    <h:outputText value="Go to the #{VDCRequest.currentVDC.name} Dataverse homepage"/>
-                               </h:outputLink>
+                               <ice:outputLink rendered="#{VDCRequest.currentVDC != null}" value="/dvn#{VDCRequest.currentVDCURL}">
+                                    <ice:outputText value="Go to the #{VDCRequest.currentVDC.name} Dataverse homepage"/>
+                               </ice:outputLink>
                             </p>
                             <p>
-                               <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true">
-                                    <h:outputText value="Log in"/>
-                               </h:outputLink>
+                               <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true">
+                                    <ice:outputText value="Log in"/>
+                               </ice:outputLink>
                             </p>
                          </div>
                     </div>
                 </div>
             </div>
-        </h:form>
+        </ice:form>
             </gui:define>
         </gui:composition>
     </body>

@@ -20,27 +20,27 @@
   <gui:define name="body">             
      
 
-        <h:form  id="studyLockedForm">
-            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:form  id="studyLockedForm">
+            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                     
-                        <h:outputText value="File Upload In Progress"/>   
+                        <ice:outputText value="File Upload In Progress"/>   
                     
                 </div>            
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">
                         
-                        <h:outputText  style="warnMessage" value="We are sorry; this study is currently unavailable for editing because files are being uploaded.   When the file upload is completed the study will be editable again. "/>
+                        <ice:outputText  style="warnMessage" value="We are sorry; this study is currently unavailable for editing because files are being uploaded.   When the file upload is completed the study will be editable again. "/>
                         <p>
-                            <h:outputText   style="warnMessage" value="#{param.message}"/>   
+                            <ice:outputText   style="warnMessage" value="#{param.message}"/>   
                         </p>
                         
                     </div>
                 </div>
             </div>
 
-        </h:form>
+        </ice:form>
             </gui:define>
         </gui:composition>
     </body>

@@ -19,27 +19,27 @@
 
   <gui:define name="body">
 
-        <h:form  id="fileRequestForm">
-            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:form  id="fileRequestForm">
+            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                     
-                        <h:outputText value="Request Access to Restricted File"/>
+                        <ice:outputText value="Request Access to Restricted File"/>
                    
                 </div>            
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">
                         
-                        <h:outputText value="Your request has been received.  Please wait for approval from the administrator."/>
-                        <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.xhtml" title="Go to Dataverse Home Page">
-                            <h:outputText  value="Go to Dataverse Home Page"/>
-                        </h:outputLink>    
+                        <ice:outputText value="Your request has been received.  Please wait for approval from the administrator."/>
+                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.xhtml" title="Go to Dataverse Home Page">
+                            <ice:outputText  value="Go to Dataverse Home Page"/>
+                        </ice:outputLink>    
                         
                     </div>
                 </div>
             </div>     
-        </h:form>
+        </ice:form>
             </gui:define>
         </gui:composition>
     </body>

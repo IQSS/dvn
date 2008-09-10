@@ -20,38 +20,38 @@
   <gui:define name="body">
 
 
-        <h:form  id="fileRequestForm">
-            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-            <h:inputHidden  value="test"/>
-            <h:inputHidden  value="test"/>
+        <ice:form  id="fileRequestForm">
+            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+            <ice:inputHidden  value="test"/>
+            <ice:inputHidden  value="test"/>
          
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                     
-                        <h:outputText value="Request Access to Restricted File"/>
+                        <ice:outputText value="Request Access to Restricted File"/>
                    
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
                         
-                        <div jsfc="ice:panelGroup" rendered="#{ !FileRequestPage.alreadyRequested}">
+                        <div rendered="#{ !FileRequestPage.alreadyRequested}">
                             <div jsfc="ice:panelGroup"   style="padding-top: 10px" >
-                                <h:outputText value="I would like to access restricted files in this study."/>
+                                <ice:outputText value="I would like to access restricted files in this study."/>
                             </div>
-                            <div jsfc="ice:panelGroup"   style="padding-top: 10px; text-align: center;"  >                                      
-                                <h:commandButton value="Submit Request" action="#{FileRequestPage.generateRequest}"/>
-                                <h:commandButton value="Cancel" action="home"/>
+                            <div style="padding-top: 10px; text-align: center;"  >                                      
+                                <ice:commandButton value="Submit Request" action="#{FileRequestPage.generateRequest}"/>
+                                <ice:commandButton value="Cancel" action="home"/>
                             </div>
                         </div>
                         <div jsfc="ice:panelGroup"    style="padding-top: 10px" rendered="#{FileRequestPage.alreadyRequested}">
-                            <h:outputText value="You have already requested access to files in this study.  Please wait for approval from the administrator."/>
-                            <h:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.xhtml" title="Go to Dataverse Home Page"/>
+                            <ice:outputText value="You have already requested access to files in this study.  Please wait for approval from the administrator."/>
+                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.xhtml" title="Go to Dataverse Home Page"/>
                         </div>
                         
                     </div>
                 </div>
             </div>
-        </h:form>
+        </ice:form>
             </gui:define>
         </gui:composition>
     </body>

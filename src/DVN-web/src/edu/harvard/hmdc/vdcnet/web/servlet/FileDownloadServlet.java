@@ -343,11 +343,12 @@ public class FileDownloadServlet extends HttpServlet{
 		    method.releaseConnection();
 		} else {
 
+		    String remoteFileUrl = file.getFileSystemLocation();
 		    GetMethod method = null; 
 		    int status = 200;
 
 		    try { 
-			String remoteFileUrl = file.getFileSystemLocation(); 
+
 			if ( remoteFileUrl != null ) {
 			    remoteFileUrl = remoteFileUrl.replaceAll (" ", "+");
 			}
@@ -358,10 +359,9 @@ public class FileDownloadServlet extends HttpServlet{
 
 			if ( noVarHeader != null ) {
 			    if ( remoteFileUrl.matches ( ".*FileDownload.*" )) {
-				remoteFileUrl.concat ("&noVarHeader=1"); 
+				remoteFileUrl = remoteFileUrl + "&noVarHeader=1"; 
 			    }
 			}
-
 			
 			// See if remote authentication is required; 
 
@@ -377,9 +377,8 @@ public class FileDownloadServlet extends HttpServlet{
 			String jsessionid     = null; 
 			String remoteAuthHeader     = null; 
 
-
-
 			String remoteAuthType = remoteAuthRequired(remoteHost); 
+
 			if ( remoteAuthType != null ) {
 			    if ( remoteAuthType.equals("httpbasic") ) {
 				// get the basic HTTP auth credentials
@@ -454,7 +453,8 @@ public class FileDownloadServlet extends HttpServlet{
 				// Accept the TOU agreement: 
 
 				//method = dvnAcceptRemoteTOU ( redirectLocation + "&clicker=downloadServlet", jsessionid, file.getFileSystemLocation() );
-				method = dvnAcceptRemoteTOU ( redirectLocation + "&clicker=downloadServlet", jsessionid, remoteFileUrl ); 
+				//method = dvnAcceptRemoteTOU ( redirectLocation + "&clicker=downloadServlet", jsessionid, remoteFileUrl ); 
+				method = dvnAcceptRemoteTOU ( redirectLocation, jsessionid, remoteFileUrl ); 
 
 				// (the condition above was causing the problem
 				// with the extra Variable header supplied by a 
@@ -544,7 +544,7 @@ public class FileDownloadServlet extends HttpServlet{
 				if ( headerName.equals("Content-Type") && 
 				     method.getResponseHeaders()[i].getValue() != null &&
 				     method.getResponseHeaders()[i].getValue().startsWith("text/html")) {
-				    String remoteFileUrl = file.getFileSystemLocation(); 
+				    //String remoteFileUrl = file.getFileSystemLocation(); 
 				    createRedirectResponse( res, remoteFileUrl );
 				    //studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
 				    studyService.incrementNumberOfDownloads(file.getId());
@@ -1585,7 +1585,7 @@ private String remoteAuthRequired ( String remoteHost ) {
 	try { 
 
 
-	    TOUgetMethod = new GetMethod ( TOUurl + "&clicker=downloadServlet" );
+	    TOUgetMethod = new GetMethod ( TOUurl );
 	    if ( jsessionid != null ) {
 		TOUgetMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
 	    }

@@ -357,8 +357,8 @@ public class FileDownloadServlet extends HttpServlet{
 			// argument along:
 
 			if ( noVarHeader != null ) {
-			    if ( remoteFileUrl.matches ( ".*/dvn/.*FileDownload.*" )) {
-				remoteFileUrl = remoteFileUrl + "&noVarHeader=1"; 
+			    if ( remoteFileUrl.matches ( ".*FileDownload.*" )) {
+				remoteFileUrl.concat ("&noVarHeader=1"); 
 			    }
 			}
 
@@ -453,7 +453,16 @@ public class FileDownloadServlet extends HttpServlet{
 
 				// Accept the TOU agreement: 
 
-				method = dvnAcceptRemoteTOU ( redirectLocation + "&clicker=downloadServlet", jsessionid, file.getFileSystemLocation() ); 
+				//method = dvnAcceptRemoteTOU ( redirectLocation + "&clicker=downloadServlet", jsessionid, file.getFileSystemLocation() );
+				method = dvnAcceptRemoteTOU ( redirectLocation + "&clicker=downloadServlet", jsessionid, remoteFileUrl ); 
+
+				// (the condition above was causing the problem
+				// with the extra Variable header supplied by a 
+				// remote DVN; note that the "getFileSystemLocation"
+				// was used, instead of the remoteFileUrl, that
+				// already has the "noVarHeader" flag attached.
+
+
 
 				// If everything has worked right
 				// we should be redirected to the final 
@@ -1595,7 +1604,8 @@ private String remoteAuthRequired ( String remoteHost ) {
 	    String regexpJsession = "jsessionid=([^\"?&]*)"; 
 	    String regexpViewState = "ViewState\" value=\"([^\"]*)\""; 
 	    String regexpStudyId = "studyId\" value=\"([0-9]*)\""; 
-	    String regexpRemoteFileId = "(/FileDownload.*fileId=[0-9]*)";
+	    //String regexpRemoteFileId = "(/FileDownload.*fileId=[0-9]*)";
+	    String regexpRemoteFileId = "(/FileDownload.*)";
 	    String regexpOldStyleForm = "content:termsOfUsePageView:";
 
 

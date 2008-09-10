@@ -19,55 +19,55 @@
 <gui:param name="pageTitle" value="DVN - Add/Edit Collection" />
 
 <gui:define name="body">
-        <h:form id="form1" >
-            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>                       
-            <h:inputHidden id="edit" value="#{AddCollectionsPage.edit}"/>                       
-            <h:inputHidden id="collId" value="#{AddCollectionsPage.collId}"/>                       
-            <h:inputHidden id="parentId" value="#{AddCollectionsPage.parentId}"/>  
+        <ice:form id="form1" >
+            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>                       
+            <ice:inputHidden id="edit" value="#{AddCollectionsPage.edit}"/>                       
+            <ice:inputHidden id="collId" value="#{AddCollectionsPage.collId}"/>                       
+            <ice:inputHidden id="parentId" value="#{AddCollectionsPage.parentId}"/>  
                         
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                                          
-                        <h:outputText value="Collection by Assigning Studies"/>
+                        <ice:outputText value="Collection by Assigning Studies"/>
                     
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">  
                         <div style="padding-top: 10px; padding-left: 5px">
-                            <h:outputText value="Enter collection name: "/>
-                            <h:inputText binding="#{AddCollectionsPage.textFieldCollectionName}" required="true" requiredMessage="This field is required." id="textFieldCollectionName" validator="#{AddCollectionsPage.validateName}"/>
-                            <h:message for="textFieldCollectionName" showSummary="true" showDetail="false" styleClass="errorMessage"/>
-                            <h:outputText  id="outputText5" value="Choose a parent: "/>
-                            <h:selectOneMenu binding="#{AddCollectionsPage.dropdown3}" id="dropdown3">
+                            <ice:outputText value="Enter collection name: "/>
+                            <ice:inputText binding="#{AddCollectionsPage.textFieldCollectionName}" required="true" requiredMessage="This field is required." id="textFieldCollectionName" validator="#{AddCollectionsPage.validateName}"/>
+                            <ice:message for="textFieldCollectionName" showSummary="true" showDetail="false" styleClass="errorMessage"/>
+                            <ice:outputText  id="outputText5" value="Choose a parent: "/>
+                            <ice:selectOneMenu binding="#{AddCollectionsPage.dropdown3}" id="dropdown3">
                                 <f:selectItems  id="dropdown2SelectItems1" value="#{AddCollectionsPage.dropdown2DefaultItems}"/>
-                            </h:selectOneMenu>
+                            </ice:selectOneMenu>
                         </div>                                                                                        
                         
                         <div style="padding-top: 10px;">
-                            <h:outputText  id="outputText7" styleClass="vdcSubHeader" value="Assign Studies to Collection:"/>
+                            <ice:outputText  id="outputText7" styleClass="vdcSubHeader" value="Assign Studies to Collection:"/>
                             <div style="padding-top:10px; padding-left:15px; padding-right:15px;">    
-                                <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                                <h:outputText  styleClass="vdcHelpText" value="Here you can define a collection by selecting studies and assign them directly to the collection. First, select studies from an existing collection or search for studies, and then add studies to the collection."/>
+                                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                                <ice:outputText  styleClass="vdcHelpText" value="Here you can define a collection by selecting studies and assign them directly to the collection. First, select studies from an existing collection or search for studies, and then add studies to the collection."/>
                             </div>
                             <div style="padding-top: 10px; padding-left:15px;"> 
-                                <h:outputText  id="outputText8" value="1) Choose studies from an existing collection: "/>
-                                <h:selectOneMenu binding="#{AddCollectionsPage.dropdown4}"  id="dropdown4">
+                                <ice:outputText  id="outputText8" value="1) Choose studies from an existing collection: "/>
+                                <ice:selectOneMenu binding="#{AddCollectionsPage.dropdown4}"  id="dropdown4">
                                     <f:selectItems id="dropdown4SelectItems" value="#{AddCollectionsPage.dropdown4DefaultItems}"/>
-                                </h:selectOneMenu>
-                                <h:commandButton id="button5" value="Select" actionListener="#{AddCollectionsPage.selectCollectionsStudies}"/>
+                                </ice:selectOneMenu>
+                                <ice:commandButton id="button5" value="Select" actionListener="#{AddCollectionsPage.selectCollectionsStudies}"/>
                             </div>
                             <div style="padding-top: 10px; padding-left:15px;">
-                                <h:outputText  id="outputText9"  value="2) or choose from search results:"/>
-                                <h:selectOneMenu  id="dropdown5" value="#{AddCollectionsPage.searchField}">
+                                <ice:outputText  id="outputText9"  value="2) or choose from search results:"/>
+                                <ice:selectOneMenu  id="dropdown5" value="#{AddCollectionsPage.searchField}">
                                     <f:selectItem   itemLabel="Cataloging Information" itemValue="any" />
                                     <f:selectItem   itemLabel="- Author" itemValue="authorName" />
                                     <f:selectItem   itemLabel="- Title" itemValue="title" />
                                     <f:selectItem   itemLabel="- Global ID" itemValue="globalId" />
-                                </h:selectOneMenu>
-                                <h:inputText  id="textField1" value="#{AddCollectionsPage.searchValue}"/>
+                                </ice:selectOneMenu>
+                                <ice:inputText  id="textField1" value="#{AddCollectionsPage.searchValue}"/>
                               
-                                <h:message for="textField1" showSummary="true" showDetail="false" errorClass="errorMessage"/>
-                                <h:commandButton id="button1" value="Search" actionListener="#{AddCollectionsPage.searchStudies}"/>                                                
+                                <ice:message for="textField1" showSummary="true" showDetail="false" errorClass="errorMessage"/>
+                                <ice:commandButton id="button1" value="Search" actionListener="#{AddCollectionsPage.searchStudies}"/>                                                
                             </div>
                             
                             <ui:addRemove vertical="true"  availableItemsLabel="Studies to Choose from:" 
@@ -76,15 +76,15 @@
                                           selectedItemsLabel="Studies Selected:" style="margin-left: 15px; margin-top: 10px; margin-bottom: 10px;"/>
                             
                             <div style="padding-top: 30px; ">
-                                <h:commandButton id="button3" value="Save Collection" action="#{AddCollectionsPage.saveCollection}"/>
-                                <h:commandButton id="button4" immediate="true" 
+                                <ice:commandButton id="button3" value="Save Collection" action="#{AddCollectionsPage.saveCollection}"/>
+                                <ice:commandButton id="button4" immediate="true" 
                                                  style="margin-left: 30px;" value="Cancel" action="#{AddCollectionsPage.cancel}"/>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </h:form>
+        </ice:form>
             </gui:define>
         </gui:composition>
     </body>

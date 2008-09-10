@@ -28,7 +28,7 @@
                     </div>            
                     <div class="dvn_sectionBox">             
                         <div class="dvn_margin12">
-                            <div rendered="#{VDCSession.loginBean.contributor and not VDCRequest.currentVDC.harvestingDv}">
+                            <div jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.contributor and not VDCRequest.currentVDC.harvestingDv}">
                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                     <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundle.ContributorSection}"/></td></tr>
                                     <tr>
@@ -39,14 +39,14 @@
                                         </td>
                                         <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundle.AddStudyHelp}"/></td>
                                     </tr>
-                                    <tr>
-                                        <td class="dvnOptionsTableOption">
-                                            <ice:outputLink id="hyperlink2" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/MyStudiesPage.xhtml">
-                                                <ice:outputText id="hyperlink2Text" value="#{bundle.MyStudiesTitle}"/>
-                                            </ice:outputLink>
-                                        </td>
-                                        <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundle.MyStudiesHelp}"/></td>
-                                    </tr>
+                                   <tr>
+                                            <td class="dvnOptionsTableOption">
+                                                <ice:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/ReviewStudiesPage.xhtml">
+                                                    <ice:outputText  value="#{bundle.ReviewStudiesTitle}"/>
+                                                </ice:outputLink>
+                                            </td>
+                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundle.ReviewStudiesContributorHelp}"/></td>
+                                        </tr>
                                 </table>
                             </div>   
                                 
@@ -61,14 +61,6 @@
                                                 </ice:outputLink>
                                             </td>
                                             <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundle.AddStudyHelp}"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/MyStudiesPage.xhtml">
-                                                    <ice:outputText value="#{bundle.MyStudiesTitle}"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundle.MyStudiesHelp}"/></td>
                                         </tr>
                                         <tr>
                                             <td class="dvnOptionsTableOption">

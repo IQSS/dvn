@@ -27,9 +27,6 @@
 package edu.harvard.hmdc.vdcnet.web;
 
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import javax.faces.component.html.HtmlPanelGrid;
-import com.sun.rave.web.ui.component.PanelLayout;
-import javax.faces.component.html.HtmlOutputText;
 
 
 /**
@@ -51,66 +48,6 @@ public class AnnouncementsPage extends VDCBaseBean implements java.io.Serializab
     private void _init() throws Exception {
     }
 
-    private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel1() {
-        return gridPanel1;
-    }
-
-    public void setGridPanel1(HtmlPanelGrid hpg) {
-        this.gridPanel1 = hpg;
-    }
-
-    private PanelLayout layoutPanel1 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel1() {
-        return layoutPanel1;
-    }
-
-    public void setLayoutPanel1(PanelLayout pl) {
-        this.layoutPanel1 = pl;
-    }
-
-    private PanelLayout layoutPanel2 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel2() {
-        return layoutPanel2;
-    }
-
-    public void setLayoutPanel2(PanelLayout pl) {
-        this.layoutPanel2 = pl;
-    }
-
-    private HtmlOutputText outputText1 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText1() {
-        return outputText1;
-    }
-
-    public void setOutputText1(HtmlOutputText hot) {
-        this.outputText1 = hot;
-    }
-
-    private PanelLayout layoutPanel3 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel3() {
-        return layoutPanel3;
-    }
-
-    public void setLayoutPanel3(PanelLayout pl) {
-        this.layoutPanel3 = pl;
-    }
-
-    private HtmlOutputText outputText2 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText2() {
-        return outputText2;
-    }
-
-    public void setOutputText2(HtmlOutputText hot) {
-        this.outputText2 = hot;
-    }
-    
     // </editor-fold>
 
 

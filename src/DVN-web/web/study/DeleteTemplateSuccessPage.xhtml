@@ -19,26 +19,26 @@
 
   <gui:define name="body">
       
-            <h:form  id="form1">
-                <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+            <ice:form  id="form1">
+                <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
                 <input type="hidden" name="pageName" value="DeleteTemplateSuccessPage"/>
 
                 <div class="dvn_section">
                     <div class="dvn_sectionTitle">
                          
-                            <h:outputText  value="Delete Successful"/>
+                            <ice:outputText  value="Delete Successful"/>
                          
                     </div>            
                     <div class="dvn_sectionBox"> 
                         <div class="dvn_margin12">
                             
-                            <h:outputText  id="outputText2" value="The template has been deleted successfully. "/>
+                            <ice:outputText  id="outputText2" value="The template has been deleted successfully. "/>
                             
                         </div>
                     </div>
                 </div>
 
-            </h:form>
+            </ice:form>
                
    </gui:define>
     </gui:composition>

@@ -20,39 +20,39 @@
   <gui:define name="body">
 
       
-        <h:form  id="form1">
-            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:form  id="form1">
+            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             <input type="hidden" name="pageName" value="DeleteStudyPage"/>
-            <h:inputHidden id="studyId" value="#{DeleteStudyPage.study.id}"/>                                    
+            <ice:inputHidden id="studyId" value="#{DeleteStudyPage.study.id}"/>                                    
 
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                   
-                        <h:outputText  value="Deleting a Study"/>
+                        <ice:outputText  value="Deleting a Study"/>
                      
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
                         
                         <div>
-                            <h:outputText  styleClass="warnMessage" value="By deleting a study, you are removing it permanently from the Archive. This means that all references to this study will be gone, including the persistent global identifier associated with this study. "/>
+                            <ice:outputText  styleClass="warnMessage" value="By deleting a study, you are removing it permanently from the Archive. This means that all references to this study will be gone, including the persistent global identifier associated with this study. "/>
                              <br />
-                            <h:outputText  styleClass="warnMessage" value="Are you sure you want to delete "/>
-                            <h:outputFormat  id="outputText3" styleClass="vdcTextStandOut" value="{0} - {1}">
+                            <ice:outputText  styleClass="warnMessage" value="Are you sure you want to delete "/>
+                            <ice:outputFormat  id="outputText3" styleClass="vdcTextStandOut" value="{0} - {1}">
                                 <f:param value="#{DeleteStudyPage.study.globalId}"/>
                                 <f:param value="#{DeleteStudyPage.study.title}"/>
-                            </h:outputFormat>
-                            <h:outputText  id="outputText4" value="?"/>
+                            </ice:outputFormat>
+                            <ice:outputText  id="outputText4" value="?"/>
                         </div>
                         <div style="padding-top: 30px; text-align: center">
-                            <h:commandButton  id="button1" value="Delete" action="#{DeleteStudyPage.delete}"/>
-                            <h:commandButton  immediate="true" id="button2" style="margin-left: 30px" value="Cancel" action="#{DeleteStudyPage.cancel}"/>
+                            <ice:commandButton  id="button1" value="Delete" action="#{DeleteStudyPage.delete}"/>
+                            <ice:commandButton  immediate="true" id="button2" style="margin-left: 30px" value="Cancel" action="#{DeleteStudyPage.cancel}"/>
                         </div>
                         
                     </div>
                 </div>
             </div>
-        </h:form>
+        </ice:form>
             </gui:define>
         </gui:composition>
     </body>

@@ -11,19 +11,19 @@
                 </a>
              </div>
             <div class="dvn_headerTitleL"> 
-                <h:outputText  value="&#160;" rendered="#{VDCRequest.currentVDC == null}" />
-                <h:outputLink value="/dvn" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" target="_top" rendered="#{VDCRequest.currentVDC != null}">
-                    <h:outputText  value="All #{VDCRequest.vdcNetwork.name} Dataverses &#160;&gt;"  />
-                </h:outputLink>
+                <ice:outputText  value="&#160;" rendered="#{VDCRequest.currentVDC == null}" />
+                <ice:outputLink value="/dvn" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" target="_top" rendered="#{VDCRequest.currentVDC != null}">
+                    <ice:outputText  value="All #{VDCRequest.vdcNetwork.name} Dataverses &#160;&gt;"  />
+                </ice:outputLink>
             </div>
             
             <div class="dvn_headerTitleLarge"> 
-                <h:outputLink value="/dvn" styleClass="dvn_headerTitleLrgNetwork" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" rendered="#{VDCRequest.currentVDC == null}">
-                    <h:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network"/>
-                </h:outputLink>
-                <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}" title="#{VDCRequest.currentVDC.name} dataverse Homepage" rendered="#{VDCRequest.currentVDC != null}">
-                    <h:outputText value="#{VDCRequest.currentVDC.name} Dataverse" />
-                </h:outputLink>
+                <ice:outputLink value="/dvn" styleClass="dvn_headerTitleLrgNetwork" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Homepage" rendered="#{VDCRequest.currentVDC == null}">
+                    <ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network"/>
+                </ice:outputLink>
+                <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}" title="#{VDCRequest.currentVDC.name} dataverse Homepage" rendered="#{VDCRequest.currentVDC != null}">
+                    <ice:outputText value="#{VDCRequest.currentVDC.name} Dataverse" />
+                </ice:outputLink>
             </div>
              
         </div>
@@ -32,53 +32,53 @@
             <div class="dvn_navblockLinks">
                 <ul class="dvn_floatL">
                     <li>
-                      <h:outputLink value="/dvn" title="Browse and Search #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDC == null}">
-                        <h:outputText value="#{bundle.homeLabel}"/>
-                      </h:outputLink>
-                      <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}" title="Browse and Search #{VDCRequest.currentVDC.name} dataverse" rendered="#{VDCRequest.currentVDC != null}">
-                        <h:outputText value="#{bundle.homeLabel}"/>
-                      </h:outputLink>
+                      <ice:outputLink value="/dvn" title="Browse and Search #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDC == null}">
+                        <ice:outputText value="#{bundle.homeLabel}"/>
+                      </ice:outputLink>
+                      <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}" title="Browse and Search #{VDCRequest.currentVDC.name} dataverse" rendered="#{VDCRequest.currentVDC != null}">
+                        <ice:outputText value="#{bundle.homeLabel}"/>
+                      </ice:outputLink>
                     </li>
                     <li>
-                      <h:outputLink value="http://thedata.org/guides" target="_blank" title="Go to User Guides">
-                        <h:outputText value="#{bundle.helpLabel}"/>
-                      </h:outputLink>
+                      <ice:outputLink value="http://thedata.org/guides" target="_blank" title="Go to User Guides">
+                        <ice:outputText value="#{bundle.helpLabel}"/>
+                      </ice:outputLink>
                     </li>
                     <li>
-                      <h:outputLink value="/dvn/faces/ContactUsPage.xhtml" title="Contact #{VDCRequest.vdcNetwork.name} Dataverse Network Help" rendered="#{VDCRequest.currentVDC == null}">
-                        <h:outputText value="#{bundle.contactUsLabel}"/>
-                      </h:outputLink>
-                      <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/ContactUsPage.xhtml" title="Contact #{VDCRequest.currentVDC.name} dataverse Help" rendered="#{VDCRequest.currentVDC != null}">
-                        <h:outputText value="#{bundle.contactUsLabel}"/>
-                      </h:outputLink>
+                      <ice:outputLink value="/dvn/faces/ContactUsPage.xhtml" title="Contact #{VDCRequest.vdcNetwork.name} Dataverse Network Help" rendered="#{VDCRequest.currentVDC == null}">
+                        <ice:outputText value="#{bundle.contactUsLabel}"/>
+                      </ice:outputLink>
+                      <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/ContactUsPage.xhtml" title="Contact #{VDCRequest.currentVDC.name} dataverse Help" rendered="#{VDCRequest.currentVDC != null}">
+                        <ice:outputText value="#{bundle.contactUsLabel}"/>
+                      </ice:outputLink>
                     </li>
                     <li>
-                      <h:outputLink rendered="#{VDCRequest.logoutPage or VDCSession.loginBean.user==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true" title="Login">
-                        <h:outputText value="#{bundle.loginLabel}"/>
-                      </h:outputLink>
-                      <h:outputLink rendered="#{VDCSession.loginBean.user!=null and !VDCRequest.logoutPage }" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LogoutPage.xhtml"  title="Logout">
-                        <h:outputText value="#{bundle.logoutLabel}"/>
-                      </h:outputLink>  
+                      <ice:outputLink rendered="#{VDCRequest.logoutPage or VDCSession.loginBean.user==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true" title="Login">
+                        <ice:outputText value="#{bundle.loginLabel}"/>
+                      </ice:outputLink>
+                      <ice:outputLink rendered="#{VDCSession.loginBean.user!=null and !VDCRequest.logoutPage }" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LogoutPage.xhtml"  title="Logout">
+                        <ice:outputText value="#{bundle.logoutLabel}"/>
+                      </ice:outputLink>  
                     </li>
                 </ul>      
                 <div jsfc="ice:panelGroup" styleClass="dvn_navUserName" rendered="#{(!VDCRequest.logoutPage and VDCSession.loginBean.user.firstName != null) or  (!VDCRequest.logoutPage and VDCSession.ipUserGroup.friendlyName != null)}">
                     <div jsfc="ice:panelGroup" rendered="#{!VDCRequest.logoutPage and VDCSession.loginBean.user.firstName != null}">
-                        <h:outputLink styleClass="dvn_navNetworkName" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{VDCSession.loginBean.user.id}" title="Edit Account Information">
-                            <h:outputText value="#{VDCSession.loginBean.user.firstName} #{VDCSession.loginBean.user.lastName}"/>
-                        </h:outputLink>
+                        <ice:outputLink styleClass="dvn_navNetworkName" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{VDCSession.loginBean.user.id}" title="Edit Account Information">
+                            <ice:outputText value="#{VDCSession.loginBean.user.firstName} #{VDCSession.loginBean.user.lastName}"/>
+                        </ice:outputLink>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="textUserName" rendered="#{!VDCRequest.logoutPage and VDCSession.ipUserGroup.friendlyName != null }">
-                        <h:outputText value="#{ VDCSession.ipUserGroup.friendlyName }"/>
+                        <ice:outputText value="#{ VDCSession.ipUserGroup.friendlyName }"/>
                     </div>
                     <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and VDCRequest.currentVDC == null and VDCSession.loginBean.networkAdmin }">
-                        <h:outputLink styleClass="dvn_navUserOptions" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Admin Options">
-                            <h:outputText value="Network Options"/>
-                        </h:outputLink>
+                        <ice:outputLink styleClass="dvn_navUserOptions" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Admin Options">
+                            <ice:outputText value="Network Options"/>
+                        </ice:outputLink>
                     </div>
                     <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}">
-                        <h:outputLink rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}" styleClass="dvn_navUserOptions" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml" title="My Options in #{VDCRequest.currentVDC.name} dataverse">
-                            <h:outputText rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}" value="#{bundle.myOptionsLabel}"/>
-                        </h:outputLink>
+                        <ice:outputLink rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}" styleClass="dvn_navUserOptions" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml" title="My Options in #{VDCRequest.currentVDC.name} dataverse">
+                            <ice:outputText rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator  or VDCSession.loginBean.contributor  or VDCSession.loginBean.networkAdmin)}" value="#{bundle.myOptionsLabel}"/>
+                        </ice:outputLink>
                     </div>
                 </div>
             </div>

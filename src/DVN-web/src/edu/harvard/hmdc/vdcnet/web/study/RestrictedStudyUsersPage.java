@@ -27,12 +27,12 @@
 package edu.harvard.hmdc.vdcnet.web.study;
 
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlOutputText;
+import com.icesoft.faces.component.ext.HtmlCommandButton;
+import com.icesoft.faces.component.ext.HtmlDataTable;
 import javax.faces.component.UIColumn;
-import javax.faces.component.html.HtmlOutputLink;
-import javax.faces.component.html.HtmlSelectBooleanCheckbox;
+import com.icesoft.faces.component.ext.HtmlOutputLink;
+import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This

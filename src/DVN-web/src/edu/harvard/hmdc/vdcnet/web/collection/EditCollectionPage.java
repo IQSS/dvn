@@ -51,21 +51,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import javax.faces.component.html.HtmlPanelGrid;
-import com.sun.rave.web.ui.component.PanelLayout;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlSelectOneMenu;
+import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import javax.faces.component.UISelectItems;
-import javax.faces.component.html.HtmlInputText;
-import com.sun.rave.web.ui.component.PanelGroup;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlSelectOneRadio;
+import com.icesoft.faces.component.ext.HtmlInputText;
+import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import com.sun.jsfcl.data.DefaultSelectItemsArray;
 import com.sun.rave.web.ui.component.AddRemove;
 import com.sun.rave.web.ui.model.MultipleSelectOptionsList;
-import com.sun.rave.web.ui.component.HelpInline;
-import javax.faces.component.html.HtmlInputTextarea;
-import javax.faces.context.FacesContext;
+import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import javax.faces.event.ActionEvent;
 
 /**
@@ -217,76 +210,6 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         this.form1 = f;
     }
 
-    private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel1() {
-        return gridPanel1;
-    }
-
-    public void setGridPanel1(HtmlPanelGrid hpg) {
-        this.gridPanel1 = hpg;
-    }
-
-    private PanelLayout layoutPanel1 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel1() {
-        return layoutPanel1;
-    }
-
-    public void setLayoutPanel1(PanelLayout pl) {
-        this.layoutPanel1 = pl;
-    }
-
-    private PanelLayout layoutPanel2 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel2() {
-        return layoutPanel2;
-    }
-
-    public void setLayoutPanel2(PanelLayout pl) {
-        this.layoutPanel2 = pl;
-    }
-
-    private HtmlOutputText outputText1 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText1() {
-        return outputText1;
-    }
-
-    public void setOutputText1(HtmlOutputText hot) {
-        this.outputText1 = hot;
-    }
-
-    private PanelLayout layoutPanel3 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel3() {
-        return layoutPanel3;
-    }
-
-    public void setLayoutPanel3(PanelLayout pl) {
-        this.layoutPanel3 = pl;
-    }
-
-    private PanelGroup groupPanel3 = new PanelGroup();
-
-    public PanelGroup getGroupPanel3() {
-        return groupPanel3;
-    }
-
-    public void setGroupPanel3(PanelGroup pg) {
-        this.groupPanel3 = pg;
-    }
-
-    private HtmlOutputText outputText7 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText7() {
-        return outputText7;
-    }
-
-    public void setOutputText7(HtmlOutputText hot) {
-        this.outputText7 = hot;
-    }
-
     private HtmlInputText textField1 = new HtmlInputText();
 
     public HtmlInputText getTextField1() {
@@ -296,17 +219,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
     public void setTextField1(HtmlInputText hit) {
         this.textField1 = hit;
     }
-
-    private HtmlOutputText outputText8 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText8() {
-        return outputText8;
-    }
-
-    public void setOutputText8(HtmlOutputText hot) {
-        this.outputText8 = hot;
-    }
-
+    
     private HtmlSelectOneMenu dropdown3 = new HtmlSelectOneMenu();
 
     public HtmlSelectOneMenu getDropdown3() {
@@ -335,56 +248,6 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
 
     public void setDropdown2SelectItems2(UISelectItems uisi) {
         this.dropdown2SelectItems2 = uisi;
-    }
-
-    private PanelGroup groupPanel4 = new PanelGroup();
-
-    public PanelGroup getGroupPanel4() {
-        return groupPanel4;
-    }
-
-    public void setGroupPanel4(PanelGroup pg) {
-        this.groupPanel4 = pg;
-    }
-
-    private HtmlOutputText outputText10 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText10() {
-        return outputText10;
-    }
-
-    public void setOutputText10(HtmlOutputText hot) {
-        this.outputText10 = hot;
-    }
-
-    private HtmlPanelGrid gridPanel2 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel2() {
-        return gridPanel2;
-    }
-
-    public void setGridPanel2(HtmlPanelGrid hpg) {
-        this.gridPanel2 = hpg;
-    }
-
-    private HtmlOutputText outputText11 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText11() {
-        return outputText11;
-    }
-
-    public void setOutputText11(HtmlOutputText hot) {
-        this.outputText11 = hot;
-    }
-
-    private PanelGroup groupPanel5 = new PanelGroup();
-
-    public PanelGroup getGroupPanel5() {
-        return groupPanel5;
-    }
-
-    public void setGroupPanel5(PanelGroup pg) {
-        this.groupPanel5 = pg;
     }
 
     private HtmlSelectOneMenu dropdown4 = new HtmlSelectOneMenu();
@@ -416,36 +279,6 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
 
     public void setDropdown4DefaultItems(DefaultSelectItemsArray dsia) {
         this.dropdown4DefaultItems = dsia;
-    }
-
-    private HtmlCommandButton selectButton = new HtmlCommandButton();
-
-    public HtmlCommandButton getSelectButton() {
-        return selectButton;
-    }
-
-    public void setSelectButton(HtmlCommandButton hcb) {
-        this.selectButton = hcb;
-    }
-
-    private HtmlOutputText outputText12 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText12() {
-        return outputText12;
-    }
-
-    public void setOutputText12(HtmlOutputText hot) {
-        this.outputText12 = hot;
-    }
-
-    private PanelGroup groupPanel6 = new PanelGroup();
-
-    public PanelGroup getGroupPanel6() {
-        return groupPanel6;
-    }
-
-    public void setGroupPanel6(PanelGroup pg) {
-        this.groupPanel6 = pg;
     }
 
     private HtmlSelectOneMenu dropdown5 = new HtmlSelectOneMenu();
@@ -488,16 +321,6 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         this.textField2 = hit;
     }
 
-    private HtmlCommandButton button4 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton4() {
-        return button4;
-    }
-
-    public void setButton4(HtmlCommandButton hcb) {
-        this.button4 = hcb;
-    }
-
     private HtmlSelectOneRadio radioButtonList1 = new HtmlSelectOneRadio();
 
     public HtmlSelectOneRadio getRadioButtonList1() {
@@ -528,46 +351,6 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         this.radioButtonList1DefaultItems = dsia;
     }
 
-    private PanelGroup groupPanel7 = new PanelGroup();
-
-    public PanelGroup getGroupPanel7() {
-        return groupPanel7;
-    }
-
-    public void setGroupPanel7(PanelGroup pg) {
-        this.groupPanel7 = pg;
-    }
-
-    private HtmlOutputText outputText13 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText13() {
-        return outputText13;
-    }
-
-    public void setOutputText13(HtmlOutputText hot) {
-        this.outputText13 = hot;
-    }
-
-    private HelpInline helpInline2 = new HelpInline();
-
-    public HelpInline getHelpInline2() {
-        return helpInline2;
-    }
-
-    public void setHelpInline2(HelpInline hi) {
-        this.helpInline2 = hi;
-    }
-
-    private PanelGroup groupPanel8 = new PanelGroup();
-
-    public PanelGroup getGroupPanel8() {
-        return groupPanel8;
-    }
-
-    public void setGroupPanel8(PanelGroup pg) {
-        this.groupPanel8 = pg;
-    }
-
     private HtmlInputTextarea textAreaQuery = new HtmlInputTextarea();
 
     public HtmlInputTextarea getTextAreaQuery() {
@@ -576,16 +359,6 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
 
     public void setTextAreaQuery(HtmlInputTextarea hit) {
         this.textAreaQuery = hit;
-    }
-
-    private HtmlCommandButton button5 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton5() {
-        return button5;
-    }
-
-    public void setButton5(HtmlCommandButton hcb) {
-        this.button5 = hcb;
     }
 
     private AddRemove addRemoveList2 = new AddRemove();
@@ -618,36 +391,6 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         this.addRemoveList2DefaultOptions = msol;
     }
 
-    private PanelGroup groupPanel9 = new PanelGroup();
-
-    public PanelGroup getGroupPanel9() {
-        return groupPanel9;
-    }
-
-    public void setGroupPanel9(PanelGroup pg) {
-        this.groupPanel9 = pg;
-    }
-
-    private HtmlCommandButton saveCollectionButton = new HtmlCommandButton();
-
-    public HtmlCommandButton getSaveCollectionButton() {
-        return saveCollectionButton;
-    }
-
-    public void setSaveCollectionButton(HtmlCommandButton hcb) {
-        this.saveCollectionButton = hcb;
-    }
-
-    private HtmlCommandButton button7 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton7() {
-        return button7;
-    }
-
-    public void setButton7(HtmlCommandButton hcb) {
-        this.button7 = hcb;
-    }
-    
     // </editor-fold>
 
 

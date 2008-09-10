@@ -47,22 +47,14 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.FacesException;
-import javax.faces.component.html.HtmlPanelGrid;
-import com.sun.rave.web.ui.component.PanelLayout;
-import javax.faces.component.html.HtmlOutputText;
-import com.sun.rave.web.ui.component.PanelGroup;
-import javax.faces.component.html.HtmlSelectOneMenu;
+import com.icesoft.faces.component.ext.HtmlOutputText;
 import javax.faces.component.UISelectItems;
-import com.sun.rave.web.ui.component.HelpInline;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlSelectOneRadio;
-import javax.faces.component.html.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlCommandButton;
+import com.icesoft.faces.component.ext.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.sun.jsfcl.data.DefaultTableDataModel;
 import javax.faces.component.UIColumn;
-import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import com.sun.jsfcl.data.DefaultSelectItemsArray;
-import javax.faces.component.html.HtmlCommandLink;
-import javax.faces.component.html.HtmlGraphicImage;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -167,36 +159,6 @@ public class ManageCollectionsPage extends VDCBaseBean implements java.io.Serial
         this.form1 = f;
     }
 
-    private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel1() {
-        return gridPanel1;
-    }
-
-    public void setGridPanel1(HtmlPanelGrid hpg) {
-        this.gridPanel1 = hpg;
-    }
-
-    private PanelLayout layoutPanel1 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel1() {
-        return layoutPanel1;
-    }
-
-    public void setLayoutPanel1(PanelLayout pl) {
-        this.layoutPanel1 = pl;
-    }
-
-    private PanelLayout layoutPanel2 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel2() {
-        return layoutPanel2;
-    }
-
-    public void setLayoutPanel2(PanelLayout pl) {
-        this.layoutPanel2 = pl;
-    }
-
     private HtmlOutputText outputText1 = new HtmlOutputText();
 
     public HtmlOutputText getOutputText1() {
@@ -205,46 +167,6 @@ public class ManageCollectionsPage extends VDCBaseBean implements java.io.Serial
 
     public void setOutputText1(HtmlOutputText hot) {
         this.outputText1 = hot;
-    }
-
-    private PanelLayout layoutPanel3 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel3() {
-        return layoutPanel3;
-    }
-
-    public void setLayoutPanel3(PanelLayout pl) {
-        this.layoutPanel3 = pl;
-    }
-
-    private HelpInline helpInline1 = new HelpInline();
-
-    public HelpInline getHelpInline1() {
-        return helpInline1;
-    }
-
-    public void setHelpInline1(HelpInline hi) {
-        this.helpInline1 = hi;
-    }                
-    
-    private PanelGroup groupPanel1 = new PanelGroup();
-
-    public PanelGroup getGroupPanel1() {
-        return groupPanel1;
-    }
-
-    public void setGroupPanel1(PanelGroup pg) {
-        this.groupPanel1 = pg;
-    }
-
-    private HtmlCommandLink linkAction1 = new HtmlCommandLink();
-
-    public HtmlCommandLink getLinkAction1() {
-        return linkAction1;
-    }
-
-    public void setLinkAction1(HtmlCommandLink hcl) {
-        this.linkAction1 = hcl;
     }
 
     private HtmlOutputText linkAction1Text = new HtmlOutputText();
@@ -544,36 +466,6 @@ public class ManageCollectionsPage extends VDCBaseBean implements java.io.Serial
 
     public void setOutputText11(HtmlOutputText hot) {
         this.outputText11 = hot;
-    }
-
-    private HtmlSelectBooleanCheckbox checkbox1 = new HtmlSelectBooleanCheckbox();
-
-    public HtmlSelectBooleanCheckbox getCheckbox1() {
-        return checkbox1;
-    }
-
-    public void setCheckbox1(HtmlSelectBooleanCheckbox hsbc) {
-        this.checkbox1 = hsbc;
-    }
-
-    private HtmlGraphicImage image1 = new HtmlGraphicImage();
-
-    public HtmlGraphicImage getImage1() {
-        return image1;
-    }
-
-    public void setImage1(HtmlGraphicImage hgi) {
-        this.image1 = hgi;
-    }
-
-    private HtmlSelectOneRadio radioButtonList1 = new HtmlSelectOneRadio();
-
-    public HtmlSelectOneRadio getRadioButtonList1() {
-        return radioButtonList1;
-    }
-
-    public void setRadioButtonList1(HtmlSelectOneRadio hsor) {
-        this.radioButtonList1 = hsor;
     }
 
     private UISelectItems radioButtonList1SelectItems1 = new UISelectItems();

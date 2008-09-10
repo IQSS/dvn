@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.component.UISelectItems;
-import javax.faces.component.html.HtmlSelectOneMenu;
+import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 
 /**
  *

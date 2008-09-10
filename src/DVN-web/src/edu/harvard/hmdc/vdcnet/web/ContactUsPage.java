@@ -21,15 +21,12 @@
 package edu.harvard.hmdc.vdcnet.web;
 
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.component.UISelectItems;
-import javax.faces.component.html.HtmlCommandButton;
+import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.sun.jsfcl.data.DefaultSelectItemsArray;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.ExceptionMessageWriter;
-import java.util.Iterator;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;

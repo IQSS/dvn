@@ -37,15 +37,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.UIColumn;
-import javax.faces.component.html.HtmlOutputLink;
-import javax.faces.component.html.HtmlSelectOneMenu;
 import com.sun.jsfcl.data.DefaultSelectItemsArray;
 import javax.faces.component.UISelectItems;
-import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
@@ -86,36 +80,6 @@ public class ReviewStudiesPage extends VDCBaseBean implements java.io.Serializab
         newStudy = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_NEW);
     }
 
-    private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel1() {
-        return gridPanel1;
-    }
-
-    public void setGridPanel1(HtmlPanelGrid hpg) {
-        this.gridPanel1 = hpg;
-    }
-
-    private HtmlOutputText outputText1 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText1() {
-        return outputText1;
-    }
-
-    public void setOutputText1(HtmlOutputText hot) {
-        this.outputText1 = hot;
-    }
-
-    private HtmlDataTable dataTable1 = new HtmlDataTable();
-
-    public HtmlDataTable getDataTable1() {
-        return dataTable1;
-    }
-
-    public void setDataTable1(HtmlDataTable hdt) {
-        this.dataTable1 = hdt;
-    }
-
     private UIColumn column1 = new UIColumn();
 
     public UIColumn getColumn1() {
@@ -126,36 +90,6 @@ public class ReviewStudiesPage extends VDCBaseBean implements java.io.Serializab
         this.column1 = uic;
     }
 
-    private HtmlOutputText outputText2 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText2() {
-        return outputText2;
-    }
-
-    public void setOutputText2(HtmlOutputText hot) {
-        this.outputText2 = hot;
-    }
-
-    private HtmlOutputLink hyperlink1 = new HtmlOutputLink();
-
-    public HtmlOutputLink getHyperlink1() {
-        return hyperlink1;
-    }
-
-    public void setHyperlink1(HtmlOutputLink hol) {
-        this.hyperlink1 = hol;
-    }
-
-    private HtmlOutputText hyperlink1Text1 = new HtmlOutputText();
-
-    public HtmlOutputText getHyperlink1Text1() {
-        return hyperlink1Text1;
-    }
-
-    public void setHyperlink1Text1(HtmlOutputText hot) {
-        this.hyperlink1Text1 = hot;
-    }
-
     private UIColumn column2 = new UIColumn();
 
     public UIColumn getColumn2() {
@@ -164,26 +98,6 @@ public class ReviewStudiesPage extends VDCBaseBean implements java.io.Serializab
 
     public void setColumn2(UIColumn uic) {
         this.column2 = uic;
-    }
-
-    private HtmlOutputText outputText4 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText4() {
-        return outputText4;
-    }
-
-    public void setOutputText4(HtmlOutputText hot) {
-        this.outputText4 = hot;
-    }
-
-    private HtmlSelectOneMenu dropdown1 = new HtmlSelectOneMenu();
-
-    public HtmlSelectOneMenu getDropdown1() {
-        return dropdown1;
-    }
-
-    public void setDropdown1(HtmlSelectOneMenu hsom) {
-        this.dropdown1 = hsom;
     }
 
     private DefaultSelectItemsArray dropdown1DefaultItems = new DefaultSelectItemsArray();
@@ -236,36 +150,6 @@ public class ReviewStudiesPage extends VDCBaseBean implements java.io.Serializab
         this.column3 = uic;
     }
 
-    private HtmlOutputText outputText3 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText3() {
-        return outputText3;
-    }
-
-    public void setOutputText3(HtmlOutputText hot) {
-        this.outputText3 = hot;
-    }
-
-    private HtmlOutputLink hyperlink2 = new HtmlOutputLink();
-
-    public HtmlOutputLink getHyperlink2() {
-        return hyperlink2;
-    }
-
-    public void setHyperlink2(HtmlOutputLink hol) {
-        this.hyperlink2 = hol;
-    }
-
-    private HtmlOutputText hyperlink2Text = new HtmlOutputText();
-
-    public HtmlOutputText getHyperlink2Text() {
-        return hyperlink2Text;
-    }
-
-    public void setHyperlink2Text(HtmlOutputText hot) {
-        this.hyperlink2Text = hot;
-    }
-
     private UIColumn column4 = new UIColumn();
 
     public UIColumn getColumn4() {
@@ -276,56 +160,6 @@ public class ReviewStudiesPage extends VDCBaseBean implements java.io.Serializab
         this.column4 = uic;
     }
 
-    private HtmlOutputLink hyperlink3 = new HtmlOutputLink();
-
-    public HtmlOutputLink getHyperlink3() {
-        return hyperlink3;
-    }
-
-    public void setHyperlink3(HtmlOutputLink hol) {
-        this.hyperlink3 = hol;
-    }
-
-    private HtmlOutputText hyperlink2Text1 = new HtmlOutputText();
-
-    public HtmlOutputText getHyperlink2Text1() {
-        return hyperlink2Text1;
-    }
-
-    public void setHyperlink2Text1(HtmlOutputText hot) {
-        this.hyperlink2Text1 = hot;
-    }
-
-    private HtmlOutputText outputText5 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText5() {
-        return outputText5;
-    }
-
-    public void setOutputText5(HtmlOutputText hot) {
-        this.outputText5 = hot;
-    }
-
-    private HtmlCommandButton button1 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton1() {
-        return button1;
-    }
-
-    public void setButton1(HtmlCommandButton hcb) {
-        this.button1 = hcb;
-    }
-
-    private HtmlCommandButton button3 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton3() {
-        return button3;
-    }
-
-    public void setButton3(HtmlCommandButton hcb) {
-        this.button3 = hcb;
-    }
-    
     // </editor-fold>
 
 

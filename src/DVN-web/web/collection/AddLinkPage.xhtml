@@ -19,36 +19,36 @@
 
   <gui:define name="body">                        
     
-        <h:form  id="form1">
-            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:form  id="form1">
+            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">
                         
-                        <h:outputText value="Add Collection Link"/>
+                        <ice:outputText value="Add Collection Link"/>
                     
                 </div>            
                 <div class="dvn_sectionBox">      
                     <div class="dvn_margin12">
                         
-                        <h:outputText value="Select a collection from another (public) dataverse that you would like to add your dataverse (the collection you select will be displayed in the homepage of your dataverse and it will be included in your dataverse searches)."  />
+                        <ice:outputText value="Select a collection from another (public) dataverse that you would like to add your dataverse (the collection you select will be displayed in the homepage of your dataverse and it will be included in your dataverse searches)."  />
                         
-                        <div jsfc="ice:panelGroup"   style="padding-top: 10px;">
-                            <h:selectOneMenu  id="dropdown1" binding="#{AddLinkPage.dropdown1}" >
+                        <div style="padding-top: 10px;">
+                            <ice:selectOneMenu  id="dropdown1" binding="#{AddLinkPage.dropdown1}" >
                                 <f:selectItems  binding="#{AddLinkPage.dropdown1SelectItems}"  value="#{AddLinkPage.dropdown1DefaultItems}"/>
-                            </h:selectOneMenu>
+                            </ice:selectOneMenu>
                         </div>
                         
-                        <div jsfc="ice:panelGroup"    style="padding-top: 20px" >
-                            <h:commandButton  id="button1" value="Save" action="#{AddLinkPage.saveLink}" disabled="#{AddLinkPage.saveDisabled}"/>
-                            <h:commandButton  id="button2" value="Cancel" style="margin-left: 30px" action="#{AddLinkPage.cancel}" />
+                        <div style="padding-top: 20px" >
+                            <ice:commandButton  id="button1" value="Save" action="#{AddLinkPage.saveLink}" disabled="#{AddLinkPage.saveDisabled}"/>
+                            <ice:commandButton  id="button2" value="Cancel" style="margin-left: 30px" action="#{AddLinkPage.cancel}" />
                         </div>            
                         
                     </div>
                 </div>
              </div>
 
-        </h:form>
+        </ice:form>
             </gui:define>
         </gui:composition>
     </body>

@@ -26,21 +26,12 @@
  */
 package edu.harvard.hmdc.vdcnet.web.site;
 
-
-import edu.harvard.hmdc.vdcnet.web.study.*;
-import edu.harvard.hmdc.vdcnet.study.EditStudyService;
-import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.html.HtmlInputHidden;
-import javax.faces.context.FacesContext;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import com.icesoft.faces.component.ext.HtmlInputHidden;
+
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This

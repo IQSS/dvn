@@ -25,12 +25,6 @@
  */
 package edu.harvard.hmdc.vdcnet.web.collection;
 
-import com.sun.rave.web.ui.component.Body;
-import com.sun.rave.web.ui.component.Form;
-import com.sun.rave.web.ui.component.Head;
-import com.sun.rave.web.ui.component.Html;
-import com.sun.rave.web.ui.component.Link;
-import com.sun.rave.web.ui.component.Page;
 import com.sun.rave.web.ui.model.Option;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
@@ -55,16 +49,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.ejb.EJB;
-import javax.faces.component.html.HtmlPanelGrid;
-import com.sun.rave.web.ui.component.PanelLayout;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlSelectOneMenu;
+import javax.ejb.EJB;;
+import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import javax.faces.component.UISelectItems;
-import javax.faces.component.html.HtmlInputText;
-import com.sun.rave.web.ui.component.PanelGroup;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlSelectOneRadio;
+import com.icesoft.faces.component.ext.HtmlInputText;
 import com.sun.jsfcl.data.DefaultSelectItemsArray;
 import com.sun.rave.web.ui.component.AddRemove;
 import com.sun.rave.web.ui.model.MultipleSelectOptionsList;
@@ -72,7 +60,7 @@ import com.sun.rave.web.ui.component.HelpInline;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
-import javax.faces.component.html.HtmlInputTextarea;
+import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
@@ -235,156 +223,6 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         vdcId = getVDCRequestBean().getCurrentVDC().getId().longValue();;
     }
 
-    private Page page1 = new Page();
-    
-    public Page getPage1() {
-        return page1;
-    }
-    
-    public void setPage1(Page p) {
-        this.page1 = p;
-    }
-    
-    private Html html1 = new Html();
-    
-    public Html getHtml1() {
-        return html1;
-    }
-    
-    public void setHtml1(Html h) {
-        this.html1 = h;
-    }
-    
-    private Head head1 = new Head();
-    
-    public Head getHead1() {
-        return head1;
-    }
-    
-    public void setHead1(Head h) {
-        this.head1 = h;
-    }
-    
-    private Link link1 = new Link();
-    
-    public Link getLink1() {
-        return link1;
-    }
-    
-    public void setLink1(Link l) {
-        this.link1 = l;
-    }
-    
-    private Body body1 = new Body();
-    
-    public Body getBody1() {
-        return body1;
-    }
-    
-    public void setBody1(Body b) {
-        this.body1 = b;
-    }
-    
-    private Form form1 = new Form();
-    
-    public Form getForm1() {
-        return form1;
-    }
-    
-    public void setForm1(Form f) {
-        this.form1 = f;
-    }
-
-    private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel1() {
-        return gridPanel1;
-    }
-
-    public void setGridPanel1(HtmlPanelGrid hpg) {
-        this.gridPanel1 = hpg;
-    }
-
-    private PanelLayout layoutPanel1 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel1() {
-        return layoutPanel1;
-    }
-
-    public void setLayoutPanel1(PanelLayout pl) {
-        this.layoutPanel1 = pl;
-    }
-
-    private PanelLayout layoutPanel2 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel2() {
-        return layoutPanel2;
-    }
-
-    public void setLayoutPanel2(PanelLayout pl) {
-        this.layoutPanel2 = pl;
-    }
-
-    private HtmlOutputText outputText1 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText1() {
-        return outputText1;
-    }
-
-    public void setOutputText1(HtmlOutputText hot) {
-        this.outputText1 = hot;
-    }
-
-    private PanelLayout layoutPanel3 = new PanelLayout();
-
-    public PanelLayout getLayoutPanel3() {
-        return layoutPanel3;
-    }
-
-    public void setLayoutPanel3(PanelLayout pl) {
-        this.layoutPanel3 = pl;
-    }
-
-    private HtmlOutputText outputText2 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText2() {
-        return outputText2;
-    }
-
-    public void setOutputText2(HtmlOutputText hot) {
-        this.outputText2 = hot;
-    }
-
-    private PanelGroup groupPanel1 = new PanelGroup();
-
-    public PanelGroup getGroupPanel1() {
-        return groupPanel1;
-    }
-
-    public void setGroupPanel1(PanelGroup pg) {
-        this.groupPanel1 = pg;
-    }
-
-    private PanelGroup groupPanel2 = new PanelGroup();
-
-    public PanelGroup getGroupPanel2() {
-        return groupPanel2;
-    }
-
-    public void setGroupPanel2(PanelGroup pg) {
-        this.groupPanel2 = pg;
-    }
-
-    private HtmlOutputText outputText3 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText3() {
-        return outputText3;
-    }
-
-    public void setOutputText3(HtmlOutputText hot) {
-        this.outputText3 = hot;
-    }
-
     private HtmlInputText textFieldCollectionName = new HtmlInputText();
 
     public HtmlInputText getTextFieldCollectionName() {
@@ -393,16 +231,6 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
 
     public void setTextFieldCollectionName(HtmlInputText hit) {
         this.textFieldCollectionName = hit;
-    }
-
-    private HtmlOutputText outputText4 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText4() {
-        return outputText4;
-    }
-
-    public void setOutputText4(HtmlOutputText hot) {
-        this.outputText4 = hot;
     }
 
     private HtmlSelectOneMenu dropdown1 = new HtmlSelectOneMenu();
@@ -435,16 +263,7 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         this.dropdown1SelectItems = uisi;
     }
 
-    private PanelGroup groupPanel3 = new PanelGroup();
-
-    public PanelGroup getGroupPanel3() {
-        return groupPanel3;
-    }
-
-    public void setGroupPanel3(PanelGroup pg) {
-        this.groupPanel3 = pg;
-    }
-
+    
     private HtmlSelectOneMenu dropdown2 = new HtmlSelectOneMenu();
 
     public HtmlSelectOneMenu getDropdown2() {
@@ -485,56 +304,6 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         this.dropdown3SelectItems = uisi;
     }
 
-    private HtmlOutputText outputText5 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText5() {
-        return outputText5;
-    }
-
-    public void setOutputText5(HtmlOutputText hot) {
-        this.outputText5 = hot;
-    }
-
-    private HtmlOutputText outputText6 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText6() {
-        return outputText6;
-    }
-
-    public void setOutputText6(HtmlOutputText hot) {
-        this.outputText6 = hot;
-    }
-
-    private HtmlOutputText outputText7 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText7() {
-        return outputText7;
-    }
-
-    public void setOutputText7(HtmlOutputText hot) {
-        this.outputText7 = hot;
-    }
-
-    private HtmlPanelGrid gridPanel2 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel2() {
-        return gridPanel2;
-    }
-
-    public void setGridPanel2(HtmlPanelGrid hpg) {
-        this.gridPanel2 = hpg;
-    }
-
-    private HtmlOutputText outputText8 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText8() {
-        return outputText8;
-    }
-
-    public void setOutputText8(HtmlOutputText hot) {
-        this.outputText8 = hot;
-    }
-
     private HtmlSelectOneMenu dropdown4 = new HtmlSelectOneMenu();
 
     public HtmlSelectOneMenu getDropdown4() {
@@ -566,36 +335,6 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         this.dropdown4SelectItems = uisi;
     }
 
-    private HtmlOutputText outputText9 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText9() {
-        return outputText9;
-    }
-
-    public void setOutputText9(HtmlOutputText hot) {
-        this.outputText9 = hot;
-    }
-
-    private PanelGroup groupPanel4 = new PanelGroup();
-
-    public PanelGroup getGroupPanel4() {
-        return groupPanel4;
-    }
-
-    public void setGroupPanel4(PanelGroup pg) {
-        this.groupPanel4 = pg;
-    }
-
-    private HtmlCommandButton button1 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton1() {
-        return button1;
-    }
-
-    public void setButton1(HtmlCommandButton hcb) {
-        this.button1 = hcb;
-    }
-
     private HtmlInputText textField1 = new HtmlInputText();
 
     public HtmlInputText getTextField1() {
@@ -606,36 +345,6 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         this.textField1 = hit;
     }
 
-    private HtmlOutputText outputText10 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText10() {
-        return outputText10;
-    }
-
-    public void setOutputText10(HtmlOutputText hot) {
-        this.outputText10 = hot;
-    }
-
-    private PanelGroup groupPanel5 = new PanelGroup();
-
-    public PanelGroup getGroupPanel5() {
-        return groupPanel5;
-    }
-
-    public void setGroupPanel5(PanelGroup pg) {
-        this.groupPanel5 = pg;
-    }
-
-    private HtmlCommandButton button2 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton2() {
-        return button2;
-    }
-
-    public void setButton2(HtmlCommandButton hcb) {
-        this.button2 = hcb;
-    }
-
     private HtmlInputTextarea textAreaQuery = new HtmlInputTextarea();
 
     public HtmlInputTextarea getTextAreaQuery() {
@@ -644,26 +353,6 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
 
     public void setTextAreaQuery(HtmlInputTextarea hit) {
         this.textAreaQuery = hit;
-    }
-
-    private HtmlOutputText outputText11 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText11() {
-        return outputText11;
-    }
-
-    public void setOutputText11(HtmlOutputText hot) {
-        this.outputText11 = hot;
-    }
-
-    private HtmlOutputText outputText12 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText12() {
-        return outputText12;
-    }
-
-    public void setOutputText12(HtmlOutputText hot) {
-        this.outputText12 = hot;
     }
 
     private AddRemove addRemoveList1 = new AddRemove();
@@ -686,56 +375,6 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         this.addRemoveList1DefaultOptions = msol;
     }
 
-    private PanelGroup groupPanel6 = new PanelGroup();
-
-    public PanelGroup getGroupPanel6() {
-        return groupPanel6;
-    }
-
-    public void setGroupPanel6(PanelGroup pg) {
-        this.groupPanel6 = pg;
-    }
-
-    private HtmlCommandButton button3 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton3() {
-        return button3;
-    }
-
-    public void setButton3(HtmlCommandButton hcb) {
-        this.button3 = hcb;
-    }
-
-    private HtmlCommandButton button4 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton4() {
-        return button4;
-    }
-
-    public void setButton4(HtmlCommandButton hcb) {
-        this.button4 = hcb;
-    }
-
-    private PanelGroup groupPanel7 = new PanelGroup();
-
-    public PanelGroup getGroupPanel7() {
-        return groupPanel7;
-    }
-
-    public void setGroupPanel7(PanelGroup pg) {
-        this.groupPanel7 = pg;
-    }
-
-    private HtmlCommandButton button5 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton5() {
-        return button5;
-    }
-
-    public void setButton5(HtmlCommandButton hcb) {
-        this.button5 = hcb;
-    }
-
     private HelpInline helpInline1 = new HelpInline();
 
     public HelpInline getHelpInline1() {
@@ -744,16 +383,6 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
 
     public void setHelpInline1(HelpInline hi) {
         this.helpInline1 = hi;
-    }
-
-    private PanelGroup groupPanel8 = new PanelGroup();
-
-    public PanelGroup getGroupPanel8() {
-        return groupPanel8;
-    }
-
-    public void setGroupPanel8(PanelGroup pg) {
-        this.groupPanel8 = pg;
     }
 
     private HtmlSelectOneMenu dropdown3 = new HtmlSelectOneMenu();
@@ -806,16 +435,6 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         this.dropdown5SelectItems = uisi;
     }
 
-    private HtmlOutputText outputText13 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText13() {
-        return outputText13;
-    }
-
-    public void setOutputText13(HtmlOutputText hot) {
-        this.outputText13 = hot;
-    }
-
     private AddRemove addRemoveList2 = new AddRemove();
 
     public AddRemove getAddRemoveList2() {
@@ -846,16 +465,6 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
         this.helpInline2 = hi;
     }
 
-    private HtmlSelectOneRadio radioButtonList1 = new HtmlSelectOneRadio();
-
-    public HtmlSelectOneRadio getRadioButtonList1() {
-        return radioButtonList1;
-    }
-
-    public void setRadioButtonList1(HtmlSelectOneRadio hsor) {
-        this.radioButtonList1 = hsor;
-    }
-
     private DefaultSelectItemsArray radioButtonList1DefaultItems = new DefaultSelectItemsArray();
 
     public DefaultSelectItemsArray getRadioButtonList1DefaultItems() {
@@ -874,36 +483,6 @@ public class AddCollectionsPage extends VDCBaseBean implements java.io.Serializa
 
     public void setRadioButtonList1SelectItems(UISelectItems uisi) {
         this.radioButtonList1SelectItems = uisi;
-    }
-
-    private PanelGroup groupPanel9 = new PanelGroup();
-
-    public PanelGroup getGroupPanel9() {
-        return groupPanel9;
-    }
-
-    public void setGroupPanel9(PanelGroup pg) {
-        this.groupPanel9 = pg;
-    }
-
-    private HtmlCommandButton button6 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton6() {
-        return button6;
-    }
-
-    public void setButton6(HtmlCommandButton hcb) {
-        this.button6 = hcb;
-    }
-
-    private HtmlCommandButton button7 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton7() {
-        return button7;
-    }
-
-    public void setButton7(HtmlCommandButton hcb) {
-        this.button7 = hcb;
     }
     
     public String getSearchField() {

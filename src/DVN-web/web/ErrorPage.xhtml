@@ -19,40 +19,40 @@
 
   <gui:define name="body">
 
-            <h:form  id="errorForm">
-                <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+            <ice:form  id="errorForm">
+                <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
                 
                 <div class="dvn_section">
                     <div class="dvn_sectionTitle">
                         
-                            Error
+                            <ice:outputText value="Error"/>
                          
                     </div>            
                     <div class="dvn_sectionBox"> 
                         <div class="dvn_margin12">
                             
-                            <h:outputText styleClass="errorMessage" value="We are sorry. An application error has occurred. "/>
+                            <ice:outputText styleClass="errorMessage" value="We are sorry. An application error has occurred. "/>
                             <br /> <br />
-                            <h:outputText value="Error Message:" rendered="#{param.errorMsg!=null}"/>
-                            <h:outputText escape="false" styleClass="errorMessage" value="#{param.errorMsg}" rendered="#{param.errorMsg!=null}"/>
+                            <ice:outputText value="Error Message:" rendered="#{param.errorMsg!=null}"/>
+                            <ice:outputText escape="false" styleClass="errorMessage" value="#{param.errorMsg}" rendered="#{param.errorMsg!=null}"/>
                             
-                            <h:dataTable value="#{ErrorPage.messages}" var="currentRow">
-                                <h:column>
-                                    <h:outputText escape="false" styleClass="errorMessage" value="#{currentRow}"/>
-                                </h:column>
-                            </h:dataTable>
+                            <ice:dataTable value="#{ErrorPage.messages}" var="currentRow">
+                                <ice:column>
+                                    <ice:outputText escape="false" styleClass="errorMessage" value="#{currentRow}"/>
+                                </ice:column>
+                            </ice:dataTable>
                             
                             <br /><br />
-                            <h:outputText styleClass="errorMessage" value="Event occurred at " rendered="#{param.time!=null}" />
-                            <h:outputText styleClass="errorMessage" value="#{param.time}" rendered="#{param.time!=null}">
+                            <ice:outputText styleClass="errorMessage" value="Event occurred at " rendered="#{param.time!=null}" />
+                            <ice:outputText styleClass="errorMessage" value="#{param.time}" rendered="#{param.time!=null}">
                                 <f:convertDateTime dateStyle="full"/>
-                            </h:outputText>
+                            </ice:outputText>
                             
                         </div>
                     </div>
                 </div>
                  
-            </h:form>
+            </ice:form>
             </gui:define>
         </gui:composition>
     </body>

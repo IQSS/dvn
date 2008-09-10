@@ -39,7 +39,7 @@ import javax.ejb.EJB;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.util.ArrayList;
 import java.util.Iterator;
-import javax.faces.component.html.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlDataTable;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 

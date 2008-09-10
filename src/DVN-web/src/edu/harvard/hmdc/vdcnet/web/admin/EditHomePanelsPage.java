@@ -32,7 +32,6 @@ import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
-import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.context.FacesContext;
 
 /**
@@ -67,25 +66,6 @@ public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializa
         success = false;
     }
     
-   private HtmlCommandButton btnSave = new HtmlCommandButton();
-
-    public HtmlCommandButton getBtnSave() {
-        return btnSave;
-    }
-
-    public void setBtnSave(HtmlCommandButton hcb) {
-        this.btnSave = hcb;
-    }
-
-    private HtmlCommandButton btnCancel = new HtmlCommandButton();
-
-    public HtmlCommandButton getBtnCancel() {
-        return btnCancel;
-    }
-
-    public void setBtnCancel(HtmlCommandButton hcb) {
-        this.btnCancel = hcb;
-    }
 
     /** 
      * <p>Callback method that is called after the component tree has been

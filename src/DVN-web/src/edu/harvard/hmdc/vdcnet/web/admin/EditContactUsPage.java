@@ -27,11 +27,6 @@
 package edu.harvard.hmdc.vdcnet.web.admin;
 
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlGraphicImage;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlCommandButton;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
@@ -61,86 +56,6 @@ public class EditContactUsPage extends VDCBaseBean implements java.io.Serializab
      * here is subject to being replaced.</p>
      */
     private void _init() throws Exception {
-    }
-
-    private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel1() {
-        return gridPanel1;
-    }
-
-    public void setGridPanel1(HtmlPanelGrid hpg) {
-        this.gridPanel1 = hpg;
-    }
-
-    private HtmlOutputText outputText1 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText1() {
-        return outputText1;
-    }
-
-    public void setOutputText1(HtmlOutputText hot) {
-        this.outputText1 = hot;
-    }
-
-    private HtmlPanelGrid gridPanel2 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel2() {
-        return gridPanel2;
-    }
-
-    public void setGridPanel2(HtmlPanelGrid hpg) {
-        this.gridPanel2 = hpg;
-    }
-
-    private HtmlOutputText outputText5 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText5() {
-        return outputText5;
-    }
-
-    public void setOutputText5(HtmlOutputText hot) {
-        this.outputText5 = hot;
-    }
-
-    private HtmlGraphicImage image1 = new HtmlGraphicImage();
-
-    public HtmlGraphicImage getImage1() {
-        return image1;
-    }
-
-    public void setImage1(HtmlGraphicImage hgi) {
-        this.image1 = hgi;
-    }
-
-    private HtmlInputText textField1 = new HtmlInputText();
-
-    public HtmlInputText getTextField1() {
-        return textField1;
-    }
-
-    public void setTextField1(HtmlInputText hit) {
-        this.textField1 = hit;
-    }
-
-    private HtmlCommandButton btnSave = new HtmlCommandButton();
-
-    public HtmlCommandButton getBtnSave() {
-        return btnSave;
-    }
-
-    public void setBtnSave(HtmlCommandButton hcb) {
-        this.btnSave = hcb;
-    }
-
-    private HtmlCommandButton btnCancel = new HtmlCommandButton();
-
-    public HtmlCommandButton getBtnCancel() {
-        return btnCancel;
-    }
-
-    public void setBtnCancel(HtmlCommandButton hcb) {
-        this.btnCancel = hcb;
     }
 
     // </editor-fold>

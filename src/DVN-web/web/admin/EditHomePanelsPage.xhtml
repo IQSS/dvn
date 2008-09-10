@@ -35,7 +35,7 @@
 
                        <ice:messages layout="list" showDetail="false" showSummary="true" styleClass="successMessage" />
                         
-                        <div jsfc="ice:panelGroup"   id="groupPanel3" style="padding-bottom: 10px">
+                        <div id="groupPanel3" style="padding-bottom: 10px">
                             <ice:outputText  id="outputText3" value="#{bundle.displayLocalAnnouncementsLabel}"/>
                             <ice:selectBooleanCheckbox  id="chkLocalAnnouncements"  value="#{EditHomePanelsPage.chkLocalAnnouncements}"/>
                             <div jsfc="ice:panelGroup"   style="padding-right: 70px">
@@ -56,7 +56,7 @@
                             </ice:inputTextarea>
                         </div>
                                              
-                        <div jsfc="ice:panelGroup"   id="groupPanel1" style="padding-left: 200px; padding-top: 20px">
+                        <div id="groupPanel1" style="padding-left: 200px; padding-top: 20px">
                             <ice:commandButton id="btnSave" value="#{bundle.saveButtonLabel}" action="#{EditHomePanelsPage.save_action}"/>
                             <ice:commandButton id="btnCancel" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditHomePanelsPage.cancel_action}"/>
                         </div>

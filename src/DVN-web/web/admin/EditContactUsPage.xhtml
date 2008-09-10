@@ -36,7 +36,7 @@
                         <ice:messages  layout="list" showDetail="false" showSummary="true" styleClass="successMessage" />
                         
                         <ice:outputText  id="helpInline1" style="margin-bottom: 20px" value="#{bundle.editContactUsHelpMsg}"/>
-                        <div jsfc="ice:panelGroup">
+                        <div>
                             <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
                             <ice:outputText id="outputText4" styleClass="vdcHelpText" value="Separate multiple email addresses with a comma (and no spaces). Example: admin@mydvn.edu,user@mydvn.edu"/>
                         </div>
@@ -44,7 +44,7 @@
                         <ice:panelGrid  cellpadding="0" cellspacing="0"
                                       columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
                             
-                            <div jsfc="ice:panelGroup"  id="groupPanel2">
+                            <div>
                                 <ice:outputText  id="outputText5" value="#{bundle.editContactUsEmailLabel}"/>
                                 <ice:graphicImage  id="image1" value="#{bundle.iconRequired}"/>
                             </div>
@@ -63,7 +63,7 @@
                                        for="contactUsEmail"
                                        styleClass="errorMessage"/>
                         </ice:panelGrid>
-                        <div jsfc="ice:panelGroup"   id="groupPanel6" style="padding-left: 140px; padding-top: 20px">
+                        <div id="groupPanel6" style="padding-left: 140px; padding-top: 20px">
                             <ice:commandButton  id="btnSave" value="#{bundle.saveButtonLabel}" action="#{EditContactUsPage.save_action}"/>
                             <ice:commandButton  id="btnCancel" style="margin-left: 30px" immediate="true" value="#{bundle.cancelButtonLabel}" action="#{EditContactUsPage.cancel_action}"/>
                         </div>

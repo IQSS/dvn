@@ -20,64 +20,64 @@
   <gui:define name="body">
 
 
-    <h:form id="editBannerFooterForm">
-        <h:inputHidden rendered="#{VDCRequest.currentVDC != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+    <ice:form id="editBannerFooterForm">
+        <ice:inputHidden rendered="#{VDCRequest.currentVDC != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         
         <div class="dvn_section">
                 <div class="dvn_sectionTitle">    
-                         <h:outputText  value="#{bundle.editBannerFooterHeading}"/>              
+                         <ice:outputText  value="#{bundle.editBannerFooterHeading}"/>              
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
 
-                        <h:messages layout="list" globalOnly="true" styleClass="successMessage" />
+                        <ice:messages layout="list" globalOnly="true" styleClass="successMessage" />
                         
-                        <div jsfc="ice:panelGroup"  style="padding-bottom: 10px">
-                            <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                            <h:outputText id="htmlHelp" styleClass="vdcHelpText" value="#{bundle.htmlHelpText}"/>
+                        <div style="padding-bottom: 10px">
+                            <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                            <ice:outputText id="htmlHelp" styleClass="vdcHelpText" value="#{bundle.htmlHelpText}"/>
                         </div>
-                        <h:panelGrid cellpadding="0" cellspacing="0"
+                        <ice:panelGrid cellpadding="0" cellspacing="0"
                                      columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2" style="margin-top: 10px">
-                            <h:outputText  id="outputText2" styleClass="vdcFieldTitle" value="#{bundle.editCustomBannerLabel}"/>
-                            <h:panelGroup>
-                                <h:message for="combined" styleClass="errorMessage"/>   
-                                <h:message  id="bannerMsg" 
+                            <ice:outputText  id="outputText2" styleClass="vdcFieldTitle" value="#{bundle.editCustomBannerLabel}"/>
+                            <div>
+                                <ice:message for="combined" styleClass="errorMessage"/>   
+                                <ice:message id="bannerMsg" 
                                             for="banner"
                                             styleClass="errorMessage"/>
                                 <br /><br />
-                                <h:inputTextarea    id="banner" 
+                                <ice:inputTextarea id="banner" 
                                                     rows="15" 
                                                     value="#{EditBannerFooterPage.banner}"
                                                     styleClass="formHtmlEnabled">
                                     <f:validator validatorId="XhtmlValidator"/>
-                                </h:inputTextarea>
-                            </h:panelGroup>
-                            <h:outputText  id="footerLabel" styleClass="vdcFieldTitle" value="#{bundle.editCustomFooterLabel}"/>
-                            <h:panelGroup>
-                                <h:message  id="footerMsg" 
+                                </ice:inputTextarea>
+                            </div>
+                            <ice:outputText id="footerLabel" styleClass="vdcFieldTitle" value="#{bundle.editCustomFooterLabel}"/>
+                            <div>
+                                <ice:message  id="footerMsg" 
                                             for="footer"
                                             styleClass="errorMessage"/>
                                 
                                 <br />
-                                <h:inputTextarea    id="footer" 
+                                <ice:inputTextarea    id="footer" 
                                                     rows="7" 
                                                     value="#{EditBannerFooterPage.footer}"
                                                     styleClass="formHtmlEnabled">
                                     <f:validator validatorId="XhtmlValidator"/>
-                                </h:inputTextarea> 
-                                <h:inputHidden id="combined" value="combined"/>
+                                </ice:inputTextarea> 
+                                <ice:inputHidden id="combined" value="combined"/>
                                 
-                            </h:panelGroup>
+                            </div>
                             
-                        </h:panelGrid>
-                        <div jsfc="ice:panelGroup"   id="groupPanel1" style="padding-left: 200px; padding-top: 20px">
-                            <h:commandButton id="btnSave" value="#{bundle.saveButtonLabel}" action="#{EditBannerFooterPage.save_action}"/>
-                            <h:commandButton id="btnCancel" immediate="true" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditBannerFooterPage.cancel_action}"/>
+                        </ice:panelGrid>
+                        <div id="groupPanel1" style="padding-left: 200px; padding-top: 20px">
+                            <ice:commandButton id="btnSave" value="#{bundle.saveButtonLabel}" action="#{EditBannerFooterPage.save_action}"/>
+                            <ice:commandButton id="btnCancel" immediate="true" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditBannerFooterPage.cancel_action}"/>
                         </div>
                     </div>
                </div>
             </div>
-        </h:form>
+        </ice:form>
             </gui:define>
         </gui:composition>
     </body>

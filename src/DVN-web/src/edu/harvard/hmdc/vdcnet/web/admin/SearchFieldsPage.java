@@ -38,13 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlOutputLink;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlDataTable;
-import javax.faces.component.UIColumn;
-import javax.faces.component.html.HtmlSelectBooleanCheckbox;
+import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 
@@ -181,101 +175,6 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
         this.relatedStudiesResults = checked;
     }
 
-    private HtmlPanelGrid gridPanel1 = new HtmlPanelGrid();
-
-    public HtmlPanelGrid getGridPanel1() {
-        return gridPanel1;
-    }
-
-    public void setGridPanel1(HtmlPanelGrid hpg) {
-        this.gridPanel1 = hpg;
-    }
-
-    private HtmlOutputText outputText1 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText1() {
-        return outputText1;
-    }
-
-    public void setOutputText1(HtmlOutputText hot) {
-        this.outputText1 = hot;
-    }
-
-    private HtmlCommandButton button3 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton3() {
-        return button3;
-    }
-
-    public void setButton3(HtmlCommandButton hcb) {
-        this.button3 = hcb;
-    }
-
-    private HtmlDataTable dataTable1 = new HtmlDataTable();
-
-    public HtmlDataTable getDataTable1() {
-        return dataTable1;
-    }
-
-    public void setDataTable1(HtmlDataTable hdt) {
-        this.dataTable1 = hdt;
-    }
-
-    private UIColumn column1 = new UIColumn();
-
-    public UIColumn getColumn1() {
-        return column1;
-    }
-
-    public void setColumn1(UIColumn uic) {
-        this.column1 = uic;
-    }
-
-    private HtmlOutputText outputText3 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText3() {
-        return outputText3;
-    }
-
-    public void setOutputText3(HtmlOutputText hot) {
-        this.outputText3 = hot;
-    }
-
-    private HtmlOutputLink hyperlink2 = new HtmlOutputLink();
-
-    public HtmlOutputLink getHyperlink2() {
-        return hyperlink2;
-    }
-
-    public void setHyperlink2(HtmlOutputLink hol) {
-        this.hyperlink2 = hol;
-    }
-
-    private HtmlOutputText hyperlink2Text1 = new HtmlOutputText();
-
-    public HtmlOutputText getHyperlink2Text1() {
-        return hyperlink2Text1;
-    }
-
-    public void setHyperlink2Text1(HtmlOutputText hot) {
-        this.hyperlink2Text1 = hot;
-    }
-
-    private UIColumn column2 = new UIColumn();
-
-    public UIColumn getColumn2() {
-        return column2;
-    }
-
-    public void setColumn2(UIColumn uic) {
-        this.column2 = uic;
-    }
-
-    private HtmlOutputText outputText4 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText4() {
-        return outputText4;
-    }
 
     public IndexServiceLocal getIndexService() {
         return indexService;
@@ -285,10 +184,6 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
         return studyFieldService;
     }
 
-    public void setOutputText4(HtmlOutputText hot) {
-        this.outputText4 = hot;
-    }
-    
     private HtmlSelectBooleanCheckbox producerCheckbox = new HtmlSelectBooleanCheckbox();
 
     public HtmlSelectBooleanCheckbox getProducerCheckbox() {
@@ -299,15 +194,6 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
         this.producerCheckbox = hsbc;
     }
 
-    private UIColumn column3 = new UIColumn();
-
-    public UIColumn getColumn3() {
-        return column3;
-    }
-
-    public void setColumn3(UIColumn uic) {
-        this.column3 = uic;
-    }
 
     private HtmlSelectBooleanCheckbox distributionDateCheckbox = new HtmlSelectBooleanCheckbox();
 
@@ -317,36 +203,6 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
 
     public void setDistributionDateCheckbox(HtmlSelectBooleanCheckbox hsbc) {
         this.distributionDateCheckbox = hsbc;
-    }
-
-    private HtmlOutputText outputText5 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText5() {
-        return outputText5;
-    }
-
-    public void setOutputText5(HtmlOutputText hot) {
-        this.outputText5 = hot;
-    }
-
-    private UIColumn column4 = new UIColumn();
-
-    public UIColumn getColumn4() {
-        return column4;
-    }
-
-    public void setColumn4(UIColumn uic) {
-        this.column4 = uic;
-    }
-
-    private HtmlOutputText outputText6 = new HtmlOutputText();
-
-    public HtmlOutputText getOutputText6() {
-        return outputText6;
-    }
-
-    public void setOutputText6(HtmlOutputText hot) {
-        this.outputText6 = hot;
     }
 
     private HtmlSelectBooleanCheckbox distributorCheckbox = new HtmlSelectBooleanCheckbox();
@@ -397,16 +253,6 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
 
     public void setRelatedstudiesCheckbox(HtmlSelectBooleanCheckbox hsbc) {
         this.relatedstudiesCheckbox = hsbc;
-    }
-
-    private HtmlCommandButton button4 = new HtmlCommandButton();
-
-    public HtmlCommandButton getButton4() {
-        return button4;
-    }
-
-    public void setButton4(HtmlCommandButton hcb) {
-        this.button4 = hcb;
     }
 
     // </editor-fold>

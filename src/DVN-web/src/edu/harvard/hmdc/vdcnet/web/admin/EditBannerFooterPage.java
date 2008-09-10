@@ -32,7 +32,6 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
-import javax.faces.component.html.HtmlCommandButton;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -61,26 +60,6 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
         }
     }
     
-    
-    private HtmlCommandButton btnSave = new HtmlCommandButton();
-
-    public HtmlCommandButton getBtnSave() {
-        return btnSave;
-    }
-
-    public void setBtnSave(HtmlCommandButton hcb) {
-        this.btnSave = hcb;
-    }
-
-    private HtmlCommandButton btnCancel = new HtmlCommandButton();
-
-    public HtmlCommandButton getBtnCancel() {
-        return btnCancel;
-    }
-
-    public void setBtnCancel(HtmlCommandButton hcb) {
-        this.btnCancel = hcb;
-    }
     
     // </editor-fold>
 

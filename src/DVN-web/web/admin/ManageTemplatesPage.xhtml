@@ -29,80 +29,80 @@
            </script>
            
        
-        <h:form  id="templateForm">
-            <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-            <h:inputHidden id="hiddenNetworkTemplateId" value="#{ManageTemplatesPage.networkTemplateId}"/>
+        <ice:form  id="templateForm">
+            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+            <ice:inputHidden id="hiddenNetworkTemplateId" value="#{ManageTemplatesPage.networkTemplateId}"/>
            
             <div class="dvn_section">
                 <div class="dvn_sectionTitle">                    
-                        <h:outputText value="Manage Templates"/>
+                        <ice:outputText value="Manage Templates"/>
                 </div>            
                 <div class="dvn_sectionBox">
                   <div class="dvn_margin12">  
                     
-                    <div jsfc="ice:panelGroup"  style="padding-bottom: 10px">
-                        <h:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                        <h:outputText  styleClass="vdcHelpText" escape="false" value="Template help text here" />
+                    <div style="padding-bottom: 10px">
+                        <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
+                        <ice:outputText  styleClass="vdcHelpText" escape="false" value="Template help text here" />
                     </div>
              
-                    <h:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/TemplateFormPage.xhtml">
-                        <h:outputText value="Add Template"/>
-                    </h:outputLink>                
-                    <h:dataTable cellpadding="0" cellspacing="0"
+                    <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/TemplateFormPage.xhtml">
+                        <ice:outputText value="Add Template"/>
+                    </ice:outputLink>                
+                    <ice:dataTable cellpadding="0" cellspacing="0"
                                  binding="#{ManageTemplatesPage.templateDataTable}"
                                  headerClass="list-header-left vdcColPadded" id="dataTable1" 
                                  rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded" 
                                  value="#{ManageTemplatesPage.templateData}" var="currentRow" width="100%">
                        
                                      
-                         <h:column >
+                         <ice:column >
                             <f:facet name="header">
-                                <h:outputText  value="Default"/>
+                                <ice:outputText  value="Default"/>
                             </f:facet>
                              
-                            <h:outputText  value="Current Default Template" rendered="#{ManageTemplatesPage.defaultTemplateId==currentRow[0].id}" />   
-                            <h:commandLink  value="Make Default" rendered="#{ManageTemplatesPage.defaultTemplateId!=currentRow[0].id}"  action="#{ManageTemplatesPage.updateDefaultAction}"/>
+                            <ice:outputText  value="Current Default Template" rendered="#{ManageTemplatesPage.defaultTemplateId==currentRow[0].id}" />   
+                            <ice:commandLink  value="Make Default" rendered="#{ManageTemplatesPage.defaultTemplateId!=currentRow[0].id}"  action="#{ManageTemplatesPage.updateDefaultAction}"/>
                                 
-                        </h:column>
-                       <h:column >
+                        </ice:column>
+                       <ice:column >
                             <f:facet name="header">
-                                <h:outputText  value="Name"/>
+                                <ice:outputText  value="Name"/>
                             </f:facet>
-                            <h:outputText  value="#{currentRow[0].name}" />
+                            <ice:outputText  value="#{currentRow[0].name}" />
                             
-                        </h:column>
+                        </ice:column>
               
-                        <h:column >
+                        <ice:column >
                             <f:facet name="header">
-                                <h:outputText  value="Remove"/>
+                                <ice:outputText  value="Remove"/>
                             </f:facet>
                            
-                            <h:outputLink  rendered="#{currentRow[1]==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.xhtml?templateId=#{currentRow[0].id}">
-                                <h:outputText  value="Remove"/>
-                            </h:outputLink>    
-                            <h:outputText rendered="#{currentRow[1]!=null}" value="Cannot Remove"/>
+                            <ice:outputLink  rendered="#{currentRow[1]==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteTemplatePage.xhtml?templateId=#{currentRow[0].id}">
+                                <ice:outputText  value="Remove"/>
+                            </ice:outputLink>    
+                            <ice:outputText rendered="#{currentRow[1]!=null}" value="Cannot Remove"/>
                             
-                        </h:column>
-                         <h:column >
+                        </ice:column>
+                         <ice:column >
                             <f:facet name="header">
-                                <h:outputText value="Edit"/>
+                                <ice:outputText value="Edit"/>
                             </f:facet>
                            
-                            <h:outputLink  rendered="#{currentRow[0].id!=ManageTemplatesPage.networkTemplateId}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{currentRow[0].id}">
-                                <h:outputText  value="Edit"/>
-                            </h:outputLink>                           
+                            <ice:outputLink  rendered="#{currentRow[0].id!=ManageTemplatesPage.networkTemplateId}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?templateId=#{currentRow[0].id}">
+                                <ice:outputText  value="Edit"/>
+                            </ice:outputLink>                           
                        
-                           <h:outputText  rendered="#{currentRow[0].id==ManageTemplatesPage.networkTemplateId}" value="Cannot Edit"/>
+                           <ice:outputText  rendered="#{currentRow[0].id==ManageTemplatesPage.networkTemplateId}" value="Cannot Edit"/>
                           
                                                  
-                         </h:column>
+                         </ice:column>
                         
-                    </h:dataTable>
+                    </ice:dataTable>
 
                     </div>
                 </div>
              </div>
-        </h:form>    
+        </ice:form>    
     </gui:define>
   </gui:composition>
  </body>

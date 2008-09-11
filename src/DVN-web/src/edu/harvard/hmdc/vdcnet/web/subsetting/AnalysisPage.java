@@ -4987,13 +4987,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // simulation : value for 1st diff: text box
-    private TextField textField8 = new TextField();
+    private HtmlInputText textField8 = 
+        new com.icesoft.faces.component.ext.HtmlInputText();
 
-    public TextField getTextField8() {
+    public HtmlInputText getTextField8() {
         return textField8;
     }
 
-    public void setTextField8(TextField tf) {
+    public void setTextField8(HtmlInputText tf) {
         this.textField8 = tf;
     }
 
@@ -5045,13 +5046,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 
     // simulation : explanatory variable value: text box
-    private TextField textField10 = new TextField();
+    private HtmlInputText textField10 = 
+        new com.icesoft.faces.component.ext.HtmlInputText();
 
-    public TextField getTextField10() {
+    public HtmlInputText getTextField10() {
         return textField10;
     }
 
-    public void setTextField10(TextField tf) {
+    public void setTextField10(HtmlInputText tf) {
         this.textField10 = tf;
     }
 

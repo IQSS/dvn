@@ -7904,17 +7904,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
         List<DataVariable> dvs = getDataVariableForRequest();
 
-	// populate the initial, empty varMetaSet: 
+	//populate the initial, empty varMetaSet: 
 
-	//for (int i = 0; i < noRecords; i++){
-
-	//while (noRecords-- > 0){
-	//    List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
-	//    varMetaSet.put(noRecords, cardVarMetaSet); 
-	//}
+	for (Long count = new Long((long)0); count < noRecords; count++){
+	    List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
+	    varMetaSet.put((count+1), cardVarMetaSet); 
+	}
 
         if (dvs != null) {
-            for (int i = 0; i < dvs.size();i++  ){
+            for (int i = 0 ; i < dvs.size();i++  ){
 
                 DataVariable dv = dvs.get(i);
 
@@ -7935,10 +7933,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 Long recordSegmentNumber = dv.getRecordSegmentNumber(); 
 
-                if ( varMetaSet.get(recordSegmentNumber) == null ) {
-                    List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
-                    varMetaSet.put(recordSegmentNumber, cardVarMetaSet); 
-                }
+                //if ( varMetaSet.get(recordSegmentNumber) == null ) {
+                //    List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
+                //    varMetaSet.put(recordSegmentNumber, cardVarMetaSet); 
+                //}
 
                 varMetaSet.get(recordSegmentNumber).add(varMeta); 
             

@@ -154,7 +154,7 @@
 
 <!-- html top boiler-plate block -->    
 
-    <h:form id="form1" >
+    <ice:form id="form1" >
     <input type="hidden" name="dtId" value="${param.dtId}"/>
 
     <h:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -181,11 +181,11 @@
                 <!-- 1. Download -->
                 <ui:tab id="tabDwnld" text="Download Subset" 
                     actionListener="#{AnalysisPage.resetVariableInLBox}" toolTip="Variable Selection and Downloading">
-                    <div jsfc="ice:panelGroup" id="layoutPanel3" panelLayout="flow" style="width: 100%;">
+                    <ice:panelGroup id="layoutPanel3" layout="flow" style="width: 100%;">
                         
                         <h:panelGrid cellpadding="0" cellspacing="0" columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" columns="2" id="gridPanel4" width="100%">
                             
-                            <div jsfc="ice:panelGroup" id="groupPanel2" separator="&lt;br /&gt;">
+                            <ice:panelGroup id="groupPanel2" separator="&lt;br /&gt;">
                                 
                                 <!-- ui tag solution -->
                                 <ui:listbox id="mListboxDwnld" 
@@ -200,11 +200,11 @@
                                 
                                 
                                 
-                                <ui:helpInline id="helpInline2" text="#{bundleAnalysis['dwnld.selectedvarBox.bttmHelpText']}" type="field" rendered="false"/>
+                                <!-- helpInline id="helpInline2" text="{bundleAnalysis['dwnld.selectedvarBox.bttmHelpText']}" type="field" rendered="false"/ -->
    
-                         </div>
+                         </ice:panelGroup>
                             
-                            <div jsfc="ice:panelGroup"  id="groupPanel5">
+                            <ice:panelGroup id="groupPanel5" block="true">
                                 <h:graphicImage 
                                     alt="Information" 
                                     title="Information" 
@@ -257,17 +257,17 @@
                                     action="#{AnalysisPage.dwnldAction}">
                                 </h:commandButton>
                                 </h:panelGroup>
-                            </div>
+                            </ice:panelGroup>
    
                         </h:panelGrid>
                         <!-- Edit-variable block-->
-                        <div jsfc="ice:panelGroup"  rendered="#{AnalysisPage.editVariableActionRendered}" style="padding-top:10px; padding-bottom:10px;">
+                        <ice:panelGroup block="true" rendered="#{AnalysisPage.editVariableActionRendered}" style="padding-top:10px; padding-bottom:10px;">
                             <h:commandLink id="linkAction5" action="#{AnalysisPage.gotoEditVariableAction}">
                                     <h:outputText id="linkAction5Text" value="Edit selected variables"/>   
                             </h:commandLink>
                             <h:outputText id="linkAction5HelpText" styleClass="vdcHelpText" value="(If no variables are selected, all variables will be displayed in Edit Variables page.)"/>
-                        </div>
-                    </div>
+                        </ice:panelGroup>
+                    </ice:panelGroup><!-- ice:panelLayout-->
                 </ui:tab>
                 
                 
@@ -277,11 +277,11 @@
                          text="Recode and Case-Subsetting" 
                          actionListener="#{AnalysisPage.resetVariableInLBox}"
                          toolTip="Rocoding and Case Selection">
-                    <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" style="width: 100%;">
+                    <ice:panelGroup id="layoutPanel2" layout="flow" style="width: 100%;">
                         <h:panelGrid  id="gridPanel7"
                                       cellpadding="0" cellspacing="0" columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" columns="2" width="100%">
                             <!-- 1st column -->
-                            <div jsfc="ice:panelGroup" id="groupPanel10">
+                            <ice:panelGroup id="groupPanel10">
                             <h:panelGrid columns="2">
                                 <h:panelGroup>
                                 <!-- ui tag solution -->
@@ -295,11 +295,11 @@
                                     multiple="false" 
                                     label="#{bundleAnalysis['advStat.selectedVarBox.title']}"
                                     labelOnTop="true"/>
-                                <ui:helpInline 
+                                <!-- helpInline 
                                     id="helpInline4" 
-                                    text="#{bundleAnalysis['recode.selectedvarBox.bttmHelpText']}" 
+                                    text="{bundleAnalysis['recode.selectedvarBox.bttmHelpText']}" 
                                     type="field" 
-                                    rendered="false" />
+                                    rendered="false" / -->
                                 </h:panelGroup>
                                 <h:panelGroup id="groupPanelRecodeMiddleColumn">
                                 
@@ -313,12 +313,12 @@
                                      value="start" />
                                 </h:panelGroup>  
                             </h:panelGrid>
-                            </div>
+                            </ice:panelGroup>
                             <!-- end: 1st column -->
                             
                             <!-- 2nd column -->
                             
-                            <div jsfc="ice:panelGroup" id="groupPanel11" >
+                            <ice:panelGroup id="groupPanel11" block="true">
                                 <!-- instruction lines-->
                                 <h:panelGroup id="groupPanelRecodeInstruction1" 
                                     binding="#{AnalysisPage.groupPanelRecodeInstruction1}"
@@ -363,7 +363,7 @@
                                 <h:panelGroup id="groupPanelRecodeTableArea" 
                                     binding="#{AnalysisPage.groupPanelRecodeTableArea}"
                                     rendered="false"
-                                     >
+                                    block="true" >
                                     <!-- input boxes for variable name/label -->
                                     <h:panelGrid id="groupPanel15" 
                                         cellpadding="0" 
@@ -407,7 +407,7 @@
                                     </h:panelGrid>
                                     <!-- end of variable name/label boxes-->
                                     <!-- help pane -->
-                                    <div jsfc="ice:panelGroup" id="recodeTableHelpPanel" 
+                                    <ice:panelGroup id="recodeTableHelpPanel" 
                                                    binding="#{AnalysisPage.groupPanelRecodeTableHelp}" 
                                                    >
                                         
@@ -491,7 +491,7 @@
                                         <br/>
                                         
                                         
-                                    </div>
+                                    </ice:panelGroup>
                                     <!-- end of help panel -->
                                     <!-- recoding table panel -->
                                     <h:dataTable id="recodeTable" 
@@ -576,8 +576,8 @@
                                         actionListener="#{AnalysisPage.addValueRange}"
                                         rendered ="false"/>
                                     
-                                    <div jsfc="ice:panelGroup" id="groupPanel18" 
-                                         
+                                    <ice:panelGroup id="groupPanel18" 
+                                        block="true" 
                                         style="padding-left: 300px; white-space: nowrap">
                                         
                                         <h:commandButton id="recodeBttn"
@@ -593,13 +593,13 @@
                                             styleClass="errorMessage"/>
                                         
                                         
-                                    </div>
+                                    </ice:panelGroup>
                                     
                                 </h:panelGroup><!-- recodeTableArea -->
 
-                            </div><!--end 2nd column  -->
+                            </ice:panelGroup><!--end 2nd column  -->
                         </h:panelGrid>
-                    </div>
+                    </ice:panelGroup>
                 </ui:tab>
                 
                 
@@ -608,14 +608,14 @@
                     text="Descriptive Statistics" 
                     actionListener="#{AnalysisPage.resetVariableInLBox}"
                     toolTip="Calculate Numeric and Graphic Summaries">
-                    <div jsfc="ice:panelGroup" id="layoutPanel4" 
-                        panelLayout="flow" 
+                    <ice:panelGroup id="layoutPanel4" 
+                        layout="flow" 
                         style="width: 100%;">
                         
                         <h:panelGrid id="gridPanel2" 
                             cellpadding="0" cellspacing="0" columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" columns="2" width="100%">
                             
-                            <div jsfc="ice:panelGroup" id="groupPanel3" separator="&lt;br /&gt;">
+                            <ice:panelGroup id="groupPanel3" separator="&lt;br /&gt;">
                                 <!-- ui tag solution -->
                                 <ui:listbox id="mListboxEda" 
                                     items="#{AnalysisPage.varSetAdvStat}" 
@@ -626,13 +626,13 @@
                                     multiple="true" 
                                     label="#{bundleAnalysis['eda.selectedVarBox.title']}"
                                     labelOnTop="true"/>
-                                <ui:helpInline id="helpInline3"
-                                    text="#{bundleAnalysis['eda.selectedvarBox.bttmHelpText']}" type="field" rendered="false" />
+                                <!--  helpInline id="helpInline3"
+                                    text="{bundleAnalysis['eda.selectedvarBox.bttmHelpText']}" type="field" rendered="false" / -->
                                 
-                            </div>
+                            </ice:panelGroup>
                             
                             
-                            <div jsfc="ice:panelGroup"  id="groupPanel4">
+                            <ice:panelGroup block="true" id="groupPanel4">
                                 <h:graphicImage 
                                     alt="Information" 
                                     title="Information" 
@@ -664,18 +664,18 @@
                                     value="#{bundleAnalysis['eda.button.submit']}" 
                                     action="#{AnalysisPage.edaAction}"/>
                                 
-                            </div>
+                            </ice:panelGroup>
                             
                         </h:panelGrid>
                         
-                    </div>
+                    </ice:panelGroup>
                 </ui:tab>
                 
                 
                 <!-- 5. advStat -->
                 <ui:tab id="tabAdvStat" text="Advanced Statistical Analysis"
                     toolTip="Advanced Statistical Modeling">
-                    <div jsfc="ice:panelGroup" id="layoutPanel5" panelLayout="flow" style="width: 100%;">
+                    <ice:panelGroup id="layoutPanel5" layout="flow" style="width: 100%;">
                         
                         <h:panelGrid id="gridPanel5"
                                      cellpadding="0" 
@@ -684,7 +684,7 @@
                                      columns="2"  
                                      width="100%">
                             
-                            <div jsfc="ice:panelGroup" id="groupPanel6" separator="&lt;br /&gt;">
+                            <ice:panelGroup id="groupPanel6" separator="&lt;br /&gt;">
                                 
                                 <!-- ui tag solution -->
 
@@ -699,13 +699,13 @@
                                             label="#{bundleAnalysis['advStat.selectedVarBox.title']}"
                                             labelOnTop="true"/>
                                 
-                                <ui:helpInline id="helpInline1" 
-                                               text="#{bundleAnalysis['advStat.selectedvarBox.bttmHelpText']}"
-                                               type="field" rendered="false" />
-                            </div><!-- groupPanel6 -->
+                                <!-- helpInline id="helpInline1" 
+                                               text="{bundleAnalysis['advStat.selectedvarBox.bttmHelpText']}"
+                                               type="field" rendered="false" / -->
+                            </ice:panelGroup><!-- groupPanel6 -->
                             <!-- end of LHS -->
                             <!-- RHS section of the tab -->
-                            <div jsfc="ice:panelGroup" id="groupPanel7"  >
+                            <ice:panelGroup id="groupPanel7" block="true" >
                                 
                                 <!-- model menu list -->
 
@@ -749,7 +749,7 @@
                                     </h:panelGrid>
                                     </h:panelGrid><!-- end: gridPanel8above -->
                                     
-                                    <div jsfc="ice:panelGroup" id="groupPanel8below" 
+                                    <ice:panelGroup id="groupPanel8below" 
                                                    binding="#{AnalysisPage.groupPanel8below}" 
                                                    rendered="#{AnalysisPage.groupPanel8belowRendered}">
                                         <h:panelGrid id="gridPanel8"
@@ -759,12 +759,12 @@
                                                      columns="2" >
                                             
                                             <!-- column of variable boxes-->
-                                            <div jsfc="ice:panelGroup" id="groupPanel8" 
+                                            <ice:panelGroup id="groupPanel8" 
 
                                                            separator="&lt;br /&gt;">
                                                 
                                                 <!-- 1st box panel: usually dependent -->
-                                                <div jsfc="ice:panelGroup" id="groupPanel12"
+                                                <ice:panelGroup id="groupPanel12"
                                                                binding="#{AnalysisPage.groupPanel12}" 
                                                                rendered="true" >
                                                     
@@ -809,10 +809,10 @@
                                                             <!-- label="#{bundleAnalysis['advStat.modelVarbox.dependent.label']}"-->
                                                         </h:panelGrid>
                                                     </h:panelGrid>
-                                                </div><!-- groupPanel12 -->
+                                                </ice:panelGroup><!-- groupPanel12 -->
 
                                                 <!-- 2nd box panel: usually independent -->
-                                                <div jsfc="ice:panelGroup" id="groupPanel13"
+                                                <ice:panelGroup id="groupPanel13"
 
                                                                binding="#{AnalysisPage.groupPanel13}" 
                                                                rendered="false">
@@ -859,11 +859,11 @@
                                                             <!-- label="#{bundleAnalysis['advStat.modelVarbox.explanatory.label']}"-->
                                                         </h:panelGrid>
                                                     </h:panelGrid>
-                                                </div><!-- groupPanel13 -->
+                                                </ice:panelGroup><!-- groupPanel13 -->
 
                                                 <!-- 3rd box panel: usually for models of factor anlysis-->
 
-                                                <div jsfc="ice:panelGroup" id="groupPanel14"
+                                                <ice:panelGroup id="groupPanel14"
                                                                binding="#{AnalysisPage.groupPanel14}"  
                                                                rendered="false">
                                                     
@@ -910,19 +910,19 @@
                                                             <!-- label="#{bundleAnalysis['advStat.modelVarbox.observed.label']}"-->
                                                         </h:panelGrid>
                                                     </h:panelGrid>
-                                                </div><!-- groupPanel14 -->
+                                                </ice:panelGroup><!-- groupPanel14 -->
 
                                                 <!-- end of column of var boxes -->
-                                            </div><!-- groupPanel8 -->
+                                            </ice:panelGroup><!-- groupPanel8 -->
 
                                             <!-- column of option panes -->
-                                            <div jsfc="ice:panelGroup" id="groupPanel9"
+                                            <ice:panelGroup id="groupPanel9"
                                                            separator="&lt;br /&gt;">
                                                 
                                                 <!-- output-opton block -->
 
-                                                <div jsfc="ice:panelGroup" id="groupPanel25" 
-                                                               
+                                                <ice:panelGroup id="groupPanel25" 
+                                                               block="true"
                                                                style="border: 1px groove #999999; padding: 2px; ">
                                                     
                                                     <!-- Output-option block: checkbox set -->
@@ -963,13 +963,13 @@
                                                             >
                                                             <f:selectItems value="#{AnalysisPage.chkbxAdvStatOutputXtbOptMap}"/>
                                                     </h:selectManyCheckbox>
-                                                </div><!-- groupPanel25 -->
+                                                </ice:panelGroup><!-- groupPanel25 -->
 
                                                 <!-- Analysis option block: complex -->
 
-                                                <div jsfc="ice:panelGroup" id="analysisOptionPanel"
+                                                <ice:panelGroup id="analysisOptionPanel"
                                                                binding="#{AnalysisPage.analysisOptionPanel}" 
-                                                                
+                                                               block="true" 
                                                                separator="&lt;br /&gt;" 
                                                                style="border: 1px groove #999999; padding: 2px; ">
                                                     
@@ -979,11 +979,11 @@
                                                           for="groupPanelSetxOption"
                                                           value="Analysis Options"/>
                                                     
-                                                    <div jsfc="ice:panelGroup" id="groupPanelSetxOption"
+                                                    <ice:panelGroup id="groupPanelSetxOption"
                                                                    binding="#{AnalysisPage.setxOptionPanel}" 
                                                                    separator="&lt;br /&gt;"
                                                                    rendered="true"
-                                                                    >
+                                                                   block="true" >
                                                         <!-- simulation: checkbox -->
                                                         <ui:checkbox id="checkbox3" 
                                                                      binding="#{AnalysisPage.checkbox3}" 
@@ -1047,7 +1047,7 @@
                                                                                  submitForm="false"
                                                                                  immediate="true" />
                                                                                  
-                                                                    <ui:staticText id="staticText2" text=" = "/>
+                                                                    <ice:outputText id="staticText2" text=" = "/>
                                                                     <ui:textField binding="#{AnalysisPage.textField10}" columns="10" id="textField10"/>
                                                                 </h:panelGrid>
                                                                 
@@ -1068,7 +1068,7 @@
                                                                                  submitForm="false"
                                                                                  immediate="true" />
 
-                                                                    <ui:staticText id="staticText1" text=" = "/>
+                                                                    <ice:outputText id="staticText1" text=" = "/>
                                                                     
                                                                     <ui:textField id="textField8" binding="#{AnalysisPage.textField8}" columns="10"/>
                                                                 </h:panelGrid>
@@ -1079,10 +1079,10 @@
 
                                                         <!-- checkbox: Sensitivity analysis -->
                                                         <!--groupPanel23 -->
-                                                    </div>
+                                                    </ice:panelGroup>
                                                     <!-- checkbox: Missing Values -->
                                                     
-                                                </div><!-- analysisOptionPanel-->
+                                                </ice:panelGroup><!-- analysisOptionPanel-->
 
 
                                                 <ui:staticText  id="msgAdvStatButton" 
@@ -1102,15 +1102,15 @@
                                                                  />
                                                 
                                                 <!-- end of  column of opion panes-->
-                                            </div><!-- groupPanel9: option panes -->
+                                            </ice:panelGroup><!-- groupPanel9: option panes -->
 
                                         </h:panelGrid><!-- gridPanel8: variable boxes and option panes -->
-                                    </div><!-- groupPanel8below -->
+                                    </ice:panelGroup><!-- groupPanel8below -->
                                 </h:panelGrid><!-- gridPanel8out-->
-                            </div><!-- groupPanel7--><!-- end of the RHS of the tab -->
+                            </ice:panelGroup><!-- groupPanel7--><!-- end of the RHS of the tab -->
 
                         </h:panelGrid><!-- gridPanel5 -->
-                    </div><!-- layoutPanel5 -->
+                    </ice:panelGroup><!-- layoutPanel5 -->
                 </ui:tab>
             </ui:tabSet>  
             
@@ -1123,7 +1123,7 @@
                           columns="1" 
                           style="margin-left: 8px; margin-top: 10px" width="98%">
                 
-                <div jsfc="ice:panelGroup" id="wrapSubsettingInstruction"
+                <ice:panelGroup id="wrapSubsettingInstruction"
                     rendered="#{AnalysisPage.wrapSubsettingInstructionRendered}"
                 >
                     <h:graphicImage 
@@ -1136,16 +1136,16 @@
                     <h:outputText id="txtSubsettingInstruction" 
                                   binding="#{AnalysisPage.txtSubsettingInstruction}" 
                                   value="#{bundleAnalysis['subsettingInstruction']}" />
-                </div>
-               <div jsfc="ice:panelGroup" 
+                </ice:panelGroup>
+               <ice:panelGroup 
                     id="wrapNonSubsettingInstruction"
-                     
+                    block="true" 
                     styleClass="successMessage"
                     rendered="#{AnalysisPage.wrapNonSubsettingInstructionRendered}">
                     <h:outputText id="txtNonSubsettingInstruction"
                                  binding="#{AnalysisPage.txtNonSubsettingInstruction}"
                                  value="#{bundleAnalysis['nonSubsettingInstruction']}" />
-               </div>                 
+               </ice:panelGroup>                 
                 
                 <ui:staticText id="msgVariableSelection"
                                binding="#{AnalysisPage.msgVariableSelection}" 
@@ -1162,7 +1162,7 @@
                           columns="3" id="gridPanel9"
                           style="margin-left: 8px; margin-top: 10px" width="100%">
                 <!--column 1 -->
-                <div jsfc="ice:panelGroup" id="groupPanel16">
+                <ice:panelGroup id="groupPanel16">
                     
                     <h:outputText id="outputText47" rendered="false" styleClass="vdcSubHeaderColor" value="#{bundleAnalysis['varSearch.displaylabel.initial']}"/>
                     
@@ -1184,16 +1184,16 @@
                     </h:commandLink>
                     
                     
-                </div>
+                </ice:panelGroup>
                 <!-- column 2-->
-                <div jsfc="ice:panelGroup" id="groupPanel19">
+                <ice:panelGroup id="groupPanel19">
                     <h:inputText binding="#{AnalysisPage.textField4}" id="textField4" rendered="false"/>
                     <h:commandButton id="button8" value="#{bundleAnalysis['varSearch.button.search']}" rendered="false"/>
-                </div>
+                </ice:panelGroup>
                 
                 
                 <!-- column 3-->
-                <div jsfc="ice:panelGroup" id="groupPanel17">
+                <ice:panelGroup id="groupPanel17">
                     <ui:dropDown id="howManyRows"
                                  binding="#{AnalysisPage.howManyRows}"  
                                  items="#{AnalysisPage.howManyRowsOptions.options}"
@@ -1207,7 +1207,7 @@
                                  immediate="true" />
                     
                     
-                </div>
+                </ice:panelGroup>
                 
             </h:panelGrid>
             
@@ -1307,7 +1307,7 @@
                 </h:dataTable>    
                 
                 <f:facet name="footer">
-                    <div jsfc="ice:panelGroup"  id="pgFooterDataTable1">
+                    <ice:panelGroup block="true" id="pgFooterDataTable1">
                         <t:scroller navFacetOrientation="NORTH" for="dataTable1" actionListener="#{AnalysisPage.processScrollEvent}">
                             <f:facet name="next">
                                 <h:panelGroup>
@@ -1330,7 +1330,7 @@
                             </f:facet>
                             
                         </t:scroller>
-                    </div>
+                    </ice:panelGroup>
                 </f:facet>
                 
             </h:panelGrid>
@@ -1401,7 +1401,7 @@
                         <!-- checkbox: modify --><!---->
                         <h:column id="RVTcolumn3">
                             <f:facet name="header">
-                                <ui:staticText  id="RVThdr3" text="#{bundleAnalysis['recodedVarTable.colHdr.modify']}"  visible="false" />
+                                <ice:outputText id="RVThdr3" value="#{bundleAnalysis['recodedVarTable.colHdr.modify']}"  visible="false" />
                             </f:facet>
                             <!-- h:outputText id="RVTcolv3" value="#{rcw[3]}"/ -->
                             <ui:hyperlink id="RVTcolv3" 
@@ -1418,7 +1418,7 @@
                             <f:facet name="header">
                                 <h:outputText id="RVThdr4" value=""/>
                             </f:facet>
-                            <ui:staticText id="RVTcolv4" text="#{rcw[2]}" visible="false"/> 
+                            <ice:outputText id="RVTcolv4" value="#{rcw[2]}" visible="false"/> 
                             <!-- h:outputText id="RVTcolv4" value="#{rcw[2]}" / -->
                         </h:column>
                         
@@ -1432,7 +1432,7 @@
         </div>
     </div>
         
-    </h:form>
+    </ice:form>
 <!-- hr / -->
 
        

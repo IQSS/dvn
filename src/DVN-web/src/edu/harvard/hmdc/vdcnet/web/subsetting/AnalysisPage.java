@@ -1627,14 +1627,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // panel above the recodeTable : recodeTableHelpPanel
-    // @binding
-    private PanelGroup groupPanelRecodeTableHelp = new PanelGroup();
+    // @binding  ui to ice
+    private HtmlPanelGroup groupPanelRecodeTableHelp = new com.icesoft.faces.component.ext.HtmlPanelGroup();
 
-    public PanelGroup getGroupPanelRecodeTableHelp() {
+    public HtmlPanelGroup getGroupPanelRecodeTableHelp() {
         return groupPanelRecodeTableHelp;
     }
 
-    public void setGroupPanelRecodeTableHelp(PanelGroup pg) {
+    public void setGroupPanelRecodeTableHelp(HtmlPanelGroup pg) {
         this.groupPanelRecodeTableHelp = pg;
     }
 
@@ -2714,15 +2714,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // LHS: list box related fields
 
-    private HelpInline helpInline3 = new HelpInline();
-
-    public HelpInline getHelpInline3() {
-        return helpInline3;
-    }
-
-    public void setHelpInline3(HelpInline helpInline3) {
-        this.helpInline3 = helpInline3;
-    }
+//    private HelpInline helpInline3 = new HelpInline();
+//
+//    public HelpInline getHelpInline3() {
+//        return helpInline3;
+//    }
+//
+//    public void setHelpInline3(HelpInline helpInline3) {
+//        this.helpInline3 = helpInline3;
+//    }
 
     // RHS: checkbox area related fields
     // analysis:h:selectManyCheckbox@binding
@@ -3642,13 +3642,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * The rendered attribute of this component must be state-kept.
      * Initially hidden.
      */
-    private PanelGroup groupPanel8below = new PanelGroup();
+    private HtmlPanelGroup groupPanel8below = 
+        new com.icesoft.faces.component.ext.HtmlPanelGroup();
     /**
      * Getter for component groupPanel8below
      *
      * @return    ui:panelGroup of the pane below the model-selection menu
      */
-    public PanelGroup getGroupPanel8below() {
+    public HtmlPanelGroup getGroupPanel8below() {
         return groupPanel8below;
     }
     /**
@@ -3656,7 +3657,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      *
      * @param pg    ui:panelGroup of the pane below the model-selection menu
      */
-    public void setGroupPanel8below(PanelGroup pg) {
+    public void setGroupPanel8below(HtmlPanelGroup pg) {
         this.groupPanel8below = pg;
     }
 
@@ -3722,37 +3723,40 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // panel for the 1st var box
     // PanelGroup@binding
-    private PanelGroup groupPanel12 = new PanelGroup();
+    private HtmlPanelGroup groupPanel12 = 
+        new com.icesoft.faces.component.ext.HtmlPanelGroup();
 
-    public PanelGroup getGroupPanel12() {
+    public HtmlPanelGroup getGroupPanel12() {
         return groupPanel12;
     }
 
-    public void setGroupPanel12(PanelGroup pg) {
+    public void setGroupPanel12(HtmlPanelGroup pg) {
         this.groupPanel12 = pg;
     }
 
     // panel for the 2nd var box
     // PanelGroup@binding
-    private PanelGroup groupPanel13 = new PanelGroup();
+    private HtmlPanelGroup groupPanel13 = 
+        new com.icesoft.faces.component.ext.HtmlPanelGroup();
 
-    public PanelGroup getGroupPanel13() {
+    public HtmlPanelGroup getGroupPanel13() {
         return groupPanel13;
     }
 
-    public void setGroupPanel13(PanelGroup pg) {
+    public void setGroupPanel13(HtmlPanelGroup pg) {
         this.groupPanel13 = pg;
     }
 
     // plane for the 3rd var box
     // PanelGroup@binding
-    private PanelGroup groupPanel14 = new PanelGroup();
+    private HtmlPanelGroup groupPanel14 = 
+        new com.icesoft.faces.component.ext.HtmlPanelGroup();
 
-    public PanelGroup getGroupPanel14() {
+    public HtmlPanelGroup getGroupPanel14() {
         return groupPanel14;
     }
 
-    public void setGroupPanel14(PanelGroup pg) {
+    public void setGroupPanel14(HtmlPanelGroup pg) {
         this.groupPanel14 = pg;
     }
 
@@ -4717,37 +4721,39 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // <editor-fold desc="Adv Stat Analysis Option">
     // Analysis option block: casing panel
 
-    private PanelGroup analysisOptionPanel = new PanelGroup();
+    private HtmlPanelGroup analysisOptionPanel = 
+        new com.icesoft.faces.component.ext.HtmlPanelGroup();
 
-    public PanelGroup getAnalysisOptionPanel() {
+    public HtmlPanelGroup getAnalysisOptionPanel() {
         return analysisOptionPanel;
     }
 
-    public void setAnalysisOptionPanel(PanelGroup pg) {
+    public void setAnalysisOptionPanel(HtmlPanelGroup pg) {
         this.analysisOptionPanel = pg;
     }
 
     // setx-option panel
-    private PanelGroup setxOptionPanel = new PanelGroup();
+    private HtmlPanelGroup setxOptionPanel = 
+        new com.icesoft.faces.component.ext.HtmlPanelGroup();
 
-    public PanelGroup getSetxOptionPanel() {
+    public HtmlPanelGroup getSetxOptionPanel() {
         return setxOptionPanel;
     }
 
-    public void setSetxOptionPanel(PanelGroup pg) {
+    public void setSetxOptionPanel(HtmlPanelGroup pg) {
         this.setxOptionPanel = pg;
     }
 
     // simulation: casing panel
-    private PanelGroup groupPanel20 = new PanelGroup();
-
-    public PanelGroup getGroupPanel20() {
-        return groupPanel20;
-    }
-
-    public void setGroupPanel20(PanelGroup pg) {
-        this.groupPanel20 = pg;
-    }
+//    private PanelGroup groupPanel20 = new PanelGroup();
+//
+//    public PanelGroup getGroupPanel20() {
+//        return groupPanel20;
+//    }
+//
+//    public void setGroupPanel20(PanelGroup pg) {
+//        this.groupPanel20 = pg;
+//    }
 
     private HtmlPanelGroup groupPanelSimTypeChoice = new HtmlPanelGroup();
 
@@ -4907,15 +4913,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // simulation: option panel for the radio-button-option of select values
     // @binding
-    private PanelGroup groupPanel22 = new PanelGroup();
-
-    public PanelGroup getGroupPanel22() {
-        return groupPanel22;
-    }
-
-    public void setGroupPanel22(PanelGroup pg) {
-        this.groupPanel22 = pg;
-    }
+//    private PanelGroup groupPanel22 = new PanelGroup();
+//
+//    public PanelGroup getGroupPanel22() {
+//        return groupPanel22;
+//    }
+//
+//    public void setGroupPanel22(PanelGroup pg) {
+//        this.groupPanel22 = pg;
+//    }
 
 
 
@@ -6008,21 +6014,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
 
-    private PanelGroup wrapSubsettingInstruction = new PanelGroup();
+    private HtmlPanelGroup wrapSubsettingInstruction = 
+        new com.icesoft.faces.component.ext.HtmlPanelGroup();
     /**
      * Getter for component wrapSubsettingInstruction
      *
-     * @return    ui:panelGroup of the pane 
+     * @return    ice:panelGroup of the pane 
      */
-    public PanelGroup getWrapSubsettingInstruction() {
+    public HtmlPanelGroup getWrapSubsettingInstruction() {
         return wrapSubsettingInstruction;
     }
     /**
      * Setter for panelGroup wrapSubsettingInstruction
      *
-     * @param pg    ui:panelGroup of the pane
+     * @param pg    ice:panelGroup of the pane
      */
-    public void setWrapSubsettingInstruction(PanelGroup pg) {
+    public void setWrapSubsettingInstruction(HtmlPanelGroup pg) {
         wrapSubsettingInstruction = pg;
     }
 
@@ -6031,7 +6038,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * Getter for attribute wrapSubsettingInstructionRendered
      *
-     * @return    the rendered attribute of ui:panelGroup
+     * @return    the rendered attribute of ice:panelGroup
      */    
     public Boolean getWrapSubsettingInstructionRendered(){
         return wrapSubsettingInstructionRendered;
@@ -6040,28 +6047,29 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * Setter for attribute wrapSubsettingInstructionRendered
      *
-     * @param rndrd    the rendered attribute of ui:panelGroup
+     * @param rndrd    the rendered attribute of ice:panelGroup
      */
     public void setWrapSusettingInstructionRendered(Boolean rndrd){
         wrapSubsettingInstructionRendered = rndrd;
     }
 
 
-    private PanelGroup wrapNonSubsettingInstruction = new PanelGroup();
+    private HtmlPanelGroup wrapNonSubsettingInstruction = 
+        new com.icesoft.faces.component.ext.HtmlPanelGroup();
     /**
      * Getter for component wrapNonSubsettingInstruction
      *
-     * @return    ui:panelGroup of the pane 
+     * @return    ice:panelGroup of the pane 
      */
-    public PanelGroup getWrapNonSubsettingInstruction() {
+    public HtmlPanelGroup getWrapNonSubsettingInstruction() {
         return wrapSubsettingInstruction;
     }
     /**
      * Setter for panelGroup wrapNonSubsettingInstruction
      *
-     * @param pg    ui:panelGroup of the pane
+     * @param pg    ice:panelGroup of the pane
      */
-    public void setWrapNonSubsettingInstruction(PanelGroup pg) {
+    public void setWrapNonSubsettingInstruction(HtmlPanelGroup pg) {
         wrapNonSubsettingInstruction = pg;
     }
 
@@ -6070,7 +6078,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * Getter for attribute wrapNonSubsettingInstructionRendered
      *
-     * @return    the rendered attribute of ui:panelGroup
+     * @return    the rendered attribute of ice:panelGroup
      */    
     public Boolean getWrapNonSubsettingInstructionRendered(){
         return wrapNonSubsettingInstructionRendered;
@@ -6536,7 +6544,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 // simulation-type radio button group
                 radioButtonGroup1.setSelected("0");
-                groupPanel20.setRendered(false);
+                //groupPanel20.setRendered(false);
                 groupPanelSimTypeChoice.setRendered(false);
                 //groupPanel22.setRendered(false);
                 groupPanelSimNonDefault.setRendered(false);

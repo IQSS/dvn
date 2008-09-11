@@ -1403,11 +1403,11 @@
                             <f:facet name="header">
                                 <ice:outputText id="RVThdr3" value="#{bundleAnalysis['recodedVarTable.colHdr.modify']}"  visible="false" />
                             </f:facet>
-                            <!-- h:outputText id="RVTcolv3" value="#{rcw[3]}"/ -->
-                            <ui:hyperlink id="RVTcolv3" 
+                            <!-- h:outputText id="RVTcolv3" value="{rcw[3]}"/ -->
+                            <ice:commandLink id="RVTcolv3" 
                                 actionListener="#{AnalysisPage.editRecodedVariable}"
                                 immediate="true" 
-                                text="#{bundleAnalysis['recodedVarTable.hyperLink.title.modify']}" 
+                                title="#{bundleAnalysis['recodedVarTable.hyperLink.title.modify']}" 
                                 toolTip="#{bundleAnalysis['recodedVarTable.tooltip.modify']}"
                                 visible="false"
                             /> 

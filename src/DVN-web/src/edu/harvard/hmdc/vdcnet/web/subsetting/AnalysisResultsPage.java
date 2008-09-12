@@ -461,7 +461,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
                 msgDwnldButton.setVisible(false);
             
         } catch (Exception e) {
-            log("Page1 Initialization Failure", e);
+            dbgLog.severe(e.getMessage());
             throw e instanceof FacesException ? (FacesException) e : new FacesException(e);
         }
     }

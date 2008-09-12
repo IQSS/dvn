@@ -150,7 +150,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
       
         }
 
-        getVDCSessionBean().setUserService(null);
+     
 
          return nextPage;
     }

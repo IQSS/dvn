@@ -273,14 +273,6 @@
             <is-xml>true</is-xml>
         </jsp-property-group>
     </jsp-config>
-    <servlet>
-        <servlet-name>VDCImportServlet</servlet-name>
-        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCImportServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>VDCImportServlet</servlet-name>
-        <url-pattern>/import/*</url-pattern>
-    </servlet-mapping>
      <servlet>
         <servlet-name>VDCExportServlet</servlet-name>
         <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCExportServlet</servlet-class>
@@ -296,19 +288,13 @@
     <servlet>
         <servlet-name>StudyGlobalIdServlet</servlet-name>
         <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.StudyGlobalIdServlet</servlet-class>
-    </servlet>    
+    </servlet>
     <servlet-mapping>
         <servlet-name>StudyGlobalIdServlet</servlet-name>
         <url-pattern>/study</url-pattern>
-    </servlet-mapping>  
-    <servlet>
-        <servlet-name>VDCAdminServlet</servlet-name>
-        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCAdminServlet</servlet-class>
-    </servlet>     
-    <servlet-mapping>
-    <servlet-name>VDCAdminServlet</servlet-name>
-        <url-pattern>/admin</url-pattern>
-    </servlet-mapping> 
+    </servlet-mapping>
+
+
     <servlet>
         <servlet-name>CensusRepositoryServlet</servlet-name>
         <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.CensusRepositoryServlet</servlet-class>

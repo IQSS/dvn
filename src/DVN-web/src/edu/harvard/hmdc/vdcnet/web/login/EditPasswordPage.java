@@ -217,7 +217,6 @@ public class EditPasswordPage extends VDCBaseBean implements java.io.Serializabl
     
     public String cancel() {
         editUserService.cancel();
-        getVDCSessionBean().setUserService(null);
         return "myNetworkOptions";
     }
 

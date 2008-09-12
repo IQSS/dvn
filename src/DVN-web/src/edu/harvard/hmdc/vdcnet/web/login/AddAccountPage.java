@@ -26,7 +26,6 @@
 package edu.harvard.hmdc.vdcnet.web.login;
 
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
-import com.sun.jsfcl.data.DefaultSelectItemsArray;
 import edu.harvard.hmdc.vdcnet.admin.EditUserService;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
@@ -56,82 +55,7 @@ import javax.faces.context.FacesContext;
  * to respond to incoming events.</p>
  */
 public class AddAccountPage extends VDCBaseBean implements java.io.Serializable  {
-    // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
-    private int __placeholder;
-    
-    /**
-     * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
-     * This method is automatically generated, so any user-specified code inserted
-     * here is subject to being replaced.</p>
-     */
-    private void _init() throws Exception {
-        
-    }
-    
-    
-    
-    
-    
-    private HtmlSelectOneMenu dropdown1 = new HtmlSelectOneMenu();
-    
-    public HtmlSelectOneMenu getDropdown1() {
-        return dropdown1;
-    }
-    
-    public void setDropdown1(HtmlSelectOneMenu hsom) {
-        this.dropdown1 = hsom;
-    }
-    
-    private DefaultSelectItemsArray dropdown1DefaultItems = new DefaultSelectItemsArray();
-    
-    public DefaultSelectItemsArray getDropdown1DefaultItems() {
-        return dropdown1DefaultItems;
-    }
-    
-    
-    
-    private HtmlSelectManyCheckbox checkboxList1 = new HtmlSelectManyCheckbox();
-    
-    public HtmlSelectManyCheckbox getCheckboxList1() {
-        return checkboxList1;
-    }
-    
-    public void setCheckboxList1(HtmlSelectManyCheckbox hsmc) {
-        this.checkboxList1 = hsmc;
-    }
-    
-    private DefaultSelectItemsArray checkboxList1DefaultItems = new DefaultSelectItemsArray();
-    
-    public DefaultSelectItemsArray getCheckboxList1DefaultItems() {
-        return checkboxList1DefaultItems;
-    }
-    
-    public void setCheckboxList1DefaultItems(DefaultSelectItemsArray dsia) {
-        this.checkboxList1DefaultItems = dsia;
-    }
-    
-    private UISelectItems checkboxList1SelectItems = new UISelectItems();
-    
-    public UISelectItems getCheckboxList1SelectItems() {
-        return checkboxList1SelectItems;
-    }
-    
-    public void setCheckboxList1SelectItems(UISelectItems uisi) {
-        this.checkboxList1SelectItems = uisi;
-    }
-    
-    private UISelectItems dropdown1SelectItems = new UISelectItems();
-    
-    public UISelectItems getDropdown1SelectItems() {
-        return dropdown1SelectItems;
-    }
-    
-    public void setDropdown1SelectItems(UISelectItems uisi) {
-        this.dropdown1SelectItems = uisi;
-    }
-    
-    
-    // </editor-fold>
+  
     @EJB EditUserService editUserService;
     @EJB UserServiceLocal userService;
     @EJB MailServiceLocal mailService;
@@ -191,38 +115,7 @@ public class AddAccountPage extends VDCBaseBean implements java.io.Serializable 
         }
         
     }
-    
-    /**
-     * <p>Callback method that is called after the component tree has been
-     * restored, but before any event processing takes place.  This method
-     * will <strong>only</strong> be called on a postback request that
-     * is processing a form submit.  Customize this method to allocate
-     * resources that will be required in your event handlers.</p>
-     */
-    public void preprocess() {
-    }
-    
-    /**
-     * <p>Callback method that is called just before rendering takes place.
-     * This method will <strong>only</strong> be called for the page that
-     * will actually be rendered (and not, for example, on a page that
-     * handled a postback and then navigated to a different page).  Customize
-     * this method to allocate resources that will be required for rendering
-     * this page.</p>
-     */
-    public void prerender() {
-    }
-    
-    /**
-     * <p>Callback method that is called after rendering is completed for
-     * this request, if <code>init()</code> was called (regardless of whether
-     * or not this was the page that was actually rendered).  Customize this
-     * method to release resources acquired in the <code>init()</code>,
-     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
-     * acquired during execution of an event handler).</p>
-     */
-    public void destroy() {
-    }
+   
     
     /**
      * Holds value of property user.
@@ -290,7 +183,6 @@ public class AddAccountPage extends VDCBaseBean implements java.io.Serializable 
     
     public String cancel() {
         editUserService.cancel();
-        getVDCSessionBean().setUserService(null);
         return "home";
     }
     

@@ -178,7 +178,6 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
     
     public String cancelAction() {
         editUserService.cancel();
-        getVDCSessionBean().setUserService(null);
         return "myNetworkOptions";
     }
     

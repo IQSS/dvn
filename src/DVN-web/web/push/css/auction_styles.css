@@ -1,0 +1,609 @@
+ /*
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * "The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations under
+ * the License.
+ *
+ * The Original Code is ICEfaces 1.5 open source software code, released
+ * November 5, 2006. The Initial Developer of the Original Code is ICEsoft
+ * Technologies Canada, Corp. Portions created by ICEsoft are Copyright (C)
+ * 2004-2006 ICEsoft Technologies Canada, Corp. All Rights Reserved.
+ *
+ * Contributor(s): _____________________.
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"
+ * License), in which case the provisions of the LGPL License are
+ * applicable instead of those above. If you wish to allow use of your
+ * version of this file only under the terms of the LGPL License and not to
+ * allow others to use your version of this file under the MPL, indicate
+ * your decision by deleting the provisions above and replace them with
+ * the notice and other provisions required by the LGPL License. If you do
+ * not delete the provisions above, a recipient may use your version of
+ * this file under either the MPL or the LGPL License."
+ *
+ */
+
+/* controls the appearance of links throughout of the application */
+a:link,a:hover,a:visited,a:active {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+table{
+	font-size:.9em;
+}
+
+/*
+The following styles control the appearance of the major sections of the page
+*/
+div#auction_content, div#readme_content, div#chat_content{
+    margin: 15px;
+    position: relative;
+}
+
+div#readme_content{
+
+}
+div#auction_content{
+   margin-top: 40px;
+}
+div#chat_content{
+
+}
+
+
+#chatDiv{
+     background-image: url( ../images/icesoft_logo_bkgnd.jpg );
+     background-position:center left;
+     background-repeat:no-repeat;
+ }
+
+/*
+CSS for the section of the page that holds the search field
+*/
+#searchDiv {
+	width:98%;
+	border:2px solid #FFCC0B;
+	background-color:#F9EA94;
+	color:#000000;
+	/*float:left;*/
+	padding:5px;
+	text-align:center;
+}
+
+/*
+CSS for the sections of the page that hold golden band top and bottom
+*/
+#bandDiv {
+	width:98%;
+	/*border:2px solid #FFCC0B;*/
+	background-color: #EFEFEF;
+	background-image:url( ../images/blue-fade-bkgnd.gif );
+	background-repeat:repeat-x;
+	background-position: center;
+	color:#F9EA94;
+	/*float:left;*/
+	padding:5px;
+	text-align:center;
+}
+
+/*
+CSS for the hidden sections of the page
+*/
+#hiddenDiv {
+	display:none;
+	height:0px;
+}
+
+/*
+CSS for the hidden sections of the page
+*/
+#hiddenDiv2 {
+	visibility:hidden;
+	height:0px;
+}
+
+/*
+CSS for the Readme section
+*/
+#readmeDiv {
+	width:98%;
+	border:1px solid #DEDEDE;
+	background-color: #FFFFFF;
+	color:#000000;
+	/*float:left;*/
+	padding:5px;
+	text-align:left;
+}
+
+/*
+CSS for the section of the page that holds the search results
+*/
+#resultsDiv {
+	width:98%;
+	/*float:left;*/
+	background-color:#FFFFFF;
+	border:1px solid #717171;
+	padding:3px;
+}
+
+/*
+CSS for the Chat section
+*/
+#chatDiv {
+	width:98%;
+	/*float:left;*/
+	background-color:#FFFFFF;
+	border:1px solid #717171;
+	padding:3px;
+}
+
+/*
+CSS for the section of the page that holds the items you are watching
+*/
+#watchDiv {
+	width:98%;
+	/*float:left;*/
+	background-color:#FFFFFF;
+	border:1px solid #717171;
+	padding:5px;
+}
+
+/*
+CSS for the tabs including the hover states
+*/
+#tabDivActive{
+	width:200px;
+	height:20px;
+	background-image:url( ../images/tab_outline.gif );
+	background-position:top;
+	background-repeat:no-repeat;
+	background-color:#FCDA54;
+	color:#000000;
+	text-align:center;
+	float:left;
+	vertical-align:bottom;
+	padding-top:5px;
+	margin-top:15px;
+	margin-right:1px;
+	cursor:pointer;
+}
+
+#tabDivActive:hover {
+	background-color:#FFCC0B;
+	cursor:pointer;
+}
+
+#tabDivInActive{
+	width:200px;
+	height:20px;
+	background-image:url( ../images/tab_outline.gif );
+	background-position:top;
+	background-repeat:no-repeat;
+	background-color:#F9EA94;
+	color:#666666;
+	text-align:center;
+	float:left;
+	vertical-align:bottom;
+	padding-top:5px;
+	margin-top:15px;
+	margin-right:1px;
+	cursor:pointer;
+}
+
+/*
+Forms elements styles. These classes are used to control the appearance of the
+standard HTML form elements including buttons and text boxes
+*/
+form{
+	margin:0px auto;
+	padding:0px;
+}
+
+.buttons {
+	background-color:#FFFFFF;
+	background-image:url( ../images/button_bkgnd.gif );
+	background-position:right;
+	background-repeat:repeat-x;
+	color:#333333;
+	border:1px solid #343434;
+	margin:4px;
+}
+
+.orangeButtons, .orangeButtonM {
+	background-image: url( ../images/button_orange_120x22.gif );
+	background-position: left;
+        background-color: transparent;
+	background-repeat:no-repeat;
+	border:none;
+	width:120px;
+	height:22px;
+	color: #FFFFFF;
+	text-indent:0px;
+	font-size:.9em;
+}
+
+.orangeButtonM {
+        background-image: url( ../images/button_orange_60x22.gif );
+        width:60px;
+}
+
+.endChatButtons {
+	background-image: url( ../images/end-chat-dot.gif );
+	background-position:right;
+        background-color: transparent;
+	background-repeat:no-repeat;
+	border:none;
+	height:22px;
+	color: #506491;
+	text-indent:0px;
+	font-size:.9em;
+	font-weight:bold;
+	padding-right:20px;
+}
+
+.textField {
+	background-color:#FFFFFF;
+	color:#333333;
+	border-top:1px solid #343434;
+	border-left:1px solid #343434;
+	border-bottom:1px solid #9a9a9a;
+	border-right:1px solid #ABABAB;
+}
+
+.textFieldDynamic {
+	background-color:#FFFFFF;
+	color:#333333;
+	border-top:1px solid #343434;
+	border-left:1px solid #343434;
+	border-bottom:1px solid #9a9a9a;
+	border-right:1px solid #ABABAB;
+        width:40%;
+}
+
+.hiddenTextField {
+    visibility: hidden;
+    background-color:#FFFFFF;
+	color:#333333;
+	border-top:1px solid #343434;
+	border-left:1px solid #343434;
+	border-bottom:1px solid #9a9a9a;
+	border-right:1px solid #ABABAB;
+}
+
+/*
+TABLE CLASSES - the styles below are for the various parts of the tables
+that display the information, starting with the various table header styles
+*/
+
+.tableTdAction{
+    color:#FFFFFF;
+    font-size:12;
+}
+
+/* styles for the links used in the headers of the tables*/
+.bidTableColHdr1 a{
+	color:#FFFFFF;
+	font-size:12;
+}
+
+/* the standard table header */
+.bidTableColHdr1{
+	background-color:#A6A6A6;
+	font-size:1em;
+	color:#FFFFFF;
+	text-align:center;
+}
+
+/* the header for a selected column in ascending order */
+.tableHeaderSelAsc1{
+    width:40%;
+	background-color:#717171;
+	background-image:url( ../images/header_arrow_up.gif );
+	background-position:3px 1px;
+	background-repeat:no-repeat;
+	font-size:12;
+	color:#FFFFFF;
+	text-align:center;
+}
+
+.tableHeaderSelAsc2{
+    width:10%;
+	background-color:#717171;
+	background-image:url( ../images/header_arrow_up.gif );
+	background-position:3px 1px;
+	background-repeat:no-repeat;
+	font-size:12;
+	color:#FFFFFF;
+	text-align:center;
+}
+
+.tableHeaderSelAsc3{
+    width:10%;
+	background-color:#717171;
+	background-image:url( ../images/header_arrow_up.gif );
+	background-position:3px 1px;
+	background-repeat:no-repeat;
+	font-size:12;
+	color:#FFFFFF;
+	text-align:center;
+}
+
+.tableHeaderSelAsc4{
+    width:18%;
+	background-color:#717171;
+	background-image:url( ../images/header_arrow_up.gif );
+	background-position:3px 1px;
+	background-repeat:no-repeat;
+	font-size:12;
+	color:#FFFFFF;
+	text-align:center;
+}
+
+/* the header for a selected column in decending order  */
+.tableHeaderSelDesc1{
+    width:40%;
+	background-color:#717171;
+	background-image:url( ../images/header_arrow_down.gif );
+	background-position:3px 1px;
+	background-repeat:no-repeat;
+	font-size:12;
+	color:#FFFFFF;
+	text-align:center;
+}
+
+.tableHeaderSelDesc2{
+    width:10%;
+	background-color:#717171;
+	background-image:url( ../images/header_arrow_down.gif );
+	background-position:3px 1px;
+	background-repeat:no-repeat;
+	font-size:12;
+	color:#FFFFFF;
+	text-align:center;
+}
+
+.tableHeaderSelDesc3{
+    width:10%;
+	background-color:#717171;
+	background-image:url( ../images/header_arrow_down.gif );
+	background-position:3px 1px;
+	background-repeat:no-repeat;
+	font-size:12;
+	color:#FFFFFF;
+	text-align:center;
+}
+
+.tableHeaderSelDesc4{
+    width:18%;
+	background-color:#717171;
+	background-image:url( ../images/header_arrow_down.gif );
+	background-position:3px 1px;
+	background-repeat:no-repeat;
+	font-size:12;
+	color:#FFFFFF;
+	text-align:center;
+}
+
+/* the classes for the background rows of the table alternate the rows to 
+make the list easier to read */
+.rowClass1{
+	background-color:#FFFFFF;
+}
+
+.rowClass2{
+	background-color:#EEEEEE;
+}
+
+.column1{
+    width:40%;
+}
+
+.column2{
+    width:10%;
+}
+
+.column3{
+    width:10%;
+}
+
+.column4{
+    width:18%;
+}
+
+/* height required to prevent shifting of row height when you toggle bid button rendering. */
+.column5{
+	height: 26px;
+    width:12%;
+}
+
+.column6{
+    width:10%;
+}
+
+/* the class below is used to hilite the rows of information when
+an item is expanded to show additional information*/
+.rowClassHilite{
+	background-color:#DDEEFF;
+	color:#000000;
+}
+
+.expandedColumn1{
+    width:19%;
+}
+
+.expandedColumn2{
+    width:48%;
+}
+
+.expandedColumn3{
+    width:33%;
+}
+
+/* the classes below are used to control the display of the fonts in
+the time left column */
+.timeCellDays{
+	color:#666666;
+	font-style:italic;
+	font-weight:normal;
+}
+
+.timeCellHours{
+	color:#000000;
+	font-style:normal;
+	font-weight:normal;
+}
+
+.timeCellMins{
+	color:#AA0000;
+	font-style:normal;
+	font-weight:bold;
+}
+
+/*
+ICEsoft JSF BEAN CLASSES - the classes below are used to create the dynamic visual
+effects coded into the beans. *IMPORTANT* do not change the names of these classes 
+*/
+/* the following 3 classes are used for the dynamic effects moving from rowCalss1 or 
+rowClass2 through 1->2->3 */
+.rowHilite1{
+	background-color: #FFFFCC;
+}
+
+.rowHilite2{
+	background-color: #FFFF99;
+}
+
+.rowHilite3{
+	background-color: #FFFF66;
+}
+
+/* the following class is used to magnify the row as it changes position int he list */
+.rowMagnify{
+	background-color: #FFFF66;
+	font-size: 1.2em;
+	font-weight:bold;
+	color: #000000;
+}
+
+/* CSS for rounded corner boxes */
+b.rtop, b.rbottom{
+	display:block;
+	background: #FFFFFF;
+}
+
+.nifty{
+	margin: 0px auto;
+	background-color: #CDCDCD ;
+	text-align:left;
+	font-size:1em;
+	color:#000000;
+	clear:both;
+	width:100%;
+}
+
+.nifty a{
+	color:#000033;
+	text-decoration:none;
+}
+.nifty a:hover{
+	color:#000066;
+	text-decoration:underline;
+}
+
+b.rtop b, b.rbottom b{
+	display:block;
+	height: 1px;
+	overflow: hidden; 
+	background-color: #CDCDCD;
+}
+
+b.r1{
+	margin: 0 5px;
+}
+
+b.r2{
+	margin: 0 3px;
+}
+
+b.r3{
+	margin: 0 2px;
+}
+
+b.rtop b.r4, b.rbottom b.r4{
+	margin: 0 1px;height: 2px;
+}
+
+.headLine{
+	color: #003366;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:1.75em;
+	font-weight:bold;
+}
+
+.infoHeader{
+	color: #003366;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:1.15em;
+	font-weight:bold;
+
+}
+
+/* CSS styles for the chat widgets*/
+.chatLine{
+	width:100%;
+	border-top:1px dotted #BEBEBE;
+	margin-bottom:8px;
+	clear:both;
+}
+
+.chatLineMobile{
+        width:100%;
+        border-top:1px dotted #BEBEBE;
+        margin-bottom:8px;
+        clear:both;
+}
+
+.chatName{
+	width:70%;
+	font-weight: bold;
+	font-size:10.5px;
+	color:#666666;
+	text-align:left;
+	float:left;
+}
+
+.chatTime{
+	width:30%;
+	font-weight:normal;
+	font-size:9px;
+	color:#666666;
+	text-align:right;
+	float:left;
+}
+
+.chatTimeMobile{
+        font-weight:normal;
+        font-size:9px;
+        color:#666666;
+        text-align:right;
+        float:left;
+}
+
+.chatText{
+	width:100%;
+	font-weight:normal;
+	font-size:11.5px;
+	color:#666666;
+	text-align:left;
+	float:left;
+}

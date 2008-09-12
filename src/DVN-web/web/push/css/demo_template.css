@@ -1,0 +1,155 @@
+/*
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * "The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations under
+ * the License.
+ *
+ * The Original Code is ICEfaces 1.5 open source software code, released
+ * November 5, 2006. The Initial Developer of the Original Code is ICEsoft
+ * Technologies Canada, Corp. Portions created by ICEsoft are Copyright (C)
+ * 2004-2006 ICEsoft Technologies Canada, Corp. All Rights Reserved.
+ *
+ * Contributor(s): _____________________.
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"
+ * License), in which case the provisions of the LGPL License are
+ * applicable instead of those above. If you wish to allow use of your
+ * version of this file only under the terms of the LGPL License and not to
+ * allow others to use your version of this file under the MPL, indicate
+ * your decision by deleting the provisions above and replace them with
+ * the notice and other provisions required by the LGPL License. If you do
+ * not delete the provisions above, a recipient may use your version of
+ * this file under either the MPL or the LGPL License."
+ *
+ */
+@import 'showcase_style.css';
+
+html, body, div, table, img, fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    overflow: scroll;
+
+}
+
+body {
+    font-family: Arial, Sans-Serif;
+    font-size: 0.8em;
+    color: #5f5f5f;
+    background-color: #ffffff;
+    background-image: url( './images/banner_bg.gif' );
+    background-repeat: repeat-x;
+    background-position: right top;
+}
+
+table {
+    font-size: 1.0em;
+}
+
+ul {
+    margin-left: 20px;
+}
+
+li {
+    margin-left: 5px;
+}
+
+div.clearer {
+    clear: both;
+    height: -5px;
+    line-height: .01em;
+    padding: 0;
+    margin: 0;
+}
+
+/* header begin */
+
+div.header_container {
+    width: 100%;
+    height: 100px;
+    min-width: 730px;
+
+}
+
+div.header_container div.header_left {
+    display: inline;
+    height: 100px;
+    position: relative;
+
+}
+
+div.header_right {
+    float: right;
+    position: absolute;
+    text-align: left;
+    height: 100px;
+    top: 0;
+    right: 0;
+}
+
+/* header end */
+
+/* header begin */
+div.footer_container {
+    width: 100%;
+    height: 95px;
+    min-width: 730px;
+    background-image: url( './images/bgslice_footer.gif' );
+    background-repeat: repeat-x;
+    background-position: bottom left; /*position: relative;*/
+}
+
+div.footer_container div.footer_left {
+    float: left;
+    display: inline;
+    width: 80%;
+    padding-left: 15px;
+    padding-top: 50px;
+    font-size: 0.9em;
+    text-align: center;
+    color: white;
+}
+
+div.footer_container div.footer_left a, div.footer_container div.footer_left a:hover,
+    div.footer_container div.footer_left a:visited {
+    color: orange;
+    text-decoration: none;
+}
+
+div.footer_container div.footer_left a:hover {
+    text-decoration: underline;
+}
+
+div.footer_container div.footer_right {
+    float: right;
+    display: inline;
+    width: 121px;
+}
+
+/* footer end */
+div.columnleft {
+    margin-left: 5px;
+    margin-top: 15px;
+    width: 26px;
+    float: left;
+}
+
+div.columnMiddle {
+    min-height: 500px;
+    margin-left: 265px;
+    padding: 5px;
+    position: relative;
+
+}
+

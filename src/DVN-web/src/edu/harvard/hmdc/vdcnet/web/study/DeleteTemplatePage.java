@@ -135,9 +135,7 @@ public class DeleteTemplatePage extends VDCBaseBean implements java.io.Serializa
     
     
     public String delete() {
-       //editStudyService.deleteStudy();
         templateService.deleteTemplate(templateId);
-        getVDCSessionBean().setStudyService(null);
         return "success";
     }
     

@@ -165,7 +165,6 @@ public class DeleteStudyPage extends VDCBaseBean implements java.io.Serializable
     public String delete() {
        //editStudyService.deleteStudy();
         studyService.deleteStudy(study.getId());
-        getVDCSessionBean().setStudyService(null);
         return "success";
     }
     

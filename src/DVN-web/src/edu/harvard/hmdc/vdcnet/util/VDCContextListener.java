@@ -30,14 +30,17 @@
 package edu.harvard.hmdc.vdcnet.util;
 
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
-import edu.harvard.hmdc.vdcnet.study.SyncVDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
+import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import javax.ejb.EJBs;
 import javax.naming.InitialContext;
+import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.ServletRequestAttributeEvent;
+import javax.servlet.ServletRequestAttributeListener;
 
 /**
  *
@@ -48,7 +51,7 @@ import javax.servlet.ServletContextListener;
  @EJB(name="harvestingDataverseService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal.class),
  @EJB(name="vdcNetworkService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal.class)
 })
-public class VDCContextListener implements ServletContextListener, java.io.Serializable  {
+public class VDCContextListener implements ServletContextListener,ServletRequestAttributeListener, java.io.Serializable  {
   
 
     public void contextDestroyed(ServletContextEvent event) {
@@ -91,5 +94,35 @@ public class VDCContextListener implements ServletContextListener, java.io.Seria
     /** Creates a new instance of VDCContextListener */
     public VDCContextListener() {
     }
+     
     
+  public void attributeAdded(ServletRequestAttributeEvent event) {
+      Object value = event.getValue();
+        if (value != null) {
+            if (value instanceof VDCBaseBean) {
+                fireInit((VDCBaseBean) value);
+            } 
+        }
+     }
+  
+    /**
+     * <p>Fire an init event on an AbstractPageBean.</p>
+     *
+     * @param bean {@link AbstractPageBean} to fire event on
+     */
+    private void fireInit(VDCBaseBean bean) {
+
+      //  try {
+           
+            bean.init();
+  //      } catch (Exception e) {
+  //          log(e.getMessage(), e);
+  //          ViewHandlerImpl.cache(FacesContext.getCurrentInstance(), e);
+  //      }
+
+    }
+ public void attributeRemoved(ServletRequestAttributeEvent event) {}
+ public void attributeReplaced(ServletRequestAttributeEvent event) {}
+
+        // If the new value is an 
 }

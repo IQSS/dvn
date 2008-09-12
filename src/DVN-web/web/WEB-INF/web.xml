@@ -273,14 +273,6 @@
             <is-xml>true</is-xml>
         </jsp-property-group>
     </jsp-config>
-     <servlet>
-        <servlet-name>VDCExportServlet</servlet-name>
-        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCExportServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>VDCExportServlet</servlet-name>
-        <url-pattern>/export/*</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>VDCHandleRegistrationServlet</servlet-name>
         <url-pattern>/handleregistration/*</url-pattern>

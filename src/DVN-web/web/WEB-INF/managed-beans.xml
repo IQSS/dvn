@@ -2,7 +2,7 @@
 <faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
     <managed-bean>
         <managed-bean-name>sfc</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.common.StudyFieldConstant</managed-bean-class>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.study.StudyFieldConstant</managed-bean-class>
         <managed-bean-scope>application</managed-bean-scope>
     </managed-bean>
     <managed-bean>
@@ -165,11 +165,6 @@
 
     <!-- Privileged Users Pages -->
     <!-- *******************  Study Management *********************** -->
-    <managed-bean>
-        <managed-bean-name>studyList</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.StudyListBean</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-    </managed-bean>
     <managed-bean>
         <managed-bean-name>studyPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.StudyPage</managed-bean-class>

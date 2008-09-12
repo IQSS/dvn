@@ -14,8 +14,24 @@
     <!-- optional for use with push -->
     <context-param>
         <param-name>com.icesoft.faces.synchronousUpdate</param-name>
-        <param-value>true</param-value>
+        <param-value>false</param-value>
     </context-param>
+     <context-param>
+         <param-name>com.icesoft.faces.heartbeatInterval</param-name>
+         <param-value>300000</param-value>
+     </context-param>
+     <context-param>
+         <param-name>com.icesoft.faces.heartbeatTimeout</param-name>
+         <param-value>300000</param-value>
+     </context-param>
+     <context-param>
+         <param-name>com.icesoft.faces.connectionTimeout</param-name>
+         <param-value>300000</param-value>
+     </context-param>
+     <context-param>
+         <param-name>com.icesoft.faces.heartbeatRetries</param-name>
+         <param-value>50</param-value>
+     </context-param> 
     <!-- end optional for use with push -->
     <context-param>
         <param-name>com.icesoft.faces.debugDOMUpdate</param-name>
@@ -148,28 +164,25 @@
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
     <!-- Icefaces Servlets -->
-   <!-- <servlet>
-        <servlet-name>Grizzly Push Servlet</servlet-name>
-        <servlet-class>
-            com.icesoft.faces.webapp.http.servlet.GrizzlyPushServlet
-        </servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet> -->
-     <servlet>
+   <servlet>
         <servlet-name>Persistent Faces Servlet</servlet-name>
             <servlet-class>com.icesoft.faces.webapp.xmlhttp.PersistentFacesServlet</servlet-class>
+            <init-param>
+              <param-name>errorPage</param-name>
+              <param-value>/ExceptionHandler</param-value>
+            </init-param>
             <load-on-startup>1</load-on-startup>
-        </servlet>
+      </servlet>
         <servlet>
             <servlet-name>Blocking Servlet</servlet-name>
             <servlet-class>com.icesoft.faces.webapp.xmlhttp.BlockingServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
         </servlet>
-        <servlet>
+      <servlet>
             <servlet-name>uploadServlet</servlet-name>
             <servlet-class>com.icesoft.faces.component.inputfile.FileUploadServlet</servlet-class>
             <load-on-startup>1</load-on-startup>
-        </servlet>
+      </servlet>
         <!-- DVN SPECIFIC SERVLETS -->
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>

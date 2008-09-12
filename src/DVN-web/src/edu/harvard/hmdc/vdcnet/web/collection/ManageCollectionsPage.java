@@ -67,26 +67,18 @@ public class ManageCollectionsPage extends VDCBaseBean implements java.io.Serial
     @EJB VDCServiceLocal vdcService;
     @EJB VDCCollectionServiceLocal vdcCollectionService;
     @EJB ReviewStateServiceLocal reviewStateService;
-    // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
-    private int __placeholder;
-    private void _init() throws Exception {
-    }
+   
     /**
      * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
      * This method is automatically generated, so any user-specified code inserted
      * here is subject to being replaced.</p>
      */
     public void init() {
-        super.init();
+     
         msg =  (StatusMessage)getRequestMap().get("statusMessage");
         dropdown1DefaultItems.setItems(new String[] {"Hidden", "Visible"});
         dataTable1Model.setWrappedData(getCollectionsDisplay());
-        try {
-            _init();
-        } catch (Exception e) {
-            log("Page1 Initialization Failure", e);
-            throw e instanceof FacesException ? (FacesException) e: new FacesException(e);
-        } 
+       
     }
     
     StatusMessage msg;

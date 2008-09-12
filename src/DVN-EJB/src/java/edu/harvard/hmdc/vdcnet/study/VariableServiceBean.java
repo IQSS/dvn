@@ -81,7 +81,38 @@ public class VariableServiceBean implements edu.harvard.hmdc.vdcnet.study.Variab
         Query query =em.createQuery(queryStr);
         List <DataVariable> dvs = query.getResultList();
         
-        return dvs;        
+	// Before we return the list, we need to make an adjustment to 
+	// convert the (possibly) relative column numbers to the 
+	// absolute:
+
+
+	int relOrder = 0; 
+	int absOffset = -1; 
+
+        for (Iterator el = dvs.iterator(); el.hasNext();) {
+            DataVariable dv = (DataVariable) el.next();
+
+	    if ( absOffset == -1 ) {
+		absOffset = dv.getFileOrder(); 
+		// This is the column number stored in the database
+		// for the first variable in the data file.
+		// We want to use it as the offset, i.e. to 
+		// subtract it from all the other variable orders in the 
+		// data table, thus converting them into absolute 
+		// numbers. 
+
+		if ( absOffset == 0 ) {
+		    return dvs; 
+		}
+		// (of course, if the offset is 0, we don't need
+		// to do anything!)
+	    }
+
+	    relOrder = dv.getFileOrder(); 
+	    dv.setFileOrder(relOrder - absOffset); 
+        }
+
+	return dvs; 
     }
     
     public SummaryStatisticType findSummaryStatisticTypeByName(String name) {

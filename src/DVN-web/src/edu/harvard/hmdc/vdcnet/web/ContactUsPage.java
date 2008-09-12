@@ -26,6 +26,7 @@ import javax.faces.model.SelectItem;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.ExceptionMessageWriter;
+import java.util.ArrayList;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;

@@ -22,9 +22,8 @@ package edu.harvard.hmdc.vdcnet.web;
 
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.faces.component.html.HtmlSelectOneMenu;
-import javax.faces.component.UISelectItems;
+import javax.faces.model.SelectItem;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
-import com.sun.jsfcl.data.DefaultSelectItemsArray;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.ExceptionMessageWriter;
 import javax.ejb.EJB;
@@ -107,8 +106,7 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
      */
     public void init() {
         super.init();
-        listSubjectDefaults.setItems(new String[] {"-  Select a subject -", "Issue accessing a study or studies", "Issue downloading a file or files", "Issue logging in or creating an account", "Issues with Analysis and Subsetting", "Curator/Administration Issues", "Need more information about a topic", "Other question or issue"});
-        this.setFullName((getVDCSessionBean().getLoginBean() != null) ? getVDCSessionBean().getLoginBean().getUser().getFirstName() + " " + getVDCSessionBean().getLoginBean().getUser().getLastName() : "");
+         this.setFullName((getVDCSessionBean().getLoginBean() != null) ? getVDCSessionBean().getLoginBean().getUser().getFirstName() + " " + getVDCSessionBean().getLoginBean().getUser().getLastName() : "");
         this.setEmailAddress((getVDCSessionBean().getLoginBean() != null) ? getVDCSessionBean().getLoginBean().getUser().getEmail() : "");
         this.setEmailBody((this.getEmailBody() != null) ? this.getEmailBody() : "");
         this.setSelectedSubject((this.getSelectedSubject() != null) ? this.getSelectedSubject() : "");
@@ -176,27 +174,24 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
         this.listSubjects = hsom;
     }
     
-    //select list identifier
-    private UISelectItems listSubjectItems = new UISelectItems();
+  
+    public ArrayList<SelectItem> getListSubjectItems() {
+        ArrayList<SelectItem> arr = new ArrayList<SelectItem>();
+        arr.add(new SelectItem("-  Select a subject -"));
+        arr.add(new SelectItem("Issue accessing a study or studies"));
+        arr.add(new SelectItem("Issue downloading a file or files"));
+        arr.add(new SelectItem("Issue logging in or creating an account"));
+        arr.add(new SelectItem("Issues with Analysis and Subsetting"));
+        arr.add(new SelectItem("Curator/Administration Issues"));
+        arr.add(new SelectItem("Issues with Analysis and Subsetting"));
+        arr.add(new SelectItem("Need more information about a topic"));
+        arr.add(new SelectItem("Other question or issue"));
+        return arr;
 
-    public UISelectItems getListSubjectItems() {
-        return listSubjectItems;
     }
 
-    public void setListSubjectItems(UISelectItems uisi) {
-        this.listSubjectItems = uisi;
-    }
-    
-    //default select list items
-    private DefaultSelectItemsArray listSubjectDefaults = new DefaultSelectItemsArray();
-
-    public DefaultSelectItemsArray getListSubjectDefaults() {
-        return listSubjectDefaults;
-    }
-
-    public void setListSubjectDefaults(DefaultSelectItemsArray dsia) {
-        this.listSubjectDefaults = dsia;
-    }
+   
+   
     
     //email body
     private String emailBody;

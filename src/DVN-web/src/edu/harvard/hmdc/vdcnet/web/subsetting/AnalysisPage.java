@@ -730,16 +730,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         resetMsg4MoveVar();
         
         // download message area
-        msgDwnldButton.setText(" ");
+        msgDwnldButton.setValue(" ");
         msgDwnldButton.setVisible(false);
 
         
         // eda message area
-        msgEdaButton.setText(" ");
+        msgEdaButton.setValue(" ");
         msgEdaButton.setVisible(false);
         
         // advance stat area
-        msgAdvStatButton.setText(" ");
+        msgAdvStatButton.setValue(" ");
         msgAdvStatButton.setVisible(false);
     }
 
@@ -812,20 +812,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
     
 
-    // msgDwnldButton:ui:StaticText@binding
-    private StaticText msgDwnldButton = new StaticText();
+    // msgDwnldButton:ice:outputText@binding
+    private com.icesoft.faces.component.ext.HtmlOutputText msgDwnldButton = 
+        new com.icesoft.faces.component.ext.HtmlOutputText();
 
-    public StaticText getMsgDwnldButton() {
+    public com.icesoft.faces.component.ext.HtmlOutputText getMsgDwnldButton() {
         return msgDwnldButton;
     }
 
-    public void setMsgDwnldButton(StaticText txt) {
+    public void setMsgDwnldButton(com.icesoft.faces.component.ext.HtmlOutputText txt) {
         this.msgDwnldButton = txt;
     }
     
     /**
      * The object backing the value attribute of
-     * ui:StaticText for msgDwnldButton that shows 
+     * htmlOutputText for msgDwnldButton that shows 
      * error messages for the action of the download
      * button
      */
@@ -857,7 +858,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // Replaces the error message text with spaces
         // so that the previous error message is not shown
         // even if the following setVisible(false) line fails
-        msgDwnldButton.setText("     ");
+        msgDwnldButton.setValue("     ");
         
         // Stores the new state of msgDwnldButtonTxt in the session map
         FacesContext.getCurrentInstance().getExternalContext()
@@ -1011,7 +1012,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         if (wholeFileSize <= 0){
                             // subset file exists but it is empty
                         
-                            msgDwnldButton.setText("* an data file is empty");
+                            msgDwnldButton.setValue("* an data file is empty");
                             msgDwnldButton.setVisible(true);
                             dbgLog.warning("exiting dwnldAction() due to a file access error:"+
                             "a data file is empty"
@@ -1023,7 +1024,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         
                     } else {
                         // file was not created/downloaded
-                        msgDwnldButton.setText("* a data file was not created");
+                        msgDwnldButton.setValue("* a data file was not created");
                         msgDwnldButton.setVisible(true);
                         dbgLog.warning("exiting dwnldAction() due to a file access error:"+
                         "a data file was not created"
@@ -1074,7 +1075,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
 
-                            msgDwnldButton.setText("* could not generate subset due to an IO problem");
+                            msgDwnldButton.setValue("* could not generate subset due to an IO problem");
                             msgDwnldButton.setVisible(true); 
                             dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                             getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1084,7 +1085,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         } catch (RuntimeException re){
                             re.printStackTrace();
                             
-                            msgDwnldButton.setText("* could not generate subset due to an runtime error");
+                            msgDwnldButton.setValue("* could not generate subset due to an runtime error");
                             msgDwnldButton.setVisible(true); 
                             dbgLog.warning("exiting dwnldAction() due to an runtime error");
                             getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1107,7 +1108,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         } else {
                             // subset file exists but it is empty
                         
-                            msgDwnldButton.setText("* an subset file is empty");
+                            msgDwnldButton.setValue("* an subset file is empty");
                             msgDwnldButton.setVisible(true);
                             dbgLog.warning("exiting dwnldAction() due to a subsetting error:"+
                             "a subset file is empty"
@@ -1119,7 +1120,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         }
                     } else {
                         // subset file was not created
-                        msgDwnldButton.setText("* a subset file was not created");
+                        msgDwnldButton.setValue("* a subset file was not created");
                         msgDwnldButton.setVisible(true);
                         dbgLog.warning("exiting dwnldAction() due to a subsetting error:"+
                         "a subset file was not created"
@@ -1154,7 +1155,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // Step 5. Checks the DSB-exit-status code
                     if (resultInfo.get("RexecError").equals("true")){
                     
-                        msgDwnldButton.setText("* The Request failed due to an R-runtime error");
+                        msgDwnldButton.setValue("* The Request failed due to an R-runtime error");
                         msgDwnldButton.setVisible(true);
                         dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
                         getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1171,7 +1172,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
 
-                    msgDwnldButton.setText("* file URL is malformed");
+                    msgDwnldButton.setValue("* file URL is malformed");
                     msgDwnldButton.setVisible(true);
                     dbgLog.warning("exiting dwnldAction() due to a URL problem ");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1183,7 +1184,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // the file exists, but it is not accessible 
                     e.printStackTrace();
                     
-                    msgDwnldButton.setText("* an IO problem occurred");
+                    msgDwnldButton.setValue("* an IO problem occurred");
                     msgDwnldButton.setVisible(true);
                     dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1194,7 +1195,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                // end of subset-OK case
             } else {
                 // not subsettable data file
-                msgDwnldButton.setText("* this data file is not subsettable file");
+                msgDwnldButton.setValue("* this data file is not subsettable file");
                 msgDwnldButton.setVisible(true);
                 dbgLog.warning("exiting dwnldAction(): the data file is not subsettable ");
                 getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1308,7 +1309,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // the data file was not created
                     dbgLog.fine("wbSubsetDataFile does not exist");
 
-                    msgDwnldButton.setText("* The requested data file is not available");
+                    msgDwnldButton.setValue("* The requested data file is not available");
                     msgDwnldButton.setVisible(true);
                     dbgLog.warning("exiting dwnldAction(): data file was not transferred");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1328,7 +1329,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //
 //                } else {
 //                    dbgLog.fine("RwrkspFileName does not exist");
-//                    //msgDwnldButton.setText("* The workspace file is not available");
+//                    //msgDwnldButton.setValue("* The workspace file is not available");
 //                    //msgDwnldButton.setVisible(true);
 //                    dbgLog.warning("dwnldAction(): R workspace file was not transferred");
 //                    //getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1346,7 +1347,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                    zipFileList.add(vdcstrtFileName);
 //                } else {
 //                    dbgLog.fine("vdcstrtFileName does not exist");
-//                    //msgDwnldButton.setText("* vdc_startup.R is not available");
+//                    //msgDwnldButton.setValue("* vdc_startup.R is not available");
 //                    //msgDwnldButton.setVisible(true);
 //                    dbgLog.warning("dwnldAction(): vdc_startup.R was not transferred");
 //                    //getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1402,7 +1403,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // file-access problem, etc.
                     e.printStackTrace();
                     dbgLog.fine("download zipping IO exception");
-                    msgDwnldButton.setText("* an IO problem occurred");
+                    msgDwnldButton.setValue("* an IO problem occurred");
                     msgDwnldButton.setVisible(true);
                     dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1414,7 +1415,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             } catch (IOException e){
                 e.printStackTrace();
                 
-                msgDwnldButton.setText("* an IO problem occurred");
+                msgDwnldButton.setValue("* an IO problem occurred");
                 msgDwnldButton.setVisible(true);
                 dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1428,7 +1429,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // the selection is incomplete
             // show error message;
             pgDwnldErrMsg.setRendered(true);
-            msgDwnldButton.setText("* Error: Select a file format");
+            msgDwnldButton.setValue("* Error: Select a file format");
             msgDwnldButton.setVisible(true);
             dbgLog.warning("exiting dwnldAction() due to incomplete data ");
             getVDCRequestBean().setSelectedTab("tabDwnld");
@@ -1851,7 +1852,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         if (oldVarId == null){
             dbgLog.fine("source variable is not selected");
             msgSaveRecodeBttn.setRendered(true);
-            msgSaveRecodeBttn.setText(
+            msgSaveRecodeBttn.setValue(
                 "Select one of the existing variables as a source variable;<br />"+
                 "and click the arrow button to set up the recode table"
                 );
@@ -1865,7 +1866,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         if (StringUtils.isEmpty(newVarName)){
             dbgLog.fine("Recode variable is not entered");
                 msgSaveRecodeBttn.setRendered(true);
-                msgSaveRecodeBttn.setText(
+                msgSaveRecodeBttn.setValue(
                 "New variable name is not entered;<br />"+
                 "enter a unique name in the variable-name box;");
                 return;
@@ -1882,7 +1883,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // duplicated name
                 dbgLog.fine("The new variable name is already in use");
                 msgSaveRecodeBttn.setRendered(true);
-                msgSaveRecodeBttn.setText(
+                msgSaveRecodeBttn.setValue(
                     "The variable Name you entered is found "+
                     "among the existing variables;<br />"+
                     " enter a new variable name");
@@ -1895,7 +1896,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 if (isVariableNameValid(newVarName, whiteSpace)) {
                     // whitespace found
                     msgSaveRecodeBttn.setRendered(true);
-                    msgSaveRecodeBttn.setText(
+                    msgSaveRecodeBttn.setValue(
                         "A whitespace character was found in "+
                         "the variable name;<br />"+
                         "Whitesapce characters are not allowed "+
@@ -1904,7 +1905,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 } else if (isVariableNameValid(newVarName, prohibitedChars)) {
                     // non-permissible character was found
                     msgSaveRecodeBttn.setRendered(true);
-                    msgSaveRecodeBttn.setText(
+                    msgSaveRecodeBttn.setValue(
                         "At least one non-permissible character was found "+
                         "in the variable name;<br />"+
                         "Use a-z, A-Z, _, 0-9 characters.");
@@ -1912,7 +1913,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 } else if (isVariableNameValid(newVarName, firstChar)) {
                     // non-permissible character found
                     msgSaveRecodeBttn.setRendered(true);
-                    msgSaveRecodeBttn.setText(
+                    msgSaveRecodeBttn.setValue(
                         "The first character of a variable name must be "+
                         "an alphabet character.");
                     return;
@@ -2088,20 +2089,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // errormessage for recode-save button
-    // ui:staticText
-    private StaticText msgSaveRecodeBttn = new StaticText();
+    // ice:outputText
+    private HtmlOutputText msgSaveRecodeBttn = 
+        new com.icesoft.faces.component.ext.HtmlOutputText();
 
-    public StaticText getMsgSaveRecodeBttn() {
+    public HtmlOutputText getMsgSaveRecodeBttn() {
         return msgSaveRecodeBttn;
     }
 
-    public void setMsgSaveRecodeBttn(StaticText txt) {
+    public void setMsgSaveRecodeBttn(HtmlOutputText txt) {
         this.msgSaveRecodeBttn = txt;
     }
 
     public void resetMsgSaveRecodeBttn() {
         dbgLog.fine("***** within resetMsgSaveRecodeBttn *****");
-        msgSaveRecodeBttn.setText(" ");
+        msgSaveRecodeBttn.setValue(" ");
         msgSaveRecodeBttn.setRendered(false);
         
     }
@@ -2413,25 +2415,25 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // whitespace found
             msgSaveRecodeBttn.setRendered(true);
             msgSaveRecodeBttn
-                .setText("A whitespace character was found in the variable name;<br />Whitesapce characters are not allowed in a variable name.");
+                .setValue("A whitespace character was found in the variable name;<br />Whitesapce characters are not allowed in a variable name.");
             return;
         } else if (isVariableNameValid(newVarName, prohibitedChars)) {
             // non-permissible character found
             msgSaveRecodeBttn.setRendered(true);
             msgSaveRecodeBttn
-                .setText("At least one non-permissible character was found in the variable name;<br />Use a-z, A-Z, _, 0-9 characters.");
+                .setValue("At least one non-permissible character was found in the variable name;<br />Use a-z, A-Z, _, 0-9 characters.");
             return;
         } else if (isVariableNameValid(newVarName, firstChar)) {
             // non-permissible character found
             msgSaveRecodeBttn.setRendered(true);
             msgSaveRecodeBttn
-                .setText("The first character of a variable name must be an alphabet character.");
+                .setValue("The first character of a variable name must be an alphabet character.");
             return;
         } else {
             // unique and safe name
             dbgLog.fine("The new variable name is unique");
             msgSaveRecodeBttn.setRendered(false);
-            // msgSaveRecodeBttn.setText("The variable name is unique");
+            // msgSaveRecodeBttn.setValue("The variable name is unique");
         }
 
         // get the latest varLabel in the input field
@@ -2778,14 +2780,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
 
-    // msgEdaButton:ui:StaticText@binding
-    private StaticText msgEdaButton = new StaticText();
+    // msgEdaButton:ice:outputText@binding
+    private com.icesoft.faces.component.ext.HtmlOutputText msgEdaButton = 
+        new com.icesoft.faces.component.ext.HtmlOutputText();
 
-    public StaticText getMsgEdaButton() {
+    public com.icesoft.faces.component.ext.HtmlOutputText getMsgEdaButton() {
         return msgEdaButton;
     }
 
-    public void setMsgEdaButton(StaticText txt) {
+    public void setMsgEdaButton(com.icesoft.faces.component.ext.HtmlOutputText txt) {
         this.msgEdaButton = txt;
     }
 
@@ -2801,7 +2804,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     public void resetMsgEdaButton() {
         dbgLog.fine("***** within resetMsgEdaButton *****");
-        msgEdaButton.setText(" ");
+        msgEdaButton.setValue(" ");
         FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().put("msgEdaButtonTxt", msgEdaButtonTxt);
         msgEdaButton.setVisible(false);
@@ -2966,7 +2969,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         if (wholeFileSize <= 0){
                             // subset file exists but it is empty
                         
-                            msgEdaButton.setText("* an data file is empty");
+                            msgEdaButton.setValue("* an data file is empty");
                             msgEdaButton.setVisible(true);
                             dbgLog.warning("exiting edaAction() due to a file access error:"+
                             "a data file is empty"
@@ -2978,7 +2981,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                        
                     } else {
                         // file was not created/downloaded
-                        msgEdaButton.setText("* a data file was not created");
+                        msgEdaButton.setValue("* a data file was not created");
                         msgEdaButton.setVisible(true);
                         dbgLog.warning("exiting edaAction() due to a file access error:"+
                         "a data file was not created"
@@ -3028,7 +3031,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
 
-                            msgEdaButton.setText("* could not generate subset due to an IO problem");
+                            msgEdaButton.setValue("* could not generate subset due to an IO problem");
                             msgEdaButton.setVisible(true); 
                             dbgLog.warning("exiting edaAction() due to an IO problem ");
                             getVDCRequestBean().setSelectedTab("tabEda");
@@ -3037,7 +3040,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         } catch (RuntimeException re){
                             re.printStackTrace();
                             
-                            msgEdaButton.setText("* could not generate subset due to an runtime error");
+                            msgEdaButton.setValue("* could not generate subset due to an runtime error");
                             msgEdaButton.setVisible(true); 
                             dbgLog.warning("exiting edaAction() due to an runtime error");
                             getVDCRequestBean().setSelectedTab("tabEda");
@@ -3057,7 +3060,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         } else {
                             // subset file exists but it is empty
                         
-                            msgEdaButton.setText("* an subset file is empty");
+                            msgEdaButton.setValue("* an subset file is empty");
                             msgEdaButton.setVisible(true);
                             dbgLog.warning("exiting edaAction() due to a subsetting error:"+
                             "a subset file is empty"
@@ -3069,7 +3072,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         }
                     } else {
                         // subset file was not created
-                        msgEdaButton.setText("* a subset file was not created");
+                        msgEdaButton.setValue("* a subset file was not created");
                         msgEdaButton.setVisible(true);
                         dbgLog.warning("exiting edaAction() due to a subsetting error:"+
                         "a subset file was not created"
@@ -3102,7 +3105,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                 // Step 5. Checks the DSB-exit-status code
                     if (resultInfo.get("RexecError").equals("true")){
-                        msgEdaButton.setText("* The Request failed due to an R-runtime error");
+                        msgEdaButton.setValue("* The Request failed due to an R-runtime error");
                         msgEdaButton.setVisible(true);
                         dbgLog.fine("exiting edaAction() due to an R-runtime error");
                         getVDCRequestBean().setSelectedTab("tabEda");
@@ -3119,7 +3122,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
 
-                    msgEdaButton.setText("* file URL is malformed");
+                    msgEdaButton.setValue("* file URL is malformed");
                     msgEdaButton.setVisible(true);
                     dbgLog.warning("exiting edaAction() due to a URL problem ");
                     getVDCRequestBean().setSelectedTab("tabEda");
@@ -3131,7 +3134,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // the file exists, but it is not accessible 
                     e.printStackTrace();
                     
-                    msgEdaButton.setText("* an IO problem occurred");
+                    msgEdaButton.setValue("* an IO problem occurred");
                     msgEdaButton.setVisible(true);
                     dbgLog.warning("exiting edaAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabEda");
@@ -3142,7 +3145,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // end of the subset-OK case
             } else {
                 // not subsettable data file
-                msgEdaButton.setText("* this data file is not subsettable file");
+                msgEdaButton.setValue("* this data file is not subsettable file");
                 msgEdaButton.setVisible(true);
                 dbgLog.warning("exiting edaAction(): the data file is not subsettable ");
                 getVDCRequestBean().setSelectedTab("tabEda");
@@ -3221,7 +3224,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 } else {
                     dbgLog.fine("RwrkspFileName does not exist");
-                    //msgEdaButton.setText("* The workspace file is not available");
+                    //msgEdaButton.setValue("* The workspace file is not available");
                     //msgEdaButton.setVisible(true);
                     dbgLog.warning("edaAction(): R workspace file was not transferred");
                     //getVDCRequestBean().setSelectedTab("tabEda");
@@ -3239,7 +3242,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                    zipFileList.add(vdcstrtFileName);
 //                } else {
 //                    dbgLog.fine("vdcstrtFileName does not exist");
-//                    //msgEdaButton.setText("* vdc_startup.R is not available");
+//                    //msgEdaButton.setValue("* vdc_startup.R is not available");
 //                    //msgEdaButton.setVisible(true);
 //                    dbgLog.warning("edaAction(): vdc_startup.R was not transferred");
 //                    //getVDCRequestBean().setSelectedTab("tabEda");
@@ -3317,7 +3320,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // file-access problem, etc.
                     e.printStackTrace();
                     dbgLog.fine("zipping IO exception");
-                    msgEdaButton.setText("* an IO problem occurred during zipping replication files");
+                    msgEdaButton.setValue("* an IO problem occurred during zipping replication files");
                     msgEdaButton.setVisible(true);
                     dbgLog.warning("exiting edaAction() due to an zipping IO problem ");
                     //getVDCRequestBean().setSelectedTab("tabEda");
@@ -3330,7 +3333,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // io errors caught during writing files
                 e.printStackTrace();
                 
-                msgEdaButton.setText("* an IO problem occurred");
+                msgEdaButton.setValue("* an IO problem occurred");
                 msgEdaButton.setVisible(true);
                 dbgLog.warning("exiting edaAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabEda");
@@ -3348,7 +3351,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // end of CheckParameters: OK case
         } else {
             // parameters are not complete: show error message;
-            msgEdaButton.setText("* Select at least one option");
+            msgEdaButton.setValue("* Select at least one option");
             msgEdaButton.setVisible(true);
             dbgLog.warning("exiting edaAction(): selection is incomplete");
             getVDCRequestBean().setSelectedTab("tabEda");
@@ -3552,7 +3555,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 + selectedModelSpec.getVarBox().get(0).getLabel());
 
             // set var box label
-            varListbox1Lbl.setText(selectedModelSpec.getVarBox().get(0)
+            varListbox1Lbl.setValue(selectedModelSpec.getVarBox().get(0)
                 .getLabel());
 
         } else if (noRboxes == 2) {
@@ -3566,9 +3569,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 + selectedModelSpec.getVarBox().get(1).getLabel());
 
             // set var box label
-            varListbox1Lbl.setText(selectedModelSpec.getVarBox().get(0)
+            varListbox1Lbl.setValue(selectedModelSpec.getVarBox().get(0)
                 .getLabel());
-            varListbox2Lbl.setText(selectedModelSpec.getVarBox().get(1)
+            varListbox2Lbl.setValue(selectedModelSpec.getVarBox().get(1)
                 .getLabel());
 
         } else if (noRboxes == 3) {
@@ -3584,11 +3587,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 + selectedModelSpec.getVarBox().get(2).getLabel());
 
             // set var box label
-            varListbox1Lbl.setText(selectedModelSpec.getVarBox().get(0)
+            varListbox1Lbl.setValue(selectedModelSpec.getVarBox().get(0)
                 .getLabel());
-            varListbox2Lbl.setText(selectedModelSpec.getVarBox().get(1)
+            varListbox2Lbl.setValue(selectedModelSpec.getVarBox().get(1)
                 .getLabel());
-            varListbox3Lbl.setText(selectedModelSpec.getVarBox().get(2)
+            varListbox3Lbl.setValue(selectedModelSpec.getVarBox().get(2)
                 .getLabel());
 
         }
@@ -3688,36 +3691,39 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         groupPanel8belowRendered = rndrd;
     }
 
-    // label@binding for variable Left box1
-    private Label varListbox1Lbl = new Label();
+    // ice:outputLabel@binding for variable Left box1
+    private HtmlOutputLabel varListbox1Lbl = 
+        new com.icesoft.faces.component.ext.HtmlOutputLabel();
 
-    public Label getVarListbox1Lbl() {
+    public HtmlOutputLabel getVarListbox1Lbl() {
         return varListbox1Lbl;
     }
 
-    public void setVarListbox1Lbl(Label l) {
+    public void setVarListbox1Lbl(HtmlOutputLabel l) {
         this.varListbox1Lbl = l;
     }
 
-    // label@binding for variable box2
-    private Label varListbox2Lbl = new Label();
+    // ice:outputLabel@binding for variable box2
+    private HtmlOutputLabel varListbox2Lbl = 
+        new com.icesoft.faces.component.ext.HtmlOutputLabel();
 
-    public Label getVarListbox2Lbl() {
+    public HtmlOutputLabel getVarListbox2Lbl() {
         return varListbox2Lbl;
     }
 
-    public void setVarListbox2Lbl(Label l) {
+    public void setVarListbox2Lbl(HtmlOutputLabel l) {
         this.varListbox2Lbl = l;
     }
 
-    // label@binding for variable box3
-    private Label varListbox3Lbl = new Label();
+    // ice:outputLabel@binding for variable box3
+    private HtmlOutputLabel varListbox3Lbl = 
+        new com.icesoft.faces.component.ext.HtmlOutputLabel();
 
-    public Label getVarListbox3Lbl() {
+    public HtmlOutputLabel getVarListbox3Lbl() {
         return varListbox3Lbl;
     }
 
-    public void setVarListbox3Lbl(Label l) {
+    public void setVarListbox3Lbl(HtmlOutputLabel l) {
         this.varListbox3Lbl = l;
     }
 
@@ -4261,20 +4267,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // reset all error message text-fields related to moveVar buttons
     public void resetMsg4MoveVar() {
         msgMoveVar1Bttn.setRendered(false);
-        msgMoveVar1Bttn.setText(" ");
+        msgMoveVar1Bttn.setValue(" ");
         msgMoveVar2Bttn.setRendered(false);
-        msgMoveVar2Bttn.setText(" ");
+        msgMoveVar2Bttn.setValue(" ");
         msgMoveVar3Bttn.setRendered(false);
-        msgMoveVar3Bttn.setText(" ");
+        msgMoveVar3Bttn.setValue(" ");
     }
 
-    private StaticText msgMoveVar1Bttn = new StaticText();
+    private HtmlOutputText msgMoveVar1Bttn = 
+        new com.icesoft.faces.component.ext.HtmlOutputText();
 
-    public StaticText getMsgMoveVar1Bttn() {
+    public HtmlOutputText getMsgMoveVar1Bttn() {
         return msgMoveVar1Bttn;
     }
 
-    public void setMsgMoveVar1Bttn(StaticText txt) {
+    public void setMsgMoveVar1Bttn(HtmlOutputText txt) {
         this.msgMoveVar1Bttn = txt;
     }
 
@@ -4332,7 +4339,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     }
                 } else {
                     // show error message
-                    msgMoveVar1Bttn.setText("* Incompatible type:<br />required="
+                    msgMoveVar1Bttn.setValue("* Incompatible type:<br />required="
                             + varType
                             + "<br />found="
                             + vtInt2String
@@ -4344,19 +4351,20 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         } else {
             dbgLog.fine("1st RHS box is already maxed out");
             // show error message;
-            msgMoveVar1Bttn.setText("* The max number of variables<br/>for this box is: "
+            msgMoveVar1Bttn.setValue("* The max number of variables<br/>for this box is: "
                     + BoxR1max);
             msgMoveVar1Bttn.setRendered(true);
         }
     }
 
-    private StaticText msgMoveVar2Bttn = new StaticText();
+    private HtmlOutputText msgMoveVar2Bttn = 
+        new com.icesoft.faces.component.ext.HtmlOutputText();
 
-    public StaticText getMsgMoveVar2Bttn() {
+    public HtmlOutputText getMsgMoveVar2Bttn() {
         return msgMoveVar2Bttn;
     }
 
-    public void setMsgMoveVar2Bttn(StaticText txt) {
+    public void setMsgMoveVar2Bttn(HtmlOutputText txt) {
         this.msgMoveVar2Bttn = txt;
     }
 
@@ -4416,7 +4424,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     }
                 } else {
                     // show error message
-                    msgMoveVar2Bttn.setText("* Incompatible type:<br />required="
+                    msgMoveVar2Bttn.setValue("* Incompatible type:<br />required="
                             + varType
                             + "<br />found="
                             + vtInt2String
@@ -4428,19 +4436,20 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         } else {
             dbgLog.warning("2nd RHS box is already maxed out");
             // show error message;
-            msgMoveVar2Bttn.setText("* The max number of variables<br/>for this box is: "
+            msgMoveVar2Bttn.setValue("* The max number of variables<br/>for this box is: "
                     + BoxR2max);
             msgMoveVar2Bttn.setRendered(true);
         }
     }
 
-    private StaticText msgMoveVar3Bttn = new StaticText();
+    private HtmlOutputText msgMoveVar3Bttn = 
+        new com.icesoft.faces.component.ext.HtmlOutputText();
 
-    public StaticText getMsgMoveVar3Bttn() {
+    public HtmlOutputText getMsgMoveVar3Bttn() {
         return msgMoveVar3Bttn;
     }
 
-    public void setMsgMoveVar3Bttn(StaticText txt) {
+    public void setMsgMoveVar3Bttn(HtmlOutputText txt) {
         this.msgMoveVar3Bttn = txt;
     }
 
@@ -4501,7 +4510,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     }
                 } else {
                     // show error message
-                    msgMoveVar3Bttn.setText("* Incompatible type:<br />required="
+                    msgMoveVar3Bttn.setValue("* Incompatible type:<br />required="
                             + varType
                             + "<br />found="
                             + vtInt2String
@@ -5112,13 +5121,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 noe++;
                 if (i == 0) {
-                    msgMoveVar1Bttn.setText("*" + ermsg);
+                    msgMoveVar1Bttn.setValue("*" + ermsg);
                     msgMoveVar1Bttn.setRendered(true);
                 } else if (i == 1) {
-                    msgMoveVar2Bttn.setText("*" + ermsg);
+                    msgMoveVar2Bttn.setValue("*" + ermsg);
                     msgMoveVar2Bttn.setRendered(true);
                 } else if (i == 2) {
-                    msgMoveVar3Bttn.setText("*" + ermsg);
+                    msgMoveVar3Bttn.setValue("*" + ermsg);
                     msgMoveVar3Bttn.setRendered(true);
                 }
             }
@@ -5132,14 +5141,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 
 
-    // msgAdvStatButton:ui:StaticText@binding
-    private StaticText msgAdvStatButton = new StaticText();
+    // msgAdvStatButton:ice:outputText@binding
+    private com.icesoft.faces.component.ext.HtmlOutputText msgAdvStatButton = 
+        new com.icesoft.faces.component.ext.HtmlOutputText();
 
-    public StaticText getMsgAdvStatButton() {
+    public com.icesoft.faces.component.ext.HtmlOutputText getMsgAdvStatButton() {
         return msgAdvStatButton;
     }
 
-    public void setMsgAdvStatButton(StaticText txt) {
+    public void setMsgAdvStatButton(com.icesoft.faces.component.ext.HtmlOutputText txt) {
         this.msgAdvStatButton = txt;
     }
 
@@ -5155,7 +5165,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     public void resetMsgAdvStatButton() {
         dbgLog.fine("***** within resetMsgAdvStatButton *****");
-        msgAdvStatButton.setText(" ");
+        msgAdvStatButton.setValue(" ");
         FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().put("msgAdvStatButtonTxt", msgAdvStatButtonTxt);
         msgAdvStatButton.setVisible(false);
@@ -5588,7 +5598,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         if (wholeFileSize <= 0){
                             // subset file exists but it is empty
                         
-                            msgAdvStatButton.setText("* an data file is empty");
+                            msgAdvStatButton.setValue("* an data file is empty");
                             msgAdvStatButton.setVisible(true);
                             dbgLog.warning("exiting advStatAction() due to a file access error:"+
                             "a data file is empty"
@@ -5600,7 +5610,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                        
                     } else {
                         // file was not created/downloaded
-                        msgAdvStatButton.setText("* a data file was not created");
+                        msgAdvStatButton.setValue("* a data file was not created");
                         msgAdvStatButton.setVisible(true);
                         dbgLog.warning("exiting advStatAction() due to a file access error:"+
                         "a data file was not created"
@@ -5650,7 +5660,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
 
-                            msgAdvStatButton.setText("* could not generate subset due to an IO problem");
+                            msgAdvStatButton.setValue("* could not generate subset due to an IO problem");
                             msgAdvStatButton.setVisible(true); 
                             dbgLog.warning("exiting advStatAction() due to an IO problem ");
                             getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5660,7 +5670,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         } catch (RuntimeException re){
                             re.printStackTrace();
 
-                            msgAdvStatButton.setText("* could not generate subset due to an runtime error");
+                            msgAdvStatButton.setValue("* could not generate subset due to an runtime error");
                             msgAdvStatButton.setVisible(true); 
                             dbgLog.warning("exiting advStatAction() due to an runtime error ");
                             getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5682,7 +5692,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         } else {
                             // subset file exists but it is empty
                         
-                            msgAdvStatButton.setText("* an subset file is empty");
+                            msgAdvStatButton.setValue("* an subset file is empty");
                             msgAdvStatButton.setVisible(true);
                             dbgLog.warning("exiting advStatAction() due to a subsetting error:"+
                             "a subset file is empty"
@@ -5694,7 +5704,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         }
                     } else {
                         // subset file was not created
-                        msgAdvStatButton.setText("* a subset file was not created");
+                        msgAdvStatButton.setValue("* a subset file was not created");
                         msgAdvStatButton.setVisible(true);
                         dbgLog.warning("exiting advStatAction() due to a subsetting error:"+
                         "a subset file was not created"
@@ -5728,8 +5738,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                 // Step 5. Checks the DSB-exit-status code
                     if (resultInfo.get("RexecError").equals("true")){
-                        //msgAdvStatButton.setText("* The Request failed due to an R-runtime error");
-                        msgAdvStatButton.setText("* The Request failed due to an R-runtime error");
+                        //msgAdvStatButton.setValue("* The Request failed due to an R-runtime error");
+                        msgAdvStatButton.setValue("* The Request failed due to an R-runtime error");
                         msgAdvStatButton.setVisible(true);
                         dbgLog.fine("exiting advStatAction() due to an R-runtime error");
                         getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5748,7 +5758,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     e.printStackTrace();
                     // pass the error message to the resultPage
                     // resultInfo.put();
-                    msgAdvStatButton.setText("* file URL is malformed");
+                    msgAdvStatButton.setValue("* file URL is malformed");
                     msgAdvStatButton.setVisible(true);
                     dbgLog.warning("exiting advStatAction() due to a URL problem ");
                     getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5760,7 +5770,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // the file exists, but it is not accessible 
                     e.printStackTrace();
                     
-                    msgAdvStatButton.setText("* an IO problem occurred");
+                    msgAdvStatButton.setValue("* an IO problem occurred");
                     msgAdvStatButton.setVisible(true);
                     dbgLog.warning("exiting advStatAction() due to an IO problem ");
                     getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5771,7 +5781,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // end of the subset-OK case
             } else {
                 // not subsettable data file
-                msgAdvStatButton.setText("* this data file is not subsettable file");
+                msgAdvStatButton.setValue("* this data file is not subsettable file");
                 msgAdvStatButton.setVisible(true);
                 dbgLog.warning("exiting advStatAction(): the data file is not subsettable ");
                 getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5851,7 +5861,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 } else {
                     dbgLog.fine("RwrkspFileName does not exist");
-                    //msgAdvStatButton.setText("* The workspace file is not available");
+                    //msgAdvStatButton.setValue("* The workspace file is not available");
                     //msgAdvStatButton.setVisible(true);
                     dbgLog.warning("advStatAction(): R workspace file was not transferred");
                     //getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5869,7 +5879,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                    zipFileList.add(vdcstrtFileName);
 //                } else {
 //                    dbgLog.fine("vdcstrtFileName does not exist");
-//                    //msgAdvStatButton.setText("* vdc_startup.R is not available");
+//                    //msgAdvStatButton.setValue("* vdc_startup.R is not available");
 //                    //msgAdvStatButton.setVisible(true);
 //                    dbgLog.warning("advStatAction(): vdc_startup.R was not transferred");
 //                    //getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5947,7 +5957,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // file-access problem, etc.
                     e.printStackTrace();
                     dbgLog.fine("zipping IO exception");
-                    msgAdvStatButton.setText("* an IO problem occurred during zipping replication files");
+                    msgAdvStatButton.setValue("* an IO problem occurred during zipping replication files");
                     msgAdvStatButton.setVisible(true);
                     dbgLog.warning("exiting edaAction() due to an zipping IO problem ");
                     //getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5960,7 +5970,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // io errors caught during writing files
                 e.printStackTrace();
                 
-                msgAdvStatButton.setText("* an IO problem occurred");
+                msgAdvStatButton.setValue("* an IO problem occurred");
                 msgAdvStatButton.setVisible(true);
                 dbgLog.warning("exiting edaAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -5978,7 +5988,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         } else {
             // parameters are not complete: show error message;
 
-            msgAdvStatButton.setText("* Selection is incomplete");
+            msgAdvStatButton.setValue("* Selection is incomplete");
             msgAdvStatButton.setVisible(true);
             dbgLog.fine("exiting advStatAction(): selection is incomplete");
             getVDCRequestBean().setSelectedTab("tabAdvStat");
@@ -6618,7 +6628,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 advStatVarRBox3.addAll(tmpRBox3);
 
                 msgVariableSelection.setRendered(true);
-                msgVariableSelection.setText(
+                msgVariableSelection.setValue(
                     "At least one variable is used for recoding;<br />"+
                     "Remove its recoded variable(s) first.");
             }
@@ -6747,7 +6757,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 // shows the error message
                 msgVariableSelection.setRendered(true);
                 msgVariableSelection
-                    .setText("The variable ("
+                    .setValue("The variable ("
                         + tmpDataLine.get(3)
                         + ") is used for recoding;<br />Remove its recoded variable(s) first.");
 
@@ -6791,19 +6801,20 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
     
     /**
-     * ui:staticText component that is under the subsetting instruction
+     * ice:outputText component that is under the subsetting instruction
      * to show an error message when a base-variable for a recoded variable
      * is unchecked.  Exposed to the subsetting page and 
      * the component id is the same as this property
      */
-    private StaticText msgVariableSelection = new StaticText();
+    private HtmlOutputText msgVariableSelection = 
+        new com.icesoft.faces.component.ext.HtmlOutputText();
     
     /**
      * Getter for property msgVariableSelection
      *
      * @return    an unchecked-error message 
      */
-    public StaticText getMsgVariableSelection() {
+    public HtmlOutputText getMsgVariableSelection() {
         return msgVariableSelection;
     }
 
@@ -6812,7 +6823,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      *
      * @param txt    an uncheck-error message to be displayed
      */
-    public void setMsgVariableSelection(StaticText txt) {
+    public void setMsgVariableSelection(HtmlOutputText txt) {
         this.msgVariableSelection = txt;
     }
     
@@ -6823,7 +6834,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void resetMsgVariableSelection() {
         dbgLog.fine("***** resetMsgVariableSelection: start *****");
         msgVariableSelection.setRendered(false);
-        msgVariableSelection.setText(" ");
+        msgVariableSelection.setValue(" ");
         dbgLog.fine("***** resetMsgVariableSelection: end *****");
     }
     
@@ -7539,12 +7550,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     }
                     
                     // Resets the properties (rendered and text) of
-                    // msgSaveRecodeBttn (ui:staticText) that shows
+                    // msgSaveRecodeBttn (ice:outputText) that shows
                     // error messages for the action of SaveRecodeBttn
                     resetMsgSaveRecodeBttn();
                     
                     // Rests the properties (rendered and text) of
-                    // msgVariableSelection (ui:staticText) that shows
+                    // msgVariableSelection (ice:outputText) that shows
                     // error message when the base varaible for
                     // a recoded variable is un-selected in the variable table
                     resetMsgVariableSelection();

@@ -237,7 +237,7 @@
                                     style="vertical-align: middle" 
                                     value="/resources/error_small.gif"
                                     rendered="false"/>
-                                <ui:staticText id="msgDwnldButton"
+                                <ice:outputText id="msgDwnldButton"
                                     binding="#{AnalysisPage.msgDwnldButton}" 
                                     visible="false" 
                                     escape="true" 
@@ -586,7 +586,7 @@
                                             actionListener="#{AnalysisPage.saveRecodedVariable}"
                                             disabled="true" />
                                         
-                                        <ui:staticText id="msgSaveRecodeBttn"
+                                        <ice:outputText id="msgSaveRecodeBttn"
                                             binding="#{AnalysisPage.msgSaveRecodeBttn}" 
                                             rendered="false"
                                             escape="false"
@@ -652,11 +652,11 @@
                                         itemValue="#{AnalysisPage.edaOptionItems[1]}"/>
                                     
                                 </h:selectManyCheckbox>
-                                <ui:staticText  id="msgEdaButton"
+                                <ice:outputText  id="msgEdaButton"
                                     binding="#{AnalysisPage.msgEdaButton}" 
                                     visible="false" escape="false" 
                                     styleClass="errorMessage" 
-                                    text="#{AnalysisPage.msgEdaButtonTxt}"/>
+                                    value="#{AnalysisPage.msgEdaButtonTxt}"/>
                                                 <br />
                                 <h:commandButton  id="edaBttn"
                                     binding="#{AnalysisPage.edaButton}" 
@@ -777,7 +777,7 @@
                                                                              binding="#{AnalysisPage.button4}"
                                                                              actionListener="#{AnalysisPage.addVarBoxR1}"
                                                                              value=" &gt; "/>
-                                                            <ui:staticText id="msgMoveVar1Bttn"
+                                                            <ice:outputText id="msgMoveVar1Bttn"
                                                                            binding="#{AnalysisPage.msgMoveVar1Bttn}" 
                                                                            rendered="false"
                                                                            escape="false"
@@ -790,7 +790,7 @@
                                                         </h:panelGrid>
                                                         <h:panelGrid columns="1" id="gridPanel12r">
 
-                                                            <ui:label id="varListbox1Lbl" 
+                                                            <ice:outputLabel id="varListbox1Lbl" 
                                                                       binding="#{AnalysisPage.varListbox1Lbl}"
                                                                       for="moveVarListbox1"
                                                                       labelLevel="3" 
@@ -826,7 +826,7 @@
                                                                              actionListener="#{AnalysisPage.addVarBoxR2}"
                                                                              value=" &gt; "/>
                                                             
-                                                            <ui:staticText id="msgMoveVar2Bttn"
+                                                            <ice:outputText id="msgMoveVar2Bttn"
                                                                            binding="#{AnalysisPage.msgMoveVar2Bttn}" 
                                                                            rendered="false"
                                                                            escape="false"
@@ -840,7 +840,7 @@
                                                         </h:panelGrid>
                                                         <h:panelGrid columns="1" id="gridPanel13r">
                                                             
-                                                            <ui:label id="varListbox2Lbl" 
+                                                            <ice:outputLabel id="varListbox2Lbl" 
                                                                       binding="#{AnalysisPage.varListbox2Lbl}"
                                                                       for="moveVarListbox2"
                                                                       labelLevel="3" 
@@ -876,7 +876,7 @@
                                                                              actionListener="#{AnalysisPage.addVarBoxR3}"
                                                                              value=" &gt; "/>
                                                             
-                                                            <ui:staticText id="msgMoveVar3Bttn"
+                                                            <ice:outputText id="msgMoveVar3Bttn"
                                                                            binding="#{AnalysisPage.msgMoveVar3Bttn}" 
                                                                            rendered="false"
                                                                            escape="false"
@@ -891,7 +891,7 @@
                                                         <h:panelGrid columns="1" id="gridPanel14r">
                                                             
                                                             
-                                                            <ui:label id="varListbox3Lbl" 
+                                                            <ice:outputLabel id="varListbox3Lbl" 
                                                                       binding="#{AnalysisPage.varListbox3Lbl}"
                                                                       for="moveVarListbox3"
                                                                       labelLevel="3" 
@@ -1085,10 +1085,10 @@
                                                 </ice:panelGroup><!-- analysisOptionPanel-->
 
 
-                                                <ui:staticText  id="msgAdvStatButton" 
-                                                binding="#{AnalysisPage.msgAdvStatButton}" 
-                                                visible="false" escape="false" styleClass="errorMessage" 
-                                                 text="#{AnalysisPage.msgAdvStatButtonTxt}"/>
+                                                <ice:outputText  id="msgAdvStatButton" 
+                                                    binding="#{AnalysisPage.msgAdvStatButton}" 
+                                                    visible="false" escape="false" styleClass="errorMessage" 
+                                                    value="#{AnalysisPage.msgAdvStatButtonTxt}"/>
                                                 <br />
 
 
@@ -1147,7 +1147,7 @@
                                  value="#{bundleAnalysis['nonSubsettingInstruction']}" />
                </ice:panelGroup>                 
                 
-                <ui:staticText id="msgVariableSelection"
+                <ice:outputText id="msgVariableSelection"
                                binding="#{AnalysisPage.msgVariableSelection}" 
                                rendered="false"
                                escape="false"

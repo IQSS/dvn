@@ -20,6 +20,8 @@
 	 <link rel="stylesheet" type="text/css" href="/dvn/resources/stylesheet.css"/>
          <link rel="stylesheet" type="text/css" href="/dvn/resources/thickbox.css"/>
          <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css" />
+         <link rel="stylesheet" type="text/css" href="/dvn/css/demo_template.css"/>
+         <link rel="stylesheet" type="text/css" href="/dvn/css/auction_styles.css"/>
          <script type="text/javascript" src="/dvn/theme/com/sun/rave/web/ui/defaulttheme/javascript/formElements.js"/>
          <script type="text/javascript" src="/dvn/resources/EventCapture.js"/>
          <script type="text/javascript" src="/dvn/resources/jquery.js"/>
@@ -83,6 +85,8 @@
        </gui:insert>
        <div class="dvn_wrapper">
            <div class="dvn_content" id="content-frame">
+               <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
+               <ice:outputConnectionStatus style="display:none;"/>
                <gui:insert name="title">
                    <!-- *** MENUBAR (Included from template) *** -->
                    <gui:include src="views/Menubar.xhtml"/>

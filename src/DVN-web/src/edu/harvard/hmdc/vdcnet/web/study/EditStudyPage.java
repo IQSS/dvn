@@ -52,7 +52,7 @@ import edu.harvard.hmdc.vdcnet.util.SessionCounter;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
-import edu.harvard.hmdc.vdcnet.web.common.StudyFieldConstant;
+import edu.harvard.hmdc.vdcnet.study.StudyFieldConstant;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -677,7 +677,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         this.sessionRemove(token);
         getVDCRequestBean().setStudyId(study.getId());
         getVDCRequestBean().setSelectedTab(tabSet1.getSelected());
-        getVDCSessionBean().setStudyService(null);
         
         return  forwardPage;
     }
@@ -1150,7 +1149,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
        
         getVDCRequestBean().setStudyId(study.getId());
         getVDCRequestBean().setSelectedTab(tabSet1.getSelected());
-        getVDCSessionBean().setStudyService(null);
         this.sessionRemove(token);
         return "viewStudy";
     }

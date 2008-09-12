@@ -60,7 +60,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import com.icesoft.faces.component.ext.HtmlDataTable;
-import com.sun.jsfcl.data.DefaultTableDataModel;
+import com.icesoft.faces.component.jsfcl.data.DefaultTableDataModel;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import javax.faces.component.UIColumn;
 import java.util.Locale;

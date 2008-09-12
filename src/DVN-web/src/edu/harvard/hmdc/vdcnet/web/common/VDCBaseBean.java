@@ -27,14 +27,13 @@
 
 package edu.harvard.hmdc.vdcnet.web.common;
 
-import edu.harvard.hmdc.vdcnet.vdc.VDC;
-import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.faces.FacesException;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,7 +41,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Ellen Kraffmiller
  */
-public class VDCBaseBean extends  com.sun.rave.web.ui.appbase.AbstractPageBean implements java.io.Serializable  {
+public class VDCBaseBean  implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;   
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     /**
@@ -65,41 +64,8 @@ public class VDCBaseBean extends  com.sun.rave.web.ui.appbase.AbstractPageBean i
      * property values that were saved for this view when it was rendered.</p>
      */
     public void init() {
-        // Perform initializations inherited from our superclass
-        super.init();
-        // Perform application initialization that must complete
-        // *before* managed components are initialized
-        // TODO - add your own initialiation code here
-
-        try {
-            _init();
-        } catch (Exception e) {
-            log("_init() Initialization Failure", e);
-            throw e instanceof FacesException ? (FacesException) e: new FacesException(e);
-        }
-        
-        // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Initialization">
-        // Initialize automatically managed components
-        // *Note* - this logic should NOT be modified
-        try {
-            _init();
-        } catch (Exception e) {
-            log("AddCollectionsPage Initialization Failure", e);
-            throw e instanceof FacesException ? (FacesException) e: new FacesException(e);
-        }
-        // </editor-fold>
-        // Perform application initialization that must complete
-        // *after* managed components are initialized
-        // TODO - add your own initialization code here
 
     }  
-/*
-    public void doInit() throws Exception {
-        // this is the method that subclasses should override with their initiliaztion code
-    }     
-    */
-    private void _init() throws Exception{
-    }    
 
     
     public String getRequestParam(String name) {
@@ -144,7 +110,44 @@ public class VDCBaseBean extends  com.sun.rave.web.ui.appbase.AbstractPageBean i
         return (VDCRequestBean)getBean("VDCRequest");
         
     }
+     /**
+     * <p>Return a <code>Map</code> of the session scope attributes for the
+     * current user's session.  Note that calling this method will cause a
+     * session to be created if there is not already one associated with
+     * this request.</p>
+     */
+    protected Map getSessionMap() {
+
+        return FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+
+    }
     
+   protected ExternalContext getExternalContext() {
+
+        return FacesContext.getCurrentInstance().getExternalContext();
+
+    }
+   
+    /**
+     * <p>Return a <code>Map</code> of the request scope attributes for
+     * the current request.</p>
+     */
+    protected Map getRequestMap() {
+
+        return getExternalContext().getRequestMap();
+
+    }
+    
+      /**
+     * <p>Return the <code>FacesContext</code> instance for the current
+     * request.</p>
+     */
+    protected FacesContext getFacesContext() {
+
+        return FacesContext.getCurrentInstance();
+
+    }
+
 /**
  * Looks for the given paramName in the request:
  * Either by the exact parameter name, or as part of a String (if this is a faces component)
@@ -169,4 +172,42 @@ public class VDCBaseBean extends  com.sun.rave.web.ui.appbase.AbstractPageBean i
         }
         return paramValue;
  }
+ 
+   /**
+     * <p>Mapping from the String version of the <code>Locale</code> for
+     * this response to the corresponding character encoding.  For each
+     * row, the first String is the value returned by the toString() method
+     * for the java.util.Locale for the current view, and the second
+     * String is the name of the character encoding to be used.</p>
+     *
+     * <p>Only locales that use an encoding other than the default (UTF-8)
+     * need to be listed here.</p>
+     */
+    protected String encoding[][] = {
+	{ "zh_CN", "GB2312" }, // NOI18N
+    };
+
+  public String getLocaleCharacterEncoding() {
+
+	// Return the appropriate character encoding for this locale (if any)
+	Locale locale = getFacesContext().getViewRoot().getLocale();
+	if (locale == null) {
+	    locale = Locale.getDefault();
+	}
+	String match = locale.toString();
+	for (int i = 0; i < encoding.length; i++) {
+	    if (match.equals(encoding[i][0])) {
+		return encoding[i][1];
+	    }
+	}
+
+	// Return the default encoding value
+	return "UTF-8"; // NOI18N
+
+    }
+  protected Object getBean(String name) {
+
+        return FacesContext.getCurrentInstance().getApplication().getVariableResolver().resolveVariable(FacesContext.getCurrentInstance(), name);
+
+    }
 }

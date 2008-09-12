@@ -56,7 +56,6 @@
  */
 package edu.harvard.hmdc.vdcnet.web.common;
 
-import com.sun.rave.web.ui.appbase.AbstractApplicationBean;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -72,20 +71,8 @@ import javax.faces.FacesException;
  * or method binding expression that references a managed bean using
  * this class.</p>
  */
-public class VDCApplicationBean extends AbstractApplicationBean implements java.io.Serializable  {
-    // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
-    private int __placeholder;
-
-    /** 
-     * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
-     * This method is automatically generated, so any user-specified code inserted
-     * here is subject to being replaced.</p>
-     */
-    private void _init() throws Exception {
-    }
-        
-    // </editor-fold>
-
+public class VDCApplicationBean extends VDCBaseBean implements java.io.Serializable  {
+ 
 
     /** 
      * <p>Construct a new application data bean instance.</p>
@@ -93,46 +80,7 @@ public class VDCApplicationBean extends AbstractApplicationBean implements java.
     public VDCApplicationBean() {
     }
 
-    /** 
-     * <p>This method is called when this bean is initially added to
-     * application scope.  Typically, this occurs as a result of evaluating
-     * a value binding or method binding expression, which utilizes the
-     * managed bean facility to instantiate this bean and store it into
-     * application scope.</p>
-     * 
-     * <p>You may customize this method to initialize and cache application wide
-     * data values (such as the lists of valid options for dropdown list
-     * components), or to allocate resources that are required for the
-     * lifetime of the application.</p>
-     */
-    public void init() {
-        // Perform initializations inherited from our superclass
-        super.init();
-        // Perform application initialization that must complete
-        // *before* managed components are initialized
-        // TODO - add your own initialiation code here
 
-        // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Initialization">
-        // Initialize automatically managed components
-        // *Note* - this logic should NOT be modified
-        try {
-            _init();
-        } catch (Exception e) {
-            log("ApplicationBean1 Initialization Failure", e);
-            throw e instanceof FacesException ? (FacesException) e: new FacesException(e);
-        }
-
-        // </editor-fold>
-        // Perform application initialization that must complete
-        // *after* managed components are initialized
-        // TODO - add your own initialization code here
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-        try {
-            this.minimumDate = format.parse("01/01/2005");
-        } catch (ParseException pe) {
-            log("Parse exception in ApplicationBean1", pe);
-        }
-    }
 
     /** 
      * <p>This method is called when this bean is removed from

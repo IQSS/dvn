@@ -176,7 +176,13 @@ public class DvnRJobRequest {
     public String getStudytitle(){
         List<String> studytitle = listParametersForRequest.get("studytitle");
         dbgLog.fine("studytitle="+studytitle.get(0));
-        return studytitle.get(0);
+        String title = null;
+        if (studytitle.get(0) != null) {
+            title =  studytitle.get(0).replaceAll("\"", "'");
+        } else {
+            title = "[no study ]";
+        }
+        return title;
     }
 
     /**

@@ -234,6 +234,7 @@
         <managed-bean-name>AddFilesPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.AddFilesPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
+<!--
         <managed-property>
             <property-name>studyId</property-name>
             <property-class>java.lang.Long</property-class>
@@ -244,7 +245,42 @@
             <property-class>java.lang.String</property-class>
             <value>#{VDCSession.loginBean.user.email}</value>
         </managed-property>
+-->
+ <!-- ****** EV : Managed beans for AddFilesPage with IceFaces ****** -->
+        <managed-property>
+        <property-name>renderManager</property-name>
+        <value>#{manager}</value>
+       </managed-property>
     </managed-bean>
+<managed-bean>
+        <description>
+            Backing bean for dataTable example.
+        </description>
+        <managed-bean-name>fileData</managed-bean-name>
+        <managed-bean-class>
+            edu.harvard.hmdc.vdcnet.web.study.util.InputFileData
+        </managed-bean-class>
+        <managed-bean-scope>none</managed-bean-scope>
+        <managed-property>
+          <property-name>fileInfo</property-name>
+          <value>#{fileInfo}</value>
+       </managed-property>
+    </managed-bean>
+ <managed-bean>
+        <managed-bean-name>manager</managed-bean-name>
+        <managed-bean-class>
+	com.icesoft.faces.async.render.RenderManager
+	</managed-bean-class>
+        <managed-bean-scope>none</managed-bean-scope>
+    </managed-bean>
+ <managed-bean>
+        <managed-bean-name>fileInfo</managed-bean-name>
+        <managed-bean-class>
+	com.icesoft.faces.component.inputfile.FileInfo
+	</managed-bean-class>
+        <managed-bean-scope>none</managed-bean-scope>
+    </managed-bean>
+ <!-- **************** EV ***************** -->
     <managed-bean>
         <managed-bean-name>PrivilegedUsersPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.PrivilegedUsersPage</managed-bean-class>

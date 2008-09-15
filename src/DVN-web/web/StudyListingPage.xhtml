@@ -22,7 +22,7 @@
 
     <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}" />
-        <input type="hidden" name="pageName" value="SearchPage" />
+        <input type="hidden" name="pageName" value="StudyListingPage" />
         <script type="text/javascript">
             // <![CDATA[ 
            // workaround for issue where f:selectItems does not provide setStyle or setStyleClass wbossons
@@ -36,7 +36,7 @@
             // ]]>
         </script>
 
-        <ice:inputHidden id="studyListingIndex" value="#{SearchPage.studyListingIndex}" />
+        <ice:inputHidden id="studyListingIndex" value="#{StudyListingPage.studyListingIndex}" />
       
       <!-- Main Section starts here -->
       <div id="dvn_mainSection">
@@ -51,7 +51,7 @@
             <div class="dvn_searchTitle"><a title="" name="search">Search</a></div>
             <fieldset>
                 <label for="options">
-                    <ice:selectOneMenu id="dropdown1" value="#{SearchPage.searchField}">
+                    <ice:selectOneMenu id="dropdown1" value="#{StudyListingPage.searchField}">
                         <f:selectItem itemLabel="Cataloging Information" itemValue="any" />
                         <f:selectItem itemLabel="- Author" itemValue="authorName" />
                         <f:selectItem itemLabel="- Title" itemValue="title" />
@@ -60,18 +60,18 @@
                     </ice:selectOneMenu>
                 </label>
                 <label for="search">
-                    <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" id="textField2" value="#{SearchPage.searchValue}" />
+                    <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" id="textField2" value="#{StudyListingPage.searchValue}" />
                 </label>
-                <ice:outputLabel for="filter" rendered="#{SearchPage.renderSearchResultsFilter}" >
-                    <ice:selectBooleanCheckbox value="#{SearchPage.searchResultsFilter}" />
+                <ice:outputLabel for="filter" rendered="#{StudyListingPage.renderSearchResultsFilter}" >
+                    <ice:selectBooleanCheckbox value="#{StudyListingPage.searchResultsFilter}" />
                     <span><ice:outputText value="within these results" /></span>
                 </ice:outputLabel>
-                <ice:outputLabel  for="filter" rendered="#{SearchPage.renderSearchCollectionFilter}" >
-                    <ice:selectBooleanCheckbox value="#{SearchPage.searchCollectionFilter}" />
+                <ice:outputLabel  for="filter" rendered="#{StudyListingPage.renderSearchCollectionFilter}" >
+                    <ice:selectBooleanCheckbox value="#{StudyListingPage.searchCollectionFilter}" />
                     <span><ice:outputText value="within this collection" /></span>
                 </ice:outputLabel>
                 <label for="button">
-                    <ice:commandButton id="search" value="Go" action="#{SearchPage.search_action}" />
+                    <ice:commandButton id="search" value="Go" action="#{StudyListingPage.search_action}" />
                 </label>
            </fieldset>
            <div class="dvn_searchLinks">
@@ -92,34 +92,34 @@
     <!-- Search Section ends here -->
                    
     <!-- Start Search Results (with side panel, if available) -->      
-      <div jsfc="ice:panelGroup"  styleClass="#{ (SearchPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'}" >  
-           <div jsfc="ice:panelGroup"  styleClass="#{ (SearchPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}" >    	
+      <div jsfc="ice:panelGroup"  styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'}" >  
+           <div jsfc="ice:panelGroup"  styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}" >    	
               <div class="dvn_sectionTitle">
                   <a name="recent" title="">
-                      <ice:outputText value="#{SearchPage.listHeader}" />
+                      <ice:outputText value="#{StudyListingPage.listHeader}" />
                   </a>
               </div>            
                   <div class="dvn_sectionBox">  
                      <div class="dvn_margin12">
-                       <ice:outputText styleClass="vdcSubHeaderColor" value="#{SearchPage.subListHeader}" />
+                       <ice:outputText styleClass="vdcSubHeaderColor" value="#{StudyListingPage.subListHeader}" />
                        <div>
-                          <ice:outputText id="listMessagePrefix" value="#{SearchPage.listMessagePrefix}" />
-                          <ice:outputText id="listMessageContent" styleClass="warnMessage" value="#{SearchPage.listMessageContent}" />
-                          <ice:outputText id="listMessageSuffix" value="#{SearchPage.listMessageSuffix}" />
+                          <ice:outputText id="listMessagePrefix" value="#{StudyListingPage.listMessagePrefix}" />
+                          <ice:outputText id="listMessageContent" styleClass="warnMessage" value="#{StudyListingPage.listMessageContent}" />
+                          <ice:outputText id="listMessageSuffix" value="#{StudyListingPage.listMessageSuffix}" />
                        </div>
                       
                       <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2" width="98%"
-                                    styleClass="vdcSResultsTop" rendered="#{SearchPage.renderSort or SearchPage.renderScroller}">
-                         <div jsfc="ice:panelGroup" id="groupPanel5" rendered="#{SearchPage.renderSort}">
-                              <ice:selectOneMenu id="dropdown2" valueChangeListener="#{SearchPage.sort_action}" onchange="submit();">
+                                    styleClass="vdcSResultsTop" rendered="#{StudyListingPage.renderSort or StudyListingPage.renderScroller}">
+                         <div jsfc="ice:panelGroup" id="groupPanel5" rendered="#{StudyListingPage.renderSort}">
+                              <ice:selectOneMenu id="dropdown2" valueChangeListener="#{StudyListingPage.sort_action}" onchange="submit();">
                                   <f:selectItem itemLabel="Sort By:" itemValue="" />
                                   <f:selectItem itemLabel="- Study ID" itemValue="studyId" />
                                   <f:selectItem itemLabel="- Title" itemValue="title" />
                               </ice:selectOneMenu>
                           </div>
                           
-                          <div jsfc="ice:panelGroup"  id="groupPanel4" rendered="#{SearchPage.renderScroller}">
-                              <t:scroller binding="#{SearchPage.scroller}" for="dataTable1" actionListener="#{SearchPage.scroll_action}">
+                          <div jsfc="ice:panelGroup"  id="groupPanel4" rendered="#{StudyListingPage.renderScroller}">
+                              <t:scroller binding="#{StudyListingPage.scroller}" for="dataTable1" actionListener="#{StudyListingPage.scroll_action}">
                                   <f:facet name="previous">
                                       <ice:graphicImage id="scrollBack" value="/resources/arrow-left.gif" styleClass="vdcNoBorders" />
                                   </f:facet>
@@ -130,12 +130,12 @@
                           </div>
                       </ice:panelGrid>
             
-                      <ice:dataTable binding="#{SearchPage.studyTable}" rows="10" headerClass="list-header" id="dataTable1" width="98%"
-                                    rowClasses="list-row-odd, list-row-even" columnClasses="vdcSResultsList" value="#{SearchPage.studies}" var="studyUI">
+                      <ice:dataTable binding="#{StudyListingPage.studyTable}" rows="10" headerClass="list-header" id="dataTable1" width="98%"
+                                    rowClasses="list-row-odd, list-row-even" columnClasses="vdcSResultsList" value="#{StudyListingPage.studies}" var="studyUI">
                           <ice:column id="column1">
                               <div jsfc="ice:panelGroup" id="groupPanel1" style="padding-bottom: 5px">
                                   
-                                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}&amp;studyListingIndex=#{SearchPage.studyListingIndex}"  id="hyperlink3">
+                                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}"  id="hyperlink3">
                                       <ice:outputText id="hyperlink3Text" value="#{studyUI.study.title}" />
                                   </ice:outputLink>
                                   <ice:outputText styleClass="dvn_SResultsGlobalId" value=" (#{studyUI.study.globalId})" />
@@ -144,7 +144,7 @@
                               <div>
                                   <ice:graphicImage alt="This study contains no files." rendered="#{!studyUI.files}"
                                                   title="This study contains no files." value="/resources/icon_nofiles.gif" />
-                                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}&amp;tab=files&amp;studyListingIndex=#{SearchPage.studyListingIndex}" rendered="#{studyUI.files}">
+                                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}&amp;tab=files&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}" rendered="#{studyUI.files}">
                                       <ice:graphicImage styleClass="vdcNoBorders" alt="This study contains subsettable files." rendered="#{studyUI.subsettable}"
                                                       title="This study contains subsettable files." value="/resources/icon_subsettable.gif" />
                                       <ice:graphicImage styleClass="vdcNoBorders" alt="This study contains only non-subsettable files." rendered="#{!studyUI.subsettable}"
@@ -167,31 +167,31 @@
                               </div>
                               
                               <!-- Optional search fields  -->
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.producerName]  and !empty studyUI.producers}">
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.producerName]  and !empty studyUI.producers}">
                                   <ice:outputText value="Producer:" styleClass="vdcSResultsField" />
                                   <ice:outputText value="#{studyUI.producers}" escape="false" />
                               </div>
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.distributionDate]  and !empty studyUI.study.distributionDate}">
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.distributionDate]  and !empty studyUI.study.distributionDate}">
                                   <ice:outputText value="Distribution Date:" styleClass="vdcSResultsField" />
                                   <ice:outputText value="#{studyUI.study.distributionDate}" escape="false" />
                               </div>
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.distributorName]  and !empty studyUI.distributors}">
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.distributorName]  and !empty studyUI.distributors}">
                                   <ice:outputText value="Distributor:" styleClass="vdcSResultsField" />
                                   <ice:outputText value="#{studyUI.distributors}" escape="false" />
                               </div>
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.replicationFor]  and !empty studyUI.study.replicationFor}">
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.replicationFor]  and !empty studyUI.study.replicationFor}">
                                   <ice:outputText value="Replication For:" styleClass="vdcSResultsField" />
                                   <ice:outputText value="#{studyUI.study.replicationFor}" escape="false" />
                               </div>
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.relatedPublications]  and !empty studyUI.relPublications}">
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.relatedPublications]  and !empty studyUI.relPublications}">
                                   <ice:outputText value="Related Publications:" styleClass="vdcSResultsField" />
                                   <ice:outputText value="#{studyUI.relPublications}" escape="false" />
                               </div>
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.relatedMaterial]  and !empty studyUI.relMaterials}">
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.relatedMaterial]  and !empty studyUI.relMaterials}">
                                   <ice:outputText value="Related Material:" styleClass="vdcSResultsField" />
                                   <ice:outputText value="#{studyUI.relMaterials}" escape="false" />
                               </div>
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty SearchPage.studyFields[sfc.relatedStudies]  and !empty studyUI.relStudies}">
+                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.relatedStudies]  and !empty studyUI.relStudies}">
                                   <ice:outputText value="Related Studies:" styleClass="vdcSResultsField" />
                                   <ice:outputText value="#{studyUI.relStudies}" escape="false" />
                               </div>
@@ -217,13 +217,13 @@
                       </ice:dataTable>
                       
                       <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22" width="98%"
-                                    styleClass="vdcSResultsTop" rendered="#{SearchPage.renderSort or SearchPage.renderScroller}">
-                          <div jsfc="ice:panelGroup"  id="groupPanel55" rendered="#{SearchPage.renderSort}">
+                                    styleClass="vdcSResultsTop" rendered="#{StudyListingPage.renderSort or StudyListingPage.renderScroller}">
+                          <div jsfc="ice:panelGroup"  id="groupPanel55" rendered="#{StudyListingPage.renderSort}">
                               
                           </div>
                           
-                          <div jsfc="ice:panelGroup"  id="groupPanel44" rendered="#{SearchPage.renderScroller}">
-                              <t:scroller binding="#{SearchPage.scroller2}" for="dataTable1" actionListener="#{SearchPage.scroll_action}">
+                          <div jsfc="ice:panelGroup"  id="groupPanel44" rendered="#{StudyListingPage.renderScroller}">
+                              <t:scroller binding="#{StudyListingPage.scroller2}" for="dataTable1" actionListener="#{StudyListingPage.scroll_action}">
                                   <f:facet name="previous">
                                       <ice:graphicImage id="scrollBack2" value="/resources/arrow-left.gif" styleClass="vdcNoBorders" />
                                   </f:facet>

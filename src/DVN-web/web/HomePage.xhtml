@@ -268,7 +268,7 @@
             
                     <!-- This is temporary until Dataverse homepage ans search results page are changed -->
             
-               <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/SearchPage.xhtml?mode=1&amp;collectionId=#{VDCRequest.currentVDC.rootCollection.id}" rendered="#{VDCRequest.currentVDC != null}">
+               <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/StudyListingPage.xhtml?mode=1&amp;collectionId=#{VDCRequest.currentVDC.rootCollection.id}" rendered="#{VDCRequest.currentVDC != null}">
                     <ice:outputText value="#{VDCRequest.currentVDC.name} Dataverse - Study Listing (temporary link)" />
                 </ice:outputLink>
            

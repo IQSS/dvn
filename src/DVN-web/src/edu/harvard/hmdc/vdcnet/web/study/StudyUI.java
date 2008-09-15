@@ -76,7 +76,7 @@ public class StudyUI  implements java.io.Serializable {
     /** Creates a new instance of StudyUI
      *  this consturctor does not initialize the file category ui list
      *  and is meant to be used in places where you do not need them
-     *  e.g. the SearchPage or the CollectionTree
+     *  e.g. the StudyListingPage or the CollectionTree
      */
     public StudyUI(Study s) {
         this.study = s;

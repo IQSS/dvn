@@ -19,7 +19,7 @@
  */
 
 /*
- * SearchPageBean.java
+ * StudyListingPage.java
  *
  * Created on September 19, 2006, 6:28 PM
  *
@@ -72,15 +72,15 @@ import org.apache.commons.collections.map.LinkedMap;
  *
  * @author gdurand
  */
-public class SearchPage extends VDCBaseBean  implements java.io.Serializable {
+public class StudyListingPage extends VDCBaseBean  implements java.io.Serializable {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCCollectionServiceLocal vdcCollectionService;
     @EJB StudyServiceLocal studyService;
     @EJB IndexServiceLocal indexService;
     @EJB VariableServiceLocal varService;
     
-    /** Creates a new instance of SearchPageBean */
-    public SearchPage() {
+    /** Creates a new instance of StudyListingPageBean */
+    public StudyListingPage() {
     }
     
     // data members
@@ -338,7 +338,7 @@ public class SearchPage extends VDCBaseBean  implements java.io.Serializable {
     
     public void init() {
         super.init();
-        if ( isFromPage("SearchPage") ) { // this is a post, so get the studyListing and let actions handle the rest
+        if ( isFromPage("StudyListingPage") ) { // this is a post, so get the studyListing and let actions handle the rest
             String slIndex = getRequestParam("form1:studyListingIndex");
             if (slIndex != null) {
                 studyListing =  getStudyListingFromMap(slIndex);
@@ -542,9 +542,9 @@ public class SearchPage extends VDCBaseBean  implements java.io.Serializable {
             // performace of filtering the tree is slow, so for now just show entire tree
             //vdcTree.setStudyFilter(studies);
             //vdcTree.setIncludeCount(true);
-            vdcTree.setCollectionUrl("/faces/SearchPage.xhtml?mode=3&oslIndex=" + studyListingIndex);
+            vdcTree.setCollectionUrl("/faces/StudyListingPage.xhtml?mode=3&oslIndex=" + studyListingIndex);
         } else {
-            vdcTree.setCollectionUrl("/faces/SearchPage.xhtml?mode=1");
+            vdcTree.setCollectionUrl("/faces/StudyListingPage.xhtml?mode=1");
         }
         
         if (studyListing.getCollectionId() != null) {

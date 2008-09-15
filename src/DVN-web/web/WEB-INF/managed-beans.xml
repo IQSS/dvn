@@ -37,8 +37,8 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
-        <managed-bean-name>SearchPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.SearchPage</managed-bean-class>
+        <managed-bean-name>StudyListingPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.StudyListingPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>

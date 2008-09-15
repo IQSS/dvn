@@ -109,8 +109,8 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
             sessionRemove("refererUrl");
         }
         boolean activeOnly = true;
-        VDCUser user = userService.findByUserName(userName, activeOnly);
-        if (user == null || !userService.validatePassword(user.getId(), password)) {
+        VDCUser user = userService.findByUserName(userName.trim(), activeOnly);
+        if (user == null || !userService.validatePassword(user.getId(),password)) {
             loginFailed = true;
             return null;
         } else {

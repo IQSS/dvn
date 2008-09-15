@@ -49,7 +49,7 @@ import edu.harvard.hmdc.vdcnet.study.TemplateField;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
-import edu.harvard.hmdc.vdcnet.web.common.StudyFieldConstant;
+import edu.harvard.hmdc.vdcnet.study.StudyFieldConstant;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -608,7 +608,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         editTemplateService.cancel();
         this.sessionRemove(token);
        
-        getVDCSessionBean().setStudyService(null);
         
         return  forwardPage;
     }
@@ -1092,8 +1091,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         
         editTemplateService.save();
        
-      
-        getVDCSessionBean().setStudyService(null);
+       
         this.sessionRemove(token);
         return "manageTemplates";
     }

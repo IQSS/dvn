@@ -60,6 +60,7 @@ import java.util.logging.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.PorterStemFilter;
 import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
@@ -536,8 +537,9 @@ public class Indexer implements java.io.Serializable  {
     }
 
     public List query(String adhocQuery) throws IOException {
-//        QueryParser parser = new QueryParser("abstract",new DVNStandardAnalyzer());
+//        QueryParser parser = new QueryParser("abstract",new DVNAnalyzer());
         QueryParser parser = new QueryParser("abstract",new DVNSearchAnalyzer());
+//        QueryParser parser = new QueryParser("abstract",new StandardAnalyzer());
         parser.setDefaultOperator(QueryParser.AND_OPERATOR);
         Query query=null;
         try {

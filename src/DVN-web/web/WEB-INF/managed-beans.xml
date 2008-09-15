@@ -731,14 +731,4 @@
             <value>#{renderMgr}</value>
         </managed-property>
     </managed-bean>
-    <managed-bean>
-        <description>Bean for pushing out network stats changes</description>
-        <managed-bean-name>dvnBean</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.DVNBean</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-         <managed-property>
-            <property-name>renderManager</property-name>
-            <value>#{renderMgr}</value>
-        </managed-property>
-    </managed-bean>
 </faces-config>

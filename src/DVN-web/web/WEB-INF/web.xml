@@ -237,11 +237,6 @@
         <servlet-name>Grizzly Push Servlet</servlet-name>
         <url-pattern>/block/receive-updated-views/*</url-pattern>
     </servlet-mapping> -->
-    <servlet>
-        <servlet-name>ServletAdaptor</servlet-name>
-        <servlet-class>com.sun.ws.rest.impl.container.servlet.ServletAdaptor</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
     <servlet-mapping>
         <servlet-name>Persistent Faces Servlet</servlet-name>
         <url-pattern>/xmlhttp/*</url-pattern>
@@ -286,10 +281,6 @@
     <servlet-mapping>
         <servlet-name>OAIHandler</servlet-name>
         <url-pattern>/OAIHandler</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ServletAdaptor</servlet-name>
-        <url-pattern>/resources/*</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>HomePage.jsp</welcome-file>

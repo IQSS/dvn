@@ -21,28 +21,20 @@
 /*
  * AddFilesPage.java
  *
- * Created on September 25, 2006, 3:54 PM
- *
+ * Created on September, 2008, 3:54 PM
+ * evillalon@iq.harvard.edu
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
+ *
+ *
+ *
+ * @author gdurand
  */
-
 package edu.harvard.hmdc.vdcnet.web.study;
 
-import com.sun.rave.web.ui.model.UploadedFile;
-import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
-import edu.harvard.hmdc.vdcnet.study.EditStudyService;
-import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyFile;
-import edu.harvard.hmdc.vdcnet.study.StudyFileEditBean;
-import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
-import edu.harvard.hmdc.vdcnet.study.TemplateFileCategory;
-import edu.harvard.hmdc.vdcnet.util.FileUtil;
+
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -53,19 +45,294 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 import java.util.*;
+import edu.harvard.hmdc.vdcnet.study.EditStudyService;
+import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import com.icesoft.faces.async.render.RenderManager;
+import com.icesoft.faces.async.render.Renderable;
+import com.icesoft.faces.component.inputfile.InputFile;
+import com.icesoft.faces.context.DisposableBean;
+import com.icesoft.faces.webapp.xmlhttp.FatalRenderingException;
+import com.icesoft.faces.webapp.xmlhttp.PersistentFacesState;
+import com.icesoft.faces.webapp.xmlhttp.RenderingException;
+import com.icesoft.faces.webapp.xmlhttp.TransientRenderingException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+//import org.apache.commons.fileupload.servelet.*;
 
-/**
- *
- * @author gdurand
- */
-public class AddFilesPage extends VDCBaseBean implements java.io.Serializable  {
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import edu.harvard.hmdc.vdcnet.util.InputFileData;
+import edu.harvard.hmdc.vdcnet.study.StudyFileEditBean;
+import edu.harvard.hmdc.vdcnet.study.Study;
+import edu.harvard.hmdc.vdcnet.study.StudyFile;
+import edu.harvard.hmdc.vdcnet.study.TemplateFileCategory;
+
+public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
+	  Renderable, DisposableBean  {
     @EJB EditStudyService studyService;
     @EJB StudyServiceLocal fileSystemNameService;
 
-    /** Creates a new instance of AddFilesPage */
-    public AddFilesPage() {
+/**
+ * <p>The AddFilesPage is responsible for the file upload
+ * logic as well as the file deletion object.  A users file uploads are only
+ * visible to them and are deleted when the session is destroyed.</p>
+ *
+ * @since 1.7
+ */
+
+
+    public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
+
+    // File sizes used to generate formatted label
+    public static final long MEGABYTE_LENGTH_BYTES = 1048000l;
+    public static final long KILOBYTE_LENGTH_BYTES = 1024l;
+
+    // render manager for the application, uses session id for on demand
+    // render group.
+    private RenderManager renderManager;
+    private PersistentFacesState persistentFacesState;
+    private String sessionId;
+    // files associated with the current user
+   
+     private final List<InputFileData> fileList =
+            Collections.synchronizedList(new ArrayList<InputFileData>());
+    // latest file uploaded by client
+    private InputFileData currentFile;
+    // file upload completed percent (Progress)
+    private int fileProgress;
+    
+   
+     /**
+     * Return the reference to the
+     * {@link com.icesoft.faces.webapp.xmlhttp.PersistentFacesState
+     * PersistentFacesState} associated with this Renderable.
+     * <p/>
+     * The typical (and recommended usage) is to get and hold a reference to the
+     * PersistentFacesState in the constructor of your managed bean and return
+     * that reference from this method.
+     *
+     * @return the PersistentFacesState associated with this Renderable
+     */
+    public PersistentFacesState getState() {
+        return persistentFacesState;
     }
 
+    public void setRenderManager(RenderManager renderManager) {
+        this.renderManager = renderManager;
+        renderManager.getOnDemandRenderer(sessionId).add(this);
+        
+    }
+
+    public InputFileData getCurrentFile() {
+        return currentFile;
+    }
+
+    public int getFileProgress() {
+        return fileProgress;
+    }
+
+    public List getFileList() {
+        return fileList;
+    }
+    
+  
+    public AddFilesPage() {
+        persistentFacesState = PersistentFacesState.getInstance();
+     
+     
+        // Get the session id in a container generic way
+        sessionId = FacesContext.getCurrentInstance().getExternalContext()
+                .getSession(false).toString();
+    }
+
+    /**
+     * <p>Action event method which is triggered when a user clicks on the
+     * upload file button.  Uploaded files are added to a list so that user have
+     * the option to delete them programatically.  Any errors that occurs
+     * during the file uploaded are added the messages output.</p>
+     *
+     * @param event jsf action event.
+     */
+    public void uploadFile(ActionEvent event) {
+        InputFile inputFile = (InputFile) event.getSource();
+        String str="";
+       
+	if (inputFile.getStatus() != InputFile.SAVED){
+            str = "File " + inputFile.getFileInfo().getFileName()+ " has not been saved";
+            mLog.error(str); 
+            errorMessage(str);
+            return;
+          }
+            
+            // reference our newly updated file for display purposes and
+            // added it to our history file list.
+        File file = inputFile.getFile();
+        currentFile = new InputFileData(inputFile.getFileInfo(),file);
+        boolean b =hasFileName(currentFile, false);
+       if(b){
+            str = "File " + currentFile.getFileInfo().getFileName()+ " is already in the table";
+            mLog.error(str);
+            System.out.println(str);
+           errorMessage(str);
+            return;
+       }else{
+            getValidationFileNames().add(currentFile.getFileName()); 
+       }
+                
+        synchronized (fileList) {
+                fileList.add(currentFile);   
+           }  
+     
+    try{
+        if (persistentFacesState !=null) persistentFacesState.executeAndRender();
+     }catch(RenderingException ee){ 
+         mLog.error(ee.getMessage()); } 
+        
+
+    }
+  private void errorMessage(String str){
+       FacesContext context =   FacesContext.getCurrentInstance();
+       FacesMessage message = new FacesMessage(str);
+       UIInput out = new UIInput(); 
+       out.setValid(false); 
+      persistentFacesState.getFacesContext().addMessage(out.getClientId(context),message);
+      
+  }
+    /**
+     * <p>This method is bound to the inputFile component and is executed
+     * multiple times during the file upload process.  Every call allows
+     * the user to finds out what percentage of the file has been uploaded.
+     * This progress information can then be used with a progressBar component
+     * for user feedback on the file upload progress. </p>
+     *
+     * @param event holds a InputFile object in its source which can be probed
+     *              for the file upload percentage complete.
+     */
+    public void fileUploadProgress(EventObject event) {
+        InputFile ifile = (InputFile) event.getSource();
+        fileProgress = ifile.getFileInfo().getPercent();
+  if (persistentFacesState !=null) {
+         renderManager.getOnDemandRenderer(sessionId).requestRender();} 
+        
+/* 
+try {
+       
+          persistentFacesState.render();
+            
+        } catch (RenderingException ee) {
+            mLog.error(ee.getMessage());
+        }
+  */
+    }
+
+    /**
+     * <p>Allows a user to remove a file from a list of uploaded files.  This
+     * methods assumes that a request param "fileName" has been set to a valid
+     * file name that the user wishes to remove or delete</p>
+     *
+     * @param event jsf action event
+     */ 
+    public void removeUploadedFile(ActionEvent event) {
+        // Get the inventory item ID from the context.
+        FacesContext context = FacesContext.getCurrentInstance();
+        Map map = context.getExternalContext().getRequestParameterMap();
+        String fileName = (String) map.get("fileName");
+        
+        InputFileData inputFileData=null;
+        boolean found = false; 
+        synchronized (fileList) {
+            
+            Iterator<InputFileData> theit = fileList.iterator();
+            
+            
+            while(theit.hasNext()){
+                inputFileData =theit.next();
+               
+                
+                  if (inputFileData.getFileName().equals(fileName)||
+                     inputFileData.getFileInfo().getFileName().equals(fileName) ) {
+		      found = true; 
+                      theit.remove();             
+                      break;
+                  }
+            }
+        }
+	if (found) hasFileName(fileName, true);
+      
+        }
+     
+private boolean  hasFileName( InputFileData inputFileData, boolean remov){
+    boolean isin = false; 
+    if(getValidationFileNames().size() <= 0) return isin;
+   
+    String fname = inputFileData.getFileName();
+    return hasFileName(fname, remov);
+         
+}
+        
+  private boolean  hasFileName( String fname, boolean remov){
+    boolean isin = false; 
+    Iterator<String> iter = getValidationFileNames().iterator();
+        while (iter.hasNext()) {
+           
+            if (fname.equals(iter.next() ) ) {
+                if(remov) iter.remove();
+		isin = true;
+            }
+	}
+	return isin; 
+}
+       
+    
+    /**
+     * Callback method that is called if any exception occurs during an attempt
+     * to render this Renderable.
+     * <p/>
+     * It is up to the application developer to implement appropriate policy
+     * when a RenderingException occurs.  Different policies might be
+     * appropriate based on the severity of the exception.  For example, if the
+     * exception is fatal (the session has expired), no further attempts should
+     * be made to render this Renderable and the application may want to remove
+     * the Renderable from some or all of the
+     * {@link com.icesoft.faces.async.render.GroupAsyncRenderer}s it
+     * belongs to. If it is a transient exception (like a client's connection is
+     * temporarily unavailable) then the application has the option of removing
+     * the Renderable from GroupRenderers or leaving them and allowing another
+     * render call to be attempted.
+     *
+     * @param renderingException The exception that occurred when attempting to
+     *                           render this Renderable.
+     */
+    public void renderingException(RenderingException renderingException) {
+        if (mLog.isTraceEnabled() &&
+                renderingException instanceof TransientRenderingException) {
+            mLog.trace("InputFileController Transient Rendering excpetion:", renderingException);
+        } else if (renderingException instanceof FatalRenderingException) {
+            if (mLog.isTraceEnabled()) {
+                mLog.trace("InputFileController Fatal rendering exception: ", renderingException);
+            }
+            renderManager.getOnDemandRenderer(sessionId).remove(this);
+            renderManager.getOnDemandRenderer(sessionId).dispose();
+        }
+    }
+
+   
+    /**
+     * Dispose callback called due to a view closing or session
+     * invalidation/timeout
+     */
+    	public void dispose() throws Exception {
+               
+       if (mLog.isTraceEnabled()) {
+            mLog.trace("OutputProgressController dispose OnDemandRenderer for session: " + sessionId);
+        }
+        renderManager.getOnDemandRenderer(sessionId).remove(this);
+		renderManager.getOnDemandRenderer(sessionId).dispose();
+		}
+        
+        
+      
+   
     public void init() {
         super.init();
         if ( isFromPage("AddFilesPage") ) {
@@ -110,65 +377,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable  {
         this.study = study;
     }    
     
-    transient  private UploadedFile  uploadedFile;
-
- 
-      //
-      // Getter for property uploadedFile.
-      // @return Value of property uploadedFile.
-      //
-     public UploadedFile getUploadedFile() {
-         return this.uploadedFile;
-     }
- 
-      //
-      // Setter for property uploadedFile.
-      // @param uploadedFile New value of property uploadedFile.
-      //
-     public void setUploadedFile(UploadedFile uploadedFile) {
-         this.uploadedFile = uploadedFile;
-     }
-
- 
-
-    private List files;    
-    
-    public List getFiles() {
-        return files;
-    }
-
-    public void setFiles(List f) {
-        files = f;
-    }
-
-    
-    public void fileBrowser_add (ValueChangeEvent event) {
-        Object value = event.getNewValue(); 
-        if (value != null && !((UploadedFile) value).getOriginalName().equals("") ) {
-            UploadedFile uploadedFile = (UploadedFile)value;
-            String originalName = uploadedFile.getOriginalName();
-            originalName = originalName.substring( originalName.lastIndexOf("/") + 1 );
-            originalName = originalName.substring( originalName.lastIndexOf("\\") + 1 );
-
-            // upload the file to a temp directory
-            try {            
-                String sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
-                File file = FileUtil.createTempFile(sessionId, originalName);
-                uploadedFile.write( file );
-
-                // now add the studyfile
-                StudyFileEditBean f = new StudyFileEditBean( file, fileSystemNameService.generateFileSystemNameSequence() );
-                files.add(f);          
-                newFileAdded = true;
-                validateFileName( FacesContext.getCurrentInstance(), event.getComponent(), f.getStudyFile().getFileName() );
-                        
-            } catch(Exception ex) {
-                System.out.println("Exception: " + ex.getMessage());
-                // report the problem        
-            }                    
-        }
-    }
-    
+    List<StudyFileEditBean> files =   Collections.synchronizedList(new ArrayList< StudyFileEditBean>());
     private String replaceExtension(String originalName) {
         int extensionIndex = originalName.lastIndexOf(".");
         if (extensionIndex != -1 ) {
@@ -186,46 +395,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable  {
     	return ext;
     }
     
-    public String save_action () {
-        // first step is to validate (and remove the files that are not wanted from the list)
-        Iterator iter = files.iterator();
-        while (iter.hasNext()) {
-            StudyFileEditBean file = (StudyFileEditBean) iter.next();
-            if ( file.isDeleteFlag()) { 
-                iter.remove();
-            } 
-        }
-        
-        
-        // now call save
-        if (files.size() > 0) {
-            studyService.setIngestEmail(ingestEmail);
-            studyService.save(getVDCRequestBean().getCurrentVDCId(), getVDCSessionBean().getLoginBean().getUser().getId());
-        }
-        
-        getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setSelectedTab("files");
-        return "viewStudy";
-    }  
-    
-    public String cancel_action () {
-        //first clean up the temp files
-        if (files.size() > 0) {
-            Iterator iter = files.iterator();
-            while (iter.hasNext()) {
-                StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
-                File physicalFile = new File(fileBean.getTempSystemFileLocation());
-                physicalFile.delete();
-            }
-        }        
-
-        studyService.cancel();
-        
-        getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setSelectedTab("files");
-        return "viewStudy";
-    }
-    
+  
     public List getTemplateFileCategories() {
         List tfc = new ArrayList();
         Iterator iter = study.getTemplate().getTemplateFileCategories().iterator();
@@ -257,15 +427,17 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable  {
     public void setIngestEmail(String ingestEmail) {
         this.ingestEmail = ingestEmail;
     }
-
+  
     
     public void validateFileName(FacesContext context,
             UIComponent toValidate,
             Object value) {
-        String fileName = (String) value;
+        if (value==null) return;
+        String fileName =( (String) value).trim();
         String errorMessage = null;
-        
-        // check invalid characters
+        if(fileName.equals("")) return; 
+        // check invalid characters 
+        String fname = currentFile.getFileName();
         if (    fileName.contains("\\") ||
                 fileName.contains("/") ||
                 fileName.contains(":") ||
@@ -277,18 +449,19 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable  {
                 fileName.contains("|") ||
                 fileName.contains(";") ||
                 fileName.contains("#")) {
-            errorMessage = "cannot contain any of the following characters: \\ / : * ? \" < > | ; #";
-        }
-
-        // now check unique filename against other file names
-        Iterator iter = getValidationFileNames().iterator();
-        while (iter.hasNext()) {
-            if ( fileName.equals( (String) iter.next() ) ) {
-                errorMessage = "must be unique.";
-                break;
-            }
+            errorMessage = "cannot contain any of the following characters: \\ / : * ? \" < > | ; "; 
+            
         }
         
+         if (errorMessage != null) {
+            ((UIInput)toValidate).setValid(false);
+            
+            FacesMessage message = new FacesMessage("Invalid File Name - " + errorMessage);
+            context.addMessage(toValidate.getClientId(context), message);
+            currentFile.setFileName(fname);
+            return; 
+         }
+/*       
         // also check prexisting files
         iter = study.getStudyFiles().iterator();
         while (iter.hasNext()) {
@@ -298,21 +471,18 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable  {
                 break;
             }
         }      
-        
+     */ 
+         currentFile.setFileName(fileName);
         // now add this name to the validation list
-        getValidationFileNames().add(fileName);        
+       getValidationFileNames().add(fileName); 
+       //remove the old name 
+       hasFileName(fname,true);
+         
         
-        
-        if (errorMessage != null) {
-            ((UIInput)toValidate).setValid(false);
-            
-            FacesMessage message = new FacesMessage("Invalid File Name - " + errorMessage);
-            context.addMessage(toValidate.getClientId(context), message);
-        }
-        
-    }    
+    } 
+   
     
-    private List validationFileNames = new ArrayList();
+    private List<String> validationFileNames = new ArrayList<String>();
     
     public List getValidationFileNames() {
         return validationFileNames;

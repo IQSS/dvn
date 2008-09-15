@@ -699,9 +699,46 @@
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.LoginWorkflowBean</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
+    <!-- Network Home Page Manager Bean -->
     <managed-bean>
         <managed-bean-name>dvRecordsManager</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.DvRecordsManager</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <!-- IceFaces Push -->
+    <!-- Render Manager -->
+    <managed-bean>
+        <description>
+            Manages render calls to the Faces Context.
+        </description>
+        <managed-bean-name>
+            renderMgr
+        </managed-bean-name>
+        <managed-bean-class>
+            com.icesoft.faces.async.render.RenderManager
+        </managed-bean-class>
+        <managed-bean-scope>
+            application
+        </managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <description>Bean for pushing out network stats changes</description>
+        <managed-bean-name>NetworkStatsBean</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.push.beans.NetworkStatsBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>renderManager</property-name>
+            <value>#{renderMgr}</value>
+        </managed-property>
+    </managed-bean>
+    <managed-bean>
+        <description>Bean for pushing out network stats changes</description>
+        <managed-bean-name>dvnBean</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.DVNBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+         <managed-property>
+            <property-name>renderManager</property-name>
+            <value>#{renderMgr}</value>
+        </managed-property>
     </managed-bean>
 </faces-config>

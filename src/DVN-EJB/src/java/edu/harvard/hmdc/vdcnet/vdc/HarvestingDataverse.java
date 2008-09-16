@@ -143,22 +143,22 @@ public class HarvestingDataverse implements Serializable {
     /**
      * Holds value of property oaiServer.
      */
-    private String oaiServer;
+    private String serverUrl;
 
     /**
      * Getter for property oaiServer.
      * @return Value of property oaiServer.
      */
-    public String getOaiServer() {
-        return this.oaiServer;
+    public String getServerUrl() {
+        return this.serverUrl;
     }
 
     /**
      * Setter for property oaiServer.
      * @param oaiServer New value of property oaiServer.
      */
-    public void setOaiServer(String oaiServer) {
-        this.oaiServer = oaiServer.trim();
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl = serverUrl.trim();
     }
 
     /**

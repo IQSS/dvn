@@ -454,7 +454,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
             e.printStackTrace();
             addMessage( "harvestMessage", "Harvest failed: An unexpected error occurred trying to get this record." );
             addMessage( "harvestMessage", "Exception message: " + e.getMessage() );
-            addMessage( "harvestMessage", "Harvest URL: " + hd.getOaiServer() + "?verb=GetRecord&identifier=" + harvestIdentifier + "&metadataPrefix=" + hd.getHarvestFormatType().getMetadataPrefix() );
+            addMessage( "harvestMessage", "Harvest URL: " + hd.getServerUrl() + "?verb=GetRecord&identifier=" + harvestIdentifier + "&metadataPrefix=" + hd.getHarvestFormatType().getMetadataPrefix() );
         }
        
         return null;

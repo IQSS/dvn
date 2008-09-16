@@ -129,8 +129,8 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
                     filesRestricted = harvestingDataverse.getVdc().isFilesRestricted();
                 }
                 try {
-                    assignHarvestingSets(editHarvestSiteService.getHarvestingDataverse().getOaiServer(), harvestingDataverse.getHarvestType());        
-                    assignMetadataFormats(editHarvestSiteService.getHarvestingDataverse().getOaiServer(), harvestingDataverse.getHarvestType());       
+                    assignHarvestingSets(editHarvestSiteService.getHarvestingDataverse().getServerUrl(), harvestingDataverse.getHarvestType());        
+                    assignMetadataFormats(editHarvestSiteService.getHarvestingDataverse().getServerUrl(), harvestingDataverse.getHarvestType());       
                 } catch(Exception e) {
                     e.printStackTrace();
                     FacesContext context = FacesContext.getCurrentInstance();

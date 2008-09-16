@@ -76,7 +76,6 @@ import ORG.oclc.oai.server.verb.NoSetHierarchyException;
 import edu.harvard.hmdc.vdcnet.catalog.CatalogServiceLocal;
 import edu.harvard.hmdc.vdcnet.harvest.HarvestStudy;
 import edu.harvard.hmdc.vdcnet.harvest.HarvestStudyServiceLocal;
-import edu.harvard.hmdc.vdcnet.study.DeletedStudy;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 

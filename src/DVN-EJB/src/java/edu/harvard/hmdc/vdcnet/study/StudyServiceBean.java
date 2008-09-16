@@ -901,6 +901,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         int deletedStudyCount = 0;
         try {
 
+            /* THIS IS LEGACY CODE AND SHOULD BE DELETED
             // For all studies that have been deleted in the dataverse since last export, remove study directory in VDC
 
             String query = "SELECT s from DeletedStudy s where s.authority = '" + authority + "' ";
@@ -924,6 +925,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
                 em.remove(deletedStudy);
             }
+            */
 
             // Do export of all studies updated at "lastUpdateTime""
 
@@ -946,7 +948,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 cal.add(Calendar.DAY_OF_YEAR, 1);
                 endTime = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
             }
-            query = "SELECT s from Study s where s.authority = '" + authority + "' ";
+            String query = "SELECT s from Study s where s.authority = '" + authority + "' ";
             query += " and s.lastUpdateTime >'" + beginTime + "'";
             //    query+=" and s.lastUpdateTime <'" +endTime+"'";
             query += " order by s.studyId";
@@ -1147,21 +1149,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return study;
     }
 
-    public DeletedStudy getDeletedStudyByGlobalId(String identifier) {
-
-
-        String queryStr = "SELECT s from DeletedStudy s where s.globalId = :identifier";
-
-        DeletedStudy study = null;
-        try {
-            Query query = em.createQuery(queryStr);
-            query.setParameter("identifier", identifier);
-            study = (DeletedStudy) query.getSingleResult();
-        } catch (javax.persistence.NoResultException e) {
-            // DO nothing, just return null.
-        }
-        return study;
-    }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier) {

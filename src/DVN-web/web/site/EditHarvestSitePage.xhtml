@@ -187,7 +187,7 @@
                                 <ice:outputText style="white-space: nowrap; padding-right: 10px; " value="Server URL"/> 
                             </div>
                             <div>
-                                <ice:inputText id="dataverseServer" validator="#{EditHarvestSitePage.validateOAIServer}"  value="#{EditHarvestSitePage.harvestingDataverse.oaiServer}"  required="true" requiredMessage="This field is required." size="60">
+                                <ice:inputText id="dataverseServer" validator="#{EditHarvestSitePage.validateOAIServer}"  value="#{EditHarvestSitePage.harvestingDataverse.serverUrl}"  required="true" requiredMessage="This field is required." size="60">
                                     <f:validator validatorId="UrlValidator"/>
                                 </ice:inputText>  
                                 <ice:commandButton  value="Validate" />
@@ -208,10 +208,10 @@
                                 <verbatim><br /></verbatim>
                                 <ice:outputText styleClass="vdcHelpText" value="Select the set you would like to harvest. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."/>
                             </div> 
-                            <div jsfc="ice:panelGroup" rendered="#{ EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and  EditHarvestSitePage.harvestingDataverse.oaiServer !=null}"> 
+                            <div jsfc="ice:panelGroup" rendered="#{ EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and  EditHarvestSitePage.harvestingDataverse.serverUrl !=null}">
                                 <verbatim><br /></verbatim>
                             </div>
-                            <div jsfc="ice:panelGroup" rendered="#{ EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and  EditHarvestSitePage.harvestingDataverse.oaiServer !=null}">   
+                            <div jsfc="ice:panelGroup" rendered="#{ EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and  EditHarvestSitePage.harvestingDataverse.serverUrl !=null}">
                                 <ice:outputText value="This Server does not support sets. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."/>
                             </div>
                             <div jsfc="ice:panelGroup" style="vertical-align: top;" rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.metadataFormats}">

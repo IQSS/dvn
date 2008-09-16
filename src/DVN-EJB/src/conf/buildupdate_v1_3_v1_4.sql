@@ -23,3 +23,5 @@ ALTER TABLE vdc ADD COLUMN dvndescription varchar(255);
 ALTER TABLE vdc ALTER COLUMN dvndescription SET STORAGE EXTENDED;
 
 ALTER TABLE harvestingdataverse RENAME COLUMN oaiserver TO serverurl;
+
+drop table deletedstudy;

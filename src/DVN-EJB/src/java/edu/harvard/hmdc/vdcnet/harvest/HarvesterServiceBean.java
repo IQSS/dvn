@@ -323,14 +323,14 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             havestingDataverseService.setHarvestingNow(dataverse.getId(), true);
             Date lastHarvestTime = new Date();
 
-            hdLogger.log(Level.INFO, "BEGIN HARVEST..., oaiUrl=" + dataverse.getOaiServer() + ",set=" + dataverse.getHarvestingSet() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix() + ", from=" + from + ", until=" + until);
+            hdLogger.log(Level.INFO, "BEGIN HARVEST..., oaiUrl=" + dataverse.getServerUrl() + ",set=" + dataverse.getHarvestingSet() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix() + ", from=" + from + ", until=" + until);
             ResumptionTokenType resumptionToken = null;
 
             do {
                 resumptionToken = harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken, dataverse, from, until, harvestedStudyIds, failedIdentifiers, harvestErrorOccurred);
             } while (resumptionToken != null && !resumptionToken.equals(""));
 
-            hdLogger.log(Level.INFO, "COMPLETED HARVEST, oaiUrl=" + dataverse.getOaiServer() + ",set=" + dataverse.getHarvestingSet() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix() + ", from=" + from + ", until=" + until);
+            hdLogger.log(Level.INFO, "COMPLETED HARVEST, oaiUrl=" + dataverse.getServerUrl() + ",set=" + dataverse.getHarvestingSet() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix() + ", from=" + from + ", until=" + until);
             havestingDataverseService.setLastHarvestTime(dataverse.getId(), lastHarvestTime);
             
             // now index all studies (need to modify for update)
@@ -339,7 +339,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             hdLogger.log(Level.INFO, "POST HARVEST, calls to index finished.");
         } catch (Throwable e) {
             harvestErrorOccurred.setValue(true);
-            String message = "Exception processing harvest, oaiServer= " + dataverse.getOaiServer() + ",from=" + from + ",until=" + until + ",encodedSet=" + dataverse.getHarvestingSet() + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix() + " " + e.getClass().getName() + " " + e.getMessage();
+            String message = "Exception processing harvest, oaiServer= " + dataverse.getServerUrl() + ",from=" + from + ",until=" + until + ",encodedSet=" + dataverse.getHarvestingSet() + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix() + " " + e.getClass().getName() + " " + e.getMessage();
             hdLogger.log(Level.SEVERE, message);
             logException(e, hdLogger);
             hdLogger.log(Level.INFO, "HARVEST NOT COMPLETED DUE TO UNEXPECTED ERROR.");
@@ -359,14 +359,14 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         ListIdentifiers listIdentifiers = null;
 
         if (resumptionToken == null) {
-            listIdentifiers = new ListIdentifiers(dataverse.getOaiServer(),
+            listIdentifiers = new ListIdentifiers(dataverse.getServerUrl(),
                     from,
                     until,
                     encodedSet,
                     URLEncoder.encode(dataverse.getHarvestFormatType().getMetadataPrefix(), "UTF-8"));
         } else {
             hdLogger.log(Level.INFO, "harvestFromIdentifiers(), resumptionToken=" + resumptionToken.getValue());
-            listIdentifiers = new ListIdentifiers(dataverse.getOaiServer(), resumptionToken.getValue());
+            listIdentifiers = new ListIdentifiers(dataverse.getServerUrl(), resumptionToken.getValue());
         }
         
         Document doc = listIdentifiers.getDocument();
@@ -380,7 +380,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             if (oaiObj.getError().get(0).getCode().equals(OAIPMHerrorcodeType.NO_RECORDS_MATCH)) {
                  hdLogger.info("ListIdentifiers returned NO_RECORDS_MATCH - no studies found to be harvested.");
             } else {
-                handleOAIError(hdLogger, oaiObj, "calling listIdentifiers, oaiServer= " + dataverse.getOaiServer() + ",from=" + from + ",until=" + until + ",encodedSet=" + encodedSet + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix());
+                handleOAIError(hdLogger, oaiObj, "calling listIdentifiers, oaiServer= " + dataverse.getServerUrl() + ",from=" + from + ",until=" + until + ",encodedSet=" + encodedSet + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix());
                 throw new EJBException("Received OAI Error response calling ListIdentifiers");
             }
         } else {
@@ -440,7 +440,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
 
         String errMessage = null;;
         Study harvestedStudy = null;
-        String oaiUrl = dataverse.getOaiServer();
+        String oaiUrl = dataverse.getServerUrl();
         try {
             hdLogger.log(Level.INFO, "Calling GetRecord: oaiUrl =" + oaiUrl + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + metadataPrefix);
 
@@ -643,12 +643,12 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             havestingDataverseService.setHarvestingNow(dataverse.getId(), true);
             Date lastHarvestTime = new Date();
 
-            hdLogger.log(Level.INFO, "BEGIN HARVEST..., nesstarServer=" + dataverse.getOaiServer() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix());
+            hdLogger.log(Level.INFO, "BEGIN HARVEST..., nesstarServer=" + dataverse.getServerUrl() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix());
 
             //Instantiate the NesstarHarvester class:
             NesstarHarvester nh = new NesstarHarvester();
             //Add a server (remember to use a standards compliant URL)
-            nh.addServer(dataverse.getOaiServer());
+            nh.addServer(dataverse.getServerUrl());
             //Harvest the server:
             DDI[] ddis = nh.harvest();
             if (ddis != null) {
@@ -673,7 +673,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 }
             }
             
-            hdLogger.log(Level.INFO, "COMPLETED HARVEST, nesstarServer=" + dataverse.getOaiServer() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix());
+            hdLogger.log(Level.INFO, "COMPLETED HARVEST, nesstarServer=" + dataverse.getServerUrl() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix());
             havestingDataverseService.setLastHarvestTime(dataverse.getId(), lastHarvestTime);
             
             // now index all studies (need to modify for update)
@@ -682,7 +682,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             hdLogger.log(Level.INFO, "POST HARVEST, calls to index finished.");
         } catch (Throwable e) {
             harvestErrorOccurred.setValue(true);
-            String message = "Exception processing harvest, nesstarServer= " + dataverse.getOaiServer() + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix() + " " + e.getClass().getName() + " " + e.getMessage();
+            String message = "Exception processing harvest, nesstarServer= " + dataverse.getServerUrl() + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix() + " " + e.getClass().getName() + " " + e.getMessage();
             hdLogger.log(Level.SEVERE, message);
             logException(e, hdLogger);
             hdLogger.log(Level.INFO, "HARVEST NOT COMPLETED DUE TO UNEXPECTED ERROR.");

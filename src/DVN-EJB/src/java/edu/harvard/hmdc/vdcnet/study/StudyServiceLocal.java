@@ -50,9 +50,7 @@ public interface StudyServiceLocal extends java.io.Serializable {
    
 
     public Study getStudyByHarvestInfo(VDC vdc, String harvestIdentifier);
-
-    public DeletedStudy getDeletedStudyByGlobalId(String identifier);
-       
+     
     public Study getStudyDetail(Long studyId);
     
     public Study getStudyForSearch(Long studyId, Map studyFields);

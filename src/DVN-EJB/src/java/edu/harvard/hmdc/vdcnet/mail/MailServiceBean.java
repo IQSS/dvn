@@ -202,13 +202,17 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
     }
     public void sendAddSiteNotification(String dataverseCreatorEmail, String siteName, String siteAddress){
         String subject = "Dataverse Network: Your dataverse has been created";
-        String messageText = "Hello, \nYour dataverse named '"+siteName+ "' was created in the Dataverse Network. You can use the following URL to access it directly:\n" +
-               "http://"+siteAddress+"\n"+
-               "Note that your dataverse is set as 'Not Released' until you change that setting. "+
-               "Only you, and any privileged users you add, can access it. "+
-               "To make your dataverse available to everybody, go to the dataverse homepage and click 'My Options.' "+
-               "Then look for the 'Release Dataverse' settings under 'Manage User Privileges, Release Dataverse'.\n\n"+
-               "For information about how to use your dataverse options, click 'User Guides' on the Dataverse Network menu bar, or go to http://thedata.org/guides.";
+        String messageText = "Hello, \nYour new dataverse named '"+siteName+"' was"
+               + " created in the IQSS Dataverse Network. You can access your dataverse"
+               + " directly by entering this URL:\n" 
+               + "http://"+siteAddress+"\n"
+               + "Your dataverse is set to Not Released by default. You can do the"
+               +" following as a Dataverse Admin: \n"
+               +" \t• Click My Options to administer your dataverse.\n"
+               + "\t• Begin adding studies and uploading files or creating collections of data from other dataverses.\n"
+               + "\t• Customize the layout, and then you are ready to release your dataverse live!\n"
+               + "For detailed information about how to use your dataverse options, click User Guides on the Dataverse Network menu bar, or go to http://thedata.org/guides.";
+
         sendDoNotReplyMail(dataverseCreatorEmail,subject,messageText);
     }
     

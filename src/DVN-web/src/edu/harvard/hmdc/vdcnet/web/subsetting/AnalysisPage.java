@@ -103,6 +103,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.*;
 
+import com.icesoft.faces.component.paneltabset.*;
 
 public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
@@ -242,8 +243,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         vtInt2String.put("0", "character");
         
         
-        getTabSet1().setSelected("tabDwnld");
-        getVDCRequestBean().setSelectedTab("tabDwnld");
+//        getTabSet1().setSelected("tabDwnld");
+//        getVDCRequestBean().setSelectedTab("tabDwnld");
        
         REP_README_FILE = new File(this.getClass().getResource("README").getFile());
         REP_README_FILE_PREFIX = "README_";
@@ -548,7 +549,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * ui:tabSet component backing the binding attribute of the tabset in
      * the subsetting page and whose id is tabSet1
      */
-    private TabSet tabSet1 = new TabSet();
+    //private TabSet tabSet1 = new TabSet();
 
     /**
      * Getter for component tabSet1
@@ -556,129 +557,175 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return    the main tab-set component
      */
 
-    public TabSet getTabSet1() {
-        return tabSet1;
-    }
-
+//    public TabSet getTabSet1() {
+//        return tabSet1;
+//    }
+    
     /**
      * Setter for component tabSet1
      *
      * @param ts    the main tab-set component
      */
-    public void setTabSet1(TabSet ts) {
-        tabSet1 = ts;
+//    public void setTabSet1(TabSet ts) {
+//        tabSet1 = ts;
+//    }
+    private PanelTabSet tabSet1 = new PanelTabSet();
+
+    public PanelTabSet getTabSet1() {
+        return tabSet1;
     }
 
+    public void setTabSet1(PanelTabSet tabSet1) {
+        this.tabSet1 = tabSet1;
+    }
+    
     /**
      * ui:tab component backing the binding attribute of the tab of 
      * the downloading option and whose id is tabDwnld
      * 
      */
-    private Tab tabDwnld = new Tab();
+//    private Tab tabDwnld = new Tab();
     
     /**
      * Getter for component tabDwnld
      *
      * @return    ui:tab of the downloading option
      */
-    public Tab getTabDwnld() {
-        return tabDwnld;
-    }
+//    public Tab getTabDwnld() {
+//        return tabDwnld;
+//    }
 
     /**
      * Setter for component tabDwnld
      *
      * @param tab3    ui:tab of the downloading option
      */
-    public void setTabDwnld(Tab tab3) {
-        this.tabDwnld = tab3;
+//    public void setTabDwnld(Tab tab3) {
+//        this.tabDwnld = tab3;
+//    }
+    private PanelTab tabDwnld = new PanelTab();
+
+    public PanelTab getTabDwnld() {
+        return tabDwnld;
     }
 
+    public void setTabDwnld(PanelTab tabDwnld) {
+        this.tabDwnld = tabDwnld;
+    }
+    
     /**
      * ui:tab component backing the binding attribute of the tab of 
      * the recoding option and whose id is tabRecode
      */
-    private Tab tabRecode = new Tab();
+//    private Tab tabRecode = new Tab();
 
     /**
      * Getter for component tabRecode
      *
      * @return    ui:tab of the recoding option
      */
-    public Tab getTabRecode() {
-        return tabRecode;
-    }
+//    public Tab getTabRecode() {
+//        return tabRecode;
+//    }
 
     /**
      * Setter for component tabRecode
      *
      * @param tab2    ui:tab of the recoding option
      */
-    public void setTabRecode(Tab tab2) {
-        this.tabRecode = tab2;
+//    public void setTabRecode(Tab tab2) {
+//        this.tabRecode = tab2;
+//    }
+    private PanelTab tabRecode = new PanelTab();
+
+    public PanelTab getTabRecode() {
+        return tabRecode;
     }
 
+    public void setTabRecode(PanelTab tabRecode) {
+        this.tabRecode = tabRecode;
+    }
+    
     /**
      * ui:tab component backing the binding attribute of the tab of 
      * the EDA option and whose id is tabEda
      */
-    private Tab tabEda = new Tab();
+//    private Tab tabEda = new Tab();
 
     /**
      * Getter for component tabEda
      *
      * @return    ui:tab of the EDA option
      */
-    public Tab getTabEda() {
-        return tabEda;
-    }
+//    public Tab getTabEda() {
+//        return tabEda;
+//    }
 
     /**
      * Setter for component tabEda
      *
      * @param tab4    ui:tab of the EDA option
      */
-    public void setTabEda(Tab tab4) {
-        this.tabEda = tab4;
+//    public void setTabEda(Tab tab4) {
+//        this.tabEda = tab4;
+//    }
+    
+    private PanelTab tabEda = new PanelTab();
+
+    public PanelTab getTabEda() {
+        return tabEda;
     }
 
+    public void setTabEda(PanelTab tabEda) {
+        this.tabEda = tabEda;
+    }
+    
     /**
      * ui:tab component backing the binding attribute of the tab of 
      * the advanced statistics optionn and whose id is tabAdvStat
      */
-    private Tab tabAdvStat = new Tab();
+//    private Tab tabAdvStat = new Tab();
 
     /**
      * Getter for component tabAdvStat
      *
      * @return    ui:tab of the advanced statistics option
      */
-    public Tab getTabAdvStat() {
-        return tabAdvStat;
-    }
+//    public Tab getTabAdvStat() {
+//        return tabAdvStat;
+//    }
 
     /**
      * Setter for component tabAdvStat
      *
      * @param tab5    ui:tab of the advanced statistics option
      */
-    public void setTabAdvStat(Tab tab5) {
-        this.tabAdvStat = tab5;
+//    public void setTabAdvStat(Tab tab5) {
+//        this.tabAdvStat = tab5;
+//    }
+
+    private PanelTab tabAdvStat = new PanelTab();
+
+    public PanelTab getTabAdvStat() {
+        return tabAdvStat;
     }
 
-
-    private String tab;
-
-    public String getTab() {
-        return tab;
+    public void setTabAdvStat(PanelTab tabAdvStat) {
+        this.tabAdvStat = tabAdvStat;
     }
 
-    public void setTab(String tab) {
-        if (tab == null || tab.equals("tabDwnld") || tab.equals("tabRecode") || 
-         tab.equals("tabEda") || tab.equals("tabAdvStat")  ) {
-            this.tab = tab;
-        }
-    }
+//    private String tab;
+//
+//    public String getTab() {
+//        return tab;
+//    }
+//
+//    public void setTab(String tab) {
+//        if (tab == null || tab.equals("tabDwnld") || tab.equals("tabRecode") || 
+//         tab.equals("tabEda") || tab.equals("tabAdvStat")  ) {
+//            this.tab = tab;
+//        }
+//    }
 
 
 
@@ -2818,7 +2865,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // edaBttn:h:commandButton@action
     public String edaAction() {
         
-        dbgLog.fine("selected tab(eda)="+getTabSet1().getSelected());
+//        dbgLog.fine("selected tab(eda)="+getTabSet1().getSelected());
         // clear the error message around the EDA button if they exisit
         resetMsgEdaButton();
         
@@ -4764,7 +4811,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //        this.groupPanel20 = pg;
 //    }
 
-    private HtmlPanelGroup groupPanelSimTypeChoice = new HtmlPanelGroup();
+    private HtmlPanelGroup groupPanelSimTypeChoice = 
+        new javax.faces.component.html.HtmlPanelGroup();
 
     public HtmlPanelGroup getGroupPanelSimTypeChoice() {
         return groupPanelSimTypeChoice;
@@ -4779,14 +4827,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // simulation option: checkbox
 
-    private Checkbox checkbox3 = new Checkbox();
+    private HtmlSelectBooleanCheckbox simulationPanel = 
+        new javax.faces.component.html.HtmlSelectBooleanCheckbox();
 
-    public Checkbox getCheckbox3() {
-        return checkbox3;
+    public HtmlSelectBooleanCheckbox getSimulationPanel() {
+        return simulationPanel;
     }
 
-    public void setCheckbox3(Checkbox c) {
-        this.checkbox3 = c;
+    public void setSimulationPanel(HtmlSelectBooleanCheckbox c) {
+        this.simulationPanel = c;
     }
 
     public void showHideSimulationsOptPanel(ValueChangeEvent vce) {
@@ -4935,7 +4984,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 
 
-    private HtmlPanelGroup groupPanelSimNonDefault = new HtmlPanelGroup();
+    private HtmlPanelGroup groupPanelSimNonDefault = 
+        new com.icesoft.faces.component.ext.HtmlPanelGroup(); //new javax.faces.component.html.HtmlPanelGroup();
 
     public HtmlPanelGroup getGroupPanelSimNonDefault() {
         return groupPanelSimNonDefault;
@@ -4961,16 +5011,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // simulation : value for 1st diff: label for the casing panel
-
-    private Label label2 = new Label();
-
-    public Label getLabel2() {
-        return label2;
-    }
-
-    public void setLabel2(Label l) {
-        this.label2 = l;
-    }
+//
+//    private Label label2 = new Label();
+//
+//    public Label getLabel2() {
+//        return label2;
+//    }
+//
+//    public void setLabel2(Label l) {
+//        this.label2 = l;
+//    }
 
     // simulation : value for 1st diff: pull-down var selection
     // dropdown2: ui:dropdown@binding
@@ -5020,15 +5070,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // simulation : explanatory variable value: label for casing panel
-    private Label label1 = new Label();
-
-    public Label getLabel1() {
-        return label1;
-    }
-
-    public void setLabel1(Label l) {
-        this.label1 = l;
-    }
+//    private Label label1 = new Label();
+//
+//    public Label getLabel1() {
+//        return label1;
+//    }
+//
+//    public void setLabel1(Label l) {
+//        this.label1 = l;
+//    }
 
     // simulation : explanatory variable value: pull-down var selection
     // dropdown3: ui:dropDown@binding
@@ -5245,7 +5295,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // advStatBttn:h:commandButton@action
     public String advStatAction() {
-        dbgLog.fine("selected tab(advStat)="+getTabSet1().getSelected());
+//        dbgLog.fine("selected tab(advStat)="+getTabSet1().getSelected());
         // check the current model
 
         String mdlName = (String) dropDown1.getSelected();
@@ -5432,7 +5482,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                      zlg_017_naMethod
 //                     
                     //
-                    if (checkbox3.isChecked()) {
+                    if (simulationPanel.isSelected()) {
                         //mpl.put(zligPrefix + "_Sim", Arrays.asList("T"));
                         mpl.put("Sim", Arrays.asList("T"));
                         
@@ -6552,7 +6602,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 advStatVarRBox3.clear();
 
                 // RHS simulation option: unchecked
-                checkbox3.setSelected(false);
+                simulationPanel.setSelected(false);
 
                 // simulation-type radio button group
                 radioButtonGroup1.setSelected("0");
@@ -7101,17 +7151,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     + getVDCRequestBean().getStudyId());
                 dbgLog.fine("VDCRequestBean =" + getVDCRequestBean());
 
-             dbgLog.fine("selected tab(init())="+getTabSet1().getSelected());
+//             dbgLog.fine("selected tab(init())="+getTabSet1().getSelected());
 
             // set tab if it was it was sent as pamameter or part of request bean
-            if (getTab() != null) {
-                getTabSet1().setSelected(getTab());
-                dbgLog.fine("getTab()= "+getTab());
-            } else if (getVDCRequestBean().getSelectedTab() != null) {
-                dbgLog.fine("tab from the requestBean="+getVDCRequestBean().getSelectedTab());
-            
-                getTabSet1().setSelected(getVDCRequestBean().getSelectedTab());
-            }
+//            if (getTab() != null) {
+//                getTabSet1().setSelected(getTab());
+//                dbgLog.fine("getTab()= "+getTab());
+//            } else if (getVDCRequestBean().getSelectedTab() != null) {
+//                dbgLog.fine("tab from the requestBean="+getVDCRequestBean().getSelectedTab());
+//            
+//                getTabSet1().setSelected(getVDCRequestBean().getSelectedTab());
+//            }
             
             
             
@@ -7641,7 +7691,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 : new FacesException(e);
         } // end of try-catch block
         
-            dbgLog.fine("init(): current tab id=" + tabSet1.getSelected());
+//            dbgLog.fine("init(): current tab id=" + tabSet1.getSelected());
             dbgLog.fine("***** init():end *****\n\n");
     }
     

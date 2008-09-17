@@ -56,7 +56,7 @@ import com.sun.rave.web.ui.model.Separator;
 
 import edu.harvard.hmdc.vdcnet.dsb.*;
 import edu.harvard.hmdc.vdcnet.dsb.impl.*;
-
+import edu.harvard.hmdc.vdcnet.web.common.*;
 
 /**
  * <p>Application scope data bean for your application.  Create properties
@@ -68,7 +68,7 @@ import edu.harvard.hmdc.vdcnet.dsb.impl.*;
  * or method binding expression that references a managed bean using
  * this class.</p>
  */
-public class AnalysisApplicationBean extends AbstractApplicationBean implements java.io.Serializable  {
+public class AnalysisApplicationBean extends VDCApplicationBean implements java.io.Serializable  {
 
 
 

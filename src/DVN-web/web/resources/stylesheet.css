@@ -7,7 +7,7 @@
 
 .dvn_content {
     padding: 0 12px 12px 12px;
-    color: #464646;
+    color: #464646 !important;
     text-align: left;
 }
 
@@ -61,7 +61,7 @@
 .dvn_sectionContent {
 	display: inline;
         width: 75%;
-	float: left;
+	float: right;
 }
 
 div.dvn_sectionTitle {margin: 0; padding: 0 .65em .25em .65em; font-size: 112% !important; color: #526f76; text-transform: uppercase; text-align: left;}
@@ -101,7 +101,7 @@ span.disabled {font-weight: bold;}
 #dvn_mainSectionTitle {padding: .25em 0; color: #526f76; font-size: 124% !important; text-transform: uppercase;}
 
 /* SIDE SECTION PANELS */
-.dvn_sectionPanels {display: inline; margin-left: 2%; width: 22%; float: left;} 
+.dvn_sectionPanels {display: inline; margin-right: 2%; width: 22%; float: left;} 
 .dvn_sectionPanelTitle {padding: .25em 0; border-bottom: 2px solid #91a5a9; color: #555; font-weight: bold;} 
 .dvn_sectionPanels div.dvn_sectionPanelText {margin-bottom: 1em; padding: .5em; } 
 .dvn_sectionPanels ul {margin-left: 2em; list-style-image: url(icon_bullet.gif);}
@@ -112,10 +112,10 @@ span.disabled {font-weight: bold;}
 /* HEADER */
 .dvn_headerTitle {position: relative;}
 .dvn_headerTitleLarge {margin: .25em 228px .25em 12px;}
-.dvn_headerTitleLarge a:link, .dvn_headerTitleLarge a:visited, .dvn_headerTitleLarge a:hover, .dvn_headerTitleLarge a:active {color: #526f76; font-size: 148% !important;}
-a.dvn_headerTitleLrgNetwork:link, a.dvn_headerTitleLrgNetwork:visited, a.dvn_headerTitleLrgNetwork:hover, a.dvn_headerTitleLrgNetwork:active {color: #c55b28;}
+.dvn_headerTitleLarge a:link span, .dvn_headerTitleLarge a:visited span, .dvn_headerTitleLarge a:hover span, .dvn_headerTitleLarge a:active span {color: #526f76; font-size: 148% !important;}
+a.dvn_headerTitleLrgNetwork:link span, a.dvn_headerTitleLrgNetwork:visited span, a.dvn_headerTitleLrgNetwork:hover span, a.dvn_headerTitleLrgNetwork:active span {color: #c55b28;}
 .dvn_headerTitleL {margin: 0 12px;}
-.dvn_headerTitleL a:link, .dvn_headerTitleL a:visited, .dvn_headerTitleL a:hover, .dvn_headerTitleL a:active {color: #c55b28; font-size: 90% !important;}
+.dvn_headerTitleL a:link span, .dvn_headerTitleL a:visited span, .dvn_headerTitleL a:hover span, .dvn_headerTitleL a:active span {color: #c55b28; font-size: 90% !important;}
 .dvn_headerTitleR {position: absolute; right: 12px; top: 0;}
 
 /* NAV MENU */
@@ -163,6 +163,12 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
 #dvn_hmpgMainSection {position: relative;}
 #dvn_MainSectionCount {position: absolute; top: 0; right: 0;}
 
+/* NEW STYLES: STUDY LIST + STUDIES TREE (these override IceFace styles) */
+.vdcSResultsTable {border: 0; margin: 0 0 0 0;}
+.vdcSResultsTable tr {border-left: 0;}
+.vdcSResultsTable td {border: 0;}
+.vdcSResultsTable div {border-width: 0 0 0 0;}
+
 /* ANALYSIS PAGE */
 .dvn_preFileTitle{ font-weight: bold; font-style: normal; color: #000;}
 .dvn_fileTitle{ font-weight: normal; font-style: normal; color: #000;}
@@ -187,16 +193,18 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
 }
 
 .list-row-even {
+  background-color: #e6ebed;
 }
 .list-row-even td {
+  background-color: #e6ebed;
   border-bottom: 1px solid #dddfde;
 }
 
 .list-row-odd { 
-  background-color: #eeeeee;
+  background-color: #fff;
 }
 .list-row-odd td { 
-  background-color: #eeeeee;
+  background-color: #fff;
   border-bottom: 1px solid #dddfde;
 }
 
@@ -472,7 +480,7 @@ a.vdcSiteMapLink:link, a.vdcSiteMapLink:visited, a.vdcSiteMapLink:hover, a.vdcSi
 }
 
 span.vdcSResultsField {
-   font-weight: bold;   
+   
 }
 
 .vdcSResultsCol1{

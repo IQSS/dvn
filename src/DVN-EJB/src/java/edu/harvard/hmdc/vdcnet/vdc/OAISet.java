@@ -20,6 +20,7 @@
 package edu.harvard.hmdc.vdcnet.vdc;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -69,6 +70,8 @@ public class OAISet implements Serializable {
     private String name;
     private String spec;
     private String definition;
+   
+    @Column(columnDefinition="TEXT")
     private String description;
 
    /**

@@ -85,6 +85,11 @@ is divided into following sections:
             </and>
         </condition>
     </target>
+    <target depends="init" name="-init-cos">
+        <condition property="build.disable.deploy.on.save">
+            <istrue value="${disable.deploy.on.save}"/>
+        </condition>
+    </target>
     <target name="post-init">
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
@@ -96,7 +101,20 @@ is divided into following sections:
         <fail unless="build.classes.excludes">Must set build.classes.excludes</fail>
         <fail unless="dist.jar">Must set dist.jar</fail>
     </target>
-    <target depends="pre-init,init-private,init-userdir,init-user,init-project,do-init,post-init,init-check" name="init"/>
+    <target name="-init-taskdefs">
+        <fail unless="libs.CopyLibs.classpath">
+The libs.CopyLibs.classpath property is not set up.
+This property must point to 
+org-netbeans-modules-java-j2seproject-copylibstask.jar file which is part
+of NetBeans IDE installation and is usually located at 
+&lt;netbeans_installation&gt;/java&lt;version&gt;/ant/extra folder.
+Either open the project in the IDE and make sure CopyLibs library
+exists or setup the property manually. For example like this:
+ ant -Dlibs.CopyLibs.classpath=a/path/to/org-netbeans-modules-java-j2seproject-copylibstask.jar
+                </fail>
+        <taskdef classpath="${libs.CopyLibs.classpath}" resource="org/netbeans/modules/java/j2seproject/copylibstask/antlib.xml"/>
+    </target>
+    <target depends="pre-init,init-private,init-userdir,init-user,init-project,do-init,post-init,init-check,-init-taskdefs" name="init"/>
     <!--
     COMPILATION SECTION
     -->
@@ -104,12 +122,15 @@ is divided into following sections:
     <target depends="init" name="deps-j2ee-archive" unless="no.deps">
         <ant antfile="${project.DVN-EJB}/build.xml" inheritall="false" target="dist-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
+            <property name="disable.deploy.on.save" value="${build.disable.deploy.on.save}"/>
         </ant>
         <ant antfile="${project.DVN-ejb}/build.xml" inheritall="false" target="dist-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
+            <property name="disable.deploy.on.save" value="${build.disable.deploy.on.save}"/>
         </ant>
         <ant antfile="${project.DVN-web}/build.xml" inheritall="false" target="dist-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
+            <property name="disable.deploy.on.save" value="${build.disable.deploy.on.save}"/>
         </ant>
     </target>
     <target depends="init,deps-jar,deps-j2ee-archive" name="pre-pre-compile"/>
@@ -121,8 +142,8 @@ is divided into following sections:
         <copy todir="${build.dir}/META-INF">
             <fileset dir="${meta.inf}"/>
         </copy>
-        <copy file="${reference.DVN-EJB.dist-ear}" todir="${build.dir}//"/>
-        <copy file="${reference.DVN-web.dist-ear}" todir="${build.dir}//"/>
+        <copyfiles files="${reference.DVN-EJB.dist-ear}" todir="${build.dir}//"/>
+        <copyfiles files="${reference.DVN-web.dist-ear}" todir="${build.dir}//"/>
     </target>
     <target name="post-compile">
         <!-- Empty placeholder for easier customization. -->
@@ -181,7 +202,7 @@ is divided into following sections:
         <ant antfile="${project.DVN-ejb}/build.xml" inheritall="false" target="-run-deploy-am"/>
         <ant antfile="${project.DVN-web}/build.xml" inheritall="false" target="-run-deploy-am"/>
     </target>
-    <target depends="dist,pre-run-deploy,-pre-nbmodule-run-deploy,-run-deploy-nb,-init-deploy-ant,-deploy-ant,-run-deploy-am,-post-nbmodule-run-deploy,post-run-deploy" name="run-deploy"/>
+    <target depends="-init-cos,dist,pre-run-deploy,-pre-nbmodule-run-deploy,-run-deploy-nb,-init-deploy-ant,-deploy-ant,-run-deploy-am,-post-nbmodule-run-deploy,post-run-deploy" name="run-deploy"/>
     <target if="netbeans.home" name="-run-deploy-nb">
         <nbdeploy clientModuleUri="${client.module.uri}" clientUrlPart="${client.urlPart}" debugmode="false" forceRedeploy="${forceRedeploy}"/>
     </target>
@@ -350,12 +371,15 @@ is divided into following sections:
     <target depends="init" name="deps-clean" unless="no.deps">
         <ant antfile="${project.DVN-EJB}/build.xml" inheritall="false" target="clean-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
+            <property name="disable.deploy.on.save" value="${build.disable.deploy.on.save}"/>
         </ant>
         <ant antfile="${project.DVN-ejb}/build.xml" inheritall="false" target="clean-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
+            <property name="disable.deploy.on.save" value="${build.disable.deploy.on.save}"/>
         </ant>
         <ant antfile="${project.DVN-web}/build.xml" inheritall="false" target="clean-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
+            <property name="disable.deploy.on.save" value="${build.disable.deploy.on.save}"/>
         </ant>
     </target>
     <target depends="init" name="do-clean">

@@ -124,11 +124,18 @@ is divided into following sections:
             </and>
         </condition>
         <property name="javadoc.encoding.used" value="${source.encoding}"/>
+        <property name="includes" value="**"/>
+        <property name="excludes" value=""/>
         <condition else="" property="javac.compilerargs.jaxws" value="-Djava.endorsed.dirs='${jaxws.endorsed.dir}'">
             <and>
                 <isset property="jaxws.endorsed.dir"/>
                 <available file="nbproject/jaxws-build.xml"/>
             </and>
+        </condition>
+    </target>
+    <target depends="init" name="-init-cos">
+        <condition property="ensure.built.source.roots" value="${src.dir}">
+            <isfalse value="${disable.deploy.on.save}"/>
         </condition>
     </target>
     <target name="-post-init">
@@ -166,11 +173,13 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
             <attribute default="${src.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}:${j2ee.platform.classpath}" name="classpath"/>
+            <attribute default="${includes}" name="includes"/>
+            <attribute default="${excludes}" name="excludes"/>
             <attribute default="${javac.debug}" name="debug"/>
             <element name="customize" optional="true"/>
             <sequential>
                 <property name="javac.compilerargs" value=""/>
-                <javac debug="@{debug}" deprecation="${javac.deprecation}" destdir="@{destdir}" encoding="${source.encoding}" executable="${platform.javac}" fork="yes" includeantruntime="false" source="${javac.source}" srcdir="@{srcdir}" target="${javac.target}">
+                <javac debug="@{debug}" deprecation="${javac.deprecation}" destdir="@{destdir}" encoding="${source.encoding}" excludes="@{excludes}" executable="${platform.javac}" fork="yes" includeantruntime="false" includes="@{includes}" source="${javac.source}" srcdir="@{srcdir}" target="${javac.target}">
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
@@ -182,7 +191,9 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
     </target>
     <target name="-init-macrodef-junit">
         <macrodef name="junit" uri="http://www.netbeans.org/ns/j2ee-ejbjarproject/2">
-            <attribute default="**/*Test.java" name="includes"/>
+            <attribute default="${includes}" name="includes"/>
+            <attribute default="${excludes}" name="excludes"/>
+            <attribute default="**" name="testincludes"/>
             <sequential>
                 <junit dir="${basedir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" jvm="${platform.java}" showoutput="true">
                     <batchtest todir="${build.test.results.dir}"/>
@@ -196,6 +207,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
                     </syspropertyset>
                     <formatter type="brief" usefile="false"/>
                     <formatter type="xml"/>
+                    <jvmarg line="${runmain.jvmargs}"/>
                 </junit>
             </sequential>
         </macrodef>
@@ -219,12 +231,12 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
             </sequential>
         </macrodef>
     </target>
-    <target name="-init-macrodef-nbjpda">
+    <target depends="-init-debug-args" name="-init-macrodef-nbjpda">
         <macrodef name="nbjpdastart" uri="http://www.netbeans.org/ns/j2ee-ejbjarproject/1">
             <attribute default="${main.class}" name="name"/>
             <attribute default="${debug.classpath}" name="classpath"/>
             <sequential>
-                <nbjpdastart addressproperty="jpda.address" name="@{name}" transport="dt_socket">
+                <nbjpdastart addressproperty="jpda.address" name="@{name}" transport="${debug-transport}">
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
@@ -265,6 +277,12 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <condition else="-Xdebug" property="debug-args-line" value="-Xdebug -Xnoagent -Djava.compiler=none">
             <istrue value="${have-jdk-older-than-1.4}"/>
         </condition>
+        <condition else="dt_socket" property="debug-transport-by-os" value="dt_shmem">
+            <os family="windows"/>
+        </condition>
+        <condition else="${debug-transport-by-os}" property="debug-transport" value="${debug.transport}">
+            <isset property="debug.transport"/>
+        </condition>
     </target>
     <target depends="-init-debug-args" name="-init-macrodef-debug">
         <macrodef name="debug" uri="http://www.netbeans.org/ns/j2ee-ejbjarproject/1">
@@ -278,7 +296,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
                         <path path="${platform.bootcp}"/>
                     </bootclasspath>
                     <jvmarg line="${debug-args-line}"/>
-                    <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+                    <jvmarg value="-Xrunjdwp:transport=${debug-transport},address=${jpda.address}"/>
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
@@ -288,7 +306,20 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
             </sequential>
         </macrodef>
     </target>
-    <target depends="-pre-init,-init-private,-init-userdir,-init-user,-init-project,-do-init,-post-init,-init-check,-init-macrodef-property,-init-macrodef-javac,-init-macrodef-junit,-init-macrodef-java,-init-macrodef-nbjpda,-init-macrodef-debug" name="init"/>
+    <target name="-init-taskdefs">
+        <fail unless="libs.CopyLibs.classpath">
+The libs.CopyLibs.classpath property is not set up.
+This property must point to 
+org-netbeans-modules-java-j2seproject-copylibstask.jar file which is part
+of NetBeans IDE installation and is usually located at 
+&lt;netbeans_installation&gt;/java&lt;version&gt;/ant/extra folder.
+Either open the project in the IDE and make sure CopyLibs library
+exists or setup the property manually. For example like this:
+ ant -Dlibs.CopyLibs.classpath=a/path/to/org-netbeans-modules-java-j2seproject-copylibstask.jar
+                </fail>
+        <taskdef classpath="${libs.CopyLibs.classpath}" resource="org/netbeans/modules/java/j2seproject/copylibstask/antlib.xml"/>
+    </target>
+    <target depends="-pre-init,-init-private,-init-userdir,-init-user,-init-project,-do-init,-post-init,-init-check,-init-macrodef-property,-init-macrodef-javac,-init-macrodef-junit,-init-macrodef-java,-init-macrodef-nbjpda,-init-macrodef-debug,-init-taskdefs" name="init"/>
     <!--
                 COMPILATION SECTION
             -->
@@ -304,79 +335,12 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" name="library-inclusion-in-archive">
-        <copy file="${libs.dvn-EJB.classpath.libfile.23}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.22}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.21}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.20}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.19}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.18}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.17}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.16}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.15}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.14}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.13}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.12}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.11}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.10}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.9}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.8}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.7}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.6}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.5}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.4}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.3}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.2}" todir="${build.classes.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.1}" todir="${build.classes.dir}"/>
+        <copyfiles files="${libs.dvn-EJB.classpath}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
-        <basename file="${libs.dvn-EJB.classpath.libfile.23}" property="included.lib.libs.dvn-EJB.classpath.23"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.22}" property="included.lib.libs.dvn-EJB.classpath.22"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.21}" property="included.lib.libs.dvn-EJB.classpath.21"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.20}" property="included.lib.libs.dvn-EJB.classpath.20"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.19}" property="included.lib.libs.dvn-EJB.classpath.19"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.18}" property="included.lib.libs.dvn-EJB.classpath.18"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.17}" property="included.lib.libs.dvn-EJB.classpath.17"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.16}" property="included.lib.libs.dvn-EJB.classpath.16"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.15}" property="included.lib.libs.dvn-EJB.classpath.15"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.14}" property="included.lib.libs.dvn-EJB.classpath.14"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.13}" property="included.lib.libs.dvn-EJB.classpath.13"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.12}" property="included.lib.libs.dvn-EJB.classpath.12"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.11}" property="included.lib.libs.dvn-EJB.classpath.11"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.10}" property="included.lib.libs.dvn-EJB.classpath.10"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.9}" property="included.lib.libs.dvn-EJB.classpath.9"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.8}" property="included.lib.libs.dvn-EJB.classpath.8"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.7}" property="included.lib.libs.dvn-EJB.classpath.7"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.6}" property="included.lib.libs.dvn-EJB.classpath.6"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.5}" property="included.lib.libs.dvn-EJB.classpath.5"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.4}" property="included.lib.libs.dvn-EJB.classpath.4"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.3}" property="included.lib.libs.dvn-EJB.classpath.3"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.2}" property="included.lib.libs.dvn-EJB.classpath.2"/>
-        <basename file="${libs.dvn-EJB.classpath.libfile.1}" property="included.lib.libs.dvn-EJB.classpath.1"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.23}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.22}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.21}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.20}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.19}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.18}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.17}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.16}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.15}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.14}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.13}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.12}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.11}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.10}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.9}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.8}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.7}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.6}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.5}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.4}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.3}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.2}" todir="${dist.ear.dir}"/>
-        <copy file="${libs.dvn-EJB.classpath.libfile.1}" todir="${dist.ear.dir}"/>
+        <copyfiles files="${libs.dvn-EJB.classpath}" manifestproperty="manifest.libs.dvn-EJB.classpath" todir="${dist.ear.dir}"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.libs.dvn-EJB.classpath.1} ${included.lib.libs.dvn-EJB.classpath.2} ${included.lib.libs.dvn-EJB.classpath.3} ${included.lib.libs.dvn-EJB.classpath.4} ${included.lib.libs.dvn-EJB.classpath.5} ${included.lib.libs.dvn-EJB.classpath.6} ${included.lib.libs.dvn-EJB.classpath.7} ${included.lib.libs.dvn-EJB.classpath.8} ${included.lib.libs.dvn-EJB.classpath.9} ${included.lib.libs.dvn-EJB.classpath.10} ${included.lib.libs.dvn-EJB.classpath.11} ${included.lib.libs.dvn-EJB.classpath.12} ${included.lib.libs.dvn-EJB.classpath.13} ${included.lib.libs.dvn-EJB.classpath.14} ${included.lib.libs.dvn-EJB.classpath.15} ${included.lib.libs.dvn-EJB.classpath.16} ${included.lib.libs.dvn-EJB.classpath.17} ${included.lib.libs.dvn-EJB.classpath.18} ${included.lib.libs.dvn-EJB.classpath.19} ${included.lib.libs.dvn-EJB.classpath.20} ${included.lib.libs.dvn-EJB.classpath.21} ${included.lib.libs.dvn-EJB.classpath.22} ${included.lib.libs.dvn-EJB.classpath.23} "/>
+            <attribute name="Class-Path" value="${manifest.libs.dvn-EJB.classpath} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">
@@ -390,7 +354,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
     <target depends="init,deps-jar,-pre-pre-compile,-pre-compile,-copy-meta-inf" if="have.sources" name="-do-compile">
         <ejbjarproject2:javac destdir="${classes.dir}"/>
         <copy todir="${classes.dir}">
-            <fileset dir="${src.dir}" excludes="${build.classes.excludes}"/>
+            <fileset dir="${src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
         </copy>
     </target>
     <target name="-post-compile">
@@ -404,11 +368,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
     </target>
     <target depends="init,deps-jar,-pre-pre-compile" name="-do-compile-single">
         <fail unless="javac.includes">Must select some files in the IDE or set javac.includes</fail>
-        <ejbjarproject2:javac>
-            <customize>
-                <include name="${javac.includes}"/>
-            </customize>
-        </ejbjarproject2:javac>
+        <ejbjarproject2:javac excludes="" includes="${javac.includes}"/>
     </target>
     <target name="-post-compile-single">
         <!-- Empty placeholder for easier customization. -->
@@ -449,7 +409,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="init,compile,-pre-dist,-do-dist,-post-dist" description="Build distribution (JAR)." name="dist"/>
-    <target depends="init,compile,-pre-dist,-do-ear-dist,-post-dist" description="Build distribution (JAR) to be packaged into an EAR." name="dist-ear"/>
+    <target depends="init,-init-cos,compile,-pre-dist,-do-ear-dist,-post-dist" description="Build distribution (JAR) to be packaged into an EAR." name="dist-ear"/>
     <!--
                 EXECUTION SECTION
             -->
@@ -476,7 +436,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
     <target name="-run-deploy-am">
         <!-- Task to deploy to the Access Manager runtime. -->
     </target>
-    <target depends="init,-init-deploy,compile,library-inclusion-in-archive,dist,pre-run-deploy,-pre-nbmodule-run-deploy,-run-deploy-nb,-init-deploy-ant,-deploy-ant,-run-deploy-am,-post-nbmodule-run-deploy,post-run-deploy" name="run-deploy">
+    <target depends="init,-init-cos,-init-deploy,compile,library-inclusion-in-archive,dist,pre-run-deploy,-pre-nbmodule-run-deploy,-run-deploy-nb,-init-deploy-ant,-deploy-ant,-run-deploy-am,-post-nbmodule-run-deploy,post-run-deploy" name="run-deploy">
         <nbjpdaappreloaded/>
     </target>
     <target if="netbeans.home" name="-run-deploy-nb">
@@ -543,11 +503,9 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
             <classpath>
                 <path path="${javac.classpath}:${j2ee.platform.classpath}"/>
             </classpath>
-            <sourcepath>
-                <pathelement location="${src.dir}"/>
-            </sourcepath>
-            <packageset dir="${src.dir}" includes="*/**"/>
-            <fileset dir="${src.dir}" includes="*.java"/>
+            <fileset dir="${src.dir}" excludes="${excludes}" includes="${includes}">
+                <filename name="**/*.java"/>
+            </fileset>
         </javadoc>
     </target>
     <target depends="init,javadoc-build" if="netbeans.home" name="javadoc-browse" unless="no.javadoc.preview">
@@ -579,11 +537,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
     </target>
     <target depends="init,compile,-pre-pre-compile-test,-pre-compile-test-single" if="have.tests" name="-do-compile-test-single">
         <fail unless="javac.includes">Must select some files in the IDE or set javac.includes</fail>
-        <ejbjarproject2:javac classpath="${javac.test.classpath}:${j2ee.platform.classpath}" debug="true" destdir="${build.test.classes.dir}" srcdir="">
-            <customize>
-                <patternset includes="${javac.includes}"/>
-            </customize>
-        </ejbjarproject2:javac>
+        <ejbjarproject2:javac classpath="${javac.test.classpath}:${j2ee.platform.classpath}" debug="true" destdir="${build.test.classes.dir}" excludes="" includes="${javac.includes}" srcdir=""/>
     </target>
     <target name="-post-compile-test-single">
         <!-- Empty placeholder for easier customization. -->
@@ -597,7 +551,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <mkdir dir="${build.test.results.dir}"/>
     </target>
     <target depends="init,compile-test,-pre-test-run" if="have.tests" name="-do-test-run">
-        <ejbjarproject2:junit/>
+        <ejbjarproject2:junit testincludes="**/*Test.java"/>
     </target>
     <target depends="init,compile-test,-pre-test-run,-do-test-run" if="have.tests" name="-post-test-run">
         <fail if="tests.failed">Some tests failed; see details above.</fail>
@@ -610,7 +564,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
     </target>
     <target depends="init,compile-test-single,-pre-test-run-single" if="have.tests" name="-do-test-run-single">
         <fail unless="test.includes">Must select some files in the IDE or set test.includes</fail>
-        <ejbjarproject2:junit includes="${test.includes}"/>
+        <ejbjarproject2:junit excludes="" includes="${test.includes}"/>
     </target>
     <target depends="init,compile-test-single,-pre-test-run-single,-do-test-run-single" if="have.tests" name="-post-test-run-single">
         <fail if="tests.failed">Some tests failed; see details above.</fail>

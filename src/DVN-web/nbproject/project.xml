@@ -8,47 +8,52 @@
             <name>DVN-web</name>
             <minimum-ant-version>1.6</minimum-ant-version>
             <web-module-libraries>
-                <library files="5">
+                <library>
                     <file>${libs.woodstock-components.classpath}</file>
                 </library>
-                <library files="1">
+                <library>
                     <file>${libs.woodstock-theme-default.classpath}</file>
                 </library>
-                <library files="1">
-                    <file>${file.reference.javaee.jar}</file>
-                </library>
-                <library files="1">
-                    <file>${file.reference.jsf-impl.jar}</file>
-                </library>
-                <library files="4">
+                <library>
                     <file>${libs.jsf12-support.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="21">
-                    <file>${libs.dvn-WEB.classpath}</file>
-                </library>
-                <library files="1">
+                <library>
                     <file>${reference.DVN-EJB.dist}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library>
+                    <file>${libs.dvn-WEB.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library>
+                    <file>${libs.dvn-Ice.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries>
-                <library files="21">
+                <library>
                     <file>${libs.dvn-WEB.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="5">
+                <library>
                     <file>${libs.woodstock-components.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="1">
+                <library>
                     <file>${libs.woodstock-theme-default.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="4">
+                <library>
                     <file>${libs.jsf12-support.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="1">
+                <library>
                     <file>${libs.exceptionhandler-runtime.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library>
+                    <file>${libs.dvn-Ice.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-additional-libraries>

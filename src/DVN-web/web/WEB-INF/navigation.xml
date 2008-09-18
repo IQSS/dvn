@@ -278,6 +278,13 @@
             <to-view-id>/HomePage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/collection/AddCollectionPage.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>home</from-outcome>
+            <to-view-id>/HomePage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
     <!-- ******************* END-USER FACING PAGES ********************* -->
     <navigation-rule>
         <from-view-id>/ContactUsPage.xhtml</from-view-id>

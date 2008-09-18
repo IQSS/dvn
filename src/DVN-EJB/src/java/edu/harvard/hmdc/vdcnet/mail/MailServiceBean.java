@@ -208,9 +208,9 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
                + "http://"+siteAddress+"\n"
                + "Your dataverse is set to Not Released by default. You can do the"
                +" following as a Dataverse Admin: \n"
-               +" \t• Click My Options to administer your dataverse.\n"
-               + "\t• Begin adding studies and uploading files or creating collections of data from other dataverses.\n"
-               + "\t• Customize the layout, and then you are ready to release your dataverse live!\n"
+               +" \t Click My Options to administer your dataverse.\n"
+               + "\t Begin adding studies and uploading files or creating collections of data from other dataverses.\n"
+               + "\t Customize the layout, and then you are ready to release your dataverse live!\n"
                + "For detailed information about how to use your dataverse options, click User Guides on the Dataverse Network menu bar, or go to http://thedata.org/guides.";
 
         sendDoNotReplyMail(dataverseCreatorEmail,subject,messageText);

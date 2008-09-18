@@ -413,7 +413,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     /**
      *   Gets Study and dependent objects based on Map parameter;
-     *   used by searchPage
+     *   used by studyListingPage
      *
      */
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)

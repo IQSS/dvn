@@ -177,7 +177,8 @@
         
             <!-- ui:tabSet binding="{AnalysisPage.tabSet1}" id="tabSet1" lite="true" mini="true" selected="{AnalysisPage.tab}" styleClass="vdcStudyTabSet" -->
             <ice:panelTabSet id="tabSet1"
-                binding="#{AnalysisPage.tabSet1}">
+                binding="#{AnalysisPage.tabSet1}"
+                tabChangeListener="#{AnalysisPage.processTabChange}">
                 
                 <!-- 1. Download -->
                 <!--ui:tab id="tabDwnld" text="Download Subset" 
@@ -989,7 +990,7 @@
                                                                binding="#{AnalysisPage.analysisOptionPanel}" 
                                                                layout="block" 
                                                                 
-                                                               style="border: 1px groove #FF0000; padding: 2px; ">
+                                                               style="border: 1px groove #000000; padding: 2px; ">
                                                     
                                                     
                                                     <h:outputLabel 
@@ -1017,7 +1018,7 @@
                                                                 binding="#{AnalysisPage.groupPanelSimTypeChoice}"
                                                                 rendered="false"
                                                                 layout="block"
-                                                                style="border: 1px groove rgb(153, 153, 153); padding: 2px; "
+                                                                style="border: 1px groove #00ffff; padding: 2px; "
                                                                 >
                                                             <!-- contional simulation: radio selection -->
 

@@ -524,7 +524,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /** Sets the state number of the initially selected tab.
      *  The default is 3 
      */
-    private int clickedTab = 3;
+    //private int clickedTab = 3;
+    private int currentTabIndex;
 
     
     public Map<String, String> resultInfo = new HashMap<String, String>();
@@ -789,7 +790,46 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         msgAdvStatButton.setValue(" ");
         msgAdvStatButton.setVisible(false);
     }
+    
+    public void processTabChange(TabChangeEvent tce){
 
+        dbgLog.fine("***** within processTabChange: start *****");
+        dbgLog.fine("selectedIndex="+tabSet1.getSelectedIndex());
+        dbgLog.fine("tabPlacement="+tabSet1.getTabPlacement());
+        dbgLog.fine("old tab Index="+tce.getOldTabIndex());
+        dbgLog.fine("new tab Index="+tce.getNewTabIndex());
+        
+        if (tce.getNewTabIndex() != tce.getOldTabIndex()) {
+            dbgLog.fine("reset messages and boxes");
+            // reset boxes
+            // remove vars from RHS boxes
+            advStatVarRBox1.clear();
+            advStatVarRBox2.clear();
+            advStatVarRBox3.clear();
+
+            // add existing vars to LHS box
+            // add user-defined vars to LHS box if available
+            resetVarSetAdvStat(varCart);
+
+            // download message area
+            msgDwnldButton.setValue("");
+            msgDwnldButton.setVisible(false);
+            
+            // recode message area
+            resetMsgSaveRecodeBttn();
+            resetMsg4MoveVar();
+
+            // eda message area
+            msgEdaButton.setValue("");
+            msgEdaButton.setVisible(false);
+
+            // advance stat area
+            msgAdvStatButton.setValue("");
+            msgAdvStatButton.setVisible(false);
+        }        
+        
+        dbgLog.fine("***** within processTabChange: end *****");
+    }
     // </editor-fold>
 
     // -----------------------------------------------------------------------
@@ -7370,6 +7410,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         dbgLog.fine("1st time visit: "+
                             "selected value for howManyRows="
                             + howManyRowsOptions.getSelectedValue());
+                    currentTabIndex = 0;
                 } else {
                     // Postback cases (not 1st-time visit to this page)
                     // Applies the stored data to the key page-scoped objects

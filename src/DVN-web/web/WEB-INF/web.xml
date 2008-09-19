@@ -113,6 +113,10 @@
     <listener>
         <listener-class>edu.harvard.hmdc.vdcnet.util.VDCContextListener</listener-class>
     </listener>
+   <!-- EV: to clean the temporary directory with the uploaded files -->
+    <listener>
+ <listener-class>edu.harvard.hmdc.vdcnet.util.InputFileSessionCleaner</listener-class>
+    </listener>
    <!-- upload filter -->
     <filter>
         <filter-name>UploadFilter</filter-name>

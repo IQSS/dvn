@@ -20,7 +20,11 @@
 
   <gui:define name="body">
 
-    <ice:form>
+   <ice:form id="form1">
+       <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+       <ice:inputHidden id="studyId" value="#{AddFilesPage.study.id}"/>
+      <input type="hidden" name="pageName" value="AddFilesPage"/>
+    
         <ice:inputFile id="inputFileComponent" 
             progressListener="#{AddFilesPage.fileUploadProgress}" 
             actionListener="#{AddFilesPage.uploadFile}" />
@@ -34,7 +38,7 @@
 
     </ice:form>
 <br/>
- <ice:form>
+ <ice:form id="form2">
         <!--
             This is a very basic table comprising four columns. Each
             row represents an inventory item.  Each column represents a
@@ -79,7 +83,7 @@
                     <ice:outputLabel
                             value="Size"/>
                 </f:facet>
-                <ice:outputText value="#{file.sizeFormatted}"/>
+                <ice:outputText size="25" value="#{file.sizeFormatted}"/>
             </ice:column>
           <ice:column>
                 <f:facet name="header">
@@ -93,6 +97,11 @@
                 </ice:commandLink>
             </ice:column> 
         </ice:dataTable>
+    </ice:form>
+    <ice:form id="form3" >
+        <ice:commandButton id="saveButton" value ="Save" action="#{AddFilesPage.save_action}" />
+          <ice:commandButton immediate="true" id="cancelButton" value ="Cancel"
+          action="#{AddFilesPage.cancel_action}" style="margin-left: 30px;"/>
     </ice:form>
 </gui:define>
     </gui:composition>

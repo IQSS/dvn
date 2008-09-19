@@ -61,6 +61,11 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
     public static final String CONTRACT_IMAGE = "tree_nav_top_close_no_siblings.gif";
     public static final String EXPAND_IMAGE = "tree_nav_top_open_no_siblings.gif";
 
+    //these static variables have a dependency on the Network Stats Server e.g.
+    // they should be held as constants in a constants file ... TODO
+    private static Long   SCHOLAR_ID = new Long("-1");
+    private static Long   OTHER_ID   = new Long("-2");
+
     public DvRecordsManager() {
         CHILD_ROW_STYLE_CLASS = "";
     }
@@ -72,9 +77,9 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
         List list = (List)vdcGroupService.findAll();
         initGroupBean(list);
         List scholarlist = (List)vdcService.findVdcsNotInGroups("Scholar");
-        initUnGroupedBeans(scholarlist, "Scholar Dataverses");
+        initUnGroupedBeans(scholarlist, "Scholar Dataverses", SCHOLAR_ID);
         List otherlist = (List)vdcService.findVdcsNotInGroups("Basic");
-        initUnGroupedBeans(otherlist, "Other");
+        initUnGroupedBeans(otherlist, "Other", OTHER_ID);
         
      }
 
@@ -104,9 +109,9 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
         }
      }
 
-     private void initUnGroupedBeans(List list, String caption) {
+     private void initUnGroupedBeans(List list, String caption, Long netstatsId) {
         Iterator iterator = list.iterator();
-        parentItem = new DataverseGrouping(new Long("-1"), caption, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, false);
+        parentItem = new DataverseGrouping(netstatsId, caption, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, false);
         ArrayList childItems   = new ArrayList();
         while (iterator.hasNext()) {
             VDC vdc = (VDC)iterator.next();

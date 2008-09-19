@@ -78,7 +78,8 @@ import javax.servlet.http.HttpSession;
 @EJB(name = "catalogService", beanInterface = edu.harvard.hmdc.vdcnet.catalog.CatalogServiceLocal.class),
 @EJB(name = "oaiSetService", beanInterface = edu.harvard.hmdc.vdcnet.vdc.OAISetServiceLocal.class),
 @EJB(name = "harvestStudyService", beanInterface = edu.harvard.hmdc.vdcnet.harvest.HarvestStudyServiceLocal.class),
-@EJB(name = "vdcGroupService", beanInterface = edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal.class)
+@EJB(name = "vdcGroupService", beanInterface = edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal.class),
+@EJB(name = "vdcService", beanInterface = edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal.class)
 })
 public class LoginFilter implements Filter {
 

@@ -81,8 +81,7 @@
         <managed-bean-name>AnalysisResultsPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.subsetting.AnalysisResultsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
-    </managed-bean>    
-    
+    </managed-bean>        
     
     <!-- **************** Login ***************** -->
      <managed-bean>
@@ -234,8 +233,7 @@
         <managed-bean-name>AddFilesPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.AddFilesPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
-<!--
-        <managed-property>
+   <!--     <managed-property>
             <property-name>studyId</property-name>
             <property-class>java.lang.Long</property-class>
             <value>#{param.studyId}</value>
@@ -245,6 +243,7 @@
             <property-class>java.lang.String</property-class>
             <value>#{VDCSession.loginBean.user.email}</value>
         </managed-property>
+
 -->
  <!-- ****** EV : Managed beans for AddFilesPage with IceFaces ****** -->
         <managed-property>

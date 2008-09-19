@@ -33,6 +33,7 @@
 package edu.harvard.hmdc.vdcnet.web;
 
 import edu.harvard.hmdc.vdcnet.util.DateUtils;
+import edu.harvard.hmdc.vdcnet.web.push.beans.NetworkStatsBean;
 import java.awt.event.ActionEvent;
 import java.sql.Timestamp;
 
@@ -70,7 +71,7 @@ public class DataverseGrouping extends SortableList {
     }
     private Map allChildren = new LinkedHashMap();//used by addchilditem to collect all of the children for expansion and contraction support
     
-    public DataverseGrouping(String name, String recordType, ArrayList parentItems, boolean isExpanded, String expandImage, String contractImage) {
+    public DataverseGrouping(Long id, String name, String recordType, ArrayList parentItems, boolean isExpanded, String expandImage, String contractImage, boolean isTop) {
         super(nameColumnName);
         this.groupKey    = name.replaceAll(" ", "").toLowerCase();
         this.name        = name;
@@ -80,6 +81,8 @@ public class DataverseGrouping extends SortableList {
         this.isExpanded  = isExpanded;
         this.expandImage = expandImage;
         this.contractImage = contractImage;
+        this.id = id;
+        this.top = isTop;
         // update the default state of the node.
         if (this.isExpanded) {
             expandNodeAction();
@@ -335,6 +338,7 @@ public class DataverseGrouping extends SortableList {
     private LocalizedDate localizedDate = new LocalizedDate();
     private String recordType;
     private String activity;
+    private boolean top;
         
     public String getRecordType() {
         return recordType;
@@ -410,12 +414,20 @@ public class DataverseGrouping extends SortableList {
         this.alias = alias;
     }
 
-    public Long getId() {
-        return id;
+    public String getId() {
+        return id.toString();
     }
 
-    public void setId(Long personId) {
-        id = personId;
+    public void setId(Long Id) {
+        id = Id;
+    }
+
+    public boolean isTop() {
+        return top;
+    }
+
+    public void setTop(boolean istop) {
+        this.top = istop;
     }
 
     public String getDvnDescription() {

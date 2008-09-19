@@ -35,6 +35,9 @@ import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtils;
 import edu.harvard.hmdc.vdcnet.vdc.*;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import edu.harvard.hmdc.vdcnet.web.push.NetworkStatsState;
+import edu.harvard.hmdc.vdcnet.web.push.beans.NetworkStatsBean;
+import edu.harvard.hmdc.vdcnet.web.push.beans.NetworkStatsItemBean;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -42,7 +45,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.FacesException;
 
 public class DvRecordsManager extends VDCBaseBean implements Serializable {
     @EJB StudyServiceLocal studyService;
@@ -59,7 +61,6 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
     public static final String CONTRACT_IMAGE = "tree_nav_top_close_no_siblings.gif";
     public static final String EXPAND_IMAGE = "tree_nav_top_open_no_siblings.gif";
 
-
     public DvRecordsManager() {
         CHILD_ROW_STYLE_CLASS = "";
     }
@@ -74,6 +75,7 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
         initUnGroupedBeans(scholarlist, "Scholar Dataverses");
         List otherlist = (List)vdcService.findVdcsNotInGroups("Basic");
         initUnGroupedBeans(otherlist, "Other");
+        
      }
 
      DataverseGrouping parentItem = null;
@@ -85,7 +87,7 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
          while(iterator.hasNext()) {
             //add DataListItems to the list
             vdcgroup = (VDCGroup)iterator.next();
-            parentItem = new DataverseGrouping(vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE);
+            parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, false);
             List innerlist = vdcgroup.getVdcs();
             Iterator inneriterator = innerlist.iterator();
             ArrayList childItems   = new ArrayList();
@@ -104,7 +106,7 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
 
      private void initUnGroupedBeans(List list, String caption) {
         Iterator iterator = list.iterator();
-        parentItem = new DataverseGrouping(caption, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE);
+        parentItem = new DataverseGrouping(new Long("-1"), caption, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, false);
         ArrayList childItems   = new ArrayList();
         while (iterator.hasNext()) {
             VDC vdc = (VDC)iterator.next();

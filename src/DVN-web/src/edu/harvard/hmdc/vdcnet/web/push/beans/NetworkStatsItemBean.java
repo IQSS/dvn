@@ -54,10 +54,6 @@ import javax.faces.context.FacesContext;
  */
 public class NetworkStatsItemBean extends ItemType {
     private static Log log = LogFactory.getLog(NetworkStatsItemBean.class);
-    private boolean expanded;
-    private boolean bidExpanded = false;
-    private double currentPrice; //TODO: Deprecated. Remove this
-    private boolean bidMessage;
     private Effect effect;
     
     //Network Stats
@@ -72,11 +68,6 @@ public class NetworkStatsItemBean extends ItemType {
     }
     
     // action methods
-    
-    public String pressBidButton() {
-        bidExpanded = !bidExpanded;
-        return SUCCESS;
-    }
     
     public String doRelease() {
         setDataverseTotal(Long.toString(new Long(dataverseTotal) + 1));
@@ -124,10 +115,7 @@ public class NetworkStatsItemBean extends ItemType {
         
          if (effect == null) {
             effect = new Highlight("#FFCC0B");
-            System.out.println("the effect is null");
-         } else {
-             System.out.println("the effect is " + effect.toString());
-         }
+         } 
          effect.setFired(false);
     }
     
@@ -163,31 +151,23 @@ public class NetworkStatsItemBean extends ItemType {
     public Effect getEffect() {
         return effect;
     }
-    
-    public boolean isExpanded() {
-        return expanded;
-    }
-     
-     public boolean isBidExpanded() {
-        return bidExpanded;
-    }
-     
+
      //NETWORK STATS
      public String getDataverseTotal() {
-            dataverseTotal = (String)NetworkStatsState.getNetworkStatsMap().get(getItemID() + ".dataverseTotal");
+            dataverseTotal = NetworkStatsState.getNetworkStatsMap().get(getItemID() + ".dataverseTotal").toString();
             
          
          return dataverseTotal;
     }
      
      public String getStudyTotal() {
-            studyTotal = (String)NetworkStatsState.getNetworkStatsMap().get(getItemID() + ".studyTotal");
+            studyTotal = NetworkStatsState.getNetworkStatsMap().get(getItemID() + ".studyTotal").toString();
          
          return studyTotal;
     }
      
      public String getFilesTotal() {
-            filesTotal = (String)NetworkStatsState.getNetworkStatsMap().get(getItemID() + ".filesTotal");
+            filesTotal = NetworkStatsState.getNetworkStatsMap().get(getItemID() + ".filesTotal").toString();
          
          return filesTotal;
     }
@@ -197,10 +177,6 @@ public class NetworkStatsItemBean extends ItemType {
         this.effect = effect;
     }
 
-    public void setCurrentPrice(double currentPrice) {
-        this.currentPrice = currentPrice;
-    }
-   
    // NETWORK TOTALS
    public void setDataverseTotal(String dataverseTotal) {
         this.dataverseTotal = dataverseTotal;
@@ -212,14 +188,6 @@ public class NetworkStatsItemBean extends ItemType {
    
    public void setFilesTotal(String filesTotal) {
         this.filesTotal = filesTotal;
-    }
-    
-    public void setExpanded(boolean expanded) {
-        this.expanded = expanded;
-    }
-    
-    public void setBidExpanded(boolean bidExpanded) {
-        this.bidExpanded = bidExpanded;
     }
   
 }

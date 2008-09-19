@@ -48,6 +48,7 @@ import edu.harvard.hmdc.vdcnet.web.push.NetworkStatsState;
 import edu.harvard.hmdc.vdcnet.web.push.ReleaseEvent;
 import edu.harvard.hmdc.vdcnet.web.push.stubs.ItemType;
 import edu.harvard.hmdc.vdcnet.web.push.stubs.NetworkStatsStubServer;
+import javax.faces.component.html.HtmlOutputText;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -110,13 +111,7 @@ public class NetworkStatsBean implements NetworkStatsListener, Renderable, Dispo
         if (null == queryString) {
             return null;
         }
-        System.out.println("isFreshSearch? " + isFreshSearch);
         if (!isFreshSearch) {
-            // DEBUG --remove the below it is just for testing
-            //for (int i = 0; i < searchItemBeans.length; i++) {
-                //NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
-                //System.out.println("the itembean dataverseTotal is " + itembean.getDataverseTotal());
-           // }
             return searchItemBeans;
         }
 
@@ -216,6 +211,164 @@ public class NetworkStatsBean implements NetworkStatsListener, Renderable, Dispo
         }
     }
 
+    private HtmlOutputText inlineDataverseKey;
+    private String inlineDataverseValue;
+    private HtmlOutputText inlineStudyKey;
+    private String inlineStudyValue;
+    private HtmlOutputText inlineFilesKey;
+    private String inlineFilesValue;
+
+    // Getters -----------------------------------------------------------------------------------
+
+    public HtmlOutputText getInlineDataverseKey() {
+        return inlineDataverseKey;
+    }
+
+    public synchronized String getInlineDataverseValue() {
+        if (null == queryString) {
+            return null;
+        }
+        if (!isFreshSearch) {
+            for (int i = 0; i < searchItemBeans.length; i++) {
+                NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
+                if (itembean.getItemID().equals((String) inlineDataverseKey.getAttributes().get("itemid"))){
+                    return itembean.getDataverseLabel() + itembean.getDataverseTotal();
+                }
+            }
+        }
+        try {
+            ItemType searchItems[] = getSearchResults(queryString);
+            if (null == searchItems) {
+                return null;
+            }
+            searchItemBeans = new NetworkStatsItemBean[searchItems.length];
+
+            for (int i = 0; i < searchItems.length; i++) {
+                searchItemBeans[i] = new NetworkStatsItemBean(searchItems[i]);
+            }
+            isFreshSearch = false;
+            Thread t = new Thread(
+                    new NetworkStatsItemDetailer(this, searchItemBeans));
+            t.start();
+            for (int i = 0; i < searchItemBeans.length; i++) {
+                NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
+                if (itembean.getItemID().equals((String) inlineDataverseKey.getAttributes().get("itemid"))){
+                    return itembean.getDataverseLabel() + itembean.getDataverseTotal();
+                }
+            }
+        } catch (Exception e) {
+            if (log.isErrorEnabled()) {
+                log.error(
+                        "Failed to read the available search items because of " + e);
+            }
+        }
+        return null;
+    }
+
+    public HtmlOutputText getInlineStudyKey() {
+        return inlineStudyKey;
+    }
+
+    public synchronized String getInlineStudyValue() {
+        if (null == queryString) {
+            return null;
+        }
+        if (!isFreshSearch) {
+            for (int i = 0; i < searchItemBeans.length; i++) {
+                NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
+                if (itembean.getItemID().equals((String) inlineDataverseKey.getAttributes().get("itemid"))){
+                    return itembean.getStudyLabel() + itembean.getStudyTotal();
+                }
+            }
+        }
+        try {
+            ItemType searchItems[] = getSearchResults(queryString);
+            if (null == searchItems) {
+                return null;
+            }
+            searchItemBeans = new NetworkStatsItemBean[searchItems.length];
+
+            for (int i = 0; i < searchItems.length; i++) {
+                searchItemBeans[i] = new NetworkStatsItemBean(searchItems[i]);
+            }
+            isFreshSearch = false;
+            Thread t = new Thread(
+                    new NetworkStatsItemDetailer(this, searchItemBeans));
+            t.start();
+            for (int i = 0; i < searchItemBeans.length; i++) {
+                NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
+                if (itembean.getItemID().equals((String) inlineDataverseKey.getAttributes().get("itemid"))){
+                    return itembean.getStudyLabel() + itembean.getStudyTotal();
+                }
+            }
+        } catch (Exception e) {
+            if (log.isErrorEnabled()) {
+                log.error(
+                        "Failed to read the available search items because of " + e);
+            }
+        }
+        return null;
+    }
+
+    public HtmlOutputText getInlineFilesKey() {
+        return inlineFilesKey;
+    }
+
+    public synchronized String getInlineFilesValue() {
+        if (null == queryString) {
+            return null;
+        }
+        if (!isFreshSearch) {
+            for (int i = 0; i < searchItemBeans.length; i++) {
+                NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
+                if (itembean.getItemID().equals((String) inlineDataverseKey.getAttributes().get("itemid"))){
+                    return itembean.getFilesLabel() + itembean.getFilesTotal();
+                }
+            }
+        }
+        try {
+            ItemType searchItems[] = getSearchResults(queryString);
+            if (null == searchItems) {
+                return null;
+            }
+            searchItemBeans = new NetworkStatsItemBean[searchItems.length];
+
+            for (int i = 0; i < searchItems.length; i++) {
+                searchItemBeans[i] = new NetworkStatsItemBean(searchItems[i]);
+            }
+            isFreshSearch = false;
+            Thread t = new Thread(
+                    new NetworkStatsItemDetailer(this, searchItemBeans));
+            t.start();
+            for (int i = 0; i < searchItemBeans.length; i++) {
+                NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
+                if (itembean.getItemID().equals((String) inlineDataverseKey.getAttributes().get("itemid"))){
+                    return itembean.getFilesLabel() + itembean.getFilesTotal();
+                }
+            }
+        } catch (Exception e) {
+            if (log.isErrorEnabled()) {
+                log.error(
+                        "Failed to read the available search items because of " + e);
+            }
+        }
+        return null;
+    }
+
+    // Setters -----------------------------------------------------------------------------------
+
+    public void setInlineDataverseKey(HtmlOutputText dataversekey) {
+        this.inlineDataverseKey = dataversekey;
+    }
+
+    public void setInlineStudyKey(HtmlOutputText studykey) {
+        this.inlineStudyKey = studykey;
+    }
+
+    public void setInlineFilesKey(HtmlOutputText fileskey) {
+        this.inlineFilesKey = fileskey;
+    }
+
     public void reRender() {
         if (renderer != null) {
             renderer.requestRender();
@@ -263,7 +416,7 @@ public class NetworkStatsBean implements NetworkStatsListener, Renderable, Dispo
         }
         return false;
     }
-    
+
     /**
      * View has been disposed either by window closing or a session timeout.
      */

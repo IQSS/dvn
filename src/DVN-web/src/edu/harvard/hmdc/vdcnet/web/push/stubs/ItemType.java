@@ -56,9 +56,6 @@ public class ItemType implements Serializable {
         this.dataverseLabel = parent.getDataverseLabel();
         this.studyLabel     = parent.getStudyLabel();
         this.filesLabel     = parent.getFilesLabel();
-        //DEBUG
-        System.out.println("Made it through ItemType constructor ...");
-        // END DEBUG
     }
 
     //getters

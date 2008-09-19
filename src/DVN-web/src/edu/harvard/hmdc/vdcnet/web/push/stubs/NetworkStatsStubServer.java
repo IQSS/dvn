@@ -33,22 +33,20 @@
 
 package edu.harvard.hmdc.vdcnet.web.push.stubs;
 
+import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.web.push.NetworkStatsState;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Iterator;
-import java.util.Properties;
-import java.util.ResourceBundle;
 
 import javax.naming.InitialContext;
 
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
+import java.util.Collection;
 
 /**
  * NetworkStatsStubServer
@@ -86,6 +84,8 @@ public class NetworkStatsStubServer {
      * Holds value of property total.
      */
     VDCNetworkServiceLocal vdcNetworkService = null;
+    VDCGroupServiceLocal vdcGroupService = null;
+    VDCServiceLocal vdcService = null;
     
     private static final String DVNITEM                 = "item";
     private static final String DVNID                   = "id";
@@ -105,29 +105,19 @@ public class NetworkStatsStubServer {
     
      private void initNetworkData() {
         boolean isReleased         = true;
-         // Loop through each property and put the values in the global network stats state
-        // this can be made more dynamic by using a while loop if outputting a set of these values,
-        // for example if each group had a listing of the number of dataverses. For now, it will only
-        // have a size of 1.
+
         int itemCounter = 0;
         String itemPrefix, idValue, key;
         itemPrefix = DVNITEM + itemCounter + ".";
-        //idValue = props.getProperty(itemPrefix + ID);
         try {
             vdcNetworkService = (VDCNetworkServiceLocal) new InitialContext().lookup("java:comp/env/vdcNetworkService");
-            
-            
         } catch (Exception e) {
             e.printStackTrace();
         }
         idValue = DVNITEM + itemCounter;
         key = itemPrefix;
-        // No more item sets were found, so break the loop
-        // TODO: increment this if we become interested in the # of dataverses per group
-            //if (idValue == null) {
-               // break;
-            //}
-        
+
+        //network level
         NetworkStatsState.getNetworkStatsMap().put(key + DVNID, idValue);
         NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSETOTAL, this.getTotalDataverses(isReleased));
         NetworkStatsState.getNetworkStatsMap().put(key + STUDYTOTAL, this.getTotalStudies(isReleased));
@@ -138,7 +128,48 @@ public class NetworkStatsStubServer {
         NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSELABEL, "Dataverses: ");
         NetworkStatsState.getNetworkStatsMap().put(key + STUDYLABEL, "Studies: ");
         NetworkStatsState.getNetworkStatsMap().put(key + FILESLABEL, "Files: ");
-       // itemCounter++; TODO: increment this if we become interested in the # of dataverses per group
+
+        //GROUPS COUNTS
+        try {
+            vdcGroupService = (VDCGroupServiceLocal) new InitialContext().lookup("java:comp/env/vdcGroupService");
+
+        Collection<VDCGroup> vdcgroups = (Collection<VDCGroup>)vdcGroupService.findAll();
+
+        Iterator iterator = vdcgroups.iterator();
+               
+        while (iterator.hasNext()) {
+            VDCGroup vdcgroup = (VDCGroup)iterator.next();
+            idValue = vdcgroup.getId().toString();
+            itemPrefix = DVNITEM + idValue + ".";
+            key = itemPrefix;
+            NetworkStatsState.getNetworkStatsMap().put(key + DVNID, idValue);
+            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSETOTAL, this.getGroupTotalDataverses(vdcgroup.getId()));
+            NetworkStatsState.getNetworkStatsMap().put(key + STUDYTOTAL, this.getGroupTotalStudies(vdcgroup.getId()));
+            NetworkStatsState.getNetworkStatsMap().put(key + FILESTOTAL, this.getGroupTotalFiles(vdcgroup.getId()));
+            NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_DATAVERSETOTAL, new String("0"));
+            NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_STUDYTOTAL, new String("0"));
+            NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_FILESTOTAL, new String("0"));
+            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSELABEL, "Dataverses: ");
+            NetworkStatsState.getNetworkStatsMap().put(key + STUDYLABEL, "Studies: ");
+            NetworkStatsState.getNetworkStatsMap().put(key + FILESLABEL, "Files: ");
+        }
+         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //OTHER
+            idValue = new String("-1"); //TODO: convert to Long if convenient/time permits
+            itemPrefix = DVNITEM + idValue + ".";
+            key = itemPrefix;
+            NetworkStatsState.getNetworkStatsMap().put(key + DVNID, idValue);
+            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSETOTAL, this.getGroupTotalDataverses(new Long("-1")));
+            NetworkStatsState.getNetworkStatsMap().put(key + STUDYTOTAL, this.getGroupTotalStudies(new Long("-1")));
+            NetworkStatsState.getNetworkStatsMap().put(key + FILESTOTAL, this.getGroupTotalFiles(new Long("-1")));
+            NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_DATAVERSETOTAL, new String("0"));
+            NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_STUDYTOTAL, new String("0"));
+            NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_FILESTOTAL, new String("0"));
+            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSELABEL, "Dataverses: ");
+            NetworkStatsState.getNetworkStatsMap().put(key + STUDYLABEL, "Studies: ");
+            NetworkStatsState.getNetworkStatsMap().put(key + FILESLABEL, "Files: ");
      }
     
     /**
@@ -150,7 +181,6 @@ public class NetworkStatsStubServer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("the total dataverses are " + vdcNetworkService.getTotalDataverses(released));
         return vdcNetworkService.getTotalDataverses(released).toString();
     }
     
@@ -170,6 +200,29 @@ public class NetworkStatsStubServer {
             e.printStackTrace();
         }
         return vdcNetworkService.getTotalFiles(released).toString();
+    }
+
+    public String getGroupTotalDataverses(Long id) {
+        VDCGroup vdcgroup = vdcGroupService.findById(id);
+        if (vdcgroup != null) {
+            return new Integer(vdcgroup.getVdcs().size()).toString();
+        } else {
+            try {
+                vdcService = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
+                return (new Integer(vdcService.findVdcsNotInGroups("Basic").size())).toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public String getGroupTotalStudies(Long id) {
+        return new String("0");
+    }
+
+    public String getGroupTotalFiles(Long id) {
+        return new String("0");
     }
 
     /**

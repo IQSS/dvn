@@ -24,7 +24,9 @@ public class InputFileData implements Serializable {
     //
     private String fileName=null;
     private String fileCategoryName = "";  
-    private String fileDescription ="";  
+    private String fileDescription =""; 
+    private String sizeFormatted;
+ 
     /**
      * Create a new InputFileDat object.
      *
@@ -39,7 +41,7 @@ public class InputFileData implements Serializable {
         this.file = file;
         fileName = fileInfo.getFileName();
     }
-    
+   
     /**
      * 
      * @param fileInfo fileInfo object created by the inputFile component for
@@ -86,6 +88,8 @@ public class InputFileData implements Serializable {
     public void setFileDescription(String str){
 	fileDescription = str; 
     }
+   
+   
     /**
      * Method to return the file size as a formatted string
      * For example, 4000 bytes would be returned as 4kb
@@ -108,9 +112,11 @@ public class InputFileData implements Serializable {
         else if (ourLength < AddFilesPage.KILOBYTE_LENGTH_BYTES) {
             return ourLength + "b";
         }
-        
-        return Long.toString(ourLength);
+        sizeFormatted =  Long.toString(ourLength); 
+        return sizeFormatted; 
     }
-  
+  private void setSizeFormatted(String s){
+      sizeFormatted = s; 
+  }
   
 }

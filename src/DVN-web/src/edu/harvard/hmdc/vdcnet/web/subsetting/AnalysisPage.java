@@ -1537,7 +1537,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // ui-listbox-based solution
 
     // moveRecodeVarBttn:h:commandButton@binding
-    private HtmlCommandButton moveRecodeVarBttn = new HtmlCommandButton();
+    private HtmlCommandButton moveRecodeVarBttn = new javax.faces.component.html.HtmlCommandButton();
 
     public HtmlCommandButton getMoveRecodeVarBttn() {
         return moveRecodeVarBttn;
@@ -1598,12 +1598,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         }
         String varId = null;// getSelectedRecodeVariable();
         if (getSelectedRecodeVariable() == null){
-            varId = (String)listboxRecode.getSelected();
+            varId = (String)listboxRecode.getValue();
         } else {
             varId = getSelectedRecodeVariable();
         }
         dbgLog.fine("recode-variable id=" + varId);
-        dbgLog.fine("selected from the binding="+listboxRecode.getSelected());
+        dbgLog.fine("selected from the binding="+listboxRecode.getValue());
         dbgLog.fine("Is this a recoded var?[" + isRecodedVar(varId) + "]");
         resetMsgSaveRecodeBttn();
         if (isRecodedVar(varId)) {
@@ -1750,16 +1750,20 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
     // listboxRecode:ui:listbox@binding => varSetAdvStat
     // boxL1:listbox@binding
-    private Listbox listboxRecode = new Listbox();
+    //private Listbox listboxRecode = new Listbox();
+    // ice:selectOneListbox binding
+    private HtmlSelectOneListbox listboxRecode = 
+        new com.icesoft.faces.component.ext.HtmlSelectOneListbox();
 
-    public Listbox getListboxRecode() {
+    public HtmlSelectOneListbox getListboxRecode() {
         return listboxRecode;
     }
 
-    public void setListboxRecode(Listbox lstbx) {
+    public void setListboxRecode(HtmlSelectOneListbox lstbx) {
         this.listboxRecode = lstbx;
     }
-    // listboxRecode:ui:listbox@selected
+    
+    // listboxRecode:ice:selectOneListbox value
     private String selectedRecodeVariable;
 
     public void setSelectedRecodeVariable(String s) {
@@ -3854,25 +3858,27 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // boxL1:listbox@binding
-    private Listbox listboxAdvStat = new Listbox();
+    //private Listbox listboxAdvStat = new Listbox();
+    private HtmlSelectManyListbox listboxAdvStat
+        = new com.icesoft.faces.component.ext.HtmlSelectManyListbox();
 
-    public Listbox getListboxAdvStat() {
+    public HtmlSelectManyListbox getListboxAdvStat() {
         return listboxAdvStat;
     }
 
-    public void setListboxAdvStat(Listbox lstbx) {
+    public void setListboxAdvStat(HtmlSelectManyListbox lstbx) {
         this.listboxAdvStat = lstbx;
     }
 
     // boxL1: listbox@items (data for the listbox)
 
-    private Collection<Option> varSetAdvStat = new ArrayList<Option>();
+    private List<SelectItem> varSetAdvStat = new ArrayList<SelectItem>();
 
-    public Collection<Option> getVarSetAdvStat() {
+    public List<SelectItem> getVarSetAdvStat() {
         return varSetAdvStat;
     }
 
-    public void setVarSetAdvStat(Collection<Option> co) {
+    public void setVarSetAdvStat(List<SelectItem> co) {
         this.varSetAdvStat = co;
     }
 
@@ -3911,25 +3917,27 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // boxR1: listbox@binding
     // 
-    private Listbox advStatVarListboxR1 = new Listbox();
+    //private Listbox advStatVarListboxR1 = new Listbox();
+    private HtmlSelectManyListbox advStatVarListboxR1 =
+        new com.icesoft.faces.component.ext.HtmlSelectManyListbox();
 
-    public Listbox getAdvStatVarListboxR1() {
+    public HtmlSelectManyListbox getAdvStatVarListboxR1() {
         return advStatVarListboxR1;
     }
 
-    public void setAdvStatVarListboxR1(Listbox l1) {
+    public void setAdvStatVarListboxR1(HtmlSelectManyListbox l1) {
         this.advStatVarListboxR1 = l1;
     }
 
     // boxR1 : listbox@items [provide data for the listbox]
+    // value
+    private List<SelectItem> advStatVarRBox1 = new ArrayList<SelectItem>();
 
-    private Collection<Option> advStatVarRBox1 = new ArrayList<Option>();
-
-    public Collection<Option> getAdvStatVarRBox1() {
+    public List<SelectItem> getAdvStatVarRBox1() {
         return advStatVarRBox1;
     }
 
-    public void setAdvStatVarRBox1(Collection<Option> dol) {
+    public void setAdvStatVarRBox1(List<SelectItem> dol) {
         this.advStatVarRBox1 = dol;
     }
 
@@ -3945,24 +3953,26 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // boxR2: listbox@binding
-    private Listbox advStatVarListboxR2 = new Listbox();
+    // private Listbox advStatVarListboxR2 = new Listbox();
+    private HtmlSelectManyListbox advStatVarListboxR2 =
+        new com.icesoft.faces.component.ext.HtmlSelectManyListbox();
 
-    public Listbox getAdvStatVarListboxR2() {
+    public HtmlSelectManyListbox getAdvStatVarListboxR2() {
         return advStatVarListboxR2;
     }
 
-    public void setAdvStatVarListboxR2(Listbox l2) {
+    public void setAdvStatVarListboxR2(HtmlSelectManyListbox l2) {
         this.advStatVarListboxR2 = l2;
     }
 
     // boxR2: listbox@items [provide data for the listbox]
-    private Collection<Option> advStatVarRBox2 = new ArrayList<Option>();
+    private List<SelectItem> advStatVarRBox2 = new ArrayList<SelectItem>();
 
-    public Collection<Option> getAdvStatVarRBox2() {
+    public List<SelectItem> getAdvStatVarRBox2() {
         return advStatVarRBox2;
     }
 
-    public void setAdvStatVarRBox2(Collection<Option> dol) {
+    public void setAdvStatVarRBox2(List<SelectItem> dol) {
         this.advStatVarRBox2 = dol;
     }
 
@@ -3978,24 +3988,26 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // boxR3: listbox@binding
-    private Listbox advStatVarListboxR3 = new Listbox();
+    //private Listbox advStatVarListboxR3 = new Listbox();
+    private HtmlSelectManyListbox advStatVarListboxR3 =
+        new com.icesoft.faces.component.ext.HtmlSelectManyListbox();
 
-    public Listbox getAdvStatVarListboxR3() {
+    public HtmlSelectManyListbox getAdvStatVarListboxR3() {
         return advStatVarListboxR3;
     }
 
-    public void setAdvStatVarListboxR3(Listbox l3) {
+    public void setAdvStatVarListboxR3(HtmlSelectManyListbox l3) {
         this.advStatVarListboxR3 = l3;
     }
 
     // boxR3: listbox@items [provide data for the listbox]
-    private Collection<Option> advStatVarRBox3 = new ArrayList<Option>();
+    private List<SelectItem> advStatVarRBox3 = new ArrayList<SelectItem>();
 
-    public Collection<Option> getAdvStatVarRBox3() {
+    public List<SelectItem> getAdvStatVarRBox3() {
         return advStatVarRBox3;
     }
 
-    public void setAdvStatVarRBox3(Collection<Option> dol) {
+    public void setAdvStatVarRBox3(List<SelectItem> dol) {
         this.advStatVarRBox3 = dol;
     }
 
@@ -4336,12 +4348,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return result;
     }
 
-    // remove the selected option from a given listbox@items
-    private Option removeOption(String varId, Collection<Option> co) {
-        Option matchedOptn = null;
+    // remove the selected SelectItem from a given selectManyListbox
+    private SelectItem removeOption(String varId, List<SelectItem> co) {
+        SelectItem matchedOptn = null;
         Iterator iter = co.iterator();
         while (iter.hasNext()) {
-            Option optn = (Option) iter.next();
+            SelectItem optn = (SelectItem) iter.next();
             if (varId.equals(optn.getValue())) {
                 matchedOptn = optn;
                 co.remove(optn);
@@ -4381,10 +4393,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         resetMsgAdvStatButton();
         
         dbgLog.fine("advStatSelectedVarLBox="+advStatSelectedVarLBox);
-        dbgLog.fine("advStatSelectedVar from binding="+listboxAdvStat.getSelected());
+        dbgLog.fine("advStatSelectedVar from binding="+listboxAdvStat.getValue());
         String[] OptnSet = null;
         if (getAdvStatSelectedVarLBox() == null){
-            OptnSet = (String[])listboxAdvStat.getSelected();
+            OptnSet = (String[])listboxAdvStat.getValue();
         } else {
             OptnSet = getAdvStatSelectedVarLBox();
         }
@@ -4467,10 +4479,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         resetMsgAdvStatButton();
         
         dbgLog.fine("advStatSelectedVarLBox="+advStatSelectedVarLBox);
-        dbgLog.fine("advStatSelectedVar from binding="+listboxAdvStat.getSelected());
+        dbgLog.fine("advStatSelectedVar from binding="+listboxAdvStat.getValue());
         String[] OptnSet = null;
         if (getAdvStatSelectedVarLBox() == null){
-            OptnSet = (String[])listboxAdvStat.getSelected();
+            OptnSet = (String[])listboxAdvStat.getValue();
         } else {
             OptnSet = getAdvStatSelectedVarLBox();
         }
@@ -4552,10 +4564,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         resetMsgAdvStatButton();
         
         dbgLog.fine("advStatSelectedVarLBox="+advStatSelectedVarLBox);
-        dbgLog.fine("advStatSelectedVar from binding="+listboxAdvStat.getSelected());
+        dbgLog.fine("advStatSelectedVar from binding="+listboxAdvStat.getValue());
         String[] OptnSet = null;
         if (getAdvStatSelectedVarLBox() == null){
-            OptnSet = (String[])listboxAdvStat.getSelected();
+            OptnSet = (String[])listboxAdvStat.getValue();
         } else {
             OptnSet = getAdvStatSelectedVarLBox();
         }
@@ -4622,10 +4634,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         
         
         dbgLog.fine("advStatSelectedVarRBox1="+advStatSelectedVarRBox1);
-        dbgLog.fine("advStatSelectedVar from binding="+advStatVarListboxR1.getSelected());
+        dbgLog.fine("advStatSelectedVar from binding="+advStatVarListboxR1.getValue());
         String[] OptnSet = null;
         if (getAdvStatSelectedVarRBox1() == null){
-            OptnSet = (String[])advStatVarListboxR1.getSelected();
+            OptnSet = (String[])advStatVarListboxR1.getValue();
         } else {
             OptnSet = getAdvStatSelectedVarRBox1();
         }
@@ -4634,8 +4646,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dbgLog.fine("OptnSet="+OptnSet);
         // for each selected item
         for (int i = 0; i < OptnSet.length; i++) {
-            getVarSetAdvStat().add(
-                removeOption(OptnSet[i], getAdvStatVarRBox1()));
+            getVarSetAdvStat().add(removeOption(OptnSet[i], getAdvStatVarRBox1()));
         }
     }
 
@@ -4649,10 +4660,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         resetMsgAdvStatButton();
         
         dbgLog.fine("advStatSelectedVarRBox2="+advStatSelectedVarRBox2);
-        dbgLog.fine("advStatSelectedVar from binding="+advStatVarListboxR2.getSelected());
+        dbgLog.fine("advStatSelectedVar from binding="+advStatVarListboxR2.getValue());
         String[] OptnSet = null;
         if (getAdvStatSelectedVarRBox2() == null){
-            OptnSet = (String[])advStatVarListboxR2.getSelected();
+            OptnSet = (String[])advStatVarListboxR2.getValue();
         } else {
             OptnSet = getAdvStatSelectedVarRBox2();
         }
@@ -4677,16 +4688,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         resetMsgAdvStatButton();
         
         dbgLog.fine("advStatSelectedVarRBox3="+advStatSelectedVarRBox3);
-        dbgLog.fine("advStatSelectedVar from binding="+advStatVarListboxR3.getSelected());
+        dbgLog.fine("advStatSelectedVar from binding="+advStatVarListboxR3.getValue());
         String[] OptnSet = null;
         if (getAdvStatSelectedVarRBox3() == null){
-            OptnSet = (String[])advStatVarListboxR3.getSelected();
+            OptnSet = (String[])advStatVarListboxR3.getValue();
         } else {
             OptnSet = getAdvStatSelectedVarRBox3();
         }
         
         dbgLog.fine("OptnSet Length="+OptnSet.length);
-        dbgLog.fine("OptnSet="+OptnSet);        
+        dbgLog.fine("OptnSet="+OptnSet);
         
         
         
@@ -5064,24 +5075,25 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // simulation : value for 1st diff: pull-down var selection
     // dropdown2: ui:dropdown@binding
-    private DropDown dropDown2 = new DropDown();
-
-    public DropDown getDropDown2() {
+    // private DropDown dropDown2 = new DropDown();
+    private HtmlSelectOneMenu dropDown2 =
+        new com.icesoft.faces.component.ext.HtmlSelectOneMenu();
+    public HtmlSelectOneMenu getDropDown2() {
         return dropDown2;
     }
 
-    public void setDropDown2(DropDown dd) {
+    public void setDropDown2(HtmlSelectOneMenu dd) {
         this.dropDown2 = dd;
     }
 
     // dropdown2: ui:dropdown@items
-    private Collection<Option> setxDiffVarBox1 = new ArrayList<Option>();
+    private List<SelectItem> setxDiffVarBox1 = new ArrayList<SelectItem>();
 
-    public Collection<Option> getSetxDiffVarBox1() {
+    public List<SelectItem> getSetxDiffVarBox1() {
         return setxDiffVarBox1;
     }
 
-    public void setSetxDiffVarBox1(Collection<Option> dol) {
+    public void setSetxDiffVarBox1(List<SelectItem> dol) {
         this.setxDiffVarBox1 = dol;
     }
 
@@ -5122,24 +5134,26 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // simulation : explanatory variable value: pull-down var selection
     // dropdown3: ui:dropDown@binding
-    private DropDown dropDown3 = new DropDown();
+    //private DropDown dropDown3 = new DropDown();
+    private HtmlSelectOneMenu dropDown3 = 
+        new com.icesoft.faces.component.ext.HtmlSelectOneMenu();
 
-    public DropDown getDropDown3() {
+    public HtmlSelectOneMenu getDropDown3() {
         return dropDown3;
     }
 
-    public void setDropDown3(DropDown dd) {
+    public void setDropDown3(HtmlSelectOneMenu dd) {
         this.dropDown3 = dd;
     }
 
     // dropdown3: ui:dropdown@items
-    private Collection<Option> setxDiffVarBox2 = new ArrayList<Option>();
+    private List<SelectItem> setxDiffVarBox2 = new ArrayList<SelectItem>();
 
-    public Collection<Option> getSetxDiffVarBox2() {
+    public List<SelectItem> getSetxDiffVarBox2() {
         return setxDiffVarBox2;
     }
 
-    public void setSetxDiffVarBox2(Collection<Option> dol) {
+    public void setSetxDiffVarBox2(List<SelectItem> dol) {
         this.setxDiffVarBox2 = dol;
     }
 
@@ -5533,8 +5547,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         mpl.put("setxType", Arrays.asList((String) simOptn));
                         
                         if (((String) simOptn).equals("1")) {
-                            Object v1 = dropDown2.getSelected();
-                            Object v2 = dropDown3.getSelected();
+                            Object v1 = dropDown2.getValue();
+                            Object v2 = dropDown3.getValue();
                             Object vl1 = textField10.getValue();
                             Object vl2 = textField8.getValue();
                             
@@ -6669,11 +6683,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.fine("pass the block for varCart");
                 // clear varSetAdvStat except for base vars for recoding
                 // LHS listbox object (Collection ArrayList<Option>)
-                Collection<Option> tmpvs = new ArrayList<Option>();
+                List<SelectItem> tmpvs = new ArrayList<SelectItem>();
                 for (Iterator i = varSetAdvStat.iterator(); i.hasNext();) {
-                    Option el = (Option) i.next();
+                    SelectItem el = (SelectItem) i.next();
                     if (bvIdSet.contains((String) el.getValue())) {
-                        tmpvs.add(new Option(el.getValue(), el.getLabel()));
+                        tmpvs.add(new SelectItem(el.getValue(), el.getLabel()));
                     }
                 }
                 dbgLog.fine("contents:tmpvs=" + tmpvs);
@@ -6683,11 +6697,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.fine("pass the block for varSetAdvState");
 
                 // RHS listbox1
-                Collection<Option> tmpRBox1 = new ArrayList<Option>();
+                List<SelectItem> tmpRBox1 = new ArrayList<SelectItem>();
                 for (Iterator i = advStatVarRBox1.iterator(); i.hasNext();) {
-                    Option el = (Option) i.next();
+                    SelectItem el = (SelectItem) i.next();
                     if (!bvIdSet.contains((String) el.getValue())) {
-                        tmpRBox1.add(new Option(el.getValue(), el.getLabel()));
+                        tmpRBox1.add(new SelectItem(el.getValue(), el.getLabel()));
 
                     }
                 }
@@ -6696,20 +6710,20 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.fine("pass the block for advStatVarRBox1");
 
                 // RHS listbox2
-                Collection<Option> tmpRBox2 = new ArrayList<Option>();
+                List<SelectItem> tmpRBox2 = new ArrayList<SelectItem>();
                 for (Iterator i = advStatVarRBox2.iterator(); i.hasNext();) {
-                    Option el = (Option) i.next();
+                    SelectItem el = (SelectItem) i.next();
                     if (bvIdSet.contains((String) el.getValue())) {
-                        tmpRBox2.add(new Option(el.getValue(), el.getLabel()));
+                        tmpRBox2.add(new SelectItem(el.getValue(), el.getLabel()));
                     }
                 }
                 advStatVarRBox2.clear();
                 advStatVarRBox2.addAll(tmpRBox2);
 
                 // RHS listbox3
-                Collection<Option> tmpRBox3 = new ArrayList<Option>();
+                List<SelectItem> tmpRBox3 = new ArrayList<SelectItem>();
                 for (Iterator i = advStatVarRBox3.iterator(); i.hasNext();) {
-                    Option el = (Option) i.next();
+                    SelectItem el = (SelectItem) i.next();
                     if (bvIdSet.contains((String) el.getValue())) {
                         tmpRBox3.add(new Option(el.getValue(), el.getLabel()));
                     }
@@ -7335,7 +7349,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // Map<String, String>: The currently selected variables
                     sessionMap.put("varCart", varCart);
 
-                    // Collection<Option> varSetAdvStat: user-selected
+                    // List<SelectItem> varSetAdvStat: user-selected
                     // variables behind the LHS variable list box
                     sessionMap.put("varSetAdvStat", varSetAdvStat);
                         dbgLog.fine("varSetAdvStat:\n"+varSetAdvStat);
@@ -7368,7 +7382,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         // accessors: get/set
                         // JSP rendered="#{AnalysisPage.gridPanelModelInfoBoxRendered}"
                     
-                    // Collection<Option> advStatVarRBox1
+                    // List<SelectItem> advStatVarRBox1
                     sessionMap.put("advStatVarRBox1", advStatVarRBox1);
                     sessionMap.put("advStatVarRBox2", advStatVarRBox2);
                     sessionMap.put("advStatVarRBox3", advStatVarRBox3);
@@ -7430,24 +7444,24 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         dbgLog.fine("varCart:\n"+varCart);
 
                     // Gets the stored object backing the items attribute of 
-                    // ui:listbox for the LHS list-box component, which is
+                    // ice:selectManyListbox for the LHS list-box component, which is
                     // located in each tab
-                    varSetAdvStat = (Collection<Option>) sessionMap
+                    varSetAdvStat = (List<SelectItem>) sessionMap
                         .get("varSetAdvStat");
                         dbgLog.fine("varSetAdvStat:\n"+varSetAdvStat);
 
                     // Gets the stored object backing the items attribute of
-                    // ui:listbox for the 1st RHS variable box
+                    // ice:selectManyListbox for the 1st RHS variable box
                     // located in the advanced statistics tab
-                    advStatVarRBox1 = (Collection<Option>) sessionMap
+                    advStatVarRBox1 = (List<SelectItem>) sessionMap
                         .get("advStatVarRBox1");
                     
                     // ditto (2nd)
-                    advStatVarRBox2 = (Collection<Option>) sessionMap
+                    advStatVarRBox2 = (List<SelectItem>) sessionMap
                         .get("advStatVarRBox2");
                     
                     // ditto (3rd)
-                    advStatVarRBox3 = (Collection<Option>) sessionMap
+                    advStatVarRBox3 = (List<SelectItem>) sessionMap
                         .get("advStatVarRBox3");
                         dbgLog.fine("advStatVarRBox1:\n"+advStatVarRBox1);
                         dbgLog.fine("advStatVarRBox2:\n"+advStatVarRBox2);
@@ -7458,11 +7472,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     // Gets the stored object backing the items attribute
                     // of ui:dropDown for the 1st setx variable selector
-                    setxDiffVarBox1 = (Collection<Option>) sessionMap
+                    setxDiffVarBox1 = (List<SelectItem>) sessionMap
                         .get("setxDiffVarBox1");
                         
                     // ditto (2nd)
-                    setxDiffVarBox2 = (Collection<Option>) sessionMap
+                    setxDiffVarBox2 = (List<SelectItem>) sessionMap
                         .get("setxDiffVarBox2");
                         
                     // String object backing the currently selected model name
@@ -7756,7 +7770,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     public String gotoEditVariableAction() {
         String dvFilter = "";
-        for (Option item : getVarSetAdvStat()) {
+        for (SelectItem item : getVarSetAdvStat()) {
             dvFilter += (String) item.getValue() + ",";
         }
 

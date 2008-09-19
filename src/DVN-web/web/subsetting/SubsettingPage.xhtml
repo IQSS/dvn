@@ -185,8 +185,8 @@
                     actionListener="{AnalysisPage.resetVariableInLBox}" 
                     toolTip="Variable Selection and Downloading" -->
                     <ice:panelTab id="tabDwnld"
-                    label="#{bundleAnalysis['dwnld.tab.text']}"
-                    title="Variable Selection and Downloading">
+                        label="#{bundleAnalysis['dwnld.tab.text']}"
+                        title="Variable Selection and Downloading">
                         
                     <ice:panelGroup id="layoutPanel3" layout="flow" style="width: 100%;">
                         
@@ -194,21 +194,15 @@
                             
                             <ice:panelGroup id="groupPanel2">
                                 
-                                <!-- ui tag solution -->
-                                <ui:listbox id="mListboxDwnld" 
-                                            items="#{AnalysisPage.varSetAdvStat}" 
-                                            rows="10" 
-                                            disabled="true"
-                                            labelLevel="3" 
-                                            monospace="true"  
-                                            multiple="true" 
-                                            label="#{bundleAnalysis['dwnld.selectedVarBox.title']}"
-                                            labelOnTop="true"/>
-                                
-                                
-                                
-                                <!-- helpInline id="helpInline2" text="{bundleAnalysis['dwnld.selectedvarBox.bttmHelpText']}" type="field" rendered="false"/ -->
-   
+                                <ice:outputLabel id="mListboxDwnldLabel" 
+                                    for="mListboxDwnld" 
+                                    value="#{bundleAnalysis['dwnld.selectedVarBox.title']}" />
+                                <ice:selectManyListbox id="mListboxDwnld" 
+                                        size="10" 
+                                        disabled="true">
+                                    <f:selectItems id="itemsDwnld"  
+                                         value="#{AnalysisPage.varSetAdvStat}"/>                
+                                </ice:selectManyListbox>
                          </ice:panelGroup>
                             
                             <ice:panelGroup id="groupPanel5" block="true">
@@ -295,22 +289,18 @@
                             <ice:panelGroup id="groupPanel10">
                             <h:panelGrid columns="2">
                                 <h:panelGroup>
-                                <!-- ui tag solution -->
-                                <ui:listbox id="listboxRecode" 
-                                    items="#{AnalysisPage.varSetAdvStat}" 
+                                    
+                                <ice:outputLabel id="listboxRecodeLabel" 
+                                    for="listboxRecode" 
+                                    value="#{bundleAnalysis['advStat.selectedVarBox.title']}" />                                
+                                <ice:selectOneListbox id="listboxRecode" 
                                     binding="#{AnalysisPage.listboxRecode}"
-                                    selected="#{AnalysisPage.selectedRecodeVariable}"
-                                    rows="10" 
-                                    labelLevel="3" 
-                                    monospace="true"  
-                                    multiple="false" 
-                                    label="#{bundleAnalysis['advStat.selectedVarBox.title']}"
-                                    labelOnTop="true"/>
-                                <!-- helpInline 
-                                    id="helpInline4" 
-                                    text="{bundleAnalysis['recode.selectedvarBox.bttmHelpText']}" 
-                                    type="field" 
-                                    rendered="false" / -->
+                                    value="#{AnalysisPage.selectedRecodeVariable}"
+                                    size="10" >
+                                    <f:selectItems id="itemsRecode"  
+                                         value="#{AnalysisPage.varSetAdvStat}"/>                                     
+                                </ice:selectOneListbox>
+                                
                                 </h:panelGroup>
                                 <h:panelGroup id="groupPanelRecodeMiddleColumn">
                                 
@@ -631,19 +621,15 @@
                             cellpadding="0" cellspacing="0" columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" columns="2" width="100%">
                             
                             <ice:panelGroup id="groupPanel3">
-                                <!-- ui tag solution -->
-                                <ui:listbox id="mListboxEda" 
-                                    items="#{AnalysisPage.varSetAdvStat}" 
-                                    rows="10" 
-                                    labelLevel="3" 
-                                    disabled="true"
-                                    monospace="true"  
-                                    multiple="true" 
-                                    label="#{bundleAnalysis['eda.selectedVarBox.title']}"
-                                    labelOnTop="true"/>
-                                <!--  helpInline id="helpInline3"
-                                    text="{bundleAnalysis['eda.selectedvarBox.bttmHelpText']}" type="field" rendered="false" / -->
-                                
+                                <ice:outputLabel id="mListboxEdaLabel" 
+                                    for="mListboxEda" 
+                                    value="#{bundleAnalysis['eda.selectedVarBox.title']}" />
+                                <ice:selectManyListbox id="mListboxEda" 
+                                    size="10" 
+                                    disabled="true">
+                                    <f:selectItems id="itemsEda"  
+                                         value="#{AnalysisPage.varSetAdvStat}"/>   
+                                </ice:selectManyListbox>
                             </ice:panelGroup>
                             
                             
@@ -705,22 +691,17 @@
                             
                             <ice:panelGroup id="groupPanel6">
                                 
-                                <!-- ui tag solution -->
-
-                                <ui:listbox id="listboxAdvStat" 
-                                            items="#{AnalysisPage.varSetAdvStat}" 
+                                <ice:outputLabel id="listboxAdvStatLabel" 
+                                    for="listboxAdvStat" 
+                                    value="#{bundleAnalysis['advStat.selectedVarBox.title']}" />
+                                <ice:selectManyListbox id="listboxAdvStat" 
                                             binding="#{AnalysisPage.listboxAdvStat}"
-                                            selected="#{AnalysisPage.advStatSelectedVarLBox}"
-                                            rows="10" 
-                                            labelLevel="3" 
-                                            monospace="true"  
-                                            multiple="true" 
-                                            label="#{bundleAnalysis['advStat.selectedVarBox.title']}"
-                                            labelOnTop="true"/>
-                                
-                                <!-- helpInline id="helpInline1" 
-                                               text="{bundleAnalysis['advStat.selectedvarBox.bttmHelpText']}"
-                                               type="field" rendered="false" / -->
+                                            value="#{AnalysisPage.advStatSelectedVarLBox}"
+                                            size="10">
+                                   <f:selectItems id="itemsDwnld"  
+                                         value="#{AnalysisPage.varSetAdvStat}"/>
+                               </ice:selectManyListbox>
+
                             </ice:panelGroup><!-- groupPanel6 -->
                             <!-- end of LHS -->
                             <!-- RHS section of the tab -->
@@ -815,17 +796,15 @@
                                                                       labelLevel="3" 
                                                                       text="1st box"/>
                                                             
-                                                            <ui:listbox id="moveVarListbox1"
+                                                            <ice:selectManyListbox id="moveVarListbox1"
                                                                         binding="#{AnalysisPage.advStatVarListboxR1}" 
-                                                                        items="#{AnalysisPage.advStatVarRBox1}"
-                                                                        selected="#{AnalysisPage.advStatSelectedVarRBox1}"
-                                                                        multiple="true"
-                                                                        monospace="true"
-                                                                        separators="false"
+                                                                        value="#{AnalysisPage.advStatSelectedVarRBox1}"
                                                                         immediate="true"
-
-                                                                        rows="3" />
-                                                            <!-- label="#{bundleAnalysis['advStat.modelVarbox.dependent.label']}"-->
+                                                                        size="3">
+                                                                <f:selectItems id="advStatVarRBox1"
+                                                                    value="#{AnalysisPage.advStatVarRBox1}" />
+                                                            </ice:selectManyListbox>
+                                                            <!-- label="{bundleAnalysis['advStat.modelVarbox.dependent.label']}"-->
                                                         </h:panelGrid>
                                                     </h:panelGrid>
                                                 </ice:panelGroup><!-- groupPanel12 -->
@@ -865,17 +844,14 @@
                                                                       labelLevel="3" 
                                                                       text="2nd box"/>
                                                             
-                                                            <ui:listbox id="moveVarListbox2"
+                                                            <ice:selectManyListbox id="moveVarListbox2"
                                                                         binding="#{AnalysisPage.advStatVarListboxR2}" 
-                                                                        items="#{AnalysisPage.advStatVarRBox2}"
-                                                                        selected="#{AnalysisPage.advStatSelectedVarRBox2}"
-                                                                        labelLevel="3" 
-                                                                        multiple="true"
-                                                                        monospace="true"
+                                                                        value="#{AnalysisPage.advStatSelectedVarRBox2}"
                                                                         immediate="true"
-
-                                                                        rows="3"/>
-                                                            <!-- label="#{bundleAnalysis['advStat.modelVarbox.explanatory.label']}"-->
+                                                                        size="3">
+                                                                <f:selectItems id="advStatVarRBox2" value="#{AnalysisPage.advStatVarRBox2}"/>
+                                                            </ice:selectManyListbox>
+                                                            <!-- label="{bundleAnalysis['advStat.modelVarbox.explanatory.label']}"-->
                                                         </h:panelGrid>
                                                     </h:panelGrid>
                                                 </ice:panelGroup><!-- groupPanel13 -->
@@ -916,17 +892,15 @@
                                                                       labelLevel="3" 
                                                                       text="3rd box"/>
                                                             
-                                                            <ui:listbox id="moveVarListbox3"
+                                                            <ice:selectManyListbox id="moveVarListbox3"
                                                                         binding="#{AnalysisPage.advStatVarListboxR3}" 
-                                                                        items="#{AnalysisPage.advStatVarRBox3}" 
-                                                                        selected="#{AnalysisPage.advStatSelectedVarRBox3}"
-                                                                        labelLevel="3"
-                                                                        multiple="true"
-                                                                        monospace="true"
+                                                                        value="#{AnalysisPage.advStatSelectedVarRBox3}"
                                                                         immediate="true"
-
-                                                                        rows="3"/>
-                                                            <!-- label="#{bundleAnalysis['advStat.modelVarbox.observed.label']}"-->
+                                                                        size="3">
+                                                                <f:selectItems id="advStatVarRBox3"
+                                                                    value="#{AnalysisPage.advStatVarRBox3}"/>
+                                                            </ice:selectManyListbox>
+                                                            <!-- label="{bundleAnalysis['advStat.modelVarbox.observed.label']}"-->
                                                         </h:panelGrid>
                                                     </h:panelGrid>
                                                 </ice:panelGroup><!-- groupPanel14 -->
@@ -1063,11 +1037,12 @@
                                                                 <h:panelGrid id="gridPanel11" 
                                                                              binding="#{AnalysisPage.gridPanel11}" columns="3">
                                                                     
-                                                                    <ui:dropDown id="dropDown2"
+                                                                    <ice:selectOneMenu id="dropDown2"
                                                                                  binding="#{AnalysisPage.dropDown2}"  
-                                                                                 items="#{AnalysisPage.setxDiffVarBox1}"
-                                                                                 submitForm="false"
-                                                                                 immediate="true" />
+                                                                                 immediate="true">
+                                                                        <f:selectItems id="itemsDropDown2"  
+                                                                             value="#{AnalysisPage.setxDiffVarBox1}"/>
+                                                                    </ice:selectOneMenu>
                                                                                  
                                                                     <ice:outputText id="staticText2" text=" = "/>
                                                                     <ice:inputText id="textField10" binding="#{AnalysisPage.textField10}" columns="10"/>
@@ -1084,11 +1059,12 @@
                                                                 <h:panelGrid id="gridPanel10"
                                                                              binding="#{AnalysisPage.gridPanel10}" columns="3" >
                                                                     
-                                                                    <ui:dropDown id="dropDown3" 
+                                                                    <ice:selectOneMenu id="dropDown3" 
                                                                                  binding="#{AnalysisPage.dropDown3}" 
-                                                                                 items="#{AnalysisPage.setxDiffVarBox2}"
-                                                                                 submitForm="false"
-                                                                                 immediate="true" />
+                                                                                 immediate="true">
+                                                                         <f:selectItems id="itemsDropDown3"  
+                                                                             value="#{AnalysisPage.setxDiffVarBox2}"/>
+                                                                    </ice:selectOneMenu>
 
                                                                     <ice:outputText id="staticText1" text=" = "/>
                                                                     

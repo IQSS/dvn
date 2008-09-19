@@ -40,10 +40,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.html.HtmlDataTable;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpSession;
 import java.util.*;
 import edu.harvard.hmdc.vdcnet.study.EditStudyService;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
@@ -66,12 +63,16 @@ import edu.harvard.hmdc.vdcnet.study.StudyFileEditBean;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.TemplateFileCategory;
+import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionEvent;
 
 public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
 	  Renderable, DisposableBean  {
     @EJB EditStudyService studyService;
     @EJB StudyServiceLocal fileSystemNameService;
-
+  public static final String FILE_UPLOAD_DIRECTORY = "upload";
 /**
  * <p>The AddFilesPage is responsible for the file upload
  * logic as well as the file deletion object.  A users file uploads are only
@@ -79,10 +80,9 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
  *
  * @since 1.7
  */
-
-
-    public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
-
+   //private sta
+    //public static Logger mLog = Logger.getLogger(AddFilesPage.class.getName());
+public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
     // File sizes used to generate formatted label
     public static final long MEGABYTE_LENGTH_BYTES = 1048000l;
     public static final long KILOBYTE_LENGTH_BYTES = 1024l;
@@ -93,11 +93,11 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
     private PersistentFacesState persistentFacesState;
     private String sessionId;
     // files associated with the current user
-   
+   private Long studyId= 0l; 
      private final List<InputFileData> fileList =
             Collections.synchronizedList(new ArrayList<InputFileData>());
     // latest file uploaded by client
-    private InputFileData currentFile;
+    private InputFileData currentFile=null;
     // file upload completed percent (Progress)
     private int fileProgress;
     
@@ -135,7 +135,13 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
         return fileList;
     }
     
-  
+  public Long getStudyId(){
+      return studyId;
+  }
+  public void setStudyId(long st){
+      
+      studyId = st; 
+  }
     public AddFilesPage() {
         persistentFacesState = PersistentFacesState.getInstance();
      
@@ -143,6 +149,9 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
         // Get the session id in a container generic way
         sessionId = FacesContext.getCurrentInstance().getExternalContext()
                 .getSession(false).toString();
+        String studyEV = (( HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("studyId");
+        studyId = Long.parseLong(studyEV); 
+     
     }
 
     /**
@@ -167,13 +176,14 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
             // reference our newly updated file for display purposes and
             // added it to our history file list.
         File file = inputFile.getFile();
+      //  file = new File(file, sessionId);
         currentFile = new InputFileData(inputFile.getFileInfo(),file);
         boolean b =hasFileName(currentFile, false);
        if(b){
             str = "File " + currentFile.getFileInfo().getFileName()+ " is already in the table";
             mLog.error(str);
             System.out.println(str);
-           errorMessage(str);
+            errorMessage(str);
             return;
        }else{
             getValidationFileNames().add(currentFile.getFileName()); 
@@ -182,13 +192,21 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
         synchronized (fileList) {
                 fileList.add(currentFile);   
            }  
-     
+   //  addtoStudyBean(file);
     try{
         if (persistentFacesState !=null) persistentFacesState.executeAndRender();
      }catch(RenderingException ee){ 
          mLog.error(ee.getMessage()); } 
         
 
+    }
+    private void addtoStudyBean(File ff) {
+        try{
+        StudyFileEditBean f= new StudyFileEditBean(ff, fileSystemNameService.generateFileSystemNameSequence());
+        }catch(IOException io){
+            mLog.error(io.getMessage());
+            
+        }    
     }
   private void errorMessage(String str){
        FacesContext context =   FacesContext.getCurrentInstance();
@@ -238,29 +256,30 @@ try {
         Map map = context.getExternalContext().getRequestParameterMap();
         String fileName = (String) map.get("fileName");
         
-        InputFileData inputFileData=null;
-        boolean found = false; 
+       boolean found = removeFromFileLst(fileName);
+        
+	if (found) hasFileName(fileName, true);
+      
+        }
+public boolean removeFromFileLst(String fname){
+     InputFileData inputFileData=null;
+     boolean found = false; 
         synchronized (fileList) {
             
             Iterator<InputFileData> theit = fileList.iterator();
-            
-            
+             
             while(theit.hasNext()){
-                inputFileData =theit.next();
-               
-                
-                  if (inputFileData.getFileName().equals(fileName)||
-                     inputFileData.getFileInfo().getFileName().equals(fileName) ) {
+              inputFileData =theit.next();  
+                  if (inputFileData.getFileName().equals(fname)||
+                     inputFileData.getFileInfo().getFileName().equals(fname) ) {
 		      found = true; 
                       theit.remove();             
                       break;
                   }
             }
         }
-	if (found) hasFileName(fileName, true);
-      
-        }
-     
+     return found;
+   }     
 private boolean  hasFileName( InputFileData inputFileData, boolean remov){
     boolean isin = false; 
     if(getValidationFileNames().size() <= 0) return isin;
@@ -335,19 +354,24 @@ private boolean  hasFileName( InputFileData inputFileData, boolean remov){
    
     public void init() {
         super.init();
+    
         if ( isFromPage("AddFilesPage") ) {
            studyService = (EditStudyService) sessionGet(studyService.getClass().getName());
            study = studyService.getStudy();
            files = studyService.getNewFiles();
+          
         }
         else {
             // we need to create the studyServiceBean
+    
             if (studyId != null) {
+              
                 studyService.setStudy(studyId);
                 sessionPut( studyService.getClass().getName(), studyService);
                 //sessionPut( (studyService.getClass().getName() + "."  + studyId.toString()), studyService);
                 study = studyService.getStudy();
                 files = studyService.getNewFiles();
+                
             } else {
                 // WE SHOULD HAVE A STUDY ID, throw an error
                 System.out.println("ERROR: in addStudyPage, without a serviceBean or a studyId");
@@ -355,18 +379,7 @@ private boolean  hasFileName( InputFileData inputFileData, boolean remov){
 
         }
     }
-    
-    
-    private Long studyId;
-
-    public Long getStudyId() {
-        return studyId;
-    }
-
-    public void setStudyId(Long studyId) {
-        this.studyId = studyId;
-    }
-    
+       
     private Study study;
     
     public Study getStudy() {
@@ -378,24 +391,71 @@ private boolean  hasFileName( InputFileData inputFileData, boolean remov){
     }    
     
     List<StudyFileEditBean> files =   Collections.synchronizedList(new ArrayList< StudyFileEditBean>());
-    private String replaceExtension(String originalName) {
-        int extensionIndex = originalName.lastIndexOf(".");
-        if (extensionIndex != -1 ) {
-            return originalName.substring(0, extensionIndex) + ".tab" ;
-        } else {
-            return originalName + ".tab";    
+    
+   public String save_action () {
+        
+        // now call save
+        if (files.size() > 0) {
+            studyService.setIngestEmail(ingestEmail);
+            studyService.save(getVDCRequestBean().getCurrentVDCId(), getVDCSessionBean().getLoginBean().getUser().getId());
         }
+        
+        getVDCRequestBean().setStudyId(study.getId());
+        getVDCRequestBean().setSelectedTab("files");
+        return "viewStudy";
+    }  
+    
+    public String cancel_action () {
+        //first clean up the temp files
+         
+        removeUploadFiles();
+        studyService.cancel();
+        
+        getVDCRequestBean().setStudyId(study.getId());
+        getVDCRequestBean().setSelectedTab("files");
+        return "viewStudy";
     }
     
-   private String getFileExtension(String originalName){
-    	String ext = null;
-    	if ( originalName.lastIndexOf(".") != -1){
-    		ext = (originalName.substring( originalName.lastIndexOf(".") + 1 )).toLowerCase();
-    	}
-    	return ext;
-    }
+  public void removeUploadFiles() {
+        
+      if(currentFile == null) return;
+      //get the path to the temporary directory in web.xml = upload 
+        String p = currentFile.getFileInfo().getPhysicalPath().trim();
+        String nm = currentFile.getFileInfo().getFileName().trim(); 
+                
+        String fp =  p.replaceAll(nm, "");
+         
+        int ln =  fp.length();
+        //the absolute path to the temp directory in web.xml
+        String sessionFileUploadPath = fp.substring(0,ln-1);
+        
+         mLog.debug("Temp dir is..." + fp.substring(0,ln-1));
+         File sessionfileUploadDirectory = new File(sessionFileUploadPath);
+         //list all the files in the temp directory, i.e. upload
+         File [] filein = sessionfileUploadDirectory.listFiles();
+         mLog.debug("No files in dir is "+ filein.length);
+         for(int n=0; n < filein.length; ++n){
+               mLog.debug("Contains file..."+ filein[n].getName()+ "...."+ filein[n].isFile());
+               if(getValidationFileNames().contains(filein[n].getName())){
+                  
+                    String fname = filein[n].getName();
+                    //remove from validation names
+                    hasFileName(fname,true);
+            //remove from the backing dataTable list
+           boolean found=  removeFromFileLst(fname);
+           if(found)  mLog.debug("Deleting file..."+ fname);
+           
+               }
+               
+            
+                   boolean res = filein[n].delete();
+                   mLog.debug("Deleted "+ res);
+               
+                  
+               }
+           }
+            
     
-  
     public List getTemplateFileCategories() {
         List tfc = new ArrayList();
         Iterator iter = study.getTemplate().getTemplateFileCategories().iterator();
@@ -453,7 +513,16 @@ private boolean  hasFileName( InputFileData inputFileData, boolean remov){
             
         }
         
-         if (errorMessage != null) {
+        // also check prexisting files
+       Iterator<StudyFile> iter = study.getStudyFiles().iterator();
+        while (iter.hasNext()) {
+            StudyFile file = iter.next();
+            if ( fileName.equals(file.getFileName()) ) {
+                errorMessage = "must be unique (a previously existing file already exists with the name).";
+                break;
+            }
+        }      
+      if (errorMessage != null) {
             ((UIInput)toValidate).setValid(false);
             
             FacesMessage message = new FacesMessage("Invalid File Name - " + errorMessage);
@@ -461,18 +530,7 @@ private boolean  hasFileName( InputFileData inputFileData, boolean remov){
             currentFile.setFileName(fname);
             return; 
          }
-/*       
-        // also check prexisting files
-        iter = study.getStudyFiles().iterator();
-        while (iter.hasNext()) {
-            StudyFile file = (StudyFile) iter.next();
-            if ( fileName.equals(file.getFileName()) ) {
-                errorMessage = "must be unique (a previously existing file already exists with the name).";
-                break;
-            }
-        }      
-     */ 
-         currentFile.setFileName(fileName);
+       getCurrentFile().setFileName(fileName);
         // now add this name to the validation list
        getValidationFileNames().add(fileName); 
        //remove the old name 

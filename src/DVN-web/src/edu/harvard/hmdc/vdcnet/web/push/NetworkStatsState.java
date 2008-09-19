@@ -68,7 +68,6 @@ public class NetworkStatsState {
     public void fireNetworkStatsEvent(final ReleaseEvent networkStatsEvent) {
         Thread t = new Thread(new Runnable() {
             public void run() {
-                System.out.println("NetworkStatsState: handling ReleaseEvent . . .");
                 Iterator listenerList = listeners.keySet().iterator();
                 NetworkStatsListener networkStatsListener;
                 while (listenerList.hasNext()) {

@@ -59,7 +59,6 @@ public class NetworkStatsItemDetailer implements Runnable {
     }
 
     public void run() {
-        System.out.println("running the item detailer . . .");
         NetworkStatsItemBean itemBean;
         for (int i = 0, max = searchItemBeans.length; i < max; i++) {
             try {

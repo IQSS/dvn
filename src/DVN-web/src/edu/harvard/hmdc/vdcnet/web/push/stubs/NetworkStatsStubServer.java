@@ -143,7 +143,7 @@ public class NetworkStatsStubServer {
             itemPrefix = DVNITEM + idValue + ".";
             key = itemPrefix;
             NetworkStatsState.getNetworkStatsMap().put(key + DVNID, idValue);
-            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSETOTAL, this.getGroupTotalDataverses(vdcgroup.getId()));
+            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSETOTAL, this.getGroupTotalDataverses(vdcgroup.getId(), "All"));
             NetworkStatsState.getNetworkStatsMap().put(key + STUDYTOTAL, this.getGroupTotalStudies(vdcgroup.getId()));
             NetworkStatsState.getNetworkStatsMap().put(key + FILESTOTAL, this.getGroupTotalFiles(vdcgroup.getId()));
             NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_DATAVERSETOTAL, new String("0"));
@@ -156,14 +156,30 @@ public class NetworkStatsStubServer {
          } catch (Exception e) {
             e.printStackTrace();
         }
-        //OTHER
+
+        //SCHOLAR
             idValue = new String("-1"); //TODO: convert to Long if convenient/time permits
             itemPrefix = DVNITEM + idValue + ".";
             key = itemPrefix;
             NetworkStatsState.getNetworkStatsMap().put(key + DVNID, idValue);
-            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSETOTAL, this.getGroupTotalDataverses(new Long("-1")));
-            NetworkStatsState.getNetworkStatsMap().put(key + STUDYTOTAL, this.getGroupTotalStudies(new Long("-1")));
-            NetworkStatsState.getNetworkStatsMap().put(key + FILESTOTAL, this.getGroupTotalFiles(new Long("-1")));
+            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSETOTAL, this.getGroupTotalDataverses(new Long(idValue), "Scholar"));
+            NetworkStatsState.getNetworkStatsMap().put(key + STUDYTOTAL, this.getGroupTotalStudies(new Long(idValue)));
+            NetworkStatsState.getNetworkStatsMap().put(key + FILESTOTAL, this.getGroupTotalFiles(new Long(idValue)));
+            NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_DATAVERSETOTAL, new String("0"));
+            NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_STUDYTOTAL, new String("0"));
+            NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_FILESTOTAL, new String("0"));
+            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSELABEL, "Dataverses: ");
+            NetworkStatsState.getNetworkStatsMap().put(key + STUDYLABEL, "Studies: ");
+            NetworkStatsState.getNetworkStatsMap().put(key + FILESLABEL, "Files: ");
+
+        //OTHER
+            idValue = new String("-2"); //TODO: convert to Long if convenient/time permits
+            itemPrefix = DVNITEM + idValue + ".";
+            key = itemPrefix;
+            NetworkStatsState.getNetworkStatsMap().put(key + DVNID, idValue);
+            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSETOTAL, this.getGroupTotalDataverses(new Long(idValue), "Basic"));
+            NetworkStatsState.getNetworkStatsMap().put(key + STUDYTOTAL, this.getGroupTotalStudies(new Long(idValue)));
+            NetworkStatsState.getNetworkStatsMap().put(key + FILESTOTAL, this.getGroupTotalFiles(new Long(idValue)));
             NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_DATAVERSETOTAL, new String("0"));
             NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_STUDYTOTAL, new String("0"));
             NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_FILESTOTAL, new String("0"));
@@ -202,14 +218,14 @@ public class NetworkStatsStubServer {
         return vdcNetworkService.getTotalFiles(released).toString();
     }
 
-    public String getGroupTotalDataverses(Long id) {
+    public String getGroupTotalDataverses(Long id, String dtype) {
         VDCGroup vdcgroup = vdcGroupService.findById(id);
-        if (vdcgroup != null) {
+        if (vdcgroup != null && dtype.equals("All")) {
             return new Integer(vdcgroup.getVdcs().size()).toString();
         } else {
             try {
                 vdcService = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
-                return (new Integer(vdcService.findVdcsNotInGroups("Basic").size())).toString();
+                return (new Integer(vdcService.findVdcsNotInGroups(dtype).size())).toString();
             } catch (Exception e) {
                 e.printStackTrace();
             }

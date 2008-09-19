@@ -19,23 +19,23 @@
 <gui:param name="pageTitle" value="DVN - Home" />
 
   <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
+     <f:loadBundle basename="Bundle" var="bundle"/>
      <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
                         
-         <ice:form>
-           <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+     <ice:form>
+         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
            <!-- Success Message -->
          <div jsfc="ice:panelGroup" styleClass="#{HomePage.msg.styleClass}" rendered="#{!empty HomePage.msg.messageText}">
            <ice:outputText id="statusMessage" escape="false" value="#{HomePage.msg.messageText}" />
          </div>
        
-           <div jsfc="ice:panelGroup" styleClass="dvn_hmpgMainMessage"  rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
-                <ice:outputText id="networkAnnouncementsMessages" escape="false" value="#{HomePage.parsedNetworkAnnouncements}"/>
-            </div>
-            
-            <div jsfc="ice:panelGroup" styleClass="dvn_hmpgMainMessage" rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" id="announcementsHeaderPanel" >
-                <ice:outputText rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" escape="false" value="#{HomePage.parsedLocalAnnouncements}"/>
-            </div>
+         <div jsfc="ice:panelGroup" styleClass="dvn_hmpgMainMessage"  rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
+              <ice:outputText id="networkAnnouncementsMessages" escape="false" value="#{HomePage.parsedNetworkAnnouncements}"/>
+         </div>
+
+          <div jsfc="ice:panelGroup" styleClass="dvn_hmpgMainMessage" rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" id="announcementsHeaderPanel" >
+              <ice:outputText rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" escape="false" value="#{HomePage.parsedLocalAnnouncements}"/>
+          </div>
       
          <!-- Main Section starts here -->
          <div id="dvn_mainSection">
@@ -94,7 +94,13 @@
             
       </div>
         <!-- Main Section ends here -->
-        <!-- ***************** NETWORK HOMEPAGE CONTENT *************************  --> 
+
+            <div id="hiddenDiv" style="display:none;">
+                    <ice:outputText value="#{NetworkStatsBean.autoLoad}"/>
+            </div>
+  
+        <!-- ***************** NETWORK HOMEPAGE CONTENT *************************  -->
+
     <ice:panelSeries styleClass="dvn_networkHomePanel" 
                     value="#{dvRecordsManager.itemBeans}" 
                     var="dvItems" 
@@ -108,17 +114,34 @@
                     <ice:graphicImage style="border:0px solid; vertical-align:middle;" value="#{dvItems.expandContractImage}"/>
                 </ice:commandLink>
         </div>
+
+        
         <!-- Start Browse section (with side panels, if available) -->
+
         <div>
         <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems)and VDCRequest.currentVDC == null }" styleClass="left">
             <p>
               <!-- Network Homepage -->
-                <!-- datalist component for NETWORK HOME PAGE -->
-                        <ice:outputText escape="false" value="#{HomePage.networkData}"/>
-              <!-- THE DV GROUPS AND DVS GO HERE -->
-              
+                 <h:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
+                                effect="#{item.effect}"
+                                value="#{NetworkStatsBean.inlineDataverseValue}">
+                    <f:attribute name="itemid" value="item#{dvItems.id}" />
+                 </h:outputText>
+                 <h:outputText binding="#{NetworkStatsBean.inlineStudyKey}"
+                                effect="#{item.effect}"
+                                rendered="#{dvItems.top == true}"
+                                value="#{NetworkStatsBean.inlineStudyValue}">
+                    <f:attribute name="itemid" value="item#{dvItems.id}" />
+                 </h:outputText>
+                 <h:outputText binding="#{NetworkStatsBean.inlineFilesKey}"
+                                effect="#{item.effect}"
+                                rendered="#{dvItems.top == true}"
+                                value="#{NetworkStatsBean.inlineFilesValue}">
+                    <f:attribute name="itemid" value="item#{dvItems.id}" />
+                 </h:outputText>
                </p>
         </div>
+
         <div align="right" jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }" styleClass="dataPaginator">
             <ice:dataPaginator id="dataScroll_3"
                                for="dataverseList"
@@ -163,7 +186,7 @@
                                 sortAscending="#{dvItems.ascending}"
                                 styleClass="dvn_networkHomePanelInner"
                                 value="#{dvItems.childItems}" 
-                                var="item" 
+                                var="items"
                                 width="100%">
                 <!-- name number -->
                 <f:facet name="header">
@@ -180,11 +203,11 @@
                     <ice:outputLink id="hideShow" value="javascript:void(0);" style="display:inline;float:right;" onclick="getNextSibling(this);">
                         <ice:outputText id="more_info" value="More Info"/>
                     </ice:outputLink>
-                    <ice:outputLink id="dataverse_link" value="/dvn/dv/#{item.alias}">
-                        <ice:outputText  value="#{item.name}"/>
+                    <ice:outputLink id="dataverse_link" value="/dvn/dv/#{items.alias}">
+                        <ice:outputText  value="#{items.name}"/>
                     </ice:outputLink>
                     <div id="hideShow_description" style="display:none; width:400px; z-Index:500;">
-                        <ice:outputText value="#{item.dvnDescription}"/>
+                        <ice:outputText value="#{items.dvnDescription}"/>
                     </div>
                 </ice:column>
                 <!-- affiliation -->
@@ -196,7 +219,7 @@
                             <ice:outputText value="#{dvItems.affiliationColumnName}"/>
                         </ice:commandSortHeader>
                     </f:facet>
-                    <ice:outputText value="#{item.affiliation}"/>
+                    <ice:outputText value="#{items.affiliation}"/>
                 </ice:column>
 
                 <!-- DateReleased  -->
@@ -208,7 +231,7 @@
                             <ice:outputText value="#{dvItems.dateReleasedColumnName}"/>
                         </ice:commandSortHeader>
                     </f:facet>
-                    <ice:outputText value="#{item.releaseDate}"/>
+                    <ice:outputText value="#{items.releaseDate}"/>
                 </ice:column>
 
                 <!-- Last Update -->
@@ -220,7 +243,7 @@
                             <ice:outputText value="#{dvItems.lastUpdatedColumnName}"/>
                         </ice:commandSortHeader>
                     </f:facet>
-                    <ice:outputText value="#{item.lastUpdateTime}"/>
+                    <ice:outputText value="#{items.lastUpdateTime}"/>
                 </ice:column>
 
                 <!-- Activity -->
@@ -233,13 +256,13 @@
                         </ice:commandSortHeader>
                     </f:facet>
                     <div class="activity">
-                        <div jsfc="ice:panelLayout" styleClass="#{item.activity}">
+                        <div jsfc="ice:panelLayout" styleClass="#{items.activity}">
                             <span class="numbervalue">0</span>
                         </div>
                     </div>
                    
 
-                   <!-- <ice:outputText value="#{item.activity}"/> -->
+                   <!-- <ice:outputText value="#{items.activity}"/> -->
                 </ice:column>
             </ice:dataTable>
             <ice:dataPaginator id="dataScroll_2" for="dataverseList"

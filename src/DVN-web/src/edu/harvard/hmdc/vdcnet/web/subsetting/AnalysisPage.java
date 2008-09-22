@@ -136,22 +136,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     private void _init() throws Exception {
         
         // Advanced Statistics: radio button group for the setx option
-        radioButtonGroup1DefaultOptions.setOptions(
-            new Option[] {
-                new Option("0", "Use average values (setx default)"),
-                new Option("1", "Select values")
-            });
+//        radioButtonGroup1DefaultOptions.setOptions(
+//            new Option[] {
+//                new Option("0", "Use average values (setx default)"),
+//                new Option("1", "Select values")
+//            });
             //  new Option("1","Set a value for 1 or 2 variables") 
             //  new Option("2","First differences between baseline and alterantive")
             
         
         simOptionMap.put("Use average values (setx default)","0");
         simOptionMap.put("Select values", "1");
-        //radioSimTypeChoiceSelected = "0";
-        radioSimTypeChoice.setValue("0");
+        radioSimTypeChoiceSelected = "0";
+        //radioSimTypeChoice.setValue("0");
         
         // Sets the default value of the above setx option
-        radioButtonGroup1DefaultOptions.setSelectedValue("0");
+//        radioButtonGroup1DefaultOptions.setSelectedValue("0");
 
         // Advanced Statistics: checkbox group for the output option pane
         checkboxGroup2DefaultOptions.setOptions(
@@ -199,19 +199,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             });
 
         // Dropdown menu of how many rows to be displayed in the variable table
-        howManyRowsOptions.setOptions(
-            new Option[] {
-                new Option("20", "20 Variables"), 
-                new Option("10", "10 Variables"),
-                new Option("50", "50 Variables"), 
-                new Option("0", "All") 
-            });
+        howManyRowsOptions.add(new SelectItem("20", "20 Variables"));
+        howManyRowsOptions.add(new SelectItem("10", "10 Variables"));
+        howManyRowsOptions.add(new SelectItem("50", "50 Variables"));
+        howManyRowsOptions.add(new SelectItem("0", "All"));
         
         // Sets the default state of the above Dropdown menu to 20 (variables)
         /*
         // howManyRowsOptions.setSelectedValue("20");
         */
-        
+        selectedNoRows= "20";
         /*
          * Setter for property StudyUIclassName.  The instance of StudyUI class
          * contains citation-related information
@@ -1534,8 +1531,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // -----------------------------------------------------------------------
     // <editor-fold desc="recode">
 
-    // ui-listbox-based solution
-
     // moveRecodeVarBttn:h:commandButton@binding
     private HtmlCommandButton moveRecodeVarBttn = new javax.faces.component.html.HtmlCommandButton();
 
@@ -1586,25 +1581,80 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setGroupPanelRecodeTableArea(HtmlPanelGroup groupPanelRecodeTableArea) {
         this.groupPanelRecodeTableArea = groupPanelRecodeTableArea;
     }
+ 
+    // listboxRecode:ui:listbox@binding => varSetAdvStat
+    // boxL1:listbox@binding
+    //private Listbox listboxRecode = new Listbox();
+    // ice:selectOneListbox binding
+    private HtmlSelectOneListbox listboxRecode = 
+        new com.icesoft.faces.component.ext.HtmlSelectOneListbox();
+
+    public HtmlSelectOneListbox getListboxRecode() {
+        return listboxRecode;
+    }
+
+    public void setListboxRecode(HtmlSelectOneListbox lstbx) {
+        this.listboxRecode = lstbx;
+    }
+    
+    // listboxRecode:ice:selectOneListbox value
+    private String selectedRecodeVariable;
+
+    public void setSelectedRecodeVariable(String s) {
+        selectedRecodeVariable = s;
+    }
+
+    public String getSelectedRecodeVariable() {
+        return selectedRecodeVariable;
+    }
+    
+    public void recodeVariableChanged(ValueChangeEvent event){
+        dbgLog.fine("***** recodeVariableChanged(): begins here *****");
+        dbgLog.fine("old selectedRecodeVariable="+selectedRecodeVariable);
+        String oldVarValue = (String) event.getOldValue();
+        dbgLog.fine("old value="+event.getOldValue());
+        String newVarValue = (String) event.getNewValue();
+        dbgLog.fine("new value="+event.getNewValue());
+        selectedRecodeVariable = (String)event.getNewValue();
+        dbgLog.fine("new selectedRecodeVariable="+selectedRecodeVariable);
+        dbgLog.fine("***** recodeVariableChanged(): ends here *****");
+    }
     
     // moveRecodeVarBttn:h:commandButton@actionListener
     public void moveRecodeVariable(ActionEvent acev) {
 
         dbgLog.fine("***** moveRecodeVariable(): begins here *****");
+        if (listboxRecode.getValue()!=null){
+            dbgLog.fine("listboxRecode.getValue="+listboxRecode.getValue());
+        } else {
+            dbgLog.fine("listboxRecode.getValue is null");
+        }
+        if (selectedRecodeVariable != null){
+            dbgLog.fine("selectedRecodeVariable=" + selectedRecodeVariable);
+        } else {
+            dbgLog.fine("selectedRecodeVariable is null");
+        }
+        
+        String varId = null;// getSelectedRecodeVariable();
+        if (selectedRecodeVariable == null){
+            dbgLog.fine("recode varId selected from the binding="+listboxRecode.getValue());
+            varId = (String)listboxRecode.getValue();
+        } else {
+            dbgLog.fine("recode varId selected from the value=" + selectedRecodeVariable);
+            varId = selectedRecodeVariable;
+        }
+
+        if (varId != null){
+            dbgLog.fine("Is this a recoded var?[" + isRecodedVar(varId) + "]");            
+        } else {
+            dbgLog.fine("recode-variable id is still null");
+            return;
+        }
         if (!groupPanelRecodeTableArea.isRendered()){
             groupPanelRecodeTableArea.setRendered(true);
             groupPanelRecodeInstruction2.setRendered(true);
             groupPanelRecodeInstruction1.setRendered(false);
         }
-        String varId = null;// getSelectedRecodeVariable();
-        if (getSelectedRecodeVariable() == null){
-            varId = (String)listboxRecode.getValue();
-        } else {
-            varId = getSelectedRecodeVariable();
-        }
-        dbgLog.fine("recode-variable id=" + varId);
-        dbgLog.fine("selected from the binding="+listboxRecode.getValue());
-        dbgLog.fine("Is this a recoded var?[" + isRecodedVar(varId) + "]");
         resetMsgSaveRecodeBttn();
         if (isRecodedVar(varId)) {
             // newly recoded var case
@@ -1632,19 +1682,25 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.fine("recode variable Name=" + varName);
                 // setRecodeVariableName(varName);
 
-                setCurrentRecodeVariableName(varName);
-                setCurrentRecodeVariableId(varId);
+                currentRecodeVariableName= varName;
+                currentRecodeVariableId = varId;
+                dbgLog.fine("currentRecodeVariableName="+currentRecodeVariableName);
+                dbgLog.fine("currentRecodeVariableId="+currentRecodeVariableId);
+                
+                dbgLog.fine("recodeTargetVarName(b)="+recodeTargetVarName.getValue());
                 // set the label
                 // setRecodeVariableLabel(getVariableLabelfromId(varId));
                 String newNamePrefix = "new_"+ RandomStringUtils.randomAlphanumeric(2) +"_";
                 recodeTargetVarName.setValue(newNamePrefix+varName);
                 recodeTargetVarLabel.setValue(newNamePrefix+getVariableLabelfromId(varId));
-
+                dbgLog.fine("recodeTargetVarName(a)="+recodeTargetVarName.getValue());
                 // get value/label data and set them to the table
                 DataVariable dv = getVariableById(varId);
 
                 Collection<VariableCategory> catStat = dv.getCategories();
                 recodeDataList.clear();
+                recodeValueBox.setRendered(false);
+                recodeTable.setRendered(false);
                 dbgLog.fine("catStat.size=" + catStat.size());
                 if (catStat.size() > 0) {
                     // catStat exists
@@ -1685,12 +1741,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     }
 
                 }
-
+                dbgLog.fine("recodeDataList="+recodeDataList);
+                recodeTable.setValue(recodeDataList);
+                dbgLog.fine("recodeTable: value="+recodeTable.getValue());
                 // show the recodeTable
                 dbgLog.fine("Number of rows in this Recode Table="
                     + recodeDataList.size());
                 groupPanelRecodeTableHelp.setRendered(true);
+                recodeValueBox.setRendered(true);
                 recodeTable.setRendered(true);
+                
                 addValueRangeBttn.setRendered(true);
                 // keep this variable's Id
                 FacesContext.getCurrentInstance().getExternalContext()
@@ -1699,7 +1759,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 FacesContext.getCurrentInstance().getExternalContext()
                     .getSessionMap().put("currentRecodeVariableName",
                         currentRecodeVariableName);
-
+                FacesContext.getCurrentInstance().getExternalContext()
+                    .getSessionMap().put("recodeDataList", recodeDataList);
+                FacesContext.getCurrentInstance().renderResponse();
             } else {
                 dbgLog.fine("Variable to be recoded is null");
             }
@@ -1707,7 +1769,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dbgLog.fine("***** moveRecodeVariable(): ends here *****");
 
     }
+    private HtmlInputText recodeValueBox = new HtmlInputText();
 
+    public HtmlInputText getRecodeValueBox() {
+        return recodeValueBox;
+    }
+
+    public void setRecodeValueBox(HtmlInputText recodeValueBox) {
+        this.recodeValueBox = recodeValueBox;
+    }
+    
     public void clearRecodeTargetVarInfo() {
         dbgLog.fine("pass the clear step");
         recodeTargetVarName.resetValue();
@@ -1748,31 +1819,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.recodeDropValueCheckboxx = cb;
     }    
     
-    // listboxRecode:ui:listbox@binding => varSetAdvStat
-    // boxL1:listbox@binding
-    //private Listbox listboxRecode = new Listbox();
-    // ice:selectOneListbox binding
-    private HtmlSelectOneListbox listboxRecode = 
-        new com.icesoft.faces.component.ext.HtmlSelectOneListbox();
 
-    public HtmlSelectOneListbox getListboxRecode() {
-        return listboxRecode;
-    }
-
-    public void setListboxRecode(HtmlSelectOneListbox lstbx) {
-        this.listboxRecode = lstbx;
-    }
-    
-    // listboxRecode:ice:selectOneListbox value
-    private String selectedRecodeVariable;
-
-    public void setSelectedRecodeVariable(String s) {
-        selectedRecodeVariable = s;
-    }
-
-    public String getSelectedRecodeVariable() {
-        return selectedRecodeVariable;
-    }
 
     // recode-Variable-name for the recode-table header cell
     // h:outputText(recodeHdrVariable)
@@ -1846,13 +1893,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 */
     // h:dataTable:recodeTable
     // @binding
-    private UIData recodeTable = null;
+    private HtmlDataTable recodeTable = 
+        new javax.faces.component.html.HtmlDataTable();
+        //new com.icesoft.faces.component.ext.HtmlDataTable();
 
-    public UIData getRecodeTable() {
+    public HtmlDataTable getRecodeTable() {
         return recodeTable;
     }
 
-    public void setRecodeTable(UIData daTa) {
+    public void setRecodeTable(HtmlDataTable daTa) {
         this.recodeTable = daTa;
     }
 
@@ -4025,7 +4074,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // moveVar1Bttn
     // > button (add)
     // @binding
-    private HtmlCommandButton button4 = new HtmlCommandButton();
+    private HtmlCommandButton button4 = 
+        new com.icesoft.faces.component.ext.HtmlCommandButton();
 
     public HtmlCommandButton getButton4() {
         return button4;
@@ -4037,7 +4087,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // < button (remove)
     // @binding
-    private HtmlCommandButton button4b = new HtmlCommandButton();
+    private HtmlCommandButton button4b = 
+        new com.icesoft.faces.component.ext.HtmlCommandButton();
 
     public HtmlCommandButton getButton4b() {
         return button4b;
@@ -4828,29 +4879,49 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // <editor-fold desc="Adv Stat Analysis Option">
     // Analysis option block: casing panel
 
-    private HtmlPanelGroup analysisOptionPanel = 
-        new com.icesoft.faces.component.ext.HtmlPanelGroup();
+//    private HtmlPanelGroup analysisOptionPanel = 
+//        new com.icesoft.faces.component.ext.HtmlPanelGroup();
+//
+//    public HtmlPanelGroup getAnalysisOptionPanel() {
+//        return analysisOptionPanel;
+//    }
+//
+//    public void setAnalysisOptionPanel(HtmlPanelGroup pg) {
+//        this.analysisOptionPanel = pg;
+//    }
+    private HtmlPanelGrid analysisOptionPanel = 
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();
 
-    public HtmlPanelGroup getAnalysisOptionPanel() {
+    public HtmlPanelGrid getAnalysisOptionPanel() {
         return analysisOptionPanel;
     }
 
-    public void setAnalysisOptionPanel(HtmlPanelGroup pg) {
-        this.analysisOptionPanel = pg;
+    public void setAnalysisOptionPanel(HtmlPanelGrid analysisOptionPanel) {
+        this.analysisOptionPanel = analysisOptionPanel;
     }
-
+    
     // setx-option panel
-    private HtmlPanelGroup setxOptionPanel = 
-        new com.icesoft.faces.component.ext.HtmlPanelGroup();
+//    private HtmlPanelGroup setxOptionPanel = 
+//        new com.icesoft.faces.component.ext.HtmlPanelGroup();
+//
+//    public HtmlPanelGroup getSetxOptionPanel() {
+//        return setxOptionPanel;
+//    }
+//
+//    public void setSetxOptionPanel(HtmlPanelGroup pg) {
+//        this.setxOptionPanel = pg;
+//    }
+    private HtmlPanelGrid setxOptionPanel = 
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();
 
-    public HtmlPanelGroup getSetxOptionPanel() {
+    public HtmlPanelGrid getSetxOptionPanel() {
         return setxOptionPanel;
     }
 
-    public void setSetxOptionPanel(HtmlPanelGroup pg) {
-        this.setxOptionPanel = pg;
+    public void setSetxOptionPanel(HtmlPanelGrid setxOptionPanel) {
+        this.setxOptionPanel = setxOptionPanel;
     }
-
+    
     // simulation: casing panel
 //    private PanelGroup groupPanel20 = new PanelGroup();
 //
@@ -4879,7 +4950,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // simulation option: checkbox
 
     private HtmlSelectBooleanCheckbox simulationPanel = 
-        new javax.faces.component.html.HtmlSelectBooleanCheckbox();
+        new com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox();
 
     public HtmlSelectBooleanCheckbox getSimulationPanel() {
         return simulationPanel;
@@ -4890,42 +4961,46 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     public void showHideSimulationsOptPanel(ValueChangeEvent vce) {
-    
+        dbgLog.fine("***** showHideSimulationsOptPanel: starts here *****");
         Boolean currentState = (Boolean) vce.getNewValue();
+        dbgLog.fine("currentState="+currentState);
         if ((currentState.toString()).equals("true")) {
             //groupPanel20.setRendered(true);
             groupPanelSimTypeChoice.setRendered(true);
+            dbgLog.fine("groupPanelSimTypeChoice(rendered?)="+groupPanelSimTypeChoice.isRendered());
         } else if ((currentState.toString()).equals("false")) {
             //groupPanel20.setRendered(false);
             groupPanelSimTypeChoice.setRendered(false);
+            dbgLog.fine("groupPanelSimTypeChoice(rendered?)="+groupPanelSimTypeChoice.isRendered());
         }
 
         FacesContext.getCurrentInstance().renderResponse();
+        dbgLog.fine("***** showHideSimulationsOptPanel: ends here *****");
     }
 
 
     // simulation option: radio button group
     // @binding
-    private RadioButtonGroup radioButtonGroup1 = new RadioButtonGroup();
-
-    public RadioButtonGroup getRadioButtonGroup1() {
-        return radioButtonGroup1;
-    }
-
-    public void setRadioButtonGroup1(RadioButtonGroup rbg) {
-        this.radioButtonGroup1 = rbg;
-    }
+//    private RadioButtonGroup radioButtonGroup1 = new RadioButtonGroup();
+//
+//    public RadioButtonGroup getRadioButtonGroup1() {
+//        return radioButtonGroup1;
+//    }
+//
+//    public void setRadioButtonGroup1(RadioButtonGroup rbg) {
+//        this.radioButtonGroup1 = rbg;
+//    }
 
     // @items
-    private SingleSelectOptionsList radioButtonGroup1DefaultOptions = new SingleSelectOptionsList();
-
-    public SingleSelectOptionsList getRadioButtonGroup1DefaultOptions() {
-        return radioButtonGroup1DefaultOptions;
-    }
-
-    public void setRadioButtonGroup1DefaultOptions(SingleSelectOptionsList ssol) {
-        this.radioButtonGroup1DefaultOptions = ssol;
-    }
+//    private SingleSelectOptionsList radioButtonGroup1DefaultOptions = new SingleSelectOptionsList();
+//
+//    public SingleSelectOptionsList getRadioButtonGroup1DefaultOptions() {
+//        return radioButtonGroup1DefaultOptions;
+//    }
+//
+//    public void setRadioButtonGroup1DefaultOptions(SingleSelectOptionsList ssol) {
+//        this.radioButtonGroup1DefaultOptions = ssol;
+//    }
 
     // @selected
     private String lastSimCndtnSelected;
@@ -4938,7 +5013,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.lastSimCndtnSelected = lastSimCndtnSelected;
     }
 
-    private HtmlSelectOneRadio radioSimTypeChoice = new HtmlSelectOneRadio();
+    private HtmlSelectOneRadio radioSimTypeChoice = 
+        new com.icesoft.faces.component.ext.HtmlSelectOneRadio();
 
     public HtmlSelectOneRadio getRadioSimTypeChoice() {
         return radioSimTypeChoice;
@@ -4965,29 +5041,34 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return radioSimTypeChoiceSelected;
     }
 
-    public void setRadioSimTypeChoiceSelected(String radioSimTypeChoiceSelected) {
-        this.radioSimTypeChoiceSelected = radioSimTypeChoiceSelected;
+    public void setRadioSimTypeChoiceSelected(String s) {
+        this.radioSimTypeChoiceSelected = s;
     }
 
     // @valueChangeListener
     public void showHideSimCndtnOptPanel(ValueChangeEvent vce) {
         FacesContext cntxt = FacesContext.getCurrentInstance();
-
+        dbgLog.fine("***** within showHideSimCndtnOptPanel(): starts here *****");
         String currentState = (String) vce.getNewValue();
         dbgLog.fine("currentState=" + currentState);
         dbgLog.fine("current model name in setx=" + getCurrentModelName());
 
-        dbgLog.fine("within simulation-type choice: new selected="
-            + radioButtonGroup1.getSelected());
+        dbgLog.fine("radioSimTypeChoice(value)="
+            + radioSimTypeChoice.getValue());
+        dbgLog.fine("radioSimTypeChoiceSelected="+radioSimTypeChoiceSelected);
         if (getCurrentModelName() != null) {
 
             AdvancedStatGUIdata.Model selectedModelSpec = 
                 getAnalysisApplicationBean().getSpecMap()
                     .get(getCurrentModelName());
-            dbgLog.fine("spec within setx:\n" + selectedModelSpec);
+            dbgLog.finer("spec within setx:\n" + selectedModelSpec);
             if ((currentState.toString()).equals("1")) {
                 //groupPanel22.setRendered(true);
                 groupPanelSimNonDefault.setRendered(true);
+                gridPanel11.setRendered(true);
+                
+                
+                dbgLog.fine("groupPanelSimNonDefault: rendered="+groupPanelSimNonDefault.isRendered());
                 // set up the @items for dropDown2/dropDown3
 
                 if (selectedModelSpec.getNoRboxes() == 2) {
@@ -5016,8 +5097,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             //groupPanel22.setRendered(false);
             groupPanelSimNonDefault.setRendered(false);
         }
-
+        
         cntxt.renderResponse();
+        dbgLog.fine("***** within showHideSimCndtnOptPanel(): ends here *****");
     }
 
     // simulation: option panel for the radio-button-option of select values
@@ -5035,17 +5117,26 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 
 
-    private HtmlPanelGroup groupPanelSimNonDefault = 
-        new com.icesoft.faces.component.ext.HtmlPanelGroup(); //new javax.faces.component.html.HtmlPanelGroup();
+//    private HtmlPanelGroup groupPanelSimNonDefault = 
+//        new com.icesoft.faces.component.ext.HtmlPanelGroup(); //new javax.faces.component.html.HtmlPanelGroup();
+//
+//    public HtmlPanelGroup getGroupPanelSimNonDefault() {
+//        return groupPanelSimNonDefault;
+//    }
+//
+//    public void setGroupPanelSimNonDefault(HtmlPanelGroup groupPanelSimNonDefault) {
+//        this.groupPanelSimNonDefault = groupPanelSimNonDefault;
+//    }
+    private HtmlPanelGrid groupPanelSimNonDefault = 
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();
 
-    public HtmlPanelGroup getGroupPanelSimNonDefault() {
+    public HtmlPanelGrid getGroupPanelSimNonDefault() {
         return groupPanelSimNonDefault;
     }
 
-    public void setGroupPanelSimNonDefault(HtmlPanelGroup groupPanelSimNonDefault) {
+    public void setGroupPanelSimNonDefault(HtmlPanelGrid groupPanelSimNonDefault) {
         this.groupPanelSimNonDefault = groupPanelSimNonDefault;
     }
-
 
 
 
@@ -5536,21 +5627,30 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                      zlg_017_naMethod
 //                     
                     //
+                    dbgLog.fine("simulationPanel is selected="+simulationPanel.isSelected());
                     if (simulationPanel.isSelected()) {
+                        dbgLog.fine("radioSimTypeChoiceSelected="+radioSimTypeChoiceSelected);
                         //mpl.put(zligPrefix + "_Sim", Arrays.asList("T"));
                         mpl.put("Sim", Arrays.asList("T"));
                         
-                        Object simOptn = radioButtonGroup1DefaultOptions.getSelectedValue();
+                        //Object simOptn = radioButtonGroup1DefaultOptions.getSelectedValue();
+                        dbgLog.fine("radioSimTypeChoice(value)="+radioSimTypeChoice.getValue());
+                        dbgLog.fine("radioSimTypeChoiceSelected="+radioSimTypeChoiceSelected);
                         // simOptn = 0 or 1
                         //mpl.put(zligPrefix + "_setx", Arrays.asList((String) simOptn));
-                        mpl.put("setx", Arrays.asList((String) simOptn));
-                        mpl.put("setxType", Arrays.asList((String) simOptn));
-                        
-                        if (((String) simOptn).equals("1")) {
+//                        mpl.put("setx", Arrays.asList((String) simOptn));
+//                        mpl.put("setxType", Arrays.asList((String) simOptn));
+                        mpl.put("setx", Arrays.asList(radioSimTypeChoiceSelected));
+                        mpl.put("setxType", Arrays.asList(radioSimTypeChoiceSelected));                        
+                        if (radioSimTypeChoiceSelected.equals("1")) {
                             Object v1 = dropDown2.getValue();
                             Object v2 = dropDown3.getValue();
                             Object vl1 = textField10.getValue();
                             Object vl2 = textField8.getValue();
+                            dbgLog.fine("v1="+v1);
+                            dbgLog.fine("v2="+v2);
+                            dbgLog.fine("vl1="+vl1);
+                            dbgLog.fine("vl2="+vl2);
                             
                             List<String> setxVars = new ArrayList<String>();
                             
@@ -6233,27 +6333,37 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // ui:drowpDown: howManyRows
     // howManyRows@binding
 
-    private DropDown howManyRows = new DropDown();
+    private HtmlSelectOneMenu howManyRows = 
+        new com.icesoft.faces.component.ext.HtmlSelectOneMenu();
 
-    public DropDown getHowManyRows() {
+    public HtmlSelectOneMenu getHowManyRows() {
         return howManyRows;
     }
 
-    public void setHowManyRows(DropDown dd) {
+    public void setHowManyRows(HtmlSelectOneMenu dd) {
         this.howManyRows = dd;
     }
 
     // howManyRows@items
-    private SingleSelectOptionsList howManyRowsOptions = new SingleSelectOptionsList();
+//    private SingleSelectOptionsList howManyRowsOptions = new SingleSelectOptionsList();
+//
+//    public SingleSelectOptionsList getHowManyRowsOptions() {
+//        return howManyRowsOptions;
+//    }
+//
+//    public void setHowManyRowsOptions(SingleSelectOptionsList ssol) {
+//        this.howManyRowsOptions = ssol;
+//    }
+    
+    private List<SelectItem> howManyRowsOptions = new ArrayList<SelectItem>();
 
-    public SingleSelectOptionsList getHowManyRowsOptions() {
+    public List<SelectItem> getHowManyRowsOptions() {
         return howManyRowsOptions;
     }
 
-    public void setHowManyRowsOptions(SingleSelectOptionsList ssol) {
+    public void setHowManyRowsOptions(List<SelectItem> ssol) {
         this.howManyRowsOptions = ssol;
     }
-
     // howManyRows@valueChangeListener
 
     public void howManyRows_processValueChange(ValueChangeEvent vce) {
@@ -6265,7 +6375,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         }
         dbgLog.fine("new number of Rows=" + vce.getNewValue());
         dbgLog.fine("current Row Index(1)=" + data.getRowIndex());
-        selectedNoRows = (String) howManyRows.getSelected();
+        selectedNoRows = (String) howManyRows.getValue();
         dbgLog.fine("selected number of Rows=" + selectedNoRows);
 
         int newNoRows = Integer.parseInt(selectedNoRows);
@@ -6293,6 +6403,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     private String selectedNoRows;
 
+    public String getSelectedNoRows() {
+        return selectedNoRows;
+    }
+
+    public void setSelectedNoRows(String selectedNoRows) {
+        this.selectedNoRows = selectedNoRows;
+    }
+    
     // </editor-fold>
     
     // -----------------------------------------------------------------------
@@ -6659,7 +6777,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 simulationPanel.setSelected(false);
 
                 // simulation-type radio button group
-                radioButtonGroup1.setSelected("0");
+                radioSimTypeChoice.setValue("0");
                 //groupPanel20.setRendered(false);
                 groupPanelSimTypeChoice.setRendered(false);
                 //groupPanel22.setRendered(false);
@@ -7416,14 +7534,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                     // String selectedNoRows
                     selectedNoRows = Integer.toString(INITIAL_ROW_NO);
-                    howManyRowsOptions.setSelectedValue(selectedNoRows);
+                    //howManyRowsOptions.setSelectedValue(selectedNoRows);
+                    howManyRows.setValue(selectedNoRows);
                     sessionMap.put("selectedNoRows", selectedNoRows);
                     
                     
                         dbgLog.fine("selectedNoRows=" + selectedNoRows);
                         dbgLog.fine("1st time visit: "+
                             "selected value for howManyRows="
-                            + howManyRowsOptions.getSelectedValue());
+                            + howManyRows.getValue());
                     currentTabIndex = 0;
                 } else {
                     // Postback cases (not 1st-time visit to this page)
@@ -7467,8 +7586,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         dbgLog.fine("advStatVarRBox2:\n"+advStatVarRBox2);
                         dbgLog.fine("advStatVarRBox3:\n"+advStatVarRBox3);
                     
-                    radioButtonGroup1DefaultOptions.setSelectedValue( (String)sessionMap.get("lastSimCndtnSelected"));
-                        dbgLog.fine("lastSimCndtnSelected= "+ sessionMap.get("lastSimCndtnSelected"));
+//                    radioButtonGroup1DefaultOptions.setSelectedValue( (String)sessionMap.get("lastSimCndtnSelected"));
+//                        dbgLog.fine("lastSimCndtnSelected= "+ sessionMap.get("lastSimCndtnSelected"));
 
                     // Gets the stored object backing the items attribute
                     // of ui:dropDown for the 1st setx variable selector
@@ -7524,11 +7643,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             "returned the selected value for howManyRows="
                             + selectedNoRows);
                     
-                    howManyRowsOptions.setSelectedValue(selectedNoRows);
+                    howManyRows.setValue(selectedNoRows);
                     
                         dbgLog.fine("post-back case:"+
                             " selected value for howManyRows="
-                            + howManyRowsOptions.getSelectedValue());
+                            + howManyRows.getValue());
                             
                         if (currentRecodeVariableId == null) {
                             dbgLog.fine("currentRecodeVariableId is null");

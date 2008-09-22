@@ -295,7 +295,9 @@
                                     value="#{bundleAnalysis['advStat.selectedVarBox.title']}" />                                
                                 <ice:selectOneListbox id="listboxRecode" 
                                     binding="#{AnalysisPage.listboxRecode}"
+                                    immediate="true"
                                     value="#{AnalysisPage.selectedRecodeVariable}"
+                                    valueChangeListener="#{AnalysisPage.recodeVariableChanged}"
                                     size="10" >
                                     <f:selectItems id="itemsRecode"  
                                          value="#{AnalysisPage.varSetAdvStat}"/>                                     
@@ -398,11 +400,13 @@
                                                 />
                                             <br/>
                                             <h:inputText id="recodeTargetVarName"
-                                                         binding="#{AnalysisPage.recodeTargetVarName}"
+                                                 binding="#{AnalysisPage.recodeTargetVarName}"
+                                                 immediate="true"
                                             />
                                             <br />
                                             <h:inputText id="recodeTargetVarLabel"
                                                 binding="#{AnalysisPage.recodeTargetVarLabel}"
+                                                immediate="true"
                                                 size="40"/>                                            
                                         </h:panelGroup>
                                     </h:panelGrid>
@@ -524,6 +528,7 @@
                                             </f:facet>
                                             
                                             <h:inputText  id="recodeVariableNameBox"
+                                                
                                                 value="#{rd[3]}" 
                                                 size="10"/>
                                         </h:column>
@@ -551,7 +556,8 @@
                                             </f:facet>
                                             
                                             <h:inputText  id="recodeValueBox" 
-                                                          
+                                                binding="#{AnalysisPage.recodeValueBox}"
+                                                immediate="true"
                                                 value="#{rd[1]}"
                                                 size="10"/>
                                             
@@ -562,10 +568,11 @@
                                                     value="#{bundleAnalysis['recode.valueTable.valuelabel.header']}"/>
                                             </f:facet>
                                             
-                                            <h:inputText  id="recodeValueLabelBox"
+                                            <ice:inputText  id="recodeValueLabelBox"
+                                                immediate="true"
                                                 value="#{rd[2]}" 
                                                 size="25"/>
-                                            
+                                            <h:outputText id="recodeValueLabelBoxT" value="#{rd[2]}"/>
                                         </h:column>
 
                                     </h:dataTable>
@@ -697,6 +704,7 @@
                                 <ice:selectManyListbox id="listboxAdvStat" 
                                             binding="#{AnalysisPage.listboxAdvStat}"
                                             value="#{AnalysisPage.advStatSelectedVarLBox}"
+                                            immediate="true"
                                             size="10">
                                    <f:selectItems id="itemsDwnld"  
                                          value="#{AnalysisPage.varSetAdvStat}"/>
@@ -773,18 +781,20 @@
                                                         
                                                         <h:panelGrid columns="1" id="gridPanel12in">
                                                             
-                                                            <h:commandButton id="moveVar1Bttn"
+                                                            <ice:commandButton id="moveVar1Bttn"
                                                                              binding="#{AnalysisPage.button4}"
                                                                              actionListener="#{AnalysisPage.addVarBoxR1}"
+                                                                             partialSubmit="true"
                                                                              value=" &gt; "/>
                                                             <ice:outputText id="msgMoveVar1Bttn"
                                                                            binding="#{AnalysisPage.msgMoveVar1Bttn}" 
                                                                            rendered="false"
                                                                            escape="false"
                                                                            styleClass="errorMessage"/>
-                                                            <h:commandButton id="moveVar1Bttnb"
+                                                            <ice:commandButton id="moveVar1Bttnb"
                                                                              binding="#{AnalysisPage.button4b}"
                                                                              actionListener="#{AnalysisPage.removeVarBoxR1}"
+                                                                             partialSubmit="true"
                                                                              value=" &lt; "/>
                                                             
                                                         </h:panelGrid>
@@ -960,32 +970,29 @@
                                                  <br />
                                                 <!-- Analysis option block: complex -->
 
-                                                <ice:panelGroup id="analysisOptionPanel"
+                                                <ice:panelGrid id="analysisOptionPanel"
                                                                binding="#{AnalysisPage.analysisOptionPanel}" 
-                                                               layout="block" 
-                                                                
+                                                               columns="1" 
                                                                style="border: 1px groove #000000; padding: 2px; ">
-                                                    
-                                                    
                                                     <h:outputLabel 
                                                           id="outputText46" 
                                                           for="groupPanelSetxOption"
                                                           value="Analysis Options"/>
                                                     <!-- br /  -->
-                                                    <ice:panelGroup id="groupPanelSetxOption"
+                                                    <ice:panelGrid id="groupPanelSetxOption"
                                                                    binding="#{AnalysisPage.setxOptionPanel}" 
-                                                                   
-                                                                   
-                                                                   layout="block" >
+                                                                   columns="1"
+                                                                   >
                                                         <!-- simulation: checkbox -->
-                                                        <h:selectBooleanCheckbox id="simulationPanel" 
+                                                        <ice:panelGrid id="caseingSimulaton" columns="2"> 
+                                                        <ice:selectBooleanCheckbox id="simulationPanel" 
                                                                      binding="#{AnalysisPage.simulationPanel}" 
                                                                      immediate="true"
                                                                      valueChangeListener="#{AnalysisPage.showHideSimulationsOptPanel}"
-                                                                     onclick="submit()"
-                                                                     label="Simulations" />
+                                                                     partialSubmit="true"
+                                                                      />
                                                         <h:outputLabel for="simulationPanel" value="Simulations" />
-                                                        
+                                                        </ice:panelGrid>
                                                         <!-- br / -->
                                                         <h:panelGroup
                                                                 id="groupPanelSimTypeChoice" 
@@ -999,30 +1006,28 @@
                                                             <h:outputLabel 
                                                                 id="outputTextSimchoice" 
                                                                 for="radioSimTypeChoice"
-                                                                rendered="false"
+                                                                
                                                                 value="#{bundleAnalysis['advStat.simulation.optionPanel']}"/>
                                                             
 
-                                                            <h:selectOneRadio
+                                                            <ice:selectOneRadio
                                                                 id="radioSimTypeChoice"
                                                                 binding="#{AnalysisPage.radioSimTypeChoice}"
                                                                 valueChangeListener="#{AnalysisPage.showHideSimCndtnOptPanel}"
                                                                 value="#{AnalysisPage.radioSimTypeChoiceSelected}"
                                                                 immediate="true"
                                                                 layout="pageDirection"
-                                                                rendered="false"
-                                                                onclick="submit();"
-                                                                >
+                                                                partialSubmit="true">
                                                                   <f:selectItems  value="#{AnalysisPage.simOptionMap}" />
-                                                            </h:selectOneRadio>
+                                                            </ice:selectOneRadio>
                                                             
 
                                                             <!-- gui when the option of select values is chosen-->
                                                             <!-- br / -->
-                                                            <ice:panelGroup 
+                                                            <ice:panelGrid
                                                                     id="groupPanelSimNonDefault"
                                                                     binding="#{AnalysisPage.groupPanelSimNonDefault}"
-                                                                    layout="block"
+                                                                    columns="1"
                                                                     style="border: 1px groove rgb(255, 0, 0); margin: 2px; padding: 2px; "
                                                                     rendered="false"
                                                                 >
@@ -1070,17 +1075,17 @@
                                                                     
                                                                     <ice:inputText id="textField8" binding="#{AnalysisPage.textField8}" columns="10"/>
                                                                 </h:panelGrid>
-                                                            </ice:panelGroup><!-- groupPanelSimNonDefault -->
+                                                            </ice:panelGrid><!-- groupPanelSimNonDefault -->
                                                             <!-- /ui:panelGroup --><!-- groupPanel22 -->
                                                         </h:panelGroup><!-- groupPaneSimChoice -->
                                                         <!-- /ui:panelGroup --><!--groupPanel20 -->
 
                                                         <!-- checkbox: Sensitivity analysis -->
                                                         <!--groupPanel23 -->
-                                                    </ice:panelGroup>
+                                                    </ice:panelGrid>
                                                     <!-- checkbox: Missing Values -->
                                                     
-                                                </ice:panelGroup><!-- analysisOptionPanel-->
+                                                </ice:panelGrid><!-- analysisOptionPanel-->
 
 
                                                 <ice:outputText  id="msgAdvStatButton" 
@@ -1192,19 +1197,17 @@
                 
                 <!-- column 3-->
                 <ice:panelGroup id="groupPanel17">
-                    <ui:dropDown id="howManyRows"
+                    <ice:outputLabel id="howManyRowsLabel"
+                    value="Show "/>
+                    <ice:selectOneMenu id="howManyRows"
                                  binding="#{AnalysisPage.howManyRows}"  
-                                 items="#{AnalysisPage.howManyRowsOptions.options}"
-                                 selected="#{AnalysisPage.howManyRowsOptions.selectedValue}"
-                                 onChange="common_timeoutSubmitForm(this.form, '#{AnalysisPage.howManyRowsClientId}');" 
+                                 value="#{AnalysisPage.selectedNoRows}"
                                  valueChangeListener="#{AnalysisPage.howManyRows_processValueChange}"
-                                 submitForm="false"
-                                 label="Show "
-                                 labelLevel="3"
                                  disabled="false"
-                                 immediate="true" />
-                    
-                    
+                                 partialSubmit="true"
+                                 immediate="true">
+                         <f:selectItems value="#{AnalysisPage.howManyRowsOptions}"/>
+                    </ice:selectOneMenu>
                 </ice:panelGroup>
                 
             </h:panelGrid>

@@ -6543,19 +6543,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // -----------------------------------------------------------------------
     
     /**
-     * The Checkbox object backing the binding attribute of ui:checkbox 
+     * The Checkbox object backing the binding attribute of 
+     * HtmlSelectBooleanCheckbox 
      * component that renders the select/unselect-all variable checkbox
      *  in the first column of the header of the variable table
      */
-    private Checkbox checkboxSelectUnselectAll = new Checkbox();
-    
+    //private Checkbox checkboxSelectUnselectAll = new Checkbox();
+    private HtmlSelectBooleanCheckbox checkboxSelectUnselectAll = 
+        new com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox();
     /**
      * Getter for component checkboxSelectUnselectAll
      *
      * @return  the Checkbox object backing the
      *          select/unselect-all variable checkbox
      */
-    public Checkbox getCheckboxSelectUnselectAll() {
+    public HtmlSelectBooleanCheckbox getCheckboxSelectUnselectAll() {
         return checkboxSelectUnselectAll;
     }
     
@@ -6565,7 +6567,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @param c    the Checkbox object that backs the
      *             select/unselect-all variable checkbox
      */
-    public void setCheckboxSelectUnselectAll(Checkbox c) {
+    public void setCheckboxSelectUnselectAll(HtmlSelectBooleanCheckbox c) {
         checkboxSelectUnselectAll = c;
     }
 
@@ -6576,7 +6578,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * selected and rendered, must be separately handled by two new 
      * Boolean properties.
      * attribute       Boolean property
-     * --.selected     checkboxSelectUnselectAllSelected
+     * --.value     checkboxSelectUnselectAllSelected
      * --.rendered     checkboxSelectUnselectAllRendered
      */
 
@@ -6677,7 +6679,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 checkboxSelectUnselectAll);
         */
             checkboxSelectUnselectAllSelected = 
-                (Boolean)checkboxSelectUnselectAll.getSelected();
+                (Boolean)checkboxSelectUnselectAll.getValue();
             FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().put("checkboxSelectUnselectAllSelected",
                 checkboxSelectUnselectAllSelected);
@@ -6862,7 +6864,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         */
         // Saves the Boolean backing object in the sessionMap
         checkboxSelectUnselectAllSelected = 
-            (Boolean)checkboxSelectUnselectAll.getSelected();
+            (Boolean)checkboxSelectUnselectAll.getValue();
         cntxt.getExternalContext().getSessionMap()
             .put("checkboxSelectUnselectAllSelected",
             checkboxSelectUnselectAllSelected);
@@ -6873,52 +6875,52 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // -----------------------------------------------------------------------
     // variable-table: Checkboxes in the first column
     // -----------------------------------------------------------------------
-
-    private HtmlSelectBooleanCheckbox varCheckboxx = new HtmlSelectBooleanCheckbox();
-    
-    public HtmlSelectBooleanCheckbox getVarCheckboxx() {
-        return varCheckboxx;
-    }
-
-    public void setVarCheckboxx(HtmlSelectBooleanCheckbox varCheckboxx) {
-        this.varCheckboxx = varCheckboxx;
-    }
-
     /**
-     * ui:checkbox component backing the binding attribute of a checkbox
-     * in the first column of the variable table in the subsetting page and
-     * whose id is varCheckbox
+     * h:HtmlSelectBooleanCheckbox component backing the binding attribute of 
+     * a HtmlSelectBooleanCheckbox in the first column of the variable table in 
+     * the subsetting page and whose id is varCheckbox
      */
-//    private Checkbox varCheckbox = new Checkbox();
-    
+    private HtmlSelectBooleanCheckbox varCheckbox = 
+        new com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox();
+
     /**
      * Getter for component varCheckbox
      *
-     * @return    Checkbox object
+     * @return    HtmlSelectBooleanCheckbox object
      */
-    
-//    public Checkbox getVarCheckbox() {
-//        return varCheckbox;
-//    }
+    public HtmlSelectBooleanCheckbox getVarCheckbox() {
+        return varCheckbox;
+    }
     
     /**
      * Setter for component varCheckbox 
      *
-     * @param c    Checkbox object
+     * @param c    HtmlSelectBooleanCheckbox object
      */
-//    public void setVarCheckbox(Checkbox c) {
-//        this.varCheckbox = c;
-//    }
+
+    public void setVarCheckbox(HtmlSelectBooleanCheckbox c) {
+        this.varCheckbox = c;
+    }
+
+
+
+    
+
+    
+
+    
+
 
     /**
      * Updates backing objects and components after
      * an end-user checked/unchecked a checkbox in each of the variable table.
-     * Attached to the valueChangeListener attribute of ui:checkbox
+     * Attached to the valueChangeListener attribute of HtmlSelectBooleanCheckbox
      * component whose id is varCheckbox
      *
      * @param vce    ValueChangeEvent event
      */
     public void updateCheckBoxState(ValueChangeEvent vce) {
+        dbgLog.fine("***** updateCheckBoxState:starts here *****");
         int cr = 0;
 
         List<Object> tmpDataLine = (List<Object>) data.getRowData();
@@ -7007,6 +7009,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     }
                 }
                 dbgLog.fine("recoded var is=" + getCurrentRecodeVariableId());
+                dbgLog.fine("checkboxSelectUnselectAll(b)="+
+                    checkboxSelectUnselectAll.isSelected());
+                if (checkboxSelectUnselectAll.isSelected()){
+                    checkboxSelectUnselectAll.setSelected(false);
+                    checkboxSelectUnselectAllSelected=false;
+                    FacesContext.getCurrentInstance().renderResponse();
+                    dbgLog.fine("checkboxSelectUnselectAll(a)="+
+                    checkboxSelectUnselectAll.isSelected());
+                }
+                
             }
 
         }
@@ -7020,6 +7032,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             deactivateButtons();
             // reset recode field
         }
+        dbgLog.fine("***** updateCheckBoxState:ends here *****");
     }
     
     /**
@@ -7604,12 +7617,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                         dbgLog.fine("\nSelected model name(after post-back)="
                             + currentModelName+"\n");
-                    // deprecated: 
-                    // checkbox component
-                    // Gets the stored object backing the binding attribute
-                    // of ui:checkbox for the select-unselect check box
-                    // checkboxSelectUnselectAll = (Checkbox) sessionMap
-                    //    .get("checkboxSelectUnselectAll");
                     
                     // new approach
                     // Updates the following two attributes at least
@@ -7944,7 +7951,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         
         // 5. Hides the variable-checkboxes in the 1st column of 
         //    the variable table
-        varCheckboxx.setRendered(false);
+        varCheckbox.setRendered(false);
         
         // 6. Hides the title of the recoded-var table
         recodedVarTableTitle.setRendered(false);

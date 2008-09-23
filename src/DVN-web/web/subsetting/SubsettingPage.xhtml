@@ -1232,33 +1232,24 @@
                     <h:column id="column1">
                         <f:facet name="header">
                             <!-- h:outputText id="outputText4" value="#{bundleAnalysis['varTable.colHdr.checkBox']}"/ -->
-                            <ui:checkbox id="checkboxSelectUnselectAll"
+                            <ice:selectBooleanCheckbox id="checkboxSelectUnselectAll"
                                          binding="#{AnalysisPage.checkboxSelectUnselectAll}"
-                                         selected="#{AnalysisPage.checkboxSelectUnselectAllSelected}"
+                                         value="#{AnalysisPage.checkboxSelectUnselectAllSelected}"
                                          rendered="#{AnalysisPage.checkboxSelectUnselectAllRendered}"
                                          immediate="true"   
                                          valueChangeListener="#{AnalysisPage.selectUnselectAllCheckbox}" 
-                                         onClick="submit();"
-                                         toolTip="select or unselect all rows in this view"
+                                         partialSubmit="true"
+                                         title="select or unselect all rows in this view"
                             />
                         </f:facet>
-                        <!--
-                        <ui:checkbox id="varCheckbox"
-                                     binding="#{AnalysisPage.varCheckbox}"
-                                     immediate="true"   
-                                     selected="#{currentRow[0]}" 
-                                     name="varbl_#{currentRow[2]}"
-                                     valueChangeListener="#{AnalysisPage.updateCheckBoxState}" 
-                                     onClick="submit();" >
-                        </ui:checkbox> 
-                        -->
                         
-                        <h:selectBooleanCheckbox id="varCheckboxx"
-                                     binding="#{AnalysisPage.varCheckboxx}" 
+                        <ice:selectBooleanCheckbox id="varCheckbox"
+                                     binding="#{AnalysisPage.varCheckbox}" 
                                      value="#{currentRow[0]}" 
                                      title="#{currentRow[3]}"
+                                     immediate="true"
                                      valueChangeListener="#{AnalysisPage.updateCheckBoxState}" 
-                                     onclick="this.form.submit();"
+                                     partialSubmit="true"
                         />                        
                         
                         

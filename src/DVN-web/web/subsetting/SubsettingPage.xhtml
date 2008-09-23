@@ -728,13 +728,13 @@
                                                  columnClasses="vdcAdvAnalysisCol1, vdcAdvAnalysisCol2" 
                                                  columns="1" >
                                         
-                                        <ui:dropDown id="dropDown1"
+                                        <ice:selectOneMenu id="dropDown1"
                                                      binding="#{AnalysisPage.dropDown1}"  
-                                                     items="#{AnalysisApplicationBean.modelMenuOptions}"
-                                                     onChange="common_timeoutSubmitForm(this.form, '#{AnalysisPage.dropDown1ClientId}');" 
                                                      valueChangeListener="#{AnalysisPage.dropDown1_processValueChange}"
-                                                     submitForm="false"
-                                                     immediate="true" />
+                                                     immediate="true"
+                                                     partialSubmit="true">
+                                            <f:selectItems value="#{AnalysisApplicationBean.modelMenuOptions}"/>
+                                        </ice:selectOneMenu>
                                         
                                     <h:panelGrid id="modelInfoBox"
                                                  binding="#{AnalysisPage.gridPanelModelInfoBox}"
@@ -930,13 +930,6 @@
                                                     
                                                     <!-- Output-option block: checkbox set -->
                                                     <h:outputText id="outputText45" value="Output Options"/>
-                                                    <!-- ui:checkboxGroup id="checkboxGroup2"
-                                                                      binding="{AnalysisPage.checkboxGroup2}" 
-                                                                      items="{AnalysisPage.checkboxGroup2DefaultOptions.options}"
-                                                                      labelLevel="3" 
-                                                                      selected="{AnalysisPage.checkboxGroup2DefaultOptions.selectedValue}"
-                                                                      rendered="true"
-                                                    / -->
                                                     
                                                     <h:selectManyCheckbox 
                                                             id="chkbxAdvStatOutputOpt" 
@@ -948,15 +941,6 @@
                                                             <f:selectItems value="#{AnalysisPage.chkbxAdvStatOutputOptMap}"/>
                                                     </h:selectManyCheckbox>
                                                     
-                                                    
-                                                    <!-- ui:checkboxGroup id="checkboxGroupXtb"
-                                                                      binding="{AnalysisPage.checkboxGroupXtb}" 
-                                                                      items="{AnalysisPage.checkboxGroupXtbOptions.options}"
-                                                                      labelLevel="3" 
-                                                                      selected="{AnalysisPage.checkboxGroupXtbOptions.selectedValue}"
-                                                                      rendered="false"
-                                                                      valueChangeListener="{AnalysisPage.checkboxGroupXtbProcessValueChange}"
-                                                    / -->
                                                     <h:selectManyCheckbox 
                                                             id="chkbxAdvStatOutputXtbOpt" 
                                                             binding="#{AnalysisPage.chkbxAdvStatOutputXtbOpt}"
@@ -973,7 +957,7 @@
                                                 <ice:panelGrid id="analysisOptionPanel"
                                                                binding="#{AnalysisPage.analysisOptionPanel}" 
                                                                columns="1" 
-                                                               style="border: 1px groove #000000; padding: 2px; ">
+                                                               style="border: 1px groove #999999; padding: 2px; ">
                                                     <h:outputLabel 
                                                           id="outputText46" 
                                                           for="groupPanelSetxOption"
@@ -999,7 +983,7 @@
                                                                 binding="#{AnalysisPage.groupPanelSimTypeChoice}"
                                                                 rendered="false"
                                                                 layout="block"
-                                                                style="border: 1px groove #00ffff; padding: 2px; "
+                                                                style="border: 1px groove #999999; padding: 2px; "
                                                                 >
                                                             <!-- contional simulation: radio selection -->
 
@@ -1028,7 +1012,7 @@
                                                                     id="groupPanelSimNonDefault"
                                                                     binding="#{AnalysisPage.groupPanelSimNonDefault}"
                                                                     columns="1"
-                                                                    style="border: 1px groove rgb(255, 0, 0); margin: 2px; padding: 2px; "
+                                                                    style="border: 1px groove #999999; margin: 2px; padding: 2px; "
                                                                     rendered="false"
                                                                 >
                                                                 <!--1st option: Explnatory variable values -->

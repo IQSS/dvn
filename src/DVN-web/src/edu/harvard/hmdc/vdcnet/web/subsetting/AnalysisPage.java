@@ -544,191 +544,124 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // <editor-fold desc="Page-level-components">
 
     /**
-     * ui:tabSet component backing the binding attribute of the tabset in
+     * ice:panelTabSet component backing the binding attribute of the tabset in
      * the subsetting page and whose id is tabSet1
      */
-    //private TabSet tabSet1 = new TabSet();
-
+    private PanelTabSet tabSet1 = new PanelTabSet();
+    
     /**
      * Getter for component tabSet1
      *
      * @return    the main tab-set component
      */
-
-//    public TabSet getTabSet1() {
-//        return tabSet1;
-//    }
+    public PanelTabSet getTabSet1() {
+        return tabSet1;
+    }
     
     /**
      * Setter for component tabSet1
      *
      * @param ts    the main tab-set component
      */
-//    public void setTabSet1(TabSet ts) {
-//        tabSet1 = ts;
-//    }
-    private PanelTabSet tabSet1 = new PanelTabSet();
-
-    public PanelTabSet getTabSet1() {
-        return tabSet1;
-    }
-
     public void setTabSet1(PanelTabSet tabSet1) {
         this.tabSet1 = tabSet1;
     }
     
     /**
-     * ui:tab component backing the binding attribute of the tab of 
+     * ice:panelTab component backing the binding attribute of the tab of 
      * the downloading option and whose id is tabDwnld
      * 
      */
-//    private Tab tabDwnld = new Tab();
+    private PanelTab tabDwnld = new PanelTab();
     
     /**
      * Getter for component tabDwnld
      *
-     * @return    ui:tab of the downloading option
+     * @return    ice:panelTab of the downloading option
      */
-//    public Tab getTabDwnld() {
-//        return tabDwnld;
-//    }
-
-    /**
-     * Setter for component tabDwnld
-     *
-     * @param tab3    ui:tab of the downloading option
-     */
-//    public void setTabDwnld(Tab tab3) {
-//        this.tabDwnld = tab3;
-//    }
-    private PanelTab tabDwnld = new PanelTab();
-
     public PanelTab getTabDwnld() {
         return tabDwnld;
     }
 
+    /**
+     * Setter for component tabDwnld
+     *
+     * @param tab3    ice:panelTab of the downloading option
+     */
     public void setTabDwnld(PanelTab tabDwnld) {
         this.tabDwnld = tabDwnld;
     }
     
     /**
-     * ui:tab component backing the binding attribute of the tab of 
+     * ice:panelTab component backing the binding attribute of the tab of 
      * the recoding option and whose id is tabRecode
      */
-//    private Tab tabRecode = new Tab();
+    private PanelTab tabRecode = new PanelTab();
 
     /**
      * Getter for component tabRecode
      *
-     * @return    ui:tab of the recoding option
+     * @return    ice:panelTab of the recoding option
      */
-//    public Tab getTabRecode() {
-//        return tabRecode;
-//    }
-
-    /**
-     * Setter for component tabRecode
-     *
-     * @param tab2    ui:tab of the recoding option
-     */
-//    public void setTabRecode(Tab tab2) {
-//        this.tabRecode = tab2;
-//    }
-    private PanelTab tabRecode = new PanelTab();
-
     public PanelTab getTabRecode() {
         return tabRecode;
     }
 
+    /**
+     * Setter for component tabRecode
+     *
+     * @param tab2    ice:panelTab of the recoding option
+     */
     public void setTabRecode(PanelTab tabRecode) {
         this.tabRecode = tabRecode;
     }
     
     /**
-     * ui:tab component backing the binding attribute of the tab of 
+     * ice:panelTab component backing the binding attribute of the tab of 
      * the EDA option and whose id is tabEda
      */
-//    private Tab tabEda = new Tab();
-
+    private PanelTab tabEda = new PanelTab();
+    
     /**
      * Getter for component tabEda
      *
-     * @return    ui:tab of the EDA option
+     * @return    ice:panelTab of the EDA option
      */
-//    public Tab getTabEda() {
-//        return tabEda;
-//    }
-
-    /**
-     * Setter for component tabEda
-     *
-     * @param tab4    ui:tab of the EDA option
-     */
-//    public void setTabEda(Tab tab4) {
-//        this.tabEda = tab4;
-//    }
-    
-    private PanelTab tabEda = new PanelTab();
-
     public PanelTab getTabEda() {
         return tabEda;
     }
 
+    /**
+     * Setter for component tabEda
+     *
+     * @param tab4    ice:panelTab of the EDA option
+     */
     public void setTabEda(PanelTab tabEda) {
         this.tabEda = tabEda;
     }
     
     /**
-     * ui:tab component backing the binding attribute of the tab of 
+     * ice:panelTab component backing the binding attribute of the tab of 
      * the advanced statistics optionn and whose id is tabAdvStat
      */
-//    private Tab tabAdvStat = new Tab();
-
+    private PanelTab tabAdvStat = new PanelTab();
     /**
      * Getter for component tabAdvStat
      *
-     * @return    ui:tab of the advanced statistics option
+     * @return    ice:panelTab of the advanced statistics option
      */
-//    public Tab getTabAdvStat() {
-//        return tabAdvStat;
-//    }
-
-    /**
-     * Setter for component tabAdvStat
-     *
-     * @param tab5    ui:tab of the advanced statistics option
-     */
-//    public void setTabAdvStat(Tab tab5) {
-//        this.tabAdvStat = tab5;
-//    }
-
-    private PanelTab tabAdvStat = new PanelTab();
-
     public PanelTab getTabAdvStat() {
         return tabAdvStat;
     }
 
+    /**
+     * Setter for component tabAdvStat
+     *
+     * @param tab5    ice:panelTab of the advanced statistics option
+     */
     public void setTabAdvStat(PanelTab tabAdvStat) {
         this.tabAdvStat = tabAdvStat;
     }
-
-//    private String tab;
-//
-//    public String getTab() {
-//        return tab;
-//    }
-//
-//    public void setTab(String tab) {
-//        if (tab == null || tab.equals("tabDwnld") || tab.equals("tabRecode") || 
-//         tab.equals("tabEda") || tab.equals("tabAdvStat")  ) {
-//            this.tab = tab;
-//        }
-//    }
-
-
-
-
-
 
     /** The Id of the currently selected tab */
     private String currentTabId;
@@ -753,7 +686,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * Moves all variables back to the box of an end-user selected variables
      * and resets the backing storage object varCart.  
-     * Backing the actionListener attribute of each ui:tab component.
+     * Backing the actionListener attribute of each ice:panelTab component.
      *
      * @param  acev    tab-clicking-action event
      */
@@ -1582,10 +1515,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.groupPanelRecodeTableArea = groupPanelRecodeTableArea;
     }
  
-    // listboxRecode:ui:listbox@binding => varSetAdvStat
-    // boxL1:listbox@binding
-    //private Listbox listboxRecode = new Listbox();
-    // ice:selectOneListbox binding
+    // ice:selectOneListbox binding => varSetAdvStat
     private HtmlSelectOneListbox listboxRecode = 
         new com.icesoft.faces.component.ext.HtmlSelectOneListbox();
 
@@ -2251,7 +2181,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * remove a recoded Variable from the cart
      * 
-     * ui:hyperlink attr: actionListener see recode block above
+     * h:commandLink attr: actionListener see recode block above
      */
     public void removeRecodedVariable(ActionEvent e) {
         dbgLog.fine("***** removeRecodedVariable(): begins here *****");
@@ -2414,7 +2344,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // editRecodedVariable
-    // ui:hyperlink @actionListener
+    // h:commandLink @actionListener
     // se recode block above
 
     public void editRecodedVariable(ActionEvent e) {
@@ -3506,31 +3436,33 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // -----------------------------------------------------------------------
     // <editor-fold desc="Advanced Statistics">
     // <editor-fold desc="Adv Stat box and panels">
-    // Selected variable box
+    
+    // ice:selectOneMenu @binding
 
-    // @value: options for dropDown menu
-    private List<Option> modelMenuOptions = new ArrayList<Option>();
+    private HtmlSelectOneMenu dropDown1 = 
+        new com.icesoft.faces.component.ext.HtmlSelectOneMenu();
 
-    public List<Option> getModelMenuOptions() {
-        return this.modelMenuOptions;
-    }
-
-    private void setModelMenuOptions(List<Option> sig) {
-        this.modelMenuOptions = sig;
-    }
-
-    // ui: dropDown solution
-    // @binding
-    private DropDown dropDown1 = new DropDown();
-
-    public DropDown getDropDown1() {
+    public HtmlSelectOneMenu getDropDown1() {
         return dropDown1;
     }
 
-    public void setDropDown1(DropDown dd) {
-        this.dropDown1 = dd;
+    public void setDropDown1(HtmlSelectOneMenu dropDown1) {
+        this.dropDown1 = dropDown1;
+    }
+    
+    // ice:selectOneMenu @value: options for selectOneMenu
+    private List<SelectItem> modelMenuOptions = 
+        new ArrayList<SelectItem>();
+
+    public List<SelectItem> getModelMenuOptions() {
+        return modelMenuOptions;
     }
 
+    public void setModelMenuOptions(List<SelectItem> modelMenuOptions) {
+        this.modelMenuOptions = modelMenuOptions;
+    }
+    
+    
     private String currentModelName;
 
     public String getCurrentModelName() {
@@ -3602,7 +3534,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         gridPanelModelInfoBoxRendered = rndrd;
     }
 
-    // dropDown1: ui: dropDown@valueChangeListener
+    // dropDown1: @valueChangeListener
     public void dropDown1_processValueChange(ValueChangeEvent vce) {
         dbgLog.fine("\n\n***** dropDown1_processValueChange:start *****");        
         String lastModelName = getCurrentModelName();
@@ -3632,8 +3564,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.fine("selected model(---)=" + getCurrentModelName());
                 dbgLog.fine("selected model(---)=" + lastModelName);
                 setCurrentModelName(lastModelName);
-                dropDown1.setSelected(lastModelName);
-                dbgLog.fine("selected model(---)=" + dropDown1.getSelected());
+                dropDown1.setValue(lastModelName);
+                dbgLog.fine("selected model(---)=" + dropDown1.getValue());
                 dbgLog.fine("selected model(---)=" + currentModelName);
 
                 cntxt.getExternalContext().getSessionMap().put("currentModelName",
@@ -3643,7 +3575,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // model option was chosen
             // this model's name
             // String selectedModelName= (String)dropDown1.getSelected();
-            setCurrentModelName((String) dropDown1.getSelected());
+            setCurrentModelName((String) dropDown1.getValue());
             dbgLog.fine("selected model=" + getCurrentModelName());
             cntxt.getExternalContext().getSessionMap().put("currentModelName",
                 currentModelName);
@@ -3780,7 +3712,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
     /**
      * The PanelGroup object backing the binding attribute of 
-     * ui:panelGroup component that covers the pane below the dropDown 
+     * panelGroup component that covers the pane below the dropDown 
      * model-selection menu in the advanced statistics pane.
      * The rendered attribute of this component must be state-kept.
      * Initially hidden.
@@ -3790,7 +3722,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * Getter for component groupPanel8below
      *
-     * @return    ui:panelGroup of the pane below the model-selection menu
+     * @return    panelGroup of the pane below the model-selection menu
      */
     public HtmlPanelGroup getGroupPanel8below() {
         return groupPanel8below;
@@ -3798,7 +3730,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * Setter for component groupPanel8below
      *
-     * @param pg    ui:panelGroup of the pane below the model-selection menu
+     * @param pg    panelGroup of the pane below the model-selection menu
      */
     public void setGroupPanel8below(HtmlPanelGroup pg) {
         this.groupPanel8below = pg;
@@ -3806,7 +3738,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     /**
      * The Boolean object backing the rendered attribute of 
-     * groupPanel8below (ui:panelGroup) component.
+     * groupPanel8below (panelGroup) component.
      * Exposed to the SubsettingPage.xhtml.
      * Must be state-kept. 
      * Added after serialization problems of the component-binding
@@ -3816,7 +3748,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * Getter for attribute groupPanel8belowRendered
      *
-     * @return    the rendered attribute of ui:panelGroup
+     * @return    the rendered attribute of panelGroup
      */    
     public Boolean getGroupPanel8belowRendered(){
         return groupPanel8belowRendered;
@@ -3825,7 +3757,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * Setter for attribute groupPanel8belowRendered
      *
-     * @param rndrd    the rendered attribute of ui:panelGroup
+     * @param rndrd    the rendered attribute of panelGroup
      */
     public void setGroupPanel8belowRendered(Boolean rndrd){
         groupPanel8belowRendered = rndrd;
@@ -4979,39 +4911,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
 
-    // simulation option: radio button group
-    // @binding
-//    private RadioButtonGroup radioButtonGroup1 = new RadioButtonGroup();
-//
-//    public RadioButtonGroup getRadioButtonGroup1() {
-//        return radioButtonGroup1;
-//    }
-//
-//    public void setRadioButtonGroup1(RadioButtonGroup rbg) {
-//        this.radioButtonGroup1 = rbg;
-//    }
-
-    // @items
-//    private SingleSelectOptionsList radioButtonGroup1DefaultOptions = new SingleSelectOptionsList();
-//
-//    public SingleSelectOptionsList getRadioButtonGroup1DefaultOptions() {
-//        return radioButtonGroup1DefaultOptions;
-//    }
-//
-//    public void setRadioButtonGroup1DefaultOptions(SingleSelectOptionsList ssol) {
-//        this.radioButtonGroup1DefaultOptions = ssol;
-//    }
-
+    // simulation option: radio button
     // @selected
-    private String lastSimCndtnSelected;
-
-    public String getLastSimCndtnSelected() {
-        return lastSimCndtnSelected;
-    }
-
-    public void setLastSimCndtnSelected(String lastSimCndtnSelected) {
-        this.lastSimCndtnSelected = lastSimCndtnSelected;
-    }
+//    private String lastSimCndtnSelected;
+//
+//    public String getLastSimCndtnSelected() {
+//        return lastSimCndtnSelected;
+//    }
+//
+//    public void setLastSimCndtnSelected(String lastSimCndtnSelected) {
+//        this.lastSimCndtnSelected = lastSimCndtnSelected;
+//    }
 
     private HtmlSelectOneRadio radioSimTypeChoice = 
         new com.icesoft.faces.component.ext.HtmlSelectOneRadio();
@@ -5085,13 +4995,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     "setxDiffVarBox1", setxDiffVarBox1);
                 cntxt.getExternalContext().getSessionMap().put(
                     "setxDiffVarBox2", setxDiffVarBox2);
-                cntxt.getExternalContext().getSessionMap().put(
-                "lastSimCndtnSelected", currentState.toString());
+//                cntxt.getExternalContext().getSessionMap().put(
+//                "lastSimCndtnSelected", currentState.toString());
             } else if ((currentState.toString()).equals("0")) {
                 //groupPanel22.setRendered(false);
                 groupPanelSimNonDefault.setRendered(false);
-                cntxt.getExternalContext().getSessionMap().put(
-                "lastSimCndtnSelected", currentState.toString());
+//                cntxt.getExternalContext().getSessionMap().put(
+//                "lastSimCndtnSelected", currentState.toString());
             }
         } else {
             //groupPanel22.setRendered(false);
@@ -5165,7 +5075,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //    }
 
     // simulation : value for 1st diff: pull-down var selection
-    // dropdown2: ui:dropdown@binding
+    // dropdown2: ice:selectOneMenu@binding
     // private DropDown dropDown2 = new DropDown();
     private HtmlSelectOneMenu dropDown2 =
         new com.icesoft.faces.component.ext.HtmlSelectOneMenu();
@@ -5177,7 +5087,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.dropDown2 = dd;
     }
 
-    // dropdown2: ui:dropdown@items
+    // dropdown2: ice:selectOneMenu@value
     private List<SelectItem> setxDiffVarBox1 = new ArrayList<SelectItem>();
 
     public List<SelectItem> getSetxDiffVarBox1() {
@@ -5224,7 +5134,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //    }
 
     // simulation : explanatory variable value: pull-down var selection
-    // dropdown3: ui:dropDown@binding
+    // dropdown3: ice:selectOneMenu@binding
     //private DropDown dropDown3 = new DropDown();
     private HtmlSelectOneMenu dropDown3 = 
         new com.icesoft.faces.component.ext.HtmlSelectOneMenu();
@@ -5237,7 +5147,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.dropDown3 = dd;
     }
 
-    // dropdown3: ui:dropdown@items
+    // dropdown3: ice:selectOneMenu@value
     private List<SelectItem> setxDiffVarBox2 = new ArrayList<SelectItem>();
 
     public List<SelectItem> getSetxDiffVarBox2() {
@@ -5443,7 +5353,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //        dbgLog.fine("selected tab(advStat)="+getTabSet1().getSelected());
         // check the current model
 
-        String mdlName = (String) dropDown1.getSelected();
+        String mdlName = (String) dropDown1.getValue();
         dbgLog.fine("model name=" + mdlName);
         
         AdvancedStatGUIdata.Model modelSpec = getAnalysisApplicationBean()
@@ -6303,7 +6213,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * Setter for attribute wrapNonSubsettingInstructionRendered
      *
-     * @param rndrd    the rendered attribute of ui:panelGroup
+     * @param rndrd    the rendered attribute of panelGroup
      */
     public void setWrapNonSubsettingInstructionRendered(Boolean rndrd){
         wrapNonSubsettingInstructionRendered = rndrd;
@@ -6330,7 +6240,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.textField4 = hit;
     }
 
-    // ui:drowpDown: howManyRows
+    // ice:selectOneMenu: howManyRows
     // howManyRows@binding
 
     private HtmlSelectOneMenu howManyRows = 
@@ -6344,16 +6254,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.howManyRows = dd;
     }
 
-    // howManyRows@items
-//    private SingleSelectOptionsList howManyRowsOptions = new SingleSelectOptionsList();
-//
-//    public SingleSelectOptionsList getHowManyRowsOptions() {
-//        return howManyRowsOptions;
-//    }
-//
-//    public void setHowManyRowsOptions(SingleSelectOptionsList ssol) {
-//        this.howManyRowsOptions = ssol;
-//    }
+    // howManyRows@value
     
     private List<SelectItem> howManyRowsOptions = new ArrayList<SelectItem>();
 
@@ -6689,7 +6590,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     /**
      * Updates backing objects and components after an end-user 
      * checked/unchecked the checkbox checkboxSelectUnselectAll.
-     * Attached to the valueChangeListener  attribute of ui:checkbox
+     * Attached to the valueChangeListener  attribute of checkbox
      * component whose id is checkboxSelectUnselectAll
      *
      * @param vce ValueChangeEvent event 
@@ -7371,7 +7272,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     "derivedVarToBaseVar", "recodeVarNameSet",
                     "selectedNoRows", "msgEdaButtonTxt", "msgDwnldButtonTxt",
                      "msgAdvStatButtonTxt","gridPanelModelInfoBox",
-                     "lastSimCndtnSelected", "resultInfo",
+                     "resultInfo",
                      "wrapSubsettingInstructionRendered", 
                      "wrapNonSubsettingInstructionRendered", "modelHelpLinkURL"
                      );
@@ -7484,7 +7385,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // variables behind the LHS variable list box
                     sessionMap.put("varSetAdvStat", varSetAdvStat);
                         dbgLog.fine("varSetAdvStat:\n"+varSetAdvStat);
-                    // ui:PanelGroup component that shows/hides the pane for
+                    // PanelGroup component that shows/hides the pane for
                     // the advanced statistics. 
                     // The rendered attribute of this PanelGroup object
                     // must be state-kept
@@ -7518,17 +7419,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     sessionMap.put("advStatVarRBox2", advStatVarRBox2);
                     sessionMap.put("advStatVarRBox3", advStatVarRBox3);
                     
-                    sessionMap.put("lastSimCndtnSelected", "0");
+//                    sessionMap.put("lastSimCndtnSelected", "0");
 
-                    // ui:checkbox
-                    // Checkbox object
-                    // method       tag attribute
-                    // setSelected   selectedValue
-                    // setRendered   rendered
-                    //
-                    // deprecated: use of component-binding
-                    //sessionMap.put("checkboxSelectUnselectAll",
-                    //    checkboxSelectUnselectAll);
+                    // ice:selectBooleanCheckbox
                     // 
                     // Saves the selected attribute
                     
@@ -7603,7 +7496,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                        dbgLog.fine("lastSimCndtnSelected= "+ sessionMap.get("lastSimCndtnSelected"));
 
                     // Gets the stored object backing the items attribute
-                    // of ui:dropDown for the 1st setx variable selector
+                    // of ice:selectOneMenu for the 1st setx variable selector
                     setxDiffVarBox1 = (List<SelectItem>) sessionMap
                         .get("setxDiffVarBox1");
                         
@@ -7643,7 +7536,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         .get("wrapNonSubsettingInstructionRendered");                        
                     
                     // Gets the stored object backing the selected attribute
-                    // of ui:dropDown for the menu of choosing
+                    // of ice:selectOneMenu for the menu of choosing
                     // an option of how many row per table
                     selectedNoRows = (String)sessionMap.get("selectedNoRows");
                         dbgLog.fine("post-back case: "+
@@ -7674,7 +7567,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             + currentRecodeVariableId);
                     
                     // Gets the stored object backing the rendered attribute
-                    // of ui:PaneGroup for groupPanel8below
+                    // of PaneGroup for groupPanel8below
                     groupPanel8belowRendered =(Boolean) 
                         sessionMap.get("groupPanel8belowRendered");
                     dbgLog.fine("groupPanel8belowRendered(map)="+
@@ -7683,7 +7576,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         groupPanel8belowRendered);
                     // deprecated approach
                     // Gets the stored object backing the binding attribute of
-                    // ui: PanelGroup for groupPanel8below
+                    // PanelGroup for groupPanel8below
                     // cntxt.getExternalContext().getSessionMap()
                     // .get("groupPanel8below"));
 

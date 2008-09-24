@@ -180,926 +180,942 @@
                 binding="#{AnalysisPage.tabSet1}"
                 tabChangeListener="#{AnalysisPage.processTabChange}">
                 
-                <!-- 1. Download -->
-                <!--ui:tab id="tabDwnld" text="Download Subset" 
-                    actionListener="{AnalysisPage.resetVariableInLBox}" 
-                    toolTip="Variable Selection and Downloading" -->
-                    <ice:panelTab id="tabDwnld"
-                        label="#{bundleAnalysis['dwnld.tab.text']}"
-                        title="Variable Selection and Downloading">
-                        
-                    <ice:panelGroup id="layoutPanel3" layout="flow" style="width: 100%;">
-                        
-                        <h:panelGrid cellpadding="0" cellspacing="0" columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" columns="2" id="gridPanel4" width="100%">
-                            
-                            <ice:panelGroup id="groupPanel2">
-                                
-                                <ice:outputLabel id="mListboxDwnldLabel" 
-                                    for="mListboxDwnld" 
-                                    value="#{bundleAnalysis['dwnld.selectedVarBox.title']}" />
-                                <ice:selectManyListbox id="mListboxDwnld" 
-                                        size="10" 
-                                        disabled="true">
-                                    <f:selectItems id="itemsDwnld"  
-                                         value="#{AnalysisPage.varSetAdvStat}"/>                
-                                </ice:selectManyListbox>
-                         </ice:panelGroup>
-                            
-                            <ice:panelGroup id="groupPanel5" block="true">
-                                <h:graphicImage 
-                                    alt="Information" 
-                                    title="Information" 
-                                    styleClass="vdcNoBorders" 
-                                    style="vertical-align: bottom" 
-                                    value="/resources/icon_info.gif" />
-                                
-                                <h:outputText id="outputText13" value="#{bundleAnalysis['dwnld.instruction']}"/>
-                                
-                                <h:selectOneRadio binding="#{AnalysisPage.dwnldFileTypeSet}" id="dtdwnld" layout="pageDirection">
-                                    
-                                    <f:selectItem id="dwnldFileTypeText"  itemLabel="#{bundleAnalysis['dwnld.fileType.text']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[0]}"/>
-                                    <f:selectItem id="dwnldFileTypeRdata" itemLabel="#{bundleAnalysis['dwnld.fileType.Rdata']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[1]}"/>
-                                    <f:selectItem id="dwnldFileTypeSplus" itemLabel="#{bundleAnalysis['dwnld.fileType.Splus']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[2]}"/>
-                                    <f:selectItem id="dwnldFileTypeStata" itemLabel="#{bundleAnalysis['dwnld.fileType.stata']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[3]}"/>
-                                </h:selectOneRadio>
-                                
-                                <!-- message block submit button -->
-                                <h:panelGroup layout="block">
-                                <br/>
-                                <h:panelGroup id="pgDwnldErrMsg"
-                                    binding="#{AnalysisPage.pgDwnldErrMsg}"
-                                    rendered="false"
-                                    style="margin:4px 4px;padding:10px;"
-                                    >
-                                <h:graphicImage 
-                                    alt="Error" 
-                                    title="Error" 
-                                    styleClass="vdcNoBorders" 
-                                    style="vertical-align: middle" 
-                                    value="/resources/error_small.gif"
-                                    rendered="false"/>
-                                <ice:outputText id="msgDwnldButton"
-                                    binding="#{AnalysisPage.msgDwnldButton}" 
-                                    visible="false" 
-                                    escape="true" 
-                                    styleClass="errorMessage"
-                                    
-                                    text="#{AnalysisPage.msgDwnldButtonTxt}"
-                                    />
-                                </h:panelGroup>
-                                <br />
-                                
-                                <h:commandButton id="dwnldBttn"
-                                    binding="#{AnalysisPage.dwnldButton}" 
-                                    type="submit" 
-                                    disabled="true" 
-                                    style="margin-top:10px"
-                                    value="#{bundleAnalysis['dwnld.button.submit']}" 
-                                    action="#{AnalysisPage.dwnldAction}">
-                                </h:commandButton>
-                                </h:panelGroup>
-                            </ice:panelGroup>
-   
-                        </h:panelGrid>
-                        <!-- Edit-variable block-->
-                        <ice:panelGroup block="true" rendered="#{AnalysisPage.editVariableActionRendered}" style="padding-top:10px; padding-bottom:10px;">
-                            <h:commandLink id="linkAction5" action="#{AnalysisPage.gotoEditVariableAction}">
-                                    <h:outputText id="linkAction5Text" value="Edit selected variables"/>   
-                            </h:commandLink>
-                            <h:outputText id="linkAction5HelpText" styleClass="vdcHelpText" value="(If no variables are selected, all variables will be displayed in Edit Variables page.)"/>
-                        </ice:panelGroup>
-                    </ice:panelGroup><!-- ice:panelLayout-->
-                </ice:panelTab><!-- /ui:tab -->
+<!-- 1. Download -->
+<ice:panelTab id="tabDwnld"
+    label="#{bundleAnalysis['dwnld.tab.text']}"
+    title="Variable Selection and Downloading">
+
+    <ice:panelGrid id="layoutPanel3"
+        columns="1" style="width: 100%;">
+
+        <ice:panelGrid  id="gridPanel4"
+            columns="2" 
+            cellpadding="0" cellspacing="0" 
+            columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" 
+            width="100%">
+
+            <ice:panelGrid id="groupPanel2" 
+                columns="1">
+                <ice:outputLabel id="mListboxDwnldLabel" 
+                    for="mListboxDwnld" 
+                    value="#{bundleAnalysis['dwnld.selectedVarBox.title']}" />
+                <ice:selectManyListbox id="mListboxDwnld" 
+                    size="10" 
+                    disabled="true">
+                    <f:selectItems id="itemsDwnld"  
+                         value="#{AnalysisPage.varSetAdvStat}"/>                
+                </ice:selectManyListbox>
+            </ice:panelGrid>
+
+            <ice:panelGrid id="groupPanel5"
+                columns="1">
+                <ice:graphicImage 
+                    alt="Information" 
+                    title="Information" 
+                    styleClass="vdcNoBorders" 
+                    style="vertical-align: bottom" 
+                    value="/resources/icon_info.gif" />
+
+                <ice:outputText id="outputText13" 
+                    value="#{bundleAnalysis['dwnld.instruction']}"/>
+
+                <ice:selectOneRadio id="dtdwnld"  
+                   binding="#{AnalysisPage.dwnldFileTypeSet}" 
+                   immediate="true"
+                   value="#{AnalysisPage.dwnldFileTypeSelected}"
+                   partialSubmit="true"
+                   layout="pageDirection">
+                    <f:selectItem id="dwnldFileTypeText"  itemLabel="#{bundleAnalysis['dwnld.fileType.text']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[0]}"/>
+                    <f:selectItem id="dwnldFileTypeRdata" itemLabel="#{bundleAnalysis['dwnld.fileType.Rdata']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[1]}"/>
+                    <f:selectItem id="dwnldFileTypeSplus" itemLabel="#{bundleAnalysis['dwnld.fileType.Splus']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[2]}"/>
+                    <f:selectItem id="dwnldFileTypeStata" itemLabel="#{bundleAnalysis['dwnld.fileType.stata']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[3]}"/>
+                </ice:selectOneRadio>
+
+                <!-- message block submit button -->
+                <ice:panelGrid
+                    id="dwnldButtonArea">
+                    <br/>
+                    <ice:panelGrid id="pgDwnldErrMsg"
+                        binding="#{AnalysisPage.pgDwnldErrMsg}"
+                        rendered="false"
+                        style="margin:4px 4px;padding:10px;" >
+                        <ice:graphicImage 
+                            alt="Error" 
+                            title="Error" 
+                            styleClass="vdcNoBorders" 
+                            style="vertical-align: middle" 
+                            value="/resources/error_small.gif"
+                            rendered="false"/>
+                        <ice:outputText id="msgDwnldButton"
+                            binding="#{AnalysisPage.msgDwnldButton}" 
+                            visible="false" 
+                            escape="true" 
+                            styleClass="errorMessage"
+
+                            text="#{AnalysisPage.msgDwnldButtonTxt}"
+                            />
+                    </ice:panelGrid>
+                    <br />
+
+                    <ice:commandButton id="dwnldBttn"
+                        binding="#{AnalysisPage.dwnldButton}" 
+                        type="submit" 
+                        disabled="true" 
+                        style="margin-top:10px"
+                        value="#{bundleAnalysis['dwnld.button.submit']}" 
+                        action="#{AnalysisPage.dwnldAction}" >
+                    </ice:commandButton>
+                </ice:panelGrid>
+            </ice:panelGrid>
+
+        </ice:panelGrid>
+        <!-- Edit-variable block-->
+        <ice:panelGrid block="true" 
+            columns="1"
+            rendered="#{AnalysisPage.editVariableActionRendered}" 
+            style="padding-top:10px; padding-bottom:10px;">
+            <ice:commandLink id="linkAction5" 
+                action="#{AnalysisPage.gotoEditVariableAction}">
+                    <ice:outputText id="linkAction5Text" 
+                        value="Edit selected variables"/>   
+            </ice:commandLink>
+            <ice:outputText id="linkAction5HelpText" 
+                styleClass="vdcHelpText" 
+                value="(If no variables are selected, all variables will be displayed in Edit Variables page.)"/>
+        </ice:panelGrid>
+    </ice:panelGrid>
+</ice:panelTab>
                 
                 
-                <!-- 2. Recode -->
+<!-- 2. Recode -->
+<ice:panelTab
+    id="tabRecode"
+    label="#{bundleAnalysis['recode.tab.text']}"
+    title="Rocoding and Case Selection">
+    <ice:panelGrid id="layoutPanel2"
+        columns="1"
+        style="width: 100%;">
+        <ice:panelGrid  id="gridPanel7"
+              cellpadding="0" 
+              cellspacing="0" 
+              columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" 
+              columns="2" width="100%">
+            <!-- 1st column -->
+            <ice:panelGrid id="groupPanel10"
+                columns="2">
+                <ice:panelGrid 
+                    columns="1">
+                    <ice:outputLabel id="listboxRecodeLabel" 
+                        for="listboxRecode" 
+                        value="#{bundleAnalysis['advStat.selectedVarBox.title']}" />                                
+                    <ice:selectOneListbox id="listboxRecode" 
+                        binding="#{AnalysisPage.listboxRecode}"
+                        immediate="true"
+                        value="#{AnalysisPage.selectedRecodeVariable}"
+                        valueChangeListener="#{AnalysisPage.recodeVariableChanged}"
+                        size="10" >
+                        <f:selectItems id="itemsRecode"  
+                             value="#{AnalysisPage.varSetAdvStat}"/>                                     
+                    </ice:selectOneListbox>
+                </ice:panelGrid>
+                
+                <ice:panelGroup id="groupPanelRecodeMiddleColumn">
+                    <ice:commandButton id="moveRecodeVarBttn"
+                         binding="#{AnalysisPage.moveRecodeVarBttn}"
+                         immediate="true"
+                         actionListener="#{AnalysisPage.moveRecodeVariable}"
+                         disabled="true"
+                         style="vertical-align:top"
+                         partialSubmit="true"
+                         alt="#{bundleAnalysis['recode.button.moveVar.alt']}"  
+                         value="start" />
+                </ice:panelGroup>  
+ 
+            </ice:panelGrid>
+            <!-- end: 1st column -->
 
-                <!-- ui:tab  id="tabRecode" 
-                         text="Recode and Case-Subsetting" 
-                         actionListener="{AnalysisPage.resetVariableInLBox}"
-                         toolTip="Rocoding and Case Selection" -->
-                <ice:panelTab
-                    id="tabRecode"
-                    label="#{bundleAnalysis['recode.tab.text']}"
-                    title="Rocoding and Case Selection">
-                    <ice:panelGroup id="layoutPanel2" layout="flow" style="width: 100%;">
-                        <h:panelGrid  id="gridPanel7"
-                                      cellpadding="0" cellspacing="0" columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" columns="2" width="100%">
-                            <!-- 1st column -->
-                            <ice:panelGroup id="groupPanel10">
-                            <h:panelGrid columns="2">
-                                <h:panelGroup>
-                                    
-                                <ice:outputLabel id="listboxRecodeLabel" 
-                                    for="listboxRecode" 
-                                    value="#{bundleAnalysis['advStat.selectedVarBox.title']}" />                                
-                                <ice:selectOneListbox id="listboxRecode" 
-                                    binding="#{AnalysisPage.listboxRecode}"
-                                    immediate="true"
-                                    value="#{AnalysisPage.selectedRecodeVariable}"
-                                    valueChangeListener="#{AnalysisPage.recodeVariableChanged}"
-                                    size="10" >
-                                    <f:selectItems id="itemsRecode"  
-                                         value="#{AnalysisPage.varSetAdvStat}"/>                                     
-                                </ice:selectOneListbox>
-                                
-                                </h:panelGroup>
-                                <h:panelGroup id="groupPanelRecodeMiddleColumn">
-                                
-                                <h:commandButton id="moveRecodeVarBttn"
-                                     binding="#{AnalysisPage.moveRecodeVarBttn}"
-                                     immediate="true"
-                                     actionListener="#{AnalysisPage.moveRecodeVariable}"
-                                     disabled="true"
-                                     style="vertical-align:top"
-                                     alt="#{bundleAnalysis['recode.button.moveVar.alt']}"  
-                                     value="start" />
-                                </h:panelGroup>  
-                            </h:panelGrid>
+            <!-- 2nd column -->
+
+            <ice:panelGrid id="groupPanel11" 
+                columns="1">
+                <!-- instruction lines-->
+                <h:panelGroup id="groupPanelRecodeInstruction1" 
+                    binding="#{AnalysisPage.groupPanelRecodeInstruction1}"
+                    rendered="true" 
+                    layout="block">
+                    <ice:graphicImage 
+                        alt="Information" 
+                        title="Information" 
+                        styleClass="vdcNoBorders" 
+                        style="vertical-align: bottom" 
+                        value="/resources/icon_info.gif" />
+
+                    <ice:outputText id="outputText491" 
+                        value="#{bundleAnalysis['recode.instruction.line1']}"/>
+                    <br />
+                </h:panelGroup>
+
+                <h:panelGroup id="groupPanelRecodeInstruction2" 
+                    binding="#{AnalysisPage.groupPanelRecodeInstruction2}"
+                    rendered="false"
+                    layout="block">
+                    <ice:graphicImage 
+                        alt="Information" 
+                        title="Information" 
+                        styleClass="vdcNoBorders" 
+                        style="vertical-align: bottom" 
+                        value="/resources/icon_info.gif" />
+                    <ice:outputText id="outputText492" 
+                        value="#{bundleAnalysis['recode.instruction.line2']}"/>
+                    <br />
+                    <ice:outputText id="outputText493" 
+                        value="#{bundleAnalysis['recode.instruction.line3']}"/>
+                    <ice:panelGrid id="requiredfield" 
+                        columns="1">
+                        <ice:outputText id="rfb" escape="false" value="(" />
+                        <ice:graphicImage value="/resources/icon_required.gif" />
+                        <ice:outputText id="rfa" style="vdcHelpText"
+                            value="indicates a required field.)" />
+                    </ice:panelGrid>
+                </h:panelGroup>
+                <br />
+                <!-- recoding working area -->
+                <h:panelGroup id="groupPanelRecodeTableArea" 
+                    binding="#{AnalysisPage.groupPanelRecodeTableArea}"
+                    rendered="false"
+                    block="true" >
+                    <!-- input boxes for variable name/label -->
+                    <ice:panelGrid id="groupPanel15" 
+                        cellpadding="0" 
+                        cellspacing="10px" 
+                        columns="2" >
+
+                        <h:panelGroup id="groupPanelRecodeNewVarInfo" 
+                                binding="#{AnalysisPage.groupPanelRecodeNewVarInfo}" >
+                            <ice:panelGroup>
+                            <ice:outputText id="currentConditionVar" 
+                                 value="#{bundleAnalysis['recode.currentConditionVar']}"/>
+
                             </ice:panelGroup>
-                            <!-- end: 1st column -->
-                            
-                            <!-- 2nd column -->
-                            
-                            <ice:panelGroup id="groupPanel11" block="true">
-                                <!-- instruction lines-->
-                                <h:panelGroup id="groupPanelRecodeInstruction1" 
-                                    binding="#{AnalysisPage.groupPanelRecodeInstruction1}"
-                                    rendered="true" 
-                                    layout="block">
-                                    <h:graphicImage 
-                                        alt="Information" 
-                                        title="Information" 
-                                        styleClass="vdcNoBorders" 
-                                        style="vertical-align: bottom" 
-                                        value="/resources/icon_info.gif" />
-                                    
-                                    <h:outputText id="outputText491" 
-                                        value="#{bundleAnalysis['recode.instruction.line1']}"/>
-                                    <br />
-                                </h:panelGroup>
-                                
-                                <h:panelGroup id="groupPanelRecodeInstruction2" 
-                                    binding="#{AnalysisPage.groupPanelRecodeInstruction2}"
-                                    rendered="false"
-                                    layout="block">
-                                    <h:graphicImage 
-                                        alt="Information" 
-                                        title="Information" 
-                                        styleClass="vdcNoBorders" 
-                                        style="vertical-align: bottom" 
-                                        value="/resources/icon_info.gif" />
-                                    <h:outputText id="outputText492" 
-                                        value="#{bundleAnalysis['recode.instruction.line2']}"/>
-                                    <br />
-                                    <h:outputText id="outputText493" 
-                                        value="#{bundleAnalysis['recode.instruction.line3']}"/>
-                                    <h:panelGroup id="requiredfield" layout="block">
-                                    <h:outputText id="rfb" escape="false" value="(" />
-                                    <h:graphicImage value="/resources/icon_required.gif" />
-                                    <h:outputText id="rfa" style="vdcHelpText"
-                                        value="indicates a required field.)" />
-                                    </h:panelGroup>
-                                </h:panelGroup>
-                                <br />
-                                <!-- recoding working area -->
-                                <h:panelGroup id="groupPanelRecodeTableArea" 
-                                    binding="#{AnalysisPage.groupPanelRecodeTableArea}"
-                                    rendered="false"
-                                    block="true" >
-                                    <!-- input boxes for variable name/label -->
-                                    <h:panelGrid id="groupPanel15" 
-                                        cellpadding="0" 
-                                        cellspacing="10px" 
-                                        columns="2" >
-    
-                                        <h:panelGroup id="groupPanelRecodeNewVarInfo" 
-                                                binding="#{AnalysisPage.groupPanelRecodeNewVarInfo}" >
-                                            <h:panelGroup>
-                                            <h:outputText id="currentConditionVar" 
-                                                 value="#{bundleAnalysis['recode.currentConditionVar']}"/>
-                                                
-                                            </h:panelGroup>
-                                            <br/>
-                                            <h:panelGroup>    
-                                            <h:outputText id="recodeNewVarName" 
-                                                 value="#{bundleAnalysis['recode.newVar.name']}"/>
-                                                <h:graphicImage  value="/resources/icon_required.gif"/>
-                                            </h:panelGroup>
-                                            <br/>
-                                            <h:panelGroup>
-                                            <h:outputText id="recodeNewVarLabel"
-                                                value="#{bundleAnalysis['recode.newVar.label']}"/>
-                                                
-                                            </h:panelGroup>
-                                            
-                                        </h:panelGroup>
-                                        <h:panelGroup>
-                                            <h:outputText id="currentRecodeVariableName"
-                                                value="#{AnalysisPage.currentRecodeVariableName}"
-                                                />
-                                            <br/>
-                                            <h:inputText id="recodeTargetVarName"
-                                                 binding="#{AnalysisPage.recodeTargetVarName}"
-                                                 immediate="true"
-                                            />
-                                            <br />
-                                            <h:inputText id="recodeTargetVarLabel"
-                                                binding="#{AnalysisPage.recodeTargetVarLabel}"
-                                                immediate="true"
-                                                size="40"/>                                            
-                                        </h:panelGroup>
-                                    </h:panelGrid>
-                                    <!-- end of variable name/label boxes-->
-                                    <!-- help pane -->
-                                    <ice:panelGroup id="recodeTableHelpPanel" 
-                                                   binding="#{AnalysisPage.groupPanelRecodeTableHelp}" 
-                                                   >
-                                        
-                                        <h:graphicImage 
-                                            alt="Information" 
-                                            title="Information" 
-                                            styleClass="vdcNoBorders" 
-                                            style="vertical-align: bottom" 
-                                            value="/resources/icon_info.gif" />
-                                        
-                                        <h:outputText id="recodeHowToRecodeInstruction" 
-                                                      value="#{bundleAnalysis['recode.howToRecode.instruction']}"/>
-                                        
+                            <br/>
+                            <ice:panelGrid
+                                columns="1">    
+                                <ice:outputText id="recodeNewVarName" 
+                                    value="#{bundleAnalysis['recode.newVar.name']}"/>
+                                <ice:graphicImage  value="/resources/icon_required.gif"/>
+                            </ice:panelGrid>
+                            <br/>
+                            <ice:panelGroup>
+                            <ice:outputText id="recodeNewVarLabel"
+                                value="#{bundleAnalysis['recode.newVar.label']}"/>
 
-                                        
-                                        <h:graphicImage 
-                                            alt="Click to show the how-to information" 
-                                            title="Click to show/hide how-to information" 
-                                            styleClass="vdcNoBorders" 
-                                            style="vertical-align: bottom" 
-                                            value="/resources/icon_help.gif" onclick="return shwNshwTxt('recodeDetail');"/>
-                                            
-                                            
-                                        <div id="recodeDetail" style="display:none">
-                                            <br/>
-                                            <h:outputText id="recodeHowToRecodeDetails"
-                                                          value="#{bundleAnalysis['recode.howToRecode.details']}"/>
-                                        </div>
-                                        <br/>
-                                        
-                                        <h:graphicImage 
-                                            alt="Information" 
-                                            title="Information" 
-                                            styleClass="vdcNoBorders" 
-                                            style="vertical-align: bottom" 
-                                            value="/resources/icon_info.gif" />
-                                        
-                                        
-                                        <h:outputText id="recodeHowToSubsetInstruction" 
-                                                      value="#{bundleAnalysis['recode.howToSubset.instruction']}"/>
-                                        
-                                        <h:graphicImage 
-                                            alt="Click to show the how-to information" 
-                                            title="Click to show/hide how-to information" 
-                                            styleClass="vdcNoBorders" 
-                                            style="vertical-align: bottom" 
-                                            value="/resources/icon_help.gif" onclick="return shwNshwTxt('subsetDetail');"/>
-                                        
-                                        <div id="subsetDetail" style="display:none">
-                                            <br/>
-                                            <h:outputText id="recodeHowToSubsetDetails"
-                                                          value="#{bundleAnalysis['recode.howToSubset.details']}"/>
-                                        </div>
-                                        <br/>
-                                        
-                                        <h:graphicImage 
-                                            alt="Information" 
-                                            title="Information" 
-                                            styleClass="vdcNoBorders" 
-                                            style="vertical-align: bottom" 
-                                            value="/resources/icon_info.gif" />
-                                        
-                                        
-                                        
-                                        <h:outputText id="recodeHowToEnterConditionInstruction" 
-                                                      value="#{bundleAnalysis['recode.howToEnterCondition.instruction']}"/>
-                                        
-                                        
-                                        <h:graphicImage 
-                                            alt="Click to show the how-to information" 
-                                            title="Click to show/hide how-to information" 
-                                            styleClass="vdcNoBorders" 
-                                            style="vertical-align: bottom" 
-                                            value="/resources/icon_help.gif" onclick="return shwNshwTxt('conditionDetail');"/>
-                                        
-                                        <div id="conditionDetail" style="display:none">
-                                            <br/>
-                                            <h:outputText id="recodeHowToEnterConditionDetails"
-                                                          value="#{bundleAnalysis['recode.howToEnterCondition.details']}"/>
-                                        </div>
-                                        <br/>
-                                        
-                                        
-                                    </ice:panelGroup>
-                                    <!-- end of help panel -->
-                                    <!-- recoding table panel -->
-                                    <h:dataTable id="recodeTable" 
-                                        binding="#{AnalysisPage.recodeTable}"
-                                        var="rd"
-                                        value="#{AnalysisPage.recodeDataList}"
-                                        rendered="false"
-                                        cellpadding="0" cellspacing="0" columnClasses="vdcRecodesColA, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB" 
-                                        headerClass="vdcRecodesHeader" 
-                                        style="margin-top: 20px" >
-                                        
-                                        <h:column id="recodeClDropx">
-                                            <f:facet name="header">
-                                                <h:outputText id="recodeHdrDrop" 
-                                                    value="#{bundleAnalysis['recode.valueTable.drop.header']}"/>
-                                            </f:facet>
-                                            <h:selectBooleanCheckbox
-                                                id="recodeDropValueCheckboxx"
-                                                binding="#{AnalysisPage.recodeDropValueCheckboxx}" 
-                                                value="#{rd[0]}" 
-                                                title="#{bundleAnalysis['recode.valueTable.drop.checkbox']}"
-                                                immediate="true"/>   
-                                            
-                                        </h:column>
-                                        <h:column id="recodeClVariable">
-                                            <f:facet name="header">
-                                                <h:outputText id="recodeHdrVariable" 
-                                                    value="#{AnalysisPage.currentRecodeVariableName}"/>
-                                            </f:facet>
-                                            
-                                            <h:inputText  id="recodeVariableNameBox"
-                                                
-                                                value="#{rd[3]}" 
-                                                size="10"/>
-                                        </h:column>
-                                       
-                                        
-                                        <h:column id="recodeClArrow">
-                                            <f:facet name="header">
-                                            </f:facet>
+                            </ice:panelGroup>
 
-                                        <h:graphicImage 
-                                            alt="Information" 
-                                            title="Information" 
-                                            styleClass="vdcNoBorders" 
-                                            style="vertical-align: middle" 
-                                            value="/resources/arrow_right.gif" />
+                        </h:panelGroup>
+                        <ice:panelGrid
+                            columns="1">
+                            <ice:outputText id="currentRecodeVariableName"
+                                value="#{AnalysisPage.currentRecodeVariableName}"
+                                />
+                            <br/>
+                            <h:inputText id="recodeTargetVarName"
+                                 binding="#{AnalysisPage.recodeTargetVarName}"
+                                 immediate="true"
+                            />
+                            <br />
+                            <h:inputText id="recodeTargetVarLabel"
+                                binding="#{AnalysisPage.recodeTargetVarLabel}"
+                                immediate="true"
+                                size="40"/>                                            
+                        </ice:panelGrid>
+                    </ice:panelGrid>
+                    <!-- end of variable name/label boxes-->
+                    <!-- help pane -->
+                    <ice:panelGroup id="recodeTableHelpPanel" 
+                                   binding="#{AnalysisPage.groupPanelRecodeTableHelp}" 
+                                   >
+
+                        <h:graphicImage 
+                            alt="Information" 
+                            title="Information" 
+                            styleClass="vdcNoBorders" 
+                            style="vertical-align: bottom" 
+                            value="/resources/icon_info.gif" />
+
+                        <h:outputText id="recodeHowToRecodeInstruction" 
+                                      value="#{bundleAnalysis['recode.howToRecode.instruction']}"/>
 
 
-                                        </h:column>
-                                        
-                                        
-                                        <h:column id="recodeClValue">
-                                            <f:facet name="header">
-                                                <h:outputText id="recodeHdrValue" 
-                                                    value="#{bundleAnalysis['recode.valueTable.value.header']}"/>
-                                            </f:facet>
-                                            
-                                            <h:inputText  id="recodeValueBox" 
-                                                binding="#{AnalysisPage.recodeValueBox}"
-                                                immediate="true"
-                                                value="#{rd[1]}"
-                                                size="10"/>
-                                            
-                                        </h:column>
-                                        <h:column id="recodeClValueLabel">
-                                            <f:facet name="header">
-                                                <h:outputText id="recodeHdrValueLabel" 
-                                                    value="#{bundleAnalysis['recode.valueTable.valuelabel.header']}"/>
-                                            </f:facet>
-                                            
-                                            <ice:inputText  id="recodeValueLabelBox"
-                                                immediate="true"
-                                                value="#{rd[2]}" 
-                                                size="25"/>
-                                            <h:outputText id="recodeValueLabelBoxT" value="#{rd[2]}"/>
-                                        </h:column>
 
-                                    </h:dataTable>
-                                    <!-- end of recoding table -->
-                                    <br />
-                                    <h:commandButton id="addValueRangeBttn" 
-                                        binding="#{AnalysisPage.addValueRangeBttn}"
-                                        value="#{bundleAnalysis['recode.button.addValue']}"
-                                        actionListener="#{AnalysisPage.addValueRange}"
-                                        rendered ="false"/>
-                                    
-                                    <ice:panelGroup id="groupPanel18" 
-                                        block="true" 
-                                        style="padding-left: 300px; white-space: nowrap">
-                                        
-                                        <h:commandButton id="recodeBttn"
-                                            binding="#{AnalysisPage.recodeButton}" 
-                                            value="#{bundleAnalysis['recode.button.save']}"
-                                            actionListener="#{AnalysisPage.saveRecodedVariable}"
-                                            disabled="true" />
-                                        
-                                        <ice:outputText id="msgSaveRecodeBttn"
-                                            binding="#{AnalysisPage.msgSaveRecodeBttn}" 
-                                            rendered="false"
-                                            escape="false"
-                                            styleClass="errorMessage"/>
-                                        
-                                        
-                                    </ice:panelGroup>
-                                    
-                                </h:panelGroup><!-- recodeTableArea -->
+                        <h:graphicImage 
+                            alt="Click to show the how-to information" 
+                            title="Click to show/hide how-to information" 
+                            styleClass="vdcNoBorders" 
+                            style="vertical-align: bottom" 
+                            value="/resources/icon_help.gif" onclick="return shwNshwTxt('recodeDetail');"/>
 
-                            </ice:panelGroup><!--end 2nd column  -->
-                        </h:panelGrid>
+
+                        <div id="recodeDetail" style="display:none">
+                            <br/>
+                            <h:outputText id="recodeHowToRecodeDetails"
+                                          value="#{bundleAnalysis['recode.howToRecode.details']}"/>
+                        </div>
+                        <br/>
+
+                        <h:graphicImage 
+                            alt="Information" 
+                            title="Information" 
+                            styleClass="vdcNoBorders" 
+                            style="vertical-align: bottom" 
+                            value="/resources/icon_info.gif" />
+
+
+                        <h:outputText id="recodeHowToSubsetInstruction" 
+                                      value="#{bundleAnalysis['recode.howToSubset.instruction']}"/>
+
+                        <h:graphicImage 
+                            alt="Click to show the how-to information" 
+                            title="Click to show/hide how-to information" 
+                            styleClass="vdcNoBorders" 
+                            style="vertical-align: bottom" 
+                            value="/resources/icon_help.gif" onclick="return shwNshwTxt('subsetDetail');"/>
+
+                        <div id="subsetDetail" style="display:none">
+                            <br/>
+                            <h:outputText id="recodeHowToSubsetDetails"
+                                          value="#{bundleAnalysis['recode.howToSubset.details']}"/>
+                        </div>
+                        <br/>
+
+                        <h:graphicImage 
+                            alt="Information" 
+                            title="Information" 
+                            styleClass="vdcNoBorders" 
+                            style="vertical-align: bottom" 
+                            value="/resources/icon_info.gif" />
+
+
+
+                        <h:outputText id="recodeHowToEnterConditionInstruction" 
+                                      value="#{bundleAnalysis['recode.howToEnterCondition.instruction']}"/>
+
+
+                        <h:graphicImage 
+                            alt="Click to show the how-to information" 
+                            title="Click to show/hide how-to information" 
+                            styleClass="vdcNoBorders" 
+                            style="vertical-align: bottom" 
+                            value="/resources/icon_help.gif" onclick="return shwNshwTxt('conditionDetail');"/>
+
+                        <div id="conditionDetail" style="display:none">
+                            <br/>
+                            <h:outputText id="recodeHowToEnterConditionDetails"
+                                          value="#{bundleAnalysis['recode.howToEnterCondition.details']}"/>
+                        </div>
+                        <br/>
+
+
                     </ice:panelGroup>
-                    </ice:panelTab><!--/ui:tab -->
+                    <!-- end of help panel -->
+                    <!-- recoding table panel -->
+                    <ice:dataTable id="recodeTable" 
+                        binding="#{AnalysisPage.recodeTable}"
+                        var="rd"
+                        value="#{AnalysisPage.recodeDataList}"
+                        rendered="false"
+                        cellpadding="0" cellspacing="0" columnClasses="vdcRecodesColA, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB" 
+                        headerClass="vdcRecodesHeader" 
+                        style="margin-top: 20px" >
+
+                        <ice:column id="recodeClDropx">
+                            <f:facet name="header">
+                                <h:outputText id="recodeHdrDrop" 
+                                    value="#{bundleAnalysis['recode.valueTable.drop.header']}"/>
+                            </f:facet>
+                            <h:selectBooleanCheckbox
+                                id="recodeDropValueCheckboxx"
+                                binding="#{AnalysisPage.recodeDropValueCheckboxx}" 
+                                value="#{rd[0]}" 
+                                title="#{bundleAnalysis['recode.valueTable.drop.checkbox']}"
+                                immediate="true"/>   
+
+                        </ice:column>
+                        <ice:column id="recodeClVariable">
+                            <f:facet name="header">
+                                <h:outputText id="recodeHdrVariable" 
+                                    value="#{AnalysisPage.currentRecodeVariableName}"/>
+                            </f:facet>
+
+                            <ice:inputText  id="recodeVariableNameBox"
+                                value="#{rd[3]}" 
+                                size="10"/>
+                        </ice:column>
+
+
+                        <ice:column id="recodeClArrow">
+                            <f:facet name="header">
+                            </f:facet>
+
+                        <h:graphicImage 
+                            alt="Information" 
+                            title="Information" 
+                            styleClass="vdcNoBorders" 
+                            style="vertical-align: middle" 
+                            value="/resources/arrow_right.gif" />
+
+
+                        </ice:column>
+
+
+                        <ice:column id="recodeClValue">
+                            <f:facet name="header">
+                                <h:outputText id="recodeHdrValue" 
+                                    value="#{bundleAnalysis['recode.valueTable.value.header']}"/>
+                            </f:facet>
+
+                            <ice:inputText  id="recodeValueBox" 
+                                binding="#{AnalysisPage.recodeValueBox}"
+                                immediate="true"
+                                value="#{rd[1]}"
+                                size="10"/>
+                            <ice:outputText value="#{rd[1]}"/>
+                        </ice:column>
+                        <ice:column id="recodeClValueLabel">
+                            <f:facet name="header">
+                                <h:outputText id="recodeHdrValueLabel" 
+                                    value="#{bundleAnalysis['recode.valueTable.valuelabel.header']}"/>
+                            </f:facet>
+
+                            <ice:inputText  id="recodeValueLabelBox"
+                                immediate="false"
+                                value="#{rd[2]}" 
+                                size="25"/>
+
+                        </ice:column>
+
+                    </ice:dataTable>
+                    <!-- end of recoding table -->
+                    <br />
+                    <h:commandButton id="addValueRangeBttn" 
+                        binding="#{AnalysisPage.addValueRangeBttn}"
+                        value="#{bundleAnalysis['recode.button.addValue']}"
+                        actionListener="#{AnalysisPage.addValueRange}"
+                        rendered ="false"/>
+
+                    <ice:panelGrid id="groupPanel18" 
+                        columns="1" 
+                        style="padding-left: 300px; white-space: nowrap">
+
+                        <h:commandButton id="recodeBttn"
+                            binding="#{AnalysisPage.recodeButton}" 
+                            value="#{bundleAnalysis['recode.button.save']}"
+                            actionListener="#{AnalysisPage.saveRecodedVariable}"
+                            disabled="true" />
+
+                        <ice:outputText id="msgSaveRecodeBttn"
+                            binding="#{AnalysisPage.msgSaveRecodeBttn}" 
+                            rendered="false"
+                            escape="false"
+                            styleClass="errorMessage"/>
+
+
+                    </ice:panelGrid>
+
+                </h:panelGroup><!-- recodeTableArea -->
+
+            </ice:panelGrid><!--end 2nd column  -->
+        </ice:panelGrid>
+    </ice:panelGrid>
+    </ice:panelTab>
                 
                 
-                <!-- 3. EDA -->
-                <!-- ui:tab id="tabEda" 
-                    text="Descriptive Statistics" 
-                    actionListener="{AnalysisPage.resetVariableInLBox}"
-                    toolTip="Calculate Numeric and Graphic Summaries" -->
-                <ice:panelTab
-                    id="tabEda"
-                    label="#{bundleAnalysis['eda.tab.text']}"
-                    title="Calculate Numeric and Graphic Summaries">
-                    <ice:panelGroup id="layoutPanel4" 
-                        layout="flow" 
-                        style="width: 100%;">
-                        
-                        <h:panelGrid id="gridPanel2" 
-                            cellpadding="0" cellspacing="0" columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" columns="2" width="100%">
-                            
-                            <ice:panelGroup id="groupPanel3">
-                                <ice:outputLabel id="mListboxEdaLabel" 
-                                    for="mListboxEda" 
-                                    value="#{bundleAnalysis['eda.selectedVarBox.title']}" />
-                                <ice:selectManyListbox id="mListboxEda" 
-                                    size="10" 
-                                    disabled="true">
-                                    <f:selectItems id="itemsEda"  
-                                         value="#{AnalysisPage.varSetAdvStat}"/>   
-                                </ice:selectManyListbox>
-                            </ice:panelGroup>
-                            
-                            
-                            <ice:panelGroup block="true" id="groupPanel4">
-                                <h:graphicImage 
-                                    alt="Information" 
-                                    title="Information" 
-                                    styleClass="vdcNoBorders" 
-                                    style="vertical-align: bottom" 
-                                    value="/resources/icon_info.gif" />
-                                
-                                <h:outputText id="outputText21" value="#{bundleAnalysis['eda.instruction']}"/>
-                                
-                                <h:selectManyCheckbox binding="#{AnalysisPage.edaOptionSet}" id="analysis" layout="pageDirection">
-                                    
-                                    <f:selectItem  id="edaOptionNumeric" 
-                                        itemLabel="#{bundleAnalysis['eda.option.numeric']}" 
-                                        itemValue="#{AnalysisPage.edaOptionItems[0]}"/>
-                                    <f:selectItem  id="edaOptionGraphic" 
-                                        itemLabel="#{bundleAnalysis['eda.option.graphic']}"  
-                                        itemValue="#{AnalysisPage.edaOptionItems[1]}"/>
-                                    
-                                </h:selectManyCheckbox>
-                                <ice:outputText  id="msgEdaButton"
-                                    binding="#{AnalysisPage.msgEdaButton}" 
+<!-- 3. EDA -->
+<ice:panelTab
+    id="tabEda"
+    label="#{bundleAnalysis['eda.tab.text']}"
+    title="Calculate Numeric and Graphic Summaries">
+    <ice:panelGrid id="layoutPanel4"
+        columns="1"
+        layout="flow" 
+        style="width: 100%;">
+
+        <ice:panelGrid id="gridPanel2" 
+            cellpadding="0" cellspacing="0" 
+            columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" 
+            columns="2" width="100%">
+
+            <ice:panelGrid id="groupPanel3"
+                columns="1">
+                <ice:outputLabel id="mListboxEdaLabel" 
+                    for="mListboxEda" 
+                    value="#{bundleAnalysis['eda.selectedVarBox.title']}" />
+                <ice:selectManyListbox id="mListboxEda" 
+                    size="10" 
+                    disabled="true">
+                    <f:selectItems id="itemsEda"  
+                         value="#{AnalysisPage.varSetAdvStat}"/>   
+                </ice:selectManyListbox>
+            </ice:panelGrid>
+
+
+            <ice:panelGrid id="groupPanel4"
+                columns="1">
+                <ice:graphicImage 
+                    alt="Information" 
+                    title="Information" 
+                    styleClass="vdcNoBorders" 
+                    style="vertical-align: bottom" 
+                    value="/resources/icon_info.gif" />
+
+                <ice:outputText id="outputText21" 
+                    value="#{bundleAnalysis['eda.instruction']}"/>
+                <ice:selectManyCheckbox id="edaOptionSet"
+                    binding="#{AnalysisPage.edaOptionSet}"
+                    value="#{AnalysisPage.edaOptionSelected}"
+                    immediate="true"
+                    partialSubmit="true"
+                    layout="pageDirection">
+                    <f:selectItem  id="edaOptionNumeric" 
+                        itemLabel="#{bundleAnalysis['eda.option.numeric']}" 
+                        itemValue="#{AnalysisPage.edaOptionItems[0]}"/>
+                    <f:selectItem  id="edaOptionGraphic" 
+                        itemLabel="#{bundleAnalysis['eda.option.graphic']}"  
+                        itemValue="#{AnalysisPage.edaOptionItems[1]}"/>
+                </ice:selectManyCheckbox>
+                
+                <ice:outputText  id="msgEdaButton"
+                    binding="#{AnalysisPage.msgEdaButton}" 
+                    visible="false" escape="false" 
+                    styleClass="errorMessage" 
+                    value="#{AnalysisPage.msgEdaButtonTxt}"/>
+                <br />
+                <ice:commandButton  id="edaBttn"
+                    binding="#{AnalysisPage.edaButton}" 
+                    disabled="true" 
+                    value="#{bundleAnalysis['eda.button.submit']}" 
+                    action="#{AnalysisPage.edaAction}"/>
+
+            </ice:panelGrid>
+
+        </ice:panelGrid>
+
+    </ice:panelGrid>
+</ice:panelTab>
+                
+                
+<!-- 5. advStat -->
+<ice:panelTab
+    id="tabAdvStat"
+    label="#{bundleAnalysis['advStat.tab.text']}"
+    title="Advanced Statistical Modeling">
+    <ice:panelGrid id="layoutPanel5"
+        columns="1"
+        style="width: 100%;">
+
+        <ice:panelGrid id="gridPanel5"
+            cellpadding="0" 
+            cellspacing="0" 
+            columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" 
+            columns="2"  
+            width="100%">
+
+            <ice:panelGrid id="groupPanel6"
+                columns="1">
+                <ice:outputLabel id="listboxAdvStatLabel" 
+                    for="listboxAdvStat" 
+                    value="#{bundleAnalysis['advStat.selectedVarBox.title']}" />
+                <ice:selectManyListbox id="listboxAdvStat" 
+                    binding="#{AnalysisPage.listboxAdvStat}"
+                    value="#{AnalysisPage.advStatSelectedVarLBox}"
+                    immediate="true"
+                    size="10">
+                   <f:selectItems id="itemsDwnld"  
+                         value="#{AnalysisPage.varSetAdvStat}"/>
+               </ice:selectManyListbox>
+
+            </ice:panelGrid><!-- groupPanel6 -->
+            <!-- end of LHS -->
+            
+            <!-- RHS section of the tab -->
+            <ice:panelGrid id="groupPanel7" 
+                columns="1" >
+
+                <!-- model menu list -->
+
+                <h:panelGrid id="gridPanel8out"
+                     cellpadding="0" cellspacing="0" 
+                     columnClasses="vdcAdvAnalysisCol1, vdcAdvAnalysisCol2" 
+                     columns="1" >
+
+                    <ice:panelGrid id="gridPanel8above"
+                         cellpadding="0" 
+                         cellspacing="0" 
+                         columnClasses="vdcAdvAnalysisCol1, vdcAdvAnalysisCol2" 
+                         columns="1" >
+
+                        <ice:selectOneMenu id="dropDown1"
+                             binding="#{AnalysisPage.dropDown1}"  
+                             valueChangeListener="#{AnalysisPage.dropDown1_processValueChange}"
+                             immediate="true"
+                             partialSubmit="true">
+                            <f:selectItems value="#{AnalysisApplicationBean.modelMenuOptions}"/>
+                        </ice:selectOneMenu>
+
+                        <h:panelGrid id="modelInfoBox"
+                             binding="#{AnalysisPage.gridPanelModelInfoBox}"
+                             cellpadding="0" 
+                             cellspacing="0" 
+                             columns="2" 
+                             rendered="#{AnalysisPage.gridPanelModelInfoBoxRendered}" >
+
+                            <ice:graphicImage 
+                                alt="Information" 
+                                title="Information" 
+                                styleClass="vdcNoBorders" 
+                                style="vertical-align: bottom" 
+                                value="/resources/icon_info.gif" />
+
+                            <ice:outputLink 
+                                value="#{AnalysisPage.modelHelpLinkURL}"
+                                target="_blank">
+                                <ice:outputText 
+                                     value="#{bundleAnalysis['advStat.model.helpInfo.header']}"/>                       
+                            </ice:outputLink>
+                        </h:panelGrid>
+                    </ice:panelGrid><!-- end: gridPanel8above -->
+
+                    <ice:panelGroup id="groupPanel8below" 
+                        binding="#{AnalysisPage.groupPanel8below}" 
+                        rendered="#{AnalysisPage.groupPanel8belowRendered}">
+                        <ice:panelGrid id="gridPanel8"
+                             cellpadding="0" 
+                             cellspacing="0" 
+                             columnClasses="vdcAdvAnalysisCol1, vdcAdvAnalysisCol2" 
+                             columns="2" >
+
+                            <!-- column of variable boxes-->
+                            <ice:panelGrid id="groupPanel8"
+                                columns="1"> 
+                                <!-- 1st box panel: usually dependent -->
+                                <ice:panelGroup id="groupPanel12"
+                                    binding="#{AnalysisPage.groupPanel12}" 
+                                    rendered="true" >
+
+                                    <ice:panelGrid id="gridPanel12"
+                                         columns="2" >
+
+                                        <ice:panelGrid id="gridPanel12in"
+                                             columns="1" >
+
+                                            <ice:commandButton id="moveVar1Bttn"
+                                                binding="#{AnalysisPage.button4}"
+                                                actionListener="#{AnalysisPage.addVarBoxR1}"
+                                                partialSubmit="true"
+                                                value=" &gt; "/>
+                                            <ice:outputText id="msgMoveVar1Bttn"
+                                                binding="#{AnalysisPage.msgMoveVar1Bttn}" 
+                                                rendered="false"
+                                                escape="false"
+                                                styleClass="errorMessage"/>
+                                            <ice:commandButton id="moveVar1Bttnb"
+                                                binding="#{AnalysisPage.button4b}"
+                                                actionListener="#{AnalysisPage.removeVarBoxR1}"
+                                                partialSubmit="true"
+                                                value=" &lt; "/>
+
+                                        </ice:panelGrid>
+                                        <ice:panelGrid id="gridPanel12r"
+                                            columns="1">
+                                            <ice:outputLabel id="varListbox1Lbl" 
+                                                binding="#{AnalysisPage.varListbox1Lbl}"
+                                                for="moveVarListbox1"
+                                                value="1st box"/>
+                                            <ice:selectManyListbox id="moveVarListbox1"
+                                                binding="#{AnalysisPage.advStatVarListboxR1}" 
+                                                value="#{AnalysisPage.advStatSelectedVarRBox1}"
+                                                immediate="true"
+                                                size="3">
+                                                <f:selectItems id="advStatVarRBox1"
+                                                    value="#{AnalysisPage.advStatVarRBox1}" />
+                                            </ice:selectManyListbox>
+                                            <!-- label="{bundleAnalysis['advStat.modelVarbox.dependent.label']}"-->
+                                        </ice:panelGrid>
+                                    </ice:panelGrid>
+                                </ice:panelGroup><!-- groupPanel12 -->
+
+                                <!-- 2nd box panel: usually independent -->
+                                <ice:panelGroup id="groupPanel13"
+                                    binding="#{AnalysisPage.groupPanel13}" 
+                                    rendered="false">
+
+                                    <ice:panelGrid id="gridPanel13"
+                                        columns="2">
+
+                                        <ice:panelGrid id="gridPanel13in" 
+                                            columns="1" >
+
+                                            <h:commandButton id="moveVar2Bttn"
+                                                binding="#{AnalysisPage.button5}" 
+                                                actionListener="#{AnalysisPage.addVarBoxR2}"
+                                                value=" &gt; "/>
+
+                                            <ice:outputText id="msgMoveVar2Bttn"
+                                                binding="#{AnalysisPage.msgMoveVar2Bttn}" 
+                                                rendered="false"
+                                                escape="false"
+                                                styleClass="errorMessage"/>
+
+                                            <h:commandButton id="moveVar2Bttnb"
+                                                binding="#{AnalysisPage.button5b}" 
+                                                actionListener="#{AnalysisPage.removeVarBoxR2}"
+                                                value=" &lt; "/>
+                                        </ice:panelGrid>
+                                        <ice:panelGrid id="gridPanel13r"
+                                            columns="1">
+                                            <ice:outputLabel id="varListbox2Lbl" 
+                                                binding="#{AnalysisPage.varListbox2Lbl}"
+                                                for="moveVarListbox2" 
+                                                value="2nd box"/>
+
+                                            <ice:selectManyListbox id="moveVarListbox2"
+                                                binding="#{AnalysisPage.advStatVarListboxR2}" 
+                                                value="#{AnalysisPage.advStatSelectedVarRBox2}"
+                                                immediate="true"
+                                                size="3">
+                                                <f:selectItems id="advStatVarRBox2" 
+                                                    value="#{AnalysisPage.advStatVarRBox2}"/>
+                                            </ice:selectManyListbox>
+                                            <!-- label="{bundleAnalysis['advStat.modelVarbox.explanatory.label']}"-->
+                                        </ice:panelGrid>
+                                    </ice:panelGrid>
+                                </ice:panelGroup><!-- groupPanel13 -->
+
+                                <!-- 3rd box panel: usually for models of factor anlysis-->
+
+                                <ice:panelGroup id="groupPanel14"
+                                    binding="#{AnalysisPage.groupPanel14}"  
+                                    rendered="false">
+
+                                    <ice:panelGrid id="gridPanel14"
+                                         columns="2">
+
+                                        <ice:panelGrid id="gridPanel14in"
+                                            columns="1">
+
+                                            <h:commandButton id="moveVar3Bttn" 
+                                                binding="#{AnalysisPage.button6}" 
+                                                actionListener="#{AnalysisPage.addVarBoxR3}"
+                                                value=" &gt; "/>
+
+                                            <ice:outputText id="msgMoveVar3Bttn"
+                                                binding="#{AnalysisPage.msgMoveVar3Bttn}" 
+                                                rendered="false"
+                                                escape="false"
+                                                styleClass="errorMessage"/>
+
+                                            <h:commandButton id="moveVar3Bttnb" 
+                                                binding="#{AnalysisPage.button6b}" 
+                                                actionListener="#{AnalysisPage.removeVarBoxR3}"
+                                                value=" &lt; "/>
+
+                                        </ice:panelGrid>
+                                        <ice:panelGrid id="gridPanel14r"
+                                            columns="1">
+                                            <ice:outputLabel id="varListbox3Lbl" 
+                                                binding="#{AnalysisPage.varListbox3Lbl}"
+                                                for="moveVarListbox3"
+                                                value="3rd box"/>
+                                            <ice:selectManyListbox id="moveVarListbox3"
+                                                binding="#{AnalysisPage.advStatVarListboxR3}" 
+                                                value="#{AnalysisPage.advStatSelectedVarRBox3}"
+                                                immediate="true"
+                                                size="3">
+                                                <f:selectItems id="advStatVarRBox3"
+                                                    value="#{AnalysisPage.advStatVarRBox3}"/>
+                                            </ice:selectManyListbox>
+                                            <!-- label="{bundleAnalysis['advStat.modelVarbox.observed.label']}"-->
+                                        </ice:panelGrid>
+                                    </ice:panelGrid>
+                                </ice:panelGroup><!-- groupPanel14 -->
+
+                                <!-- end of column of var boxes -->
+                            </ice:panelGrid><!-- groupPanel8 -->
+
+                            <!-- column of option panes -->
+                            <ice:panelGrid id="groupPanel9"
+                                columns="1">
+
+
+                                <!-- output-opton block -->
+
+                                <ice:panelGrid id="groupPanel25" 
+                                    columns="1"
+                                    style="border: 1px groove #999999; padding: 2px; ">
+
+                                    <!-- Output-option block: checkbox set -->
+                                    <ice:outputText id="outputText45" 
+                                        value="Output Options"/>
+
+                                    <h:selectManyCheckbox 
+                                        id="chkbxAdvStatOutputOpt" 
+                                        binding="#{AnalysisPage.chkbxAdvStatOutputOpt}"
+                                        layout="pageDirection"
+                                        rendered="true" >
+                                        <f:selectItems 
+                                            value="#{AnalysisPage.chkbxAdvStatOutputOptMap}"/>
+                                    </h:selectManyCheckbox>
+
+                                    <h:selectManyCheckbox 
+                                        id="chkbxAdvStatOutputXtbOpt" 
+                                        binding="#{AnalysisPage.chkbxAdvStatOutputXtbOpt}"
+                                        layout="pageDirection"
+                                        rendered="false">
+                                        <f:selectItems 
+                                            value="#{AnalysisPage.chkbxAdvStatOutputXtbOptMap}"/>
+                                    </h:selectManyCheckbox>
+                                </ice:panelGrid><!-- groupPanel25 -->
+                                 <br />
+                                <!-- Analysis option block: complex -->
+
+                                <ice:panelGrid id="analysisOptionPanel"
+                                    binding="#{AnalysisPage.analysisOptionPanel}" 
+                                    columns="1" 
+                                    style="border: 1px groove #999999; padding: 2px; ">
+                                    <ice:outputLabel 
+                                        id="outputText46" 
+                                        for="groupPanelSetxOption"
+                                        value="Analysis Options"/>
+                                    <!-- br /  -->
+                                    <ice:panelGrid id="groupPanelSetxOption"
+                                       binding="#{AnalysisPage.setxOptionPanel}" 
+                                       columns="1">
+                                        <!-- simulation: checkbox -->
+                                        <ice:panelGrid id="caseingSimulaton" columns="2"> 
+                                        <ice:selectBooleanCheckbox id="simulationPanel" 
+                                             binding="#{AnalysisPage.simulationPanel}" 
+                                             immediate="true"
+                                             valueChangeListener="#{AnalysisPage.showHideSimulationsOptPanel}"
+                                             partialSubmit="true" />
+                                        <ice:outputLabel for="simulationPanel" 
+                                            value="Simulations" />
+                                        </ice:panelGrid>
+                                        <!-- br / -->
+                                        <h:panelGroup
+                                            id="groupPanelSimTypeChoice" 
+                                            binding="#{AnalysisPage.groupPanelSimTypeChoice}"
+                                            rendered="false"
+                                            layout="block"
+                                            style="border: 1px groove #999999; padding: 2px;">
+                                            <!-- contional simulation: radio selection -->
+
+                                            <ice:outputLabel 
+                                                id="outputTextSimchoice" 
+                                                for="radioSimTypeChoice"
+                                                value="#{bundleAnalysis['advStat.simulation.optionPanel']}"/>
+                                            <ice:selectOneRadio
+                                                id="radioSimTypeChoice"
+                                                binding="#{AnalysisPage.radioSimTypeChoice}"
+                                                valueChangeListener="#{AnalysisPage.showHideSimCndtnOptPanel}"
+                                                value="#{AnalysisPage.radioSimTypeChoiceSelected}"
+                                                immediate="true"
+                                                layout="pageDirection"
+                                                partialSubmit="true">
+                                                  <f:selectItems  
+                                                      value="#{AnalysisPage.simOptionMap}" />
+                                            </ice:selectOneRadio>
+
+
+                                            <!-- gui when the option of select values is chosen-->
+                                            <!-- br / -->
+                                            <ice:panelGrid
+                                                id="groupPanelSimNonDefault"
+                                                binding="#{AnalysisPage.groupPanelSimNonDefault}"
+                                                columns="1"
+                                                style="border: 1px groove #999999; margin: 2px; padding: 2px; "
+                                                rendered="false" >
+                                                    
+                                                <!--1st option: Explnatory variable values -->
+                                                <ice:outputLabel 
+                                                    id="setxlabel1"
+                                                    for="gridPanel11"
+                                                    value="#{bundleAnalysis['advStat.simulation.setValues.values']}" />
+                                                <h:panelGrid id="gridPanel11" 
+                                                    binding="#{AnalysisPage.gridPanel11}" 
+                                                    columns="3">
+
+                                                    <ice:selectOneMenu id="dropDown2"
+                                                        binding="#{AnalysisPage.dropDown2}"  
+                                                        immediate="true">
+                                                        <f:selectItems id="itemsDropDown2"  
+                                                             value="#{AnalysisPage.setxDiffVarBox1}"/>
+                                                    </ice:selectOneMenu>
+
+                                                    <ice:outputText id="staticText2" 
+                                                        value=" = "/>
+                                                    <ice:inputText id="textField10" 
+                                                        binding="#{AnalysisPage.textField10}" 
+                                                        size="10"/>
+                                                </h:panelGrid>
+
+                                                <!-- 2nd option: Value for the first difference(optional)-->
+
+                                                <ice:outputText 
+                                                    id="setxlabel2"
+                                                    for="gridPanel10"
+                                                    value="#{bundleAnalysis['advStat.simulation.setValues.diff']}" />
+                                                <h:panelGrid id="gridPanel10"
+                                                     binding="#{AnalysisPage.gridPanel10}"
+                                                     columns="3" >
+
+                                                    <ice:selectOneMenu id="dropDown3" 
+                                                        binding="#{AnalysisPage.dropDown3}" 
+                                                        immediate="true">
+                                                        <f:selectItems id="itemsDropDown3"  
+                                                             value="#{AnalysisPage.setxDiffVarBox2}"/>
+                                                    </ice:selectOneMenu>
+                                                    <ice:outputText id="staticText1" 
+                                                        value=" = "/>
+                                                    <ice:inputText id="textField8" 
+                                                        binding="#{AnalysisPage.textField8}" 
+                                                        size="10"/>
+                                                </h:panelGrid>
+                                            </ice:panelGrid><!-- groupPanelSimNonDefault -->
+                                            <!-- /ui:panelGroup --><!-- groupPanel22 -->
+                                        </h:panelGroup><!-- groupPaneSimChoice -->
+                                        <!-- /ui:panelGroup --><!--groupPanel20 -->
+
+                                        <!-- checkbox: Sensitivity analysis -->
+                                        <!--groupPanel23 -->
+                                    </ice:panelGrid>
+                                    <!-- checkbox: Missing Values -->
+
+                                </ice:panelGrid><!-- analysisOptionPanel-->
+
+
+                                <ice:outputText  id="msgAdvStatButton" 
+                                    binding="#{AnalysisPage.msgAdvStatButton}" 
                                     visible="false" escape="false" 
                                     styleClass="errorMessage" 
-                                    value="#{AnalysisPage.msgEdaButtonTxt}"/>
-                                                <br />
-                                <h:commandButton  id="edaBttn"
-                                    binding="#{AnalysisPage.edaButton}" 
-                                    disabled="true" 
-                                    value="#{bundleAnalysis['eda.button.submit']}" 
-                                    action="#{AnalysisPage.edaAction}"/>
-                                
-                            </ice:panelGroup>
-                            
-                        </h:panelGrid>
-                        
-                    </ice:panelGroup>
-                </ice:panelTab><!--/ui:tab -->
-                
-                
-                <!-- 5. advStat -->
-                <!-- ui:tab id="tabAdvStat" text="Advanced Statistical Analysis"
-                    toolTip="Advanced Statistical Modeling" -->
-                <ice:panelTab
-                    id="tabAdvStat"
-                    label="#{bundleAnalysis['advStat.tab.text']}"
-                    title="Advanced Statistical Modeling">
-                     <ice:panelGroup id="layoutPanel5" layout="flow" style="width: 100%;">
-                        
-                        <h:panelGrid id="gridPanel5"
-                                     cellpadding="0" 
-                                     cellspacing="0" 
-                                     columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" 
-                                     columns="2"  
-                                     width="100%">
-                            
-                            <ice:panelGroup id="groupPanel6">
-                                
-                                <ice:outputLabel id="listboxAdvStatLabel" 
-                                    for="listboxAdvStat" 
-                                    value="#{bundleAnalysis['advStat.selectedVarBox.title']}" />
-                                <ice:selectManyListbox id="listboxAdvStat" 
-                                            binding="#{AnalysisPage.listboxAdvStat}"
-                                            value="#{AnalysisPage.advStatSelectedVarLBox}"
-                                            immediate="true"
-                                            size="10">
-                                   <f:selectItems id="itemsDwnld"  
-                                         value="#{AnalysisPage.varSetAdvStat}"/>
-                               </ice:selectManyListbox>
+                                    value="#{AnalysisPage.msgAdvStatButtonTxt}"/>
+                                <br />
+                                <h:commandButton id="advStatBttn" 
+                                     disabled="true" 
+                                     binding="#{AnalysisPage.advStatButton}" 
+                                     value="#{bundleAnalysis['advStat.button.submit']}"
+                                     action="#{AnalysisPage.advStatAction}" />
 
-                            </ice:panelGroup><!-- groupPanel6 -->
-                            <!-- end of LHS -->
-                            <!-- RHS section of the tab -->
-                            <ice:panelGroup id="groupPanel7" block="true" >
-                                
-                                <!-- model menu list -->
+                                <!-- end of  column of opion panes-->
+                            </ice:panelGrid><!-- groupPanel9: option panes -->
 
-                                <h:panelGrid id="gridPanel8out"
-                                             cellpadding="0" cellspacing="0" 
-                                             columnClasses="vdcAdvAnalysisCol1, vdcAdvAnalysisCol2" 
-                                             columns="1" >
-                                    
-                                    <h:panelGrid id="gridPanel8above"
-                                                 cellpadding="0" 
-                                                 cellspacing="0" 
-                                                 columnClasses="vdcAdvAnalysisCol1, vdcAdvAnalysisCol2" 
-                                                 columns="1" >
-                                        
-                                        <ice:selectOneMenu id="dropDown1"
-                                                     binding="#{AnalysisPage.dropDown1}"  
-                                                     valueChangeListener="#{AnalysisPage.dropDown1_processValueChange}"
-                                                     immediate="true"
-                                                     partialSubmit="true">
-                                            <f:selectItems value="#{AnalysisApplicationBean.modelMenuOptions}"/>
-                                        </ice:selectOneMenu>
-                                        
-                                    <h:panelGrid id="modelInfoBox"
-                                                 binding="#{AnalysisPage.gridPanelModelInfoBox}"
-                                                 cellpadding="0" 
-                                                 cellspacing="0" 
-                                                 columns="2" 
-                                                 rendered="#{AnalysisPage.gridPanelModelInfoBoxRendered}" >
+                        </ice:panelGrid><!-- gridPanel8: variable boxes and option panes -->
+                    </ice:panelGroup><!-- groupPanel8below -->
+                </h:panelGrid><!-- gridPanel8out-->
+            </ice:panelGrid><!-- groupPanel7--><!-- end of the RHS of the tab -->
 
-                                        <h:graphicImage 
-                                            alt="Information" 
-                                            title="Information" 
-                                            styleClass="vdcNoBorders" 
-                                            style="vertical-align: bottom" 
-                                            value="/resources/icon_info.gif" />
-                                            
-                                            <h:outputLink value="#{AnalysisPage.modelHelpLinkURL}"
-                                            target="_blank">
-                                            <h:outputText value="#{bundleAnalysis['advStat.model.helpInfo.header']}"/>                       
-                                            </h:outputLink>
-                                    </h:panelGrid>
-                                    </h:panelGrid><!-- end: gridPanel8above -->
-                                    
-                                    <ice:panelGroup id="groupPanel8below" 
-                                                   binding="#{AnalysisPage.groupPanel8below}" 
-                                                   rendered="#{AnalysisPage.groupPanel8belowRendered}">
-                                        <h:panelGrid id="gridPanel8"
-                                                     cellpadding="0" 
-                                                     cellspacing="0" 
-                                                     columnClasses="vdcAdvAnalysisCol1, vdcAdvAnalysisCol2" 
-                                                     columns="2" >
-                                            
-                                            <!-- column of variable boxes-->
-                                            <ice:panelGroup id="groupPanel8"> 
-
-                                                           
-                                                
-                                                <!-- 1st box panel: usually dependent -->
-                                                <ice:panelGroup id="groupPanel12"
-                                                               binding="#{AnalysisPage.groupPanel12}" 
-                                                               rendered="true" >
-                                                    
-
-                                                    <h:panelGrid columns="2" id="gridPanel12">
-                                                        
-                                                        <h:panelGrid columns="1" id="gridPanel12in">
-                                                            
-                                                            <ice:commandButton id="moveVar1Bttn"
-                                                                             binding="#{AnalysisPage.button4}"
-                                                                             actionListener="#{AnalysisPage.addVarBoxR1}"
-                                                                             partialSubmit="true"
-                                                                             value=" &gt; "/>
-                                                            <ice:outputText id="msgMoveVar1Bttn"
-                                                                           binding="#{AnalysisPage.msgMoveVar1Bttn}" 
-                                                                           rendered="false"
-                                                                           escape="false"
-                                                                           styleClass="errorMessage"/>
-                                                            <ice:commandButton id="moveVar1Bttnb"
-                                                                             binding="#{AnalysisPage.button4b}"
-                                                                             actionListener="#{AnalysisPage.removeVarBoxR1}"
-                                                                             partialSubmit="true"
-                                                                             value=" &lt; "/>
-                                                            
-                                                        </h:panelGrid>
-                                                        <h:panelGrid columns="1" id="gridPanel12r">
-
-                                                            <ice:outputLabel id="varListbox1Lbl" 
-                                                                      binding="#{AnalysisPage.varListbox1Lbl}"
-                                                                      for="moveVarListbox1"
-                                                                      labelLevel="3" 
-                                                                      text="1st box"/>
-                                                            
-                                                            <ice:selectManyListbox id="moveVarListbox1"
-                                                                        binding="#{AnalysisPage.advStatVarListboxR1}" 
-                                                                        value="#{AnalysisPage.advStatSelectedVarRBox1}"
-                                                                        immediate="true"
-                                                                        size="3">
-                                                                <f:selectItems id="advStatVarRBox1"
-                                                                    value="#{AnalysisPage.advStatVarRBox1}" />
-                                                            </ice:selectManyListbox>
-                                                            <!-- label="{bundleAnalysis['advStat.modelVarbox.dependent.label']}"-->
-                                                        </h:panelGrid>
-                                                    </h:panelGrid>
-                                                </ice:panelGroup><!-- groupPanel12 -->
-
-                                                <!-- 2nd box panel: usually independent -->
-                                                <ice:panelGroup id="groupPanel13"
-
-                                                               binding="#{AnalysisPage.groupPanel13}" 
-                                                               rendered="false">
-                                                    
-                                                    <h:panelGrid columns="2" id="gridPanel13">
-                                                        
-                                                        <h:panelGrid columns="1" id="gridPanel13in">
-                                                            
-                                                            <h:commandButton id="moveVar2Bttn"
-                                                                             binding="#{AnalysisPage.button5}" 
-                                                                             actionListener="#{AnalysisPage.addVarBoxR2}"
-                                                                             value=" &gt; "/>
-                                                            
-                                                            <ice:outputText id="msgMoveVar2Bttn"
-                                                                           binding="#{AnalysisPage.msgMoveVar2Bttn}" 
-                                                                           rendered="false"
-                                                                           escape="false"
-                                                                           styleClass="errorMessage"/>
-                                                            
-                                                            <h:commandButton id="moveVar2Bttnb"
-                                                                             binding="#{AnalysisPage.button5b}" 
-                                                                             actionListener="#{AnalysisPage.removeVarBoxR2}"
-                                                                             value=" &lt; "/>
-                                                            
-                                                        </h:panelGrid>
-                                                        <h:panelGrid columns="1" id="gridPanel13r">
-                                                            
-                                                            <ice:outputLabel id="varListbox2Lbl" 
-                                                                      binding="#{AnalysisPage.varListbox2Lbl}"
-                                                                      for="moveVarListbox2"
-                                                                      labelLevel="3" 
-                                                                      text="2nd box"/>
-                                                            
-                                                            <ice:selectManyListbox id="moveVarListbox2"
-                                                                        binding="#{AnalysisPage.advStatVarListboxR2}" 
-                                                                        value="#{AnalysisPage.advStatSelectedVarRBox2}"
-                                                                        immediate="true"
-                                                                        size="3">
-                                                                <f:selectItems id="advStatVarRBox2" value="#{AnalysisPage.advStatVarRBox2}"/>
-                                                            </ice:selectManyListbox>
-                                                            <!-- label="{bundleAnalysis['advStat.modelVarbox.explanatory.label']}"-->
-                                                        </h:panelGrid>
-                                                    </h:panelGrid>
-                                                </ice:panelGroup><!-- groupPanel13 -->
-
-                                                <!-- 3rd box panel: usually for models of factor anlysis-->
-
-                                                <ice:panelGroup id="groupPanel14"
-                                                               binding="#{AnalysisPage.groupPanel14}"  
-                                                               rendered="false">
-                                                    
-                                                    <h:panelGrid columns="2" id="gridPanel14">
-                                                        
-                                                        <h:panelGrid columns="1" id="gridPanel14in">
-                                                            
-                                                            <h:commandButton id="moveVar3Bttn" 
-                                                                             binding="#{AnalysisPage.button6}" 
-                                                                             actionListener="#{AnalysisPage.addVarBoxR3}"
-                                                                             value=" &gt; "/>
-                                                            
-                                                            <ice:outputText id="msgMoveVar3Bttn"
-                                                                           binding="#{AnalysisPage.msgMoveVar3Bttn}" 
-                                                                           rendered="false"
-                                                                           escape="false"
-                                                                           styleClass="errorMessage"/>
-                                                            
-                                                            <h:commandButton id="moveVar3Bttnb" 
-                                                                             binding="#{AnalysisPage.button6b}" 
-                                                                             actionListener="#{AnalysisPage.removeVarBoxR3}"
-                                                                             value=" &lt; "/>
-                                                            
-                                                        </h:panelGrid>
-                                                        <h:panelGrid columns="1" id="gridPanel14r">
-                                                            
-                                                            
-                                                            <ice:outputLabel id="varListbox3Lbl" 
-                                                                      binding="#{AnalysisPage.varListbox3Lbl}"
-                                                                      for="moveVarListbox3"
-                                                                      labelLevel="3" 
-                                                                      text="3rd box"/>
-                                                            
-                                                            <ice:selectManyListbox id="moveVarListbox3"
-                                                                        binding="#{AnalysisPage.advStatVarListboxR3}" 
-                                                                        value="#{AnalysisPage.advStatSelectedVarRBox3}"
-                                                                        immediate="true"
-                                                                        size="3">
-                                                                <f:selectItems id="advStatVarRBox3"
-                                                                    value="#{AnalysisPage.advStatVarRBox3}"/>
-                                                            </ice:selectManyListbox>
-                                                            <!-- label="{bundleAnalysis['advStat.modelVarbox.observed.label']}"-->
-                                                        </h:panelGrid>
-                                                    </h:panelGrid>
-                                                </ice:panelGroup><!-- groupPanel14 -->
-
-                                                <!-- end of column of var boxes -->
-                                            </ice:panelGroup><!-- groupPanel8 -->
-
-                                            <!-- column of option panes -->
-                                            <ice:panelGroup id="groupPanel9">
-                                                           
-                                                
-                                                <!-- output-opton block -->
-
-                                                <ice:panelGroup id="groupPanel25" 
-                                                               block="true"
-                                                               style="border: 1px groove #999999; padding: 2px; ">
-                                                    
-                                                    <!-- Output-option block: checkbox set -->
-                                                    <h:outputText id="outputText45" value="Output Options"/>
-                                                    
-                                                    <h:selectManyCheckbox 
-                                                            id="chkbxAdvStatOutputOpt" 
-                                                            binding="#{AnalysisPage.chkbxAdvStatOutputOpt}"
-                                                            
-                                                            layout="pageDirection"
-                                                            rendered="true"
-                                                            >
-                                                            <f:selectItems value="#{AnalysisPage.chkbxAdvStatOutputOptMap}"/>
-                                                    </h:selectManyCheckbox>
-                                                    
-                                                    <h:selectManyCheckbox 
-                                                            id="chkbxAdvStatOutputXtbOpt" 
-                                                            binding="#{AnalysisPage.chkbxAdvStatOutputXtbOpt}"
-                                                            
-                                                            layout="pageDirection"
-                                                            rendered="false"
-                                                            >
-                                                            <f:selectItems value="#{AnalysisPage.chkbxAdvStatOutputXtbOptMap}"/>
-                                                    </h:selectManyCheckbox>
-                                                </ice:panelGroup><!-- groupPanel25 -->
-                                                 <br />
-                                                <!-- Analysis option block: complex -->
-
-                                                <ice:panelGrid id="analysisOptionPanel"
-                                                               binding="#{AnalysisPage.analysisOptionPanel}" 
-                                                               columns="1" 
-                                                               style="border: 1px groove #999999; padding: 2px; ">
-                                                    <h:outputLabel 
-                                                          id="outputText46" 
-                                                          for="groupPanelSetxOption"
-                                                          value="Analysis Options"/>
-                                                    <!-- br /  -->
-                                                    <ice:panelGrid id="groupPanelSetxOption"
-                                                                   binding="#{AnalysisPage.setxOptionPanel}" 
-                                                                   columns="1"
-                                                                   >
-                                                        <!-- simulation: checkbox -->
-                                                        <ice:panelGrid id="caseingSimulaton" columns="2"> 
-                                                        <ice:selectBooleanCheckbox id="simulationPanel" 
-                                                                     binding="#{AnalysisPage.simulationPanel}" 
-                                                                     immediate="true"
-                                                                     valueChangeListener="#{AnalysisPage.showHideSimulationsOptPanel}"
-                                                                     partialSubmit="true"
-                                                                      />
-                                                        <h:outputLabel for="simulationPanel" value="Simulations" />
-                                                        </ice:panelGrid>
-                                                        <!-- br / -->
-                                                        <h:panelGroup
-                                                                id="groupPanelSimTypeChoice" 
-                                                                binding="#{AnalysisPage.groupPanelSimTypeChoice}"
-                                                                rendered="false"
-                                                                layout="block"
-                                                                style="border: 1px groove #999999; padding: 2px; "
-                                                                >
-                                                            <!-- contional simulation: radio selection -->
-
-                                                            <h:outputLabel 
-                                                                id="outputTextSimchoice" 
-                                                                for="radioSimTypeChoice"
-                                                                
-                                                                value="#{bundleAnalysis['advStat.simulation.optionPanel']}"/>
-                                                            
-
-                                                            <ice:selectOneRadio
-                                                                id="radioSimTypeChoice"
-                                                                binding="#{AnalysisPage.radioSimTypeChoice}"
-                                                                valueChangeListener="#{AnalysisPage.showHideSimCndtnOptPanel}"
-                                                                value="#{AnalysisPage.radioSimTypeChoiceSelected}"
-                                                                immediate="true"
-                                                                layout="pageDirection"
-                                                                partialSubmit="true">
-                                                                  <f:selectItems  value="#{AnalysisPage.simOptionMap}" />
-                                                            </ice:selectOneRadio>
-                                                            
-
-                                                            <!-- gui when the option of select values is chosen-->
-                                                            <!-- br / -->
-                                                            <ice:panelGrid
-                                                                    id="groupPanelSimNonDefault"
-                                                                    binding="#{AnalysisPage.groupPanelSimNonDefault}"
-                                                                    columns="1"
-                                                                    style="border: 1px groove #999999; margin: 2px; padding: 2px; "
-                                                                    rendered="false"
-                                                                >
-                                                                <!--1st option: Explnatory variable values -->
-
-
-                                                                <h:outputLabel 
-                                                                  id="setxlabel1"
-                                                                  for="gridPanel11"
-                                                                  value="#{bundleAnalysis['advStat.simulation.setValues.values']}"
-                                                                  />
-                                                                <h:panelGrid id="gridPanel11" 
-                                                                             binding="#{AnalysisPage.gridPanel11}" columns="3">
-                                                                    
-                                                                    <ice:selectOneMenu id="dropDown2"
-                                                                                 binding="#{AnalysisPage.dropDown2}"  
-                                                                                 immediate="true">
-                                                                        <f:selectItems id="itemsDropDown2"  
-                                                                             value="#{AnalysisPage.setxDiffVarBox1}"/>
-                                                                    </ice:selectOneMenu>
-                                                                                 
-                                                                    <ice:outputText id="staticText2" text=" = "/>
-                                                                    <ice:inputText id="textField10" binding="#{AnalysisPage.textField10}" columns="10"/>
-                                                                </h:panelGrid>
-                                                                
-                                                                <!-- 2nd option: Value for the first difference(optional)-->
-
-
-                                                                <h:outputText 
-                                                                    id="setxlabel2"
-                                                                    for="gridPanel10"
-                                                                    value="#{bundleAnalysis['advStat.simulation.setValues.diff']}"
-                                                                    />
-                                                                <h:panelGrid id="gridPanel10"
-                                                                             binding="#{AnalysisPage.gridPanel10}" columns="3" >
-                                                                    
-                                                                    <ice:selectOneMenu id="dropDown3" 
-                                                                                 binding="#{AnalysisPage.dropDown3}" 
-                                                                                 immediate="true">
-                                                                         <f:selectItems id="itemsDropDown3"  
-                                                                             value="#{AnalysisPage.setxDiffVarBox2}"/>
-                                                                    </ice:selectOneMenu>
-
-                                                                    <ice:outputText id="staticText1" text=" = "/>
-                                                                    
-                                                                    <ice:inputText id="textField8" binding="#{AnalysisPage.textField8}" columns="10"/>
-                                                                </h:panelGrid>
-                                                            </ice:panelGrid><!-- groupPanelSimNonDefault -->
-                                                            <!-- /ui:panelGroup --><!-- groupPanel22 -->
-                                                        </h:panelGroup><!-- groupPaneSimChoice -->
-                                                        <!-- /ui:panelGroup --><!--groupPanel20 -->
-
-                                                        <!-- checkbox: Sensitivity analysis -->
-                                                        <!--groupPanel23 -->
-                                                    </ice:panelGrid>
-                                                    <!-- checkbox: Missing Values -->
-                                                    
-                                                </ice:panelGrid><!-- analysisOptionPanel-->
-
-
-                                                <ice:outputText  id="msgAdvStatButton" 
-                                                    binding="#{AnalysisPage.msgAdvStatButton}" 
-                                                    visible="false" escape="false" styleClass="errorMessage" 
-                                                    value="#{AnalysisPage.msgAdvStatButtonTxt}"/>
-                                                <br />
-
-
-                                                <!-- action="#{AnalysisPage.advStatAction}" -->
-                                                <h:commandButton id="advStatBttn" 
-                                                                 disabled="true" 
-                                                                 binding="#{AnalysisPage.advStatButton}" 
-                                                                 value="#{bundleAnalysis['advStat.button.submit']}"
-                                                                 action="#{AnalysisPage.advStatAction}"
-                                                                 
-                                                                 />
-                                                
-                                                <!-- end of  column of opion panes-->
-                                            </ice:panelGroup><!-- groupPanel9: option panes -->
-
-                                        </h:panelGrid><!-- gridPanel8: variable boxes and option panes -->
-                                    </ice:panelGroup><!-- groupPanel8below -->
-                                </h:panelGrid><!-- gridPanel8out-->
-                            </ice:panelGroup><!-- groupPanel7--><!-- end of the RHS of the tab -->
-
-                        </h:panelGrid><!-- gridPanel5 -->
-                    </ice:panelGroup><!-- layoutPanel5 -->
-                </ice:panelTab><!--/ui:tab -->
-            </ice:panelTabSet><!--/ui:tabSet -->  
+        </ice:panelGrid><!-- gridPanel5 -->
+    </ice:panelGrid><!-- layoutPanel5 -->
+</ice:panelTab><!--/ice:tab advStat-->
+            </ice:panelTabSet><!--/ice:tabSet -->
             
             
             <!-- end of tab block -->
@@ -1111,8 +1127,7 @@
                           style="margin-left: 8px; margin-top: 10px" width="98%">
                 
                 <ice:panelGroup id="wrapSubsettingInstruction"
-                    rendered="#{AnalysisPage.wrapSubsettingInstructionRendered}"
-                >
+                    rendered="#{AnalysisPage.wrapSubsettingInstructionRendered}" >
                     <h:graphicImage 
                         alt="Information" 
                         title="Information" 

@@ -81,13 +81,13 @@ import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 
 // java studio creator's classes
-import com.sun.rave.web.ui.component.*;
-import com.sun.rave.web.ui.model.*;
+//import com.sun.rave.web.ui.component.*;
+//import com.sun.rave.web.ui.model.*;
 
 // the following package is deprecaged
 // the new name is com.sun.rave.faces.data
 
-import com.sun.jsfcl.data.*;
+//import com.sun.jsfcl.data.*;
 
 import edu.harvard.hmdc.vdcnet.dsb.*;
 import edu.harvard.hmdc.vdcnet.dsb.impl.*;
@@ -154,16 +154,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //        radioButtonGroup1DefaultOptions.setSelectedValue("0");
 
         // Advanced Statistics: checkbox group for the output option pane
-        checkboxGroup2DefaultOptions.setOptions(
-            new Option[] {
-                new Option("Summary", "Include Summary Statistics"),
-                new Option("Plots", "Include Plot"),
-                new Option("BinOutput", "Include Replication Data")
-            });
+//        checkboxGroup2DefaultOptions.setOptions(
+//            new Option[] {
+//                new Option("Summary", "Include Summary Statistics"),
+//                new Option("Plots", "Include Plot"),
+//                new Option("BinOutput", "Include Replication Data")
+//            });
 
         // Sets the default state of each checkbox of the above group
-        checkboxGroup2DefaultOptions.setSelectedValue(new Object[] { "Summary",
-            "Plots", "BinOutput" });
+//        checkboxGroup2DefaultOptions.setSelectedValue(new Object[] { "Summary",
+//            "Plots", "BinOutput" });
 
 
         chkbxAdvStatOutputOptMap.put("Include Summary Statistics", "Summary");
@@ -181,22 +181,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 "xtb_Percentages",});
         
         // Advanced Statistics: checkbox group for the output option pane(xtab)
-        checkboxGroupXtbOptions.setOptions(
-            new Option[] {
-                new Option("xtb_Totals",      "Include Totals"),
-                new Option("xtb_Statistics",  "Include Statistics"),
-                new Option("xtb_Percentages", "Include Percentages"),
-                new Option("xtb_ExtraTables", "Include Extra Tables")
-            });
+//        checkboxGroupXtbOptions.setOptions(
+//            new Option[] {
+//                new Option("xtb_Totals",      "Include Totals"),
+//                new Option("xtb_Statistics",  "Include Statistics"),
+//                new Option("xtb_Percentages", "Include Percentages"),
+//                new Option("xtb_ExtraTables", "Include Extra Tables")
+//            });
         
         // Sets the default state of each checkbox of the above group
-        checkboxGroupXtbOptions.setSelectedValue(
-            new Object[] {
-                "xtb_Totals", 
-                "xtb_Statistics", 
-                "xtb_Percentages",
-                "false"
-            });
+//        checkboxGroupXtbOptions.setSelectedValue(
+//            new Object[] {
+//                "xtb_Totals", 
+//                "xtb_Statistics", 
+//                "xtb_Percentages",
+//                "false"
+//            });
 
         // Dropdown menu of how many rows to be displayed in the variable table
         howManyRowsOptions.add(new SelectItem("20", "20 Variables"));
@@ -768,7 +768,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // <editor-fold desc="download">
 
     // download radio button selection
-    private HtmlSelectOneRadio dwnldFileTypeSet = new HtmlSelectOneRadio();
+    private HtmlSelectOneRadio dwnldFileTypeSet = 
+        new com.icesoft.faces.component.ext.HtmlSelectOneRadio();
 
     public HtmlSelectOneRadio getDwnldFileTypeSet() {
         return dwnldFileTypeSet;
@@ -792,10 +793,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         }
         return dwnldFileTypeItems;
     }
+    public String dwnldFileTypeSelected = null;
 
-    // dwnldBttn:h:commandButton@binding
-    private HtmlCommandButton dwnldButton = new HtmlCommandButton();
+    public String getDwnldFileTypeSelected() {
+        return dwnldFileTypeSelected;
+    }
 
+    public void setDwnldFileTypeSelected(String s) {
+        this.dwnldFileTypeSelected = s;
+    }
+    
+
+    // dwnldBttn commandButton@binding
+    private HtmlCommandButton dwnldButton = 
+        new com.icesoft.faces.component.ext.HtmlCommandButton();
+        //new javax.faces.component.html.HtmlCommandButton();
     public HtmlCommandButton getDwnldButton() {
         return dwnldButton;
     }
@@ -806,25 +818,31 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
     // dwnldBttn:h:commandButton@action
     public boolean checkDwnldParameters (){
-        boolean result=true;
+        boolean result=false;
         dbgLog.fine("***** within checkDwnldParameters() *****");
         // param-checking conditions
-        if (dwnldFileTypeSet.getValue()== null) {
-            dbgLog.warning("download radio button set: no selected value");
-            result=false;
+        if (dwnldFileTypeSelected != null){
+            dbgLog.fine("download radio button set: selected value="+
+                (String)dwnldFileTypeSet.getValue());
+            result = true;
+        } else if (dwnldFileTypeSet.getValue() != null) {
+            dbgLog.fine("download radio button set: selected value="+ 
+                (String)dwnldFileTypeSet.getValue());
+            result=true;
         } else {
-            dbgLog.fine("download radio button set: selected value"+(String)dwnldFileTypeSet.getValue());
+            dbgLog.warning("download radio button set: no selected value");
         }
          return result;
     }
 
-    HtmlPanelGroup pgDwnldErrMsg = new HtmlPanelGroup();
+    HtmlPanelGrid pgDwnldErrMsg = 
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();
 
-    public HtmlPanelGroup getPgDwnldErrMsg() {
+    public HtmlPanelGrid getPgDwnldErrMsg() {
         return pgDwnldErrMsg;
     }
 
-    public void setPgDwnldErrMsg(HtmlPanelGroup pgDwnldErrMsg) {
+    public void setPgDwnldErrMsg(HtmlPanelGrid pgDwnldErrMsg) {
         this.pgDwnldErrMsg = pgDwnldErrMsg;
     }
     
@@ -892,9 +910,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // </editor-fold>
 
     
-    // dwnldButton:h:commandButton@action
-    public String dwnldAction() {
-    
+    // dwnldButton commandButton@action
+    public String dwnldAction() {   
         resetMsgDwnldButton();
         
         if (checkDwnldParameters()) {
@@ -927,7 +944,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // String formatType = req.getParameter("formatType");
             String formatType = (String) dwnldFileTypeSet.getValue();
             dbgLog.fine("file type from the binding=" + formatType);
-
+            if (formatType == null){
+                formatType = dwnldFileTypeSelected;
+                dbgLog.fine("file type from the value=" + dwnldFileTypeSelected);
+            }
             mpl.put("dtdwnld", Arrays.asList(formatType));
 
             // if there is a user-defined (recoded) variables
@@ -1401,7 +1421,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                     zipFiles(res.getOutputStream(), zipFileList);
 
-                    FacesContext.getCurrentInstance().responseComplete();
+                    //FacesContext.getCurrentInstance().responseComplete();
 
             
 
@@ -1465,7 +1485,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // <editor-fold desc="recode">
 
     // moveRecodeVarBttn:h:commandButton@binding
-    private HtmlCommandButton moveRecodeVarBttn = new javax.faces.component.html.HtmlCommandButton();
+    private HtmlCommandButton moveRecodeVarBttn = 
+        new com.icesoft.faces.component.ext.HtmlCommandButton();
+        //new javax.faces.component.html.HtmlCommandButton();
 
     public HtmlCommandButton getMoveRecodeVarBttn() {
         return moveRecodeVarBttn;
@@ -1474,14 +1496,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setMoveRecodeVarBttn(HtmlCommandButton hcb) {
         this.moveRecodeVarBttn = hcb;
     }
-    private PanelGroup groupPanelRecodeNewVarInfo = new PanelGroup();
+    private HtmlPanelGroup groupPanelRecodeNewVarInfo = new HtmlPanelGroup();
 
-    public PanelGroup getGroupPanelRecodeNewVarInfo() {
+    public HtmlPanelGroup getGroupPanelRecodeNewVarInfo() {
         return groupPanelRecodeNewVarInfo;
     }
 
-    public void setGroupPanelRecodeNewVarInfo(PanelGroup groupPanelRecodeNewVarInfo) {
-        this.groupPanelRecodeNewVarInfo = groupPanelRecodeNewVarInfo;
+    public void setGroupPanelRecodeNewVarInfo(HtmlPanelGroup gp) {
+        this.groupPanelRecodeNewVarInfo = gp;
     }
 
     private HtmlPanelGroup groupPanelRecodeInstruction1 = new HtmlPanelGroup();
@@ -1629,7 +1651,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 Collection<VariableCategory> catStat = dv.getCategories();
                 recodeDataList.clear();
-                recodeValueBox.setRendered(false);
+                recodeValueBox.setSubmittedValue(null);
                 recodeTable.setRendered(false);
                 dbgLog.fine("catStat.size=" + catStat.size());
                 if (catStat.size() > 0) {
@@ -1672,14 +1694,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 }
                 dbgLog.fine("recodeDataList="+recodeDataList);
-                recodeTable.setValue(recodeDataList);
+                //recodeTable.setValue(recodeDataList);
                 dbgLog.fine("recodeTable: value="+recodeTable.getValue());
                 // show the recodeTable
                 dbgLog.fine("Number of rows in this Recode Table="
                     + recodeDataList.size());
                 groupPanelRecodeTableHelp.setRendered(true);
                 recodeValueBox.setRendered(true);
-                recodeTable.setRendered(true);
+//                recodeTable.setValue(recodeDataList);
+//                recodeTable.setRendered(true);
                 
                 addValueRangeBttn.setRendered(true);
                 // keep this variable's Id
@@ -1691,7 +1714,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         currentRecodeVariableName);
                 FacesContext.getCurrentInstance().getExternalContext()
                     .getSessionMap().put("recodeDataList", recodeDataList);
-                FacesContext.getCurrentInstance().renderResponse();
+                //FacesContext.getCurrentInstance().renderResponse();
+                recodeTable.setRendered(true);
+                recodeTable.setValue(recodeDataList);
+                recodeValueBox.setRendered(true);
             } else {
                 dbgLog.fine("Variable to be recoded is null");
             }
@@ -1699,7 +1725,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dbgLog.fine("***** moveRecodeVariable(): ends here *****");
 
     }
-    private HtmlInputText recodeValueBox = new HtmlInputText();
+    private HtmlInputText recodeValueBox = 
+        new com.icesoft.faces.component.ext.HtmlInputText();
 
     public HtmlInputText getRecodeValueBox() {
         return recodeValueBox;
@@ -1729,15 +1756,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // checkbox column(drop this value)
     // recodeDropValueCheckbox@binding
-    private Checkbox recodeDropValueCheckbox = new Checkbox();
-
-    public Checkbox getRecodeDropValueCheckbox() {
-        return recodeDropValueCheckbox;
-    }
-
-    public void setRecodeDropValueCheckbox(Checkbox c) {
-        this.recodeDropValueCheckbox = c;
-    }
+//    private Checkbox recodeDropValueCheckbox = new Checkbox();
+//
+//    public Checkbox getRecodeDropValueCheckbox() {
+//        return recodeDropValueCheckbox;
+//    }
+//
+//    public void setRecodeDropValueCheckbox(Checkbox c) {
+//        this.recodeDropValueCheckbox = c;
+//    }
 
     private HtmlSelectBooleanCheckbox recodeDropValueCheckboxx = new HtmlSelectBooleanCheckbox();
     
@@ -1821,11 +1848,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return recodeVariableLabel;
     }
 */
-    // h:dataTable:recodeTable
+    // dataTable:recodeTable
     // @binding
     private HtmlDataTable recodeTable = 
-        new javax.faces.component.html.HtmlDataTable();
-        //new com.icesoft.faces.component.ext.HtmlDataTable();
+        new com.icesoft.faces.component.ext.HtmlDataTable();
+        //new javax.faces.component.html.HtmlDataTable();
 
     public HtmlDataTable getRecodeTable() {
         return recodeTable;
@@ -2012,7 +2039,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // new-case only
         varCart.put(newVarId, newVarName);
         // new only
-        getVarSetAdvStat().add(new Option(newVarId, newVarName));
+        getVarSetAdvStat().add(new SelectItem(newVarId, newVarName));
 
         // add this new var to the old2new mapping table
         // new-case only
@@ -2525,7 +2552,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // replace only: remove the existing option first
         removeOption(newVarId, getVarSetAdvStat());
         // new and replace: both cases
-        getVarSetAdvStat().add(new Option(newVarId, newVarName));
+        getVarSetAdvStat().add(new SelectItem(newVarId, newVarName));
 
         // add this new var to the old2new mapping table
         // new-case only
@@ -2797,8 +2824,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //    }
 
     // RHS: checkbox area related fields
-    // analysis:h:selectManyCheckbox@binding
-    private HtmlSelectManyCheckbox edaOptionSet = new HtmlSelectManyCheckbox();
+    // analysis :selectManyCheckbox@binding
+    private HtmlSelectManyCheckbox edaOptionSet = 
+        new com.icesoft.faces.component.ext.HtmlSelectManyCheckbox();
+        //new HtmlSelectManyCheckbox();
 
     public HtmlSelectManyCheckbox getEdaOptionSet() {
         return edaOptionSet;
@@ -2808,6 +2837,20 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.edaOptionSet = edaOptionSet;
     }
 
+    // selectManyCheckbox@value
+    
+    private Object[] edaOptionSelected = null;
+
+    public Object[] getEdaOptionSelected() {
+        return edaOptionSelected;
+    }
+
+    public void setEdaOptionSelected(Object[] edaOptionSelected) {
+        this.edaOptionSelected = edaOptionSelected;
+    }
+    
+    
+    
     // edaOptionNumeric:f:selectItem@itemValue
     // edaOptionGraphic:f:selectItem@itemValue
     private List edaOptionItems = null;
@@ -2823,7 +2866,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // submit button
     // edaBttn:h:commandButton@binding
-    private HtmlCommandButton edaButton = new HtmlCommandButton();
+    private HtmlCommandButton edaButton = 
+        new com.icesoft.faces.component.ext.HtmlCommandButton();
+        // new HtmlCommandButton();
 
     public HtmlCommandButton getEdaButton() {
         return edaButton;
@@ -2835,16 +2880,23 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // checking parameters before submission-
     public boolean checkEdaParameters() {
-        boolean result = true;
-
+        boolean result = false;
+        dbgLog.fine("EDA: number of selected options (value)="
+            + edaOptionSelected);
         Object[] vs = edaOptionSet.getSelectedValues();
+        dbgLog.fine("EDA: number of selected options (binding)="
+            + vs);        
         // param-checking conditions
-        if (vs.length < 1) {
-            dbgLog.fine("EDA(checkEdaParameters()): no option is checked");
-            result = false;
-        } else {
+        if  (edaOptionSelected.length > 0){
             dbgLog.fine("EDA(checkEdaParameters): number of selected options="
                 + vs.length);
+            result = true;
+        } else if (vs.length > 0) {
+            dbgLog.fine("EDA(checkEdaParameters): number of selected options="
+                + vs.length);
+            result = true;
+        } else {
+            dbgLog.fine("EDA(checkEdaParameters()): no option is checked");
         }
         return result;
     }
@@ -3533,7 +3585,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setGridPanelModelInfoBoxRendered(Boolean rndrd){
         gridPanelModelInfoBoxRendered = rndrd;
     }
-
+    private String modelSelectionInstruction = "Choose a Statistical Model";
     // dropDown1: @valueChangeListener
     public void dropDown1_processValueChange(ValueChangeEvent vce) {
         dbgLog.fine("\n\n***** dropDown1_processValueChange:start *****");        
@@ -3550,11 +3602,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         String newModelName = (String) vce.getNewValue();
         dbgLog.fine("Newly selected model=" + newModelName);
         // IE users may select separator "---"
-        if (newModelName.startsWith("---")){
+        if (newModelName.startsWith(modelSelectionInstruction)){
             if (lastModelName==null){
                 // no model has been chosen but the separator was chosen (1st)
                 return;
-            } else if (lastModelName.startsWith("---")) {
+            } else if (lastModelName.startsWith(modelSelectionInstruction)) {
                 // 2nd or later time
                 return;
             } else {
@@ -3671,9 +3723,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // set up option panels
         if (getCurrentModelName().equals("xtb")) {
             // cross-tabulation (non-zelig)
-            checkboxGroup2.setRendered(false);
+
             chkbxAdvStatOutputOpt.setRendered(false);
-            checkboxGroupXtb.setRendered(true);
+
             chkbxAdvStatOutputXtbOpt.setRendered(true);
             analysisOptionPanel.setRendered(false);
             
@@ -3684,10 +3736,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 setxOptionPanel.setRendered(false);
                 analysisOptionPanel.setRendered(false);
             } else {
-            checkboxGroup2.setRendered(true);
+
             chkbxAdvStatOutputOpt.setRendered(true);
             chkbxAdvStatOutputXtbOpt.setRendered(false);
-            checkboxGroupXtb.setRendered(false);
+
             analysisOptionPanel.setRendered(true);
             // show/hide setx-option panel
                 setxOptionPanel.setRendered(true);
@@ -3880,7 +3932,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         Iterator all = vs.entrySet().iterator();
         while (all.hasNext()) {
             Entry entry = (Entry) all.next();
-            varSetAdvStat.add(new Option(entry.getKey().toString(),
+            varSetAdvStat.add(new SelectItem(entry.getKey().toString(),
                 (String) entry.getValue()));
         }
     }
@@ -4706,25 +4758,25 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      */
 
     // output option checkbox group: zelig
-    private CheckboxGroup checkboxGroup2 = new CheckboxGroup();
-
-    public CheckboxGroup getCheckboxGroup2() {
-        return checkboxGroup2;
-    }
-
-    public void setCheckboxGroup2(CheckboxGroup cg) {
-        this.checkboxGroup2 = cg;
-    }
-
-    private MultipleSelectOptionsList checkboxGroup2DefaultOptions = new MultipleSelectOptionsList();
-
-    public MultipleSelectOptionsList getCheckboxGroup2DefaultOptions() {
-        return checkboxGroup2DefaultOptions;
-    }
-
-    public void setCheckboxGroup2DefaultOptions(MultipleSelectOptionsList msol) {
-        this.checkboxGroup2DefaultOptions = msol;
-    }
+//    private CheckboxGroup checkboxGroup2 = new CheckboxGroup();
+//
+//    public CheckboxGroup getCheckboxGroup2() {
+//        return checkboxGroup2;
+//    }
+//
+//    public void setCheckboxGroup2(CheckboxGroup cg) {
+//        this.checkboxGroup2 = cg;
+//    }
+//
+//    private MultipleSelectOptionsList checkboxGroup2DefaultOptions = new MultipleSelectOptionsList();
+//
+//    public MultipleSelectOptionsList getCheckboxGroup2DefaultOptions() {
+//        return checkboxGroup2DefaultOptions;
+//    }
+//
+//    public void setCheckboxGroup2DefaultOptions(MultipleSelectOptionsList msol) {
+//        this.checkboxGroup2DefaultOptions = msol;
+//    }
 
 
 
@@ -4776,34 +4828,34 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 
     // output option checkbox group: xtab
-    private CheckboxGroup checkboxGroupXtb = new CheckboxGroup();
+//    private CheckboxGroup checkboxGroupXtb = new CheckboxGroup();
+//
+//    public CheckboxGroup getCheckboxGroupXtb() {
+//        return checkboxGroupXtb;
+//    }
+//
+//    public void setCheckboxGroupXtb(CheckboxGroup cg) {
+//        this.checkboxGroupXtb = cg;
+//    }
+//
+//    private MultipleSelectOptionsList checkboxGroupXtbOptions = new MultipleSelectOptionsList();
+//
+//    public MultipleSelectOptionsList getCheckboxGroupXtbOptions() {
+//        return checkboxGroupXtbOptions;
+//    }
+//
+//    public void setCheckboxGroupXtbOptions(MultipleSelectOptionsList msol) {
+//        this.checkboxGroupXtbOptions = msol;
+//    }
 
-    public CheckboxGroup getCheckboxGroupXtb() {
-        return checkboxGroupXtb;
-    }
-
-    public void setCheckboxGroupXtb(CheckboxGroup cg) {
-        this.checkboxGroupXtb = cg;
-    }
-
-    private MultipleSelectOptionsList checkboxGroupXtbOptions = new MultipleSelectOptionsList();
-
-    public MultipleSelectOptionsList getCheckboxGroupXtbOptions() {
-        return checkboxGroupXtbOptions;
-    }
-
-    public void setCheckboxGroupXtbOptions(MultipleSelectOptionsList msol) {
-        this.checkboxGroupXtbOptions = msol;
-    }
-
-    public void checkboxGroupXtbProcessValueChange(ValueChangeEvent vce) {
-        dbgLog.fine("checkboxGroupXtbProcessValueChange");
-        dbgLog.fine("checkbox: new value=" + vce.getNewValue());
-        Option[] outOption = (Option[]) checkboxGroupXtbOptions.getOptions();
-        for (int i = 0; i < outOption.length; i++) {
-            dbgLog.fine("output option[" + i + "]=" + outOption[i].getValue());
-        }
-    }
+//    public void checkboxGroupXtbProcessValueChange(ValueChangeEvent vce) {
+//        dbgLog.fine("checkboxGroupXtbProcessValueChange");
+//        dbgLog.fine("checkbox: new value=" + vce.getNewValue());
+//        Option[] outOption = (Option[]) checkboxGroupXtbOptions.getOptions();
+//        for (int i = 0; i < outOption.length; i++) {
+//            dbgLog.fine("output option[" + i + "]=" + outOption[i].getValue());
+//        }
+//    }
     // </editor-fold>
     // ////////////////////
     // Analysis option
@@ -5283,7 +5335,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public List<String> getDataVariableForRBox1() {
         List<String> dvs = new ArrayList<String>();
         for (Iterator el = advStatVarRBox1.iterator(); el.hasNext();) {
-            Option dv = (Option) el.next();
+            SelectItem dv = (SelectItem) el.next();
             String id = (String) dv.getValue();
             dvs.add("v" + id);
         }
@@ -5293,7 +5345,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public List<String> getDataVariableForRBox2() {
         List<String> dvs = new ArrayList<String>();
         for (Iterator el = advStatVarRBox2.iterator(); el.hasNext();) {
-            Option dv = (Option) el.next();
+            SelectItem dv = (SelectItem) el.next();
             String id = (String) dv.getValue();
             dvs.add("v" + id);
         }
@@ -5303,7 +5355,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public List<String> getDataVariableForRBox3() {
         List<String> dvs = new ArrayList<String>();
         for (Iterator el = advStatVarRBox3.iterator(); el.hasNext();) {
-            Option dv = (Option) el.next();
+            SelectItem dv = (SelectItem) el.next();
             String id = (String) dv.getValue();
             dvs.add("v" + id);
         }
@@ -6655,7 +6707,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 if (!varCart.containsKey(keyS)) {
                     // varCart.put( newKey, valueS );
                     varCart.put(keyS, valueS);
-                    getVarSetAdvStat().add(new Option(keyS, valueS));
+                    getVarSetAdvStat().add(new SelectItem(keyS, valueS));
                 }
             }
             // activate buttons
@@ -6746,7 +6798,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 for (Iterator i = advStatVarRBox3.iterator(); i.hasNext();) {
                     SelectItem el = (SelectItem) i.next();
                     if (bvIdSet.contains((String) el.getValue())) {
-                        tmpRBox3.add(new Option(el.getValue(), el.getLabel()));
+                        tmpRBox3.add(new SelectItem(el.getValue(), el.getLabel()));
                     }
                 }
                 advStatVarRBox3.clear();
@@ -6864,7 +6916,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 .get(3));
 
             getVarSetAdvStat().add(
-                new Option((String) tmpDataLine.get(2), (String) tmpDataLine
+                new SelectItem((String) tmpDataLine.get(2), (String) tmpDataLine
                     .get(3)));
             
         } else {

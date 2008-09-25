@@ -1496,45 +1496,49 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setMoveRecodeVarBttn(HtmlCommandButton hcb) {
         this.moveRecodeVarBttn = hcb;
     }
-    private HtmlPanelGroup groupPanelRecodeNewVarInfo = new HtmlPanelGroup();
+    private HtmlPanelGrid groupPanelRecodeNewVarInfo = 
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();
 
-    public HtmlPanelGroup getGroupPanelRecodeNewVarInfo() {
+    public HtmlPanelGrid getGroupPanelRecodeNewVarInfo() {
         return groupPanelRecodeNewVarInfo;
     }
 
-    public void setGroupPanelRecodeNewVarInfo(HtmlPanelGroup gp) {
+    public void setGroupPanelRecodeNewVarInfo(HtmlPanelGrid gp) {
         this.groupPanelRecodeNewVarInfo = gp;
     }
 
-    private HtmlPanelGroup groupPanelRecodeInstruction1 = new HtmlPanelGroup();
+    private HtmlPanelGrid groupPanelRecodeInstruction1 = 
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();
 
-    public HtmlPanelGroup getGroupPanelRecodeInstruction1() {
+    public HtmlPanelGrid getGroupPanelRecodeInstruction1() {
         return groupPanelRecodeInstruction1;
     }
 
-    public void setGroupPanelRecodeInstruction1(HtmlPanelGroup groupPanelRecodeInstruction1) {
-        this.groupPanelRecodeInstruction1 = groupPanelRecodeInstruction1;
+    public void setGroupPanelRecodeInstruction1(HtmlPanelGrid gpri) {
+        this.groupPanelRecodeInstruction1 = gpri;
     }
     
     
-    private HtmlPanelGroup groupPanelRecodeInstruction2 = new HtmlPanelGroup();
+    private HtmlPanelGrid groupPanelRecodeInstruction2 = 
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();
 
-    public HtmlPanelGroup getGroupPanelRecodeInstruction2() {
+    public HtmlPanelGrid getGroupPanelRecodeInstruction2() {
         return groupPanelRecodeInstruction2;
     }
 
-    public void setGroupPanelRecodeInstruction2(HtmlPanelGroup groupPanelRecodeInstruction2) {
-        this.groupPanelRecodeInstruction2 = groupPanelRecodeInstruction2;
+    public void setGroupPanelRecodeInstruction2(HtmlPanelGrid gpri2) {
+        this.groupPanelRecodeInstruction2 = gpri2;
     }
     
-    private HtmlPanelGroup groupPanelRecodeTableArea = new HtmlPanelGroup();
+    private HtmlPanelGrid groupPanelRecodeTableArea = 
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();;
 
-    public HtmlPanelGroup getGroupPanelRecodeTableArea() {
+    public HtmlPanelGrid getGroupPanelRecodeTableArea() {
         return groupPanelRecodeTableArea;
     }
 
-    public void setGroupPanelRecodeTableArea(HtmlPanelGroup groupPanelRecodeTableArea) {
-        this.groupPanelRecodeTableArea = groupPanelRecodeTableArea;
+    public void setGroupPanelRecodeTableArea(HtmlPanelGrid gprta) {
+        this.groupPanelRecodeTableArea = gprta;
     }
  
     // ice:selectOneListbox binding => varSetAdvStat
@@ -1744,13 +1748,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // panel above the recodeTable : recodeTableHelpPanel
     // @binding  ui to ice
-    private HtmlPanelGroup groupPanelRecodeTableHelp = new com.icesoft.faces.component.ext.HtmlPanelGroup();
+    private HtmlPanelGrid groupPanelRecodeTableHelp =
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();
 
-    public HtmlPanelGroup getGroupPanelRecodeTableHelp() {
+    public HtmlPanelGrid getGroupPanelRecodeTableHelp() {
         return groupPanelRecodeTableHelp;
     }
 
-    public void setGroupPanelRecodeTableHelp(HtmlPanelGroup pg) {
+    public void setGroupPanelRecodeTableHelp(HtmlPanelGrid pg) {
         this.groupPanelRecodeTableHelp = pg;
     }
 
@@ -1766,7 +1771,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //        this.recodeDropValueCheckbox = c;
 //    }
 
-    private HtmlSelectBooleanCheckbox recodeDropValueCheckboxx = new HtmlSelectBooleanCheckbox();
+    private HtmlSelectBooleanCheckbox recodeDropValueCheckboxx = 
+        new com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox();
     
     public HtmlSelectBooleanCheckbox getRecodeDropValueCheckboxx() {
         return recodeDropValueCheckboxx;
@@ -1802,9 +1808,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return currentRecodeVariableId;
     }
 
-    // h:inputText: recodeTargetVarName:
+    // inputText: recodeTargetVarName:
     // @binding
-    private HtmlInputText recodeTargetVarName = new HtmlInputText();
+    private HtmlInputText recodeTargetVarName = 
+        new com.icesoft.faces.component.ext.HtmlInputText();
 
     public HtmlInputText getRecodeTargetVarName() {
         return recodeTargetVarName;
@@ -1825,9 +1832,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return recodeVariableName;
     }
 
-    // h:inputText: recodeTargetVarLabel
+    // inputText: recodeTargetVarLabel
     // @binding
-    private HtmlInputText recodeTargetVarLabel = new HtmlInputText();
+    private HtmlInputText recodeTargetVarLabel = 
+        new com.icesoft.faces.component.ext.HtmlInputText();
 
     public HtmlInputText getRecodeTargetVarLabel() {
         return recodeTargetVarLabel;
@@ -1873,10 +1881,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.recodeDataList = dl;
     }
 
-    // h:commandButton (Add Value/Range Button)
+    // commandButton (Add Value/Range Button)
     // addValueRangeBttn@binding
 
-    private HtmlCommandButton addValueRangeBttn = new HtmlCommandButton();
+    private HtmlCommandButton addValueRangeBttn = 
+        new com.icesoft.faces.component.ext.HtmlCommandButton();
 
     public HtmlCommandButton getAddValueRangeBttn() {
         return addValueRangeBttn;
@@ -1886,7 +1895,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.addValueRangeBttn = hcb;
     }
 
-    // h:commandButton:addValueRangeBttn
+    // commandButton:addValueRangeBttn
     // @actionListener
     public void addValueRange(ActionEvent acev) {
         dbgLog.fine("before add: recodeDataList=" + recodeDataList);
@@ -1924,7 +1933,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // h:commandButton(Apply Recode Button)
     // recodeBttn@binding
-    private HtmlCommandButton recodeButton = new HtmlCommandButton();
+    private HtmlCommandButton recodeButton = 
+        new com.icesoft.faces.component.ext.HtmlCommandButton();
 
     public HtmlCommandButton getRecodeButton() {
         return recodeButton;
@@ -2751,8 +2761,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // -----------------------------------------------------------------------
     // / title and message line
 
-    // h:HtmlOutputText: recodedVarTableTitle@binding
-    private HtmlOutputText recodedVarTableTitle = new HtmlOutputText();
+    // HtmlOutputText: recodedVarTableTitle@binding
+    private HtmlOutputText recodedVarTableTitle = 
+        new com.icesoft.faces.component.ext.HtmlOutputText();
 
     public HtmlOutputText getRecodedVarTableTitle() {
         return recodedVarTableTitle;
@@ -2764,13 +2775,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // h:panelGroup PGrecodedVarTable
     // @binding
-    private HtmlPanelGroup pgRecodedVarTable = new HtmlPanelGroup();
+    private HtmlPanelGrid pgRecodedVarTable =
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();
 
-    public HtmlPanelGroup getPgRecodedVarTable() {
+    public HtmlPanelGrid getPgRecodedVarTable() {
         return pgRecodedVarTable;
     }
 
-    public void setPgRecodedVarTable(HtmlPanelGroup pg) {
+    public void setPgRecodedVarTable(HtmlPanelGrid pg) {
         this.pgRecodedVarTable = pg;
     }
 
@@ -3535,12 +3547,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.modelHelpLinkURL = url;
     }
     /**
-     * h:panelGrid component that contains the model help
+     * panelGrid component that contains the model help
      * information box in the advanced statistics pane.
      * The rendered attribute of this component must be state-kept.
      * Initially hidden.
      */
-    private HtmlPanelGrid gridPanelModelInfoBox = new HtmlPanelGrid();
+    private HtmlPanelGrid gridPanelModelInfoBox = 
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();
     
     /**
      * Getter for component gridPanelModelInfoBox
@@ -4085,7 +4098,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // moveVar2Bttn
     // > button (add)
     // @binding
-    private HtmlCommandButton button5 = new HtmlCommandButton();
+    private HtmlCommandButton button5 = 
+        new com.icesoft.faces.component.ext.HtmlCommandButton();
 
     public HtmlCommandButton getButton5() {
         return button5;
@@ -4097,7 +4111,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // < button (remove)
     // @binding
-    private HtmlCommandButton button5b = new HtmlCommandButton();
+    private HtmlCommandButton button5b = 
+        new com.icesoft.faces.component.ext.HtmlCommandButton();
 
     public HtmlCommandButton getButton5b() {
         return button5b;
@@ -4110,7 +4125,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // moveVar3Bttn
     // > button (add)
     // @binding
-    private HtmlCommandButton button6 = new HtmlCommandButton();
+    private HtmlCommandButton button6 = 
+        new com.icesoft.faces.component.ext.HtmlCommandButton();
 
     public HtmlCommandButton getButton6() {
         return button6;
@@ -4122,7 +4138,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // < button (remove)
     // @binding
-    private HtmlCommandButton button6b = new HtmlCommandButton();
+    private HtmlCommandButton button6b = 
+        new com.icesoft.faces.component.ext.HtmlCommandButton();
 
     public HtmlCommandButton getButton6b() {
         return button6b;
@@ -4783,14 +4800,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 
 
-    private HtmlSelectManyCheckbox chkbxAdvStatOutputOpt = new HtmlSelectManyCheckbox();
+    private HtmlSelectManyCheckbox chkbxAdvStatOutputOpt = 
+        new com.icesoft.faces.component.ext.HtmlSelectManyCheckbox();
 
     public HtmlSelectManyCheckbox getChkbxAdvStatOutputOpt() {
         return chkbxAdvStatOutputOpt;
     }
 
-    public void setChkbxAdvStatOutputOpt(HtmlSelectManyCheckbox chkbxAdvStatOutputOpt) {
-        this.chkbxAdvStatOutputOpt = chkbxAdvStatOutputOpt;
+    public void setChkbxAdvStatOutputOpt(HtmlSelectManyCheckbox chkbxOut) {
+        this.chkbxAdvStatOutputOpt = chkbxOut;
     }
 
 
@@ -4800,19 +4818,20 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return chkbxAdvStatOutputOptMap;
     }
 
-    public void setChkbxAdvStatOutputOptMap(Map<String, String> chkbxAdvStatOutputOptMap) {
-        this.chkbxAdvStatOutputOptMap = chkbxAdvStatOutputOptMap;
+    public void setChkbxAdvStatOutputOptMap(Map<String, String> chkbxOutMp) {
+        this.chkbxAdvStatOutputOptMap = chkbxOutMp;
     }
 
 
-    private HtmlSelectManyCheckbox chkbxAdvStatOutputXtbOpt = new HtmlSelectManyCheckbox();
+    private HtmlSelectManyCheckbox chkbxAdvStatOutputXtbOpt = 
+        new com.icesoft.faces.component.ext.HtmlSelectManyCheckbox();
 
     public HtmlSelectManyCheckbox getChkbxAdvStatOutputXtbOpt() {
         return chkbxAdvStatOutputXtbOpt;
     }
 
-    public void setChkbxAdvStatOutputXtbOpt(HtmlSelectManyCheckbox chkbxAdvStatOutputXtbOpt) {
-        this.chkbxAdvStatOutputXtbOpt = chkbxAdvStatOutputXtbOpt;
+    public void setChkbxAdvStatOutputXtbOpt(HtmlSelectManyCheckbox chkbxXtb) {
+        this.chkbxAdvStatOutputXtbOpt = chkbxXtb;
     }
 
 
@@ -4917,15 +4936,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //        this.groupPanel20 = pg;
 //    }
 
-    private HtmlPanelGroup groupPanelSimTypeChoice = 
-        new javax.faces.component.html.HtmlPanelGroup();
+    private HtmlPanelGrid groupPanelSimTypeChoice = 
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();;
 
-    public HtmlPanelGroup getGroupPanelSimTypeChoice() {
+    public HtmlPanelGrid getGroupPanelSimTypeChoice() {
         return groupPanelSimTypeChoice;
     }
 
-    public void setGroupPanelSimTypeChoice(HtmlPanelGroup groupPanelSimTypeChoice) {
-        this.groupPanelSimTypeChoice = groupPanelSimTypeChoice;
+    public void setGroupPanelSimTypeChoice(HtmlPanelGrid gpstc) {
+        this.groupPanelSimTypeChoice = gpstc;
     }
 
 
@@ -5104,7 +5123,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // simulation : value for 1st diff: casing pane
 
-    private HtmlPanelGrid gridPanel10 = new HtmlPanelGrid();
+    private HtmlPanelGrid gridPanel10 = 
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();
 
     public HtmlPanelGrid getGridPanel10() {
         return gridPanel10;
@@ -5164,7 +5184,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
     // simulation : explanatory variable value: casing panel
 
-    private HtmlPanelGrid gridPanel11 = new HtmlPanelGrid();
+    private HtmlPanelGrid gridPanel11 = 
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();
 
     public HtmlPanelGrid getGridPanel11() {
         return gridPanel11;
@@ -5224,8 +5245,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // submit button (modeling request)
-    // advStatBttn:h:commandButton@binding
-    private HtmlCommandButton advStatButton = new HtmlCommandButton();
+    // advStatBttn: commandButton@binding
+    private HtmlCommandButton advStatButton = 
+        new com.icesoft.faces.component.ext.HtmlCommandButton();
 
     public HtmlCommandButton getAdvStatButton() {
         return advStatButton;
@@ -6170,7 +6192,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // <editor-fold desc="subsetting instruction">
 
     // message block: subsetting allowed
-    private HtmlOutputText txtSubsettingInstruction = new HtmlOutputText();
+    private HtmlOutputText txtSubsettingInstruction = 
+        new com.icesoft.faces.component.ext.HtmlOutputText();
 
     public HtmlOutputText getTxtSubsettingInstruction() {
         return txtSubsettingInstruction;
@@ -6181,7 +6204,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // message block: subsetting not allowed
-    private HtmlOutputText txtNonSubsettingInstruction = new HtmlOutputText();
+    private HtmlOutputText txtNonSubsettingInstruction = 
+        new com.icesoft.faces.component.ext.HtmlOutputText();
 
     public HtmlOutputText getTxtNonSubsettingInstruction() {
         return txtNonSubsettingInstruction;
@@ -6192,22 +6216,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
 
 
-    private HtmlPanelGroup wrapSubsettingInstruction = 
-        new com.icesoft.faces.component.ext.HtmlPanelGroup();
+    private HtmlPanelGrid wrapSubsettingInstruction = 
+        new com.icesoft.faces.component.ext.HtmlPanelGrid();
     /**
      * Getter for component wrapSubsettingInstruction
      *
-     * @return    ice:panelGroup of the pane 
+     * @return    ice:panelGrid of the pane 
      */
-    public HtmlPanelGroup getWrapSubsettingInstruction() {
+    public HtmlPanelGrid getWrapSubsettingInstruction() {
         return wrapSubsettingInstruction;
     }
     /**
      * Setter for panelGroup wrapSubsettingInstruction
      *
-     * @param pg    ice:panelGroup of the pane
+     * @param pg    ice:panelGrid of the pane
      */
-    public void setWrapSubsettingInstruction(HtmlPanelGroup pg) {
+    public void setWrapSubsettingInstruction(HtmlPanelGrid pg) {
         wrapSubsettingInstruction = pg;
     }
 
@@ -6240,7 +6264,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return    ice:panelGroup of the pane 
      */
     public HtmlPanelGroup getWrapNonSubsettingInstruction() {
-        return wrapSubsettingInstruction;
+        return wrapNonSubsettingInstruction;
     }
     /**
      * Setter for panelGroup wrapNonSubsettingInstruction
@@ -6282,7 +6306,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // -----------------------------------------------------------------------
     // <editor-fold desc="How Many Variable Menu">
 
-    private HtmlInputText textField4 = new HtmlInputText();
+    private HtmlInputText textField4 = 
+        new com.icesoft.faces.component.ext.HtmlInputText();
 
     public HtmlInputText getTextField4() {
         return textField4;
@@ -8101,12 +8126,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
         List<DataVariable> dvs = getDataVariableForRequest();
 
-	//populate the initial, empty varMetaSet: 
+    //populate the initial, empty varMetaSet: 
 
-	for (Long count = new Long((long)0); count < noRecords; count++){
-	    List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
-	    varMetaSet.put((count+1), cardVarMetaSet); 
-	}
+    for (Long count = new Long((long)0); count < noRecords; count++){
+        List<List<Integer>> cardVarMetaSet = new LinkedList<List<Integer>>();
+        varMetaSet.put((count+1), cardVarMetaSet); 
+    }
 
         if (dvs != null) {
             for (int i = 0 ; i < dvs.size();i++  ){

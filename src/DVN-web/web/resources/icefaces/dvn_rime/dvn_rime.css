@@ -42,9 +42,7 @@
 /* set the attributes for the font family, size and color for ALL elements on the page */
 /* make the fonts inside tables and forms == the default size of the page */
 body, table {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: .95em;
-    color: #000000;
+    
 }
 
 /* now set the size and other attributes of the fonts for any of the form elements for non-ICE form elements. (note this will also affect any ICE components that render out any of the following HTML tags  */
@@ -82,7 +80,7 @@ fieldset {
     padding: 3px;
     font: 11px tahoma;
     background: #FFF;
-    border: 1px solid #d9d9d9;
+    border: 1px solid #7f9db9;
 }
 
 .iceSelMnyCb {
@@ -103,7 +101,7 @@ fieldset {
     padding: 3px;
     font: 11px tahoma;
     background: #FFF;
-    border: 1px solid #d9d9d9;
+    border: 1px solid #7f9db9;
 }
 
 .iceSelOneMnu, .iceSelMnyLb, .iceSelMnyMnu, .iceSelOneLb {
@@ -119,7 +117,7 @@ fieldset {
     padding: 3px;
     font: 11px tahoma;
     background: #FFF;
-    border: 1px solid #d9d9d9;
+    border: 1px solid #7f9db9;
 }
 
 .iceCmdLnk, .iceOutLnk {
@@ -129,7 +127,6 @@ fieldset {
 }
 
 .iceOutTxt, .iceOutLbl {
-    font-family: Arial, Helvetica, sans-serif;
     padding-left: 0px;
     padding-right: 0px;
     padding-top: 2px;

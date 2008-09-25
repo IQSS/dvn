@@ -64,23 +64,23 @@
 	float: right;
 }
 
-div.dvn_sectionTitle {margin: 0; padding: 0 .65em .25em .65em; font-size: 112% !important; color: #526f76; text-transform: uppercase; text-align: left;}
-div.dvn_sectionTitle a {font-size: inherit !important; font-size: 100% !important;}
-div.dvn_sectionTitle a:hover, div.dvn_sectionTitle a:active {font-size: inherit !important; font-size: 100% !important; color: #526f76; text-decoration: none !important; cursor: text;}
-span.dvn_sectionTitleL {float: left; padding: 0 0 0.25em 0; color: #526f76; font-size: 112% !important; font-weight: bold; text-transform: uppercase; text-align: left;}
-span.dvn_sectionTitleR  {float: right; padding: 0 0 0.25em 0; }
-span.dvn_sectionTitleR a:link, span.dvn_sectionTitleR a:visited, span.dvn_sectionTitleR a:hover, span.dvn_sectionTitleR a:active {margin-left: 2em;}
+.dvn_sectionTitle {margin: 0; padding: 0 .65em .25em .65em; font-size: 112% !important; color: #526f76; text-transform: uppercase; text-align: left;}
+.dvn_sectionTitle a {font-size: inherit !important; font-size: 100% !important;}
+.dvn_sectionTitle a:hover, .dvn_sectionTitle a:active {font-size: inherit !important; font-size: 100% !important; color: #526f76; text-decoration: none !important; cursor: text;}
+.dvn_sectionTitleL {float: left; padding: 0 0 0.25em 0; color: #526f76; font-size: 112% !important; font-weight: bold; text-transform: uppercase; text-align: left;}
+.dvn_sectionTitleR  {float: right; padding: 0 0 0.25em 0; }
+.dvn_sectionTitleR a:link, .dvn_sectionTitleR a:visited, .dvn_sectionTitleR a:hover, .dvn_sectionTitleR a:active {margin-left: 2em;}
 
-span.dvn_sectionTitleLinksL {float: left;}
-span.dvn_sectionTitleLinksR  {float: right;}
-span.dvn_sectionTitleLinksR a:link, span.dvn_sectionTitleLinksR a:visited, span.dvn_sectionTitleLinksR a:hover, span.dvn_sectionTitleLinksR a:active {margin-left: 2em;}
+.dvn_sectionTitleLinksL {float: left;}
+.dvn_sectionTitleLinksR  {float: right;}
+.dvn_sectionTitleLinksR a:link, .dvn_sectionTitleLinksR a:visited, .dvn_sectionTitleLinksR a:hover, .dvn_sectionTitleLinksR a:active {margin-left: 2em;}
 
 .dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; }
 .dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; clear: both;} 
 
-div.dvn_block {margin-bottom: 12px; padding: 6px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
-div.dvn_block span {margin: 0; padding: 0; color: #526f76; font-weight: bold; text-transform: uppercase;}
-div.dvn_blockTitleBar {margin-bottom: 12px; padding: 6px; background: #e6ebed; border: 1px solid #ddd; font-style: italic; text-align: center;}
+.dvn_block {margin-bottom: 12px; padding: 6px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
+.dvn_block span {margin: 0; padding: 0; color: #526f76; font-weight: bold; text-transform: uppercase;}
+.dvn_blockTitleBar {margin-bottom: 12px; padding: 6px; background: #e6ebed; border: 1px solid #ddd; font-style: italic; text-align: center;}
 
 .dvn_margin12 {
    margin: 1em 0em 0em 1em; padding-bottom: 2em;
@@ -778,6 +778,25 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
 
 /* Edit Study/Files style rules
 */
+.vdcEditStudyTable {border: 0; margin: 0 0 0 0;}
+.vdcEditStudyTable tr {border-width: 0 0 1px 0; padding: 0 0 0 0;}
+.vdcEditStudyTable td {border-bottom: 1px solid #dadee0; border-width: 0 0 1px 0; padding: 4px 0;}
+.vdcEditStudyTable div {border-width: 0 0 0 0; padding: 0 0 0 0;}
+.vdcEditStudyTableRow table {border-width: 0 0 0 0; margin: 0 0 0 0;}
+.vdcEditStudyTableRow table td {border-width: 0 0 0 0; padding: 0 0 0 0;}
+
+span.vdcEditStudyFormatExample {display: inline;}
+
+.vdcEditStudyTableLegend div {margin-bottom: .25em;}
+.vdcEditStudyTableLegend img {vertical-align: middle;}
+.vdcEditStudyTableLegend span {margin-left: .25em;}
+.vdcEditStudyTableLegend span.vdcEditStudyLegendMargin {margin-right: 1em;}
+
+.vdcEditStudyFieldFloatWrap {overflow: hidden}
+.vdcEditStudyFieldFloat1 {float: left;}
+.vdcEditStudyFieldFloat2 {float: left; margin-left: 1em;}
+.vdcEditStudyFieldFloat3 {clear: left;}
+
 .vdcEditFilesColA{
    width: 25%;
    padding-bottom: 2px;

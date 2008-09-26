@@ -337,9 +337,14 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
-        <managed-bean-name>ReviewStudiesPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.ReviewStudiesPage</managed-bean-class>
+        <managed-bean-name>ManageStudiesList</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.ManageStudiesList</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
+       <managed-property>
+            <property-name>vdcId</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{VDCRequest.currentVDCId}</value>
+        </managed-property>       
     </managed-bean>
     <managed-bean>
         <managed-bean-name>StudyPermissionsPage</managed-bean-name>

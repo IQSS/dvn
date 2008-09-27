@@ -1245,136 +1245,155 @@
             <!-- data table -->
             <ice:panelGrid id="pgDataTable" style="width:100%">
                 
-                <h:dataTable id="dataTable1" 
-                             binding="#{AnalysisPage.data}"
-                             var="currentRow" 
-                             value="#{AnalysisPage.dt4Display}" 
-                             rows="20"
-                             cellpadding="0"
-                             cellspacing="0"
-                             columnClasses="vdcVariablesCol1, vdcVariablesCol2, vdcVariablesCol3, vdcVariablesCol4, vdcVariablesCol5, vdcVariablesCol6"
-                             style="margin: 10px 4px 10px 8px; "
-                             title="Variable Information"
-                             rowClasses="list-row-odd, list-row-even"  
-                             width="98%">
-                    
-                    <h:column id="column1">
-                        <f:facet name="header">
-                            <!-- h:outputText id="outputText4" value="#{bundleAnalysis['varTable.colHdr.checkBox']}"/ -->
-                            <ice:selectBooleanCheckbox id="checkboxSelectUnselectAll"
-                                         binding="#{AnalysisPage.checkboxSelectUnselectAll}"
-                                         value="#{AnalysisPage.checkboxSelectUnselectAllSelected}"
-                                         rendered="#{AnalysisPage.checkboxSelectUnselectAllRendered}"
-                                         immediate="true"   
-                                         valueChangeListener="#{AnalysisPage.selectUnselectAllCheckbox}" 
-                                         partialSubmit="true"
-                                         title="select or unselect all rows in this view"
-                            />
-                        </f:facet>
-                        
-                        <ice:selectBooleanCheckbox id="varCheckbox"
-                                     binding="#{AnalysisPage.varCheckbox}" 
-                                     value="#{currentRow[0]}" 
-                                     title="#{currentRow[3]}"
-                                     immediate="true"
-                                     valueChangeListener="#{AnalysisPage.updateCheckBoxState}" 
-                                     partialSubmit="true"
-                        />                        
-                        
-                        
-                        
-                    </h:column>
-                    <h:column id="column2">
-                        <f:facet name="header">
-                            <ice:outputText id="outputText6"
-                                value="#{bundleAnalysis['varTable.colHdr.varType']}"/>
-                        </f:facet>
-                        <ice:outputText id="outputText5"
-                            value="#{currentRow[1]}"/>
-                    </h:column>
-                    <h:column id="column3">
-                        <f:facet name="header"><!---->
-                            <ice:outputText  id="outputText8"
-                                value="#{bundleAnalysis['varTable.colHdr.Id']}" style="visibility:hidden;"/>
-                            
-                        </f:facet><!---->
-                        <ice:outputText id="outputText7"
-                            value="#{currentRow[2]}" style="visibility:hidden;"/>
-                    </h:column>
-                    <h:column id="column4">
-                        <f:facet name="header">
-                            <ice:outputText  id="outputText10"
-                                value="#{bundleAnalysis['varTable.colHdr.varName']}"/>
-                        </f:facet>
-                        <ice:outputText id="outputText9"
-                            value="#{currentRow[3]}"/>
-                    </h:column>
-                    <h:column id="column5">
-                        <f:facet name="header">
-                            <ice:outputText  id="outputText12"
-                                value="#{bundleAnalysis['varTable.colHdr.varLabel']}"/>
-                        </f:facet>
-                        <ice:outputText id="outputText11"
-                            value="#{currentRow[4]}"/>
-                    </h:column>
-                    <h:column id="column6">
-                        <f:facet name="header">
-                            <ice:outputText id="outputText14"
-                                value="#{bundleAnalysis['varTable.colHdr.quickSummary']}"/>
-                        </f:facet>
-                        
-                        <h:commandButton 
-                          id="showStatistics" 
-                          onclick="QSrequested(this.id, '#{currentRow[2]}');return false;" 
-                          alt="Click to show descriptive statistics"
-                          title="Click to show/hide descriptive statistics"
-                          image="/resources/icon_variables.gif"
-                          type="submit" />
-                        
-                        <ice:outputText id="varSummaryTable"
-                            escape="false" value="#{currentRow[5]}"  />
-                        
-                    </h:column>
-                </h:dataTable>    
-                
-                <f:facet name="footer">
-                    <ice:panelGrid id="pgFooterDataTable1">
-                        <t:scroller navFacetOrientation="NORTH" 
-                            for="dataTable1" 
-                            actionListener="#{AnalysisPage.processScrollEvent}">
-                            <f:facet name="next">
-                                <ice:panelGrid 
-                                    columns="1">
-                                    <ice:outputText
-                                        value="Next"/>
-                                    <ice:graphicImage 
-                                        url="/resources/arrow-right.gif"
-                                        styleClass="vdcNoBorders"/>
-                                </ice:panelGrid>
-                            </f:facet>
-                            
-                            <f:facet name="previous">
-                                <ice:panelGrid
-                                    columns="1">
-                                    <ice:outputText value="Previous"/>
-                                    <ice:graphicImage 
-                                        url="/resources/arrow-left.gif" 
-                                        styleClass="vdcNoBorders"/>
-                                </ice:panelGrid>
-                            </f:facet>
-                            
-                            <f:facet name="number">
-                            </f:facet>
-                            
-                            <f:facet name="current">
-                            </f:facet>
-                            
-                        </t:scroller>
-                    </ice:panelGrid>
-                </f:facet>
-                
-            </ice:panelGrid>
-            <!---->
+<ice:dataTable id="dataTable1" 
+     binding="#{AnalysisPage.data}"
+     var="currentRow" 
+     value="#{AnalysisPage.dt4Display}" 
+     rows="10"
+     cellpadding="0"
+     cellspacing="0"
+     columnClasses="vdcVariablesCol1, vdcVariablesCol2, vdcVariablesCol3, vdcVariablesCol4, vdcVariablesCol5, vdcVariablesCol6"
+     style="margin: 10px 4px 10px 8px; "
+     title="Variable Information"
+     rowClasses="list-row-odd, list-row-even"  
+     width="98%">
+
+    <ice:column id="column1">
+        <f:facet name="header">
+            <ice:selectBooleanCheckbox id="checkboxSelectUnselectAll"
+                 binding="#{AnalysisPage.checkboxSelectUnselectAll}"
+                 value="#{AnalysisPage.checkboxSelectUnselectAllSelected}"
+                 rendered="#{AnalysisPage.checkboxSelectUnselectAllRendered}"
+                 immediate="true"   
+                 valueChangeListener="#{AnalysisPage.selectUnselectAllCheckbox}" 
+                 partialSubmit="true"
+                 title="select or unselect all rows in this view" />
+        </f:facet>
+
+        <ice:selectBooleanCheckbox id="varCheckbox"
+             binding="#{AnalysisPage.varCheckbox}" 
+             value="#{currentRow[0]}" 
+             title="#{currentRow[3]}"
+             immediate="true"
+             valueChangeListener="#{AnalysisPage.updateCheckBoxState}" 
+             partialSubmit="true"/>
+    </ice:column>
+    <ice:column id="column2">
+        <f:facet name="header">
+            <ice:outputText id="outputText6"
+                value="#{bundleAnalysis['varTable.colHdr.varType']}"/>
+        </f:facet>
+        <ice:outputText id="outputText5"
+            value="#{currentRow[1]}"/>
+    </ice:column>
+    <ice:column id="column3">
+        <f:facet name="header">
+            <ice:outputText  id="outputText8"
+                value="#{bundleAnalysis['varTable.colHdr.Id']}" style="visibility:hidden;"/>
+
+        </f:facet>
+        <ice:outputText id="outputText7"
+            value="#{currentRow[2]}" style="visibility:hidden;"/>
+    </ice:column>
+    <ice:column id="column4">
+        <f:facet name="header">
+            <ice:outputText  id="outputText10"
+                value="#{bundleAnalysis['varTable.colHdr.varName']}"/>
+        </f:facet>
+        <ice:outputText id="outputText9"
+            value="#{currentRow[3]}"/>
+    </ice:column>
+    <ice:column id="column5">
+        <f:facet name="header">
+            <ice:outputText  id="outputText12"
+                value="#{bundleAnalysis['varTable.colHdr.varLabel']}"/>
+        </f:facet>
+        <ice:outputText id="outputText11"
+            value="#{currentRow[4]}"/>
+    </ice:column>
+    <ice:column id="column6">
+        <f:facet name="header">
+            <ice:outputText id="outputText14"
+                value="#{bundleAnalysis['varTable.colHdr.quickSummary']}"/>
+        </f:facet>
+
+        <ice:commandButton 
+            id="showStatistics" 
+            onclick="QSrequested(this.id, '#{currentRow[2]}');return false;" 
+            alt="Click to show descriptive statistics"
+            title="Click to show/hide descriptive statistics"
+            image="/resources/icon_variables.gif"
+            type="submit" />
+        <ice:outputText id="varSummaryTable"
+            escape="false" value="#{currentRow[5]}"  />
+    </ice:column>
+</ice:dataTable>
+
+<!-- Paginator with page controls -->
+<ice:dataPaginator id="dataScroll_3"
+    for="dataTable1"
+    paginator="true"
+    fastStep="3"
+    paginatorMaxPages="4">
+    
+    <f:facet name="first">
+        <ice:graphicImage
+            url="./xmlhttp/css/xp/css-images/arrow-first.gif"
+            style="border:none;"
+            title="First Page"/>
+    </f:facet>
+    <f:facet name="last">
+        <ice:graphicImage
+            url="./xmlhttp/css/xp/css-images/arrow-last.gif"
+            style="border:none;"
+            title="Last Page"/>
+    </f:facet>
+    <f:facet name="previous">
+        <ice:graphicImage
+            url="./xmlhttp/css/xp/css-images/arrow-previous.gif"
+            style="border:none;"
+            title="Previous Page"/>
+    </f:facet>
+    <f:facet name="next">
+        <ice:graphicImage
+            url="./xmlhttp/css/xp/css-images/arrow-next.gif"
+            style="border:none;"
+            title="Next Page"/>
+    </f:facet>
+    <f:facet name="fastforward">
+        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-ff.gif"
+            style="border:none;"
+            title="Fast Forward"/>
+    </f:facet>
+    <f:facet name="fastrewind">
+        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-fr.gif"
+            style="border:none;"
+            title="Fast Backwards"/>
+    </f:facet>
+</ice:dataPaginator>
+
+<!-- Display counts about the table and the currently displayed page -->
+<ice:dataPaginator id="dataScroll_2" for="dataTable1"
+    rowsCountVar="rowsCount"
+    displayedRowsCountVar="displayedRowsCount"
+    firstRowIndexVar="firstRowIndex"
+    lastRowIndexVar="lastRowIndex"
+    pageCountVar="pageCount"
+    pageIndexVar="pageIndex">
+    <ice:outputFormat
+        value="{0} variables found, displaying {1} variables(s), from {2} to {3}. Page {4} / {5}."
+        styleClass="standard">
+        <f:param value="#{rowsCount}"/>
+        <f:param value="#{displayedRowsCount}"/>
+        <f:param value="#{firstRowIndex}"/>
+        <f:param value="#{lastRowIndex}"/>
+        <f:param value="#{pageIndex}"/>
+        <f:param value="#{pageCount}"/>
+    </ice:outputFormat>
+</ice:dataPaginator>
+
+<!-- old scroller was here as a footer -->
+            </ice:panelGrid><!-- panelGrid pgDataTable -->
             <ice:panelGrid id="belowDT">
                 
                 <ice:panelGrid id="pgRecodedVarTable"
@@ -1386,82 +1405,82 @@
                         binding="#{AnalysisPage.recodedVarTableTitle}"
                         value="#{bundleAnalysis['recodedVarTable.title']}"/>
                         
-                    <h:dataTable id="recodedVarTable"
-                        binding="#{AnalysisPage.recodedVarTable}" 
-                        var="rcw"
-                        value="#{AnalysisPage.recodedVarSet}"
-                        headerClass="list-header"  
-                        rowClasses="list-row-odd,list-row-even"
-                        cellpadding="2px"
-                        cellspacing="0"
-                        columnClasses="vdcVariablesCol3, vdcVariablesCol4, vdcVariablesCol5, vdcVariablesCol2"
-                        style="margin: 10px 4px 10px 8px;">
-                        
-                        <!-- chekcbox: remove --><!---->
-                        <h:column id="RVTcolumn0">
-                            <f:facet name="header">
-                                <ice:outputText id="RVThdr0" 
-                                    value="#{bundleAnalysis['recodedVarTable.colHdr.remove']}"/>
-                            </f:facet>
+<ice:dataTable id="recodedVarTable"
+    binding="#{AnalysisPage.recodedVarTable}" 
+    var="rcw"
+    value="#{AnalysisPage.recodedVarSet}"
+    headerClass="list-header"  
+    rowClasses="list-row-odd,list-row-even"
+    cellpadding="2px"
+    cellspacing="0"
+    columnClasses="vdcVariablesCol3, vdcVariablesCol4, vdcVariablesCol5, vdcVariablesCol2"
+    style="margin: 10px 4px 10px 8px;">
 
-                            
-                            <ice:commandLink id="removeRecodedVariable"
-                                actionListener="#{AnalysisPage.removeRecodedVariable}"
-                                title="#{bundleAnalysis['recodedVarTable.tooltip.remove']}"
-                                immediate="true"
-                                shape="rect" >
-                                <ice:outputText value="#{bundleAnalysis['recodedVarTable.hyperLink.title.remove']}"/>
-                            </ice:commandLink>
-                            
-                        </h:column>
-                        
-                        <!-- variable name --><!---->
-                        <h:column id="RVTcolumn1">
-                            <f:facet name="header">
-                                <ice:outputText id="RVThdr1" 
-                                    value="#{bundleAnalysis['recodedVarTable.colHdr.varName']}"/>
-                            </f:facet>
-                            <ice:outputText id="RVTcolv1" 
-                                value="#{rcw[0]}"/>
-                        </h:column>
-                        
-                        <!-- variable label --><!---->
-                        <h:column id="RVTcolumn2">
-                            <f:facet name="header">
-                                <ice:outputText id="RVThdr2"
-                                    value="#{bundleAnalysis['recodedVarTable.colHdr.varLabel']}"/>
-                            </f:facet>
-                            <ice:outputText id="RVTcolv2"
-                                value="#{rcw[1]}"/>
-                        </h:column>
-                        
-                        <!-- checkbox: modify --><!---->
-                        <h:column id="RVTcolumn3">
-                            <f:facet name="header">
-                                <ice:outputText id="RVThdr3" value="#{bundleAnalysis['recodedVarTable.colHdr.modify']}"  visible="false" />
-                            </f:facet>
-                            <!-- h:outputText id="RVTcolv3" value="{rcw[3]}"/ -->
-                            <ice:commandLink id="RVTcolv3" 
-                                actionListener="#{AnalysisPage.editRecodedVariable}"
-                                immediate="true" 
-                                title="#{bundleAnalysis['recodedVarTable.hyperLink.title.modify']}" 
-                                toolTip="#{bundleAnalysis['recodedVarTable.tooltip.modify']}"
-                                visible="false"
-                            /> 
-                            
-                        </h:column>
-                        <!-- variable Id  --><!---->
-                        <h:column id="RVTcolumn4" >
-                            <f:facet name="header">
-                                <ice:outputText id="RVThdr4" 
-                                    value=""/>
-                            </f:facet>
-                            <ice:outputText id="RVTcolv4"
-                                value="#{rcw[2]}" visible="false"/> 
-                            <!-- h:outputText id="RVTcolv4" value="#{rcw[2]}" / -->
-                        </h:column>
-                        
-                    </h:dataTable>
+    <!-- chekcbox: remove --><!---->
+    <ice:column id="RVTcolumn0">
+        <f:facet name="header">
+            <ice:outputText id="RVThdr0" 
+                value="#{bundleAnalysis['recodedVarTable.colHdr.remove']}"/>
+        </f:facet>
+
+
+        <ice:commandLink id="removeRecodedVariable"
+            actionListener="#{AnalysisPage.removeRecodedVariable}"
+            title="#{bundleAnalysis['recodedVarTable.tooltip.remove']}"
+            immediate="true"
+            shape="rect" >
+            <ice:outputText 
+                value="#{bundleAnalysis['recodedVarTable.hyperLink.title.remove']}"/>
+        </ice:commandLink>
+
+    </ice:column>
+
+    <!-- variable name --><!---->
+    <ice:column id="RVTcolumn1">
+        <f:facet name="header">
+            <ice:outputText id="RVThdr1" 
+                value="#{bundleAnalysis['recodedVarTable.colHdr.varName']}"/>
+        </f:facet>
+        <ice:outputText id="RVTcolv1" 
+            value="#{rcw[0]}"/>
+    </ice:column>
+
+    <!-- variable label --><!---->
+    <ice:column id="RVTcolumn2">
+        <f:facet name="header">
+            <ice:outputText id="RVThdr2"
+                value="#{bundleAnalysis['recodedVarTable.colHdr.varLabel']}"/>
+        </f:facet>
+        <ice:outputText id="RVTcolv2"
+            value="#{rcw[1]}"/>
+    </ice:column>
+
+    <!-- checkbox: modify --><!---->
+    <ice:column id="RVTcolumn3">
+        <f:facet name="header">
+            <ice:outputText id="RVThdr3" 
+                value="#{bundleAnalysis['recodedVarTable.colHdr.modify']}"
+                visible="false" />
+        </f:facet>
+        <ice:commandLink id="RVTcolv3" 
+            actionListener="#{AnalysisPage.editRecodedVariable}"
+            immediate="true" 
+            title="#{bundleAnalysis['recodedVarTable.hyperLink.title.modify']}" 
+            toolTip="#{bundleAnalysis['recodedVarTable.tooltip.modify']}"
+            visible="false"/> 
+
+    </ice:column>
+    <!-- variable Id  --><!---->
+    <ice:column id="RVTcolumn4" >
+        <f:facet name="header">
+            <ice:outputText id="RVThdr4" 
+                value=""/>
+        </f:facet>
+        <ice:outputText id="RVTcolv4"
+            value="#{rcw[2]}" visible="false"/> 
+    </ice:column>
+
+</ice:dataTable>
                     
                 </ice:panelGrid>
             </ice:panelGrid>

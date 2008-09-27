@@ -11,7 +11,7 @@ public abstract class SortableList {
     protected String sortColumnName;
     protected boolean ascending;
 
-    // we only want to resort if the oder or column has changed.
+    // we only want to resort if the order or column has changed.
     protected String oldSort;
     protected boolean oldAscending;
 
@@ -27,6 +27,17 @@ public abstract class SortableList {
         oldAscending = !ascending;
  
     }
+    
+    protected void checkSort() {
+        // we only want to sortColumnName if the column or ordering has changed.
+            if (!oldSort.equals(sortColumnName) ||
+                oldAscending != ascending){
+                sort();
+                oldSort = sortColumnName;
+                oldAscending = ascending;
+            }
+       
+        }
 
     /**
      * Sort the list.

@@ -78,7 +78,8 @@ public interface StudyServiceLocal extends java.io.Serializable {
     java.util.List <Study> getContributorStudies(VDCUser contributor, VDC vdc);
 
     java.util.List<edu.harvard.hmdc.vdcnet.study.Study> getReviewerStudies(Long vdcId);
-   java.util.List<edu.harvard.hmdc.vdcnet.study.Study> getNewStudies(Long vdcId);
+    java.util.List<edu.harvard.hmdc.vdcnet.study.Study> getNewStudies(Long vdcId);
+    public List getDvOrderedStudyIds(Long vdcId, String orderBy, boolean ascending );
 
     void incrementNumberOfDownloads(Long studyId);
     void incrementNumberOfDownloads(Long studyFileId, Date lastDownloadTime);
@@ -141,4 +142,6 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public void setIndexTime(Long studyId, Date indexTime);
  
     public Timestamp getLastUpdatedTime(Long vdcId);
+    
+   
 }

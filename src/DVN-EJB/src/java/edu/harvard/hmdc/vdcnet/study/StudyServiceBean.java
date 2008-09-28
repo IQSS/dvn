@@ -511,7 +511,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         return returnList;
     }
+    
 
+    
     public List<Long> getAllNonHarvestedStudyIds() {
         String queryStr = "select id from study where isharvested='false'";
         Query query = em.createNativeQuery(queryStr);
@@ -539,6 +541,15 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return (List) em.createQuery(query).getResultList();
     }
 
+       public List getDvOrderedStudyIds(Long vdcId, String orderBy, boolean ascending ) {
+          String query = "SELECT s.id FROM Study s WHERE s.owner.id = " + vdcId + " ORDER BY s."+orderBy;
+          if (!ascending) {
+              query+= " desc";
+          }    
+            return (List) em.createQuery(query).getResultList();
+        }
+    
+    
     public List<Study> getReviewerStudies(Long vdcId) {
         String query = "SELECT s FROM Study s WHERE s.reviewState.name = 'In Review' AND s.owner.id = " + vdcId;
         List<Study> studies = em.createQuery(query).getResultList();

@@ -90,18 +90,16 @@ document.write("<p><img src=\"" + decodeURIComponent(imgdir) + imgid + ".jpg\" w
 }
 
 function jcap(){
+  var uword = hex_md5(document.getElementById(jfldid).value);
 
-var uword = hex_md5(document.getElementById(jfldid).value);
+  if (uword==cword[anum-1]) {
+      iceSubmit(document.getElementById("contactUsForm"),document.getElementById("contactUsForm:btnSend"),MouseEvent.CLICK);
 
-if (uword==cword[anum-1]) {
-return true;
-}
-
-else {
-alert("ERROR: Enter the code as it is shown.");
-document.getElementById(jfldid).focus();
-return false;
-}
+  } else {
+      alert("ERROR: Enter the code as it is shown.");
+      document.getElementById(jfldid).focus();
+      return false;
+  }
 }
 
 //  End -->

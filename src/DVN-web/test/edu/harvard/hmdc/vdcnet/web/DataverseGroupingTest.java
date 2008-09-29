@@ -94,7 +94,7 @@ public class DataverseGroupingTest extends TestCase {
         Date date = new Date();
         Timestamp releasedTimeStamp = new Timestamp(date.getTime());
         Timestamp lastUpdateTimeStamp = new Timestamp(date.getTime());
-        DataverseGrouping instance = new DataverseGrouping("Parent Dataverse", "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE);
+        DataverseGrouping instance = new DataverseGrouping(new Long("1"), "Parent Dataverse", "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, false);
         DataverseGrouping dvGroupRecord = new DataverseGrouping("Child Dataverse", "childdv", "No Affiliation", releasedTimeStamp, lastUpdateTimeStamp, "This is the description.", "dataverse", "activityClassName");
         instance.addChildItem(dvGroupRecord);
         assertEquals("The child item should have one record", 1, itemBeans.size());
@@ -129,7 +129,7 @@ public class DataverseGroupingTest extends TestCase {
         
         Timestamp releasedTimeStamp = new Timestamp(date.getTime());
         Timestamp lastUpdateTimeStamp = new Timestamp(date.getTime());
-        DataverseGrouping instance = new DataverseGrouping("Parent Dataverse", "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE);
+        DataverseGrouping instance = new DataverseGrouping(new Long("1"), "Parent Dataverse", "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, false);
         DataverseGrouping dvGroupRecord = new DataverseGrouping("A Child Dataverse", "childdv", "No Affiliation", releasedTimeStamp, lastUpdateTimeStamp, "This is the description.", "dataverse", "activityClassName");
         instance.addChildItem(dvGroupRecord);
         //2
@@ -197,7 +197,7 @@ public class DataverseGroupingTest extends TestCase {
      */
     public String testGetGroupKey() {
         System.out.println("getGroupKey");
-        DataverseGrouping instance = new DataverseGrouping("Parent Dataverse", "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE);
+        DataverseGrouping instance = new DataverseGrouping(new Long("1"), "Parent Dataverse", "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, true);
         String expResult = "ParentDataverse".toLowerCase();
         String result = instance.getGroupKey();
         assertEquals(expResult, result);

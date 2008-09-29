@@ -162,9 +162,9 @@ public class NetworkStatsStubServer {
             itemPrefix = DVNITEM + idValue + ".";
             key = itemPrefix;
             NetworkStatsState.getNetworkStatsMap().put(key + DVNID, idValue);
-            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSETOTAL, this.getGroupTotalDataverses(new Long(idValue), "Scholar"));
-            NetworkStatsState.getNetworkStatsMap().put(key + STUDYTOTAL, this.getGroupTotalStudies(new Long(idValue)));
-            NetworkStatsState.getNetworkStatsMap().put(key + FILESTOTAL, this.getGroupTotalFiles(new Long(idValue)));
+            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSETOTAL, getGroupTotalDataverses(new Long(idValue), "Scholar"));
+            NetworkStatsState.getNetworkStatsMap().put(key + STUDYTOTAL, getGroupTotalStudies(new Long(idValue)));
+            NetworkStatsState.getNetworkStatsMap().put(key + FILESTOTAL, getGroupTotalFiles(new Long(idValue)));
             NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_DATAVERSETOTAL, new String("0"));
             NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_STUDYTOTAL, new String("0"));
             NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_FILESTOTAL, new String("0"));
@@ -177,9 +177,9 @@ public class NetworkStatsStubServer {
             itemPrefix = DVNITEM + idValue + ".";
             key = itemPrefix;
             NetworkStatsState.getNetworkStatsMap().put(key + DVNID, idValue);
-            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSETOTAL, this.getGroupTotalDataverses(new Long(idValue), "Basic"));
-            NetworkStatsState.getNetworkStatsMap().put(key + STUDYTOTAL, this.getGroupTotalStudies(new Long(idValue)));
-            NetworkStatsState.getNetworkStatsMap().put(key + FILESTOTAL, this.getGroupTotalFiles(new Long(idValue)));
+            NetworkStatsState.getNetworkStatsMap().put(key + DATAVERSETOTAL, getGroupTotalDataverses(new Long(idValue), "Basic"));
+            NetworkStatsState.getNetworkStatsMap().put(key + STUDYTOTAL, getGroupTotalStudies(new Long(idValue)));
+            NetworkStatsState.getNetworkStatsMap().put(key + FILESTOTAL, getGroupTotalFiles(new Long(idValue)));
             NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_DATAVERSETOTAL, new String("0"));
             NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_STUDYTOTAL, new String("0"));
             NetworkStatsState.getNetworkStatsMap().put(key + INITIAL_FILESTOTAL, new String("0"));
@@ -220,12 +220,12 @@ public class NetworkStatsStubServer {
 
     public String getGroupTotalDataverses(Long id, String dtype) {
         VDCGroup vdcgroup = vdcGroupService.findById(id);
-        if (vdcgroup != null && dtype.equals("All")) {
+        if (vdcgroup != null || dtype.equals("All")) {
             return new Integer(vdcgroup.getVdcs().size()).toString();
-        } else {
+        } else if (vdcgroup == null && (dtype.equals("Scholar") || dtype.equals("Basic"))) {
             try {
-                vdcService = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
-                return (new Integer(vdcService.findVdcsNotInGroups(dtype).size())).toString();
+                    vdcService = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
+                    return (new Integer(vdcService.findVdcsNotInGroups(dtype).size())).toString();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -243,8 +243,7 @@ public class NetworkStatsStubServer {
 
     /**
      * Method to convert the global properties file values into ItemTypes
-     * Ideally this method would use the Ebay SDK, but for now will "fake it"
-     * with the property file
+     * 
      *
      * @return ItemType[] resulting list of auction items
      */

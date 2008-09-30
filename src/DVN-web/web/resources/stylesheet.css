@@ -1282,46 +1282,26 @@ span.vdcEditStudyFormatExample {display: inline;}
         /*
         v1.4 styles
         */
-
-            div.content {
-                float:none;
-                clear:left;
-            }
         
-            div.header {
-                padding:0.5em;
-                clear:left;
-            }
-            
-            h1.header {
-                padding:0;
-                font-size:large;
-                margin:0;
-            }
-            
-            div.left {
-                float:left;
-                width:40%;
-                margin:0;
-                padding:1em;
-                text-align:left;
-            }
-            div.dataPaginator {
-                float:right;
-                width:40%;
-                padding:1em;
-                text-align:right;
-            }
+.dvn_networkHomePanelInner span {font-size: 90% !important;}
+.dvn_networkHomePanelInnerHdr span.iceOutTxt td {font-size: 90% !important;}
 
-            .activity {width: 120px; text-align: center;}
-            .activitylevelicon { vertical-align:middle; width: 48px; height: 8px; background: url(/dvn/resources/activity-icons.png) no-repeat;}
-            .al-0 {background-position: -50 0;}
-            .al-1 {background-position: -40 0;}
-            .al-2 {background-position: -30 0;}
-            .al-3 {background-position: -20 0;}
-            .al-4 {background-position: -10 0;}
-            .al-5 {background-position: 0 0;}
-            .numbervalue {display: none;}
+.activity {width: 120px; text-align: center;}
+.activitylevelicon {vertical-align:middle; width: 48px; height: 8px; background: url(/dvn/resources/activity-icons.png) no-repeat;}
+.al-0 {background-position: -50 0;}
+.al-1 {background-position: -40 0;}
+.al-2 {background-position: -30 0;}
+.al-3 {background-position: -20 0;}
+.al-4 {background-position: -10 0;}
+.al-5 {background-position: 0 0;}
+.numbervalue {display: none;}
+
+.dvnNetworkHmpgDvListNav div {font-size: 90% !important;}
+.dvnNetworkHmpgDvListNav ul {margin-top: .5em; margin-left: 0em; padding-left: 0em; list-style: none;}
+.dvnNetworkHmpgDvListNav ul li {margin-left: 0em; padding-left: 22px; background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_folder_closed.gif) 0 .25em no-repeat;}
+.dvnNetworkHmpgDvListNav ul li a:link, .dvnNetworkHmpgDvListNav ul li a:visited, .dvnNetworkHmpgDvListNav ul li a:active, .dvnNetworkHmpgDvListNav ul li a:hover {font-size: 90% !important;}
+li.hmpgDvGroupSelected {background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_folder_close.gif) 0 .25em no-repeat;}
+li.hmpgDvGroupSelected a:link, li.hmpgDvGroupSelected a:visited, li.hmpgDvGroupSelected a:active, li.hmpgDvGroupSelected a:hover {font-weight: bold;}
 
 /* end v1.4 styles */
             

@@ -53,6 +53,10 @@
   overflow: hidden;
 }
 
+.dvnInlineButton {
+  display: inline;
+}
+
 /* GENERAL CONTENT */
 .dvn_hmpgMainMessage {margin-bottom: 1em;}
 

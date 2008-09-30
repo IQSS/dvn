@@ -1304,7 +1304,7 @@ span.vdcEditStudyFormatExample {display: inline;}
 .dvnNetworkHmpgDvListNav ul {margin-top: .5em; margin-left: 0em; padding-left: 0em; list-style: none;}
 .dvnNetworkHmpgDvListNav ul li {margin-left: 0em; padding-left: 22px; background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_folder_closed.gif) 0 .25em no-repeat;}
 .dvnNetworkHmpgDvListNav ul li a:link, .dvnNetworkHmpgDvListNav ul li a:visited, .dvnNetworkHmpgDvListNav ul li a:active, .dvnNetworkHmpgDvListNav ul li a:hover {font-size: 90% !important;}
-li.hmpgDvGroupSelected {background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_folder_close.gif) 0 .25em no-repeat;}
+.dvnNetworkHmpgDvListNav ul li.hmpgDvGroupSelected {background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_folder_close.gif) 0 0 no-repeat;}
 li.hmpgDvGroupSelected a:link, li.hmpgDvGroupSelected a:visited, li.hmpgDvGroupSelected a:active, li.hmpgDvGroupSelected a:hover {font-weight: bold;}
 
 /* end v1.4 styles */

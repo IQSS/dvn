@@ -398,7 +398,6 @@ table.iceSelInpDate tbody tr td table{
     font: 11px tahoma;
     color: #484848;
     padding: 5px;
-    font-weight: bold;
     background: #FFF url( './css-images/table_col_header.gif' ) repeat-x bottom left;
     border: 1px solid #d9d9d9;
 }
@@ -498,6 +497,9 @@ table.iceSelInpDate tbody tr td table{
 /*
 ----------- Data Scroller Component classes
 */
+.iceDatPgr, .iceDatPgrTbl {margin: 0; padding: 0; border-collapse: collapse;}
+.iceDatPgr td {padding: 0 4px;}
+
 .iceDatPgrScrOut {
 /* the class for the outside table */
     background-color: transparent;
@@ -507,7 +509,7 @@ table.iceSelInpDate tbody tr td table{
 .iceDatPgrScrBtn {
 /* the cells behind the scroll buttons */
     background-color: transparent;
-    padding: 2px;
+    padding: 0px;
 }
 
 .iceDatPgrTbl {
@@ -519,14 +521,14 @@ table.iceSelInpDate tbody tr td table{
 .iceDatPgrScrCol a, .iceDatPgrCol a {
     text-decoration: none;
     font-weight: normal;
-    background-color: #FFFFFF;
+    background-color: transparent;
     color: #656565;
     display: block;
     padding-left: 5px;
     padding-right: 5px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    border: 1px solid #DBDBDB;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    border: 0;
 }
 
 /** html .iceDatPgrCol a {*/
@@ -537,7 +539,7 @@ table.iceSelInpDate tbody tr td table{
 .iceDatPgrScrCol a {
     color: #FFFFFF;
     border: 1px solid #DBDBDB;
-    background-color: #FFA600;
+    background-color: #D3D3D3;
 }
 
 /** html .iceDatPgrScrCol a {*/
@@ -546,16 +548,8 @@ table.iceSelInpDate tbody tr td table{
 
 /* set the attributes for the mouseover on none-current pages */
 .iceDatPgrCol a:hover {
-    color: #000000;
-    border: 1px solid #FFA600;
-    text-decoration: none;
-    padding-bottom: 1px;
 }
 .iceDatPgrScrCol a:hover {
-    color: #000000;
-    border: 1px solid #DBDBDB;
-    text-decoration: none;
-    padding-bottom: 1px;
 }
 
 /*

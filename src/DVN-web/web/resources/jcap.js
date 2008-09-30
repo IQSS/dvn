@@ -85,19 +85,19 @@ cword =
  "821f03288846297c2cf43c34766a38f7", "faec47e96bfb066b7c4b8c502dc3f649", "78b6367af86e03f19809449e2c365ff5",
  "015f28b9df1bdd36427dd976fb73b29d", "755f85c2723bb39381c7379a604160d8"];
 
-document.write("<p><input type=\"text\" id=\"" + jfldid + "\" name=\"" + jfldid + "\" class=\"" + jfldcls + "\" size=\"" +  jfldsz + "\"><\/p>");
+document.write("<p><input type=\"text\" id=\"" + jfldid + "\" class=\"" + jfldcls + "\" size=\"" +  jfldsz + "\"><\/p>");
 document.write("<p><img src=\"" + decodeURIComponent(imgdir) + imgid + ".jpg\" width=\"290\" height=\"80\" alt=\"\"><\/p>");
 }
 
 function jcap(){
-  var uword = hex_md5(document.getElementById(jfldid).value);
+  var uword = hex_md5(eval("document.getElementById('" + jfldid + "').value"));
 
   if (uword==cword[anum-1]) {
       iceSubmit(document.getElementById("contactUsForm"),document.getElementById("contactUsForm:btnSend"),MouseEvent.CLICK);
 
   } else {
       alert("ERROR: Enter the code as it is shown.");
-      document.getElementById(jfldid).focus();
+      eval("document.getElementById('" + jfldid + "').focus()");
       return false;
   }
 }

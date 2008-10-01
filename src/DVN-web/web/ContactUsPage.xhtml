@@ -18,7 +18,7 @@
 
   <gui:define name="body">
 
-<ice:form  id="contactUsForm">
+<ice:form  id="contactUsForm" >
               <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
               
               <div class="dvn_section">
@@ -38,8 +38,8 @@
                         
                         <div style="padding-bottom: 20px">
                             <ice:outputText  id="outputText2" escape="false"  value="#{bundle.contactUsFormMessage}"/>
-                            <ice:graphicImage value="/resources/icon_required.gif"/>
-                            <ice:outputText style="vdcHelpText" value="Indicates a required field."/>
+                            <ice:graphicImage value="/resources/icon_required.gif" />
+                            <ice:outputText style="vdcHelpText" value="Indicates a required field." />
                         </div>
                         <ice:panelGrid cellpadding="0" cellspacing="0"
                                       columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
@@ -122,11 +122,27 @@
                         <ice:panelGrid>
                           <p>Enter the code as it is shown:</p>
                           <p>This field helps prevent automated access.</p>
-                          <script type="text/javascript">sjcap();</script>
+                          <script type="text/javascript">
+                                // <![CDATA[
+                                function submitTheForm() {
+                                    //nothing to do yet
+                                    document.getElementById('contactUsForm').disabled = false;
+                                    alert(isMatch);
+                                    jcap();
+                                    if (!isMatch) {
+                                        alert("ContactUsPage: isMatch  = " + isMatch);
+                                        document.getElementById('contactUsForm').disabled = true;
+                                        eval("document.getElementById('" + jfldid + "').focus()");
+                                           return false;
+                                    }
+                                }
+                                sjcap();
+                             // ]]>
+                          </script>
                           <noscript><p>[This resource requires a Javascript enabled browser.]</p></noscript>
                         </ice:panelGrid>
                         <div style="padding-left: 170px; padding-top: 20px">
-                          <ice:commandButton  id="btnSend" value="Send E-mail" onmousedown="jcap();" action="#{ContactUsPage.send_action}"/>
+                          <ice:commandButton  id="btnSend" value="Send E-mail" onmousedown="submitTheForm();" action="#{ContactUsPage.send_action}"/>
                         </div>
                         
                     </div>

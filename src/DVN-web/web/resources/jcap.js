@@ -89,16 +89,19 @@ document.write("<p><input type=\"text\" id=\"" + jfldid + "\" class=\"" + jfldcl
 document.write("<p><img src=\"" + decodeURIComponent(imgdir) + imgid + ".jpg\" width=\"290\" height=\"80\" alt=\"\"><\/p>");
 }
 
+var isMatch = false;
 function jcap(){
   var uword = hex_md5(eval("document.getElementById('" + jfldid + "').value"));
 
   if (uword==cword[anum-1]) {
+      isMatch = true; //wjb
+      alert("in jcap and submitting the form");
       iceSubmit(document.getElementById("contactUsForm"),document.getElementById("contactUsForm:btnSend"),MouseEvent.CLICK);
 
   } else {
+      isMatch = false; //wjb
       alert("ERROR: Enter the code as it is shown.");
-      eval("document.getElementById('" + jfldid + "').focus()");
-      return false;
+      
   }
 }
 

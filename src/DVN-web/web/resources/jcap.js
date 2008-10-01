@@ -95,12 +95,12 @@ function jcap(){
 
   if (uword==cword[anum-1]) {
       isMatch = true; //wjb
-      alert("in jcap and submitting the form");
+      //alert("in jcap and submitting the form");
       iceSubmit(document.getElementById("contactUsForm"),document.getElementById("contactUsForm:btnSend"),MouseEvent.CLICK);
 
   } else {
       isMatch = false; //wjb
-      alert("ERROR: Enter the code as it is shown.");
+      //alert("ERROR: Enter the code as it is shown.");
       
   }
 }

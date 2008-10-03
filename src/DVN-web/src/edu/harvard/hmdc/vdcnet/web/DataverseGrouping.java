@@ -59,6 +59,9 @@ public class DataverseGrouping extends SortableList {
     private static final String dateReleasedColumnName  = "Date Released";
     private static final String lastUpdatedColumnName   = "Last Updated";
     private static final String activityColumnName      = "Activity";
+    // network admin fields
+    private static final String shortDescriptionColumnName   = "Description";
+    private static final String subclassificationsColumnName = "Subclassifications";
     
     ArrayList parentItems = new ArrayList();
     //ArrayList childItems = new ArrayList();
@@ -99,7 +102,6 @@ public class DataverseGrouping extends SortableList {
         this.lastUpdateTime = lastUpdateTime;
         this.dvnDescription = dvnDescription;
         this.recordType     = recordType;
-        //this.activity     = calculateActivity(alias);
         this.activity       = activity;
     }
     
@@ -249,6 +251,14 @@ public class DataverseGrouping extends SortableList {
                     return ascending ?
                             c1.getActivity().compareTo(c2.getActivity()) :
                             c2.getActivity().compareTo(c1.getActivity());
+                }
+                else if (sortColumnName.equals(shortDescriptionColumnName)) {
+                    return ascending ? c1.getShortDescription().compareTo(c2.getShortDescription()) :
+                            c2.getShortDescription().compareTo(c1.getShortDescription());
+                }
+                else if (sortColumnName.equals(subclassificationsColumnName)) {
+                    return ascending ? c1.getSubclassification().compareTo(c2.getSubclassification()) :
+                            c2.getSubclassification().compareTo(c1.getSubclassification());
                 } else {
                     return 0;
                 }
@@ -276,10 +286,15 @@ public class DataverseGrouping extends SortableList {
     public String getActivityColumnName() {
         return activityColumnName;
     }
+
+    public String getShortDescriptionColumnName() {
+        return shortDescriptionColumnName;
+    }
+
+    public String getSubclassificationsColumnName() {
+        return subclassificationsColumnName;
+    }
     
-  public String toString() {
-      return "[ name = " + name + " ]; [ affiliation = " + affiliation + " ]";
-  }
             // end sorting related stuff
   
     
@@ -339,6 +354,9 @@ public class DataverseGrouping extends SortableList {
     private String recordType;
     private String activity;
     private boolean top;
+    private String shortDescription; //TODO: Implement for dvn childItems and parentItems
+    // Manage Classifications specific fields
+    private Long subclassification;
         
     public String getRecordType() {
         return recordType;
@@ -463,6 +481,38 @@ public class DataverseGrouping extends SortableList {
     public void setActivity(String activity) {
         this.activity = activity;
     }
-    
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public Long getSubclassification() {
+        return subclassification;
+    }
+
+    public void setSubclassification(Long subclassification) {
+        this.subclassification = subclassification;
+    }
+
+    //******************* UTILS ***************************
+    public String toString() {
+          String dataverseToString = new String("");
+          dataverseToString+="[ name = " + name + "; ";
+          dataverseToString+=" affiliation = " + ((affiliation != null) ? affiliation : "") + "; ";
+          dataverseToString+=" shortDescription = " + ((shortDescription != null) ? shortDescription : "") + "; ";
+          dataverseToString+=" nameColumnName = " + ((nameColumnName != null) ? nameColumnName : "") + "; ]";
+          dataverseToString+=" recordType = " + ((recordType != null) ? recordType : "") + "; ]";
+          return  dataverseToString;
+      }
+
+    private String strToString;
+
+    public String getStrToString() {
+        return this.toString();
+    }
     
  }

@@ -21,12 +21,20 @@
 package edu.harvard.hmdc.vdcnet.web;
 
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.model.SelectItem;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
+import com.icesoft.faces.webapp.http.common.Request;
 import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.ExceptionMessageWriter;
+import edu.harvard.hmdc.vdcnet.vdc.Captcha;
+import edu.harvard.hmdc.vdcnet.vdc.CaptchaServiceLocal;
+import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -38,6 +46,10 @@ import javax.faces.context.FacesContext;
  *
  * Created on October 18, 2006, 4:24 PM
  */
+import javax.servlet.http.HttpServletRequest;
+import net.tanesha.recaptcha.ReCaptchaImpl;
+import net.tanesha.recaptcha.ReCaptchaResponse;
+import net.tanesha.recaptcha.http.SimpleHttpLoader;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -48,10 +60,14 @@ import javax.faces.context.FacesContext;
  */
 public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
     @EJB MailServiceLocal mailService;
+    @EJB CaptchaServiceLocal captchService;
     
     private String ERROR_MESSAGE   = new String("An Error Occurred.");
     private String SUCCESS_MESSAGE = new String("An e-mail has been sent successfully!");
     private String EMAIL_ERROR_MESSAGE = new String("An error occurred. The message was not sent.");
+    private Captcha c;
+    private ReCaptchaImpl r;
+    private SimpleHttpLoader l;
     
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
@@ -250,19 +266,35 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
     //ACTION METHODS
     public String send_action() {
         String msg  = SUCCESS_MESSAGE;
+        Map map = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String challenge = map.get("recaptcha_challenge_field").toString();
+        String response = map.get("recaptcha_response_field").toString();
+        HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         success = true;
+        ReCaptchaResponse resp = null;
         try {
+            resp = r.checkAnswer("127.0.0.1", challenge, response);
+            if (resp.isValid()){
+                msg = resp.getErrorMessage();
             String fromAddress = "\"" + fullName + "\"<" + emailAddress.trim() + ">";
             mailService.sendMail(fromAddress, (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getContactEmail() : getVDCRequestBean().getCurrentVDC().getContactEmail(), (getVDCRequestBean().getCurrentVDCId()==null) ? getVDCRequestBean().getVdcNetwork().getName()  + " Dataverse Network: " + selectedSubject.trim() : getVDCRequestBean().getCurrentVDC().getName() + " dataverse: " + selectedSubject.trim(), emailBody.trim());
+            } else {
+                FacesMessage message = new FacesMessage("This field is required.");
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage("XXXXXX", message);
+                return "invalidResponse";
+            }
         } catch (Exception e) {
             success     = false;
             exception   = true;
             msg = EMAIL_ERROR_MESSAGE;
             ExceptionMessageWriter.logException(e);
         } finally {
+            System.out.println("oooo "+response+" k "+ resp.isValid());
             ExceptionMessageWriter.addGlobalMessage(msg);
             if (success) return "success"; else return "result";
         }
+        
     }
     
     public String cancel_action(){
@@ -290,5 +322,45 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
         }
     }
     
+    public void validateCaptcha(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        if (c != null) {
+            Map map = context.getExternalContext().getRequestParameterMap();
+            String challenge = map.get("recaptcha_challenge_field").toString();
+            String response = map.get("recaptcha_response_field").toString();
+            HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            try {
+                System.out.println("Rmote Addr: " + InetAddress.getLocalHost().getCanonicalHostName());
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(ContactUsPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            ReCaptchaResponse resp = r.checkAnswer(c.getHost(), challenge, response);
+            if (!resp.isValid()) {
+                ((UIInput) toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Please fill in the reCAPTCHA form.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
+        }
+    }
+
+    public String getCaptcha() {
+        c = captchService.findCaptcha();
+        String retVal = null;
+        if (c != null) {
+            r = new ReCaptchaImpl();
+            l = new SimpleHttpLoader();
+
+            r.setIncludeNoscript(true);
+            r.setRecaptchaServer(ReCaptchaImpl.HTTPS_SERVER);
+            r.setHttpLoader(l);
+            r.setPrivateKey(c.getPrivateKey());
+            r.setPublicKey(c.getPublicKey());
+            retVal = r.createRecaptchaHtml(null, null);
+        } else {
+            retVal = "";
+        }
+        return retVal;
+    }
 }
 

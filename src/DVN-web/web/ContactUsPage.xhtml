@@ -120,7 +120,7 @@
                         </ice:panelGrid>
                         
                         <ice:panelGrid>
-                          <p>Enter the code as it is shown:</p>
+<!--                          <p>Enter the code as it is shown:</p>
                           <p>This field helps prevent automated access.</p>
                           <script type="text/javascript">
                                 // <![CDATA[
@@ -139,7 +139,11 @@
                                 sjcap();
                              // ]]>
                           </script>
-                          <noscript><p>[This resource requires a Javascript enabled browser.]</p></noscript>
+                          <noscript><p>[This resource requires a Javascript enabled browser.]</p></noscript> -->
+                        <ice:inputHidden id="recaptcha" validator="#{ContactUsPage.validateCaptcha}" value="captcha" >
+                          <ice:message styleClass="errorMessage" for="recaptcha"/>
+                        </ice:inputHidden>
+                        #{ContactUsPage.captcha}
                         </ice:panelGrid>
                         <div style="padding-left: 170px; padding-top: 20px">
                           <ice:commandButton  id="btnSend" value="Send E-mail" onmousedown="submitTheForm();" action="#{ContactUsPage.send_action}"/>

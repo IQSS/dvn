@@ -203,7 +203,32 @@ public class VDCGroup implements Serializable {
     public Long getDefaultDisplayNumber() {
         return defaultDisplayNumber;
     }
-   
+
+    private Long parent;
+
+    /**
+     * v1.4 Get the value of parent
+     *
+     * Introduced in v 1.4. This
+     * property represents the hierarchy
+     * designed for the network home page
+     *
+     * @return the value of parent
+     *
+     * @author wbossons
+     */
+    public Long getParent() {
+        return parent;
+    }
+
+    /**
+     * Set the value of parent
+     *
+     * @param parent new value of parent
+     */
+    public void setParent(Long parent) {
+        this.parent = parent;
+    }
     
     
     @Transient

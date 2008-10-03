@@ -73,6 +73,7 @@ public class AllUsersDataBean implements java.io.Serializable  {
         if (user.getNetworkRole()!=null) {
             if (user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
                 str+= " Network Admin";
+                return str;
             } else if (user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.CREATOR)){
                 str+=" Dataverse Creator";
             } else {

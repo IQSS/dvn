@@ -28,3 +28,10 @@ drop table deletedstudy;
 
 alter table oaiset
 alter column definition type text;
+
+-- Column: parent
+
+-- ALTER TABLE vdcgroup DROP COLUMN parent;
+
+ALTER TABLE vdcgroup ADD COLUMN parent int4;
+ALTER TABLE vdcgroup ALTER COLUMN parent SET STORAGE PLAIN;

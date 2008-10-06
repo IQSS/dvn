@@ -126,7 +126,12 @@
                          var="dvItems"
                          rendered="#{VDCRequest.currentVDC == null}"
                          style="border: 0px solid gold;">
-          <ice:outputText style="font-size: 1.5em !important; font-weight: bold;" value="#{dvItems.name}"/>
+          <ice:outputText   style="font-size: 1.5em !important; font-weight: bold;"
+                            value="#{dvItems.name}"/>
+                            <!-- Placeholder for TODO: what output when group is empty? -->
+         <div  align="center" style="float: left; width: 100%; padding-top:10px; padding-bottom:10px;">
+            <ice:outputText rendered="#{empty(dvItems.childItems)}" value="There are no dataverses to display in this group."/>
+          </div>
           <div style="margin-top: .5em; border: 1px solid #d9d9d9; border-bottom: 1px solid transparent;">
             <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }" style="overflow: hidden; margin-bottom: .25em;">
 
@@ -151,6 +156,7 @@
                       <f:attribute name="itemid" value="item#{dvItems.id}"/>
                     </h:outputText>
                 </div>
+                
                 <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }" style="float: right; width: 20%;">
                   <ice:dataPaginator id="dataScroll_3"
                                      for="dataverseList"

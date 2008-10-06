@@ -109,10 +109,9 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         VDCGroup vdcgroup = new VDCGroup();
         vdcgroup.setName((String)nameInput.getValue());
         vdcgroup.setDescription((String)descriptionInput.getValue());
-        vdcgroup.setParent((new Long(9)));
-        System.out.println("the selected value is " + parentSelect.getValue());
+        vdcgroup.setParent(new Long((String)parentSelect.getValue()));
+        //System.out.println("the selected value is " + parentSelect.getValue());
         vdcGroupService.create(vdcgroup);
-        System.out.println("the property is " + nameInput.getValue() + descriptionInput.getValue());
         return "Success";
     }
 

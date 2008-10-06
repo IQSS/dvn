@@ -1437,19 +1437,19 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 
 /**** Login ****/
 #dvnLoginPageWrap {margin-top: 10%; width: 98%; text-align: center;}
-#dvnLoginPageWrap form {width: 70%; margin: 0 auto; padding: 1em; background: #fff; border: 1px solid #6E7F90;}
+#dvnLoginPageWrap form {width: 700px; margin: 0 auto; padding: 1em; background: #fff; border: 1px solid #6E7F90;}
 
 #dvnLoginPageHeader {width: 100%; margin-bottom: 2em; background: #dadee0;}
 #dvnLoginPageHeader .dvnLoginHeadingText {font-size: 160% !important; color: #c55b28; text-transform: uppercase;}
 .dvnLoginPageSubHeader {color: #526f76; font-size: 160% !important; text-transform: uppercase;}
 
 .dvnLoginContent {overflow: hidden;}
-.dvnLoginContentText {float: left; width: 60%; padding-right: 1em;}
-.dvnLoginInputArea {float: right; width: 35%;}
+.dvnLoginContentText {float: left; width: 380px; padding-right: 10px;}
+.dvnLoginInputArea {float: right; width: 300px;}
 .dvnLoginInputArea p {text-align: right;}
 .dvnLoginInputArea .dvnLoginFailed {display: block;}
 .dvnLoginInputArea .errorMessageError {display: block; text-align: right; color: red; font-weight: bold;}
-.dvnLoginInputArea fieldset {border: 1px solid #7f9db9; background: #f4ebc7;}
+.dvnLoginInputArea fieldset {width: 280px; border: 1px solid #7f9db9; background: #f4ebc7;}
 .dvnLoginInputArea legend {padding: 0 8px; border: 1px solid #7f9db9; background: #e6ebed; text-transform: uppercase;}
 .dvnLoginInputArea label {margin-top: 1em; padding-right: .5em;}
 .dvnLoginInputArea input {margin-top: 1em;}

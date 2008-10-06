@@ -3,75 +3,63 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:gui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-       xmlns:ice="http://www.icesoft.com/icefaces/component"
-      >
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
 </head>
 
 <body>
-<gui:composition template="/template.xhtml">
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="DVN - Contributor Success"/>
+    <gui:define name="body">
 
-<gui:param name="pageTitle" value="DVN - Contributor Success" />
+      <ice:form id="contributorRequestForm">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
-  <gui:define name="body">
-
-        <ice:form  id="contributorRequestForm">
-            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-
-            <div styleClass="dvn_createDvRequest dvn_section dvn_overflow">
-              <div styleClass="requestHeader dvn_overflow">
-                      <ice:outputText value="Success! &lt;span&gt;&gt; Become a Contributor&lt;/span&gt;" escape="false"/>
-              </div>
-              <div rendered="#{LoginWorkflowBean.contributorWorkflow}" styleClass="requestTimeline" style="background-position: -93px -12px;">
-                        <div class="requestTimelinePoint" style="left: 144px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Create Account</strong></div>
-                        <div class="requestTimelinePoint" style="left: 347px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Terms of Use</strong></div>
-                        <div class="requestTimelinePoint" style="left: 554px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Success!</strong></div>
-              </div>
-              <div styleClass="requestContent">
-                  
-                  <div styleClass="requestContentDescLeft requestContentSucessH4">
-                      <h4><ice:outputText value="You are now a contributor to the "/> <ice:outputText value="#{VDCRequest.currentVDC.name}"/> dataverse!</h4>
-                  </div>
-                  
-                  <div styleClass="requestContentDescRight requestContentSucess">
-                  <div styleClass="dvn_margin12"> 
-                      
-                        <p><ice:outputText value="As a contributor, you can:"/> </p>
-                            <ul>
-                            <li>
-                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
-                                <ice:outputText value="Add new studies and upload files"/>
-                            </ice:outputLink>
-                            </li>
-                            <li> 
-                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/MyStudiesPage.xhtml">
-                                <ice:outputText value="View studies you have uploaded"/>
-                            </ice:outputLink>
-                            </li>
-                            </ul>
-                        <p><ice:outputText value="You can get to these links from "/>
-                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml">
-                                <ice:outputText value="My Options"/>
-                            </ice:outputLink> <ice:outputText value="(displayed in menubar when you are logged in to this dataverse)."/> </p>
-                            <p><ice:outputText value="Be sure to click Ready for Review after you have completed adding a study, to notify the Dataverse Administrator that your study is ready to be released. 
-                        After the study is sent for Review, you cannot edit it or add files to it anymore (use"/> 
-                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml">
-                                <ice:outputText value="Contact Us"/>
-                            </ice:outputLink>
-                        <ice:outputText value="to ask any questions or report any concerns to the Administrator of this Dataverse)."/> </p>
-                      
-                  </div>
-                  </div>
-                  
-              </div>
+        <div styleClass="dvn_createDvRequest dvn_section dvn_overflow">
+          <div styleClass="requestHeader dvn_overflow">
+            <ice:outputText value="Success! &lt;span&gt;&gt; Become a Contributor&lt;/span&gt;" escape="false"/>
           </div>
-          
-        </ice:form>
-            </gui:define>
-        </gui:composition>
-    </body>
+          <div rendered="#{LoginWorkflowBean.contributorWorkflow}" styleClass="requestTimeline" style="background-position: -93px -12px;">
+            <div class="requestTimelinePoint" style="left: 144px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Create Account</strong></div>
+            <div class="requestTimelinePoint" style="left: 347px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Terms of Use</strong></div>
+            <div class="requestTimelinePoint" style="left: 554px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Success!</strong></div>
+          </div>
+          <div styleClass="requestContent">
+            <div styleClass="requestContentDescLeft requestContentSucessH4">
+              <h4><ice:outputText value="You are now a contributor to the "/> <ice:outputText value="#{VDCRequest.currentVDC.name}"/> dataverse!</h4>
+            </div>
+            <div styleClass="requestContentDescRight requestContentSucess">
+              <div styleClass="dvn_margin12">
+                <p><ice:outputText value="As a contributor, you can:"/> </p>
+                <ul>
+                  <li>
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
+                      <ice:outputText value="Add new studies and upload files"/>
+                    </ice:outputLink>
+                  </li>
+                  <li>
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/MyStudiesPage.xhtml">
+                      <ice:outputText value="View studies you have uploaded"/>
+                    </ice:outputLink>
+                  </li>
+                </ul>
+                <p><ice:outputText value="You can get to these links from "/> <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml">
+                    <ice:outputText value="My Options"/>
+                </ice:outputLink> <ice:outputText value=" (displayed in menubar when you are logged in to this dataverse)."/></p>
+                <p><ice:outputText value="Be sure to click Ready for Review after you have completed adding a study, to notify the Dataverse Administrator that your study is ready to be released.
+                                     After the study is sent for Review, you cannot edit it or add files to it anymore (use "/> <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml">
+                    <ice:outputText value="Report Issue"/>
+                  </ice:outputLink> <ice:outputText value=" to ask any questions or report any concerns to the Administrator of this Dataverse)."/></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
 </html>

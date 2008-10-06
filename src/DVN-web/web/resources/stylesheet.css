@@ -57,6 +57,14 @@
   display: inline;
 }
 
+.dvnFormPadding {
+  padding: 1em 0;
+}
+
+.dvnFormMargin input {
+  margin-right: 2em;
+}
+
 /* GENERAL CONTENT */
 .dvn_hmpgMainMessage {margin-bottom: 1em;}
 
@@ -280,21 +288,26 @@ a.dvn_more:link, a.dvn_more:visited, a.dvn_more:hover, a.dvn_more:active{
     padding: .15em;
 }
 
-.vdcTextWrap{
+.vdcTextWrap {
     white-space: normal;
 }
-.vdcTextNoWrap{
+.vdcTextNoWrap {
     white-space: nowrap;
 }
-.vdcTextStandOut{
+.vdcTextStandOut {
    color: #820024;
    font-weight: bold;
 }
 
-.vdcHelpText{
-    font: 70%;
-    color: #666666;
-    line-height: 140%;
+.vdcHelpText {
+    color: #666;
+    margin-bottom: 1em;
+}
+.vdcHelpText img {
+    vertical-align: bottom;
+}
+.vdcHelpText span {
+    padding-left: .5em;
 }
 
 /* start inline help support */
@@ -414,30 +427,39 @@ a.dvn_more:link, a.dvn_more:visited, a.dvn_more:hover, a.dvn_more:active{
 }
 /* end popup support */
 
-.vdcNoBorders{
+.vdcNoBorders {
    border-bottom-style: none;
    border-left-style: none;
    border-right-style: none;
    border-top-style: none
 }
 
-.vdcSubHeader{
+.vdcSubHeader {
    font-weight: bold;
+   display: block;
 }
-.vdcSubHeaderColor{
+.vdcSubHeaderColor {
    color: #0b3b6b;
    font-weight: bold;
+   display: block;
+}
+.vdcSubHeaderPadding {
+  padding-top: 1.5em;
+}
+.vdcSubHeaderIndent {
+  margin-left: 3em;
+  padding-top: 1.5em;
 }
 
-.vdcFieldTitle{
+.vdcFieldTitle {
    font-weight: bold
 }
-.vdcTextRight{
+.vdcTextRight {
    padding-right: 4px;
    text-align: right;
 }
 
-.vdcColPadded{
+.vdcColPadded {
    padding-bottom: 3px;
    padding-left: 4px;
    padding-top: 3px;
@@ -450,9 +472,9 @@ a.dvn_more:link, a.dvn_more:visited, a.dvn_more:hover, a.dvn_more:active{
    height: 20px
 }
 
-.vdcTextLarger{ }
+.vdcTextLarger { }
 
-.vdcSpace{
+.vdcSpace {
     margin-left: 20px; 
 }
 
@@ -782,6 +804,8 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
 
 /* Edit Study/Files style rules
 */
+.vdcStudyTemplateFormTable {width: 98%; border: 1px solid #6E7F90; padding: 10px; margin-top: 1em;}
+
 .vdcEditStudyTable {border: 0; margin: 0 0 0 0;}
 .vdcEditStudyTable tr {border-width: 0 0 1px 0; padding: 0 0 0 0;}
 .vdcEditStudyTable td {border-bottom: 1px solid #dadee0; border-width: 0 0 1px 0; padding: 4px 0;}

@@ -55,8 +55,21 @@
                 <f:facet name="header">
                     <ice:outputText value="Manage Dataverse Classifications"/>
                 </f:facet>
-                <!-- classification name -->
-
+                 <!-- contract/expand column -->
+	        <ice:column style="width:5%;">
+	            <ice:panelGroup styleClass="#{dvItems.indentStyleClass}">
+	                <!-- Render the expand/contract if there is an image -->
+	                <ice:commandLink rendered="#{dvItems.expandContractImage != null}" actionListener="#{dvItems.toggleSubGroupAction}">
+	                    <ice:graphicImage id="expandContractImage"
+                                              value="#{dvItems.expandContractImage}"
+	                                      style="border: 0px solid;"/>
+	                </ice:commandLink>
+                       <ice:outputText escape="false"
+                                         rendered="#{dvItems.expandContractImage == null}"
+                                         value="&lt;!-- cell spacer --&gt;"/>
+	            </ice:panelGroup>
+	        </ice:column>
+                 <!-- classification name -->
                 <ice:column style="width:35%" >
                     <f:facet name="header">
                         <ice:commandSortHeader
@@ -81,7 +94,6 @@
                     </f:facet>
                     <ice:outputText value="#{dvItems.shortDescription}"/>
                 </ice:column>
-
                 <!-- subclassifications  -->
                 <ice:column style="width:10%">
                     <f:facet name="header">
@@ -93,8 +105,6 @@
                     </f:facet>
                     <ice:outputText value="#{dvItems.subclassification}"/>
                 </ice:column>
-                
-
                 <!-- controls
                 <ice:column rendered="#{dvItems.recordType == 'group' }" style="width:10%">
                     <f:facet name="header">
@@ -113,9 +123,7 @@
                     var="dvItems"
                     rendered="#{VDCRequest.currentVDC == null}">
                     <ice:outputText value="#{dvItems.strToString}"  />
-                 
              </ice:panelSeries>
-             
             </ice:form>
         </gui:define>
         

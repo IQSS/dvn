@@ -55,6 +55,7 @@ public class DataverseGrouping extends SortableList {
     // style for column that holds expand/contract image toggle, in the group
     // record row.
     protected String indentStyleClass = "";
+    protected boolean selected; //used by the RowSelectController from Add/RemoveDataversesClassifications
         /**
      * Gets the style class name used to define the first column of a files
      * record row.  This first column is where a expand/contract image is
@@ -75,6 +76,7 @@ public class DataverseGrouping extends SortableList {
     // network admin fields
     private static final String shortDescriptionColumnName   = "Description";
     private static final String subclassificationsColumnName = "Subclassifications";
+    private static final String idColumnName                 = "Id";
     
     ArrayList parentItems = new ArrayList();
     ArrayList childItems = new ArrayList();
@@ -115,6 +117,23 @@ public class DataverseGrouping extends SortableList {
         this.recordType     = recordType;
         this.activity       = activity;
         this.indentStyleClass = "childRowIndentStyle";
+    }
+
+    /** DataverseGrouping
+     * Overloaded constructor for the
+     * Add/Remove Dataverse to/from Page.
+     *
+     *
+     * @param name
+     * @param affiliation
+     *
+     *
+     */
+    public DataverseGrouping(Long id, String name, String affiliation) {
+        super(nameColumnName);
+        this.id             = id;
+        this.name           = name;
+        this.affiliation    = affiliation;
     }
     
     
@@ -318,6 +337,15 @@ public class DataverseGrouping extends SortableList {
             return dir + img;
         //}
         //return DEFAULT_IMAGE_DIR + SPACER_IMAGE;
+    }
+
+    public boolean isSelected() {
+        return this.selected;
+    }
+
+    // mutators
+    public void setSelected(boolean select) {
+        this.selected = select;
     }
 
    /** DataverseGrouping display attributes

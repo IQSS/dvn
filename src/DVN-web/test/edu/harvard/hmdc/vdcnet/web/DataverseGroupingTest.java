@@ -101,25 +101,7 @@ public class DataverseGroupingTest extends TestCase {
         
     }
 
-    /**
-     * Test of addAllChildren method, of class DataverseGrouping.
-     */
-    public void testAddAllChildren() {
-        System.out.println("addAllChildren");
-        DataverseGrouping instance = new DataverseGrouping();
-        Iterator iterator = this.childItems.iterator();
-            ArrayList list = new ArrayList();
-            while (iterator.hasNext()) {
-                DataverseGrouping bean = (DataverseGrouping)iterator.next();
-                list.add(bean);
-            }
-            allChildren.put(this.testGetGroupKey(), list);
-        instance.addAllChildren();
-        // TODO review the generated test code and remove the default call to fail.
-        assertEquals("There is only one child.", 1, allChildren.size());
-    }
-
-  
+     
     /**
      * Test of sort method, of class DataverseGrouping.
      */

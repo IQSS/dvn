@@ -273,24 +273,14 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
         success = true;
         ReCaptchaResponse resp = null;
         try {
-            resp = r.checkAnswer("127.0.0.1", challenge, response);
-            if (resp.isValid()){
-                msg = resp.getErrorMessage();
             String fromAddress = "\"" + fullName + "\"<" + emailAddress.trim() + ">";
             mailService.sendMail(fromAddress, (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getContactEmail() : getVDCRequestBean().getCurrentVDC().getContactEmail(), (getVDCRequestBean().getCurrentVDCId()==null) ? getVDCRequestBean().getVdcNetwork().getName()  + " Dataverse Network: " + selectedSubject.trim() : getVDCRequestBean().getCurrentVDC().getName() + " dataverse: " + selectedSubject.trim(), emailBody.trim());
-            } else {
-                FacesMessage message = new FacesMessage("This field is required.");
-                FacesContext context = FacesContext.getCurrentInstance();
-                context.addMessage("XXXXXX", message);
-                return "invalidResponse";
-            }
         } catch (Exception e) {
             success     = false;
             exception   = true;
             msg = EMAIL_ERROR_MESSAGE;
             ExceptionMessageWriter.logException(e);
         } finally {
-            System.out.println("oooo "+response+" k "+ resp.isValid());
             ExceptionMessageWriter.addGlobalMessage(msg);
             if (success) return "success"; else return "result";
         }

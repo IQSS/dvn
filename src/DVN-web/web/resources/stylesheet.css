@@ -52,6 +52,9 @@
 .dvn_overflow{
   overflow: hidden;
 }
+.dvn_indent {
+  margin-left: 2em;
+}
 
 .dvnFormPadding {
   padding: 1em 0;

@@ -100,22 +100,22 @@
                         <ice:commandSortHeader
                             columnName="#{dvItems.subclassificationsColumnName}"
                             arrow="true">
-                            <ice:outputText value="#{dvItems.subclassificationsColumnName}"/>
+                            <ice:outputText value="Subclassifications"/>
                         </ice:commandSortHeader>
                     </f:facet>
                     <ice:outputText value="#{dvItems.subclassification}"/>
                 </ice:column>
-                <!-- controls
-                <ice:column rendered="#{dvItems.recordType == 'group' }" style="width:10%">
+                <!-- controls   -->
+                <ice:column style="width:10%">
                     <f:facet name="header">
-                        <ice:commandSortHeader
-                            columnName="#{dvItems.lastUpdatedColumnName}"
-                            arrow="true">
-                            <ice:outputText value="#{dvItems.lastUpdatedColumnName}"/>
-                        </ice:commandSortHeader>
+                        <ice:outputText escape="false" value="&lt;!-- cell spacer --&gt;"/>
                     </f:facet>
-                    <ice:outputText value="#{dvItems.lastUpdateTime}"/>
-                </ice:column>  -->
+                    <!-- TODO: build this link value from the backing bean -->
+                    <ice:outputLink rendered="#{dvItems.recordType eq 'group'}" value="/dvn/faces/networkAdmin/AddDataversesClassificationsPage.xhtml">
+                      <f:param name="cid" value="#{dvItems.id}" />
+                      <ice:outputText value="Add"/>
+                    </ice:outputLink>
+                </ice:column>
               </ice:dataTable>
               <!-- ******************* TEST ****************** -->
               <ice:panelSeries styleClass="dvn_networkHomePanel"

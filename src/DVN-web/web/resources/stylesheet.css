@@ -53,17 +53,24 @@
   overflow: hidden;
 }
 
-.dvnInlineButton {
-  display: inline;
-}
-
 .dvnFormPadding {
   padding: 1em 0;
 }
-
 .dvnFormMargin input {
   margin-right: 2em;
 }
+.dvnInlineButton {
+  display: inline;
+}
+.dvnFormDataTable {
+    border: 0;
+    margin: 0 0 0 0;
+}
+.dvnFormDataTable tr {border: 0; padding: 0 0 0 0;}
+.dvnFormDataTable td, .dvnFormDataTable th {border: 0; padding: 4px 0; text-align: left;}
+
+/* ICEFACES OVERWRITE */
+.iceSelOneRb tr, .iceSelOneRb td {border: 0;}
 
 /* GENERAL CONTENT */
 .dvn_hmpgMainMessage {margin-bottom: 1em;}

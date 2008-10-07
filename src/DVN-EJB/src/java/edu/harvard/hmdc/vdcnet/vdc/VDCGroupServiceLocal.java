@@ -49,6 +49,8 @@ public interface VDCGroupServiceLocal extends java.io.Serializable  {
     public void updateVdcGroup(VDCGroup vdcgroup);
     
     public void updateWithVdcs(VDCGroup vdcgroup, String[] vdcs);
+
+    public void updateWithVdcs(VDCGroup vdcgroup, Long[] vdcs);
     
     public int getNextInOrder();
     

@@ -90,7 +90,16 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
             em.merge(vdcgroup);
         }
     }
-    
+
+    /** updateWithVdcs
+     *
+     * This version was used prior to v1.4
+     * It may be removed after it's determined that
+     * it's no longer used anywhere.
+     *
+     * @param vdcgroup
+     * @param vdcs
+     */
     public void updateWithVdcs(VDCGroup vdcgroup, String[] vdcs) {
             // remove existing relationships
         vdcgroup = findById(vdcgroup.getId());
@@ -109,6 +118,40 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
             for ( int i = 0; i < selectedVdcs.length; i++ ) {
                 String mystring = selectedVdcs[i].toString();
                 Long vdcid = new Long(mystring);
+                VDC vdc    = vdcService.findById(vdcid);
+                if (!vdc.getVdcGroups().contains(vdcgroup)) {
+                    vdc.getVdcGroups().add(vdcgroup);
+                    vdcgroup.getVdcs().add(vdc);
+                }
+            }
+        }
+    }
+
+    /** updateWithVdcs
+     *
+     * This method overrides the previously needed method
+     * updateWithVdcs. The new component doesn't build a string
+     * array, so there's no need to deal with strings.
+     *
+     * @param vdcgroup
+     * @param vdcs
+     */
+    public void updateWithVdcs(VDCGroup vdcgroup, Long[] vdcs) {
+            // remove existing relationships
+        vdcgroup = findById(vdcgroup.getId());
+        if (vdcgroup != null) {
+            List membervdcs = (List)vdcgroup.getVdcs();
+            Iterator iterator = membervdcs.iterator();
+            while (iterator.hasNext()) {
+                VDC vdc = (VDC)iterator.next();
+                if (vdc.getVdcGroups().contains(vdcgroup))
+                    vdc.getVdcGroups().remove(vdcgroup);
+                iterator.remove();//remove the vdc from the vdcgroup relationship
+            }
+
+            //end remove existing relationships
+            for ( int i = 0; i < vdcs.length; i++ ) {
+                Long vdcid = vdcs[i];
                 VDC vdc    = vdcService.findById(vdcid);
                 if (!vdc.getVdcGroups().contains(vdcgroup)) {
                     vdc.getVdcGroups().add(vdcgroup);

@@ -24,10 +24,6 @@ import javax.faces.model.SelectItem;
 public class AddClassificationsPage extends VDCBaseBean implements Serializable {
     @EJB VDCGroupServiceLocal vdcGroupService;
 
-    public static final String PROP_SAMPLE_PROPERTY = "sampleProperty";
-    
-    private String            nameProperty;
-    private String            descriptionProperty;
     private HtmlInputText     nameInput;
     private HtmlInputTextarea descriptionInput;
     private HtmlInputText     parentInput;
@@ -56,14 +52,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     }
 
     //getters
-    public String getNameProperty() {
-        return nameProperty;
-    }
-
-    public String getDescriptionProperty() {
-        return descriptionProperty;
-    }
-      
+    
     public HtmlInputText getNameInput() {
         return this.nameInput;
     }
@@ -110,7 +99,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         vdcgroup.setName((String)nameInput.getValue());
         vdcgroup.setDescription((String)descriptionInput.getValue());
         vdcgroup.setParent(new Long((String)parentSelect.getValue()));
-        //System.out.println("the selected value is " + parentSelect.getValue());
         vdcGroupService.create(vdcgroup);
         return "Success";
     }

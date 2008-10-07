@@ -3,90 +3,76 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:gui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-       xmlns:ice="http://www.icesoft.com/icefaces/component"
-      >
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
 </head>
 
 <body>
-<gui:composition template="/template.xhtml">
-
-<gui:param name="pageTitle" value="DVN - OAI Sets" />
-
-  <gui:define name="body">
-
-
-    <ice:form id="form1">
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="DVN - OAI Sets"/>
+    <gui:define name="body">
+      <ice:form id="form1">
         <div class="dvn_section">
-            <div class="dvn_sectionTitle">
-                 
-                    <ice:outputText value="OAI Sets defined in #{VDCRequest.vdcNetwork.name} Dataverse Network"/>
-                
-            </div>            
-            <div class="dvn_sectionBox"> 
-                <div class="dvn_margin12">
-                    <div style="padding-bottom: 15px;">
-                        <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" style="vertical-align: bottom" value="/resources/icon_info.gif" />
-                        <ice:outputText  styleClass="vdcHelpText" value=" The sets defined here are used by the OAI server that comes with your DVN. Another DVN (or any other remote site) 
-                        will be able to harvest the sets you define. If no sets are defined, the default OAI call (http://localhost/dvn/OAIHandler) will return all the studies owned by this DVN.
-                        Once you've created a set, you can edit it by clicking on the set name."/>
-                    </div>
-                      
-                      <ice:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.xhtml">
-                        <ice:outputText value="Create a New Set"/>
-                    </ice:outputLink>
-                    
-                    <ice:dataTable cellpadding="0" cellspacing="0" binding="#{OAISetsPage.dataTable}"
-                                 columnClasses="vdcColPadded, vdcColPadded" headerClass="list-header-left" id="dataTable1"
-                                 rowClasses="list-row-even,list-row-odd" value="#{OAISetsPage.oaiSets}" var="currentRow" width="100%">
-                        <ice:column id="column1">
-                            <f:facet name="header">
-                                <ice:outputText id="column1Header" value="Set Name"/>
-                            </f:facet>
-                            <ice:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.xhtml?oaiSetId=#{currentRow.id}">
-                                <ice:outputText value="#{currentRow.name}"/>
-                            </ice:outputLink>
-                        </ice:column>
-                        <ice:column id="column2">
-                            <f:facet name="header">
-                                <ice:outputText id="column2Header" value="Spec"/>
-                            </f:facet>
-                                <ice:outputText value="#{currentRow.spec}"/>
-                         
-                        </ice:column>
-                        <ice:column id="column3">
-                            <f:facet name="header">
-                                <ice:outputText id="column3Header" value="Query Definition"/>
-                            </f:facet>
-                            <ice:outputText value="#{currentRow.definition}"/>
-                        </ice:column>
-                       <ice:column id="column4">
-                            <f:facet name="header">
-                                <ice:outputText id="column4Header" value="Description"/>
-                            </f:facet>
-                            <ice:outputText value="#{currentRow.description}"/>
-                        </ice:column>
-                              
-                        <ice:column id="column5">
-                            <f:facet name="header">
-                                <ice:outputText  value="Delete"/>
-                            </f:facet>
-                            <ice:commandLink actionListener="#{OAISetsPage.deleteSet}">
-                                <ice:outputText value="Delete Set"/>
-                            </ice:commandLink>
-                        </ice:column>
-                        
-                    </ice:dataTable>
-                    
-                </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="OAI Sets defined in #{VDCRequest.vdcNetwork.name} Dataverse Network"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <div class="vdcHelpText">
+                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
+                <ice:outputText value="The sets defined here are used by the OAI server that comes with your DVN. Another DVN (or any other remote site)
+                                will be able to harvest the sets you define. If no sets are defined, the default OAI call (http://localhost/dvn/OAIHandler) will return all the studies owned by this DVN.
+                                Once you've created a set, you can edit it by clicking on the set name."/>
+              </div>
+              <ice:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.xhtml">
+                <ice:outputText value="Create a New Set"/>
+              </ice:outputLink>
+              <ice:dataTable cellpadding="0" cellspacing="0" width="100%" binding="#{OAISetsPage.dataTable}"
+                             columnClasses="vdcColPadded, vdcColPadded" headerClass="list-header-left" id="dataTable1"
+                             rowClasses="list-row-even,list-row-odd" value="#{OAISetsPage.oaiSets}" var="currentRow">
+                <ice:column id="column1">
+                  <f:facet name="header">
+                    <ice:outputText id="column1Header" value="Set Name"/>
+                  </f:facet>
+                  <ice:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.xhtml?oaiSetId=#{currentRow.id}">
+                    <ice:outputText value="#{currentRow.name}"/>
+                  </ice:outputLink>
+                </ice:column>
+                <ice:column id="column2">
+                  <f:facet name="header">
+                    <ice:outputText id="column2Header" value="Spec"/>
+                  </f:facet>
+                  <ice:outputText value="#{currentRow.spec}"/>
+                </ice:column>
+                <ice:column id="column3">
+                  <f:facet name="header">
+                    <ice:outputText id="column3Header" value="Query Definition"/>
+                  </f:facet>
+                  <ice:outputText value="#{currentRow.definition}"/>
+                </ice:column>
+                <ice:column id="column4">
+                  <f:facet name="header">
+                    <ice:outputText id="column4Header" value="Description"/>
+                  </f:facet>
+                  <ice:outputText value="#{currentRow.description}"/>
+                </ice:column>
+                <ice:column id="column5">
+                  <f:facet name="header">
+                    <ice:outputText value="Delete"/>
+                  </f:facet>
+                  <ice:commandLink actionListener="#{OAISetsPage.deleteSet}">
+                    <ice:outputText value="Delete Set"/>
+                  </ice:commandLink>
+                </ice:column>
+              </ice:dataTable>
             </div>
+          </div>
         </div>
-    </ice:form>
-            </gui:define>
-        </gui:composition>
-    </body>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
 </html>

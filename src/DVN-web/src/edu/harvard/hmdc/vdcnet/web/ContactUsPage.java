@@ -320,11 +320,6 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
             String challenge = map.get("recaptcha_challenge_field").toString();
             String response = map.get("recaptcha_response_field").toString();
             HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            try {
-                System.out.println("Rmote Addr: " + InetAddress.getLocalHost().getCanonicalHostName());
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(ContactUsPage.class.getName()).log(Level.SEVERE, null, ex);
-            }
             ReCaptchaResponse resp = r.checkAnswer(c.getHost(), challenge, response);
             if (!resp.isValid()) {
                 ((UIInput) toValidate).setValid(false);

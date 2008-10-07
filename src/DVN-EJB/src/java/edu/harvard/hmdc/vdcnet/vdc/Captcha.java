@@ -7,6 +7,7 @@ package edu.harvard.hmdc.vdcnet.vdc;
 
 import java.io.Serializable;
 import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -80,7 +81,7 @@ public class Captcha implements Serializable {
     public String getHost(){
         String hostName = null;
         try {
-            hostName = Inet4Address.getLocalHost().getHostName();
+            hostName = InetAddress.getLocalHost().getCanonicalHostName();
             if (hostName.indexOf(domainName) == -1){
                 hostName = "127.0.0.1"; // for dev testing
             }

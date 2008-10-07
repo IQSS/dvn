@@ -34,7 +34,7 @@ package edu.harvard.hmdc.vdcnet.web;
 
 import edu.harvard.hmdc.vdcnet.util.DateUtils;
 import edu.harvard.hmdc.vdcnet.web.push.beans.NetworkStatsBean;
-import java.awt.event.ActionEvent;
+import javax.faces.event.ActionEvent;
 import java.sql.Timestamp;
 
 // Referenced classes of package test:
@@ -51,7 +51,20 @@ public class DataverseGrouping extends SortableList {
      // Images used to represent expand/contract, spacer by default
     protected String expandImage;   // + or >
     protected String contractImage; // - or v
-    protected static final String DEFAULT_IMAGE_DIR = "/resources/";
+    protected static final String DEFAULT_IMAGE_DIR = "/resources/icefaces/dvn_rime/css-images/";
+    // style for column that holds expand/contract image toggle, in the group
+    // record row.
+    protected String indentStyleClass = "";
+        /**
+     * Gets the style class name used to define the first column of a files
+     * record row.  This first column is where a expand/contract image is
+     * placed.
+     *
+     * @return indent style class as defined in css file
+     */
+    public String getIndentStyleClass() {
+        return indentStyleClass;
+    }
      
     // dataTableColumn Names
     private static final String nameColumnName          = "Name";
@@ -64,10 +77,7 @@ public class DataverseGrouping extends SortableList {
     private static final String subclassificationsColumnName = "Subclassifications";
     
     ArrayList parentItems = new ArrayList();
-    //ArrayList childItems = new ArrayList();
-    
-    DataverseGrouping[] items;
-    
+    ArrayList childItems = new ArrayList();
     
     public DataverseGrouping() {
         super(nameColumnName);
@@ -84,8 +94,9 @@ public class DataverseGrouping extends SortableList {
         this.isExpanded  = isExpanded;
         this.expandImage = expandImage;
         this.contractImage = contractImage;
-        this.id = id;
-        this.top = isTop;
+        this.id          = id;
+        this.top         = isTop;
+        this.indentStyleClass = "groupRowIndentStyle";
         // update the default state of the node.
         if (this.isExpanded) {
             expandNodeAction();
@@ -94,33 +105,29 @@ public class DataverseGrouping extends SortableList {
     
     public DataverseGrouping(String name, String alias, String affiliation, Timestamp releaseDate, Timestamp lastUpdateTime, String dvnDescription, String recordType, String activity) {
         super(nameColumnName);
-        this.id          = id;
-        this.name        = name;
-        this.alias       = alias;
-        this.affiliation = affiliation;
-        this.releaseDate = releaseDate;
+        this.id             = id;
+        this.name           = name;
+        this.alias          = alias;
+        this.affiliation    = affiliation;
+        this.releaseDate    = releaseDate;
         this.lastUpdateTime = lastUpdateTime;
         this.dvnDescription = dvnDescription;
         this.recordType     = recordType;
         this.activity       = activity;
+        this.indentStyleClass = "childRowIndentStyle";
     }
     
-    ArrayList childItems = new ArrayList();
+    
     public void addChildItem(DataverseGrouping dvGroupRecord) {
         if (this.childItems != null && dvGroupRecord != null) {
             this.childItems.add(dvGroupRecord);
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    public void addAllChildren() {
-            Iterator iterator = this.childItems.iterator();
-            ArrayList list = new ArrayList();
-            while (iterator.hasNext()) {
-                DataverseGrouping bean = (DataverseGrouping)iterator.next();
-                list.add(bean);
+            if (isExpanded) {
+                // to keep elements in order, remove all
+                contractNodeAction();
+                // then add them again.
+                expandNodeAction();
             }
-            allChildren.put(this.getGroupKey(), list);
+        }
     }
     
     public void removeChildItem(DataverseGrouping dvGroupRecord) {
@@ -154,20 +161,6 @@ public class DataverseGrouping extends SortableList {
         }
     }
     
-    public void toggleSubGroupAction() {
-        System.out.println("committed the action");
-        // toggle expanded state
-        isExpanded = !isExpanded;
-        // add sub elements to list
-        if (isExpanded) {
-            expandNodeAction();
-        }
-        // remove items from list
-        else {
-           contractNodeAction();
-        }
-    }
-    
       /**
      * Utility method to add all child nodes to the parent dataTable list.
      */
@@ -176,20 +169,11 @@ public class DataverseGrouping extends SortableList {
         if (childItems != null && childItems.size() > 0) {
             // get index of current node
             int index = parentItems.indexOf(this);
-            // add all items in childFilesRecords to the parent list
             parentItems.addAll(index + 1, childItems);
-        } else if (!allChildren.isEmpty()) {
-            // get index of current node
-            int index = parentItems.indexOf(this);
-            // add all items in childItems to the parent list
-            System.out.println("the index of the current node is " + index);
-            DataverseGrouping bean = (DataverseGrouping)parentItems.get(index);
-            System.out.println("the children of this parent are in a list of size " + bean.childItems.size());
-            ArrayList list = (ArrayList)allChildren.get(bean.getGroupKey());
-            bean.childItems.addAll(list);
-            //parentItems.addAll(index + 1, list);
         }
     }
+
+           
 
     /**
      * Utility method to remove all child nodes from the parent dataTable list.
@@ -198,16 +182,16 @@ public class DataverseGrouping extends SortableList {
         
         if (childItems != null && childItems.size() > 0) {
             // remove all items in childItems from the parent list
-            //removes all the parents. I just want the children TODO: work it that way
-            Iterator iterator = childItems.iterator();
-           while (iterator.hasNext()) {
-              DataverseGrouping grouping = (DataverseGrouping)iterator.next();
-              System.out.println("The parent item name is " + grouping.getName());
-              iterator.remove();
-            }
-           //parentItems.removeAll(childItems);   
+           parentItems.removeAll(childItems);   
         }
     }
+
+    /*
+     *       if (childFilesRecords != null && childFilesRecords.size() > 0) {
+            // remove all items in childFilesRecords from the parent list
+            parentInventoryList.removeAll(childFilesRecords);
+        }
+     * /
     
     // ************  SORTING **************
     
@@ -326,6 +310,7 @@ public class DataverseGrouping extends SortableList {
      *
      * @return name of image to draw
      */
+
     public String getExpandContractImage() {
         //if (styleBean != null) {
             String dir = DEFAULT_IMAGE_DIR;
@@ -334,7 +319,6 @@ public class DataverseGrouping extends SortableList {
         //}
         //return DEFAULT_IMAGE_DIR + SPACER_IMAGE;
     }
-
 
    /** DataverseGrouping display attributes
     * 

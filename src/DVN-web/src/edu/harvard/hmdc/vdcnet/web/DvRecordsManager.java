@@ -70,20 +70,25 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
     private static String   OTHER_SHORT_DESCRIPTION = new String("A short description for the unclassified dataverses group (other).");
 
     public DvRecordsManager() {
+        //init();
         CHILD_ROW_STYLE_CLASS = "";
     }
 
      @SuppressWarnings("unchecked")
     public void init() {
         super.init();
-        itemBeans = new ArrayList();
+        // initialize the list
+        if (itemBeans != null) {
+            itemBeans.clear();
+        } else {
+            itemBeans = new ArrayList();
+        }
         List list = (List)vdcGroupService.findAll();
         initGroupBean(list);
         List scholarlist = (List)vdcService.findVdcsNotInGroups("Scholar");
         initUnGroupedBeans(scholarlist, "Scholar Dataverses", SCHOLAR_ID);
         List otherlist = (List)vdcService.findVdcsNotInGroups("Basic");
         initUnGroupedBeans(otherlist, "Other", OTHER_ID);
-        System.out.println("the size of the item beans is " + itemBeans.size());
      }
 
      DataverseGrouping parentItem = null;
@@ -99,10 +104,9 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
             parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, false);
             parentItem.setShortDescription(vdcgroup.getDescription());
             parentItem.setSubclassification(new Long("25"));
-            System.out.println(parentItem.toString());
             List innerlist = vdcgroup.getVdcs();
             Iterator inneriterator = innerlist.iterator();
-            ArrayList childItems   = new ArrayList();
+            // ArrayList childItems   = new ArrayList();
             while(inneriterator.hasNext()) {
                 VDC vdc = (VDC)inneriterator.next();
                 //TODO: Make this the timestamp for last update time
@@ -112,7 +116,7 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
                 childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
                 parentItem.addChildItem(childItem);
             }
-            parentItem.addAllChildren();
+            //parentItem.addAllChildren();
         }
      }
 
@@ -122,30 +126,26 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
         parentItem.setShortDescription("Hello Wendy");
         parentItem.setSubclassification(new Long("25"));
         itemBeansSize++;
-        System.out.println(parentItem.toString());
-        ArrayList childItems   = new ArrayList();
         while (iterator.hasNext()) {
             VDC vdc = (VDC)iterator.next();
             Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
-            System.out.println("about to calculate activity for the vdc: " + vdc.getName());
             Long localActivity       = calculateActivity(vdc);
             String activity          = getActivityClass(localActivity);
             childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(),  "dataverse", activity);
             parentItem.addChildItem(childItem);
         }
-        parentItem.addAllChildren();
      }
 
     public void dispose() {
         isInit = false;
-        if(dvGroupItemBeans != null)
-        {
-            for(int i = 0; i < dvGroupItemBeans.size(); i++)
-            {
-                DataverseGrouping tmp = (DataverseGrouping)itemBeans.get(i);
-                ArrayList tmpList = tmp.getChildItems();
-                if(tmpList != null)
-                    tmpList.clear();
+        if(itemBeans != null) {
+            DataverseGrouping dataversegrouping;
+            ArrayList tempList;
+            for(int i = 0; i < itemBeans.size(); i++) {
+                dataversegrouping = (DataverseGrouping)itemBeans.get(i);
+                tempList = dataversegrouping.getChildItems();
+                if(tempList != null)
+                    tempList.clear();
             }
 
             itemBeans.clear();
@@ -159,12 +159,7 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
     public int getItemBeansSize() {
         return itemBeansSize;
     }
-    //DEBUG
-    private ArrayList itemBeanParents;
-    public ArrayList getItemBeanParents() {
-        return itemBeanParents;
-    }
-    //END DEBUG
+
     private String getLastUpdatedTime(Long vdcId) {
         Timestamp timestamp = null;
         timestamp = studyService.getLastUpdatedTime(vdcId);

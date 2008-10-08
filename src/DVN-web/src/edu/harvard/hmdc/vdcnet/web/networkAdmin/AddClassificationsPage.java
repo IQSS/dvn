@@ -83,7 +83,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
              DataverseGrouping dataverse = new DataverseGrouping(vdc.getId(), vdc.getName(), vdc.getAffiliation());
              dataverse.setSelected(true);
              selectedDataverses.add(dataverse);
-             System.out.println("RowSelectController:dataversegrouping: " + dataverse.toString());
              //initialize the members
              Iterator innerIterator = dataverses.iterator();
              while (innerIterator.hasNext()) {
@@ -102,7 +101,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
          while(iterator.hasNext()) {
              VDC vdc = (VDC)iterator.next();
              DataverseGrouping dataversegrouping = new DataverseGrouping(vdc.getId(), vdc.getName(), vdc.getAffiliation());
-             System.out.println("RowSelectController:dataversegrouping: " + dataversegrouping.toString());
              dataverses.add(dataversegrouping);
          }
     }
@@ -178,7 +176,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         this.iceMessage = icemessage;
     }
 
-    //TODO from RowSelectController
+    //TODO 
 
     /**
      * SelectionListener bound to the ice:rowSelector component.  Called

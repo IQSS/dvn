@@ -136,7 +136,7 @@
                 </ice:panelGroup>
                 <ice:inputHidden id="classificationId"
                                     binding="#{rowSelectController.classificationId}"
-                                    value="#{ (param.cid !=  null) ? param.cid : rowSelectController.cid }"
+                                    value="#{ rowSelectController.cid }"
                                     />
 
                 <div jsfc="ice:panelGroup" id="groupPanel5" style="padding-left: 200px; padding-top: 20px">

@@ -446,6 +446,13 @@
             <to-view-id>/networkAdmin/VDCGroupEditPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/networkAdmin/AddClassificationsPage.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>result</from-outcome>
+            <to-view-id>/networkAdmin/AddClassificationsPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 <!-- 
   Navigation rules from SubsettingPage.xhtml to RequestSummaryPage.xhtml
   ///////////////// start ////////////////

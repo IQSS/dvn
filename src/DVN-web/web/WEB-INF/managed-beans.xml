@@ -689,11 +689,6 @@
             <value>#{param.cid}</value>
         </managed-property>
     </managed-bean>
-    <managed-bean>
-        <managed-bean-name>rowSelectController</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.RowSelectController</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-    </managed-bean>
     <!-- utility beans -->
     <managed-bean>
         <managed-bean-name>CollectionTreeBuilder</managed-bean-name>

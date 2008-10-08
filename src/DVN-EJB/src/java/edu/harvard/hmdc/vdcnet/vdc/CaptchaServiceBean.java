@@ -5,8 +5,10 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 /**
@@ -18,11 +20,15 @@ public class CaptchaServiceBean implements CaptchaServiceLocal {
 
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     private EntityManager em;
+    private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.vdc.CaptchaServiceBean");
 
     public Captcha findCaptcha() {
-        return (Captcha) em.createQuery("SELECT cp from Captcha cp").getSingleResult();
-
+        Captcha c = null;
+        try {
+            c = (Captcha) em.createQuery("SELECT cp from Captcha cp").getSingleResult();
+        } catch (NoResultException n){
+            logger.info("Captcha is not initialized");
+        }
+        return c;
     }
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method" or "Web Service > Add Operation")
 }

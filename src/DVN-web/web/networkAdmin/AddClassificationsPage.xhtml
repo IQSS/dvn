@@ -20,11 +20,12 @@
 
         <gui:define name="body">
 
-            <ice:form>
+            <ice:form id="AddClassificationsPageForm">
+              <div jsfc="ice:panelGroup" rendered="#{addClassificationsPage.result == true}" styleClass="successMessage">
+                 <ice:messages id="iceMessage" binding="#{addClassificationsPage.iceMessage}" layout="list" showDetail="false" showSummary="true"/>
+              </div>
               <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
-
-                            <ice:messages layout="list" globalOnly="true" styleClass="successMessage" showSummary="true" />
                             <!-- ***************************** add content here ************************************ -->
                             <ice:panelGrid  cellpadding="0" cellspacing="0"
                                       columnClasses="vdcColPadded, vdcColPadded" columns="1" id="gridPanel2">
@@ -65,8 +66,121 @@
                                     </ice:selectOneMenu>
                                 </ice:panelGroup>
                              </ice:panelGrid>
+           <!-- ***************************** Add/Remove Dataverses to/from Classifications page. ************************************ -->
+
+
+                <ice:panelGroup styleClass="componentBox">
+
+                    <ice:panelGroup styleClass="synopsisBox">
+                        <ice:outputText value="Synopsis"/>
+                        <ice:outputText value="Instructions"/>
+                    </ice:panelGroup>
+
+                    <!-- Multiple Selection Checkbox -->
+
+                    <ice:panelGroup styleClass="clearer" />
+
+                    <ice:panelGroup styleClass="rowSelectorContainer">
+
+                    <!-- DataTable with RowSelector Component -->
+                    <ice:panelGroup styleClass="exampleBox " style="margin-right:25px; float:left;" >
+                        <ice:dataTable id="dataverseList"
+                                       var="dataverse"
+                                       value="#{addClassificationsPage.dataverses}"
+                                       rows="15"
+                                       columnClasses="tableCol">
+                            <ice:column>
+                                <ice:rowSelector id="selected"
+                                                 value="#{dataverse.selected}"
+                                                 multiple="#{addClassificationsPage.multiRowSelect}"
+                                                 selectionListener="#{addClassificationsPage.rowSelectionListener}"/>
+                                <f:facet name="header">
+                                    <ice:outputText id="column1"
+                                                    value="Id"/>
+                                                    <!-- #{dataverse.idColumnName} -->
+                                </f:facet>
+                                <ice:outputText id="vdcId"
+                                                value="#{dataverse.id}"/>
+                            </ice:column>
+
+                            <ice:column>
+                                <f:facet name="header">
+                                    <ice:outputText id="column2"
+                                                    value="Name"/>
+                                                    <!-- #{dataverse.nameColumnName} -->
+                                </f:facet>
+                                <ice:outputText id="Name"
+                                                value="#{dataverse.name}"/>
+                            </ice:column>
+
+                            <ice:column>
+                                <f:facet name="header">
+                                    <ice:outputText id="column3"
+                                                    value="Affiliation"/>
+                                                    <!-- #{dataverse.affiliationColumnName} -->
+                                </f:facet>
+                                <ice:outputText id="Affiliation"
+                                                value="#{dataverse.affiliation}"/>
+                            </ice:column>
+                            <ice:column>
+                                <f:facet name="header">
+                                    <ice:outputText id="column4"
+                                                    value="Controls"/>
+                                </f:facet>
+                                <ice:outputText id="Add"
+                                                value="Add"/>
+                            </ice:column>
+                        </ice:dataTable>
+
+                    </ice:panelGroup>
+                    <!-- Selected Values DataTable -->
+                    <ice:panelGroup style="vertical-align:top;" styleClass="exampleBox">
+                      <!-- TODO: Build this message -->
+                        <ice:outputLabel id="results"
+                                        value="Your results are: "/>
+                        <ice:dataTable id="selectedRows"
+                                       var="dataverse"
+                                       value="#{addClassificationsPage.selectedDataverses}"
+                                       rows="15"
+                                       columnClasses="tableCol" >
+                            <ice:column>
+                                <f:facet name="header">
+                                    <ice:outputText id="selectedColumn1"
+                                                    value="Name"/>
+                                </f:facet>
+                                    <ice:outputText id="selectedName"
+                                                    value="#{dataverse.name}"/>
+                            </ice:column>
+                            <ice:column>
+                                <f:facet name="header">
+                                    <ice:outputText id="selectedColumn2"
+                                                    value="Affiliation"/>
+                                </f:facet>
+                                <ice:outputText id="selectedAffiliation"
+                                                value="#{dataverse.affiliation}"/>
+                            </ice:column>
+                        </ice:dataTable>
+                    </ice:panelGroup>
+
+                </ice:panelGroup>
+              <ice:inputHidden id="classificationId"
+                                    binding="#{addClassificationsPage.classificationId}"
+                                    value="#{ addClassificationsPage.cid }"
+                                    />
+                <ice:inputHidden id="multiRowSelect"
+                                    binding="#{addClassificationsPage.multiRowSelector}"
+                                    value="#{addClassificationsPage.multiRowSelect}"
+                                    />
+           <!--   TODO: Merge the action of below buttons to this page's backing bean
+              <div jsfc="ice:panelGroup" id="groupPanel5" style="padding-left: 200px; padding-top: 20px">
+                  <ice:commandButton id="btnSave" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.add_action}"/>
+                  <ice:commandButton id="btnCancel" immediate="true" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditAboutPage.cancel_action}"/>
+                </div>  -->
+                </ice:panelGroup>
+                <!-- end rowSelect related form fields -->
                             <div jsfc="ice:panelGroup"   id="groupPanel5" style="padding-left: 200px; padding-top: 20px">
-                              <ice:commandButton id="btnSave" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.add_action}"/>
+                              <ice:commandButton id="btnUpdate" rendered="#{addClassificationsPage.cid != null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.update_action}"/>
+                              <ice:commandButton id="btnCreate" rendered="#{addClassificationsPage.cid == null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.add_action}"/>
                               <ice:commandButton id="btnCancel" immediate="true" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditAboutPage.cancel_action}"/>
                             </div>
                      </div>

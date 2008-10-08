@@ -78,10 +78,11 @@
                         </ice:commandSortHeader>
                         <ice:outputText value="Name"/>
                     </f:facet>
-                    <ice:outputLink id="dataverse_link" value="#">
+                     <ice:outputLink rendered="#{dvItems.recordType eq 'group'}" value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
+                        <f:param name="cid" value="#{dvItems.id}" />
                         <ice:outputText  value="#{dvItems.name}"/>
                     </ice:outputLink>
-                    
+                    <ice:outputText rendered="#{dvItems.recordType eq 'dataverse'}"  value="#{dvItems.name}"/>
                 </ice:column>
                 <!-- description -->
                 <ice:column style="width:35%">
@@ -110,10 +111,10 @@
                     <f:facet name="header">
                         <ice:outputText escape="false" value="&lt;!-- cell spacer --&gt;"/>
                     </f:facet>
-                    <!-- TODO: build this link value from the backing bean -->
+                    <!-- TODO: change this link to perform the delete function -->
                     <ice:outputLink rendered="#{dvItems.recordType eq 'group'}" value="/dvn/faces/networkAdmin/AddDataversesClassificationsPage.xhtml">
                       <f:param name="cid" value="#{dvItems.id}" />
-                      <ice:outputText value="Add"/>
+                      <ice:outputText value="Delete"/>
                     </ice:outputLink>
                 </ice:column>
               </ice:dataTable>

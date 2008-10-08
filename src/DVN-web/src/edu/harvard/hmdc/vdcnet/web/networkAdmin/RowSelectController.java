@@ -169,7 +169,7 @@ public class RowSelectController extends VDCBaseBean implements Serializable {
             count++;
         }
         System.out.println("RowSelectController: class Id is " + classificationId.getValue());
-        VDCGroup vdcgroup = vdcGroupService.findById(new Long((String)classificationId.getValue()));
+        VDCGroup vdcgroup = vdcGroupService.findById((Long)classificationId.getValue());
         vdcGroupService.updateWithVdcs(vdcgroup, vdcs);
         return "Success";
     }

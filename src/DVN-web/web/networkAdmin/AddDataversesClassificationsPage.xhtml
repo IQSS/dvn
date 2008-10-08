@@ -34,20 +34,7 @@
                     </ice:panelGroup>
 
                     <!-- Multiple Selection Checkbox -->
-                    <ice:panelGroup styleClass="exampleBox rowSelectorContainer">
-
-                        <ice:panelGroup>
-                            <!-- clear the list if some change the multiselect state -->
-                            <ice:selectBooleanCheckbox id="multipleSelection"
-                                                       value="#{rowSelectController.multiRowSelect}"
-                                                       partialSubmit="true"
-                                                       valueChangeListener="#{rowSelectController.rowSelectionListener}"/>
-                            <ice:outputLabel for="multipleSelection"
-                                             value="Allow Multiple Selections"/>
-
-                        </ice:panelGroup>
-                    </ice:panelGroup>
-
+                   
                     <ice:panelGroup styleClass="clearer" />
 
                     <ice:panelGroup styleClass="rowSelectorContainer">
@@ -138,7 +125,10 @@
                                     binding="#{rowSelectController.classificationId}"
                                     value="#{ rowSelectController.cid }"
                                     />
-
+                <ice:inputHidden id="multiRowSelect"
+                                    binding="#{rowSelectController.multiRowSelector}"
+                                    value="#{rowSelectController.multiRowSelect}"
+                                    />
                 <div jsfc="ice:panelGroup" id="groupPanel5" style="padding-left: 200px; padding-top: 20px">
                   <ice:commandButton id="btnSave" value="#{bundle.saveButtonLabel}" action="#{rowSelectController.add_action}"/>
                   <ice:commandButton id="btnCancel" immediate="true" style="margin-left: 30px" value="#{bundle.cancelButtonLabel}" action="#{EditAboutPage.cancel_action}"/>

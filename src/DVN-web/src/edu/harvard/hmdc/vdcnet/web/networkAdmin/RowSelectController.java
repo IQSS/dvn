@@ -38,9 +38,10 @@ public class RowSelectController extends VDCBaseBean implements Serializable {
     private ArrayList dataverses;
 
     // flat to indicate multiselect row enabled.
-    private boolean multiRowSelect;
+    private boolean multiRowSelect = true;
 
     private HtmlInputHidden classificationId;
+    private HtmlInputHidden multiRowSelector;
     private Long cid;
 
 
@@ -128,11 +129,14 @@ public class RowSelectController extends VDCBaseBean implements Serializable {
         return this.cid;
     }
 
+
     public void setCid(Long cid) {
         this.cid = cid;
     }
 
-
+    public HtmlInputHidden getMultiRowSelector() {
+        return this.multiRowSelector;
+    }
     /**
      * Sets the selection more of the rowSelector.
      *
@@ -149,6 +153,10 @@ public class RowSelectController extends VDCBaseBean implements Serializable {
     //setters
     public void setClassificationId(HtmlInputHidden classificationid) {
         this.classificationId = classificationid;
+    }
+
+    public void setMultiRowSelector(HtmlInputHidden multirowselector) {
+        this.multiRowSelector = multirowselector;
     }
     
     /** add_action

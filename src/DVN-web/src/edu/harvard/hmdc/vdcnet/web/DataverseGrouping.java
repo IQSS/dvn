@@ -55,7 +55,7 @@ public class DataverseGrouping extends SortableList {
     // style for column that holds expand/contract image toggle, in the group
     // record row.
     protected String indentStyleClass = "";
-    protected boolean selected; //used by the RowSelectController from Add/RemoveDataversesClassifications
+    protected boolean selected; //used by the AddClassificationsPage
         /**
      * Gets the style class name used to define the first column of a files
      * record row.  This first column is where a expand/contract image is

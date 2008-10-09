@@ -341,6 +341,7 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
             r.setHttpLoader(l);
             r.setPrivateKey(c.getPrivateKey());
             r.setPublicKey(c.getPublicKey());
+            Logger.getLogger(ContactUsPage.class.getName()).info("PUBLIC: "+c.getPublicKey()+" -- PRIVATE: "+c.getPrivateKey()+" -- HOST: "+c.getHost());
             retVal = r.createRecaptchaHtml(null, null);
         } else {
             retVal = "";

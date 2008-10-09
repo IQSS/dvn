@@ -321,7 +321,7 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
             if (!resp.isValid()) {
                 Logger.getLogger(ContactUsPage.class.getName()).info("INVALID RESPONSE: "+resp.getErrorMessage());
                 ((UIInput) toValidate).setValid(false);
-                FacesMessage message = new FacesMessage("Please fill in the reCAPTCHA form.");
+                FacesMessage message = new FacesMessage("Please fill in the reCAPTCHA form. "+ resp.getErrorMessage() );
                 context.addMessage(toValidate.getClientId(context), message);
             }
         }

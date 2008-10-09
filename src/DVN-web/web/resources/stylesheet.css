@@ -616,8 +616,11 @@ div.vdcStudyFilesMessage a:link, div.vdcStudyFilesMessage a:visited, div.vdcStud
     font-weight: bold;
 }
 
-.vdcStudyFilesDownloadAll {padding-bottom: 1em;}
-.vdcStudyFilesDownloadAllMessage {vertical-align: top;}
+.vdcStudyFilesDownloadAll {width: 100%; background: #f5f6bd;}
+.vdcStudyFilesDownloadAll td {background: #f5f6bd;}
+.vdcStudyFilesDownloadAllInfo, .vdcStudyFilesDownloadAllButton {padding: .5em 1em; background: inherit;}
+.vdcStudyFilesDownloadAllInfo {font-weight: bold;}
+.vdcStudyFilesDownloadAllInfo p {font-weight: normal; font-size: 90% !important;}
 
 .vdcStudyFilesCat {
    background-color: #d2d2d2;
@@ -663,13 +666,30 @@ span.vdcStudyCatDownloadLink {
 a.vdcTruncatorLinkMore:link, a.vdcTruncatorLinkMore:hover, a.vdcTruncatorLinkMore:active, a.vdcTruncatorLinkMore:visited,
 a.vdcTruncatorLinkLess:link, a.vdcTruncatorLinkLess:hover, a.vdcTruncatorLinkLess:active, a.vdcTruncatorLinkLess:visited {font-size: 90% !important;}
 
-.vdcStudyFileRow {width: 100%;}
-.vdcStudyFileRowLeft {float: left; width: 50%;}
-.vdcStudyFileRowFileInfo {float: left; width: auto; padding: 0 .25em;}
-.vdcStudyFileRowFileThumb {float: left; padding: .25em;}
-.vdcStudyFileRowFileName {float: left;}
-span.vdcStudyFileRowFileDetails {font-size: 90% !important; color: darkgray;}
-.vdcStudyFileRowFileDownload {float: right; width: 160px; padding: .25em 0;}
+/* STUDY FILES PAGE ICEFACES OVERWRITE */
+.vdcStudyFileRowFileName span.iceOutTxt, .vdcStudyFileRowFileDownload span.iceOutTxt, .vdcStudyFilesCatLabel span.iceOutTxt,
+.vdcStudyCatDownloadLink span.iceOutTxt, .vdcStudyFileSubsetAnalysisLink span.iceOutTxt {
+    overflow: visible !important; display: inline !important; padding: 0 !important;
+}
+.vdcStudyFileRowFileDownloadLink span.iceOutTxt, .vdcStudyFileSubsetAnalysisLink span.iceOutTxt,
+.studyFileDownloadAs span.iceOutTxt, .vdcStudyFileSubsetTable span.iceOutTxt {
+    font-size: 100% !important;
+}
+.vdcStudyFilesContent table.iceDatTbl, .vdcStudyFilesContent table.iceDatTbl tr, .vdcStudyFilesContent table.iceDatTbl td {
+  border: 0; margin: 0 0 0 0; padding: 0 0 0 0;
+}
+
+/* STUDY FILES PAGE */
+.vdcStudyFileCheckBox, .vdcStudyFileSpacer {vertical-align: top; width: 24px;}
+.vdcStudyFileInfo, .vdcStudyFileSubsetting {vertical-align: top; width: 40%;}
+.vdcStudyFileDownload, .vdcStudyFileAnalysis {vertical-align: top; width: 150px;}
+.vdcStudyFileDesc, .vdcStudyFileCitation {vertical-align: top; width: 35%;}
+
+.vdcStudyFileRowFileInfo {padding: 0 .25em;}
+.vdcStudyFileRowFileThumb {padding: .25em;}
+.vdcStudyFileRowFileName {}
+span.vdcStudyFileRowFileDetails {font-size: 90% !important; color: darkgray;  white-space: nowrap;}
+.vdcStudyFileRowFileDownload {padding: .25em 0;}
 
 a.vdcStudyFileRowFileDownloadLink:link, a.vdcStudyFileRowFileDownloadLink:hover, 
 a.vdcStudyFileRowFileDownloadLink:active, a.vdcStudyFileRowFileDownloadLink:visited {padding-left: 24px; padding-bottom: 4px; padding-top: 4px; background: url(icon_download.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
@@ -677,20 +697,18 @@ span.vdcStudyFileRowFileDownloadRestricted {margin-left: 3px; font-size: 90% !im
 
 .vdcStudyDesc a.vdcTruncatorLinkLess {display: block; text-align: right;}
 
-.vdcStudyFileRowRight {float: left; width: 48%; padding: 0 .25em;}
-.vdcStudyFileRowSubset {overflow: hidden; clear: left; width: 100%;}
-.vdcStudyFileRowSubsetLeft {float: left; width: 50%;}
-.vdcStudyFileSubsetTable {float: left; width: auto; padding: 0 .25em;}
-.vdcStudyFileSubsetTable table {margin: .5em 0; border-collapse: collapse;}
-.vdcStudyFileSubsetTable td {border: 1px solid #c55b28; padding: 0 .5em; font-size: 90% !important;}
-.vdcStudyFileSubsetTable td span {text-transform: uppercase; font-size: 90% !important;}
-.vdcStudyFileSubsetAnalysis {float: right; width: 160px;}
+.vdcStudyFileSubset {padding: 0 .25em;}
+.vdcStudyFileSubset table.vdcStudyFileSubsetTable {margin: .5em 0; border-collapse: collapse;}
+.vdcStudyFileSubset table.vdcStudyFileSubsetTable td {border: 1px solid #c55b28; padding: 0 .5em;}
+.vdcStudyFileSubset table.vdcStudyFileSubsetTable td span {text-transform: uppercase; font-size: 90% !important;}
+.vdcStudyFileSubset table.vdcStudyFileSubsetTable td a {font-size: 100% !important;}
+.vdcStudyFileSubsetAnalysis {}
 .vdcStudyFileSubsetAnalysis a:hover, .vdcStudyFileSubsetAnalysis a:active {color: #c55b28; text-decoration: underline;}
 
 a.vdcStudyFileSubsetAnalysisLink:link, a.vdcStudyFileSubsetAnalysisLink:hover, 
 a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visited {padding-left: 24px; padding-bottom: 2px; padding-top: 2px; background: url(icon_analyze.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
 
-.vdcStudyDataCitationContainer {float: left; width: 48%; padding: 0 0.25em;}
+.vdcStudyDataCitationContainer {width: 90%; padding: 0 0.25em;}
 .vdcStudyDataCitation {}
 .vdcStudyDataCitation a.vdcTruncatorLinkMore {
         padding-left: 24px;

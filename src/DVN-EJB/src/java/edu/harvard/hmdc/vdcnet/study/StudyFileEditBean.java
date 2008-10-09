@@ -60,13 +60,13 @@ public class StudyFileEditBean implements Serializable{
                                         // not yet supported as subsettable
                                         //this.getStudyFile().getFileType().equals("application/x-rlang-transport") );
 
-        // replace extension with ".tab" if subsettable
-        this.getStudyFile().setFileName(this.getStudyFile().isSubsettable() ? FileUtil.replaceExtension(this.getOriginalFileName()): this.getOriginalFileName());                
+          // replace extension with ".tab" if subsettable
+        this.getStudyFile().setFileName(this.getStudyFile().isSubsettable() ? FileUtil.replaceExtension(this.getOriginalFileName()): this.getOriginalFileName());  
 
         this.setTempSystemFileLocation( file.getAbsolutePath() );
-        this.getStudyFile().setFileSystemName(fileSystemName);    
+        this.getStudyFile().setFileSystemName(fileSystemName);
     }    
-    
+   
     private StudyFile studyFile;
     
     private String fileCategoryName;
@@ -75,7 +75,12 @@ public class StudyFileEditBean implements Serializable{
     private String controlCardSystemFileLocation;
     private String ingestedSystemFileLocation;    
     private boolean deleteFlag;
-
+    
+   
+    private Long sizeFormatted = null;
+   
+     
+    //end of EV additions
     public StudyFile getStudyFile() {
         return studyFile;
     }
@@ -162,5 +167,19 @@ public class StudyFileEditBean implements Serializable{
      public String getUserFriendlyFileType() {
          return FileUtil.getUserFriendlyFileType(studyFile);
      }    
-
+//EV added for compatibility with icefaces
+      /**
+     * Method to return the file size as a formatted string
+     * For example, 4000 bytes would be returned as 4kb
+     *
+     *@return formatted file size
+     */
+    public Long getSizeFormatted() {
+       
+        return sizeFormatted; 
+    }
+  public void setSizeFormatted(Long s){
+      sizeFormatted = s; 
+  }
+  
 }

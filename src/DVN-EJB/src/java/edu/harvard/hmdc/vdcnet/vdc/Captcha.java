@@ -82,6 +82,7 @@ public class Captcha implements Serializable {
         String hostName = null;
         try {
             hostName = InetAddress.getLocalHost().getCanonicalHostName();
+            Logger.getLogger(Captcha.class.getName()).info("HOST NAME: "+hostName);
             if (hostName.indexOf(domainName) == -1){
                 hostName = "127.0.0.1"; // for dev testing
             }

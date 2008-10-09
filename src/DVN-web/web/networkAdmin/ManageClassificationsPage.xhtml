@@ -112,10 +112,13 @@
                         <ice:outputText escape="false" value="&lt;!-- cell spacer --&gt;"/>
                     </f:facet>
                     <!-- TODO: change this link to perform the delete function -->
-                    <ice:outputLink rendered="#{dvItems.recordType eq 'group'}" value="/dvn/faces/networkAdmin/AddDataversesClassificationsPage.xhtml">
-                      <f:param name="cid" value="#{dvItems.id}" />
-                      <ice:outputText value="Delete"/>
-                    </ice:outputLink>
+                    <ice:commandLink actionListener="#{manageClassificationsPage.delete_action}"
+                                        binding="#{manageClassificationsPage.linkDelete}"
+                                        rendered="#{dvItems.recordType eq 'group'}"
+                                        value="Delete"
+                                        >
+                      <f:attribute name="cid" value="#{dvItems.id}"/>
+                    </ice:commandLink>
                 </ice:column>
               </ice:dataTable>
               <!-- ******************* TEST ****************** -->

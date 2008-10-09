@@ -233,36 +233,21 @@
         <managed-bean-name>AddFilesPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.AddFilesPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
-   <!--     <managed-property>
+   <!--    <managed-property>
             <property-name>studyId</property-name>
             <property-class>java.lang.Long</property-class>
             <value>#{param.studyId}</value>
         </managed-property>
+-->
         <managed-property>
             <property-name>ingestEmail</property-name>
             <property-class>java.lang.String</property-class>
             <value>#{VDCSession.loginBean.user.email}</value>
         </managed-property>
-
--->
  <!-- ****** EV : Managed beans for AddFilesPage with IceFaces ****** -->
         <managed-property>
         <property-name>renderManager</property-name>
         <value>#{manager}</value>
-       </managed-property>
-    </managed-bean>
-<managed-bean>
-        <description>
-            Backing bean for dataTable example.
-        </description>
-        <managed-bean-name>fileData</managed-bean-name>
-        <managed-bean-class>
-            edu.harvard.hmdc.vdcnet.web.util.InputFileData
-        </managed-bean-class>
-        <managed-bean-scope>none</managed-bean-scope>
-        <managed-property>
-          <property-name>fileInfo</property-name>
-          <value>#{fileInfo}</value>
        </managed-property>
     </managed-bean>
  <managed-bean>

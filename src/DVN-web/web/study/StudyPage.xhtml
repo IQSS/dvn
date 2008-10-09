@@ -14,35 +14,28 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-
-    <gui:param name="pageTitle" value="DVN - Study" />
-
+    <gui:param name="pageTitle" value="DVN - Study"/>
     <gui:define name="body">
       <f:loadBundle basename="StudyBundle" var="studybundle"/>
-
       <dvn:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" writePopupDiv="true" rendered="true"/>
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" value="StudyPage" name="pageName"/>
         <ice:inputHidden id="studyId" value="#{studyPage.studyId}"/>
         <ice:inputHidden id="slIndex" value="#{studyPage.studyListingIndex}"/>
-
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{studyPage.studyUI.study.title}"/> 
             <ice:outputText styleClass="vdcStudyStatus" value=" (In Review)" rendered="#{studyPage.studyUI.study.inReview}"/>
             <ice:outputText styleClass="vdcStudyStatus" value=" (New)" rendered="#{studyPage.studyUI.study.new}"/>
           </div>
-
           <div jsfc="ice:panelGroup" styleClass="dvn_sectionTitleLinksL" rendered="#{!empty studyPage.studyListingIndex}">
             <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/StudyListingPage.xhtml?studyListingIndex=#{studyPage.studyListingIndex}">
               <ice:outputText value="&lt; View Previous Study Listing"/>
             </ice:outputLink>
           </div>
-
           <div jsfc="ice:panelGroup" styleClass="dvn_sectionTitleLinksR" rendered="#{studyPage.userAuthorizedToEdit or studyPage.studyUI.study.inReview or studyPage.studyUI.study.new}">
             <ice:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
-
             <div jsfc="ice:panelGroup" styleClass="dvn_tooltip" rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
               <script type="text/javascript">
                   // <![CDATA[
@@ -54,31 +47,23 @@
                   });
                   // ]]>
               </script>
-
               <div jsfc="ice:panelGroup" styleClass="dvnInlineButton" rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}">
                 <ice:commandButton value="Release" actionListener="#{studyPage.setReleased}"/>
               </div>
-
               <dvn:tooltip tooltipMessage="#{studybundle.editTip}" linkText="#{studybundle.editText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tabSet1.selected}" cssClass="vdcTooltipLink"/>
-
               <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
-
               <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
-
               <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
-
               <span jsfc="ice:outputText" rendered="#{studyPage.userAuthorizedToRelease}">
                 <dvn:tooltip tooltipMessage="#{studybundle.templateTip}" linkText="#{studybundle.templateText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
               </span>
               <ice:commandButton rendered="#{studyPage.studyUI.study.new}" value="Ready for Review" actionListener="#{studyPage.setReadyForReview}"/>
             </div>
           </div>
-
           <div class="dvn_sectionBoxNoBorders">
             <ui:tabSet binding="#{studyPage.tabSet1}" id="tabSet1" lite="true" mini="true">
               <ui:tab id="catalog" text="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
                 <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" style="width: 98%">
-
                   <div jsfc="ice:panelGroup"  id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                     <ice:outputText id="outputText11" value="Citation Information"/>
                     <ice:commandButton id="commandButtonCitationInfoContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}" />
@@ -144,16 +129,16 @@
                     <ice:outputText id="text18"  value="#{studyPage.studyUI.study.replicationFor}" rendered="#{!empty studyPage.studyUI.study.replicationFor}" escape="false" />
 
                     <!--
-                                  <dvn:inlinehelp helpMessage="#{studybundle.dataverseOwnerHelp}"  linkText="#{studybundle.dataverseOwnerLabel}" heading="#{studybundle.dataverseOwnerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.owner.Id != VDCRequest.currentVDCId}" />
-                                  <ice:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}" rendered="#{studyPage.studyUI.study.owner.Id != VDCRequest.currentVDCId}" >
-                                      <ice:outputText value="#{studyPage.studyUI.study.owner.name} Dataverse" />
-                                  </ice:outputLink>
+                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseOwnerHelp}"  linkText="#{studybundle.dataverseOwnerLabel}" heading="#{studybundle.dataverseOwnerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.owner.Id != VDCRequest.currentVDCId}" />
+                    <ice:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}" rendered="#{studyPage.studyUI.study.owner.Id != VDCRequest.currentVDCId}" >
+                        <ice:outputText value="#{studyPage.studyUI.study.owner.name} Dataverse" />
+                    </ice:outputLink>
 
-                                  <dvn:inlinehelp helpMessage="#{studybundle.harvestHoldingsHelp}"  linkText="#{studybundle.harvestHoldingsLabel}" heading="#{studybundle.harvestHoldingsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{ !empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}"/>
-                                  <ice:outputLink value="#{studyPage.studyUI.study.harvestHoldings}" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
-                                      <ice:outputText value="#{studyPage.studyUI.study.harvestHoldings}" />
-                                  </ice:outputLink>
-                                  -->
+                    <dvn:inlinehelp helpMessage="#{studybundle.harvestHoldingsHelp}"  linkText="#{studybundle.harvestHoldingsLabel}" heading="#{studybundle.harvestHoldingsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{ !empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}"/>
+                    <ice:outputLink value="#{studyPage.studyUI.study.harvestHoldings}" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
+                        <ice:outputText value="#{studyPage.studyUI.study.harvestHoldings}" />
+                    </ice:outputLink>
+                    -->
 
                     <dvn:inlinehelp helpMessage="#{studybundle.provenanceHelp}"  linkText="#{studybundle.provenanceLabel}" heading="#{studybundle.provenanceHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  />
                     <div jsfc="ice:panelGroup" >
@@ -165,7 +150,6 @@
                       </ice:outputLink>
                     </div>
                   </ice:panelGrid>
-
                   <div jsfc="ice:panelGroup"  id="groupPanel12" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.abstractAndScopePanelIsEmpty}" >
                     <ice:outputText   id="AbstractAndScopeText" value="Abstract and Scope"/>
                     <ice:commandButton id="commandButtonAbstractScopeContract"  image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.abstractAndScopePanelIsRendered }" actionListener="#{studyPage.updateAbstractScopeDisplay}"/>
@@ -205,7 +189,6 @@
                     <dvn:inlinehelp helpMessage="#{studybundle.collectionDateHelp}"  linkText="#{studybundle.collectionDateLabel}" heading="#{studybundle.collectionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.dateOfCollection != ''  }"/>
                     <ice:outputText id="text25"  value="#{studyPage.studyUI.dateOfCollection} " rendered="#{!empty studyPage.studyUI.dateOfCollection }"/>
 
-
                     <dvn:inlinehelp helpMessage="#{studybundle.countryHelp}"  linkText="#{studybundle.countryLabel}" heading="#{studybundle.countryHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.country != '' and studyPage.studyUI.study.country != null }"/>
                     <ice:outputText  id="text26" value="#{studyPage.studyUI.study.country}" rendered="#{!empty studyPage.studyUI.study.country }"/>
 
@@ -227,7 +210,6 @@
                     <dvn:inlinehelp helpMessage="#{studybundle.kindOfDataHelp}"  linkText="#{studybundle.kindOfDataLabel}" heading="#{studybundle.kindOfDataHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.kindOfData != '' and studyPage.studyUI.study.kindOfData != null }"/>
                     <ice:outputText id="text32"  value="#{studyPage.studyUI.study.kindOfData}" rendered="#{!empty studyPage.studyUI.study.kindOfData}"/>
                   </ice:panelGrid>
-
                   <div jsfc="ice:panelGroup"   id="groupPanel13" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataCollectionIsEmpty}">
                     <ice:outputText  id="outputText78" value="Data Collection / Methodology"/>
                     <ice:commandButton id="commandButtondataCollectionoContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.dataCollectionPanelIsRendered}" actionListener="#{studyPage.updateDataCollectionDisplay}" />
@@ -296,7 +278,6 @@
                     <dvn:inlinehelp helpMessage="#{studybundle.otherDataAppraisalHelp}" linkText="#{studybundle.otherDataAppraisalLabel}" heading="#{studybundle.otherDataAppraisalHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.otherDataAppraisal != '' and studyPage.studyUI.study.otherDataAppraisal != null }"/>
                     <ice:outputText id="outputText114" value="#{studyPage.studyUI.study.otherDataAppraisal}" rendered="#{!empty studyPage.studyUI.study.otherDataAppraisal}" escape="false" />
                   </ice:panelGrid>
-
                   <div jsfc="ice:panelGroup" id="groupPanel14a" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataAvailIsEmpty}">
                     <ice:outputText id="outputText115a" value="Data Set Availability"/>
                     <ice:commandButton id="commandButtonDataAvailContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.dataAvailPanelIsRendered}" actionListener="#{studyPage.updateDataAvailDisplay}" />
@@ -323,7 +304,6 @@
                     <dvn:inlinehelp helpMessage="#{studybundle.numberOfFilesHelp}" linkText="#{studybundle.numberOfFilesLabel}" heading="#{studybundle.numberOfFilesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.numberOfFiles != '' and studyPage.studyUI.study.numberOfFiles != null }"/>
                     <ice:outputText id="outputText127" value="#{studyPage.studyUI.study.numberOfFiles}" rendered="#{!empty studyPage.studyUI.study.numberOfFiles}" escape="false"/>
                   </ice:panelGrid>
-
                   <div jsfc="ice:panelGroup" id="groupPanel14b" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.termsOfUseIsEmpty}">
                     <a name="termsofuse"><!--TERMS OF USE--></a>
                     <ice:outputText id="outputText115" value="Terms of Use"/>
@@ -355,46 +335,45 @@ width="100%">
                     <dvn:inlinehelp helpMessage="#{studybundle.conditionsHelp}"  linkText="#{studybundle.conditionsLabel}" heading="#{studybundle.conditionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.conditions != '' and studyPage.studyUI.study.conditions != null }"/>
                     <ice:outputText  id="outputText141" value="#{studyPage.studyUI.study.conditions}" rendered="#{!empty studyPage.studyUI.study.conditions}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.disclaimerHelp}"  linkText="#{studybundle.disclaimerLabel}" heading="#{studybundle.disclaimerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.disclaimer != '' and studyPage.studyUI.study.disclaimer != null }"/>
-                    <ice:outputText  id="outputText143" value="#{studyPage.studyUI.study.disclaimer}" rendered="#{!empty studyPage.studyUI.study.disclaimer}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.disclaimerHelp}" linkText="#{studybundle.disclaimerLabel}" heading="#{studybundle.disclaimerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.disclaimer != '' and studyPage.studyUI.study.disclaimer != null }"/>
+                    <ice:outputText id="outputText143" value="#{studyPage.studyUI.study.disclaimer}" rendered="#{!empty studyPage.studyUI.study.disclaimer}" escape="false"/>
 
                     <!-- Dataverse, Dataverse Network and Harvest Terms of Use -->
-                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseTermsofUseHelp}"  linkText="#{studybundle.dataverseTermsofUseLabel}" heading="#{studybundle.dataverseTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}"/>
-                    <ice:outputText   value="#{studyPage.studyUI.dataverseTermsOfUse}" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseTermsofUseHelp}" linkText="#{studybundle.dataverseTermsofUseLabel}" heading="#{studybundle.dataverseTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}"/>
+                    <ice:outputText value="#{studyPage.studyUI.dataverseTermsOfUse}" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}" escape="false"/>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.networkTermsofUseHelp}"  linkText="#{studybundle.networkTermsofUseLabel}" heading="#{studybundle.networkTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}"/>
                     <ice:outputText value="#{VDCRequest.vdcNetwork.downloadTermsOfUse}" rendered="#{VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseHarvestedTermsofUseHelp}"  linkText="#{studybundle.dataverseHarvestedTermsofUseLabel}" heading="#{studybundle.dataverseHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.study.harvestDVTermsOfUse}"/>
-                    <ice:outputText  value="#{studyPage.studyUI.study.harvestDVTermsOfUse}" rendered="#{!empty studyPage.studyUI.study.harvestDVTermsOfUse}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseHarvestedTermsofUseHelp}" linkText="#{studybundle.dataverseHarvestedTermsofUseLabel}" heading="#{studybundle.dataverseHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.study.harvestDVTermsOfUse}"/>
+                    <ice:outputText value="#{studyPage.studyUI.study.harvestDVTermsOfUse}" rendered="#{!empty studyPage.studyUI.study.harvestDVTermsOfUse}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.networkHarvestedTermsofUseHelp}"  linkText="#{studybundle.networkHarvestedTermsofUseLabel}" heading="#{studybundle.networkHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.study.harvestDVNTermsOfUse}"/>
-                    <ice:outputText  value="#{studyPage.studyUI.study.harvestDVNTermsOfUse}" rendered="#{!empty studyPage.studyUI.study.harvestDVNTermsOfUse}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.networkHarvestedTermsofUseHelp}" linkText="#{studybundle.networkHarvestedTermsofUseLabel}" heading="#{studybundle.networkHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.study.harvestDVNTermsOfUse}"/>
+                    <ice:outputText value="#{studyPage.studyUI.study.harvestDVNTermsOfUse}" rendered="#{!empty studyPage.studyUI.study.harvestDVNTermsOfUse}" escape="false"/>
 
                   </ice:panelGrid>
-                  <div jsfc="ice:panelGroup"   id="groupPanel15" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.notesIsEmpty}">
-                    <ice:outputText  id="outputText144" value="Other Information"/>
+                  <div jsfc="ice:panelGroup" id="groupPanel15" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.notesIsEmpty}">
+                    <ice:outputText id="outputText144" value="Other Information"/>
                     <ice:commandButton id="commandButtonNotesContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.notesPanelIsRendered}" actionListener="#{studyPage.updateNotesDisplay}" />
                     <ice:commandButton id="commandButtonNotesExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.notesPanelIsRendered}" actionListener="#{studyPage.updateNotesDisplay}"/>
                   </div>
-                  <ice:panelGrid   binding="#{studyPage.notesPanel}" cellpadding="0" cellspacing="0"
-                                   columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelNotes"  rendered="#{studyPage.studyUI.notesPanelIsRendered}"
-                                   width="100%">
-                    <dvn:inlinehelp helpMessage="#{studybundle.notesHelp}"  linkText="#{studybundle.notesLabel}" heading="#{studybundle.notesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.notes != ''}"/>
-                    <ice:outputText  id="outputText146" value="#{studyPage.studyUI.notes}" rendered="#{!empty studyPage.studyUI.notes}" escape="false"/>
+                  <ice:panelGrid  binding="#{studyPage.notesPanel}" cellpadding="0" cellspacing="0"
+                                  columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelNotes" rendered="#{studyPage.studyUI.notesPanelIsRendered}"
+                                  width="100%">
+                    <dvn:inlinehelp helpMessage="#{studybundle.notesHelp}" linkText="#{studybundle.notesLabel}" heading="#{studybundle.notesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.notes != ''}"/>
+                    <ice:outputText id="outputText146" value="#{studyPage.studyUI.notes}" rendered="#{!empty studyPage.studyUI.notes}" escape="false"/>
                   </ice:panelGrid>
-
                   <!--
-                              <div jsfc="ice:panelGroup"   id="groupPanel3" styleClass="vdcStudyInfoDownload" rendered="false">
-                                  <ice:outputLink  id="hyperlink2" value="http://www.sun.com/jscreator">
-                                      <ice:outputText  id="hyperlink2Text" value="Download the complete cataloging information in XML format (without variables)"/>
-                                  </ice:outputLink>
-                              </div>
-                              <div jsfc="ice:panelGroup"   id="groupPanel2" styleClass="vdcStudyInfoDownload" rendered="false">
-                                  <ice:outputLink  id="hyperlink1" value="http://www.sun.com/jscreator">
-                                      <ice:outputText  id="hyperlink1Text" value="Download the complete cataloging information in XML format (with variables)"/>
-                                  </ice:outputLink>
-                              </div>
+                  <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="vdcStudyInfoDownload" rendered="false">
+                      <ice:outputLink  id="hyperlink2" value="http://www.sun.com/jscreator">
+                          <ice:outputText id="hyperlink2Text" value="Download the complete cataloging information in XML format (without variables)"/>
+                      </ice:outputLink>
+                  </div>
+                  <div jsfc="ice:panelGroup" id="groupPanel2" styleClass="vdcStudyInfoDownload" rendered="false">
+                      <ice:outputLink id="hyperlink1" value="http://www.sun.com/jscreator">
+                          <ice:outputText id="hyperlink1Text" value="Download the complete cataloging information in XML format (with variables)"/>
+                      </ice:outputLink>
+                  </div>
                   -->
                 </div>
               </ui:tab>
@@ -439,18 +418,34 @@ width="100%">
                       <ice:outputText value=" if you would like to access the restricted files in this study." rendered="#{studyPage.studyUI.study.requestAccess}"/>
                     </div>
                   </div>
-
                   <div jsfc="ice:panelGroup" id="layoutPanel3" panelLayout="flow" styleClass="vdcStudyFilesContent" rendered="#{!empty studyPage.studyUI.study.fileCategories}">
+                    <!-- OLD DOWNLOAD ALL BUTTON PLEASE REMOVE WHEN DONE
                     <div jsfc="ice:panelGroup" id="groupPanel7a" styleClass="vdcStudyFilesDownloadAll" rendered="#{studyPage.studyUI.anyFileUnrestricted}">
                       <ice:commandButton onclick="window.location.href='/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?studyId=#{studyPage.studyUI.study.id}#{studyPage.xff}';return false;" value="Download All Files"/>
                       <ice:outputText id="outputText33" styleClass="vdcStudyFilesDownloadAllMessage" value="Note: you will be prompted to save a single archive file. Study files that have restricted access will not be downloaded. Data files will be downloaded in their default format."/>
                     </div>
-
+                    -->
+                    <ice:panelGrid columns="2" cellspacing="0" cellpadding="0" styleClass="vdcStudyFilesDownloadAll">
+                      <div class="vdcStudyFilesDownloadAllButton">
+                        <ice:commandButton onclick="window.location.href='/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?studyId=#{studyPage.studyUI.study.id}#{studyPage.xff}';return false;" value="Download All Selected Files"/>
+                        <p>
+                          <ice:selectBooleanCheckbox value=""/> <ice:outputText value=" Select all files"/>
+                        </p>
+                      </div>
+                      <div class="vdcStudyFilesDownloadAllInfo">
+                        DOWNLOAD INSTRUCTIONS<br/>
+                        <p>Use the checkboxes next to the file name to download multiple files. You can also download all the files in a category by checking the box next to the category name.</p>
+                        <p>Note: You will be prompted to save a single archive file. Study files that have restricted access will not be downloaded. Data files will be downloaded in their default format.</p>
+                      </div>
+                    </ice:panelGrid>
                     <ice:dataTable cellpadding="0" cellspacing="0" value="#{studyPage.studyUI.categoryUIList}" id="catDataTable" var="catUI" width="100%">
                       <ice:column id="catColumn">
                         <div class="TogglePaneFancy">
                           <div>
                             <div jsfc="ice:panelGroup" id="groupPanel4" styleClass="TogglePaneFancyHeader vdcStudyFilesCat">
+                              <div jsfc="ice:panelGroup" styleClass="vdcStudyFilesCatLabel">
+                                <ice:selectBooleanCheckbox value=""/>
+                              </div>
                               <div jsfc="ice:panelGroup" styleClass="vdcStudyFilesCatLabel">
                                 <ice:outputText id="outputText16" value="#{catUI.fileCategory.name}"/>
                               </div>
@@ -466,93 +461,97 @@ width="100%">
                               <ice:dataTable rendered="#{catUI.rendered}" cellpadding="0" cellspacing="0"
                                              id="dataTable5" rowClasses="list-row-even,list-row-odd"
                                              value="#{catUI.studyFileUIs}" var="studyFileUI" width="100%">
-                                <ice:column id="column9">
-                                  <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRow">
-
-                                    <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowLeft">
+                                <ice:column>
+                                  <ice:panelGrid columns="4" cellpadding="0" cellspacing="0" border="0" width="100%"
+                                                 columnClasses="vdcStudyFileCheckBox,vdcStudyFileInfo,vdcStudyFileDownload,vdcStudyFileDesc">
+                                    <ice:column id="column10">
+                                      <ice:selectBooleanCheckbox value=""/>
+                                    </ice:column>
+                                    <ice:column id="column11">
                                       <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowFileInfo">
                                         <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowFileThumb" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.image}">
-                                          <ice:graphicImage styleClass="vdcNoBorders" value="/FileDownload/?fileId=#{studyFileUI.studyFile.id}&amp;imageThumb" alt="Thumbnail" />
+                                          <ice:graphicImage styleClass="vdcNoBorders" value="/FileDownload/?fileId=#{studyFileUI.studyFile.id}&amp;imageThumb" alt="Thumbnail"/>
                                         </div>
                                         <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowFileName">
                                           <ice:outputText id="outputText15" value="#{studyFileUI.studyFile.fileName}"/>
                                           <ice:inputHidden id="vdcIdforFile" value="#{studyFileUI.vdcId}"/>
                                           <br/>
-                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value="#{studyFileUI.userFriendlyFileType}" />
-                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.fileSize}" rendered="#{!empty studyFileUI.studyFile.fileSystemLocation and !studyFileUI.studyFile.remote}" />
-                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" - Unknown file size" rendered="#{empty studyFileUI.studyFile.fileSystemLocation or studyFileUI.studyFile.remote}" />
-                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.downloadCount}" />
-                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" download" rendered="#{studyFileUI.downloadCount == 1 and !studyFileUI.studyFile.subsettable}" />
-                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" download/analysis" rendered="#{studyFileUI.downloadCount == 1 and studyFileUI.studyFile.subsettable}" />
-                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" downloads" rendered="#{studyFileUI.downloadCount != 1 and !studyFileUI.studyFile.subsettable}" />
-                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" downloads + analyses" rendered="#{studyFileUI.downloadCount != 1 and studyFileUI.studyFile.subsettable}" />
+                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value="#{studyFileUI.userFriendlyFileType}"/>
+                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.fileSize}" rendered="#{!empty studyFileUI.studyFile.fileSystemLocation and !studyFileUI.studyFile.remote}"/>
+                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" - Unknown file size" rendered="#{empty studyFileUI.studyFile.fileSystemLocation or studyFileUI.studyFile.remote}"/>
+                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.downloadCount} download" rendered="#{studyFileUI.downloadCount == 1 and !studyFileUI.studyFile.subsettable}"/>
+                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.downloadCount} download/analysis" rendered="#{studyFileUI.downloadCount == 1 and studyFileUI.studyFile.subsettable}"/>
+                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.downloadCount} downloads" rendered="#{studyFileUI.downloadCount != 1 and !studyFileUI.studyFile.subsettable}"/>
+                                          <ice:outputText styleClass="vdcStudyFileRowFileDetails" value=" - #{studyFileUI.downloadCount} downloads + analyses" rendered="#{studyFileUI.downloadCount != 1 and studyFileUI.studyFile.subsettable}"/>
                                         </div>
                                       </div>
-
-                                      <div jsfc="ice:panelGroup"  styleClass="vdcStudyFileRowFileDownload">
+                                    </ice:column>
+                                    <ice:column id="column12">
+                                      <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowFileDownload">
                                         <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" alt="You do not have permissions to access this file."/>
-                                        <ice:outputText styleClass="vdcStudyFileRowFileDownloadRestricted" value="Restricted Access" rendered="#{studyFileUI.restrictedForUser}" />
-
+                                        <ice:outputText styleClass="vdcStudyFileRowFileDownloadRestricted" value="Restricted Access" rendered="#{studyFileUI.restrictedForUser}"/>
                                         <ice:outputLink styleClass="vdcStudyFileRowFileDownloadLink" value="#{studyFileUI.fileDownloadURL}" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}">
-                                          <ice:outputText value="Download" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}" />
+                                          <ice:outputText value="Download" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}"/>
                                         </ice:outputLink>
-
-                                        <div jsfc="ice:panelGroup"  rendered="#{!studyFileUI.restrictedForUser and studyFileUI.studyFile.subsettable}">
-                                          <script type="text/javascript">
-                                              // <![CDATA[
-                                              jQuery(document).ready(function(){
-                                                  jQuery(".studyFileDownloadAs li").hover(
-                                                  function(){ jQuery("ul", this).fadeIn("fast"); },
-                                                  function() { }
-                                              );
-                                                  if (document.all) {
-                                                      jQuery(".studyFileDownloadAs li").hoverClass ("sfHover");
-                                                  }
-                                              });
-                                              jQuery.fn.hoverClass = function(c) {
-                                                  return this.each(function(){
-                                                      jQuery(this).hover(
-                                                      function() { jQuery(this).addClass(c);  },
-                                                      function() { jQuery(this).removeClass(c); }
-                                                  );
-                                                  });
-                                              };
-                                              // ]]>
-                                          </script>
-                                          <ul class="studyFileDownloadAs downloadas">
-                                            <li>
-                                              <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_download.gif" alt="View or download this File."/><a class="downloadasLink">Download as...</a>
-                                              <ul>
-                                                <gui:repeat value="#{studyFileUI.dataFileFormatTypes}" var="studyDataFileType">
-                                                  <li>
-                                                    <ice:outputLink value="#{studyFileUI.fileDownloadURL}&amp;downloadOriginalFormat=true" rendered="#{!empty studyDataFileType.value and studyDataFileType.originalFileDataFileFormat}">
-                                                      <ice:outputText value="#{studyDataFileType.name}"/>
-                                                    </ice:outputLink>
-                                                    <ice:outputLink value="#{studyFileUI.fileDownloadURL}&amp;format=#{studyDataFileType.value}" rendered="#{!empty studyDataFileType.value and !studyDataFileType.originalFileDataFileFormat}">
-                                                      <ice:outputText value="#{studyDataFileType.name}"/>
-                                                    </ice:outputLink>
-                                                    <ice:outputLink value="#{studyFileUI.fileDownloadURL}" rendered="#{empty studyDataFileType.value}">
-                                                      <ice:outputText value="#{studyDataFileType.name}"/>
-                                                    </ice:outputLink>
-                                                  </li>
-                                                </gui:repeat>
-                                              </ul>
-                                            </li>
-                                          </ul>
-                                        </div>
                                       </div>
-                                    </div>
-
-                                    <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowRight">
-                                      <ice:outputText styleClass="vdcStudyDesc" id="outputText17" value="#{studyFileUI.studyFile.description}"/>
-                                    </div>
-                                  </div>
-
-                                  <div jsfc="ice:panelGroup" rendered="#{studyFileUI.studyFile.subsettable}"  styleClass="vdcStudyFileRowSubset">
-
-                                    <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowSubsetLeft">
-                                      <div jsfc="ice:panelGroup" styleClass="vdcStudyFileSubsetTable">
-                                        <ice:panelGrid columns="3" cellpadding="2" cellspacing="0" border="0">
+                                      <div jsfc="ice:panelGroup" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.studyFile.subsettable}">
+                                        <script type="text/javascript">
+                                            // <![CDATA[
+                                            jQuery(document).ready(function(){
+                                                jQuery(".studyFileDownloadAs li").hover(
+                                                function(){ jQuery("ul", this).fadeIn("fast"); },
+                                                function() { }
+                                            );
+                                                if (document.all) {
+                                                    jQuery(".studyFileDownloadAs li").hoverClass ("sfHover");
+                                                }
+                                            });
+                                            jQuery.fn.hoverClass = function(c) {
+                                                return this.each(function(){
+                                                    jQuery(this).hover(
+                                                    function() { jQuery(this).addClass(c);  },
+                                                    function() { jQuery(this).removeClass(c); }
+                                                );
+                                                });
+                                            };
+                                            // ]]>
+                                        </script>
+                                        <ul class="studyFileDownloadAs downloadas">
+                                          <li>
+                                            <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_download.gif" alt="View or download this File."/><a class="downloadasLink">Download as...</a>
+                                            <ul>
+                                              <gui:repeat value="#{studyFileUI.dataFileFormatTypes}" var="studyDataFileType">
+                                                <li>
+                                                  <ice:outputLink value="#{studyFileUI.fileDownloadURL}&amp;downloadOriginalFormat=true" rendered="#{!empty studyDataFileType.value and studyDataFileType.originalFileDataFileFormat}">
+                                                    <ice:outputText value="#{studyDataFileType.name}"/>
+                                                  </ice:outputLink>
+                                                  <ice:outputLink value="#{studyFileUI.fileDownloadURL}&amp;format=#{studyDataFileType.value}" rendered="#{!empty studyDataFileType.value and !studyDataFileType.originalFileDataFileFormat}">
+                                                    <ice:outputText value="#{studyDataFileType.name}"/>
+                                                  </ice:outputLink>
+                                                  <ice:outputLink value="#{studyFileUI.fileDownloadURL}" rendered="#{empty studyDataFileType.value}">
+                                                    <ice:outputText value="#{studyDataFileType.name}"/>
+                                                  </ice:outputLink>
+                                                </li>
+                                              </gui:repeat>
+                                            </ul>
+                                          </li>
+                                        </ul>
+                                      </div>
+                                    </ice:column>
+                                    <ice:column id="column13">
+                                      <div jsfc="ice:panelGroup">
+                                        <ice:outputText styleClass="vdcStudyDesc" id="outputText17" value="#{studyFileUI.studyFile.description}"/>
+                                      </div>
+                                    </ice:column>
+                                  </ice:panelGrid>
+                                  <ice:panelGrid rendered="#{studyFileUI.studyFile.subsettable}" columns="4" cellpadding="0" cellspacing="0" border="0" width="100%"
+                                                 columnClasses="vdcStudyFileSpacer,vdcStudyFileSubsetting,vdcStudyFileAnalysis,vdcStudyFileCitation">
+                                    <ice:column id="column20">
+                                      &#160;
+                                    </ice:column>
+                                    <ice:column id="column21">
+                                      <div jsfc="ice:panelGroup" styleClass="vdcStudyFileSubset">
+                                        <ice:panelGrid styleClass="vdcStudyFileSubsetTable" columns="3" cellpadding="2" cellspacing="0" border="0">
                                           <ice:column id="column1">
                                             <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}">
                                               <span>Subsetting</span>
@@ -566,18 +565,20 @@ width="100%">
                                           </ice:column>
                                         </ice:panelGrid>
                                       </div>
-
-                                      <div jsfc="ice:panelGroup"  styleClass="vdcStudyFileSubsetAnalysis">
+                                    </ice:column>
+                                    <ice:column id="column22">
+                                      <div jsfc="ice:panelGroup" styleClass="vdcStudyFileSubsetAnalysis">
                                         <ice:outputLink id="fileSubset2" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}">
                                           <ice:outputText value="Access Subset/Analysis"/>
                                         </ice:outputLink>
                                       </div>
-                                    </div>
-
-                                    <div jsfc="ice:panelGroup"  styleClass="vdcStudyDataCitationContainer">
-                                      <ice:outputText styleClass="vdcStudyDataCitation" escape="false" value="&lt;span&gt;View Data Citation&lt;/span&gt;&lt;br /&gt;#{studyPage.studyUI.study.citation} #{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)]" />
-                                    </div>
-                                  </div>
+                                    </ice:column>
+                                    <ice:column id="column23">
+                                      <div jsfc="ice:panelGroup" styleClass="vdcStudyDataCitationContainer">
+                                        <ice:outputText styleClass="vdcStudyDataCitation" escape="false" value="&lt;span&gt;View Data Citation&lt;/span&gt;&lt;br /&gt;#{studyPage.studyUI.study.citation} #{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)]" />
+                                      </div>
+                                    </ice:column>
+                                  </ice:panelGrid>
                                 </ice:column>
                               </ice:dataTable>
                             </div>
@@ -585,14 +586,12 @@ width="100%">
                         </div>
                       </ice:column>
                     </ice:dataTable>
-
                   </div>
                 </div>
               </ui:tab>
             </ui:tabSet>
           </div>
         </div>
-
       </ice:form>
     </gui:define>
   </gui:composition>

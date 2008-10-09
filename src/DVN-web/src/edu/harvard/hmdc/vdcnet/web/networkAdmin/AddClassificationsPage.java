@@ -34,8 +34,8 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     @EJB VDCGroupServiceLocal vdcGroupService;
     @EJB VDCServiceLocal vdcService;
 
-    private HtmlInputText     nameInput = new HtmlInputText();
-    private HtmlInputTextarea descriptionInput = new HtmlInputTextarea();
+    private HtmlInputText     nameInput         = new HtmlInputText();
+    private HtmlInputTextarea descriptionInput  = new HtmlInputTextarea();
     private HtmlInputText     parentInput;
     private HtmlSelectOneMenu parentSelect;
     private SelectItem[]      parentSelectItems;

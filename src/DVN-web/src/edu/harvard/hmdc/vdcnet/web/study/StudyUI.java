@@ -91,6 +91,16 @@ public class StudyUI  implements java.io.Serializable {
         this.studyFields = studyFields;
     }
     
+    public StudyUI(Long sid, boolean selected) {
+        this.studyId = sid;
+        this.selected = selected;
+    }
+
+    public StudyUI(Study s, boolean selected) {
+        this.study = s;
+        this.selected = selected;
+    }   
+    
     /**
      * Creates a new instance of StudyUI
      * this constructor initializes the file category ui list
@@ -871,5 +881,15 @@ public class StudyUI  implements java.io.Serializable {
             downloadCount += sf.getStudyFileActivity() != null ? sf.getStudyFileActivity().getDownloadCount() : 0;
         }
         return downloadCount;
+    }
+
+    private boolean selected;
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

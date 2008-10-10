@@ -317,7 +317,7 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
             String challenge = map.get("recaptcha_challenge_field").toString();
             String response = map.get("recaptcha_response_field").toString();
             HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            ReCaptchaResponse resp = r.checkAnswer(c.getHost(), challenge, response); 
+            ReCaptchaResponse resp = r.checkAnswer(req.getRemoteAddr(), challenge, response); 
             if (!resp.isValid()) {
                 Logger.getLogger(ContactUsPage.class.getName()).info("INVALID RESPONSE: "+resp.getErrorMessage());
                 ((UIInput) toValidate).setValid(false);

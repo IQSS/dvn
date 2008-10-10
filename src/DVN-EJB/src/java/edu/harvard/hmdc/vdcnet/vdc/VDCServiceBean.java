@@ -103,8 +103,6 @@ public class VDCServiceBean implements VDCServiceLocal {
         sDV.setCreatedDate(DateUtil.getTimestamp());
         VDCCollection addedRootCollection = new VDCCollection();
         addedRootCollection.setName(name);
-        addedRootCollection.setReviewState(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED));
-        addedRootCollection.setVisible(true);
         vdcCollectionService.create(addedRootCollection);
         sDV.setRootCollection(addedRootCollection);
         sDV.getOwnedCollections().add(addedRootCollection);
@@ -249,6 +247,10 @@ public class VDCServiceBean implements VDCServiceLocal {
     public List findAll() {
         return em.createQuery("select object(o) from VDC as o order by o.name").getResultList();
     }
+    
+    public List<VDC> findAllPublic() {
+        return em.createQuery("select object(o) from VDC as o where o.restricted=false order by o.name").getResultList();
+    }    
 
     public List findBasic() {
         List myList = (List<VDC>) em.createQuery("select object(o) from VDC as o where o.dtype = 'Basic' order by o.name").getResultList();
@@ -265,8 +267,6 @@ public class VDCServiceBean implements VDCServiceLocal {
         addedSite.setCreatedDate(DateUtil.getTimestamp());
         VDCCollection addedRootCollection = new VDCCollection();
         addedRootCollection.setName(name);
-        addedRootCollection.setReviewState(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED));
-        addedRootCollection.setVisible(true);
         vdcCollectionService.create(addedRootCollection);
         addedSite.setRootCollection(addedRootCollection);
         addedSite.getOwnedCollections().add(addedRootCollection);
@@ -338,20 +338,8 @@ public class VDCServiceBean implements VDCServiceLocal {
     }    
     
     public List getLinkedCollections(VDC vdc, boolean getHiddenCollections) {
-        if (getHiddenCollections) {
-            return vdc.getLinkedCollections();
-        } else {
-            List linkedColls = new ArrayList();
-            Iterator iter = vdc.getLinkedCollections().iterator();
-            while (iter.hasNext()) {
-                VDCCollection link = (VDCCollection) iter.next();
-               if (link.isVisible()) {
-                    linkedColls.add( link );
-               }
-            }
-            
-            return linkedColls;
-        }
+        // getHiddenCollections is no longer used
+        return vdc.getLinkedCollections();
     }
     
     public void delete (Long vdcId) {

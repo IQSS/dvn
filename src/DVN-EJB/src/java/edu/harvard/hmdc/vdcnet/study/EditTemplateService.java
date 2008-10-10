@@ -42,6 +42,8 @@ public interface EditTemplateService extends java.io.Serializable {
     public void removeCollectionElement(Collection coll, Object elem);
     public Long getCreatedFromStudyId();
     void removeCollectionElement(Iterator iter, Object elem);
-    public void addFields(Long vdcId);
+    public void changeRecommend(TemplateField tf, boolean isRecommended);
+  
+   
  
 }

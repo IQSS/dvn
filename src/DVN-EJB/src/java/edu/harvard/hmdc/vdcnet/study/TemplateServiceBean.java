@@ -31,10 +31,16 @@ package edu.harvard.hmdc.vdcnet.study;
 
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -61,6 +67,60 @@ public class TemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.Templa
     public TemplateServiceBean() {
     }
 
+    private void addFields(Template template, Long vdcId) {
+      VDC vdc = em.find(VDC.class, vdcId);
+        Collection<TemplateField> defaultFields = vdc.getDefaultTemplate().getTemplateFields();
+       
+        template.setTemplateFields(new ArrayList());
+        for( TemplateField defaultField: defaultFields) {
+            TemplateField tf = new TemplateField();
+            tf.setDefaultValue(defaultField.getDefaultValue());
+            tf.setFieldInputLevel(defaultField.getFieldInputLevel());
+            tf.setStudyField(defaultField.getStudyField());
+            tf.setTemplate(template);
+            template.getTemplateFields().add(tf);
+        }
+
+      
+    }
+    
+    
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public  void createTemplate(Long vdcId) {
+       // Template template = new Template();
+        Template template = new Template();
+        template.setName((new Date()).toString());
+            TemplateField tf = new TemplateField();
+            tf.setDefaultValue("Test String");
+        
+            tf.setTemplate(template);     
+            template.setTemplateFields(new ArrayList<TemplateField>());
+            template.getTemplateFields().add(tf);
+        /*
+        VDC vdc = em.find(VDC.class, vdcId);      
+        template.setVdc(vdc);
+        vdc.getTemplates().add(template);
+        addFields(template, vdcId);
+         * */
+        em.persist(template);
+    
+   }
+
+        // Also copy default file categories
+        /* Not doing this anymore  
+        createdTemplate.setTemplateFileCategories(new ArrayList<TemplateFileCategory>());
+        for(TemplateFileCategory templateFileCategory: defTemplate.getTemplateFileCategories()) {
+            TemplateFileCategory tfc = new TemplateFileCategory();
+            tfc.setName(templateFileCategory.getName());
+            tfc.setDisplayOrder(templateFileCategory.getDisplayOrder());
+            tfc.setTemplate(templateFileCategory.getTemplate());
+        }
+         */  
+   
+      //  return template;
+    
+    /*
     public void createTemplate(String templateName, Long studyId, Long vdcId) {
         Template template = new Template();
         template.setName(templateName);
@@ -70,6 +130,7 @@ public class TemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.Templa
         em.persist(template);
 
     }
+     */ 
     public void deleteTemplate(Long templateId) {
         Template template = em.find(Template.class, templateId);
         em.remove(template);
@@ -83,7 +144,13 @@ public class TemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.Templa
         Query query = em.createNativeQuery(queryStr);
         Object object = ((List)query.getSingleResult()).get(0);
         Long count = (Long)object;
-        return count.compareTo(new Long(0))>0;
-        
+        return count.compareTo(new Long(0))>0;    
     }
+    
+    public FieldInputLevel getFieldInputLevel(String name) {
+        String queryStr = "SELECT f FROM FieldInputLevel f WHERE f.name = '" + name + "'"; 
+        Query query= em.createQuery(queryStr);
+        return (FieldInputLevel)query.getSingleResult();
+    }
+    
 }

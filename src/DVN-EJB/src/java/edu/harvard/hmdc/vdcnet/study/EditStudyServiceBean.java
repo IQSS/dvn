@@ -470,7 +470,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
         
         // Copy Template Metadata into Study Metadata
         newTemplate.getMetadata().copyMetadata(study.getMetadata());
-        FacesContext.getCurrentInstance( ).renderResponse( );
+        study.setTemplate(newTemplate);
     }
     
     private void clearCollection(Collection collection) {

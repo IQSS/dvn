@@ -36,9 +36,9 @@ import javax.xml.bind.JAXBException;
 @Local
 public interface TemplateServiceLocal extends java.io.Serializable {
   
-    
-    public void createTemplate( String templateName, Long studyId, Long vdcId);
+    public FieldInputLevel getFieldInputLevel(String name);    
     public void deleteTemplate(Long templateId);
     public Template getTemplate(Long templateId);
     public boolean isTemplateUsed(Long templateId);
+    public  void createTemplate(Long vdcId);
 }

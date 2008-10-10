@@ -30,13 +30,9 @@
 package edu.harvard.hmdc.vdcnet.study;
 
 import java.util.Collection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.*;
 import edu.harvard.hmdc.vdcnet.vdc.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -55,7 +51,9 @@ public class Template implements java.io.Serializable {
         metadata = new Metadata();
     }
 
-     
+     public Template(ArrayList templateFields ) {
+        metadata = new Metadata();
+    } 
     public Collection<TemplateField> getTemplateFields() {
         return templateFields;
     }

@@ -31,6 +31,7 @@ package edu.harvard.hmdc.vdcnet.harvest;
 
 import edu.harvard.hmdc.vdcnet.jaxb.oai.ResumptionTokenType;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBException;
@@ -61,4 +62,5 @@ public interface HarvesterServiceLocal extends java.io.Serializable  {
 
     public List<HarvestFormatType> findAllHarvestFormatTypes();    
     public HarvestFormatType findHarvestFormatTypeByMetadataPrefix(String metadataPrefix);
+  
 }

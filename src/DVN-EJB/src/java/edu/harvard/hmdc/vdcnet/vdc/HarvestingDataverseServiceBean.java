@@ -96,6 +96,13 @@ public class HarvestingDataverseServiceBean implements edu.harvard.hmdc.vdcnet.v
         hd.setLastHarvestTime(lastHarvestTime);
     }
     
+    
+   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void setLastSuccessfulHarvestTime(Long hdId, Date lastHarvestTime) {
+        HarvestingDataverse hd = em.find(HarvestingDataverse.class,hdId);
+        em.refresh(hd);
+        hd.setLastSuccessfulHarvestTime(lastHarvestTime);
+    }   
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public boolean getHarvestingNow(Long hdId) {
         HarvestingDataverse hd = em.find(HarvestingDataverse.class,hdId);
@@ -108,13 +115,51 @@ public class HarvestingDataverseServiceBean implements edu.harvard.hmdc.vdcnet.v
         em.refresh(hd);
         return hd.getLastHarvestTime();
     }
-    
-    
-    public void resetHarvestingStatus() {
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void setHarvestSuccess(Long hdId, Date currentTime, int harvestedCount, int failedCount) {
+        HarvestingDataverse hd = em.find(HarvestingDataverse.class, hdId);
+        em.refresh(hd);
+        hd.setLastSuccessfulHarvestTime(currentTime);
+        hd.setHarvestedStudyCount(new Long(harvestedCount));
+        hd.setFailedStudyCount(new Long(failedCount));
+        hd.setHarvestResult(hd.HARVEST_RESULT_SUCCESS);
+
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void setHarvestFailure(Long hdId, int harvestedStudyCount, int failedCount) {
+        HarvestingDataverse hd = em.find(HarvestingDataverse.class, hdId);
+        em.refresh(hd);
+
+        hd.setHarvestedStudyCount(new Long(harvestedStudyCount));
+        hd.setFailedStudyCount(new Long(failedCount));
+        hd.setHarvestResult(hd.HARVEST_RESULT_FAILED);
+
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void setHarvestResult(Long hdId, String result) {
+        HarvestingDataverse hd = em.find(HarvestingDataverse.class, hdId);
+        em.refresh(hd);
+        hd.setHarvestResult(result);
+    }
+  
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void resetHarvestingStatus(Long hdId) {
+        HarvestingDataverse hd = em.find(HarvestingDataverse.class, hdId);
+        em.refresh(hd);
+        hd.setHarvestingNow(false);
+        hd.setHarvestResult(null);
+        hd.setHarvestedStudyCount(null);
+        hd.setFailedStudyCount(null);
+   
+    }
+   public void resetAllHarvestingStatus() {
         List harvestingDataverses = findAll();
         for (Iterator it = harvestingDataverses.iterator(); it.hasNext();) {
             HarvestingDataverse hd = (HarvestingDataverse)it.next();
-            hd.setHarvestingNow(false);
+            resetHarvestingStatus(hd.getId());
         }
     }
+    
 }

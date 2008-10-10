@@ -29,36 +29,19 @@
 
 package edu.harvard.hmdc.vdcnet.study;
 
-import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
-import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
-import edu.harvard.hmdc.vdcnet.admin.VDCUser;
-import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
-import edu.harvard.hmdc.vdcnet.gnrs.GNRSServiceLocal;
-import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
-import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
-import edu.harvard.hmdc.vdcnet.vdc.ReviewState;
+import edu.harvard.hmdc.vdcnet.util.FieldInputLevelConstant;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
-import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
-import edu.harvard.hmdc.vdcnet.study.DataFileFormatType;
-import java.io.File;
-import java.io.IOException;
+import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.faces.context.FacesContext;
-import javax.jms.Queue;
-import javax.jms.QueueConnectionFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
@@ -71,7 +54,7 @@ import javax.persistence.PersistenceContextType;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class EditTemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.EditTemplateService, java.io.Serializable {
     @EJB VDCNetworkServiceLocal vdcNetworkService;
-  
+    @EJB TemplateServiceLocal templateService;
     @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
     EntityManager em;
     Template template;
@@ -93,64 +76,30 @@ public class EditTemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.Ed
     }
     
     public void newTemplate(Long vdcId ) {
-        template = new Template();
         newTemplate=true;   
+         
+        template = new Template();
         em.persist(template);
-        VDC vdc = em.find(VDC.class, vdcId);      
-        template.setVdc(vdc);
-        vdc.getTemplates().add(template);
-      //  addFields(vdcId);
-        
-    }
+       System.out.println("Persist after init, member template");    
     
-    public void addFields(Long vdcId) {
-          VDC vdc = em.find(VDC.class, vdcId);      
-           // Copy template fields from default template
-        // When the template form adds ability to edit "recommended/required",
-        // then we won't need this (unless we want to use the default)
-        Template defTemplate = vdc.getDefaultTemplate();
-     //   template.setTemplateFields(new ArrayList<TemplateField>());
-        for ( TemplateField templateField: defTemplate.getTemplateFields()) {
-            TemplateField tf = new TemplateField(templateField.getFieldInputLevel());
-            tf.setStudyField(templateField.getStudyField());
-            tf.setTemplate(template);
-            template.getTemplateFields().add(tf);
-        }
-    }
-    private Template createTemplate(Long vdcId) {
-        Template createdTemplate = new Template();
-        newTemplate=true;        
-        VDC vdc = em.find(VDC.class, vdcId);      
-        createdTemplate.setVdc(vdc);
-        vdc.getTemplates().add(createdTemplate);
-        // Copy template fields from default template
-        // When the template form adds ability to edit "recommended/required",
-        // then we won't need this (unless we want to use the default)
-        Template defTemplate = vdc.getDefaultTemplate();
-        createdTemplate.setTemplateFields(new ArrayList<TemplateField>());
-        for ( TemplateField templateField: defTemplate.getTemplateFields()) {
-            TemplateField tf = new TemplateField(templateField.getFieldInputLevel());
-            tf.setStudyField(templateField.getStudyField());
-            tf.setTemplate(createdTemplate);
-            createdTemplate.getTemplateFields().add(tf);
-        }
-        // Also copy default file categories
-        createdTemplate.setTemplateFileCategories(new ArrayList<TemplateFileCategory>());
-        for(TemplateFileCategory templateFileCategory: defTemplate.getTemplateFileCategories()) {
-            TemplateFileCategory tfc = new TemplateFileCategory();
-            tfc.setName(templateFileCategory.getName());
-            tfc.setDisplayOrder(templateFileCategory.getDisplayOrder());
-            tfc.setTemplate(templateFileCategory.getTemplate());
-        }
-        return createdTemplate;
+ 
+        
+       initTemplate( vdcId);
+      
+     
     }
     public void  newTemplate(Long vdcId, Long studyId) {
-        template = createTemplate(vdcId);       
+        newTemplate=true;   
+        template = new Template();
+      
+       initTemplate( vdcId);       
         Study study = em.find(Study.class, studyId);
         study.getMetadata().copyMetadata(template.getMetadata());
-      
+          System.out.println("Persist after init");
+   
+      em.persist(template);
         createdFromStudyId=studyId;
-        em.persist(template);
+      
     }
     
     public void removeCollectionElement(Collection coll, Object elem) {
@@ -187,8 +136,9 @@ public class EditTemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.Ed
     @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void save() {
+      
       // Don't need to do anything specific, just commit the transaction 
-            
+  
       
     }
     
@@ -230,6 +180,49 @@ public class EditTemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.Ed
         return createdFromStudyId;
     }
    
+    /**
+     * Get the default template for the given dataverse, and add fields to the 
+     *  new template based on the default template. 
+     */
+    private void addFields(Long vdcId) {
+        
+        VDC vdc = em.find(VDC.class, vdcId);
+        Collection<TemplateField> defaultFields = vdc.getDefaultTemplate().getTemplateFields();
+       
+        template.setTemplateFields(new ArrayList());
+        for( TemplateField defaultField: defaultFields) {
+            TemplateField tf = new TemplateField();
+            tf.setDefaultValue(defaultField.getDefaultValue());
+            tf.setFieldInputLevel(defaultField.getFieldInputLevel());
+            tf.setStudyField(defaultField.getStudyField());
+            tf.setTemplate(template);
+            template.getTemplateFields().add(tf);
+        }
+        
+       
+   
+        
+   
+    }
+     
+   
+    private void initTemplate( Long vdcId) {
+       // Template template = new Template();
+           
+        VDC vdc = em.find(VDC.class, vdcId);      
+        template.setVdc(vdc);
+        vdc.getTemplates().add(template);
+        addFields(vdcId);
+     
+    }
+    
+     public void changeRecommend(TemplateField tf, boolean isRecommended) {
+          if (isRecommended) {
+              tf.setFieldInputLevel(templateService.getFieldInputLevel(FieldInputLevelConstant.getRecommended()));
+          } else {
+              tf.setFieldInputLevel(templateService.getFieldInputLevel(FieldInputLevelConstant.getOptional()));
+          }
+     }
     
 }
 

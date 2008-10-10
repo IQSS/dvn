@@ -113,7 +113,6 @@ public class TemplateField implements java.io.Serializable {
     /**
      * Holds value of property template.
      */
-    @ManyToOne
     private Template template;
 
     /**
@@ -121,13 +120,15 @@ public class TemplateField implements java.io.Serializable {
      * @return Value of property template.
      */
     public Template getTemplate() {
-    return null;}
+        return template;
+    }
 
     /**
      * Setter for property template.
      * @param template New value of property template.
      */
     public void setTemplate(Template template) {
+        this.template=template;
     }
 
     /**

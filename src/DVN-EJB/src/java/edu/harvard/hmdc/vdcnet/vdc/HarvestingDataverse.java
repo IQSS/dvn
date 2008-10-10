@@ -27,21 +27,16 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
-import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
-import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import java.util.GregorianCalendar;
 import javax.persistence.*;
 
 /**
@@ -56,9 +51,20 @@ public class HarvestingDataverse implements Serializable {
     public static final String HARVEST_TYPE_OAI="oai";
     public static final String HARVEST_TYPE_NESSTAR="nesstar";
     
+    public static final String HARVEST_RESULT_SUCCESS="success";
+    public static final String HARVEST_RESULT_FAILED="failed";
+    
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastHarvestTime;
     
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date lastSuccessfulHarvestTime; 
+    private Long harvestedStudyCount;
+    private Long failedStudyCount;
+    private String harvestResult;
+
+   
+       
     public Collection<Study> search(String query) {
         //TODO: complete implementation
         return null;
@@ -280,6 +286,25 @@ public class HarvestingDataverse implements Serializable {
         return schedulePeriod;
     }
 
+    public String getScheduleDescription() {
+        Date date = new Date();
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        SimpleDateFormat weeklyFormat = new SimpleDateFormat(" E h a ");
+        SimpleDateFormat  dailyFormat = new SimpleDateFormat(" h a ");
+        String desc = "Not Scheduled";
+        if (schedulePeriod!=null && schedulePeriod!="") {
+            cal.set(Calendar.HOUR_OF_DAY, scheduleHourOfDay);
+            if (schedulePeriod.equals(this.SCHEDULE_PERIOD_WEEKLY)) {
+                cal.set(Calendar.DAY_OF_WEEK,scheduleDayOfWeek);
+                desc="Weekly, "+weeklyFormat.format(cal.getTime());
+            } else {
+                desc="Daily, "+dailyFormat.format(cal.getTime());
+            }
+        }
+        return desc;
+    }
+    
     public void setSchedulePeriod(String schedulePeriod) {
         this.schedulePeriod = schedulePeriod;
     }
@@ -363,4 +388,43 @@ public class HarvestingDataverse implements Serializable {
         
     }   
      
+    public Long getFailedStudyCount() {
+        return failedStudyCount;
+    }
+
+    public void setFailedStudyCount(Long failedStudyCount) {
+        this.failedStudyCount = failedStudyCount;
+    }
+
+    public String getHarvestResult() {
+        return harvestResult;
+    }
+
+    public void setHarvestResult(String harvestResult) {
+        this.harvestResult = harvestResult;
+    }
+
+    public String getHarvestResultSuccess() {
+        return this.HARVEST_RESULT_SUCCESS;
+    }
+    
+    public String getHarvestResultFailed() {
+        return this.HARVEST_RESULT_FAILED;
+    }
+  
+    public Long getHarvestedStudyCount() {
+        return harvestedStudyCount;
+    }
+
+    public void setHarvestedStudyCount(Long harvestedStudyCount) {
+        this.harvestedStudyCount = harvestedStudyCount;
+    }
+
+    public Date getLastSuccessfulHarvestTime() {
+        return lastSuccessfulHarvestTime;
+    }
+
+    public void setLastSuccessfulHarvestTime(Date lastSuccessfulHarvestTime) {
+        this.lastSuccessfulHarvestTime = lastSuccessfulHarvestTime;
+    }   
 }

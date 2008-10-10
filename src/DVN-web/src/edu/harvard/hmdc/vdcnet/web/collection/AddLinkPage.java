@@ -29,177 +29,93 @@
 
 package edu.harvard.hmdc.vdcnet.web.collection;
 
-import com.sun.jsfcl.data.DefaultSelectItemsArray;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollectionServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
-import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.faces.component.UISelectItems;
-import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 
-/**
- *
- * @author roberttreacy
- */
+import javax.faces.model.SelectItem;
+
+
 public class AddLinkPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;
     @EJB VDCCollectionServiceLocal vdcCollectionService;
-    private Map collectionsMap = new HashMap();
-    private static final String [] emptyCollection = {"No collections available for selection"};
-    private boolean saveDisabled = false;
+
+
     
     /** Creates a new instance of AddLinkPage */
     public AddLinkPage() {
     }
-    
-    private HtmlSelectOneMenu dropdown1 = new HtmlSelectOneMenu();
+ 
 
-    public HtmlSelectOneMenu getDropdown1() {
-        return dropdown1;
+    private Long dvId;
+    private Long collId;
+
+    public Long getDvId() {
+        return dvId;
     }
 
-    public void setDropdown1(HtmlSelectOneMenu hsom) {
-        this.dropdown1 = hsom;
+    public void setDvId(Long dvId) {
+        this.dvId = dvId;
     }
 
-    private UISelectItems dropdown1SelectItems = new UISelectItems();
-
-    public UISelectItems getDropdown1SelectItems() {
-        return dropdown1SelectItems;
+    public Long getCollId() {
+        return collId;
     }
 
-    public void setDropdown1SelectItems(UISelectItems uisi) {
-        this.dropdown1SelectItems = uisi;
+    public void setCollId(Long collId) {
+        this.collId = collId;
     }
 
-    private DefaultSelectItemsArray dropdown1DefaultItems = new DefaultSelectItemsArray();
 
-    public DefaultSelectItemsArray getDropdown1DefaultItems() {
-        return dropdown1DefaultItems;
-    }
 
-    public void setDropdown1DefaultItems(DefaultSelectItemsArray dsia) {
-        this.dropdown1DefaultItems = dsia;
-    }
-
-    public void init() {
-        super.init();
-        collectionsMap = getCollectionsMap();
-        dropdown1DefaultItems.setItems(getOtherPublicVDCs());
-    }
-    
-    private String[] getOtherPublicVDCs() {
-        String[] otherVDCs = null;
-        List <VDC> allVDC = vdcService.findAll();
-        List otherVDCCollections = new ArrayList();
-        long vdcId = getVDCRequestBean().getCurrentVDC().getId().longValue();
-        for (Iterator it = allVDC.iterator(); it.hasNext();) {
-            VDC elem = (VDC) it.next();
-            if ((elem.getId().longValue() != vdcId) && (elem.isRestricted() == false)){
-                otherVDCCollections.addAll(getCollections(elem.getId().longValue()));
+    public List<SelectItem> getDvItems() {
+        List dvSelectItems = new ArrayList<SelectItem>();
+        for (VDC vdc : vdcService.findAllPublic()) {
+            if (!vdc.getId().equals(getVDCRequestBean().getCurrentVDC().getId()) ) {
+                dvSelectItems.add(new SelectItem(vdc.getId(), vdc.getName()));
             }
         }
-        if (otherVDCCollections.size() > 0){
-            setSaveDisabled(false);
-            otherVDCs = new String[otherVDCCollections.size()];
-            int i=0;
-            for (Iterator it = otherVDCCollections.iterator(); it.hasNext();) {
-                VDCCollection elem = (VDCCollection) it.next();
-                otherVDCs[i++] = new String( elem.getFullCollectionName());
-                
-            }
-        } else{
-            setSaveDisabled(true);
-            otherVDCs = emptyCollection;
-        }
-        return otherVDCs;
-    }
-    
-    public List getCollections(long vdcId){
-        ArrayList collections = new ArrayList();
-        VDC vdc = vdcService.find(new Long(vdcId));
-        int treeLevel=0;
-        VDCCollection vdcRootCollection = vdc.getRootCollection();
-        if (vdcRootCollection != null){
-            vdcRootCollection.setLevel(treeLevel);
-            collections.add(vdcRootCollection);
-            Collection <VDCCollection> subcollections = vdcRootCollection.getSubCollections();
-            treeLevel = buildList(collections, subcollections,treeLevel);
-        }
-        return collections;
+
+        return dvSelectItems;
     }
 
-    public Map getCollectionsMap(){
-        List <VDC> allVDC = vdcService.findAll();
-        List allVDCCollections = new ArrayList();
-        for (Iterator it = allVDC.iterator(); it.hasNext();) {
-            VDC elem = (VDC) it.next();
-            allVDCCollections.addAll(getCollections(elem.getId().longValue()));
-        }
-        String [] allVDCs = new String[allVDCCollections.size()];
-        for (Iterator it = allVDCCollections.iterator(); it.hasNext();) {
-            VDCCollection elem = (VDCCollection) it.next();
-            collectionsMap.put(elem.getFullCollectionName(),elem.getId());
-
-        }
-
-        return collectionsMap;
-    }
-
-    private int buildList( ArrayList collections, Collection<VDCCollection> vdcCollections,int level) {
-        level++;
-        for (Iterator it = vdcCollections.iterator(); it.hasNext();) {
-            VDCCollection elem = (VDCCollection) it.next();
-            if (elem.isVisible()){
-                elem.setLevel(level);
-                collections.add(elem);
-                Collection <VDCCollection> subcollections = elem.getSubCollections();
-                if (subcollections.size()>0){
-                    buildList(collections,subcollections,level);
-                }
+    public List<SelectItem> getCollectionItems() {
+        List collSelectItems = new ArrayList<SelectItem>();
+                    
+        if (dvId != null) {
+            List<VDCCollection> collList = CollectionUI.getCollectionList(vdcService.find(dvId));
+            for (VDCCollection coll : collList) {
+                collSelectItems.add(new SelectItem(coll.getId(), coll.getName()));    
             }
         }
-        level--;
-        return level;
-    }
+        
+        return collSelectItems;
+    }    
+  
 
-    public String saveLink() {
-        VDC vdc = vdcService.find(getVDCRequestBean().getCurrentVDC().getId());
-        List <VDCCollection> linkedCollections = vdc.getLinkedCollections();
-        VDCCollection addCollection = vdcCollectionService.find(collectionsMap.get((String) dropdown1.getValue()));
-        linkedCollections.add(addCollection);
-        vdc.setLinkedCollections(linkedCollections);
-        Collection <VDC> linkedVdcs = addCollection.getLinkedVDCs();
-        linkedVdcs.add(vdc);
-        addCollection.setLinkedVDCs(linkedVdcs);
-        vdcCollectionService.edit(addCollection);
-        vdcService.edit(vdc);
-        StatusMessage msg = new StatusMessage();
-        msg.setMessageText("Link "+ addCollection.getFullCollectionName()+ " was added to dataverse "+ getVDCRequestBean().getCurrentVDC().getName());
-        msg.setStyleClass("successMessage");
-        Map m = getRequestMap();
-        m.put("statusMessage",msg);
-        return "home";
+    public String save_action() {
+        if (collId != null) {
+            VDC vdc = getVDCRequestBean().getCurrentVDC();
+            VDCCollection coll = vdcCollectionService.find(collId);
+            vdc.getLinkedCollections().add( coll );
+            coll.getLinkedVDCs().add(vdc);
+
+            vdcCollectionService.edit(coll);
+            vdcService.edit(vdc);
+        }
+        
+        return "manageCollections";
     }
     
-    public String cancel(){
-        return "myOptions";
-    }
-
-    public boolean isSaveDisabled() {
-        return saveDisabled;
-    }
-
-    public void setSaveDisabled(boolean saveEnabled) {
-        this.saveDisabled = saveEnabled;
-    }
+    public String cancel_action() {
+        return "manageCollections";
+    }     
+        
 }

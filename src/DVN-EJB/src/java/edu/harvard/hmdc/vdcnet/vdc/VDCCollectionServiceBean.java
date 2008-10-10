@@ -73,7 +73,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
         managedCollection.setQuery(vDCCollection.getQuery());
         managedCollection.setDescription(vDCCollection.getDescription());
         managedCollection.setType(vDCCollection.getType());
-        managedCollection.setLocal(vDCCollection.isLocal());
+        managedCollection.setLocalScope(vDCCollection.isLocalScope());
         managedCollection.setDisplayOrder(vDCCollection.getDisplayOrder());        
     }
 

@@ -1322,6 +1322,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         clearCollection(study.getStudyTopicClasses());
 
         // and metatdata
+        em.remove(study.getMetadata());
         study.setMetadata(new Metadata());
 
         //study.setHarvestDVNTermsOfUse(null); // metadata

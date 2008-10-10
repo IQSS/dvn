@@ -30,6 +30,7 @@
 package edu.harvard.hmdc.vdcnet.util;
 
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
+import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
@@ -49,7 +50,8 @@ import javax.servlet.ServletRequestAttributeListener;
 @EJBs({
  @EJB(name="harvesterService", beanInterface=edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal.class),
  @EJB(name="harvestingDataverseService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal.class),
- @EJB(name="vdcNetworkService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal.class)
+ @EJB(name="vdcNetworkService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal.class),
+ @EJB(name="indexService", beanInterface=edu.harvard.hmdc.vdcnet.index.IndexServiceLocal.class)
 })
 public class VDCContextListener implements ServletContextListener,ServletRequestAttributeListener, java.io.Serializable  {
   
@@ -62,10 +64,13 @@ public class VDCContextListener implements ServletContextListener,ServletRequest
        
         HarvesterServiceLocal harvesterService = null;
         HarvestingDataverseServiceLocal harvestingDataverseService = null;
+
+        IndexServiceLocal indexService = null;
          
         try {
             harvesterService=(HarvesterServiceLocal)new InitialContext().lookup("java:comp/env/harvesterService");
             harvestingDataverseService=(HarvestingDataverseServiceLocal)new InitialContext().lookup("java:comp/env/harvestingDataverseService");
+            indexService=(IndexServiceLocal)new InitialContext().lookup("java:comp/env/indexService");
            
         } catch(Exception e) {
             e.printStackTrace();
@@ -73,6 +78,7 @@ public class VDCContextListener implements ServletContextListener,ServletRequest
         try {
             harvestingDataverseService.resetAllHarvestingStatus();         
             harvesterService.createScheduledHarvestTimers();
+            indexService.createIndexTimer();
         } catch (Exception e) {
             e.printStackTrace();
         }

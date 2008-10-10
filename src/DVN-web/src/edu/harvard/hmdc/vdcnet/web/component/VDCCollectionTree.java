@@ -20,10 +20,7 @@
 
 package edu.harvard.hmdc.vdcnet.web.component;
 
-import com.sun.rave.web.ui.component.Hyperlink;
-import com.sun.rave.web.ui.component.ImageComponent;
-import com.sun.rave.web.ui.component.Tree;
-import com.sun.rave.web.ui.component.TreeNode;
+import com.icesoft.faces.component.tree.IceUserObject;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
@@ -34,8 +31,8 @@ import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import javax.el.MethodExpression;
-import javax.faces.el.MethodBinding;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /*
  * VDCCollectionTree.java
@@ -54,18 +51,22 @@ public class VDCCollectionTree implements java.io.Serializable  {
     
     /** Creates a new instance of VDCCollectionTree */
     public VDCCollectionTree() {
-        tree = new Tree();
-        tree.setClientSide(true);
-        tree.setExpandOnSelect(false);
+        
+        // create root node with its children expanded
+        DefaultMutableTreeNode rootTreeNode = new DefaultMutableTreeNode();
+        IceUserObject rootObject = new IceUserObject(rootTreeNode);
+        rootObject.setText("Root Node");
+        rootObject.setExpanded(true);
+        rootTreeNode.setUserObject(rootObject);
+      
+        tree = new DefaultTreeModel(rootTreeNode);
     }
     
-    public VDCCollectionTree(Tree tree) {
+    public VDCCollectionTree(DefaultTreeModel tree) {
         this.tree = tree;
-        tree.setClientSide(true);
-        tree.setExpandOnSelect(false);
     }
     
-    private Tree tree;
+    private DefaultTreeModel tree;
     
     private String vdcUrl;
     private String collectionUrl;
@@ -80,9 +81,6 @@ public class VDCCollectionTree implements java.io.Serializable  {
     private Long collectionToBeExpanded = null;
     private boolean expandAll = false;
     
-    // this is deprecated and should be replaced by new way
-    private MethodBinding actionMethodBinding;
-    private MethodExpression actionExpression;
     
     //
     // Getters and Setters
@@ -159,29 +157,20 @@ public class VDCCollectionTree implements java.io.Serializable  {
     public void setIncludeLinkedCollections(boolean includeLinkedCollections) {
         this.includeLinkedCollections = includeLinkedCollections;
     }
-/*    
-    public MethodBinding getActionMethodBinding() {
-        return actionMethodBinding;
-    }
-    
-    public void setActionMethodBinding(MethodBinding actionMethodBinding) {
-        this.actionMethodBinding = actionMethodBinding;
-    }
-    */
+
     //
     // Populate methods
     //
-    
-    public Tree populate(List vdcs) {
+    /*
+    public DefaultTreeModel populate(List vdcs) {
         
-        clearNode(tree);
+        clearNode((DefaultMutableTreeNode) tree.getRoot());
         
         Iterator iter = vdcs.iterator();
         while (iter.hasNext()) {
             VDC vdc = (VDC) iter.next();
-            TreeNode baseNode = newTreeNode(vdc);
-            baseNode.setExpanded(expandAll);
-            tree.getChildren().add(baseNode);
+            DefaultMutableTreeNode baseNode = newTreeNode(vdc);
+            ((DefaultMutableTreeNode) tree.getRoot()).add(baseNode);
             
             if (!vdc.isRestricted()) {
                 addVDC(baseNode, vdc);
@@ -190,15 +179,16 @@ public class VDCCollectionTree implements java.io.Serializable  {
         
         return tree;
     }
+    */
     
-    public Tree populate(VDC vdc) {
+    public DefaultTreeModel populate(VDC vdc) {
         // by default, expand the root node
         if (collectionToBeExpanded == null) {
             collectionToBeExpanded = vdc.getRootCollection().getId();
         }
         
-        clearNode(tree);
-        addVDC(tree, vdc);
+        clearNode( getRootNode() );
+        addVDC( getRootNode(), vdc);
         return tree;
     }
     
@@ -209,13 +199,13 @@ public class VDCCollectionTree implements java.io.Serializable  {
     // Private helper methods
     //
     
-    private void clearNode(TreeNode node) {
+    private void clearNode(DefaultMutableTreeNode node) {
         while (node.getChildCount() > 0 ) {
-            node.getChildren().remove(0);
+            node.removeAllChildren();
         }
     }
     
-    private void addVDC(TreeNode parentNode, VDC vdc) {
+    private void addVDC(DefaultMutableTreeNode parentNode, VDC vdc) {
         addCollectionNode(parentNode, vdc.getRootCollection(), vdc, true);
         if (includeLinkedCollections) {
             Iterator iter = new VDCUI(vdc).getLinkedCollections().iterator();
@@ -227,17 +217,18 @@ public class VDCCollectionTree implements java.io.Serializable  {
     }
     
     
-    private Boolean addCollectionNode(TreeNode parentNode, VDCCollection c, VDC vdc, boolean alwaysInclude) {
+    private Boolean addCollectionNode(DefaultMutableTreeNode parentNode, VDCCollection c, VDC vdc, boolean alwaysInclude) {
         boolean includeFlag = alwaysInclude;
         boolean expandFlag = expandAll;
         int studyCount = 0;
         
-        TreeNode collectionNode = newTreeNode(c, vdc);
+        DefaultMutableTreeNode collectionNode = newTreeNode(c, vdc);
         CollectionUI collUI = new CollectionUI(c);
         
         
         Collection subCollections = collUI.getSubCollections();
         for (Iterator it = subCollections.iterator(); it.hasNext();) {
+            getNodeObject( collectionNode ).setLeaf(false);
             VDCCollection subColl = (VDCCollection) it.next();
             Boolean expanded = addCollectionNode(collectionNode, subColl, vdc, false );
             if (expanded != null) {
@@ -275,18 +266,19 @@ public class VDCCollectionTree implements java.io.Serializable  {
                 while (studyIter.hasNext()) {
                     Study s = (Study) studyIter.next();
                     if ( studyFilter == null || StudyUI.isStudyInList(s, studyFilter) ) {
-                        TreeNode studyNode = newTreeNode(s, vdc);
-                        collectionNode.getChildren().add(studyNode);
+                        DefaultMutableTreeNode studyNode = newTreeNode(s, vdc);
+                        getNodeObject( collectionNode ).setLeaf(false);
+                        collectionNode.add(studyNode);
                     }
                 }
             }
             
             if (includeCount && studyFilter != null) {
-                collectionNode.setText(collectionNode.getText() + " (" + studyCount + ")" );
+                getNodeObject(collectionNode).setText( getNodeObject(collectionNode).getText() + " (" + studyCount + ")" );
             }
             
-            collectionNode.setExpanded(expandFlag);
-            parentNode.getChildren().add(collectionNode);
+            getNodeObject(collectionNode).setExpanded(expandFlag);
+            parentNode.add(collectionNode);
             return expandFlag;
         } else {
             // this collection is not included
@@ -295,8 +287,8 @@ public class VDCCollectionTree implements java.io.Serializable  {
     }
     
     // new node methods
-    
-    private TreeNode newTreeNode(VDC vdc) {
+    /*
+    private DefaultMutableTreeNode newTreeNode(VDC vdc) {
         String id = "vdc_" + vdc.getId().toString();
         String styleClass = "vdcTreeDataverse";
         
@@ -317,78 +309,41 @@ public class VDCCollectionTree implements java.io.Serializable  {
         }
         return newTreeNode(id, vdc.getName(), url, image, styleClass);
     }
-    
-    private TreeNode newTreeNode(VDCCollection coll, VDC vdc) {
-        String id = "collection_" + coll.getId();
-        String styleClass = "vdcTreeCollection";
-        
+    */
+    private DefaultMutableTreeNode newTreeNode(VDCCollection coll, VDC vdc) {        
         String url = null;
         if (collectionUrl != null) {
-            url = appendParameterToUrl("/dv/" + vdc.getAlias() + collectionUrl, "collectionId=" + coll.getId());
+            url = appendParameterToUrl("/dvn/dv/" + vdc.getAlias() + collectionUrl, "collectionId=" + coll.getId());
         }
-        
-        ImageComponent image = new ImageComponent();
-        if ( coll.getOwner().getId().equals( vdc.getId() ) ) {
-            image.setUrl("/resources/tree_folder.gif");
-            image.setAlt("Collection");
-        } else {
-            //image.setUrl("/resources/icon_link.gif"); change icon to make link collections to look the same as regular collections
-            image.setUrl("/resources/tree_folder.gif");
-            image.setAlt("Linked Collection");
-        }
-        
-        return newTreeNode(id, coll.getName(), url, image, styleClass);
+               
+        return newTreeNode(coll.getName(), url, true);
     }
-    
-    private TreeNode newTreeNode(Study study, VDC vdc) {
-        String id =  "study_" + study.getId();
-        String styleClass = "vdcTreeStudy";
+
+    private DefaultMutableTreeNode newTreeNode(Study study, VDC vdc) {
         
         String url = null;
         if (studyUrl != null) {
-            url = appendParameterToUrl("/dv/" + vdc.getAlias() + studyUrl, "studyId=" + study.getId());
+            url = appendParameterToUrl("/dvn//dv/" + vdc.getAlias() + studyUrl, "studyId=" + study.getId());
         }
-        
-        ImageComponent image = new ImageComponent();
-        image.setUrl("/resources/tree_document.gif");
-        image.setAlt("Study");
-        
+                
         StudyUI studyUI = new StudyUI(study);
         String studyText = study.getTitle();
         if ( !StringUtil.isEmpty(studyUI.getAuthors()) ) {
             studyText += " by " + studyUI.getAuthors();
         }
         
-        return newTreeNode(id, studyText, url, image, styleClass);
+        return newTreeNode(studyText, url, false);
     }
-    
-    private TreeNode newTreeNode(String id, String text, String url, ImageComponent image) {
-        return newTreeNode(id,text,url,image,null);
-    }
-    
-    private TreeNode newTreeNode(String id, String text, String url, ImageComponent image, String styleClass) {
-        // create node
-        TreeNode node = new TreeNode();
-        node.setId(id);
-        node.setStyleClass(styleClass);
-        
-        //format the node link
-        
-        Hyperlink nodelink = new Hyperlink();
-        nodelink.setText(text);
-        nodelink.setToolTip(image.getAlt());
-        nodelink.setUrl(url);
-        
-        // this is deprecated and should be replaced by new way
-        node.setAction(actionMethodBinding); 
-        
-        // set up some global image stuff
-        image.setAlign("top");
-        image.setToolTip(image.getAlt());
-        
-        node.getFacets().put(node.IMAGE_FACET_KEY, image);
-        node.getFacets().put(node.CONTENT_FACET_KEY, nodelink);
 
+    
+    private DefaultMutableTreeNode newTreeNode(String text, String url, boolean isColl) {
+        // create node
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+        UrlNodeUserObject nodeObject = new UrlNodeUserObject(node, isColl);
+        nodeObject.setText(text);
+        nodeObject.setUrl(url);
+       
+        node.setUserObject(nodeObject);
         return node;
     }
        
@@ -426,14 +381,47 @@ public class VDCCollectionTree implements java.io.Serializable  {
         
         return false;
     }
-
-    public MethodExpression getActionExpression() {
-        return actionExpression;
-    }
-
-    public void setActionExpression(MethodExpression actionExpression) {
-        this.actionExpression = actionExpression;
+    
+    private UrlNodeUserObject getNodeObject(DefaultMutableTreeNode node) {
+        return (UrlNodeUserObject) node.getUserObject();
     }
     
+    private DefaultMutableTreeNode getRootNode() {
+        return (DefaultMutableTreeNode) tree.getRoot();
+    } 
+    
+
+    private static final String XP_BRANCH_CONTRACTED_ICON = "./xmlhttp/css/xp/css-images/tree_folder_close.gif";
+    private static final String XP_BRANCH_EXPANDED_ICON = "./xmlhttp/css/xp/css-images/tree_folder_open.gif";
+    private static final String XP_BRANCH_LEAF_ICON = "./xmlhttp/css/xp/css-images/tree_document.gif";
+
+    public class UrlNodeUserObject extends IceUserObject {
+
+        // url to show when a node is clicked
+        private String url;
+
+        public UrlNodeUserObject(DefaultMutableTreeNode wrapper, boolean isColl) {
+            super(wrapper);
+            this.setLeaf(true);
+            this.setBranchContractedIcon(XP_BRANCH_CONTRACTED_ICON);
+            this.setBranchExpandedIcon(XP_BRANCH_EXPANDED_ICON);
+            
+            if (isColl) {
+                this.setLeafIcon(XP_BRANCH_CONTRACTED_ICON);
+            } else {
+                this.setLeafIcon(XP_BRANCH_LEAF_ICON);   
+            }
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+    }
+
     
 }

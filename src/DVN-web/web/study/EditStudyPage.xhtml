@@ -330,15 +330,13 @@
                     </ice:column>
                   </ice:dataTable>
 
-
-                    <!-- Authors -->
-
-                                <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <!-- Authors -->
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                     <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                    styleClass="vdcEditStudyTable" visible="#{EditStudyPage.studyMap[sfc.authorName].recommended or EditStudyPage.showAll}" value="dummy_datatable">
                       <ice:column>
                         <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                       columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                       styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                        binding="#{EditStudyPage.dataTableAuthors}"
                                        value="#{EditStudyPage.study.studyAuthors}" var="currentAuthor">
                           <ice:column>
@@ -346,12 +344,10 @@
                               <dvn:inlinehelp helpMessage="#{editstudybundle.authorHelp}" linkText="#{editstudybundle.authorLabel}" heading="#{editstudybundle.authorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.authorInputLevel=='required'}"/>
                               <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.authorInputLevel=='recommended'}"/>
-
                             </div>
-
                           </ice:column>
                           <ice:column>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap" >
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
                               <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1" visible="#{EditStudyPage.studyMap[sfc.authorName].recommended or EditStudyPage.showAll}">
                                 <dvn:inlinehelp helpMessage="#{editstudybundle.authorNameHelp}" linkText="#{editstudybundle.authorNameLabel}" heading="#{editstudybundle.authorNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                 <br/>
@@ -378,14 +374,14 @@
                                 <ice:message styleClass="errorMessage" for="input_authorAffiliation"/>
                               </div>
                             </div>
-                        </ice:column>
-                        <ice:column>
-                          <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableAuthors.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
-                        </ice:column>
-                      </ice:dataTable>
-                    </ice:column>
-                  </ice:dataTable>
+                          </ice:column>
+                          <ice:column>
+                            <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                            <ice:commandButton rendered="#{EditStudyPage.dataTableAuthors.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          </ice:column>
+                        </ice:dataTable>
+                      </ice:column>
+                    </ice:dataTable>
 
                   <!--Producers-->
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->

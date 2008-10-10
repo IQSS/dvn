@@ -160,7 +160,6 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
     // browse functionality
     private Long browseDVId;
     private Long browseCollectionId;
-    private boolean localBrowse;
     private Long tempCollId;
 
     public Long getBrowseDVId() {
@@ -189,25 +188,12 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         }
     }
 
-    public boolean isLocalBrowse() {
-        return localBrowse;
-    }
-
-    public void setLocalBrowse(boolean localBrowse) {
-        this.localBrowse = localBrowse;
-    }
-
     public List<SelectItem> getBrowseDVItems() {
         List dvSelectItems = new ArrayList<SelectItem>();
-        if (localBrowse) {
-            VDC currentVDC = getVDCRequestBean().getCurrentVDC();
-            dvSelectItems.add(new SelectItem(currentVDC.getId(), currentVDC.getName()));
-        } else {
-            for (VDC vdc : vdcService.findAllPublic()) {
-                dvSelectItems.add(new SelectItem(vdc.getId(), vdc.getName()));
-            }
+        for (VDC vdc : vdcService.findAllPublic()) {
+            dvSelectItems.add(new SelectItem(vdc.getId(), vdc.getName()));
         }
-
+        
         return dvSelectItems;
     }
 

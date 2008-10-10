@@ -26,11 +26,10 @@
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-
-
 package edu.harvard.hmdc.vdcnet.web.collection;
 
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
+import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
@@ -45,122 +44,153 @@ import javax.naming.NamingException;
  *
  * @author gdurand
  */
-public class CollectionUI implements java.io.Serializable  {
-    
+public class CollectionUI implements java.io.Serializable {
+
     VDCCollection coll;
+    VDC vdc; // used with linked Collections
     
     /** Creates a new instance of CollectionUI */
     public CollectionUI(VDCCollection coll) {
         this.coll = coll;
     }
+
+    // this constructor is used for links (so we need to know which VDC)
+    public CollectionUI(VDCCollection coll, VDC vdc) {
+        this.coll = coll;
+        this.vdc = vdc;
+    }    
     
+    public VDCCollection getCollection() {
+        return coll;
+    }
+
     public String getCollectionPath(VDC vdc) {
         if (coll.getParentCollection() == null) {
             return coll.getName();
         }
-        
-        CollectionUI parentCollUI = new CollectionUI( coll.getParentCollection() );
 
-        if (!coll.getOwner().getId().equals( vdc.getId())
-        && isLinkedCollection(vdc)
-        && !parentCollUI.isLinkedCollection(vdc) ) {
+        CollectionUI parentCollUI = new CollectionUI(coll.getParentCollection());
+
+        if (!coll.getOwner().getId().equals(vdc.getId()) && isLinkedCollection(vdc) && !parentCollUI.isLinkedCollection(vdc)) {
             return coll.getName();
         }
 
         return parentCollUI.getCollectionPath(vdc) + " > " + coll.getName();
     }
-    
+
     public String getShortCollectionPath(VDC vdc) {
-        
+
         if (coll.getParentCollection() == null) {
             return null;
         } else {
             return getCollectionPath(vdc);
-        }   
+        }
     }
-    
+
     public boolean isLinkedCollection(VDC vdc) {
         Iterator iter = coll.getLinkedVDCs().iterator();
         while (iter.hasNext()) {
             VDC linkedVDC = (VDC) iter.next();
-            if ( linkedVDC.getId().equals(vdc.getId() )) {
+            if (linkedVDC.getId().equals(vdc.getId())) {
                 return true;
             }
         }
         return false;
     }
-    
+
     public List getSubCollections() {
         return getSubCollections(false);
     }
+
     public List getSubCollections(boolean getHiddenCollections) {
         VDCCollectionServiceLocal collectionService = null;
         try {
-            collectionService=(VDCCollectionServiceLocal)new InitialContext().lookup("java:comp/env/collectionService");
-        } catch(Exception e) {
+            collectionService = (VDCCollectionServiceLocal) new InitialContext().lookup("java:comp/env/collectionService");
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         List subCollections = collectionService.findSubCollections(coll.getId(), getHiddenCollections);
         return subCollections;
-        
+
     }
-    
+
     public List getStudies() {
-        if (coll.getQuery() != null) {
-            return getQueryStudies();
-        } else {
-            return getActualStudys();
+        List studies = new ArrayList();
+        if (coll.getParentCollection() == null) {
+            studies.addAll(coll.getOwner().getOwnedStudies());
         }
+        if (isDynamic()) {
+            studies.addAll(getQueryStudies());
+        } else {
+            studies.addAll(getActualStudys());
+        }
+
+        return studies;
     }
-    
+
     public List getStudyIds() {
-        if (coll.getQuery() != null) {
-            return getQueryStudyIds();
-        } else {
-            return getActualStudyIds();
+        List studyIds = new ArrayList();
+        if (coll.getParentCollection() == null) {
+            studyIds.addAll(getOwnedStudyIds());
         }
+        if (isDynamic()) {
+            studyIds.addAll(getQueryStudyIds());
+        } else {
+            studyIds.addAll(getActualStudyIds());
+        }
+
+        return studyIds;
     }
-    
+
+    private List getOwnedStudyIds() {
+        List studyIds = new ArrayList();
+        for (Study study : coll.getOwner().getOwnedStudies()) {
+            studyIds.add(study.getId());
+        }
+
+        return studyIds;
+    }
+
     public List getActualStudys() {
         VDCCollectionServiceLocal collectionService = null;
         try {
-            collectionService=(VDCCollectionServiceLocal)new InitialContext().lookup("java:comp/env/collectionService");
-        } catch(Exception e) {
+            collectionService = (VDCCollectionServiceLocal) new InitialContext().lookup("java:comp/env/collectionService");
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return collectionService.getOrderedStudiesByCollection(coll.getId());
     }
-    
+
     public List getActualStudyIds() {
         VDCCollectionServiceLocal collectionService = null;
         try {
-            collectionService=(VDCCollectionServiceLocal)new InitialContext().lookup("java:comp/env/collectionService");
-        } catch(Exception e) {
+            collectionService = (VDCCollectionServiceLocal) new InitialContext().lookup("java:comp/env/collectionService");
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return collectionService.getOrderedStudyIdsByCollection(coll.getId());
     }
-    
+
     public List getQueryStudyIds() {
         IndexServiceLocal indexService = null;
         try {
             // call Indexer
-            indexService =(IndexServiceLocal)new InitialContext().lookup("java:comp/env/indexService");
+            indexService = (IndexServiceLocal) new InitialContext().lookup("java:comp/env/indexService");
             return indexService.query(coll.getQuery());
         } catch (NamingException ex) {
             ex.printStackTrace();
             return new ArrayList();
         }
     }
-    
+
     public List getQueryStudies() {
         List studies = new ArrayList();
         StudyServiceLocal studyService = null;
         try {
-            studyService=(StudyServiceLocal)new InitialContext().lookup("java:comp/env/studyService");
+            studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
             Iterator iter = getQueryStudyIds().iterator();
             while (iter.hasNext()) {
                 Long studyId = (Long) iter.next();
@@ -169,8 +199,64 @@ public class CollectionUI implements java.io.Serializable  {
         } catch (NamingException ex) {
             ex.printStackTrace();
         }
-        
+
         return studies;
-        
+
     }
+
+    public boolean isDynamic() {
+        return (coll.getType() != null && coll.getType().equals("dynamic"));
+
+    }
+
+    public static List<VDCCollection> getCollectionList(VDC vdc) {
+        return getCollectionList(vdc, null);
+    }
+
+    public static List<VDCCollection> getCollectionList(VDC vdc, VDCCollection collectionToExclude) {
+        List collections = new ArrayList<VDCCollection>();
+        addCollectionFamilyToList(collections, vdc.getRootCollection(), collectionToExclude);
+        return collections;
+    }
+
+    private static void addCollectionFamilyToList(List collections, VDCCollection coll, VDCCollection collectionToExclude) {
+        if (collectionToExclude == null || !coll.getId().equals(collectionToExclude.getId())) {
+            collections.add(coll);
+            for (VDCCollection subColl : coll.getSubCollections()) {
+                subColl.setLevel(coll.getLevel() + 1);
+                addCollectionFamilyToList(collections, subColl, collectionToExclude);
+            }
+        }
+    }
+
+
+    // the following are actions used in the ManageCollectionsPage 
+    public String deleteCollection_action() {
+        VDCCollectionServiceLocal collectionService = null;
+        try {
+            collectionService = (VDCCollectionServiceLocal) new InitialContext().lookup("java:comp/env/collectionService");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        collectionService.destroy(coll);
+        return null;
+    }
+    
+    public String removeLink_action() {
+        VDCCollectionServiceLocal collectionService = null;
+
+        try {
+            collectionService = (VDCCollectionServiceLocal) new InitialContext().lookup("java:comp/env/collectionService");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        vdc.getLinkedCollections().remove(coll);        
+        coll.getLinkedVDCs().remove(vdc);
+        
+
+        collectionService.edit(coll);  
+        return null;
+    }    
 }

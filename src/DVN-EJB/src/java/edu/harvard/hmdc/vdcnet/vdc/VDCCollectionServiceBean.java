@@ -71,9 +71,9 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
         VDCCollection managedCollection = em.merge(vDCCollection);
         managedCollection.setName(vDCCollection.getName());
         managedCollection.setQuery(vDCCollection.getQuery());
-        managedCollection.setLongDesc(vDCCollection.getLongDesc());
-        managedCollection.setShortDesc(vDCCollection.getShortDesc());
-        managedCollection.setVisible(vDCCollection.isVisible());
+        managedCollection.setDescription(vDCCollection.getDescription());
+        managedCollection.setType(vDCCollection.getType());
+        managedCollection.setLocal(vDCCollection.isLocal());
         managedCollection.setDisplayOrder(vDCCollection.getDisplayOrder());        
     }
 
@@ -116,11 +116,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
         String query = "select c "+
                 " from VDCCollection c "+
                 " where c.parentCollection.id = "+id;
-        
-        if (!getHiddenCollections) {
-            query += " and c.visible=true";
-        }
-        
+                
         query += " order by c.name ";
         
         return em.createQuery(query).getResultList();

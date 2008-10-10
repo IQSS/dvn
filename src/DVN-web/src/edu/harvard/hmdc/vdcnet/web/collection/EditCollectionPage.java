@@ -19,46 +19,28 @@
  */
 
 /*
- * EditCollectionsPage.java
+ * AddCollectionsPage.java
  *
  * Created on September 15, 2006, 1:33 PM
  */
 package edu.harvard.hmdc.vdcnet.web.collection;
 
-import com.sun.rave.web.ui.component.Body;
-import com.sun.rave.web.ui.component.Form;
-import com.sun.rave.web.ui.component.Head;
-import com.sun.rave.web.ui.component.Html;
-import com.sun.rave.web.ui.component.Link;
-import com.sun.rave.web.ui.component.Page;
-import com.sun.rave.web.ui.model.Option;
-import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import com.icesoft.faces.component.ext.RowSelectorEvent;
+import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
+import edu.harvard.hmdc.vdcnet.index.SearchTerm;
 import edu.harvard.hmdc.vdcnet.study.ReviewStateServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyField;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollectionServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
-import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
 import javax.ejb.EJB;
-import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
-import javax.faces.component.UISelectItems;
-import com.icesoft.faces.component.ext.HtmlInputText;
-import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
-import com.sun.jsfcl.data.DefaultSelectItemsArray;
-import com.sun.rave.web.ui.component.AddRemove;
-import com.sun.rave.web.ui.model.MultipleSelectOptionsList;
-import com.icesoft.faces.component.ext.HtmlInputTextarea;
+import javax.faces.model.SelectItem;
 import javax.faces.event.ActionEvent;
 
 /**
@@ -68,595 +50,247 @@ import javax.faces.event.ActionEvent;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
-public class EditCollectionPage extends VDCBaseBean implements java.io.Serializable  {
-    @EJB VDCServiceLocal vdcService;
-    @EJB VDCCollectionServiceLocal vdcCollectionService;
-    @EJB StudyServiceLocal studyService;
-    @EJB ReviewStateServiceLocal reviewStateService;
-    long vdcId =  0;
-    VDCCollection vdcCollection;
-    private ResourceBundle messages = ResourceBundle.getBundle("Bundle");
-    
-    private HashMap searchFields = new HashMap();
-    private Map collectionsMap = new HashMap();
-    // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
-    private int __placeholder;
-    private Long collId;
-    public Long getCollId(){
-        return collId;
-    }
-    public void setCollId(Long collId){
-        this.collId = collId;
-    }
-    
-    String collectionName;
-    public String getCollectionName(){
-        return collectionName;
-    }
-    public void setCollectionName(String name){
-        this.collectionName = name;
-    }
+public class EditCollectionPage extends VDCBaseBean implements java.io.Serializable {
 
-    
-    /**
-     * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
-     * This method is automatically generated, so any user-specified code inserted
-     * here is subject to being replaced.</p>
-     */
-    public void init(){
-        super.init();
-        initVdcId();
-        Long id =  (Long)getRequestMap().get("collectionId");
-        if (id != null){
-            collId = id;
-        } else{
-//            String collIdStr = getRequestParam("form1:collectionId");
-            String collIdStr = getRequestParam("collectionId");
-            if (collIdStr == null){
-                collIdStr = getRequestParam("form1:collectionId");
-            }
-            collId = Long.parseLong(collIdStr);
-        }
-        vdcCollection = vdcCollectionService.find(collId);
-        setCollectionName(vdcCollection.getName());
-        textField1.setValue(vdcCollection.getName());
-        VDCCollection editCollection = vdcCollectionService.find(vdcCollection.getId());
-        Collection <Study> editStudies = vdcCollection.getStudies();
-        int i=0;
-        Option [] studies = new Option[editStudies.size()];
-        Object [] studiesValues = new Object[editStudies.size()];
-        for (Iterator it = editStudies.iterator(); it.hasNext();) {
-            Study elem = (Study) it.next();
-            studiesValues[i] = Long.toString(elem.getId().longValue());
-            studies[i++]= new Option(Long.toString(elem.getId().longValue()),elem.getTitle());
-        }
-        
-        collectionsMap = getCollectionsMap();
-        try{
-            dropdown2DefaultItems.setItems(getVDCCollections(vdcId));
-        } catch (NullPointerException n){
-            n.printStackTrace();
-        }
-        dropdown4DefaultItems.setItems(getAllViewableCollections());
-        
-        addRemoveList2DefaultOptions.setOptions(studies);
-        addRemoveList2DefaultOptions.setSelectedValue(studiesValues);
-        addRemoveList2.setSelected(addRemoveList2DefaultOptions.getSelectedValue());
-        dropdown5DefaultItems.setItems(getSearchFields());
-        radioButtonList1DefaultItems.setItems(new String[] {"Search Studies in All Dataverses", "Search from \"Studies to Choose from\" box"});
-    }
-    
-    private void initVdcId(){
-        vdcId = getVDCRequestBean().getCurrentVDC().getId().longValue();;
-    }
-    
-    private Page page1 = new Page();
-    
-    public Page getPage1() {
-        return page1;
-    }
-    
-    public void setPage1(Page p) {
-        this.page1 = p;
-    }
-    
-    private Html html1 = new Html();
-    
-    public Html getHtml1() {
-        return html1;
-    }
-    
-    public void setHtml1(Html h) {
-        this.html1 = h;
-    }
-    
-    private Head head1 = new Head();
-    
-    public Head getHead1() {
-        return head1;
-    }
-    
-    public void setHead1(Head h) {
-        this.head1 = h;
-    }
-    
-    private Link link1 = new Link();
-    
-    public Link getLink1() {
-        return link1;
-    }
-    
-    public void setLink1(Link l) {
-        this.link1 = l;
-    }
-    
-    private Body body1 = new Body();
-    
-    public Body getBody1() {
-        return body1;
-    }
-    
-    public void setBody1(Body b) {
-        this.body1 = b;
-    }
-    
-    private Form form1 = new Form();
-    
-    public Form getForm1() {
-        return form1;
-    }
-    
-    public void setForm1(Form f) {
-        this.form1 = f;
-    }
+    @EJB
+    VDCServiceLocal vdcService;
+    @EJB
+    VDCCollectionServiceLocal vdcCollectionService;
+    @EJB
+    StudyServiceLocal studyService;
+    @EJB
+    IndexServiceLocal indexService;
 
-    private HtmlInputText textField1 = new HtmlInputText();
-
-    public HtmlInputText getTextField1() {
-        return textField1;
-    }
-
-    public void setTextField1(HtmlInputText hit) {
-        this.textField1 = hit;
-    }
-    
-    private HtmlSelectOneMenu dropdown3 = new HtmlSelectOneMenu();
-
-    public HtmlSelectOneMenu getDropdown3() {
-        return dropdown3;
-    }
-
-    public void setDropdown3(HtmlSelectOneMenu hsom) {
-        this.dropdown3 = hsom;
-    }
-
-    private DefaultSelectItemsArray dropdown2DefaultItems = new DefaultSelectItemsArray();
-
-    public DefaultSelectItemsArray getDropdown2DefaultItems() {
-        return dropdown2DefaultItems;
-    }
-
-    public void setDropdown2DefaultItems(DefaultSelectItemsArray dsia) {
-        this.dropdown2DefaultItems = dsia;
-    }
-
-    private UISelectItems dropdown2SelectItems2 = new UISelectItems();
-
-    public UISelectItems getDropdown2SelectItems2() {
-        return dropdown2SelectItems2;
-    }
-
-    public void setDropdown2SelectItems2(UISelectItems uisi) {
-        this.dropdown2SelectItems2 = uisi;
-    }
-
-    private HtmlSelectOneMenu dropdown4 = new HtmlSelectOneMenu();
-
-    public HtmlSelectOneMenu getDropdown4() {
-        return dropdown4;
-    }
-
-    public void setDropdown4(HtmlSelectOneMenu hsom) {
-        this.dropdown4 = hsom;
-    }
-
-    private UISelectItems dropdown4SelectItems1 = new UISelectItems();
-
-    public UISelectItems getDropdown4SelectItems1() {
-        return dropdown4SelectItems1;
-    }
-
-    public void setDropdown4SelectItems1(UISelectItems uisi) {
-        this.dropdown4SelectItems1 = uisi;
-    }
-
-    private DefaultSelectItemsArray dropdown4DefaultItems = new DefaultSelectItemsArray();
-    
-
-    public DefaultSelectItemsArray getDropdown4DefaultItems() {
-        return dropdown4DefaultItems;
-    }
-
-    public void setDropdown4DefaultItems(DefaultSelectItemsArray dsia) {
-        this.dropdown4DefaultItems = dsia;
-    }
-
-    private HtmlSelectOneMenu dropdown5 = new HtmlSelectOneMenu();
-
-    public HtmlSelectOneMenu getDropdown5() {
-        return dropdown5;
-    }
-
-    public void setDropdown5(HtmlSelectOneMenu hsom) {
-        this.dropdown5 = hsom;
-    }
-
-    private UISelectItems dropdown5SelectItems1 = new UISelectItems();
-
-    public UISelectItems getDropdown5SelectItems1() {
-        return dropdown5SelectItems1;
-    }
-
-    public void setDropdown5SelectItems1(UISelectItems uisi) {
-        this.dropdown5SelectItems1 = uisi;
-    }
-
-    private DefaultSelectItemsArray dropdown5DefaultItems = new DefaultSelectItemsArray();
-
-    public DefaultSelectItemsArray getDropdown5DefaultItems() {
-        return dropdown5DefaultItems;
-    }
-
-    public void setDropdown5DefaultItems(DefaultSelectItemsArray dsia) {
-        this.dropdown5DefaultItems = dsia;
-    }
-
-    private HtmlInputText textField2 = new HtmlInputText();
-
-    public HtmlInputText getTextField2() {
-        return textField2;
-    }
-
-    public void setTextField2(HtmlInputText hit) {
-        this.textField2 = hit;
-    }
-
-    private HtmlSelectOneRadio radioButtonList1 = new HtmlSelectOneRadio();
-
-    public HtmlSelectOneRadio getRadioButtonList1() {
-        return radioButtonList1;
-    }
-
-    public void setRadioButtonList1(HtmlSelectOneRadio hsor) {
-        this.radioButtonList1 = hsor;
-    }
-
-    private UISelectItems radioButtonList1SelectItems1 = new UISelectItems();
-
-    public UISelectItems getRadioButtonList1SelectItems1() {
-        return radioButtonList1SelectItems1;
-    }
-
-    public void setRadioButtonList1SelectItems1(UISelectItems uisi) {
-        this.radioButtonList1SelectItems1 = uisi;
-    }
-
-    private DefaultSelectItemsArray radioButtonList1DefaultItems = new DefaultSelectItemsArray();
-
-    public DefaultSelectItemsArray getRadioButtonList1DefaultItems() {
-        return radioButtonList1DefaultItems;
-    }
-
-    public void setRadioButtonList1DefaultItems(DefaultSelectItemsArray dsia) {
-        this.radioButtonList1DefaultItems = dsia;
-    }
-
-    private HtmlInputTextarea textAreaQuery = new HtmlInputTextarea();
-
-    public HtmlInputTextarea getTextAreaQuery() {
-        return textAreaQuery;
-    }
-
-    public void setTextAreaQuery(HtmlInputTextarea hit) {
-        this.textAreaQuery = hit;
-    }
-
-    private AddRemove addRemoveList2 = new AddRemove();
-
-    public AddRemove getAddRemoveList2() {
-        return addRemoveList2;
-    }
-
-    public void setAddRemoveList2(AddRemove ar) {
-        this.addRemoveList2 = ar;
-    }
-
-    private MultipleSelectOptionsList addRemoveList1DefaultOptions = new MultipleSelectOptionsList();
-
-    public MultipleSelectOptionsList getAddRemoveList1DefaultOptions() {
-        return addRemoveList1DefaultOptions;
-    }
-
-    public void setAddRemoveList1DefaultOptions(MultipleSelectOptionsList msol) {
-        this.addRemoveList1DefaultOptions = msol;
-    }
-
-    private MultipleSelectOptionsList addRemoveList2DefaultOptions = new MultipleSelectOptionsList();
-
-    public MultipleSelectOptionsList getAddRemoveList2DefaultOptions() {
-        return addRemoveList2DefaultOptions;
-    }
-
-    public void setAddRemoveList2DefaultOptions(MultipleSelectOptionsList msol) {
-        this.addRemoveList2DefaultOptions = msol;
-    }
-
-    // </editor-fold>
-
-
-    /** 
-     * <p>Construct a new Page bean instance.</p>
-     */
     public EditCollectionPage() {
     }
+    
+    private VDCCollection collection;
+    private Long collId;
+    private Long parentId;
 
-
-
-    /** 
-     * <p>Callback method that is called after the component tree has been
-     * restored, but before any event processing takes place.  This method
-     * will <strong>only</strong> be called on a postback request that
-     * is processing a form submit.  Customize this method to allocate
-     * resources that will be required in your event handlers.</p>
-     */
-    public void preprocess() {
-        Map m = getRequestMap();
-        m.put("collectionId",collId);
+    public VDCCollection getCollection() {
+        return collection;
     }
 
-    /** 
-     * <p>Callback method that is called just before rendering takes place.
-     * This method will <strong>only</strong> be called for the page that
-     * will actually be rendered (and not, for example, on a page that
-     * handled a postback and then navigated to a different page).  Customize
-     * this method to allocate resources that will be required for rendering
-     * this page.</p>
-     */
-    public void prerender() {
+    public CollectionUI getCollUI() {
+        return new CollectionUI(collection);
     }
 
-    /** 
-     * <p>Callback method that is called after rendering is completed for
-     * this request, if <code>init()</code> was called (regardless of whether
-     * or not this was the page that was actually rendered).  Customize this
-     * method to release resources acquired in the <code>init()</code>,
-     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
-     * acquired during execution of an event handler).</p>
-     */
-    public void destroy() {
+    public void setCollection(VDCCollection collection) {
+        this.collection = collection;
+    }
+
+    public Long getCollId() {
+        return collId;
+    }
+
+    public void setCollId(Long collId) {
+        this.collId = collId;
+    }    
+    
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
     
-    public Map getCollectionsMap(){
-        List <VDC> allVDC = vdcService.findAll();
-        List allVDCCollections = new ArrayList();
-        for (Iterator it = allVDC.iterator(); it.hasNext();) {
-            VDC elem = (VDC) it.next();
-            allVDCCollections.addAll(getCollections(elem.getId().longValue()));
-        }
-        String [] allVDCs = new String[allVDCCollections.size()];
-        for (Iterator it = allVDCCollections.iterator(); it.hasNext();) {
-            VDCCollection elem = (VDCCollection) it.next();
-            collectionsMap.put(getLevelRepStr(elem.getLevel())+elem.getName(),elem.getId());
+    public void init() {
+        super.init();
 
+        String collIdStr = getRequestParam("collectionId");
+
+        if (collIdStr != null) {
+            collId = Long.parseLong(collIdStr);
+            collection = vdcCollectionService.find(collId);
+            if (collection.getParentCollection() != null) {
+                parentId = collection.getParentCollection().getId();
+            }
+        } else {
+            collection = new VDCCollection();
+            collection.setStudies(new ArrayList());
+            collection.setOwner(getVDCRequestBean().getCurrentVDC());
+            collection.setType("static");
+
+            String parentIdStr = getRequestParam("parentId");
+            parentId = Long.parseLong(parentIdStr);
         }
 
-        return collectionsMap;
+        browseDVId = getVDCRequestBean().getCurrentVDC().getId();
+        browseCollectionId = getVDCRequestBean().getCurrentVDC().getRootCollection().getId();
+        setAvailableStudies(browseCollectionId);
+
+    }    
+
+    public List<SelectItem> getParentCollectionItems() {
+        List collSelectItems = new ArrayList<SelectItem>();
+
+        List<VDCCollection> collList = CollectionUI.getCollectionList(getVDCRequestBean().getCurrentVDC(), collection);
+        for (VDCCollection coll : collList) {
+            collSelectItems.add(new SelectItem(coll.getId(), coll.getName()));
+        }
+
+        return collSelectItems;
     }
-        
-    private String[] getAllViewableCollections() {
-        List <VDC> allVDC = vdcService.findAll();
-        List allVDCCollections = new ArrayList();
-        for (Iterator it = allVDC.iterator(); it.hasNext();) {
-            VDC elem = (VDC) it.next();
-            if (!elem.isRestricted() || elem.getId() ==getVDCRequestBean().getCurrentVDC().getId()){
-                List <VDCCollection> collections = getCollections(elem.getId().longValue());
-                List viewableCollections = new ArrayList();
-                for (int i = 0; i < collections.size(); i++) {
-                    VDCCollection collection = collections.get(i);
-                    if ((collection.isVisible()) || collection.getOwner().getId().equals(getVDCRequestBean().getCurrentVDCId())){
-                        viewableCollections.add(collection);
-                    }
-                }
-              
-                allVDCCollections.addAll(viewableCollections);
-            }
-        }
-        String [] allVDCs = new String[allVDCCollections.size()];
-        int i=0;
-        for (Iterator it = allVDCCollections.iterator(); it.hasNext();) {
-            VDCCollection elem = (VDCCollection) it.next();
-            String name=null;
-            if (elem.isVisible()){
-                name = getLevelRepStr(elem.getLevel()) + elem.getName();
-            } else{
-                name = getLevelRepStr(elem.getLevel()) + elem.getName()+ " (Hidden)";
-            }
-            allVDCs[i++] = name;
 
+
+    private List availableStudies;
+
+    public List getAvailableStudies() {
+        return availableStudies;
+    }
+
+    private void setAvailableStudies(Long collectionId) {
+        availableStudies = new ArrayList();
+        List<Study> studies = new CollectionUI(vdcCollectionService.find(collectionId)).getStudies();
+        for (Study study : studies) {
+            availableStudies.add(new StudyUI(study, StudyUI.isStudyInList(study, collection.getStudies())));
         }
-        return allVDCs;
+    }
+
+    private void setAvailableStudies(List<Long> studyIds) {
+        availableStudies = new ArrayList();
+        for (Long sid : studyIds) {
+            availableStudies.add(new StudyUI(sid));
+        }
     }
     
-    private String[] getVDCCollections(List <VDCCollection> vdcCollections){
-        String[] thisVDCCollections = new String[vdcCollections.size()+1];
-        int i = 0;
-        for (Iterator it = vdcCollections.iterator(); it.hasNext();) {
-            VDCCollection elem = (VDCCollection) it.next();
-            thisVDCCollections[i++] = getLevelRepStr(elem.getLevel()) + elem.getName();
-        }
-        return thisVDCCollections;
+    
+    // browse functionality
+    private Long browseDVId;
+    private Long browseCollectionId;
+    private boolean localBrowse;
+    private Long tempCollId;
+
+    public Long getBrowseDVId() {
+        return browseDVId;
     }
 
-    private String[] getVDCCollections(long vdcId) {
-        /*
-        VDC thisVDC = vdcService.find(new Long(vdcId));
-        VDCCollection thisVDCRootCollection = thisVDC.getRootCollection();
-        Collection <VDCCollRelationship> thisVDCRootCollectionRelationships = thisVDCRootCollection.getVdcCollRelationships();
-         **/
-        List thisVDC = getCollections(vdcId);
-        String[] thisVDCCollections = new String[thisVDC.size() ];
-        int i = 0;
-        for (Iterator it = thisVDC.iterator(); it.hasNext();) {
-            VDCCollection elem = (VDCCollection) it.next();
-            thisVDCCollections[i++] = getLevelRepStr(elem.getLevel()) + elem.getName();
+    public void setBrowseDVId(Long browseDVId) {
+        if (!browseDVId.equals(this.browseDVId)) {
+            this.browseDVId = browseDVId;
+            tempCollId = vdcService.find(browseDVId).getRootCollection().getId();
+            setAvailableStudies(tempCollId);
         }
-       return thisVDCCollections;
     }
 
-    public String queryStudies(){
-        VDCCollection editCollection = vdcCollectionService.find(vdcCollection.getId());
-        editCollection.setQuery((String) textAreaQuery.getValue());
-        editCollection.setVisible(true);
-        vdcCollectionService.edit(editCollection);
-        StatusMessage msg = new StatusMessage();
-        msg.setMessageText("Collection "+ editCollection.getName()+ " has been modified");
-        msg.setStyleClass("successMessage");
-        Map m = getRequestMap();
-        m.put("statusMessage",msg);
+    public Long getBrowseCollectionId() {
+        return browseCollectionId;
+    }
+
+    public void setBrowseCollectionId(Long browseCollectionId) {
+        if (tempCollId != null) {
+            this.browseCollectionId = tempCollId;
+            tempCollId = null;
+        } else if (!browseCollectionId.equals(this.browseCollectionId)) {
+            this.browseCollectionId = browseCollectionId;
+            setAvailableStudies(browseCollectionId);
+        }
+    }
+
+    public boolean isLocalBrowse() {
+        return localBrowse;
+    }
+
+    public void setLocalBrowse(boolean localBrowse) {
+        this.localBrowse = localBrowse;
+    }
+
+    public List<SelectItem> getBrowseDVItems() {
+        List dvSelectItems = new ArrayList<SelectItem>();
+        if (localBrowse) {
+            VDC currentVDC = getVDCRequestBean().getCurrentVDC();
+            dvSelectItems.add(new SelectItem(currentVDC.getId(), currentVDC.getName()));
+        } else {
+            for (VDC vdc : vdcService.findAllPublic()) {
+                dvSelectItems.add(new SelectItem(vdc.getId(), vdc.getName()));
+            }
+        }
+
+        return dvSelectItems;
+    }
+
+    public List<SelectItem> getBrowseCollectionItems() {
+        List collSelectItems = new ArrayList<SelectItem>();
+
+        if (browseDVId != null) {
+            List<VDCCollection> collList = CollectionUI.getCollectionList(vdcService.find(browseDVId));
+            for (VDCCollection coll : collList) {
+                collSelectItems.add(new SelectItem(coll.getId(), coll.getName()));
+            }
+        }
+
+        return collSelectItems;
+    }
+    
+    
+    // search functionality
+    private String searchField;
+    private String searchValue;
+
+    public String getSearchField() {
+        return searchField;
+    }
+
+    public void setSearchField(String searchField) {
+        this.searchField = searchField;
+    }
+
+    public String getSearchValue() {
+        return searchValue;
+    }
+
+    public void setSearchValue(String searchValue) {
+        this.searchValue = searchValue;
+    }
+
+    public void searchStudies(ActionEvent e) {
+        List searchTerms = new ArrayList();
+        SearchTerm st = new SearchTerm();
+        st.setFieldName(searchField);
+        st.setValue(searchValue);
+        searchTerms.add(st);
+
+        setAvailableStudies(indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms));
+    }
+
+
+
+    public String save_action() {
+
+        VDCCollection parentColl = vdcCollectionService.find(parentId);
+        parentColl.getSubCollections().add(collection);
+        collection.setParentCollection(parentColl);
+
+        if (collId == null) {
+            vdcCollectionService.create(collection);
+        } else {
+            vdcCollectionService.edit(collection);
+        }
+
         return "manageCollections";
-        
     }
-    
-    public String saveCollection(){
-        VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        Object[] s = (Object[]) addRemoveList2DefaultOptions.getSelectedValue();
-        VDCCollection editCollection = vdcCollectionService.find(vdcCollection.getId());
-        editCollection.setName((String)textField1.getValue());
-        ArrayList studies = new ArrayList();
-        for (int i=0;i<s.length;i++){
-            String studyStr =  s[i].toString();
-            Long studyId = new Long(Long.parseLong(studyStr));
-            Study study = studyService.getStudy(studyId);
-            study.getStudyColls().add(editCollection);
-            studies.add(study);
-        }
-        editCollection.setStudies(studies);
-        editCollection.setOwner(thisVDC);
-        
-        vdcCollectionService.edit(editCollection);
-        StatusMessage msg = new StatusMessage();
-        msg.setMessageText("Collection "+ editCollection.getName()+ " has been modified");
-        msg.setStyleClass("successMessage");
-        Map m = getRequestMap();
-        m.put("statusMessage",msg);
+
+    public String cancel_action() {
         return "manageCollections";
     }
-    
-    public List getCollections(long vdcId){
-        ArrayList collections = new ArrayList();
-        VDC vdc = vdcService.find(new Long(vdcId));
-        int treeLevel=0;
-        VDCCollection vdcRootCollection = vdc.getRootCollection();
-        if (vdcRootCollection != null){
-            vdcRootCollection.setLevel(treeLevel);
-            collections.add(vdcRootCollection);
-            Collection <VDCCollection> subcollections = vdcRootCollection.getSubCollections();
-            treeLevel = buildList(collections, subcollections,treeLevel);
-        }
-        return collections;
-    }
 
-    private int buildList( ArrayList collections, Collection<VDCCollection> vdcCollections,int level) {
-            level++;
-        for (Iterator it = vdcCollections.iterator(); it.hasNext();) {
-            VDCCollection elem = (VDCCollection) it.next();
-            elem.setLevel(level);
-            collections.add(elem);
-            Collection <VDCCollection> subcollections = elem.getSubCollections();
-            if (subcollections.size()>0){
-                buildList(collections,subcollections,level);
+    public void addRemoveStudyListener(RowSelectorEvent event) {
+        StudyUI studyUI = (StudyUI) availableStudies.get(event.getRow());
+
+        if (studyUI.isSelected()) {
+            if (!StudyUI.isStudyInList(studyUI.getStudy(), collection.getStudies())) {
+                collection.getStudies().add(studyUI.getStudy());
             }
+        } else {
+            collection.getStudies().remove(studyUI.getStudy());
         }
-        level--;
-        return level;
     }
 
-    private String getLevelRepStr(int i) {
-        StringBuffer levelRep = new StringBuffer();
-        for (int level = 0; level < i; level++) {
-            levelRep.append('-');
-        }
-        return levelRep.toString();
+    public void removeStudyListener(RowSelectorEvent event) {
+        Study study = collection.getStudies().get(event.getRow());
+        collection.getStudies().remove(study);
     }
-    
-
-    public String[] getSearchFields() {
-        VDC vdc = vdcService.find(new Long(vdcId));
-        Collection advSearchFields = vdc.getAdvSearchFields();
-        String[] fields = new String[advSearchFields.size()];
-        int i=0;
-        for (Iterator it = advSearchFields.iterator(); it.hasNext();) {
-            StudyField elem = (StudyField) it.next();
-            fields[i++]=elem.getDescription();
-            searchFields.put(messages.getString(elem.getName()),elem.getName());
-            
-        }
-        return fields;
-    }
-    
-    public void selectCollectionsStudies(ActionEvent e){
-       String collectionNameStr = (String) dropdown4.getValue();
-       int x =collectionNameStr.indexOf(" (Hidden)");
-       if (x>-1){
-           collectionNameStr = collectionNameStr.substring(0,x);
-       }
-//        Map m = getRequestMap();
-//        m.put("collectionId",collId);
-       Long collectionId = (Long) collectionsMap.get(collectionNameStr);
-       long collectionIdSelected = collectionId.longValue() ;
-       VDCCollection collectionSelected = vdcCollectionService.find(new Long(collectionIdSelected));
-       Collection <Study> collectionStudies = collectionSelected.getStudies();
-       List <Study> viewableStudies = new ArrayList();
-       for (Iterator it = collectionStudies.iterator(); it.hasNext();) {
-           Study elem = (Study) it.next();
-           if (isViewable(elem)){
-               viewableStudies.add(elem);
-           }
-           
-       }
-       int i=0;
-       Option [] studies = new Option[viewableStudies.size()];
-       for (Iterator it = viewableStudies.iterator(); it.hasNext();) {
-           Study elem = (Study) it.next();
-           if (isViewable(elem)){
-           studies[i++]= new Option(Long.toString(elem.getId().longValue()),elem.getTitle());
-           }
-       }
-
-       addRemoveList2.setItems(studies);       
-    }
-
-    private boolean isViewable(Study s){
-        boolean viewable;
-        viewable = ((!s.isRestricted() || isUserAllowed(s.getAllowedUsers(),getVDCSessionBean().getLoginBean().getUser().getId())) && !s.getReviewState().getId().equals(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW).getId()) && !s.getReviewState().getId().equals(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_NEW).getId()) && (!s.getOwner().isRestricted() || s.getOwner().getId().equals(getVDCSessionBean().getLoginBean().getCurrentVDC().getId())));
-        return viewable;
-
-    }
-
-    private boolean isUserAllowed(Collection allowedList, Long userId){
-        boolean userAllowed = false;
-        for (Iterator it = allowedList.iterator(); it.hasNext();) {
-            VDCUser elem = (VDCUser) it.next();
-            if (elem.getId().equals(userId)){
-                userAllowed = true;
-                break;
-            }
-        }
-        return userAllowed;
-    }
-
-    public void saveLink() {
-    }
-
 }
 

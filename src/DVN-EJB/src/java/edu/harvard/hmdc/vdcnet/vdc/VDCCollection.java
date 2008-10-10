@@ -49,10 +49,11 @@ import javax.persistence.*;
 @Entity
 public class VDCCollection implements java.io.Serializable  {
     private String name;
-    private String shortDesc;
-    private String longDesc;
+    private String description;
     @Column(columnDefinition="TEXT")
     private String query;
+    private boolean localScope;
+    private String type;
     
     @ManyToOne
     private VDC owner;
@@ -90,21 +91,13 @@ public class VDCCollection implements java.io.Serializable  {
     public void setName(String name) {
         this.name = name;
     }
-    
-    public String getShortDesc() {
-        return shortDesc;
+       
+    public String getDescription() {
+        return description;
     }
     
-    public void setShortDesc(String shortDesc) {
-        this.shortDesc = shortDesc;
-    }
-    
-    public String getLongDesc() {
-        return longDesc;
-    }
-    
-    public void setLongDesc(String longDesc) {
-        this.longDesc = longDesc;
+    public void setDescription(String description) {
+        this.description = description;
     }
     
     public String getQuery() {
@@ -114,6 +107,22 @@ public class VDCCollection implements java.io.Serializable  {
     public void setQuery(String query) {
         this.query = query;
     }
+
+    public boolean isLocalScope() {
+        return localScope;
+    }
+
+    public void setLocalScope(boolean localScope) {
+        this.localScope = localScope;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }    
     
     public VDC getOwner() {
         return owner;
@@ -278,48 +287,9 @@ public class VDCCollection implements java.io.Serializable  {
         this.linkedVDCs = linkedVDCs;
     }
 
-    /**
-     * Holds value of property reviewState.
-     */
-    @ManyToOne
-    private ReviewState reviewState;
 
-    /**
-     * Getter for property reviewState.
-     * @return Value of property reviewState.
-     */
-    public ReviewState getReviewState() {
-        return this.reviewState;
-    }
 
-    /**
-     * Setter for property reviewState.
-     * @param reviewState New value of property reviewState.
-     */
-    public void setReviewState(ReviewState reviewState) {
-        this.reviewState = reviewState;
-    }
 
-    /**
-     * Holds value of property visible.
-     */
-    private boolean visible;
-
-    /**
-     * Getter for property visible.
-     * @return Value of property visible.
-     */
-    public boolean isVisible() {
-        return this.visible;
-    }
-
-    /**
-     * Setter for property visible.
-     * @param visible New value of property visible.
-     */
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
 
     public void setParentRelationship (VDCCollection parentColl) {
         if (parentColl == null) {

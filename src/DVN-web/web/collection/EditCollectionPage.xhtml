@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  </head>
+
+  <body>
+    <gui:composition template="/template.xhtml">
+      <gui:param name="pageTitle" value="DVN - Add/Edit Collection"/>
+      <gui:define name="body">
+
+        <script type="text/javascript">
+            // <![CDATA[
+            function initPage() {
+                setRadioValue("collType", document.getElementById("form1:collectionType").value );
+                showHide(document.getElementById("form1:collectionType").value );
+            }
+
+
+            function getElementsByClassName( strClassName, obj ) {
+                var ar = arguments[2] || new Array();
+                var re = new RegExp("\\b" + strClassName + "\\b", "g");
+
+                if ( re.test(obj.className) ) {
+                    ar.push( obj );
+                }
+                for ( var i = 0; i < obj.childNodes.length; i++ )
+                    getElementsByClassName( strClassName, obj.childNodes[i], ar );
+
+                return ar;
+            }
+
+            function getRadioValue( id ) {
+                elements=document.getElementsByTagName("input");
+                for(i=0; i < elements.length; i++) {
+
+                    if (elements[i].id.indexOf(id) != -1 ) {
+                        if (elements[i].checked) {
+                            return elements[i].value;
+                        }
+                    }
+                }
+            }
+
+            function setRadioValue( id, newValue ) {
+                elements=document.getElementsByTagName("input");
+                for(i=0; i < elements.length; i++) {
+
+                    if (elements[i].id.indexOf(id) != -1) {
+                        if (elements[i].value == newValue) {
+                            elements[i].checked = true;
+                            return;
+                        }
+                    }
+                }
+            }
+
+
+            function showHide(showType) {              
+                var hideType;
+                
+                switch(showType)
+                {
+                    case "dynamic":
+                        hideType = "static";
+                        document.getElementById("form1:collectionType").value = showType;
+                        break;
+                    case "static":
+                        hideType = "dynamic";
+                        document.getElementById("form1:collectionType").value = showType;
+                        break;
+                    case "search":
+                        hideType = "browse";
+                        break;
+                    case "browse":
+                        hideType = "search";
+                        break;
+                    default:
+                        break;
+                }
+                var showDivs = getElementsByClassName(showType, document.body);
+                for (var i = 0; i < showDivs.length; i++)
+                {
+                    var div = showDivs[i];
+                    div.style.display='';
+                }
+
+                var hideDivs = getElementsByClassName(hideType, document.body);
+                for (var i = 0; i < hideDivs.length; i++)
+                {
+                    var div = hideDivs[i];
+                    div.style.display='none';
+                }
+            }
+            // ]]>
+        </script>
+
+        <ice:form id="form1">
+          <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+          <ice:inputHidden id="collId" value="#{EditCollectionPage.collId}"/>
+          <ice:inputHidden id="parentId" value="#{EditCollectionPage.parentId}"/>
+
+          <div class="dvn_section">
+            <div class="dvn_sectionTitle">
+              <ice:outputText value="Create Collection"/>
+            </div>
+            <div class="dvn_sectionBox">
+              <div class="dvn_margin12">
+                <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" style="width: 100%;">
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%">
+                    <div jsfc="ice:panelGroup" id="groupPanel1" styleClass="vdcFieldTitle">
+                      Type
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <!-- workaround for iefaces radio / onclick problem
+                      <h:selectOneMenu id="collectionType" value="#{EditCollectionPage.collection.type}" onclick="showHide(this.value);">
+                        <f:selectItem id="item1" itemLabel="static" itemValue="static" />
+                        <f:selectItem id="item2" itemLabel="dynamic" itemValue="dynamic" />
+                      </h:selectOneMenu>
+                      -->
+                      <ice:inputHidden id="collectionType" value="#{EditCollectionPage.collection.type}"/>
+                      <input type="radio" name="collType" id="collTypeStatic" value="static" onclick="showHide(this.value);"/> static
+                      <input type="radio" name="collType" id="collTypeDynamic" value="dynamic" onclick="showHide(this.value);"/> dynamic
+                    </div>
+                    <div jsfc="ice:panelGroup" id="groupPanel2" styleClass="vdcFieldTitle">
+                      Name
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_collectionName" size="45" value="#{EditCollectionPage.collection.name}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="vdcFieldTitle">
+                      Parent
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:selectOneMenu id="parentColl" value="#{EditCollectionPage.parentId}">
+                        <f:selectItems value="#{EditCollectionPage.parentCollectionItems}" />
+                      </ice:selectOneMenu>
+                    </div>
+                    <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="vdcFieldTitle">
+                      Description
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputTextarea id="input_collectionDesc" cols="60" rows="4" value="#{EditCollectionPage.collection.description}"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <!-- MPL License text (see http://www.mozilla.org/MPL/)
+                In this demonstration, ice:dataTable is used to display data. There is
+a control on the data to hide/show the table columns.-->
+
+                  <ice:panelGroup styleClass="componentBox static" style="padding-top: 2em;">
+
+                    <ice:panelGroup styleClass="rowSelectorContainer">
+
+                      <!-- DataTable with RowSelector Component -->
+
+                      <div class="vdcFieldTitle">Selected Studies</div>
+
+                      <ice:panelGroup styleClass="exampleBox">
+
+                        <ice:dataTable id="studyList"
+                                       var="study"
+                                       value="#{EditCollectionPage.collection.studies}"
+                                       rows="15" width="100%"
+                                       columnClasses="tableCol">
+                          <ice:column>
+                            <ice:rowSelector id="selected"
+                                             selectionListener="#{EditCollectionPage.removeStudyListener}"/>
+                            <ice:outputText id="studyName"
+                                            value="#{study.metadata.title}"/>
+                          </ice:column>
+                        </ice:dataTable>
+                      </ice:panelGroup>
+
+                      <!-- Selected Values DataTable -->
+
+                      <div class="vdcFieldTitle" style="padding-top: 1em;">Studies to Choose From</div>
+
+                      <ice:panelGroup>
+                        <div>
+                          <ice:outputLink value="javascript:showHide('browse');">
+                            <ice:outputText value="Browse"/>
+                          </ice:outputLink>
+                          &#160;|&#160;&#160;
+                          <ice:outputLink value="javascript:showHide('search');">
+                            <ice:outputText value="Search"/>
+                          </ice:outputLink>
+                        </div>
+                      </ice:panelGroup>
+
+                      <ice:panelGroup styleClass="browse" style="display: none;">
+                        <ice:selectOneMenu value="#{EditCollectionPage.browseDVId}" partialSubmit="true">
+                          <f:selectItems value="#{EditCollectionPage.browseDVItems}"/>
+                        </ice:selectOneMenu>
+                        <br/>
+                        <ice:selectOneMenu value="#{EditCollectionPage.browseCollectionId}" partialSubmit="true">
+                          <f:selectItems value="#{EditCollectionPage.browseCollectionItems}"/>
+                        </ice:selectOneMenu>
+                      </ice:panelGroup>
+
+                      <ice:panelGroup styleClass="search" style="display: none;">
+                        <ice:selectOneMenu id="dropdown5" value="#{EditCollectionPage.searchField}" >
+                          <f:selectItem itemLabel="Cataloging Information" itemValue="any"/>
+                          <f:selectItem itemLabel="- Author" itemValue="authorName"/>
+                          <f:selectItem itemLabel="- Title" itemValue="title"/>
+                          <f:selectItem itemLabel="- Global ID" itemValue="globalId"/>
+                        </ice:selectOneMenu>
+                        <ice:inputText id="textField1" value="#{EditCollectionPage.searchValue}"/>
+
+                        <ice:message for="textField1" showSummary="true" showDetail="false" errorClass="errorMessage"/>
+                        <ice:commandButton id="button1" value="Search" actionListener="#{EditCollectionPage.searchStudies}"/>
+                      </ice:panelGroup>
+
+                      <ice:panelGroup>
+                        <ice:outputLabel id="results"
+                                         value=""/>
+                        <ice:dataTable id="selectedRows"
+                                       var="studyUI"
+                                       value="#{EditCollectionPage.availableStudies}"
+                                       rows="15" width="100%"
+                                       columnClasses="tableCol" >
+                          <ice:column>
+                            <ice:rowSelector id="selected2"
+                                             value="#{studyUI.selected}"
+                                             selectionListener="#{EditCollectionPage.addRemoveStudyListener}"
+                                             multiple="true"/>
+                            <ice:outputText id="selectedStudyName"
+                                            value="#{studyUI.study.metadata.title} (#{studyUI.selected})"/>
+                          </ice:column>
+                        </ice:dataTable>
+                      </ice:panelGroup>
+
+                    </ice:panelGroup>
+                  </ice:panelGroup>
+
+                  <!-- Dynamic Query textarea -->
+
+                  <div jsfc="ice:panelGroup" style="padding-top: 2em;" styleClass="dynamic">
+                    Enter query:<br/>
+                    <ice:inputTextarea id="input_collectionQuery" cols="60" rows="6" value="#{EditCollectionPage.collection.query}"/>
+                    <br/>
+                    <ice:selectBooleanCheckbox id="onlyYourDataverse2"
+                                               value="#{EditCollectionPage.collection.local}"
+                                               partialSubmit="true"/>
+                    <ice:outputLabel for="multipleSelection"
+                                     value="Only your dataverse"/>
+                  </div>
+
+                </div>
+
+                <div style="padding-top: 2em;">
+                  <ice:commandButton id="button3" value="Save Collection" action="#{EditCollectionPage.save_action}"/>
+                  <ice:commandButton id="button4" immediate="true"
+                                     style="margin-left: 30px;" value="Cancel" action="#{EditCollectionPage.cancel_action}"/>
+                </div>
+              </div>
+            </div>
+          </div>-
+        </ice:form>
+        <script type="text/javascript">
+            initPage();
+        </script>
+      </gui:define>
+    </gui:composition>
+  </body>
+</html>

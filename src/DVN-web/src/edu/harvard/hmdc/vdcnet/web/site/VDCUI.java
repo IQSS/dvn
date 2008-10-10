@@ -53,19 +53,7 @@ public class VDCUI  implements java.io.Serializable {
     }
     
     public List getLinkedCollections(boolean getHiddenCollections) {
-        if (getHiddenCollections) {
-            return vdc.getLinkedCollections();
-        } else {
-            List linkedColls = new ArrayList();
-            Iterator iter = vdc.getLinkedCollections().iterator();
-            while (iter.hasNext()) {
-                VDCCollection link = (VDCCollection) iter.next();
-               if (link.isVisible()) {
-                    linkedColls.add( link );
-               }
-            }
-            
-            return linkedColls;
-        }
+        // getHiddenCollections no longer used
+        return vdc.getLinkedCollections();
     }
 }

@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
+import javax.swing.tree.DefaultTreeModel;
 import org.apache.commons.collections.OrderedMap;
 import org.apache.commons.collections.map.LinkedMap;
 
@@ -64,7 +65,7 @@ public class StudyListing  implements java.io.Serializable {
     private int mode;
     private List studyIds = new ArrayList();
     private Long collectionId;
-    private Tree collectionTree;
+    private DefaultTreeModel collectionTree;
     
     private Long vdcId;
     private List searchTerms;
@@ -94,11 +95,11 @@ public class StudyListing  implements java.io.Serializable {
         this.collectionId = collectionId;
     }
 
-    public Tree getCollectionTree() {
+    public DefaultTreeModel getCollectionTree() {
         return collectionTree;
     }
 
-    public void setCollectionTree(Tree collectionTree) {
+    public void setCollectionTree(DefaultTreeModel collectionTree) {
         this.collectionTree = collectionTree;
     }
 

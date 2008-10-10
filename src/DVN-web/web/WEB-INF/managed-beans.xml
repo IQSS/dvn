@@ -403,11 +403,6 @@
         </managed-property>
     </managed-bean>
     <managed-bean>
-        <managed-bean-name>AddCollectionsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.collection.AddCollectionsPage</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-    </managed-bean>
-    <managed-bean>
         <managed-bean-name>AddLinkPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.collection.AddLinkPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>

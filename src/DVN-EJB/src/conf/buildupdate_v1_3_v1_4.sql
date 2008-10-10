@@ -56,4 +56,22 @@ ALTER TABLE harvestingdataverse ALTER COLUMN harvestresult SET STORAGE EXTENDED;
 
 update harvestingdataverse set lastsuccessfulharvesttime=lastharvesttime;
 
+
+
+-- Changes to vdccollection table
+
+alter table vdccollection drop column visible
+
+alter table vdccollection drop column reviewstate_id
+
+alter table vdccollection drop column shortdesc
+
+alter table vdccollection rename column longdesc to description
+
+ALTER TABLE vdccollection ADD COLUMN localscope boolean;
+ALTER TABLE vdccollection ALTER COLUMN localscope SET STORAGE PLAIN;
+
+ALTER TABLE vdccollection ADD COLUMN type varchar(255);
+ALTER TABLE vdccollection ALTER COLUMN type SET STORAGE EXTENDED;
+
 commit;

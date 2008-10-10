@@ -35,3 +35,21 @@ alter column definition type text;
 
 ALTER TABLE vdcgroup ADD COLUMN parent int4;
 ALTER TABLE vdcgroup ALTER COLUMN parent SET STORAGE PLAIN;
+
+
+ALTER TABLE harvestingdataverse ADD COLUMN lastsuccessfulharvesttime timestamp;
+ALTER TABLE harvestingdataverse ALTER COLUMN lastsuccessfulharvesttime SET STORAGE PLAIN;
+
+
+ALTER TABLE harvestingdataverse ADD COLUMN harvestedstudycount int8;
+ALTER TABLE harvestingdataverse ALTER COLUMN harvestedstudycount SET STORAGE PLAIN;
+
+
+ALTER TABLE harvestingdataverse ADD COLUMN failedstudycount int8;
+ALTER TABLE harvestingdataverse ALTER COLUMN failedstudycount SET STORAGE PLAIN;
+
+
+ALTER TABLE harvestingdataverse ADD COLUMN harvestresult varchar(255);
+ALTER TABLE harvestingdataverse ALTER COLUMN harvestresult SET STORAGE EXTENDED;
+
+

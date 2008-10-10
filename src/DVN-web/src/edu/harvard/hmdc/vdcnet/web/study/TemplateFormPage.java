@@ -26,7 +26,7 @@
 package edu.harvard.hmdc.vdcnet.web.study;
 
 
-import com.sun.jsfcl.data.DefaultTableDataModel;
+
 import edu.harvard.hmdc.vdcnet.study.EditTemplateService;
 import edu.harvard.hmdc.vdcnet.study.StudyAbstract;
 import edu.harvard.hmdc.vdcnet.study.StudyAuthor;
@@ -67,6 +67,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -335,15 +336,7 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
    
     
-    private DefaultTableDataModel dataTable5Model = new DefaultTableDataModel();
-    
-    public DefaultTableDataModel getDataTable5Model() {
-        return dataTable5Model;
-    }
-    
-    public void setDataTable5Model(DefaultTableDataModel dtdm) {
-        this.dataTable5Model = dtdm;
-    }
+   
     
     
     
@@ -355,10 +348,10 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     public void initStudyMap() {
         studyMap = new HashMap();
-        for (Iterator<TemplateField> it = vdcNetworkService.find().getDefaultTemplate().getTemplateFields().iterator(); it.hasNext();) {
+        for (Iterator<TemplateField> it =template.getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
             StudyMapValue smv = new StudyMapValue();
-            smv.setTemplateField(tf);
+            smv.setTemplateFieldUI(new TemplateFieldUI(tf));
             studyMap.put(tf.getStudyField().getName(),smv);
         }
         
@@ -1084,11 +1077,8 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     public String save() {
         if (this.getTemplate()==null) {
             return "home";
-        }
-      
+        }      
         removeEmptyRows();
-       
-        
         editTemplateService.save();
        
        
@@ -2511,7 +2501,12 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     private void _init() {
     }
     
-    
+    public void changeRecommend(ValueChangeEvent event) {
+            Boolean newValue = (Boolean)event.getNewValue();
+            String studyFieldName=  event.getComponent().getId();
+            StudyMapValue studyMapValue = (StudyMapValue)studyMap.get(studyFieldName);
+            editTemplateService.changeRecommend(studyMapValue.getTemplateField(), newValue);
+    }
   
     
 }

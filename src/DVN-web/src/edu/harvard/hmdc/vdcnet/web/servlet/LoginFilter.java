@@ -74,6 +74,7 @@ import javax.servlet.http.HttpSession;
 @EJBs({
 @EJB(name = "collectionService", beanInterface = edu.harvard.hmdc.vdcnet.vdc.VDCCollectionServiceLocal.class),
 @EJB(name = "studyService", beanInterface = edu.harvard.hmdc.vdcnet.study.StudyServiceLocal.class),
+@EJB(name = "templateService", beanInterface = edu.harvard.hmdc.vdcnet.study.TemplateServiceLocal.class),
 @EJB(name = "indexService", beanInterface = edu.harvard.hmdc.vdcnet.index.IndexServiceLocal.class),
 @EJB(name = "catalogService", beanInterface = edu.harvard.hmdc.vdcnet.catalog.CatalogServiceLocal.class),
 @EJB(name = "oaiSetService", beanInterface = edu.harvard.hmdc.vdcnet.vdc.OAISetServiceLocal.class),

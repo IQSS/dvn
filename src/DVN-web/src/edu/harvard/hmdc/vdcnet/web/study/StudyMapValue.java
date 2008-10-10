@@ -69,33 +69,41 @@ public class StudyMapValue implements java.io.Serializable  {
     /**
      * Holds value of property templateField.
      */
-    private TemplateField templateField;
+    private TemplateFieldUI templateFieldUI;
+
+    public TemplateFieldUI getTemplateFieldUI() {
+        return templateFieldUI;
+    }
+
+    public void setTemplateFieldUI(TemplateFieldUI templateFieldUI) {
+        this.templateFieldUI = templateFieldUI;
+    }
 
     /**
      * Getter for property templateField.
      * @return Value of property templateField.
      */
     public TemplateField getTemplateField() {
-        return this.templateField;
+        return this.templateFieldUI.getTemplateField();
     }
 
-    /**
-     * Setter for property templateField.
-     * @param templateField New value of property templateField.
-     */
-    public void setTemplateField(TemplateField templateField) {
-        this.templateField = templateField;
-    }
+   
     
     public boolean isRequired() {
-        return templateField.isRequired();
+        return templateFieldUI.getTemplateField().isRequired();
     }
     
     public boolean isRecommended() {
-        return templateField.isRecommended();
+        System.out.println("HELLO JAVA REBEL");
+        return templateFieldUI.getTemplateField().isRecommended();
     }
-      public boolean isOptional() {
-        return templateField.isOptional();
+ 
+    public void setRecommended(boolean isRecommended) {
+        templateFieldUI.setRecommended(isRecommended);
+    }
+
+    public boolean isOptional() {
+        return templateFieldUI.getTemplateField().isOptional();
     }
    
 }

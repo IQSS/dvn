@@ -366,6 +366,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             Long templateId = Long.parseLong((String)value);
             editStudyService.changeTemplate(templateId);
             study = editStudyService.getStudy();
+            initCollections();
+            initStudyMap();
         }
      }
        public String changeTemplateAction() {
@@ -375,6 +377,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             study = editStudyService.getStudy();
         }
         initCollections();  // Add empty row for entering data in currently empty collections
+        initStudyMap();  // Reset Recommended flag for all fields
         return "";
      }
      
@@ -412,28 +415,30 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     
+    private Map studyMap;
     
-    
+    public Map getStudyMap() {
+        if (studyMap==null) {
+            initStudyMap();
+        }
+        return studyMap;
+    }
     
     public void initStudyMap() {
-        editStudyService.setStudyMap(new HashMap());
-        for (Iterator<TemplateField> it = vdcNetworkService.find().getDefaultTemplate().getTemplateFields().iterator(); it.hasNext();) {
+        studyMap = new HashMap();
+        for (Iterator<TemplateField> it =study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
             TemplateField tf = it.next();
             StudyMapValue smv = new StudyMapValue();
-            smv.setTemplateField(tf);
-            editStudyService.getStudyMap().put(tf.getStudyField().getName(),smv);
-        }
-        
+            smv.setTemplateFieldUI(new TemplateFieldUI(tf));
+            studyMap.put(tf.getStudyField().getName(),smv);
+      }
     }
       public Map getTemplatesMap() {
         return vdcService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
     }
     
     
-    public Map getStudyMap() {
-        return editStudyService.getStudyMap();
-        
-    }
+    
     public boolean isTitleRequired() {
         TemplateField tf = (TemplateField)( editStudyService.getStudyMap().get("title"));
         return tf.isRequired();
@@ -1586,6 +1591,26 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
         
     }
+
+    public String getShowAllString() {
+        return showAllString;
+    }
+
+    public void setShowAllString(String showAllString) {
+        this.showAllString = showAllString;
+    }
+    private String showAllString;
+
+    private boolean showAll;
+
+    public boolean isShowAll() {
+        return showAll;
+    }
+
+    public void setShowAll(boolean showAll) {
+        this.showAll = showAll;
+    }
+
     
     private Long selectTemplateId;
 
@@ -1595,6 +1620,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     public void setSelectTemplateId(Long selectTemplateId) {
         this.selectTemplateId = selectTemplateId;
+        if (study!=null && !study.getTemplate().getId().equals(selectTemplateId)) {
+           editStudyService.changeTemplate(selectTemplateId);
+           initCollections();  // Add empty row for entering data in currently empty collections
+           initStudyMap();  // Reset Recommended flag for all fields
+        }
+        
     }
     
     

@@ -115,7 +115,7 @@
                   <input checked="checked" type="radio" id="hideRadio" name="hideShowRadio" value="hide" onclick="updateHideShow(this);"/> Show Required and Recommended Fields
                   <input type="radio" id="showRadio" name="hideShowRadio" value="show" onclick="updateHideShow(this);"/> Show All Fields
                   <div class="dvnFormPadding">
-                    <ice:outputText value="Template Name: "/><ice:inputText id="template_name" size="45" value='#{TemplateFormPage.template.name}' required='true' requiredMessage='This field is required.'/>
+                    <ice:outputText  value="Template Name: "/><ice:inputText id="template_name" size="45" value='#{TemplateFormPage.template.name}' required='true' requiredMessage='This field is required.'/>
                     <ice:message styleClass="errorMessage" for="template_name"/>
                   </div>
                 </div>
@@ -159,6 +159,7 @@
                     styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.subTitle].templateField.fieldInputLevel.name}"
                     columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.subTitle].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.subtitleHelp}" linkText="#{editstudybundle.subtitleLabel}" heading="#{editstudybundle.subtitleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.subTitle].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.subTitle].recommended}"/>
@@ -179,6 +180,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyOtherIds}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.otherId].recommended}" rendered ="#{TemplateFormPage.dataTableOtherIds.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.otheridHelp}" linkText="#{editstudybundle.otheridLabel}" heading="#{editstudybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.otherIdLevel=='required'}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.otherIdLevel=='recommended'}"/>
@@ -202,8 +204,8 @@
                       </div>
                     </ice:column>
                     <ice:column id="groupPanel61">
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableOtherIds.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton  partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="True" rendered="#{TemplateFormPage.dataTableOtherIds.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>
@@ -220,6 +222,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyAuthors}" var="currentAuthor">
                     <ice:column>
                       <div class="vdcEditStudyField">
+                        <ice:selectBooleanCheckbox  partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.authorName].recommended}"  rendered ="#{TemplateFormPage.dataTableAuthors.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.authorHelp}" linkText="#{editstudybundle.authorLabel}" heading="#{editstudybundle.authorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.authorInputLevel=='required'}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.authorInputLevel=='recommended'}"/>
@@ -255,8 +258,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableAuthors.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableAuthors.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>
@@ -273,7 +276,8 @@
                                  value="#{TemplateFormPage.template.metadata.studyProducers}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
-                        <dvn:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                         <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.producerName].recommended}" rendered ="#{TemplateFormPage.dataTableProducers.rowIndex==0}"  />
+                       <dvn:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.producerInputLevel=='required'}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.producerInputLevel=='recommended'}"/>
                       </div>
@@ -334,8 +338,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableProducers.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableProducers.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>
@@ -345,6 +349,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.productionDate].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.productionDate].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.productionDateHelp}" linkText="#{editstudybundle.productionDateLabel}" heading="#{editstudybundle.productionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.productionDate].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.productionDate].recommended}"/>
@@ -362,6 +367,7 @@
                     styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.productionPlace].templateField.fieldInputLevel.name}"
                     columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.productionPlace].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.productionPlaceHelp}" linkText="#{editstudybundle.productionPlaceLabel}" heading="#{editstudybundle.productionPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.productionPlace].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.productionPlace].recommended}"/>
@@ -383,6 +389,7 @@
                                  value="#{TemplateFormPage.template.metadata.studySoftware}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.softwareName].recommended}" rendered ="#{TemplateFormPage.dataTableSoftware.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.softwareNameHelp}" linkText="#{editstudybundle.softwareNameLabel}" heading="#{editstudybundle.softwareNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.softwareInputLevel=='required'}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.softwareInputLevel=='recommended'}"/>
@@ -405,8 +412,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableSoftware.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableSoftware.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>
@@ -416,6 +423,7 @@
                             styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevel.name}"
                             columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.fundingAgency].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.fundingAgencyHelp}" linkText="#{editstudybundle.fundingAgencyLabel}" heading="#{editstudybundle.fundingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.fundingAgency].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.fundingAgency].recommended}"/>
@@ -436,6 +444,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyGrants}" var="currentRow" width="100%">
                     <ice:column>
                       <div class="vdcEditStudyField">
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.grantNumber].recommended}" rendered ="#{TemplateFormPage.dataTableGrants.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.grantNumberHelp}" linkText="#{editstudybundle.grantNumberLabel}" heading="#{editstudybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.grantInputLevel=='required'}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.grantInputLevel=='recommended'}"/>
@@ -458,8 +467,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableGrants.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableGrants.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>
@@ -475,6 +484,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyDistributors}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.distributorName].recommended}" rendered ="#{TemplateFormPage.dataTableDistributors.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.distributorHelp}" linkText="#{editstudybundle.distributorLabel}" heading="#{editstudybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.distributorInputLevel=='required'}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.distributorInputLevel=='recommended'}"/>
@@ -537,8 +547,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableDistributors.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableDistributors.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>
@@ -547,6 +557,7 @@
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.distributorInputLevel}" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField #{TemplateFormPage.distributorInputLevel}">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.distributorContact].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactHelp}" linkText="#{editstudybundle.distributorContactLabel}" heading="#{editstudybundle.distributorContactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributorContact].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributorContact].recommended}"/>
@@ -584,6 +595,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div jsfc="ice:panelGroup" id="groupPanel49" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevel.name}">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.distributionDate].recommended}"  /> 
                   <dvn:inlinehelp helpMessage="#{editstudybundle.distributionDateHelp}" linkText="#{editstudybundle.distributionDateLabel}" heading="#{editstudybundle.distributionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributionDate].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributionDate].recommended}"/>
@@ -601,6 +613,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.depositor].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div id="groupPanel50" class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.depositor].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.depositorHelp}" linkText="#{editstudybundle.depositorLabel}" heading="#{editstudybundle.depositorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.depositor].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.depositor].recommended}"/>
@@ -615,6 +628,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div jsfc="ice:panelGroup" id="groupPanel51"  styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevel.name}">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.depositDateHelp}" linkText="#{editstudybundle.depositDateLabel}" heading="#{editstudybundle.depositDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].recommended}"/>
@@ -632,6 +646,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.seriesInputLevel}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div jsfc="ice:panelGroup" id="groupPanel52" styleClass="vdcEditStudyField #{TemplateFormPage.seriesInputLevel}">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.seriesName].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.seriesHelp}" linkText="#{editstudybundle.seriesLabel}" heading="#{editstudybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.seriesInputLevel=='required'}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.seriesInputLevel=='recommended'}"/>
@@ -668,9 +683,10 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.versionInputLevel}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div jsfc="ice:panelGroup" id="groupPanel53" styleClass="#{TemplateFormPage.versionInputLevel}">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.studyVersion].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionHelp}" linkText="#{editstudybundle.seriesVersionLabel}" heading="#{editstudybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                  <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.inputVersion=='required'}"/>
-                  <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.inputVersion=='recommended'}"/>
+                  <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.versionInputLevel=='required'}"/>
+                  <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.versionInputLevel=='recommended'}"/>
                 </div>
                 <div id="groupPanel30">
                   <div jsfc="ice:panelGroup" styleClass="#{TemplateFormPage.studyMap[sfc.studyVersion].templateField.fieldInputLevel.name}">
@@ -694,6 +710,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{TemplateFormPage.studyMap[sfc.replicationFor].templateField.fieldInputLevel.name}">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.replicationFor].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.replicationForHelp}" linkText="#{editstudybundle.replicationForLabel}" heading="#{editstudybundle.replicationForHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.replicationFor].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.replicationFor].recommended}"/>
@@ -724,6 +741,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyAbstracts}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.abstractText].recommended}" rendered ="#{TemplateFormPage.dataTableAbstracts.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.abstractHelp}" linkText="#{editstudybundle.abstractLabel}" heading="#{editstudybundle.abstractHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.abstractInputLevel=='required'}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.abstractInputLevel=='recommended'}"/>
@@ -758,8 +776,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableAbstracts.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true"  rendered="#{TemplateFormPage.dataTableAbstracts.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>
@@ -775,6 +793,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyKeywords}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.keywordValue].recommended}" rendered ="#{TemplateFormPage.dataTableKeywords.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.keywordHelp}" linkText="#{editstudybundle.keywordLabel}" heading="#{editstudybundle.keywordHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.keywordInputLevel=='required'}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.keywordInputLevel=='recommended'}"/>
@@ -812,8 +831,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableKeywords.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableKeywords.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>
@@ -830,6 +849,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyTopicClasses}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.topicClassValue].recommended}" rendered ="#{TemplateFormPage.dataTableTopicClass.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassificationHelp}" linkText="#{editstudybundle.topicClassificationLabel}" heading="#{editstudybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.topicInputLevel=='required'}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.topicInputLevel=='recommended'}"/>
@@ -867,8 +887,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableTopicClass.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableTopicClass.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>
@@ -885,6 +905,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyRelPublications}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.relatedPublications].recommended}" rendered ="#{TemplateFormPage.dataTableRelPublications.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.relatedPublicationsHelp}" linkText="#{editstudybundle.relatedPublicationsLabel}" heading="#{editstudybundle.relatedPublicationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedPublications].required}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedPublications].recommended}"/>
@@ -904,8 +925,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableRelPublications.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelPublications.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>
@@ -922,6 +943,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyRelMaterials}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.relatedMaterial].recommended}" rendered ="#{TemplateFormPage.dataTableRelMaterials.rowIndex==0}"  />                                                                        
                         <dvn:inlinehelp helpMessage="#{editstudybundle.relatedMaterialHelp}" linkText="#{editstudybundle.relatedMaterialLabel}" heading="#{editstudybundle.relatedMaterialHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedMaterial].required}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedMaterial].recommended}"/>
@@ -941,8 +963,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableRelMaterials.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelMaterials.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>
@@ -959,6 +981,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyRelStudies}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.relatedStudies].recommended}" rendered ="#{TemplateFormPage.dataTableRelStudies.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.relatedStudiesHelp}" linkText="#{editstudybundle.relatedStudiesLabel}" heading="#{editstudybundle.relatedStudiesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedStudies].required}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedStudies].recommended}"/>
@@ -978,8 +1001,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableRelStudies.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableRelStudies.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>
@@ -996,6 +1019,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyOtherRefs}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.otherReferences].recommended}" rendered ="#{TemplateFormPage.dataTableOtherReferences.rowIndex==0}"  />                                                                                                
                         <dvn:inlinehelp helpMessage="#{editstudybundle.otherReferencesHelp}" linkText="#{editstudybundle.otherReferencesLabel}" heading="#{editstudybundle.otherReferencesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherReferences].required}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherReferences].recommended}"/>
@@ -1015,8 +1039,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableOtherReferences.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableOtherReferences.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>
@@ -1026,6 +1050,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.timePeriodStartHelp}" linkText="#{editstudybundle.timePeriodStartLabel}" heading="#{editstudybundle.timePeriodStartHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredStart].recommended}"/>
@@ -1043,6 +1068,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.timePeriodEndHelp}" linkText="#{editstudybundle.timePeriodEndLabel}" heading="#{editstudybundle.timePeriodEndHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.timePeriodCoveredEnd].recommended}"/>
@@ -1060,6 +1086,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.collectionDateStartHelp}" linkText="#{editstudybundle.collectionDateStartLabel}" heading="#{editstudybundle.collectionDateStartHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dateOfCollectionStart].recommended}"/>
@@ -1077,6 +1104,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.collectionDateEndHelp}" linkText="#{editstudybundle.collectionDateEndLabel}" heading="#{editstudybundle.collectionDateEndHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dateOfCollectionEnd].recommended}"/>
@@ -1094,7 +1122,10 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.country].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.country].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.countryHelp}" linkText="#{editstudybundle.countryLabel}" heading="#{editstudybundle.countryHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                  <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.country].required}"/>
+                  <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.country].recommended}"/>
                 </div>
                 <div>
                   <ice:inputText id="input_country" size="45" value="#{TemplateFormPage.template.metadata.country}" required="#{TemplateFormPage.studyMap[sfc.country].required}"/>
@@ -1106,6 +1137,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.geographicCoverage].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.geographicCoverage].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.geographicCoverageHelp}" linkText="#{editstudybundle.geographicCoverageLabel}" heading="#{editstudybundle.geographicCoverageHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.geographicCoverage].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.geographicCoverage].recommended}"/>
@@ -1120,6 +1152,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.geographicUnit].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.geographicUnit].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.geographicUnitHelp}" linkText="#{editstudybundle.geographicUnitLabel}" heading="#{editstudybundle.geographicUnitHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.geographicUnit].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.geographicUnit].recommended}"/>
@@ -1134,6 +1167,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.westLongitude].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.westLongitude].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.geographicBoundingBoxHelp}" linkText="#{editstudybundle.geographicBoundingBoxLabel}" heading="#{editstudybundle.geographicBoundingBoxHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.westLongitude].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.westLongitude].recommended}"/>
@@ -1174,6 +1208,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.unitOfAnalysis].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.unitOfAnalysis].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.unitOfAnalysisHelp}" linkText="#{editstudybundle.unitOfAnalysisLabel}" heading="#{editstudybundle.unitOfAnalysisHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.unitOfAnalysis].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.unitOfAnalysis].recommended}"/>
@@ -1190,6 +1225,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.universe].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.universe].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.universeHelp}" linkText="#{editstudybundle.universeLabel}" heading="#{editstudybundle.universeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.universe].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.universe].recommended}"/>
@@ -1206,6 +1242,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.kindOfData].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.kindOfData].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.kindOfDataHelp}" linkText="#{editstudybundle.kindOfDataLabel}" heading="#{editstudybundle.kindOfDataHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.kindOfData].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.kindOfData].recommended}"/>
@@ -1226,6 +1263,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.timeMethod].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.timeMethod].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.timeMethodHelp}" linkText="#{editstudybundle.timeMethodLabel}" heading="#{editstudybundle.timeMethodHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.timeMethod].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.timeMethod].recommended}"/>
@@ -1245,6 +1283,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dataCollector].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.dataCollector].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.dataCollectorHelp}" linkText="#{editstudybundle.dataCollectorLabel}" heading="#{editstudybundle.dataCollectorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataCollector].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataCollector].recommended}"/>
@@ -1264,6 +1303,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.frequencyHelp}" linkText="#{editstudybundle.frequencyLabel}" heading="#{editstudybundle.frequencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.frequencyOfDataCollection].recommended}"/>
@@ -1283,6 +1323,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.samplingProcedure].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.samplingProcedure].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.samplingProcedureHelp}" linkText="#{editstudybundle.samplingProcedureLabel}" heading="#{editstudybundle.samplingProcedureHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.samplingProcedure].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.samplingProcedure].recommended}"/>
@@ -1303,6 +1344,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.majorDeviationsHelp}" linkText="#{editstudybundle.majorDeviationsLabel}" heading="#{editstudybundle.majorDeviationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.deviationsFromSampleDesign].recommended}"/>
@@ -1323,6 +1365,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.collectionMode].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.collectionMode].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.collectionModeHelp}" linkText="#{editstudybundle.collectionModeLabel}" heading="#{editstudybundle.collectionModeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.collectionMode].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.collectionMode].recommended}"/>
@@ -1342,6 +1385,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.researchInstrument].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.researchInstrument].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.researchInstrumentHelp}" linkText="#{editstudybundle.researchInstrumentLabel}" heading="#{editstudybundle.researchInstrumentHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.researchInstrument].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.researchInstrument].recommended}"/>
@@ -1362,6 +1406,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dataSources].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.dataSources].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.dataSourcesHelp}" linkText="#{editstudybundle.dataSourcesLabel}" heading="#{editstudybundle.dataSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataSources].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataSources].recommended}"/>
@@ -1381,6 +1426,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.originOfSources].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.originOfSources].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.originOfSourcesHelp}" linkText="#{editstudybundle.originOfSourcesLabel}" heading="#{editstudybundle.originOfSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.originOfSources].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.originOfSources].recommended}"/>
@@ -1400,6 +1446,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.characteristicOfSources].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.sourceCharacteristicsHelp}" linkText="#{editstudybundle.sourceCharacteristicsLabel}" heading="#{editstudybundle.sourceCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.characteristicOfSources].recommended}"/>
@@ -1420,6 +1467,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.accessToSources].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.accessToSources].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.sourceDocumentationHelp}" linkText="#{editstudybundle.sourceDocumentationLabel}" heading="#{editstudybundle.sourceDocumentationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.accessToSources].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.accessToSources].recommended}"/>
@@ -1440,6 +1488,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dataCollectionSituation].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.dataCollectionCharacteristicsHelp}" linkText="#{editstudybundle.dataCollectionCharacteristicsLabel}" heading="#{editstudybundle.dataCollectionCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dataCollectionSituation].recommended}"/>
@@ -1460,6 +1509,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.minimizeActionsHelp}" linkText="#{editstudybundle.minimizeActionsLabel}" heading="#{editstudybundle.minimizeActionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.actionsToMinimizeLoss].recommended}"/>
@@ -1480,6 +1530,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.controlOperations].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.controlOperations].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.controlOperationsHelp}" linkText="#{editstudybundle.controlOperationsLabel}" heading="#{editstudybundle.controlOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.controlOperations].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.controlOperations].recommended}"/>
@@ -1500,6 +1551,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.weighting].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.weighting].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.weightingHelp}" linkText="#{editstudybundle.weightingLabel}" heading="#{editstudybundle.weightingHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.weighting].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.weighting].recommended}"/>
@@ -1519,6 +1571,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.cleaningOperations].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.cleaningOperations].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.cleaningOperationsHelp}" linkText="#{editstudybundle.cleaningOperationsLabel}" heading="#{editstudybundle.cleaningOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.cleaningOperations].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.cleaningOperations].recommended}"/>
@@ -1538,6 +1591,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.studyLevelErrorNotesHelp}" linkText="#{editstudybundle.studyLevelErrorNotesLabel}" heading="#{editstudybundle.studyLevelErrorNotesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.studyLevelErrorNotes].recommended}"/>
@@ -1557,6 +1611,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.responseRate].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.responseRate].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.responseRateHelp}" linkText="#{editstudybundle.responseRateLabel}" heading="#{editstudybundle.responseRateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.responseRate].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.responseRate].recommended}"/>
@@ -1576,6 +1631,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.samplingErrorHelp}" linkText="#{editstudybundle.samplingErrorLabel}" heading="#{editstudybundle.samplingErrorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.samplingErrorEstimates].recommended}"/>
@@ -1595,6 +1651,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.otherDataAppraisal].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.otherDataAppraisalHelp}" linkText="#{editstudybundle.otherDataAppraisalLabel}" heading="#{editstudybundle.otherDataAppraisalHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherDataAppraisal].recommended}"/>
@@ -1621,6 +1678,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.placeOfAccess].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5a">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.placeOfAccess].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.dataAccessPlaceHelp}" linkText="#{editstudybundle.dataAccessPlaceLabel}" heading="#{editstudybundle.dataAccessPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.placeOfAccess].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.placeOfAccess].recommended}"/>
@@ -1641,6 +1699,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.originalArchive].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.placeOfAccess].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.originalArchiveHelp}" linkText="#{editstudybundle.originalArchiveLabel}" heading="#{editstudybundle.originalArchiveHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.originalArchive].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.originalArchive].recommended}"/>
@@ -1661,7 +1720,8 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.availabilityStatus].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
-                  <dvn:inlinehelp helpMessage="#{editstudybundle.availabilityHelp}" linkText="#{editstudybundle.availabilityLabel}" heading="#{editstudybundle.availabilityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                   <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.availabilityStatus].recommended}"/>
+                   <dvn:inlinehelp helpMessage="#{editstudybundle.availabilityHelp}" linkText="#{editstudybundle.availabilityLabel}" heading="#{editstudybundle.availabilityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.availabilityStatus].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.availabilityStatus].recommended}"/>
                 </div>
@@ -1680,6 +1740,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.collectionSize].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.collectionSize].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.collectionSizeHelp}" linkText="#{editstudybundle.collectionSizeLabel}" heading="#{editstudybundle.collectionSizeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.collectionSize].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.collectionSize].recommended}"/>
@@ -1700,6 +1761,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.studyCompletion].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.studyCompletion].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.studyCompletionHelp}" linkText="#{editstudybundle.studyCompletionLabel}" heading="#{editstudybundle.studyCompletionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.studyCompletion].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.studyCompletion].recommended}"/>
@@ -1725,6 +1787,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.confidentialityHelp}" linkText="#{editstudybundle.confidentialityLabel}" heading="#{editstudybundle.confidentialityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.confidentialityDeclaration].recommended}"/>
@@ -1745,6 +1808,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.specialPermissions].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.specialPermissions].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.specialPermissionsHelp}" linkText="#{editstudybundle.specialPermissionsLabel}" heading="#{editstudybundle.specialPermissionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.specialPermissions].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.specialPermissions].recommended}"/>
@@ -1764,6 +1828,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.restrictions].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.restrictions].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.restrictionsHelp}" linkText="#{editstudybundle.restrictionsLabel}" heading="#{editstudybundle.restrictionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.restrictions].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.restrictions].recommended}"/>
@@ -1784,6 +1849,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.contact].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.contact].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.contactHelp}" linkText="#{editstudybundle.contactLabel}" heading="#{editstudybundle.contactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.contact].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.contact].recommended}"/>
@@ -1804,6 +1870,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.citationRequirements].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.citationRequirementsHelp}" linkText="#{editstudybundle.citationRequirementsLabel}" heading="#{editstudybundle.citationRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.citationRequirements].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.citationRequirements].recommended}"/>
@@ -1823,6 +1890,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.depositorRequirements].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.depositorRequirements].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.depositorRequirementsHelp}" linkText="#{editstudybundle.depositorRequirementsLabel}" heading="#{editstudybundle.depositorRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.depositorRequirements].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.depositorRequirements].recommended}"/>
@@ -1843,6 +1911,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.conditions].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.conditions].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.conditionsHelp}" linkText="#{editstudybundle.conditionsLabel}" heading="#{editstudybundle.conditionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.conditions].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.conditions].recommended}"/>
@@ -1863,6 +1932,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.disclaimer].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" columns="2">
                 <div class="vdcEditStudyField">
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.disclaimer].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.disclaimerHelp}" linkText="#{editstudybundle.disclaimerLabel}" heading="#{editstudybundle.disclaimerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.disclaimer].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.disclaimer].recommended}"/>
@@ -1893,6 +1963,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyNotes}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.notesInformationType].recommended}" rendered ="#{TemplateFormPage.dataTableNotes.rowIndex==0}"  />                                                                                                
                         <dvn:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.noteInputLevel=='required'}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.noteInputLevel=='recommended'}"/>
@@ -1942,8 +2013,8 @@
                       </div>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
-                      <ice:commandButton rendered="#{TemplateFormPage.dataTableNotes.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
+                      <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{TemplateFormPage.addRow}"/>
+                      <ice:commandButton partialSubmit="true" rendered="#{TemplateFormPage.dataTableNotes.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{TemplateFormPage.removeRow}"/>
                     </ice:column>
                   </ice:dataTable>
                 </ice:column>

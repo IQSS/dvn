@@ -29,6 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
+import com.icesoft.faces.component.tree.IceUserObject;
 import com.sun.rave.web.ui.component.Tree;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
@@ -57,16 +58,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIData;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpSession;
-import org.apache.commons.collections.OrderedMap;
-import org.apache.commons.collections.map.LinkedMap;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
@@ -85,7 +82,7 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
     
     // data members
     private StudyListing studyListing;
-    private Tree collectionTree;
+    private DefaultTreeModel collectionTree;
     private UIData studyTable;
     private ScrollerComponent scroller;
     private ScrollerComponent scroller2;
@@ -111,7 +108,15 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
     String listMessageContent;
     String listMessageSuffix;
     String subListHeader;
+
     
+    public StudyListing getStudyListing() {
+        return studyListing;
+    }
+
+    public void setStudyListing(StudyListing studyListing) {
+        this.studyListing = studyListing;
+    }    
     
     public Collection getStudies() {
         List studyUIList = new ArrayList();
@@ -136,11 +141,11 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
      * Getter for property collectionTree.
      * @return Value of property collectionTree.
      */
-    public Tree getCollectionTree() {
+    public DefaultTreeModel getCollectionTree() {
         return this.collectionTree;
     }
     
-    public void setCollectionTree(Tree collectionTree) {
+    public void setCollectionTree(DefaultTreeModel collectionTree) {
         this.collectionTree = collectionTree;
     }
     
@@ -532,7 +537,14 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
     
     private void initCollectionTree() {
         if (studyListing.getCollectionTree() == null) {
-            studyListing.setCollectionTree(new Tree());
+            // create root node with its children expanded
+            DefaultMutableTreeNode rootTreeNode = new DefaultMutableTreeNode();
+            IceUserObject rootObject = new IceUserObject(rootTreeNode);
+            rootObject.setText("Root Node");
+            rootObject.setExpanded(true);
+            rootTreeNode.setUserObject(rootObject);
+                     
+            studyListing.setCollectionTree(new DefaultTreeModel(rootTreeNode));
         }
         
         collectionTree = studyListing.getCollectionTree();
@@ -792,6 +804,20 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
        
         return sl;          
     }
-            
+
+    public int getStudyCount() {
+        return studyListing.getStudyIds().size();
+    }
+    
+    public String getCollectionName() {
+        if (studyListing.getCollectionId() != null) {
+            return vdcCollectionService.find( studyListing.getCollectionId() ).getName();
+            //CollectionUI collUI = new CollectionUI( vdcCollectionService.find( studyListing.getCollectionId() ) );
+            //return collUI.getShortCollectionPath(getVDCRequestBean().getCurrentVDC() );
+        }
+        
+        return null;
+    }
+    
   
 }

@@ -1,3 +1,5 @@
+begin;
+
 UPDATE pagedef SET path=regexp_replace(pagedef.path, '.jsp', '.xhtml', 'g');
 
 -- Column: releasedate
@@ -52,4 +54,6 @@ ALTER TABLE harvestingdataverse ALTER COLUMN failedstudycount SET STORAGE PLAIN;
 ALTER TABLE harvestingdataverse ADD COLUMN harvestresult varchar(255);
 ALTER TABLE harvestingdataverse ALTER COLUMN harvestresult SET STORAGE EXTENDED;
 
+update harvestingdataverse set lastsuccessfulharvesttime=lastharvesttime;
 
+commit;

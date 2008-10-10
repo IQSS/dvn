@@ -63,6 +63,8 @@ public interface VDCServiceLocal extends java.io.Serializable  {
 
     public List findAll();
 
+    public List<VDC> findAllPublic();
+
     public VDC findByAlias(String alias);
 
     public VDC findByName(String name);

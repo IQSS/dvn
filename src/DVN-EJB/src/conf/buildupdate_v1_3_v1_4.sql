@@ -74,4 +74,8 @@ ALTER TABLE vdccollection ALTER COLUMN localscope SET STORAGE PLAIN;
 ALTER TABLE vdccollection ADD COLUMN type varchar(255);
 ALTER TABLE vdccollection ALTER COLUMN type SET STORAGE EXTENDED;
 
+update vdccollection set localscope = false;
+update vdccollection set type='static' where query is null;
+update vdccollection set type='dynamic' where query is not null;
+
 commit;

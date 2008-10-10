@@ -71,7 +71,7 @@ public class VDCContextListener implements ServletContextListener,ServletRequest
             e.printStackTrace();
         }
         try {
-            harvestingDataverseService.resetHarvestingStatus();         
+            harvestingDataverseService.resetAllHarvestingStatus();         
             harvesterService.createScheduledHarvestTimers();
         } catch (Exception e) {
             e.printStackTrace();

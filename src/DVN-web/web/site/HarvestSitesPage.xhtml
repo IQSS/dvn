@@ -31,54 +31,77 @@
 
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              binding="#{HarvestSitesPage.harvestDataTable}"
-                             headerClass="list-header-left vdcColPadded" id="dataTable1"
+                             headerClass="iceDatTblColHdr1 list-header-left vdcColPadded" id="dataTable1"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
                              value="#{HarvestSitesPage.harvestSiteList}" var="currentRow">
                 <ice:column>
                   <f:facet name="header">
-                    <ice:outputText id="outputText2" value="Harvest Dataverse"/>
+                    <ice:outputText value="Name"/>
                   </f:facet>
                   <ice:outputText value="#{currentRow.vdc.name}" rendered="#{currentRow.harvestingNow}"/>
                   <ice:outputLink rendered="#{!currentRow.harvestingNow}" value="/dvn/dv/#{currentRow.vdc.alias}/faces/site/EditHarvestSitePage.xhtml?harvestId=#{currentRow.id}">
                     <ice:outputText value="#{currentRow.vdc.name}"/>
                   </ice:outputLink>
                 </ice:column>
+                
+                <ice:column>
+                 <f:facet name="header">
+                    <ice:outputText id="outputText2" value="Schedule"/>
+                  </f:facet>
+                  <ice:panelGroup>
+                    <ice:outputText value="#{currentRow.scheduleDescription}" rendered="#{currentRow.oai and !empty currentRow.schedulePeriod}"/>
+                    <ice:outputText value="Nesstar server - run on demand only" rendered="#{currentRow.nesstar}"/>
+                    <ice:outputText value="Not Defined" rendered="#{currentRow.harvestingNow and currentRow.oai and empty currentRow.schedulePeriod}"/>
+                    <ice:outputLink rendered="#{!currentRow.harvestingNow and currentRow.oai and empty currentRow.schedulePeriod}" value="/dvn/dv/#{currentRow.vdc.alias}/faces/site/EditHarvestSitePage.xhtml?harvestId=#{currentRow.id}">
+                      <ice:outputText value="Not Defined"/>
+                    </ice:outputLink>
+                    <ice:outputText value="(Unscheduled)" rendered="#{  currentRow.oai  and !empty currentRow.schedulePeriod and !currentRow.scheduled }" />
+                    <ice:outputText value="(Scheduled)" rendered="#{ currentRow.oai  and !empty currentRow.schedulePeriod and currentRow.scheduled }" />
+                    <ice:commandButton value="Schedule" rendered="#{!currentRow.harvestingNow and currentRow.oai  and !empty currentRow.schedulePeriod and !currentRow.scheduled }" actionListener="#{HarvestSitesPage.doSchedule}"/>
+                    <ice:commandButton value="Unschedule" rendered="#{!currentRow.harvestingNow and currentRow.oai  and !empty currentRow.schedulePeriod and currentRow.scheduled }" actionListener="#{HarvestSitesPage.doUnschedule}"/>
+                </ice:panelGroup>
+                </ice:column>
+
                 <ice:column>
                   <f:facet name="header">
-                    <ice:outputText id="outputText4" value="Status"/>
+                    <ice:outputText value="Last Attempt"/>
                   </f:facet>
-                  <ice:outputText id="outputText4b" value="Scheduled" rendered="#{currentRow.oai and currentRow.scheduled and  !empty currentRow.schedulePeriod}"/>
-                  <ice:outputText id="outputText4c" value="Not Scheduled" rendered="#{currentRow.oai and !currentRow.scheduled and !empty currentRow.schedulePeriod}"/>
-                  <ice:outputText value="Harvesting Schedule Not Defined" rendered="#{currentRow.oai and empty currentRow.schedulePeriod}"/>
+                  <ice:outputText value="#{currentRow.lastHarvestTime}" rendered="#{!empty currentRow.lastHarvestTime}"/>
+                  <ice:outputText value="No harvests attempted" rendered="#{empty currentRow.lastHarvestTime}"/>
+
                 </ice:column>
+
+
                 <ice:column>
                   <f:facet name="header">
-                    <ice:outputText value=""/>
+                    <ice:outputText value="Result"/>
                   </f:facet>
-                  <ice:commandButton value="Schedule Harvesting" rendered="#{currentRow.oai and !currentRow.scheduled and !empty currentRow.schedulePeriod }" actionListener="#{HarvestSitesPage.doSchedule}"/>
-                  <ice:commandButton value="Unschedule Harvesting" rendered="#{currentRow.oai and currentRow.scheduled and !empty currentRow.schedulePeriod }" actionListener="#{HarvestSitesPage.doUnschedule}"/>
-                  <ice:outputLink rendered="#{currentRow.oai and !currentRow.harvestingNow and empty currentRow.schedulePeriod}" value="/dvn/dv/#{currentRow.vdc.alias}/faces/site/EditHarvestSitePage.xhtml?harvestId=#{currentRow.id}">
-                    <ice:outputText value=" Define Harvesting Schedule"/>
-                  </ice:outputLink>
+                  <ice:outputText value="#{currentRow.lastHarvestTime}, #{currentRow.harvestedStudyCount} Studies harvested" rendered="#{currentRow.harvestResult == currentRow.harvestResultSuccess}"/>
+                  <ice:outputText value="#{currentRow.failedStudyCount} Failures" rendered="#{currentRow.harvestResult == currentRow.harvestResultSuccess and currentRow.failedStudyCount > 0}" />
+                  <ice:outputText value="FAILED" rendered = "#{currentRow.harvestResult == currentRow.harvestResultFailed}"/>
+                  <ice:outputText value="No results available" rendered="#{empty currentRow.harvestResult}"/>
                 </ice:column>
+             
                 <ice:column>
                   <f:facet name="header">
-                    <ice:outputText value=""/>
+                    <ice:outputText value="Run"/>
                   </f:facet>
-                  <ice:commandButton value="Run Harvester Now" rendered="#{!currentRow.harvestingNow and (currentRow.oai or empty currentRow.lastHarvestTime)}" actionListener="#{HarvestSitesPage.doRunNow}"/>
-                  <ice:outputText value="Harvesting Currently Running" rendered="#{currentRow.harvestingNow}"/>
+                  <ice:commandButton value="Run Now" rendered="#{!currentRow.harvestingNow and (currentRow.oai or empty currentRow.lastHarvestTime)}" actionListener="#{HarvestSitesPage.doRunNow}"/>
+                  <ice:outputText value="Currently Running" rendered="#{currentRow.harvestingNow}"/>
                 </ice:column>
                 <ice:column>
+                    
                   <f:facet name="header">
                     <ice:outputText id="outputText3" value="Remove"/>
                   </f:facet>
-                  <!--ice:commandButton value="Remove" actionListener="#{HarvestSitesPage.doRemoveHarvestDataverse}"/-->
+              
                   <ice:outputLink disabled="#{currentRow.harvestingNow}" value="/dvn/faces/site/DeleteDataversePage.xhtml?deleteId=#{currentRow.vdc.id}">
                     <ice:outputText value="Remove"/>
                   </ice:outputLink>
                 </ice:column>
               </ice:dataTable>
-
+<!--
+  sample table from Mike
               <table cellpadding="0" cellspacing="0" width="100%">
                 <thead>
                   <th class="iceDatTblColHdr1 list-header-left vdcColPadded">
@@ -134,7 +157,7 @@
                   </tr>
                 </tbody>
               </table>
-
+            -->
             </div>
           </div>
         </div>

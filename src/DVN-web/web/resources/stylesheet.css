@@ -840,6 +840,7 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
 .vdcEditStudyTable div {border-width: 0 0 0 0; padding: 0 0 0 0;}
 .vdcEditStudyTableRow table {border-width: 0 0 0 0; margin: 0 0 0 0;}
 .vdcEditStudyTableRow table td {border-width: 0 0 0 0; padding: 0 0 0 0;}
+.vdcEditStudyInnerTable, .vdcEditStudyInnerTable tr, .vdcEditStudyInnerTable td {border-width: 0 0 0 0; padding: 0 0 0 0;}
 
 span.vdcEditStudyFormatExample {display: inline;}
 

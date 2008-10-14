@@ -52,6 +52,7 @@ public class DataverseGrouping extends SortableList {
     protected String expandImage;   // + or >
     protected String contractImage; // - or v
     protected static final String DEFAULT_IMAGE_DIR = "/resources/icefaces/dvn_rime/css-images/";
+    String SPACER_IMAGE = "tree_line_blank.gif";
     // style for column that holds expand/contract image toggle, in the group
     // record row.
     protected String indentStyleClass = "";
@@ -86,7 +87,7 @@ public class DataverseGrouping extends SortableList {
     }
     private Map allChildren = new LinkedHashMap();//used by addchilditem to collect all of the children for expansion and contraction support
     
-    public DataverseGrouping(Long id, String name, String recordType, ArrayList parentItems, boolean isExpanded, String expandImage, String contractImage, boolean isTop) {
+    public DataverseGrouping(Long id, String name, String recordType, ArrayList parentItems, boolean isExpanded, String expandImage, String contractImage, Long parentClassification) {
         super(nameColumnName);
         this.groupKey    = name.replaceAll(" ", "").toLowerCase();
         this.name        = name;
@@ -97,13 +98,32 @@ public class DataverseGrouping extends SortableList {
         this.expandImage = expandImage;
         this.contractImage = contractImage;
         this.id          = id;
-        this.top         = isTop;
+        this.parentClassification         = parentClassification;
         this.indentStyleClass = "groupRowIndentStyle";
         // update the default state of the node.
         if (this.isExpanded) {
             expandNodeAction();
         }
     }
+
+    //subgroups
+    public DataverseGrouping(Long id, String name, String recordType, boolean isExpanded, String expandImage, String contractImage, Long parentClassification) {
+        super(nameColumnName);
+        this.groupKey    = name.replaceAll(" ", "").toLowerCase();
+        this.name        = name;
+        this.recordType  = recordType;
+        this.isExpanded  = isExpanded;
+        this.expandImage = expandImage;
+        this.contractImage = contractImage;
+        this.id          = id;
+        this.parentClassification         = parentClassification;
+        this.indentStyleClass = "groupRowIndentStyle";
+        // update the default state of the node.
+        if (this.isExpanded) {
+            expandNodeAction();
+        }
+    }
+
     
     public DataverseGrouping(String name, String alias, String affiliation, Timestamp releaseDate, Timestamp lastUpdateTime, String dvnDescription, String recordType, String activity) {
         super(nameColumnName);
@@ -331,12 +351,13 @@ public class DataverseGrouping extends SortableList {
      */
 
     public String getExpandContractImage() {
-        //if (styleBean != null) {
+        if (expandImage != null && contractImage != null) {
             String dir = DEFAULT_IMAGE_DIR;
             String img = isExpanded ? contractImage : expandImage;
             return dir + img;
-        //}
-        //return DEFAULT_IMAGE_DIR + SPACER_IMAGE;
+        } else {
+            return DEFAULT_IMAGE_DIR + SPACER_IMAGE;
+        }
     }
 
     public boolean isSelected() {
@@ -365,7 +386,7 @@ public class DataverseGrouping extends SortableList {
     private LocalizedDate localizedDate = new LocalizedDate();
     private String recordType;
     private String activity;
-    private boolean top;
+    private Long parentClassification;
     private String shortDescription; //TODO: Implement for dvn childItems and parentItems
     // Manage Classifications specific fields
     private Long subclassification;
@@ -452,12 +473,12 @@ public class DataverseGrouping extends SortableList {
         id = Id;
     }
 
-    public boolean isTop() {
-        return top;
+    public Long getParentClassification() {
+        return parentClassification;
     }
 
-    public void setTop(boolean istop) {
-        this.top = istop;
+    public void setParentClassification(Long parentclass) {
+        this.parentClassification = parentclass;
     }
 
     public String getDvnDescription() {

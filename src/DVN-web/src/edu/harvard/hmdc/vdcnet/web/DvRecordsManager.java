@@ -6,7 +6,7 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -19,13 +19,13 @@
  */
 
 /** Source File Name:   DvRecordsManager.java
- * 
+ *
  * DvRecordsManager is the backing bean that supports
  * the network home page. It is through this class that the
- * DataverseGrouping parents and children are created and 
+ * DataverseGrouping parents and children are created and
  * passed onto the view.
- * 
- * 
+ *
+ *
  */
 
 package edu.harvard.hmdc.vdcnet.web;
@@ -101,7 +101,8 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
             //add DataListItems to the list
             itemBeansSize++;
             vdcgroup = (VDCGroup)iterator.next();
-            parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, false);
+            Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
+            parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
             parentItem.setShortDescription(vdcgroup.getDescription());
             parentItem.setSubclassification(new Long("25"));
             List innerlist = vdcgroup.getVdcs();
@@ -116,13 +117,12 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
                 childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
                 parentItem.addChildItem(childItem);
             }
-            //parentItem.addAllChildren();
         }
      }
 
      private void initUnGroupedBeans(List list, String caption, Long netstatsId) {
         Iterator iterator = list.iterator();
-        parentItem = new DataverseGrouping(netstatsId, caption, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, false);
+        parentItem = new DataverseGrouping(netstatsId, caption, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, new Long("-1"));
         parentItem.setShortDescription("Hello Wendy");
         parentItem.setSubclassification(new Long("25"));
         itemBeansSize++;
@@ -167,7 +167,7 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
         String timestampString = DateUtils.getTimeInterval(timestamp.getTime());
         return timestampString;
     }
-    
+
     private Long calculateActivity(VDC vdc) {
         Integer numberOfDownloads = 0;
         Integer numberOwnedStudies = new Integer(0);
@@ -191,7 +191,7 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
             return localActivity;
         }
     }
-    
+
     private String getActivityClass(Long activity) {
         String activityClass = new String();
         switch (activity.intValue()) {
@@ -244,5 +244,5 @@ public class DvRecordsManager extends VDCBaseBean implements Serializable {
      */
     private void _init() {
     }
-    
+
 }

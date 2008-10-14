@@ -21,18 +21,15 @@
         <gui:define name="body">
             <ice:form>
             <!-- ***************************** add content here ************************************ -->
+            <div jsfc="ice:panelGroup" rendered="#{manageClassificationsPage.result == true}" styleClass="successMessage">
+               <ice:messages id="iceMessage" binding="#{manageClassificationsPage.iceMessage}" layout="list" showDetail="false" showSummary="true"/>
+            </div>
             <div style="margin-top: .5em; border: 1px solid #d9d9d9; border-bottom: 1px solid transparent;">
             <div jsfc="ice:panelGroup" style="overflow: hidden; margin-bottom: .25em;">
 
             <div style="float: left; width: 100%; padding-top: 4px;">
                 <div jsfc="ice:panelGroup" style="float: left; width: 60%; padding-top: 2px; padding-bottom: 2px;">
-                 <!--   <h:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
-                                  effect="#{item.effect}"
-                                  styleClass="dvn_totalsLabel"
-                                  value="#{NetworkStatsBean.inlineDataverseValue}">
-                      <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item#{dvItems.id}"/>
-                    </h:outputText> -->
-                    <ice:outputText value="Classifications: #{dvRecordsManager.itemBeansSize}"/>
+                    <ice:outputText value="Classifications: #{manageClassificationsPage.itemBeansSize}"/>
                 </div>
                 <div jsfc="ice:panelGroup" style="float: right; width: 20%;">
                   <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/AddClassificationsPage.xhtml">
@@ -48,7 +45,7 @@
                                 sortColumn="#{dvItems.sortColumnName}"
                                 sortAscending="#{dvItems.ascending}"
                                 styleClass="dvn_networkHomePanelInner"
-                                value="#{dvRecordsManager.itemBeans}"
+                                value="#{manageClassificationsPage.itemBeans}"
                                 var="dvItems"
                                 width="100%">
                 <!-- name number -->
@@ -56,10 +53,10 @@
                     <ice:outputText value="Manage Dataverse Classifications"/>
                 </f:facet>
                  <!-- contract/expand column -->
-	        <ice:column style="width:5%;">
+	        <ice:column style="width:1%;">
 	            <ice:panelGroup styleClass="#{dvItems.indentStyleClass}">
 	                <!-- Render the expand/contract if there is an image -->
-	                <ice:commandLink rendered="#{dvItems.expandContractImage != null}" actionListener="#{dvItems.toggleSubGroupAction}">
+	                <ice:commandLink rendered="#{dvItems.subclassification > 0}" actionListener="#{dvItems.toggleSubGroupAction}">
 	                    <ice:graphicImage id="expandContractImage"
                                               value="#{dvItems.expandContractImage}"
 	                                      style="border: 0px solid;"/>
@@ -70,19 +67,30 @@
 	            </ice:panelGroup>
 	        </ice:column>
                  <!-- classification name -->
-                <ice:column style="width:35%" >
+                <ice:column style="width:40%" >
                     <f:facet name="header">
                         <ice:commandSortHeader
                             columnName="#{dvItems.nameColumnName}"
                             arrow="true">
                         </ice:commandSortHeader>
+                        <ice:panelGroup styleClass="#{dvItems.indentStyleClass}">
+	                <!-- Render the expand/contract if there is an image -->
+	                <ice:commandLink rendered="#{dvItems.expandContractImage != null}" actionListener="#{dvItems.toggleSubGroupAction}">
+	                    <ice:graphicImage id="expandContractImage"
+                                              value="#{dvItems.expandContractImage}"
+	                                      style="border: 0px solid;"/>
+	                </ice:commandLink>
+                       <ice:outputText escape="false"
+                                         rendered="#{dvItems.expandContractImage == null}"
+                                         value="&lt;!-- cell spacer --&gt;"/>
+
                         <ice:outputText value="Name"/>
+                        </ice:panelGroup>
                     </f:facet>
-                     <ice:outputLink rendered="#{dvItems.recordType eq 'group'}" value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
+                     <ice:outputLink value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
                         <f:param name="cid" value="#{dvItems.id}" />
                         <ice:outputText  value="#{dvItems.name}"/>
                     </ice:outputLink>
-                    <ice:outputText rendered="#{dvItems.recordType eq 'dataverse'}"  value="#{dvItems.name}"/>
                 </ice:column>
                 <!-- description -->
                 <ice:column style="width:35%">
@@ -112,7 +120,7 @@
                         <ice:outputText escape="false" value="&lt;!-- cell spacer --&gt;"/>
                     </f:facet>
                     <!-- TODO: change this link to perform the delete function -->
-                    <ice:commandLink actionListener="#{manageClassificationsPage.delete_action}"
+                    <ice:commandLink action="#{manageClassificationsPage.delete_action}"
                                         binding="#{manageClassificationsPage.linkDelete}"
                                         rendered="#{dvItems.recordType eq 'group'}"
                                         value="Delete"
@@ -123,7 +131,7 @@
               </ice:dataTable>
               <!-- ******************* TEST ****************** -->
               <ice:panelSeries styleClass="dvn_networkHomePanel"
-                    value="#{dvRecordsManager.itemBeans}"
+                    value="#{manageClassificationsPage.itemBeans}"
                     var="dvItems"
                     rendered="#{VDCRequest.currentVDC == null}">
                     <ice:outputText value="#{dvItems.strToString}"  />

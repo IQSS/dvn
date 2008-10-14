@@ -61,7 +61,10 @@
                                         style="vertical-align:top;width:150px;"
                                         value="Parent"
                                         />
-                                    <ice:selectOneMenu binding="#{addClassificationsPage.parentSelect}" id="parentSelect" style="margin-left:24px" >
+                                    <ice:selectOneMenu binding="#{addClassificationsPage.parentSelect}"
+                                                        id="parentSelect"
+                                                        style="margin-left:24px"
+                                                        value="#{addClassificationsPage.selectedParent}">
                                         <f:selectItems value="#{addClassificationsPage.parentSelectItems}" id="parentSelectItems" />
                                     </ice:selectOneMenu>
                                 </ice:panelGroup>

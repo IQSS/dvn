@@ -6,7 +6,7 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -30,7 +30,6 @@
 package edu.harvard.hmdc.vdcnet.web;
 
 import com.icesoft.faces.component.tree.IceUserObject;
-import com.sun.rave.web.ui.component.Tree;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
@@ -75,11 +74,11 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
     @EJB StudyServiceLocal studyService;
     @EJB IndexServiceLocal indexService;
     @EJB VariableServiceLocal varService;
-    
+
     /** Creates a new instance of StudyListingPageBean */
     public StudyListingPage() {
     }
-    
+
     // data members
     private StudyListing studyListing;
     private DefaultTreeModel collectionTree;
@@ -90,37 +89,37 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
     private String searchValue;
     private Integer searchFilter;
     private Map studyFields;
-    
+
     private String studyListingIndex;
-    
+
     // display items
     boolean renderTree;
     String treeHeader;
-    
+
     boolean renderSearch;
     List searchRadioItems = new ArrayList();
-    
+
     boolean renderSort;
     private boolean renderScroller;
-    
+
     String listHeader;
     String listMessagePrefix;
     String listMessageContent;
     String listMessageSuffix;
     String subListHeader;
 
-    
+
     public StudyListing getStudyListing() {
         return studyListing;
     }
 
     public void setStudyListing(StudyListing studyListing) {
         this.studyListing = studyListing;
-    }    
-    
+    }
+
     public Collection getStudies() {
         List studyUIList = new ArrayList();
- 
+
         if ( studyListing != null && studyListing.getStudyIds() != null ) {
             Iterator iter = studyListing.getStudyIds().iterator();
             while (iter.hasNext()) {
@@ -133,10 +132,10 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
                 studyUIList.add(sui) ;
             }
         }
-        
+
         return studyUIList;
     }
-    
+
     /**
      * Getter for property collectionTree.
      * @return Value of property collectionTree.
@@ -144,88 +143,88 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
     public DefaultTreeModel getCollectionTree() {
         return this.collectionTree;
     }
-    
+
     public void setCollectionTree(DefaultTreeModel collectionTree) {
         this.collectionTree = collectionTree;
     }
-    
+
     public UIData getStudyTable() {
         return studyTable;
     }
-    
+
     public void setStudyTable(UIData studyTable) {
         this.studyTable = studyTable;
     }
-    
+
     public String getStudyListingIndex() {
         return studyListingIndex;
     }
-    
+
     public void setStudyListingIndex(String studyListingIndex) {
         this.studyListingIndex = studyListingIndex;
     }
-    
+
     public String getListHeader() {
         return  listHeader;
     }
-    
+
     public String getSubListHeader() {
         return  subListHeader;
     }
-    
+
     public String getTreeHeader() {
         return  treeHeader;
     }
-    
+
     public String getListMessagePrefix() {
         return  listMessagePrefix;
     }
-    
+
     public String getListMessageContent() {
         return listMessageContent;
     }
-    
+
     public String getListMessageSuffix() {
         return listMessageSuffix;
     }
-    
+
     public List getSearchRadioItems() {
         return searchRadioItems;
     }
-    
+
     public boolean isRenderTree() {
         return renderTree;
     }
-    
+
     public boolean isRenderSearch() {
         return renderSearch;
     }
-    
+
     public boolean isRenderSort() {
         return renderSort;
     }
-    
-    
+
+
     public boolean isRenderScroller() {
         return renderScroller;
     }
-    
+
     public String search_action() {
         List searchTerms = new ArrayList();
         SearchTerm st = new SearchTerm();
         st.setFieldName( searchField );
         st.setValue( searchValue );
         searchTerms.add(st);
-        
+
         List studyIDList = new ArrayList();
         Map variableMap = new HashMap();
-        
+
         if (searchFilter == null) { searchFilter = 0; }
-        
+
         // currently search filter is determined from a set of boolean checkboxes
         if (searchResultsFilter) { searchFilter = 2; }
         if (searchCollectionFilter) { searchFilter = 1; }
-        
+
         if ( searchField.equals("variable") ) {
             List variables = null;
             if ( searchFilter ==  1 ) {
@@ -239,7 +238,7 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
             } else {
                 variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
             }
-            
+
             varService.determineStudiesFromVariables(variables, studyIDList, variableMap);
         } else {
             if ( searchFilter ==  1 ) {
@@ -254,12 +253,12 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
                 studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
             }
         }
-        
-        
+
+
         // now we handle the display of the page
         // first get the bound collection tree
         collectionTree = studyListing.getCollectionTree();
-        
+
         // now create the new StudyListing
         studyListing = new StudyListing(StudyListing.SEARCH);
         studyListing.setVdcId( getVDCRequestBean().getCurrentVDCId() );
@@ -268,36 +267,36 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
         studyListing.setVariableMap(variableMap);
         studyListing.setCollectionTree(collectionTree);
         setStudyListingIndex(addToStudyListingMap(studyListing));
-        
+
         // finally reinit!
         initStudies();
         initText(StudyListing.SEARCH);
         if (renderTree) {
             initCollectionTree();
         }
-        
+
         resetScroller();
         return "search";
     }
-    
+
     public void sort_action(ValueChangeEvent event) {
         String sortBy = (String) event.getNewValue();
         if ( sortBy == null || sortBy.equals("") ) {
             return;
         }
-        
+
         if (studyListing.getStudyIds() != null && studyListing.getStudyIds().size() > 0) {
             List sortedStudies = studyService.getOrderedStudies(studyListing.getStudyIds(), sortBy);
             studyListing.setStudyIds(sortedStudies);
             resetScroller();
-            
-            
+
+
         }
     }
-    
+
     public void scroll_action(ActionEvent event) {
         int row = 1;
-        
+
         UIComponent component=event.getComponent();
         Integer currentRow = (Integer) component.getAttributes().get("currentRow");
         Integer currentPage = (Integer) component.getAttributes().get("currentPage");
@@ -305,17 +304,17 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
         // set for both scrollers
         scroller.getAttributes().put("currentRow",currentRow);
         scroller.getAttributes().put("currentPage",currentPage);
-        
+
         scroller2.getAttributes().put("currentRow",currentRow);
         scroller2.getAttributes().put("currentPage",currentPage);
-        
+
         if (currentRow != null) {
             row = currentRow.intValue();
         }
 
-        scroll(row);        
+        scroll(row);
     }
-    
+
     public void scroll(int row) {
         int rows = getStudyTable().getRows();
         if (rows < 1) {
@@ -329,18 +328,18 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
             getStudyTable().setFirst( row - (row % rows) );
         }
     }
-    
+
     private void resetScroller() {
         scroller.getAttributes().put("currentRow",0);
         scroller.getAttributes().put("currentPage",1);
-        
+
         scroller2.getAttributes().put("currentRow",0);
         scroller2.getAttributes().put("currentPage",1);
-        
+
         scroll(0);
     }
-    
-    
+
+
     public void init() {
         super.init();
         if ( isFromPage("StudyListingPage") ) { // this is a post, so get the studyListing and let actions handle the rest
@@ -361,7 +360,7 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
                 initNewStudyListing();
                 initStudies();
             }
-            
+
             initText(studyListing.getMode());
             if (renderTree) {
                 initCollectionTree();
@@ -369,22 +368,22 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
 
         }
     }
-    
-    
+
+
     private void initStudies() {
         if (studyListing.getStudyIds() != null) {
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             VDCUser user = getVDCSessionBean().getUser();
             UserGroup usergroup = getVDCSessionBean().getIpUserGroup();
-            
+
             // first filter the visible studies; visible studies are those that are released
             // and not from a restricted VDC )unless you are in that VDC)
-            studyListing.getStudyIds().retainAll( studyService.getVisibleStudies( 
-                studyListing.getStudyIds(), 
-                vdc!= null ? vdc.getId() : null 
+            studyListing.getStudyIds().retainAll( studyService.getVisibleStudies(
+                studyListing.getStudyIds(),
+                vdc!= null ? vdc.getId() : null
             ) );
-                
-            
+
+
             // next  determine if user is admin or curator of that vdc, or networkAdmin; if they are, they
             // can see all visible studies; otherwise we have to filter out those that are restricted to them
             boolean isAdminOrCurator = false;
@@ -399,35 +398,35 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
                     }
                 }
             }
-            
-            if (!isAdminOrCurator) {    
+
+            if (!isAdminOrCurator) {
                 studyListing.getStudyIds().retainAll( studyService.getViewableStudies(
-                    studyListing.getStudyIds(), 
-                    (user != null ? user.getId() : null), 
-                    (usergroup != null ? usergroup.getId() : null) 
+                    studyListing.getStudyIds(),
+                    (user != null ? user.getId() : null),
+                    (usergroup != null ? usergroup.getId() : null)
                 ) );
             }
         }
     }
-    
-    
-    
+
+
+
     private void initText(int mode) {
         int matches = studyListing.getStudyIds() != null ? studyListing.getStudyIds().size() : 0;
         renderSort = matches == 0 ? false : true;
         renderScroller = matches == 0 ? false : true;
-        
+
         // dafeult the following to false; will likely change after checking mode
         renderSearchResultsFilter = false;
         renderSearchCollectionFilter = false;
-                
+
         subListHeader = null;
-        
-        
+
+
         if (mode == StudyListing.SEARCH) {
             listHeader =  "Results";
             listMessagePrefix = "You searched for " ;
-            
+
             listMessageContent = "";
             if (studyListing.getSearchTerms() != null) {
                 Iterator iter = studyListing.getSearchTerms().iterator();
@@ -439,23 +438,23 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
                     }
                 }
             }
-            
+
             if (matches == 1) {
                 listMessageSuffix = "; " + matches + " match was found.";
             } else {
                 listMessageSuffix = "; " + matches + " matches were found.";
             }
-            
+
             // for now show tree, even if no matches.
             //if ( matches > 0 && getVDCRequestBean().getCurrentVDC() != null) {
             if ( getVDCRequestBean().getCurrentVDC() != null) {
                 renderTree = true;
                 treeHeader = "Narrow Results by Collection";
             } else {
-                
+
                 renderTree = false;
             }
-            
+
             renderSearch = true;
             renderSearchResultsFilter = matches == 0 ? false : true;
             /*
@@ -464,13 +463,13 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
             searchRadioItems.add(new SelectItem("2", "Search These Results"));
             searchFilter = 0;
             */
-            
-            
+
+
         } else if (mode == StudyListing.COLLECTION_STUDIES) {
             CollectionUI collUI = new CollectionUI( vdcCollectionService.find( studyListing.getCollectionId() ) );
             subListHeader =  collUI.getShortCollectionPath(getVDCRequestBean().getCurrentVDC() );
             listHeader = vdcCollectionService.find( studyListing.getCollectionId() ).getName();
-            
+
             if (matches == 0) {
                 listMessageContent = "There are no studies in this collection.";
             } else if (matches == 1) {
@@ -478,11 +477,11 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
             } else {
                 listMessageContent = "There are " +  matches + " studies in this collection.";
             }
-            
-            
+
+
             renderTree = true;
             treeHeader = "Browse by Collection";
-            
+
             renderSearch = true;
             renderSearchCollectionFilter = true;
             /*
@@ -491,7 +490,7 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
             searchRadioItems.add(new SelectItem("1", "This Collection"));
             searchFilter = 0;
              * */
-            
+
         } else if (mode == StudyListing.VDC_RECENT_STUDIES) {
             listHeader =  "Studies Uploaded and Released to This Dataverse";
             renderSearch = true;
@@ -500,13 +499,13 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
             searchRadioItems = new ArrayList();
             searchRadioItems.add(new SelectItem("0", "New Search"));
             searchRadioItems.add(new SelectItem("2", "Search These Results"));
-            searchFilter = 0;  
-             * */          
-            
+            searchFilter = 0;
+             * */
+
         } else if (mode == StudyListing.GENERIC_LIST) {
             // this needs to be fleshed out if it's ever used
             listHeader =  "Studies";
-            
+
         } else {
             // in this case we have an invalid list
             renderSearch = true;
@@ -524,17 +523,17 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
                 listMessageContent = "The results for this listing were generated while searching or browsing a different dataverse.";
             }
         }
-        
+
         /* lastly if no search radio items have been set, add a default
         if (searchRadioItems == null || searchRadioItems.size() == 0) {
             searchRadioItems = new ArrayList();
             searchRadioItems.add(new SelectItem("0", "New Search"));
         }
         */
-        
-        
+
+
     }
-    
+
     private void initCollectionTree() {
         if (studyListing.getCollectionTree() == null) {
             // create root node with its children expanded
@@ -543,13 +542,13 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
             rootObject.setText("Root Node");
             rootObject.setExpanded(true);
             rootTreeNode.setUserObject(rootObject);
-                     
+
             studyListing.setCollectionTree(new DefaultTreeModel(rootTreeNode));
         }
-        
+
         collectionTree = studyListing.getCollectionTree();
         VDCCollectionTree vdcTree = new VDCCollectionTree(collectionTree);
-        
+
         if (studyListing.getMode() == StudyListing.SEARCH) {
             // performace of filtering the tree is slow, so for now just show entire tree
             //vdcTree.setStudyFilter(studies);
@@ -558,15 +557,15 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
         } else {
             vdcTree.setCollectionUrl("/faces/StudyListingPage.xhtml?mode=1");
         }
-        
+
         if (studyListing.getCollectionId() != null) {
             vdcTree.setCollectionToBeExpanded( new Long(studyListing.getCollectionId()) );
         }
-        
+
         VDC vdc = getVDCRequestBean().getCurrentVDC();
         vdcTree.populate(vdc);
     }
-    
+
     private void initNewStudyListing() {
         StudyListing sl = null;
         int mode = -1;
@@ -574,8 +573,8 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
             mode = Integer.parseInt(getRequestParam("mode"));
         } catch (Exception e) {
         }    // mode is -1
-        
-        
+
+
         if (mode == StudyListing.COLLECTION_STUDIES) {
             String collectionId = getRequestParam("collectionId");
             if (collectionId != null) {
@@ -585,7 +584,7 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
                 sl.setStudyIds(collUI.getStudyIds());
                 setStudyListingIndex(addToStudyListingMap(sl));
             }
-            
+
         }  else if (mode == StudyListing.SEARCH) {
             String  searchValue = getRequestParam("searchValue");
             if (searchValue != null) {
@@ -597,7 +596,7 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
                 sl = search(searchField, searchValue);
                 setStudyListingIndex(addToStudyListingMap(sl));
             }
-            
+
         } else if (mode == StudyListing.COLLECTION_FILTER) {
             String  oslIndex = getRequestParam("oslIndex");
             String collectionId = getRequestParam("collectionId");
@@ -630,7 +629,7 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
                 numResults = Integer.parseInt(getRequestParam("numResults"));
             } catch (Exception e) {
             } // numResults remains 100
-            
+
             sl = new StudyListing(StudyListing.VDC_RECENT_STUDIES);
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             if (vdc != null) {
@@ -649,7 +648,7 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
             }
 
             setStudyListingIndex(addToStudyListingMap(sl));
-            
+
         } else {
             // in this case we don't have a mode so we check to see if we
             // have a studyListing passed via the request
@@ -658,53 +657,53 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
                 setStudyListingIndex(addToStudyListingMap(sl));
             }
         }
-        
+
         // at this point we should throw an error
         if (sl == null) {
             sl = new StudyListing(StudyListing.GENERIC_ERROR);
         }
-        
+
         studyListing = sl;
         studyListing.setVdcId( getVDCRequestBean().getCurrentVDCId() );
-        
+
     }
-    
+
     private String addToStudyListingMap(StudyListing sl) {
         return StudyListing.addToStudyListingMap(sl, getSessionMap());
     }
-    
+
     private StudyListing getStudyListingFromMap(String slIndex) {
         return StudyListing.getStudyListingFromMap(slIndex, getSessionMap(), getVDCRequestBean().getCurrentVDCId());
     }
-    
+
     public String getSearchField() {
         return searchField;
     }
-    
+
     public void setSearchField(String searchField) {
         this.searchField = searchField;
     }
-    
+
     public String getSearchValue() {
         return searchValue;
     }
-    
+
     public void setSearchValue(String searchValue) {
         this.searchValue = searchValue;
     }
-    
+
     public Integer getSearchFilter() {
         return searchFilter;
     }
-    
+
     public void setSearchFilter(Integer searchFilter) {
         this.searchFilter = searchFilter;
     }
-    
+
     public ScrollerComponent getScroller() {
         return scroller;
     }
-    
+
     public void setScroller(ScrollerComponent scroller) {
         this.scroller = scroller;
     }
@@ -712,11 +711,11 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
     public ScrollerComponent getScroller2() {
         return scroller2;
     }
-    
+
     public void setScroller2(ScrollerComponent scroller2) {
         this.scroller2 = scroller2;
     }
-    
+
     public Map getStudyFields() {
         if (studyFields == null) {
             studyFields = new HashMap();
@@ -729,17 +728,17 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
                 }
             }
         }
-        
+
         return studyFields;
     }
-    
-    // booleans for search filters 
+
+    // booleans for search filters
     boolean searchResultsFilter;
     boolean searchCollectionFilter;
-    
+
     boolean renderSearchResultsFilter;
     boolean renderSearchCollectionFilter;
-    
+
     public boolean isSearchResultsFilter() {
         return searchResultsFilter;
     }
@@ -771,8 +770,8 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
     public void setRenderSearchCollectionFilter(boolean renderSearchCollectionFilter) {
         this.renderSearchCollectionFilter = renderSearchCollectionFilter;
     }
-    
-    
+
+
     private StudyListing search(String searchField, String searchValue) {
         // TODO: combine the search logic from the search_action (which has more
         // flexibility) with this one for one unified search code section
@@ -798,26 +797,26 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
         sl.setStudyIds(studies);
         sl.setSearchTerms(searchTerms);
         sl.setVariableMap(variableMap);
-        
+
         sl.setVdcId( getVDCRequestBean().getCurrentVDCId() );
         sl.setCollectionTree(collectionTree);
-       
-        return sl;          
+
+        return sl;
     }
 
     public int getStudyCount() {
         return studyListing.getStudyIds().size();
     }
-    
+
     public String getCollectionName() {
         if (studyListing.getCollectionId() != null) {
             return vdcCollectionService.find( studyListing.getCollectionId() ).getName();
             //CollectionUI collUI = new CollectionUI( vdcCollectionService.find( studyListing.getCollectionId() ) );
             //return collUI.getShortCollectionPath(getVDCRequestBean().getCurrentVDC() );
         }
-        
+
         return null;
     }
-    
-  
+
+
 }

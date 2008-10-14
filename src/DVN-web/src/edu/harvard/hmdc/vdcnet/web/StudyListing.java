@@ -6,7 +6,7 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -29,7 +29,6 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
-import com.sun.rave.web.ui.component.Tree;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,13 +46,13 @@ public class StudyListing  implements java.io.Serializable {
     public static final int INCORRECT_VDC           = -2;
     public static final int EXPIRED_LIST            = -1;
     public static final int GENERIC_ERROR           =  0;
-    
+
     public static final int COLLECTION_STUDIES      =  1;
     public static final int SEARCH                  =  2;
     public static final int COLLECTION_FILTER       =  3;
     public static final int VDC_RECENT_STUDIES      =  4;
-    public static final int GENERIC_LIST            =  100;    
-    
+    public static final int GENERIC_LIST            =  100;
+
     /** Creates a new instance of StudyListing */
     public StudyListing() {
     }
@@ -61,16 +60,16 @@ public class StudyListing  implements java.io.Serializable {
     public StudyListing(int mode) {
         this.mode=mode;
     }
-    
+
     private int mode;
     private List studyIds = new ArrayList();
     private Long collectionId;
     private DefaultTreeModel collectionTree;
-    
+
     private Long vdcId;
     private List searchTerms;
     private Map variableMap;
-    
+
     public int getMode() {
         return mode;
     }
@@ -78,14 +77,14 @@ public class StudyListing  implements java.io.Serializable {
     public void setMode(int mode) {
         this.mode = mode;
     }
-    
+
     public List getStudyIds() {
         return studyIds;
     }
 
     public void setStudyIds(List studyIds) {
         this.studyIds = studyIds;
-    }      
+    }
 
     public Long getCollectionId() {
         return collectionId;
@@ -109,8 +108,8 @@ public class StudyListing  implements java.io.Serializable {
 
     public void setVdcId(Long vdcId) {
         this.vdcId = vdcId;
-    }    
-    
+    }
+
     public List getSearchTerms() {
         return searchTerms;
     }
@@ -126,15 +125,15 @@ public class StudyListing  implements java.io.Serializable {
     public void setVariableMap(Map variableMap) {
         this.variableMap = variableMap;
     }
-    
+
     public static String addToStudyListingMap(StudyListing sl, Map sessionMap) {
         Long slCount = (Long) sessionMap.get("studyListingsCount");
         OrderedMap slMap = (OrderedMap) sessionMap.get("studyListings");
         String sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
-        
+
         if (slCount == null) {
             slCount = new Long(0);
-            
+
         } else {
             slCount = slCount + 1;
         }
@@ -155,7 +154,7 @@ public class StudyListing  implements java.io.Serializable {
 
         return newIndex;
     }
-    
+
     public static StudyListing getStudyListingFromMap(String slIndex, Map sessionMap, Long currentVdcId) {
         OrderedMap slMap = (OrderedMap) sessionMap.get("studyListings");
         if (slMap != null) {
@@ -173,12 +172,12 @@ public class StudyListing  implements java.io.Serializable {
                     if ( !currentVdcId.equals(sl.getVdcId()) ) {
                         sl = new StudyListing(StudyListing.INCORRECT_VDC);
                     }
-                } 
+                }
 
                 return sl;
             }
         }
-        
+
         // this means that this studyListing or the session has expired
         return new StudyListing(StudyListing.EXPIRED_LIST);
     }
@@ -186,5 +185,5 @@ public class StudyListing  implements java.io.Serializable {
     public static void clearStudyListingMap(Map sessionMap) {
         sessionMap.remove("studyListings");
     }
-    
+
 }

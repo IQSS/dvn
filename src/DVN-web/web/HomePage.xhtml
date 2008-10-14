@@ -126,14 +126,25 @@
                          var="dvItems"
                          rendered="#{VDCRequest.currentVDC == null}"
                          style="border: 0px solid gold;">
-          <ice:outputText   style="font-size: 1.5em !important; font-weight: bold;"
+          <ice:outputText   rendered="#{dvItems.recordType eq 'group'}"
+                            style="font-size: 1.5em !important; font-weight: bold;"
                             value="#{dvItems.name}"/>
                             <!-- Placeholder for TODO: what output when group is empty? -->
-         <div  align="center" style="float: left; width: 100%; padding-top:10px; padding-bottom:10px;">
-            <ice:outputText rendered="#{empty(dvItems.childItems)}" value="There are no dataverses to display in this group."/>
+         <div  jsfc="ice:panelGroup"
+                align="center"
+                rendered="#{dvItems.recordType eq 'group'}"
+                style="float: left; width: 100%; padding-top:10px; padding-bottom:10px;">
+            <ice:outputText rendered="#{ (empty(dvItems.childItems) and (dvItems.recordType eq 'group') )}"
+                            value="There are no dataverses to display in this group."/>
           </div>
-          <div style="margin-top: .5em; border: 1px solid #d9d9d9; border-bottom: 1px solid transparent;">
-            <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }" style="overflow: hidden; margin-bottom: .25em;">
+          <div  jsfc="ice:panelGroup"
+                rendered="#{dvItems.recordType eq 'group'}"
+                style="margin-top: .5em;
+                border: 1px solid #d9d9d9;
+                border-bottom: 1px solid transparent;">
+            <div jsfc="ice:panelGroup" 
+                    rendered="#{not empty(dvItems.childItems) }"
+                    style="overflow: hidden; margin-bottom: .25em;">
 
               <div style="float: left; width: 100%; padding-top: 4px;">
                 <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems)and VDCRequest.currentVDC == null }" style="float: left; width: 60%; padding-top: 2px; padding-bottom: 2px;">
@@ -143,15 +154,16 @@
                                   value="#{NetworkStatsBean.inlineDataverseValue}">
                       <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item#{dvItems.id}"/>
                     </h:outputText>
+                    <!-- TODO: For the next two rendered was, #{dvItems.parentClassification == 0} -->
                     <h:outputText binding="#{NetworkStatsBean.inlineStudyKey}"
                                   effect="#{item.effect}"
-                                  rendered="#{dvItems.top == true}"
+                                  rendered="true"
                                   value="#{NetworkStatsBean.inlineStudyValue}">
                       <f:attribute name="itemid" value="item#{dvItems.id}"/>
                     </h:outputText>
                     <h:outputText binding="#{NetworkStatsBean.inlineFilesKey}"
                                   effect="#{item.effect}"
-                                  rendered="#{dvItems.top == true}"
+                                  rendered="true"
                                   value="#{NetworkStatsBean.inlineFilesValue}">
                       <f:attribute name="itemid" value="item#{dvItems.id}"/>
                     </h:outputText>

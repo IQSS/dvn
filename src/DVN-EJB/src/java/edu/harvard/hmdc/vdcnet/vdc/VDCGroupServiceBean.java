@@ -34,7 +34,10 @@ package edu.harvard.hmdc.vdcnet.vdc;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Remove;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -63,7 +66,15 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
         List<VDCGroup> vdcgroups = (List<VDCGroup>)em.createQuery("select object(o) from VDCGroup as o order by o.displayOrder").getResultList();
         return vdcgroups;
     }
-    
+
+    public List<VDCGroup> findByParentId(Long id) {
+        String query = "SELECT object(o) FROM VDCGroup AS o WHERE o.parent = :fieldName ORDER BY o.displayOrder";
+        List<VDCGroup> vdcgroups = (List<VDCGroup>)em.createQuery(query).setParameter("fieldName", id).getResultList();
+        return vdcgroups;
+    }
+
+    @Remove
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void removeVdcGroup(VDCGroup vdcgroup) {
         VDCGroup group = findById(vdcgroup.getId());
         if (group != null) {

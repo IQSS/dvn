@@ -29,6 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -41,6 +42,8 @@ public interface VDCGroupServiceLocal extends java.io.Serializable  {
     public VDCGroup findById(Long id);
     
     public java.util.Collection<VDCGroup> findAll();
+
+    public List<VDCGroup> findByParentId(Long id);
     
     public void removeVdcGroup(VDCGroup vdcgroup);
      

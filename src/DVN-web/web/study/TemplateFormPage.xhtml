@@ -19,71 +19,7 @@
       <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
 
 
-      <script type="text/javascript">
-          // <![CDATA[
-          // Functions for hiding and showing study fields
-          //
-          function getElementsByClassName( strClassName, obj ) {
-              var ar = arguments[2] || new Array();
-              var re = new RegExp("\\b" + strClassName + "\\b", "g");
-
-              if ( re.test(obj.className) ) {
-                  ar.push( obj );
-              }
-              for ( var i = 0; i < obj.childNodes.length; i++ )
-                  getElementsByClassName( strClassName, obj.childNodes[i], ar );
-
-              return ar;
-          }
-
-
-          function addLoadEvent(func) {
-              var oldonload = window.onload;
-              if (typeof window.onload != 'function') {
-                  window.onload = func;
-              } else {
-                  window.onload = function() {
-                      if (oldonload) {
-                          oldonload();
-                      }
-                      func();
-                  }
-              }
-          }
-
-          function hideShowOptional(actionString) {
-
-              var optionalDivs = getElementsByClassName("optional", document.body);
-              for (var i = 0; i < optionalDivs.length; i++)
-              {
-                  //  alert("setting optional div");
-                  var optionalDiv = optionalDivs[i];
-                  if (actionString=="hide") {
-                      //   alert("hiding div");
-                      optionalDiv.style.display='none';
-
-                  } else {
-                      //  alert("showing div");
-                      optionalDiv.style.display='';
-                  }
-
-              }
-          }
-          function initHide() {
-              //  alert("in initHide")
-              //  document.getElementById("hideRadio").checked=true
-              hideShowOptional("hide");
-          }
-
-          function updateHideShow(radioButton) {
-              // alert("in updateHideShow")
-              hideShowOptional(radioButton.value);
-          }
-
-
-
-          // ]]>
-      </script>
+ 
 
       <dvn:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" rendered="true"/>
       <f:loadBundle basename="BundleHelp" var="helpText"/>
@@ -112,8 +48,6 @@
             <div panelLayout="flow" class="vdcStudyTemplateFormTable">
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%" style="margin-bottom: 5px;">
                 <div>
-                  <input checked="checked" type="radio" id="hideRadio" name="hideShowRadio" value="hide" onclick="updateHideShow(this);"/> Show Required and Recommended Fields
-                  <input type="radio" id="showRadio" name="hideShowRadio" value="show" onclick="updateHideShow(this);"/> Show All Fields
                   <div class="dvnFormPadding">
                     <ice:outputText  value="Template Name: "/><ice:inputText id="template_name" size="45" value='#{TemplateFormPage.template.name}' required='true' requiredMessage='This field is required.'/>
                     <ice:message styleClass="errorMessage" for="template_name"/>
@@ -356,7 +290,7 @@
                 </div>
                 <div>
                   <ice:inputText id="input_productionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.productionDate}" required="#{TemplateFormPage.studyMap[sfc.productionDate].required}">
-                    <f:validator validatorId="DateValidator"/>
+                  
                   </ice:inputText>
                   <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
                   <ice:message styleClass="errorMessage" for="input_productionDate"><f:param name="x" value="Production Date:"/> </ice:message>
@@ -602,7 +536,7 @@
                 </div>
                 <div jsfc="ice:panelGroup" id="groupPanel26" styleClass="#{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevel.name}">
                   <ice:inputText id="input_distributionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.distributionDate}"  required="#{TemplateFormPage.studyMap[sfc.distributionDate].required}">
-                    <f:validator validatorId="DateValidator"/>
+                  
                   </ice:inputText>
                   <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
                   <ice:message styleClass="errorMessage" for="input_distributionDate"/>
@@ -635,7 +569,7 @@
                 </div>
                 <div jsfc="ice:panelGroup" id="groupPanel28" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevel.name}">
                   <ice:inputText id="input_dateOfDeposit" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.dateOfDeposit}"  required="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].required}">
-                    <f:validator validatorId="DateValidator"/>
+                    
                   </ice:inputText>
                   <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
                   <ice:message styleClass="errorMessage" for="input_dateOfDeposit"/>
@@ -699,7 +633,7 @@
                     <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionDateHelp}" linkText="#{editstudybundle.seriesVersionDateLabel}" heading="#{editstudybundle.seriesVersionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                     <br/>
                     <ice:inputText binding="#{TemplateFormPage.inputVersionDate}" validator="#{TemplateFormPage.validateVersion}" id="input_versionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.versionDate}" required="#{TemplateFormPage.studyMap[sfc.versionDate].required}" >
-                      <f:validator validatorId="DateValidator"/>
+                    
                     </ice:inputText>
                     <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
                     <ice:message styleClass="errorMessage" for="input_versionDate"/>
@@ -768,7 +702,7 @@
                           <dvn:inlinehelp helpMessage="#{editstudybundle.abstractDateHelp}" linkText="#{editstudybundle.abstractDateLabel}" heading="#{editstudybundle.abstractDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                           <br/>
                           <ice:inputText binding="#{TemplateFormPage.inputAbstractDate}" validator="#{TemplateFormPage.validateStudyAbstract}" id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}" required="#{TemplateFormPage.studyMap[sfc.abstractDate].required}">
-                            <f:validator validatorId="DateValidator"/>
+
                           </ice:inputText>
                           <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
                           <ice:message styleClass="errorMessage" for="input_abstractDate"/>
@@ -2028,9 +1962,7 @@
         </div>
       </ice:form>
 
-      <script type="text/javascript">
-          addLoadEvent(initHide());
-      </script>
+    
     </gui:define>
   </gui:composition>
 </body>

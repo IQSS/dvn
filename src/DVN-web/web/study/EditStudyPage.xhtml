@@ -257,7 +257,7 @@
                       <ice:message styleClass="errorMessage" for="input_title"/>
                     </div>
                   </ice:panelGrid>
-
+                  <!-- SUBTITLE -->
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                                  styleClass="vdcEditStudyTable" visible="#{EditStudyPage.studyMap[sfc.subTitle].recommended or EditStudyPage.showAll}"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
@@ -274,7 +274,7 @@
 
                   <!-- STUDY ID-->
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.studyId].templateField.fieldInputLevel.name}"
+                                 styleClass="vdcEditStudyTable" visible="#{EditStudyPage.studyMap[sfc.studyId].recommended or EditStudyPage.showAll}"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.studyidHelp}" linkText="#{editstudybundle.studyidLabel}" heading="#{editstudybundle.studyidHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -292,28 +292,29 @@
                   <!-- OTHER IDS -->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyTable"
-                                 rowClasses="#{EditStudyPage.otherIdLevel}" value="dummy_datatable">
+                                 visible="#{EditStudyPage.studyMap[sfc.otherId].recommended or EditStudyPage.showAll}" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableOtherIds}"
                                      value="#{EditStudyPage.study.studyOtherIds}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.otheridHelp}" linkText="#{editstudybundle.otheridLabel}" heading="#{editstudybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.otherIdLevel=='required'}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.otherIdLevel=='recommended'}"/>
+                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
+                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{EditStudyPage.studyMap[sfc.otherId].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 ">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.otheridHelp}" linkText="#{editstudybundle.otheridLabel}" heading="#{editstudybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" binding="#{EditStudyPage.inputOtherId}" id="input_otherId" value="#{currentRow.otherId}" required="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
                               <ice:message styleClass="errorMessage" for="input_otherId"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.otherIdAgency].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.otherAgencyHelp}" linkText="#{editstudybundle.otherAgencyLabel}" heading="#{editstudybundle.otherAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" binding="#{EditStudyPage.inputOtherIdAgency}" validator="#{EditStudyPage.validateStudyOtherId}"
@@ -342,13 +343,13 @@
                           <ice:column>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.authorHelp}" linkText="#{editstudybundle.authorLabel}" heading="#{editstudybundle.authorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                              <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.authorInputLevel=='required'}"/>
-                              <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.authorInputLevel=='recommended'}"/>
+                              <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].required}"/>
+                              <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].recommended}"/>
                             </div>
                           </ice:column>
                           <ice:column>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
-                              <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1" visible="#{EditStudyPage.studyMap[sfc.authorName].recommended or EditStudyPage.showAll}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">               
+                              <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1" >
                                 <dvn:inlinehelp helpMessage="#{editstudybundle.authorNameHelp}" linkText="#{editstudybundle.authorNameLabel}" heading="#{editstudybundle.authorNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                 <br/>
                                 <ice:inputText id="input_authorName"
@@ -386,34 +387,35 @@
                   <!--Producers-->
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" rowClasses="#{EditStudyPage.producerInputLevel}" value="dummy_datatable">
+                                 styleClass="vdcEditStudyTable"  visible="#{EditStudyPage.studyMap[sfc.producerName].recommended or EditStudyPage.showAll}" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableProducers}"
                                      value="#{EditStudyPage.study.studyProducers}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.producerInputLevel=='required'}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.producerInputLevel=='recommended'}"/>
+                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.producerName].required}"/>
+                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.producerName].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.producerName].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" binding="#{EditStudyPage.inputProducerName}" id="input_producerName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.producerName].required}"/>
                               <ice:message styleClass="errorMessage" for="input_producerName"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.producerAbbreviation].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.producerAbbreviationHelp}" linkText="#{editstudybundle.producerAbbreviationLabel}" heading="#{editstudybundle.producerAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" validator="#{EditStudyPage.validateStudyProducer}" binding="#{EditStudyPage.inputProducerAbbreviation}" id="input_producerAbbreviation" value="#{currentRow.abbreviation}" required="#{EditStudyPage.studyMap[sfc.producerAbbreviation].required}"/>
                               <ice:message styleClass="errorMessage" for="input_producerAbbreviation"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.producerAffiliation].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.producerAffiliationHelp}" linkText="#{editstudybundle.producerAffiliationLabel}" heading="#{editstudybundle.producerAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" validator="#{EditStudyPage.validateStudyProducer}" binding="#{EditStudyPage.inputProducerAffiliation}" id="input_producerAffiliation" size="45" value="#{currentRow.affiliation}" required="#{EditStudyPage.studyMap[sfc.producerAffiliation].required}"
@@ -422,7 +424,7 @@
                               </ice:inputText>
                               <ice:message styleClass="errorMessage" for="input_producerAffiliation"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.producerURL].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.producerURLHelp}" linkText="#{editstudybundle.producerURLLabel}" heading="#{editstudybundle.producerURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText id="input_producerURL"
@@ -437,7 +439,7 @@
                               <ice:outputText value="(http://example-domain.edu/)"/>
                               <ice:message styleClass="errorMessage" for="input_producerURL"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField  #{EditStudyPage.studyMap[sfc.producerLogo].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.producerLogoHelp}" linkText="#{editstudybundle.producerLogoLabel}" heading="#{editstudybundle.producerLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText id="input_producerLogo"
@@ -463,7 +465,8 @@
                   </ice:dataTable>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.productionDate].templateField.fieldInputLevel.name}" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable " columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.productionDate].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel42" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.productionDateHelp}" linkText="#{editstudybundle.productionDateLabel}" heading="#{editstudybundle.productionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.productionDate].required}"/>
@@ -479,7 +482,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.productionPlace].templateField.fieldInputLevel.name}" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable" 
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.productionPlace].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel43"   styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.productionPlaceHelp}" linkText="#{editstudybundle.productionPlaceLabel}" heading="#{editstudybundle.productionPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.productionPlace].required}"/>
@@ -494,28 +499,29 @@
                   <!-- Software -->
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" rowClasses="#{EditStudyPage.softwareInputLevel}" value="dummy_datatable">
+                                 styleClass="vdcEditStudyTable"  visible="#{EditStudyPage.studyMap[sfc.softwareName].recommended or EditStudyPage.showAll}" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableSoftware}"
                                      value="#{EditStudyPage.study.studySoftware}" var="currentRow">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.softwareNameHelp}" linkText="#{editstudybundle.softwareNameLabel}" heading="#{editstudybundle.softwareNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.softwareInputLevel=='required'}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.softwareInputLevel=='recommended'}"/>
+                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.softwareName].required}"/>
+                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.softwareName].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{EditStudyPage.studyMap[sfc.softwareName].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.softwareNameHelp}" linkText="#{editstudybundle.softwareNameLabel}" heading="#{editstudybundle.softwareNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" binding="#{EditStudyPage.inputSoftwareName}" id="input_softwareName" size="45"  value="#{currentRow.name}" required="#{EditStudyPage.studyMap[sfc.softwareName].required}"/>
                               <ice:message styleClass="errorMessage" for="input_softwareName"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.softwareVersion].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.softwareVersionHelp}" linkText="#{editstudybundle.softwareVersionLabel}" heading="#{editstudybundle.softwareVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" binding="#{EditStudyPage.inputSoftwareVersion}" validator="#{EditStudyPage.validateStudySoftware}" id="input_softwareVersion" value="#{currentRow.softwareVersion}" required="#{EditStudyPage.studyMap[sfc.softwareVersion].required}"/>
@@ -532,7 +538,9 @@
                   </ice:dataTable>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.fundingAgency].templateField.fieldInputLevel.name}" columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable " 
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.fundingAgency].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.fundingAgencyHelp}" linkText="#{editstudybundle.fundingAgencyLabel}" heading="#{editstudybundle.fundingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].required}"/>
@@ -546,28 +554,29 @@
 
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" rowClasses="#{EditStudyPage.grantInputLevel}" value="dummy_datatable">
+                                 styleClass="vdcEditStudyTable" visible="#{EditStudyPage.studyMap[sfc.grantNumber].recommended or EditStudyPage.showAll}" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableGrants}"
                                      value="#{EditStudyPage.study.studyGrants}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.grantNumberHelp}" linkText="#{editstudybundle.grantNumberLabel}" heading="#{editstudybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.grantInputLevel=='required'}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.grantInputLevel=='recommended'}"/>
+                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
+                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.grantNumber].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
                           <div jsfc="ice:panelGroup">
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.grantNumber].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.grantNumberHelp}" linkText="#{editstudybundle.grantNumberLabel}" heading="#{editstudybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" immediate="true" binding="#{EditStudyPage.inputGrantNumber}" id="input_grantNumber" size="45"  value="#{currentRow.number}" required="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
                               <ice:message styleClass="errorMessage" for="input_grantNumber"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.grantNumberAgency].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.grantingAgencyHelp}" linkText="#{editstudybundle.grantingAgencyLabel}" heading="#{editstudybundle.grantingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" immediate="true" binding="#{EditStudyPage.inputGrantAgency}" validator="#{EditStudyPage.validateStudyGrant}" id="input_grantNumberAgency" size="45" value="#{currentRow.agency}" required="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required}"/>
@@ -585,34 +594,35 @@
 
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" rowClasses="#{EditStudyPage.distributorInputLevel}" value="dummy_datatable">
+                                 styleClass="vdcEditStudyTable" visible="#{EditStudyPage.studyMap[sfc.distributorName].recommended or EditStudyPage.showAll}" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableDistributors}"
                                      value="#{EditStudyPage.study.studyDistributors}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.distributorHelp}" linkText="#{editstudybundle.distributorLabel}" heading="#{editstudybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.distributorInputLevel=='required'}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.distributorInputLevel=='recommended'}"/>
+                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorName].required}"/>
+                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorName].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{EditStudyPage.studyMap[sfc.distributorName].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.distributorHelp}" linkText="#{editstudybundle.distributorLabel}" heading="#{editstudybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" binding="#{EditStudyPage.inputDistributorName}" id="input_distributorName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.distributorName].required}"/>
                               <ice:message styleClass="errorMessage" for="input_distributorName"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.distributorAbbreviation].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.distributorAbbreviationHelp}" linkText="#{editstudybundle.distributorAbbreviationLabel}" heading="#{editstudybundle.distributorAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" validator="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"  required="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required}"/>
                               <ice:message styleClass="errorMessage" for="input_distributorAbbreviation"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.distributorAffiliation].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.distributorAffiliationHelp}" linkText="#{editstudybundle.distributorAffiliationLabel}" heading="#{editstudybundle.distributorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" id="input_distributorAffiliation" validator="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAffiliation}" size="45"
@@ -623,7 +633,7 @@
                               </ice:inputText>
                               <ice:message styleClass="errorMessage" for="input_distributorAffiliation"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.distributorURL].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField ">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.distributorURLHelp}" linkText="#{editstudybundle.distributorURLLabel}" heading="#{editstudybundle.distributorURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText id="input_distributorURL"
@@ -638,7 +648,7 @@
                               <ice:outputText value="(http://example-domain.edu/)"/>
                               <ice:message styleClass="errorMessage" for="input_distributorURL"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField  #{EditStudyPage.studyMap[sfc.distributorLogo].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.distributorLogoHelp}" linkText="#{editstudybundle.distributorLogoLabel}" heading="#{editstudybundle.distributorLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText binding="#{EditStudyPage.inputDistributorLogo}" id="input_distributorLogo"
@@ -663,21 +673,22 @@
                   </ice:dataTable>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.distributorInputLevel}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
-                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField #{EditStudyPage.distributorInputLevel}">
+                                 styleClass="vdcEditStudyTable "
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.distributorContact].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactHelp}" linkText="#{editstudybundle.distributorContactLabel}" heading="#{editstudybundle.distributorContactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorContact].required}"/>
                       <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorContact].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
-                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{EditStudyPage.studyMap[sfc.distributorContact].templateField.fieldInputLevel.name}">
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactHelp}" linkText="#{editstudybundle.distributorContactLabel}" heading="#{editstudybundle.distributorContactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
                         <ice:inputText binding ="#{EditStudyPage.inputDistributorContact}" id="input_distributorContact" size="45"  value="#{EditStudyPage.study.distributorContact}"  required="#{EditStudyPage.studyMap[sfc.distributorContact].required}"/>
                         <ice:message styleClass="errorMessage" for="input_distributorContact"/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.distributorContactAffiliation].templateField.fieldInputLevel.name}">
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactAffiliationHelp}" linkText="#{editstudybundle.distributorContactAffiliationLabel}" heading="#{editstudybundle.distributorContactAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
                         <ice:inputText id="distributorContactAffiliation" size="45" maxlength="255"
@@ -690,7 +701,7 @@
                         </ice:inputText>
                         <ice:message styleClass="errorMessage" for="distributorContactAffiliation"/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.distributorContactEmail].templateField.fieldInputLevel.name}" >
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField " >
                         <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactEmailHelp}" linkText="#{editstudybundle.distributorContactEmailLabel}" heading="#{editstudybundle.distributorContactEmailHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
                         <ice:inputText binding ="#{EditStudyPage.inputDistributorContactEmail}" id="input_distributorContactEmail" size="45" value="#{EditStudyPage.study.distributorContactEmail}" required="#{EditStudyPage.studyMap[sfc.distributorContactEmail].required}"/>
@@ -700,14 +711,15 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.distributionDate].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
-                    <div jsfc="ice:panelGroup" id="groupPanel49" styleClass="vdcEditStudyField #{EditStudyPage.studyMap[sfc.distributionDate].templateField.fieldInputLevel.name}" >
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.distributionDate].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" id="groupPanel49" styleClass="vdcEditStudyField" >
                       <dvn:inlinehelp helpMessage="#{editstudybundle.distributionDateHelp}" linkText="#{editstudybundle.distributionDateLabel}" heading="#{editstudybundle.distributionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributionDate].required}"/>
                       <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.distributionDate].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup" id="groupPanel26" styleClass="#{EditStudyPage.studyMap[sfc.distributionDate].templateField.fieldInputLevel.name}">
+                    <div jsfc="ice:panelGroup" id="groupPanel26" >
                       <ice:inputText id="input_distributionDate" styleClass="formDateFormat" value="#{EditStudyPage.study.distributionDate}" required="#{EditStudyPage.studyMap[sfc.distributionDate].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
@@ -717,28 +729,30 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.depositor].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.depositor].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel50"  styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.depositorHelp}" linkText="#{editstudybundle.depositorLabel}" heading="#{editstudybundle.depositorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.depositor].required}"/>
                       <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.depositor].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup" id="groupPanel27" styleClass="#{EditStudyPage.studyMap[sfc.depositor].templateField.fieldInputLevel.name}">
+                    <div jsfc="ice:panelGroup" id="groupPanel27" >
                       <ice:inputText id="input_depositor" size="45"  value="#{EditStudyPage.study.depositor}" required="#{EditStudyPage.studyMap[sfc.depositor].required}"/>
                       <ice:message styleClass="errorMessage" for="input_depositor"/>
                     </div>
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
-                    <div jsfc="ice:panelGroup" id="groupPanel51"  styleClass="vdcEditStudyField #{EditStudyPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevel.name}">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.dateOfDeposit].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" id="groupPanel51"  styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.depositDateHelp}" linkText="#{editstudybundle.depositDateLabel}" heading="#{editstudybundle.depositDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfDeposit].required}"/>
                       <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfDeposit].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup" id="groupPanel28" styleClass="vdcEditStudyField #{EditStudyPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevel.name}">
+                    <div jsfc="ice:panelGroup" id="groupPanel28" styleClass="vdcEditStudyField">
                       <ice:inputText id="input_dateOfDeposit" styleClass="formDateFormat" value="#{EditStudyPage.study.dateOfDeposit}" required="#{EditStudyPage.studyMap[sfc.dateOfDeposit].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
@@ -748,15 +762,16 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.seriesInputLevel}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
-                    <div jsfc="ice:panelGroup" id="groupPanel52"  styleClass="vdcEditStudyField #{EditStudyPage.seriesInputLevel}">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.seriesName].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" id="groupPanel52"  styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.seriesHelp}" linkText="#{editstudybundle.seriesLabel}" heading="#{editstudybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.seriesInputLevel=='required'}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.seriesInputLevel=='recommended'}"/>
+                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.seriesName].required}"/>
+                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.seriesName].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <div jsfc="ice:panelGroup" id="groupPanel29" styleClass="vdcEditStudyField #{EditStudyPage.studyMap[sfc.seriesName].templateField.fieldInputLevel.name}">
+                      <div jsfc="ice:panelGroup" id="groupPanel29" styleClass="vdcEditStudyField">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.seriesHelp}" linkText="#{editstudybundle.seriesLabel}" heading="#{editstudybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
                         <ice:inputText binding="#{EditStudyPage.inputSeries}" id="input_seriesName"
@@ -767,7 +782,7 @@
                         </ice:inputText>
                         <ice:message styleClass="errorMessage" for="input_seriesName"/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.seriesName].templateField.fieldInputLevel.name}">
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.seriesInformationHelp}" linkText="#{editstudybundle.seriesInformationLabel}" heading="#{editstudybundle.seriesInformationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
                         <ice:inputText binding ="#{EditStudyPage.inputSeriesInformation}" id="input_seriesInformation"
@@ -784,21 +799,22 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.versionInputLevel}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
-                    <div jsfc="ice:panelGroup" id="groupPanel53"   styleClass="#{EditStudyPage.versionInputLevel}">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.studyVersion].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" id="groupPanel53">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionHelp}" linkText="#{editstudybundle.seriesVersionLabel}" heading="#{editstudybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.inputVersion=='required'}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.inputVersion=='recommended'}"/>
+                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyVersion].required }"/>
+                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyVersion].recommended }"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel30">
-                      <div jsfc="ice:panelGroup" styleClass= "#{EditStudyPage.studyMap[sfc.studyVersion].templateField.fieldInputLevel.name}">
+                      <div jsfc="ice:panelGroup" >
                         <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionHelp}" linkText="#{editstudybundle.seriesVersionLabel}" heading="#{editstudybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
                         <ice:inputText binding="#{EditStudyPage.inputVersion}" id="input_studyVersion" value="#{EditStudyPage.study.studyVersion}"  required="#{EditStudyPage.studyMap[sfc.studyVersion].required}"/>
                         <ice:message styleClass="errorMessage" for="input_studyVersion"/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.versionDate].templateField.fieldInputLevel.name}">
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionDateHelp}" linkText="#{editstudybundle.seriesVersionDateLabel}" heading="#{editstudybundle.seriesVersionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
                         <ice:inputText binding="#{EditStudyPage.inputVersionDate}" validator="#{EditStudyPage.validateVersion}" id="input_versionDate" styleClass="formDateFormat" value="#{EditStudyPage.study.versionDate}" required="#{EditStudyPage.studyMap[sfc.versionDate].required}" >
@@ -811,14 +827,15 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.replicationFor].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
-                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.replicationFor].templateField.fieldInputLevel.name}">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.replicationFor].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.replicationForHelp}" linkText="#{editstudybundle.replicationForLabel}" heading="#{editstudybundle.replicationForHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.replicationFor].required}"/>
                       <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.replicationFor].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup" styleClass="#{EditStudyPage.studyMap[sfc.replicationFor].templateField.fieldInputLevel.name}">
+                    <div jsfc="ice:panelGroup" >
                       <ice:inputTextarea cols="90" rows="4"
                                          id="input_replicationFor"
                                          value="#{EditStudyPage.study.replicationFor}"
@@ -830,28 +847,29 @@
                     </div>
                   </ice:panelGrid>
 
-                  <div jsfc="ice:panelGroup" id="groupPanel12" styleClass="vdcStudyInfoHeader #{EditStudyPage.abstractAndScopeInputLevel}">
+                  <div jsfc="ice:panelGroup" id="groupPanel12" styleClass="vdcStudyInfoHeader" visible="#{EditStudyPage.abstractAndScopeInputLevel=='recommended' or EditStudyPage.showAll }">
                     <ice:outputText id="outputText65" value="Abstract and Scope"/>
                   </div>
 
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" rowClasses="#{EditStudyPage.abstractInputLevel}" value="dummy_datatable">
+                                 styleClass="vdcEditStudyTable" visible="#{EditStudyPage.studyMap[sfc.abstractText].recommended or EditStudyPage.showAll}"  value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableAbstracts}"
                                      value="#{EditStudyPage.study.studyAbstracts}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.abstractHelp}" linkText="#{editstudybundle.abstractLabel}" heading="#{editstudybundle.abstractHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.abstractInputLevel=='required'}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.abstractInputLevel=='recommended'}"/>
+                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.abstractText].required}"/>
+                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.abstractText].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
                           <div jsfc="ice:panelGroup">
-                            <div jsfc="ice:panelGroup" styleClass="#{EditStudyPage.studyMap[sfc.abstractText].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" >
                               <ice:outputText value="Note: Copying and pasting from a Word document can create errors when you save this page."/>
                               <br/>
                               <dvn:inlinehelp helpMessage="#{editstudybundle.abstractHelp}" linkText="#{editstudybundle.abstractLabel}" heading="#{editstudybundle.abstractHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -866,7 +884,7 @@
                               </ice:inputTextarea>
                               <ice:message styleClass="errorMessage" for="input_abstractText"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.abstractDate].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.abstractDateHelp}" linkText="#{editstudybundle.abstractDateLabel}" heading="#{editstudybundle.abstractDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText binding="#{EditStudyPage.inputAbstractDate}" validator="#{EditStudyPage.validateStudyAbstract}" id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}" required="#{EditStudyPage.studyMap[sfc.abstractDate].required}">
@@ -887,34 +905,35 @@
 
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" rowClasses="#{EditStudyPage.keywordInputLevel}" value="dummy_datatable">
+                                 styleClass="vdcEditStudyTable" visible="#{EditStudyPage.studyMap[sfc.keywordValue].recommended or EditStudyPage.showAll}" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableKeywords}"
                                      value="#{EditStudyPage.study.studyKeywords}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.keywordHelp}" linkText="#{editstudybundle.keywordLabel}" heading="#{editstudybundle.keywordHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.keywordInputLevel=='required'}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.keywordInputLevel=='recommended'}"/>
+                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.keywordValue].required}"/>
+                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.keywordValue].recommended }"/>
                           </div>
                         </ice:column>
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{EditStudyPage.studyMap[sfc.keywordValue].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.keywordHelp}" linkText="#{editstudybundle.keywordLabel}" heading="#{editstudybundle.keywordHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText binding="#{EditStudyPage.inputKeywordValue}" id="input_keywordValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.keywordValue].required}"/>
                               <ice:message styleClass="errorMessage" for="input_keywordValue"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.keywordVocab].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyHelp}" linkText="#{editstudybundle.keywordVocabularyLabel}" heading="#{editstudybundle.keywordVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText validator="#{EditStudyPage.validateStudyKeyword}" binding="#{EditStudyPage.inputKeywordVocab}" id="input_keywordVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.keywordVocab].required}" maxlength="255"/>
                               <ice:message styleClass="errorMessage" for="input_keywordVocab"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.keywordVocabURI].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField ">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyURLHelp}" linkText="#{editstudybundle.keywordVocabularyURLLabel}" heading="#{editstudybundle.keywordVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText id="input_keywordVocabURI"
@@ -941,9 +960,10 @@
 
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" rowClasses="#{EditStudyPage.topicInputLevel}" value="dummy_datatable">
+                                 styleClass="vdcEditStudyTable" visible="#{EditStudyPage.studyMap[sfc.topicClassValue].recommended or EditStudyPage.showAll}" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      id="dataTableTopicClass"
                                      binding="#{EditStudyPage.dataTableTopicClass}"
@@ -951,25 +971,25 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassificationHelp}" linkText="#{editstudybundle.topicClassificationLabel}" heading="#{editstudybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.topicInputLevel=='required'}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.topicInputLevel=='recommended'}"/>
+                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].required}"/>
+                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.topicClassValue].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField ">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassificationHelp}" linkText="#{editstudybundle.topicClassificationLabel}" heading="#{editstudybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText binding="#{EditStudyPage.inputTopicClassValue}" id="input_topicClassValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.topicClassValue].required}"/>
                               <ice:message styleClass="errorMessage" for="input_topicClassValue"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.topicClassVocab].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField ">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyHelp}" linkText="#{editstudybundle.topicClassVocabularyLabel}" heading="#{editstudybundle.topicClassVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" validator="#{EditStudyPage.validateStudyTopicClass}" binding="#{EditStudyPage.inputTopicClassVocab}" id="input_topicClassVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.topicClassVocab].required}"/>
                               <ice:message styleClass="errorMessage" for="input_topicClassVocab"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.topicClassVocabURI].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField ">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyURLHelp}" linkText="#{editstudybundle.topicClassVocabularyURLLabel}" heading="#{editstudybundle.topicClassVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText id="input_topicClassVocabURI"
@@ -996,9 +1016,10 @@
 
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" rowClasses="#{EditStudyPage.studyMap[sfc.relatedPublications].templateField.fieldInputLevel.name}" value="dummy_datatable">
+                                 styleClass="vdcEditStudyTable"  visible="#{EditStudyPage.studyMap[sfc.relatedPublications].recommended or EditStudyPage.showAll}"  value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableRelPublications}"
                                      value="#{EditStudyPage.study.studyRelPublications}" var="currentRow" width="100%">
@@ -1032,9 +1053,10 @@
 
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" rowClasses="#{EditStudyPage.studyMap[sfc.relatedMaterial].templateField.fieldInputLevel.name}" value="dummy_datatable">
+                                 styleClass="vdcEditStudyTable" visible="#{EditStudyPage.studyMap[sfc.relatedMaterial].recommended or EditStudyPage.showAll}"  value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableRelMaterials}"
                                      value="#{EditStudyPage.study.studyRelMaterials}" var="currentRow" width="100%">
@@ -1068,9 +1090,10 @@
 
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable" rowClasses="#{EditStudyPage.studyMap[sfc.relatedStudies].templateField.fieldInputLevel.name}" value="dummy_datatable">
+                                 styleClass="vdcEditStudyTable" visible="#{EditStudyPage.studyMap[sfc.relatedStudies].recommended or EditStudyPage.showAll}" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableRelStudies}"
                                      value="#{EditStudyPage.study.studyRelStudies}" var="currentRow" width="100%">
@@ -1105,9 +1128,10 @@
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyTable"
-                                 rowClasses="#{EditStudyPage.studyMap[sfc.otherReferences].templateField.fieldInputLevel.name}" value="dummy_datatable">
+                                  visible="#{EditStudyPage.studyMap[sfc.otherReferences].recommended or EditStudyPage.showAll}" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableOtherReferences}"
                                      value="#{EditStudyPage.study.studyOtherRefs}" var="currentRow" width="100%">
@@ -1140,8 +1164,9 @@
                   </ice:dataTable>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField" >
                       <dvn:inlinehelp helpMessage="#{editstudybundle.timePeriodStartHelp}" linkText="#{editstudybundle.timePeriodStartLabel}" heading="#{editstudybundle.timePeriodStartHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required}"/>
@@ -1157,8 +1182,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.timePeriodEndHelp}" linkText="#{editstudybundle.timePeriodEndLabel}" heading="#{editstudybundle.timePeriodEndHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required}"/>
@@ -1174,8 +1200,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.dateOfCollectionStart].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.collectionDateStartHelp}" linkText="#{editstudybundle.collectionDateStartLabel}" heading="#{editstudybundle.collectionDateStartHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].required}"/>
@@ -1191,8 +1218,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.collectionDateEndHelp}" linkText="#{editstudybundle.collectionDateEndLabel}" heading="#{editstudybundle.collectionDateEndHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required}"/>
@@ -1208,8 +1236,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.country].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.country].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.countryHelp}" linkText="#{editstudybundle.countryLabel}" heading="#{editstudybundle.countryHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.country].required}"/>
@@ -1222,8 +1251,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.geographicCoverage].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.geographicCoverage].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.geographicCoverageHelp}" linkText="#{editstudybundle.geographicCoverageLabel}" heading="#{editstudybundle.geographicCoverageHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].required}"/>
@@ -1236,8 +1266,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.geographicUnit].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.geographicUnit].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.geographicUnitHelp}" linkText="#{editstudybundle.geographicUnitLabel}" heading="#{editstudybundle.geographicUnitHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].required}"/>
@@ -1250,8 +1281,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.westLongitude].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.westLongitude].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.geographicBoundingBoxHelp}" linkText="#{editstudybundle.geographicBoundingBoxLabel}" heading="#{editstudybundle.geographicBoundingBoxHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.westLongitude].required}"/>
@@ -1290,8 +1322,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.unitOfAnalysis].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.unitOfAnalysisHelp}" linkText="#{editstudybundle.unitOfAnalysisLabel}" heading="#{editstudybundle.unitOfAnalysisHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}"/>
@@ -1306,8 +1339,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.universe].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.universe].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.universeHelp}" linkText="#{editstudybundle.universeLabel}" heading="#{editstudybundle.universeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.universe].required}"/>
@@ -1322,8 +1356,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.kindOfData].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.kindOfData].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.kindOfDataHelp}" linkText="#{editstudybundle.kindOfDataLabel}" heading="#{editstudybundle.kindOfDataHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.kindOfData].required}"/>
@@ -1336,15 +1371,16 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%"
-                                 styleClass="#{EditStudyPage.dataCollectionMethodologyInputLevel}">
+                                 visible="#{EditStudyPage.dataCollectionMethodologyInputLevel=='recommended' or EditStudyPage.showAll }">
                     <div jsfc="ice:panelGroup" id="groupPanel13" styleClass="vdcStudyInfoHeader" >
-                      <ice:outputText id="outputText90" value="Data Collection / Methodology" styleClass="#{EditStudyPage.dataCollectionMethodologyInputLevel}" />
+                      <ice:outputText id="outputText90" value="Data Collection / Methodology" />
                     </div>
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.timeMethod].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.timeMethod].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.timeMethodHelp}" linkText="#{editstudybundle.timeMethodLabel}" heading="#{editstudybundle.timeMethodHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timeMethod].required}"/>
@@ -1361,8 +1397,9 @@
                     </div>
                   </ice:panelGrid>
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.dataCollector].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.dataCollector].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.dataCollectorHelp}" linkText="#{editstudybundle.dataCollectorLabel}" heading="#{editstudybundle.dataCollectorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollector].required}"/>
@@ -1380,8 +1417,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.frequencyHelp}" linkText="#{editstudybundle.frequencyLabel}" heading="#{editstudybundle.frequencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].required}"/>
@@ -1399,8 +1437,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.samplingProcedure].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.samplingProcedure].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.samplingProcedureHelp}" linkText="#{editstudybundle.samplingProcedureLabel}" heading="#{editstudybundle.samplingProcedureHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingProcedure].required}"/>
@@ -1419,8 +1458,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.majorDeviationsHelp}" linkText="#{editstudybundle.majorDeviationsLabel}" heading="#{editstudybundle.majorDeviationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].required}"/>
@@ -1439,8 +1479,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.collectionMode].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable}"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.collectionMode].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.collectionModeHelp}" linkText="#{editstudybundle.collectionModeLabel}" heading="#{editstudybundle.collectionModeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionMode].required}"/>
@@ -1458,8 +1499,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.researchInstrument].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.researchInstrument].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.researchInstrumentHelp}" linkText="#{editstudybundle.researchInstrumentLabel}" heading="#{editstudybundle.researchInstrumentHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.researchInstrument].required}"/>
@@ -1477,8 +1519,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.dataSources].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.dataSources].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.dataSourcesHelp}" linkText="#{editstudybundle.dataSourcesLabel}" heading="#{editstudybundle.dataSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataSources].required}"/>
@@ -1496,8 +1539,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.originOfSources].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.originOfSources].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.originOfSourcesHelp}" linkText="#{editstudybundle.originOfSourcesLabel}" heading="#{editstudybundle.originOfSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.originOfSources].required}"/>
@@ -1515,8 +1559,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.characteristicOfSources].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.characteristicOfSources].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.sourceCharacteristicsHelp}" linkText="#{editstudybundle.sourceCharacteristicsLabel}" heading="#{editstudybundle.sourceCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.characteristicOfSources].required}"/>
@@ -1534,8 +1579,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.accessToSources].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.accessToSources].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.sourceDocumentationHelp}" linkText="#{editstudybundle.sourceDocumentationLabel}" heading="#{editstudybundle.sourceDocumentationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.accessToSources].required}"/>
@@ -1554,8 +1600,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.dataCollectionSituation].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.dataCollectionCharacteristicsHelp}" linkText="#{editstudybundle.dataCollectionCharacteristicsLabel}" heading="#{editstudybundle.dataCollectionCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].required}"/>
@@ -1573,8 +1620,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.minimizeActionsHelp}" linkText="#{editstudybundle.minimizeActionsLabel}" heading="#{editstudybundle.minimizeActionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].required}"/>
@@ -1592,8 +1640,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.controlOperations].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.controlOperations].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.controlOperationsHelp}" linkText="#{editstudybundle.controlOperationsLabel}" heading="#{editstudybundle.controlOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.controlOperations].required}"/>
@@ -1611,8 +1660,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.weighting].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.weighting].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.weightingHelp}" linkText="#{editstudybundle.weightingLabel}" heading="#{editstudybundle.weightingHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.weighting].required}"/>
@@ -1630,8 +1680,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.cleaningOperations].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                  visible="#{EditStudyPage.studyMap[sfc.cleaningOperations].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.cleaningOperationsHelp}" linkText="#{editstudybundle.cleaningOperationsLabel}" heading="#{editstudybundle.cleaningOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.cleaningOperations].required}"/>
@@ -1649,8 +1700,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.studyLevelErrorNotesHelp}" linkText="#{editstudybundle.studyLevelErrorNotesLabel}" heading="#{editstudybundle.studyLevelErrorNotesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].required}"/>
@@ -1668,8 +1720,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.responseRate].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.responseRateHelp}" linkText="#{editstudybundle.responseRateLabel}" heading="#{editstudybundle.responseRateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.responseRate].required}"/>
@@ -1687,8 +1740,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.samplingErrorEstimates].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.samplingErrorHelp}" linkText="#{editstudybundle.samplingErrorLabel}" heading="#{editstudybundle.samplingErrorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].required}"/>
@@ -1706,8 +1760,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.otherDataAppraisal].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.otherDataAppraisalHelp}" linkText="#{editstudybundle.otherDataAppraisalLabel}" heading="#{editstudybundle.otherDataAppraisalHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].required}"/>
@@ -1724,7 +1779,7 @@
                     </div>
 
                   </ice:panelGrid>
-                  <ice:panelGrid cellpadding="0" cellspacing="0" styleClass="#{EditStudyPage.dataSetAvailabilityInputLevel}"
+                  <ice:panelGrid cellpadding="0" cellspacing="0" visible="#{EditStudyPage.dataSetAvailabilityInputLevel=='recommended' or EditStudyPage.showAll}"
                                  columns="1" width="100%">
                     <div jsfc="ice:panelGroup" id="groupPanel14a" styleClass="vdcStudyInfoHeader">
                       <ice:outputText id="outputText131a" value="Data Set Availability" />
@@ -1732,8 +1787,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.placeOfAccess].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5a">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5a"
+                                 visible="#{EditStudyPage.studyMap[sfc.placeOfAccess].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.dataAccessPlaceHelp}" linkText="#{editstudybundle.dataAccessPlaceLabel}" heading="#{editstudybundle.dataAccessPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.placeOfAccess].required}"/>
@@ -1751,8 +1807,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.originalArchive].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable "
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.originalArchive].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.originalArchiveHelp}" linkText="#{editstudybundle.originalArchiveLabel}" heading="#{editstudybundle.originalArchiveHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.originalArchive].required}"/>
@@ -1770,8 +1827,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.availabilityStatus].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.availabilityStatus].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.availabilityHelp}" linkText="#{editstudybundle.availabilityLabel}" heading="#{editstudybundle.availabilityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.availabilityStatus].required}"/>
@@ -1789,8 +1847,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.collectionSize].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.collectionSize].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.collectionSizeHelp}" linkText="#{editstudybundle.collectionSizeLabel}" heading="#{editstudybundle.collectionSizeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionSize].required}"/>
@@ -1808,8 +1867,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.studyCompletion].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.studyCompletion].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.studyCompletionHelp}" linkText="#{editstudybundle.studyCompletionLabel}" heading="#{editstudybundle.studyCompletionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyCompletion].required}"/>
@@ -1826,15 +1886,16 @@
                     </div>
                   </ice:panelGrid>
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%"
-                                 styleClass="#{EditStudyPage.termsOfUseInputLevel}">
+                                 visible="#{EditStudyPage.termsOfUseInputLevel=='recommended' or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel14" styleClass="vdcStudyInfoHeader">
-                      <ice:outputText id="outputText131" value="Terms of Use" styleClass="#{EditStudyPage.termsOfUseInputLevel}"/>
+                      <ice:outputText id="outputText131" value="Terms of Use" />
                     </div>
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.confidentialityDeclaration].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5"
+                                 visible="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.confidentialityHelp}" linkText="#{editstudybundle.confidentialityLabel}" heading="#{editstudybundle.confidentialityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].required}"/>
@@ -1853,8 +1914,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.specialPermissions].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.specialPermissions].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.specialPermissionsHelp}" linkText="#{editstudybundle.specialPermissionsLabel}" heading="#{editstudybundle.specialPermissionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.specialPermissions].required}"/>
@@ -1872,8 +1934,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.restrictions].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.restrictions].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.restrictionsHelp}" linkText="#{editstudybundle.restrictionsLabel}" heading="#{editstudybundle.restrictionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.restrictions].required}"/>
@@ -1892,8 +1955,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.contact].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.contact].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.contactHelp}" linkText="#{editstudybundle.contactLabel}" heading="#{editstudybundle.contactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.contact].required}"/>
@@ -1911,8 +1975,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.citationRequirements].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.citationRequirements].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.citationRequirementsHelp}" linkText="#{editstudybundle.citationRequirementsLabel}" heading="#{editstudybundle.citationRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.citationRequirements].required}"/>
@@ -1930,8 +1995,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.depositorRequirements].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.depositorRequirements].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.depositorRequirementsHelp}" linkText="#{editstudybundle.depositorRequirementsLabel}" heading="#{editstudybundle.depositorRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.depositorRequirements].required}"/>
@@ -1950,8 +2016,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.conditions].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.conditions].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.conditionsHelp}" linkText="#{editstudybundle.conditionsLabel}" heading="#{editstudybundle.conditionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.conditions].required}"/>
@@ -1970,8 +2037,9 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable #{EditStudyPage.studyMap[sfc.disclaimer].templateField.fieldInputLevel.name}"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{EditStudyPage.studyMap[sfc.disclaimer].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.disclaimerHelp}" linkText="#{editstudybundle.disclaimerLabel}" heading="#{editstudybundle.disclaimerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                       <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.disclaimer].required}"/>
@@ -1989,28 +2057,30 @@
                     </div>
                   </ice:panelGrid>
 
-                  <div jsfc="ice:panelGroup" id="groupPanel15" styleClass="vdcStudyInfoHeader #{EditStudyPage.noteInputLevel}">
+                  <div jsfc="ice:panelGroup" id="groupPanel15" styleClass="vdcStudyInfoHeader"
+                       visible="#{EditStudyPage.studyMap[sfc.notesInformationType].recommended or EditStudyPage.showAll}">
                     <ice:outputText id="outputText160" value="Other Information"/>
                   </div>
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  styleClass="vdcEditStudyTable"
-                                 rowClasses="#{EditStudyPage.noteInputLevel}" value="dummy_datatable">
+                                 visible="#{EditStudyPage.studyMap[sfc.notesInformationType].recommended or EditStudyPage.showAll}" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable id="dataTableNotes" cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableNotes}"
                                      value="#{EditStudyPage.study.studyNotes}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.noteInputLevel=='required'}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.noteInputLevel=='recommended'}"/>
+                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].required}"/>
+                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 #{EditStudyPage.studyMap[sfc.notesInformationType].templateField.fieldInputLevel.name}">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText maxlength="255" binding="#{EditStudyPage.inputNoteType}" id="input_notesInformationType"
@@ -2021,7 +2091,7 @@
                               </ice:inputText>
                               <ice:message styleClass="errorMessage" for="input_notesInformationType"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.notesInformationSubject].templateField.fieldInputLevel.name}"  >
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField"  >
                               <dvn:inlinehelp helpMessage="#{editstudybundle.notesSubjectHelp}" linkText="#{editstudybundle.notesSubjectLabel}" heading="#{editstudybundle.notesSubjectHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText id="input_notesInformationSubject"
@@ -2035,7 +2105,7 @@
                               </ice:inputText>
                               <ice:message styleClass="errorMessage" for="input_notesInformationSubject"/>
                             </div>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField #{EditStudyPage.studyMap[sfc.notesText].templateField.fieldInputLevel.name} " >
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField" >
                               <dvn:inlinehelp helpMessage="#{editstudybundle.notesTextHelp}" linkText="#{editstudybundle.notesTextLabel}" heading="#{editstudybundle.notesTextHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                               <br/>
                               <ice:inputText id="input_notesText" size="90"
@@ -2071,6 +2141,7 @@
                   <ice:dataTable id="fileDataTableWrapper" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                     styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColC"
                                      headerClass="vdcEditFilesHeader" id="fileDataTable" rowClasses="list-row-even,list-row-odd"
                                      value="#{EditStudyPage.files}" var="file">

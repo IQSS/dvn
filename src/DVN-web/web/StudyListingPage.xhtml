@@ -259,7 +259,8 @@
                           value="#{StudyListingPage.collectionTree}"
                           var="item"
                           hideRootNode="true"
-                          hideNavigation="false" >
+                          hideNavigation="false"
+                          rendered="#{StudyListingPage.renderTree}" >
                   <ice:treeNode>
                     <f:facet name="icon">
                       <ice:panelGroup style="display: inline">

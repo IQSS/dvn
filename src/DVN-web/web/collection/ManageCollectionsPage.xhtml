@@ -69,7 +69,8 @@
                       <ice:outputText id="deleteCol"
                                       value="Delete Collection"/>
                     </f:facet>
-                    <ice:commandLink id="deleteColLink" action="#{collUI.deleteCollection_action}" rendered="#{!empty collUI.collection.parentCollection}" >
+                    <ice:commandLink id="deleteColLink" action="#{collUI.deleteCollection_action}" rendered="#{!empty collUI.collection.parentCollection}"
+                                     onclick="if(!confirm('Please confirm this DELETE request. This will delete this collection and any subcollections it contains.')){ return false; };">
                       <ice:outputText value="Delete"/>
                     </ice:commandLink>
                   </ice:column>

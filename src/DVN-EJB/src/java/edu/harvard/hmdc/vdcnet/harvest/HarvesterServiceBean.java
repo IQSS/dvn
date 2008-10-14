@@ -287,9 +287,9 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 harvestingDataverseService.resetHarvestingStatus(dataverse.getId());
                 String until = null;  // If we don't set until date, we will get all the changes since the last harvest.
                 String from = null;
-                Date lastHarvestTime = dataverse.getLastHarvestTime();
-                if (lastHarvestTime != null) {
-                    from = formatter.format(lastHarvestTime);
+                Date lastSuccessfulHarvestTime = dataverse.getLastSuccessfulHarvestTime();
+                if (lastSuccessfulHarvestTime != null) {
+                    from = formatter.format(lastSuccessfulHarvestTime);
                 }
                 if (dataverse.isOai() || dataverse.isNesstar()) {
                     harvestingDataverseService.setHarvestingNow(dataverse.getId(), true);

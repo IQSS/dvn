@@ -48,6 +48,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     private HtmlInputHidden classificationId;
     private HtmlInputHidden multiRowSelector;
     private Long cid;
+    private Long selectedParent;
 
     private boolean result;
     private String statusMessage;
@@ -72,6 +73,8 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         VDCGroup vdcGroup = vdcGroupService.findById(cid);
         nameInput.setValue(vdcGroup.getName());
         descriptionInput.setValue(vdcGroup.getDescription());
+        if (vdcGroup.getParent() != null)
+            selectedParent = vdcGroup.getParent();
     }
 
     private void initSelectedItemBeans() {
@@ -106,13 +109,17 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     }
 
     private void initParentSelectItems() {
-        List list = (List) vdcGroupService.findAll();
-        Iterator iterator = list.iterator();
-        parentSelectItems = new SelectItem[list.size()];
-        int i = 0;
+        List list             = (List) vdcGroupService.findAll();
+        Iterator iterator     = list.iterator();
+        parentSelectItems     = new SelectItem[(list.size() + 1)];
+        SelectItem selectitem = new SelectItem();
+        selectitem.setLabel("Select One");
+        selectitem.setValue(new Long("0"));
+        parentSelectItems[0]  = selectitem;
+        int i = 1;
         while (iterator.hasNext()) {
             VDCGroup vdcgroup = (VDCGroup)iterator.next();
-            SelectItem selectitem = new SelectItem();
+            selectitem = new SelectItem();
             selectitem.setLabel((String) vdcgroup.getName());
             selectitem.setValue(vdcgroup.getId());
             parentSelectItems[i] = selectitem;
@@ -142,6 +149,10 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         return parentSelectItems;
     }
 
+    public Long getSelectedParent() {
+        return this.selectedParent;
+    }
+
     public HtmlMessages getIceMessage() {
         return this.iceMessage;
     }
@@ -169,6 +180,10 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
 
     public void setParentSelectItems(SelectItem[] parentselectitems) {
         this.parentSelectItems = parentselectitems;
+    }
+
+    public void setSelectedParent(Long selected) {
+        this.selectedParent = selected;
     }
 
     public void setIceMessage(HtmlMessages icemessage) {
@@ -273,9 +288,6 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     }
 
     public String add_action() {
-        Iterator iterator = FacesContext.getCurrentInstance().getMessages("AddClassificationsPageForm");
-        if (iterator.hasNext())
-            iterator.remove();
         String statusMessage = SUCCESS_MESSAGE;
         result = true;
         try {
@@ -283,13 +295,17 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             VDCGroup vdcgroup = new VDCGroup();
             vdcgroup.setName((String)nameInput.getValue());
             vdcgroup.setDescription((String)descriptionInput.getValue());
-            vdcgroup.setParent(new Long((String)parentSelect.getValue()));
+            vdcgroup.setParent((Long)parentSelect.getValue());
             vdcGroupService.create(vdcgroup);
             classificationId.setValue(vdcgroup.getId());
             update_action();
         } catch (Exception e) {
             statusMessage = FAIL_MESSAGE;
         } finally {
+            //Iterator iterator = FacesContext.getCurrentInstance().getMessages("AddClassificationsPageForm");
+            //while (iterator.hasNext()) {
+                //iterator.remove();
+            //}
             FacesContext.getCurrentInstance().addMessage("AddClassificationsPageForm", new FacesMessage(statusMessage));
             return "result";
         }
@@ -298,9 +314,9 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
 
     public String update_action() {
         //now add all of these dataverses to the parent
-        Iterator msgiterator = FacesContext.getCurrentInstance().getMessages("AddClassificationsPageForm");
-        if (msgiterator.hasNext())
-            msgiterator.remove();
+        //Iterator msgiterator = FacesContext.getCurrentInstance().getMessages("AddClassificationsPageForm");
+        //if (msgiterator.hasNext())
+            //msgiterator.remove();
         String statusMessage = SUCCESS_MESSAGE;
         result = true;
         try {
@@ -313,10 +329,17 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
                 count++;
             }
             VDCGroup vdcgroup = vdcGroupService.findById((Long)classificationId.getValue());
+            vdcgroup.setName((String)nameInput.getValue());
+            vdcgroup.setDescription((String)descriptionInput.getValue());
+            vdcgroup.setParent((Long)parentSelect.getValue());
             vdcGroupService.updateWithVdcs(vdcgroup, vdcs);
         } catch (Exception e) {
             statusMessage = FAIL_MESSAGE;
         } finally {
+            //Iterator iterator = FacesContext.getCurrentInstance().getMessages("AddClassificationsPageForm");
+            //while (iterator.hasNext()) {
+                //iterator.remove();
+            //}
             FacesContext.getCurrentInstance().addMessage("AddClassificationsPageForm", new FacesMessage(statusMessage));
             return "result";
         }

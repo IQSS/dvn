@@ -15,6 +15,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Content-Language" content="en" />
     <meta http-equiv="imagetoolbar" content="no" />
+        <link rel="stylesheet" href="http://dev.jquery.com/view/tags/ui/latest/themes/flora/flora.all.css" type="text/css" media="screen" title="Flora (Default)"/>
          <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css" />
          <link rel="stylesheet" type="text/css" href="/dvn/css/demo_template.css"/>
          <link rel="stylesheet" type="text/css" href="/dvn/css/auction_styles.css"/>
@@ -30,11 +31,20 @@
          <script type="text/javascript" src="/dvn/resources/sgbeal-togglepane.jquery.js"/>
          <script type="text/javascript" src="/dvn/resources/jcap.js"/>
          <script type="text/javascript" src="/dvn/resources/md5.js"/>
-         
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+  
+  <script type="text/javascript" src="http://dev.jquery.com/view/tags/ui/latest/ui/ui.core.js"></script>
+  <script type="text/javascript" src="http://dev.jquery.com/view/tags/ui/latest/ui/ui.tabs.js"></script>
+
+
+
+
          <script type="text/javascript">
           // <![CDATA[    
              jQuery.noConflict();
              jQuery(document).ready(function(){
+                jQuery("#editStudyTabSet > ul").tabs();
+                jQuery("#viewStudyTabSet > ul").tabs();
 		jQuery("div.dvn_navblock").corner("10px bottom");
 		jQuery("div.dvn_searchblock").corner("10px");
 		jQuery("div.successMessage").corner("10px");

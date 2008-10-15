@@ -153,7 +153,8 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         for (Study study : studies) {
             availableStudies.add(new StudyUI(study, StudyUI.isStudyInList(study, collection.getStudies())));
         }
-        availableStudiesPaginator.gotoFirstPage();
+        
+        resetAvailableStudiesPaginator();
     }
 
     private void setAvailableStudies(List<Long> studyIds) {
@@ -161,7 +162,8 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         for (Long sid : studyIds) {
             availableStudies.add(new StudyUI(sid, StudyUI.isStudyInList(sid, collection.getStudies())));
         }
-        availableStudiesPaginator.gotoFirstPage();
+
+        resetAvailableStudiesPaginator();
     }
     
     public DataPaginator getAvailableStudiesPaginator() {
@@ -171,6 +173,12 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
     public void setAvailableStudiesPaginator(DataPaginator availableStudiesPaginator) {
         this.availableStudiesPaginator = availableStudiesPaginator;
     } 
+    
+    private void resetAvailableStudiesPaginator() {
+        if (availableStudiesPaginator != null) {
+            availableStudiesPaginator.gotoFirstPage();  
+        }
+    }
     
     public String getAvailableStudiesMethod() {
         return availableStudiesMethod;
@@ -272,10 +280,11 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
     // actions
 
     public String save_action() {
-
-        VDCCollection parentColl = vdcCollectionService.find(parentId);
-        parentColl.getSubCollections().add(collection);
-        collection.setParentCollection(parentColl);
+        if (parentId != null) {
+            VDCCollection parentColl = vdcCollectionService.find(parentId);
+            parentColl.getSubCollections().add(collection);
+            collection.setParentCollection(parentColl);
+        }
 
         if (collId == null) {
             vdcCollectionService.create(collection);

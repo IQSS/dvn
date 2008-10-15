@@ -98,6 +98,7 @@ public class StudyUI  implements java.io.Serializable {
 
     public StudyUI(Study s, boolean selected) {
         this.study = s;
+        this.studyId = s.getId();
         this.selected = selected;
     }   
     
@@ -108,9 +109,18 @@ public class StudyUI  implements java.io.Serializable {
      */
     public StudyUI(Study s, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         this.study = s;
+        this.studyId = s.getId();
         this.ipUserGroup = ipUserGroup;
         initFileCategoryUIList(vdc, user, ipUserGroup);
     }
+
+    public Long getStudyId() {
+        return studyId;
+    }
+
+    public void setStudyId(Long studyId) {
+        this.studyId = studyId;
+    }    
     
     public Study getStudy() {
         // check to see if study is loaded or if we only have the studyId
@@ -874,6 +884,18 @@ public class StudyUI  implements java.io.Serializable {
         
         return false;
     }
+    
+    public static boolean isStudyInList(Long studyId, List list) {
+        Iterator iter = list.iterator();
+        while (iter.hasNext()) {
+            Study s = (Study) iter.next();
+            if ( s.getId().equals(studyId) ) {
+                return true;
+            }
+        }
+        
+        return false;
+    }    
     
     public int getDownloadCount() {
         int downloadCount = 0;

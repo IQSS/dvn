@@ -73,23 +73,13 @@
                             columnName="#{dvItems.nameColumnName}"
                             arrow="true">
                         </ice:commandSortHeader>
-                        <ice:panelGroup styleClass="#{dvItems.indentStyleClass}">
-	                <!-- Render the expand/contract if there is an image -->
-	                <ice:commandLink rendered="#{dvItems.expandContractImage != null}" actionListener="#{dvItems.toggleSubGroupAction}">
-	                    <ice:graphicImage id="expandContractImage"
-                                              value="#{dvItems.expandContractImage}"
-	                                      style="border: 0px solid;"/>
-	                </ice:commandLink>
-                       <ice:outputText escape="false"
-                                         rendered="#{dvItems.expandContractImage == null}"
-                                         value="&lt;!-- cell spacer --&gt;"/>
-
+                        <ice:panelGroup>
                         <ice:outputText value="Name"/>
                         </ice:panelGroup>
                     </f:facet>
                      <ice:outputLink value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
                         <f:param name="cid" value="#{dvItems.id}" />
-                        <ice:outputText  value="#{dvItems.name}"/>
+                        <ice:outputText styleClass="#{dvItems.indentStyleClass}" value="#{dvItems.name}"/>
                     </ice:outputLink>
                 </ice:column>
                 <!-- description -->
@@ -117,25 +107,24 @@
                 <!-- controls   -->
                 <ice:column style="width:10%">
                     <f:facet name="header">
-                        <ice:outputText escape="false" value="&lt;!-- cell spacer --&gt;"/>
+                        <ice:outputText escape="false" value="DELETE"/>
                     </f:facet>
                     <!-- TODO: change this link to perform the delete function -->
                     <ice:commandLink action="#{manageClassificationsPage.delete_action}"
                                         binding="#{manageClassificationsPage.linkDelete}"
-                                        rendered="#{dvItems.recordType eq 'group'}"
                                         value="Delete"
                                         >
                       <f:attribute name="cid" value="#{dvItems.id}"/>
                     </ice:commandLink>
                 </ice:column>
               </ice:dataTable>
-              <!-- ******************* TEST ****************** -->
+              <!-- ******************* TEST ******************
               <ice:panelSeries styleClass="dvn_networkHomePanel"
                     value="#{manageClassificationsPage.itemBeans}"
                     var="dvItems"
                     rendered="#{VDCRequest.currentVDC == null}">
                     <ice:outputText value="#{dvItems.strToString}"  />
-             </ice:panelSeries>
+             </ice:panelSeries>  -->
             </ice:form>
         </gui:define>
         

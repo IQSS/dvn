@@ -134,7 +134,8 @@
                       Name
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_collectionName" size="45" value="#{EditCollectionPage.collection.name}" required="true"/>
+                      <ice:inputText id="input_collectionName" size="45" value="#{EditCollectionPage.collection.name}" required="true" requiredMessage="This field is required."/>
+                      <ice:message styleClass="errorMessage" for="input_collectionName"/>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="vdcFieldTitle">
                       Parent

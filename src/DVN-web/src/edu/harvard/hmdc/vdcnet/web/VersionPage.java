@@ -12,6 +12,7 @@ package edu.harvard.hmdc.vdcnet.web;
 import edu.harvard.hmdc.vdcnet.admin.DVNVersion;
 import edu.harvard.hmdc.vdcnet.admin.DVNVersionServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import java.util.ResourceBundle;
 import javax.ejb.EJB;
 
 /**
@@ -29,7 +30,8 @@ public class VersionPage extends VDCBaseBean  implements java.io.Serializable {
     }
     
     public Long versionNumber;
-    public Long getVersionNumber(){
+
+    public Long getVersionNumber() {
         DVNVersion version = getLatestVersion();
         return version.getVersionNumber();
     }
@@ -42,6 +44,13 @@ public class VersionPage extends VDCBaseBean  implements java.io.Serializable {
     
     public DVNVersion getLatestVersion(){
         return dvnVersionService.getLatestVersion();
+    }
+    
+    public String getBambooBuild() {
+        String buildString = null;
+        String buildStr = ResourceBundle.getBundle("BuildNumber").getString("build.number");
+        System.out.println("BUILD NUMBER: " + buildStr);
+        return buildStr != null? buildStr : "00";
     }
 
 }

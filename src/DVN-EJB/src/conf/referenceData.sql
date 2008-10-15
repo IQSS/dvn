@@ -303,9 +303,8 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'TemplateFo
 
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'MyStudiesPage','/study/MyStudiesPage.xhtml',1,null );
 -- Curator Role
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddCollectionsPage','/collection/AddCollectionsPage.xhtml',2,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditCollectionPage','/collection/EditCollectionPage.xhtml',2,null );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageCollectionPage','/collection/ManageCollectionPage.xhtml',2,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageCollectionsPage','/collection/ManageCollectionsPage.xhtml',2,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'StudyPermissionsPage','/study/StudyPermissionsPage.xhtml',2,null );
 -- Admin Role
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditAboutPage','/admin/EditAboutPage.xhtml',3,2 );

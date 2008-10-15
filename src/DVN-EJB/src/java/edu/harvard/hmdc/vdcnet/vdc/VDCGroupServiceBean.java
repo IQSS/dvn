@@ -67,6 +67,13 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
         return vdcgroups;
     }
 
+    /** findByParentId
+     *
+     *
+     * @param id
+     * @return a list of VDCGroup type that are subclass'ns
+     *          of this VDCGroup of param id.
+     */
     public List<VDCGroup> findByParentId(Long id) {
         String query = "SELECT object(o) FROM VDCGroup AS o WHERE o.parent = :fieldName ORDER BY o.displayOrder";
         List<VDCGroup> vdcgroups = (List<VDCGroup>)em.createQuery(query).setParameter("fieldName", id).getResultList();

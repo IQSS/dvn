@@ -80,6 +80,10 @@ public class AddLinkPage extends VDCBaseBean implements java.io.Serializable  {
         for (VDC vdc : vdcService.findAllPublic()) {
             if (!vdc.getId().equals(getVDCRequestBean().getCurrentVDC().getId()) ) {
                 dvSelectItems.add(new SelectItem(vdc.getId(), vdc.getName()));
+                // set dvId first time around
+                if (dvId == null) {
+                    dvId = vdc.getId();
+                }
             }
         }
 
@@ -90,9 +94,12 @@ public class AddLinkPage extends VDCBaseBean implements java.io.Serializable  {
         List collSelectItems = new ArrayList<SelectItem>();
                     
         if (dvId != null) {
+            List linkedColls = getVDCRequestBean().getCurrentVDC().getLinkedCollections();
             List<VDCCollection> collList = CollectionUI.getCollectionList(vdcService.find(dvId));
             for (VDCCollection coll : collList) {
-                collSelectItems.add(new SelectItem(coll.getId(), coll.getName()));    
+                if ( !linkedColls.contains(coll) ) {
+                    collSelectItems.add(new SelectItem(coll.getId(), coll.getName() ) );
+                }    
             }
         }
         

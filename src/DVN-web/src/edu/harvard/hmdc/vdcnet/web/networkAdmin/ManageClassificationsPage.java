@@ -45,7 +45,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
     private DataverseGrouping childItem  = null;
     private ArrayList itemBeans;
     private boolean isInit;
-    private int itemBeansSize = 0;
+    private int itemBeansSize = 0; //used to output the number of classifications
     public static final String GROUP_INDENT_STYLE_CLASS = "GROUP_INDENT_STYLE_CLASS";
     public static final String GROUP_ROW_STYLE_CLASS = "groupRow";
     public static final String CHILD_INDENT_STYLE_CLASS = "CHILD_INDENT_STYLE_CLASS";
@@ -74,79 +74,49 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
         //DEBUG support subcollections
             List list = (List)vdcGroupService.findAll();
             //loop through results to get parents and subgroups
-            Iterator iterator = list.iterator();
+            Iterator outeriterator = list.iterator();
              //find subgroups
              VDCGroup vdcgroup = null;
-             while(iterator.hasNext()) {
+             List removeFromList = new ArrayList();
+             while(outeriterator.hasNext()) {
                 //add DataListItems to the list
                 itemBeansSize++;
-                vdcgroup = (VDCGroup)iterator.next();
-                populateParentClassification(vdcgroup);
-                List innerlist = vdcGroupService.findByParentId(vdcgroup.getId());
-                Iterator inneriterator = innerlist.iterator();
-                long childCount = 0;
-                while(inneriterator.hasNext()) {
-                    VDCGroup subgroup = (VDCGroup)inneriterator.next();
-                    populateSubClassification(subgroup);
-                    childCount++;
+                vdcgroup = (VDCGroup)outeriterator.next();
+                Iterator iterator = removeFromList.iterator();
+                while (iterator.hasNext()) {
+                    if (vdcgroup.getId().equals((Long)iterator.next())) {
+                        //System.out.println("found a class'n to skip");
+                        continue;
+                    }
                 }
-                parentItem.setSubclassification(childCount);
-                /*Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("0");
-                System.out.println("dv records manager: parent in group is " + vdcgroup.getParent());
-                parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
-                parentItem.setShortDescription(vdcgroup.getDescription());*/
+                if (!vdcGroupService.findByParentId(vdcgroup.getId()).isEmpty()) {
+                    populateParentClassification(vdcgroup);
+                    List innerlist = vdcGroupService.findByParentId(vdcgroup.getId());//get the children
+                    Iterator inneriterator = innerlist.iterator();
+                    long childCount = 0;
+                    while(inneriterator.hasNext()) {
+                        VDCGroup subgroup = (VDCGroup)inneriterator.next();
+                        populateSubClassification(subgroup);
+                        //remove the subgroup from the iterator
+                        removeSubgroup(removeFromList, subgroup);
+                        childCount++;
+                    }
+                    parentItem.setSubclassification(childCount);
+                } else if (vdcgroup.getParent() == null) {
+                    populateParentClassification(vdcgroup);
+                }
 
-                //Now check for subgroups by recursion
              }
      }
 
-          private void initGroupBean(List list) {
-             Iterator iterator = list.iterator();
-             VDCGroup vdcgroup = null;
-             while(iterator.hasNext()) {
-                //add DataListItems to the list
-                itemBeansSize++;
-                vdcgroup = (VDCGroup)iterator.next();
-                Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("0");
-                System.out.println("dv records manager: parent in group is " + vdcgroup.getParent());
-                parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
-                parentItem.setShortDescription(vdcgroup.getDescription());
-                parentItem.setSubclassification(new Long("25"));//TODO: method to get the number of children
-                List innerlist = vdcgroup.getVdcs();
-                Iterator inneriterator = innerlist.iterator();
-                while(inneriterator.hasNext()) {
-                    VDC vdc = (VDC)inneriterator.next();
-                    //TODO: Make this the timestamp for last update time
-                    //Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
-                   // Long localActivity       = calculateActivity(vdc);
-                    //String activity          = getActivityClass(localActivity);
-                    parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("0");
-                    childItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "subgroup", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
-                    parentItem.addChildItem(childItem);
-                }
-            }
-        }
-
-     private void initUnGroupedBeans(List list, String caption, Long netstatsId, String shortDescription) {
-        Iterator iterator = list.iterator();
-        parentItem = new DataverseGrouping(netstatsId, caption, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, new Long("0"));
-        parentItem.setShortDescription(shortDescription);
-        parentItem.setSubclassification(new Long("25"));
-        itemBeansSize++;
-        while (iterator.hasNext()) {
-            VDC vdc = (VDC)iterator.next();
-           // Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
-           // Long localActivity       = calculateActivity(vdc);
-           // String activity          = getActivityClass(localActivity);
-           // childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(),  "dataverse", activity);
-            //parentItem.addChildItem(childItem);
-        }
+     private void removeSubgroup(List removeFromList, VDCGroup subgroup) {
+         removeFromList.add(subgroup.getId());
      }
 
      //Manage classification
      private void populateParentClassification(VDCGroup vdcgroup) {
          Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
-         System.out.println("dv records manager: parent in group is " + vdcgroup.getParent());
+         //System.out.println("dv records manager: parent in group is " + vdcgroup.getParent());
          List list = vdcGroupService.findByParentId(vdcgroup.getId());
          Iterator iterator = list.iterator();
          String expandImage = null;
@@ -163,7 +133,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
 
      private void populateSubClassification(VDCGroup vdcgroup) {
          Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
-         System.out.println("dv records manager: parent in group is " + vdcgroup.getParent());
+         //System.out.println("dv records manager: parent in group is " + vdcgroup.getParent());
          List list = vdcGroupService.findByParentId(vdcgroup.getId());
          Iterator iterator = list.iterator();
          String expandImage = null;
@@ -176,6 +146,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
          }
          childItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "subgroup", itemBeans, isExpanded, expandImage, contractImage, parent);
          childItem.setShortDescription(vdcgroup.getDescription());
+         childItem.setIndentStyleClass("childRowIndentStyle");
          parentItem.addChildItem(childItem);
      }
 
@@ -183,7 +154,6 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
         statusMessage = SUCCESS_MESSAGE;
         result = true;
         setCid(new Long((String)linkDelete.getAttributes().get("cid")));
-        System.out.println("ManageClass...Page: cid=" + cid);
         try {
             VDCGroup vdcgroup = vdcGroupService.findById(cid);
             vdcGroupService.removeVdcGroup(vdcgroup);
@@ -271,7 +241,6 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
     public int getItemBeansSize() {
         return itemBeansSize;
     }
-
 
     /**
      * <p>Callback method that is called after the component tree has been

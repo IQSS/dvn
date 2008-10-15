@@ -62,9 +62,9 @@
             }
 
 
-            function showHide(showType) {              
+            function showHide(showType) {
                 var hideType;
-                
+
                 switch(showType)
                 {
                     case "dynamic":
@@ -77,9 +77,11 @@
                         break;
                     case "search":
                         hideType = "browse";
+                        document.getElementById("form1:availableStudiesMethod").value = showType;
                         break;
                     case "browse":
                         hideType = "search";
+                        document.getElementById("form1:availableStudiesMethod").value = showType;
                         break;
                     default:
                         break;
@@ -132,7 +134,7 @@
                       Name
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_collectionName" size="45" value="#{EditCollectionPage.collection.name}"/>
+                      <ice:inputText id="input_collectionName" size="45" value="#{EditCollectionPage.collection.name}" required="true"/>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="vdcFieldTitle">
                       Parent
@@ -170,10 +172,15 @@ a control on the data to hide/show the table columns.-->
                                        rows="15" width="100%"
                                        columnClasses="tableCol">
                           <ice:column>
-                            <ice:rowSelector id="selected"
+                            <ice:rowSelector id="selectedStudiesSelector"
                                              selectionListener="#{EditCollectionPage.removeStudyListener}"/>
-                            <ice:outputText id="studyName"
-                                            value="#{study.metadata.title}"/>
+                            <ice:outputText value="#{study.globalId}"/>
+                          </ice:column>
+                          <ice:column>
+                            <ice:outputText value="#{study.metadata.title}"/>
+                          </ice:column>
+                          <ice:column>
+                            <ice:outputText value="#{study.owner.name}"/>
                           </ice:column>
                         </ice:dataTable>
                       </ice:panelGroup>
@@ -184,17 +191,18 @@ a control on the data to hide/show the table columns.-->
 
                       <ice:panelGroup>
                         <div>
-                          <ice:outputLink value="javascript:showHide('browse');">
+                          <ice:inputHidden id="availableStudiesMethod" value="#{EditCollectionPage.availableStudiesMethod}"/>
+                          <ice:commandLink onclick="javascript:showHide('browse');" partialSubmit="true">
                             <ice:outputText value="Browse"/>
-                          </ice:outputLink>
+                          </ice:commandLink>
                           &#160;|&#160;&#160;
-                          <ice:outputLink value="javascript:showHide('search');">
+                          <ice:commandLink onclick="javascript:showHide('search');" partialSubmit="true">
                             <ice:outputText value="Search"/>
-                          </ice:outputLink>
+                          </ice:commandLink>
                         </div>
                       </ice:panelGroup>
 
-                      <ice:panelGroup styleClass="browse" style="display: none;">
+                      <ice:panelGroup styleClass="browse">
                         <ice:selectOneMenu value="#{EditCollectionPage.browseDVId}" partialSubmit="true">
                           <f:selectItems value="#{EditCollectionPage.browseDVItems}"/>
                         </ice:selectOneMenu>
@@ -220,20 +228,76 @@ a control on the data to hide/show the table columns.-->
                       <ice:panelGroup>
                         <ice:outputLabel id="results"
                                          value=""/>
-                        <ice:dataTable id="selectedRows"
+                        <ice:dataTable id="availableStudies"
                                        var="studyUI"
                                        value="#{EditCollectionPage.availableStudies}"
-                                       rows="15" width="100%"
+                                       rows="5" width="100%"
                                        columnClasses="tableCol" >
                           <ice:column>
-                            <ice:rowSelector id="selected2"
+                            <ice:rowSelector id="availableStudiesSelector"
                                              value="#{studyUI.selected}"
                                              selectionListener="#{EditCollectionPage.addRemoveStudyListener}"
                                              multiple="true"/>
-                            <ice:outputText id="selectedStudyName"
-                                            value="#{studyUI.study.metadata.title} (#{studyUI.selected})"/>
+                            <ice:outputText value="#{studyUI.study.globalId}"/>
+                          </ice:column>
+                          <ice:column>
+                            <ice:outputText value="#{studyUI.study.metadata.title}"/>
+                          </ice:column>
+                          <ice:column>
+                            <ice:outputText value="#{studyUI.study.owner.name}"/>
                           </ice:column>
                         </ice:dataTable>
+
+                        <!-- Set up the buttons and links for browsing through the table
+             fastStep means No. of pages to fast forward or rewind: 3
+             paginatorMaxPages means No. of direct links to pages: 4 -->
+                        <ice:dataPaginator id="availableStudiesPaginator"
+                                           binding="#{EditCollectionPage.availableStudiesPaginator}"
+                                           for="availableStudies"
+                                           paginator="true"
+                                           fastStep="3"
+                                           paginatorMaxPages="4"
+                                           partialSubmit="true"
+                                           style="margin: 0; padding: 0; float: right;">
+                          <f:facet name="first">
+                            <ice:graphicImage
+                              url="./xmlhttp/css/xp/css-images/arrow-first.gif"
+                              style="border:none;"
+                              title="First Page"/>
+                          </f:facet>
+                          <f:facet name="previous">
+                            <ice:graphicImage
+                              url="./xmlhttp/css/xp/css-images/arrow-previous.gif"
+                              style="border:none;"
+                              title="Previous"/>
+                          </f:facet>
+                          <f:facet name="next">
+                            <ice:graphicImage
+                              url="./xmlhttp/css/xp/css-images/arrow-next.gif"
+                              style="border:none;"
+                              title="Next"/>
+                          </f:facet>
+                          <f:facet name="last">
+                            <ice:graphicImage
+                              url="./xmlhttp/css/xp/css-images/arrow-last.gif"
+                              style="border:none;"
+                              title="Last Page"/>
+                          </f:facet>
+                          <f:facet name="fastforward">
+                            <ice:graphicImage
+                              url="./xmlhttp/css/xp/css-images/arrow-ff.gif"
+                              style="border:none;"
+                              title="Fast Forward"/>
+                          </f:facet>
+
+                          <f:facet name="fastrewind">
+                            <ice:graphicImage
+                              url="./xmlhttp/css/xp/css-images/arrow-fr.gif"
+                              style="border:none;"
+                              title="Fast Rewind"/>
+                          </f:facet>
+                        </ice:dataPaginator>
+
                       </ice:panelGroup>
 
                     </ice:panelGroup>

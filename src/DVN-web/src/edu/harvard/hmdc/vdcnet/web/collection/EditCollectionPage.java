@@ -25,10 +25,10 @@
  */
 package edu.harvard.hmdc.vdcnet.web.collection;
 
+import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.RowSelectorEvent;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.SearchTerm;
-import edu.harvard.hmdc.vdcnet.study.ReviewStateServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
@@ -63,7 +63,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
 
     public EditCollectionPage() {
     }
-    
+     
     private VDCCollection collection;
     private Long collId;
     private Long parentId;
@@ -86,8 +86,8 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
 
     public void setCollId(Long collId) {
         this.collId = collId;
-    }    
-    
+    }
+
     public Long getParentId() {
         return parentId;
     }
@@ -95,7 +95,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
     public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
-    
+
     public void init() {
         super.init();
 
@@ -114,14 +114,18 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
             collection.setType("static");
 
             String parentIdStr = getRequestParam("parentId");
-            parentId = Long.parseLong(parentIdStr);
+            if (parentIdStr != null) {
+                parentId = Long.parseLong(parentIdStr);
+            } else {
+                parentId = getVDCRequestBean().getCurrentVDC().getRootCollection().getId();
+            }
         }
 
         browseDVId = getVDCRequestBean().getCurrentVDC().getId();
         browseCollectionId = getVDCRequestBean().getCurrentVDC().getRootCollection().getId();
         setAvailableStudies(browseCollectionId);
 
-    }    
+    }
 
     public List<SelectItem> getParentCollectionItems() {
         List collSelectItems = new ArrayList<SelectItem>();
@@ -133,11 +137,13 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
 
         return collSelectItems;
     }
-
-
-    private List availableStudies;
-
-    public List getAvailableStudies() {
+    
+    
+    private List<StudyUI>  availableStudies;
+    private DataPaginator availableStudiesPaginator;
+    private String availableStudiesMethod = "browse";
+    
+    public List<StudyUI> getAvailableStudies() {
         return availableStudies;
     }
 
@@ -147,15 +153,39 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         for (Study study : studies) {
             availableStudies.add(new StudyUI(study, StudyUI.isStudyInList(study, collection.getStudies())));
         }
+        availableStudiesPaginator.gotoFirstPage();
     }
 
     private void setAvailableStudies(List<Long> studyIds) {
         availableStudies = new ArrayList();
         for (Long sid : studyIds) {
-            availableStudies.add(new StudyUI(sid));
+            availableStudies.add(new StudyUI(sid, StudyUI.isStudyInList(sid, collection.getStudies())));
         }
+        availableStudiesPaginator.gotoFirstPage();
     }
     
+    public DataPaginator getAvailableStudiesPaginator() {
+        return availableStudiesPaginator;
+    }
+
+    public void setAvailableStudiesPaginator(DataPaginator availableStudiesPaginator) {
+        this.availableStudiesPaginator = availableStudiesPaginator;
+    } 
+    
+    public String getAvailableStudiesMethod() {
+        return availableStudiesMethod;
+    }
+
+    public void setAvailableStudiesMethod(String availableStudiesMethod) {
+        if (!availableStudiesMethod.equals(this.availableStudiesMethod)) {
+            this.availableStudiesMethod = availableStudiesMethod;
+            if (availableStudiesMethod.equals("browse") && browseCollectionId != null ) {
+                setAvailableStudies(browseCollectionId);
+            } else {
+                availableStudies = new ArrayList();    
+            }
+        }
+    }    
     
     // browse functionality
     private Long browseDVId;
@@ -193,7 +223,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         for (VDC vdc : vdcService.findAllPublic()) {
             dvSelectItems.add(new SelectItem(vdc.getId(), vdc.getName()));
         }
-        
+
         return dvSelectItems;
     }
 
@@ -209,8 +239,6 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
 
         return collSelectItems;
     }
-    
-    
     // search functionality
     private String searchField;
     private String searchValue;
@@ -241,7 +269,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         setAvailableStudies(indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms));
     }
 
-
+    // actions
 
     public String save_action() {
 
@@ -277,6 +305,14 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
     public void removeStudyListener(RowSelectorEvent event) {
         Study study = collection.getStudies().get(event.getRow());
         collection.getStudies().remove(study);
+
+        // delselect from availableStudies()
+        for (StudyUI studyUI : availableStudies) {
+            if (study.getId().equals( studyUI.getStudyId() ) ) {
+                studyUI.setSelected(false);
+                break;
+            }
+        }
     }
 }
 

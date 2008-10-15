@@ -223,7 +223,7 @@ a control on the data to hide/show the table columns.-->
                         <ice:inputText id="textField1" value="#{EditCollectionPage.searchValue}"/>
 
                         <ice:message for="textField1" showSummary="true" showDetail="false" errorClass="errorMessage"/>
-                        <ice:commandButton id="button1" value="Search" actionListener="#{EditCollectionPage.searchStudies}"/>
+                        <ice:commandButton id="button1" value="Search" actionListener="#{EditCollectionPage.searchStudies}" partialSubmit="true"/>
                       </ice:panelGroup>
 
                       <ice:panelGroup>
@@ -258,7 +258,7 @@ a control on the data to hide/show the table columns.-->
                                            paginator="true"
                                            fastStep="3"
                                            paginatorMaxPages="4"
-                                           partialSubmit="true"
+                                           immediate="true"
                                            style="margin: 0; padding: 0; float: right;">
                           <f:facet name="first">
                             <ice:graphicImage

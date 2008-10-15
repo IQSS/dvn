@@ -117,7 +117,7 @@ public class DataverseGrouping extends SortableList {
         this.contractImage = contractImage;
         this.id          = id;
         this.parentClassification         = parentClassification;
-        this.indentStyleClass = "groupRowIndentStyle";
+        this.indentStyleClass = "childRowIndentStyle";
         // update the default state of the node.
         if (this.isExpanded) {
             expandNodeAction();
@@ -529,6 +529,10 @@ public class DataverseGrouping extends SortableList {
 
     public void setSubclassification(Long subclassification) {
         this.subclassification = subclassification;
+    }
+
+    public void setIndentStyleClass(String indentstyle) {
+        this.indentStyleClass = indentstyle;
     }
 
     //******************* UTILS ***************************

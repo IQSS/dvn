@@ -112,17 +112,11 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         List list             = (List) vdcGroupService.findAll();
         Iterator iterator     = list.iterator();
         parentSelectItems     = new SelectItem[(list.size() + 1)];
-        SelectItem selectitem = new SelectItem();
-        selectitem.setLabel("Select One");
-        selectitem.setValue(new Long("0"));
-        parentSelectItems[0]  = selectitem;
+        parentSelectItems[0]  = new SelectItem(new Long("0"), "Select Classification(s)");
         int i = 1;
         while (iterator.hasNext()) {
             VDCGroup vdcgroup = (VDCGroup)iterator.next();
-            selectitem = new SelectItem();
-            selectitem.setLabel((String) vdcgroup.getName());
-            selectitem.setValue(vdcgroup.getId());
-            parentSelectItems[i] = selectitem;
+            parentSelectItems[i] = new SelectItem(vdcgroup.getId(), vdcgroup.getName());
             i++;
         }
     }
@@ -288,7 +282,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     }
 
     public String add_action() {
-        String statusMessage = SUCCESS_MESSAGE;
+        statusMessage = SUCCESS_MESSAGE;
         result = true;
         try {
             //
@@ -317,7 +311,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         //Iterator msgiterator = FacesContext.getCurrentInstance().getMessages("AddClassificationsPageForm");
         //if (msgiterator.hasNext())
             //msgiterator.remove();
-        String statusMessage = SUCCESS_MESSAGE;
+        statusMessage = SUCCESS_MESSAGE;
         result = true;
         try {
             Long[] vdcs         = new Long[selectedDataverses.size()];
@@ -332,6 +326,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             vdcgroup.setName((String)nameInput.getValue());
             vdcgroup.setDescription((String)descriptionInput.getValue());
             vdcgroup.setParent((Long)parentSelect.getValue());
+            vdcGroupService.updateVdcGroup(vdcgroup);
             vdcGroupService.updateWithVdcs(vdcgroup, vdcs);
         } catch (Exception e) {
             statusMessage = FAIL_MESSAGE;

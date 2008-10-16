@@ -185,11 +185,8 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
 #dvn_hmpgMainSection {position: relative;}
 #dvn_MainSectionCount {position: absolute; top: 0; right: 0;}
 
-/* NEW STYLES: STUDY LIST + STUDIES TREE (these override IceFace styles) */
-.vdcSResultsTable {border: 0; margin: 0 0 0 0;}
-.vdcSResultsTable tr {border-left: 0;}
-.vdcSResultsTable td {border: 0;}
-.vdcSResultsTable div {border-width: 0 0 0 0;}
+/* PAGINATOR */
+.dvnStudyListPaginator {margin: 0; padding: 0; float: right;}
 
 /* ANALYSIS PAGE */
 .dvn_preFileTitle{ font-weight: bold; font-style: normal; color: #000;}
@@ -492,18 +489,34 @@ a.vdcSiteMapLink:link, a.vdcSiteMapLink:visited, a.vdcSiteMapLink:hover, a.vdcSi
   text-decoration: underline;
 }
 
+/* STUDYLISTING PAGE */
+.dvnStudyListWrapper {border: 1px solid #dcdddf;}
+.dvnStudyListCollectionName {padding: .5em .25em; border: 1px solid #dcdddf; border-width: 1px 1px 0 1px;}
+.dvnStudyListCollectionName span {font-size: 140% !important; font-weight: bold;}
+.dvnStudyListResultsTop {border-bottom: 1px solid #dcdddf;}
+.dvnStudyListResultsBottom {border-top: 1px solid #dcdddf;}
+.dvn_StudyListTotals {text-align: right;}
+
+/* NEW STYLES: STUDY LIST + STUDIES TREE (these override IceFace styles) */
+.dvnStudyListTable {border: 0; margin: 0 0 0 0;}
+.dvnStudyListTable tr {border-left: 0;}
+.dvnStudyListTable td {border: 0;}
+.dvnStudyListTable div {border-width: 0 0 0 0;}
+
 /* VDC Search Results Style rules 
 */
-.dvn_SResultsGlobalId{
-  color : #666;
-}
+.dvnStudyListStudyInfo {float: left; width: 77%; background: inherit;}
+span.dvnStudyListStudyAuthor {font-size: 90% !important;}
+.dvnStudyListIDDownloads {float: right; padding: 0 10px; border-left: 1px solid #dcdddf !important;}
+.dvnStudyListIDDownloads span {font-size: 90% !important; color: grey;}
+span.dvnStudyListGlobalId {color: black;}
 
 .vdcSResultsPageN {
    border-right-style: solid;
    border-right-color: black;
    border-right-width: 1px;
    padding-left: 2px;
-   padding-right: 4px
+   padding-right: 4px;
 }
 
 .vdcSResultsPageNLast {
@@ -530,11 +543,21 @@ span.vdcSResultsField {
    width: 50%;
 }
 
-.vdcSResultsList{
-   background-color:inherit !important;
-   padding-top: 10px;
-   padding-bottom: 10px;
+.dvnStudyListTableColumn {
+   background-color: inherit !important;
 }
+
+/* Rules for paragraphs in abstract
+*/
+.dvnStudyListTableAbstract {
+    padding-top: 3px; 
+    padding-bottom: 3px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.dvnStudyListTableAbstract div, .dvnStudyListTableAbstract p {margin: 0; padding: 0; display: inline;}
+span.dvnStudyListTableAbstract {color: grey; font-size: 90% !important;}
+.dvnStudyListTableAbstract p {color: black; font-size: 90% !important;}
 
 /* Style rules for Study Page (Cataloging Info and Files)
 */
@@ -1154,16 +1177,6 @@ span.vdcEditStudyFormatExample {display: inline;}
    vertical-align: top;
 }
 
-/* Rules for paragraphs in abstract
-*/
-.vdcAbstractSResults{
-    padding-top: 3px; 
-    padding-bottom: 3px;
-    padding-left: 0px;
-    padding-right: 0px;
-}
-.vdcAbstractSResults div, .vdcAbstractSResults p {margin: 0; padding: 0; display: inline;}
-
 /* Scrollable div for terms  of use
 */
 .vdcScrollDivTermsUse {
@@ -1343,6 +1356,7 @@ span.vdcEditStudyFormatExample {display: inline;}
 .dvn_networkHomePanelInner span {font-size: 90% !important;}
 .dvn_networkHomePanelInnerHdr span.iceOutTxt td {font-size: 90% !important;}
 
+.childRowIndentStyle {text-indent:15px;}
 .activity {width: 120px; text-align: center;}
 .activitylevelicon {vertical-align:middle; width: 48px; height: 8px; background: url(/dvn/resources/activity-icons.png) no-repeat;}
 .al-0 {background-position: -50 0;}

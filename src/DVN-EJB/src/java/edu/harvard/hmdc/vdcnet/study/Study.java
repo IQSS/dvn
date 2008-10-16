@@ -114,13 +114,6 @@ public class Study implements java.io.Serializable {
         this.setLastUpdateTime(createDate);
 
         this.setReviewState( reviewState );
-        
-        // Add Study to root collection of it's VDC owner. 
-        if (this.getOwner()!=null) {
-            this.setStudyColls( new ArrayList() );
-            this.getStudyColls().add(this.getOwner().getRootCollection());
-            this.getOwner().getRootCollection().getStudies().add(this);
-        }        
     }
        
     

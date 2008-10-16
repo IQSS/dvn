@@ -4,89 +4,79 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:gui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:dvn="/WEB-INF/tlds/dvn-components">
 
 <head>
-    <!-- page title param passed in by param -->
-    <title><h:outputText value="#{pageTitle}"/></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="Content-Language" content="en" />
-    <meta http-equiv="imagetoolbar" content="no" />
-        <link rel="stylesheet" href="http://dev.jquery.com/view/tags/ui/latest/themes/flora/flora.all.css" type="text/css" media="screen" title="Flora (Default)"/>
-         <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css" />
-         <link rel="stylesheet" type="text/css" href="/dvn/css/demo_template.css"/>
-         <link rel="stylesheet" type="text/css" href="/dvn/css/auction_styles.css"/>
-         <link rel="stylesheet" type="text/css" href="/dvn/theme/com/sun/rave/web/ui/defaulttheme/css/dvn_css_master.css"/>
-	 <link rel="stylesheet" type="text/css" href="/dvn/resources/stylesheet.css"/>
-         <script type="text/javascript" src="/dvn/theme/com/sun/rave/web/ui/defaulttheme/javascript/formElements.js"/>
-         <script type="text/javascript" src="/dvn/resources/EventCapture.js"/>
-         <script type="text/javascript" src="/dvn/resources/jquery.js"/>
-         <script type="text/javascript" src="/dvn/resources/jquery.corner.pack.js"/>
-         <script type="text/javascript" src="/dvn/resources/excanvas.pack.js"/>
-         <script type="text/javascript" src="/dvn/resources/jquery.ifixpng.js"/>
-         <script type="text/javascript" src="/dvn/resources/jquery.truncator.js"/>
-         <script type="text/javascript" src="/dvn/resources/sgbeal-togglepane.jquery.js"/>
-         <script type="text/javascript" src="/dvn/resources/jcap.js"/>
-         <script type="text/javascript" src="/dvn/resources/md5.js"/>
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-  
-  <script type="text/javascript" src="http://dev.jquery.com/view/tags/ui/latest/ui/ui.core.js"></script>
-  <script type="text/javascript" src="http://dev.jquery.com/view/tags/ui/latest/ui/ui.tabs.js"></script>
-
-
-
-
-         <script type="text/javascript">
-          // <![CDATA[    
-             jQuery.noConflict();
-             jQuery(document).ready(function(){
-                jQuery("#editStudyTabSet > ul").tabs();   
-                 jQuery("#viewStudyTabSet > ul").tabs();                    
-		jQuery("div.dvn_navblock").corner("10px bottom");
-		jQuery("div.dvn_searchblock").corner("10px");
-		jQuery("div.successMessage").corner("10px");
-		jQuery("div.vdcStudyFilesMessage").corner("10px");
-		jQuery("div.dvn_block").corner("10px");
-		jQuery("div.dvn_blockTitleBar").corner("10px");
-                jQuery.ifixpng('/dvn/resources/pixel.gif');
-                jQuery('img[@src$=.png], a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active').ifixpng();
-                jQuery('.vdcStudyDesc').truncate({max_length: 198});
-                jQuery('.vdcStudyDataCitation').truncate({max_length: 25, more: "View Data Citation [+]", less: "Collapse [-]"});
-                jQuery('.TogglePaneFancy').initTogglePane({headerClassClosed:'TogglePaneFancyHeaderClosed'});
-              });
-          // ]]>
-         </script>
-         <style type="text/css">
-           /** Mike, please incorporate this change into the stylesheet */
-           .childRowIndentStyle {text-indent:15px;}
-         </style>
-         <base href="#{facesContext.externalContext.request.scheme}://#{facesContext.externalContext.request.serverName}:#{facesContext.externalContext.request.serverPort}#{facesContext.externalContext.requestContextPath}/"/>
+  <!-- page title param passed in by param -->
+  <title><h:outputText value="#{pageTitle}"/></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Content-Language" content="en"/>
+  <meta http-equiv="imagetoolbar" content="no"/>
+  <link rel="stylesheet" type="text/css" href="/dvn/resources/jquery/tabs/flora.all.css"/>
+  <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css"/>
+  <link rel="stylesheet" type="text/css" href="/dvn/css/demo_template.css"/>
+  <link rel="stylesheet" type="text/css" href="/dvn/css/auction_styles.css"/>
+  <link rel="stylesheet" type="text/css" href="/dvn/theme/com/sun/rave/web/ui/defaulttheme/css/dvn_css_master.css"/>
+  <link rel="stylesheet" type="text/css" href="/dvn/resources/stylesheet.css"/>
+  <script type="text/javascript" src="/dvn/theme/com/sun/rave/web/ui/defaulttheme/javascript/formElements.js"/>
+  <script type="text/javascript" src="/dvn/resources/EventCapture.js"/>
+  <script type="text/javascript" src="/dvn/resources/jquery.js"/>
+  <script type="text/javascript" src="/dvn/resources/jquery.corner.pack.js"/>
+  <script type="text/javascript" src="/dvn/resources/excanvas.pack.js"/>
+  <script type="text/javascript" src="/dvn/resources/jquery.ifixpng.js"/>
+  <script type="text/javascript" src="/dvn/resources/jquery.truncator.js"/>
+  <script type="text/javascript" src="/dvn/resources/sgbeal-togglepane.jquery.js"/>
+  <script type="text/javascript" src="/dvn/resources/jcap.js"/>
+  <script type="text/javascript" src="/dvn/resources/md5.js"/>
+  <script type="text/javascript" src="/dvn/resources/jquery/tabs/jquery.ui.core.js"/>
+  <script type="text/javascript" src="/dvn/resources/jquery/tabs/jquery.ui.tabs.js"/>
+  <script type="text/javascript">
+      // <![CDATA[
+      jQuery.noConflict();
+      jQuery(document).ready(function(){
+          jQuery("#editStudyTabSet > ul").tabs();
+          jQuery("#viewStudyTabSet > ul").tabs();
+          jQuery("div.dvn_navblock").corner("10px bottom");
+          jQuery("div.dvn_searchblock").corner("10px");
+          jQuery("div.successMessage").corner("10px");
+          jQuery("div.vdcStudyFilesMessage").corner("10px");
+          jQuery("div.dvn_block").corner("10px");
+          jQuery("div.dvn_blockTitleBar").corner("10px");
+          jQuery.ifixpng('/dvn/resources/pixel.gif');
+          jQuery('img[@src$=.png], a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active').ifixpng();
+          jQuery('.vdcStudyDesc').truncate({max_length: 198});
+          jQuery('.vdcStudyDataCitation').truncate({max_length: 25, more: "View Data Citation [+]", less: "Collapse [-]"});
+          jQuery('.TogglePaneFancy').initTogglePane({headerClassClosed:'TogglePaneFancyHeaderClosed'});
+      });
+      // ]]>
+  </script>
+  <base href="#{facesContext.externalContext.request.scheme}://#{facesContext.externalContext.request.serverName}:#{facesContext.externalContext.request.serverPort}#{facesContext.externalContext.requestContextPath}/"/>
 
 </head>
-   <!--  this template is example 4.3 in the Facelets Shortcut -->
-   <body>
-       <f:loadBundle basename="Bundle" var="bundle"/>
-       <gui:insert name="title">
-           <!--  ****** THIS IS THE HEADER ******** -->
-           <gui:include src="views/CustomBanner.xhtml"/>
-           <!-- <gui:include src="views/ConnectedBanner.xhtml"/> -->
-       </gui:insert>
-       <div class="dvn_wrapper">
-           <div class="dvn_content" id="content-frame">
-               <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
-               <ice:outputConnectionStatus style="display:none;"/>
-               <gui:insert name="title">
-                   <!-- *** MENUBAR (Included from template) *** -->
-                   <gui:include src="views/Menubar.xhtml"/>
-               </gui:insert>
-               <gui:insert name="body">Default Body</gui:insert>                   
-           </div>
-       </div>
-       <gui:insert name="footer">
-           <gui:include src="views/CustomFooter.xhtml"/>
-       </gui:insert>
-   </body>
+<!--  this template is example 4.3 in the Facelets Shortcut -->
+<body>
+  <f:loadBundle basename="Bundle" var="bundle"/>
+  <gui:insert name="title">
+    <!--  ****** THIS IS THE HEADER ******** -->
+    <gui:include src="views/CustomBanner.xhtml"/>
+    <!-- <gui:include src="views/ConnectedBanner.xhtml"/> -->
+  </gui:insert>
+  <div class="dvn_wrapper">
+    <div class="dvn_content" id="content-frame">
+      <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
+      <ice:outputConnectionStatus style="display:none;"/>
+      <gui:insert name="title">
+        <!-- *** MENUBAR (Included from template) *** -->
+        <gui:include src="views/Menubar.xhtml"/>
+      </gui:insert>
+      <gui:insert name="body">Default Body</gui:insert>
+    </div>
+  </div>
+  <gui:insert name="footer">
+    <gui:include src="views/CustomFooter.xhtml"/>
+  </gui:insert>
+</body>
 </html>

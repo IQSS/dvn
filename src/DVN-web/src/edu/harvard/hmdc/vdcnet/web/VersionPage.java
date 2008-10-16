@@ -49,7 +49,6 @@ public class VersionPage extends VDCBaseBean  implements java.io.Serializable {
     public String getBambooBuild() {
         String buildString = null;
         String buildStr = ResourceBundle.getBundle("BuildNumber").getString("build.number");
-        System.out.println("BUILD NUMBER: " + buildStr);
         return buildStr != null? buildStr : "00";
     }
 

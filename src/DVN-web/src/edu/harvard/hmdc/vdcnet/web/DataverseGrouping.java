@@ -78,14 +78,13 @@ public class DataverseGrouping extends SortableList {
     private static final String shortDescriptionColumnName   = "Description";
     private static final String subclassificationsColumnName = "Subclassifications";
     private static final String idColumnName                 = "Id";
-    
+
     ArrayList parentItems = new ArrayList();
     ArrayList childItems = new ArrayList();
     
     public DataverseGrouping() {
         super(nameColumnName);
     }
-    private Map allChildren = new LinkedHashMap();//used by addchilditem to collect all of the children for expansion and contraction support
     
     public DataverseGrouping(Long id, String name, String recordType, ArrayList parentItems, boolean isExpanded, String expandImage, String contractImage, Long parentClassification) {
         super(nameColumnName);
@@ -209,6 +208,12 @@ public class DataverseGrouping extends SortableList {
             // get index of current node
             int index = parentItems.indexOf(this);
             parentItems.addAll(index + 1, childItems);
+            //recursively add children
+            Iterator iterator = childItems.iterator();
+               while (iterator.hasNext()) {
+                   DataverseGrouping childitem = (DataverseGrouping)iterator.next();
+                   recurseAndExpandNodeAction(childitem);
+               }
         }
     }
 
@@ -218,12 +223,44 @@ public class DataverseGrouping extends SortableList {
      * Utility method to remove all child nodes from the parent dataTable list.
      */
     private void contractNodeAction() {
-        
+
         if (childItems != null && childItems.size() > 0) {
+            //recursively remove children
+            Iterator iterator = childItems.iterator();
+               while (iterator.hasNext()) {
+                   DataverseGrouping childitem = (DataverseGrouping)iterator.next();
+                   recurseAndContractNodeAction(childitem);
+               }
             // remove all items in childItems from the parent list
            parentItems.removeAll(childItems);   
         }
     }
+
+    //BEGIN RECURSIVE NODE ACTIONS
+    
+      /**
+     * Utility method to recursively add all child nodes to their parents in the data table.
+     */
+    @SuppressWarnings("unchecked")
+    private void recurseAndExpandNodeAction(DataverseGrouping childitem) {
+        if (childitem.childItems != null && childitem.childItems.size() > 0) {
+            int index = parentItems.indexOf(this);
+            parentItems.addAll(index + 1, childitem.childItems);
+            
+        }
+    }
+
+
+
+    /**
+     * Recursive utility method to remove all child nodes from their parents in the dataTable list.
+     */
+    private void recurseAndContractNodeAction(DataverseGrouping childitem) {
+        if (childitem.childItems != null && childitem.childItems.size() > 0) {
+           parentItems.removeAll(childitem.childItems);
+        }
+    }
+    //END RECURSIVE NODE ACTIONS
 
     /*
      *       if (childFilesRecords != null && childFilesRecords.size() > 0) {

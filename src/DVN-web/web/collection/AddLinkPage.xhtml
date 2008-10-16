@@ -40,6 +40,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:selectOneMenu value="#{AddLinkPage.dvId}" partialSubmit="true">
+                        <f:selectItem itemLabel="Select a Dataverse" itemValue="" />
                         <f:selectItems value="#{AddLinkPage.dvItems}"/>
                       </ice:selectOneMenu>
                     </div>
@@ -48,6 +49,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:selectOneMenu value="#{AddLinkPage.collId}">
+                        <f:selectItem itemLabel="Select a Collection" itemValue="" />
                         <f:selectItems value="#{AddLinkPage.collectionItems}"/>
                       </ice:selectOneMenu>
                     </div>

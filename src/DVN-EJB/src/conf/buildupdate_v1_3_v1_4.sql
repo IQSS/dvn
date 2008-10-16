@@ -78,4 +78,6 @@ update vdccollection set localscope = false;
 update vdccollection set type='static' where query is null;
 update vdccollection set type='dynamic' where query is not null;
 
+update dvnversion set buildnumber=4;
+
 commit;

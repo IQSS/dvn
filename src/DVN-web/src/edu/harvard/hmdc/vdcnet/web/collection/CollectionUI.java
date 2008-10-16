@@ -117,10 +117,10 @@ public class CollectionUI implements java.io.Serializable {
 
     public List getStudies() {
         List studies = new ArrayList();
-        if (coll.getParentCollection() == null) {
+        if (coll.isRootCollection()) {
             studies.addAll(coll.getOwner().getOwnedStudies());
         }
-        if (isDynamic()) {
+        if (coll.isDynamic()) {
             studies.addAll(getQueryStudies());
         } else {
             studies.addAll(getActualStudys());
@@ -134,7 +134,7 @@ public class CollectionUI implements java.io.Serializable {
         if (coll.getParentCollection() == null) {
             studyIds.addAll(getOwnedStudyIds());
         }
-        if (isDynamic()) {
+        if (coll.isDynamic()) {
             studyIds.addAll(getQueryStudyIds());
         } else {
             studyIds.addAll(getActualStudyIds());
@@ -204,10 +204,6 @@ public class CollectionUI implements java.io.Serializable {
 
     }
 
-    public boolean isDynamic() {
-        return (coll.getType() != null && coll.getType().equals("dynamic"));
-
-    }
 
     public static List<VDCCollection> getCollectionList(VDC vdc) {
         return getCollectionList(vdc, null);

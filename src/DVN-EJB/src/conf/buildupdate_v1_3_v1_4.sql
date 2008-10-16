@@ -80,4 +80,19 @@ update vdccollection set type='dynamic' where query is not null;
 
 update dvnversion set buildnumber=4;
 
+
+-- remove owned studies from root collection
+delete from coll_studies
+where study_id || '_' || vdc_collection_id in
+(
+	select study_id || '_' || rootcollection_id
+	from study, vdc
+	where study.owner_id = vdc.id
+)
+
+
+delete from pagedef where name = 'AddCollectionsPage';
+update pagedef set name = 'ManageCollectionsPage' where name = 'ManageCollectionPage';
+update pagedef set path = '/collection/ManageCollectionsPage.xhtml' where path = '/collection/ManageCollectionPage.xhtml';
+
 commit;

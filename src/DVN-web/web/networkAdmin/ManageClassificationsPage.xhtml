@@ -56,12 +56,12 @@
 	        <ice:column style="width:1%;">
 	            <ice:panelGroup styleClass="#{dvItems.indentStyleClass}">
 	                <!-- Render the expand/contract if there is an image -->
-	                <ice:commandLink rendered="#{dvItems.subclassification > 0}" actionListener="#{dvItems.toggleSubGroupAction}">
+	                <ice:commandLink  actionListener="#{dvItems.toggleSubGroupAction}">
 	                    <ice:graphicImage id="expandContractImage"
                                               value="#{dvItems.expandContractImage}"
 	                                      style="border: 0px solid;"/>
 	                </ice:commandLink>
-                       <ice:outputText escape="false"
+                        <ice:outputText escape="false"
                                          rendered="#{dvItems.expandContractImage == null}"
                                          value="&lt;!-- cell spacer --&gt;"/>
 	            </ice:panelGroup>

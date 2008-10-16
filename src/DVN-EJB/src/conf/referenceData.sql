@@ -993,4 +993,4 @@ create index studytopicclass_metadata_id_index on studytopicclass(metadata_id);
 create index template_metadata_id_index on template(metadata_id);
 
 
-insert into dvnversion( id, buildnumber,versionnumber) values (1,3,1);
+insert into dvnversion( id, buildnumber,versionnumber) values (1,4,1);

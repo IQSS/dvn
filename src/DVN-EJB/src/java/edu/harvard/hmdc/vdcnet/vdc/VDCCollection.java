@@ -24,7 +24,6 @@
  * Created on July 28, 2006, 2:41 PM
  *
  */
-
 package edu.harvard.hmdc.vdcnet.vdc;
 
 import edu.harvard.hmdc.vdcnet.study.Study;
@@ -47,63 +46,62 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class VDCCollection implements java.io.Serializable  {
+public class VDCCollection implements java.io.Serializable {
+
     private String name;
     private String description;
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition = "TEXT")
     private String query;
     private boolean localScope;
     private String type;
-    
     @ManyToOne
     private VDC owner;
-    
-    @ManyToMany (cascade={CascadeType.REMOVE })
-    @JoinTable(name="COLL_ADV_SEARCH_FIELDS",
-            joinColumns=@JoinColumn(name="vdc_collection_id"),
-            inverseJoinColumns=@JoinColumn(name="study_field_id"))
+    @ManyToMany(cascade = {CascadeType.REMOVE})
+    @JoinTable(name = "COLL_ADV_SEARCH_FIELDS",
+    joinColumns = @JoinColumn(name = "vdc_collection_id"),
+    inverseJoinColumns = @JoinColumn(name = "study_field_id"))
     private Collection<StudyField> advSearchFields;
-    
-    @ManyToMany (cascade={CascadeType.REMOVE })
-    @JoinTable(name="COLL_ANY_SEARCH_FIELDS",
-            joinColumns=@JoinColumn(name="vdc_collection_id"),
-            inverseJoinColumns=@JoinColumn(name="study_field_id"))
+    @ManyToMany(cascade = {CascadeType.REMOVE})
+    @JoinTable(name = "COLL_ANY_SEARCH_FIELDS",
+    joinColumns = @JoinColumn(name = "vdc_collection_id"),
+    inverseJoinColumns = @JoinColumn(name = "study_field_id"))
     private Collection<StudyField> anySearchFields;
-    
-    @ManyToMany  (cascade={CascadeType.REMOVE })
-    @JoinTable(name="COLL_SEARCH_RESULT_FIELDS",
-            joinColumns=@JoinColumn(name="vdc_collection_id"),
-            inverseJoinColumns=@JoinColumn(name="study_field_id"))
+    @ManyToMany(cascade = {CascadeType.REMOVE})
+    @JoinTable(name = "COLL_SEARCH_RESULT_FIELDS",
+    joinColumns = @JoinColumn(name = "vdc_collection_id"),
+    inverseJoinColumns = @JoinColumn(name = "study_field_id"))
     private Collection<StudyField> searchResultFields;
+
     public Collection<Study> search(String query) {
         //TODO: complete implementation
         return null;
     }
+
     /** Creates a new instance of VDCCollection */
     public VDCCollection() {
     }
-    
+
     public String getName() {
-        
+
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
-       
+
     public String getDescription() {
         return description;
     }
-    
+
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     public String getQuery() {
         return query;
     }
-    
+
     public void setQuery(String query) {
         this.query = query;
     }
@@ -122,16 +120,15 @@ public class VDCCollection implements java.io.Serializable  {
 
     public void setType(String type) {
         this.type = type;
-    }    
-    
+    }
+
     public VDC getOwner() {
         return owner;
     }
-    
+
     public void setOwner(VDC owner) {
         this.owner = owner;
     }
-
     /**
      * Holds value of property displayOrder.
      */
@@ -152,13 +149,12 @@ public class VDCCollection implements java.io.Serializable  {
     public void setDisplayOrder(int displayOrder) {
         this.displayOrder = displayOrder;
     }
-
     /**
      * Holds value of property id.
      */
-   @SequenceGenerator(name="vdccollection_gen", sequenceName="vdccollection_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="vdccollection_gen")    
-    
+    @SequenceGenerator(name = "vdccollection_gen", sequenceName = "vdccollection_id_seq")
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vdccollection_gen")
     private Long id;
 
     /**
@@ -176,11 +172,10 @@ public class VDCCollection implements java.io.Serializable  {
     public void setId(Long id) {
         this.id = id;
     }
-
     /**
      * Holds value of property subCollections.
      */
-@OneToMany(mappedBy="parentCollection",cascade={CascadeType.REMOVE,CascadeType.MERGE ,CascadeType.PERSIST })
+    @OneToMany(mappedBy = "parentCollection", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private Collection<VDCCollection> subCollections;
 
     /**
@@ -197,21 +192,18 @@ public class VDCCollection implements java.io.Serializable  {
      */
     public void setSubCollections(Collection<VDCCollection> subCollections) {
         this.subCollections = subCollections;
-    }    
- 
-    @ManyToOne (cascade=CascadeType.MERGE)
+    }
+    @ManyToOne(cascade = CascadeType.MERGE)
     private VDCCollection parentCollection;
-    
+
     public VDCCollection getParentCollection() {
         return parentCollection;
     }
-    
+
     public void setParentCollection(VDCCollection parentCollection) {
         this.parentCollection = parentCollection;
-    }    
-    
-
-  /**
+    }
+    /**
      * Holds value of property version.
      */
     @Version
@@ -232,14 +224,13 @@ public class VDCCollection implements java.io.Serializable  {
     public void setVersion(Long version) {
         this.version = version;
     }
-
     /**
      * Holds value of property studies.
      */
-    @ManyToMany (cascade={CascadeType.MERGE })
-    @JoinTable(name="COLL_STUDIES",
-            joinColumns=@JoinColumn(name="vdc_collection_id"),
-            inverseJoinColumns=@JoinColumn(name="study_id"))    
+    @ManyToMany(cascade = {CascadeType.MERGE})
+    @JoinTable(name = "COLL_STUDIES",
+    joinColumns = @JoinColumn(name = "vdc_collection_id"),
+    inverseJoinColumns = @JoinColumn(name = "study_id"))
     private List<Study> studies;
 
     /**
@@ -257,7 +248,6 @@ public class VDCCollection implements java.io.Serializable  {
     public void setStudies(List<Study> studies) {
         this.studies = studies;
     }
-    
     private transient int level;
 
     public int getLevel() {
@@ -267,17 +257,15 @@ public class VDCCollection implements java.io.Serializable  {
     public void setLevel(int level) {
         this.level = level;
     }
-    
-    public String getFullCollectionName(){
-        return getOwner().getName()+" Dataverse/"+getName();
-    }
-    
 
+    public String getFullCollectionName() {
+        return getOwner().getName() + " Dataverse/" + getName();
+    }
     @ManyToMany //(cascade={CascadeType.REMOVE })
-    @JoinTable(name="VDC_LINKED_COLLECTIONS",
-            joinColumns=@JoinColumn(name="linked_collection_id"),
-            inverseJoinColumns=@JoinColumn(name="vdc_id"))    
-    private Collection<VDC> linkedVDCs;    
+    @JoinTable(name = "VDC_LINKED_COLLECTIONS",
+    joinColumns = @JoinColumn(name = "linked_collection_id"),
+    inverseJoinColumns = @JoinColumn(name = "vdc_id"))
+    private Collection<VDC> linkedVDCs;
 
     public Collection<VDC> getLinkedVDCs() {
         return linkedVDCs;
@@ -287,30 +275,26 @@ public class VDCCollection implements java.io.Serializable  {
         this.linkedVDCs = linkedVDCs;
     }
 
-
-
-
-
-    public void setParentRelationship (VDCCollection parentColl) {
+    public void setParentRelationship(VDCCollection parentColl) {
         if (parentColl == null) {
             return;  // nothing to set
         }
-        
-        this.setParentCollection( parentColl );
+
+        this.setParentCollection(parentColl);
         if (parentColl.getSubCollections() == null) {
-            parentColl.setSubCollections( new ArrayList() );
+            parentColl.setSubCollections(new ArrayList());
         }
-        
+
         parentColl.getSubCollections().add(this);
     }
-    
+
     public void removeParentRelationship() {
         VDCCollection parentColl = this.getParentCollection();
         if (parentCollection != null) {
             Iterator iter = parentColl.getSubCollections().iterator();
             while (iter.hasNext()) {
                 VDCCollection subColl = (VDCCollection) iter.next();
-                if ( subColl.getId().equals( this.getId() ) ) {
+                if (subColl.getId().equals(this.getId())) {
                     iter.remove();
                     break;
                 }
@@ -319,7 +303,7 @@ public class VDCCollection implements java.io.Serializable  {
             this.setParentCollection(null);
         }
     }
-    
+
     public int hashCode() {
         int hash = 0;
         hash += (this.id != null ? this.id.hashCode() : 0);
@@ -331,9 +315,18 @@ public class VDCCollection implements java.io.Serializable  {
         if (!(object instanceof VDCCollection)) {
             return false;
         }
-        VDCCollection other = (VDCCollection)object;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
+        VDCCollection other = (VDCCollection) object;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
         return true;
-    }       
-    
+    }
+
+    public boolean isDynamic() {
+        return (this.getType() != null && this.getType().equals("dynamic"));
+    }
+
+    public boolean isRootCollection() {
+        return (this.getParentCollection() == null);
+    }
 }

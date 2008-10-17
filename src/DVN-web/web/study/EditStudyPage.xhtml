@@ -7,7 +7,7 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
-      xmlns:ui="http://www.sun.com/web/ui">
+      >
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
@@ -23,7 +23,7 @@
           // Functions for hiding and showing study fields
           //
 
-      
+
 
           function addLoadEvent(func) {
               var oldonload = window.onload;
@@ -101,7 +101,7 @@
           </div>
           <div class="dvn_sectionBoxNoBorders">
 
-       
+
 
               <!-- validation errors occurred? -->
               <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage">
@@ -133,12 +133,12 @@
                         <input checked="checked" type="radio" id="hideRadio" name="hideShowRadio" value="hide" onclick="updateHideShow(this);"/> Show Required and Recommended Fields
                         <input type="radio" id="showRadio" name="hideShowRadio" value="show" onclick="updateHideShow(this);"/> Show All Fields
                        -->
-                        
+
                         <ice:selectOneRadio partialSubmit="true" value ="#{EditStudyPage.showAll}">
                           <f:selectItem itemLabel="Show Required and Recommended Fields" itemValue="false"/>
                           <f:selectItem itemLabel="Show All Fields" itemValue="true"/>
                         </ice:selectOneRadio>
-                      
+
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyTableLegend">
                         <div jsfc="ice:panelGroup">
@@ -267,7 +267,7 @@
                             </div>
                           </ice:column>
                           <ice:column>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">               
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
                               <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1" >
                                 <dvn:inlinehelp helpMessage="#{editstudybundle.authorNameHelp}" linkText="#{editstudybundle.authorNameLabel}" heading="#{editstudybundle.authorNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                 <br/>
@@ -401,7 +401,7 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable" 
+                                 styleClass="vdcEditStudyTable"
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
                                  visible="#{EditStudyPage.studyMap[sfc.productionPlace].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel43"   styleClass="vdcEditStudyField">
@@ -457,7 +457,7 @@
                   </ice:dataTable>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable " 
+                                 styleClass="vdcEditStudyTable "
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
                                  visible="#{EditStudyPage.studyMap[sfc.fundingAgency].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
@@ -2114,7 +2114,7 @@
           </div>
         </div>
       </ice:form>
-  
+
 
     </gui:define>
   </gui:composition>

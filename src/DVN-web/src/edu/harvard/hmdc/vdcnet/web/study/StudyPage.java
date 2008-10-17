@@ -29,8 +29,8 @@
 package edu.harvard.hmdc.vdcnet.web.study;
 
 import com.sun.jsfcl.data.DefaultTableDataModel;
-import com.sun.rave.web.ui.component.Tab;
-import com.sun.rave.web.ui.component.TabSet;
+
+
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
@@ -69,33 +69,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     /**
      * Creates a new instance of StudyPage
      */
-    private TabSet tabSet1 = new TabSet();
-
-    public TabSet getTabSet1() {
-        return tabSet1;
-    }
-
-    public void setTabSet1(TabSet ts) {
-        this.tabSet1 = ts;
-    }
-    private Tab tab1 = new Tab();
-
-    public Tab getTab1() {
-        return tab1;
-    }
-
-    public void setTab1(Tab t) {
-        this.tab1 = t;
-    }
-    private Tab tab2 = new Tab();
-
-    public Tab getTab2() {
-        return tab2;
-    }
-
-    public void setTab2(Tab t) {
-        this.tab2 = t;
-    }
 
     public StudyPage() {
     }
@@ -321,11 +294,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         }
 
         // set tab if it was it was sent as pamameter or part of request bean
-        if (getTab() != null) {
-            getTabSet1().setSelected(getTab());
-        } else if (getVDCRequestBean().getSelectedTab() != null) {
-            getTabSet1().setSelected(getVDCRequestBean().getSelectedTab());
-        }
 
         if (isFromPage("StudyPage")) {
             setStudyUI((StudyUI) sessionGet(StudyUI.class.getName()));
@@ -343,15 +311,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             // we need to create the studyServiceBean
             HttpServletRequest request = (HttpServletRequest) this.getExternalContext().getRequest();
             if (studyId != null) {
-                if ("files".equals(getTabSet1().getSelected())) {
-                    studyUI = new StudyUI(
-                            studyService.getStudyDetail(studyId),
-                            getVDCRequestBean().getCurrentVDC(),
-                            getVDCSessionBean().getLoginBean() != null ? this.getVDCSessionBean().getLoginBean().getUser() : null,
-                            getVDCSessionBean().getIpUserGroup());
-                } else {
-                    studyUI = new StudyUI(studyService.getStudyDetail(studyId));
-                }
+                studyUI = new StudyUI(studyService.getStudyDetail(studyId));
 
                 // flag added to start with all file categories closed
                 if (getRequestParam("renderFiles") != null && getRequestParam("renderFiles").equals("false")) {

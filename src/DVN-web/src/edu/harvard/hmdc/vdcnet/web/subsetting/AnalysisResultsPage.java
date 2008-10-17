@@ -5,21 +5,15 @@
 
 package edu.harvard.hmdc.vdcnet.web.subsetting;
 
+import com.icesoft.faces.component.ext.HtmlOutputText;
+import com.icesoft.faces.component.ext.HtmlPanelGroup;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import javax.faces.FacesException;
-
-// jsf-api classes
-import javax.faces.component.*;
 import javax.faces.component.UIComponent.*;
-import javax.faces.component.html.*;
-import javax.faces.event.*;
 import javax.faces.context.*;
 import javax.faces.FacesException;
 import javax.faces.render.ResponseStateManager;
 
-import com.sun.rave.web.ui.component.*;
 
-import static java.lang.System.*;
 import java.util.*;
 import java.util.logging.*;
 import javax.servlet.http.*;
@@ -241,13 +235,13 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
     }
     
     // msgDwnldButton:ui:StaticText@binding
-    private StaticText msgDwnldButton = new StaticText();
+    private HtmlOutputText msgDwnldButton = new HtmlOutputText();
 
-    public StaticText getMsgDwnldButton() {
+    public HtmlOutputText getMsgDwnldButton() {
         return msgDwnldButton;
     }
 
-    public void setMsgDwnldButton(StaticText txt) {
+    public void setMsgDwnldButton(HtmlOutputText txt) {
         this.msgDwnldButton = txt;
     }
     
@@ -316,7 +310,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
                 // file-access problem, etc.
                 e.printStackTrace();
                 dbgLog.fine("download zip file IO exception");
-                msgDwnldButton.setText("* an IO problem occurred during downloading");
+                msgDwnldButton.setValue("* an IO problem occurred during downloading");
                 msgDwnldButton.setVisible(true);
                 dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                 getVDCRequestBean().setSelectedTab("tabDwnld");

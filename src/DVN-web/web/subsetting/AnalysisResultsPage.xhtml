@@ -6,7 +6,6 @@
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
-      xmlns:ui="http://www.sun.com/web/ui"
       >
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -49,9 +48,9 @@
                         <div class="dvAnalysisResults dvn_overflow">
                             <div id="dvAnalysisReplicationMsg">A copy of the data file used for this request with an R-command file are downloadable as a ZIP file by clicking the button below. To replicate the request on your local R installation for further analyses, please read the README file included in a ZIP File.</div>
                             <div id="rWrkspButton">
-                                <ui:staticText id="msgDwnldButton" binding="#{AnalysisResultsPage.msgDwnldButton}" 
+                                <ice:outputText id="msgDwnldButton" binding="#{AnalysisResultsPage.msgDwnldButton}"
                                     visible="false" escape="false" styleClass="errorMessage"
-                                    text="#{AnalysisResultsPage.msgDwnldButtonTxt}"/>
+                                    value="#{AnalysisResultsPage.msgDwnldButtonTxt}"/>
                                 <h:commandButton value="Download Replication-ZIP File" action="#{AnalysisResultsPage.getReplicationPack}" id="resultURLRworkspace" />
                             </div>
                             <div id="rWrkspMessage">

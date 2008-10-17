@@ -80,15 +80,6 @@ import edu.harvard.hmdc.vdcnet.vdc.VDC;
 
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 
-// java studio creator's classes
-//import com.sun.rave.web.ui.component.*;
-//import com.sun.rave.web.ui.model.*;
-
-// the following package is deprecaged
-// the new name is com.sun.rave.faces.data
-
-//import com.sun.jsfcl.data.*;
-
 import edu.harvard.hmdc.vdcnet.dsb.*;
 import edu.harvard.hmdc.vdcnet.dsb.impl.*;
 

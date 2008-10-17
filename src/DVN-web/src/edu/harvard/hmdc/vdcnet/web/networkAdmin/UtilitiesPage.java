@@ -29,7 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
-import com.sun.rave.web.ui.model.UploadedFile;
+
 import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
 import edu.harvard.hmdc.vdcnet.harvest.HarvestStudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
@@ -554,7 +554,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     private Long importDVId;
     private Long importFileFormat;
     private String importBatchDir;
-    private UploadedFile importFile;
+    //private UploadedFile importFile;
 
     public Long getImportDVId() {
         return importDVId;
@@ -579,14 +579,20 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     public void setImportBatchDir(String importBatchDir) {
         this.importBatchDir = importBatchDir;
     }
-    
+
+    /*
+     * commenting out -- this is slated for
+     * replacement in 1.4 and I am removing for
+     * QA to test without rave webui libs
+     * wjb
+
     public UploadedFile getImportFile() {
         return importFile;
     }
 
     public void setImportFile(UploadedFile importFile) {
         this.importFile = importFile;
-    }    
+    }  */
     
      public List<SelectItem> getImportDVs() {
         List importDVsSelectItems = new ArrayList<SelectItem>();
@@ -727,8 +733,13 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     public String importSingleFile_action() {
         try {
             File xmlFile = File.createTempFile("study", ".xml");
+            /*
+             * commenting out -- this is slated for
+             * replacement in 1.4 and I am removing for
+             * QA to test without rave webui libs
+             * wjb
             importFile.write(xmlFile);
-
+            */
             Study study = studyService.importStudy(
                     xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId());
             indexService.updateStudy(study.getId());

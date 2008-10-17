@@ -311,7 +311,16 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             // we need to create the studyServiceBean
             HttpServletRequest request = (HttpServletRequest) this.getExternalContext().getRequest();
             if (studyId != null) {
-                studyUI = new StudyUI(studyService.getStudyDetail(studyId));
+               /* if ("files".equals(getTabSet1().getSelected())) { */
+                    Study study = studyService.getStudyDetail(studyId);
+                    studyUI = new StudyUI(
+                            study,
+                            study.getOwner(),
+                            getVDCSessionBean().getLoginBean() != null ? this.getVDCSessionBean().getLoginBean().getUser() : null,
+                            getVDCSessionBean().getIpUserGroup());
+            /*    } else {
+                    studyUI = new StudyUI(studyService.getStudyDetail(studyId));
+                } */
 
                 // flag added to start with all file categories closed
                 if (getRequestParam("renderFiles") != null && getRequestParam("renderFiles").equals("false")) {

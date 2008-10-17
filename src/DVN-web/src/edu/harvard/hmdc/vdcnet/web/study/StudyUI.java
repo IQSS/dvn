@@ -80,6 +80,7 @@ public class StudyUI  implements java.io.Serializable {
      */
     public StudyUI(Study s) {
         this.study = s;
+        this.studyId = s.getId();
     }
     
     public StudyUI(Long sid) {
@@ -906,6 +907,7 @@ public class StudyUI  implements java.io.Serializable {
     }
 
     private boolean selected;
+    private boolean selectable = true;
 
     public boolean isSelected() {
         return selected;
@@ -914,4 +916,12 @@ public class StudyUI  implements java.io.Serializable {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+    
+    public boolean isSelectable() {
+        return selectable;
+    }
+
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }    
 }

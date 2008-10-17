@@ -151,7 +151,12 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         availableStudies = new ArrayList();
         List<Study> studies = new CollectionUI(vdcCollectionService.find(collectionId)).getStudies();
         for (Study study : studies) {
-            availableStudies.add(new StudyUI(study, StudyUI.isStudyInList(study, collection.getStudies())));
+            StudyUI studyUI = new StudyUI(study, StudyUI.isStudyInList(study, collection.getStudies()));
+            if (collection.isRootCollection() && study.getOwner().equals(getVDCRequestBean().getCurrentVDC()) ) {
+                studyUI.setSelected(true);
+                studyUI.setSelectable(false);             
+            }
+            availableStudies.add(studyUI);           
         }
         
         resetAvailableStudiesPaginator();
@@ -302,20 +307,25 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
     public void addRemoveStudyListener(RowSelectorEvent event) {
         StudyUI studyUI = (StudyUI) availableStudies.get(event.getRow());
 
-        if (studyUI.isSelected()) {
-            if (!StudyUI.isStudyInList(studyUI.getStudy(), collection.getStudies())) {
-                collection.getStudies().add(studyUI.getStudy());
+        if (studyUI.isSelectable() ) {
+            if (studyUI.isSelected()) {
+                if (!StudyUI.isStudyInList(studyUI.getStudy(), collection.getStudies())) {
+                    collection.getStudies().add(studyUI.getStudy());
+                }
+            } else {
+                collection.getStudies().remove(studyUI.getStudy());
             }
         } else {
-            collection.getStudies().remove(studyUI.getStudy());
+            // revert back to what it was before the user clicked
+            studyUI.setSelected( !studyUI.isSelected() );
         }
     }
 
     public void removeStudyListener(RowSelectorEvent event) {
-        Study study = collection.getStudies().get(event.getRow());
+        Study study = collection.getStudies().get(event.getRow());       
         collection.getStudies().remove(study);
 
-        // delselect from availableStudies()
+        // deselect from availableStudies
         for (StudyUI studyUI : availableStudies) {
             if (study.getId().equals( studyUI.getStudyId() ) ) {
                 studyUI.setSelected(false);

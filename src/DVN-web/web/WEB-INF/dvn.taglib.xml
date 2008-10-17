@@ -11,12 +11,6 @@
         </component>
     </tag>
     <tag>
-        <tag-name>datalist</tag-name>
-        <component>
-            <component-type>DataList</component-type>
-        </component>
-    </tag>
-    <tag>
           <tag-name>inlinehelp</tag-name>
         <component>
             <component-type>DvnInlineHelp</component-type>

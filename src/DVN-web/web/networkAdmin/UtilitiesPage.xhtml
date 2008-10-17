@@ -6,7 +6,9 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
-      xmlns:ui="http://www.sun.com/web/ui">
+      ><!-- removed xmlns:ui="http://www.sun.com/web/ui" on 10/17/2008 for v1.4 wjb
+      TODO: remove this comment after icefaces component has replaced the ui: tag see below -->
+
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
@@ -218,7 +220,7 @@
                 <hr/>
                 <ice:outputText value="or b) Single import - browse for the file and click on the button:"/>
                 <div>
-                  <ui:upload id="fileBrowser" uploadedFile="#{UtilitiesPage.importFile}"/>
+                 <!-- <ui:upload id="fileBrowser" uploadedFile="#{UtilitiesPage.importFile}"/> -->
                   <ice:commandButton value="Single Import" action="#{UtilitiesPage.importSingleFile_action}"/>
                 </div>
                 <hr/>

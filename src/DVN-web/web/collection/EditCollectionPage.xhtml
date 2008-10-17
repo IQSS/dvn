@@ -141,9 +141,10 @@
                       Parent
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:selectOneMenu id="parentColl" value="#{EditCollectionPage.parentId}">
+                      <ice:selectOneMenu id="parentColl" value="#{EditCollectionPage.parentId}" rendered="#{!EditCollectionPage.collection.rootCollection}">
                         <f:selectItems value="#{EditCollectionPage.parentCollectionItems}" />
                       </ice:selectOneMenu>
+                      <ice:outputText value="No Parent (Root Collection)" rendered="#{EditCollectionPage.collection.rootCollection}"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="vdcFieldTitle">
                       Description
@@ -170,7 +171,9 @@ a control on the data to hide/show the table columns.-->
                         <ice:dataTable id="studyList"
                                        var="study"
                                        value="#{EditCollectionPage.collection.studies}"
-                                       rows="15" width="100%"
+                                       width="100%"
+                                       scrollable="true"
+                                       scrollHeight="150px"
                                        columnClasses="tableCol">
                           <ice:column>
                             <ice:rowSelector id="selectedStudiesSelector"

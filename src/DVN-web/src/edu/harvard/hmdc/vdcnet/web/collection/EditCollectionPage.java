@@ -119,6 +119,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
             } else {
                 parentId = getVDCRequestBean().getCurrentVDC().getRootCollection().getId();
             }
+            collection.setParentRelationship( vdcCollectionService.find(parentId) );
         }
 
         browseDVId = getVDCRequestBean().getCurrentVDC().getId();

@@ -27,7 +27,7 @@ package edu.harvard.hmdc.vdcnet.web.study;
 
 
 import com.sun.jsfcl.data.DefaultTableDataModel;
-import com.sun.rave.web.ui.component.TabSet;
+
 import edu.harvard.hmdc.vdcnet.study.EditStudyService;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyAbstract;
@@ -104,9 +104,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void init() {
         super.init();
         // set tab if it was it was sent as pamameter
-        if (tab != null) {
-            tabSet1.setSelected(tab);
-        }
         token = this.getRequestParam("studyForm:token" );
         if ( token!=null) {
             if ( sessionGet(token)!=null) {
@@ -331,17 +328,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
      */
     public void destroy() {
     }
-    
-    private TabSet tabSet1 = new TabSet();
-    
-    public TabSet getTabSet1() {
-        return tabSet1;
-    }
-    
-    public void setTabSet1(TabSet ts) {
-        this.tabSet1 = ts;
-    }
-    
+
+ 
     public String tab1_action() {
         // TODO: Replace with your code
         
@@ -681,7 +669,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         editStudyService.cancel();
         this.sessionRemove(token);
         getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setSelectedTab(tabSet1.getSelected());
         
         return  forwardPage;
     }
@@ -1058,7 +1045,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         editStudyService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
        
         getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setSelectedTab(tabSet1.getSelected());
         this.sessionRemove(token);
         return "viewStudy";
     }

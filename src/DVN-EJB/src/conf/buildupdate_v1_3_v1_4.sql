@@ -88,7 +88,7 @@ where study_id || '_' || vdc_collection_id in
 	select study_id || '_' || rootcollection_id
 	from study, vdc
 	where study.owner_id = vdc.id
-)
+);
 
 
 delete from pagedef where name = 'AddCollectionsPage';

@@ -117,32 +117,6 @@
     <listener>
  <listener-class>edu.harvard.hmdc.vdcnet.util.InputFileSessionCleaner</listener-class>
     </listener>
-   <!-- upload filter -->
-    <filter>
-        <filter-name>UploadFilter</filter-name>
-        <filter-class>com.sun.rave.web.ui.util.UploadFilter</filter-class>
-        <init-param>
-            <description>The maximum allowed upload size in bytes.  If this is set
-                to a negative value, there is no maximum.  The default
-            value is 1000000.</description>
-            <param-name>maxSize</param-name>
-            <param-value>1500000000</param-value>
-        </init-param>
-        <init-param>
-            <description>The size (in bytes) of an uploaded file which, if it is
-                exceeded, will cause the file to be written directly to
-                disk instead of stored in memory.  Files smaller than or
-                equal to this size will be stored in memory.  The default
-            value is 4096.</description>
-            <param-name>sizeThreshold</param-name>
-            <param-value>4096</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>UploadFilter</filter-name>
-        <servlet-name>Persistent Faces Servlet</servlet-name>
-    </filter-mapping> 
-    
     <!-- login filter -->
     <filter>
         <filter-name>LoginFilter</filter-name>
@@ -212,10 +186,6 @@
         <load-on-startup>3</load-on-startup>
     </servlet>
     <servlet>
-        <servlet-name>ThemeServlet</servlet-name>
-        <servlet-class>com.sun.rave.web.ui.theme.ThemeServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>FileDownloadServlet</servlet-name>
         <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.FileDownloadServlet</servlet-class>
     </servlet>
@@ -265,10 +235,6 @@
     <servlet-mapping>
         <servlet-name>ErrorPageServlet</servlet-name>
         <url-pattern>/ExceptionHandler</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ThemeServlet</servlet-name>
-        <url-pattern>/theme/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>FileDownloadServlet</servlet-name>

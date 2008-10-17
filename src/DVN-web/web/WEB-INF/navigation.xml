@@ -403,36 +403,6 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <from-view-id>/networkAdmin/VDCGroupDetailPage.xhtml</from-view-id>
-        <navigation-case>
-            <from-outcome>result</from-outcome>
-            <to-view-id>/networkAdmin/VDCGroupDetailPage.xhtml</to-view-id> 
-            <redirect />
-        </navigation-case>
-    </navigation-rule>
-    <navigation-rule>
-        <from-view-id>/networkAdmin/VDCGroupDetailPage.xhtml</from-view-id>
-        <navigation-case>
-            <from-outcome>dvgroup_edit</from-outcome>
-            <to-view-id>/networkAdmin/VDCGroupEditPage.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>dvgroup_add</from-outcome>
-            <to-view-id>/networkAdmin/VDCGroupEditPage.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>
-    <navigation-rule>
-        <from-view-id>/networkAdmin/VDCGroupEditPage.xhtml</from-view-id>
-        <navigation-case>
-            <from-outcome>success</from-outcome>
-            <to-view-id>/networkAdmin/VDCGroupDetailPage.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>failed</from-outcome>
-            <to-view-id>/networkAdmin/VDCGroupEditPage.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>
-    <navigation-rule>
         <from-view-id>/networkAdmin/AddClassificationsPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>

@@ -61,10 +61,6 @@
       <component-type>DvnInlineHelpSupport</component-type>
       <component-class>edu.harvard.hmdc.vdcnet.web.component.DvnInlineHelpSupport</component-class>
   </component>
-  <component>
-      <component-type>DvnDataList</component-type>
-      <component-class>edu.harvard.hmdc.vdcnet.web.component.DvnDataList</component-class>
-    </component>
   <!-- validators -->
   <validator>
       <validator-id>CharacterValidator</validator-id>

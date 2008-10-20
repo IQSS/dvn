@@ -119,7 +119,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
             } else {
                 parentId = getVDCRequestBean().getCurrentVDC().getRootCollection().getId();
             }
-            collection.setParentRelationship( vdcCollectionService.find(parentId) );
+            collection.setParentCollection( vdcCollectionService.find(parentId) );
         }
 
         browseDVId = getVDCRequestBean().getCurrentVDC().getId();
@@ -234,8 +234,16 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
 
     public List<SelectItem> getBrowseDVItems() {
         List dvSelectItems = new ArrayList<SelectItem>();
+        
+        // first add current
+        VDC currentVDC = getVDCRequestBean().getCurrentVDC();
+        dvSelectItems.add(new SelectItem(currentVDC.getId(), currentVDC.getName()));
+        dvSelectItems.add(new SelectItem("", "-----", null, true));
+        
         for (VDC vdc : vdcService.findAllPublic()) {
-            dvSelectItems.add(new SelectItem(vdc.getId(), vdc.getName()));
+            if (!vdc.equals(currentVDC)) {
+                dvSelectItems.add(new SelectItem(vdc.getId(), vdc.getName()));
+            }
         }
 
         return dvSelectItems;
@@ -286,12 +294,19 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
     // actions
 
     public String save_action() {
-        if (parentId != null) {
+        // first set parent, if needed
+        if (parentId != null && 
+                (collection.getParentCollection() == null || !parentId.equals(collection.getParentCollection().getId() ) ) ) {
+
+            if (collection.getParentCollection() != null) {
+                collection.removeParentRelationship();
+            }
+
             VDCCollection parentColl = vdcCollectionService.find(parentId);
-            parentColl.getSubCollections().add(collection);
-            collection.setParentCollection(parentColl);
+            collection.setParentRelationship(parentColl);
         }
 
+        // now save collection
         if (collId == null) {
             vdcCollectionService.create(collection);
         } else {

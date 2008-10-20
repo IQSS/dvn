@@ -6,7 +6,7 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -18,670 +18,231 @@
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/** Source File Name:   DvRecordsManager.java
+ *
+ * DvRecordsManager is the backing bean that supports
+ * the network home page. It is through this class that the
+ * DataverseGrouping parents and children are created and
+ * passed onto the view.
+ *
+ *
+ */
+
 package edu.harvard.hmdc.vdcnet.web;
 
-import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
-import edu.harvard.hmdc.vdcnet.admin.RoleRequestServiceLocal;
-import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
-import edu.harvard.hmdc.vdcnet.admin.VDCUser;
-import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
-import edu.harvard.hmdc.vdcnet.index.SearchTerm;
+import edu.harvard.hmdc.vdcnet.study.StudyDownload;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
-import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
-import edu.harvard.hmdc.vdcnet.util.BundleReader;
-import edu.harvard.hmdc.vdcnet.util.StringUtil;
-import edu.harvard.hmdc.vdcnet.util.Tab;
-import edu.harvard.hmdc.vdcnet.util.TabSort;
-import edu.harvard.hmdc.vdcnet.vdc.VDC;
-import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
-import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
-import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
-import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
-import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
-import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
+import edu.harvard.hmdc.vdcnet.util.DateUtils;
+import edu.harvard.hmdc.vdcnet.vdc.*;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import edu.harvard.hmdc.vdcnet.web.component.DvnDataList;
-import edu.harvard.hmdc.vdcnet.web.component.DataListing;
-import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
-import java.text.MessageFormat;
+import edu.harvard.hmdc.vdcnet.web.push.NetworkStatsState;
+import edu.harvard.hmdc.vdcnet.web.push.beans.NetworkStatsBean;
+import edu.harvard.hmdc.vdcnet.web.push.beans.NetworkStatsItemBean;
+import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.ResourceBundle;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import javax.ejb.EJB;
 
-
-
-/*
- * HomePageBean.java
- *
- * Created on September 19, 2006, 1:37 PM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- */
-
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.servlet.http.HttpServletRequest;
-
-/**
- *
- * @author gdurand
- */
-public class HomePage extends VDCBaseBean  implements java.io.Serializable  {
-    
-    @EJB VDCServiceLocal vdcService;
+public class HomePage extends VDCBaseBean implements Serializable {
     @EJB StudyServiceLocal studyService;
-    @EJB VariableServiceLocal varService;
-    @EJB IndexServiceLocal indexService;
-    @EJB NetworkRoleServiceLocal networkRoleService;
-    @EJB RoleRequestServiceLocal roleRequestService;
-    @EJB UserServiceLocal userService;
-    
-    /** Creates a new instance of HomePageBean */
+    @EJB VDCGroupServiceLocal vdcGroupService;
+    @EJB VDCServiceLocal vdcService;
+
+    private ArrayList itemBeans;
+    private ArrayList dvGroupItemBeans;
+    private boolean isInit;
+    private int itemBeansSize = 0;
+    public static final String GROUP_INDENT_STYLE_CLASS = "GROUP_INDENT_STYLE_CLASS";
+    public static final String GROUP_ROW_STYLE_CLASS = "groupRow";
+    public static final String CHILD_INDENT_STYLE_CLASS = "CHILD_INDENT_STYLE_CLASS";
+    public String CHILD_ROW_STYLE_CLASS;
+    public static final String CONTRACT_IMAGE = "tree_nav_top_close_no_siblings.gif";
+    public static final String EXPAND_IMAGE = "tree_nav_top_open_no_siblings.gif";
+
+    //these static variables have a dependency on the Network Stats Server e.g.
+    // they should be held as constants in a constants file ... TODO
+    private static Long   SCHOLAR_ID = new Long("-1");
+    private static String   SCHOLAR_SHORT_DESCRIPTION = new String("A short description for the research scholar group");
+    private static Long   OTHER_ID   = new Long("-2");
+    private static String   OTHER_SHORT_DESCRIPTION = new String("A short description for the unclassified dataverses group (other).");
+
     public HomePage() {
+        //init();
+        CHILD_ROW_STYLE_CLASS = "";
     }
-    
-    private static int vdcGroupCount;
-    private static int scholarDvCount;
-    private List<VDC> scholarDvGroup;
-    private List<VDC> vdcGroups;
-    private List<VDC> vdcsSansGroups;
-    private String searchField;
-    private String searchValue;
-    private Map dataMap    = new LinkedHashMap();
-    private Map tabsMap    = new LinkedHashMap();
-    private Map showMap = new LinkedHashMap(); //stores display numbers for all of the groups
-    private BundleReader datalistbundle = new BundleReader("DataListBundle");
-    
-    StatusMessage msg;
-    
-    public StatusMessage getMsg(){
-        return msg;
-    }
-    
-    public void setMsg(StatusMessage msg){
-        this.msg = msg;
-    }
-    
+
+     @SuppressWarnings("unchecked")
     public void init() {
         super.init();
-        msg =  (StatusMessage)getRequestMap().get("statusMessage");
-        
-        LoginBean loginBean = getVDCSessionBean().getLoginBean();
-        
-        if (getVDCRequestBean().getCurrentVDC() == null && getVDCRequestBean().getVdcNetwork().isAllowCreateRequest()) {
-            if (loginBean==null || 
-                    (loginBean!=null  && 
-                      !loginBean.isNetworkAdmin()    && 
-                      (!loginBean.isNetworkCreator() || (loginBean.isNetworkCreator() && !userService.hasUserCreatedDataverse(loginBean.getUser().getId()))))) {
-                showRequestCreator=true;
-            }
-        }
-        if ( getVDCRequestBean().getCurrentVDC() != null && getVDCRequestBean().getCurrentVDC().isAllowContributorRequests()) {
-            if (loginBean==null || (loginBean!=null && loginBean.isBasicUser() )) {
-                showRequestContributor=true;
-            }
-        }
-        //Add support for VDC Groups on VDC network home page
-        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        String tab = request.getParameter("tab");
-        if (tab == null) {
-            Iterator iterator = request.getParameterMap().keySet().iterator();
-            while (iterator.hasNext()) {
-                Object key = (Object) iterator.next();
-                if ( key instanceof String && ((String) key).indexOf("tab") != -1 && !request.getParameter((String)key).equals("")) {
-                    tab = request.getParameter((String)key);
-                }
-            }
-        }
-        if (tab != null) {
-            setSelectedTab(tab);
+        // initialize the list
+        if (itemBeans != null) {
+            itemBeans.clear();
         } else {
-            setSelectedTab(datalistbundle.getMessageValue("tab1key")); //default value
+            itemBeans = new ArrayList();
         }
-        request.setAttribute("tab", getSelectedTab());
-        initTabsMap();
-        initVdcGroupData();
-        initScholarDVGroup();
-        initVdcsSansGroups();
-        initNetworkData();
-    }
-
-    public String getSearchField() {
-        return searchField;
-    }
-    
-    public void setSearchField(String searchField) {
-        this.searchField = searchField;
-    }
-    
-    public String getSearchValue() {
-        return searchValue;
-    }
-    
-    public void setSearchValue(String searchValue) {
-        this.searchValue = searchValue;
-    }
-    
-    private List recentStudies;
-    
-    public List getRecentStudies() {
-        if (recentStudies == null) {
-            recentStudies = new ArrayList();
-            VDC vdc = getVDCRequestBean().getCurrentVDC();
-            if (vdc != null) {
-                VDCUser user = getVDCSessionBean().getUser();
-                recentStudies = StudyUI.filterVisibleStudies( studyService.getRecentStudies(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 3 );
-            }
-        }
-        return recentStudies;
-    }
-    
-    
-    public List getVdcs() {
-        return vdcService.findAll();
-    }
-    
-    
-    public String search_action() {
-        List searchTerms = new ArrayList();
-        SearchTerm st = new SearchTerm();
-        st.setFieldName( searchField );
-        st.setValue( searchValue );
-        searchTerms.add(st);
-        List studies = new ArrayList();
-        Map variableMap = new HashMap();
-            
-        if ( searchField.equals("variable") ) {
-            List variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
-            varService.determineStudiesFromVariables(variables, studies, variableMap);
-            
-        } else {
-            studies = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
-        }
-        
-        
-        StudyListing sl = new StudyListing(StudyListing.SEARCH);
-        sl.setStudyIds(studies);
-        sl.setSearchTerms(searchTerms);
-        sl.setVariableMap(variableMap);
-        getVDCRequestBean().setStudyListing(sl);
-        
-        return "search";
-    }
-    
-    private String parsedLocalAnnouncements = parseAnnouncements((getVDCRequestBean().getCurrentVDC()!= null) ? getVDCRequestBean().getCurrentVDC().getAnnouncements(): "", true);
-    
-    public String getParsedLocalAnnouncements() {
-        return this.parsedLocalAnnouncements;
-    }
-    
-    public void setParsedLocalAnnouncements(String announcements) {
-        this.parsedLocalAnnouncements = announcements;
-    }
-    
-    private String parsedNetworkAnnouncements = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
-    
-    public String getParsedNetworkAnnouncements() {
-        return this.parsedNetworkAnnouncements;
-    }
-    
-    public void setParsedNetworkAnnouncements(String announcements) {
-        this.parsedNetworkAnnouncements = announcements;
-    }
-    
-    
-    /** public String parseLocalAnnouncements
-     *
-     * @description This utility method checks a string
-     * for a regexp pattern and then parses off the remainder.
-     *
-     *
-     *@return parsed announcements
-     *
-     */
-    public String parseAnnouncements(String announcements, boolean isLocal) {
-        String truncatedAnnouncements = StringUtil.truncateString(announcements, 1000);
-        if ( truncatedAnnouncements != null && !truncatedAnnouncements.equals(announcements) ) {
-            ResourceBundle resourceBundle = ResourceBundle.getBundle("Bundle");
-            if (isLocal) {
-                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml?vdcId=" + getVDCRequestBean().getCurrentVDC().getId() + "\" title=\"" + resourceBundle.getString("moreLocalAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
-            } else {
-                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml\" title=\"" + resourceBundle.getString("moreNetworkAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
-            }
-        }
-        return truncatedAnnouncements;
-    }
-    
-    /**
-     * Holds value of property showRequestCreator.
-     */
-    private boolean showRequestCreator;
-    
-    /**
-     * Getter for property showRequestCreator.
-     * @return Value of property showRequestCreator.
-     */
-    public boolean isShowRequestCreator() {
-        return this.showRequestCreator;
-    }
-    
-    /**
-     * Setter for property showRequestCreator.
-     * @param showRequestCreator New value of property showRequestCreator.
-     */
-    public void setShowRequestCreator(boolean showRequestCreator) {
-        this.showRequestCreator = showRequestCreator;
-    }
-    
-    /**
-     * Holds value of property showRequestContributor.
-     */
-    private boolean showRequestContributor;
-    
-    /**
-     * Getter for property showRequestContributor.
-     * @return Value of property showRequestContributor.
-     */
-    public boolean isShowRequestContributor() {
-        return this.showRequestContributor;
-    }
-    
-    /**
-     * Setter for property showRequestContributor.
-     * @param showRequestContributor New value of property showRequestContributor.
-     */
-    public void setShowRequestContributor(boolean showRequestContributor) {
-        this.showRequestContributor = showRequestContributor;
-    }
-    
-    /** ************ Add support for VDC Groups on the network home page *************** 
-     *
-     *
-     *
-     *
-     * @author wbossons
-     *
-     */
-    @EJB VDCGroupServiceLocal vdcGroupService;
-     
-    private final String defaultVdcPath = "";//TODO: Calculate this from the faces configuration
-    //getters
-    public Map getDataMap() {
-        return this.dataMap;
-    }
-    
-    public Map getTabsMap() {
-        return this.tabsMap;
-    }
-    
-    //setters
-    public void setDataMap(Map map) {
-        this.dataMap = map;
-    }
-    
-    public void setTabsMap(Map map) {
-        this.tabsMap = map;
-    }
-        
-    /** ************ support for VDC Groups on the network home page *************** 
-     *
-     *
-     *
-     *
-     * @author wbossons
-     *
-     */
-    
-    //init groups
-    public void initVdcGroupData() {
-        // Get all the vdc groups
-        vdcGroupCount = 0;
         List list = (List)vdcGroupService.findAll();
-        setVdcGroups(list);
-        List localList = vdcGroups;
-        Iterator iterator = localList.iterator();
-        VDCGroup vdcgroup = null;
-        // add the vdc children who are members of a group
-        
-        while (iterator.hasNext()) {
+        initGroupBean(list);
+        List scholarlist = (List)vdcService.findVdcsNotInGroups("Scholar");
+        initUnGroupedBeans(scholarlist, "Scholar Dataverses", SCHOLAR_ID);
+        List otherlist = (List)vdcService.findVdcsNotInGroups("Basic");
+        initUnGroupedBeans(otherlist, "Other", OTHER_ID);
+     }
+
+     DataverseGrouping parentItem = null;
+     DataverseGrouping childItem  = null;
+
+     private void initGroupBean(List list) {
+         Iterator iterator = list.iterator();
+         VDCGroup vdcgroup = null;
+         while(iterator.hasNext()) {
+            //add DataListItems to the list
+            itemBeansSize++;
             vdcgroup = (VDCGroup)iterator.next();
-            //check coming soon or is available
-            List<VDC> innerlist = vdcgroup.getVdcs();
+            Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
+            parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
+            parentItem.setShortDescription(vdcgroup.getDescription());
+            parentItem.setSubclassification(new Long("25"));
+            List innerlist = vdcgroup.getVdcs();
             Iterator inneriterator = innerlist.iterator();
-            while (inneriterator.hasNext()) {
+            // ArrayList childItems   = new ArrayList();
+            while(inneriterator.hasNext()) {
                 VDC vdc = (VDC)inneriterator.next();
-                if (this.selectedTab.equals(datalistbundle.getMessageValue("tab2key")) && !vdc.isRestricted()) // coming soon
-                    inneriterator.remove();
-                else if (this.selectedTab.equals(datalistbundle.getMessageValue("tab1key")) && vdc.isRestricted()) // now available
-                    inneriterator.remove();  
+                //TODO: Make this the timestamp for last update time
+                Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
+                Long localActivity       = calculateActivity(vdc);
+                String activity          = getActivityClass(localActivity);
+                childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
+                parentItem.addChildItem(childItem);
             }
-            List<DataListing> dataList = sortVdcs(innerlist);
-            if (!dataList.isEmpty()) {
-                dataMap.put(vdcgroup.getName(), dataList);
-                showMap.put(vdcgroup.getName(), vdcgroup.getDefaultDisplayNumber());
-                vdcGroupCount++;
-            } 
-        }
-        //finally, add the default display numbers 
-    }
-    
-    public void initVdcsSansGroups() {
-        // Get all the vdc groups
-        List list = (List)vdcService.findVdcsNotInGroups("Basic");
-        List newlist = new ArrayList();
-        Iterator iterator = list.iterator();
-        while (iterator.hasNext()) {
-            VDC vdc = (VDC)iterator.next();
-            if (vdc.getDtype().equals("Scholar")) { 
-                continue; //scholar dvs are in the scholar dv group
-            } else {
-                if (this.selectedTab.equals(datalistbundle.getMessageValue("tab2key")) && vdc.isRestricted()) {
-                    newlist.add(vdc);
-                } else if (this.selectedTab.equals(datalistbundle.getMessageValue("tab1key")) && !vdc.isRestricted()) {
-                    newlist.add(vdc);
-                }
-            }
-        }
-        setVdcsSansGroups(newlist);
-        List<DataListing> dataList = sortVdcs(this.getVdcsSansGroups());
-        String heading = (vdcGroupCount > 0 || scholarDvCount > 0) ? datalistbundle.getMessageValue("otherGroupLabel") : "";
-        if (!dataList.isEmpty()) {
-                dataMap.put(heading, dataList);
-                showMap.put(heading, getVDCRequestBean().getVdcNetwork().getDefaultDisplayNumber());
-        }
-   }
-    
-   public void initScholarDVGroup() {
-        // Get all the vdc groups
-        scholarDvCount = 0;
-        List list = (List)vdcService.findVdcsNotInGroups("Scholar");
-        List newlist = new ArrayList();
-        Iterator iterator = list.iterator();
-        while (iterator.hasNext()) {
-            Object object = (Object)iterator.next();
-            VDC sdv = null;
-            if (object instanceof VDC) {
-                sdv = (VDC)object;
-                if (this.selectedTab.equals(datalistbundle.getMessageValue("tab2key")) && sdv.isRestricted()) {
-                    newlist.add(sdv);
-                } else if (this.selectedTab.equals(datalistbundle.getMessageValue("tab1key")) && !sdv.isRestricted()) {
-                    newlist.add(sdv);
-                }
-            }
-        }
-        setScholarDvGroup(newlist);
-        List<DataListing> dataList = sortVdcs(this.getScholarDvGroup());
-        if (!dataList.isEmpty()) {
-            dataMap.put(this.datalistbundle.getMessageValue("scholarDvGroupLabel"), dataList);
-            showMap.put(this.datalistbundle.getMessageValue("scholarDvGroupLabel"), getVDCRequestBean().getVdcNetwork().getDefaultDisplayNumber());
-            scholarDvCount++;
         }
      }
-    
-    //getters
-    public List getVdcGroups() {
-        return (List)vdcGroups;
-    }
-    
-    public List<VDC> getVdcsSansGroups() {
-        return this.vdcsSansGroups;
-    }
-    
-    public List getScholarDvGroup() {
-        return (List)scholarDvGroup;
-    }
-    
-    // setters
-    
-    public void setVdcGroups(List vdcgroups) {
-        this.vdcGroups = vdcgroups;
-    }
 
-    public void setVdcsSansGroups(List<VDC> vdcsSansGroups) {
-        this.vdcsSansGroups = vdcsSansGroups;
-    }
-    
-    public void setScholarDvGroup(List groups) {
-        this.scholarDvGroup = groups;
-    }
-    
-    //utils
-    
-    private List sortVdcs(List memberVDCs) {
-        List<DataListing> listToSort = new ArrayList<DataListing>();
-        List<DataListing> sortedList = new ArrayList<DataListing>();
-        DataListing ndvList = null;
-        Iterator iterator = memberVDCs.iterator();
+     private void initUnGroupedBeans(List list, String caption, Long netstatsId) {
+        Iterator iterator = list.iterator();
+        parentItem = new DataverseGrouping(netstatsId, caption, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, new Long("-1"));
+        parentItem.setShortDescription("Hello Wendy");
+        parentItem.setSubclassification(new Long("25"));
+        itemBeansSize++;
         while (iterator.hasNext()) {
             VDC vdc = (VDC)iterator.next();
-            String restricted = null;
-            if (vdc.isRestricted()) 
-                restricted = new String("yes");
-            else
-                restricted = new String("no");
-            String affiliation = null;
-            if (vdc.getAffiliation() != null)
-                affiliation = new String(vdc.getAffiliation());
-            else
-                affiliation = new String("");
-            if (vdc.getDtype().equals("Scholar")) {
-                VDC scholarDV = (VDC)vdc;
-                String name = new String(scholarDV.getLastName() + ", " + scholarDV.getFirstName());
-                String tooltip = new String(scholarDV.getName());
-                ndvList = new DataListing(name, scholarDV.getAlias(), affiliation, restricted, tooltip);
-            } else {
-                ndvList = new DataListing(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), restricted, vdc.getName());
+            Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
+            Long localActivity       = calculateActivity(vdc);
+            String activity          = getActivityClass(localActivity);
+            childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(),  "dataverse", activity);
+            parentItem.addChildItem(childItem);
+        }
+     }
+
+    public void dispose() {
+        isInit = false;
+        if(itemBeans != null) {
+            DataverseGrouping dataversegrouping;
+            ArrayList tempList;
+            for(int i = 0; i < itemBeans.size(); i++) {
+                dataversegrouping = (DataverseGrouping)itemBeans.get(i);
+                tempList = dataversegrouping.getChildItems();
+                if(tempList != null)
+                    tempList.clear();
             }
-            listToSort.add(ndvList);
+
+            itemBeans.clear();
         }
-        synchronized(listToSort){
-            Collections.sort(listToSort);
-        }
-        SortedSet set = new TreeSet(listToSort);
-        //System.out.println(set); leave this for debugging purposes
+    }
+
+    public ArrayList getItemBeans() {
+        return itemBeans;
+    }
+
+    public int getItemBeansSize() {
+        return itemBeansSize;
+    }
+
+    private String getLastUpdatedTime(Long vdcId) {
+        Timestamp timestamp = null;
+        timestamp = studyService.getLastUpdatedTime(vdcId);
+        //TODO: convert this to n (hours, months days) time ago
+        String timestampString = DateUtils.getTimeInterval(timestamp.getTime());
+        return timestampString;
+    }
+
+    private Long calculateActivity(VDC vdc) {
+        Integer numberOfDownloads = 0;
+        Integer numberOwnedStudies = new Integer(0);
+        Long localActivity;
         try {
-          Iterator setIterator = set.iterator();
-          while (setIterator.hasNext()) {
-              DataListing ndvListing = (DataListing)setIterator.next();
-              sortedList.add(ndvListing);
-          }
-        } catch (NoSuchElementException e) {
-          System.out.println("No elements to printout");
+            Collection collection = vdc.getOwnedStudies();
+            numberOwnedStudies = collection.size();
+            Iterator iterator = collection.iterator();
+            while (iterator.hasNext()) {
+                StudyDownload studydownload = new StudyDownload();
+                numberOfDownloads += studydownload.getNumberOfDownloads();
+                iterator.next();
+            }
+        } catch (Exception e) {
+            System.out.println("an exception was thrown while calculating activity");
+        } finally {
+            if (numberOwnedStudies > 0)
+                localActivity = new Long(numberOfDownloads/numberOwnedStudies * 100);
+            else
+                localActivity = new Long(numberOfDownloads.toString());
+            return localActivity;
         }
-       return sortedList;
     }
- 
-    public String getDefaultVdcPath() {
-        return defaultVdcPath;
-    }
-    
-      
-    /******************** TABS *******************/
-    
-    public void initTabsMap() {
-       ArrayList<Tab> tabs = new ArrayList<Tab>();
-       int i = 1;
-       while (i <= Integer.parseInt(datalistbundle.getMessageValue("numberOfTabs"))) {
-          String tabkey  = datalistbundle.getMessageValue("tab" + i + "key");
-          String tabname = datalistbundle.getMessageValue("tab" + i + "name");
-          String tabnodisplaymsg = datalistbundle.getMessageValue("tab" + i + "nodisplaymsg");
-          Integer taborder   = new Integer(datalistbundle.getMessageValue("tab" + i + "order"));
-          Tab tab = new Tab(tabkey, tabname, tabnodisplaymsg, taborder);
-          tabs.add(tab);
-          i++;
+
+    private String getActivityClass(Long activity) {
+        String activityClass = new String();
+        switch (activity.intValue()) {
+           case 0: activityClass =  "activitylevelicon al-0"; break;
+           case 1: activityClass =  "activitylevelicon al-1"; break;
+           case 2: activityClass =  "activitylevelicon al-2"; break;
+           case 3: activityClass =  "activitylevelicon al-3"; break;
+           case 4: activityClass =  "activitylevelicon al-4"; break;
+           case 5: activityClass =  "activitylevelicon al-5"; break;
        }
-       TabSort tabsort = new TabSort();
-       synchronized(tabsort){
-            Collections.sort(tabs, tabsort.TAB_ORDER);
-        }
-      
-       Iterator iterator = tabs.iterator();
-       while (iterator.hasNext()) {
-           Tab tab = (Tab)iterator.next();
-           tabsMap.put(tab.getKey(), tab);
-       }
-   }
-    
-    
-//rem tab
-        
-//rem TabSort
-    
-    private String selectedTab;
-    
-    public String getSelectedTab() {
-        return this.selectedTab;
-    }
-    
-    public void setSelectedTab(String selected) {
-        this.selectedTab = selected;
-    }
-    
-    //network data
-    private Long totalDataverses;
-    private Long totalStudies;
-    private Long totalFiles;
-    
-    private String networkData = new String();
-    
-    @EJB VDCNetworkServiceLocal vdcNetworkService;
-       /**
-     * Holds value of property total.
-     */
-     private void initNetworkData() {
-         boolean isReleased         = true;
-         if (this.selectedTab.equals(datalistbundle.getMessageValue("tab2key"))) //comingsoon
-             isReleased = false;
-         ResourceBundle messages = ResourceBundle.getBundle("Bundle");
-         Object[] messageArguments = { this.getTotalDataverses(isReleased), this.getTotalStudies(isReleased), this.getTotalFiles(isReleased) };
-         MessageFormat formatter = new MessageFormat("");
-         formatter.applyPattern(messages.getString("totals"));
-         String output = formatter.format(messageArguments);
-         setNetworkData(output);
-     }
-    
-    /**
-     * Getters 
-     */
-    public Long getTotalDataverses(boolean released) {
-        return vdcNetworkService.getTotalDataverses(released);
-    }
-    
-    public Long getTotalStudies(boolean released) {
-        return vdcNetworkService.getTotalStudies(released);
-    }
-    
-    public Long getTotalFiles(boolean released) {
-        return vdcNetworkService.getTotalFiles(released);
-    }
-    
-    public String getNetworkData() {
-        return this.networkData;
+        return activityClass;
     }
 
     /**
-     * Setters
+     * <p>Callback method that is called after the component tree has been
+     * restored, but before any event processing takes place.  This method
+     * will <strong>only</strong> be called on a postback request that
+     * is processing a form submit.  Customize this method to allocate
+     * resources that will be required in your event handlers.</p>
      */
-    public void setTotalDataverses(Long totalDvs) {
-        this.totalDataverses = totalDvs;
+    public void preprocess() {
     }
-    
-    public void setTotalStudies(Long totalstudies) {
-        this.totalStudies = totalstudies;
+
+    /**
+     * <p>Callback method that is called just before rendering takes place.
+     * This method will <strong>only</strong> be called for the page that
+     * will actually be rendered (and not, for example, on a page that
+     * handled a postback and then navigated to a different page).  Customize
+     * this method to allocate resources that will be required for rendering
+     * this page.</p>
+     */
+    public void prerender() {
     }
-    
-    public void setTotalFiles(Long totalfiles) {
-        this.totalFiles = totalfiles;
+
+    /**
+     * <p>Callback method that is called after rendering is completed for
+     * this request, if <code>init()</code> was called (regardless of whether
+     * or not this was the page that was actually rendered).  Customize this
+     * method to release resources acquired in the <code>init()</code>,
+     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
+     * acquired during execution of an event handler).</p>
+     */
+    public void destroy() {
     }
-    
-    public void setNetworkData(String networkdata) {
-        this.networkData = networkdata;
+
+    /**
+     * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
+     * This method is automatically generated, so any user-specified code inserted
+     * here is subject to being replaced.</p>
+     */
+    private void _init() {
     }
-    
-    //AJAX related code
-    // actionlisteners associated with the component
-    //action listeners
-    
-      /**
-       * page_action
-       * 
-       * @description This method tags an ajax paging event
-       * for the DvnDataList on the network version of the
-       * home page and also sets some of the attributes
-       * needed to page the correct group in the correct direction
-       * 
-       * @author wbossons
-       */
-      public void page_action(ActionEvent event) {
-        if (event.getComponent().getClientId(FacesContext.getCurrentInstance()).contains("previous_")) {
-            dataList.getAttributes().put("pagingDirection", "previous");
-        } else {
-            dataList.getAttributes().put("pagingDirection", "next");
-        }
-        HttpServletRequest request  = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        request.setAttribute("AjaxRequest", "page_action");
-        String clientId = event.getComponent().getClientId(FacesContext.getCurrentInstance());
-        String targetGroup = getTargetGroup(clientId);
-        dataList.getAttributes().put("targetGroup", targetGroup);
-      }
-      
-      //getters for paging
-      private String getTargetGroup(String clientid) {
-          return clientid.substring(clientid.indexOf("_") + 1, clientid.indexOf("_", clientid.indexOf("_") + 1));
-      }
-    
-    //DvnDataList initialization
-      HtmlPanelGrid mainDataTable = new HtmlPanelGrid();
-      DvnDataList dataList;
-      
-      //Getters
-      public DvnDataList getDataList() {
-          if (dataList == null) {
-              dataList = new DvnDataList();
-              populateDataList();
-          } 
-          return dataList;
-      }
-      
-      //Setters
-      public void setDataList(DvnDataList datalist) {
-          this.dataList = datalist;
-      }
-      
-      //Utils
-      
-      private String dataMapId;
-      
-      public String getDataMapId() {
-          return this.dataMapId;
-      }
-      
-      public void setDataMapId(String datamapid) {
-           dataMapId = new String(datamapid);
-      }
-            
-      private void populateDataList() {
-        setDataMapId("dataMap");
-        //dataList.getAttributes().put("defaultDisplayNumber", getDefaultDisplayNumber());
-        dataList.getAttributes().put("defaultDisplayNumber", showMap);
-        dataList.getAttributes().put("idName", "dataMap");
-        dataList.getAttributes().put("contents", dataMap);
-        dataList.getAttributes().put("tabs", tabsMap);
-        dataList.getAttributes().put("tab", selectedTab);
-        dataList.getAttributes().put("lastRecord", "");
-        dataList.getAttributes().put("firstRecord", "");
-        dataList.getAttributes().put("targetGroup", "none");
-    }
-      
+
 }

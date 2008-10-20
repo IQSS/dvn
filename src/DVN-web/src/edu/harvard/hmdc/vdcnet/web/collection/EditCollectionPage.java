@@ -296,9 +296,9 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
     public String save_action() {
         // first set parent, if needed
         if (parentId != null && 
-                (collection.getParentCollection() == null || !parentId.equals(collection.getParentCollection().getId() ) ) ) {
+                (collId == null || !parentId.equals(collection.getParentCollection().getId() ) ) ) {
 
-            if (collection.getParentCollection() != null) {
+            if (collId != null) {
                 collection.removeParentRelationship();
             }
 

@@ -27,7 +27,7 @@ package edu.harvard.hmdc.vdcnet.web.study;
 
 
 import com.sun.jsfcl.data.DefaultTableDataModel;
-
+import com.sun.rave.web.ui.component.TabSet;
 import edu.harvard.hmdc.vdcnet.study.EditStudyService;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyAbstract;
@@ -104,6 +104,9 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void init() {
         super.init();
         // set tab if it was it was sent as pamameter
+        if (tab==null) {
+            tab="catalog";
+        }
         token = this.getRequestParam("studyForm:token" );
         if ( token!=null) {
             if ( sessionGet(token)!=null) {
@@ -328,8 +331,17 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
      */
     public void destroy() {
     }
-
- 
+    
+    private TabSet tabSet1 = new TabSet();
+    
+    public TabSet getTabSet1() {
+        return tabSet1;
+    }
+    
+    public void setTabSet1(TabSet ts) {
+        this.tabSet1 = ts;
+    }
+    
     public String tab1_action() {
         // TODO: Replace with your code
         
@@ -669,6 +681,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         editStudyService.cancel();
         this.sessionRemove(token);
         getVDCRequestBean().setStudyId(study.getId());
+        getVDCRequestBean().setSelectedTab(tabSet1.getSelected());
         
         return  forwardPage;
     }
@@ -907,7 +920,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         return "optional";
     }
     
-    /** get the combined input level of the fields in this section of the page */
      public String getAbstractAndScopeInputLevel() {
         return getInputLevel(StudyFieldConstant.abstractDate,
                StudyFieldConstant.abstractText,
@@ -936,8 +948,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                StudyFieldConstant.kindOfData,
                StudyFieldConstant.universe);
      }
-     
-    /** get the combined input level of the fields in this section of the page */
+
     public String getDataCollectionMethodologyInputLevel() {
         return getInputLevel(StudyFieldConstant.timeMethod,
                 StudyFieldConstant.dataCollector,
@@ -962,7 +973,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     }
 
-    /** get the combined input level of the fields in this section of the page */
     public String getTermsOfUseInputLevel() {
         return getInputLevel(StudyFieldConstant.disclaimer,
                 StudyFieldConstant.conditions,
@@ -975,7 +985,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     }
 
-    /** get the combined input level of the fields in this section of the page */
     public String getDataSetAvailabilityInputLevel() {
         return getInputLevel(StudyFieldConstant.placeOfAccess,
                 StudyFieldConstant.originalArchive,
@@ -984,7 +993,106 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 StudyFieldConstant.studyCompletion);
 
     }
-  
+   public String getGeoBoundingInputLevel() {
+        return getInputLevel(StudyFieldConstant.eastLongitude,
+                StudyFieldConstant.westLongitude,
+                StudyFieldConstant.northLatitude,
+                StudyFieldConstant.southLatitude);
+
+    }
+    public String getOtherInformationInputLevel() {
+        return getInputLevel(StudyFieldConstant.NotesInformationSubject,
+                StudyFieldConstant.NotesInformationType,
+                StudyFieldConstant.NotesText);
+
+    }
+
+    public String getOtherIdLevel() {
+        return getInputLevel(StudyFieldConstant.otherId,
+                StudyFieldConstant.otherIdAgency);
+
+    }
+
+    public String getAuthorInputLevel() {
+        return getInputLevel(StudyFieldConstant.authorName,
+                StudyFieldConstant.authorAffiliation);
+
+
+    }
+
+    public String getProducerInputLevel() {
+        return getInputLevel(StudyFieldConstant.producerName,
+                StudyFieldConstant.producerAffiliation,
+                StudyFieldConstant.producerAbbreviation,
+                StudyFieldConstant.producerURL,
+                StudyFieldConstant.producerLogo);
+    }
+
+    public String getSeriesInputLevel() {
+        return getInputLevel(StudyFieldConstant.seriesName,
+                StudyFieldConstant.seriesInformation);
+
+    }
+    
+    public String getVersionInputLevel() {
+        return getInputLevel(StudyFieldConstant.versionDate,
+                StudyFieldConstant.studyVersion);
+
+    }
+
+    public String getSoftwareInputLevel() {
+        return getInputLevel(StudyFieldConstant.softwareName,
+                StudyFieldConstant.softwareVersion);
+
+    }
+
+    public String getGrantInputLevel() {
+        return getInputLevel(StudyFieldConstant.grantNumber,
+                StudyFieldConstant.grantNumberAgency);
+    }
+
+    public String getDistributorInputLevel() {
+        return getInputLevel(StudyFieldConstant.distributorName,
+                StudyFieldConstant.distributorAffiliation,
+                StudyFieldConstant.distributorAbbreviation,
+                StudyFieldConstant.distributorURL,
+                StudyFieldConstant.distributorLogo);
+
+    }
+
+    public String getContactInputLevel() {
+        return getInputLevel(StudyFieldConstant.distributorContact,
+                StudyFieldConstant.distributorContactAffiliation,
+                StudyFieldConstant.distributorContactEmail);
+
+    }
+
+    public String getAbstractInputLevel() {
+        return getInputLevel(StudyFieldConstant.abstractText,
+                StudyFieldConstant.abstractDate);
+
+    }
+
+    public String getKeywordInputLevel() {
+        return getInputLevel(StudyFieldConstant.keywordValue,
+                StudyFieldConstant.keywordVocab,
+                StudyFieldConstant.keywordVocabURI);
+
+    }
+
+    public String getTopicInputLevel() {
+        return getInputLevel(StudyFieldConstant.topicClassValue,
+                StudyFieldConstant.topicClassVocab,
+                StudyFieldConstant.topicClassVocabURI);
+    }
+
+    public String getNoteInputLevel() {
+        return getInputLevel(StudyFieldConstant.NotesText,
+                StudyFieldConstant.NotesInformationType,
+                StudyFieldConstant.NotesInformationSubject);
+
+    }
+
  
   
    
@@ -1045,6 +1153,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         editStudyService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
        
         getVDCRequestBean().setStudyId(study.getId());
+        getVDCRequestBean().setSelectedTab(tabSet1.getSelected());
         this.sessionRemove(token);
         return "viewStudy";
     }
@@ -2612,7 +2721,11 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         productionDate = new DvnDate(study.getProductionDate());
         
     }
-  */  
+  */
+
+    public boolean getShowTab() {
+        return true;
+    }
   
 }
 

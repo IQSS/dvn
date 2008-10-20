@@ -7,7 +7,7 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
-      >
+      xmlns:ui="http://www.sun.com/web/ui">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
@@ -23,7 +23,7 @@
           // Functions for hiding and showing study fields
           //
 
-
+      
 
           function addLoadEvent(func) {
               var oldonload = window.onload;
@@ -101,7 +101,7 @@
           </div>
           <div class="dvn_sectionBoxNoBorders">
 
-
+       
 
               <!-- validation errors occurred? -->
               <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage">
@@ -113,14 +113,9 @@
                 <ice:commandButton immediate="true" id="button2" style="margin-left: 30px; margin-right: 15px" value="Cancel" action="#{EditStudyPage.cancel}"/>
               </div>
 
-        <div id="editStudyTabSet">
-            <ul>
-              <li><a href="#catalog"><span>Cataloging Information</span></a></li>
-              <li><a href="#files"><span>Documentation, Data and Analysis</span></a></li>
 
-            </ul>
-                <div  id="catalog">
-                  <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" style="width: 98%;">
+
+                  <ice:panelGroup id="layoutPanel1" panelLayout="flow" style="width: 98%;" visible="#{EditStudyPage.showTab}">
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%" style="margin-bottom: 5px;">
                       <div jsfc="ice:panelGroup" id="groupPanel9b">
                         <ice:outputText value="Select Study Template: " rendered="#{EditStudyPage.showTemplateList}"/>
@@ -133,12 +128,12 @@
                         <input checked="checked" type="radio" id="hideRadio" name="hideShowRadio" value="hide" onclick="updateHideShow(this);"/> Show Required and Recommended Fields
                         <input type="radio" id="showRadio" name="hideShowRadio" value="show" onclick="updateHideShow(this);"/> Show All Fields
                        -->
-
+                        
                         <ice:selectOneRadio partialSubmit="true" value ="#{EditStudyPage.showAll}">
                           <f:selectItem itemLabel="Show Required and Recommended Fields" itemValue="false"/>
                           <f:selectItem itemLabel="Show All Fields" itemValue="true"/>
                         </ice:selectOneRadio>
-
+                      
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyTableLegend">
                         <div jsfc="ice:panelGroup">
@@ -149,7 +144,7 @@
                           <ice:graphicImage value="/resources/icon_htmlformat.gif"/> <ice:outputText styleClass="vdcHelpText" value="#{bundle.htmlHelpText}"/>
                         </div>
                         <div jsfc="ice:panelGroup">
-                          <ice:graphicImage value="/resources/icon_dateformat.gif"/> <ice:outputText styleClass="vdcHelpText" value="Light Orange field indicates that Date format is required (YYYY or YYYY-MM or YYYY-MM-DD)"/>
+                          <ice:graphicImage  value="/resources/icon_dateformat.gif"/> <ice:outputText styleClass="vdcHelpText" value="Light Orange field indicates that Date format is required (YYYY or YYYY-MM or YYYY-MM-DD)"/>
                         </div>
                         <div jsfc="ice:panelGroup">
                         <ice:graphicImage value="/resources/icon_add.gif"/> <ice:outputText styleClass="vdcHelpText vdcEditStudyLegendMargin" value="Add a new row (e.g., multiple authors)"/>
@@ -267,7 +262,7 @@
                             </div>
                           </ice:column>
                           <ice:column>
-                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">               
                               <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1" >
                                 <dvn:inlinehelp helpMessage="#{editstudybundle.authorNameHelp}" linkText="#{editstudybundle.authorNameLabel}" heading="#{editstudybundle.authorNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                                 <br/>
@@ -401,7 +396,7 @@
                   </ice:panelGrid>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable"
+                                 styleClass="vdcEditStudyTable" 
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
                                  visible="#{EditStudyPage.studyMap[sfc.productionPlace].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel43"   styleClass="vdcEditStudyField">
@@ -457,7 +452,7 @@
                   </ice:dataTable>
 
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable "
+                                 styleClass="vdcEditStudyTable " 
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
                                  visible="#{EditStudyPage.studyMap[sfc.fundingAgency].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
@@ -2046,12 +2041,14 @@
                       </ice:dataTable>
                     </ice:column>
                   </ice:dataTable>
-                </div>
-              </div>
+              
+              </ice:panelGroup>
 
               <!-- FILES TAB -->
 
-              <div id="files">
+
+               <ice:panelGroup id="layoutPanel1" panelLayout="flow" style="width: 98%;" visible="#{EditStudyPage.showTab}">
+
                 <div jsfc="ice:panelGroup" id="noFilesPanel" style="padding-top: 30px; padding-bottom: 30px; padding-left: 20px;" rendered="#{empty EditStudyPage.files}">
                   <ice:outputText value="No files have been provided for this study. To add files, return to the study view (by clicking Save or Cancel) and follow the Add File(s) link."/>
                 </div>
@@ -2105,8 +2102,8 @@
                     </ice:column>
                   </ice:dataTable>
                 </div>
-              </div>
-            </div>
+               </ice:panelGroup>
+      
             <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormPadding dvnFormMargin">
               <ice:commandButton id="button1b" value="Save" action="#{EditStudyPage.save}"/>
               <ice:commandButton immediate="true" id="button2b" value="Cancel" action="#{EditStudyPage.cancel}"/>
@@ -2114,7 +2111,7 @@
           </div>
         </div>
       </ice:form>
-
+  
 
     </gui:define>
   </gui:composition>

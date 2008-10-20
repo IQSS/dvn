@@ -95,4 +95,8 @@ delete from pagedef where name = 'AddCollectionsPage';
 update pagedef set name = 'ManageCollectionsPage' where name = 'ManageCollectionPage';
 update pagedef set path = '/collection/ManageCollectionsPage.xhtml' where path = '/collection/ManageCollectionPage.xhtml';
 
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddClassificationsPage', '/networkAdmin/AddClassificationsPage.xhtml', null,1 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageClassificationsPage', '/networkAdmin/ManageClassificationsPage.xhtml', null,1 );
+
+
 commit;

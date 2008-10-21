@@ -36,7 +36,7 @@
           <!-- Search Section starts here -->
           <div class="dvn_searchblock">
             <div class="dvn_searchBoxContent">
-              <div class="dvn_searchTitle"><a title="" name="search">Search</a></div>
+              <div class="dvn_searchTitle"><a title="" name="search">Search Studies</a></div>
               <fieldset>
                 <label for="options">
                   <ice:selectOneMenu id="dropdown1" value="#{StudyListingPage.searchField}">
@@ -50,13 +50,13 @@
                 <label for="search">
                   <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" id="textField2" value="#{StudyListingPage.searchValue}"/>
                 </label>
-                <ice:outputLabel for="filter" rendered="#{StudyListingPage.renderSearchResultsFilter}">
+                <ice:outputLabel for="filter" styleClass="dvnSearchBoxCheckbox" rendered="#{StudyListingPage.renderSearchResultsFilter}">
                   <ice:selectBooleanCheckbox value="#{StudyListingPage.searchResultsFilter}"/>
-                  <span><ice:outputText value="within these results" /></span>
+                  <ice:outputText value="within these results"/>
                 </ice:outputLabel>
-                <ice:outputLabel for="filter" rendered="#{StudyListingPage.renderSearchCollectionFilter}">
+                <ice:outputLabel for="filter" styleClass="dvnSearchBoxCheckbox" rendered="#{StudyListingPage.renderSearchCollectionFilter}">
                   <ice:selectBooleanCheckbox value="#{StudyListingPage.searchCollectionFilter}"/>
-                  <span><ice:outputText value="within this collection" /></span>
+                  <ice:outputText value="within this collection"/>
                 </ice:outputLabel>
                 <label for="button">
                   <ice:commandButton id="search" value="Go" action="#{StudyListingPage.search_action}"/>
@@ -66,7 +66,7 @@
                 <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
                   <ice:outputText value="Advanced Search"/>
                 </ice:outputLink>
-                &#160; | &#160;
+                &#160;| &#160;
                 <ice:outputLink value="http://thedata.org/guides/users/search/tips" target="_blank">
                   <ice:outputText value="Tips"/>
                 </ice:outputLink>
@@ -97,17 +97,17 @@
                     <ice:selectOneMenu id="dropdown2" valueChangeListener="#{StudyListingPage.sort_action}" onchange="submit();">
                       <f:selectItem itemLabel="Sort By:" itemValue=""/>
                       <f:selectItem itemLabel="- Study ID" itemValue="studyId"/>
-                      <f:selectItem itemLabel="- Title" itemValue="title"/>
+                      <f:selectItem itemLabel="- Title" itemValue="metadata.title"/>
                     </ice:selectOneMenu>
                   </div>
                   <div jsfc="ice:panelGroup" id="groupPanel6" styleClass="dvn_StudyListTotals">
                     <ice:outputText styleClass="dvn_totalsLabel" value="Studies: "/>
                     <ice:outputText styleClass="dvn_totalsValue" value="#{StudyListingPage.studyCount}"/>
                   </div>
-                  <div jsfc="ice:panelGroup" id="groupPanel4" rendered="#{StudyListingPage.renderScroller}">
-                    <ice:dataPaginator id="studyListingPaginatorTop" styleClass="dvnStudyListPaginator"
+                  <div jsfc="ice:panelGroup" id="groupPanel4" rendered="#{StudyListingPage.renderScroller}" styleClass="dvnPaginatorWrap">
+                    <ice:dataPaginator id="studyListingPaginatorTop" styleClass="dvnPaginatorRight"
                                        for="studyListTable1" paginator="true" partialSubmit="true"
-                                       fastStep="3" paginatorMaxPages="4">
+                                       fastStep="3" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
                       <f:facet name="first">
                         <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-first.gif" title="First Page"/>
                       </f:facet>
@@ -129,7 +129,7 @@
                     </ice:dataPaginator>
                   </div>
                 </ice:panelGrid>
-                <ice:dataTable binding="#{StudyListingPage.studyTable}" rows="10" headerClass="list-header" id="studyListTable1" width="100%"
+                <ice:dataTable binding="#{StudyListingPage.studyTable}" rows="2" headerClass="list-header" id="studyListTable1" width="100%"
                                styleClass="dvnStudyListTable" rowClasses="list-row-odd, list-row-even" columnClasses="dvnStudyListTableColumn" value="#{StudyListingPage.studies}" var="studyUI">
                   <ice:column id="column1">
                     <div class="dvnStudyListStudyInfo">
@@ -221,10 +221,10 @@
                   <div jsfc="ice:panelGroup" id="groupPanel55" rendered="#{StudyListingPage.renderSort}">
 
                   </div>
-                  <div jsfc="ice:panelGroup" id="groupPanel44" rendered="#{StudyListingPage.renderScroller}">
-                    <ice:dataPaginator id="studyListingPaginatorBottom" styleClass="dvnStudyListPaginator"
+                  <div jsfc="ice:panelGroup" id="groupPanel44" rendered="#{StudyListingPage.renderScroller}" styleClass="dvnPaginatorWrap">
+                    <ice:dataPaginator id="studyListingPaginatorBottom" styleClass="dvnPaginatorRight"
                                        for="studyListTable1" paginator="true" partialSubmit="true"
-                                       fastStep="3" paginatorMaxPages="4">
+                                       fastStep="3" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
                       <f:facet name="first">
                         <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-first.gif" title="First Page"/>
                       </f:facet>

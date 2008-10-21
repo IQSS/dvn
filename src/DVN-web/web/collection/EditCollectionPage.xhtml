@@ -6,216 +6,192 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
-  <head>
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  </head>
+</head>
 
-  <body>
-    <gui:composition template="/template.xhtml">
-      <gui:param name="pageTitle" value="DVN - Add/Edit Collection"/>
-      <gui:define name="body">
-
-        <script type="text/javascript">
-            // <![CDATA[
-            function initPage() {
-                setRadioValue("collType", document.getElementById("form1:collectionType").value );
-                showHide(document.getElementById("form1:collectionType").value );
-            }
-
-
-            function getElementsByClassName( strClassName, obj ) {
-                var ar = arguments[2] || new Array();
-                var re = new RegExp("\\b" + strClassName + "\\b", "g");
-
-                if ( re.test(obj.className) ) {
-                    ar.push( obj );
-                }
-                for ( var i = 0; i < obj.childNodes.length; i++ )
-                    getElementsByClassName( strClassName, obj.childNodes[i], ar );
-
-                return ar;
-            }
-
-            function getRadioValue( id ) {
-                elements=document.getElementsByTagName("input");
-                for(i=0; i < elements.length; i++) {
-
-                    if (elements[i].id.indexOf(id) != -1 ) {
-                        if (elements[i].checked) {
-                            return elements[i].value;
-                        }
-                    }
-                }
-            }
-
-            function setRadioValue( id, newValue ) {
-                elements=document.getElementsByTagName("input");
-                for(i=0; i < elements.length; i++) {
-
-                    if (elements[i].id.indexOf(id) != -1) {
-                        if (elements[i].value == newValue) {
-                            elements[i].checked = true;
-                            return;
-                        }
-                    }
-                }
-            }
-
-
-            function showHide(showType) {
-                var hideType;
-
-                switch(showType)
-                {
-                    case "dynamic":
-                        hideType = "static";
-                        document.getElementById("form1:collectionType").value = showType;
-                        break;
-                    case "static":
-                        hideType = "dynamic";
-                        document.getElementById("form1:collectionType").value = showType;
-                        break;
-                    case "search":
-                        hideType = "browse";
-                        document.getElementById("form1:availableStudiesMethod").value = showType;
-                        break;
-                    case "browse":
-                        hideType = "search";
-                        document.getElementById("form1:availableStudiesMethod").value = showType;
-                        break;
-                    default:
-                        break;
-                }
-                var showDivs = getElementsByClassName(showType, document.body);
-                for (var i = 0; i < showDivs.length; i++)
-                {
-                    var div = showDivs[i];
-                    div.style.display='';
-                }
-
-                var hideDivs = getElementsByClassName(hideType, document.body);
-                for (var i = 0; i < hideDivs.length; i++)
-                {
-                    var div = hideDivs[i];
-                    div.style.display='none';
-                }
-            }
-            // ]]>
-        </script>
-
-        <ice:form id="form1">
-          <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-          <ice:inputHidden id="collId" value="#{EditCollectionPage.collId}"/>
-
-          <div class="dvn_section">
-            <div class="dvn_sectionTitle">
-              <ice:outputText value="Create Collection"/>
-            </div>
-            <div class="dvn_sectionBox">
-              <div class="dvn_margin12">
-                <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" style="width: 100%;">
-                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%">
-                    <div jsfc="ice:panelGroup" id="groupPanel1" styleClass="vdcFieldTitle">
-                      Type
-                    </div>
-                    <div jsfc="ice:panelGroup">
-                      <!-- workaround for iefaces radio / onclick problem
-                      <h:selectOneMenu id="collectionType" value="#{EditCollectionPage.collection.type}" onclick="showHide(this.value);">
-                        <f:selectItem id="item1" itemLabel="static" itemValue="static" />
-                        <f:selectItem id="item2" itemLabel="dynamic" itemValue="dynamic" />
-                      </h:selectOneMenu>
-                      -->
-                      <ice:inputHidden id="collectionType" value="#{EditCollectionPage.collection.type}"/>
-                      <input type="radio" name="collType" id="collTypeStatic" value="static" onclick="showHide(this.value);"/> static
-                      <input type="radio" name="collType" id="collTypeDynamic" value="dynamic" onclick="showHide(this.value);"/> dynamic
-                    </div>
-                    <div jsfc="ice:panelGroup" id="groupPanel2" styleClass="vdcFieldTitle">
-                      Name
-                    </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_collectionName" size="45" value="#{EditCollectionPage.collection.name}" required="true" requiredMessage="This field is required."/>
-                      <ice:message styleClass="errorMessage" for="input_collectionName"/>
-                    </div>
-                    <div jsfc="ice:panelGroup" styleClass="vdcFieldTitle">
-                      Parent
-                    </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:selectOneMenu id="parentColl" value="#{EditCollectionPage.parentId}" rendered="#{!EditCollectionPage.collection.rootCollection}">
-                        <f:selectItems value="#{EditCollectionPage.parentCollectionItems}" />
-                      </ice:selectOneMenu>
-                      <ice:outputText value="No Parent (Root Collection)" rendered="#{EditCollectionPage.collection.rootCollection}"/>
-                    </div>
-                    <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="vdcFieldTitle">
-                      Description
-                    </div>
-                    <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea id="input_collectionDesc" cols="60" rows="4" value="#{EditCollectionPage.collection.description}"/>
-                    </div>
-                  </ice:panelGrid>
-
-                  <!-- MPL License text (see http://www.mozilla.org/MPL/)
-                In this demonstration, ice:dataTable is used to display data. There is
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="DVN - Add/Edit Collection"/>
+    <gui:define name="body">
+      <script type="text/javascript">
+          // <![CDATA[
+          function initPage() {
+              setRadioValue("collType", document.getElementById("form1:collectionType").value );
+              showHide(document.getElementById("form1:collectionType").value );
+          }
+          function getElementsByClassName( strClassName, obj ) {
+              var ar = arguments[2] || new Array();
+              var re = new RegExp("\\b" + strClassName + "\\b", "g");
+              if ( re.test(obj.className) ) {
+                  ar.push( obj );
+              }
+              for ( var i = 0; i < obj.childNodes.length; i++ )
+                  getElementsByClassName( strClassName, obj.childNodes[i], ar );
+              return ar;
+          }
+          function getRadioValue( id ) {
+              elements=document.getElementsByTagName("input");
+              for(i=0; i < elements.length; i++) {
+                  if (elements[i].id.indexOf(id) != -1 ) {
+                      if (elements[i].checked) {
+                          return elements[i].value;
+                      }
+                  }
+              }
+          }
+          function setRadioValue( id, newValue ) {
+              elements=document.getElementsByTagName("input");
+              for(i=0; i < elements.length; i++) {
+                  if (elements[i].id.indexOf(id) != -1) {
+                      if (elements[i].value == newValue) {
+                          elements[i].checked = true;
+                          return;
+                      }
+                  }
+              }
+          }
+          function showHide(showType) {
+              var hideType;
+              switch(showType)
+              {
+                  case "dynamic":
+                      hideType = "static";
+                      document.getElementById("form1:collectionType").value = showType;
+                      break;
+                  case "static":
+                      hideType = "dynamic";
+                      document.getElementById("form1:collectionType").value = showType;
+                      break;
+                  case "search":
+                      hideType = "browse";
+                      document.getElementById("form1:availableStudiesMethod").value = showType;
+                      break;
+                  case "browse":
+                      hideType = "search";
+                      document.getElementById("form1:availableStudiesMethod").value = showType;
+                      break;
+                  default:
+                      break;
+              }
+              var showDivs = getElementsByClassName(showType, document.body);
+              for (var i = 0; i < showDivs.length; i++)
+              {
+                  var div = showDivs[i];
+                  div.style.display='';
+              }
+              var hideDivs = getElementsByClassName(hideType, document.body);
+              for (var i = 0; i < hideDivs.length; i++)
+              {
+                  var div = hideDivs[i];
+                  div.style.display='none';
+              }
+          }
+          // ]]>
+      </script>
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:inputHidden id="collId" value="#{EditCollectionPage.collId}"/>
+        <div class="dvn_section">
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="Create Collection"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow">
+                <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%">
+                  <div jsfc="ice:panelGroup" id="groupPanel1" styleClass="vdcFieldTitle">
+                    Type
+                  </div>
+                  <div jsfc="ice:panelGroup">
+                    <!-- workaround for iefaces radio / onclick problem
+                    <h:selectOneMenu id="collectionType" value="#{EditCollectionPage.collection.type}" onclick="showHide(this.value);">
+                      <f:selectItem id="item1" itemLabel="static" itemValue="static" />
+                      <f:selectItem id="item2" itemLabel="dynamic" itemValue="dynamic" />
+                    </h:selectOneMenu>
+                    -->
+                    <ice:inputHidden id="collectionType" value="#{EditCollectionPage.collection.type}"/>
+                    <input type="radio" name="collType" id="collTypeStatic" value="static" onclick="showHide(this.value);"/> Static
+                    <input type="radio" name="collType" id="collTypeDynamic" value="dynamic" onclick="showHide(this.value);"/> Dynamic
+                  </div>
+                  <div jsfc="ice:panelGroup" id="groupPanel2" styleClass="vdcFieldTitle">
+                    Name
+                  </div>
+                  <div jsfc="ice:panelGroup">
+                    <ice:inputText id="input_collectionName" size="45" value="#{EditCollectionPage.collection.name}" required="true" requiredMessage="This field is required."/>
+                    <ice:message styleClass="errorMessage" for="input_collectionName"/>
+                  </div>
+                  <div jsfc="ice:panelGroup" styleClass="vdcFieldTitle">
+                    Parent
+                  </div>
+                  <div jsfc="ice:panelGroup">
+                    <ice:selectOneMenu id="parentColl" value="#{EditCollectionPage.parentId}" rendered="#{!EditCollectionPage.collection.rootCollection}">
+                      <f:selectItems value="#{EditCollectionPage.parentCollectionItems}" />
+                    </ice:selectOneMenu>
+                    <ice:outputText value="No Parent (Root Collection)" rendered="#{EditCollectionPage.collection.rootCollection}"/>
+                  </div>
+                  <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="vdcFieldTitle">
+                    Description
+                  </div>
+                  <div jsfc="ice:panelGroup">
+                    <ice:inputTextarea id="input_collectionDesc" cols="60" rows="4" value="#{EditCollectionPage.collection.description}"/>
+                  </div>
+                </ice:panelGrid>
+                <!-- MPL License text (see http://www.mozilla.org/MPL/)
+              In this demonstration, ice:dataTable is used to display data. There is
 a control on the data to hide/show the table columns.-->
-
-                  <ice:panelGroup styleClass="componentBox static" style="padding-top: 2em;">
-
-                    <ice:panelGroup styleClass="rowSelectorContainer">
-
-                      <!-- DataTable with RowSelector Component -->
-
-                      <div class="vdcFieldTitle">Selected Studies</div>
-
-                      <ice:panelGroup styleClass="exampleBox">
-
-                        <ice:dataTable id="studyList"
-                                       var="study"
-                                       value="#{EditCollectionPage.collection.studies}"
-                                       width="100%"
-                                       scrollable="true"
-                                       scrollHeight="150px"
-                                       columnClasses="tableCol">
-                          <ice:column>
-                            <ice:rowSelector id="selectedStudiesSelector"
-                                             selectionListener="#{EditCollectionPage.removeStudyListener}"/>
-                            <ice:outputText value="#{study.globalId}"/>
-                          </ice:column>
-                          <ice:column>
-                            <ice:outputText value="#{study.metadata.title}"/>
-                          </ice:column>
-                          <ice:column>
-                            <ice:outputText value="#{study.owner.name}"/>
-                          </ice:column>
-                        </ice:dataTable>
-                      </ice:panelGroup>
-
-                      <!-- Selected Values DataTable -->
-
-                      <div class="vdcFieldTitle" style="padding-top: 1em;">Studies to Choose From</div>
-
-                      <ice:panelGroup>
-                        <div>
-                          <ice:inputHidden id="availableStudiesMethod" value="#{EditCollectionPage.availableStudiesMethod}"/>
-                          <ice:commandLink onclick="javascript:showHide('browse');" partialSubmit="true">
-                            <ice:outputText value="Browse"/>
-                          </ice:commandLink>
-                          &#160;|&#160;&#160;
-                          <ice:commandLink onclick="javascript:showHide('search');" partialSubmit="true">
-                            <ice:outputText value="Search"/>
-                          </ice:commandLink>
-                        </div>
-                      </ice:panelGroup>
-
-                      <ice:panelGroup styleClass="browse">
+                <ice:panelGroup styleClass="componentBox static">
+                  <ice:panelGroup styleClass="rowSelectorContainer">
+                    <!-- DataTable with RowSelector Component -->
+                    <div class="vdcFieldTitle dvnFormPaddingTop">Selected Studies</div>
+                    <ice:panelGroup styleClass="dvnEditCollectionStudySelectedList exampleBox">
+                      <ice:dataTable id="studyList"
+                                     var="study"
+                                     value="#{EditCollectionPage.collection.studies}"
+                                     width="100%"
+                                     scrollable="true"
+                                     scrollHeight="150px"
+                                     columnWidths="16%,56%,28%"
+                                     columnClasses="dvnEditCollectionStudyListID,dvnEditCollectionStudyListTitle,dvnEditCollectionStudyListOwner">
+                        <ice:column>
+                          <ice:rowSelector id="selectedStudiesSelector"
+                                           selectionListener="#{EditCollectionPage.removeStudyListener}"/>
+                          <ice:outputText value="#{study.globalId}"/>
+                        </ice:column>
+                        <ice:column>
+                          <ice:outputText value="#{study.metadata.title}"/>
+                        </ice:column>
+                        <ice:column>
+                          <ice:outputText value="#{study.owner.name}"/>
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:panelGroup>
+                    <!-- Selected Values DataTable -->
+                    <div class="vdcFieldTitle dvnFormPaddingTop">Studies to Choose From</div>
+                    <ice:panelGroup styleClass="dvnEditCollectionStudyList">
+                      <div class="dvnEditCollectionStudyListSelect">
+                        <ice:inputHidden id="availableStudiesMethod" value="#{EditCollectionPage.availableStudiesMethod}"/>
+                        Find studies by&#160;
+                        <ice:commandLink onclick="javascript:showHide('browse');" partialSubmit="true">
+                          <ice:outputText value="Browse"/>
+                        </ice:commandLink>
+                        or&#160;
+                        <ice:commandLink onclick="javascript:showHide('search');" partialSubmit="true">
+                          <ice:outputText value="Search"/>
+                        </ice:commandLink>
+                      </div>
+                      <ice:panelGroup styleClass="dvnEditCollectionStudyListSelect browse">
+                        Dataverse<br/>
                         <ice:selectOneMenu value="#{EditCollectionPage.browseDVId}" partialSubmit="true">
                           <f:selectItems value="#{EditCollectionPage.browseDVItems}"/>
                         </ice:selectOneMenu>
                         <br/>
+                        Collection<br/>
                         <ice:selectOneMenu value="#{EditCollectionPage.browseCollectionId}" partialSubmit="true">
                           <f:selectItems value="#{EditCollectionPage.browseCollectionItems}"/>
                         </ice:selectOneMenu>
                       </ice:panelGroup>
-
-                      <ice:panelGroup styleClass="search" style="display: none;">
+                      <ice:panelGroup styleClass="dvnEditCollectionStudyListSelect search" style="display: none;">
                         <ice:selectOneMenu id="dropdown5" value="#{EditCollectionPage.searchField}" >
                           <f:selectItem itemLabel="Cataloging Information" itemValue="any"/>
                           <f:selectItem itemLabel="- Author" itemValue="authorName"/>
@@ -223,19 +199,56 @@ a control on the data to hide/show the table columns.-->
                           <f:selectItem itemLabel="- Global ID" itemValue="globalId"/>
                         </ice:selectOneMenu>
                         <ice:inputText id="textField1" value="#{EditCollectionPage.searchValue}"/>
-
                         <ice:message for="textField1" showSummary="true" showDetail="false" errorClass="errorMessage"/>
                         <ice:commandButton id="button1" value="Search" actionListener="#{EditCollectionPage.searchStudies}" partialSubmit="true"/>
                       </ice:panelGroup>
-
-                      <ice:panelGroup>
+                      <ice:panelGroup styleClass="dvnPaginatorWrap">
+                      <!-- Set up the buttons and links for browsing through the table
+             fastStep means No. of pages to fast forward or rewind: 3
+             paginatorMaxPages means No. of direct links to pages: 4 -->
+                        <ice:dataPaginator id="availableStudiesPaginator"
+                                           binding="#{EditCollectionPage.availableStudiesPaginator}"
+                                           for="availableStudies"
+                                           paginator="true"
+                                           fastStep="3"
+                                           paginatorMaxPages="4"
+                                           immediate="true"
+                                           renderFacetsIfSinglePage="false"
+                                           styleClass="dvnPaginatorRight">
+                          <f:facet name="first">
+                            <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-first.gif"
+                              title="First Page"/>
+                          </f:facet>
+                          <f:facet name="previous">
+                            <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-previous.gif"
+                              title="Previous"/>
+                          </f:facet>
+                          <f:facet name="next">
+                            <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-next.gif"
+                              title="Next"/>
+                          </f:facet>
+                          <f:facet name="last">
+                            <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-last.gif"
+                              title="Last Page"/>
+                          </f:facet>
+                          <f:facet name="fastforward">
+                            <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-ff.gif"
+                              title="Fast Forward"/>
+                          </f:facet>
+                          <f:facet name="fastrewind">
+                            <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-fr.gif"
+                              title="Fast Rewind"/>
+                          </f:facet>
+                        </ice:dataPaginator>
+                      </ice:panelGroup>
+                      <ice:panelGroup styleClass="dvnEditCollectionStudySelectionList">
                         <ice:outputLabel id="results"
                                          value=""/>
                         <ice:dataTable id="availableStudies"
                                        var="studyUI"
                                        value="#{EditCollectionPage.availableStudies}"
                                        rows="5" width="100%"
-                                       columnClasses="tableCol" >
+                                       columnClasses="dvnEditCollectionStudyListID,dvnEditCollectionStudyListTitle,dvnEditCollectionStudyListOwner">
                           <ice:column>
                             <ice:rowSelector id="availableStudiesSelector"
                                              value="#{studyUI.selected}"
@@ -250,89 +263,33 @@ a control on the data to hide/show the table columns.-->
                             <ice:outputText value="#{studyUI.study.owner.name}"/>
                           </ice:column>
                         </ice:dataTable>
-
-                        <!-- Set up the buttons and links for browsing through the table
-             fastStep means No. of pages to fast forward or rewind: 3
-             paginatorMaxPages means No. of direct links to pages: 4 -->
-                        <ice:dataPaginator id="availableStudiesPaginator"
-                                           binding="#{EditCollectionPage.availableStudiesPaginator}"
-                                           for="availableStudies"
-                                           paginator="true"
-                                           fastStep="3"
-                                           paginatorMaxPages="4"
-                                           immediate="true"
-                                           style="margin: 0; padding: 0; float: right;">
-                          <f:facet name="first">
-                            <ice:graphicImage
-                              url="./xmlhttp/css/xp/css-images/arrow-first.gif"
-                              style="border:none;"
-                              title="First Page"/>
-                          </f:facet>
-                          <f:facet name="previous">
-                            <ice:graphicImage
-                              url="./xmlhttp/css/xp/css-images/arrow-previous.gif"
-                              style="border:none;"
-                              title="Previous"/>
-                          </f:facet>
-                          <f:facet name="next">
-                            <ice:graphicImage
-                              url="./xmlhttp/css/xp/css-images/arrow-next.gif"
-                              style="border:none;"
-                              title="Next"/>
-                          </f:facet>
-                          <f:facet name="last">
-                            <ice:graphicImage
-                              url="./xmlhttp/css/xp/css-images/arrow-last.gif"
-                              style="border:none;"
-                              title="Last Page"/>
-                          </f:facet>
-                          <f:facet name="fastforward">
-                            <ice:graphicImage
-                              url="./xmlhttp/css/xp/css-images/arrow-ff.gif"
-                              style="border:none;"
-                              title="Fast Forward"/>
-                          </f:facet>
-
-                          <f:facet name="fastrewind">
-                            <ice:graphicImage
-                              url="./xmlhttp/css/xp/css-images/arrow-fr.gif"
-                              style="border:none;"
-                              title="Fast Rewind"/>
-                          </f:facet>
-                        </ice:dataPaginator>
-
                       </ice:panelGroup>
-
                     </ice:panelGroup>
                   </ice:panelGroup>
-
-                  <!-- Dynamic Query textarea -->
-
-                  <div jsfc="ice:panelGroup" style="padding-top: 2em;" styleClass="dynamic">
-                    Enter query:<br/>
-                    <ice:inputTextarea id="input_collectionQuery" cols="60" rows="6" value="#{EditCollectionPage.collection.query}"/>
-                    <br/>
-                    <ice:selectBooleanCheckbox id="onlyYourDataverse2"
-                                               value="#{EditCollectionPage.collection.localScope}"/>
-                    <ice:outputLabel for="multipleSelection"
-                                     value="Only your dataverse"/>
-                  </div>
-
-                </div>
-
-                <div style="padding-top: 2em;">
-                  <ice:commandButton id="button3" value="Save Collection" action="#{EditCollectionPage.save_action}"/>
-                  <ice:commandButton id="button4" immediate="true"
-                                     style="margin-left: 30px;" value="Cancel" action="#{EditCollectionPage.cancel_action}"/>
+                </ice:panelGroup>
+                <!-- Dynamic Query textarea -->
+                <div jsfc="ice:panelGroup" styleClass="dynamic">
+                  <div class="vdcFieldTitle dvnFormPaddingTop">Enter query:</div>
+                  <ice:inputTextarea id="input_collectionQuery" cols="60" rows="6" value="#{EditCollectionPage.collection.query}"/>
+                  <br/>
+                  <ice:selectBooleanCheckbox id="onlyYourDataverse2"
+                                             value="#{EditCollectionPage.collection.localScope}"/>
+                  <ice:outputLabel for="multipleSelection"
+                                   value="Only your dataverse"/>
                 </div>
               </div>
+              <div class="dvnFormPadding dvnFormMargin">
+                <ice:commandButton id="button3" value="Save Collection" action="#{EditCollectionPage.save_action}"/>
+                <ice:commandButton id="button4" immediate="true" value="Cancel" action="#{EditCollectionPage.cancel_action}"/>
+              </div>
             </div>
-          </div>-
-        </ice:form>
-        <script type="text/javascript">
-            initPage();
-        </script>
-      </gui:define>
-    </gui:composition>
-  </body>
+          </div>
+        </div>
+      </ice:form>
+      <script type="text/javascript">
+          initPage();
+      </script>
+    </gui:define>
+  </gui:composition>
+</body>
 </html>

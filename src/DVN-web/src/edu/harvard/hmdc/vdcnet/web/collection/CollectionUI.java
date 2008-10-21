@@ -36,7 +36,9 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollectionServiceLocal;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -98,11 +100,11 @@ public class CollectionUI implements java.io.Serializable {
         return false;
     }
 
-    public List getSubCollections() {
+    public List<VDCCollection> getSubCollections() {
         return getSubCollections(false);
     }
 
-    public List getSubCollections(boolean getHiddenCollections) {
+    public List<VDCCollection> getSubCollections(boolean getHiddenCollections) {
         VDCCollectionServiceLocal collectionService = null;
         try {
             collectionService = (VDCCollectionServiceLocal) new InitialContext().lookup("java:comp/env/collectionService");
@@ -110,37 +112,46 @@ public class CollectionUI implements java.io.Serializable {
             e.printStackTrace();
         }
 
-        List subCollections = collectionService.findSubCollections(coll.getId(), getHiddenCollections);
+        List subCollections = collectionService.findSubCollections(coll.getId());
         return subCollections;
 
     }
-
+    
     public List getStudies() {
-        List studies = new ArrayList();
+        Set studies = new LinkedHashSet();
         if (coll.isRootCollection()) {
             studies.addAll(coll.getOwner().getOwnedStudies());
         }
         if (coll.isDynamic()) {
             studies.addAll(getQueryStudies());
         } else {
-            studies.addAll(getActualStudys());
+            studies.addAll(getAssignedStudies());
+        }
+        
+        for (VDCCollection subColl : getSubCollections() ) {
+            studies.addAll( new CollectionUI(subColl).getStudies() );
         }
 
-        return studies;
-    }
-
-    public List getStudyIds() {
-        List studyIds = new ArrayList();
+        return new ArrayList(studies);
+    }    
+    
+    public List<Long> getStudyIds() {
+        Set studyIds = new LinkedHashSet();
+        
         if (coll.getParentCollection() == null) {
             studyIds.addAll(getOwnedStudyIds());
         }
         if (coll.isDynamic()) {
             studyIds.addAll(getQueryStudyIds());
         } else {
-            studyIds.addAll(getActualStudyIds());
+            studyIds.addAll(getAssignedSStudyIds());
         }
+        
+        for (VDCCollection subColl : getSubCollections() ) {
+            studyIds.addAll( new CollectionUI(subColl).getStudyIds() );
+        }        
 
-        return studyIds;
+        return new ArrayList(studyIds);        
     }
 
     private List getOwnedStudyIds() {
@@ -152,7 +163,7 @@ public class CollectionUI implements java.io.Serializable {
         return studyIds;
     }
 
-    public List getActualStudys() {
+    private List getAssignedStudies() {
         VDCCollectionServiceLocal collectionService = null;
         try {
             collectionService = (VDCCollectionServiceLocal) new InitialContext().lookup("java:comp/env/collectionService");
@@ -163,7 +174,7 @@ public class CollectionUI implements java.io.Serializable {
         return collectionService.getOrderedStudiesByCollection(coll.getId());
     }
 
-    public List getActualStudyIds() {
+    private List getAssignedSStudyIds() {
         VDCCollectionServiceLocal collectionService = null;
         try {
             collectionService = (VDCCollectionServiceLocal) new InitialContext().lookup("java:comp/env/collectionService");
@@ -174,7 +185,7 @@ public class CollectionUI implements java.io.Serializable {
         return collectionService.getOrderedStudyIdsByCollection(coll.getId());
     }
 
-    public List getQueryStudyIds() {
+    private List getQueryStudyIds() {
         IndexServiceLocal indexService = null;
         try {
             // call Indexer
@@ -186,7 +197,7 @@ public class CollectionUI implements java.io.Serializable {
         }
     }
 
-    public List getQueryStudies() {
+    private List getQueryStudies() {
         List studies = new ArrayList();
         StudyServiceLocal studyService = null;
         try {

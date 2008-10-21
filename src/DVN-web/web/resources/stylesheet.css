@@ -59,6 +59,9 @@
 .dvnFormPadding {
   padding: 1em 0;
 }
+.dvnFormPaddingTop {
+  padding-top: 1em;
+}
 .dvnFormMargin input {
   margin-right: 2em;
 }
@@ -131,6 +134,9 @@ span.disabled {font-weight: bold;}
 
 .dvn_sectionPanels .TreeContent a:link, .dvn_sectionPanels .TreeContent a:visited, .dvn_sectionPanels .TreeContent a:hover, .dvn_sectionPanels .TreeContent a:active {font-size: 90% !important;}
 
+/* ICEFACES TREE */
+.iceTreeRow a span.iceOutTxt {font-size: 90% !important;}
+
 /* HEADER */
 .dvn_headerTitle {position: relative;}
 .dvn_headerTitleLarge {margin: .25em 228px .25em 12px;}
@@ -169,24 +175,28 @@ div.dvn_navblockNetwork {background: #dadee0; border-top: 2px solid #c55b28;}
 /* SEARCH */
 div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background: #e6ebed; border: 1px solid #ddd;}
 .dvn_searchBoxContent {overflow: hidden;}
-.dvn_searchTitle {float: left; margin-right: 12px; color: #526f76; font-size: 124% !important; line-height: 155% !important;}
-.dvn_searchTitle a {color: #526f76; font-size: 124% !important; line-height: 155% !important;}
-.dvn_searchTitle a:hover, .dvn_searchTitle a:active {color: #526f76; font-size: 124% !important; line-height: 155% !important; text-decoration: none !important; cursor: text;}
+.dvn_searchTitle {}
+.dvn_searchTitle a {color: #526f76; font-size: 90% !important;}
+.dvn_searchTitle a:hover, .dvn_searchTitle a:active {color: #526f76; font-size: 90% !important; text-decoration: none !important; cursor: text;}
 .dvn_searchBoxContent fieldset {float: left;}
 .dvn_searchLinks {float: right;}
-.dvn_searchLinks a:link, .dvn_searchLinks a:visited, .dvn_searchLinks a:hover, .dvn_searchLinks a:active {margin-left: 2em; line-height: 224% !important;}
+.dvn_searchLinks a span.iceOutTxt {margin: 0; font-size: 90% !important;}
 .dvn_searchBoxContent {position: relative; width: 100%;}
 .dvn_searchBoxContent fieldset {margin: 0; padding: 0; border: 0;}
 .dvn_searchBoxContent label {float: left;}
 .dvn_searchBoxContent span {margin-right: 12px; line-height: 224% !important;}
 .dvn_searchBoxContent input, .dvn_searchBoxContent select {margin: 2px 6px 2px 0;}
+.dvnSearchBoxCheckbox, .dvnSearchBoxCheckbox select {margin-top: 0; margin-bottom: 0;}
+.dvnSearchBoxCheckbox span.iceOutTxt {font-size: 90% !important;}
 
 /* MAIN SECTION: DATAVERSE LIST + STUDIES TREE */
 #dvn_hmpgMainSection {position: relative;}
 #dvn_MainSectionCount {position: absolute; top: 0; right: 0;}
 
 /* PAGINATOR */
-.dvnStudyListPaginator {margin: 0; padding: 0; float: right;}
+.dvnPaginatorWrap {overflow: hidden;}
+.dvnPaginatorRight {margin: 0; padding: 0; float: right;}
+.dvnPaginatorRight img {border: 0;}
 
 /* ANALYSIS PAGE */
 .dvn_preFileTitle{ font-weight: bold; font-style: normal; color: #000;}
@@ -999,8 +1009,24 @@ span.vdcEditStudyFormatExample {display: inline;}
    padding-top: 2px;
    vertical-align: bottom;
 }
+
 /* Add/Manage Collection Style Rules
 */
+.dvnEditCollectionStudySelectedList {border: 1px solid #dcdddf; margin: 0; padding: 0;}
+.dvnEditCollectionStudySelectedList .iceDatTbl {margin: 0; padding: 0; width: 100%; border-left: 0px;}
+.dvnEditCollectionStudySelectedList .iceDatTbl table {margin: 0; padding: 0; width: 100%; border: 0;}
+.dvnEditCollectionStudySelectedList .iceDatTbl td, .dvnEditCollectionStudySelectedList .iceDatTbl div {margin: 0; border: 0;}
+.dvnEditCollectionStudySelectedList .iceDatTbl tr {border: 1px solid #ccc; border-width: 0 0 1px 0;}
+.dvnEditCollectionStudySelectedList .iceDatTblScrlSpr {display: none;}
+.dvnEditCollectionStudyList {border: 1px solid #dcdddf; margin: 0; padding: 0;}
+.dvnEditCollectionStudyList .dvnEditCollectionStudyListSelect {padding: .25em 1em;}
+.dvnEditCollectionStudyListID {width: 16%;}
+.dvnEditCollectionStudyListTitle {width: 56%;}
+.dvnEditCollectionStudyListOwner {width: 28%;}
+.dvnEditCollectionStudySelectionList .iceDatTbl {border: 1px solid #ccc; border-width: 1px 0 0 0;}
+.dvnEditCollectionStudySelectionList .iceDatTbl td, .dvnEditCollectionStudySelectionList .iceDatTbl div {margin: 0; border: 0;}
+.dvnEditCollectionStudySelectionList .iceDatTbl tr {border: 1px solid #ccc; border-width: 0 0 1px 0;}
+
 .vdcAddCollectionCol1{
    padding-bottom: 4px;
    padding-left: 20px;

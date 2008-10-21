@@ -29,6 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
+import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.tree.IceUserObject;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
@@ -48,7 +49,6 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.collection.CollectionUI;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import edu.harvard.hmdc.vdcnet.web.component.VDCCollectionTree;
-import edu.harvard.hmdc.vdcnet.web.customComponent.scroller.ScrollerComponent;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,9 +57,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.faces.component.UIComponent;
 import javax.faces.component.UIData;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -83,8 +81,9 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
     private StudyListing studyListing;
     private DefaultTreeModel collectionTree;
     private UIData studyTable;
-    private ScrollerComponent scroller;
-    private ScrollerComponent scroller2;
+    private DataPaginator paginator;
+
+    
     private String searchField;
     private String searchValue;
     private Integer searchFilter;
@@ -294,49 +293,10 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
         }
     }
 
-    public void scroll_action(ActionEvent event) {
-        int row = 1;
-
-        UIComponent component=event.getComponent();
-        Integer currentRow = (Integer) component.getAttributes().get("currentRow");
-        Integer currentPage = (Integer) component.getAttributes().get("currentPage");
-
-        // set for both scrollers
-        scroller.getAttributes().put("currentRow",currentRow);
-        scroller.getAttributes().put("currentPage",currentPage);
-
-        scroller2.getAttributes().put("currentRow",currentRow);
-        scroller2.getAttributes().put("currentPage",currentPage);
-
-        if (currentRow != null) {
-            row = currentRow.intValue();
-        }
-
-        scroll(row);
-    }
-
-    public void scroll(int row) {
-        int rows = getStudyTable().getRows();
-        if (rows < 1) {
-            return;
-        }
-        if (row <= 0) { //if there is no current row e.g. no search result
-            getStudyTable().setFirst(0);
-        } else if (row >= getStudyTable().getRowCount() ) { // if the current row is greater than or equal to the total rows returned
-            getStudyTable().setFirst( getStudyTable().getRowCount() - 1 );
-        } else { //if the current row is less than the total row count, but greater than 0
-            getStudyTable().setFirst( row - (row % rows) );
-        }
-    }
-
     private void resetScroller() {
-        scroller.getAttributes().put("currentRow",0);
-        scroller.getAttributes().put("currentPage",1);
-
-        scroller2.getAttributes().put("currentRow",0);
-        scroller2.getAttributes().put("currentPage",1);
-
-        scroll(0);
+        if (paginator != null) {
+            paginator.gotoFirstPage();  
+        }
     }
 
 
@@ -535,20 +495,24 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
     }
 
     private void initCollectionTree() {
+        VDCCollectionTree vdcTree = null;
+        
         if (studyListing.getCollectionTree() == null) {
-            // create root node with its children expanded
-            DefaultMutableTreeNode rootTreeNode = new DefaultMutableTreeNode();
-            IceUserObject rootObject = new IceUserObject(rootTreeNode);
-            rootObject.setText("Root Node");
-            rootObject.setExpanded(true);
-            rootTreeNode.setUserObject(rootObject);
-
-            studyListing.setCollectionTree(new DefaultTreeModel(rootTreeNode));
+            vdcTree = new VDCCollectionTree();
+        } else {
+            vdcTree = new VDCCollectionTree( studyListing.getCollectionTree() );    
         }
 
-        collectionTree = studyListing.getCollectionTree();
-        VDCCollectionTree vdcTree = new VDCCollectionTree(collectionTree);
+        vdcTree.setCollectionUrl("/faces/StudyListingPage.xhtml?mode=1");
+        
+        if (studyListing.getCollectionId() != null) {
+            vdcTree.setCollectionToBeExpanded( new Long(studyListing.getCollectionId()) );
+        }
 
+        collectionTree = vdcTree.populate( getVDCRequestBean().getCurrentVDC() );
+        studyListing.setCollectionTree(collectionTree);
+        
+        /* OLD code which sets up different type of tree depending on mode
         if (studyListing.getMode() == StudyListing.SEARCH) {
             // performace of filtering the tree is slow, so for now just show entire tree
             //vdcTree.setStudyFilter(studies);
@@ -557,13 +521,8 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
         } else {
             vdcTree.setCollectionUrl("/faces/StudyListingPage.xhtml?mode=1");
         }
-
-        if (studyListing.getCollectionId() != null) {
-            vdcTree.setCollectionToBeExpanded( new Long(studyListing.getCollectionId()) );
-        }
-
-        VDC vdc = getVDCRequestBean().getCurrentVDC();
-        vdcTree.populate(vdc);
+        */
+        
     }
 
     private void initNewStudyListing() {
@@ -700,20 +659,12 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
         this.searchFilter = searchFilter;
     }
 
-    public ScrollerComponent getScroller() {
-        return scroller;
+    public DataPaginator getPaginator() {
+        return paginator;
     }
 
-    public void setScroller(ScrollerComponent scroller) {
-        this.scroller = scroller;
-    }
-
-    public ScrollerComponent getScroller2() {
-        return scroller2;
-    }
-
-    public void setScroller2(ScrollerComponent scroller2) {
-        this.scroller2 = scroller2;
+    public void setPaginator(DataPaginator paginator) {
+        this.paginator = paginator;
     }
 
     public Map getStudyFields() {

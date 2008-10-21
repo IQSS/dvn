@@ -183,7 +183,13 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
     }
 
     private void getCollectionStudies(List studyIds, VDCCollection elem) {
-        if (elem.getQuery() != null) {
+        if (elem.isRootCollection()) {
+            for (Study study : elem.getOwner().getOwnedStudies() ) {
+                studyIds.add( study.getId() );
+            }
+        }
+        
+        if (elem.isDynamic()) {
             List<Long> queryStudyIds = query(elem.getQuery());
             studyIds.addAll(queryStudyIds);
         } else {

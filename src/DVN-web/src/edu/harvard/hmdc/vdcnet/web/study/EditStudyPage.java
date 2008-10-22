@@ -27,7 +27,6 @@ package edu.harvard.hmdc.vdcnet.web.study;
 
 
 import com.sun.jsfcl.data.DefaultTableDataModel;
-import com.sun.rave.web.ui.component.TabSet;
 import edu.harvard.hmdc.vdcnet.study.EditStudyService;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyAbstract;
@@ -332,28 +331,9 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void destroy() {
     }
     
-    private TabSet tabSet1 = new TabSet();
+  
     
-    public TabSet getTabSet1() {
-        return tabSet1;
-    }
-    
-    public void setTabSet1(TabSet ts) {
-        this.tabSet1 = ts;
-    }
-    
-    public String tab1_action() {
-        // TODO: Replace with your code
-        
-        return null;
-    }
-    
-    
-    public String tab2_action() {
-        // TODO: Replace with your code
-        
-        return null;
-    }
+   
     
     public boolean getShowTemplateList() {
           return (!getTemplatesMap().isEmpty() && getTemplatesMap().size() >1 && editStudyService.isNewStudy());
@@ -681,7 +661,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         editStudyService.cancel();
         this.sessionRemove(token);
         getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setSelectedTab(tabSet1.getSelected());
+        getVDCRequestBean().setSelectedTab(tab);
         
         return  forwardPage;
     }
@@ -1153,7 +1133,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         editStudyService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
        
         getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setSelectedTab(tabSet1.getSelected());
+        getVDCRequestBean().setSelectedTab(tab);
         this.sessionRemove(token);
         return "viewStudy";
     }
@@ -2723,8 +2703,17 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
   */
 
-    public boolean getShowTab() {
+    public boolean getShowCatalog() {
+        boolean show= tab==null || tab.equals("catalog");
+        
         return true;
+    }
+    
+    public boolean getShowFiles() {
+        boolean show =  tab!=null && tab.equals("files");
+       
+        return true;
+       
     }
   
 }

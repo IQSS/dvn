@@ -6,7 +6,7 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -20,20 +20,19 @@
 
 
 /** A class to represent the VDC class
- * so that various sorting and paging 
+ * so that various sorting and paging
  * operations can be performed.
- * 
+ *
  * DataverseGrouping defines the sortColumnNames
  * and also stores the parent and child relationships
  * while providing methods for their manipulation.
- * 
+ *
  * @author wbossons
  */
 
 package edu.harvard.hmdc.vdcnet.web;
 
 import edu.harvard.hmdc.vdcnet.util.DateUtils;
-import edu.harvard.hmdc.vdcnet.web.push.beans.NetworkStatsBean;
 import javax.faces.event.ActionEvent;
 import java.sql.Timestamp;
 
@@ -43,11 +42,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 public class DataverseGrouping extends SortableList {
-     
+
      // Images used to represent expand/contract, spacer by default
     protected String expandImage;   // + or >
     protected String contractImage; // - or v
@@ -67,7 +65,7 @@ public class DataverseGrouping extends SortableList {
     public String getIndentStyleClass() {
         return indentStyleClass;
     }
-     
+
     // dataTableColumn Names
     private static final String nameColumnName          = "Name";
     private static final String affiliationColumnName   = "Affiliation";
@@ -81,11 +79,11 @@ public class DataverseGrouping extends SortableList {
 
     ArrayList parentItems = new ArrayList();
     ArrayList childItems = new ArrayList();
-    
+
     public DataverseGrouping() {
         super(nameColumnName);
     }
-    
+
     public DataverseGrouping(Long id, String name, String recordType, ArrayList parentItems, boolean isExpanded, String expandImage, String contractImage, Long parentClassification) {
         super(nameColumnName);
         this.groupKey    = name.replaceAll(" ", "").toLowerCase();
@@ -123,7 +121,7 @@ public class DataverseGrouping extends SortableList {
         }
     }
 
-    
+
     public DataverseGrouping(String name, String alias, String affiliation, Timestamp releaseDate, Timestamp lastUpdateTime, String dvnDescription, String recordType, String activity) {
         super(nameColumnName);
         this.id             = id;
@@ -154,8 +152,8 @@ public class DataverseGrouping extends SortableList {
         this.name           = name;
         this.affiliation    = affiliation;
     }
-    
-    
+
+
     public void addChildItem(DataverseGrouping dvGroupRecord) {
         if (this.childItems != null && dvGroupRecord != null) {
             this.childItems.add(dvGroupRecord);
@@ -167,20 +165,20 @@ public class DataverseGrouping extends SortableList {
             }
         }
     }
-    
+
     public void removeChildItem(DataverseGrouping dvGroupRecord) {
         if (this.childItems != null && dvGroupRecord != null) {
             this.childItems.remove(dvGroupRecord);
         }
     }
-    
-    
+
+
     //TODO: removeChildItem from the lists when action toggled.
-    
+
     //************ EXPAND/CONTRACT EVENTS *****************
      // indicates if node is in expanded state.
     protected boolean isExpanded;
-    
+
    /**
      * Toggles the expanded state of this dataverse group.
      *
@@ -191,14 +189,14 @@ public class DataverseGrouping extends SortableList {
         isExpanded = !isExpanded;
         // add sub elements to list
         if (isExpanded) {
-            expandNodeAction();
+            recurseAndExpandNodeAction();
         }
         // remove items from list
         else {
-           contractNodeAction();
+            recurseAndContractNodeAction();
         }
     }
-    
+
       /**
      * Utility method to add all child nodes to the parent dataTable list.
      */
@@ -208,16 +206,10 @@ public class DataverseGrouping extends SortableList {
             // get index of current node
             int index = parentItems.indexOf(this);
             parentItems.addAll(index + 1, childItems);
-            //recursively add children
-            Iterator iterator = childItems.iterator();
-               while (iterator.hasNext()) {
-                   DataverseGrouping childitem = (DataverseGrouping)iterator.next();
-                   recurseAndExpandNodeAction(childitem);
-               }
         }
     }
 
-           
+
 
     /**
      * Utility method to remove all child nodes from the parent dataTable list.
@@ -225,52 +217,76 @@ public class DataverseGrouping extends SortableList {
     private void contractNodeAction() {
 
         if (childItems != null && childItems.size() > 0) {
-            //recursively remove children
-            Iterator iterator = childItems.iterator();
-               while (iterator.hasNext()) {
-                   DataverseGrouping childitem = (DataverseGrouping)iterator.next();
-                   recurseAndContractNodeAction(childitem);
-               }
             // remove all items in childItems from the parent list
-           parentItems.removeAll(childItems);   
+           parentItems.removeAll(childItems);
         }
     }
 
+   
     //BEGIN RECURSIVE NODE ACTIONS
-    
+
+    List removeFromList = new ArrayList();
       /**
      * Utility method to recursively add all child nodes to their parents in the data table.
      */
     @SuppressWarnings("unchecked")
-    private void recurseAndExpandNodeAction(DataverseGrouping childitem) {
-        if (childitem.childItems != null && childitem.childItems.size() > 0) {
-            int index = parentItems.indexOf(this);
-            parentItems.addAll(index + 1, childitem.childItems);
-            
+    private void recurseAndExpandNodeAction() {
+        if (childItems != null && childItems.size() > 0) {
+            int index = parentItems.indexOf(this) + 1;
+            parentItems.addAll(index, childItems);
+            Iterator iterator = childItems.iterator();
+            DataverseGrouping childitem = (DataverseGrouping)iterator.next();
+            recurseAndExpandNodeAction(childitem);
+            if (!removeFromList.isEmpty()) {
+                  parentItems.addAll(index + 1, removeFromList);
+                  removeFromList.clear();
+            }
         }
     }
 
-
+    private void recurseAndExpandNodeAction(DataverseGrouping childItem) {
+            Iterator iterator = parentItems.iterator();
+                  while (iterator.hasNext()) {
+                      DataverseGrouping item = (DataverseGrouping)iterator.next();
+                      if (item.parentClassification.equals(childItem.id)) {
+                          removeFromList.add(item);
+                          if (item.childItems.size() >= 1)
+                            recurseAndExpandNodeAction(item);
+                      }
+                  }
+        }
 
     /**
      * Recursive utility method to remove all child nodes from their parents in the dataTable list.
      */
-    private void recurseAndContractNodeAction(DataverseGrouping childitem) {
-        if (childitem.childItems != null && childitem.childItems.size() > 0) {
-           parentItems.removeAll(childitem.childItems);
+    private void recurseAndContractNodeAction() {
+        if (childItems != null && childItems.size() > 0) {
+            parentItems.removeAll(childItems);
+            Iterator iterator = childItems.iterator();
+            DataverseGrouping childitem = (DataverseGrouping)iterator.next();
+            recurseAndContractNodeAction(childitem);
+            if (!removeFromList.isEmpty()) {
+                  parentItems.removeAll(removeFromList);
+            }
         }
+    }
+
+    private void recurseAndContractNodeAction(DataverseGrouping childItem) {
+        Iterator iterator = parentItems.iterator();
+              while (iterator.hasNext()) {
+                  DataverseGrouping item = (DataverseGrouping)iterator.next();
+                  if (item.parentClassification.equals(childItem.id)) {
+                      removeFromList.add(item);
+                      if (item.childItems.size() >= 1)
+                        recurseAndContractNodeAction(item);
+                  }
+              }
     }
     //END RECURSIVE NODE ACTIONS
 
-    /*
-     *       if (childFilesRecords != null && childFilesRecords.size() > 0) {
-            // remove all items in childFilesRecords from the parent list
-            parentInventoryList.removeAll(childFilesRecords);
-        }
-     * /
-    
+
     // ************  SORTING **************
-    
+
    /**
      * Determines the sortColumnName order.
      *
@@ -300,7 +316,7 @@ public class DataverseGrouping extends SortableList {
                     return ascending ? c1.getAffiliation().compareTo(c2.getAffiliation()) :
                             c2.getAffiliation().compareTo(c1.getAffiliation());
                 } else if (sortColumnName.equals(dateReleasedColumnName)) {
-                    return ascending ? 
+                    return ascending ?
                         c1.getReleaseDate().compareTo(c2.getReleaseDate()) :
                         c2.getReleaseDate().compareTo(c1.getReleaseDate());
                 } else if (sortColumnName.equals(lastUpdatedColumnName)) {
@@ -326,7 +342,7 @@ public class DataverseGrouping extends SortableList {
         };
         Collections.sort(childItems, comparator);
     }
-    
+
     public String getNameColumnName() {
         return nameColumnName;
     }
@@ -342,7 +358,7 @@ public class DataverseGrouping extends SortableList {
     public String getLastUpdatedColumnName() {
         return lastUpdatedColumnName;
     }
-    
+
     public String getActivityColumnName() {
         return activityColumnName;
     }
@@ -354,12 +370,12 @@ public class DataverseGrouping extends SortableList {
     public String getSubclassificationsColumnName() {
         return subclassificationsColumnName;
     }
-    
+
             // end sorting related stuff
-  
-    
+
+
     //************  ACCESSORS/MUTATORS ********************
-    
+
     public ArrayList getParentItems () {
         return parentItems;
     }
@@ -407,9 +423,9 @@ public class DataverseGrouping extends SortableList {
     }
 
    /** DataverseGrouping display attributes
-    * 
+    *
     */
-    
+
     private Long id; //TBD if needed
     private String alias;
     private String groupKey;
@@ -427,7 +443,7 @@ public class DataverseGrouping extends SortableList {
     private String shortDescription; //TODO: Implement for dvn childItems and parentItems
     // Manage Classifications specific fields
     private Long subclassification;
-        
+
     public String getRecordType() {
         return recordType;
     }
@@ -453,7 +469,7 @@ public class DataverseGrouping extends SortableList {
         else
             return "--";
     }
-    
+
     private String getLastUpdatedTime(Long lastupdatetime) {
         //TODO: convert this to n (hours, months days) time ago
         String timestampString = DateUtils.getTimeInterval(lastupdatetime);
@@ -493,7 +509,7 @@ public class DataverseGrouping extends SortableList {
     public void setName(String name) {
         this.name = name;
     }
-    
+
      public String getAlias() {
         return alias;
     }
@@ -525,7 +541,7 @@ public class DataverseGrouping extends SortableList {
     public void setDvnDescription(String dvnDescription) {
         this.dvnDescription = dvnDescription;
     }
-    
+
     public String getGroupKey() {
         return groupKey;
     }
@@ -533,7 +549,7 @@ public class DataverseGrouping extends SortableList {
     public void setGroupKey(String groupkey) {
         this.groupKey = groupkey;
     }
-    
+
     /**
      * Get the value of activity
      *
@@ -588,5 +604,5 @@ public class DataverseGrouping extends SortableList {
     public String getStrToString() {
         return this.toString();
     }
-    
+
  }

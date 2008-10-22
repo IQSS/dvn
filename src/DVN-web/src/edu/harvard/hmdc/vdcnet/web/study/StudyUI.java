@@ -71,6 +71,7 @@ public class StudyUI  implements java.io.Serializable {
     private Study study;
     private Long studyId;
     private Map studyFields;
+    private VDCUser user;
     private UserGroup ipUserGroup;
     
     /** Creates a new instance of StudyUI
@@ -91,17 +92,21 @@ public class StudyUI  implements java.io.Serializable {
         this.studyId = sid;
         this.studyFields = studyFields;
     }
-    
-    public StudyUI(Long sid, boolean selected) {
+        
+    public StudyUI(Long sid, VDCUser user, UserGroup ipUserGroup, boolean selected) {
         this.studyId = sid;
+        this.user = user;
+        this.ipUserGroup = ipUserGroup;        
         this.selected = selected;
     }
 
-    public StudyUI(Study s, boolean selected) {
+    public StudyUI(Study s, VDCUser user, UserGroup ipUserGroup, boolean selected) {
         this.study = s;
         this.studyId = s.getId();
+        this.user = user;
+        this.ipUserGroup = ipUserGroup;        
         this.selected = selected;
-    }   
+    }     
     
     /**
      * Creates a new instance of StudyUI
@@ -111,6 +116,7 @@ public class StudyUI  implements java.io.Serializable {
     public StudyUI(Study s, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         this.study = s;
         this.studyId = s.getId();
+        this.user = user;
         this.ipUserGroup = ipUserGroup;
         initFileCategoryUIList(vdc, user, ipUserGroup);
     }
@@ -923,5 +929,9 @@ public class StudyUI  implements java.io.Serializable {
 
     public void setSelectable(boolean selectable) {
         this.selectable = selectable;
-    }    
+    }
+    
+    public boolean isStudyRestricted() {
+        return study.isStudyRestrictedForUser(user, ipUserGroup);
+    }
 }

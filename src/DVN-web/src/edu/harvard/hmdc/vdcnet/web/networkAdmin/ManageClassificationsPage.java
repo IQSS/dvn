@@ -131,7 +131,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
            String contractImage = null;
            boolean isExpanded   = false;
          if (list.isEmpty()) { // this vdcgroup has no children
-             childItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "subgroup", itemBeans, isExpanded, expandImage, contractImage, parent);
+             childItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "subgroup", isExpanded, expandImage, contractImage, parent);
              childItem.setShortDescription(vdcgroup.getDescription());
              childItem.setIndentStyleClass("childRowIndentStyle");
              parentitem.addChildItem(childItem);

@@ -27,6 +27,8 @@ package edu.harvard.hmdc.vdcnet.web.collection;
 
 import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.RowSelectorEvent;
+import edu.harvard.hmdc.vdcnet.admin.UserGroup;
+import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.SearchTerm;
 import edu.harvard.hmdc.vdcnet.study.Study;
@@ -150,9 +152,13 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
 
     private void setAvailableStudies(Long collectionId) {
         availableStudies = new ArrayList();
+        
+        VDCUser user = getVDCSessionBean().getUser();
+        UserGroup ipUserGroup = getVDCSessionBean().getIpUserGroup();
+        
         List<Study> studies = new CollectionUI(vdcCollectionService.find(collectionId)).getStudies();
         for (Study study : studies) {
-            StudyUI studyUI = new StudyUI(study, StudyUI.isStudyInList(study, collection.getStudies()));
+            StudyUI studyUI = new StudyUI(study, user, ipUserGroup, StudyUI.isStudyInList(study, collection.getStudies()));
             if (collection.isRootCollection() && study.getOwner().equals(getVDCRequestBean().getCurrentVDC()) ) {
                 studyUI.setSelected(true);
                 studyUI.setSelectable(false);             
@@ -165,10 +171,31 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
 
     private void setAvailableStudies(List<Long> studyIds) {
         availableStudies = new ArrayList();
-        for (Long sid : studyIds) {
-            availableStudies.add(new StudyUI(sid, StudyUI.isStudyInList(sid, collection.getStudies())));
+        
+        Long vdcId = getVDCRequestBean().getCurrentVDCId();
+        VDCUser user = getVDCSessionBean().getUser();
+        UserGroup ipUserGroup = getVDCSessionBean().getIpUserGroup();
+        
+        List ownedStudyIds = new ArrayList();
+        if (collection.isRootCollection()) {
+            for (Study study : getVDCRequestBean().getCurrentVDC().getOwnedStudies()) {
+                ownedStudyIds.add( study.getId() );
+            }
         }
-
+        
+        // filter out studies that are not released or in (other) restricted vdcs
+        studyIds.retainAll( studyService.getVisibleStudies( studyIds, vdcId ) );
+        
+        for (Long sid : studyIds) {
+            StudyUI studyUI = new StudyUI(sid, user, ipUserGroup, StudyUI.isStudyInList(sid, collection.getStudies()));
+            if (collection.isRootCollection() && ownedStudyIds.contains(sid) ) {
+                studyUI.setSelected(true);
+                studyUI.setSelectable(false);             
+            }
+            availableStudies.add(studyUI);
+        }
+        
+        
         resetAvailableStudiesPaginator();
     }
     
@@ -288,7 +315,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         st.setValue(searchValue);
         searchTerms.add(st);
 
-        setAvailableStudies(indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms));
+        setAvailableStudies(indexService.search( (VDC) null, searchTerms) );
     }
 
     // actions
@@ -348,6 +375,19 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
                 break;
             }
         }
+    }
+    
+    public List<StudyUI> getStudies() {
+        List studyUIs = new ArrayList();
+
+        VDCUser user = getVDCSessionBean().getUser();
+        UserGroup ipUserGroup = getVDCSessionBean().getIpUserGroup();
+        
+        for (Study study : collection.getStudies()) {
+            studyUIs.add( new StudyUI(study, user, ipUserGroup, StudyUI.isStudyInList(study, collection.getStudies() ) ) );
+        }
+        
+        return studyUIs;
     }
 }
 

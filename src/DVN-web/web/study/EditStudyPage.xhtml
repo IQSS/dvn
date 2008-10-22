@@ -115,7 +115,7 @@
 
 
 
-                  <ice:panelGroup id="layoutPanel1" panelLayout="flow" style="width: 98%;" visible="#{EditStudyPage.showTab}">
+                  <ice:panelGroup id="layoutPanel1" panelLayout="flow" style="width: 98%;" visible="#{EditStudyPage.showCatalog}">
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%" style="margin-bottom: 5px;">
                       <div jsfc="ice:panelGroup" id="groupPanel9b">
                         <ice:outputText value="Select Study Template: " rendered="#{EditStudyPage.showTemplateList}"/>
@@ -2047,7 +2047,7 @@
               <!-- FILES TAB -->
 
 
-               <ice:panelGroup id="layoutPanel1" panelLayout="flow" style="width: 98%;" visible="#{EditStudyPage.showTab}">
+               <ice:panelGroup id="layoutPanel1" panelLayout="flow" style="width: 98%;" visible="#{EditStudyPage.showFiles}">
 
                 <div jsfc="ice:panelGroup" id="noFilesPanel" style="padding-top: 30px; padding-bottom: 30px; padding-left: 20px;" rendered="#{empty EditStudyPage.files}">
                   <ice:outputText value="No files have been provided for this study. To add files, return to the study view (by clicking Save or Cancel) and follow the Add File(s) link."/>

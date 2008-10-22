@@ -52,7 +52,7 @@
               <div jsfc="ice:panelGroup" styleClass="dvnInlineButton" rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}">
                 <ice:commandButton value="Release" actionListener="#{studyPage.setReleased}"/>
               </div>
-              <dvn:tooltip tooltipMessage="#{studybundle.editTip}" linkText="#{studybundle.editText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tabSet1.selected}" cssClass="vdcTooltipLink"/>
+              <dvn:tooltip tooltipMessage="#{studybundle.editTip}" linkText="#{studybundle.editText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tab}" cssClass="vdcTooltipLink"/>
               <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
               <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
               <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
@@ -63,7 +63,7 @@
             </div>
           </div>
           <div class="dvn_sectionBoxNoBorders">
-            <ice:panelTabSet>
+            <ice:panelTabSet tabChangeListener="#{studyPage.processTabChange}">
               <ice:panelTab id="catalog" label="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
                 <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" style="width: 98%">
                   <div jsfc="ice:panelGroup"  id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">

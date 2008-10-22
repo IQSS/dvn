@@ -28,9 +28,8 @@
  */
 package edu.harvard.hmdc.vdcnet.web.study;
 
+import com.icesoft.faces.component.paneltabset.TabChangeEvent;
 import com.sun.jsfcl.data.DefaultTableDataModel;
-import com.sun.rave.web.ui.component.Tab;
-import com.sun.rave.web.ui.component.TabSet;
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
@@ -49,6 +48,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
@@ -66,51 +66,23 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private ReviewStateServiceLocal reviewStateService;
     @EJB
     private MailServiceLocal mailService;
-    /**
-     * Creates a new instance of StudyPage
-     */
-    private TabSet tabSet1 = new TabSet();
 
-    public TabSet getTabSet1() {
-        return tabSet1;
+    private int selectedIndex;
+
+    public int getSelectedIndex() {
+        return selectedIndex;
     }
 
-    public void setTabSet1(TabSet ts) {
-        this.tabSet1 = ts;
-    }
-    private Tab tab1 = new Tab();
-
-    public Tab getTab1() {
-        return tab1;
+    public void setSelectedIndex(int selectedIndex) {
+        this.selectedIndex = selectedIndex;
+      
     }
 
-    public void setTab1(Tab t) {
-        this.tab1 = t;
-    }
-    private Tab tab2 = new Tab();
-
-    public Tab getTab2() {
-        return tab2;
-    }
-
-    public void setTab2(Tab t) {
-        this.tab2 = t;
-    }
 
     public StudyPage() {
     }
 
-    public String tab1_action() {
-        // TODO: Replace with your code
-
-        return null;
-    }
-
-    public String tab2_action() {
-        // TODO: Replace with your code
-
-        return null;
-    }
+ 
     private DefaultTableDataModel dataTable5Model = new DefaultTableDataModel();
 
     public DefaultTableDataModel getDataTable5Model() {
@@ -321,11 +293,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         }
 
         // set tab if it was it was sent as pamameter or part of request bean
-        if (getTab() != null) {
-            getTabSet1().setSelected(getTab());
-        } else if (getVDCRequestBean().getSelectedTab() != null) {
-            getTabSet1().setSelected(getVDCRequestBean().getSelectedTab());
-        }
+        initSelectedTabIndex();
 
         if (isFromPage("StudyPage")) {
             setStudyUI((StudyUI) sessionGet(StudyUI.class.getName()));
@@ -344,12 +312,9 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             HttpServletRequest request = (HttpServletRequest) this.getExternalContext().getRequest();
             if (studyId != null) {
 
-                if ("files".equals(getTabSet1().getSelected())) {
-                    studyUI = new StudyUI(
-                            studyService.getStudyDetail(studyId),
-                            getVDCRequestBean().getCurrentVDC(),
-                            getVDCSessionBean().getLoginBean() != null ? this.getVDCSessionBean().getLoginBean().getUser() : null,
-                            getVDCSessionBean().getIpUserGroup());
+                if ("files".equals(tab)) {
+                    initStudyUIWithFiles();
+                  
                 } else {
                     studyUI = new StudyUI(studyService.getStudyDetail(studyId));
                 }
@@ -650,5 +615,53 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");       
             return lwf.beginFileAccessWorkflow(studyId);
     }
+    
+    private boolean studyUIContainsFileDetails=false;
+    /**
+     *  Get the tab name from the request parameter or
+     *  the VDCRequestBean, and set the selected index based on the 
+     *  tab name.
+     */
+    private void initSelectedTabIndex() {
+              
+        if (tab==null && getVDCRequestBean().getSelectedTab() != null) {
+            tab = getVDCRequestBean().getSelectedTab();
+        }
+        if (tab!=null) {
+            if (tab.equals("catalog")) {
+                selectedIndex=0;
+            } else if (tab.equals("files")) {
+                selectedIndex=1;
+            } 
+        }
+    }
+    
+    private void initStudyUIWithFiles() {
+          
+          if (!studyUIContainsFileDetails) {
+             studyUI = new StudyUI(
+                            studyService.getStudyDetail(studyId),
+                            getVDCRequestBean().getCurrentVDC(),
+                            getVDCSessionBean().getLoginBean() != null ? this.getVDCSessionBean().getLoginBean().getUser() : null,
+                            getVDCSessionBean().getIpUserGroup());
+             studyUIContainsFileDetails=true;
+          }
+    }
+
+    public void processTabChange(TabChangeEvent tabChangeEvent) throws AbortProcessingException {
+        
+        // If the user clicks on the files tab,
+        // make sure the StudyUI object contains file details.
+        if ( tabChangeEvent.getNewTabIndex()==1) {
+            initStudyUIWithFiles();
+        }
+        // If user clicks on the catalog tab, reset the open/closed settings for each section
+        if (tabChangeEvent.getNewTabIndex()==0) {
+            initPanelDisplay();
+        }
+     
+    }
+
+
     
 }

@@ -500,7 +500,7 @@ public class FileDownloadServlet extends HttpServlet{
 			// generate an HTML-ized response with a correct 
 			// 403/FORBIDDEN code   
 
-			createErrorResponse200(res);
+			createErrorResponse403(res);
 			if (method != null) { method.releaseConnection(); }
 			return;
 		    } 

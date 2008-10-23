@@ -116,54 +116,20 @@ public class CollectionUI implements java.io.Serializable {
         return subCollections;
 
     }
-    
-    public List getStudies() {
-        Set studies = new LinkedHashSet();
-        if (coll.isRootCollection()) {
-            studies.addAll(coll.getOwner().getOwnedStudies());
-        }
-        if (coll.isDynamic()) {
-            studies.addAll(getQueryStudies());
-        } else {
-            studies.addAll(getAssignedStudies());
-        }
-        
-        for (VDCCollection subColl : getSubCollections() ) {
-            studies.addAll( new CollectionUI(subColl).getStudies() );
+
+    // wrappers around methods in collectionService
+    public List<Study> getStudies() {
+        VDCCollectionServiceLocal collectionService = null;
+        try {
+            collectionService = (VDCCollectionServiceLocal) new InitialContext().lookup("java:comp/env/collectionService");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        return new ArrayList(studies);
+        return collectionService.getStudies(coll);
     }    
     
     public List<Long> getStudyIds() {
-        Set studyIds = new LinkedHashSet();
-        
-        if (coll.getParentCollection() == null) {
-            studyIds.addAll(getOwnedStudyIds());
-        }
-        if (coll.isDynamic()) {
-            studyIds.addAll(getQueryStudyIds());
-        } else {
-            studyIds.addAll(getAssignedSStudyIds());
-        }
-        
-        for (VDCCollection subColl : getSubCollections() ) {
-            studyIds.addAll( new CollectionUI(subColl).getStudyIds() );
-        }        
-
-        return new ArrayList(studyIds);        
-    }
-
-    private List getOwnedStudyIds() {
-        List studyIds = new ArrayList();
-        for (Study study : coll.getOwner().getOwnedStudies()) {
-            studyIds.add(study.getId());
-        }
-
-        return studyIds;
-    }
-
-    private List getAssignedStudies() {
         VDCCollectionServiceLocal collectionService = null;
         try {
             collectionService = (VDCCollectionServiceLocal) new InitialContext().lookup("java:comp/env/collectionService");
@@ -171,69 +137,7 @@ public class CollectionUI implements java.io.Serializable {
             e.printStackTrace();
         }
 
-        return collectionService.getOrderedStudiesByCollection(coll.getId());
-    }
-
-    private List getAssignedSStudyIds() {
-        VDCCollectionServiceLocal collectionService = null;
-        try {
-            collectionService = (VDCCollectionServiceLocal) new InitialContext().lookup("java:comp/env/collectionService");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return collectionService.getOrderedStudyIdsByCollection(coll.getId());
-    }
-
-    private List getQueryStudyIds() {
-        IndexServiceLocal indexService = null;
-        try {
-            // call Indexer
-            indexService = (IndexServiceLocal) new InitialContext().lookup("java:comp/env/indexService");
-            return indexService.query(coll.getQuery());
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-            return new ArrayList();
-        }
-    }
-
-    private List getQueryStudies() {
-        List studies = new ArrayList();
-        StudyServiceLocal studyService = null;
-        try {
-            studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
-            Iterator iter = getQueryStudyIds().iterator();
-            while (iter.hasNext()) {
-                Long studyId = (Long) iter.next();
-                studies.add(studyService.getStudy(studyId));
-            }
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-        }
-
-        return studies;
-
-    }
-
-
-    public static List<VDCCollection> getCollectionList(VDC vdc) {
-        return getCollectionList(vdc, null);
-    }
-
-    public static List<VDCCollection> getCollectionList(VDC vdc, VDCCollection collectionToExclude) {
-        List collections = new ArrayList<VDCCollection>();
-        addCollectionFamilyToList(collections, vdc.getRootCollection(), collectionToExclude);
-        return collections;
-    }
-
-    private static void addCollectionFamilyToList(List collections, VDCCollection coll, VDCCollection collectionToExclude) {
-        if (collectionToExclude == null || !coll.getId().equals(collectionToExclude.getId())) {
-            collections.add(coll);
-            for (VDCCollection subColl : coll.getSubCollections()) {
-                subColl.setLevel(coll.getLevel() + 1);
-                addCollectionFamilyToList(collections, subColl, collectionToExclude);
-            }
-        }
+        return collectionService.getStudyIds(coll);
     }
 
 

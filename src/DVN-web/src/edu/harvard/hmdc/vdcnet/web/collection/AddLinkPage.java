@@ -91,7 +91,7 @@ public class AddLinkPage extends VDCBaseBean implements java.io.Serializable  {
                     
         if (dvId != null) {
             List linkedColls = getVDCRequestBean().getCurrentVDC().getLinkedCollections();
-            List<VDCCollection> collList = CollectionUI.getCollectionList(vdcService.find(dvId));
+            List<VDCCollection> collList = vdcCollectionService.getCollectionList(vdcService.find(dvId));
             for (VDCCollection coll : collList) {
                 boolean disabled = linkedColls.contains(coll);
                 collSelectItems.add(new SelectItem(coll.getId(), coll.getName(), null, disabled));

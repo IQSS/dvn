@@ -114,6 +114,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
             collection.setStudies(new ArrayList());
             collection.setOwner(getVDCRequestBean().getCurrentVDC());
             collection.setType("static");
+            collection.setLocalScope(true);
 
             String parentIdStr = getRequestParam("parentId");
             if (parentIdStr != null) {

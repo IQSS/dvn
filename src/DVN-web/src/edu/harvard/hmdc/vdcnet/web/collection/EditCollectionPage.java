@@ -151,40 +151,25 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
     }
 
     private void setAvailableStudies(Long collectionId) {
-        availableStudies = new ArrayList();
-        
-        VDCUser user = getVDCSessionBean().getUser();
-        UserGroup ipUserGroup = getVDCSessionBean().getIpUserGroup();
-        
-        List<Study> studies = new CollectionUI(vdcCollectionService.find(collectionId)).getStudies();
-        for (Study study : studies) {
-            StudyUI studyUI = new StudyUI(study, user, ipUserGroup, StudyUI.isStudyInList(study, collection.getStudies()));
-            if (collection.isRootCollection() && study.getOwner().equals(getVDCRequestBean().getCurrentVDC()) ) {
-                studyUI.setSelected(true);
-                studyUI.setSelectable(false);             
-            }
-            availableStudies.add(studyUI);           
-        }
-        
-        resetAvailableStudiesPaginator();
+        setAvailableStudies( vdcCollectionService.getStudyIds( vdcCollectionService.find(collectionId) ));
     }
 
     private void setAvailableStudies(List<Long> studyIds) {
-        availableStudies = new ArrayList();
         
         Long vdcId = getVDCRequestBean().getCurrentVDCId();
         VDCUser user = getVDCSessionBean().getUser();
         UserGroup ipUserGroup = getVDCSessionBean().getIpUserGroup();
-        
         List ownedStudyIds = new ArrayList();
+
         if (collection.isRootCollection()) {
-            for (Study study : getVDCRequestBean().getCurrentVDC().getOwnedStudies()) {
-                ownedStudyIds.add( study.getId() );
-            }
+            ownedStudyIds = vdcService.getOwnedStudyIds( collection.getOwner().getId() );
         }
         
         // filter out studies that are not released or in (other) restricted vdcs
         studyIds.retainAll( studyService.getVisibleStudies( studyIds, vdcId ) );
+
+        
+        availableStudies = new ArrayList();
         
         for (Long sid : studyIds) {
             StudyUI studyUI = new StudyUI(sid, user, ipUserGroup, StudyUI.isStudyInList(sid, collection.getStudies()));
@@ -384,7 +369,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         UserGroup ipUserGroup = getVDCSessionBean().getIpUserGroup();
         
         for (Study study : collection.getStudies()) {
-            studyUIs.add( new StudyUI(study, user, ipUserGroup, StudyUI.isStudyInList(study, collection.getStudies() ) ) );
+            studyUIs.add( new StudyUI(study, user, ipUserGroup, false) );
         }
         
         return studyUIs;

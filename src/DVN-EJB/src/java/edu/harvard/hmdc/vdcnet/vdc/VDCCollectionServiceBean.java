@@ -26,14 +26,18 @@
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-
 package edu.harvard.hmdc.vdcnet.vdc;
 
+import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Study;
+import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -47,17 +51,23 @@ import javax.persistence.Query;
  */
 @Stateless
 public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
-    
-    @PersistenceContext(unitName="VDCNet-ejbPU")
+
+    @PersistenceContext(unitName = "VDCNet-ejbPU")
     private EntityManager em;
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.vdc.VDCCollectionServiceBean");
-    
+    @EJB
+    IndexServiceLocal indexService;
+    @EJB
+    StudyServiceLocal studyService;
+    @EJB
+    VDCServiceLocal vdcService;
+
     /**
      * Creates a new instance of VDCCollectionServiceBean
      */
     public VDCCollectionServiceBean() {
     }
-    
+
     public void create(VDCCollection vDCCollection) {
 
         em.persist(vDCCollection);
@@ -66,7 +76,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
             em.merge(elem);
         }
     }
-    
+
     public void edit(VDCCollection vDCCollection) {
         VDCCollection managedCollection = em.merge(vDCCollection);
         managedCollection.setName(vDCCollection.getName());
@@ -74,7 +84,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
         managedCollection.setDescription(vDCCollection.getDescription());
         managedCollection.setType(vDCCollection.getType());
         managedCollection.setLocalScope(vDCCollection.isLocalScope());
-        managedCollection.setDisplayOrder(vDCCollection.getDisplayOrder());        
+        managedCollection.setDisplayOrder(vDCCollection.getDisplayOrder());
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -88,58 +98,131 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
         em.merge(mCollection);
         em.remove(mCollection);
     }
-    
+
     public VDCCollection find(Object pk) {
         return (VDCCollection) em.find(VDCCollection.class, pk);
     }
-    
-    public VDCCollection findByNameWithinDataverse(String name, VDC dataverse){
-     String query="SELECT v from VDCCollection v where v.name = :fieldName and v.owner = :owner";
-       VDCCollection vdcCollection=null;
-       try {
-           vdcCollection=(VDCCollection)em.createQuery(query).setParameter("fieldName",name).setParameter("owner", dataverse).getSingleResult();
-       } catch (javax.persistence.NoResultException e) {
-           logger.info("Collection "+ dataverse.getName()+"/"+ name+ " not found");
-       }
-       return vdcCollection;
+
+    public VDCCollection findByNameWithinDataverse(String name, VDC dataverse) {
+        String query = "SELECT v from VDCCollection v where v.name = :fieldName and v.owner = :owner";
+        VDCCollection vdcCollection = null;
+        try {
+            vdcCollection = (VDCCollection) em.createQuery(query).setParameter("fieldName", name).setParameter("owner", dataverse).getSingleResult();
+        } catch (javax.persistence.NoResultException e) {
+            logger.info("Collection " + dataverse.getName() + "/" + name + " not found");
+        }
+        return vdcCollection;
     }
 
     public List findAll() {
         return em.createQuery("select object(o) from VDCCollection as o").getResultList();
     }
-    
+
     public List findSubCollections(Long id) {
         return findSubCollections(id, false);
     }
-    
+
     public List findSubCollections(Long id, boolean getHiddenCollections) {
-        String query = "select c "+
-                " from VDCCollection c "+
-                " where c.parentCollection.id = "+id;
-                
+        String query = "select c " +
+                " from VDCCollection c " +
+                " where c.parentCollection.id = " + id;
+
         query += " order by c.name ";
-        
+
         return em.createQuery(query).getResultList();
-        
-        
+
+
     }
-    
-     public java.util.List<Study> getOrderedStudiesByCollection(Long collectionId){
-        String queryStr = "SELECT s FROM VDCCollection c JOIN c.studies s where c.id = " + collectionId +" ORDER BY s.metadata.title";
-        Query query =em.createQuery(queryStr);
-        List <Study> studies = query.getResultList();
-        
+
+    public java.util.List<Study> getOrderedStudiesByCollection(Long collectionId) {
+        String queryStr = "SELECT s FROM VDCCollection c JOIN c.studies s where c.id = " + collectionId + " ORDER BY s.metadata.title";
+        Query query = em.createQuery(queryStr);
+        List<Study> studies = query.getResultList();
+
         return studies;
-        
-     }
-     
-     public java.util.List<Long> getOrderedStudyIdsByCollection(Long collectionId){
-        String queryStr = "SELECT s.id FROM VDCCollection c JOIN c.studies s where c.id = " + collectionId +" ORDER BY s.metadata.title";
-        Query query =em.createQuery(queryStr);
+
+    }
+
+    public java.util.List<Long> getOrderedStudyIdsByCollection(Long collectionId) {
+        String queryStr = "SELECT s.id FROM VDCCollection c JOIN c.studies s where c.id = " + collectionId + " ORDER BY s.metadata.title";
+        Query query = em.createQuery(queryStr);
 
         return query.getResultList();
 
-        
-     }     
-    
+
+    }
+
+    public List<Long> getStudyIds(VDCCollection coll) {
+        return getStudyIds(coll, true);
+    }
+
+    private List<Long> getStudyIds(VDCCollection coll, boolean includeSubCollections) {
+
+        Set<Long> studyIds = new LinkedHashSet();
+
+        if (coll.isRootCollection()) {
+            studyIds.addAll(vdcService.getOwnedStudyIds(coll.getOwner().getId()));
+        }
+
+        if (coll.isDynamic()) {
+            studyIds.addAll(indexService.query(coll.getQuery()));
+        } else {
+            studyIds.addAll(getOrderedStudyIdsByCollection(coll.getId()));
+        }
+
+        if (includeSubCollections) {
+            for (VDCCollection subColl : coll.getSubCollections()) {
+                if (coll.isRootCollection()) {
+                    // creat flat list, in order to correctly exclude localscope queries
+                    for (VDCCollection flatColl : getCollectionList(subColl)) {
+                        // include studies if it's assigned or if it's dynamic and global
+                        if (!flatColl.isDynamic() || !flatColl.isLocalScope()) {
+                            studyIds.addAll( getStudyIds(flatColl, false) );
+                        }
+                    }
+                } else {
+                    studyIds.addAll(getStudyIds(subColl));
+                }
+            }
+        }
+
+        return new ArrayList(studyIds);
+    }
+
+    public List<Study> getStudies(VDCCollection coll) {
+        List<Study> studies = new ArrayList();
+
+        for (Long sid : getStudyIds(coll)) {
+            studies.add(studyService.getStudy(sid));
+        }
+        return studies;
+    }
+
+    public List<VDCCollection> getCollectionList(VDC vdc) {
+        return getCollectionList(vdc.getRootCollection(), null);
+    }
+
+    public List<VDCCollection> getCollectionList(VDC vdc, VDCCollection collectionToExclude) {
+        return getCollectionList(vdc.getRootCollection(), collectionToExclude);
+    }
+
+    public List<VDCCollection> getCollectionList(VDCCollection coll) {
+        return getCollectionList(coll, null);
+    }
+
+    private List<VDCCollection> getCollectionList(VDCCollection coll, VDCCollection collectionToExclude) {
+        List collections = new ArrayList<VDCCollection>();
+        addCollectionFamilyToList(collections, coll, collectionToExclude);
+        return collections;
+    }
+
+    private void addCollectionFamilyToList(List collections, VDCCollection coll, VDCCollection collectionToExclude) {
+        if (collectionToExclude == null || !coll.getId().equals(collectionToExclude.getId())) {
+            collections.add(coll);
+            for (VDCCollection subColl : coll.getSubCollections()) {
+                subColl.setLevel(coll.getLevel() + 1);
+                addCollectionFamilyToList(collections, subColl, collectionToExclude);
+            }
+        }
+    }
 }

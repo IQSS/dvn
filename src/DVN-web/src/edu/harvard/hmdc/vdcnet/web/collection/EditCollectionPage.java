@@ -133,7 +133,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
     public List<SelectItem> getParentCollectionItems() {
         List collSelectItems = new ArrayList<SelectItem>();
 
-        List<VDCCollection> collList = CollectionUI.getCollectionList(getVDCRequestBean().getCurrentVDC(), collection);
+        List<VDCCollection> collList = vdcCollectionService.getCollectionList(getVDCRequestBean().getCurrentVDC(), collection);
         for (VDCCollection coll : collList) {
             collSelectItems.add(new SelectItem(coll.getId(), coll.getName()));
         }
@@ -280,7 +280,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         List collSelectItems = new ArrayList<SelectItem>();
 
         if (browseDVId != null) {
-            List<VDCCollection> collList = CollectionUI.getCollectionList(vdcService.find(browseDVId));
+            List<VDCCollection> collList = vdcCollectionService.getCollectionList(vdcService.find(browseDVId));
             for (VDCCollection coll : collList) {
                 collSelectItems.add(new SelectItem(coll.getId(), coll.getName()));
             }

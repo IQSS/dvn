@@ -91,4 +91,6 @@ public interface VDCServiceLocal extends java.io.Serializable  {
     
     public void updateDefaultTemplate(Long vdcId, Long templateId);
     
+    public java.util.List<Long> getOwnedStudyIds(Long vdcId);
+    
 }

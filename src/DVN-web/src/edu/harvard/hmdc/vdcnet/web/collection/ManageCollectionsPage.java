@@ -43,11 +43,12 @@ import javax.ejb.EJB;
  */
 public class ManageCollectionsPage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;
+    @EJB VDCCollectionServiceLocal collService;
     
     public List getCollections() {
         List collUIs = new ArrayList();
         // we re find the currentVDC to make sure and have any updates (when returning from AddEditCollection)
-        for (VDCCollection coll : CollectionUI.getCollectionList( vdcService.find( getVDCRequestBean().getCurrentVDC().getId() ) ) ) {
+        for (VDCCollection coll : collService.getCollectionList( vdcService.find( getVDCRequestBean().getCurrentVDC().getId() ) ) ) {
             collUIs.add( new CollectionUI(coll) );
         }
         return collUIs;

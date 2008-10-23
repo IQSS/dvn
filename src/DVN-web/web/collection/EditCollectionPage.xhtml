@@ -155,6 +155,7 @@ a control on the data to hide/show the table columns.-->
                                        columnClasses="dvnEditCollectionStudyListID,dvnEditCollectionStudyListTitle,dvnEditCollectionStudyListOwner">
                           <ice:column>
                             <ice:rowSelector id="selectedStudiesSelector"
+                                             value="#{studyUI.selected}"
                                              selectionListener="#{EditCollectionPage.removeStudyListener}"/>
                             <ice:outputText value="#{studyUI.study.globalId}"/>
                           </ice:column>

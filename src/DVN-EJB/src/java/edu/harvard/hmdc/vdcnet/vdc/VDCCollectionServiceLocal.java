@@ -59,4 +59,11 @@ public interface VDCCollectionServiceLocal extends java.io.Serializable  {
 
     public VDCCollection findByNameWithinDataverse(String name, VDC dataverse);
     
+    public List<Long> getStudyIds(VDCCollection coll);
+    public List<Study> getStudies(VDCCollection coll);
+    
+    public List<VDCCollection> getCollectionList(VDC vdc);
+    public List<VDCCollection> getCollectionList(VDC vdc, VDCCollection collectionToExclude);
+    public List<VDCCollection> getCollectionList(VDCCollection coll);
+    
 }

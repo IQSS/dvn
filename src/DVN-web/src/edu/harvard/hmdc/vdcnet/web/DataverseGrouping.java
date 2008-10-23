@@ -261,10 +261,12 @@ public class DataverseGrouping extends SortableList {
      */
     private void recurseAndContractNodeAction() {
         if (childItems != null && childItems.size() > 0) {
-            parentItems.removeAll(childItems);
             Iterator iterator = childItems.iterator();
-            DataverseGrouping childitem = (DataverseGrouping)iterator.next();
-            recurseAndContractNodeAction(childitem);
+            while(iterator.hasNext()) {
+                DataverseGrouping childitem = (DataverseGrouping)iterator.next();
+                recurseAndContractNodeAction(childitem);
+            }
+            parentItems.removeAll(childItems);
             if (!removeFromList.isEmpty()) {
                   parentItems.removeAll(removeFromList);
             }

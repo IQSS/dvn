@@ -446,9 +446,15 @@ public class VDCServiceBean implements VDCServiceLocal {
                 templatesMap.put(template.getName(), template.getId());
             }
         }
+
         return templatesMap;
 
     }
+    
+      public List getUserVDCs(Long userId) {
+            String query = "select v from VDC  v where v.id in (select vr.vdc.id from VDCRole vr where vr.vdcUser.id="+userId+")";
+            return em.createQuery(query).getResultList();
+        }
 
     public List<Template> getOrderedTemplates(Long vdcId) {
 
@@ -468,4 +474,5 @@ public class VDCServiceBean implements VDCServiceLocal {
         String queryStr = "SELECT s.id FROM VDC v JOIN v.ownedStudies s where v.id = " + vdcId + " ORDER BY s.metadata.title";
         return em.createQuery(queryStr).getResultList();
     }
+
 }

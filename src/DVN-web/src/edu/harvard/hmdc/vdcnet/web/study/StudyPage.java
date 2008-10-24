@@ -474,16 +474,16 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     public boolean isUserAuthorizedToEdit() {
         boolean authorized = false;
-        if (getVDCSessionBean().getLoginBean() != null) {
-            authorized = studyUI.getStudy().isUserAuthorizedToEdit(getVDCSessionBean().getLoginBean().getUser());
+        if (getVDCSessionBean().getUser() != null) {
+            authorized = studyUI.getStudy().isUserAuthorizedToEdit(getVDCSessionBean().getUser());
         }
         return authorized;
     }
 
     public boolean isUserAuthorizedToRelease() {
         boolean authorized = false;
-        if (getVDCSessionBean().getLoginBean() != null) {
-            authorized = studyUI.getStudy().isUserAuthorizedToRelease(getVDCSessionBean().getLoginBean().getUser());
+        if (getVDCSessionBean().getUser() != null) {
+            authorized = studyUI.getStudy().isUserAuthorizedToRelease(getVDCSessionBean().getUser());
         }
         return authorized;
     }

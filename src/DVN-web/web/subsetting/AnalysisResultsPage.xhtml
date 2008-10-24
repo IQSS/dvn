@@ -51,7 +51,14 @@
                                 <ice:outputText id="msgDwnldButton" binding="#{AnalysisResultsPage.msgDwnldButton}"
                                     visible="false" escape="false" styleClass="errorMessage"
                                     value="#{AnalysisResultsPage.msgDwnldButtonTxt}"/>
-                                <h:commandButton value="Download Replication-ZIP File" action="#{AnalysisResultsPage.getReplicationPack}" id="resultURLRworkspace" />
+                                <!-- h:commandButton value="Download Replication-ZIP File" action="{AnalysisResultsPage.getReplicationPack}" id="resultURLRworkspace" / -->
+                                <ice:outputResource id="replicationPack"
+                                                    resource="#{AnalysisResultsPage.zipResourceDynFileName}" 
+                                                    mimeType="application/zip"
+                                                    value="Download Replication-ZIP File" 
+                                                    fileName="#{AnalysisResultsPage.zipFileName}" 
+                                                    type="button" 
+                                                    shared="false"/>
                             </div>
                             <div id="rWrkspMessage">
                                 <div id="rZeligInfo">

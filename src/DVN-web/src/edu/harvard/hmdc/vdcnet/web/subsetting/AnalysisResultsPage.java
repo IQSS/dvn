@@ -5,14 +5,16 @@
 
 package edu.harvard.hmdc.vdcnet.web.subsetting;
 
-import com.icesoft.faces.component.ext.HtmlOutputText;
-import com.icesoft.faces.component.ext.HtmlPanelGroup;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.faces.component.UIComponent.*;
 import javax.faces.context.*;
 import javax.faces.FacesException;
 import javax.faces.render.ResponseStateManager;
 
+import com.icesoft.faces.component.ext.HtmlOutputText;
+import com.icesoft.faces.component.ext.HtmlPanelGroup;
+import com.icesoft.faces.context.ByteArrayResource;
+import com.icesoft.faces.context.Resource;
 
 import java.util.*;
 import java.util.logging.*;
@@ -39,6 +41,15 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
         
     }
     
+    private Resource zipResourceDynFileName;
+
+    public Resource getZipResourceDynFileName() {
+        return zipResourceDynFileName;
+    }
+
+    public void setZipResourceDynFileName(Resource zipResourceDynFileName) {
+        this.zipResourceDynFileName = zipResourceDynFileName;
+    }
     
     /**
      * The ID of the requested DataTable instance. Specified as a managed-property in
@@ -65,6 +76,27 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
     public void setDtId(Long dtId) {
         this.dtId = dtId;
     }
+    
+    public String zipFile;
+
+    public String getZipFile() {
+        return zipFile;
+    }
+
+    public void setZipFile(String zipFile) {
+        this.zipFile = zipFile;
+    }
+    
+    public String zipFileName;
+
+    public String getZipFileName() {
+        return zipFileName;
+    }
+
+    public void setZipFileName(String zipFileName) {
+        this.zipFileName = zipFileName;
+    }
+    
     
     public String requestedOption;
 
@@ -279,8 +311,6 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
             HttpServletRequest req = (HttpServletRequest) cntxt
                 .getExternalContext().getRequest();
 
-            String zipFile     = resultInfo.get("replicationZipFile");
-            String zipFileName = resultInfo.get("replicationZipFileName");
 
             // zipping all required files
             try{
@@ -403,10 +433,14 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
             zeligVersion    = resultInfo.get("zeligVersion");
             rversion        = resultInfo.get("Rversion");
             rexecDate       = resultInfo.get("RexecDate");
-            
+            zipFile         = resultInfo.get("replicationZipFile");
+            zipFileName = resultInfo.get("replicationZipFileName");
             dbgLog.fine("zeligVersion="+zeligVersion);
             dbgLog.fine("rVersion="+rversion);
-            
+            dbgLog.fine("zipFile="+zipFile);
+            dbgLog.fine("zipFileName="+zipFileName);
+            zipResourceDynFileName = new ByteArrayResource( toByteArray( new FileInputStream(zipFile)));
+
             
             String dsbUrl = "http://"+resultInfo.get("dsbHost");
             if (resultInfo.containsKey("dsbPort") && (!resultInfo.get("dsbPort").equals("")) ){
@@ -459,6 +493,16 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
             throw e instanceof FacesException ? (FacesException) e : new FacesException(e);
         }
     }
+
+
+    public static byte[] toByteArray(InputStream input) throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] buf = new byte[4096];
+        int len = 0;
+        while ((len = input.read(buf)) > -1) output.write(buf, 0, len);
+        return output.toByteArray();
+    }
+
 
     /**
      * <p>Callback method that is called after the component tree has been

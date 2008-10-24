@@ -49,12 +49,8 @@ import javax.servlet.http.HttpServletRequest;
  * this class.</p>
  */
 public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable  {
-    @EJB VDCServiceLocal vdcService;
-    @EJB VDCNetworkServiceLocal vdcNetworkService;   
     @EJB PageDefServiceLocal pageDefService;
       
- 
-
     /** 
      * <p>Construct a new request data bean instance.</p>
      */
@@ -64,22 +60,7 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     public String getRequestParam(String name) {
         return ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter(name);
     }    
-    
-  
-  
-
-
-  
-
-
-    /** 
-     * <p>Return a reference to the scoped data bean.</p>
-     */
-    protected VDCSessionBean getVDCSessionBean() {
-        return (VDCSessionBean)getBean("VDCSessionBean");
-    }
-
-    
+        
 
     /**
      * Holds value of property studyId.

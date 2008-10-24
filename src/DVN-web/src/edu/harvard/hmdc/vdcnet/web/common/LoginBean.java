@@ -34,15 +34,18 @@ import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import javax.naming.InitialContext;
 
 /**
  *
  * @author Ellen Kraffmiller
  */
-public class LoginBean extends VDCBaseBean implements java.io.Serializable {
+public class LoginBean  implements java.io.Serializable {
    
     /**
      * Creates a new instance of LoginBean
@@ -79,10 +82,10 @@ public class LoginBean extends VDCBaseBean implements java.io.Serializable {
      * @return Value of property currentVDC.
      */
     public VDC getCurrentVDC() {
-        if (getVDCRequestBean()==null) {
+        if (VDCBaseBean.getVDCRequestBean()==null) {
             return null;
         } else {
-            return this.getVDCRequestBean().getCurrentVDC();
+            return VDCBaseBean.getVDCRequestBean().getCurrentVDC();
         }
     }
     
@@ -159,6 +162,20 @@ public class LoginBean extends VDCBaseBean implements java.io.Serializable {
         this.termsfUseMap = termsfUseMap;
     }
     
-    
+  public boolean gethasDataverses() {
+        boolean hasDataverses=false;
+        List vdcs;
+            VDCServiceLocal vdcService = null;
+            try {
+                vdcService = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+           vdcs = vdcService.getUserVDCs(user.getId());
+           if (vdcs!=null && !vdcs.isEmpty()) {
+               hasDataverses=true;
+           }
+        return hasDataverses;
+    }   
     
 }

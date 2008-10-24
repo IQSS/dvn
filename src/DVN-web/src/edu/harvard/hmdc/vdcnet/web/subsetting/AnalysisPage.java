@@ -190,8 +190,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //            });
 
         // Dropdown menu of how many rows to be displayed in the variable table
-        howManyRowsOptions.add(new SelectItem("20", "20 Variables"));
         howManyRowsOptions.add(new SelectItem("10", "10 Variables"));
+        howManyRowsOptions.add(new SelectItem("20", "20 Variables"));
         howManyRowsOptions.add(new SelectItem("50", "50 Variables"));
         howManyRowsOptions.add(new SelectItem("0", "All"));
         
@@ -199,7 +199,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         /*
         // howManyRowsOptions.setSelectedValue("20");
         */
-        selectedNoRows= "20";
+        //selectedNoRows= "10";
         /*
          * Setter for property StudyUIclassName.  The instance of StudyUI class
          * contains citation-related information
@@ -253,7 +253,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * The number of variables to be shown in the variable table.
      * The default value is set 20. 0 is used to show all variables
      */
-    private static final int INITIAL_ROW_NO = 20;
+    private static final int INITIAL_ROW_NO = 10;
 
     /** Sets the id number of the download GUI pane */
     private static final int PANE_DWNLD = 3;

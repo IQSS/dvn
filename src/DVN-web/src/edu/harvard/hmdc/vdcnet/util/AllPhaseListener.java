@@ -53,7 +53,7 @@ public class AllPhaseListener implements PhaseListener, java.io.Serializable  {
      }
      
      public void afterPhase(PhaseEvent pe) {
-         System.out.println("In phase " + pe.getPhaseId().toString());
+      
          if (pe.getPhaseId() == PhaseId.UPDATE_MODEL_VALUES) {
              // code any needed afterphase actions here (render response)
              // can work for other phases by referencing the correct phaseid

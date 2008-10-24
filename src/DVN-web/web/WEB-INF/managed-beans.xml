@@ -508,7 +508,12 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <!-- **************** Network Admin  ****************  -->
-    <managed-bean>
+     <managed-bean>
+        <managed-bean-name>MyDataversePage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.MyDataversePage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+   <managed-bean>
         <managed-bean-name>EditNetworkAboutPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditNetworkAboutPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>

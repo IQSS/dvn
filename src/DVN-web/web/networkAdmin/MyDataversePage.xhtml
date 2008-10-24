@@ -22,18 +22,26 @@
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
               <ice:dataTable cellpadding="0" cellspacing="0" columns="2"
-                             columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
+                             columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2"
+                                rendered="#{not empty(MyDataversePage.dataverses) }"
+                                rowClasses="evenRow oddRow"
+                             
+                                value="#{MyDataversePage.dataverses}"
+                                var="dataverseInfo"
+                                width="75%">>
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Dataverse Name"/>
                   </f:facet>
-                  <ice:inputText value="Example Research Group"/>
+                  <ice:outputLink value="/dvn/dv/#{dataverseInfo[0].alias}">
+                    <ice:outputText value="#{dataverseInfo[0].name}"/>
+                  </ice:outputLink>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Role"/>
                   </f:facet>
-                  <ice:inputText value="creator"/>
+                  <ice:outputText value="#{dataverseInfo[1]}"/>
                 </ice:column>
               </ice:dataTable>
             </div>

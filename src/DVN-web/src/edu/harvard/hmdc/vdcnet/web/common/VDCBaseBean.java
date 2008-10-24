@@ -94,7 +94,7 @@ public class VDCBaseBean  implements java.io.Serializable  {
      /** 
      * <p>Return a reference to the scoped data bean.</p>
      */
-    protected VDCApplicationBean getVDCApplicationBean() {
+    public static VDCApplicationBean getVDCApplicationBean() {
         return (VDCApplicationBean)getBean("VDCApplication");
     }
 
@@ -102,11 +102,11 @@ public class VDCBaseBean  implements java.io.Serializable  {
     /** 
      * <p>Return a reference to the scoped data bean.</p>
      */
-    protected VDCSessionBean getVDCSessionBean() {
+    public static VDCSessionBean getVDCSessionBean() {
         return (VDCSessionBean)getBean("VDCSession");
     }
 
-    protected VDCRequestBean getVDCRequestBean() {
+    public static VDCRequestBean getVDCRequestBean() {
         return (VDCRequestBean)getBean("VDCRequest");
         
     }
@@ -205,7 +205,7 @@ public class VDCBaseBean  implements java.io.Serializable  {
 	return "UTF-8"; // NOI18N
 
     }
-  protected Object getBean(String name) {
+  public static Object getBean(String name) {
 
         return FacesContext.getCurrentInstance().getApplication().getVariableResolver().resolveVariable(FacesContext.getCurrentInstance(), name);
 

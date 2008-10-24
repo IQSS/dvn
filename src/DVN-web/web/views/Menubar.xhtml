@@ -77,9 +77,9 @@
             <ice:outputText rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator or VDCSession.loginBean.contributor or VDCSession.loginBean.networkAdmin)}" value="#{bundle.myOptionsLabel}"/>
           </ice:outputLink>
         </div>
-        <div jsfc="ice:panelGroup" rendered="#{!VDCRequest.logoutPage}">
+        <div jsfc="ice:panelGroup" rendered="#{!VDCRequest.logoutPage and VDCSession.loginBean.hasDataverses}">
           <ice:outputLink styleClass="dvn_navUserOptions" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/MyDataversePage.xhtml" title="My Dataverses in #{VDCRequest.vdcNetwork.name} Dataverse Network">
-            <ice:outputText value="My Dataverse"/>
+            <ice:outputText value="My Dataverses"/>
           </ice:outputLink>
         </div>
       </div>

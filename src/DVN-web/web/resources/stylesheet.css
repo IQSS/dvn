@@ -136,6 +136,7 @@ span.disabled {font-weight: bold;}
 
 /* ICEFACES TREE */
 .iceTreeRow a span.iceOutTxt {font-size: 90% !important;}
+.iceTreeRow a.iceOutLnk, .iceTreeRow span.iceOutTxt {}
 
 /* HEADER */
 .dvn_headerTitle {position: relative;}
@@ -241,6 +242,15 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
 
 .infoMessage {
   color: black;
+}
+
+.dvnInformationMessage {
+  width: 80%; margin: 0 auto 1em auto; padding: 4px; min-height: 40px;
+  background: url(icon_information.png) lightblue 4px 4px no-repeat;
+}
+.dvnInformationMessage p:first-child {padding-top: 0; margin-top: 0;}
+.dvnInformationMessage p {
+  margin-left: 48px;
 }
 
 .successMessage {

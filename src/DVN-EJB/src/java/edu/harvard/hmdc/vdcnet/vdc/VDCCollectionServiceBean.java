@@ -165,7 +165,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
         }
 
         if (coll.isDynamic()) {
-            String query = coll.isLocalScope() ? "dvOwnerId:" + coll.getOwner().getId() + " AND " + coll.getQuery() : coll.getQuery();
+            String query = coll.isLocalScope() ? "dvOwnerId:" + coll.getOwner().getId() + " AND (" + coll.getQuery() + ")": coll.getQuery();
             studyIds.addAll(indexService.query( query ));
         } else {
             studyIds.addAll(getOrderedStudyIdsByCollection(coll.getId()));

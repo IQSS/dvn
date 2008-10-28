@@ -18,18 +18,7 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="StudyListingPage"/>
-        <script type="text/javascript">
-            // <![CDATA[
-            // workaround for issue where f:selectItems does not provide setStyle or setStyleClass wbossons
-            function setSearchOptionsClass() {
-                var table = document.getElementById('form1:radioButtonList1'); //form1:radioButtonList1
-                var cells = table.getElementsByTagName('TD');
-                for (var i = 0; i < cells.length; i++) {
-                    cells[i].className="vdcSearchOptions";
-                }
-            }
-            // ]]>
-        </script>
+
         <ice:inputHidden id="studyListingIndex" value="#{StudyListingPage.studyListingIndex}"/>
         <!-- Main Section starts here -->
         <div id="dvn_mainSection">
@@ -73,9 +62,6 @@
               </div>
             </div>
           </div>
-          <script type="text/javascript">
-              onLoad=setSearchOptionsClass();
-          </script>
           <!-- Search Section ends here -->
   <!-- Start Search Results (with side panel, if available) -->
           <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'}">

@@ -115,7 +115,7 @@
                     </ice:dataPaginator>
                   </div>
                 </ice:panelGrid>
-                <ice:dataTable binding="#{StudyListingPage.studyTable}" rows="10" headerClass="list-header" id="studyListTable1" width="100%"
+                <ice:dataTable binding="#{StudyListingPage.studyTable}" rows="2" headerClass="list-header" id="studyListTable1" width="100%"
                                styleClass="dvnStudyListTable" rowClasses="list-row-odd, list-row-even" columnClasses="dvnStudyListTableColumn" value="#{StudyListingPage.studies}" var="studyUI">
                   <ice:column id="column1">
                     <div class="dvnStudyListStudyInfo">
@@ -236,29 +236,44 @@
               </div>
             </div>
             <div jsfc="ice:panelGroup" id="groupPanel55" styleClass="dvn_sectionPanels" rendered="#{StudyListingPage.renderTree}">
-              <!--
-          <ice:outputText value="This is where the collection tree should go... There also needs to be a render on the style class dvn_sectionPanels. The render on the style class for the dvn_sectionContent (the div on the right) isnt working at the moment." />
-          -->
+              <script>
+                  // <![CDATA[
+                  jQuery(document).ready(function(){
+                      jQuery("a#dvnTreeOpen").click(function(){
+                          jQuery(".dvnCollectionTreeBlock").animate({width: "400%"}, 1500 );
+                      });
+                      jQuery("a#dvnTreeClose").click(function(){
+                          jQuery(".dvnCollectionTreeBlock").animate({width: "100%"}, 1500 );
+                      });
+                  });
+                  // ]]>
+              </script>
+              <div class="dvnCollectionTreeBlock">
+              <div class="dvnCollectionTreeControls">
+                <a id="dvnTreeOpen" name="open">Expand &#187;</a> <a id="dvnTreeClose" name="close">&#171; Close</a>
+              </div>
               <ice:tree id="collectionTree"
                         value="#{StudyListingPage.collectionTree}"
                         var="item"
                         hideRootNode="true"
-                        hideNavigation="false">
+                        hideNavigation="false"
+                        imageDir="/dvn/resources/icefaces/dvn_rime/css-images/">
                 <ice:treeNode>
                   <f:facet name="icon">
-                    <ice:panelGroup style="display: inline">
+                    <ice:panelGroup>
                       <h:graphicImage value="#{item.userObject.icon}"/>
                     </ice:panelGroup>
                   </f:facet>
                   <f:facet name="content">
-                    <ice:panelGroup style="display: inline">
-                      <ice:outputLink value="#{item.userObject.url}">
-                        <ice:outputText value="#{item.userObject.text}"/>
-                      </ice:outputLink>
+                    <ice:panelGroup>
+                        <ice:outputLink value="#{item.userObject.url}">
+                          <ice:outputText value="#{item.userObject.text}"/>
+                        </ice:outputLink>
                     </ice:panelGroup>
                   </f:facet>
                 </ice:treeNode>
               </ice:tree>
+              </div>
             </div>
           </div>
         </div>

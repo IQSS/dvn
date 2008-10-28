@@ -30,37 +30,53 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
+import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
+import edu.harvard.hmdc.vdcnet.admin.RoleRequestServiceLocal;
+import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
+import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
+import edu.harvard.hmdc.vdcnet.index.SearchTerm;
 import edu.harvard.hmdc.vdcnet.study.StudyDownload;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtils;
+import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.*;
+import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
+import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import edu.harvard.hmdc.vdcnet.web.push.NetworkStatsState;
-import edu.harvard.hmdc.vdcnet.web.push.beans.NetworkStatsBean;
-import edu.harvard.hmdc.vdcnet.web.push.beans.NetworkStatsItemBean;
+import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 import javax.ejb.EJB;
 
 public class HomePage extends VDCBaseBean implements Serializable {
-    @EJB StudyServiceLocal studyService;
-    @EJB VDCGroupServiceLocal vdcGroupService;
-    @EJB VDCServiceLocal vdcService;
+    @EJB StudyServiceLocal      studyService;
+    @EJB VDCGroupServiceLocal   vdcGroupService;
+    @EJB VDCServiceLocal        vdcService;
+    @EJB VariableServiceLocal   varService;
+    @EJB IndexServiceLocal      indexService;
+    @EJB NetworkRoleServiceLocal networkRoleService;
+    @EJB RoleRequestServiceLocal roleRequestService;
+    @EJB UserServiceLocal        userService;
 
     private ArrayList itemBeans;
     private ArrayList dvGroupItemBeans;
     private boolean isInit;
     private int itemBeansSize = 0;
     public static final String GROUP_INDENT_STYLE_CLASS = "GROUP_INDENT_STYLE_CLASS";
-    public static final String GROUP_ROW_STYLE_CLASS = "groupRow";
+    public static final String GROUP_ROW_STYLE_CLASS    = "groupRow";
     public static final String CHILD_INDENT_STYLE_CLASS = "CHILD_INDENT_STYLE_CLASS";
+    public static final String CONTRACT_IMAGE           = "tree_nav_top_close_no_siblings.gif";
+    public static final String EXPAND_IMAGE             = "tree_nav_top_open_no_siblings.gif";
     public String CHILD_ROW_STYLE_CLASS;
-    public static final String CONTRACT_IMAGE = "tree_nav_top_close_no_siblings.gif";
-    public static final String EXPAND_IMAGE = "tree_nav_top_open_no_siblings.gif";
 
     //these static variables have a dependency on the Network Stats Server e.g.
     // they should be held as constants in a constants file ... TODO
@@ -68,6 +84,10 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private static String   SCHOLAR_SHORT_DESCRIPTION = new String("A short description for the research scholar group");
     private static Long   OTHER_ID   = new Long("-2");
     private static String   OTHER_SHORT_DESCRIPTION = new String("A short description for the unclassified dataverses group (other).");
+
+    StatusMessage msg;
+
+
 
     public HomePage() {
         //init();
@@ -83,6 +103,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         } else {
             itemBeans = new ArrayList();
         }
+        initChrome();
         List list = (List)vdcGroupService.findAll();
         initGroupBean(list);
         List scholarlist = (List)vdcService.findVdcsNotInGroups("Scholar");
@@ -93,6 +114,28 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
      DataverseGrouping parentItem = null;
      DataverseGrouping childItem  = null;
+
+     private void initChrome() {
+         msg =  (StatusMessage)getRequestMap().get("statusMessage");
+
+        LoginBean loginBean = getVDCSessionBean().getLoginBean();
+
+        if (getVDCRequestBean().getCurrentVDC() == null && getVDCRequestBean().getVdcNetwork().isAllowCreateRequest()) {
+            if (loginBean==null ||
+                    (loginBean!=null  &&
+                      !loginBean.isNetworkAdmin()    &&
+                      (!loginBean.isNetworkCreator() || (loginBean.isNetworkCreator() && !userService.hasUserCreatedDataverse(loginBean.getUser().getId()))))) {
+                showRequestCreator=true;
+            }
+        }
+        if ( getVDCRequestBean().getCurrentVDC() != null && getVDCRequestBean().getCurrentVDC().isAllowContributorRequests()) {
+            if (loginBean==null || (loginBean!=null && loginBean.isBasicUser() )) {
+                showRequestContributor=true;
+            }
+        }
+
+     }
+
 
      private void initGroupBean(List list) {
          Iterator iterator = list.iterator();
@@ -205,6 +248,159 @@ public class HomePage extends VDCBaseBean implements Serializable {
         return activityClass;
     }
 
+    public StatusMessage getMsg(){
+        return msg;
+    }
+
+    private String defaultVdcPath;
+
+    public String getDefaultVdcPath() {
+        return defaultVdcPath;
+    }
+
+    private boolean showRequestCreator;
+    /**
+     * Getter for property showRequestCreator.
+     * @return Value of property showRequestCreator.
+     */
+    public boolean isShowRequestCreator() {
+        return this.showRequestCreator;
+    }
+
+    public void setMsg(StatusMessage msg){
+        this.msg = msg;
+    }
+
+    private String searchField;
+    /* SEARCH FIELD RELATED CODE */
+    public String getSearchField() {
+        return searchField;
+    }
+
+    public void setSearchField(String searchField) {
+        this.searchField = searchField;
+    }
+
+    private String searchValue;
+    public String getSearchValue() {
+        return searchValue;
+    }
+
+    public void setSearchValue(String searchValue) {
+        this.searchValue = searchValue;
+    }
+
+    /**
+     * Holds value of property showRequestContributor.
+     */
+    private boolean showRequestContributor;
+
+    /**
+     * Getter for property showRequestContributor.
+     * @return Value of property showRequestContributor.
+     */
+    public boolean isShowRequestContributor() {
+        return this.showRequestContributor;
+    }
+
+    private List recentStudies;
+
+    public List getRecentStudies() {
+        if (recentStudies == null) {
+            recentStudies = new ArrayList();
+            VDC vdc = getVDCRequestBean().getCurrentVDC();
+            if (vdc != null) {
+                VDCUser user = getVDCSessionBean().getUser();
+                recentStudies = StudyUI.filterVisibleStudies( studyService.getRecentStudies(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 3 );
+            }
+        }
+        return recentStudies;
+    }
+
+
+
+    public List getVdcs() {
+        return vdcService.findAll();
+    }
+
+
+    public String search_action() {
+        List searchTerms = new ArrayList();
+        SearchTerm st = new SearchTerm();
+        st.setFieldName( searchField );
+        st.setValue( searchValue );
+        searchTerms.add(st);
+        List studies = new ArrayList();
+        Map variableMap = new HashMap();
+
+        if ( searchField.equals("variable") ) {
+            List variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
+            varService.determineStudiesFromVariables(variables, studies, variableMap);
+
+        } else {
+            studies = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
+        }
+
+
+        StudyListing sl = new StudyListing(StudyListing.SEARCH);
+        sl.setStudyIds(studies);
+        sl.setSearchTerms(searchTerms);
+        sl.setVariableMap(variableMap);
+        getVDCRequestBean().setStudyListing(sl);
+
+        return "search";
+    }
+
+    private String parsedLocalAnnouncements = parseAnnouncements((getVDCRequestBean().getCurrentVDC()!= null) ? getVDCRequestBean().getCurrentVDC().getAnnouncements(): "", true);
+
+    public String getParsedLocalAnnouncements() {
+        return this.parsedLocalAnnouncements;
+    }
+
+    public void setParsedLocalAnnouncements(String announcements) {
+        this.parsedLocalAnnouncements = announcements;
+    }
+
+    private String parsedNetworkAnnouncements = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
+
+    public String getParsedNetworkAnnouncements() {
+        return this.parsedNetworkAnnouncements;
+    }
+
+    public void setParsedNetworkAnnouncements(String announcements) {
+        this.parsedNetworkAnnouncements = announcements;
+    }
+
+
+    /** public String parseLocalAnnouncements
+     *
+     * @description This utility method checks a string
+     * for a regexp pattern and then parses off the remainder.
+     *
+     *
+     *@return parsed announcements
+     *
+     */
+    public String parseAnnouncements(String announcements, boolean isLocal) {
+        String truncatedAnnouncements = StringUtil.truncateString(announcements, 1000);
+        if ( truncatedAnnouncements != null && !truncatedAnnouncements.equals(announcements) ) {
+            ResourceBundle resourceBundle = ResourceBundle.getBundle("Bundle");
+            if (isLocal) {
+                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml?vdcId=" + getVDCRequestBean().getCurrentVDC().getId() + "\" title=\"" + resourceBundle.getString("moreLocalAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
+            } else {
+                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml\" title=\"" + resourceBundle.getString("moreNetworkAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
+            }
+        }
+        return truncatedAnnouncements;
+    }
+
+   /**
+     * Setter for property showRequestCreator.
+     * @param showRequestCreator New value of property showRequestCreator.
+     */
+    public void setShowRequestCreator(boolean showRequestCreator) {
+        this.showRequestCreator = showRequestCreator;
+    }
     /**
      * <p>Callback method that is called after the component tree has been
      * restored, but before any event processing takes place.  This method

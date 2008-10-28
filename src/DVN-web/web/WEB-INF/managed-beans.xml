@@ -683,6 +683,11 @@
     </managed-bean>
     <!-- Network Home Page Manager Bean -->
     <managed-bean>
+        <managed-bean-name>HomePage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.HomePage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
         <managed-bean-name>dvRecordsManager</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.DvRecordsManager</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>

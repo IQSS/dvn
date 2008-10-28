@@ -334,7 +334,6 @@
                 <ice:panelGroup id="groupPanelRecodeMiddleColumn">
                     <ice:commandButton id="moveRecodeVarBttn"
                         binding="#{AnalysisPage.moveRecodeVarBttn}"
-                        immediate="true"
                         actionListener="#{AnalysisPage.moveRecodeVariable}"
                         disabled="true"
                         style="vertical-align:top"
@@ -593,7 +592,7 @@
                                 immediate="true"
                                 value="#{rd[1]}"
                                 size="10"/>
-                            <ice:outputText value="#{rd[1]}"/>
+
                         </ice:column>
                         <ice:column id="recodeClValueLabel">
                             <f:facet name="header">

@@ -95,6 +95,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.*;
 
 import com.icesoft.faces.component.paneltabset.*;
+import com.icesoft.faces.context.ByteArrayResource;
+import com.icesoft.faces.context.Resource;
+
 
 public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
@@ -896,10 +899,37 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dbgLog.fine("***** resetMsgDwnldButton: end *****");
     }
 
+    private Resource zipResourceDynFileName;
 
+    public Resource getZipResourceDynFileName() {
+        return zipResourceDynFileName;
+    }
+
+    public void setZipResourceDynFileName(Resource zipResourceDynFileName) {
+        this.zipResourceDynFileName = zipResourceDynFileName;
+    }
+    
+    public String zipFileName;
+
+    public String getZipFileName() {
+        return zipFileName;
+    }
+
+    public void setZipFileName(String zipFileName) {
+        this.zipFileName = zipFileName;
+    }
+    
     // end of download section -----------------------------------------------
     // </editor-fold>
 
+
+    public static byte[] toByteArray(InputStream input) throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] buf = new byte[4096];
+        int len = 0;
+        while ((len = input.read(buf)) > -1) output.write(buf, 0, len);
+        return output.toByteArray();
+    }
     
     // dwnldButton commandButton@action
     public String dwnldAction() {   
@@ -1405,13 +1435,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + ".zip";
                     File zipFile  = new File(TEMP_DIR, zipFilePrefix);
                     
-                    deleteTempFileList.add(zipFile);
+                    //deleteTempFileList.add(zipFile);
                     res.setContentType("application/zip");
                     String zfname = zipFile.getName();
                     res.setHeader("content-disposition", "attachment; filename=" + zfname);
-                    
-                    zipFiles(res.getOutputStream(), zipFileList);
-
+                    zipFileName = zfname;
+                    zipFiles(new FileOutputStream(zipFile), zipFileList);
+                    //zipFiles(res.getOutputStream(), zipFileList);
                     //FacesContext.getCurrentInstance().responseComplete();
 
             
@@ -1420,7 +1450,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // this step is unnecessary now because
                     //  no transition to the result page
                     //FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("resultInfo", resultInfo);
-
+                    zipResourceDynFileName = new ByteArrayResource( toByteArray( new FileInputStream(zipFile.getAbsolutePath())));
+                    dbgLog.fine("zipFileName="+zipFileName);
                     dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
                     
                     dbgLog.fine("***** within dwnldAction(): ends here *****");

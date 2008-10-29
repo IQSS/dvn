@@ -3,12 +3,14 @@
 /* MAIN LAYOUT */
 .dvn_wrapper {
     min-width: 700px;
+    position: relative;
 }
 
 .dvn_content {
     padding: 0 12px 12px 12px;
     color: #464646 !important;
     text-align: left;
+    overflow: hidden;
 }
 
 .dvn_content div, .dvn_content span, .dvn_content p, .dvn_content li, .dvn_content caption, 
@@ -126,7 +128,7 @@ span.disabled {font-weight: bold;}
 #dvn_mainSectionTitle {padding: .25em 0; color: #526f76; font-size: 124% !important; text-transform: uppercase;}
 
 /* SIDE SECTION PANELS */
-.dvn_sectionPanels {display: inline; margin-right: 2%; width: 22%; float: left;} 
+.dvn_sectionPanels {display: inline; position: relative; float: left; margin-right: 2%; width: 22%;} 
 .dvn_sectionPanelTitle {padding: .25em 0; border-bottom: 2px solid #91a5a9; color: #555; font-weight: bold;} 
 .dvn_sectionPanels div.dvn_sectionPanelText {margin-bottom: 1em; padding: .5em; } 
 .dvn_sectionPanels ul {margin-left: 2em; list-style-image: url(icon_bullet.gif);}
@@ -136,7 +138,21 @@ span.disabled {font-weight: bold;}
 
 /* ICEFACES TREE */
 .iceTreeRow a span.iceOutTxt {font-size: 90% !important;}
-.iceTreeRow a.iceOutLnk, .iceTreeRow span.iceOutTxt {}
+.iceTreeRow .icePnlGrp {display: inline;}
+
+.dvnCollectionTreeBlock {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  padding: .25em;
+  overflow: hidden;
+  border: 1px solid #DCDDDF;
+  background-color: white;
+}
+.dvnCollectionTreeControls {padding: 0 .25em; overflow: hidden;}
+#dvnTreeOpen {font-size: 90% !important; float: left; cursor: pointer;}
+#dvnTreeClose {font-size: 90% !important; float: right; cursor: pointer;}
 
 /* HEADER */
 .dvn_headerTitle {position: relative;}
@@ -290,6 +306,20 @@ ul.successMessage li, .successMessage ul li {
   font-style: italic;
   font-weight: bold;
 }
+
+.iceOutConStat {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-top: -12px;
+  margin-left: -12px;
+  z-index: 1;
+}
+.iceOutConStatActv, .iceOutConStatCaution, .iceOutConStatDisconnect {
+  width: 25px;
+  height: 25px;
+}
+
 /* GENERAL STYLES*/
 
 .dvn_more{

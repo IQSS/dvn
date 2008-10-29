@@ -932,6 +932,6 @@ public class StudyUI  implements java.io.Serializable {
     }
     
     public boolean isStudyRestricted() {
-        return study.isStudyRestrictedForUser(user, ipUserGroup);
+        return getStudy().isStudyRestrictedForUser(user, ipUserGroup);
     }
 }

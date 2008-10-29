@@ -18,16 +18,17 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlehelp.editDvnDownloadTermsHelp}" escape="false" />
+          </div>  
+            
           <div class="dvn_sectionTitle">
             <ice:outputText value="Edit Network Terms of Use for File Download"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
               <ice:messages layout="list" showDetail="false" showSummary="true" styleClass="successMessage"/>
-              <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
-                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                <ice:outputText value="By enabling these Terms of Use, users will be asked to agree to them before downloading a file or accessing the subsetting/analysis page. These Terms of Use will apply to all the files in the #{VDCRequest.vdcNetwork.name} Dataverse Network, and will be displayed in the Cataloging Information under the Terms of Use section for every study."/>
-              </div>
+              
               <div jsfc="ice:panelGroup">
                 <ice:selectBooleanCheckbox value="#{EditNetworkDownloadUseTermsPage.termsOfUseEnabled}"/>
                 <ice:outputText value=" Enable Terms of Use"/>

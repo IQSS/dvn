@@ -17,15 +17,16 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlehelp.manageUsersHelp}" escape="false" />
+          </div> 
+            
           <div class="dvn_sectionTitle">
             <ice:outputText value="All Users in #{VDCRequest.vdcNetwork.name} Dataverse Network"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
-                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                <ice:outputText value="The default network admin has admin privileges to all Dataverses (note that only Dataverses created by the network admin will be listed here under his/her name)"/>
-              </div>
+             
               <ice:dataTable binding="#{AllUsersPage.dataTable}" cellpadding="0" cellspacing="0" width="100%"
                              columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" id="dataTable1"
                              rowClasses="list-row-even,list-row-odd" value="#{AllUsersPage.userData}" var="currentRow">

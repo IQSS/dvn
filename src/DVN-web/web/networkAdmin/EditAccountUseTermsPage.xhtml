@@ -17,16 +17,17 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlehelp.editDvnAccountTermsHelp}" escape="false" />
+          </div> 
+            
           <div class="dvn_sectionTitle">
             <ice:outputText value="Edit Network Terms of Use for Account Creation"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
               <ice:messages  layout="list" showDetail="false" showSummary="true" styleClass="successMessage"/>
-              <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
-                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif" />
-                <ice:outputText value="By enabling these Terms of Use, users will be asked to agree to them when creating an account in the #{VDCRequest.vdcNetwork.name} Dataverse Network."/>
-              </div>
+             
               <div jsfc="ice:panelGroup">
                 <ice:selectBooleanCheckbox value="#{EditAccountUseTermsPage.termsOfUseEnabled}"/>
                 <ice:outputText value=" Enable Terms of Use"/>

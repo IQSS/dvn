@@ -528,6 +528,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     public List getOrderedStudies(List studyIdList, String orderBy) {
+        if (studyIdList == null || studyIdList.size() == 0) {
+            return new ArrayList();
+        }
+
         String studyIds = "";
         Iterator iter = studyIdList.iterator();
         while (iter.hasNext()) {

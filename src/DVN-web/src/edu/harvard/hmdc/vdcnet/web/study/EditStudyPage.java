@@ -340,16 +340,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
     }
     
-     public void changeTemplate(ValueChangeEvent ae) {
-        Object value= this.selectTemplate.getValue();
-        if (value!=null ) {
-            Long templateId = Long.parseLong((String)value);
-            editStudyService.changeTemplate(templateId);
-            study = editStudyService.getStudy();
-            initCollections();
-            initStudyMap();
-        }
-     }
        public String changeTemplateAction() {
         Object value= this.selectTemplate.getValue();
         if (value!=null ) {           
@@ -1600,12 +1590,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     public void setSelectTemplateId(Long selectTemplateId) {
         this.selectTemplateId = selectTemplateId;
-        if (study!=null && !study.getTemplate().getId().equals(selectTemplateId)) {
-           editStudyService.changeTemplate(selectTemplateId);
-           initCollections();  // Add empty row for entering data in currently empty collections
-           initStudyMap();  // Reset Recommended flag for all fields
-        }
-        
     }
     
     

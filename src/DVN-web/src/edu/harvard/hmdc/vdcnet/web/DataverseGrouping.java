@@ -197,6 +197,17 @@ public class DataverseGrouping extends SortableList {
         }
     }
 
+    /**
+     * Toggles the expanded state of this dataverse group at
+     * page load time.
+     *
+     */
+     public void toggleSubGroupAction() {
+        // toggle expanded state
+            recurseAndContractNodeAction();
+            recurseAndExpandNodeAction();
+    }
+
       /**
      * Utility method to add all child nodes to the parent dataTable list.
      */
@@ -222,38 +233,46 @@ public class DataverseGrouping extends SortableList {
         }
     }
 
-   
+
     //BEGIN RECURSIVE NODE ACTIONS
 
     List removeFromList = new ArrayList();
       /**
      * Utility method to recursively add all child nodes to their parents in the data table.
      */
-    @SuppressWarnings("unchecked")
+
     private void recurseAndExpandNodeAction() {
         if (childItems != null && childItems.size() > 0) {
             int index = parentItems.indexOf(this) + 1;
-            parentItems.addAll(index, childItems);
+            synchronized(parentItems) {
+                parentItems.addAll(index, childItems);
+            }
             Iterator iterator = childItems.iterator();
             DataverseGrouping childitem = (DataverseGrouping)iterator.next();
+            
             recurseAndExpandNodeAction(childitem);
-            if (!removeFromList.isEmpty()) {
-                  parentItems.addAll(index + 1, removeFromList);
-                  removeFromList.clear();
-            }
+            
+                if (!removeFromList.isEmpty()) {
+                    synchronized(parentItems) {
+                      parentItems.addAll(index + 1, removeFromList);
+                      removeFromList.clear();
+                    }
+                }
+            
         }
     }
 
     private void recurseAndExpandNodeAction(DataverseGrouping childItem) {
             Iterator iterator = parentItems.iterator();
-                  while (iterator.hasNext()) {
-                      DataverseGrouping item = (DataverseGrouping)iterator.next();
-                      if (item.parentClassification.equals(childItem.id)) {
-                          removeFromList.add(item);
-                          if (item.childItems.size() >= 1)
-                            recurseAndExpandNodeAction(item);
-                      }
+            parentItems.contains(childItem);
+              while (iterator.hasNext()) {
+                  DataverseGrouping item = (DataverseGrouping)iterator.next();
+                  if (item.parentClassification.equals(childItem.id)) {
+                      removeFromList.add(item);
+                      if (item.childItems.size() >= 1)
+                        recurseAndExpandNodeAction(item);
                   }
+              }
         }
 
     /**
@@ -594,9 +613,10 @@ public class DataverseGrouping extends SortableList {
     public String toString() {
           String dataverseToString = new String("");
           dataverseToString+="[ name = " + name + "; ";
+          dataverseToString+=" parentClassification = " + ((parentClassification != null) ? parentClassification : "No parents") + "; ";
           dataverseToString+=" affiliation = " + ((affiliation != null) ? affiliation : "") + "; ";
           dataverseToString+=" shortDescription = " + ((shortDescription != null) ? shortDescription : "") + "; ";
-          dataverseToString+=" nameColumnName = " + ((nameColumnName != null) ? nameColumnName : "") + "; ]";
+          dataverseToString+=" nameColumnName = " + ((nameColumnName != null) ? nameColumnName : "") + "; ";
           dataverseToString+=" recordType = " + ((recordType != null) ? recordType : "") + "; ]";
           return  dataverseToString;
       }

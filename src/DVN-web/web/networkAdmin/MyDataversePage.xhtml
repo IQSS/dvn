@@ -19,16 +19,13 @@
           <div class="dvn_sectionTitle">
             <ice:outputText value="My Dataverses"/>
           </div>
-          <div class="dvn_sectionBox">
-            <div class="dvn_margin12">
-              <ice:dataTable cellpadding="0" cellspacing="0" columns="2"
-                             columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2"
-                                rendered="#{not empty(MyDataversePage.dataverses) }"
-                                rowClasses="evenRow oddRow"
-                             
-                                value="#{MyDataversePage.dataverses}"
-                                var="dataverseInfo"
-                                width="75%">>
+              <ice:dataTable cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             styleClass="dvnMyDataverseTable" id="gridPanel2"
+                             columnClasses="dvnMyDataverseTableName, dvnMyDataverseTableRole"
+                             rendered="#{not empty(MyDataversePage.dataverses)}"
+                             rowClasses="evenRow oddRow"
+                             value="#{MyDataversePage.dataverses}"
+                             var="dataverseInfo">
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Dataverse Name"/>
@@ -45,8 +42,6 @@
                 </ice:column>
               </ice:dataTable>
             </div>
-          </div>
-        </div>
       </ice:form>
     </gui:define>
   </gui:composition>

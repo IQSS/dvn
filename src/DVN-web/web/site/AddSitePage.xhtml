@@ -179,24 +179,42 @@
                             <!-- Group Assignment -->
                             <div jsfc="ice:panelGroup" >
                                 <ice:outputLabel for="selectedGroup" id="selectedGroupLabel">
-                                    <ice:outputText id="selectedGroupText" value="Group Assignment"/> 
+                                    <ice:outputText id="selectedGroupText" value="Classification"/>
                                 </ice:outputLabel>
                             </div>
-                            <div jsfc="ice:panelGroup" rendered="#{AddSitePage.dataverseType == 'Basic'}">
-                                <ice:selectOneMenu id="selectedGroup" 
-                                    immediate="true"
-                                    onchange="this.form.submit();"
-                                    value="#{AddSitePage.selectedGroup}"
-                                    valueChangeListener="#{AddSitePage.changeSelectedGroup}">
-                                    <f:selectItems value="#{AddSitePage.groupItems}" />
-                                </ice:selectOneMenu>
+                            
+                            <div jsfc="ice:panelGroup">
+                                <ice:selectManyCheckbox binding="#{AddSitePage.selectClassification}">
+                                <ice:dataTable headerClass="groupRow"
+                                id="dataverseList"
+                                rowClasses="evenRow oddRow"
+                                scrollable="true"
+                                sortColumn="#{dvItems.sortColumnName}"
+                                sortAscending="#{dvItems.ascending}"
+                                styleClass="dvn_networkHomePanelInner"
+                                value="#{AddSitePage.itemBeans}"
+                                var="dvItems"
+                                width="100%">
+                                   <!-- controls   -->
+                                  <ice:column style="width:5%; border-right:none;">
+                                        <ice:selectBooleanCheckbox partialSubmit="true"
+                                                                    value="#{dvItems.classificationSelect}"
+                                                                    valueChangeListener="#{dvItems.changeClassificationSelect}">
+                                            <f:attribute name="cid" value="#{dvItems.id}"/>
+                                        </ice:selectBooleanCheckbox>
+                                  </ice:column>
+                                   <!-- classification name -->
+                                  <ice:column style="width:60%" >
+                                      <f:param name="cid" value="#{dvItems.id}" />
+                                      <ice:outputText styleClass="#{dvItems.indentStyleClass}" value="#{dvItems.name}"/>
+                                  </ice:column>
+
+                                </ice:dataTable>
+                                </ice:selectManyCheckbox>
                                 <br />
                                 <ice:outputLabel styleClass="vdcHelpText" for="selectedGroup" value="#{bundle.groupSelect}"/>
                             </div>
-                            <div jsfc="ice:panelGroup" rendered="#{AddSitePage.dataverseType == 'Scholar'}">
-                                <ice:outputText styleClass="vdcHelpText" id="scholarDataverseGroup" 
-                                    value="#{bundle.scholarGroupSelect}" />
-                            </div>
+                            
                         </ice:panelGrid>
                         <div style="padding-left: 160px">
                             <ice:commandButton rendered="#{AddSitePage.dataverseType != 'Scholar'}" id="button1" value="Save" action="#{AddSitePage.create}"/>

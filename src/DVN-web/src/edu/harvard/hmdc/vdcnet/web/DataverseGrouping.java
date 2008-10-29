@@ -43,6 +43,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
+import javax.servlet.http.HttpServletRequest;
 
 public class DataverseGrouping extends SortableList {
 
@@ -101,6 +104,7 @@ public class DataverseGrouping extends SortableList {
         if (this.isExpanded) {
             expandNodeAction();
         }
+        this.classificationSelect = false;
     }
 
     //subgroups
@@ -119,6 +123,7 @@ public class DataverseGrouping extends SortableList {
         if (this.isExpanded) {
             expandNodeAction();
         }
+        this.classificationSelect = false;
     }
 
 
@@ -134,6 +139,7 @@ public class DataverseGrouping extends SortableList {
         this.recordType     = recordType;
         this.activity       = activity;
         this.indentStyleClass = "childRowIndentStyle";
+        this.classificationSelect = false;
     }
 
     /** DataverseGrouping
@@ -464,6 +470,23 @@ public class DataverseGrouping extends SortableList {
     private String shortDescription; //TODO: Implement for dvn childItems and parentItems
     // Manage Classifications specific fields
     private Long subclassification;
+    private boolean classificationSelect = false;
+
+     public void changeClassificationSelect(ValueChangeEvent event) {
+        boolean newValue = (Boolean) event.getNewValue();
+        this.classificationSelect = newValue;
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        // request.setAttribute("dataverseType", newValue);
+        FacesContext.getCurrentInstance().renderResponse();
+    }
+
+    public boolean getClassificationSelect() {
+        return classificationSelect;
+    }
+
+    public void setClassificationSelect(boolean classificationSelect) {
+        this.classificationSelect = classificationSelect;
+    }
 
     public String getRecordType() {
         return recordType;

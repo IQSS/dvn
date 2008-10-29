@@ -119,10 +119,11 @@
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%" style="margin-bottom: 5px;">
                       <div jsfc="ice:panelGroup" id="groupPanel9b">
                         <ice:outputText value="Select Study Template: " rendered="#{EditStudyPage.showTemplateList}"/>
-                        <ice:selectOneMenu valueChangeEvent="#{EditStudyPage.changeTemplate}" partialSubmit="true" value="#{EditStudyPage.selectTemplateId}" binding="#{EditStudyPage.selectTemplate}" rendered="#{EditStudyPage.showTemplateList}">
+                        <ice:selectOneMenu  value="#{EditStudyPage.selectTemplateId}" binding="#{EditStudyPage.selectTemplate}" rendered="#{EditStudyPage.showTemplateList}" onchange="getElementById('studyForm:templateButton').click();">
                           <f:selectItems value="#{EditStudyPage.templatesMap}"/>
                         </ice:selectOneMenu>
-                   
+                        <!-- hidden button that is clicked by select menu's onchange action -->
+                        <ice:commandButton id="templateButton"  visible="false" value="Change" action="#{EditStudyPage.changeTemplateAction}"/>
                         <br/>
                      <!--
                         <input checked="checked" type="radio" id="hideRadio" name="hideShowRadio" value="hide" onclick="updateHideShow(this);"/> Show Required and Recommended Fields

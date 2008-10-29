@@ -1544,6 +1544,33 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 .groupEditDescriptionColumn   { width:70%; border:1px solid silver; text-align:left; }
 .groupEditFooter        { width:98%; background-color:#d9e7f0; padding:0px; text-align:right;  }
 
+/**** My Dataverse Page ****/
+.dvnMyDataverseTable {
+  margin-top: 0;
+  width: 100%;
+}
+.dvnMyDataverseTableName {
+  width: 70%;
+  padding-bottom: 3px;
+  padding-left: 4px;
+  padding-top: 3px;
+  text-align: left;
+  vertical-align: top;
+}
+.dvnMyDataverseTableRole {
+  width: 30%;
+  padding-bottom: 3px;
+  padding-left: 4px;
+  padding-top: 3px;
+  text-align: center;
+  vertical-align: top;
+}
+
+/**** Manage Harvest Dataverses ****/
+.dvnHarvestSitesTable {
+  margin-top: 0;
+}
+
 /**** Login ****/
 #dvnLoginPageWrap {margin-top: 10%; width: 98%; text-align: center;}
 #dvnLoginPageWrap form {width: 700px; margin: 0 auto; padding: 1em; background: #fff; border: 1px solid #6E7F90;}
@@ -1568,7 +1595,7 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 .dvnLoginContentAreaFooter {margin-top: 1em;}
 
 /**** Network Options Page  + My Options Page ****/
-.dvnOptionsTable {width: 85%;}
+.dvnOptionsTable {width: 100%;}
 .dvnOptionsTable td {padding: .5em 2em; border-bottom: 1px solid lightgray;}
 td.dvnOptionsTableHeader {padding: .5em 1em; background: gainsboro; color: grey; text-transform: uppercase;}
 .dvnOptionsTableOption {width: 240px;}

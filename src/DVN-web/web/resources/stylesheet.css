@@ -1052,6 +1052,13 @@ span.vdcEditStudyFormatExample {display: inline;}
 
 /* Add/Manage Collection Style Rules
 */
+.dvnManageCollectionsTable {
+  width: 100%; margin-top: 0;
+}
+.dvnManageCollectionsTableChild {
+  padding-left: 18px; background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat;
+}
+
 .dvnEditCollectionStudySelectedList {border: 1px solid #dcdddf; margin: 0; padding: 0;}
 .dvnEditCollectionStudySelectedList .iceDatTbl {margin: 0; padding: 0; width: 100%; border-left: 0px;}
 .dvnEditCollectionStudySelectedList .iceDatTbl table {margin: 0; padding: 0; width: 100%; border: 0;}

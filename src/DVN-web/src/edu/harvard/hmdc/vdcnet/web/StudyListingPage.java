@@ -80,7 +80,7 @@ public class StudyListingPage extends VDCBaseBean  implements java.io.Serializab
     // data members
     private StudyListing studyListing;
     private DefaultTreeModel collectionTree;
-    private UIData studyTable;
+    private UIData studyTable; // no longer bound on page (can probably be removed)
     private DataPaginator paginator;
 
     

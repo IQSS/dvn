@@ -80,6 +80,27 @@
                 return id.substring(startIndex, endIndex);
             }
 
+            function downloadSelectedFiles() {
+                fileIdStr = "";
+
+                 var fileCBs = getElementsByClassName("fileCheckBox", document.body);
+                 for (var i = 0; i < fileCBs.length; i++) {
+                    if ( fileCBs[i].checked ) {
+                        if (fileIdStr != "") {
+                            fileIdStr = fileIdStr + ",";
+                        }
+                        fileIdStr = fileIdStr + fileCBs[i].previousSibling.value;
+                    }
+                }
+                if (fileIdStr == "") {
+                    alert ("No files selcted");
+                    return false;
+                }
+
+                window.location.href = "/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr +  "#{studyPage.xff}";
+                return false;
+            }
+
             // ]]>
         </script>
         <f:loadBundle basename="StudyBundle" var="studybundle"/>
@@ -444,9 +465,6 @@
                   </div>
                   -->
                   </div>
-                </ice:panelTab>
-                <!-- FILES -->
-                <ice:panelTab id="files" label="Documentation, Data and Analysis" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files#{studyPage.studyListingIndexAsParameter}">
                   <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" styleClass="vdcStudyFilesPage">
                     <div jsfc="ice:panelGroup" id="noFilesPanel1" panelLayout="flow" styleClass="vdcStudyFilesEmpty" rendered="#{empty studyPage.studyUI.study.fileCategories}">
                       <div jsfc="ice:panelGroup" id="noFilesPanel2" styleClass="vdcStudyFilesEmptyMessage" rendered="#{!studyPage.userAuthorizedToEdit}">
@@ -495,7 +513,7 @@
                     -->
                       <ice:panelGrid columns="2" cellspacing="0" cellpadding="0" styleClass="vdcStudyFilesDownloadAll">
                         <div class="vdcStudyFilesDownloadAllButton">
-                          <ice:commandButton onclick="window.location.href='/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?studyId=#{studyPage.studyUI.study.id}#{studyPage.xff}';return false;" value="Download All Selected Files"/>
+                          <input type="button" onclick="downloadSelectedFiles();" value="Download All Selected Files"/>
                           <p>
                             <ice:selectBooleanCheckbox id="studyCheckBox" styleClass="studyCheckBox" value="" onclick="toggleCheckBoxes(this)"/> <ice:outputText value=" Select all files"/>
                           </p>
@@ -533,7 +551,9 @@
                                     <ice:panelGrid columns="4" cellpadding="0" cellspacing="0" border="0" width="100%"
                                                    columnClasses="vdcStudyFileCheckBox,vdcStudyFileInfo,vdcStudyFileDownload,vdcStudyFileDesc">
                                       <ice:column id="column10">
-                                        <ice:selectBooleanCheckbox id="fileCheckBox" styleClass="fileCheckBox" value="#{studyFileUI.studyFile.id}" onclick="toggleCheckBoxes(this)"/>
+                                        <!-- note: the hiden file id needs to be tag immediately before the checkbox for above JS to work properly-->
+                                        <ice:inputHidden id="fileId" value="#{studyFileUI.studyFile.id}" />
+                                        <ice:selectBooleanCheckbox id="fileCheckBox" styleClass="fileCheckBox" onclick="toggleCheckBoxes(this)"/>
                                       </ice:column>
                                       <ice:column id="column11">
                                         <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowFileInfo">

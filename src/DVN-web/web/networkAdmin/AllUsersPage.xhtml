@@ -18,11 +18,11 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
            <div class="dvnInformationMessage">
-             <ice:outputText value="#{bundlehelp.manageUsersHelp}" escape="false" />
+             <ice:outputText value="#{bundlePageInfo.manageUsersHelp}" escape="false" />
           </div> 
             
           <div class="dvn_sectionTitle">
-            <ice:outputText value="All Users in #{VDCRequest.vdcNetwork.name} Dataverse Network"/>
+            <ice:outputText value="#{bundlePageInfo.manageUsersTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

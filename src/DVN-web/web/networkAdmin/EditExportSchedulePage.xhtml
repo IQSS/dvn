@@ -61,8 +61,11 @@
         <input type="hidden" name="pageName" value="EditExportSchedulePage"/>
 
         <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.exportsHelp}" escape="false" />
+          </div>  
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Study Export Schedule"/>
+            <ice:outputText value="#{bundlePageInfo.exportsTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

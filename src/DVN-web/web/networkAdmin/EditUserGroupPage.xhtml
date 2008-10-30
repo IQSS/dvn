@@ -42,6 +42,10 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditUserGroupPage"/>
         <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.editGroupHelp}" escape="false" />
+          </div>   
+            
           <div class="dvn_sectionTitle">
             <ice:outputText value="User Group"/>
           </div>

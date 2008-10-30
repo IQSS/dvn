@@ -11,13 +11,17 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Network Privileged Users"/>
+    <gui:param name="pageTitle" value="DVN - Network Permissions"/>
     <gui:define name="body">
       <ice:form id="NetworkPrivilegedUsersPageView">
         <input type="hidden" name="pageName" value="NetworkPrivilegedUsersPage"/>
         <div class="dvn_section">
+          <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.manageDvnPermissionsHelp}" escape="false" />
+          </div>   
+            
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Dataverse Creation and Network User Privileges"/>
+            <ice:outputText value="Network Permissions"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
@@ -26,19 +30,13 @@
               </div>
               <div>
                 <ice:outputText styleClass="vdcSubHeaderColor" value="Creating a New Dataverse:"/>
-                <div class="vdcHelpText">
-                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                  <ice:outputText value="By checking this option, your Dataverse Network homepage will display an invitation to create a dataverse (only users without Dataverse creator privileges will see the invitation)."/>
-                </div>
+                
                 <ice:selectBooleanCheckbox id="checkbox1" value="#{NetworkPrivilegedUsersPage.privileges.network.allowCreateRequest}"/>
                 <ice:outputText id="outputText5" value=" Allow users to request to create a new Dataverse when they create an account"/>
               </div>
               <div class="dvnFormPadding">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="Network Privileged Users:"/>
-                <div class="vdcHelpText">
-                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                  <ice:outputText value="You can add a network privileged user to be another network admin or a Dataverse creator. After privileged users are added to this list, if you want to remove a user, click 'Clear Role' for that user."/>
-                </div>
+            
                 <ice:outputText id="outputText7" value="Enter the Username of the user you want to add: "/>
                 <ice:inputText onkeypress="if (window.event) return processEvent('', 'addUserbutton'); else return processEvent(event, 'addUserbutton');" id="textField1" value="#{NetworkPrivilegedUsersPage.userName}"/>
                 <ice:commandLink  id="addUserbutton" value="Add" actionListener="#{NetworkPrivilegedUsersPage.addUser}"/>
@@ -69,10 +67,7 @@
                 </ice:column>
               </ice:dataTable>
               <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
-                <div class="vdcHelpText">
-                    <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                    <ice:outputText value="Nothing in this page will be saved until you click Save Changes."/>
-                </div>
+
                 <ice:commandButton id="button5" value="Save Changes" action="#{NetworkPrivilegedUsersPage.save}"/>
                 <ice:commandButton immediate="true" id="cancelButton" value="Cancel" action="#{NetworkPrivilegedUsersPage.cancel}"/>
               </div>

@@ -17,6 +17,10 @@
 
       <ice:form id="form1">
         <div class="dvn_section">
+          <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.editDvnNameHelp}" escape="false" />
+          </div>    
+            
           <div class="dvn_sectionTitle">
             <ice:outputText value="Edit Network Name"/>
           </div>
@@ -25,10 +29,7 @@
               <div jsfc="ice:panelGroup" styleClass="#{EditNetworkNamePage.msg.styleClass}" rendered="#{!empty EditNetworkNamePage.msg.messageText}">
                 <ice:outputText id="statusMessage" value="#{EditNetworkNamePage.msg.messageText}"/>
               </div>
-              <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
-                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                <ice:outputText value="Your Dataverse Network name is used in the &quot;Connected to&quot; banner displayed in each dataverse added to this Network. Please use a short name."/>
-              </div>
+
               <div jsfc="ice:panelGroup">
                 <ice:outputText id="outputText2" value="Network Name "/>
                 <ice:inputText binding="#{EditNetworkNamePage.textField1}" id="textField1" size="20" value="#{EditNetworkNamePage.networkName}" onkeypress="if (window.event) return processEvent('', 'form1:button1'); else return processEvent(event, 'form1:button1');"/>

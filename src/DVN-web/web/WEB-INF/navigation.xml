@@ -416,6 +416,14 @@
             <to-view-id>/networkAdmin/ManageClassificationsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/networkAdmin/ManageDataversesPage.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>result</from-outcome>
+            <to-view-id>/faces/networkAdmin/ManageDataversesPage.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
 <!-- 
   Navigation rules from SubsettingPage.xhtml to RequestSummaryPage.xhtml
   ///////////////// start ////////////////

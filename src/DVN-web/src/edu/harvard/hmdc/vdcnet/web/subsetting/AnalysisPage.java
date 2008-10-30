@@ -6383,6 +6383,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             newNoRows = data.getRowCount();
         }
         dbgLog.fine("acutually selected number of Rows=" + newNoRows);
+        data.setFirst(0);
         data.setRows(newNoRows);
         dbgLog.fine("first row to be shown=" + data.getFirst());
         dbgLog.fine("current Row Index(2)=" + data.getRowIndex());

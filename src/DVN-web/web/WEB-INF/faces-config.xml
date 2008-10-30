@@ -24,7 +24,7 @@
       <supported-locale>fr</supported-locale>
       <supported-locale>es</supported-locale>
     </locale-config>
-    <message-bundle>BundleHelp</message-bundle>
+    <message-bundle>BundlePageInfo</message-bundle>
     <message-bundle>Bundle</message-bundle>
     <message-bundle>EditStudyBundle</message-bundle>
     <message-bundle>StudyBundle</message-bundle>

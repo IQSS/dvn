@@ -559,7 +559,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                     "and s.id in (" + studyIds + ")" +
                     "group by s.id, m.title " +
                     "order by " +
-                    "(CASE WHEN sum(downloadcount) is null THEN '0' ELSE sum(downloadcount) END) desc, m.title" ;
+                    "(CASE WHEN count(sf) = 0 THEN -1 WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END) desc, m.title" ;
             Query query = em.createNativeQuery(queryStr);
             List<Long> returnList = new ArrayList<Long>();
             // since query is native, must parse through Vector results

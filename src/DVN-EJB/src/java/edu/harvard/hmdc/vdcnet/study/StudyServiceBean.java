@@ -528,8 +528,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     public List getOrderedStudies(List studyIdList, String orderBy) {
-        if (studyIdList == null || studyIdList.size() == 0) {
-            return new ArrayList();
+        if (orderBy == null || studyIdList == null || studyIdList.size() == 0) {
+            return studyIdList;
         }
 
         String studyIds = "";
@@ -539,10 +539,42 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             studyIds += id + (iter.hasNext() ? "," : "");
         }
 
-        String query = "SELECT s.id FROM Study s WHERE s.id in (" + studyIds + ") ORDER BY s." + orderBy;
+        if (orderBy.equals("globalId")) {
+            String query = "SELECT s.id FROM Study s WHERE s.id in (" + studyIds + ") ORDER BY s.protocol, s.authority, s.studyId";
+            return (List) em.createQuery(query).getResultList();
 
-        //System.out.println("getStudies - Query: " + query);
-        return (List) em.createQuery(query).getResultList();
+        } else if (orderBy.equals("title")) {
+            String query = "SELECT s.id FROM Study s WHERE s.id in (" + studyIds + ") ORDER BY s.metadata.title";
+            return (List) em.createQuery(query).getResultList();
+
+            
+        } else if (orderBy.equals("downloadCount")) {  
+            // this query runs fine in Postgres, but will need to be tested with other DBs if they are used
+            String queryStr = "select s.id " +
+                    "from metadata m, study s " +
+                    "LEFT OUTER JOIN filecategory fc on s.id = fc.study_id " +
+                    "LEFT OUTER JOIN studyfile sf on fc.id = sf.filecategory_id " +
+                    "LEFT OUTER JOIN studyfileactivity sfa on  sf.id = sfa.studyfile_id " +
+                    "where s.metadata_id = m.id " +
+                    "and s.id in (" + studyIds + ")" +
+                    "group by s.id, m.title " +
+                    "order by " +
+                    "(CASE WHEN sum(downloadcount) is null THEN '0' ELSE sum(downloadcount) END) desc, m.title" ;
+            Query query = em.createNativeQuery(queryStr);
+            List<Long> returnList = new ArrayList<Long>();
+            // since query is native, must parse through Vector results
+            for (Object currentResult : query.getResultList()) {
+                // convert results into Longs
+                returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            }
+
+            return returnList;
+            
+            
+        } else {
+            return studyIdList;   
+        }
+        
     }
 
        public List getDvOrderedStudyIds(Long vdcId, String orderBy, boolean ascending ) {

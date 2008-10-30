@@ -50,7 +50,7 @@
                     catIndex = findCatIndex(elem.id);
                     var fileCBs = getElementsByClassName("fileCheckBox", document.body);
                     for (var i = 0; i < fileCBs.length; i++) {
-                        if ( catIndex == findCatIndex(fileCBs[i].id) )  {
+                        if ( !fileCBs[i].disabled && catIndex == findCatIndex(fileCBs[i].id)  )  {
                             fileCBs[i].checked = elem.checked;
                         }
                     }
@@ -65,11 +65,15 @@
                 } else if (elem.id.indexOf('studyCheckBox') > -1) {
                     var catCBs = getElementsByClassName("catCheckBox", document.body);
                     for (var i = 0; i < catCBs.length; i++) {
-                        catCBs[i].checked = elem.checked;
+                        if ( !catCBs[i].disabled ) {
+                            catCBs[i].checked = elem.checked;
+                        }
                     }
                     var fileCBs = getElementsByClassName("fileCheckBox", document.body);
                     for (var i = 0; i < fileCBs.length; i++) {
-                        fileCBs[i].checked = elem.checked;
+                        if ( !fileCBs[i].disabled ) {
+                            fileCBs[i].checked = elem.checked;
+                        }
                     }
                 }
             }
@@ -518,7 +522,7 @@
                         <div class="vdcStudyFilesDownloadAllButton">
                           <input type="button" onclick="downloadSelectedFiles();" value="Download All Selected Files"/>
                           <p>
-                            <ice:selectBooleanCheckbox id="studyCheckBox" styleClass="studyCheckBox" value="" onclick="toggleCheckBoxes(this)"/> <ice:outputText value=" Select all files"/>
+                            <ice:selectBooleanCheckbox id="studyCheckBox" styleClass="studyCheckBox" onclick="toggleCheckBoxes(this)" disabled="#{!studyPage.studyUI.anyFileUnrestricted}"/> <ice:outputText value=" Select all files"/>
                           </p>
                         </div>
                         <div class="vdcStudyFilesDownloadAllInfo">
@@ -533,7 +537,7 @@
                             <div>
                               <div jsfc="ice:panelGroup" id="groupPanel4" styleClass="TogglePaneFancyHeader vdcStudyFilesCat">
                                 <div jsfc="ice:panelGroup" styleClass="vdcStudyFilesCatLabel">
-                                  <ice:selectBooleanCheckbox id="catCheckBox" styleClass="catCheckBox" value="" onclick="toggleCheckBoxes(this)"/>
+                                  <ice:selectBooleanCheckbox id="catCheckBox" styleClass="catCheckBox" onclick="toggleCheckBoxes(this)" disabled="#{!catUI.anyFileUnrestricted}"/>
                                 </div>
                                 <div jsfc="ice:panelGroup" styleClass="vdcStudyFilesCatLabel">
                                   <ice:outputText id="outputText16" value="#{catUI.fileCategory.name}"/>
@@ -556,7 +560,7 @@
                                       <ice:column id="column10">
                                         <!-- note: the hiden file id needs to be tag immediately before the checkbox for above JS to work properly-->
                                         <ice:inputHidden id="fileId" value="#{studyFileUI.studyFile.id}" />
-                                        <ice:selectBooleanCheckbox id="fileCheckBox" styleClass="fileCheckBox" onclick="toggleCheckBoxes(this)"/>
+                                        <ice:selectBooleanCheckbox id="fileCheckBox" styleClass="fileCheckBox" onclick="toggleCheckBoxes(this)" disabled="#{studyFileUI.restrictedForUser}"/>
                                       </ice:column>
                                       <ice:column id="column11">
                                         <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowFileInfo">

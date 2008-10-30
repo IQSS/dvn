@@ -72,13 +72,16 @@ public class DataverseGrouping extends SortableList {
     // dataTableColumn Names
     private static final String nameColumnName          = "Name";
     private static final String affiliationColumnName   = "Affiliation";
-    private static final String dateReleasedColumnName  = "Date Released";
+    private static final String createdByColumnName     = "Creator";
+    private static final String dateCreatedColumnName   = "Created";
+    private static final String dateReleasedColumnName  = "Released";
     private static final String lastUpdatedColumnName   = "Last Updated";
     private static final String activityColumnName      = "Activity";
     // network admin fields
     private static final String shortDescriptionColumnName   = "Description";
     private static final String subclassificationsColumnName = "Subclassifications";
     private static final String idColumnName                 = "Id";
+    private static final String numberOwnedStudiesColumnName = "Owned Studies";
 
     ArrayList parentItems = new ArrayList();
     ArrayList childItems = new ArrayList();
@@ -342,26 +345,35 @@ public class DataverseGrouping extends SortableList {
                 } else if (sortColumnName.equals(affiliationColumnName)) {
                     return ascending ? c1.getAffiliation().compareTo(c2.getAffiliation()) :
                             c2.getAffiliation().compareTo(c1.getAffiliation());
+                } else if (sortColumnName.equals(createdByColumnName)) {
+                    return ascending ? c1.getCreatedBy().compareTo(c2.getCreatedBy()) :
+                        c2.getCreatedBy().compareTo(c1.getCreatedBy());
                 } else if (sortColumnName.equals(dateReleasedColumnName)) {
                     return ascending ?
                         c1.getReleaseDate().compareTo(c2.getReleaseDate()) :
                         c2.getReleaseDate().compareTo(c1.getReleaseDate());
+                } else if (sortColumnName.equals(dateCreatedColumnName)) {
+                    return ascending ?
+                        c1.getCreationDate().compareTo(c2.getCreationDate()) :
+                        c2.getCreationDate().compareTo(c1.getCreationDate());
                 } else if (sortColumnName.equals(lastUpdatedColumnName)) {
                     return ascending ?
                             c1.getLastUpdateTime().compareTo(c2.getLastUpdateTime()) :
                             c2.getLastUpdateTime().compareTo(c1.getLastUpdateTime());
-                    } else if (sortColumnName.equals(activityColumnName)) {
+                } else if (sortColumnName.equals(activityColumnName)) {
                     return ascending ?
                             c1.getActivity().compareTo(c2.getActivity()) :
                             c2.getActivity().compareTo(c1.getActivity());
-                }
-                else if (sortColumnName.equals(shortDescriptionColumnName)) {
+                } else if (sortColumnName.equals(shortDescriptionColumnName)) {
                     return ascending ? c1.getShortDescription().compareTo(c2.getShortDescription()) :
                             c2.getShortDescription().compareTo(c1.getShortDescription());
-                }
-                else if (sortColumnName.equals(subclassificationsColumnName)) {
+                } else if (sortColumnName.equals(subclassificationsColumnName)) {
                     return ascending ? c1.getSubclassification().compareTo(c2.getSubclassification()) :
                             c2.getSubclassification().compareTo(c1.getSubclassification());
+                } else if (sortColumnName.equals(numberOwnedStudiesColumnName)) {
+                    return ascending ?
+                            c1.getNumberOwnedStudies().compareTo(c2.getNumberOwnedStudies()) :
+                            c2.getNumberOwnedStudies().compareTo(c1.getNumberOwnedStudies());
                 } else {
                     return 0;
                 }
@@ -376,6 +388,14 @@ public class DataverseGrouping extends SortableList {
 
     public String getAffiliationColumnName() {
         return affiliationColumnName;
+    }
+
+    public String getCreatedByColumnName() {
+        return createdByColumnName;
+    }
+
+    public String getDateCreatedColumnName() {
+        return dateCreatedColumnName;
     }
 
     public String getDateReleasedColumnName() {
@@ -398,7 +418,11 @@ public class DataverseGrouping extends SortableList {
         return subclassificationsColumnName;
     }
 
-            // end sorting related stuff
+    public String getNumberOwnedStudiesColumnName() {
+        return numberOwnedStudiesColumnName;
+    }
+
+   // end sorting related stuff
 
 
     //************  ACCESSORS/MUTATORS ********************
@@ -459,6 +483,7 @@ public class DataverseGrouping extends SortableList {
     private String name;
     private String affiliation;
     private String dvnDescription;
+    private String createdBy;
     private Long downloads;
     private Timestamp releaseDate;
     private Timestamp lastUpdateTime;
@@ -471,6 +496,7 @@ public class DataverseGrouping extends SortableList {
     // Manage Classifications specific fields
     private Long subclassification;
     private boolean classificationSelect = false;
+    private Integer numberOwnedStudies;
 
      public void changeClassificationSelect(ValueChangeEvent event) {
         boolean newValue = (Boolean) event.getNewValue();
@@ -586,6 +612,14 @@ public class DataverseGrouping extends SortableList {
         this.dvnDescription = dvnDescription;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public String getGroupKey() {
         return groupKey;
     }
@@ -627,6 +661,16 @@ public class DataverseGrouping extends SortableList {
     public void setSubclassification(Long subclassification) {
         this.subclassification = subclassification;
     }
+
+    public Integer getNumberOwnedStudies() {
+        return numberOwnedStudies;
+    }
+
+    public void setNumberOwnedStudies(Integer numberOwnedStudies) {
+        this.numberOwnedStudies = numberOwnedStudies;
+    }
+
+
 
     public void setIndentStyleClass(String indentstyle) {
         this.indentStyleClass = indentstyle;

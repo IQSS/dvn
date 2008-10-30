@@ -82,8 +82,9 @@
                   <div jsfc="ice:panelGroup" id="groupPanel5" rendered="#{StudyListingPage.renderSort}">
                     <ice:selectOneMenu id="dropdown2" valueChangeListener="#{StudyListingPage.sort_action}" onchange="submit();">
                       <f:selectItem itemLabel="Sort By:" itemValue=""/>
-                      <f:selectItem itemLabel="- Study ID" itemValue="studyId"/>
-                      <f:selectItem itemLabel="- Title" itemValue="metadata.title"/>
+                      <f:selectItem itemLabel="- Global ID" itemValue="globalId"/>
+                      <f:selectItem itemLabel="- Title" itemValue="title"/>
+                      <f:selectItem itemLabel="- Download Count" itemValue="downloadCount"/>
                     </ice:selectOneMenu>
                   </div>
                   <div jsfc="ice:panelGroup" id="groupPanel6" styleClass="dvn_StudyListTotals">
@@ -115,7 +116,7 @@
                     </ice:dataPaginator>
                   </div>
                 </ice:panelGrid>
-                <ice:dataTable binding="#{StudyListingPage.studyTable}" rows="2" headerClass="list-header" id="studyListTable1" width="100%"
+                <ice:dataTable rows="10" headerClass="list-header" id="studyListTable1" width="100%"
                                styleClass="dvnStudyListTable" rowClasses="list-row-odd, list-row-even" columnClasses="dvnStudyListTableColumn" value="#{StudyListingPage.studies}" var="studyUI">
                   <ice:column id="column1">
                     <div class="dvnStudyListStudyInfo">

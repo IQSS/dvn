@@ -153,7 +153,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
     }
 
     public List<Long> getStudyIds(VDCCollection coll) {
-        return studyService.getOrderedStudies( getStudyIds(coll, true), "metadata.title");        
+        return studyService.getOrderedStudies( getStudyIds(coll, true), "title");        
     }
 
     private List<Long> getStudyIds(VDCCollection coll, boolean includeSubCollections) {

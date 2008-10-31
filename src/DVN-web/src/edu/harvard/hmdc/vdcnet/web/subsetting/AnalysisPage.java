@@ -6730,8 +6730,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
             // check this var is a base-var for recoded vars
             if (!baseVarToDerivedVar.containsKey(varId)) {
+                // recoded var's Id may also pass this block
                 rw.set(0, currentState);
-                rmIdSet.add(varId);
+                if(!isRecodedVar(varId)){
+                    // if this id is not recoded var's id
+                    dbgLog.fine(varId + " is not a recoded varId");
+                    rmIdSet.add(varId);
+                } else {
+                    dbgLog.fine(varId + " is a recoded varId");
+                    bvcnt++;
+                    bvIdSet.add(varId);
+                }
             } else {
                 // keep this var's checkbox checked
                 rw.set(0, Boolean.TRUE);
@@ -6798,6 +6807,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 
                 // clear varCart(Map) except for base vars for recoding
                 for (String v : rmIdSet) {
+                    dbgLog.fine("to be removed="+v);
                     varCart.remove(v);
                 }
 
@@ -6809,9 +6819,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     SelectItem el = (SelectItem) i.next();
                     if (bvIdSet.contains((String) el.getValue())) {
                         tmpvs.add(new SelectItem(el.getValue(), el.getLabel()));
+                    } else if (isRecodedVar((String) el.getValue())){
+                        dbgLog.fine("recoded varId to be re-attached="+
+                            el.getValue());
+                        tmpvs.add(new SelectItem(el.getValue(), el.getLabel()));
                     }
                 }
-                dbgLog.fine("contents:tmpvs=" + tmpvs);
+                dbgLog.fine("To-be-re-attached selectItem set:tmpvs(size)=" +
+                    tmpvs.size());
+                for (SelectItem tmpvsi : tmpvs){
+                    dbgLog.fine("value="+tmpvsi.getValue()+" label="+tmpvsi.getLabel());
+                }
                 varSetAdvStat.clear();
                 varSetAdvStat.addAll(tmpvs);
 

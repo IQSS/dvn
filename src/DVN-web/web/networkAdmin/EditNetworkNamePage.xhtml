@@ -12,7 +12,7 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Edit Dataverse Network Name"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editDvnNameTitle}"/>
     <gui:define name="body">
 
       <ice:form id="form1">
@@ -22,7 +22,7 @@
           </div>    
             
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Edit Network Name"/>
+            <ice:outputText value="#{bundlePageInfo.editDvnNameTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

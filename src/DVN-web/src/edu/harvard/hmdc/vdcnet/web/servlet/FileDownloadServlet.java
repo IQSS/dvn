@@ -146,7 +146,7 @@ public class FileDownloadServlet extends HttpServlet{
 	String noVarHeader = req.getParameter("noVarHeader"); 
 
 
-        if (fileId != null) {
+        if (fileId != null && (! fileId.contains(","))) {
 
 	    StudyFile file = null; 
 
@@ -911,13 +911,25 @@ public class FileDownloadServlet extends HttpServlet{
             Study study = null;
             Collection files = new ArrayList();
             boolean createDirectoriesForCategories = false;
-            
             String catId = req.getParameter("catId");
             String studyId = req.getParameter("studyId");
 
 	    String fileManifest = ""; 
+
             
-            if (catId != null) {
+	    if (fileId != null) {
+		String[] idTokens = fileId.split (","); 
+
+		for (String tok : idTokens) {
+		    StudyFile sf; 
+		    try {
+			sf = studyService.getStudyFile( new Long(tok));
+			files.add ( sf ); 
+		    } catch (Exception ex) {
+			fileManifest = fileManifest + tok + " DOES NOT APPEAR TO BE A VALID FILE ID;\r\n";
+		    }
+		}
+	    } else if (catId != null) {
                 try {
                     FileCategory cat = studyService.getFileCategory( new Long(catId));                 
                     study = cat.getStudy();
@@ -953,6 +965,7 @@ public class FileDownloadServlet extends HttpServlet{
                     iter.remove();
                 } 
             }
+
             if (files.size() == 0) {
                 createErrorResponse403(res); 
                 return;

@@ -30,6 +30,10 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
+import com.icesoft.faces.component.dragdrop.DropEvent;
+import com.icesoft.faces.component.ext.HtmlCommandLink;
+import com.icesoft.faces.component.ext.HtmlPanelGroup;
+import com.icesoft.faces.component.tree.IceUserObject;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleRequestServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
@@ -50,12 +54,17 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
+import javax.faces.event.ActionEvent;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 
 public class HomePage extends VDCBaseBean implements Serializable {
     @EJB StudyServiceLocal      studyService;
@@ -110,6 +119,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         initUnGroupedBeans(scholarlist, "Scholar Dataverses", SCHOLAR_ID);
         List otherlist = (List)vdcService.findVdcsNotInGroups("Basic");
         initUnGroupedBeans(otherlist, "Other", OTHER_ID);
+        initMenu();
      }
 
      DataverseGrouping parentItem = null;
@@ -140,6 +150,9 @@ public class HomePage extends VDCBaseBean implements Serializable {
      private void initGroupBean(List list) {
          Iterator iterator = list.iterator();
          VDCGroup vdcgroup = null;
+
+         
+        
          while(iterator.hasNext()) {
             //add DataListItems to the list
             itemBeansSize++;
@@ -179,6 +192,294 @@ public class HomePage extends VDCBaseBean implements Serializable {
         }
      }
 
+     // ***************** DEBUG START TREE *****************
+     // tree default model, used as a value for the tree component
+    private DefaultTreeModel model;
+    private DataverseGroupingObject selectedUserObject;
+
+    /**
+     * Construct the default tree structure by combining tree nodes.
+     */
+
+    // REMOVE THIS IN FAVOR OF THIS CLASS'S CONSTRUCTOR
+    //public TreeController() {
+       // init();
+    //}
+
+    public DefaultTreeModel getModel() {
+        return model;
+    }
+
+    public void setModel(DefaultTreeModel model) {
+        this.model = model;
+    }
+
+    public DataverseGroupingObject getSelectedUserObject() {
+        return selectedUserObject;
+    }
+
+    private String groupingId;
+
+    public String getGroupingId() {
+        return groupingId;
+    }
+
+    public void setGroupingId(String groupingId) {
+        this.groupingId = groupingId;
+    }
+
+    public void groupingNodeSelected(ActionEvent event) {
+        // get grouping id
+        setGroupingId((String)linkSelect.getAttributes().get("groupingId"));
+
+        // find grouping node by id and make it the selected node
+        DefaultMutableTreeNode node = findTreeNode(groupingId);
+        selectedUserObject = (DataverseGroupingObject) node.getUserObject();
+        // TODO: change the content in the window
+
+        // fire effects.);
+        //valueChangeEffect.setFired(false);
+    }
+
+    HtmlCommandLink linkSelect = new HtmlCommandLink();
+
+    public HtmlCommandLink getLinkSelect() {
+        return linkSelect;
+    }
+
+    public void setLinkSelect(HtmlCommandLink linkSelect) {
+        this.linkSelect = linkSelect;
+    }
+
+
+    public ArrayList getSelectedTreePath() {
+        Object[] objectPath = selectedUserObject.getWrapper().getUserObjectPath();
+        ArrayList treePath = new ArrayList();
+        Object anObjectPath;
+        for(int i= 0, max = objectPath.length; i < max; i++){
+            anObjectPath = objectPath[i];
+            IceUserObject userObject = (IceUserObject) anObjectPath;
+            treePath.add(userObject.getText());
+        }
+        return treePath;
+    }
+
+    public boolean isMoveUpDisabled() {
+        DefaultMutableTreeNode selectedNode = selectedUserObject.getWrapper();
+        return isMoveDisabled(selectedNode, selectedNode.getPreviousNode());
+    }
+
+    public boolean isMoveDownDisabled() {
+        DefaultMutableTreeNode selectedNode = selectedUserObject.getWrapper();
+        return isMoveDisabled(selectedNode, selectedNode.getNextNode());
+    }
+
+    public boolean isMoveDisabled(DefaultMutableTreeNode selected, DefaultMutableTreeNode swapper) {
+        return selected == null || swapper == null || selected.getAllowsChildren() || swapper.isRoot();
+    }
+
+    public void moveUp(ActionEvent event) {
+        DefaultMutableTreeNode selectedNode = selectedUserObject.getWrapper();
+        exchangeNodes(selectedNode.getPreviousNode(), selectedNode);
+    }
+
+    public void moveDown(ActionEvent event) {
+        DefaultMutableTreeNode selectedNode = selectedUserObject.getWrapper();
+        exchangeNodes(selectedNode, selectedNode.getNextNode());
+    }
+
+    public void exchangeNodes(DefaultMutableTreeNode node1, DefaultMutableTreeNode node2) {
+        DefaultMutableTreeNode node1Parent = (DefaultMutableTreeNode) node1.getParent();
+        DefaultMutableTreeNode node2Parent = (DefaultMutableTreeNode) node2.getParent();
+        DefaultMutableTreeNode node1PrevNode = node1.getPreviousNode();
+        DefaultMutableTreeNode node1PrevNodeParent = (DefaultMutableTreeNode) node1PrevNode.getParent();
+        int childCount = 0;
+
+        if (node1.isNodeDescendant(node2)) {
+            while (node2.getChildCount() > 0) {
+                node1.insert((MutableTreeNode) node2.getFirstChild(), childCount++);
+            }
+            if (node1PrevNode == node1Parent ||
+                    (node1PrevNode.isNodeSibling(node1) && !node1PrevNode.getAllowsChildren())) {
+                node1Parent.insert(node2, node1Parent.getIndex(node1));
+            } else if (node1PrevNode.getAllowsChildren()) {
+                node1PrevNode.add(node2);
+            } else {
+                node1PrevNodeParent.add(node2);
+            }
+
+            return;
+        }
+
+        if (node2.getAllowsChildren()) {
+            node2.insert(node1, 0);
+        } else {
+            node1.removeFromParent();
+            node2Parent.insert(node1, node2Parent.getIndex(node2) + 1);
+        }
+    }
+
+    public void dropListener(DropEvent event) {
+        HtmlPanelGroup panelGroup = (HtmlPanelGroup) event.getComponent();
+
+        DefaultMutableTreeNode dragNode = (DefaultMutableTreeNode) event.getTargetDragValue();
+        DefaultMutableTreeNode dropNode = (DefaultMutableTreeNode) panelGroup.getDropValue();
+        DefaultMutableTreeNode dropNodeParent = (DefaultMutableTreeNode) dropNode.getParent();
+
+        if (dragNode.isNodeDescendant(dropNode)) return;
+
+        if (dropNode.getAllowsChildren()) {
+            dropNode.insert(dragNode, 0);
+        } else {
+            dragNode.removeFromParent();
+            dropNodeParent.insert(dragNode, dropNodeParent.getIndex(dropNode) + 1);
+        }
+    }
+
+    private DefaultMutableTreeNode addNode(DefaultMutableTreeNode parent,
+                                           String title,
+                                           DataverseGrouping grouping) {
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+        DataverseGroupingObject userObject = new DataverseGroupingObject(node);
+        node.setUserObject(userObject);
+        userObject.setGrouping(grouping);
+
+        // non-grouping node or branch
+        if (title != null) {
+            userObject.setText(title);
+            userObject.setLeaf(false);
+            userObject.setExpanded(false);
+            node.setAllowsChildren(true);
+        }
+        // grouping node
+        else {
+            userObject.setText(grouping.getName());
+            userObject.setLeaf(true);//TODO: change to false because only groups are being created
+            node.setAllowsChildren(false);
+        }
+        // finally add the node to the parent.
+        if (parent != null) {
+            parent.add(node);
+        }
+
+        return node;
+    }
+
+    //Manage classification
+     private void populateParentClassification(VDCGroup vdcgroup, String indentStyle) {
+         Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
+         //System.out.println("dv records manager: parent in group is " + vdcgroup.getParent());
+         List list = vdcGroupService.findByParentId(vdcgroup.getId());
+         Iterator iterator = list.iterator();
+         String expandImage = null;
+         String contractImage = null;
+         boolean isExpanded   = false;
+         // if (iterator.hasNext()) {
+            // expandImage   = EXPAND_IMAGE;
+            // contractImage = CONTRACT_IMAGE;
+            // isExpanded    = true;
+         // }
+         synchronized(dvGroupItemBeans) {
+            parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", dvGroupItemBeans, isExpanded, expandImage, contractImage, parent);
+            // DEBUG
+             regionNode = addNode(rootNode, parentItem.getName(), parentItem);
+             //END DEBUG
+         }
+         parentItem.setShortDescription(vdcgroup.getDescription());
+         parentItem.setSubclassification(new Long(list.size()));
+         if (!indentStyle.equals(""))
+             parentItem.setIndentStyleClass(indentStyle);
+         List innerlist = vdcGroupService.findByParentId(vdcgroup.getId());//get the children
+         Iterator inneriterator = innerlist.iterator();
+         System.out.println("populateParent: " + vdcgroup.getName());
+         removeFromList.add(vdcgroup);
+         while(inneriterator.hasNext()) {
+            VDCGroup subgroup = (VDCGroup)inneriterator.next();
+            parent = vdcgroup.getParent();
+            populateSubClassification(subgroup, parentItem);
+                //remove the subgroup from the iterator
+            removeFromList.add(subgroup);
+         }
+     }
+
+     private void populateSubClassification(VDCGroup vdcgroup, DataverseGrouping parentitem) {
+
+         List list = vdcGroupService.findByParentId(vdcgroup.getId());//get the children
+         Iterator iterator = list.iterator();
+         String expandImage = null;
+         String contractImage = null;
+         boolean isExpanded   = false;
+         // if (!list.isEmpty()) {
+             // expandImage    = EXPAND_IMAGE;
+             // contractImage  = CONTRACT_IMAGE;
+             // isExpanded     = true;
+         // }
+         childItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "subgroup", isExpanded, expandImage, contractImage, new Long(parentitem.getId()));
+         childItem.setShortDescription(vdcgroup.getDescription());
+         childItem.setIndentStyleClass("childRowIndentStyle");
+         parentitem.addChildItem(childItem);
+         addNode(regionNode, childItem.getName(), childItem);
+         //parentitem.toggleSubGroupAction();
+         System.out.println("Created a child whose name is " + vdcgroup.getName());
+         removeFromList.add(vdcgroup);
+        while (iterator.hasNext() && !removeFromList.contains(vdcgroup)) {
+             VDCGroup subgroup = (VDCGroup)iterator.next();
+             populateSubClassification(subgroup, childItem);
+
+         }
+
+     }
+
+     DefaultMutableTreeNode rootNode;
+     DefaultMutableTreeNode regionNode;
+     List removeFromList = new ArrayList();
+
+    protected void initMenu() {
+        if (dvGroupItemBeans != null) {
+            dvGroupItemBeans.clear();
+        } else {
+            dvGroupItemBeans = new ArrayList();
+        }
+       
+        // Top Level
+        rootNode = addNode(null, "All Dataverses", new DataverseGrouping(new Long("0"), "", ""));
+        model = new DefaultTreeModel(rootNode);
+        selectedUserObject = (DataverseGroupingObject) rootNode.getUserObject();
+        selectedUserObject.setExpanded(true);
+        //END Top
+            List list = (List)vdcGroupService.findAll();
+            Iterator outeriterator = list.iterator();
+             VDCGroup vdcgroup = null;
+             System.out.println(list.toString());
+             while(outeriterator.hasNext()) {
+                vdcgroup = (VDCGroup)outeriterator.next();
+                if (removeFromList.contains(vdcgroup)) {
+                    continue;
+                } else {
+                String indentStyle = (vdcgroup.getParent() == null) ? "" : "childRowIndentStyle";
+                populateParentClassification(vdcgroup, indentStyle);
+                }
+             }
+    }
+
+    private DefaultMutableTreeNode findTreeNode(String nodeId) {
+        DefaultMutableTreeNode theRootNode =
+                (DefaultMutableTreeNode) model.getRoot();
+        DefaultMutableTreeNode node;
+        DataverseGroupingObject tmp;
+        Enumeration nodes = theRootNode.depthFirstEnumeration();
+
+        while (nodes.hasMoreElements()) {
+            node = (DefaultMutableTreeNode) nodes.nextElement();
+            tmp = (DataverseGroupingObject) node.getUserObject();
+            if (groupingId.equals(String.valueOf(tmp.getGrouping().getId()))) {
+                return node;
+            }
+        }
+        return null;
+    }
+     // ******************** END DEBUG TREE ******************************
+
     public void dispose() {
         isInit = false;
         if(itemBeans != null) {
@@ -202,6 +503,13 @@ public class HomePage extends VDCBaseBean implements Serializable {
     public int getItemBeansSize() {
         return itemBeansSize;
     }
+    
+    //tree map related
+    public ArrayList getDvGroupItemBeans() {
+        return dvGroupItemBeans;
+    }
+
+
 
     private String getLastUpdatedTime(Long vdcId) {
         Timestamp timestamp = null;

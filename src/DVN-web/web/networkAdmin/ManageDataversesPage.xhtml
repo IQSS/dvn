@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:gui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
@@ -20,11 +20,11 @@
 
         <gui:define name="body">
             <ice:form>
-            
-            <div class="dvn_sectionTitle">   
+
+            <div class="dvn_sectionTitle">
                  <ice:outputText value="Manage Dataverses"/>
-            </div>  
-            
+            </div>
+
             <!-- Data Paginator goes Here, on top of table-->
                     <!-- ADD STYLE CLASS 'dvn_sectionContent' TO THE PANELSERIES BELOW IN ORDER TO
             DISPLAY AREA WHERE THE GROUP FILTER LINKS WILL GO ON THE PAGE. A RENDER IS
@@ -146,11 +146,9 @@
                     <ice:outputText value="#{dvItems.nameColumnName}"/>
                   </ice:commandSortHeader>
                 </f:facet>
-                <ice:outputLink id="dataverse_link" value="/dvn/dv/#{items.alias}">
                   <ice:outputText value="#{items.name}"/>
-                </ice:outputLink>
               </ice:column>
-              
+
               <!-- affiliation -->
               <ice:column style="width: 20%;">
                 <f:facet name="header">
@@ -174,7 +172,7 @@
                 </f:facet>
                 <ice:outputText value=""/>
               </ice:column>
-         
+
               <!-- Created  -->
               <ice:column style="width: 10%;">
                 <f:facet name="header">
@@ -185,7 +183,7 @@
                   </ice:commandSortHeader>
                 </f:facet>
                 <ice:outputText value="#{items.creationDate}"/>
-              </ice:column> 
+              </ice:column>
 
               <!-- Creator  -->
               <ice:column style="width: 10%;">
@@ -198,7 +196,7 @@
                 </f:facet>
                 <ice:outputText value="#{items.createdBy}"/>
               </ice:column>
-              
+
               <!-- Released  -->
                <ice:column style="width: 10%;">
                 <f:facet name="header">
@@ -251,15 +249,15 @@
                                         >
                       <f:attribute name="cid" value="#{items.id}"/>
                 </ice:commandLink>
-              </ice:column>              
+              </ice:column>
             </ice:dataTable>
-                        
+
           </div>
 
         </ice:panelSeries>
             </ice:form>
         </gui:define>
-        
+
     </gui:composition>
 </body>
 </html>

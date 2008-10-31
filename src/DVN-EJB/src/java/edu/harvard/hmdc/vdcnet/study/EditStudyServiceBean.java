@@ -186,6 +186,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
                 
             } else {
                 // otherwise we are coming from edit; check current files for changes
+                
                 editFiles();
             }
        
@@ -193,8 +194,10 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
             
             // if new, register the handle
             if ( isNewStudy() && vdcNetworkService.find().isHandleRegistration() ) {
+              
                 String handle = study.getAuthority() + "/" + study.getStudyId();
                 gnrsService.createHandle(handle);
+               
             }
             
             if (study.getId() == null) {
@@ -203,6 +206,7 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
             }
             em.flush(); // Always call flush(), so that we can detect an OptimisticLockException
             indexService.updateStudy(study.getId());
+           
         } catch(EJBException e) {
             System.out.println("EJBException "+e.getMessage()+" saving study "+study.getId()+" edited by " + user.getUserName() + " at "+ new Date().toString());
             e.printStackTrace();

@@ -7305,7 +7305,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * 
      */
     public void init() {
-            dbgLog.fine("\n***** init():start *****");
+            dbgLog.fine("\n***** init():start "+
+                "(edu.harvard.hmdc.vdcnet.web.subsetting.AnalysisPage) *****");
         super.init();
         try {
             // sets default values to html components

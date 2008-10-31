@@ -6,7 +6,7 @@
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -25,26 +25,29 @@
  */
 package edu.harvard.hmdc.vdcnet.web.subsetting;
 
+import edu.harvard.hmdc.vdcnet.dsb.AdvancedStatGUIdata;
+import com.sun.rave.web.ui.appbase.AbstractApplicationBean;
 import javax.faces.FacesException;
 
+import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 
 import javax.xml.bind.*;
 
 import java.util.*;
 import java.util.logging.*;
+import static java.lang.System.*;
 import java.io.StringReader;
 
 // for BigInteger 2 int
+import java.math.*;
+import java.io.IOException;
+
+// zelig-config class
 import edu.harvard.hmdc.vdcnet.dsb.zelig.*;
 
 // zelig-menu option
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
-
-
-
-
-
 
 import edu.harvard.hmdc.vdcnet.dsb.*;
 import edu.harvard.hmdc.vdcnet.dsb.impl.*;
@@ -60,11 +63,11 @@ import edu.harvard.hmdc.vdcnet.web.common.*;
  * or method binding expression that references a managed bean using
  * this class.</p>
  */
-public class AnalysisApplicationBean extends VDCApplicationBean
+public class AnalysisApplicationBean extends VDCApplicationBean 
     implements java.io.Serializable {
     // <editor-fold defaultstate="collapsed" desc="field Definition">
     /** Sets the logger (use the package name) */
-    private static Logger dbgLog =
+    private static Logger dbgLog = 
         Logger.getLogger(AnalysisApplicationBean.class.getPackage().getName());
     private int __placeholder;
     protected static Zelig zlg;
@@ -76,19 +79,19 @@ public class AnalysisApplicationBean extends VDCApplicationBean
     private void _init() throws Exception {
     }
     // </editor-fold>
-    /**
+    /** 
      * <p>Construct a new application data bean instance.</p>
      */
     public AnalysisApplicationBean() {
     }
 
-    /**
+    /** 
      * <p>This method is called when this bean is initially added to
      * application scope.  Typically, this occurs as a result of evaluating
      * a value binding or method binding expression, which utilizes the
      * managed bean facility to instantiate this bean and store it into
      * application scope.</p>
-     *
+     * 
      * <p>You may customize this method to initialize and cache application wide
      * data values (such as the lists of valid options for dropdown list
      * components), or to allocate resources that are required for the
@@ -126,7 +129,7 @@ public class AnalysisApplicationBean extends VDCApplicationBean
 
         /*
         add the zelig-specific initialization code
-
+        
          */
         try {
             // create a JAXBContext capable of handling classes generated into
@@ -152,7 +155,7 @@ public class AnalysisApplicationBean extends VDCApplicationBean
         } catch (JAXBException je) {
             je.printStackTrace();
         }
-
+        
         guiSpec = new AdvancedStatGUIdata(zlg.getModel());
         specMap = guiSpec.getModelId2SpecMap();
 
@@ -241,7 +244,7 @@ public class AnalysisApplicationBean extends VDCApplicationBean
 
         modelMenuOptions = new ArrayList<SelectItem>();
         modelMenuOptions.add(new SelectItem("Choose a Statistical Model"));
-
+        
         // add xtab option here
         // category = Categorical Data Analysis
         // title = Cross-Tabulation
@@ -261,7 +264,7 @@ public class AnalysisApplicationBean extends VDCApplicationBean
          new Option("xtb", "Cross-Tabulation") });
         modelMenuOptions.add(cdaGrp);
          */
-
+        
         int ii = 0;
         for (Iterator it = entr.iterator(); it.hasNext();) {
             Map.Entry et = (Map.Entry) it.next();
@@ -281,12 +284,12 @@ public class AnalysisApplicationBean extends VDCApplicationBean
 
             // for each Id set
             List<SelectItem> tmp = new ArrayList<SelectItem>();
-
+            
             int flcnt = 0;
             for (int i = 0; i < IdSet.size(); i++) {
                 if (specMap.containsKey(IdSet.get(i))) {
                     tmp.add(
-                        new SelectItem(specMap.get(IdSet.get(i)).getMdlName(),
+                        new SelectItem(specMap.get(IdSet.get(i)).getMdlName(), 
                         specMap.get(IdSet.get(i)).getTitle()));
                     dbgLog.fine(specMap.get(IdSet.get(i)).getMdlName() + "\t" +
                         specMap.get(IdSet.get(i)).getTitle());
@@ -300,7 +303,7 @@ public class AnalysisApplicationBean extends VDCApplicationBean
                 mdlGrp.setLabel((String) et.getKey());
                 mdlGrp.setDisabled(false);
                 mdlGrp.setSelectItems((SelectItem[]) (tmp.toArray(new SelectItem[tmp.size()])));
-
+                
                 modelMenuOptions.add(mdlGrp);
             } else {
                 dbgLog.fine("former" + ii + "-th group was empty and excluded ");
@@ -308,13 +311,13 @@ public class AnalysisApplicationBean extends VDCApplicationBean
             }
             dbgLog.fine("end of " + ii + "-th group\n\n");
         } // for each model-category
-
+        
         dbgLog.fine("\nmodelMenuOptions(size)=" + modelMenuOptions.size() + "\n");
         dbgLog.fine("dump of modelMenuOptions[AnalysisApplicationBean]\n" +
             modelMenuOptions);
 
         // contents check of modelMenuOptions
-        // JEE5 tutorila book provides an example that uses an ArrayList
+        // JEE5 tutorila book provides an example that uses an ArrayList 
         // instead of arrary to hold SelectItemGroups
         for (SelectItem sige : modelMenuOptions) {
             dbgLog.finer("1st element(label)="+sige.getLabel());
@@ -322,11 +325,11 @@ public class AnalysisApplicationBean extends VDCApplicationBean
         }
     }
 
-    /**
+    /** 
      * <p>This method is called when this bean is removed from
      * application scope.  Typically, this occurs as a result of
      * the application being shut down by its owning container.</p>
-     *
+     * 
      * <p>You may customize this method to clean up resources allocated
      * during the execution of the <code>init()</code> method, or
      * at any later time during the lifetime of the application.</p>
@@ -348,11 +351,11 @@ public class AnalysisApplicationBean extends VDCApplicationBean
     }    // TODO - add the creation statement of the zelig-config object
     /*
     private object_type XXXXXXX;
-
+    
      */    // TODO - add getter for the above the zelig-config object.
     /*
     public object_type getXXXXXX () {
-
+    
     return this.XXXXXXX;
     }
      */

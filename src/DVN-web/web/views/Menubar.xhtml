@@ -6,6 +6,7 @@
      >
   <div class="dvn_headerTitle">
     <div class="dvn_headerTitleR">
+     
       <a href="http://thedata.org" target="_blank" title="Link to the Dataverse Network Project">
         <img alt="Powered by the Dataverse Network Project" src="/dvn/resources/dvnPoweredByLogo.gif"/>
       </a>
@@ -77,7 +78,7 @@
             <ice:outputText rendered="#{VDCRequest.currentVDC != null and !VDCRequest.logoutPage and (VDCSession.loginBean.admin or VDCSession.loginBean.curator or VDCSession.loginBean.contributor or VDCSession.loginBean.networkAdmin)}" value="#{bundle.myOptionsLabel}"/>
           </ice:outputLink>
         </div>
-        <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and VDCSession.loginBean.hasDataverses}">
+        <div jsfc="ice:panelGroup" rendered="#{ VDCRequest.currentVDC == null and !VDCRequest.logoutPage and !VDCSession.loginBean.networkAdmin and VDCSession.loginBean.hasDataverses}">
           <ice:outputLink styleClass="dvn_navUserOptions" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/MyDataversePage.xhtml" title="My Dataverses in #{VDCRequest.vdcNetwork.name} Dataverse Network">
             <ice:outputText value="My Dataverses"/>
           </ice:outputLink>

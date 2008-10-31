@@ -56,14 +56,14 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
      * managed-beans.xml <property-class>java.lang.Long</property-class>
      * <value>#{param.dtId}</value>
      */
-    private Long dtId;
+    private String dtId;
 
     /**
      * Getter for property dtId
      * 
      * @return    value of property dtId
      */
-    public Long getDtId() {
+    public String getDtId() {
         return this.dtId;
     }
 
@@ -73,7 +73,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
      * @param dtId    new value of property dtId
      *           
      */
-    public void setDtId(Long dtId) {
+    public void setDtId(String dtId) {
         this.dtId = dtId;
     }
     
@@ -428,6 +428,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
             // dbgLog.fine("**** resultInfo from the subsetting Page ****:\n"+resultInfo);
             offlineCitation = resultInfo.get("offlineCitation");
             studyTitle      = resultInfo.get("studyTitle");
+            dtId            = resultInfo.get("dtId");
             fileUNF         = resultInfo.get("fileUNF");
             variableList    = resultInfo.get("variableList");
             zeligVersion    = resultInfo.get("zeligVersion");

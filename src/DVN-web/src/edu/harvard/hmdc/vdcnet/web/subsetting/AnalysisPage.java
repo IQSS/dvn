@@ -1268,6 +1268,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("offlineCitation", citation);
             resultInfo.put("studyTitle", studyTitle);
             resultInfo.put("studyNo", studyId.toString());
+            resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no","2.7.0");
             resultInfo.put("dataverse_version_no","1.3");
@@ -3315,6 +3316,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("offlineCitation", citation);
             resultInfo.put("studyTitle", studyTitle);
             resultInfo.put("studyNo", studyId.toString());
+            resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no","2.7.0");
             resultInfo.put("dataverse_version_no","1.3");
@@ -6005,6 +6007,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("offlineCitation", citation);
             resultInfo.put("studyTitle", studyTitle);
             resultInfo.put("studyNo", studyId.toString());
+            resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no","2.7.0");
             resultInfo.put("dataverse_version_no","1.3");

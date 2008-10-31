@@ -23,7 +23,14 @@
         <h:form id="form">
             
             <div jsfc="ice:panelGroup" styleClass="dvn_section">
-                <span class="dvn_sectionTitleR"><a href="javascript:window.history.go(-1);">Back to Analysis and Subsetting</a></span>
+                <span class="dvn_sectionTitleR">
+                                <ice:outputLink 
+                value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{AnalysisResultsPage.dtId}">
+                <ice:outputText 
+                    value="Back to Analysis and Subsetting"/>                       
+            </ice:outputLink>
+                    
+                    </span>
                 <div class="dvn_sectionTitle">                
                         <h:outputText value="#{AnalysisResultsPage.studyTitle}"/>                       
                         <br />

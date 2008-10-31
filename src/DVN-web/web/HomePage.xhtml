@@ -331,39 +331,37 @@
           render will be needed to display/remove it when necessary. -->
 
           <div class="dvnNetworkHmpgDvListNav">
-            <div style="margin-bottom: 1em;">
-              <ul>
-                <li><a href="#">All Dataverses</a></li>
-              </ul>
-            </div>
-
-            <div>
-              Sort by Type
-              <ul>
-                <li><a href="#">Institutions, Departments &amp; Centers</a></li>
-                <li><a href="#">Journal Replication Archives</a></li>
-                <li><a href="#">Large Collections</a></li>
-                <li><a href="#">Research Projects</a></li>
-                <li class="hmpgDvGroupSelected"><a href="#">Scholars</a></li>
-                <li><a href="#">Other</a></li>
-              </ul>
-            </div>
-
-            <div>
-              Sort by Topic
-              <ul>
-                <li><a href="#">Anthropology</a></li>
-                <li><a href="#">Economics</a></li>
-                <li><a href="#">History</a></li>
-                <li><a href="#">Political Science</a></li>
-                <li><a href="#">Psychology</a></li>
-                <li><a href="#">Social Studies</a></li>
-                <li><a href="#">Sociology</a></li>
-              </ul>
-            </div>
-          </div>
-
+          
+          <ice:tree id="tree"
+              value="#{HomePage.model}"
+              var="node"
+              hideRootNode="false"
+              hideNavigation="false"
+              imageDir="/dvn/resources/icefaces/dvn_rime/css-images/">
+            <ice:treeNode>
+                <f:facet name="icon">
+                    <ice:panelGroup
+                            style="display: inline" >
+                        <ice:graphicImage
+                             value="/resources/icefaces/dvn_rime/css-images/#{node.userObject.icon}"/>
+                    </ice:panelGroup>
+                </f:facet>
+                <f:facet name="content">
+                    <ice:panelGroup
+                            styleClass="selectedNode#{node.userObject eq HomePage.selectedUserObject}"
+                            style="display: inline" >
+                        <ice:commandLink actionListener="#{HomePage.groupingNodeSelected}"
+                                            binding="#{HomePage.linkSelect}">
+                            <f:attribute name="groupingId" value="#{node.userObject.grouping.id}" />
+                            <ice:outputText id="TreeNode"
+                                            value="#{node.userObject.text}"/>
+                        </ice:commandLink>
+                    </ice:panelGroup>
+                </f:facet>
+            </ice:treeNode>
+        </ice:tree>
         </div>
+      </div>
 
         <ice:messages></ice:messages>
         <!-- Dataverse Homepage -->

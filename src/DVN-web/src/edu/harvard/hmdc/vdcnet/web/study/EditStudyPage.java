@@ -1103,6 +1103,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
     
     public String save() {
+        this.getVDCRequestBean().setSelectedTab(tab);
         if (this.getStudy()==null) {
             return "home";
         }
@@ -2690,13 +2691,13 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public boolean getShowCatalog() {
         boolean show= tab==null || tab.equals("catalog");
         
-        return true;
+        return show;
     }
     
     public boolean getShowFiles() {
         boolean show =  tab!=null && tab.equals("files");
        
-        return true;
+       return show;
        
     }
   

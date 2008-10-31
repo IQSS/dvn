@@ -143,7 +143,6 @@
                 <div jsfc="ice:panelGroup" styleClass="dvnInlineButton" rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}">
                   <ice:commandButton value="Release" actionListener="#{studyPage.setReleased}"/>
                 </div>
-                <dvn:tooltip tooltipMessage="#{studybundle.editTip}" linkText="#{studybundle.editText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tab}" cssClass="vdcTooltipLink"/>
                 <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
                 <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
                 <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
@@ -153,20 +152,23 @@
                 <ice:commandButton rendered="#{studyPage.studyUI.study.new}" value="Ready for Review" actionListener="#{studyPage.setReadyForReview}"/>
               </div>
             </div>
-            <div class="dvn_sectionBoxNoBorders">
-              <ice:panelTabSet tabChangeListener="#{studyPage.processTabChange}">
-                <ice:panelTab id="catalog" label="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
-                  <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" style="width: 98%">
-                    <div jsfc="ice:panelGroup"  id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
-                      <ice:outputText id="outputText11" value="Citation Information"/>
-                      <ice:commandButton id="commandButtonCitationInfoContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}" />
-                      <ice:commandButton id="commandButtonCitationInfoExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}"/>
-                    </div>
-                    <ice:panelGrid binding="#{studyPage.citationInformationPanel}" id="panelGridCitationInfo" cellpadding="0" cellspacing="0"
-                                   columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" width="100%" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" >
-                      <dvn:inlinehelp helpMessage="#{studybundle.howCiteHelp}"  linkText="#{studybundle.howCiteLabel}" heading="#{studybundle.howCiteHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"/>
-                      <div jsfc="ice:panelGroup"   styleClass="vdcCitationText" >
-                        <ice:outputText value="#{studyPage.studyUI.study.citation}" escape="false"/>
+       <div class="dvn_sectionBoxNoBorders">
+            <ice:panelTabSet selectedIndex="#{studyPage.selectedIndex}" tabChangeListener="#{studyPage.processTabChange}">
+              <ice:panelTab id="catalog" label="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
+                <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" style="width: 98%">
+                    <ice:outputLink rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}"  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog">
+                        <ice:outputText value="Edit Cataloging Information"/>
+                    </ice:outputLink>
+                  <div jsfc="ice:panelGroup"  id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
+                    <ice:outputText id="outputText11" value="Citation Information"/>
+                    <ice:commandButton id="commandButtonCitationInfoContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}" />
+                    <ice:commandButton id="commandButtonCitationInfoExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}"/>
+                  </div>
+                  <ice:panelGrid binding="#{studyPage.citationInformationPanel}" id="panelGridCitationInfo" cellpadding="0" cellspacing="0"
+                                 columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" width="100%" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" >
+                    <dvn:inlinehelp helpMessage="#{studybundle.howCiteHelp}"  linkText="#{studybundle.howCiteLabel}" heading="#{studybundle.howCiteHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"/>
+                    <div jsfc="ice:panelGroup"   styleClass="vdcCitationText" >
+                      <ice:outputText value="#{studyPage.studyUI.study.citation}" escape="false"/>
                       </div>
                       <dvn:inlinehelp helpMessage="#{studybundle.subtitleHelp}"  linkText="#{studybundle.subtitleLabel}" heading="#{studybundle.subtitleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.subTitle!='' and studyPage.studyUI.study.subTitle!=null}"/>
                       <ice:outputText id="text1" value="#{studyPage.studyUI.study.subTitle}" rendered="#{!empty studyPage.studyUI.study.subTitle}"/>
@@ -468,15 +470,19 @@
                       </ice:outputLink>
                   </div>
                   -->
-                  </div>
-                </ice:panelTab>
-                <!-- FILES -->
-                <ice:panelTab id="files" label="Documentation, Data and Analysis" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files#{studyPage.studyListingIndexAsParameter}">                 
-                  <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" styleClass="vdcStudyFilesPage">
-                    <div jsfc="ice:panelGroup" id="noFilesPanel1" panelLayout="flow" styleClass="vdcStudyFilesEmpty" rendered="#{empty studyPage.studyUI.study.fileCategories}">
-                      <div jsfc="ice:panelGroup" id="noFilesPanel2" styleClass="vdcStudyFilesEmptyMessage" rendered="#{!studyPage.userAuthorizedToEdit}">
-                        <ice:outputText value="No files have been provided for this study."/>
-                      </div>
+                </div>
+              </ice:panelTab>
+              <!-- FILES -->
+              <ice:panelTab id="files" label="Documentation, Data and Analysis" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files#{studyPage.studyListingIndexAsParameter}">
+                <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" styleClass="vdcStudyFilesPage">
+                     <ice:outputLink rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null and !empty studyPage.studyUI.study.fileCategories}"  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files">
+                        <ice:outputText value="Edit Documentation Data and Analysis"/>
+                    </ice:outputLink>
+                  <div jsfc="ice:panelGroup" id="noFilesPanel1" panelLayout="flow" styleClass="vdcStudyFilesEmpty" rendered="#{empty studyPage.studyUI.study.fileCategories}">
+                    <div jsfc="ice:panelGroup" id="noFilesPanel2" styleClass="vdcStudyFilesEmptyMessage" rendered="#{!studyPage.userAuthorizedToEdit}">
+                      <ice:outputText value="No files have been provided for this study."/>
+
+                    </div>
                       <div jsfc="ice:panelGroup" id="noFilesPanel3" styleClass="vdcStudyFilesEmptyMessage" rendered="#{studyPage.userAuthorizedToEdit and (studyPage.studyUI.study.studyLock==null)}">
                         <ice:outputText value="No files have been uploaded to this study. To add a file, follow the 'Add File(s)' link on the top right of this page."/>
                       </div>

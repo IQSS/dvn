@@ -12,7 +12,7 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Manage Collections"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageCollectionsTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -22,9 +22,9 @@
              <ice:outputText value="#{bundlePageInfo.manageCollectionsHelp}" escape="false" />
           </div>
 
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="Manage Collections"/>
-          </div>          
+           <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.manageCollectionsTitle}"/>
+          </div>    
           <!--
           <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/EditCollectionPage.xhtml">
             <ice:outputText id="hyperlink3Text2" value="Create a New Collection"/>

@@ -12,15 +12,19 @@
 
   <body>
     <gui:composition template="/template.xhtml">
-      <gui:param name="pageTitle" value="DVN - Add Collection Link" />
+      <gui:param name="pageTitle" value="#{bundlePageInfo.addLinkTitle}" />
       <gui:define name="body">
         <ice:form id="form1">
           <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
-          <div class="dvn_section">
-            <div class="dvn_sectionTitle">
-              <ice:outputText value="Add Collection Link"/>
-            </div>
+                  <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.addLinkHelp}" escape="false" />
+          </div> 
+            
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.addLinkTitle}"/>
+          </div>
             <div class="dvn_sectionBox">
               <div class="dvn_margin12">
 

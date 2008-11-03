@@ -15,21 +15,25 @@
 <body>
 <gui:composition template="/template.xhtml">
 
-<gui:param name="pageTitle" value="DVN - Edit Variables" />
+<gui:param name="pageTitle" value="#{bundlePageInfo.editVariableTitle}" />
 
   <gui:define name="body">
-   
-        
+          
         <ice:form  id="form1">
             <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
             <input type="hidden"  name="pageName" value="EditVariablePage"/>
             <ice:inputHidden id="dtId" value="#{EditVariablePage.dtId}"/>
             <ice:inputHidden id="dvFilter" value="#{EditVariablePage.dvFilter}"/>
             
-            <div class="dvn_section">
-                <div class="dvn_sectionTitle">
-                    <ice:outputText value="#{EditVariablePage.dt.studyFile.fileName}"/>
-                 </div>   
+        <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.editVariableHelp}" escape="false" />
+          </div> 
+            
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.editVariableTitle}"/>
+          </div>
+                 <ice:outputText value="#{EditVariablePage.dt.studyFile.fileName}"/>
                  <div class="dvn_sectionBoxNoBorders">    
                     <br />
                     <span class="dvn_preFileTitle">Variables: </span>

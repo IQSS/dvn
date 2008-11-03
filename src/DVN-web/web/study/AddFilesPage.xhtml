@@ -15,7 +15,7 @@
     <body>
         <gui:composition template="/template.xhtml">
 
-<gui:param name="pageTitle" value="DVN - Add Files" />
+<gui:param name="pageTitle" value="#{bundlePageInfo.addFilesTitle}" />
 
   <gui:define name="body">
   <script type="text/javascript">
@@ -54,11 +54,25 @@
                 }
     // ]]>
             </script>
+            
+  <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.addFilesHelp}" escape="false" />
+          </div> 
+            
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.addFilesTitle}"/>
+          </div>
+            <div class="dvn_sectionBox">
+            <div class="dvn_margin12">          
+            
    <ice:form id="form1">
+       
        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
        <ice:inputHidden id="studyId" value="#{AddFilesPage.study.id}"/>
       <input type="hidden" name="pageName" value="AddFilesPage"/>
-    
+      
+      
         <ice:inputFile id="inputFileComponent" 
             progressListener="#{AddFilesPage.fileUploadProgress}" 
             actionListener="#{AddFilesPage.uploadFile}" />
@@ -160,7 +174,13 @@
         <ice:commandButton id="saveButton" value ="Save" action="#{AddFilesPage.save_action}" />
           <ice:commandButton  id="cancelButton" value ="Cancel" immediate="true" 
           action="#{AddFilesPage.cancel_action}" style="margin-left: 30px;"/>
+          
+
     </ice:form>
+    
+</div>
+</div>
+</div>    
 </gui:define>
     </gui:composition>
     </body>

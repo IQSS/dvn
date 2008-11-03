@@ -15,7 +15,7 @@
 <body>
 <gui:composition template="/template.xhtml">
 
-<gui:param name="pageTitle" value="DVN - Manage Studies" />
+<gui:param name="pageTitle" value="#{bundlePageInfo.manageStudiesTitle}"  />
 
   <gui:define name="body">
 
@@ -23,12 +23,12 @@
             <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
             <div class="dvn_section">
+                 <div class="dvnInformationMessage">
+                <ice:outputText value="#{bundlePageInfo.manageStudiesHelp}" escape="false" />
+          </div> 
+                
                 <div class="dvn_sectionTitle">
-                   
-                        <ice:outputFormat value="#{bundle.ManageStudiesTitle}" >
-                            <f:param value="#{VDCRequest.currentVDC.name}"/>
-                        </ice:outputFormat>
-                     
+                      <ice:outputText value="#{bundlePageInfo.manageStudiesTitle}" />                         
                 </div>            
                 <div class="dvn_sectionBox">
                     <div class="dvn_margin12">

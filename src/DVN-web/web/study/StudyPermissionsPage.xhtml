@@ -12,7 +12,7 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Study Permissions" />
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageStudyPermissionsTitle}" />
     <gui:define name="body">
 
       <script type="text/javascript">
@@ -34,18 +34,19 @@
         <ice:inputHidden id="studyId" value="#{StudyPermissionsPage.studyId}"/>
 
         <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.manageStudyPermissionsHelp}" escape="false" />
+          </div> 
+            
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Set Permissions for this Study"/>
+            <ice:outputText value="#{bundlePageInfo.manageStudyPermissionsTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
 
               <div>
                 <ice:outputText styleClass="vdcSubHeaderColor" value="Entire Study Permissions"/>
-                <div class="vdcHelpText">
-                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                  <ice:outputText value="Users without access to this Study will not see the study in search results or browsing collections."/>
-                </div>
+                
                 <ice:outputText value="This entire study (including Cataloging Information) is set as: "/>
                 <ice:selectOneMenu value="#{StudyPermissionsPage.editStudyPermissions.studyRestriction}">
                   <f:selectItem itemLabel="Restricted" itemValue="Restricted"/>
@@ -82,10 +83,7 @@
 
               <div class="vdcSubHeaderPadding">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="All Files Permissions"/>
-                <div class="vdcHelpText">
-                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                  <ice:outputText value="Checking this option requires users, when attempting access to restricted files, to log in or create an account, and submit a request for access. After receiving the request, you can choose to grant them access."/>
-                </div>
+                
                 <ice:selectBooleanCheckbox value="#{StudyPermissionsPage.editStudyPermissions.study.requestAccess}"/>
                 <ice:outputText value=" Allow users to request access to restricted files for this study by creating a Dataverse Network account"/>
               </div>

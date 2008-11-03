@@ -122,7 +122,7 @@
             NEEDED TO ADD/REMOVE THAT CLASS WHEN NECESSARY. -->
 
         <ice:panelSeries styleClass="dvn_networkHomePanel dvn_sectionContent"
-                         value="#{dvRecordsManager.itemBeans}"
+                         value="#{HomePage.itemBeans}"
                          var="dvItems"
                          rendered="#{VDCRequest.currentVDC == null}"
                          style="border: 0px solid gold;">
@@ -218,7 +218,7 @@
                            id="dataverseList"
                            rendered="#{not empty(dvItems.childItems) }"
                            rowClasses="evenRow oddRow"
-                           rows="5" width="100%"
+                           rows="10" width="100%"
                            sortColumn="#{dvItems.sortColumnName}"
                            sortAscending="#{dvItems.ascending}"
                            styleClass="dvn_networkHomePanelInner"

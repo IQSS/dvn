@@ -12,12 +12,16 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - OAI Sets"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.oaiSetsTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
         <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.oaiSetsHelp}" escape="false" />
+          </div> 
+            
           <div class="dvn_sectionTitle">
-            <ice:outputText value="OAI Sets defined in #{VDCRequest.vdcNetwork.name} Dataverse Network"/>
+            <ice:outputText value="#{bundlePageInfo.oaiSetsTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

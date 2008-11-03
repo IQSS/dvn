@@ -16,10 +16,19 @@
 <body>
     <gui:composition template="/template.xhtml">
 
-        <gui:param name="pageTitle" value="DVN - Manage Dataverse Classifications" />
+        <gui:param name="pageTitle" value="#{bundlePageInfo.manageClassificationsTitle}" />
 
         <gui:define name="body">
             <ice:form>
+                
+        <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.manageClassificationsHelp}" escape="false" />
+          </div> 
+            
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.manageClassificationsTitle}"/>
+          </div>
             <!-- ***************************** add content here ************************************ -->
             <div jsfc="ice:panelGroup" rendered="#{manageClassificationsPage.result == true}" styleClass="successMessage">
                <ice:messages id="iceMessage" binding="#{manageClassificationsPage.iceMessage}" layout="list" showDetail="false" showSummary="true"/>
@@ -125,6 +134,8 @@
                     rendered="#{VDCRequest.currentVDC == null}">
                     <ice:outputText value="#{dvItems.strToString}"  />
              </ice:panelSeries>  -->
+            
+            </div>
             </ice:form>
         </gui:define>
         

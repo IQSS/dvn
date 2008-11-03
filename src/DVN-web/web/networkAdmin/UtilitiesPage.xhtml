@@ -15,14 +15,18 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Dataverse Network Utilities"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.utilitiesTitle}"/>
     <gui:define name="body">
       <ice:form  id="utilitiesForm1">
         <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type ="hidden"  name="selectedPanel" value="${UtilitiesPage.selectedPanel}"/>
         <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.utilitiesHelp}" escape="false" />
+          </div> 
+            
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Dataverse Network Utilities"/>
+            <ice:outputText value="#{bundlePageInfo.utilitiesTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

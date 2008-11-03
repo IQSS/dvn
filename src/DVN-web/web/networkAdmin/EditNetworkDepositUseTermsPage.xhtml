@@ -12,7 +12,7 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Edit Data Deposit Use Terms"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editDvnDepositTermsTitle"/>
     <gui:define name="body">
       <ice:form  id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

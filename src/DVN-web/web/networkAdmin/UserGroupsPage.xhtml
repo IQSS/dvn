@@ -12,12 +12,16 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Dataverse Network User Groups"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageGroupsTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
         <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.manageGroupsHelp}" escape="false" />
+          </div> 
+            
           <div class="dvn_sectionTitle">
-            <ice:outputText value="User Groups in #{VDCRequest.vdcNetwork.name} Dataverse Network"/>
+            <ice:outputText value="#{bundlePageInfo.manageGroupsTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

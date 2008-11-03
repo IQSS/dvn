@@ -12,7 +12,7 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Dataverse Network Users"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageUsersTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

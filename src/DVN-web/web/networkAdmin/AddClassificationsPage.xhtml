@@ -16,11 +16,18 @@
 <body>
     <gui:composition template="/template.xhtml">
 
-        <gui:param name="pageTitle" value="DVN - Add Classification Page" />
+        <gui:param name="pageTitle" value="#{bundlePageInfo.createClassificationTitle}" />
 
         <gui:define name="body">
 
             <ice:form id="AddClassificationsPageForm">
+               <div class="dvnInformationMessage">
+                 <ice:outputText value="#{bundlePageInfo.createClassificationHelp}" escape="false" />
+              </div>    
+
+              <div class="dvn_sectionTitle">
+                <ice:outputText value="#{bundlePageInfo.createClassificationTitle}"/>
+              </div> 
               <div jsfc="ice:panelGroup" rendered="#{addClassificationsPage.result == true}" styleClass="successMessage">
                  <ice:messages id="iceMessage" binding="#{addClassificationsPage.iceMessage}" layout="list" showDetail="false" showSummary="true"/>
               </div>

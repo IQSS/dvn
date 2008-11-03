@@ -16,14 +16,19 @@
 <body>
     <gui:composition template="/template.xhtml">
 
-        <gui:param name="pageTitle" value="DVN - Manage Dataverses" />
+        <gui:param name="pageTitle" value="#{bundlePageInfo.manageDvsTitle}" />
 
         <gui:define name="body">
             <ice:form>
 
-            <div class="dvn_sectionTitle">
-                 <ice:outputText value="Manage Dataverses"/>
-            </div>
+           <div class="dvn_section">
+               <div class="dvnInformationMessage">
+                 <ice:outputText value="#{bundlePageInfo.manageDvsHelp}" escape="false" />
+              </div> 
+
+              <div class="dvn_sectionTitle">
+                <ice:outputText value="#{bundlePageInfo.manageDvsTitle}"/>
+              </div>
 
             <!-- Data Paginator goes Here, on top of table-->
                     <!-- ADD STYLE CLASS 'dvn_sectionContent' TO THE PANELSERIES BELOW IN ORDER TO
@@ -257,6 +262,8 @@
           </div>
 
         </ice:panelSeries>
+        
+         </div>
             </ice:form>
         </gui:define>
 

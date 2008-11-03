@@ -12,13 +12,18 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - My Dataverses"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.myDvsTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
         <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="My Dataverses"/>
-          </div>
+               <div class="dvnInformationMessage">
+                 <ice:outputText value="#{bundlePageInfo.myDvsHelp}" escape="false" />
+              </div> 
+
+              <div class="dvn_sectionTitle">
+                <ice:outputText value="#{bundlePageInfo.myDvsTitle}"/>
+              </div>
+              
               <ice:dataTable cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="dvnMyDataverseTable" id="gridPanel2"
                              columnClasses="dvnMyDataverseTableName, dvnMyDataverseTableRole"

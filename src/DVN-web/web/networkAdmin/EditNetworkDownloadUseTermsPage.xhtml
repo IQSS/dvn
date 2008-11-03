@@ -12,7 +12,7 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Edit Download Use Terms"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editDvnDownloadTermsTitle}"/>
     <gui:define name="body">
 
       <ice:form id="form1">
@@ -23,7 +23,7 @@
           </div>  
             
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Edit Network Terms for File Download"/>
+            <ice:outputText value="#{bundlePageInfo.editDvnDownloadTermsTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

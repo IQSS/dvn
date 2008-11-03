@@ -12,9 +12,9 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Edit User Group"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editGroupTitle}"/>
     <gui:define name="body">
-      <f:loadBundle basename="Bundle" var="bundle"/>
+        
       <ice:form id="form1">
         <f:verbatim rendered="#{param.userGroupId == null}">
           <script type="text/javascript">
@@ -47,7 +47,7 @@
           </div>   
             
           <div class="dvn_sectionTitle">
-            <ice:outputText value="User Group"/>
+            <ice:outputText value="#{bundlePageInfo.editGroupTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

@@ -12,14 +12,14 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - View User Group"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.viewGroupTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditUserGroupPage"/>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
-            <ice:outputText value="User Group Details"/>
+            <ice:outputText value="#{bundlePageInfo.viewGroupTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

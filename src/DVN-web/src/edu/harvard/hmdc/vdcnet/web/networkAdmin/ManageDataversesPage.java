@@ -99,12 +99,34 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
             itemBeans = new ArrayList();
         }
         initChrome();
-        List list = (List)vdcGroupService.findAll();
-        initGroupBean(list);
-        List scholarlist = (List)vdcService.findVdcsNotInGroups("Scholar");
-        initUnGroupedBeans(scholarlist, "Scholar Dataverses", SCHOLAR_ID);
-        List otherlist = (List)vdcService.findVdcsNotInGroups("Basic");
-        initUnGroupedBeans(otherlist, "Other", OTHER_ID);
+        List list = null;
+        list = (List)vdcService.findAll();
+        initAllDataverses(list);
+     }
+
+     private void initAllDataverses(List list) {
+         parentItem = new DataverseGrouping(new Long("0"), "", "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, null);
+         parentItem.setSubclassification(new Long("0"));
+         // TBD:  add sorting
+         Iterator iterator = list.iterator();
+         VDC vdc = null;
+         while(iterator.hasNext()) {
+            //add DataListItems to the list
+            itemBeansSize++;
+            vdc = (VDC)iterator.next();
+            Long parent = new Long("0");
+            Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
+            Long localActivity       = calculateActivity(vdc);
+            String activity          = getActivityClass(localActivity);
+            childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
+            childItem.setId(vdc.getId());
+            childItem.setCreationDate(vdc.getCreatedDate());
+            childItem.setNumberOwnedStudies(getOwnedStudies(vdc));
+            childItem.setType(vdc.getDtype());
+            //System.out.println("the vdc is " + vdc.getName() + "the number of studies is " + getOwnedStudies(vdc));
+            childItem.setCreatedBy(getCreatorName(vdc.getCreator().getId()));
+            parentItem.addChildItem(childItem);
+         }
      }
 
      DataverseGrouping parentItem = null;
@@ -156,6 +178,7 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
                 childItem.setId(vdc.getId());
                 childItem.setCreationDate(vdc.getCreatedDate());
                 childItem.setNumberOwnedStudies(getOwnedStudies(vdc));
+                childItem.setType(vdc.getDtype());
                 //System.out.println("the vdc is " + vdc.getName() + "the number of studies is " + getOwnedStudies(vdc));
                 childItem.setCreatedBy(getCreatorName(vdc.getCreator().getId()));
                 parentItem.addChildItem(childItem);

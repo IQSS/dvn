@@ -40,7 +40,9 @@ import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.SearchTerm;
+import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyDownload;
+import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtils;
@@ -209,6 +211,27 @@ public class HomePage extends VDCBaseBean implements Serializable {
          }
      }
 
+     private void initGroupBean(VDCGroup vdcgroup) {
+            //add DataListItems to the list
+            itemBeansSize++;
+            Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
+            parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
+            parentItem.setShortDescription(vdcgroup.getDescription());
+            parentItem.setSubclassification(new Long("25"));
+            List innerlist = vdcgroup.getVdcs();
+            Iterator inneriterator = innerlist.iterator();
+            // ArrayList childItems   = new ArrayList();
+            while(inneriterator.hasNext()) {
+                VDC vdc = (VDC)inneriterator.next();
+                //TODO: Make this the timestamp for last update time
+                Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
+                Long localActivity       = calculateActivity(vdc);
+                String activity          = getActivityClass(localActivity);
+                childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
+                parentItem.addChildItem(childItem);
+            }
+     }
+
 
      // ***************** DEBUG START TREE *****************
      // tree default model, used as a value for the tree component
@@ -257,8 +280,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
         itemBeans.clear();
         List list = null;
         if (!groupingId.equals("0")) {
-            list = (List)vdcGroupService.findByParentId(new Long(groupingId));
-            initGroupBean(list);
+            VDCGroup vdcgroup = vdcGroupService.findById(new Long(groupingId));
+            initGroupBean(vdcgroup);
         } else {
             list = (List)vdcService.findAll();
             initAllDataverses(list);
@@ -555,18 +578,30 @@ public class HomePage extends VDCBaseBean implements Serializable {
             Collection collection = vdc.getOwnedStudies();
             numberOwnedStudies = collection.size();
             Iterator iterator = collection.iterator();
+            //for each study, increment the download count
             while (iterator.hasNext()) {
-                StudyDownload studydownload = new StudyDownload();
-                numberOfDownloads += studydownload.getNumberOfDownloads();
-                iterator.next();
+                Study study = (Study)iterator.next();
+                 for (StudyFile studyfile : study.getStudyFiles() ) {
+                    numberOfDownloads += studyfile.getStudyFileActivity() != null ? studyfile.getStudyFileActivity().getDownloadCount() : 0;
+                }
             }
+            
+            
+
         } catch (Exception e) {
             System.out.println("an exception was thrown while calculating activity");
         } finally {
-            if (numberOwnedStudies > 0)
-                localActivity = new Long(numberOfDownloads/numberOwnedStudies * 100);
-            else
+            if (numberOwnedStudies > 0) {
+                   //range 1
+                long a = 0;
+                long b = 1000;//this is artificial high range and could be based on numberOfTotal Downloads maybe
+                //range 2
+                long c = 1;
+                long d = 5;
+                localActivity = ((numberOfDownloads - a) * (d-c)/(b-a)) + c;
+            } else {
                 localActivity = new Long(numberOfDownloads.toString());
+            }
             return localActivity;
         }
     }

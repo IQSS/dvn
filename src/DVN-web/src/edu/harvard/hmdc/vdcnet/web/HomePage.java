@@ -95,6 +95,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private static Long   OTHER_ID   = new Long("-2");
     private static String OTHER_SHORT_DESCRIPTION = new String("A short description for the unclassified dataverses group (other).");
 
+    private int classificationsSize = 0;
+
     StatusMessage msg;
 
 
@@ -501,6 +503,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
              VDCGroup vdcgroup = null;
              System.out.println(list.toString());
              while(outeriterator.hasNext()) {
+                classificationsSize++;
                 vdcgroup = (VDCGroup)outeriterator.next();
                 if (removeFromList.contains(vdcgroup)) {
                     continue;
@@ -556,6 +559,10 @@ public class HomePage extends VDCBaseBean implements Serializable {
     //tree map related
     public ArrayList getDvGroupItemBeans() {
         return dvGroupItemBeans;
+    }
+
+    public int getClassificationsSize() {
+        return this.classificationsSize;
     }
 
 

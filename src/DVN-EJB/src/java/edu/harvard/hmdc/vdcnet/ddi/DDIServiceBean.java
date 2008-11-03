@@ -2056,10 +2056,9 @@ public class DDIServiceBean implements DDIServiceLocal {
     } 
     
     private void processDataDscr(XMLStreamReader xmlr, Study study, Map filesMap) throws XMLStreamException {
-        int fileOrder = 0;
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("var")) processVar(xmlr, study, filesMap, fileOrder++);
+                if (xmlr.getLocalName().equals("var")) processVar(xmlr, filesMap);
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("dataDscr")) return;
             }   
@@ -2068,13 +2067,12 @@ public class DDIServiceBean implements DDIServiceLocal {
 
 
  
-    private void processVar(XMLStreamReader xmlr, Study study, Map filesMap, int fileOrder) throws XMLStreamException {
+    private void processVar(XMLStreamReader xmlr, Map filesMap) throws XMLStreamException {
         DataVariable dv = new DataVariable();
         dv.setInvalidRanges(new ArrayList());
         dv.setSummaryStatistics( new ArrayList() );
         dv.setCategories( new ArrayList() );
         dv.setName( xmlr.getAttributeValue(null, "name") );
-        dv.setFileOrder(fileOrder);
 
         // associate dv with the correct file
         if ( xmlr.getAttributeValue(null, "files") != null ) {
@@ -2089,7 +2087,10 @@ public class DDIServiceBean implements DDIServiceLocal {
                     sf.setSubsettable(true);
                     sf.setFileType( FileUtil.determineSubsettableFileType( sf ) ); // redetermine file type, now that we know it's subsettable
                 }
-
+                
+                // set fileOrder to size of list (pre add, since indexes start at 0)
+                dv.setFileOrder( dt.getDataVariables().size() );
+                
                 dv.setDataTable(dt);
                 dt.getDataVariables().add(dv);
             }  
@@ -2155,6 +2156,9 @@ public class DDIServiceBean implements DDIServiceLocal {
                     sf.setSubsettable(true);
                     sf.setFileType( FileUtil.determineSubsettableFileType( sf ) ); // redetermine file type, now that we know it's subsettable
                 }
+                
+                // set fileOrder to size of list (pre add, since indexes start at 0)
+                dv.setFileOrder( dt.getDataVariables().size() );
 
                 dv.setDataTable(dt);
                 dt.getDataVariables().add(dv);

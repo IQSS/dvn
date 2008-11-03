@@ -127,7 +127,7 @@
                            id="dataverseList"
                            rendered="#{not empty(dvItems.childItems) }"
                            rowClasses="evenRow oddRow"
-                           rows="5" width="100%"
+                           rows="10" width="100%"
                            sortColumn="#{dvItems.sortColumnName}"
                            sortAscending="#{dvItems.ascending}"
                            styleClass="dvn_networkHomePanelInner"
@@ -146,7 +146,9 @@
                     <ice:outputText value="#{dvItems.nameColumnName}"/>
                   </ice:commandSortHeader>
                 </f:facet>
+                <ice:outputLink id="dataverse_link" value="/dvn/dv/#{items.alias}">
                   <ice:outputText value="#{items.name}"/>
+                </ice:outputLink>
               </ice:column>
 
               <!-- affiliation -->
@@ -167,10 +169,10 @@
                   <ice:commandSortHeader
                     columnName=""
                     arrow="true">
-                    <ice:outputText value="Type"/>
+                    <ice:outputText value="#{dvItems.typeColumnName}"/>
                   </ice:commandSortHeader>
                 </f:facet>
-                <ice:outputText value=""/>
+                <ice:outputText value="#{items.type}"/>
               </ice:column>
 
               <!-- Created  -->

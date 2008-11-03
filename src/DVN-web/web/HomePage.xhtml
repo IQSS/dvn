@@ -121,7 +121,7 @@
             DISPLAY AREA WHERE THE GROUP FILTER LINKS WILL GO ON THE PAGE. A RENDER IS
             NEEDED TO ADD/REMOVE THAT CLASS WHEN NECESSARY. -->
 
-        <ice:panelSeries styleClass="dvn_networkHomePanel dvn_sectionContent"
+        <ice:panelSeries styleClass="#{ ( (HomePage.classificationsSize > 0) ? 'dvn_networkHomePanel dvn_sectionContent' : 'dvn_networkHomePanel') }"
                          value="#{HomePage.itemBeans}"
                          var="dvItems"
                          rendered="#{VDCRequest.currentVDC == null}"
@@ -147,7 +147,9 @@
                     style="overflow: hidden; margin-bottom: .25em;">
 
               <div style="float: left; width: 100%; padding-top: 4px;">
-                <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems)and VDCRequest.currentVDC == null }" style="float: left; width: 60%; padding-top: 2px; padding-bottom: 2px;">
+                <div jsfc="ice:panelGroup" 
+                            rendered="#{not empty(dvItems.childItems)and VDCRequest.currentVDC == null }"
+                            style="float: left; width: 60%; padding-top: 2px; padding-bottom: 2px;">
                     <h:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
                                   effect="#{item.effect}"
                                   styleClass="dvn_totalsLabel"
@@ -325,7 +327,9 @@
           
         </ice:panelSeries>
 
-        <div jsfc="ice:panelGroup" styleClass="dvn_sectionPanels">
+        <div jsfc="ice:panelGroup"
+                rendered="#{HomePage.classificationsSize > 0}"
+                styleClass="dvn_sectionPanels">
           <!-- This is where the group filter-links should go... There also needs to be a
           render on the style class dvn_sectionPanels. I have add the style class, but a
           render will be needed to display/remove it when necessary. -->
@@ -337,7 +341,8 @@
               var="node"
               hideRootNode="false"
               hideNavigation="false"
-              imageDir="/dvn/resources/icefaces/dvn_rime/css-images/">
+              imageDir="/dvn/resources/icefaces/dvn_rime/css-images/"
+              rendered="#{HomePage.classificationsSize > 0}">
             <ice:treeNode>
                 <f:facet name="icon">
                     <ice:panelGroup

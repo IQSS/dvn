@@ -71,7 +71,7 @@ public class VDCServlet extends HttpServlet{
         if (vdc != null) {
             if (destination.equals("/")) {
                 // set to search page
-                destination="/faces/StudyListingPage.xhtml?mode=1&collectionId=" + vdc.getRootCollection().getId();
+                destination="/faces/StudyListingPage.xhtml";
             }
 
             req.setAttribute("vdc",vdc);

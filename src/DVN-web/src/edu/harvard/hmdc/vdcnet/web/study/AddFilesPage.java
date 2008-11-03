@@ -159,7 +159,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
       
         fileCategories.add(new SelectItem("Documentation"));
         fileCategories.add(new SelectItem("Data Files"));
-         fileCategories.add(new SelectItem("DDDDD"));
+        fileCategories.add(new SelectItem(""));
      
     }
 
@@ -205,7 +205,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
        if(b){
             str = "File " + currentFile.getStudyFile().getFileName()+ " is already in the table";
             mLog.error(str);
-            System.out.println(str);
+           // mLog.debug(str);
             errorMessage(str);
             return;
        }else{
@@ -396,7 +396,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
    
     public void init() {
         super.init();
-    //   System.out.println("is from page " +isFromPage("AddFilesPage"));
+   
         if (isFromPage("AddFilesPage")) {
            studyService = (EditStudyService) sessionGet(studyService.getClass().getName());
            study = studyService.getStudy();
@@ -447,7 +447,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         studyFileNames = noDups.toArray(new String[sz]);
         Arrays.sort(studyFileNames); 
         for(int n=0; n < sz;++n)
-            System.out.println(mess +"/nFile stored are "+ studyFileNames[n]);
+            mLog.debug(mess +"/nFile stored are "+ studyFileNames[n]);
    
        //existent categories
          fileCategories = this. buildCategories(); 
@@ -459,13 +459,12 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
      */
     public Collection<SelectItem> buildCategories(){
         List<FileCategory> tfc =  study.getFileCategories(); 
-        System.out.println("Files categories are "+ tfc.size());
+        mLog.debug("Files categories are "+ tfc.size());
         Collection<FileCategory> tfcuniq= new HashSet<FileCategory>(tfc);
         if(tfcuniq.size()<=0) return fileCategories;
         Iterator<FileCategory> iter = tfcuniq.iterator();
         while(iter.hasNext()){
-            FileCategory tmp = iter.next();
-        if(!(tmp.getName().trim()).equals(""))   
+            FileCategory tmp = iter.next();   
         fileCategories.add(new SelectItem(tmp.getName()));
     }
       return fileCategories; 
@@ -501,15 +500,16 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
               
               mLog.debug(tmp.getStudyFile().getDescription()+"; File DeScription");
             //if the file name exist remove it from temp directory and do not store
-            if(found>=0|| !getValidationFileNames().contains(nm)){
+            if(found>=0){
                 edbean.remove();
                 removeUploadFiles(nm);
-            }else
-                validateFileName(FacesContext.getCurrentInstance(),null,tmp.getStudyFile().getFileName());
+            }
             
         }
        }
-        
+         for(int n=0; n < fileList.size(); ++n){
+            mLog.debug(fileList.get(n).getStudyFile().getFileName());
+        }
         // now call save
         if (fileList.size() > 0) {
             studyService.setIngestEmail(ingestEmail);
@@ -656,7 +656,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         if(fileName.equals("")) return; 
         // check invalid characters 
      
-      //  System.out.println(currentFile.getOriginalFileName());
+         mLog.debug(currentFile.getOriginalFileName());
         if (    fileName.contains("\\") ||
                 fileName.contains("/") ||
                 fileName.contains(":") ||
@@ -724,13 +724,9 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         this.filesDataTable = hdt;
     }        
     
-    private boolean newFileAdded = false;
-    
-    public boolean isNewFileAdded() {
-        return newFileAdded;
-    }
+   
      public Collection<SelectItem>  getFileCategories( ){
-           System.out.println("In getFileCategories");
+           mLog.debug("In getFileCategories");
            Collection<SelectItem> uniq = new HashSet<SelectItem>(fileCategories);
            Collection<String> noDups = new HashSet<String>();
            for(SelectItem select: uniq){
@@ -746,7 +742,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
            found = Arrays.binarySearch(cats, str);
            FileCategory c= null;
            if(found < 0) {
-              System.out.println("Added category "+ str);
+              mLog.debug("Added category "+ str);
               c= new FileCategory();
               c.setName(str);
               Collection<StudyFile> studf = c.getStudyFiles();
@@ -757,12 +753,10 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
            }
        
         if(c!=null) {
-            List<FileCategory> lst = study.getFileCategories();
-            if(lst==null) lst = new ArrayList<FileCategory>();
-            lst.add(c);
-            study.setFileCategories(lst);
-            //study.getFileCategories().get(0).getStudyFiles()
-            fileCategories.add(new SelectItem(str));
+           if(study.getFileCategories()==null) 
+                study.setFileCategories(new ArrayList<FileCategory>());
+            study.getFileCategories().add(c);
+            fileCategories.add(new SelectItem(str)); 
         }
        
         }
@@ -773,7 +767,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
       }
  
      public void setFileCategories(Collection<SelectItem> tfc) {
-           System.out.println("In setFileCategories");
+           mLog.debug("In setFileCategories");
          Iterator<SelectItem> iter = tfc.iterator();
          fileCategories.addAll(tfc);
          
@@ -781,10 +775,8 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
          String val =(String) iter.next().getValue();
          FileCategory cat = new FileCategory();
          cat.setName(val);
-          List<FileCategory> lst = study.getFileCategories();
-          if(lst==null) lst = new ArrayList<FileCategory>();
-          lst.add(cat);
-          study.setFileCategories(lst);
+          if(study.getFileCategories()==null)study.setFileCategories(new ArrayList<FileCategory>());
+         study.getFileCategories().add(cat);
          
         // currentFile.getStudyFile().setFileCategory(cat);
          }
@@ -795,7 +787,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
          return fileCategoryName;
      }
      public void setFileCategoryName(String s){
-         System.out.println("Category name");
+         mLog.debug("Category name..." +s);
          fileCategoryName =s;
      }
     

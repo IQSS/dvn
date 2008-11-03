@@ -82,6 +82,7 @@ public class DataverseGrouping extends SortableList {
     private static final String subclassificationsColumnName = "Subclassifications";
     private static final String idColumnName                 = "Id";
     private static final String numberOwnedStudiesColumnName = "Owned Studies";
+    private static final String typeColumnName          = "Type";
 
     ArrayList parentItems = new ArrayList();
     ArrayList childItems = new ArrayList();
@@ -374,6 +375,9 @@ public class DataverseGrouping extends SortableList {
                     return ascending ?
                             c1.getNumberOwnedStudies().compareTo(c2.getNumberOwnedStudies()) :
                             c2.getNumberOwnedStudies().compareTo(c1.getNumberOwnedStudies());
+                } else if (sortColumnName.equals(shortDescriptionColumnName)) {
+                    return ascending ? c1.getType().compareTo(c2.getType()) :
+                        c2.getType().compareTo(c1.getType());
                 } else {
                     return 0;
                 }
@@ -420,6 +424,10 @@ public class DataverseGrouping extends SortableList {
 
     public String getNumberOwnedStudiesColumnName() {
         return numberOwnedStudiesColumnName;
+    }
+
+    public String getTypeColumnName() {
+        return typeColumnName;
     }
 
    // end sorting related stuff
@@ -497,6 +505,9 @@ public class DataverseGrouping extends SortableList {
     private Long subclassification;
     private boolean classificationSelect = false;
     private Integer numberOwnedStudies;
+    private String type;
+
+
 
      public void changeClassificationSelect(ValueChangeEvent event) {
         boolean newValue = (Boolean) event.getNewValue();
@@ -668,6 +679,14 @@ public class DataverseGrouping extends SortableList {
 
     public void setNumberOwnedStudies(Integer numberOwnedStudies) {
         this.numberOwnedStudies = numberOwnedStudies;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
 

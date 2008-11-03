@@ -30,9 +30,7 @@
 package edu.harvard.hmdc.vdcnet.web.site;
 
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
-import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
-import java.util.ArrayList;
-import java.util.Iterator;
+import edu.harvard.hmdc.vdcnet.web.collection.CollectionUI;
 import java.util.List;
 
 /**
@@ -55,5 +53,11 @@ public class VDCUI  implements java.io.Serializable {
     public List getLinkedCollections(boolean getHiddenCollections) {
         // getHiddenCollections no longer used
         return vdc.getLinkedCollections();
+    }
+    public boolean containsOnlyLinkedCollections() {
+        return vdc.getLinkedCollections().size() > 0 &&
+               vdc.getRootCollection().getSubCollections().size() == 0 &&
+               new CollectionUI(vdc.getRootCollection()).getStudyIds().size() == 0;
+
     }
 }

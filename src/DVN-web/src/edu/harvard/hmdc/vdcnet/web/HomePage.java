@@ -114,12 +114,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
             itemBeans = new ArrayList();
         }
         initChrome();
-        List list = (List)vdcGroupService.findAll();
-        initGroupBean(list);
-        List scholarlist = (List)vdcService.findVdcsNotInGroups("Scholar");
-        List otherlist = (List)vdcService.findVdcsNotInGroups("Basic");
-        otherlist.addAll(scholarlist);
-        initUnGroupedBeans(otherlist, "Other", OTHER_ID);
+        List list = (List)vdcService.findAll();
+        initAllDataverses(list);
         initMenu();
      }
 

@@ -12,13 +12,17 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Edit Description"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editDvDescriptionTitle}"/>
     <gui:define name="body">
       <ice:form id="editHomePanelsForm">
         <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.editDvDescriptionHelp}" escape="false"/>
+          </div> 
+            
           <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundle.editHomePanelsHeading}"/>
+            <ice:outputText value="#{bundlePageInfo.editDvDescriptionTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

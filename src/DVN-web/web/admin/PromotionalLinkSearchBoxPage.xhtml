@@ -12,14 +12,18 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Dataverse Promotional Link and Search Box"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.codePromotionalTitle}"/>
     <gui:define name="body">
       <ice:form id="privilegedUsersForm">
         <input type="hidden" name="pageName" value="PrivilegedUsersPage"/>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.codePromotionalHelp}" escape="false" />
+          </div> 
+            
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Dataverse Promotional Link and Search Box"/>
+            <ice:outputText value="#{bundlePageInfo.codePromotionalTitle}"/>
           </div>
           <div class="dvn_sectionBox dvnPromotionalLinks">
             <div class="dvn_margin12">

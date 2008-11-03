@@ -12,7 +12,7 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - E-Mail Notifications"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editDvnNotificationsTitle}"/>
     <gui:define name="body">
       <ice:form id="editContactUsForm">
         <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>

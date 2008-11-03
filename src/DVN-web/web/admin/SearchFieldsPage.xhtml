@@ -15,10 +15,14 @@
     <gui:param name="pageTitle" value="DVN - Search Results Fields"/>
     <gui:define name="body">
       <ice:form id="form1">
-        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-        <div class="dvn_section">
+        <ice:inputHidden id="vdcId" value="#{bundlePageInfo.fieldsSearchResultsTitle}"/>
+<div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.fieldsSearchResultsHelp}" escape="false" />
+          </div> 
+            
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Additional Fields in Search Results"/>
+            <ice:outputText value="#{bundlePageInfo.fieldsSearchResultsTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

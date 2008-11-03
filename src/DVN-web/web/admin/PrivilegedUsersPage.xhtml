@@ -12,14 +12,18 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Dataverse Privileged Users"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageDvPermissionsTitle}"/>
     <gui:define name="body">
       <ice:form id="privilegedUsersForm">
         <input type="hidden" name="pageName" value="PrivilegedUsersPage"/>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.manageDvPermissionsTitle}" escape="false" />
+          </div> 
+            
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Site Restrictions and User Privileges"/>
+            <ice:outputText value="#{bundlePageInfo.manageDvPermissionsTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
@@ -27,10 +31,7 @@
                 <ice:outputText value="Update Successful!"/>
               </div>
               <ice:outputText id="outputText13" styleClass="vdcSubHeaderColor" value="Dataverse Release Settings:"/>
-              <div class="vdcHelpText">
-                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                <ice:outputText value="By default, a new dataverse is set to 'Not Released' and only appropriate privileges can access it. Change it to 'Released' once is ready for others to view, and click Save."/>
-              </div>
+              
               <div id="groupPanel6">
                 <ice:outputText id="outputText12" value="This dataverse is set as: "/>
                 <ice:selectOneMenu value="#{PrivilegedUsersPage.siteRestriction}">
@@ -40,10 +41,7 @@
               </div>
               <div class="dvnFormPadding">
                 <ice:outputText id="outputText14" styleClass="vdcSubHeaderColor" value="Contributions Settings:"/>
-                <div class="vdcHelpText">
-                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif" />
-                  <ice:outputText value="By checking this option, your dataverse homepage will display an invitation to become a contributor  (only end-users without the permission to contribute will see that invitation.)"/>
-                </div>
+                
                 <div id="groupPanel7">
                   <ice:selectBooleanCheckbox id="checkbox5" value="#{PrivilegedUsersPage.vdc.allowContributorRequests}"/>
                   <ice:outputText id="outputText15" value=" Allow users to request to be contributors when they create an account"/>
@@ -51,10 +49,7 @@
               </div>
               <div class="dvnFormPadding">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="Edit Privileged Users:"/>
-                <div class="vdcHelpText">
-                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                  <ice:outputText value="You can add a privileged user to be a contributor, curator or admin for this dataverse, or to gain access to this dataverse, if it's not released."/>
-                </div>
+                
                 <div id="groupPanel3">
                   <ice:outputText id="outputText2" value="Enter the Username of the user you want to add: "/>
                   <ice:inputText binding="#{PrivilegedUsersPage.userInputText}" id="userName" value="#{PrivilegedUsersPage.userName}" onkeypress="if (window.event) return processEvent('', 'privilegedUsersForm:addUserButton'); else return processEvent(event, 'privilegedUsersForm:addUserButton');"/>
@@ -92,10 +87,7 @@
               </div>
               <div class="dvnFormPadding">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="Edit Privileged Groups:"/>
-                <div class="vdcHelpText">
-                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                  <ice:outputText value="You can add a privileged group to gain access to this dataverse, if it is not released."/>
-                </div>
+                
                 <div>
                   <ice:outputText value="Enter the name of the Group you want to add: "/>
                   <ice:inputText id="groupName" binding="#{PrivilegedUsersPage.groupInputText}" value="#{PrivilegedUsersPage.groupName}" onkeypress="if (window.event) return processEvent('', 'privilegedUsersForm:addGroupButton'); else return processEvent(event, 'privilegedUsersForm:addGroupButton');"/>
@@ -126,10 +118,7 @@
               </div>
               <div class="dvnFormPadding">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="Edit Dataverse Level File Permissions:"/>
-                <div class="vdcHelpText">
-                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                  <ice:outputText value="Select to make all files for all studies in this dataverse public or restricted."/>
-                </div>
+                
                 <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
                                columnClasses="vdcAddSiteCol1, vdcAddSiteCol2">
                   <div>
@@ -193,10 +182,7 @@
                 </ice:panelGrid>
               </div>
               <div class="dvnFormPadding dvnFormMargin">
-                <div class="vdcHelpText">
-                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                  <ice:outputText value="Nothing in this page will be saved until you click Save Changes."/>
-                </div>
+               
                 <ice:commandButton id="saveChangesButton" value="Save Changes" action="#{PrivilegedUsersPage.saveChanges}"/>
                 <ice:commandButton immediate="true" id="cancelButton" value="Cancel" action="#{PrivilegedUsersPage.cancel}"/>
               </div>

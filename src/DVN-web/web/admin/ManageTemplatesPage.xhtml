@@ -12,7 +12,7 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Manage Study Templates" />
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageTemplatesTitle}" />
     <gui:define name="body">
 
       <script type="text/javascript">
@@ -27,8 +27,12 @@
         <ice:inputHidden id="hiddenNetworkTemplateId" value="#{ManageTemplatesPage.networkTemplateId}"/>
 
         <div class="dvn_section">
+           <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.manageTemplatesHelp}" escape="false" />
+          </div> 
+            
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Manage Study Templates"/>
+            <ice:outputText value="#{bundlePageInfo.manageTemplatesTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

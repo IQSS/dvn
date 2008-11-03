@@ -206,7 +206,10 @@ public class VDCCollectionTree implements java.io.Serializable  {
     }
     
     private void addVDC(DefaultMutableTreeNode parentNode, VDC vdc) {
-        addCollectionNode(parentNode, vdc.getRootCollection(), vdc, true);
+        if ( !new VDCUI(vdc).containsOnlyLinkedCollections() ) {
+            addCollectionNode(parentNode, vdc.getRootCollection(), vdc, true);
+        }
+
         if (includeLinkedCollections) {
             Iterator iter = new VDCUI(vdc).getLinkedCollections().iterator();
             while (iter.hasNext()) {

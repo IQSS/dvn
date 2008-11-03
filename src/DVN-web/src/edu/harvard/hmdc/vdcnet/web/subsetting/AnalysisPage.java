@@ -97,7 +97,7 @@ import org.apache.commons.lang.builder.*;
 import com.icesoft.faces.component.paneltabset.*;
 import com.icesoft.faces.context.ByteArrayResource;
 import com.icesoft.faces.context.Resource;
-
+import com.icesoft.faces.component.outputresource.*;
 
 public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
@@ -919,6 +919,34 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.zipFileName = zipFileName;
     }
     
+    private OutputResource dwnloadSubsetButton = new OutputResource();
+
+    public OutputResource getDwnloadSubsetButton() {
+        return dwnloadSubsetButton;
+    }
+
+    public void setDwnloadSubsetButton(OutputResource dsb) {
+        this.dwnloadSubsetButton = dsb;
+    }
+    
+    public void processDwnldFileType (ValueChangeEvent vce){
+        dbgLog.fine("***** within processDwnldFileType: start *****");
+        dbgLog.fine("old value="+vce.getOldValue());
+        dbgLog.fine("new value="+vce.getNewValue());
+        if (vce.getOldValue() == null){
+            dbgLog.fine("old value is null and this must be the initial case");
+        } else {
+            if (vce.getNewValue().equals(vce.getOldValue())){
+                dbgLog.fine("new value is the same as before");
+            } else {
+                dbgLog.fine("new value differs from the old one");
+                dwnloadSubsetButton.setRendered(false);
+                dwnldButton.setRendered(true);
+            }
+        }
+        dbgLog.fine("***** within processDwnldFileType: end *****");
+    }
+    
     // end of download section -----------------------------------------------
     // </editor-fold>
 
@@ -1454,7 +1482,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     zipResourceDynFileName = new ByteArrayResource( toByteArray( new FileInputStream(zipFile.getAbsolutePath())));
                     dbgLog.fine("zipFileName="+zipFileName);
                     dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                    
+                    dwnldButton.setRendered(false);
+                    dwnloadSubsetButton.setRendered(true);
                     dbgLog.fine("***** within dwnldAction(): ends here *****");
                                        
                     return "download";
@@ -7044,6 +7073,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             }
 
         }
+        // hide the download button and
+        // show the create button
+                    dwnldButton.setRendered(true);
+                    dwnloadSubsetButton.setRendered(false);
+        
         // Checkes the number of the currently selected variables and 
         // if positive, enable command buttons; disable them otherwise
         if (!varCart.isEmpty()) {

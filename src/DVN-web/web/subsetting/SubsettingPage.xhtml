@@ -225,6 +225,7 @@
 
                 <ice:selectOneRadio id="dtdwnld"  
                    binding="#{AnalysisPage.dwnldFileTypeSet}" 
+                   valueChangeListener="#{AnalysisPage.processDwnldFileType}"
                    immediate="true"
                    value="#{AnalysisPage.dwnldFileTypeSelected}"
                    partialSubmit="true"
@@ -270,12 +271,14 @@
                         action="#{AnalysisPage.dwnldAction}" >
                     </ice:commandButton>
                     
-<ice:outputResource id="dwnloadPack"
+<ice:outputResource id="dwnloadSubsetButton"
+                    binding="#{AnalysisPage.dwnloadSubsetButton}"
                     resource="#{AnalysisPage.zipResourceDynFileName}" 
                     mimeType="application/zip"
                     value="Download Replication-ZIP File" 
                     fileName="#{AnalysisPage.zipFileName}" 
                     type="button" 
+                    
                     shared="false"/>
                 </ice:panelGrid>
             </ice:panelGrid>

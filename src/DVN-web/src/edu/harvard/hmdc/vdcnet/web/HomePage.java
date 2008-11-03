@@ -86,13 +86,12 @@ public class HomePage extends VDCBaseBean implements Serializable {
     public static final String CONTRACT_IMAGE           = "tree_nav_top_close_no_siblings.gif";
     public static final String EXPAND_IMAGE             = "tree_nav_top_open_no_siblings.gif";
     public String CHILD_ROW_STYLE_CLASS;
+    private String ALL_DATAVERSES_LABEL = "All Dataverses";
 
     //these static variables have a dependency on the Network Stats Server e.g.
     // they should be held as constants in a constants file ... TODO
-    private static Long   SCHOLAR_ID = new Long("-1");
-    private static String   SCHOLAR_SHORT_DESCRIPTION = new String("A short description for the research scholar group");
     private static Long   OTHER_ID   = new Long("-2");
-    private static String   OTHER_SHORT_DESCRIPTION = new String("A short description for the unclassified dataverses group (other).");
+    private static String OTHER_SHORT_DESCRIPTION = new String("A short description for the unclassified dataverses group (other).");
 
     StatusMessage msg;
 
@@ -116,8 +115,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
         List list = (List)vdcGroupService.findAll();
         initGroupBean(list);
         List scholarlist = (List)vdcService.findVdcsNotInGroups("Scholar");
-        initUnGroupedBeans(scholarlist, "Scholar Dataverses", SCHOLAR_ID);
         List otherlist = (List)vdcService.findVdcsNotInGroups("Basic");
+        otherlist.addAll(scholarlist);
         initUnGroupedBeans(otherlist, "Other", OTHER_ID);
         initMenu();
      }
@@ -179,7 +178,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
      private void initUnGroupedBeans(List list, String caption, Long netstatsId) {
         Iterator iterator = list.iterator();
         parentItem = new DataverseGrouping(netstatsId, caption, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, new Long("-1"));
-        parentItem.setShortDescription("Hello Wendy");
+        parentItem.setShortDescription(""); //TODO add short description to the vdc create/edit pages.
         parentItem.setSubclassification(new Long("25"));
         itemBeansSize++;
         while (iterator.hasNext()) {
@@ -191,6 +190,25 @@ public class HomePage extends VDCBaseBean implements Serializable {
             parentItem.addChildItem(childItem);
         }
      }
+
+     private void initAllDataverses(List list) {
+         parentItem = new DataverseGrouping(new Long("0"), ALL_DATAVERSES_LABEL, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, null);
+         parentItem.setSubclassification(new Long("0"));
+         Iterator iterator = list.iterator();
+         VDC vdc = null;
+         while(iterator.hasNext()) {
+            //add DataListItems to the list
+            itemBeansSize++;
+            vdc = (VDC)iterator.next();
+            Long parent = new Long("0");
+            Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
+            Long localActivity       = calculateActivity(vdc);
+            String activity          = getActivityClass(localActivity);
+            childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
+            parentItem.addChildItem(childItem);
+         }
+     }
+
 
      // ***************** DEBUG START TREE *****************
      // tree default model, used as a value for the tree component
@@ -236,7 +254,17 @@ public class HomePage extends VDCBaseBean implements Serializable {
         DefaultMutableTreeNode node = findTreeNode(groupingId);
         selectedUserObject = (DataverseGroupingObject) node.getUserObject();
         // TODO: change the content in the window
+        itemBeans.clear();
+        List list = null;
+        if (!groupingId.equals("0")) {
+            list = (List)vdcGroupService.findByParentId(new Long(groupingId));
+            initGroupBean(list);
+        } else {
+            list = (List)vdcService.findAll();
+            initAllDataverses(list);
 
+        }
+        // initMenu();
         // fire effects.);
         //valueChangeEffect.setFired(false);
     }

@@ -217,7 +217,7 @@
                     <ice:outputText value="#{dvItems.nameColumnName}"/>
                   </ice:commandSortHeader>
                 </f:facet>
-                <ice:outputLink id="hideShow" value="javascript:void(0);" style="display: inline; float: right;" onclick="getNextSibling(this);">
+                <ice:outputLink id="hideShow" rendered="#{items.shortDescription != null}" value="javascript:void(0);" style="display: inline; float: right;" onclick="getNextSibling(this);">
                   <ice:outputText id="more_info" value="more info [+]"/>
                 </ice:outputLink>
                 <ice:outputLink id="dataverse_link" value="/dvn/dv/#{items.alias}">

@@ -12,16 +12,16 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Manage Dataverses"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageHarvestingTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
           <div class="dvnInformationMessage">
-             <p>To edit a harvest dataverse settings, click on the dataverse name. If you have set up a harvest dataverse, you can schedule harvesting from this page. The harvest schedule runs every night and gets any new studies or studies that have changed in the original source (OAI server) since the last harvesting. You have also the option to run harvesting on demand.</p>
+              <ice:outputText value="#{bundlePageInfo.manageHarvestingHelp}" escape="false" />
           </div>
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Manage Harvesting"/>
+            <ice:outputText value="#{bundlePageInfo.manageHarvestingTitle}"/>
           </div>
           <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                          binding="#{HarvestSitesPage.harvestDataTable}"

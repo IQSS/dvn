@@ -25,6 +25,7 @@
  */
 package edu.harvard.hmdc.vdcnet.web.site;
 
+import com.icesoft.faces.component.ext.HtmlCommandButton;
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.StudyFieldServiceLocal;
@@ -38,10 +39,10 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
-import com.icesoft.faces.component.ext.HtmlOutputText;
-import com.icesoft.faces.component.ext.HtmlOutputLabel;
 import com.icesoft.faces.component.ext.HtmlInputText;
-import com.icesoft.faces.component.ext.HtmlCommandButton;
+import com.icesoft.faces.component.ext.HtmlInputTextarea;
+import com.icesoft.faces.component.ext.HtmlOutputLabel;
+import com.icesoft.faces.component.ext.HtmlOutputText;
 import edu.harvard.hmdc.vdcnet.util.CharacterValidator;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
@@ -69,19 +70,27 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB StudyFieldServiceLocal    studyFieldService;
     @EJB UserServiceLocal          userService;
     @EJB RoleServiceLocal          roleService;
-    StatusMessage msg;
-    
-    public StatusMessage getMsg(){
-        return msg;
-    }
-    
-    public void setMsg(StatusMessage msg){
-        this.msg = msg;
-    }
-    
+
+    private StatusMessage   msg;
+
+    private String          affiliation;
+    private HtmlInputText   dataverseAlias;
+    private HtmlInputText   dataverseName;
+    private HtmlInputTextarea shortDescriptionInput = new HtmlInputTextarea();
+    private HtmlOutputText  shortDescriptionLabelText;
+    private HtmlOutputLabel shortDescriptionLabel;
+    private String          dataverseType = null;
+    private String          firstName = new String("");
+    private String          lastName;
+    private String          shortDescription;
+
+
+    private List<SelectItem> dataverseOptions = null;
+
+
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
-    
+
     /**
      * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
      * This method is automatically generated, so any user-specified code inserted
@@ -92,7 +101,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         //DEBUG
         //check to see if a dataverse type is in request
-         
+
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Iterator iterator = request.getParameterMap().keySet().iterator();
         while (iterator.hasNext()) {
@@ -103,7 +112,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         }
         if (this.dataverseType == null && getVDCRequestBean().getCurrentVDC().getDtype() != null) {
             this.setDataverseType(getVDCRequestBean().getCurrentVDC().getDtype());
-        } 
+        }
         //what kind of vdc is this, basic or scholar
         try {
             if ( (this.dataverseType == null || this.dataverseType.equals("Scholar")) ) {
@@ -118,6 +127,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
                 setDataverseName(nameText);
                 HtmlInputText aliasText = new HtmlInputText();
                 aliasText.setValue(scholardataverse.getAlias());
+                setShortDescription(scholardataverse.getDvnDescription());
             } else if (!this.dataverseType.equals("Scholar")) {
                 setDataverseType("Basic");
                 HtmlInputText nameText = new HtmlInputText();
@@ -129,11 +139,12 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
                     this.setAffiliation(new String(""));
                 HtmlInputText aliasText = new HtmlInputText();
                 aliasText.setValue(thisVDC.getAlias());
+                setShortDescription(thisVDC.getDvnDescription());
             }
         } catch (Exception nfe) {
             System.out.println("An error occurred " + nfe.toString());
-        }        
-        
+        }
+
     }
 
     private HtmlOutputLabel componentLabel1 = new HtmlOutputLabel();
@@ -155,8 +166,6 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     public void setComponentLabel1Text(HtmlOutputText hot) {
         this.componentLabel1Text = hot;
     }
-
-    private HtmlInputText dataverseName = new HtmlInputText();
 
     public HtmlInputText getDataverseName() {
         return dataverseName;
@@ -186,8 +195,6 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         this.componentLabel2Text = hot;
     }
 
-    private HtmlInputText dataverseAlias = new HtmlInputText();
-
     public HtmlInputText getDataverseAlias() {
         return dataverseAlias;
     }
@@ -215,10 +222,8 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     public void setButton2(HtmlCommandButton hcb) {
         this.button2 = hcb;
     }
-    
+
     // </editor-fold>
-
-
     /** 
      * <p>Construct a new Page bean instance.</p>
      */
@@ -266,6 +271,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         thisVDC.setName((String)dataverseName.getValue());
         thisVDC.setAlias((String)dataverseAlias.getValue());
         thisVDC.setAffiliation(this.getAffiliation());
+        thisVDC.setDvnDescription(shortDescription);
         if (dataverseType.equals("Scholar")) {
             thisVDC.setFirstName(this.firstName);
             thisVDC.setLastName(this.lastName);
@@ -362,42 +368,31 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
                 }
             }
     }
-    
-    
-    /**
-     * Changes for build 16
-     * to support scholar
-     * dataverses and display
-     *
-     * @author wbossons
-     */
-    
-    /**
-     * Used to set the discriminator value
-     * in the entity
-     *
-     */
-    private String dataverseType = null;
 
+
+    // ***************** GETTERS ********************
+    public StatusMessage getMsg(){
+        return msg;
+    }
+
+    /**
+     * Returns the type of dataverse, basic or scholar in this case.
+     *
+     * @return
+     */
     public String getDataverseType() {
         return dataverseType;
     }
-    
-    public void setDataverseType(String dataverseType) {
-        this.dataverseType = dataverseType;
-    }
-    
+
     /**
-     * set the possible options 
+     * set the possible options
      * please note, this was for 16a,
-     * but is not used because of 
+     * but is not used because of
      * issues with type casting - inheritance issues.
      * Keeping it pending a solution ...
      *
      * @author wbossons
      */
-    private List<SelectItem> dataverseOptions = null;
-
     public List<SelectItem> getDataverseOptions() {
         if (this.dataverseOptions == null) {
             dataverseOptions = new ArrayList();
@@ -406,11 +401,6 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         }
         return dataverseOptions;
     }
-    
-    /**
-     * Holds value of property firstName.
-     */
-    private String firstName = new String("");
 
     /**
      * Getter for property firstName.
@@ -420,39 +410,13 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         return this.firstName;
     }
 
-    /**
-     * Setter for property firstName.
-     * @param firstName New value of property firstName.
-     */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    /**
-     * Holds value of property lastName.
-     */
-    private String lastName;
-
-    /**
+        /**
      * Getter for property lastName.
      * @return Value of property lastName.
      */
     public String getLastName() {
         return this.lastName;
     }
-
-    /**
-     * Setter for property lastName.
-     * @param lastName New value of property lastName.
-     */
-    public void setLastName(String lastname) {
-        this.lastName = lastname;
-    }
-
-    /**
-     * Holds value of property affiliation.
-     */
-    private String affiliation;
 
     /**
      * Getter for property affiliation.
@@ -465,22 +429,137 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     /**
+     *
+     *
+     * @return Returns a string with the
+     * short description of the dataverse.
+     * It is viewable on the network page.
+     *
+     */
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    /**
+     * Gets the HtmlInputTextarea that the short
+     * description is bound to.
+     *
+     * @return HtmlInputTextarea
+     */
+    public HtmlInputTextarea getShortDescriptionInput() {
+        return shortDescriptionInput;
+    }
+
+    /**
+     * Gets the HtmlOutputLabel that the short
+     * description label is bound to.
+     *
+     * @return HtmlOutputLabel
+     */
+    public HtmlOutputLabel getShortDescriptionLabel() {
+        return shortDescriptionLabel;
+    }
+
+    /**
+     * Gets the HtmlOutputText binding for the short
+     * description label text.
+     *
+     * @return HtmlOutputText
+     */
+    public HtmlOutputText getShortDescriptionLabelText() {
+        return shortDescriptionLabelText;
+    }
+
+
+
+    // ***************** SETTERS ********************
+    public void setMsg(StatusMessage msg){
+        this.msg = msg;
+    }
+    public void setDataverseType(String dataverseType) {
+        this.dataverseType = dataverseType;
+    }
+
+    /**
+     * Setter for property firstName.
+     * @param firstName New value of property firstName.
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * Setter for property lastName.
+     * @param lastName New value of property lastName.
+     */
+    public void setLastName(String lastname) {
+        this.lastName = lastname;
+    }
+
+    /**
      * Setter for property affiliation.
      * @param affiliation New value of property affiliation.
      */
     public void setAffiliation(String affiliation) {
         this.affiliation = affiliation;
     }
+
+    /**
+     * Returns the value of the short description.
+     *
+     * @param shortDescription
+     */
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    /**
+     * Sets the HtmlInputTextarea that the short
+     * description is bound to.
+     *
+     * @return void
+     */
+    public void setShortDescriptionInput(HtmlInputTextarea shortDescriptionInput) {
+        this.shortDescriptionInput = shortDescriptionInput;
+    }
+
+    /**
+     * Sets the HtmlOutputLabel binding for the short
+     * description label.
+     *
+     * @return void
+     */
+    public void setShortDescriptionLabel(HtmlOutputLabel shortDescriptionLabel) {
+        this.shortDescriptionLabel = shortDescriptionLabel;
+    }
+
+    /**
+     * Sets the HtmlOutputText binding for the short
+     * description label text.
+     *
+     * @return void
+     */
+    public void setShortDescriptionLabelText(HtmlOutputText shortDescriptionLabelText) {
+        this.shortDescriptionLabelText = shortDescriptionLabelText;
+    }
+
+
+
+
     
     /**
-     * capture value change event
+     * Captures value change event for the dataverse affiliation.
      *
      */
     public void changeAffiliation(ValueChangeEvent event) {
         String newValue = (String) event.getNewValue();
         this.setAffiliation(newValue);        
     }
-    
+
+    /**
+     * Captures the selected option.
+     *
+     */
     public void changeDataverseOption(ValueChangeEvent event) {
         String newValue = (String) event.getNewValue();
         this.setDataverseType(newValue);  
@@ -488,17 +567,32 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         request.setAttribute("dataverseType", newValue);
         //FacesContext.getCurrentInstance().renderResponse();
     }
-    
+
+    /**
+     * Captures changes to the first name.
+     *
+     */
     public void changeFirstName(ValueChangeEvent event) {
         String newValue = (String) event.getNewValue();
         this.setFirstName(newValue);        
     }
-    
+
+    /**
+     * Captures changes to the last name.
+     *
+     */
     public void changeLastName(ValueChangeEvent event) {
         String newValue = (String) event.getNewValue();
         this.setLastName(newValue);        
     }
 
+    /**
+     * Validation so that a required field is not left empty
+     *
+     * @param context
+     * @param toValidate
+     * @param value
+     */
     public void validateIsEmpty(FacesContext context,
             UIComponent toValidate,
             Object value) {
@@ -506,6 +600,18 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
          if (newValue == null || newValue.trim().length() == 0)  {
             FacesMessage message = new FacesMessage("The field must have a value.");
             context.addMessage(toValidate.getClientId(context), message);
+        }
+    }
+
+    public void validateShortDescription(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        String newValue = (String)value;
+        if (newValue != null && newValue.trim().length() > 0) {
+            if (newValue.length() > 255) {
+                FacesMessage message = new FacesMessage("The field cannot be more than 255 characters in length.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
     }
 }

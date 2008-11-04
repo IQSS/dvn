@@ -1180,9 +1180,9 @@
         
             <ice:panelGrid id="gridPanel9"
                 columns="3"
+                columnClasses="vdcVarHeaderCol1, vdcVarHeaderCol1, vdcVarHeaderCol2"
                 cellpadding="0" cellspacing="0"
-                columnClasses="vdcVarHeaderCol1, vdcVarHeaderCol1, vdcVarHeaderCol2" 
-                style="margin-left: 8px; margin-top: 10px" width="100%">
+                style="margin-right: 1px; margin-top: 10px;" width="100%">
                 <!--column 1 -->
                 <ice:panelGrid id="groupPanel16"
                     columns="1">
@@ -1231,8 +1231,9 @@
                 </ice:panelGrid>
                 
                 
-                <!-- column 3-->
-                <ice:panelGrid id="groupPanel17">
+                    <!-- column 3-->
+                <ice:panelGrid id="groupPanel17" style="margin-left:80%;"  >
+                    
                     <ice:panelGroup>
                     <ice:outputLabel id="howManyRowsLabel"
                     value="Show "/>
@@ -1339,6 +1340,7 @@
 </ice:dataTable>
 
 <!-- Paginator with page controls -->
+<div style="margin-left:auto;margin-right:auto;width:50%;">
 <ice:dataPaginator id="dataScroller1"
     binding="#{AnalysisPage.dataScroller1}"
     actionListener="#{AnalysisPage.processDataScroller1}"
@@ -1383,26 +1385,9 @@
             title="Fast Backwards"/>
     </f:facet>
 </ice:dataPaginator>
-
+</div>
 <!-- Display counts about the table and the currently displayed page -->
-<ice:dataPaginator id="dataScroll_2" for="dataTable1"
-    rowsCountVar="rowsCount"
-    displayedRowsCountVar="displayedRowsCount"
-    firstRowIndexVar="firstRowIndex"
-    lastRowIndexVar="lastRowIndex"
-    pageCountVar="pageCount"
-    pageIndexVar="pageIndex">
-    <ice:outputFormat
-        value="{0} variables found, displaying {1} variables(s), from {2} to {3}. Page {4} / {5}."
-        styleClass="standard">
-        <f:param value="#{rowsCount}"/>
-        <f:param value="#{displayedRowsCount}"/>
-        <f:param value="#{firstRowIndex}"/>
-        <f:param value="#{lastRowIndex}"/>
-        <f:param value="#{pageIndex}"/>
-        <f:param value="#{pageCount}"/>
-    </ice:outputFormat>
-</ice:dataPaginator>
+
 
 <!-- old scroller was here as a footer -->
             </ice:panelGrid><!-- panelGrid pgDataTable -->

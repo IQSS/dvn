@@ -98,6 +98,7 @@ import com.icesoft.faces.component.paneltabset.*;
 import com.icesoft.faces.context.ByteArrayResource;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.component.outputresource.*;
+import com.icesoft.faces.component.datapaginator.*;
 
 public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
@@ -6570,7 +6571,25 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         dbgLog.fine("a: tentative last row-index value=" + lastRow);
         howManyVarsChecked();
     }
+    
+    private DataPaginator dataScroller1 = new DataPaginator();
 
+    public DataPaginator getDataScroller1() {
+        return dataScroller1;
+    }
+
+    public void setDataScroller1(DataPaginator dataScroller1) {
+        this.dataScroller1 = dataScroller1;
+    }
+
+    public void processDataScroller1(ActionEvent ae){
+        dbgLog.fine("***** processDataScroller1: start *****");
+        dbgLog.fine("current page index="+dataScroller1.getPageIndex());
+        checkboxSelectUnselectAll.setSelected(false);
+        dbgLog.fine("***** processDataScroller1: end *****");
+    }
+    
+    
     // -----------------------------------------------------------------------
     // select-all checkbox
     // -----------------------------------------------------------------------
@@ -6801,7 +6820,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             }
             // activate buttons
             activateButtons();
-            checkboxSelectUnselectAll.setSelected(Boolean.TRUE);
+//?            checkboxSelectUnselectAll.setSelected(Boolean.TRUE);
         } else {
             // unselect-all case
             dbgLog.fine("unselect all case");
@@ -6913,12 +6932,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         cntxt.getExternalContext().getSessionMap()
             .put("checkboxSelectUnselectAll", checkboxSelectUnselectAll);
         */
-        // Saves the Boolean backing object in the sessionMap
-        checkboxSelectUnselectAllSelected = 
-            (Boolean)checkboxSelectUnselectAll.getValue();
-        cntxt.getExternalContext().getSessionMap()
-            .put("checkboxSelectUnselectAllSelected",
-            checkboxSelectUnselectAllSelected);
+//        // Saves the Boolean backing object in the sessionMap
+//?        checkboxSelectUnselectAllSelected = 
+//            (Boolean)checkboxSelectUnselectAll.getValue();
+//?        cntxt.getExternalContext().getSessionMap()
+//?            .put("checkboxSelectUnselectAllSelected",
+//            checkboxSelectUnselectAllSelected);
         cntxt.renderResponse();
         dbgLog.fine("***** selectUnselectAllCheckbox: end *****");
     }

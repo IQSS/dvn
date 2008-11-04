@@ -1339,7 +1339,10 @@
 </ice:dataTable>
 
 <!-- Paginator with page controls -->
-<ice:dataPaginator id="dataScroll_3"
+<ice:dataPaginator id="dataScroller1"
+    binding="#{AnalysisPage.dataScroller1}"
+    actionListener="#{AnalysisPage.processDataScroller1}"
+    
     for="dataTable1"
     paginator="true"
     fastStep="3"

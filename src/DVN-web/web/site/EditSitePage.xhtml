@@ -161,6 +161,23 @@
                   <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
                   <ice:message for="dataverseAlias" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                 </div>
+                <div jsfc="ice:panelGroup">
+                  <ice:outputLabel binding="#{EditSitePage.shortDescriptionLabel}" for="shortDescriptionInput" id="shortDescriptionLabel">
+                    <ice:outputText binding="#{EditSitePage.shortDescriptionLabelText}"
+                                    id="shortDescriptionLabelText"
+                                    value="Network Home Page Description"/>
+                  </ice:outputLabel>
+                </div>
+                <div jsfc="ice:panelGroup">
+                  <ice:inputTextarea binding="#{EditSitePage.shortDescriptionInput}"
+                                 id="dataverseShortDescription"
+                                 required="false"
+                                 validator="#{EditSitePage.validateShortDescription}"
+                                 value="#{EditSitePage.shortDescription}"/>
+                  <br/>
+                  <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network home page with your dataverse listing."/>
+                  <ice:message for="dataverseShortDescription" showSummary="true" showDetail="false" styleClass="errorMessage"/>
+                </div>
               </ice:panelGrid>
               <div class="dvnFormPadding dvnFormMargin">
                 <ice:commandButton binding="#{EditSitePage.button1}" id="button1" value="Save" action="#{EditSitePage.edit}"/>

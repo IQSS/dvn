@@ -131,7 +131,7 @@ public class DataverseGrouping extends SortableList {
     }
 
 
-    public DataverseGrouping(String name, String alias, String affiliation, Timestamp releaseDate, Timestamp lastUpdateTime, String dvnDescription, String recordType, String activity) {
+    public DataverseGrouping(String name, String alias, String affiliation, Timestamp releaseDate, Timestamp lastUpdateTime, String shortDescription, String recordType, String activity) {
         super(nameColumnName);
         this.id             = id;
         this.name           = name;
@@ -139,7 +139,7 @@ public class DataverseGrouping extends SortableList {
         this.affiliation    = affiliation;
         this.releaseDate    = releaseDate;
         this.lastUpdateTime = lastUpdateTime;
-        this.dvnDescription = dvnDescription;
+        this.shortDescription = shortDescription;
         this.recordType     = recordType;
         this.activity       = activity;
         this.indentStyleClass = "childRowIndentStyle";
@@ -490,7 +490,7 @@ public class DataverseGrouping extends SortableList {
     private String groupKey;
     private String name;
     private String affiliation;
-    private String dvnDescription;
+    private String shortDescription;
     private String createdBy;
     private Long downloads;
     private Timestamp releaseDate;
@@ -500,7 +500,6 @@ public class DataverseGrouping extends SortableList {
     private String recordType;
     private String activity;
     private Long parentClassification;
-    private String shortDescription; //TODO: Implement for dvn childItems and parentItems
     // Manage Classifications specific fields
     private Long subclassification;
     private boolean classificationSelect = false;
@@ -613,14 +612,6 @@ public class DataverseGrouping extends SortableList {
 
     public void setParentClassification(Long parentclass) {
         this.parentClassification = parentclass;
-    }
-
-    public String getDvnDescription() {
-        return dvnDescription;
-    }
-
-    public void setDvnDescription(String dvnDescription) {
-        this.dvnDescription = dvnDescription;
     }
 
     public String getCreatedBy() {

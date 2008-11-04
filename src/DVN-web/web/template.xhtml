@@ -95,5 +95,9 @@
   <gui:insert name="footer">
     <gui:include src="views/CustomFooter.xhtml"/>
   </gui:insert>
+   <ice:outputText escape="false"
+                    rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
+                    value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"
+                    />
 </body>
 </html>

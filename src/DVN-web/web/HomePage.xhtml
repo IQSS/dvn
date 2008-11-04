@@ -19,29 +19,7 @@
       <f:loadBundle basename="Bundle" var="bundle"/>
       <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 
-      <f:verbatim>
-        <script type="text/javascript">
-            // <![CDATA[
-            //TODO: change this so that the div is free floating and positioned relative to the mouseX and mouseY
-            function getNextSibling (elem) {
-                isTarget = false;
-                while (!isTarget) {
-                    elem = elem.nextSibling;
-                    if (elem.id != undefined && elem.id.indexOf("hideShow_description") != -1) {
-                        isTarget = true;
-                        if (elem.style.display == 'none') {
-                            elem.style.display = 'block';
-                        } else {
-                            elem.style.display = 'none';
-                        }
-                    }
-                    if (isTarget) break;
-                }
-            }
-            // ]]>
-        </script>
 
-      </f:verbatim>
       <ice:form>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <!-- Success Message -->
@@ -246,7 +224,7 @@
                   <ice:outputText value="#{items.name}"/>
                 </ice:outputLink>
                 <div id="hideShow_description" style="display:none; width:400px; z-Index:500;">
-                  <ice:outputText value="#{items.dvnDescription}"/>
+                  <ice:outputText value="#{items.shortDescription}"/>
                 </div>
               </ice:column>
               <!-- affiliation -->

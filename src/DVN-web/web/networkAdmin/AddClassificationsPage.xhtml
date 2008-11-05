@@ -34,7 +34,7 @@
               <div class="dvn_sectionBox">
                     <div class="dvn_margin12">
                             <!-- ***************************** add content here ************************************ -->
-                            <ice:panelGrid  cellpadding="0" cellspacing="0"
+                            <ice:panelGrid  cellpadding="0" cellspacing="0" 
                                       columnClasses="vdcColPadded, vdcColPadded" columns="1" id="gridPanel2">
                                <ice:panelGroup style="width:650;">
                                  <ice:outputLabel for="classification"
@@ -60,9 +60,7 @@
                                               >
                                   </ice:inputTextarea>
                                 </ice:panelGroup>
-                              <!--  
-                                    onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true"
-                                                value="#{AdvSearchPage.dropdown3DefaultItems}"  -->
+
                                 <ice:panelGroup style="width:650;">
                                     <ice:outputLabel for="parent"
                                         style="vertical-align:top;width:150px;"
@@ -96,6 +94,8 @@
                     <ice:panelGroup styleClass="exampleBox " style="margin-right:25px; float:left;" >
                         <ice:dataTable id="dataverseList"
                                        var="dataverse"
+                                       scrollable="true"
+                                       scrollHeight="400px"
                                        value="#{addClassificationsPage.dataverses}"
                                        columnClasses="tableCol">
                             <ice:column>
@@ -148,6 +148,8 @@
                         <ice:outputLabel id="results"
                                         value="Your results are: "/>
                         <ice:dataTable id="selectedRows"
+                                       scrollable="true"
+                                       scrollHeight="400px"
                                        var="dataverse"
                                        value="#{addClassificationsPage.selectedDataverses}"
                                        columnClasses="tableCol" >

@@ -9,7 +9,6 @@
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.editDvnDepositTermsTitle"/>
@@ -17,17 +16,15 @@
       <ice:form  id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div class="dvnInformationMessage">
+           <div jsfc="ice:panelGroup" styleClass="#{(EditNetworkDepositUseTermsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
              <ice:outputText value="#{bundlePageInfo.editDvnDepositTermsHelp}" escape="false" />
-          </div>   
-          
+             <ice:messages layout="list" showDetail="false" showSummary="true" styleClass="successMessage"/>
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvnDepositTermsTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-              <ice:messages layout="list" showDetail="false" showSummary="true" styleClass="successMessage"/>
-
               <div jsfc="ice:panelGroup">
                 <ice:selectBooleanCheckbox value="#{EditNetworkDepositUseTermsPage.termsOfUseEnabled}"/>
                 <ice:outputText value=" Enable Terms of Use"/>

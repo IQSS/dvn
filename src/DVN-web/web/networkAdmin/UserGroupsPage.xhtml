@@ -7,27 +7,25 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.manageGroupsTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
         <div class="dvn_section">
-           <div class="dvnInformationMessage">
+           <div jsfc="ice:panelGroup" styleClass="#{(UserGroupsPage.statusMessage.messageText) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
              <ice:outputText value="#{bundlePageInfo.manageGroupsHelp}" escape="false" />
-          </div> 
-            
+             <div jsfc="ice:panelGroup" rendered="#{!empty UserGroupsPage.statusMessage.messageText}">
+               <ice:outputText id="statusMessage" value="#{UserGroupsPage.statusMessage.messageText}"/>
+             </div>
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageGroupsTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" styleClass="#{UserGroupsPage.statusMessage.styleClass}" rendered="#{!empty UserGroupsPage.statusMessage.messageText}">
-                <ice:outputText id="statusMessage" value="#{UserGroupsPage.statusMessage.messageText}"/>
-              </div>
               <ice:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.xhtml?userGroupType=usergroup">
                 <ice:outputText value="Create a New Group"/>
               </ice:outputLink>

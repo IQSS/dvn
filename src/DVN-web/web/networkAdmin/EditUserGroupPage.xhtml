@@ -9,7 +9,6 @@
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.editGroupTitle}"/>
@@ -26,7 +25,6 @@
                       if (document.getElementById('form1:ipgroups') != null)
                           document.getElementById('form1:ipgroups').style.display='none';
                   }
-
               }
               function setUserGroupType(obj) {
                   if (obj.checked) {
@@ -44,8 +42,7 @@
         <div class="dvn_section">
            <div class="dvnInformationMessage">
              <ice:outputText value="#{bundlePageInfo.editGroupHelp}" escape="false" />
-          </div>   
-            
+          </div>            
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editGroupTitle}"/>
           </div>

@@ -17,17 +17,15 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div class="dvnInformationMessage">
-             <ice:outputText value="#{bundlePageInfo.editDvnAccountTermsHelp}" escape="false" />
-          </div> 
-            
+           <div jsfc="ice:panelGroup" styleClass="#{(EditAccountUseTermsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+             <ice:outputText value="#{bundlePageInfo.editDvnAccountTermsHelp}" escape="false"/>
+             <ice:messages layout="list" showDetail="false" showSummary="true"/>
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvnAccountTermsTitle"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-              <ice:messages  layout="list" showDetail="false" showSummary="true" styleClass="successMessage"/>
-             
               <div jsfc="ice:panelGroup">
                 <ice:selectBooleanCheckbox value="#{EditAccountUseTermsPage.termsOfUseEnabled}"/>
                 <ice:outputText value=" Enable Terms of Use"/>

@@ -9,12 +9,10 @@
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.editOaiSetTitle}"/>
     <gui:define name="body">
-
       <ice:form id="form1">
         <ice:inputHidden value="#{EditOAISetPage.oaiSet.id}"/>
         <ice:inputHidden value="#{EditOAISetPage.oaiSet.version}"/>

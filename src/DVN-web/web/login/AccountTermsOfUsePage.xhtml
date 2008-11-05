@@ -5,75 +5,64 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
-       xmlns:ice="http://www.icesoft.com/icefaces/component"
-      >
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
-<gui:composition template="/template.xhtml">
-
-<gui:param name="pageTitle" value="DVN - Account Terms of Use" />
-
-  <gui:define name="body">
-        
-        <ice:form  id="form1">
-            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/> 
-            <input type="hidden" value="TermsOfUsePage" name="pageName"/>
-       
-              <div jsfc="ice:panelGroup" styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
-              <div jsfc="ice:panelGroup" styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestHeader dvn_overflow' : 'dvn_sectionTitle'}">
-                      <ice:outputText value="Terms of Use" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
-                      <ice:outputText value="Create a New Account" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
-                      <ice:outputText value="Create Account &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" rendered="#{LoginWorkflowBean.creatorWorkflow}" escape="false"/>
-                      <ice:outputText value="Create Account &lt;span&gt;&gt; Become a Contributor&lt;/span&gt;" rendered="#{LoginWorkflowBean.contributorWorkflow}" escape="false"/>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="DVN - Account Terms of Use"/>
+    <gui:define name="body">
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <input type="hidden" value="TermsOfUsePage" name="pageName"/>
+        <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
+          <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestHeader dvn_overflow' : 'dvn_sectionTitle'}">
+            <ice:outputText value="Terms of Use" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
+            <ice:outputText value="Create a New Account" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
+            <ice:outputText value="Create Account &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" rendered="#{LoginWorkflowBean.creatorWorkflow}" escape="false"/>
+            <ice:outputText value="Create Account &lt;span&gt;&gt; Become a Contributor&lt;/span&gt;" rendered="#{LoginWorkflowBean.contributorWorkflow}" escape="false"/>
+          </div>
+          <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestTimeline" style="background-position: 0 -4px;">
+            <div class="requestTimelinePoint" style="left: 51px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Create Account</strong></div>
+            <div class="requestTimelinePoint" style="left: 249px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Terms of Use</strong></div>
+            <div class="requestTimelinePoint" style="left: 435px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Name Dataverse</strong></div>
+            <div class="requestTimelinePoint" style="left: 651px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
+          </div>
+          <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.contributorWorkflow}" styleClass="requestTimeline" style="background-position: 108px -4px;">
+            <div class="requestTimelinePoint" style="left: 144px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Create Account</strong></div>
+            <div class="requestTimelinePoint" style="left: 347px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Terms of Use</strong></div>
+            <div class="requestTimelinePoint" style="left: 554px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
+          </div>
+          <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
+            <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow}" styleClass="requestContentDescLeft">
+              <p><ice:outputText value="Please read and agree to the terms of use for the"/>
+                <ice:outputText value="#{VDCRequest.vdcNetwork.name}"/>
+              <ice:outputText value="Dataverse Network. Check the 'I agree and accept' box and continue."/></p>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContentFormRight' : 'empty'}">
+              <div class="dvn_margin12">
+                <div jsfc="ice:panelGroup" styleClass="termsAgreementMessage" rendered="#{LoginWorkflowBean.plainWorkflow or LoginWorkflowBean.fileAccessWorkflow}">
+                  <ice:outputText value="Please read and agree to the terms of use for the #{VDCRequest.vdcNetwork.name} Dataverse Network. Check the &quot;I agree and accept&quot; box and continue."/>
+                </div>
+                <div class="termsAgreementBox">
+                  <ice:outputText value="#{AccountTermsOfUsePage.termsOfUse}" escape="false"/>
+                </div>
+                <div>
+                  <ice:selectBooleanCheckbox id="termsAccepted" required="true" validator="#{AccountTermsOfUsePage.validateTermsAccepted}"  value="#{AccountTermsOfUsePage.termsAccepted}"/>
+                  <ice:outputText styleClass="agreeCheckbox" value="I agree and accept these terms of use."/>
+                  <ice:message for="termsAccepted" styleClass="errorMessage"/>
+                </div>
+                <div class="dvnFormPadding dvnFormMargin">
+                  <ice:commandButton id="termsButton" value="Continue" action="#{AccountTermsOfUsePage.acceptTerms_action}"/>
+                  <ice:commandButton id="termsCancelButton" value="Cancel" immediate="true" action="home"/>
+                </div>
               </div>
-              <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestTimeline" style="background-position: 0 -4px;">
-                        <div class="requestTimelinePoint" style="left: 51px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Create Account</strong></div>
-                        <div class="requestTimelinePoint" style="left: 249px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Terms of Use</strong></div>
-                        <div class="requestTimelinePoint" style="left: 435px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Name Dataverse</strong></div>
-                        <div class="requestTimelinePoint" style="left: 651px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
-              </div>  
-              <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.contributorWorkflow}" styleClass="requestTimeline" style="background-position: 108px -4px;">
-                        <div class="requestTimelinePoint" style="left: 144px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Create Account</strong></div>
-                        <div class="requestTimelinePoint" style="left: 347px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Terms of Use</strong></div>
-                        <div class="requestTimelinePoint" style="left: 554px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
-              </div>       
-              <div jsfc="ice:panelGroup" styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
-                  
-                  <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow}" styleClass="requestContentDescLeft">
-                  	<p> <ice:outputText value="Please read and agree to the terms of use for the"/> 
-                        <ice:outputText value="#{VDCRequest.vdcNetwork.name}" />
-                        <ice:outputText value="Dataverse Network. Check the 'I agree and accept' box and continue."/></p>
-                  </div>
-                  
-                  <div jsfc="ice:panelGroup" styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContentFormRight' : 'empty'}">
-                  <div styleClass="dvn_margin12">
-                        <div jsfc="ice:panelGroup" styleClass="termsAgreementMessage" rendered="#{LoginWorkflowBean.plainWorkflow or LoginWorkflowBean.fileAccessWorkflow}">
-                            <ice:outputText value="Please read and agree to the terms of use for the #{VDCRequest.vdcNetwork.name} Dataverse Network. Check the &quot;I agree and accept&quot; box and continue." />
-                        </div>
-                        <div class="termsAgreementBox">
-                            <ice:outputText value="#{AccountTermsOfUsePage.termsOfUse}" escape="false"/>
-                        </div>
-                        <div>
-                            <ice:selectBooleanCheckbox id="termsAccepted" required="true" validator="#{AccountTermsOfUsePage.validateTermsAccepted}"  value="#{AccountTermsOfUsePage.termsAccepted}" />
-                            <ice:outputText styleClass="agreeCheckbox" value="I agree and accept these terms of use." />
-                            <ice:message for="termsAccepted" styleClass="errorMessage"/>
-                        </div>
-                        <div styleClass="termsAgreementButtons">
-                            <ice:commandButton id="termsButton" value="Continue" action="#{AccountTermsOfUsePage.acceptTerms_action}"/>
-                            <ice:commandButton id="termsCancelButton" value="Cancel" immediate="true" style="margin-left: 20px;" action="home"/>
-                        </div>
-                  </div>
-                  </div>
-                  
-              </div>
-          </div> 
-
-        </ice:form>
-            </gui:define>
-        </gui:composition>
-    </body>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
 </html>

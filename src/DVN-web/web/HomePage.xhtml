@@ -57,7 +57,7 @@
           <!-- Search Section starts here -->
           <div class="dvn_searchblock">
             <div class="dvn_searchBoxContent">
-              <div class="dvn_searchTitle"><a name="search" title="">Search</a></div>
+              <div class="dvn_searchTitle"><a name="search" title="">Search Studies</a></div>
               <fieldset>
                 <label for="options">
                   <ice:selectOneMenu id="dropdown1" value="#{HomePage.searchField}">
@@ -79,7 +79,7 @@
                 <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
                   <ice:outputText value="Advanced Search"/>
                 </ice:outputLink>
-                <ice:outputText value=" | " escape="true"/>
+                &#160;| &#160;
                 <ice:outputLink value="http://thedata.org/guides/users/search/tips" target="_blank" style="margin: 0;">
                   <ice:outputText value="Tips"/>
                 </ice:outputLink>
@@ -102,16 +102,13 @@
         <ice:panelSeries styleClass="#{ ( (HomePage.classificationsSize > 0) ? 'dvn_networkHomePanel dvn_sectionContent' : 'dvn_networkHomePanel') }"
                          value="#{HomePage.itemBeans}"
                          var="dvItems"
-                         rendered="#{VDCRequest.currentVDC == null}"
-                         style="border: 0px solid gold;">
-          <ice:outputText   rendered="#{dvItems.recordType eq 'group'}"
-                            style="font-size: 1.5em !important; font-weight: bold;"
-                            value="#{dvItems.name}"/>
+                         rendered="#{VDCRequest.currentVDC == null}">
+          <ice:outputText rendered="#{dvItems.recordType eq 'group'}"
+                          style="font-size: 1.5em !important; font-weight: bold;"
+                          value="#{dvItems.name}"/>
                             <!-- Placeholder for TODO: what output when group is empty? -->
-         <div  jsfc="ice:panelGroup"
-                align="center"
-                rendered="#{dvItems.recordType eq 'group'}"
-                style="float: left; width: 100%; padding-top:10px; padding-bottom:10px;">
+         <div jsfc="ice:panelGroup"
+              rendered="#{dvItems.recordType eq 'group'}">
             <ice:outputText rendered="#{ (empty(dvItems.childItems) and (dvItems.recordType eq 'group') )}"
                             value="There are no dataverses to display in this group."/>
           </div>
@@ -150,12 +147,9 @@
                 </div>
                 
                 <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }" style="float: right; width: 20%;">
-                  <ice:dataPaginator id="dataScroll_3"
-                                     for="dataverseList"
-                                     paginator="true"
-                                     fastStep="3"
-                                     paginatorMaxPages="4"
-                                     style="margin: 0; padding: 0; float: right;">
+                  <ice:dataPaginator id="dataScroll_3" styleClass="dvnPaginatorRight"
+                                     for="dataverseList" paginator="true" fastStep="3"
+                                     paginatorMaxPages="4" renderFacetsIfSinglePage="false">
                     <f:facet name="first">
                       <ice:graphicImage
                         url="./xmlhttp/css/xp/css-images/arrow-first.gif"

@@ -7,40 +7,32 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.manageTemplatesTitle}" />
     <gui:define name="body">
-
       <script type="text/javascript">
+          // <![CDATA[
           function updateDefault(radioButton) {
               hiddenNetworkTemplate = document.getElementById("templateForm:tabSet1:files:fileDataTableWrapper:0:fileDataTable:catDropdown");
               hiddenNetworkTemplate.value=radioButton.value;
           }
+          // ]]>
       </script>
-
       <ice:form id="templateForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <ice:inputHidden id="hiddenNetworkTemplateId" value="#{ManageTemplatesPage.networkTemplateId}"/>
-
         <div class="dvn_section">
            <div class="dvnInformationMessage">
              <ice:outputText value="#{bundlePageInfo.manageTemplatesHelp}" escape="false" />
-          </div> 
-            
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageTemplatesTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-
-              <div class="vdcHelpText">
-                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif" />
-                <ice:outputText escape="false" value="Template help text here." />
-              </div>
               <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/TemplateFormPage.xhtml">
                 <ice:outputText value="+ Create New Template"/>
               </ice:outputLink>
@@ -81,7 +73,6 @@
                   <ice:outputText rendered="#{currentRow[0].id==ManageTemplatesPage.networkTemplateId}" value="Cannot Edit"/>
                 </ice:column>
               </ice:dataTable>
-
             </div>
           </div>
         </div>

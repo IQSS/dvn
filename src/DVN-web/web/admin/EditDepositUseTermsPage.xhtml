@@ -7,9 +7,8 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.editDvDepositTermsTitle}"/>
@@ -17,20 +16,15 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div class="dvnInformationMessage">
+           <div jsfc="ice:panelGroup" styleClass="#{(EditDepositUseTermsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
              <ice:outputText value="#{bundlePageInfo.editDvDepositTermsHelp}" escape="false" />
-          </div> 
-            
+             <ice:messages layout="list" showDetail="false" showSummary="true"/>
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvDepositTermsTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-              <ice:messages styleClass="successMessage" layout="list" showDetail="false" showSummary="true"/>
-              <div class="vdcHelpText">
-                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                <ice:outputText value="By enabling these Terms of Use, users will be asked to agree to them when creating a new study or editing an existing study. These terms of use will apply to all the studies owned by the #{VDCRequest.currentVDC.name} Dataverse."/>
-              </div>
               <div>
                 <ice:selectBooleanCheckbox value="#{EditDepositUseTermsPage.termsOfUseEnabled}"/>
                 <ice:outputText value=" Enable Terms of Use"/>

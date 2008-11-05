@@ -7,9 +7,8 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.editDvDownloadTermsTitle}"/>
@@ -17,20 +16,15 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div class="dvnInformationMessage">
-             <ice:outputText value="#{bundlePageInfo.editDvDownloadTermsHelp}" escape="false" />
-          </div> 
-            
+           <div jsfc="ice:panelGroup" styleClass="#{(EditUseTermsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+             <ice:outputText value="#{bundlePageInfo.editDvDownloadTermsHelp}" escape="false"/>
+             <ice:messages layout="list" showDetail="false" showSummary="true"/>
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvDownloadTermsTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-              <ice:messages styleClass="successMessage" layout="list" showDetail="false" showSummary="true"/>
-              <div class="vdcHelpText">
-                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                <ice:outputText value="By enabling these Terms of Use, users will be asked to agree to them before downloading a file or accessing the subsetting/analysis page. These Terms will apply to all studies owned by the #{VDCRequest.currentVDC.name} Dataverse, and will be displayed in the Cataloging Information under the Terms of Use section."/>
-              </div>
               <div>
                 <ice:selectBooleanCheckbox value="#{EditUseTermsPage.termsOfUseEnabled}"/>
                 <ice:outputText value=" Enable Terms of Use"/>

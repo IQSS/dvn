@@ -7,9 +7,8 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.editDvDescriptionTitle}"/>
@@ -17,20 +16,15 @@
       <ice:form id="editHomePanelsForm">
         <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div class="dvnInformationMessage">
+           <div jsfc="ice:panelGroup" styleClass="#{(EditHomePanelsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
              <ice:outputText value="#{bundlePageInfo.editDvDescriptionHelp}" escape="false"/>
-          </div> 
-            
+             <ice:messages layout="list" showDetail="false" showSummary="true"/>
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvDescriptionTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-              <ice:messages layout="list" showDetail="false" showSummary="true" styleClass="successMessage"/>
-              <div class="vdcHelpText">
-                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                <ice:outputText id="htmlHelp" value="#{bundle.htmlHelpText}"/>
-              </div>
               <div>
                 <ice:selectBooleanCheckbox id="chkLocalAnnouncements" value="#{EditHomePanelsPage.chkLocalAnnouncements}"/>
                 <ice:outputText id="outputText3" value="#{bundle.displayLocalAnnouncementsLabel}"/>

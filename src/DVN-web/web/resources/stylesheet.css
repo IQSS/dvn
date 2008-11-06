@@ -130,7 +130,6 @@ span.disabled {font-weight: bold;}
 
 /* MAIN SECTION */
 #dvn_mainSection {position: relative; width: 100%;}
-#dvn_mainSectionTitle {padding: .25em 0; color: #526f76; font-size: 124% !important; text-transform: uppercase;}
 
 /* SIDE SECTION PANELS */
 .dvn_sectionPanels {display: inline; position: relative; float: left; margin-right: 2%; width: 22%;} 
@@ -564,9 +563,19 @@ a.vdcSiteMapLink:link, a.vdcSiteMapLink:visited, a.vdcSiteMapLink:hover, a.vdcSi
   text-decoration: underline;
 }
 
+/* NETWORK HOMEPAGE */
+.dvnHmpgGroupTableHeaderBlock {overflow: hidden;}
+.dvnHmpgGroupHeaderBlock {float: left;}
+span.dvnHmpgGroupHeader {font-size: 150% !important; font-weight: bold;}
+.dvnHmpgGroupCreateBlock {float: right;}
+a.dvnHmpgGroupCreateLink:link, a.dvnHmpgGroupCreateLink:visited,
+a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
+    padding-right: 28px; color: #c55b28; background: url(start-arrows.gif) 100% 52% no-repeat; font-size: 95%; text-decoration: none;
+}
+
 /* STUDYLISTING PAGE */
 .dvnStudyListWrapper {border: 1px solid #dcdddf;}
-.dvnStudyListCollectionName {padding: .5em .25em; border: 1px solid #dcdddf; border-width: 1px 1px 0 1px;}
+.dvnStudyListCollectionNameBlock {padding: .5em .25em; border: 1px solid #dcdddf; border-width: 1px 1px 0 1px;}
 .dvnStudyListCollectionName span {font-size: 140% !important; font-weight: bold;}
 .dvnStudyListResultsTop {border-bottom: 1px solid #dcdddf;}
 .dvnStudyListResultsBottom {border-top: 1px solid #dcdddf;}
@@ -1202,37 +1211,6 @@ span.vdcEditStudyFormatExample {display: inline;}
    background-color:#ffffff;
 }
 
-/* Network Homepage Style Rules */
-
-.vdcDataverseGroupLeft{
-   padding-bottom: 0px;
-   padding-left: 80px;
-   padding-right: 20px;
-   padding-top: 30px;
-   vertical-align: top;
-   width: 50%;
-}
-.vdcDataverseGroupRight{
-   padding-bottom: 0px;
-   padding-left: 20px;
-   padding-right: 80px;
-   padding-top: 30px;
-   vertical-align: top;
-   width: 50%;
-}
-.vdcDataverseGroupHeader{
-   color: #000000;
-   font-weight: bold;
-   padding-bottom: 4px;
-   text-align: left
-}
-.vdcDataversesTable{
-   padding-bottom: 9px;
-   padding-left: 50px;
-   padding-right: 20px;
-   padding-top: 9px;
-}
-
 /* Rules for Login Page
 */
 .vdcLoginCol1{
@@ -1606,8 +1584,6 @@ span.dvnOptionsTableNote {font-size: 90% !important;}
 div.dvnOptionsTableLicense {padding-top: .5em;}
 
 /**** Create a Dataverse ****/
-.requestHmpgSide {position: absolute; top: 0; right: 0; margin-bottom: 18px;}
-a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active {padding-right: 28px; color: #c55b28; background: url(start-arrows.gif) 100% 52% no-repeat; font-size: 95%; text-decoration: none;} 
 .dvn_createDvRequest {text-align: center;}
 .dvn_createDvRequest .requestHeader {margin-left: auto; margin-right: auto; width: 770px; color: #c55b28; font-size: 160% !important; text-transform: uppercase; text-align: left;}
 .dvn_createDvRequest .requestHeader .requestContentTitle {float: left; width: 330px; padding: 0 0 6px 0; color: #c55b28; font-size: 100% !important; font-weight: normal; text-transform: uppercase;}

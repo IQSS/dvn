@@ -249,13 +249,10 @@
                     <ice:outputText value="Delete"/>
                   </ice:commandSortHeader>
                 </f:facet>
-                <!-- TODO: implement delete action -->
-                <ice:commandLink action="#{manageDataversesPage.delete_action}"
-                                        binding="#{manageDataversesPage.linkDelete}"
-                                        value="Delete"
-                                        >
-                      <f:attribute name="cid" value="#{items.id}"/>
-                </ice:commandLink>
+                <ice:outputLink value="/dvn/faces/site/DeleteDataversePage.xhtml">
+                   <f:param name="deleteId" value="#{items.id}" />
+                   <ice:outputText value="Delete"/>
+                 </ice:outputLink>
               </ice:column>
             </ice:dataTable>
 

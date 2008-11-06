@@ -67,6 +67,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.MissingResourceException;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -508,8 +509,8 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         for (Iterator it = advSearchFields.iterator(); it.hasNext();) {
             StudyField elem = (StudyField) it.next();
             elem.getId();
-            advS[i++] = messages.getString(elem.getName());
-            advSearchFieldMap.put(messages.getString(elem.getName()), elem.getName());
+            advS[i++] = getUserFriendlySearchField(elem.getName());
+            advSearchFieldMap.put(getUserFriendlySearchField(elem.getName()), elem.getName());
 
         }
         return advS;
@@ -518,8 +519,8 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     private String[] getFieldList(String[] advSearchFields) {
         String[] advS = new String[advSearchFields.length];
         for (int i = 0; i < advS.length; i++) {
-            advS[i] = messages.getString(advSearchFields[i]);
-            advSearchFieldMap.put(messages.getString(advSearchFields[i]), advSearchFields[i]);
+            advS[i] = getUserFriendlySearchField(advSearchFields[i]);
+            advSearchFieldMap.put(getUserFriendlySearchField(advSearchFields[i]), advSearchFields[i]);
         }
 //        DefaultSelectItemsArray dsia = new DefaultSelectItemsArray();
         /*
@@ -533,6 +534,14 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
          */
         return advS;
     }
+    
+    private String getUserFriendlySearchField(String searchField) {
+        try {
+            return ResourceBundle.getBundle("SearchFieldBundle").getString(searchField);
+        } catch (MissingResourceException e) {
+            return searchField;
+        }
+    }    
 
     public List getCollections() {
         ArrayList collections = new ArrayList();

@@ -7,9 +7,8 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="DVN - User Account"/>
@@ -27,6 +26,10 @@
                 <ice:outputText id="statusMessage" value="#{AccountPage.statusMessage.messageText}"/>
               </div>
               <div class="dvnFormPadding vdcTextRight">
+                <ice:outputLink id="linkAction3" rendered="#{VDCRequest.currentVDC == null and !VDCSession.loginBean.networkAdmin and VDCSession.loginBean.hasDataverses}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/MyDataversePage.xhtml">
+                  <ice:outputText id="linkAction3Text" value="My Dataverses"/>
+                </ice:outputLink>
+                <ice:outputText value=" | " rendered="#{VDCRequest.currentVDC == null and !VDCSession.loginBean.networkAdmin and VDCSession.loginBean.hasDataverses}"/>
                 <ice:outputLink id="linkAction1" value="/dvn/faces/login/EditAccountPage.xhtml?userId=#{AccountPage.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
                   <ice:outputText id="linkAction1Text" value="Update Account"/>
                 </ice:outputLink>

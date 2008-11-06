@@ -155,12 +155,13 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
                 .getSession(false).toString();
         String studyEV = (( HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("studyId");
         studyId = Long.parseLong(studyEV); 
-        if(fileCategories == null) fileCategories=Collections.synchronizedList(new ArrayList<SelectItem>()); 
+        if(fileCategories == null || fileCategories.size() <=0) {
+            fileCategories=Collections.synchronizedList(new ArrayList<SelectItem>());
+            fileCategories.add(new SelectItem("Documentation"));
+            fileCategories.add(new SelectItem("Data Files"));
+            fileCategories.add(new SelectItem(""));
+        }
       
-        fileCategories.add(new SelectItem("Documentation"));
-        fileCategories.add(new SelectItem("Data Files"));
-        fileCategories.add(new SelectItem(""));
-     
     }
 
     /**
@@ -422,8 +423,9 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         }
         //Added by EV: Files already existent in the Study 
       existentFiles("From init"); 
-         
-     
+       //existent categories
+      
+      fileCategories = this. buildCategories(); 
     }
     /**
      * Helper function to init: It obtaines the collection of files 
@@ -447,10 +449,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         studyFileNames = noDups.toArray(new String[sz]);
         Arrays.sort(studyFileNames); 
         for(int n=0; n < sz;++n)
-            mLog.debug(mess +"/nFile stored are "+ studyFileNames[n]);
-   
-       //existent categories
-         fileCategories = this. buildCategories(); 
+            mLog.debug(mess +"/nFile stored are "+ studyFileNames[n]);       
          
     }
     /**
@@ -458,15 +457,39 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
      * @return Collection<SelectItem>
      */
     public Collection<SelectItem> buildCategories(){
+        if(study==null || study.getFileCategories()==null)return fileCategories;
         List<FileCategory> tfc =  study.getFileCategories(); 
         mLog.debug("Files categories are "+ tfc.size());
         Collection<FileCategory> tfcuniq= new HashSet<FileCategory>(tfc);
-        if(tfcuniq.size()<=0) return fileCategories;
+        int ln = tfcuniq.size();
+        if(ln <=0) return fileCategories;
         Iterator<FileCategory> iter = tfcuniq.iterator();
+        int cnt=0;
+        //category names that are stored in the study
+        String [] catstudy = new String[ln];
         while(iter.hasNext()){
-            FileCategory tmp = iter.next();   
-        fileCategories.add(new SelectItem(tmp.getName()));
-    }
+            FileCategory tmp = iter.next(); 
+            catstudy[cnt]= tmp.getName();
+            mLog.debug(catstudy[cnt]);
+            cnt++; 
+        }
+        Arrays.sort(catstudy);
+       //category names that are stored in drop down list of SelectItem      
+       String catfiles[] = new String[fileCategories.size()];
+       cnt=0;
+       for(SelectItem sel:fileCategories){
+            String key = (String) sel.getValue();
+            catfiles[cnt]= key;
+            cnt++; 
+        }
+        Arrays.sort(catfiles);
+        //add the study categories to the drop down list of SelectItem
+        for(String key: catstudy){
+          int found = Arrays.binarySearch(catfiles, key);  
+          if(found < 0) fileCategories.add(new SelectItem(key));   
+       }
+        
+   
       return fileCategories; 
         
     }  
@@ -737,7 +760,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         if(cats.length >1) Arrays.sort(cats);
         if(currentFile != null){
            String str = currentFile.getFileCategoryName().trim();
-           int found = 1;
+           int found=0;
            if(str != null &&!str.equals(""))
            found = Arrays.binarySearch(cats, str);
            FileCategory c= null;

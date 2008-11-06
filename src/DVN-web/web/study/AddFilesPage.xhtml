@@ -76,12 +76,12 @@
         <ice:inputFile id="inputFileComponent" 
             progressListener="#{AddFilesPage.fileUploadProgress}" 
             actionListener="#{AddFilesPage.uploadFile}" />
-        <ice:message for="inputFileComponent" />
+        <ice:message for="inputFileComponent" /> 
         <ice:outputProgress 
             label="Uploading"
             value="#{AddFilesPage.fileProgress}" />        
- <h:messages layout="table" globalOnly="false" 
-                  showDetail="true" showSummary="true"/>        
+ <!-- <ice:messages layout="table" globalOnly="false" 
+                  showDetail="true" showSummary="true"/> -->        
 
    
 <br/>

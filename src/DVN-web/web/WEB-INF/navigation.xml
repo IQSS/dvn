@@ -244,11 +244,22 @@
                 <from-outcome>success</from-outcome>
                 <to-view-id>/site/DeleteDataverseSuccessPage.xhtml</to-view-id>
             </navigation-case>
-        <navigation-case>
+            <navigation-case>
                 <from-outcome>cancel</from-outcome>
                 <to-view-id>/site/HarvestSitesPage.xhtml</to-view-id>
-            </navigation-case>           
-    </navigation-rule>    
+            </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+            <from-view-id>/networkAdmin/DeleteClassificationsPage.xhtml</from-view-id>
+            <navigation-case>
+                <from-outcome>true</from-outcome>
+                <to-view-id>/networkAdmin/DeleteClassificationsSuccessPage.xhtml</to-view-id>
+            </navigation-case>
+            <navigation-case>
+                <from-outcome>cancel</from-outcome>
+                <to-view-id>/site/ManageClassificationsPage.xhtml</to-view-id>
+            </navigation-case>
+    </navigation-rule>
     <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>

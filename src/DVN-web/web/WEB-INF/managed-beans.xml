@@ -364,7 +364,17 @@
         <managed-property>
             <property-name>deleteId</property-name>
             <property-class>java.lang.Long</property-class>
-            <value>#{param.deleteId}</value>
+            <value>#{deleteId}</value>
+        </managed-property>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>DeleteClassificationsPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.DeleteClassificationsPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>cid</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.cid}</value>
         </managed-property>
     </managed-bean>
     <managed-bean>

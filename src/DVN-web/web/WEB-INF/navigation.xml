@@ -159,8 +159,8 @@
      <navigation-rule>
          <from-view-id>/*</from-view-id>
         <navigation-case>
-            <from-outcome>creatorSuccess</from-outcome>
-            <to-view-id>/login/CreatorRequestSuccessPage.xhtml</to-view-id>
+            <from-outcome>addSiteSuccess</from-outcome>
+            <to-view-id>/site/AddSiteSuccessPage.xhtml</to-view-id>
         </navigation-case>
      </navigation-rule>  
  

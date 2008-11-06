@@ -37,23 +37,7 @@
 
         <!-- Main Section starts here -->
         <div id="dvn_mainSection">
-          <div id="dvn_mainSectionTitle">
-            <ice:outputText value="Dataverses" rendered="#{VDCRequest.currentVDC == null}"/>
-            <ice:outputText value="Studies" rendered="#{VDCRequest.currentVDC != null}" />
-          </div>
-
-          <div jsfc="ice:panelGroup" id="createDataverse" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestCreator}">
-            <ice:outputLink styleClass="requestHmpgSideLink" value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
-              <ice:outputText value="Create your own Dataverse" escape="false"/>
-            </ice:outputLink>
-          </div>
-
-          <div jsfc="ice:panelGroup" id="beContributor" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestContributor}">
-            <ice:outputLink styleClass="requestHmpgSideLink"  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/ContributorRequestInfoPage.xhtml">
-              <ice:outputText value="Become a Contributor" escape="false"/>
-            </ice:outputLink>
-          </div>
-
+          
           <!-- Search Section starts here -->
           <div class="dvn_searchblock">
             <div class="dvn_searchBoxContent">
@@ -103,10 +87,17 @@
                          value="#{HomePage.itemBeans}"
                          var="dvItems"
                          rendered="#{VDCRequest.currentVDC == null}">
-          <ice:outputText rendered="#{dvItems.recordType eq 'group'}"
-                          style="font-size: 1.5em !important; font-weight: bold;"
-                          value="#{dvItems.name}"/>
-                            <!-- Placeholder for TODO: what output when group is empty? -->
+        <div class="dvnHmpgGroupTableHeaderBlock">
+          <div class="dvnHmpgGroupHeaderBlock">
+            <ice:outputText rendered="#{dvItems.recordType eq 'group'}" styleClass="dvnHmpgGroupHeader" value="#{dvItems.name}"/>
+          </div>
+          <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupCreateBlock" id="createDataverse" rendered="#{dvItems.recordType eq 'group' and HomePage.showRequestCreator}">
+            <ice:outputLink styleClass="dvnHmpgGroupCreateLink" value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
+              <ice:outputText value="Create your own Dataverse" escape="false"/>
+            </ice:outputLink>
+          </div>
+        </div>
+
          <div jsfc="ice:panelGroup"
               rendered="#{dvItems.recordType eq 'group'}">
             <ice:outputText rendered="#{ (empty(dvItems.childItems) and (dvItems.recordType eq 'group') )}"

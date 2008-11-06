@@ -32,8 +32,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
     @EJB VDCServiceLocal vdcService;
 
      private Long cid;
-     private HtmlCommandLink linkDelete = new HtmlCommandLink();
-
+     
      private boolean result;
      private String statusMessage;
      private String SUCCESS_MESSAGE   = new String("Success. The classifications and dataverses operation completed successfully.");
@@ -62,7 +61,6 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
 
      public void init() {
         super.init();
-        linkDelete.setValue("Delete");
          // initialize the list
         synchronized(itemBeans) {
             if (itemBeans != null) {
@@ -160,7 +158,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
      public String delete_action() {
         statusMessage = SUCCESS_MESSAGE;
         result = true;
-        setCid(new Long((String)linkDelete.getAttributes().get("cid")));
+        //setCid(new Long((String)linkDelete.getAttributes().get("cid")));
         try {
             VDCGroup vdcgroup = vdcGroupService.findById(cid);
             vdcGroupService.removeVdcGroup(vdcgroup);
@@ -184,11 +182,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
          return this.cid;
      }
 
-     public HtmlCommandLink getLinkDelete() {
-         return this.linkDelete;
-     }
-
-     public HtmlMessages getIceMessage() {
+    public HtmlMessages getIceMessage() {
         return this.iceMessage;
     }
 
@@ -199,10 +193,6 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
      //setters
      public void setCid(Long cId) {
          this.cid = cId;
-     }
-
-     public void setLinkDelete(HtmlCommandLink linkdelete) {
-         this.linkDelete = linkdelete;
      }
 
      public void setIceMessage(HtmlMessages icemessage) {

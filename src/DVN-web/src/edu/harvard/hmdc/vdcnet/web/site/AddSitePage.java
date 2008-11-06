@@ -484,8 +484,8 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         mailService.sendAddSiteNotification(toMailAddress, name, siteAddress);
 
         getVDCSessionBean().getLoginBean().setUser(creator);
-        LoginWorkflowBean lwf = (LoginWorkflowBean) this.getBean("LoginWorkflowBean");
-        return getNextPage();
+
+        return "addSiteSuccess";        
     }
 
     public String createScholarDataverse() {
@@ -552,17 +552,9 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
 
         getVDCSessionBean().getLoginBean().setUser(creator);
 
-        return getNextPage();
+        return "addSiteSuccess";
     }
     
-    private String getNextPage() {
-       LoginWorkflowBean lwf = (LoginWorkflowBean) this.getBean("LoginWorkflowBean");
-        if (lwf.isCreatorWorkflow()) {
-            return "creatorSuccess";   
-        }
-        return "home";
-    }
-
     public String cancel() {
         return "home";
     }

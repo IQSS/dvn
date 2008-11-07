@@ -405,12 +405,13 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
         }
         StatusMessage newMsg = new StatusMessage();
         String msgText;
-        msgText = "Search Results updated.";
+        msgText = "Update Successful!";
         newMsg.setStyleClass("successMessage");
         newMsg.setMessageText(msgText);
         Map m = getRequestMap();
         m.put("statusMessage",newMsg);
         msg = newMsg;
+        success = true;
         return "searchFields";
     }
     
@@ -429,6 +430,16 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
     public String cancel(){
 //s        indexService.indexAll();
         return "myOptions";
+    }
+    
+    private boolean success = false;
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
     
 }

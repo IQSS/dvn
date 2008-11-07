@@ -68,7 +68,10 @@
             }
             // ]]>
         </script>
-
+        <ice:outputText escape="false"
+                    rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
+                    value="#{(applicationScope.googleAnalyticsSourceCode != null) ? applicationScope.googleAnalyticsSourceCode : MainLayoutBean.googleAnalyticsSourceCode}"
+                    />
   <base href="#{facesContext.externalContext.request.scheme}://#{facesContext.externalContext.request.serverName}:#{facesContext.externalContext.request.serverPort}#{facesContext.externalContext.requestContextPath}/"/>
 
 </head>

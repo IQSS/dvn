@@ -31,6 +31,8 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -47,6 +49,8 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
     HtmlInputHidden hiddenVdcId;
     HtmlInputHidden hiddenVdcName;
     String vdcName;
+    private Long cid;
+
 
     public String getVdcName() {
         return vdcName;
@@ -55,7 +59,6 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
     public void setVdcName(String vdcName) {
         this.vdcName = vdcName;
     }
-  
     
     /**
      * <p>Construct a new Page bean instance.</p>
@@ -78,7 +81,9 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
     
     public void init() {
         super.init();
-        if (deleteId!=null) {
+        if (cid != null)
+            deleteId = cid;
+        if (deleteId != null) {
             VDC vdc = vdcService.find(deleteId);
             vdcName = vdc.getName();
         }
@@ -117,6 +122,14 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
      */
     public void setDeleteId(Long deleteId) {
         this.deleteId = deleteId;
+    }
+
+    public Long getCid() {
+        return cid;
+    }
+
+    public void setCid(Long cid) {
+        this.cid = cid;
     }
     
     public HtmlInputHidden getHiddenVdcId() {

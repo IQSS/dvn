@@ -292,6 +292,16 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
   font-weight: bold;
   color: #299a0b;
 }
+.dvnSuccessMessage .successMessage {
+   background: none;
+   color: #299a0b;
+   display: inline;
+   font-weight: bold;
+   padding: 0;
+   text-align: left;
+   width: auot;
+   margin: 0 0 0 48px;
+}
 
 .successMessage {
    background: #f4ebc7;

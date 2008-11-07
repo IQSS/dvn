@@ -364,12 +364,7 @@
         <managed-property>
             <property-name>deleteId</property-name>
             <property-class>java.lang.Long</property-class>
-            <value>#{deleteId}</value>
-        </managed-property>
-        <managed-property>
-            <property-name>cid</property-name>
-            <property-class>java.lang.Long</property-class>
-            <value>#{param.cid}</value>
+            <value>#{param.deleteId}</value>
         </managed-property>
     </managed-bean>
     <managed-bean>

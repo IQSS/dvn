@@ -48,7 +48,10 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
     
     HtmlInputHidden hiddenVdcId;
     HtmlInputHidden hiddenVdcName;
-    String vdcName;
+
+    private String result;
+    private String resultLink;
+    private String vdcName;
     private Long cid;
 
 
@@ -92,6 +95,11 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
     public String delete() {
         deleteId = (Long)hiddenVdcId.getValue();
         vdcService.delete(deleteId);
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String referer      = (String)request.getHeader("referer");
+        result       = referer.substring(referer.lastIndexOf("/")+1, referer.indexOf("."));
+        result       = getFriendlyLinkName();
+        resultLink   = referer;
         return "success";
     }
     
@@ -136,6 +144,31 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
 
     public void setHiddenVdcName(HtmlInputHidden hiddenVdcName) {
         this.hiddenVdcName = hiddenVdcName;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public String getResultLink() {
+        return resultLink;
+    }
+
+    public void setResultLink(String resultLink) {
+        this.resultLink = resultLink;
+    }
+
+    private String getFriendlyLinkName() {
+        if (result.indexOf("ManageDataversesPage") != -1)
+            return "Manage Dataverses Page";
+        else if (result.indexOf("HarvestSitesPage") != -1)
+            return "Harvest Sites Page";
+        else
+            return "";
     }
       
 }

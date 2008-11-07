@@ -81,8 +81,6 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
     
     public void init() {
         super.init();
-        if (cid != null)
-            deleteId = cid;
         if (deleteId != null) {
             VDC vdc = vdcService.find(deleteId);
             vdcName = vdc.getName();
@@ -124,14 +122,6 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
         this.deleteId = deleteId;
     }
 
-    public Long getCid() {
-        return cid;
-    }
-
-    public void setCid(Long cid) {
-        this.cid = cid;
-    }
-    
     public HtmlInputHidden getHiddenVdcId() {
         return hiddenVdcId;
     }

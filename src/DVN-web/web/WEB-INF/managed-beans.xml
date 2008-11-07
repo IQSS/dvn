@@ -366,6 +366,11 @@
             <property-class>java.lang.Long</property-class>
             <value>#{deleteId}</value>
         </managed-property>
+        <managed-property>
+            <property-name>cid</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.cid}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>DeleteClassificationsPage</managed-bean-name>

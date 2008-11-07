@@ -44,7 +44,8 @@ public class MainLayoutBean implements java.io.Serializable  {
     public MainLayoutBean() {
     }
     
-   private String googleAnalyticsCode;
+    private String googleAnalyticsCode;
+    private String googleAnalyticsSourceCode;
     private String googleAnalyticsKey;
 
      /**
@@ -52,7 +53,6 @@ public class MainLayoutBean implements java.io.Serializable  {
      * @return Value of property googleAnalyticsCode.
      */
     public String getGoogleAnalyticsCode() {
-        //adapt this for google analytics code
         Map applicationmap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
         if (applicationmap.containsKey("googleAnalyticsCode"))  {
                 return (String) applicationmap.get("googleAnalyticsCode");
@@ -64,6 +64,21 @@ public class MainLayoutBean implements java.io.Serializable  {
         }
         return this.googleAnalyticsCode;
     }
+
+    public String getGoogleAnalyticsSourceCode() {
+        Map applicationmap = FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
+        if (applicationmap.containsKey("googleAnalyticsSourceCode"))  {
+                return (String) applicationmap.get("googleAnalyticsSourceCode");
+        } else {
+            setGoogleAnalyticsSourceCode();
+            if (googleAnalyticsSourceCode != null) {
+                applicationmap.put("googleAnalyticsSourceCode", googleAnalyticsSourceCode);
+            }
+        }
+        return googleAnalyticsSourceCode;
+    }
+
+
     
     /**
      * Getter for property googleAnalyticsKey.
@@ -87,12 +102,6 @@ public class MainLayoutBean implements java.io.Serializable  {
      */
     public void setGoogleAnalyticsCode(String key) {
         String googleCode = new String("");
-        googleCode += "         <script type=\"text/javascript\">\n\r";
-        googleCode += "         // <![CDATA[  \n\r" ;
-        googleCode += "            var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n\r";
-        googleCode += "            document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n\r";
-        googleCode += "            //  ]]>\n\r";
-        googleCode += "            </script>\n\r";
         googleCode += "            <script type=\"text/javascript\">\n\r";
         googleCode += "                // <![CDATA[  \n\r"; 
         googleCode += "            var pageTracker = _gat._getTracker(\"" + key + "\");\n\r";
@@ -102,7 +111,20 @@ public class MainLayoutBean implements java.io.Serializable  {
         googleCode += "            </script>\n\r";
         this.googleAnalyticsCode = googleCode;
     }
-    
+
+    public void setGoogleAnalyticsSourceCode() {
+        String googleCode = new String("");
+        googleCode += "         <script type=\"text/javascript\">\n\r";
+        googleCode += "         // <![CDATA[  \n\r" ;
+        googleCode += "            var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n\r";
+        googleCode += "            document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n\r";
+        googleCode += "            //  ]]>\n\r";
+        googleCode += "            </script>\n\r";
+        this.googleAnalyticsSourceCode = googleCode;
+    }
+
+
+
     public void setGoogleAnalyticsKey(String key) {
         this.googleAnalyticsKey = key;
     }

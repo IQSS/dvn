@@ -64,7 +64,6 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.TemplateFileCategory;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
-import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -155,13 +154,9 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
                 .getSession(false).toString();
         String studyEV = (( HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("studyId");
         studyId = Long.parseLong(studyEV); 
-        if(fileCategories == null || fileCategories.size() <=0) {
+        if(fileCategories == null )
             fileCategories=Collections.synchronizedList(new ArrayList<SelectItem>());
-            fileCategories.add(new SelectItem("Documentation"));
-            fileCategories.add(new SelectItem("Data Files"));
-            fileCategories.add(new SelectItem(""));
-        }
-      
+           
     }
 
     /**
@@ -224,7 +219,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
         if (persistentFacesState !=null) persistentFacesState.executeAndRender();
      }catch(RenderingException ee){ 
          mLog.error(ee.getMessage()); } 
-        
+     
 
     }
     
@@ -627,8 +622,11 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         return tfc;
     }      
   
+    public boolean isProgressRequested(){
+         
+    return currentFile != null;         
        
-      
+} 
     public boolean isEmailRequested() {
         Iterator< StudyFileEditBean> iter = fileList.iterator();
         while (iter.hasNext()) {

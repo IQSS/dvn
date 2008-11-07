@@ -36,12 +36,12 @@
                             <div class="dvn_margin12"> 
                                 
                                 <div id="groupPanel1">
-                                    <ice:outputText  styleClass="warnMessage" value="By deleting a dataverse, you are removing it permanently from the Archive. All studies and collections owned by this dataverse will also be deleted."/>
+                                    <ice:outputText  styleClass="warnMessage"
+                                                        value="By deleting a dataverse, you are removing it permanently from the Archive. All studies and collections owned by this dataverse will also be deleted."/>
                                      <br />
                                     <ice:outputText  styleClass="warnMessage" value="Are you sure you want to delete "/>
                                     <ice:outputFormat  id="outputText3" styleClass="vdcTextStandOut" value="{0}">
                                         <f:param value="#{DeleteDataversePage.vdcName}"/>
-                                        
                                     </ice:outputFormat>
                                     <ice:outputText  id="outputText4" value="?"/>
                                 </div>

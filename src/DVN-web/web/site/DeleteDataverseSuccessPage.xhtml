@@ -32,7 +32,11 @@
                 <div class="dvn_sectionBox"> 
                     <div class="dvn_margin12">
                         
-                        <h:outputText  id="outputText2" value="The dataverse has been deleted successfully. "/> 
+                        <ice:outputText id="outputText2" value="The dataverse has been deleted successfully. "/>
+                        <br />
+                        <ice:outputLink value="#{DeleteDataversePage.resultLink}">
+                            <ice:outputText id="returnLink" value="Return to the #{DeleteDataversePage.result}"/>
+                        </ice:outputLink>
                         
                     </div>
                 </div>

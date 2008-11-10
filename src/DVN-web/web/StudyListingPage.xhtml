@@ -145,7 +145,7 @@
                              </div> -->
                       </div>
                       <!-- Optional search fields
-                              <div jsfc="ice:panelGroup" id="groupPanel7" rendered="#{studyUI.study.productionDate != null and studyUI.study.productionDate != ''}">
+                              <div jsfc="ice:panelGroup" rendered="#{!empty StudyListingPage.studyFields[sfc.productionDate]  and !empty studyUI.study.productionDate}">
                                   <ice:outputText id="outputText15" styleClass="vdcSResultsField" value="Production Date:" />
                                   <ice:outputText id="outputText11" value="#{studyUI.study.productionDate}" />
                               </div>

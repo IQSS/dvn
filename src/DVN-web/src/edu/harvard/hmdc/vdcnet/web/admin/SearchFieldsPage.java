@@ -71,6 +71,9 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
         searchResultsFields = getVDCRequestBean().getCurrentVDC().getSearchResultFields();
         for (Iterator it = searchResultsFields.iterator(); it.hasNext();) {
             StudyField elem = (StudyField) it.next();
+            if (elem.getName().equals("productionDate")){
+                productionDateResults = true;
+            }            
             if (elem.getName().equals("producerName")){
                 producerResults = true;
             }
@@ -103,6 +106,16 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
     
     public void setMsg(StatusMessage msg){
         this.msg = msg;
+    }
+    
+    private boolean productionDateResults;
+
+    public boolean isProductionDateResults() {
+        return productionDateResults;
+    }
+
+    public void setProductionDateResults(boolean productionDateResults) {
+        this.productionDateResults = productionDateResults;
     }
     
     private boolean producerResults;
@@ -184,6 +197,16 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
         return studyFieldService;
     }
 
+    private HtmlSelectBooleanCheckbox productionDateCheckbox = new HtmlSelectBooleanCheckbox();
+
+    public HtmlSelectBooleanCheckbox getProductionDateCheckbox() {
+        return productionDateCheckbox;
+    }
+
+    public void setProductionDateCheckbox(HtmlSelectBooleanCheckbox productionDateCheckbox) {
+        this.productionDateCheckbox = productionDateCheckbox;
+    }
+    
     private HtmlSelectBooleanCheckbox producerCheckbox = new HtmlSelectBooleanCheckbox();
 
     public HtmlSelectBooleanCheckbox getProducerCheckbox() {
@@ -371,6 +394,10 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
     public String save(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         List <StudyField> newSearchResultsFields = getDefaultSearchResultsFields();
+        if (productionDateCheckbox.isSelected()){
+            StudyField productionDateResultsField = studyFieldService.findByName("productionDate");
+            newSearchResultsFields.add(productionDateResultsField);
+        }        
         if (producerCheckbox.isSelected()){
             StudyField producerResultsField = studyFieldService.findByName("producerName");
             newSearchResultsFields.add(producerResultsField);

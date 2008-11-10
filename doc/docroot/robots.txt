@@ -1,10 +1,14 @@
 # robots.txt generated at http://www.mcanerin.com
 User-agent: *
 Crawl-delay: 60
-Disallow: /*/cgi-bin/*
-Disallow: /*/cgi/*
 Disallow: /*/FileDownload/*
 Disallow: /*/resources/*
-Disallow: /*/subsetting/SubsettingPage.jsp*
-Disallow: /*/study/TermsOfUsePage.jsp*
-Sitemap: http://dvn-qa1.hmdc.harvard.edu:8080/dvn/faces/SiteMap.jsp
+Disallow: /*/subsetting/SubsettingPage.xhtml*
+Disallow: /*/study/TermsOfUsePage.xhtml*
+Disallow: /*/ContactUsPage.xhtml*
+
+User-agent: msnbot
+Disallow: /
+
+User-agent: *.msnbot
+Disallow: /

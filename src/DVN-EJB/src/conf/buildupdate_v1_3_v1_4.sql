@@ -98,5 +98,7 @@ update pagedef set path = '/collection/ManageCollectionsPage.xhtml' where path =
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddClassificationsPage', '/networkAdmin/AddClassificationsPage.xhtml', null,1 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageClassificationsPage', '/networkAdmin/ManageClassificationsPage.xhtml', null,1 );
 
+-- remove production date from dfault seatch results
+update studyfield set searchresultfield = false where name = 'productionDate';
 
 commit;

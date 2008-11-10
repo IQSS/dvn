@@ -252,8 +252,12 @@
     <navigation-rule>
             <from-view-id>/networkAdmin/DeleteClassificationsPage.xhtml</from-view-id>
             <navigation-case>
-                <from-outcome>true</from-outcome>
+                <from-outcome>success</from-outcome>
                 <to-view-id>/networkAdmin/DeleteClassificationsSuccessPage.xhtml</to-view-id>
+            </navigation-case>
+            <navigation-case>
+                <from-outcome>failed</from-outcome>
+                <to-view-id>/networkAdmin/ManageClassificationsPage.xhtml</to-view-id>
             </navigation-case>
             <navigation-case>
                 <from-outcome>cancel</from-outcome>

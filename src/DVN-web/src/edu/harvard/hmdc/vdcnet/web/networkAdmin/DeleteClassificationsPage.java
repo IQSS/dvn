@@ -6,9 +6,7 @@
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
 import com.icesoft.faces.component.ext.HtmlCommandButton;
-import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.ext.HtmlMessages;
-import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
@@ -18,6 +16,7 @@ import java.util.Iterator;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author wbossons
@@ -35,6 +34,7 @@ public class DeleteClassificationsPage extends VDCBaseBean implements Serializab
     private HtmlMessages  iceMessage = new HtmlMessages();
 
     private String result;
+    private String resultLink;
     private String statusMessage;
     private String SUCCESS_MESSAGE   = new String("Success. The classifications and dataverses operation completed successfully.");
     private String FAIL_MESSAGE      = new String("Problems occurred during the form submission. Please see error messages below.");
@@ -80,17 +80,22 @@ public class DeleteClassificationsPage extends VDCBaseBean implements Serializab
         try {
             VDCGroup vdcgroup = vdcGroupService.findById(deleteId);
             vdcGroupService.removeVdcGroup(vdcgroup);
+            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            String referer      = (String)request.getHeader("referer");
+            result       = referer.substring(referer.lastIndexOf("/")+1, referer.indexOf("."));
+            result       = getFriendlyLinkName();
+            resultLink   = referer;
             //this.vdcGroupService.updateGroupOrder(order); // TBD
         } catch (Exception e) {
             statusMessage = FAIL_MESSAGE + " " + e.getCause().toString();
-            result = "false";
+            result = "failed";
         } finally {
             Iterator iterator = FacesContext.getCurrentInstance().getMessages("AddClassificationsPageForm");
             while (iterator.hasNext()) {
                 iterator.remove();
             }
             FacesContext.getCurrentInstance().addMessage("AddClassificationsPageForm", new FacesMessage(statusMessage));
-            return result;
+            return "success";
         }
     }
     
@@ -183,7 +188,20 @@ public class DeleteClassificationsPage extends VDCBaseBean implements Serializab
         this.cid = cid;
     }
 
+    public String getResultLink() {
+        return resultLink;
+    }
 
+    public void setResultLink(String resultLink) {
+        this.resultLink = resultLink;
+    }
+
+    private String getFriendlyLinkName() {
+        if (result.indexOf("ManageClassificationsPage") != -1)
+            return "Manage Classifications Page";
+        else
+            return "";
+    }
 
 
 }

@@ -170,14 +170,18 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
     public void uploadFile(ActionEvent event) {
         InputFile inputFile = (InputFile) event.getSource();
         String str="";
-       
+        
 	if (inputFile.getStatus() != InputFile.SAVED){
-            str = "File " + inputFile.getFileInfo().getFileName()+ " has not been saved. \n"+
-                    "Status: "+ inputFile.getStatus();
+            str = "Uploaded File: " + inputFile.getFileInfo().getFileName()+ "\n" + 
+                   "InputFile Status: "+ inputFile.getStatus();
             mLog.error(str); 
             errorMessage(str);
-           if(inputFile.getStatus() != InputFile.INVALID) 
-            return;
+           if(inputFile.getStatus() != InputFile.INVALID){
+               str = "Error saving the file. Status "+ inputFile.getStatus();
+               System.out.println(str); 
+               errorMessage(str); 
+            //return;
+           }
           }
             
           
@@ -233,7 +237,10 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
         f.setSizeFormatted(file.length());
         f.setFileCategoryName(""); 
         
-        }catch(Exception ex){ex.printStackTrace();}
+        }catch(Exception ex){
+            System.out.println("Fail to create the study file. ");
+            mLog.error(ex.getMessage()); 
+        }
         return f;
         }
    

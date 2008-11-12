@@ -149,10 +149,7 @@ public class HarvestingDataverseServiceBean implements edu.harvard.hmdc.vdcnet.v
         HarvestingDataverse hd = em.find(HarvestingDataverse.class, hdId);
         em.refresh(hd);
         hd.setHarvestingNow(false);
-        hd.setHarvestResult(null);
-        hd.setHarvestedStudyCount(null);
-        hd.setFailedStudyCount(null);
-   
+       
     }
    public void resetAllHarvestingStatus() {
         List harvestingDataverses = findAll();

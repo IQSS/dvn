@@ -30,6 +30,7 @@ public class DvnRDataAnalysisServiceImpl{
     
     private static Logger dbgLog = Logger.getLogger(DvnRDataAnalysisServiceImpl.class.getPackage().getName());
 
+    public static String DVN_TMP_DIR=null;
     public static String DSB_TMP_DIR=null;
     public static String WEB_TMP_DIR=null;
     private static String TMP_DATA_FILE_NAME = "susetfile4Rjob";
@@ -56,8 +57,13 @@ public class DvnRDataAnalysisServiceImpl{
         
         // fallout case: last resort
         if (DSB_TMP_DIR == null){
-            DSB_TMP_DIR="/tmp/VDC/DSB";
-            WEB_TMP_DIR="/tmp/VDC/webtemp";
+//            DSB_TMP_DIR="/tmp/VDC/DSB";
+//            WEB_TMP_DIR="/tmp/VDC/webtemp";
+            
+            DVN_TMP_DIR ="/tmp/VDC";
+            DSB_TMP_DIR = DVN_TMP_DIR + "/DSB";
+            WEB_TMP_DIR = DVN_TMP_DIR + "/webtemp";
+            
         }
         
         RSERVE_HOST = System.getProperty("vdc.dsb.host");
@@ -92,9 +98,10 @@ public class DvnRDataAnalysisServiceImpl{
         }
         
 
-        RSERVE_PORT = Integer.parseInt(System.getProperty("vdc.dsb.rserve.port"));
         if (System.getProperty("vdc.dsb.rserve.port") == null ){
             RSERVE_PORT= 6311;
+        } else {
+            RSERVE_PORT = Integer.parseInt(System.getProperty("vdc.dsb.rserve.port"));
         }
         
 
@@ -154,6 +161,55 @@ public class DvnRDataAnalysisServiceImpl{
                  +"." + PID + TMP_DATA_FILE_EXT;
     }
 
+
+    public void setupWorkingDirectories(RConnection c){
+        try{
+            // set up the working directory
+            // parent dir
+            String checkWrkDir = "if (file_test('-d', '"+DSB_TMP_DIR+"')) {Sys.chmod('"+
+            DVN_TMP_DIR+"', mode = '0777'); Sys.chmod('"+DSB_TMP_DIR+"', mode = '0777');} else {dir.create('"+DSB_TMP_DIR+"', showWarnings = FALSE, recursive = TRUE);Sys.chmod('"+DVN_TMP_DIR+"', mode = '0777');Sys.chmod('"+
+            DSB_TMP_DIR+"', mode = '0777');}";
+            dbgLog.fine("w permission="+checkWrkDir);
+            c.voidEval(checkWrkDir);
+
+            // wrkdir
+            String checkWrkDr = "if (file_test('-d', '"+wrkdir+"')) {Sys.chmod('"+
+            wrkdir+"', mode = '0777'); } else {dir.create('"+wrkdir+"', showWarnings = FALSE, recursive = TRUE);Sys.chmod('"+wrkdir+"', mode = '0777');}";
+            dbgLog.fine("w permission:wrkdir="+checkWrkDr);
+            c.voidEval(checkWrkDr);
+
+            // webtemp dir
+            String checkWbWrkDr = "if (file_test('-d', '"+webwrkdir+"')) {Sys.chmod('"+
+            webwrkdir+"', mode = '0777'); } else {dir.create('"+webwrkdir+"', showWarnings = FALSE, recursive = TRUE);Sys.chmod('"+webwrkdir+"', mode = '0777');}";
+            dbgLog.fine("w permission:webtemp="+checkWbWrkDr);
+            c.voidEval(checkWbWrkDr);
+
+        
+        } catch (RserveException rse) {
+            rse.printStackTrace();
+        }
+
+    }
+    
+    public void setupWorkingDirectory(RConnection c){
+        try{
+            // set up the working directory
+            // parent dir
+            String checkWrkDir = "if (file_test('-d', '"+DSB_TMP_DIR+"')) {Sys.chmod('"+
+            DVN_TMP_DIR+"', mode = '0777'); Sys.chmod('"+DSB_TMP_DIR+"', mode = '0777');} else {dir.create('"+DSB_TMP_DIR+"', showWarnings = FALSE, recursive = TRUE);Sys.chmod('"+DVN_TMP_DIR+"', mode = '0777');Sys.chmod('"+
+            DSB_TMP_DIR+"', mode = '0777');}";
+            dbgLog.fine("w permission="+checkWrkDir);
+            c.voidEval(checkWrkDir);
+
+
+        
+        } catch (RserveException rse) {
+            rse.printStackTrace();
+        }
+    }
+    
+    
+    
     /** *************************************************************
      * Execute an R-based dvn statistical analysis request 
      *
@@ -203,6 +259,9 @@ public class DvnRDataAnalysisServiceImpl{
             dbgLog.fine("wrkdir="+wrkdir);
             historyEntry.add(librarySetup);
             c.voidEval(librarySetup);
+            
+            // check working directories
+            setupWorkingDirectories(c);
             
             // variable type
             /* 
@@ -1476,6 +1535,7 @@ if (tmpv.length > 0){
             }
             dbgLog.fine("hostname="+hostname);
             
+            setupWorkingDirectory(c);
             // set-up R command lines
             // temp file
             String R_TMP_DIR = "/tmp/VDC/";

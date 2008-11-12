@@ -6820,7 +6820,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             }
             // activate buttons
             activateButtons();
-//?            checkboxSelectUnselectAll.setSelected(Boolean.TRUE);
+            checkboxSelectUnselectAll.setSelected(Boolean.TRUE);
         } else {
             // unselect-all case
             dbgLog.fine("unselect all case");
@@ -6927,17 +6927,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     "Remove its recoded variable(s) first.");
             }
         }
-        /* deprecated: not component but backing object is
-                       saved in the sessionMap
-        cntxt.getExternalContext().getSessionMap()
-            .put("checkboxSelectUnselectAll", checkboxSelectUnselectAll);
-        */
-//        // Saves the Boolean backing object in the sessionMap
-//?        checkboxSelectUnselectAllSelected = 
-//            (Boolean)checkboxSelectUnselectAll.getValue();
-//?        cntxt.getExternalContext().getSessionMap()
-//?            .put("checkboxSelectUnselectAllSelected",
-//            checkboxSelectUnselectAllSelected);
         cntxt.renderResponse();
         dbgLog.fine("***** selectUnselectAllCheckbox: end *****");
     }
@@ -6971,15 +6960,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setVarCheckbox(HtmlSelectBooleanCheckbox c) {
         this.varCheckbox = c;
     }
-
-
-
-    
-
-    
-
-    
-
 
     /**
      * Updates backing objects and components after

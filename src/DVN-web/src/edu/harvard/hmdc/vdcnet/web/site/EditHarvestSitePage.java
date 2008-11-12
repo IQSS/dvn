@@ -757,7 +757,7 @@ public void validateHourOfDay(FacesContext context,
         boolean valid=true;
        
          
-        if (schedulePeriod!=null  &&(schedulePeriod.getLocalValue().equals("daily") || schedulePeriod.getLocalValue().equals("weekly"))) {
+        if (schedulePeriod!=null && schedulePeriod.getLocalValue()!=null &&(schedulePeriod.getLocalValue().equals("daily") || schedulePeriod.getLocalValue().equals("weekly"))) {
             if ( value==null || ((Integer)value).equals(new Integer(-1))) {
                 valid=false;
             }
@@ -777,7 +777,7 @@ public void validateDayOfWeek(FacesContext context,
         boolean valid=true;
        
          
-        if (schedulePeriod.getLocalValue()!=null && schedulePeriod.getLocalValue().equals("weekly") ) {
+        if (schedulePeriod!=null&& schedulePeriod.getLocalValue()!=null && schedulePeriod.getLocalValue().equals("weekly") ) {
                if ( value==null || ((Integer)value).equals(new Integer(-1))) {
                 valid=false;
             }

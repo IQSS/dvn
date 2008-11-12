@@ -1761,7 +1761,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
         setDisplayOrders(study);
         boolean registerHandle = determineId(study, vdc, globalIdComponents);
-        if (newStudy && studyService.getStudyByGlobalId(study.getGlobalId()) != null) {
+        if (newStudy && !studyService.isUniqueStudyId( study.getStudyId(), study.getProtocol(), study.getAuthority() ) ) {
             throw new EJBException("A study with this globalId already exists (likely cause: the study was previously harvested into a different dataverse).");
         }
 

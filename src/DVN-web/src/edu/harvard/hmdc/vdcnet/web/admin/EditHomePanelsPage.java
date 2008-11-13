@@ -44,7 +44,7 @@ import javax.faces.context.FacesContext;
 public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializable  {
      @EJB VDCServiceLocal vdcService;
      
-     private String SUCCESS_MESSAGE = new String("Update Successful! Go to Home to see your changes.");
+     private String SUCCESS_MESSAGE = new String("Update Successful! Go to the Homepage to see your changes.");
      
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;

@@ -166,7 +166,7 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
      *
      */
     
-    private String SUCCESS_MESSAGE = new String("Update Successful! Go to Home to see your changes.");
+    private String SUCCESS_MESSAGE = new String("Update Successful! Go to the Homepage to see your changes.");
     /**
      * Holds value of property success.
      */

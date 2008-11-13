@@ -15,19 +15,20 @@
 <body>
 <gui:composition template="/template.xhtml">
 
-<gui:param name="pageTitle" value="DVN - User Account" />
+<gui:param name="pageTitle" value="#{bundlePageInfo.editAccountTitle}" />
 
   <gui:define name="body">
-
 
         <ice:form  id="form1">
            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
            <input type="hidden" name="pageName" value="EditAccountPage"/>
            <div class="dvn_section">
-               <div class="dvn_sectionTitle">
-                
-                       <ice:outputText value="Edit Dataverse Network Account"/>
-                 
+               
+            <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.editAccountHelp}" escape="false" />
+           </div>
+               <div class="dvn_sectionTitle"> 
+                       <ice:outputText value="#{bundlePageInfo.editAccountTitle}"/>                 
                </div>            
                <div class="dvn_sectionBox"> 
                    <div class="dvn_margin12"> 

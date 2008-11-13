@@ -12,7 +12,7 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Dataverse General Settings"/>
+    <gui:param name="pageTitle"  value="#{bundlePageInfo.editDvSettingsTitle}"/>
     <gui:define name="body">
       <ice:form id="editsiteform">
         <script type="text/javascript">
@@ -52,9 +52,13 @@
             // ]]>
         </script>
         <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="Dataverse General Settings"/>
-          </div>
+          <div class="dvnInformationMessage">
+                 <ice:outputText value="#{bundlePageInfo.editDvSettingsHelp}" escape="false" />
+              </div>    
+
+              <div class="dvn_sectionTitle">
+                <ice:outputText value="#{bundlePageInfo.editDvSettingsTitle}"/>
+              </div> 
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
               <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

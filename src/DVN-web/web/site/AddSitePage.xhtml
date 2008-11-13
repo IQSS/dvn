@@ -15,13 +15,17 @@
 <body>
 <gui:composition template="/template.xhtml">
 
-<gui:param name="pageTitle" value="DVN - Add Dataverse" />
+<gui:param name="pageTitle" value="#{bundlePageInfo.createDvTitle}" />
 
   <gui:define name="body">
 
         <ice:form id="addsiteform">
           <ice:outputText id="statusMessage" styleClass="#{AddSitePage.msg.styleClass}" value="#{AddSitePage.msg.messageText}" />  
-          <script type="text/javascript">
+          <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.createDvHelp}" escape="false" />
+          </div>
+          
+            <script type="text/javascript">
                 //<![CDATA[
                  function changeValue(obj) {
                     if (window.event)
@@ -55,8 +59,8 @@
             
             <div jsfc="ice:panelGroup" styleClass="#{ (LoginWorkflowBean.creatorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
                 <div jsfc="ice:panelGroup" styleClass="#{ (LoginWorkflowBean.creatorWorkflow) ? 'requestHeader dvn_overflow' : 'dvn_sectionTitle'}">
-                      <ice:outputText value="Add a New Dataverse" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
-                      <ice:outputText value="Add a New Dataverse" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
+                      <ice:outputText value="#{bundlePageInfo.createDvTitle}" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
+                      <ice:outputText value="#{bundlePageInfo.createDvTitle}" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
                       <ice:outputText value="Name Dataverse &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" rendered="#{LoginWorkflowBean.creatorWorkflow}" escape="false"/>
                 </div>
               <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestTimeline" style="background-position: 0 -8px;">

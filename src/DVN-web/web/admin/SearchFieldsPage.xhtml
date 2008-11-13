@@ -27,10 +27,7 @@
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-              <div class="vdcHelpText">
-                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                <ice:outputText value="Select any of the cataloging information fields below to be displayed in the search results page (or studies listing). If selected, these fields will be displayed below the default information (Study ID, title, authors, production date, abstract), and will only be displayed if they are available in the study cataloging information. These settings apply to this Dataverse only."/>
-              </div>
+
               <div class="dvnFormPadding">
                 <ice:selectBooleanCheckbox binding="#{SearchFieldsPage.productionDateCheckbox}" id="productiondatecheckbox" value="#{SearchFieldsPage.productionDateResults}"/>
                 <ice:outputLabel for="productiondatecheckbox" value="Production Date"/>

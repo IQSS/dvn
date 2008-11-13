@@ -12,17 +12,21 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Add/Edit Account"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.createAccountTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
+        <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.createAccountHelp}" escape="false" />
+           </div> 
+          
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <ice:inputHidden id="studyId" value="#{AddAccountPage.studyId}"/>
         <ice:inputHidden binding="#{AddAccountPage.hiddenWorkflow}" value="#{AddAccountPage.workflow}"/>
         <input type="hidden" name="pageName" value="AddAccountPage"/>
         <div jsfc="ice:panelGroup" styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
           <div jsfc="ice:panelGroup" styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestHeader dvn_overflow' : 'dvn_sectionTitle'}">
-            <ice:outputText value="Create a New Account" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
-            <ice:outputText value="Create a New Account" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
+            <ice:outputText value="#{bundlePageInfo.createAccountTitle}" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
+            <ice:outputText value="#{bundlePageInfo.createAccountTitle}" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
             <ice:outputText value="Create Account &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" rendered="#{LoginWorkflowBean.creatorWorkflow}" escape="false"/>
             <ice:outputText value="Create Account &lt;span&gt;&gt; Become a Contributor&lt;/span&gt;" rendered="#{LoginWorkflowBean.contributorWorkflow}" escape="false"/>
           </div>

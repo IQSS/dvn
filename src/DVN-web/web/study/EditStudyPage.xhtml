@@ -14,7 +14,7 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Add/Edit Study" />
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editStudyTitle}" />
     <gui:define name="body">
       <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
 
@@ -96,6 +96,10 @@
         <ice:inputHidden id="token" value="#{EditStudyPage.token}" />
 
         <div class="dvn_section">
+          <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.editStudyHelp}" escape="false" />
+          </div> 
+          
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{EditStudyPage.study.title}"/>
           </div>

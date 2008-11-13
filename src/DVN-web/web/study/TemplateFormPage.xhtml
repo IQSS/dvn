@@ -13,7 +13,7 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Template Form View"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editTemplateTitle}"/>
 
     <gui:define name="body">
       <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
@@ -26,8 +26,12 @@
         <ice:inputHidden immediate="true" binding="#{TemplateFormPage.hiddenStudyId}" id="studyId" value="#{TemplateFormPage.studyId}"/>
 
         <div class="dvn_section">
+          <div class="dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.editTemplateHelp}" escape="false" />
+          </div> 
+          
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Edit Study Template"/>
+            <ice:outputText value="#{EditStudyPage.study.title}"/>
           </div>
           <div class="dvn_sectionBoxNoBorders">
 

@@ -31,6 +31,10 @@ drop table deletedstudy;
 alter table oaiset
 alter column definition type text;
 
+alter table oaiset alter column name type text;
+alter table oaiset alter column spec type text;
+alter table oaiset alter column description type text;
+
 -- Column: parent
 
 -- ALTER TABLE vdcgroup DROP COLUMN parent;

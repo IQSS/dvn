@@ -67,8 +67,11 @@ public class OAISet implements Serializable {
         this.description = description;
     }
     
+    @Column(columnDefinition="TEXT")
     private String name;
+    @Column(columnDefinition="TEXT")
     private String spec;
+    @Column(columnDefinition="TEXT")
     private String definition;
    
     @Column(columnDefinition="TEXT")

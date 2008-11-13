@@ -69,4 +69,6 @@ public interface IndexServiceLocal extends java.io.Serializable {
 
     public void createIndexTimer();
     
+    public void createIndexNotificationTimer();
+    
 }

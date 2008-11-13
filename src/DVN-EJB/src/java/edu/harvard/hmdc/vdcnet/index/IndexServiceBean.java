@@ -125,17 +125,13 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
                 logger.info("Cannot create IndexTimer, timer already exists.");
                 logger.info("IndexTimer next timeout is " + timer.getNextTimeout());
                 return;
-
             }
-
         }
-
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, 1);
         cal.set(Calendar.HOUR_OF_DAY, 1);
 
         logger.log(Level.INFO, "Indexer timer set for " + cal.getTime());
-        System.out.println("Indexer timer set for " + cal.getTime());
         Date initialExpiration = cal.getTime();  // First timeout is 1:00 AM of next day
         long intervalDuration = 1000 * 60 * 60 * 24;  // repeat every 24 hours
         timerService.createTimer(initialExpiration, intervalDuration, INDEX_TIMER);
@@ -149,35 +145,30 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
                 logger.info("Cannot create IndexNotificationTimer, timer already exists.");
                 logger.info("IndexNotificationTimer next timeout is " + timer.getNextTimeout());
                 return;
-
             }
-
         }
-
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, 1);
         cal.set(Calendar.HOUR_OF_DAY, 15);
 
         logger.log(Level.INFO, "Indexer notification timer set for " + cal.getTime());
-        System.out.println("Indexer notification timer set for " + cal.getTime());
         Date initialExpiration = cal.getTime();  // First timeout is 1:00 AM of next day
         long intervalDuration = 1000 * 60 * 60 * 24;  // repeat every 24 hours
-        timerService.createTimer(initialExpiration, intervalDuration, INDEX_TIMER);
+        timerService.createTimer(initialExpiration, intervalDuration, INDEX_NOTIFICATION_TIMER);
 
     }
 
     @Timeout
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void handleTimeout(javax.ejb.Timer timer) {
+        System.out.println("in handleTimeout, timer = "+timer.getInfo());
         try {
-            if (timer.getInfo() instanceof IndexTimerInfo) {
-                IndexTimerInfo info = (IndexTimerInfo) timer.getInfo();
+            if (timer.getInfo().equals(INDEX_TIMER)) {
                 logger.log(Level.INFO, "Index update");
-                if (info.getName().equals(INDEX_TIMER)) {
-                    indexBatch();
-                } else if (info.getName().equals(INDEX_NOTIFICATION_TIMER)) {
-                    indexProblemNotify();
-                }
+                indexBatch();
+            } else if (timer.getInfo().equals(INDEX_NOTIFICATION_TIMER)) {
+                logger.log(Level.INFO, "Index notify");
+                indexProblemNotify();
             }
         } catch (Throwable e) {
             mailService.sendIndexUpdateErrorNotification(vdcNetworkService.find().getContactEmail(), vdcNetworkService.find().getName());

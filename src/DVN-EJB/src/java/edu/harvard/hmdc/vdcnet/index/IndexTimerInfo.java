@@ -33,19 +33,13 @@ import java.io.Serializable;
  */
 public class IndexTimerInfo implements Serializable {
     private String name;
-    private String schedulePeriod;
-    private Integer scheduleHourOfDay;
-    private Integer scheduleDayOfWeek;
-    
+   
     public IndexTimerInfo(){
         
     }
 
-    public IndexTimerInfo(Long harvestingDataverseId, String name, String schedulePeriod, Integer scheduleHourOfDay, Integer scheduleDayOfWeek) {
+    public IndexTimerInfo(String name) {
         this.name=name;
-        this.schedulePeriod=schedulePeriod;
-        this.scheduleDayOfWeek=scheduleDayOfWeek;
-        this.scheduleHourOfDay=scheduleHourOfDay;
     }
 
     public String getName() {
@@ -56,28 +50,6 @@ public class IndexTimerInfo implements Serializable {
         this.name = name;
     }
 
-    public String getSchedulePeriod() {
-        return schedulePeriod;
-    }
 
-    public void setSchedulePeriod(String schedulePeriod) {
-        this.schedulePeriod = schedulePeriod;
-    }
-
-    public Integer getScheduleHourOfDay() {
-        return scheduleHourOfDay;
-    }
-
-    public void setScheduleHourOfDay(Integer scheduleHourOfDay) {
-        this.scheduleHourOfDay = scheduleHourOfDay;
-    }
-
-    public Integer getScheduleDayOfWeek() {
-        return scheduleDayOfWeek;
-    }
-
-    public void setScheduleDayOfWeek(Integer scheduleDayOfWeek) {
-        this.scheduleDayOfWeek = scheduleDayOfWeek;
-    }
     
 }

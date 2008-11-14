@@ -253,7 +253,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             } else {
                 //  HttpServletRequest request = this.getExternalContext().getRequestContextPath()
                 if (currentVDC != null) {
-                    sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/HomePage.xhtml");
+                    sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/StudyListingPage.xhtml");
                 } else {
                     sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/HomePage.xhtml");
                 }

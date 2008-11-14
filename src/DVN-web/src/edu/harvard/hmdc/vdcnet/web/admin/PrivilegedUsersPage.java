@@ -48,6 +48,8 @@ import javax.faces.component.UIData;
 import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
+import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
+import edu.harvard.hmdc.vdcnet.web.push.beans.NetworkStatsBean;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.ListDataModel;
@@ -69,8 +71,8 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     @EJB GroupServiceLocal groupService;
    
     private javax.faces.component.UIData userTable;
+    private ListDataModel userList;
     
-   private ListDataModel userList;
     /** 
      * <p>Construct a new Page bean instance.</p>
      */
@@ -93,6 +95,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
      */
     public void init() {
         super.init();
+
         if ( isFromPage("PrivilegedUsersPage")  && sessionGet(editVDCPrivileges.getClass().getName())!=null) {
             editVDCPrivileges= (EditVDCPrivilegesService) sessionGet(editVDCPrivileges.getClass().getName());
             System.out.println("Getting stateful session bean editVDCPrivileges ="+editVDCPrivileges);
@@ -215,10 +218,23 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     }
     
     public String saveChanges() {
+        NetworkStatsBean statsBean = (NetworkStatsBean) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("NetworkStatsBean");
         if (siteRestriction.equals("Public")) {
+            if (vdc.getReleaseDate() == null) {
+                 // update the network stats bean
+                if (statsBean != null)
+                    statsBean.releaseAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>)vdc.getVdcGroups());
+                vdc.setReleaseDate(DateUtil.getTimestamp());
+            }
             vdc.setRestricted(false);
-            vdc.setReleaseDate(DateUtil.getTimestamp());
+            
         } else {
+            if (vdc.getReleaseDate() != null) {
+                //update the network stats bean
+                if (statsBean != null)
+                    statsBean.restrictAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>)vdc.getVdcGroups());
+                vdc.setReleaseDate(null);
+            }
             vdc.setRestricted(true);
         }
         // If the user has added a vdcUser to the privileged list, but hasn't assigned
@@ -700,6 +716,6 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     public void setFileGroupInputText(HtmlInputText fileGroupInputText) {
         this.fileGroupInputText = fileGroupInputText;
     }
-       
+
 }
 

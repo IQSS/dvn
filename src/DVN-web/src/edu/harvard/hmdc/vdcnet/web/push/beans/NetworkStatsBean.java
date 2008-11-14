@@ -36,18 +36,22 @@ package edu.harvard.hmdc.vdcnet.web.push.beans;
 import com.icesoft.faces.async.render.OnDemandRenderer;
 import com.icesoft.faces.async.render.RenderManager;
 import com.icesoft.faces.async.render.Renderable;
+import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.context.DisposableBean;
 import com.icesoft.faces.webapp.xmlhttp.FatalRenderingException;
 import com.icesoft.faces.webapp.xmlhttp.PersistentFacesState;
 import com.icesoft.faces.webapp.xmlhttp.RenderingException;
 import com.icesoft.faces.webapp.xmlhttp.TransientRenderingException;
 
+import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.web.push.NetworkStatsItemDetailer;
 import edu.harvard.hmdc.vdcnet.web.push.NetworkStatsListener;
 import edu.harvard.hmdc.vdcnet.web.push.NetworkStatsState;
 import edu.harvard.hmdc.vdcnet.web.push.ReleaseEvent;
 import edu.harvard.hmdc.vdcnet.web.push.stubs.ItemType;
 import edu.harvard.hmdc.vdcnet.web.push.stubs.NetworkStatsStubServer;
+import java.util.Iterator;
+import java.util.List;
 import javax.faces.component.html.HtmlOutputText;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -132,8 +136,7 @@ public class NetworkStatsBean implements NetworkStatsListener, Renderable, Dispo
             return searchItemBeans;
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
-                log.error(
-                        "Failed to read the available search items because of " + e);
+                log.error("Failed to read the available search items because of " + e);
             }
         }
         return null;
@@ -368,6 +371,78 @@ public class NetworkStatsBean implements NetworkStatsListener, Renderable, Dispo
     public void setInlineFilesKey(HtmlOutputText fileskey) {
         this.inlineFilesKey = fileskey;
     }
+
+    public void releaseAndUpdateInlineDataverseValue(Long id, List<VDCGroup> groups) {
+        String dataversevalue;
+        String itemid = null;
+        Iterator iterator = groups.iterator();
+        Long newTotal;
+        long localTotal;
+        NetworkStatsState networkStatsState;
+        for (int i = 0; i < searchItemBeans.length; i++) {
+                NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
+                if (itembean.getItemID().equals("item0")) { // increment the top level -- item0;
+                    localTotal = new Long(itembean.getDataverseTotal());
+                    newTotal = localTotal + 1;
+                    networkStatsState = NetworkStatsState.getInstance();
+                    if (null != networkStatsState) {
+                            networkStatsState.fireNetworkStatsEvent(
+                            new ReleaseEvent("item0", newTotal.toString()));
+                            NetworkStatsState.getNetworkStatsMap().put("item0.dataverseTotal", newTotal.toString());
+                    }
+                }
+                while (iterator.hasNext()) {
+                    VDCGroup group = (VDCGroup)iterator.next();
+                    itemid = "item" + group.getId().toString();
+                    if (itembean.getItemID().equals(itemid)){
+                        localTotal = new Long(itembean.getDataverseTotal());
+                        newTotal = localTotal + 1;
+                        networkStatsState = NetworkStatsState.getInstance();
+                        if (null != networkStatsState) {
+                            networkStatsState.fireNetworkStatsEvent(
+                            new ReleaseEvent(itemid, newTotal.toString()));
+                            NetworkStatsState.getNetworkStatsMap().put(itemid + ".dataverseTotal", newTotal.toString());
+                        }
+                    }
+                }
+            }
+        }
+
+    public void restrictAndUpdateInlineDataverseValue(Long id, List<VDCGroup> groups) {
+        String dataversevalue;
+        String itemid = null;
+        Iterator iterator = groups.iterator();
+        Long newTotal;
+        long localTotal;
+        NetworkStatsState networkStatsState;
+        for (int i = 0; i < searchItemBeans.length; i++) {
+                NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
+                if (itembean.getItemID().equals("item0")) { // decrement the top level -- item0;
+                    localTotal = new Long(itembean.getDataverseTotal());
+                    newTotal = localTotal - 1;
+                    networkStatsState = NetworkStatsState.getInstance();
+                    if (null != networkStatsState) {
+                            networkStatsState.fireNetworkStatsEvent(
+                            new ReleaseEvent("item0", newTotal.toString()));
+                            NetworkStatsState.getNetworkStatsMap().put("item0.dataverseTotal", newTotal.toString());
+                    }
+                }
+                while (iterator.hasNext()) {
+                    VDCGroup group = (VDCGroup)iterator.next();
+                    itemid = "item" + group.getId().toString();
+                    if (itembean.getItemID().equals(itemid)){
+                        localTotal = new Long(itembean.getDataverseTotal());
+                        newTotal = localTotal - 1;
+                        networkStatsState = NetworkStatsState.getInstance();
+                        if (null != networkStatsState) {
+                            networkStatsState.fireNetworkStatsEvent(
+                            new ReleaseEvent(itemid, newTotal.toString()));
+                            NetworkStatsState.getNetworkStatsMap().put(itemid + ".dataverseTotal", newTotal.toString());
+                        }
+                    }
+                }
+            }
+        }
 
     public void reRender() {
         if (renderer != null) {

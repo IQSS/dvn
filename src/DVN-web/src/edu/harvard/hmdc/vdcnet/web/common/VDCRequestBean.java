@@ -217,4 +217,12 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         return PropertyUtil.getHostUrl();
     }  
     
+    public String home() {
+        if (getCurrentVDC() != null) {
+            return "dvHome";
+        } else {
+            return "home";
+        }
+    }
+    
 }

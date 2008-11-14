@@ -14,6 +14,9 @@
     <gui:param name="pageTitle" value="#{bundlePageInfo.manageDvPermissionsTitle}"/>
     <gui:define name="body">
       <ice:form id="privilegedUsersForm">
+        <div id="hiddenDiv" style="display:none;">
+          <ice:outputText value="#{NetworkStatsBean.autoLoad}"/>
+        </div>
         <input type="hidden" name="pageName" value="PrivilegedUsersPage"/>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
@@ -31,6 +34,7 @@
               <ice:outputText id="outputText13" styleClass="vdcSubHeaderColor" value="Dataverse Release Settings:"/>
               <div id="groupPanel6">
                 <ice:outputText id="outputText12" value="This dataverse is set as: "/>
+
                 <ice:selectOneMenu value="#{PrivilegedUsersPage.siteRestriction}">
                   <f:selectItem itemLabel="Not Released" itemValue="Restricted"/>
                   <f:selectItem itemLabel="Released" itemValue="Public"/>
@@ -175,8 +179,15 @@
                 </ice:panelGrid>
               </div>
               <div class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton id="saveChangesButton" value="Save Changes" action="#{PrivilegedUsersPage.saveChanges}"/>
+                <ice:commandButton id="saveChangesButton" value="Save Changes" action="#{PrivilegedUsersPage.saveChanges}">
+                </ice:commandButton>
                 <ice:commandButton immediate="true" id="cancelButton" value="Cancel" action="#{PrivilegedUsersPage.cancel}"/>
+                <ice:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
+                                  styleClass="dvn_totalsLabel"
+                                  style="visibility:hidden;"
+                                  value="#{NetworkStatsBean.inlineDataverseValue}">
+                        <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item0"/>
+                    </ice:outputText>
               </div>
             </div>
           </div>

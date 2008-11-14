@@ -68,6 +68,7 @@
             }
             // ]]>
         </script>
+        
         <ice:outputText escape="false"
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                     value="#{(applicationScope.googleAnalyticsSourceCode != null) ? applicationScope.googleAnalyticsSourceCode : MainLayoutBean.googleAnalyticsSourceCode}"
@@ -84,7 +85,8 @@
     <gui:include src="views/CustomBanner.xhtml"/>
     <!-- <gui:include src="views/ConnectedBanner.xhtml"/> -->
   </gui:insert>
-  <div class="dvn_wrapper">
+  
+ <div class="dvn_wrapper" id="dvn_wrapper">
     <div class="dvn_content" id="content-frame">
       <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
       <ice:outputConnectionStatus/>
@@ -102,5 +104,24 @@
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                     value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"
                     />
+                  <script type="text/javascript">
+        // <![CDATA[
+            //NOTE: Mozilla and Opera compatible. Should work in Safari, but needs debugging for that. IE requires attachEvent, but may not support
+            // dom level 2 events
+            var element=document.getElementById("dvn_wrapper");
+            element.addEventListener('DOMNodeInserted',function (e) {
+            jQuery.noConflict();
+            if (e.target.id == "successMessageDiv") {
+                jQuery("#editStudyTabSet > ul").tabs();
+                jQuery("#viewStudyTabSet > ul").tabs();
+                jQuery("div.dvn_navblock").corner("10px bottom");
+                jQuery("div.dvn_block, div.dvn_blockTitleBar, div.dvn_searchblock, div.successMessage, div.dvnInformationMessage, dvnSuccessMessage, div.vdcStudyFilesMessage").corner("10px");
+                jQuery.ifixpng("/dvn/resources/pixel.gif");
+                jQuery("img[@src$=.png], a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active").ifixpng();
+                jQuery(".vdcStudyDesc").truncate({max_length: 198});
+                jQuery(".vdcStudyDataCitation").truncate({max_length: 25, more: "View Data Citation [+]", less: "Collapse [-]"});
+                jQuery(".TogglePaneFancy").initTogglePane({headerClassClosed:"TogglePaneFancyHeaderClosed"});}},true);
+            // ]]>
+  </script>
 </body>
 </html>

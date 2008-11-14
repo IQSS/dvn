@@ -60,7 +60,7 @@
                 <ice:outputText value="#{bundlePageInfo.editDvSettingsTitle}"/>
               </div> 
           <div class="dvn_sectionBox">
-            <div class="dvn_margin12">
+            <div class="dvn_margin12" id="successMessageDiv">
               <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
               <div jsfc="ice:panelGroup" styleClass="#{EditSitePage.msg.styleClass}" rendered="#{!empty EditSitePage.msg.messageText}">
                 <ice:outputText id="statusMessage" value="#{EditSitePage.msg.messageText}" />

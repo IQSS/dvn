@@ -227,8 +227,8 @@
 <navigation-rule>
         <from-view-id>/site/AddSitePage.xhtml</from-view-id>
         <navigation-case>
-            <from-outcome>home</from-outcome>
-            <to-view-id>/HomePage.xhtml</to-view-id>
+            <from-outcome>cancel</from-outcome>
+            <to-view-id>/networkAdmin/NetworkOptionsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>    
     <navigation-rule>

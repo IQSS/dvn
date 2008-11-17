@@ -40,6 +40,8 @@ import javax.ejb.Local;
 public interface VDCGroupServiceLocal extends java.io.Serializable  {
     
     public VDCGroup findById(Long id);
+
+    public VDCGroup findByName(String name);
     
     public java.util.Collection<VDCGroup> findAll();
 

@@ -61,6 +61,12 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
         VDCGroup o = (VDCGroup) em.find(VDCGroup.class, id);
         return o;
     }
+
+    public VDCGroup findByName(String name) {
+        String query = "SELECT object(o) FROM VDCGroup AS o WHERE o.name = :fieldName";
+        VDCGroup vdcgroup = (VDCGroup)em.createQuery(query).setParameter("fieldName", name).getSingleResult();
+        return vdcgroup;
+    }
     
     public List<VDCGroup> findAll() {
         List<VDCGroup> vdcgroups = (List<VDCGroup>)em.createQuery("select object(o) from VDCGroup as o order by o.displayOrder").getResultList();

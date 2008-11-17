@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
@@ -344,4 +345,19 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             return "result";
         }
     }
+
+    // **************** VALIDATORS ****************** -->
+    public void validateClassificationName(FacesContext context, UIComponent toValidate, Object value) {
+         String newValue = (String) value;
+        if (newValue == null || newValue.trim().length() == 0) {
+            FacesMessage message = new FacesMessage("The field must have a value.");
+            context.addMessage(toValidate.getClientId(context), message);
+            context.renderResponse();
+        } else if (vdcGroupService.findByName(newValue.trim()) != null) {
+                 FacesMessage message = new FacesMessage("This name is in use. Please enter a unique classification name.");
+                context.addMessage(toValidate.getClientId(context), message);
+                context.renderResponse();
+        }
+    }
+
 }

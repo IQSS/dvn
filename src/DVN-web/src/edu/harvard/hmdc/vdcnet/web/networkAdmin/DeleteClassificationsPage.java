@@ -100,7 +100,6 @@ public class DeleteClassificationsPage extends VDCBaseBean implements Serializab
     }
     
     public String cancel() {
-      
         return "cancel";
     }
 

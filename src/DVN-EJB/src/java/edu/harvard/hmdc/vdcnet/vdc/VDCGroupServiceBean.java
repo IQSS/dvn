@@ -39,6 +39,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 /**
@@ -64,8 +65,15 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
 
     public VDCGroup findByName(String name) {
         String query = "SELECT object(o) FROM VDCGroup AS o WHERE o.name = :fieldName";
-        VDCGroup vdcgroup = (VDCGroup)em.createQuery(query).setParameter("fieldName", name).getSingleResult();
-        return vdcgroup;
+        VDCGroup vdcgroup = null;
+        try {
+            vdcgroup = (VDCGroup)em.createQuery(query).setParameter("fieldName", name).getSingleResult();
+        } catch (NoResultException nre) {
+            System.out.println("no result for findByName " + name);
+        }
+        finally {
+            return vdcgroup;
+        }
     }
     
     public List<VDCGroup> findAll() {

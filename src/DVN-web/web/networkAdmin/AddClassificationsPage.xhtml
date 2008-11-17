@@ -39,12 +39,17 @@
                                <ice:panelGroup style="width:650;">
                                  <ice:outputLabel for="classification"
                                                     styleClass="vdcFieldTitle"
-                                                    style="vertical-align:top;width:150px;" value="Name"/>
+                                                    style="vertical-align:top;width:150px;"
+                                                    value="Name"/>
                                  <ice:inputText type="text"
                                             id="classification"
                                             binding="#{addClassificationsPage.nameInput}"
+                                            required="true"
+                                            requiredMessage="The field must have a value"
                                             size="35"
+                                            validator="#{addClassificationsPage.validateClassificationName}"
                                             />
+                                            <ice:message for="classification"/>
                                </ice:panelGroup>
 
                                <ice:panelGroup style="width:650;">

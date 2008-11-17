@@ -556,7 +556,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     }
     
     public String cancel() {
-        return "home";
+        return "cancel";
     }
 
     public void validateName(FacesContext context,

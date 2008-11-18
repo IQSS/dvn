@@ -46,7 +46,6 @@ import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.StudySoftware;
 import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
 import edu.harvard.hmdc.vdcnet.study.TemplateField;
-import edu.harvard.hmdc.vdcnet.study.TemplateFileCategory;
 import edu.harvard.hmdc.vdcnet.util.SessionCounter;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
@@ -68,9 +67,10 @@ import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import edu.harvard.hmdc.vdcnet.study.FileCategory;
+import java.util.Collections;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -1146,13 +1146,16 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     
-    public List getTemplateFileCategories() {
-        List tfc = new ArrayList();
-        Iterator iter = study.getTemplate().getTemplateFileCategories().iterator();
-        while (iter.hasNext()) {
-            tfc.add( new SelectItem( ((TemplateFileCategory) iter.next()).getName() ) );
+    public List getFileCategoryItems() {
+        List<FileCategory> fileCats = new ArrayList();
+        fileCats.addAll( study.getFileCategories() );
+        Collections.sort(fileCats);
+        
+        List fcItems = new ArrayList();
+        for (FileCategory fc : fileCats) {
+            fcItems.add( new SelectItem( (fc.getName()) ) );
         }
-        return tfc;
+        return fcItems;
     }
     
     

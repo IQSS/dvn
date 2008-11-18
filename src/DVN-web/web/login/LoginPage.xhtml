@@ -7,27 +7,24 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/vanilla_template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Login"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.loginTitle}"/>
     <gui:define name="body">
-
       <div id="dvnLoginPageWrap">
+      <div class="dvnRound">
         <ice:form id="vanillaLoginForm">
           <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
           <ice:inputHidden binding="#{LoginPage.hiddenStudyId}" value="#{LoginPage.studyId}"/>
           <div id="layoutPanel1" class="dvnLoginContent">
-
             <div class="dvnLoginInputArea">
-
               <!-- ************ Username login section ******************* -->
               <fieldset>
                 <legend>Dataverse Account</legend>
-                <div jsfc="h:panelGroup" class="dvnLoginFailed" rendered="#{LoginPage.loginFailed}">
-                  <ice:outputText styleClass="errorMessage" value="Login Failed. Please check your username and password and try again."/>
+                <div jsfc="h:panelGroup" styleClass="dvnLoginFailed" rendered="#{LoginPage.loginFailed}">
+                  <ice:outputText styleClass="errorMessage" value="Login failed. Please check your username and password and try again."/>
                 </div>
                 <label for="username">Username</label>
                 <ice:inputText tabindex="1" id="username" name="username" value="#{LoginPage.userName}" required="true" requiredMessage="This field is required."/>
@@ -37,20 +34,19 @@
                 <ice:inputSecret tabindex="2" onkeypress="if (window.event) return processEvent('', 'loginForm:button1'); else return processEvent(event, 'loginForm:button1');" id="password" name="password" value="#{LoginPage.password}" required="true" requiredMessage="This field is required."/>
                 <ice:message for="password" styleClass="errorMessage"/>
                 <p>
-                    <ice:commandButton tabindex="3" id="button1" value="Log in" action="#{LoginPage.login}"/>
+                  <ice:commandButton tabindex="3" id="button1" value="Log in" action="#{LoginPage.login}"/>
                 </p>
                 <div>
-                    <ice:outputLink tabindex="4" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ForgotPasswordPage.xhtml" title="Link to Reset Password">Forgot your password?</ice:outputLink>
+                  <ice:outputLink tabindex="4" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ForgotPasswordPage.xhtml" title="Link to Reset Password">Forgot your password?</ice:outputLink>
                 </div>
               </fieldset>
               <!-- ************* end username login section *************** -->
-
               <!-- ************ Affiliate login section ******************* -->
               <div jsfc="h:panelGroup" rendered="#{LoginPage.isAffiliates != null}">
                 <fieldset>
                   <legend>Affiliate</legend>
                   <label for="username">Affiliate Name</label>
-                  <ice:selectOneMenu valueChangeListener="#{LoginPage.changeAffiliateName}" immediate="true" id="affiliateName" value="#{LoginPage.affiliateName}" style="#{ (LoginPage.isAffiliates != null) ? 'display:block;' : 'display:none;' }">
+                  <ice:selectOneMenu valueChangeListener="#{LoginPage.changeAffiliateName}" immediate="true" id="affiliateName" value="#{LoginPage.affiliateName}">
                     <f:selectItems value="#{LoginPage.affiliateNames}"/>
                   </ice:selectOneMenu>
                   <ice:message for="affiliateName" styleClass="errorMessage"/>
@@ -61,15 +57,13 @@
               </div>
               <!-- ************* end affiliate login section *************** -->
             </div>
-            <div panelLayout="flow" class="dvnLoginContentText">
+            <div class="dvnLoginContentText">
               <div id="dvnLoginPageHeader">
-                <a name="login" title=""><ice:outputText escape="false" styleClass="dvnLoginHeadingText" value="Dataverse Network Login"/></a>
+                <a name="login" title="Dataverse Network Login"><ice:outputText escape="false" styleClass="dvnLoginHeadingText" value="Dataverse Network Login"/></a>
               </div>
-              <div jsfc="h:panelGroup" rendered="#{LoginPage.redirect ==null}">
-                <ice:outputText styleClass="warnMessage" value="Login is case sensitive."/>
-              </div>
-              <div jsfc="h:panelGroup" rendered="#{LoginPage.redirect!=null}">
-                <ice:outputText styleClass="warnMessage" value="This page is restricted. You need to have special permissions to access it. Please log in if you have the appropriate permissions."/>
+              <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
+                <ice:outputText value="#{bundlePageInfo.loginHelp}" escape="false" rendered="#{LoginPage.redirect == null}"/>
+                <ice:outputText value="#{bundlePageInfo.loginRestrictedHelp}" escape="false" rendered="#{LoginPage.redirect != null}"/>
               </div>
               <div class="dvnLoginContentAreaFooter">
                 <a href="http://thedata.org" target="_blank" title="Link to the Dataverse Network Project"><img alt="Powered by the Dataverse Network Project" src="/dvn/resources/dvnPoweredByLogo.gif"/></a>
@@ -77,6 +71,7 @@
             </div>
           </div>
         </ice:form>
+      </div>
       </div>
     </gui:define>
   </gui:composition>

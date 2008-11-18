@@ -224,8 +224,19 @@
                 <hr/>
                 <ice:outputText value="or b) Single import - browse for the file and click on the button:"/>
                 <div>
-                 <!-- <ui:upload id="fileBrowser" uploadedFile="#{UtilitiesPage.importFile}"/> -->
-                  <ice:commandButton value="Single Import" action="#{UtilitiesPage.importSingleFile_action}"/>
+               <!--   <ice:inputText id="fileBrowser" uploadedFile="#{UtilitiesPage.importFile}"/> -->
+               
+              <ice:inputFile id="inputImportFileComponent" label="Upload"
+            action="#{UtilitiesPage.uploadFile}" binding="#{UtilitiesPage.inputFile}"
+           progressListener="#{UtilitiesPage.fileUploadProgress}" 
+           accept="#{UtilitiesPage.importDVId}, #{UtilitiesPage.importFileFormat}" >
+                 </ice:inputFile> 
+                 <ice:commandButton value="Single Import" id="buttonEV" 
+                 action="#{UtilitiesPage.importSingleFile_action}"/>
+        <ice:message for="inputImportFileComponent" /> 
+      <ice:outputProgress 
+            value="#{UtilitiesPage.fileProgress}" >
+       </ice:outputProgress> 
                 </div>
                 <hr/>
               </ice:panelGrid>

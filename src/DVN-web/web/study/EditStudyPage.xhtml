@@ -48,20 +48,20 @@
           // in between, created by the div)
           function updateCategory( checkbox ) {
               if (checkbox.checked) {
-                  textField = document.getElementById(checkbox.id).nextSibling.nextSibling;
-                  dropdown = document.getElementById("studyForm:tabSet1:files:fileDataTableWrapper:0:fileDataTable:catDropdown");
+                  textField = document.getElementById(checkbox.id).nextSibling;
+                  dropdown = document.getElementById("studyForm:fileDataTableWrapper:0:fileDataTable:catDropdown");
                   textField.value = dropdown.value;
               }
           }
           function deselectCategory( textField ) {
-              checkbox = document.getElementById(textField.id).previousSibling.previousSibling;
+              checkbox = document.getElementById(textField.id).previousSibling;
               checkbox.checked = false;
           }
           function updateAllCheckedCategories( dropdown ) {
               checkboxes=document.getElementsByTagName("input");
               for(i=0; i < checkboxes.length; i++) {
                   if (checkboxes[i].id.indexOf("catCheckbox") != -1 && checkboxes[i].checked == true) {
-                      textField = checkboxes[i].nextSibling.nextSibling;
+                      textField = checkboxes[i].nextSibling;
                       textField.value = dropdown.value;
                   }
               }
@@ -2077,7 +2077,7 @@
                             <div jsfc="ice:panelGroup" id="catColPanelGroup">
                               <ice:outputText id="catLabel" value="Category"/>
                               <ice:selectOneMenu id="catDropdown" onchange="updateAllCheckedCategories(this);">
-                                <f:selectItems value="#{EditStudyPage.templateFileCategories}"/>
+                                <f:selectItems value="#{EditStudyPage.fileCategoryItems}"/>
                               </ice:selectOneMenu>
                             </div>
                           </f:facet>

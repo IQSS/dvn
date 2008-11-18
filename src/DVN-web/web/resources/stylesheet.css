@@ -281,12 +281,12 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
 .dvnSuccessMessage p {
   margin-left: 48px;
 }
-.dvnSuccessMessage ul {
+.dvnSuccessMessage ul, .dvnSuccessMessage div {
   margin-left: 48px;
   padding-left: 0;
   list-style: none;
 }
-.dvnSuccessMessage li {
+.dvnSuccessMessage li, .dvnSuccessMessage div span {
   margin: 0;
   padding: 0;
   font-weight: bold;
@@ -340,6 +340,12 @@ ul.successMessage li, .successMessage ul li {
   font-style: italic;
   font-weight: bold;
 }
+
+/* ICEFACE messages NOTE: ice:message component adds a "severity style" to the style class of the tag */
+.errorMessageFatal {color: red; font-weight: bold; padding: 0 .5em;}
+.errorMessageError {color: red; font-weight: bold; padding: 0 .5em;}
+.errorMessageWarn {color: red; font-weight: bold; padding: 0 .5em;}
+.errorMessageInfo {color: red; font-weight: bold; padding: 0 .5em;}
 
 .iceOutConStat {
   position: fixed;
@@ -1499,15 +1505,7 @@ li.affiliationBullet {
     font-size: 90% !important;
 }
 
-/* *************** vanilla pages styles ***************** */
-div.ContentArea { margin-top:150px; margin-left:auto; margin-right:auto; width:500px; background: url(custom_corners_topleft.gif) top left no-repeat; text-align: center;}
-div.ContentArea p { background: url(custom_corners_topright.gif) top right no-repeat; padding:15px; margin:0; color: #062f58; }
-div.ContentArea span.headingText { display:block; width:100%; background-color:#dce6cb; font-weight: bold; text-align: center; padding: 0.25em 0;}
-div.ContentAreaBody { background: url(custom_corners_rightborder.gif) top right repeat-y; margin:0; margin-top:-2em; padding:15px;}
-div.ContentAreaFooter { background: url(custom_corners_bottomleft.gif) bottom left no-repeat; }
-div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom right no-repeat; display:block; padding:15px; margin:-2em 0 0 0; }
-
-/* *************** NetworkAdmin VDCGroup styles ******************** */
+/**************** NetworkAdmin VDCGroup styles *********************/
 .shadedRow              { background-color:#eeeeee; }
 .whiteRow               { background-color:#ffffff; }
 #vdcGroupPageForm:VDCGroups:dataTableCaption {font-size:1.2em; }/*overrides the default theme */
@@ -1564,7 +1562,8 @@ div.ContentAreaFooter p { background: url(custom_corners_bottomright.gif) bottom
 
 /**** Login ****/
 #dvnLoginPageWrap {margin-top: 10%; width: 98%; text-align: center;}
-#dvnLoginPageWrap form {width: 700px; margin: 0 auto; padding: 1em; background: #fff; border: 1px solid #6E7F90;}
+#dvnLoginPageWrap form {width: 700px; margin: 0 auto;}
+#dvnLoginPageWrap div.dvnRound {width: 700px; margin: 0 auto; padding: 1em;  background: #fff; border: 1px solid #6E7F90;}
 
 #dvnLoginPageHeader {width: 100%; margin-bottom: 2em; background: #dadee0;}
 #dvnLoginPageHeader .dvnLoginHeadingText {font-size: 160% !important; color: #c55b28; text-transform: uppercase;}
@@ -1592,6 +1591,25 @@ td.dvnOptionsTableHeader {padding: .5em 1em; background: gainsboro; color: grey;
 .dvnOptionsTableOption {width: 240px;}
 span.dvnOptionsTableNote {font-size: 90% !important;}
 div.dvnOptionsTableLicense {padding-top: .5em;}
+
+/**** Manage Permissions Page (PrivilegedUsersPage) ****/
+.dvnPermissionsTable {width: 100%;}
+.dvnPermissionsTable td {padding: .5em 2em; border-bottom: 1px solid lightgray;}
+.dvnPermissionsTable td.dvnPermissionsStackedCells {border-bottom: none;}
+td.dvnPermissionsTableHeader {padding: .5em 1em; background: gainsboro; color: grey; text-transform: uppercase;}
+.dvnPermissionsTableOption {width: 240px;}
+.dvnPermissionsTable .dvnPermissionsEmpty {text-align: center;}
+.dvnPermissionsTable .dvnPermissionsEmpty span.iceOutTxt {color: grey;}
+
+.dvnPermissionsTable fieldset.iceSelOneRb-dis {border: 0; padding: 0; background: none;}
+.dvnPermissionsTable table.iceSelOneRb-dis td {padding: 0 .25em; border: 0;}
+.dvnPermissionsTable label.iceSelOneRb-dis-dis {font-size: 90% !important;}
+
+.dvnPermissionsTable fieldset.iceSelOneRb {border: 0; padding: 0; background: none;}
+.dvnPermissionsTable table.iceSelOneRb td {padding: 0 .25em; border: 0;}
+.dvnPermissionsTable label.iceSelOneRb {font-size: 90% !important;}
+
+.dvnPermissionsTable .iceDatTbl span {font-size: 90% !important;}
 
 /**** Create a Dataverse ****/
 .dvn_createDvRequest {text-align: center;}

@@ -66,9 +66,9 @@
               <f:facet name="header">
                 <ice:outputText value="Result"/>
               </f:facet>
-              <ice:outputText value="#{currentRow.lastHarvestTime}, #{currentRow.harvestedStudyCount} Studies harvested" rendered="#{currentRow.harvestResult == currentRow.harvestResultSuccess}"/>
+              <ice:outputText value="Harvest Completed, #{currentRow.harvestedStudyCount} Studies harvested" rendered="#{currentRow.harvestResult == currentRow.harvestResultSuccess}"/>
               <ice:outputText value="#{currentRow.failedStudyCount} Failures" rendered="#{currentRow.harvestResult == currentRow.harvestResultSuccess and currentRow.failedStudyCount > 0}" />
-              <ice:outputText value="FAILED" rendered = "#{currentRow.harvestResult == currentRow.harvestResultFailed}"/>
+              <ice:outputText value="Harvest Failed" rendered = "#{currentRow.harvestResult == currentRow.harvestResultFailed}"/>
               <ice:outputText value="No results available" rendered="#{empty currentRow.harvestResult}"/>
             </ice:column>
             <ice:column>

@@ -30,6 +30,8 @@
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
 
+import com.icesoft.faces.async.render.RenderManager;
+import com.icesoft.faces.async.render.Renderable;
 import edu.harvard.hmdc.vdcnet.harvest.HarvestFormatType;
 import edu.harvard.hmdc.vdcnet.harvest.HarvestStudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
@@ -62,13 +64,24 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import com.icesoft.faces.component.inputfile.InputFile;
+import com.icesoft.faces.webapp.xmlhttp.FatalRenderingException;
+import com.icesoft.faces.webapp.xmlhttp.PersistentFacesState;
+import com.icesoft.faces.webapp.xmlhttp.RenderingException;
+import com.icesoft.faces.webapp.xmlhttp.TransientRenderingException;
+import java.util.Collection;
+import java.util.EventObject;
+import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
+import javax.swing.JFileChooser;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import javax.faces.event.ActionEvent;
 /**
  *
  * @author gdurand
  */
-public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable   {
+public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, Renderable   {
 
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.web.networkAdmin.UtilitiesPage");
             
@@ -85,6 +98,12 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     
     /** Creates a new instance of ImportStudyPage */
     public UtilitiesPage() {
+         persistentFacesState = PersistentFacesState.getInstance();
+     
+        // Get the session id in a container generic way
+       ExternalContext ext =  FacesContext.getCurrentInstance().getExternalContext();
+       sessionId = ext.getSession(false).toString();
+       
     }
     
     public void init() {
@@ -554,8 +573,16 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     private Long importDVId;
     private Long importFileFormat;
     private String importBatchDir;
-    //private UploadedFile importFile;
-
+    
+ // file upload completed percent (Progress)
+    private int fileProgress;
+      // render manager for the application, uses session id for on demand
+    // render group.
+    private String sessionId;
+    private RenderManager renderManager;
+    private PersistentFacesState persistentFacesState;
+    public static final Log mLog = LogFactory.getLog(UtilitiesPage.class);
+    private InputFile inputFile; 
     public Long getImportDVId() {
         return importDVId;
     }
@@ -579,21 +606,20 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
     public void setImportBatchDir(String importBatchDir) {
         this.importBatchDir = importBatchDir;
     }
-
-    /*
-     * commenting out -- this is slated for
-     * replacement in 1.4 and I am removing for
-     * QA to test without rave webui libs
-     * wjb
-
-    public UploadedFile getImportFile() {
-        return importFile;
+    public int getFileProgress(){
+        return fileProgress;
     }
-
-    public void setImportFile(UploadedFile importFile) {
-        this.importFile = importFile;
-    }  */
-    
+    public void setFileProgress(int p){
+        fileProgress=p;
+    }  
+    public InputFile getInputFile(){
+        return inputFile;
+    }
+           
+    public void setInputFile(InputFile in){
+        inputFile = in; 
+    }
+   
      public List<SelectItem> getImportDVs() {
         List importDVsSelectItems = new ArrayList<SelectItem>();
         Iterator iter = vdcService.findAllNonHarvesting().iterator();
@@ -619,11 +645,12 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
         FileHandler logFileHandler = null;
         Logger importLogger = null;
         
+        if(importBatchDir==null || importBatchDir.equals("")) return null;
         try {
             int importFailureCount = 0;
             int fileFailureCount = 0;
             List<Long> studiesToIndex = new ArrayList<Long>();
-            String sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
+            //sessionId =  ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
 
             File batchDir = new File(importBatchDir);
             if (batchDir.exists() && batchDir.isDirectory()) {
@@ -725,26 +752,108 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
                 logFileHandler.close();
                 importLogger.removeHandler(logFileHandler);
             }
+         //   importBatchDir = "";
         }
 
         return null;       
-    }    
+    }  
+   /**
+     * Return the reference to the
+     * {@link com.icesoft.faces.webapp.xmlhttp.PersistentFacesState
+     * PersistentFacesState} associated with this Renderable.
+     * <p/>
+     * The typical (and recommended usage) is to get and hold a reference to the
+     * PersistentFacesState in the constructor of your managed bean and return
+     * that reference from this method.
+     *
+     * @return the PersistentFacesState associated with this Renderable
+     */
+    public PersistentFacesState getState() {
+        return persistentFacesState;
+    }
 
-    public String importSingleFile_action() {
-        try {
-            File xmlFile = File.createTempFile("study", ".xml");
-            /*
-             * commenting out -- this is slated for
-             * replacement in 1.4 and I am removing for
-             * QA to test without rave webui libs
-             * wjb
-            importFile.write(xmlFile);
-            */
-            Study study = studyService.importStudy(
-                    xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId());
+    public void setRenderManager(RenderManager renderManager) {
+        this.renderManager = renderManager;
+        renderManager.getOnDemandRenderer(sessionId).add(this);
+        
+    }
+  /**
+     * Callback method that is called if any exception occurs during an attempt
+     * to render this Renderable.
+     * <p/>
+     * It is up to the application developer to implement appropriate policy
+     * when a RenderingException occurs.  Different policies might be
+     * appropriate based on the severity of the exception.  For example, if the
+     * exception is fatal (the session has expired), no further attempts should
+     * be made to render this Renderable and the application may want to remove
+     * the Renderable from some or all of the
+     * {@link com.icesoft.faces.async.render.GroupAsyncRenderer}s it
+     * belongs to. If it is a transient exception (like a client's connection is
+     * temporarily unavailable) then the application has the option of removing
+     * the Renderable from GroupRenderers or leaving them and allowing another
+     * render call to be attempted.
+     *
+     * @param renderingException The exception that occurred when attempting to
+     *                           render this Renderable.
+     */
+    public void renderingException(RenderingException renderingException) {
+        if (mLog.isTraceEnabled() &&
+                renderingException instanceof TransientRenderingException) {
+            mLog.trace("InputFileController Transient Rendering excpetion:", renderingException);
+        } else if (renderingException instanceof FatalRenderingException) {
+            if (mLog.isTraceEnabled()) {
+                mLog.trace("InputFileController Fatal rendering exception: ", renderingException);
+            }
+            renderManager.getOnDemandRenderer(sessionId).remove(this);
+            renderManager.getOnDemandRenderer(sessionId).dispose();
+        }
+    }
+
+   
+    /**
+     * Dispose callback called due to a view closing or session
+     * invalidation/timeout
+     */
+    	public void dispose() throws Exception {
+               
+       if (mLog.isTraceEnabled()) {
+            mLog.trace("OutputProgressController dispose OnDemandRenderer for session: " + sessionId);
+        }
+        renderManager.getOnDemandRenderer(sessionId).remove(this);
+		renderManager.getOnDemandRenderer(sessionId).dispose();
+		}   
+     /**
+     * <p>This method is bound to the inputFile component and is executed
+     * multiple times during the file upload process.  Every call allows
+     * the user to finds out what percentage of the file has been uploaded.
+     * This progress information can then be used with a progressBar component
+     * for user feedback on the file upload progress. </p>
+     *
+     * @param event holds a InputFile object in its source which can be probed
+     *              for the file upload percentage complete.
+     */
+    public void fileUploadProgress(EventObject event) {
+        InputFile ifile = (InputFile) event.getSource();
+        fileProgress = ifile.getFileInfo().getPercent();
+        getImportFileFormat();
+        getImportDVId();
+ //  System.out.println("sessid "+ sessionId);
+  //getImportFileFormat()getImportFileFormat() System.out.println("render "+ renderManager.getOnDemandRenderer(sessionId).toString()); 
+  if (persistentFacesState !=null) {
+         renderManager.getOnDemandRenderer(sessionId).requestRender();} 
+        
+    }  
+   
+    public String importSingleFile_action(){
+        if(inputFile==null) return null; 
+         File originalFile = inputFile.getFile();
+        
+         try {
+        
+               Study study = studyService.importStudy( 
+                   originalFile,getImportFileFormat(), getImportDVId(), getVDCSessionBean().getLoginBean().getUser().getId());
             indexService.updateStudy(study.getId());
-
-            // create result message
+             // create result message
             HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
             String studyURL = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
                     + "/dv/" + study.getOwner().getAlias() + "/faces/study/StudyPage.xhtml?studyId=" + study.getId();
@@ -752,14 +861,33 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable  
             addMessage( "importMessage", "Import succeeded." );
             addMessage( "importMessage", "Study URL: " + studyURL );
 
-        } catch (Exception e) {
+         }catch(Exception e) {
             e.printStackTrace();
             addMessage( "harvestMessage", "Import failed: An unexpected error occurred trying to import this study." );
             addMessage( "harvestMessage", "Exception message: " + e.getMessage() );            
         }
-
-        return null;
-    }          
+      
+        return null;  
+    }
+   public String uploadFile() {
+     
+       inputFile =getInputFile();  
+       
+        String str="";
+   
+	if (inputFile.getStatus() != InputFile.SAVED){
+            str = "File " + inputFile.getFileInfo().getFileName()+ " has not been saved. \n"+
+                    "Status: "+ inputFile.getStatus();
+            logger.info(str); 
+            addMessage("importMessage",str);
+           if(inputFile.getStatus() != InputFile.INVALID) 
+            return null;
+          }
+        
+       return null; 
+   }
+   
+  
 // </editor-fold>
 
     

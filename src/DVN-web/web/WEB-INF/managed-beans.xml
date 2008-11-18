@@ -654,6 +654,11 @@
             <property-class>java.lang.String</property-class>
             <value>#{param.selectedPanel}</value>
         </managed-property>
+<!-- EV added for compatiblity with icefaces -->
+        <managed-property>
+        <property-name>renderManager</property-name>
+        <value>#{manager}</value>
+       </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>addClassificationsPage</managed-bean-name>

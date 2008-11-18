@@ -1227,22 +1227,6 @@ span.vdcEditStudyFormatExample {display: inline;}
    background-color:#ffffff;
 }
 
-/* Rules for Login Page
-*/
-.vdcLoginCol1{
-   background-color:inherit !important;
-   padding-bottom: 6px;
-   padding-top: 6px;
-   white-space: nowrap;
-   vertical-align: top;
-}
-.vdcLoginCol2{
-   background-color:inherit !important;
-   padding-bottom: 6px;
-   padding-top: 6px; 
-   vertical-align: top;
-}
-
 /* Scrollable div for terms  of use
 */
 .vdcScrollDivTermsUse {
@@ -1565,11 +1549,11 @@ li.affiliationBullet {
 #dvnLoginPageWrap form {width: 700px; margin: 0 auto;}
 #dvnLoginPageWrap div.dvnRound {width: 700px; margin: 0 auto; padding: 1em;  background: #fff; border: 1px solid #6E7F90;}
 
-#dvnLoginPageHeader {width: 100%; margin-bottom: 2em; background: #dadee0;}
+#dvnLoginPageHeader {width: 100%; margin-bottom: 2em; background: #dadee0; text-align: center;}
 #dvnLoginPageHeader .dvnLoginHeadingText {font-size: 160% !important; color: #c55b28; text-transform: uppercase;}
 .dvnLoginPageSubHeader {color: #526f76; font-size: 160% !important; text-transform: uppercase;}
 
-.dvnLoginContent {overflow: hidden;}
+.dvnLoginContent {overflow: hidden; text-align: left;}
 .dvnLoginContentText {float: left; width: 380px; padding-right: 10px;}
 .dvnLoginInputArea {float: right; width: 300px;}
 .dvnLoginInputArea p {text-align: right;}
@@ -1582,7 +1566,7 @@ li.affiliationBullet {
 .dvnLoginInputArea fieldset div {margin-top: 1em; text-align: left;}
 .dvnLoginInputArea span fieldset {margin-top: 1em;}
 
-.dvnLoginContentAreaFooter {margin-top: 1em;}
+.dvnLoginContentAreaFooter {margin-top: 1em; text-align: center;}
 
 /**** Network Options Page  + My Options Page ****/
 .dvnOptionsTable {width: 100%;}

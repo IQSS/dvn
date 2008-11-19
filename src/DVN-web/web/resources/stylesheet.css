@@ -265,6 +265,7 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
 }
 
 .dvnInformationMessage {
+  max-width: 900px;
   width: 80%; margin: 0 auto 1em auto; padding: 4px; min-height: 40px;
   background: url(icon_information.png) #bfdcf1 4px 4px no-repeat;
 }
@@ -1053,8 +1054,14 @@ span.vdcEditStudyFormatExample {display: inline;}
    width: 30px
 }
 
-/* Advanced Search Style Rules
-*/
+/* Advanced Search Style Rules */
+.dvnAdvSearchScopeTable {
+  max-width: 900px;
+  margin: auto;
+}
+.dvnAdvSearchScopeTable tr.list-row-even td {
+  background-color: #fff;
+}
 .vdcAdvSearchCol1{
    padding-bottom: 2px;
    padding-left: 10px;
@@ -1072,6 +1079,17 @@ span.vdcEditStudyFormatExample {display: inline;}
    padding-left: 10px;
    padding-top: 2px;
    vertical-align: bottom;
+}
+.dvnAdvSearchCollectionsTable {
+   max-width: 900px;
+   margin: auto;
+   border-top: 1px solid #d9d9d9;
+}
+.dvnAdvSearchCollectionsTableParent {
+  display: inline;
+}
+.dvnAdvSearchCollectionsTableChild {
+  display: inline; padding-left: 18px; background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat;
 }
 
 /* Add/Manage Collection Style Rules

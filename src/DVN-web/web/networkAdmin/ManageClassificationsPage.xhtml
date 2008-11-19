@@ -10,8 +10,7 @@
       >
    <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
-</head>
+    </head>
 
 <body>
     <gui:composition template="/template.xhtml">
@@ -48,14 +47,17 @@
               </div>
               </div>
           </div>
+
+
+
             <ice:dataTable headerClass="groupRow"
                                 id="dataverseList"
                                 rowClasses="evenRow oddRow"
-                                sortColumn="#{dvItems.sortColumnName}"
-                                sortAscending="#{dvItems.ascending}"
-                                styleClass="dvn_networkHomePanelInner"
+                                sortColumn="Name"
+                                sortAscending="true"
                                 value="#{manageClassificationsPage.itemBeans}"
                                 var="dvItems"
+                                styleClass="dvn_networkHomePanelInner"
                                 width="100%">
                 <!-- name number -->
                 <f:facet name="header">
@@ -65,11 +67,20 @@
 	        <ice:column style="width:1%;">
 	            <ice:panelGroup styleClass="#{dvItems.indentStyleClass}">
 	                <!-- Render the expand/contract if there is an image -->
-	                <ice:commandLink  actionListener="#{dvItems.toggleSubGroupAction}">
+                        <ice:commandLink actionListener="#{manageClassificationsPage.toggleChildren}">
+                          <ice:graphicImage id="expandContractImage"
+                                            binding="#{manageClassificationsPage.toggleImage}"
+                                              value="#{dvItems.expandContractImage}"
+	                                      style="border: 0px solid;text-indent:#{dvItems.textIndent}">
+                                <f:attribute name="groupingId" value="#{dvItems.id}" />
+                           </ice:graphicImage>
+                          
+                        </ice:commandLink>
+	               <!-- <ice:commandLink  actionListener="#{dvItems.toggleSubGroupAction}">
 	                    <ice:graphicImage id="expandContractImage"
                                               value="#{dvItems.expandContractImage}"
 	                                      style="border: 0px solid;"/>
-	                </ice:commandLink>
+	                </ice:commandLink> -->
                         <ice:outputText escape="false"
                                          rendered="#{dvItems.expandContractImage == null}"
                                          value="&lt;!-- cell spacer --&gt;"/>
@@ -77,19 +88,17 @@
 	        </ice:column>
                  <!-- classification name -->
                 <ice:column style="width:40%" >
-                    <f:facet name="header">
-                        <ice:commandSortHeader
-                            columnName="#{dvItems.nameColumnName}"
-                            arrow="true">
-                        </ice:commandSortHeader>
-                        <ice:panelGroup>
-                        <ice:outputText value="Name"/>
-                        </ice:panelGroup>
-                    </f:facet>
-                     <ice:outputLink value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
-                        <f:param name="cid" value="#{dvItems.id}" />
-                        <ice:outputText styleClass="#{dvItems.indentStyleClass}" value="#{dvItems.name}"/>
-                    </ice:outputLink>
+                  <f:facet name="header">
+                    <ice:commandSortHeader
+                      columnName="Name"
+                      arrow="true">
+                      <ice:outputText value="Name"/>
+                    </ice:commandSortHeader>
+                  </f:facet>
+                  <ice:outputLink value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
+                    <f:param name="cid" value="#{dvItems.id}" />
+                    <ice:outputText styleClass="#{dvItems.indentStyleClass}" value="#{dvItems.name}"/>
+                  </ice:outputLink>
                 </ice:column>
                 <!-- description -->
                 <ice:column style="width:35%">
@@ -124,13 +133,13 @@
                     </ice:outputLink>
                 </ice:column>
               </ice:dataTable>
-              <!-- ******************* TEST ******************
+              <!-- ******************* TEST ****************** 
               <ice:panelSeries styleClass="dvn_networkHomePanel"
                     value="#{manageClassificationsPage.itemBeans}"
                     var="dvItems"
                     rendered="#{VDCRequest.currentVDC == null}">
                     <ice:outputText value="#{dvItems.strToString}"  />
-             </ice:panelSeries>  -->
+             </ice:panelSeries> -->
 
             </div>
             </ice:form>

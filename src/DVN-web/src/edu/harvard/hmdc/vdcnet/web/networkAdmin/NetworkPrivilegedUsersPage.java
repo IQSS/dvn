@@ -219,6 +219,9 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
         this.userNotFound = userNotFound;
     }
 
+    public boolean getDisplayPrivilegedUsers() {
+        return getPrivileges().getPrivilegedUsers().size()>1;
+    }
     /**
      * Holds value of property success.
      */

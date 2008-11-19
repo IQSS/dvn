@@ -16,7 +16,7 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="#{(SearchFieldsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{(SearchFieldsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
             <ice:outputText value="#{bundlePageInfo.fieldsSearchResultsHelp}" escape="false"/>
             <div jsfc="ice:panelGroup" styleClass="#{SearchFieldsPage.msg.styleClass}" rendered="#{!empty SearchFieldsPage.msg.messageText}">
               <ice:outputText id="statusMessage" value="#{SearchFieldsPage.msg.messageText}"/>
@@ -27,7 +27,6 @@
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-
               <div class="dvnFormPadding">
                 <ice:selectBooleanCheckbox binding="#{SearchFieldsPage.productionDateCheckbox}" id="productiondatecheckbox" value="#{SearchFieldsPage.productionDateResults}"/>
                 <ice:outputLabel for="productiondatecheckbox" value="Production Date"/>

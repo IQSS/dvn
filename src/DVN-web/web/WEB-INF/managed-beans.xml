@@ -223,12 +223,6 @@
         <managed-bean-name>AddFilesPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.AddFilesPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
-   <!--    <managed-property>
-            <property-name>studyId</property-name>
-            <property-class>java.lang.Long</property-class>
-            <value>#{param.studyId}</value>
-        </managed-property>
--->
         <managed-property>
             <property-name>ingestEmail</property-name>
             <property-class>java.lang.String</property-class>
@@ -237,22 +231,8 @@
  <!-- ****** EV : Managed beans for AddFilesPage with IceFaces ****** -->
         <managed-property>
         <property-name>renderManager</property-name>
-        <value>#{manager}</value>
+        <value>#{renderMgr}</value>
        </managed-property>
-    </managed-bean>
- <managed-bean>
-        <managed-bean-name>manager</managed-bean-name>
-        <managed-bean-class>
-	com.icesoft.faces.async.render.RenderManager
-	</managed-bean-class>
-        <managed-bean-scope>none</managed-bean-scope>
-    </managed-bean>
- <managed-bean>
-        <managed-bean-name>fileInfo</managed-bean-name>
-        <managed-bean-class>
-	com.icesoft.faces.component.inputfile.FileInfo
-	</managed-bean-class>
-        <managed-bean-scope>none</managed-bean-scope>
     </managed-bean>
  <!-- **************** EV ***************** -->
     <managed-bean>
@@ -655,9 +635,9 @@
             <value>#{param.selectedPanel}</value>
         </managed-property>
 <!-- EV added for compatiblity with icefaces -->
-        <managed-property>
+<managed-property>
         <property-name>renderManager</property-name>
-        <value>#{manager}</value>
+        <value>#{renderMgr}</value>
        </managed-property>
     </managed-bean>
     <managed-bean>

@@ -337,35 +337,36 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             VDC vdc = getVDCRequestBean().getCurrentVDC();
             VDCUser user = getVDCSessionBean().getUser();
             UserGroup usergroup = getVDCSessionBean().getIpUserGroup();
-
+            Long passThroughVdcId = null;
+            
             // first filter the visible studies; visible studies are those that are released
-            // and not from a restricted VDC )unless you are in that VDC)
+            // and not from a restricted VDC (unless you are in that VDC)
             studyListing.getStudyIds().retainAll(studyService.getVisibleStudies(
                     studyListing.getStudyIds(),
                     vdc != null ? vdc.getId() : null));
 
 
-            // next  determine if user is admin or curator of that vdc, or networkAdmin; if they are, they
-            // can see all visible studies; otherwise we have to filter out those that are restricted to them
-            boolean isAdminOrCurator = false;
+            // next determine user role:
+            // if networkAdmin, skip viewable filter (alter studies are viewable)
+            // if vdc admin or curator, allow vdc's owened studies to pass through filter (by sending vdcId)
             if (user != null) {
                 if (user.getNetworkRole() != null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
-                    isAdminOrCurator = true;
-                } else {
+                    return;
+                    
+                } else if (vdc != null) {
                     VDCRole userRole = user.getVDCRole(vdc);
                     String userRoleName = userRole != null ? userRole.getRole().getName() : null;
                     if (RoleServiceLocal.ADMIN.equals(userRoleName) || RoleServiceLocal.CURATOR.equals(userRoleName)) {
-                        isAdminOrCurator = true;
+                        passThroughVdcId = vdc.getId();
                     }
                 }
             }
 
-            if (!isAdminOrCurator) {
-                studyListing.getStudyIds().retainAll(studyService.getViewableStudies(
-                        studyListing.getStudyIds(),
-                        (user != null ? user.getId() : null),
-                        (usergroup != null ? usergroup.getId() : null)));
-            }
+            studyListing.getStudyIds().retainAll(studyService.getViewableStudies(
+                    studyListing.getStudyIds(),
+                    (user != null ? user.getId() : null),
+                    (usergroup != null ? usergroup.getId() : null),
+                    passThroughVdcId ) );
         }
     }
 

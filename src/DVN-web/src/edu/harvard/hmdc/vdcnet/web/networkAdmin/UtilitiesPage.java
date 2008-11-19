@@ -617,9 +617,9 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
     }
            
     public void setInputFile(InputFile in){
-        inputFile = in; 
+        inputFile = in;
     }
-   
+  
      public List<SelectItem> getImportDVs() {
         List importDVsSelectItems = new ArrayList<SelectItem>();
         Iterator iter = vdcService.findAllNonHarvesting().iterator();
@@ -641,7 +641,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
         return metadataFormatsSelect;
     }      
      
-    public String importBatch_action() {  
+    public String importBatch_action() {
         FileHandler logFileHandler = null;
         Logger importLogger = null;
         
@@ -866,7 +866,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
             addMessage( "harvestMessage", "Import failed: An unexpected error occurred trying to import this study." );
             addMessage( "harvestMessage", "Exception message: " + e.getMessage() );            
         }
-      
+                
         return null;  
     }
    public String uploadFile() {
@@ -883,7 +883,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
            if(inputFile.getStatus() != InputFile.INVALID) 
             return null;
           }
-        
+  
        return null; 
    }
    

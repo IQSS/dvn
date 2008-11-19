@@ -663,30 +663,30 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             String radioButtonStr = (String) radioButtonList1.getValue();
             if (radioButtonStr.indexOf("Only") > 1) {
                 searchOnlySelectedCollections = true;
-            }
 
-            searchCollections = new ArrayList();
-            List<CollectionModel> collectionModelList = (List<CollectionModel>) dataTable1Model.getWrappedData();
-            for (Iterator it = collectionModelList.iterator(); it.hasNext();) {
-                CollectionModel elem = (CollectionModel) it.next();
-                if (searchOnlySelectedCollections) {
+                searchCollections = new ArrayList();
+                List<CollectionModel> collectionModelList = (List<CollectionModel>) dataTable1Model.getWrappedData();
+                for (Iterator it = collectionModelList.iterator(); it.hasNext();) {
+                    CollectionModel elem = (CollectionModel) it.next();
                     if (elem.isSelected()) {
                         VDCCollection selectedCollection = vdcCollectionService.find(elem.getId());
                         searchCollections.add(selectedCollection);
                     }
-                } else {
-                    VDCCollection selectedCollection = vdcCollectionService.find(elem.getId());
-                    searchCollections.add(selectedCollection);
+                }
+                if (searchCollections.isEmpty()) {
+                    searchOnlySelectedCollections = false;
                 }
             }
-            if (searchCollections.isEmpty()) {
-                searchOnlySelectedCollections = false;
-            }
-
         }
+
         List<SearchTerm> searchTerms = buildSearchTermList();
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        List<Long> viewableIds = getViewableStudyIds(thisVDC, searchCollections, searchTerms);
+        List<Long> viewableIds = null;
+        if (searchOnlySelectedCollections) {
+            viewableIds = indexServiceBean.search(thisVDC, searchCollections, searchTerms);
+        } else {
+            viewableIds = indexServiceBean.search(thisVDC, searchTerms);    
+        }
 
         StudyListing sl = new StudyListing(StudyListing.SEARCH);
         sl.setSearchTerms(searchTerms);
@@ -706,36 +706,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         return "search";
     }
 
-    private List<Long> getViewableStudyIds(final VDC thisVDC, final List searchCollections, final List<SearchTerm> searchTerms) {
-        List matchedIds = null;
-        matchedIds = indexServiceBean.search(thisVDC, searchCollections, searchTerms);
-        List<Long> viewableIds = null;
-        if (!isVariableSearch()) {
-            viewableIds = viewableStudiesFilter(matchedIds);
-        } else {
-            viewableIds = matchedIds;
-        }
-        return viewableIds;
-    }
 
-    private List<Long> viewableStudiesFilter(final List matchedIds) {
-        VDC vdc = getVDCRequestBean().getCurrentVDC();
-        VDCUser user = getVDCSessionBean().getUser();
-        List<Long> viewableIds = new ArrayList();
-        for (Iterator it = matchedIds.iterator(); it.hasNext();) {
-            Long elem = (Long) it.next();
-            try {
-                Study matchedStudy = studyService.getStudy(elem);
-                if (StudyUI.isStudyVisibleToUser(matchedStudy, vdc, user)) {
-//                if (isViewable(matchedStudy)){
-                    viewableIds.add(elem);
-                }
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }
-        }
-        return viewableIds;
-    }
 
     public boolean isDateItem(String s) {
         boolean retVal = s != null && (s.equalsIgnoreCase("Production Date") || s.equalsIgnoreCase("Distribution Date") || s.equalsIgnoreCase("Date of Deposit") || s.startsWith("Time Period Covered"));
@@ -758,9 +729,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         return isDateItem(dropdown7.getValue().toString());
     }
 
-    public String cancel() {
-        return "home";
-    }
 
     public void searchFieldListener(ValueChangeEvent vce) {
         FacesContext.getCurrentInstance().renderResponse();

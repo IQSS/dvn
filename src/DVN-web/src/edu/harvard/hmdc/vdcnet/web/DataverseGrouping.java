@@ -103,7 +103,6 @@ public class DataverseGrouping extends SortableList {
         this.contractImage = contractImage;
         this.id          = id;
         this.parentClassification         = parentClassification;
-        this.indentStyleClass = "groupRowIndentStyle";
         // update the default state of the node.
         if (this.isExpanded) {
             expandNodeAction();
@@ -189,6 +188,7 @@ public class DataverseGrouping extends SortableList {
      // indicates if node is in expanded state.
     protected boolean isExpanded;
 
+   
    /**
      * Toggles the expanded state of this dataverse group.
      *
@@ -288,7 +288,7 @@ public class DataverseGrouping extends SortableList {
     /**
      * Recursive utility method to remove all child nodes from their parents in the dataTable list.
      */
-    private void recurseAndContractNodeAction() {
+    public void recurseAndContractNodeAction() {
         if (childItems != null && childItems.size() > 0) {
             Iterator iterator = childItems.iterator();
             while(iterator.hasNext()) {
@@ -329,7 +329,7 @@ public class DataverseGrouping extends SortableList {
     }
 
     /**
-     *  Sorts the list of car data.
+     *  Sorts the list of data.
      */
     protected void sort() {
         Comparator comparator = new Comparator() {
@@ -383,7 +383,10 @@ public class DataverseGrouping extends SortableList {
                 }
             }
         };
-        Collections.sort(childItems, comparator);
+        if (!childItems.isEmpty())
+            Collections.sort(childItems, comparator);
+        else
+            Collections.sort(parentItems, comparator);
     }
 
     public String getNameColumnName() {
@@ -672,6 +675,8 @@ public class DataverseGrouping extends SortableList {
         this.numberOwnedStudies = numberOwnedStudies;
     }
 
+
+
     public String getType() {
         return type;
     }
@@ -680,7 +685,23 @@ public class DataverseGrouping extends SortableList {
         this.type = type;
     }
 
+    public boolean isIsExpanded() {
+        return isExpanded;
+    }
 
+    public void setIsExpanded(boolean isExpanded) {
+        this.isExpanded = isExpanded;
+    }
+
+    private String textIndent;
+
+    public String getTextIndent() {
+        return textIndent;
+    }
+
+    public void setTextIndent(String textIndent) {
+        this.textIndent = textIndent;
+    }
 
     public void setIndentStyleClass(String indentstyle) {
         this.indentStyleClass = indentstyle;
@@ -690,11 +711,12 @@ public class DataverseGrouping extends SortableList {
     public String toString() {
           String dataverseToString = new String("");
           dataverseToString+="[ name = " + name + "; ";
+          dataverseToString+=" id = " + ((id != null) ? id : "") + "; ";
           dataverseToString+=" parentClassification = " + ((parentClassification != null) ? parentClassification : "No parents") + "; ";
           dataverseToString+=" affiliation = " + ((affiliation != null) ? affiliation : "") + "; ";
           dataverseToString+=" shortDescription = " + ((shortDescription != null) ? shortDescription : "") + "; ";
           dataverseToString+=" nameColumnName = " + ((nameColumnName != null) ? nameColumnName : "") + "; ";
-          dataverseToString+=" recordType = " + ((recordType != null) ? recordType : "") + "; ]";
+          dataverseToString+=" recordType = " + ((recordType != null) ? recordType : "") + "; ]\n\r";
           return  dataverseToString;
       }
 

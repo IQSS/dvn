@@ -124,6 +124,13 @@
             <redirect/>
         </navigation-case>
     </navigation-rule>
+      <navigation-rule>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>dvHome</from-outcome>
+            <to-view-id>/StudyListingPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>    
           <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
@@ -231,13 +238,6 @@
             <to-view-id>/networkAdmin/NetworkOptionsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>    
-    <navigation-rule>
-        <from-view-id>/AdvSearchPage.xhtml</from-view-id>
-        <navigation-case>
-            <from-outcome>home</from-outcome>
-            <to-view-id>/HomePage.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>
       <navigation-rule>
             <from-view-id>/site/DeleteDataversePage.xhtml</from-view-id>
             <navigation-case>

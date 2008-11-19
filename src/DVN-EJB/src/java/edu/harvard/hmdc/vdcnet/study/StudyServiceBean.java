@@ -1493,8 +1493,13 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
     }
 
+    // this method will return only the subset of studies that are public
+    public List getViewableStudies(List<Long> studyIds) {
+        return getViewableStudies(studyIds, null, null, null);
+    }
+    
     // viewable studies are those that are defined as not restricted to the user
-    public List getViewableStudies(List<Long> studyIds, Long userId, Long ipUserGroupId) {
+    public List getViewableStudies(List<Long> studyIds, Long userId, Long ipUserGroupId, Long vdcId) {
         List returnList = new ArrayList();
 
         if (studyIds != null && studyIds.size() > 0) {
@@ -1503,6 +1508,10 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             StringBuffer whereClause = new StringBuffer("where ( restricted = false ");
             boolean groupJoinAdded = false;
 
+            if (vdcId != null) { // if this parameter is passed, the user is an admin or curator of this vdc
+                whereClause.append("or owner_id = ? ");    
+            }
+            
             if (userId != null) {
                 queryString.append("left join study_vdcuser su on (s.id = su.studies_id) ");
                 queryString.append("left join study_usergroup sg on (s.id = sg.studies_id ) ");
@@ -1537,7 +1546,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
             // now set parameters
             int parameterCount = 1;
-
+            
+            if (vdcId != null) {
+                query.setParameter(parameterCount++, vdcId);    
+            }
+            
             if (userId != null) {
                 query.setParameter(parameterCount++, userId);
                 query.setParameter(parameterCount++, userId);

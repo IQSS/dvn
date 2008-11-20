@@ -147,8 +147,8 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
       studyId = st; 
   }
     public AddFilesPage() {
-        persistentFacesState = PersistentFacesState.getInstance();
-     
+                persistentFacesState = PersistentFacesState.getInstance();
+  
         // Get the session id in a container generic way
         sessionId = FacesContext.getCurrentInstance().getExternalContext()
                 .getSession(false).toString();
@@ -156,7 +156,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
         studyId = Long.parseLong(studyEV); 
         if(fileCategories == null )
             fileCategories=Collections.synchronizedList(new ArrayList<SelectItem>());
-           
+        
     }
 
     /**
@@ -183,7 +183,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
             //return;
            }
           }
-            
+                      
           
          currentFile = createStudyFile(inputFile);
          if(currentFile==null){
@@ -238,7 +238,9 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
         f.setFileCategoryName(""); 
         
         }catch(Exception ex){
-            System.out.println("Fail to create the study file. ");
+            String m = "Fail to create the study file. ";
+            mLog.error(m);
+            errorMessage(m);
             mLog.error(ex.getMessage()); 
         }
         return f;
@@ -471,7 +473,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         String [] catstudy = new String[ln];
         while(iter.hasNext()){
             FileCategory tmp = iter.next(); 
-            catstudy[cnt]= tmp.getName();
+            catstudy[cnt]= tmp.getName().trim();
             mLog.debug(catstudy[cnt]);
             cnt++; 
         }
@@ -480,13 +482,14 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
        String catfiles[] = new String[fileCategories.size()];
        cnt=0;
        for(SelectItem sel:fileCategories){
-            String key = (String) sel.getValue();
+            String key = ((String) sel.getValue()).trim();
             catfiles[cnt]= key;
             cnt++; 
         }
         Arrays.sort(catfiles);
         //add the study categories to the drop down list of SelectItem
-        for(String key: catstudy){
+        for(String str: catstudy){
+          String key = str.trim();
           int found = Arrays.binarySearch(catfiles, key);  
           if(found < 0) fileCategories.add(new SelectItem(key));   
        }
@@ -519,9 +522,9 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         while(edbean.hasNext()){
             
          StudyFileEditBean tmp=  edbean.next();
-         String nm =tmp.getStudyFile().getFileName();
-       
-            int found = Arrays.binarySearch(studyFileNames, nm);
+         StudyFile sf = tmp.getStudyFile();
+         String nm = sf.getFileName();
+         int found = Arrays.binarySearch(studyFileNames, nm);
               
               mLog.debug(tmp.getStudyFile().getDescription()+"; File DeScription");
             //if the file name exist remove it from temp directory and do not store
@@ -758,7 +761,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
            Collection<SelectItem> uniq = new HashSet<SelectItem>(fileCategories);
            Collection<String> noDups = new HashSet<String>();
            for(SelectItem select: uniq){
-               noDups.add((String) select.getValue());
+               noDups.add(((String) select.getValue()).trim());
            }
         int sz = noDups.size();
         String [] cats = noDups.toArray(new String[sz]);
@@ -767,7 +770,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
            String str = currentFile.getFileCategoryName().trim();
            int found=0;
            if(str != null &&!str.equals(""))
-           found = Arrays.binarySearch(cats, str);
+           found = Arrays.binarySearch(cats, str.trim());
            FileCategory c= null;
            if(found < 0) {
               mLog.debug("Added category "+ str);
@@ -800,7 +803,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
          fileCategories.addAll(tfc);
          
          while(iter.hasNext()){
-         String val =(String) iter.next().getValue();
+         String val =((String) iter.next().getValue()).trim();
          FileCategory cat = new FileCategory();
          cat.setName(val);
           if(study.getFileCategories()==null)study.setFileCategories(new ArrayList<FileCategory>());

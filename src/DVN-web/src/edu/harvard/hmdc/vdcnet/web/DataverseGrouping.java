@@ -693,13 +693,13 @@ public class DataverseGrouping extends SortableList {
         this.isExpanded = isExpanded;
     }
 
-    private String textIndent;
+    private int textIndent;
 
-    public String getTextIndent() {
+    public int getTextIndent() {
         return textIndent;
     }
 
-    public void setTextIndent(String textIndent) {
+    public void setTextIndent(int textIndent) {
         this.textIndent = textIndent;
     }
 

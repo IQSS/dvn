@@ -107,6 +107,109 @@
 .dvn_sectionTitleLinksR  {float: right;}
 .dvn_sectionTitleLinksR a:link, .dvn_sectionTitleLinksR a:visited, .dvn_sectionTitleLinksR a:hover, .dvn_sectionTitleLinksR a:active {margin-left: 2em;}
 
+/* studyPageEditLinks */
+.studyEditLinks {
+  margin-left: 2em;
+  width: 3em;
+  float: left;
+}
+.editDropDown, .editDropDown ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.editDropDown li {
+    margin: 0;
+    padding: 0;
+    display: block;
+    position: relative;
+    z-index: 5;
+}
+.editDropDown li:hover {
+    z-index: 10000;
+    white-space: normal;
+}
+.editDropDown li ul {
+    /* z-index: 100; */
+    opacity: 0.9999;
+    display: block;
+}
+.editDropDown li a, .editDropDown li a:link, .editDropDown li a:active, .editDropDown li a:visited {
+    background: inherit;
+    color: #0c54b3;
+    display: block;
+    padding: 0 3px;
+    margin: 0;
+    text-decoration: none;
+    vertical-align: top;
+}
+.editDropDown li a:hover {
+    background: khaki;
+    color: #0c54b3;
+    text-decoration: none;
+}
+.editDropDown li a.editDropDownLink {
+    display: inline;
+    margin: 0;
+}
+.editDropDown li a:hover.editDropDownLink {
+    margin: 0;
+    color: #0c54b3;
+    text-decoration: none !important;
+}
+.studyEditLinks li:hover a,
+.studyEditLinks li.sfHover a {
+    background: khaki;
+    color: #0c54b3;
+}
+.studyEditLinks li:hover ul a:link,
+.studyEditLinks li.sfHover ul a:link,
+.studyEditLinks li:hover ul a:visited,
+.studyEditLinks li.sfHover ul a:visited,
+.studyEditLinks li:hover ul a:active,
+.studyEditLinks li.sfHover ul a:active {
+    background: khaki;
+    color: #0c54b3;
+    line-height: 1.5;
+    text-decoration: none !important;
+    outline: none;
+}
+.studyEditLinks li:hover ul a:hover,
+.studyEditLinks li.sfHover ul a:hover {
+    background: khaki;
+    color: #c55b28;
+    line-height: 1.5;
+    text-decoration: underline !important;
+}
+.editDropDown ul {
+    list-style: none;
+    margin: 0;
+    width: 18.5em;
+    position: absolute;
+    top: -999em;
+    left: -1px;
+    z-index: 10;
+}
+.editDropDown li:hover ul,
+.editDropDown li.sfHover ul {
+    top: 1.3em;
+    left: 1.3em;
+    border: 0;
+}
+.editDropDown ul li {
+    border: 0;
+    float: none;
+}
+.editDropDown ul a {
+    width: 18.5em;
+    white-space: nowrap;
+}
+.editDropDown ul a:hover {
+    background: khaki;
+    color: #c55b28;
+}
+/* END studyPageEditLinks */
+
 .dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; }
 .dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; clear: both;} 
 
@@ -737,20 +840,6 @@ div.vdcStudyFilesMessage a:link, div.vdcStudyFilesMessage a:visited, div.vdcStud
    vertical-align: middle;
 }
 
-.vdcStudyFilesCatDownload {float: right; margin-right: 162px; width: 50%;}
-
-a.vdcStudyCatDownloadLink {
-        background-image: url(icon_downloadall.gif);
-	background-repeat: no-repeat;
-	padding-left: 26px;
-        padding-top: 2px;
-}
-
-span.vdcStudyCatDownloadLink {
-	font-size: 90% !important;
-        padding-bottom: 1px;
-}
-
 .TogglePaneFancyHeader {
 	background-image: url(icon_expand.gif);
 	background-repeat: no-repeat;
@@ -765,8 +854,8 @@ a.vdcTruncatorLinkMore:link, a.vdcTruncatorLinkMore:hover, a.vdcTruncatorLinkMor
 a.vdcTruncatorLinkLess:link, a.vdcTruncatorLinkLess:hover, a.vdcTruncatorLinkLess:active, a.vdcTruncatorLinkLess:visited {font-size: 90% !important;}
 
 /* STUDY FILES PAGE ICEFACES OVERWRITE */
-.vdcStudyFileRowFileName span.iceOutTxt, .vdcStudyFileRowFileDownload span.iceOutTxt, .vdcStudyFilesCatLabel span.iceOutTxt,
-.vdcStudyCatDownloadLink span.iceOutTxt, .vdcStudyFileSubsetAnalysisLink span.iceOutTxt {
+.vdcStudyFileRowFileName span.iceOutTxt, .vdcStudyFileRowFileDownload span.iceOutTxt,
+.vdcStudyFilesCatLabel span.iceOutTxt, .vdcStudyFileSubsetAnalysisLink span.iceOutTxt {
     overflow: visible !important; display: inline !important; padding: 0 !important;
 }
 .vdcStudyFileRowFileDownloadLink span.iceOutTxt, .vdcStudyFileSubsetAnalysisLink span.iceOutTxt,

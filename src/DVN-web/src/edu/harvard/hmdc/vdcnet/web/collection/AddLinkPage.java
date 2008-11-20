@@ -115,9 +115,6 @@ public class AddLinkPage extends VDCBaseBean implements java.io.Serializable  {
         
         return "manageCollections";
     }
-    
-    public String cancel_action() {
-        return "manageCollections";
-    }     
+       
         
 }

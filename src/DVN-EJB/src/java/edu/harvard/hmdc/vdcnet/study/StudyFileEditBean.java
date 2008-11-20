@@ -94,7 +94,7 @@ public class StudyFileEditBean implements Serializable{
     }
     
     public void setFileCategoryName(String fileCategoryName) {
-        this.fileCategoryName = fileCategoryName;
+        this.fileCategoryName = fileCategoryName.trim();
     }
     
     public String getOriginalFileName() {

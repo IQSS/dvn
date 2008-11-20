@@ -95,7 +95,24 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
 
     // ***************** DEBUG START *****************
     
-    
+    protected void initMenu() {
+        if (itemBeans != null) {
+            itemBeans.clear();
+        }
+
+        List list = (List)vdcGroupService.findAll();
+        Iterator outeriterator = list.iterator();
+        while(outeriterator.hasNext()) {
+            classificationsSize++;
+            VDCGroup vdcgroup = (VDCGroup)outeriterator.next();
+                String indentStyle = (vdcgroup.getParent() == null) ? "groupRowIndentStyle" : "childRowIndentStyle";
+                if (vdcgroup.getParent() == null) {
+                    populateParentClassification(vdcgroup, indentStyle);
+                }
+            }
+    }
+
+
     //Manage classification
      private void populateParentClassification(VDCGroup vdcgroup, String indentStyle) {
          Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
@@ -114,22 +131,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
              parentItem.setIndentStyleClass(indentStyle);
      }
 
-    protected void initMenu() {
-        if (itemBeans != null) {
-            itemBeans.clear();
-        } 
-       
-        List list = (List)vdcGroupService.findAll();
-        Iterator outeriterator = list.iterator();
-        while(outeriterator.hasNext()) {
-            classificationsSize++;
-            VDCGroup vdcgroup = (VDCGroup)outeriterator.next();
-                String indentStyle = (vdcgroup.getParent() == null) ? "groupRowIndentStyle" : "childRowIndentStyle";
-                if (vdcgroup.getParent() == null) {
-                    populateParentClassification(vdcgroup, indentStyle);
-                }
-            }
-    }
+    
 
     /**
      * Toggles the expanded state of this dataverse group.
@@ -172,6 +174,8 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
              parentItem.setIndentStyleClass("childRowIndentStyle"); //deprecate in favor of inline indent
              parentItem.setTextIndent(indent + "px");
              parentitem.addChildItem(parentItem);
+             if (itemBeans.contains(parentItem))
+                  itemBeans.remove(parentItem);
              itemBeans.add(itemBeans.indexOf(parentitem) + 1, parentItem);
              
          }

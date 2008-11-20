@@ -43,19 +43,21 @@
                       Dataverse
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:selectOneMenu value="#{AddLinkPage.dvId}" partialSubmit="true">
+                      <ice:selectOneMenu id="linkVDC" value="#{AddLinkPage.dvId}" partialSubmit="true" required="#{AddLinkPage.dvId == null}" requiredMessage="Please select a dataverse.">
                         <f:selectItem itemLabel="Select a Dataverse" itemValue="" />
                         <f:selectItems value="#{AddLinkPage.dvItems}"/>
                       </ice:selectOneMenu>
+                      <ice:message styleClass="errorMessage" for="linkVDC"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="vdcFieldTitle">
                       Collection
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:selectOneMenu value="#{AddLinkPage.collId}">
+                      <ice:selectOneMenu id="linkColl" value="#{AddLinkPage.collId}" required="#{AddLinkPage.dvId != null}" requiredMessage="Please select a collection">
                         <f:selectItem itemLabel="Select a Collection" itemValue="" />
                         <f:selectItems value="#{AddLinkPage.collectionItems}"/>
                       </ice:selectOneMenu>
+                      <ice:message styleClass="errorMessage" for="linkColl"/>
                     </div>
                   </ice:panelGrid>
 
@@ -63,7 +65,7 @@
 
                 <div style="padding-top: 20px;">
                   <ice:commandButton id="button1" value="Save" action="#{AddLinkPage.save_action}"/>
-                  <ice:commandButton id="button2" value="Cancel" style="margin-left: 30px;" action="#{AddLinkPage.cancel_action}"/>
+                  <ice:commandButton id="button2" value="Cancel" style="margin-left: 30px;" action="manageCollections" immediate="true"/>
                 </div>
 
               </div>

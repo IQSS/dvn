@@ -130,39 +130,17 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     public StudyServiceBean() {
     }
 
-    /**
-     * Add given Study to persistent storage.
-     */
-    /*  Commented out - not used
-    public void addStudy(Study study) {
-    // For each collection of dependent objects, set the relationship to this study.
-    if (study.getStudyAbstracts() != null) {
-    for (Iterator<StudyAbstract> it = study.getStudyAbstracts().iterator(); it.hasNext();) {
-    StudyAbstract elem = it.next();
-    elem.setStudy(study);
-    }
-    }
-    if (study.getStudyOtherIds() != null) {
-    for (Iterator<StudyOtherId> it = study.getStudyOtherIds().iterator(); it.hasNext();) {
-
-    StudyOtherId elem = it.next();
-    elem.setStudy(study);
-    }
-    }
-
-    Template template = study.getTemplate();
-    study.setTemplate(null);
-    em.persist(study);
-    study.setTemplate(template);
-
-
-    }
-     */
+   
     public void updateStudy(Study detachedStudy) {
         em.merge(detachedStudy);
     }
 
-
+    public void updateReviewState(Long studyId, String reviewStateName) {
+        Study study = em.find(Study.class, studyId);
+        ReviewState state = this.reviewStateService.findByName(reviewStateName);
+        study.setReviewState(state);
+     
+    }
     public Study getStudyByHarvestInfo(VDC dataverse, String harvestIdentifier) {
         String queryStr = "SELECT s FROM Study s WHERE s.owner.id = '" + dataverse.getId() + "' and s.harvestIdentifier = '" + harvestIdentifier + "'";
         Query query = em.createQuery(queryStr);

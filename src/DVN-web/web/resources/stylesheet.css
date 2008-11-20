@@ -1613,6 +1613,24 @@ td.dvnPermissionsTableHeader {padding: .5em 1em; background: gainsboro; color: g
 
 .dvnPermissionsTable .iceDatTbl span {font-size: 90% !important;}
 
+/**** Study Permissions Page ****/
+.dvnStudyPermissionsFileDetails th:first-child {
+   width: 10%;
+   text-align: center;
+}
+.dvnStudyPermissionsFileDetails table.iceDatTbl {
+    margin-top: 0;
+    border-top: 1px solid #d9d9d9;
+}
+.dvnStudyPermissionsFileDetails table.iceDatTbl,
+.dvnStudyPermissionsFileDetails table.iceDatTbl td.iceDatTblCol1,
+.dvnStudyPermissionsFileDetails table.iceDatTbl td.iceDatTblCol2,
+.dvnStudyPermissionsFileDetails table.iceDatTbl tr.iceDatTblRow1,
+.dvnStudyPermissionsFileDetails table.iceDatTbl tr.iceDatTblRow2 {
+  border-left: 0;
+  border-right: 0;
+}
+
 /**** Create a Dataverse ****/
 .dvn_createDvRequest {text-align: center;}
 .dvn_createDvRequest .requestHeader {margin-left: auto; margin-right: auto; width: 770px; color: #c55b28; font-size: 160% !important; text-transform: uppercase; text-align: left;}

@@ -71,6 +71,8 @@ alter table vdccollection drop column reviewstate_id;
 alter table vdccollection drop column shortdesc;
 
 alter table vdccollection rename column longdesc to description;
+ALTER TABLE vdccollection ALTER COLUMN description type text;
+ALTER TABLE vdccollection ALTER COLUMN description SET STORAGE EXTENDED;
 
 ALTER TABLE vdccollection ADD COLUMN localscope boolean;
 ALTER TABLE vdccollection ALTER COLUMN localscope SET STORAGE PLAIN;

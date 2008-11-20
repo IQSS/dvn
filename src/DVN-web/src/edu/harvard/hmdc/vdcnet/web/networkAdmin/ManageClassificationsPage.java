@@ -126,7 +126,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
          }
          parentItem.setShortDescription(vdcgroup.getDescription());
          parentItem.setSubclassification(new Long(list.size()));
-         parentItem.setTextIndent("0px");
+         parentItem.setTextIndent(0);
          if (!indentStyle.equals(""))
              parentItem.setIndentStyleClass(indentStyle);
      }
@@ -158,21 +158,22 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
 
     }
 
-    int indent = 10;
+    int indent = 10; //initialize primitive
 
     private void expandSubClassification(List<VDCGroup> children, DataverseGrouping parentitem) {
+         
          String expandImage     = EXPAND_IMAGE;
          String contractImage   = CONTRACT_IMAGE;
          boolean isExpanded     = false;
          Iterator iterator = children.iterator();
-         indent+=5;
+         indent = parentitem.getTextIndent() + 5;
          while(iterator.hasNext()) {
              VDCGroup vdcgroup = (VDCGroup)iterator.next();
             synchronized(itemBeans) {
                 parentItem  = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, isExpanded, expandImage, contractImage, new Long(parentitem.getId()));
              }
              parentItem.setIndentStyleClass("childRowIndentStyle"); //deprecate in favor of inline indent
-             parentItem.setTextIndent(indent + "px");
+             parentItem.setTextIndent(indent);
              parentitem.addChildItem(parentItem);
              if (itemBeans.contains(parentItem))
                   itemBeans.remove(parentItem);

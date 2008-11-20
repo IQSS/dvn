@@ -65,16 +65,17 @@
                 </f:facet>
                  <!-- contract/expand column -->
 	        <ice:column style="width:1%;">
-	            <ice:panelGroup styleClass="#{dvItems.indentStyleClass}">
+	            <ice:panelGroup style="text-indent:#{dvItems.textIndent}px!important;">
 	                <!-- Render the expand/contract if there is an image -->
-                        <ice:commandLink actionListener="#{manageClassificationsPage.toggleChildren}">
+                        <ice:commandLink actionListener="#{manageClassificationsPage.toggleChildren}"
+                                            >
                           <ice:graphicImage id="expandContractImage"
                                             binding="#{manageClassificationsPage.toggleImage}"
                                               value="#{dvItems.expandContractImage}"
-	                                      style="border: 0px solid;text-indent:#{dvItems.textIndent}">
+	                                      style="border: 0px solid;">
                                 <f:attribute name="groupingId" value="#{dvItems.id}" />
                            </ice:graphicImage>
-                          
+
                         </ice:commandLink>
 	               <!-- <ice:commandLink  actionListener="#{dvItems.toggleSubGroupAction}">
 	                    <ice:graphicImage id="expandContractImage"

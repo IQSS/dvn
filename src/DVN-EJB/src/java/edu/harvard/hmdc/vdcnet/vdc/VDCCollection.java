@@ -49,6 +49,7 @@ import javax.persistence.*;
 public class VDCCollection implements java.io.Serializable {
 
     private String name;
+    @Column(columnDefinition = "TEXT")
     private String description;
     @Column(columnDefinition = "TEXT")
     private String query;

@@ -491,8 +491,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public void setReadyForReview(ActionEvent ae) {
         ReviewState inReview = this.reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
         studyUI.getStudy().setReviewState(inReview);
-        studyService.updateStudy(studyUI.getStudy());
-
+        studyService.updateReviewState(studyUI.getStudy().getId(),ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
 
         Study study = studyUI.getStudy();
         VDCUser user = getVDCSessionBean().getLoginBean().getUser();
@@ -515,10 +514,12 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public void setReleased(ActionEvent ae) {
+      
+        
         ReviewState released = this.reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
         studyUI.getStudy().setReviewState(released);
-        studyService.updateStudy(studyUI.getStudy());
-        //    studyService.updateReviewState(studyUI.getStudy().getId(),ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
+        studyService.updateReviewState(studyUI.getStudy().getId(),ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
+    
         VDCRole studyCreatorRole = studyUI.getStudy().getCreator().getVDCRole(studyUI.getStudy().getOwner());
 
         if (studyCreatorRole != null && studyCreatorRole.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {

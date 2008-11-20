@@ -188,7 +188,7 @@
                         pageIndexVar="pageIndex"
                         >
  
-                 <ice:outputFormat value="{0} Studies found, displaying {1} studies, from {2} to {3}. Page {4} / {5}" styleClass="standard" >
+                 <ice:outputFormat rendered ="#{rowsCount > displayedRowsCountVar}" value="{0} Studies found, displaying {1} studies, from {2} to {3}. Page {4} / {5}" styleClass="standard" >
                         <f:param value="#{rowsCount}" />
                         <f:param value="#{displayedRowsCountVar}" />
                         <f:param value="#{firstRowIndex}" />

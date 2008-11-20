@@ -105,6 +105,24 @@
                 return false;
             }
 
+            jQuery(document).ready(function(){
+                jQuery(".studyFileDownloadAs li, .studyEditLinks li").hover(
+                function(){ jQuery("ul", this).fadeIn("fast"); },
+                function() { }
+            );
+                if (document.all) {
+                    jQuery(".studyFileDownloadAs li, .studyEditLinks li").hoverClass ("sfHover");
+                }
+            });
+            jQuery.fn.hoverClass = function(c) {
+                return this.each(function(){
+                    jQuery(this).hover(
+                    function() { jQuery(this).addClass(c);  },
+                    function() { jQuery(this).removeClass(c); }
+                );
+                });
+            };
+
             // ]]>
         </script>
         <f:loadBundle basename="StudyBundle" var="studybundle"/>
@@ -130,19 +148,33 @@
               <div jsfc="ice:panelGroup" styleClass="dvn_tooltip" rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
                 <script type="text/javascript">
                     // <![CDATA[
-                    $('.dvn_tooltip a').tooltip({
+                    $('.dvn_tooltip a.vdcTooltipLink').tooltip({
                         track: true,
                         delay: 0,
                         showURL: false,
                         showBody: " - "
                     });
-
-
                     // ]]>
                 </script>
                 <div jsfc="ice:panelGroup" styleClass="dvnInlineButton" rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}">
                   <ice:commandButton value="Release" actionListener="#{studyPage.setReleased}"/>
                 </div>
+                <ul class="studyEditLinks editDropDown">
+                  <li>
+                    <a class="editDropDownLink">Edit...</a>
+                    <ul>
+                      <li>
+                        <ice:outputLink rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog">
+                          <ice:outputText value="Edit Cataloging Information"/>
+                        </ice:outputLink>
+                        <ice:outputLink rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null and !empty studyPage.studyUI.study.fileCategories}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files">
+                          <ice:outputText value="Edit Documentation Data and Analysis"/>
+                        </ice:outputLink>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+
                 <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
                 <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
                 <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
@@ -156,9 +188,7 @@
             <ice:panelTabSet selectedIndex="#{studyPage.selectedIndex}" tabChangeListener="#{studyPage.processTabChange}">
               <ice:panelTab id="catalog" label="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
                 <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" style="width: 98%">
-                    <ice:outputLink rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}"  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog">
-                        <ice:outputText value="Edit Cataloging Information"/>
-                    </ice:outputLink>
+                    
                   <div jsfc="ice:panelGroup"  id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                     <ice:outputText id="outputText11" value="Citation Information"/>
                     <ice:commandButton id="commandButtonCitationInfoContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}" />
@@ -475,9 +505,7 @@
               <!-- FILES -->
               <ice:panelTab id="files" label="Documentation, Data and Analysis" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files#{studyPage.studyListingIndexAsParameter}">
                 <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" styleClass="vdcStudyFilesPage">
-                     <ice:outputLink rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null and !empty studyPage.studyUI.study.fileCategories}"  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files">
-                        <ice:outputText value="Edit Documentation Data and Analysis"/>
-                    </ice:outputLink>
+                     
                   <div jsfc="ice:panelGroup" id="noFilesPanel1" panelLayout="flow" styleClass="vdcStudyFilesEmpty" rendered="#{empty studyPage.studyUI.study.fileCategories}">
                     <div jsfc="ice:panelGroup" id="noFilesPanel2" styleClass="vdcStudyFilesEmptyMessage" rendered="#{!studyPage.userAuthorizedToEdit}">
                       <ice:outputText value="No files have been provided for this study."/>
@@ -548,13 +576,6 @@
                                 <div jsfc="ice:panelGroup" styleClass="vdcStudyFilesCatLabel">
                                   <ice:outputText id="outputText16" value="#{catUI.fileCategory.name}"/>
                                 </div>
-                                <div jsfc="ice:panelGroup" styleClass="vdcStudyFilesCatDownload">
-                                  <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_downloadall_locked.gif" rendered="#{!catUI.anyFileUnrestricted}" alt="You do not have permissions to access any files in this category." />
-                                  <ice:outputText styleClass="vdcStudyFileRowFileDownloadRestricted" value="Files in this category are restricted" rendered="#{!catUI.anyFileUnrestricted}" />
-                                  <ice:outputLink styleClass="vdcStudyCatDownloadLink" id="catDownloadLink" value="/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}_#{catUI.downloadName}.zip?catId=#{catUI.fileCategory.id}#{studyPage.xff}" title="Download all files in this category in a single archive file." rendered="#{catUI.anyFileUnrestricted}">
-                                    <ice:outputText styleClass="vdcStudyCatDownloadLink" value="Download all files in this category" />
-                                  </ice:outputLink>
-                                </div>
                               </div>
                               <div jsfc="ice:panelGroup" styleClass="TogglePaneContent">
                                 <ice:dataTable rendered="#{catUI.rendered}" cellpadding="0" cellspacing="0"
@@ -596,27 +617,6 @@
                                           </ice:outputLink>
                                         </div>
                                         <div jsfc="ice:panelGroup" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.studyFile.subsettable}">
-                                          <script type="text/javascript">
-                                              // <![CDATA[
-                                              jQuery(document).ready(function(){
-                                                  jQuery(".studyFileDownloadAs li").hover(
-                                                  function(){ jQuery("ul", this).fadeIn("fast"); },
-                                                  function() { }
-                                              );
-                                                  if (document.all) {
-                                                      jQuery(".studyFileDownloadAs li").hoverClass ("sfHover");
-                                                  }
-                                              });
-                                              jQuery.fn.hoverClass = function(c) {
-                                                  return this.each(function(){
-                                                      jQuery(this).hover(
-                                                      function() { jQuery(this).addClass(c);  },
-                                                      function() { jQuery(this).removeClass(c); }
-                                                  );
-                                                  });
-                                              };
-                                              // ]]>
-                                          </script>
                                           <ul class="studyFileDownloadAs downloadas">
                                             <li>
                                               <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_download.gif" alt="View or download this File."/><a class="downloadasLink">Download as...</a>

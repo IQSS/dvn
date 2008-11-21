@@ -32,6 +32,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -107,7 +108,9 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
      private void initAllDataverses(List list) {
          parentItem = new DataverseGrouping(new Long("0"), "", "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, null);
          parentItem.setSubclassification(new Long("0"));
-         // TBD:  add sorting
+         Date date = new Date();
+         Timestamp timeStamp = new Timestamp(date.getTime());
+         parentItem.setCreationDate(timeStamp);
          Iterator iterator = list.iterator();
          VDC vdc = null;
          while(iterator.hasNext()) {
@@ -151,39 +154,6 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
             }
         }
 
-     }
-
-
-     private void initGroupBean(List list) {
-         Iterator iterator = list.iterator();
-         VDCGroup vdcgroup = null;
-         while(iterator.hasNext()) {
-            //add DataListItems to the list
-            itemBeansSize++;
-            vdcgroup = (VDCGroup)iterator.next();
-            Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
-            parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
-            parentItem.setShortDescription(vdcgroup.getDescription());
-            parentItem.setSubclassification(new Long("25"));
-            List innerlist = vdcgroup.getVdcs();
-            Iterator inneriterator = innerlist.iterator();
-            // ArrayList childItems   = new ArrayList();
-            while(inneriterator.hasNext()) {
-                VDC vdc = (VDC)inneriterator.next();
-                //TODO: Make this the timestamp for last update time
-                Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
-                Long localActivity       = calculateActivity(vdc);
-                String activity          = getActivityClass(localActivity);
-                childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
-                childItem.setId(vdc.getId());
-                childItem.setCreationDate(vdc.getCreatedDate());
-                childItem.setNumberOwnedStudies(getOwnedStudies(vdc));
-                childItem.setType(vdc.getDtype());
-                //System.out.println("the vdc is " + vdc.getName() + "the number of studies is " + getOwnedStudies(vdc));
-                childItem.setCreatedBy(getCreatorName(vdc.getCreator().getId()));
-                parentItem.addChildItem(childItem);
-            }
-        }
      }
 
      private String getCreatorName(Long userid) {

@@ -104,8 +104,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
     //the names of the study files that already exist in storage 
     private String[] studyFileNames=null;  
     //
-   
-   
+  
      /**
      * Return the reference to the
      * {@link com.icesoft.faces.webapp.xmlhttp.PersistentFacesState
@@ -175,11 +174,12 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
             str = "Uploaded File: " + inputFile.getFileInfo().getFileName()+ "\n" + 
                    "InputFile Status: "+ inputFile.getStatus();
             mLog.error(str); 
-            errorMessage(str);
+            System.out.println(str);
+         //   errorMessage(str);
            if(inputFile.getStatus() != InputFile.INVALID){
                str = "Error saving the file. Status "+ inputFile.getStatus();
                System.out.println(str); 
-               errorMessage(str); 
+          //     errorMessage(str); 
             //return;
            }
           }
@@ -195,7 +195,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
          if(!currentFile.getOriginalFileName().equals(currentFile.getStudyFile().getFileName())){
              str = "StudyFileEditBean original name differs from study file name";
              mLog.error(str); 
-            errorMessage(str);
+          //  errorMessage(str);
          }
         //name of file EV============================
        
@@ -205,12 +205,12 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
        if(b){
             str = "File " + currentFile.getStudyFile().getFileName()+ " is already in the table";
             mLog.error(str);
-           // mLog.debug(str);
             errorMessage(str);
+           
             return;
        }else{
             //add it to the validation names 
-            getValidationFileNames().add(currentFile.getStudyFile().getFileName()); 
+            getValidationFileNames().add(currentFile.getStudyFile().getFileName().trim()); 
        }
        // reference our newly updated file for display purposes and
        // added it to our history file list.
@@ -538,6 +538,12 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
          for(int n=0; n < fileList.size(); ++n){
             mLog.debug(fileList.get(n).getStudyFile().getFileName());
         }
+        if(detectDuplicates()) {
+            String m = "Duplicate file names are not allowed";
+            System.out.println(m);
+            errorMessage(m); 
+            return null;
+        } 
         // now call save
         if (fileList.size() > 0) {
             studyService.setIngestEmail(ingestEmail);
@@ -548,6 +554,13 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         getVDCRequestBean().setSelectedTab("files");
         return "viewStudy";
     }  
+   private boolean detectDuplicates(){
+       int sz0 = getValidationFileNames().size();
+        Collection<String> noDups = new HashSet<String>(getValidationFileNames());
+        int sz = noDups.size(); 
+        return sz0!=sz;
+       
+   }
     /**
      * Removes files from temp from temp storage 
      * @return String
@@ -682,7 +695,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         }
       // if(!flag) return; 
         }
-        String or = currentFile.getStudyFile().getFileName();
+        String or = currentFile.getStudyFile().getFileName().trim();
         String fname = or;
         String fileName =( (String) value).trim();
          currentFile.getStudyFile().setFileName(fileName);
@@ -716,8 +729,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
             }
         }     
        }
-        
-      if(errorMessage == null && hasFileName(fileName,true))  errorMessage = "must be unique (check file names in tables)"; 
+         
       if (errorMessage != null) {
             ((UIInput)toValidate).setValid(false);
              
@@ -731,17 +743,17 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         // now add this name to the validation list
        if(!fileName.equals(fname)){
         getCurrentFile().getStudyFile().setFileName(fileName);
-        getValidationFileNames().add(fileName); 
+        getValidationFileNames().add(fileName.trim()); 
        //remove the old name from validation names 
        
         hasFileName(fname,true);
        }      
-         
+       
       }
   
     private List<String> validationFileNames = new ArrayList<String>();
     
-    public List getValidationFileNames() {
+    public List<String> getValidationFileNames() {
         return validationFileNames;
     }    
     

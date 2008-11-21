@@ -92,7 +92,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
     private String sessionId;
     // files associated with the current user
    private Long studyId= null; 
-     private  List<StudyFileEditBean> fileList =
+   private  List<StudyFileEditBean> fileList =
             Collections.synchronizedList(new ArrayList<StudyFileEditBean>());
     // latest file uploaded by client
     private StudyFileEditBean currentFile=null;
@@ -104,7 +104,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
     //the names of the study files that already exist in storage 
     private String[] studyFileNames=null;  
     //
-    
+   
    
      /**
      * Return the reference to the
@@ -666,6 +666,9 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
             Object value) {
         
         if (value==null) return;
+        String errorMessage = null;
+        ((UIInput)toValidate).setValid(true);
+    
         if(toValidate != null){
         Map<String,Object> comp =toValidate.getAttributes();
         Set<String> ss= comp.keySet();
@@ -682,8 +685,9 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         String or = currentFile.getStudyFile().getFileName();
         String fname = or;
         String fileName =( (String) value).trim();
+         currentFile.getStudyFile().setFileName(fileName);
        // currentFile.setOriginalFileName(fileName);
-        String errorMessage = null;
+      
         if(fileName.equals("")) return; 
         // check invalid characters 
      
@@ -702,9 +706,9 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
             errorMessage = "cannot contain any of the following characters: \\ / : * ? \" < > | ; "; 
             
         }
-          
+     
         // also check prexisting files
-       if(studyFileNames != null && studyFileNames.length > 0){
+       if(errorMessage == null && studyFileNames != null && studyFileNames.length > 0 ){
        for(String dummy: studyFileNames){
           if ( fileName.equals(dummy) ) {
                 errorMessage = "must be unique (a previously existing file already exists with the name).";
@@ -712,18 +716,18 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
             }
         }     
        }
-            
-      if (errorMessage != null && toValidate != null) {
+        
+      if(errorMessage == null && hasFileName(fileName,true))  errorMessage = "must be unique (check file names in tables)"; 
+      if (errorMessage != null) {
             ((UIInput)toValidate).setValid(false);
-            
+             
             FacesMessage message = new FacesMessage("Invalid File Name - " + errorMessage);
             context.addMessage(toValidate.getClientId(context), message);
-            currentFile.getStudyFile().setFileName(fileName);
+            errorMessage=null;   
             return;
             
          }
     
-      // getCurrentFile().getTempSystemFileLocation();
         // now add this name to the validation list
        if(!fileName.equals(fname)){
         getCurrentFile().getStudyFile().setFileName(fileName);
@@ -731,13 +735,9 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
        //remove the old name from validation names 
        
         hasFileName(fname,true);
-       }
-       
-       
-       
+       }      
          
-        
-    } 
+      }
   
     private List<String> validationFileNames = new ArrayList<String>();
     

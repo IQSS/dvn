@@ -349,14 +349,17 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     // **************** VALIDATORS ****************** -->
     public void validateClassificationName(FacesContext context, UIComponent toValidate, Object value) {
          String newValue = (String) value;
+         VDCGroup group = (VDCGroup)vdcGroupService.findByName(newValue);
         if (newValue == null || newValue.trim().length() == 0) {
             FacesMessage message = new FacesMessage("The field must have a value.");
             context.addMessage(toValidate.getClientId(context), message);
             context.renderResponse();
         } else if (vdcGroupService.findByName(newValue.trim()) != null) {
-                 FacesMessage message = new FacesMessage("This name is in use. Please enter a unique classification name.");
-                context.addMessage(toValidate.getClientId(context), message);
-                context.renderResponse();
+            if (!group.getId().equals(cid)) {
+             FacesMessage message = new FacesMessage("This name is in use. Please enter a unique classification name.");
+             context.addMessage(toValidate.getClientId(context), message);
+             context.renderResponse();
+            }
         }
     }
 

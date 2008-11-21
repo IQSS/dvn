@@ -1027,7 +1027,7 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
 .vdcEditStudyTable div {border-width: 0 0 0 0; padding: 0 0 0 0;}
 .vdcEditStudyTableRow table {border-width: 0 0 0 0; margin: 0 0 0 0;}
 .vdcEditStudyTableRow table td {border-width: 0 0 0 0; padding: 0 0 0 0;}
-.vdcEditStudyInnerTable, .vdcEditStudyInnerTable tr, .vdcEditStudyInnerTable td {border-width: 0 0 0 0; padding: 0 0 0 0;}
+.vdcEditStudyInnerTable, .vdcEditStudyInnerTable tr, .vdcEditStudyInnerTable td {border-width: 0 0 0 0; padding: 0 0 0 0; margin: 0 0 0 0;}
 
 span.vdcEditStudyFormatExample {display: inline;}
 
@@ -1041,36 +1041,36 @@ span.vdcEditStudyFormatExample {display: inline;}
 .vdcEditStudyFieldFloat2 {float: left; margin-left: 1em;}
 .vdcEditStudyFieldFloat3 {clear: left;}
 
-.vdcEditFilesColA{
-   width: 25%;
-   padding-bottom: 2px;
-   padding-left: 1px;
-   padding-right: 1px;
-   padding-top: 2px;
-}
+.vdcEditStudyOuterTable, .vdcEditStudyOuterTable td {padding: 0; margin: 0;}
+.vdcEditStudyInnerTable {margin: 0;}
+.vdcEditStudyInnerTable div {white-space: nowrap;}
+.vdcEditStudyInnerTable textarea {width: auto;}
+.vdcEditStudyInnerTable td.vdcEditFilesColA img.iceGphImg {display: inline; vertical-align: middle;}
+.vdcEditStudyInnerTable td.vdcEditFilesColA span.iceOutTxt {margin-left: .5em; display: inline;}
 
-.vdcEditFilesColB{
-   width: 35%;
-   padding-bottom: 2px;
-   padding-left: 1px;
-   padding-right: 1px;
-   padding-top: 2px;
-   white-space: nowrap;
+td.vdcEditFilesColA{
+   width: 26%;
+   padding: 1em .25em;
+   vertical-align:  top;
 }
-
-.vdcEditFilesColC{
-   width: 10%;
-   padding-bottom: 2px;
-   padding-left: 1px;
-   padding-right: 1px;
-   padding-top: 2px;
+td.vdcEditFilesColB{
+   width: 41%;
+   padding: 1em .25em;
+   vertical-align: top;
+}
+td.vdcEditFilesColC{
+   width: 7%;
+   padding: 1em .25em;
+   text-align: center;
 }
 
 .vdcEditFilesHeader{
-   background-color: #dadee0;
    font-weight: bold;
-   text-align: left
+   text-align: left;
+   border-right: 0;
 }
+.vdcEditFilesHeader:first-child {border-left: 0;}
+.vdcEditFilesHeader div.icePnlGrp span.iceOutTxt, .vdcEditFilesHeader div.icePnlGrp select.iceSelOneMnu {display: inline;}
 .vdcEditStudyCol1 {
    font-weight: normal;
    padding: 4px 0;

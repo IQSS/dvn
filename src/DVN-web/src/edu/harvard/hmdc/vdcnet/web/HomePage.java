@@ -146,51 +146,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
      }
 
 
-     private void initGroupBean(List list) {
-         Iterator iterator = list.iterator();
-         VDCGroup vdcgroup = null;
-
-         
-        
-         while(iterator.hasNext()) {
-            //add DataListItems to the list
-            itemBeansSize++;
-            vdcgroup = (VDCGroup)iterator.next();
-            Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
-            parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
-            parentItem.setShortDescription(vdcgroup.getDescription());
-            parentItem.setSubclassification(new Long("25"));
-            List innerlist = vdcgroup.getVdcs();
-            Iterator inneriterator = innerlist.iterator();
-            // ArrayList childItems   = new ArrayList();
-            while(inneriterator.hasNext()) {
-                VDC vdc = (VDC)inneriterator.next();
-                //TODO: Make this the timestamp for last update time
-                Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
-                Long localActivity       = calculateActivity(vdc);
-                String activity          = getActivityClass(localActivity);
-                childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
-                parentItem.addChildItem(childItem);
-            }
-        }
-     }
-
-     private void initUnGroupedBeans(List list, String caption, Long netstatsId) {
-        Iterator iterator = list.iterator();
-        parentItem = new DataverseGrouping(netstatsId, caption, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, new Long("-1"));
-        parentItem.setShortDescription(""); //TODO add short description to the vdc create/edit pages.
-        parentItem.setSubclassification(new Long("25"));
-        itemBeansSize++;
-        while (iterator.hasNext()) {
-            VDC vdc = (VDC)iterator.next();
-            Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
-            Long localActivity       = calculateActivity(vdc);
-            String activity          = getActivityClass(localActivity);
-            childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(),  "dataverse", activity);
-            parentItem.addChildItem(childItem);
-        }
-     }
-
      private void initAllDataverses(List list) {
          parentItem = new DataverseGrouping(new Long("0"), ALL_DATAVERSES_LABEL, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, null);
          parentItem.setSubclassification(new Long("0"));
@@ -205,8 +160,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
             Long localActivity       = calculateActivity(vdc);
             String activity          = getActivityClass(localActivity);
             if (vdc.getReleaseDate() != null) {
-            childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
-            parentItem.addChildItem(childItem);
+                childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
+                parentItem.addChildItem(childItem);
             }
          }
      }
@@ -227,8 +182,10 @@ public class HomePage extends VDCBaseBean implements Serializable {
                 Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
                 Long localActivity       = calculateActivity(vdc);
                 String activity          = getActivityClass(localActivity);
-                childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
-                parentItem.addChildItem(childItem);
+                if (vdc.getReleaseDate() != null) {
+                    childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
+                    parentItem.addChildItem(childItem);
+                }
             }
      }
 
@@ -238,14 +195,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private DefaultTreeModel model;
     private DataverseGroupingObject selectedUserObject;
 
-    /**
-     * Construct the default tree structure by combining tree nodes.
-     */
-
-    // REMOVE THIS IN FAVOR OF THIS CLASS'S CONSTRUCTOR
-    //public TreeController() {
-       // init();
-    //}
 
     public DefaultTreeModel getModel() {
         return model;

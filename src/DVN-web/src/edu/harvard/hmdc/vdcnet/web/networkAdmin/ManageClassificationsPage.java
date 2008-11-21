@@ -69,7 +69,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
     private DataverseGrouping parentItem = null;
     private DataverseGrouping childItem  = null;
     private final ArrayList itemBeans    = new ArrayList();
-    
+
     public String CHILD_ROW_STYLE_CLASS;
     public static final String GROUP_INDENT_STYLE_CLASS = "GROUP_INDENT_STYLE_CLASS";
     public static final String GROUP_ROW_STYLE_CLASS    = "groupRow";
@@ -98,7 +98,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
      }
 
     // ***************** DEBUG START *****************
-    
+
     protected void initMenu() {
         if (itemBeans != null) {
             itemBeans.clear();
@@ -139,7 +139,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
          }
      }
 
-    
+
 
      /**
      * Toggles the expanded state of this dataverse group.
@@ -169,10 +169,10 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
             List<VDCGroup> children = (List<VDCGroup>)vdcGroupService.findByParentId(new Long(dvgrouping.getId()));
             contractSubClassification(children, dvgrouping);
         }
-        
+
     }
 
-    
+
     String sortColumnName;
     // dataTableColumn Names
     String nameColumnName;
@@ -198,8 +198,8 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
                 }
                 if (sortColumnName.equals(nameColumnName)) {
                     return ascending ?
-                            new String(c1.getName()).compareTo(new String(c2.getName())) :
-                            new String(c2.getName()).compareTo(new String(c1.getName()));
+                            new String(c1.getName().toUpperCase()).compareTo(new String(c2.getName().toUpperCase())) :
+                            new String(c2.getName().toUpperCase()).compareTo(new String(c1.getName().toUpperCase()));
                 } else if (sortColumnName.equals(shortDescriptionColumnName)) {
                     return ascending ? c1.getShortDescription().compareTo(c2.getShortDescription()) :
                             c2.getShortDescription().compareTo(c1.getShortDescription());
@@ -246,7 +246,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
     int indent = 10; //initialize primitive
 
     private void expandSubClassification(List<VDCGroup> children, DataverseGrouping parentitem) {
-         
+
          String expandImage     = EXPAND_IMAGE;
          String contractImage   = CONTRACT_IMAGE;
          boolean isExpanded     = false;
@@ -264,7 +264,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
              if (itemBeans.contains(parentItem))
                   itemBeans.remove(parentItem);
              itemBeans.add(itemBeans.indexOf(parentitem) + 1, parentItem);
-             
+
          }
      }
 
@@ -296,7 +296,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
         this.toggleImage = toggleImage;
     }
 
-    
+
 
 
 
@@ -304,9 +304,9 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
 
      // ******************** END DEBUG ******************************
 
-   
 
-    
+
+
     public void dispose() {
         isInit = false;
         if(itemBeans != null) {

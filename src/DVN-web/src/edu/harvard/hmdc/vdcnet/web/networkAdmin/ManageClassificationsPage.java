@@ -201,8 +201,8 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
                             new String(c1.getName().toUpperCase()).compareTo(new String(c2.getName().toUpperCase())) :
                             new String(c2.getName().toUpperCase()).compareTo(new String(c1.getName().toUpperCase()));
                 } else if (sortColumnName.equals(shortDescriptionColumnName)) {
-                    return ascending ? c1.getShortDescription().compareTo(c2.getShortDescription()) :
-                            c2.getShortDescription().compareTo(c1.getShortDescription());
+                    return ascending ? c1.getShortDescription().toUpperCase().compareTo(c2.getShortDescription().toUpperCase()) :
+                            c2.getShortDescription().toUpperCase().compareTo(c1.getShortDescription().toUpperCase());
                 } else if (sortColumnName.equals(subclassificationsColumnName)) {
                     return ascending ? c1.getSubclassification().compareTo(c2.getSubclassification()) :
                             c2.getSubclassification().compareTo(c1.getSubclassification());

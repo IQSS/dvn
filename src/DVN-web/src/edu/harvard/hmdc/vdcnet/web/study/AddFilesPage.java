@@ -304,7 +304,7 @@ public boolean removeFromFileLst(String fname){
              
             while(theit.hasNext()){
               inputFileData =theit.next();  
-                  if (inputFileData.getStudyFile().getFileName().equals(fname)) {
+                  if ((inputFileData.getStudyFile().getFileName().trim()).equals(fname.trim())) {
 		      found = true; 
                       theit.remove();             
                       break;
@@ -557,8 +557,19 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
    private boolean detectDuplicates(){
        int sz0 = getValidationFileNames().size();
         Collection<String> noDups = new HashSet<String>(getValidationFileNames());
-        int sz = noDups.size(); 
-        return sz0!=sz;
+        int sz1 = noDups.size();
+        boolean ret = sz0 != sz1;
+        if(fileList.size() <= 0) return ret;
+        Iterator<StudyFileEditBean> it = fileList.iterator();
+        List<String> names = new ArrayList<String>();
+        while(it.hasNext()){
+            names.add((it.next()).getStudyFile().getFileName().trim());
+        }
+        sz0 = names.size();
+        noDups =  new HashSet<String>(names);
+        sz1 = noDups.size();
+       
+        return (ret || sz0 != sz1);
        
    }
     /**
@@ -750,7 +761,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
        }      
        
       }
-  
+    
     private List<String> validationFileNames = new ArrayList<String>();
     
     public List<String> getValidationFileNames() {

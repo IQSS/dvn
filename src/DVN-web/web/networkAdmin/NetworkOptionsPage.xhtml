@@ -198,7 +198,7 @@
                                 </ice:outputLink>
                             </td>
                             <td>
-                                <ice:outputText styleClass="dvnOptionsTableNote" rendered="#{MainLayoutBean.googleAnalyticsKey != null }" value="#{bundle.webStatsText}"/>
+                                <ice:outputText styleClass="dvnOptionsTableNote" rendered="#{MainLayoutBean.googleAnalyticsKey != null }" value="#{bundlePageInfo.webStatsText}"/>
                                 <ice:outputText styleClass="dvnOptionsTableNote" rendered="#{MainLayoutBean.googleAnalyticsKey == null }"
                                               id="siteStatsText"
                                               value="NOTE: Google Analytics is not configured for this Dataverse Network"/>

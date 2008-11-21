@@ -30,9 +30,9 @@
 
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
+import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlGraphicImage;
 import com.icesoft.faces.component.ext.HtmlMessages;
-import com.icesoft.faces.component.ext.HtmlOutputText;
 import edu.harvard.hmdc.vdcnet.study.StudyDownload;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtils;
@@ -44,10 +44,10 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import javax.ejb.EJB;
 
 public class ManageClassificationsPage extends VDCBaseBean implements Serializable {
@@ -77,6 +77,8 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
     public static final String CONTRACT_IMAGE           = "tree_nav_top_close_no_siblings.gif";
     public static final String EXPAND_IMAGE             = "tree_nav_top_open_no_siblings.gif";
 
+    private HtmlDataTable mainTable = new HtmlDataTable();
+
     public ManageClassificationsPage() {
         //init();
         CHILD_ROW_STYLE_CLASS = "";
@@ -88,7 +90,9 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
         // initialize the list
         if (itemBeans != null) {
             itemBeans.clear();
-        } 
+        }
+        mainTable.setSortAscending(true);
+        ascending = mainTable.isSortAscending();
         List list = (List)vdcGroupService.findAll();
         initMenu();
      }
@@ -101,6 +105,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
         }
 
         List list = (List)vdcGroupService.findAll();
+        itemBeansSize = list.size();
         Iterator outeriterator = list.iterator();
         while(outeriterator.hasNext()) {
             classificationsSize++;
@@ -129,9 +134,88 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
          parentItem.setTextIndent(0);
          if (!indentStyle.equals(""))
              parentItem.setIndentStyleClass(indentStyle);
+         if (sortColumnName == null) {
+             initColumnNames(parentItem);
+         }
      }
 
     
+
+     /**
+     * Toggles the expanded state of this dataverse group.
+     *
+     * @param event
+     */
+    public void sort(javax.faces.event.ActionEvent event) {
+        ascending = !ascending;
+        Iterator iterator = itemBeans.iterator();
+        List childrenlist = new ArrayList();
+        DataverseGrouping dvgrouping;
+        while(iterator.hasNext()) {
+            synchronized(itemBeans){
+                dvgrouping = (DataverseGrouping)iterator.next();
+                //ascending = !dvgrouping.isAscending();
+                dvgrouping.setAscending(ascending);
+                dvgrouping.setIsExpanded(false);
+                if (dvgrouping.getParentClassification() == -1) {
+                    childrenlist.add(dvgrouping);
+                }
+            }
+        }
+        sort(mainTable.getSortColumn());
+        iterator = childrenlist.iterator();
+        while(iterator.hasNext()) {
+            dvgrouping = (DataverseGrouping)iterator.next();
+            List<VDCGroup> children = (List<VDCGroup>)vdcGroupService.findByParentId(new Long(dvgrouping.getId()));
+            contractSubClassification(children, dvgrouping);
+        }
+        
+    }
+
+    
+    String sortColumnName;
+    // dataTableColumn Names
+    String nameColumnName;
+    // network admin fields
+    String shortDescriptionColumnName;
+    String subclassificationsColumnName;
+    boolean ascending = true;
+
+    private void initColumnNames(DataverseGrouping grouping) {
+        sortColumnName                  = grouping.getSortColumnName();
+        nameColumnName                  = grouping.getNameColumnName();
+        shortDescriptionColumnName      = grouping.getShortDescriptionColumnName();
+        subclassificationsColumnName    = grouping.getSubclassificationsColumnName();
+    }
+
+    protected void sort(String name) {
+        Comparator comparator = new Comparator() {
+            public int compare(Object o1, Object o2) {
+                DataverseGrouping c1 = (DataverseGrouping) o1;
+                DataverseGrouping c2 = (DataverseGrouping) o2;
+                if (sortColumnName == null) {
+                    return 0;
+                }
+                if (sortColumnName.equals(nameColumnName)) {
+                    return ascending ?
+                            new String(c1.getName()).compareTo(new String(c2.getName())) :
+                            new String(c2.getName()).compareTo(new String(c1.getName()));
+                } else if (sortColumnName.equals(shortDescriptionColumnName)) {
+                    return ascending ? c1.getShortDescription().compareTo(c2.getShortDescription()) :
+                            c2.getShortDescription().compareTo(c1.getShortDescription());
+                } else if (sortColumnName.equals(subclassificationsColumnName)) {
+                    return ascending ? c1.getSubclassification().compareTo(c2.getSubclassification()) :
+                            c2.getSubclassification().compareTo(c1.getSubclassification());
+                } else if (sortColumnName.equals(shortDescriptionColumnName)) {
+                    return ascending ? c1.getType().compareTo(c2.getType()) :
+                        c2.getType().compareTo(c1.getType());
+                } else {
+                    return 0;
+                }
+            }
+        };
+            Collections.sort(itemBeans, comparator);
+    }
 
     /**
      * Toggles the expanded state of this dataverse group.
@@ -155,8 +239,9 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
             contractSubClassification(vdcGroupService.findByParentId(parentId), parentitem);
             parentitem.setIsExpanded(false);
         }
-
     }
+
+
 
     int indent = 10; //initialize primitive
 
@@ -174,6 +259,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
              }
              parentItem.setIndentStyleClass("childRowIndentStyle"); //deprecate in favor of inline indent
              parentItem.setTextIndent(indent);
+             parentItem.setSubclassification(new Long(Integer.toString(vdcGroupService.findByParentId(vdcgroup.getId()).size())));
              parentitem.addChildItem(parentItem);
              if (itemBeans.contains(parentItem))
                   itemBeans.remove(parentItem);
@@ -308,44 +394,48 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
         this.statusMessage = statusMessage;
     }
 
-
-
-    private Long calculateActivity(VDC vdc) {
-        Integer numberOfDownloads = 0;
-        Integer numberOwnedStudies = new Integer(0);
-        Long localActivity;
-        try {
-            Collection collection = vdc.getOwnedStudies();
-            numberOwnedStudies = collection.size();
-            Iterator iterator = collection.iterator();
-            while (iterator.hasNext()) {
-                StudyDownload studydownload = new StudyDownload();
-                numberOfDownloads += studydownload.getNumberOfDownloads();
-                iterator.next();
-            }
-        } catch (Exception e) {
-            System.out.println("an exception was thrown while calculating activity");
-        } finally {
-            if (numberOwnedStudies > 0)
-                localActivity = new Long(numberOfDownloads/numberOwnedStudies * 100);
-            else
-                localActivity = new Long(numberOfDownloads.toString());
-            return localActivity;
-        }
+    public HtmlDataTable getMainTable() {
+        return mainTable;
     }
 
-    private String getActivityClass(Long activity) {
-        String activityClass = new String();
-        switch (activity.intValue()) {
-           case 0: activityClass =  "activitylevelicon al-0"; break;
-           case 1: activityClass =  "activitylevelicon al-1"; break;
-           case 2: activityClass =  "activitylevelicon al-2"; break;
-           case 3: activityClass =  "activitylevelicon al-3"; break;
-           case 4: activityClass =  "activitylevelicon al-4"; break;
-           case 5: activityClass =  "activitylevelicon al-5"; break;
-       }
-        return activityClass;
+    public void setMainTable(HtmlDataTable mainTable) {
+        this.mainTable = mainTable;
     }
+
+    public String getSortColumnName() {
+        return sortColumnName;
+    }
+
+    public void setSortColumnName(String sortColumnName) {
+        this.sortColumnName = sortColumnName;
+    }
+
+
+
+    public String getNameColumnName() {
+        return nameColumnName;
+    }
+
+    public void setNameColumnName(String nameColumnName) {
+        this.nameColumnName = nameColumnName;
+    }
+
+    public String getShortDescriptionColumnName() {
+        return shortDescriptionColumnName;
+    }
+
+    public void setShortDescriptionColumnName(String shortDescriptionColumnName) {
+        this.shortDescriptionColumnName = shortDescriptionColumnName;
+    }
+
+    public String getSubclassificationsColumnName() {
+        return subclassificationsColumnName;
+    }
+
+    public void setSubclassificationsColumnName(String subclassificationsColumnName) {
+        this.subclassificationsColumnName = subclassificationsColumnName;
+    }
+
 
     /**
      * <p>Callback method that is called after the component tree has been
